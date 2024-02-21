@@ -56,7 +56,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     class: UniTextareaElement,
   },
   //#endif
-  setup(props, { emit }) {
+  setup(props, { emit, expose }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const wrapperRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
@@ -123,6 +123,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     } else {
       setFixMargin()
     }
+
+    expose({
+      $triggerInput: (detail: { value: string }) => {
+        emit('update:modelValue', detail.value)
+        emit('update:value', detail.value)
+        state.value = detail.value
+      },
+    })
 
     //#if _X_ && !_NODE_JS_
     onMounted(() => {

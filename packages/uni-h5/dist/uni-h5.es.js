@@ -9681,7 +9681,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
   props: props$q,
   emits: ["confirm", ...emit],
   setup(props2, {
-    emit: emit2
+    emit: emit2,
+    expose
   }) {
     const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
     const AUTOCOMPLETES = ["off", "one-time-code"];
@@ -9784,6 +9785,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       });
       !props2.confirmHold && input.blur();
     }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state2.value = detail.value;
+      }
+    });
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
         "key": "disabled-input",
@@ -14883,7 +14891,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
   props: props$h,
   emits: ["confirm", "linechange", ...emit],
   setup(props2, {
-    emit: emit2
+    emit: emit2,
+    expose
   }) {
     const rootRef = ref(null);
     const wrapperRef = ref(null);
@@ -14948,6 +14957,13 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     {
       setFixMargin();
     }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state2.value = detail.value;
+      }
+    });
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
         "key": "disabled-textarea",
