@@ -5,17 +5,12 @@ import {
   CHECKBOX_GROUP_ROOT_ELEMENT,
   // UniCheckboxGroupChangeEvent,
   checkboxGroupProps,
+  CheckboxInfo,
   UniCheckboxGroupChangeEvent,
   UniCheckboxGroupElement,
 } from './model'
-import { getCurrentInstance, onMounted, ref } from 'vue'
+import { getCurrentInstance, onMounted, onUnmounted, ref, camelize } from 'vue'
 import { $dispatch } from '../../utils'
-
-interface CheckboxInfo {
-  name: string
-  checked: boolean
-  setCheckboxChecked: (checked: boolean) => void
-}
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: CHECKBOX_GROUP_NAME,
@@ -29,7 +24,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup(props, { emit, expose, slots }) {
     // data
     const $checkboxList = ref<CheckboxInfo[]>([])
-    const uniCheckboxGroupElementRef = ref<UniCheckboxGroupElement | null>(null)
+
+    const uniCheckboxGroupElementRef = ref<UniCheckboxGroupElement>()
+
     const instance = getCurrentInstance()
 
     /**
@@ -50,7 +47,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
      * checkbox change 触发
      */
     const _changeHandler = (info: CheckboxInfo) => {
-      // set
+      // 设置状态
       $checkboxList.value.forEach((i) => {
         if (i.name === info.name) {
           i.checked = info.checked
@@ -76,13 +73,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     onMounted(() => {
       instance?.$waitNativeRender(() => {
-        if (instance === null) return
+        if (!instance) return
 
         if (!uniCheckboxGroupElementRef.value) return
 
         uniCheckboxGroupElementRef.value._getValue = _getValue
         uniCheckboxGroupElementRef.value._setValue = _setValue
         uniCheckboxGroupElementRef.value._initialValue = _getValue()
+        uniCheckboxGroupElementRef.value._getAttribute = (
+          key: string
+        ): string | null => {
+          const keyString = camelize(key) as keyof typeof props
+          return props[keyString] !== null
+            ? props[keyString]?.toString() ?? null
+            : null
+        }
 
         // for form
         const ctx = instance.proxy
@@ -90,20 +95,34 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           ctx,
           'Form',
           'formControlUpdate',
-          uniCheckboxGroupElementRef,
+          uniCheckboxGroupElementRef.value,
           'add'
         )
       })
     })
 
+    onUnmounted(() => {
+      // for form
+      const ctx = instance?.proxy
+      $dispatch(
+        ctx,
+        'Form',
+        'formControlUpdate',
+        uniCheckboxGroupElementRef.value,
+        'remove'
+      )
+    })
+
     expose({
       _checkboxGroupUpdateHandler,
       _changeHandler,
+      _getValue,
+      _setValue,
     })
 
     return () => {
       return (
-        <uni-checkbox-group-element ref="uniCheckboxGroupElementRef">
+        <uni-checkbox-group-element ref={uniCheckboxGroupElementRef}>
           {slots.default?.()}
         </uni-checkbox-group-element>
       )

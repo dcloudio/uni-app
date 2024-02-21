@@ -3,6 +3,19 @@
 export const RADIOGROUP_NAME = 'RadioGroup'
 export const RADIOGROUP_ROOT_ELEMENT = 'uni-radio-group-element'
 
+export const RadioProps = {
+  name: {
+    type: String,
+    default: '',
+  },
+}
+
+export interface RadioInfo {
+  name: string
+  checked: boolean
+  setRadioChecked: (checked: boolean) => void
+}
+
 export class UniRadioGroupElement extends UniFormControlElement<string> {
   _initialValue: string = ''
 
@@ -10,16 +23,12 @@ export class UniRadioGroupElement extends UniFormControlElement<string> {
     super(data, pageNode)
   }
 
-  // override getAttribute(key: string): string | null {
-  //   const value = this._getAttribute(key)
-  //   if (value != null) {
-  //     return value
-  //   }
-  //   return super.getAttribute(key)
-  // }
-
-  _getAttribute = (key: string): string | null => {
-    return null
+  override getAttribute(key: string): string {
+    const value = this._getAttribute(key)
+    if (value != null) {
+      return value
+    }
+    return super.getAttribute(key)
   }
 
   override get value(): string {
@@ -31,6 +40,11 @@ export class UniRadioGroupElement extends UniFormControlElement<string> {
 
   override reset() {
     this.value = this._initialValue
+  }
+
+  // 带 _ 的方法、属性会在组件渲染之后被重写
+  _getAttribute = (key: string): string | null => {
+    return null
   }
 
   _getValue = (): string => {

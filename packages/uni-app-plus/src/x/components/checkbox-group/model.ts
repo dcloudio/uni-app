@@ -10,6 +10,12 @@ export const checkboxGroupProps = {
   },
 }
 
+export interface CheckboxInfo {
+  name: string
+  checked: boolean
+  setCheckboxChecked: (checked: boolean) => void
+}
+
 export class UniCheckboxGroupElement extends UniFormControlElement<string[]> {
   _initialValue: string[] = []
 
@@ -20,8 +26,22 @@ export class UniCheckboxGroupElement extends UniFormControlElement<string[]> {
   override get value(): string[] {
     return this._getValue()
   }
+
   override set value(value: string[]) {
     this._setValue(value)
+  }
+
+  override getAttribute(key: string): string {
+    const value = this._getAttribute(key)
+    if (value != null) {
+      return value
+    }
+    return super.getAttribute(key)
+  }
+
+  // 这个会被重写
+  _getAttribute = (key: string): string | null => {
+    return null
   }
 
   override reset() {

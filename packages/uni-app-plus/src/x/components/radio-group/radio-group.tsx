@@ -1,25 +1,19 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import {
-  onMounted,
-  getCurrentInstance,
-  ComponentInternalInstance,
-  ref,
-  onUnmounted,
-} from 'vue'
+import { onMounted, getCurrentInstance, ref, onUnmounted, camelize } from 'vue'
 import {
   RADIOGROUP_NAME,
   RADIOGROUP_ROOT_ELEMENT,
+  RadioInfo,
+  RadioProps,
   UniRadioGroupChangeEvent,
   UniRadioGroupElement,
 } from './model'
 import { $dispatch } from '../../utils'
 
-interface RadioInfo {
-  name: string
-  checked: boolean
-  setRadioChecked: (checked: boolean) => void
-}
+/**
+ * radio-group 组件
+ */
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: RADIOGROUP_NAME,
@@ -28,6 +22,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     // @ts-expect-error not web element
     class: UniRadioGroupElement,
   },
+  props: RadioProps,
   emits: ['change'],
   setup(props, { emit, slots, expose }) {
     // 获取子类所有的 radio 实例
@@ -35,55 +30,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const uniRadioGroupElementRef = ref<UniRadioGroupElement>()
 
-    let instance: ComponentInternalInstance | null = null
-
-    onMounted(() => {
-      instance = getCurrentInstance()
-
-      instance?.$waitNativeRender(() => {
-        if (!uniRadioGroupElementRef.value) return
-
-        // 重写方法
-        uniRadioGroupElementRef.value._getValue = _getValue
-        uniRadioGroupElementRef.value._setValue = _setValue
-        uniRadioGroupElementRef.value._initialValue = _getValue()
-        uniRadioGroupElementRef.value._getAttribute = (
-          key: string
-        ): string | null => {
-          // const keyString = camelize(key)
-          //   if (this.$props.has(keyString)) {
-          //     const value = this.$props.get(keyString)
-          //     if (value != null) {
-          //       return value.toString()
-          //     }
-          //     return ''
-          //   }
-          return null
-        }
-
-        // for form
-        if (!instance) return
-        const ctx = instance?.proxy
-        $dispatch(
-          ctx,
-          'Form',
-          'formControlUpdate',
-          uniRadioGroupElementRef.value,
-          'add'
-        )
-      })
-    })
-
-    onUnmounted(() => {
-      const ctx = instance?.proxy
-      $dispatch(
-        ctx,
-        'Form',
-        'formControlUpdate',
-        uniRadioGroupElementRef.value,
-        'remove'
-      )
-    })
+    const instance = getCurrentInstance()
 
     /**
      * 子类 radio 在 mounted 时候触发 add，在卸载时候执行 remove
@@ -94,8 +41,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       type: 'add' | 'remove'
     ) => {
       if (type == 'add') {
-        // 有相同的 name，默认都选中
-        // 添加
+        // 有相同的 name，默认都选中添加
         $radioList.value.push(info)
       } else {
         const index = $radioList.value.findIndex((i) => i.name == info.name)
@@ -103,6 +49,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           $radioList.value.splice(index, 1)
         }
       }
+    }
+
+    /**
+     * 当子类 radio 发生变化时候触发
+     * @param name
+     */
+    const _changeHandler = (data: { name: string; checked: boolean }) => {
+      _setValue(data.name)
+      emit('change', new UniRadioGroupChangeEvent(data.name))
     }
 
     /**
@@ -126,7 +81,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
      * @param name 最新值
      */
     const _setValue = (name: string) => {
-      $radioList.value.forEach((info, _) => {
+      $radioList.value.forEach((info) => {
         if (info.name == name) {
           info.checked = true
           info.setRadioChecked(true)
@@ -137,14 +92,46 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
     }
 
-    /**
-     * 当子类 radio 发生变化时候触发
-     * @param name
-     */
-    const _changeHandler = (data: { name: string; checked: boolean }) => {
-      _setValue(data.name)
-      emit('change', new UniRadioGroupChangeEvent(data.name))
-    }
+    onMounted(() => {
+      instance?.$waitNativeRender(() => {
+        if (!instance) return
+        if (!uniRadioGroupElementRef.value) return
+
+        // 重写方法
+        uniRadioGroupElementRef.value._getValue = _getValue
+        uniRadioGroupElementRef.value._setValue = _setValue
+        uniRadioGroupElementRef.value._initialValue = _getValue()
+        uniRadioGroupElementRef.value._getAttribute = (
+          key: string
+        ): string | null => {
+          const keyString = camelize(key) as keyof typeof props
+          return props[keyString] !== null
+            ? props[keyString]?.toString() ?? null
+            : null
+        }
+
+        // for form
+        const ctx = instance?.proxy
+        $dispatch(
+          ctx,
+          'Form',
+          'formControlUpdate',
+          uniRadioGroupElementRef.value,
+          'add'
+        )
+      })
+    })
+
+    onUnmounted(() => {
+      const ctx = instance?.proxy
+      $dispatch(
+        ctx,
+        'Form',
+        'formControlUpdate',
+        uniRadioGroupElementRef.value,
+        'remove'
+      )
+    })
 
     expose({
       _radioGroupUpdateHandler,
@@ -155,7 +142,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => {
       return (
-        <uni-radio-group-element ref={uniRadioGroupElementRef.value}>
+        <uni-radio-group-element ref={uniRadioGroupElementRef}>
           {slots.default?.()}
         </uni-radio-group-element>
       )
