@@ -7229,9 +7229,10 @@ function createComponentInstance(vnode, parent, suspense) {
         ec: null,
         sp: null,
         $waitNativeRender(fn) {
-            var _a, _b;
+            var _a, _b, _c;
             // TODO find document by ComponentInternalInstance props
-            const document = (_b = __pageManager.findPageById(((_a = this.root.proxy) === null || _a === void 0 ? void 0 : _a.$el).pageId)) === null || _b === void 0 ? void 0 : _b.document;
+            const pageId = (_b = (_a = this.root.proxy) === null || _a === void 0 ? void 0 : _a.$el) === null || _b === void 0 ? void 0 : _b.pageId;
+            const document = pageId && ((_c = __pageManager.findPageById(pageId)) === null || _c === void 0 ? void 0 : _c.document);
             if (document) {
                 document.waitNativeRender(fn);
             }
