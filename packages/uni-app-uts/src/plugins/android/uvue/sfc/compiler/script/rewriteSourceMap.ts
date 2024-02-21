@@ -87,6 +87,20 @@ export function rewriteSourceMap(
               }),\n`
             )
           }
+        } else if (
+          init.type === 'NewExpression' &&
+          init.callee.type === 'Identifier' &&
+          init.callee.name === 'UTSJSONObject'
+        ) {
+          const start = node.id.loc!.start
+          s.appendRight(
+            startOffset + init.end! - 1,
+            `${
+              init.arguments.length > 0 ? ', ' : ''
+            }new UTSSourceMapPosition("${node.id.name}", "${fileName}", ${
+              startLine + start.line
+            }, ${start.column + 1})`
+          )
         }
       } else if (
         node.type === 'TSTypeAliasDeclaration' &&
