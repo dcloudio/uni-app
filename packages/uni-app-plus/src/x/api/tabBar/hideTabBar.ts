@@ -12,8 +12,7 @@ export const hideTabBar = defineAsyncApi<API_TYPE_HIDE_TAB_BAR>(
   (options: HideTabBarOptions | null, { resolve, reject }) => {
     const tabBar = getTabBar()
     if (tabBar === null) {
-      reject()
-      // reject(new SetTabBarErrorImpl('tabBar is not exist'))
+      reject('tabBar is not exist')
       return
     }
     tabBar!.hideTabBar(

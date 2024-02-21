@@ -13,8 +13,7 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
   (options: any, { resolve, reject }) => {
     const tabBar = getTabBar()
     if (tabBar === null) {
-      reject()
-      // reject(new SetTabBarErrorImpl('tabBar is not exist'))
+      reject('tabBar is not exist')
       return
     }
     const style = new Map<string, any | null>([
@@ -27,7 +26,7 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
     if (isString(options.borderStyle)) {
       style.set('borderStyle', getBorderStyle(options.borderStyle as string))
     }
-    if (options.midButton !== null) {
+    if (!!options.midButton) {
       const midButtonOptions = options.midButton!
       const midButton: Map<string, any> = new Map<string, any>([
         ['width', midButtonOptions.width],
@@ -38,7 +37,7 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
         ['iconWidth', midButtonOptions.iconWidth],
         ['backgroundImage', midButtonOptions.backgroundImage],
       ])
-      if (midButtonOptions.iconfont !== null) {
+      if (!!midButtonOptions.iconfont) {
         const iconfontOptions = midButtonOptions.iconfont!
         const iconfont: Map<string, any> = new Map<string, any>([
           ['text', iconfontOptions.text],
