@@ -35,7 +35,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     class: UniInputElement,
   },
   //#endif
-  setup(props, { emit }) {
+  setup(props, { emit, expose }) {
     const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
     const AUTOCOMPLETES = ['off', 'one-time-code']
     const type = computed(() => {
@@ -170,6 +170,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
       !props.confirmHold && input.blur()
     }
+
+    expose({
+      $triggerInput: (detail: { value: string }) => {
+        emit('update:modelValue', detail.value)
+        emit('update:value', detail.value)
+        state.value = detail.value
+      },
+    })
 
     //#if _X_ && !_NODE_JS_
     onMounted(() => {

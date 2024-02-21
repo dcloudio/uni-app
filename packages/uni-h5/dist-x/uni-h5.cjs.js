@@ -3561,7 +3561,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
   props: props$j,
   emits: ["confirm", ...emit],
   setup(props2, {
-    emit: emit2
+    emit: emit2,
+    expose
   }) {
     const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
     const AUTOCOMPLETES = ["off", "one-time-code"];
@@ -3664,6 +3665,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       });
       !props2.confirmHold && input.blur();
     }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state.value = detail.value;
+      }
+    });
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? vue.createVNode("input", {
         "key": "disabled-input",
@@ -7361,7 +7369,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
   props: props$a,
   emits: ["confirm", "linechange", ...emit],
   setup(props2, {
-    emit: emit2
+    emit: emit2,
+    expose
   }) {
     const rootRef = vue.ref(null);
     const wrapperRef = vue.ref(null);
@@ -7423,6 +7432,13 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         !props2.confirmHold && textarea.blur();
       }
     }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state.value = detail.value;
+      }
+    });
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? vue.createVNode("textarea", {
         "key": "disabled-textarea",

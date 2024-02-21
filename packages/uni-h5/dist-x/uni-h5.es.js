@@ -9754,7 +9754,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     class: UniInputElement
   },
   setup(props2, {
-    emit: emit2
+    emit: emit2,
+    expose
   }) {
     const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
     const AUTOCOMPLETES = ["off", "one-time-code"];
@@ -9857,6 +9858,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       });
       !props2.confirmHold && input.blur();
     }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state2.value = detail.value;
+      }
+    });
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.defineProperty(rootElement, "value", {
@@ -15238,7 +15246,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     class: UniTextareaElement
   },
   setup(props2, {
-    emit: emit2
+    emit: emit2,
+    expose
   }) {
     const rootRef = ref(null);
     const wrapperRef = ref(null);
@@ -15303,6 +15312,13 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     {
       setFixMargin();
     }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state2.value = detail.value;
+      }
+    });
     onMounted(() => {
       const rootElement = rootRef.value;
       Object.defineProperty(rootElement, "value", {
