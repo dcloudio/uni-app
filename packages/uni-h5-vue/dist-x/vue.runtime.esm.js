@@ -4426,6 +4426,9 @@ function toHandlers(obj, preserveCaseIfNecessary) {
     return ret;
 }
 
+function isUniBuiltInComponentInstance(p) {
+    return p && p.$options && (p.$options.__reserved || p.$options.rootElement);
+}
 /**
  * #2437 In Vue 3, functional components do not have a public instance proxy but
  * they exist in the internal parent chain. For code that relies on traversing
@@ -4434,8 +4437,13 @@ function toHandlers(obj, preserveCaseIfNecessary) {
 const getPublicInstance = (i) => {
     if (!i)
         return null;
-    if (isStatefulComponent(i))
-        return getExposeProxy(i) || i.proxy;
+    if (isStatefulComponent(i)) {
+        const p = getExposeProxy(i) || i.proxy;
+        if (isUniBuiltInComponentInstance(p)) {
+            return getPublicInstance(i.parent);
+        }
+        return p;
+    }
     return getPublicInstance(i.parent);
 };
 const publicPropertiesMap = 
@@ -4453,7 +4461,28 @@ const publicPropertiesMap =
     $root: i => getPublicInstance(i.root),
     $emit: i => i.emit,
     $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
-    $forceUpdate: i => i.f || (i.f = () => queueJob(i.update)),
+    $forceUpdate: i => i.f ||
+        (i.f = () => {
+            queueJob(i.update);
+            const subTree = i.subTree;
+            if (subTree.shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
+                const vnodes = subTree.children;
+                vnodes.forEach(vnode => {
+                    if (!vnode.component) {
+                        return;
+                    }
+                    const p = getExposeProxy(vnode.component) || vnode.component.proxy;
+                    if (isUniBuiltInComponentInstance(p)) {
+                        p.$forceUpdate();
+                    }
+                });
+            } else if (subTree.component) {
+              const p = getExposeProxy(subTree.component) || subTree.component.proxy
+              if (isUniBuiltInComponentInstance(p)) {
+                p.$forceUpdate()
+              }
+            }
+        }),
     $nextTick: i => i.n || (i.n = nextTick.bind(i.proxy)),
     $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
 });
