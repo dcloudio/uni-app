@@ -1,6 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, computed, ref, watch, onMounted, resolveComponent, isInSSRComponentSetup, watchEffect, onUnmounted, camelize, reactive, withDirectives, resolveDirective } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, computed, onMounted, resolveComponent, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, withDirectives, resolveDirective } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
 var _core = { exports: {} };
@@ -2320,36 +2320,13 @@ function registerApp(appVm, app) {
   initAppLaunch(appVm);
   __uniConfig.ready = true;
 }
-function _defineProperty(obj, key, value) {
-  key = _toPropertyKey(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
+var $export = _export;
+var $entries = _objectToArray(true);
+$export($export.S, "Object", {
+  entries: function entries(it) {
+    return $entries(it);
   }
-  return obj;
-}
-function _toPrimitive(input, hint) {
-  if (typeof input !== "object" || input === null)
-    return input;
-  var prim = input[Symbol.toPrimitive];
-  if (prim !== void 0) {
-    var res = prim.call(input, hint || "default");
-    if (typeof res !== "object")
-      return res;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return (hint === "string" ? String : Number)(input);
-}
-function _toPropertyKey(arg) {
-  var key = _toPrimitive(arg, "string");
-  return typeof key === "symbol" ? key : String(key);
-}
+});
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -2462,274 +2439,36 @@ var defineSystemComponent = (options) => {
   };
   return defineComponent(options);
 };
-var SLIDER_TRACK_HEIGHT = 2;
-var SLIDER_THUMB_SHADOW = 4;
-var SLIDER_VALUE_WIDTH = 39;
-var SLIDER_VALUE_FONT_SIZE = 14;
-var SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
-var SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-class UniSliderElement extends UniFormControlElement {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    _defineProperty(this, "_initialValue", 0);
-    _defineProperty(this, "_value", 0);
-    _defineProperty(this, "onValueChanged", (value) => {
+function _defineProperty(obj, key, value) {
+  key = _toPropertyKey(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value,
+      enumerable: true,
+      configurable: true,
+      writable: true
     });
+  } else {
+    obj[key] = value;
   }
-  get value() {
-    return this._value;
-  }
-  set value(value) {
-    if (this._value == value) {
-      return;
-    }
-    this._value = value;
-    this.onValueChanged(value);
-  }
-  reset() {
-    this.value = this._initialValue;
-  }
+  return obj;
 }
-class SliderChangeEventDetail {
-  constructor(value) {
-    _defineProperty(this, "value", 0);
-    this.value = value;
+function _toPrimitive(input, hint) {
+  if (typeof input !== "object" || input === null)
+    return input;
+  var prim = input[Symbol.toPrimitive];
+  if (prim !== void 0) {
+    var res = prim.call(input, hint || "default");
+    if (typeof res !== "object")
+      return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
   }
+  return (hint === "string" ? String : Number)(input);
 }
-class SliderChangeEvent extends CustomEvent {
-  constructor(value) {
-    super("change", {
-      detail: new SliderChangeEventDetail(value)
-    });
-  }
+function _toPropertyKey(arg) {
+  var key = _toPrimitive(arg, "string");
+  return typeof key === "symbol" ? key : String(key);
 }
-const slider = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Slider",
-  rootElement: {
-    name: "uni-slider-element",
-    // @ts-expect-error not web element
-    class: UniSliderElement
-  },
-  props: {
-    min: {
-      type: Number,
-      default: 0
-    },
-    max: {
-      type: Number,
-      default: 100
-    },
-    value: {
-      type: Number,
-      default: 0
-    },
-    step: {
-      type: Number,
-      default: 1
-    },
-    disabled: {
-      type: Boolean,
-      default: false
-    },
-    color: {
-      type: String,
-      default: "#888888"
-    },
-    backgroundColor: {
-      type: String,
-      default: "#e9e9e9"
-    },
-    activeColor: {
-      type: String,
-      default: "#007aff"
-    },
-    selectedColor: {
-      type: String,
-      default: "#007aff"
-    },
-    blockColor: {
-      type: String,
-      default: "#ffffff"
-    },
-    blockSize: {
-      type: Number,
-      default: SLIDER_BLOCK_SIZE_MAX_VALUE
-    },
-    showValue: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["change", "changing"],
-  setup(props, _ref) {
-    var {
-      emit
-    } = _ref;
-    var $data = {
-      $sliderElement: null,
-      $sliderWidth: 0,
-      $sliderTrackWidth: 0,
-      $sliderOffsetX: 0,
-      $touchStartFlag: false,
-      $drawContext: null
-    };
-    function _onTouchStart(e) {
-      if (!props.disabled && e.changedTouches.length === 1 && !$data.$touchStartFlag) {
-        if (props.showValue == true && e.changedTouches[0].screenX > $data.$sliderOffsetX + $data.$sliderTrackWidth + internalBlockSize.value / 2) {
-          return;
-        }
-        $data.$touchStartFlag = true;
-      }
-    }
-    function _onTouchMove(e) {
-      if (!props.disabled && e.changedTouches.length === 1 && $data.$touchStartFlag) {
-        _onTrackInputChange(e.changedTouches[0].screenX);
-        emit("changing", new SliderChangeEvent($data.$sliderElement.value));
-      }
-    }
-    function _onTouchEnd(e) {
-      if (!props.disabled && $data.$touchStartFlag) {
-        $data.$touchStartFlag = false;
-        _onTrackInputChange(e.changedTouches[0].screenX);
-        emit("change", new SliderChangeEvent($data.$sliderElement.value));
-      }
-    }
-    function _onTrackInputChange(x) {
-      var px2 = x - $data.$sliderOffsetX;
-      if (px2 < 0) {
-        px2 = 0;
-      }
-      if (px2 > $data.$sliderTrackWidth) {
-        px2 = $data.$sliderTrackWidth;
-      }
-      var percentage = px2 / $data.$sliderTrackWidth;
-      var value = props.min + (props.max - props.min) * percentage;
-      if (percentage > 0 && percentage < 1) {
-        value -= value % props.step;
-      }
-      if (Number.isInteger(props.step)) {
-        $data.$sliderElement.value = parseInt(value + "");
-      } else {
-        var step_pair = props.step.toString().split(".");
-        $data.$sliderElement.value = parseFloat(value.toFixed(step_pair[1].length));
-        var value_pair = $data.$sliderElement.value.toString().split(".");
-        if (value_pair.length > 1 && parseInt(value_pair[1]) == 0) {
-          $data.$sliderElement.value = parseInt(value_pair[0]);
-        }
-      }
-    }
-    function _onLayout() {
-      var _$data$$sliderElement, _$data$$sliderElement2;
-      $data.$sliderWidth = (_$data$$sliderElement = $data.$sliderElement) === null || _$data$$sliderElement === void 0 ? void 0 : _$data$$sliderElement.offsetWidth;
-      $data.$sliderOffsetX = ((_$data$$sliderElement2 = $data.$sliderElement) === null || _$data$$sliderElement2 === void 0 ? void 0 : _$data$$sliderElement2.offsetLeft) + internalBlockSize.value / 2;
-      $data.$sliderTrackWidth = $data.$sliderWidth - internalBlockSize.value;
-      if (props.showValue) {
-        $data.$sliderTrackWidth -= SLIDER_VALUE_WIDTH;
-      }
-    }
-    function _onRender() {
-      var drawContext = $data.$drawContext;
-      drawContext.reset();
-      var radius = internalBlockSize.value / 2;
-      var center_y = SLIDER_THUMB_SHADOW + radius;
-      var value_width = $data.$sliderTrackWidth * _getValuePercentage();
-      var thumb_center_x = value_width + radius;
-      var line_bg_x = thumb_center_x + radius;
-      var line_bg_w = $data.$sliderTrackWidth - line_bg_x + internalBlockSize.value;
-      if (line_bg_w > 0) {
-        drawContext.fillStyle = props.backgroundColor;
-        drawContext.fillRect(line_bg_x, center_y, line_bg_w, SLIDER_TRACK_HEIGHT);
-      }
-      if (thumb_center_x > radius) {
-        drawContext.fillStyle = props.activeColor;
-        drawContext.fillRect(0, center_y, value_width, SLIDER_TRACK_HEIGHT);
-      }
-      drawContext.fillStyle = props.blockColor;
-      drawContext.arc(thumb_center_x, center_y, radius, 0, 2 * Math.PI);
-      drawContext.fill();
-      drawContext.lineWidth = 1;
-      for (var i = 0; i < SLIDER_THUMB_SHADOW; i++) {
-        drawContext.strokeStyle = "rgba(100,100,100,0.0".concat(4 - i, ")");
-        drawContext.beginPath();
-        drawContext.arc(thumb_center_x, center_y, radius + i, 0, 2 * Math.PI);
-        drawContext.stroke();
-      }
-      if (props.showValue) {
-        drawContext.font = SLIDER_VALUE_FONT_SIZE + "px";
-        drawContext.fillStyle = props.color;
-        drawContext.fillText($data.$sliderElement.value.toString(), $data.$sliderTrackWidth + internalBlockSize.value + 3, center_y + SLIDER_VALUE_FONT_SIZE / 2 - 1);
-      }
-      drawContext.update();
-    }
-    function _getValuePercentage() {
-      var value = $data.$sliderElement.value;
-      if (value < props.min) {
-        value = props.min;
-      }
-      if (value > props.max) {
-        value = props.max;
-      }
-      return (value - props.min) / (props.max - props.min);
-    }
-    var internalBlockSize = computed(() => {
-      return Math.min(Math.max(props.blockSize, SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
-    });
-    var sliderHeight = computed(() => {
-      return internalBlockSize.value + SLIDER_THUMB_SHADOW * 2 + "px";
-    });
-    var sliderRef = ref(null);
-    watch(() => {
-      return props.value;
-    }, (newVal) => {
-      $data.$sliderElement.value = newVal;
-    });
-    onMounted(() => {
-      var instance = getCurrentInstance();
-      instance.$waitNativeRender(() => {
-        $data.$sliderElement = sliderRef.value;
-        $data.$sliderElement._initialValue = props.value;
-        $data.$sliderElement._value = props.value;
-        $data.$sliderElement.onValueChanged = (value) => {
-          _onRender();
-        };
-        $data.$drawContext = $data.$sliderElement.getDrawableContext();
-        _onLayout();
-        _onRender();
-      });
-      watch(() => [props.showValue, props.blockSize], () => {
-        _onLayout();
-        _onRender();
-      });
-      watch(() => [props.disabled, props.color, props.backgroundColor, props.activeColor, props.selectedColor, props.blockColor], () => {
-        _onRender();
-      });
-    });
-    return () => {
-      return createVNode(resolveComponent("uni-slider-element"), {
-        "ref": sliderRef,
-        "style": {
-          height: sliderHeight.value
-        },
-        "onTouchstart": _onTouchStart,
-        "onTouchmove": _onTouchMove,
-        "onTouchend": _onTouchEnd
-      }, null, 8, ["style", "onTouchstart", "onTouchmove", "onTouchend"]);
-    };
-  }
-});
-const slider$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  SliderChangeEvent,
-  UniSliderElement,
-  default: slider
-}, Symbol.toStringTag, { value: "Module" });
-var $export = _export;
-var $entries = _objectToArray(true);
-$export($export.S, "Object", {
-  entries: function entries(it) {
-    return $entries(it);
-  }
-});
 function $dispatch(context, componentName, eventName) {
   var _parent, _parent$$options;
   var parent = context.$parent;
@@ -2745,7 +2484,7 @@ function $dispatch(context, componentName, eventName) {
     for (var _len = arguments.length, do_not_transform_spread = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
       do_not_transform_spread[_key - 3] = arguments[_key];
     }
-    parent.$callMethod(eventName, ...do_not_transform_spread);
+    parent[eventName](...do_not_transform_spread);
   }
 }
 var BUTTON_COMPONENT_NAME = "Button";
@@ -3329,6 +3068,9 @@ class UniCheckboxGroupElement extends UniFormControlElement {
   constructor(data, pageNode) {
     super(data, pageNode);
     this._initialValue = [];
+    this._getAttribute = (key) => {
+      return null;
+    };
     this._getValue = () => {
       return this._initialValue;
     };
@@ -3340,6 +3082,13 @@ class UniCheckboxGroupElement extends UniFormControlElement {
   }
   set value(value) {
     this._setValue(value);
+  }
+  getAttribute(key) {
+    var value = this._getAttribute(key);
+    if (value != null) {
+      return value;
+    }
+    return super.getAttribute(key);
   }
   reset() {
     this.value = this._initialValue.slice(0);
@@ -3373,7 +3122,7 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
       slots
     } = _ref;
     var $checkboxList = ref([]);
-    var uniCheckboxGroupElementRef = ref(null);
+    var uniCheckboxGroupElementRef = ref();
     var instance = getCurrentInstance();
     var _checkboxGroupUpdateHandler = (info, type) => {
       if (type == "add") {
@@ -3409,24 +3158,35 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     };
     onMounted(() => {
       instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
-        if (instance === null)
+        if (!instance)
           return;
         if (!uniCheckboxGroupElementRef.value)
           return;
         uniCheckboxGroupElementRef.value._getValue = _getValue;
         uniCheckboxGroupElementRef.value._setValue = _setValue;
         uniCheckboxGroupElementRef.value._initialValue = _getValue();
+        uniCheckboxGroupElementRef.value._getAttribute = (key) => {
+          var _props$keyString$toSt, _props$keyString;
+          var keyString = camelize(key);
+          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
+        };
         var ctx2 = instance.proxy;
-        $dispatch(ctx2, "Form", "formControlUpdate", uniCheckboxGroupElementRef, "add");
+        $dispatch(ctx2, "Form", "formControlUpdate", uniCheckboxGroupElementRef.value, "add");
       });
+    });
+    onUnmounted(() => {
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx2, "Form", "formControlUpdate", uniCheckboxGroupElementRef.value, "remove");
     });
     expose({
       _checkboxGroupUpdateHandler,
-      _changeHandler
+      _changeHandler,
+      _getValue,
+      _setValue
     });
     return () => {
       return createVNode(resolveComponent("uni-checkbox-group-element"), {
-        "ref": "uniCheckboxGroupElementRef"
+        "ref": uniCheckboxGroupElementRef
       }, {
         default: () => {
           var _slots$default;
@@ -3661,6 +3421,12 @@ const radio$1 = /* @__PURE__ */ Object.defineProperty({
 }, Symbol.toStringTag, { value: "Module" });
 var RADIOGROUP_NAME = "RadioGroup";
 var RADIOGROUP_ROOT_ELEMENT = "uni-radio-group-element";
+var RadioProps = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
 class UniRadioGroupElement extends UniFormControlElement {
   constructor(data, pageNode) {
     super(data, pageNode);
@@ -3673,6 +3439,13 @@ class UniRadioGroupElement extends UniFormControlElement {
     };
     this._setValue = (value) => {
     };
+  }
+  getAttribute(key) {
+    var value = this._getAttribute(key);
+    if (value != null) {
+      return value;
+    }
+    return super.getAttribute(key);
   }
   get value() {
     return this._getValue();
@@ -3703,6 +3476,7 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
     // @ts-expect-error not web element
     class: UniRadioGroupElement
   },
+  props: RadioProps,
   emits: ["change"],
   setup(props, _ref) {
     var {
@@ -3712,31 +3486,7 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
     } = _ref;
     var $radioList = ref([]);
     var uniRadioGroupElementRef = ref();
-    var instance = null;
-    onMounted(() => {
-      var _instance;
-      instance = getCurrentInstance();
-      (_instance = instance) === null || _instance === void 0 ? void 0 : _instance.$waitNativeRender(() => {
-        var _instance2;
-        if (!uniRadioGroupElementRef.value)
-          return;
-        uniRadioGroupElementRef.value._getValue = _getValue;
-        uniRadioGroupElementRef.value._setValue = _setValue;
-        uniRadioGroupElementRef.value._initialValue = _getValue();
-        uniRadioGroupElementRef.value._getAttribute = (key) => {
-          return null;
-        };
-        if (!instance)
-          return;
-        var ctx2 = (_instance2 = instance) === null || _instance2 === void 0 ? void 0 : _instance2.proxy;
-        $dispatch(ctx2, "Form", "formControlUpdate", uniRadioGroupElementRef.value, "add");
-      });
-    });
-    onUnmounted(() => {
-      var _instance3;
-      var ctx2 = (_instance3 = instance) === null || _instance3 === void 0 ? void 0 : _instance3.proxy;
-      $dispatch(ctx2, "Form", "formControlUpdate", uniRadioGroupElementRef.value, "remove");
-    });
+    var instance = getCurrentInstance();
     var _radioGroupUpdateHandler = (info, type) => {
       if (type == "add") {
         $radioList.value.push(info);
@@ -3746,6 +3496,10 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
           $radioList.value.splice(index2, 1);
         }
       }
+    };
+    var _changeHandler = (data) => {
+      _setValue(data.name);
+      emit("change", new UniRadioGroupChangeEvent(data.name));
     };
     var _getValue = () => {
       var value = "";
@@ -3757,7 +3511,7 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
       return value;
     };
     var _setValue = (name) => {
-      $radioList.value.forEach((info, _) => {
+      $radioList.value.forEach((info) => {
         if (info.name == name) {
           info.checked = true;
           info.setRadioChecked(true);
@@ -3767,10 +3521,28 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
         }
       });
     };
-    var _changeHandler = (data) => {
-      _setValue(data.name);
-      emit("change", new UniRadioGroupChangeEvent(data.name));
-    };
+    onMounted(() => {
+      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+        if (!instance)
+          return;
+        if (!uniRadioGroupElementRef.value)
+          return;
+        uniRadioGroupElementRef.value._getValue = _getValue;
+        uniRadioGroupElementRef.value._setValue = _setValue;
+        uniRadioGroupElementRef.value._initialValue = _getValue();
+        uniRadioGroupElementRef.value._getAttribute = (key) => {
+          var _props$keyString$toSt, _props$keyString;
+          var keyString = camelize(key);
+          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
+        };
+        var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+        $dispatch(ctx2, "Form", "formControlUpdate", uniRadioGroupElementRef.value, "add");
+      });
+    });
+    onUnmounted(() => {
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx2, "Form", "formControlUpdate", uniRadioGroupElementRef.value, "remove");
+    });
     expose({
       _radioGroupUpdateHandler,
       _getValue,
@@ -3779,7 +3551,7 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       return createVNode(resolveComponent("uni-radio-group-element"), {
-        "ref": uniRadioGroupElementRef.value
+        "ref": uniRadioGroupElementRef
       }, {
         default: () => {
           var _slots$default;
@@ -4140,16 +3912,131 @@ const progress$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: progress
 }, Symbol.toStringTag, { value: "Module" });
+class UniFormElement extends UniElementImpl {
+  constructor(data, pageNode) {
+    super(data, pageNode);
+    _defineProperty(this, "_getAttribute", (key) => {
+      return null;
+    });
+  }
+}
+class UniFormSubmitEventDetail {
+  constructor(value) {
+    _defineProperty(this, "value", {});
+    this.value = value;
+  }
+}
+class UniFormResetEventDetail {
+}
+class UniFormSubmitEvent extends CustomEvent {
+  constructor(value) {
+    super("change", {
+      detail: new UniFormSubmitEventDetail(value)
+    });
+  }
+}
+class UniFormResetEvent extends CustomEvent {
+  constructor() {
+    super("change", {
+      detail: new UniFormResetEventDetail()
+    });
+  }
+}
+const form = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Form",
+  rootElement: {
+    name: "uni-form-element",
+    // @ts-expect-error not web element
+    class: UniFormElement
+  },
+  emits: ["submit", "reset"],
+  setup(_ref, _ref2) {
+    var {
+      emit,
+      slots,
+      expose
+    } = _ref2;
+    var formRef = ref(null);
+    var instance;
+    function setFormControlsData(formData) {
+      var controls = [];
+      findFormControls(instance.subTree, controls);
+      controls.forEach((control, _) => {
+        setFormData(formData, control.name, control.value);
+      });
+    }
+    function setFormData(formData, name, value) {
+      formData[name] = value;
+    }
+    function findFormControls(vNode, controls) {
+      if (!Array.isArray(vNode.children)) {
+        return;
+      }
+      var vNodes = vNode.children;
+      vNodes.forEach((node) => {
+        if (node.el instanceof UniFormControlElement) {
+          var control = node.el;
+          if (control.name.length > 0) {
+            controls.push(control);
+          }
+        } else if (node.component != null)
+          ;
+        else {
+          findFormControls(node, controls);
+        }
+      });
+    }
+    function submit() {
+      var form_data_out = {};
+      setFormControlsData(form_data_out);
+      emit("submit", new UniFormSubmitEvent(form_data_out));
+    }
+    function reset() {
+      var controls = [];
+      findFormControls(instance.subTree, controls);
+      controls.forEach((control, _) => {
+        control.reset();
+      });
+      emit("reset", new UniFormResetEvent());
+    }
+    onMounted(() => {
+      instance = getCurrentInstance();
+      instance.$waitNativeRender(() => {
+      });
+    });
+    expose({
+      submit,
+      reset
+    });
+    return () => {
+      return createVNode(resolveComponent("uni-form-element"), {
+        "ref": formRef
+      }, {
+        default: () => {
+          var _slots$default;
+          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
+        }
+      }, 512);
+    };
+  }
+});
+const form$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  UniFormElement,
+  UniFormResetEvent,
+  UniFormSubmitEvent,
+  default: form
+}, Symbol.toStringTag, { value: "Module" });
 const components = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Button: button$1,
   Checkbox: checkbox$1,
   CheckboxGroup: checkboxGroup$1,
+  Form: form$1,
   Navigator: navigator$1,
   Progress: progress$1,
   Radio: radio$1,
-  RadioGroup: radioGroup$1,
-  Slider: slider$1
+  RadioGroup: radioGroup$1
 }, Symbol.toStringTag, { value: "Module" });
 const index = {
   uni: uni$1,

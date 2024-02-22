@@ -3,6 +3,7 @@ import {
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
   uniEasycomPlugin,
+  uniHBuilderXConsolePlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUTSUniModulesPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -18,6 +19,7 @@ import * as uniCliShared from '@dcloudio/uni-cli-shared'
 export function init() {
   return [
     uniPrePlugin(),
+    uniHBuilderXConsolePlugin(),
     uniUTSUniModulesPlugin({
       x: true,
       isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',

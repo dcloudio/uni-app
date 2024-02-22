@@ -32,6 +32,7 @@ const kotlinImports = [
 async function testKotlin() {
   const start = Date.now()
   await bundle(UTSTarget.KOTLIN, {
+    mode: 'production',
     input: {
       root: projectDir,
       filename: path.resolve(
