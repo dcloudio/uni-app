@@ -9441,6 +9441,17 @@ var nodeOps = {
     node.setAttribute('value', text);
   },
   setElementText: (el, text) => {
+    // 非文本节点自动嵌套文本子节点
+    if (el.tagName !== 'TEXT') {
+      var childNodes = el.childNodes;
+      var textNode = childNodes.find(node => node.tagName === 'TEXT');
+      if (!textNode) {
+        var _textNode = nodeOps.createText(text, el);
+        el.appendChild(_textNode);
+        return;
+      }
+      el = textNode;
+    }
     el.setAttribute('value', text);
   },
   parentNode: node => node.parentNode,

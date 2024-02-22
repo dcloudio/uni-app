@@ -8314,6 +8314,17 @@ const nodeOps = {
         node.setAttribute('value', text);
     },
     setElementText: (el, text) => {
+        // 非文本节点自动嵌套文本子节点
+        if (el.tagName !== 'TEXT') {
+            const childNodes = el.childNodes;
+            let textNode = childNodes.find(node => node.tagName === 'TEXT');
+            if (!textNode) {
+                const textNode = nodeOps.createText(text, el);
+                el.appendChild(textNode);
+                return;
+            }
+            el = textNode;
+        }
         el.setAttribute('value', text);
     },
     parentNode: node => node.parentNode,
