@@ -1,6 +1,8 @@
 import path from 'path'
+import fs from 'fs'
 import {
   addMiniProgramComponentJson,
+  ComponentJson,
   normalizeMiniProgramFilename,
   normalizePath,
   removeExt,
@@ -38,6 +40,16 @@ export function isUniComponentUrl(id: string) {
   return id.startsWith(uniComponentPrefix)
 }
 
+const styleIsolationRE =
+  /export\s+default\s+[\s\S]*?styleIsolation\s*:\s*['|"](isolated|apply-shared|shared)['|"]/
+function parseComponentStyleIsolation(file: string) {
+  const content = fs.readFileSync(file, 'utf-8')
+  const matches = content.match(styleIsolationRE)
+  if (matches) {
+    return matches[1]
+  }
+}
+
 export function uniEntryPlugin({
   global,
 }: UniMiniProgramPluginOptions): Plugin {
@@ -67,16 +79,30 @@ ${global}.createPage(MiniProgramPage)`,
           path.resolve(inputDir, parseVirtualComponentPath(id))
         )
         this.addWatchFile(filepath)
-        // 微信小程序json文件中的styleIsolation优先级比options中的高,不能在此配置
+
+        const json: ComponentJson = {
+          component: true,
+          styleIsolation: undefined,
+        }
+
+        if (process.env.UNI_PLATFORM === 'mp-alipay') {
+          json.styleIsolation =
+            parseComponentStyleIsolation(filepath) ||
+            platformOptions.styleIsolation ||
+            'apply-shared'
+        }
+        // 微信小程序json文件中的styleIsolation优先级比options中的高，为了兼容旧版本，不能设置默认值，并且只有在manifest.json中配置styleIsolation才会静态分析组件的styleIsolation
+        if (process.env.UNI_PLATFORM === 'mp-weixin') {
+          if (platformOptions.styleIsolation) {
+            json.styleIsolation =
+              parseComponentStyleIsolation(filepath) ||
+              platformOptions.styleIsolation
+          }
+        }
+
         addMiniProgramComponentJson(
           removeExt(normalizeMiniProgramFilename(filepath, inputDir)),
-          {
-            component: true,
-            styleIsolation:
-              process.env.UNI_PLATFORM === 'mp-alipay'
-                ? platformOptions.styleIsolation || 'apply-shared'
-                : undefined,
-          }
+          json
         )
         return {
           code: `import Component from '${filepath}'

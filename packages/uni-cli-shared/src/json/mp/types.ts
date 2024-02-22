@@ -3,7 +3,7 @@ export interface ComponentJson {
   usingComponents?: UsingComponents
   usingSwanComponents?: UsingComponents // 百度小程序特有
   // mp-alipay
-  styleIsolation?: 'apply-shared' | 'shared'
+  styleIsolation?: 'apply-shared' | 'shared' | 'isolated'
 }
 
 interface ShareWindowOptions {
