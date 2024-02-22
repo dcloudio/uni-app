@@ -11,8 +11,10 @@ function transformRpx(value: string) {
 
 export class UniElement extends HTMLElement {
   private _props: Record<string, any> = {}
+  public __isUniElement: boolean
   constructor() {
     super()
+    this.__isUniElement = true
   }
 
   attachVmProps(props: Record<string, any>) {
