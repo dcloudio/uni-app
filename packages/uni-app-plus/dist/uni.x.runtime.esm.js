@@ -1409,16 +1409,26 @@ function getPageManager() {
 }
 var ON_POP_GESTURE = "onPopGesture";
 function parsePageStyle(route) {
-  var keys2 = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
-  keys2.forEach((key) => {
-    if (key in routeMeta) {
+  var routeKeys = ["id", "route", "i18n", "isQuit", "isEntry", "isTabBar", "tabBarIndex", "tabBarText", "windowTop", "topWindow", "leftWindow", "rightWindow", "eventChannel"];
+  var navKeys = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
+  Object.keys(routeMeta).forEach((key) => {
+    if (!routeKeys.includes(key) && !navKeys.includes(key)) {
       style.set(key, routeMeta[key]);
     }
   });
-  if (style.size && style.get("navigationBarTextStyle") !== "custom" && !routeMeta.isQuit) {
-    style.set("navigationBarAutoBackButton", true);
+  var navigationBar = {};
+  navKeys.forEach((key) => {
+    if (key in routeMeta) {
+      navigationBar[key] = routeMeta[key];
+    }
+  });
+  if (Object.keys(navigationBar).length) {
+    style.set("navigationBar", navigationBar);
+    if (navigationBar.navigationBarTextStyle !== "custom" && !routeMeta.isQuit) {
+      navigationBar["navigationBarAutoBackButton"] = true;
+    }
   }
   return style;
 }

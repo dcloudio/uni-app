@@ -34,25 +34,50 @@ export interface RegisterPageOptions {
 }
 
 function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
-  const keys = [
+  const style = new Map<string, any | null>()
+  const routeMeta = route.meta
+  const routeKeys = [
+    'id',
+    'route',
+    'i18n',
+    'isQuit',
+    'isEntry',
+    'isTabBar',
+    'tabBarIndex',
+    'tabBarText',
+    'windowTop',
+    'topWindow',
+    'leftWindow',
+    'rightWindow',
+    'eventChannel',
+  ]
+  // navigationBar 与安卓不同需要特殊处理
+  const navKeys = [
     'navigationBarTitleText',
     'navigationBarBackgroundColor',
     'navigationBarTextStyle',
     'navigationStyle',
   ]
-  const style = new Map<string, any | null>()
-  const routeMeta = route.meta
-  keys.forEach((key) => {
-    if (key in routeMeta) {
+  Object.keys(routeMeta).forEach((key) => {
+    // 使用黑名单机制兼容后续新增的属性
+    if (!routeKeys.includes(key) && !navKeys.includes(key)) {
       style.set(key, (routeMeta as Record<string, any>)[key])
     }
   })
-  if (
-    style.size &&
-    style.get('navigationBarTextStyle') !== 'custom' &&
-    !routeMeta.isQuit
-  ) {
-    style.set('navigationBarAutoBackButton', true)
+  const navigationBar: Record<string, unknown> = {}
+  navKeys.forEach((key) => {
+    if (key in routeMeta) {
+      navigationBar[key] = (routeMeta as Record<string, any>)[key]
+    }
+  })
+  if (Object.keys(navigationBar).length) {
+    style.set('navigationBar', navigationBar)
+    if (
+      navigationBar.navigationBarTextStyle !== 'custom' &&
+      !routeMeta.isQuit
+    ) {
+      navigationBar['navigationBarAutoBackButton'] = true
+    }
   }
   return style
 }
