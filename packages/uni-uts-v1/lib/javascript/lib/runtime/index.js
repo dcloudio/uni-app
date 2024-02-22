@@ -390,6 +390,9 @@ function isBaseType(type) {
 function isUnknownType(type) {
     return type === 'Unknown';
 }
+function isAnyType(type) {
+    return type === 'Any';
+}
 function isUTSType(type) {
     return type && type.prototype && type.prototype instanceof UTSType;
 }
@@ -412,6 +415,7 @@ class UTSType {
             const illegalGeneric = generics.find((item) => !(item === Array ||
                 isBaseType(item) ||
                 isUnknownType(item) ||
+                isAnyType(item) ||
                 item === UTSJSONObject ||
                 (item.prototype && item.prototype instanceof UTSType)));
             if (illegalGeneric) {
@@ -431,7 +435,9 @@ class UTSType {
                     return options.map((item) => {
                         return item == null
                             ? null
-                            : isBaseType(generics[0]) || isUnknownType(generics[0])
+                            : isBaseType(generics[0]) ||
+                                isUnknownType(generics[0]) ||
+                                isAnyType(generics[0])
                                 ? item
                                 : generics[0] === Array
                                     ? new Array(...item)
