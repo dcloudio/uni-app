@@ -153,7 +153,16 @@ function updateUsingAutoImportComponents (name, usingAutoImportComponents) {
   }
 }
 
-function updateUsingComponents (name, usingComponents, type) {
+const styleIsolationRE =
+  /export\s+default\s+[\s\S]*?styleIsolation\s*:\s*['|"](isolated|apply-shared|shared)['|"]/
+function parseComponentStyleIsolation (content) {
+  const matches = content.match(styleIsolationRE)
+  if (matches) {
+    return matches[1]
+  }
+}
+
+function updateUsingComponents (name, usingComponents, type, content = '') {
   if (type === 'Component') {
     componentSet.add(name)
   }
@@ -168,9 +177,21 @@ function updateUsingComponents (name, usingComponents, type) {
   if (type === 'Component') {
     jsonObj.component = true
     if (process.env.UNI_PLATFORM === 'mp-alipay') {
-      const manifestConfig = process.UNI_MANIFEST
-      const alipayConfig = manifestConfig['mp-alipay'] || {}
-      jsonObj.styleIsolation = alipayConfig.styleIsolation || 'apply-shared'
+      const alipayConfig = process.UNI_MANIFEST['mp-alipay'] || {}
+      jsonObj.styleIsolation =
+        parseComponentStyleIsolation(content) ||
+        alipayConfig.styleIsolation ||
+        'apply-shared'
+    }
+
+    // 微信小程序json文件中的styleIsolation优先级比options中的高，为了兼容旧版本，不能设置默认值，并且只有在manifest.json中配置styleIsolation才会静态分析组件的styleIsolation
+    if (process.env.UNI_PLATFORM === 'mp-weixin') {
+      const weixinConfig = process.UNI_MANIFEST['mp-weixin'] || {}
+      if (weixinConfig.styleIsolation) {
+        jsonObj.styleIsolation =
+          parseComponentStyleIsolation(content) ||
+          weixinConfig.styleIsolation
+      }
     }
   } else if (type === 'Page') {
     if (process.env.UNI_PLATFORM === 'mp-baidu') {
