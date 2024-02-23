@@ -57,7 +57,7 @@ export function rewriteSourceMap(
             }
           }
           if (isJsonObj) {
-            const start = init.loc!.start
+            const start = id.loc!.start
             s.appendRight(
               startOffset + init.start! + 1,
               `__$originalPosition: new UTSSourceMapPosition("${
