@@ -14,6 +14,7 @@ import {
 } from 'vue'
 import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
+import { getNativeApp } from '../../../x/framework/app/app'
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -66,6 +67,10 @@ export function initScope(
     vm.$getAppWebview = $getAppWebview
     ;(vm.$ as any).ctx!.$scope = {
       $getAppWebview,
+    }
+  } else {
+    vm.$getAppPage = function () {
+      return getNativeApp().pageManager.findPageById(pageId + '')!
     }
   }
   vm.getOpenerEventChannel = () => {

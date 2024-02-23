@@ -1,5 +1,6 @@
 import { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
+import { UniPage } from '@dcloudio/uni-app-x/types/native'
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
     rootElement?:
@@ -20,6 +21,8 @@ declare module '@vue/runtime-core' {
     }
     // 目前 H5,APP 平台 getCurrentPages 中获取的 page 对象调整为 vm 对象
     $getAppWebview?: () => PlusWebviewWebviewObject
+    // X iOS
+    $getAppPage?: () => UniPage
     $requireNativePlugin?: (name: string) => unknown
     getOpenerEventChannel: () => EventChannel | undefined
     $page: Page.PageInstance['$page']
