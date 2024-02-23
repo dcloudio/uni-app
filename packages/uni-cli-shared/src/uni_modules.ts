@@ -28,6 +28,12 @@ export interface Exports {
   [name: string]: Define | Defines | false
 }
 
+const extApiProviders: { plugin: string; service: string; name?: string }[] = []
+
+export function getUniExtApiProviders() {
+  return extApiProviders
+}
+
 export function parseUniExtApis(
   vite = true,
   platform: typeof process.env.UNI_UTS_PLATFORM,
@@ -42,6 +48,7 @@ export function parseUniExtApis(
   }
 
   const injects: Injects = {}
+  extApiProviders.length = 0
   fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
     // 必须以 uni- 开头
     if (!uniModuleDir.startsWith('uni-')) {
@@ -59,6 +66,11 @@ export function parseUniExtApis(
         exports = pkg.uni_modules['uni-ext-api']
       }
       if (exports) {
+        const provider = exports.provider as any
+        if (provider && provider.service) {
+          provider.plugin = uniModuleDir
+          extApiProviders.push(provider)
+        }
         const curInjects = parseInjects(
           vite,
           platform,
