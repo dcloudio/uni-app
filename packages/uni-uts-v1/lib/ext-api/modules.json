@@ -409,6 +409,18 @@
       }
     }
   },
+  "uni-requestPayment-alipay": {
+    "uni": {
+      "requestPaymentByAli": {
+        "name": "requestPaymentByAli",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-rpx2px": {
     "uni": {
       "rpx2px": {
