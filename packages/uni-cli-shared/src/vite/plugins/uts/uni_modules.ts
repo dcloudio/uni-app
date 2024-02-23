@@ -86,12 +86,21 @@ export function uniUTSUniModulesPlugin(
       }
       const compile = once(() => {
         utsPlugins.add(path.basename(pluginDir))
+
+        const pkgJson = require(path.join(pluginDir, 'package.json'))
+
+        const extApiProvider = resolveExtApiProvider(pkgJson)
+
         return resolveUTSCompiler().compile(pluginDir, {
           isX: !!options.x,
           isSingleThread: !!options.isSingleThread,
           isPlugin: true,
           extApis: options.extApis,
           sourceMap: process.env.NODE_ENV === 'development',
+          transform: {
+            uniExtApiProviderName: extApiProvider?.name,
+            uniExtApiProviderService: extApiProvider?.service,
+          },
         })
       })
       utsModuleCaches.set(pluginDir, compile)
@@ -108,5 +117,17 @@ export function uniUTSUniModulesPlugin(
         }
       }
     },
+  }
+}
+
+export function resolveExtApiProvider(pkg: Record<string, any>) {
+  const provider = pkg.uni_modules?.['uni-ext-api']?.provider as
+    | { name?: string; service?: string }
+    | undefined
+  if (provider?.service) {
+    return {
+      name: provider.name,
+      service: provider.service,
+    }
   }
 }
