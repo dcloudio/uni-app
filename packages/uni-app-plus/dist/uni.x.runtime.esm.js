@@ -1,4 +1,4 @@
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, computed, onMounted, resolveComponent, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, withDirectives, resolveDirective } from "vue";
 var _wks = { exports: {} };
@@ -622,6 +622,12 @@ function getCurrentPage() {
     return pages2[len - 1];
   }
 }
+function getCurrentPageMeta() {
+  var page = getCurrentPage();
+  if (page) {
+    return page.$page.meta;
+  }
+}
 function getCurrentPageVm() {
   var page = getCurrentPage();
   if (page) {
@@ -1050,6 +1056,44 @@ function wrapperAsyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
   return promisify(name, wrapperAsyncApi(name, fn, void 0, options));
 }
+function getRealPath$1(filepath) {
+  if (filepath.indexOf("//") === 0) {
+    return "https:" + filepath;
+  }
+  if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
+    return filepath;
+  }
+  if (isSystemURL(filepath)) {
+    return "file://" + normalizeLocalPath(filepath);
+  }
+  var wwwPath = "file://" + normalizeLocalPath("_www");
+  if (filepath.indexOf("/") === 0) {
+    if (filepath.startsWith("/storage/") || filepath.startsWith("/sdcard/") || filepath.includes("/Containers/Data/Application/")) {
+      return "file://" + filepath;
+    }
+    return wwwPath + filepath;
+  }
+  if (filepath.indexOf("../") === 0 || filepath.indexOf("./") === 0) {
+    if (typeof __id__ === "string") {
+      return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
+    } else {
+      var page = getCurrentPage();
+      if (page) {
+        return wwwPath + getRealRoute(addLeadingSlash(page.route), filepath);
+      }
+    }
+  }
+  return filepath;
+}
+var normalizeLocalPath = cacheStringFunction((filepath) => {
+  return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
+});
+function isSystemURL(filepath) {
+  if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
+    return true;
+  }
+  return false;
+}
 var vueApp;
 function getVueApp() {
   return vueApp;
@@ -1320,6 +1364,97 @@ function createNormalizeUrl(type) {
     }
   };
 }
+var IndexProtocol = {
+  index: {
+    type: Number,
+    required: true
+  }
+};
+var IndexOptions = {
+  beforeInvoke() {
+    var pageMeta = getCurrentPageMeta();
+    if (pageMeta && !pageMeta.isTabBar) {
+      return "not TabBar page";
+    }
+  },
+  formatArgs: {
+    index(value) {
+      if (!__uniConfig.tabBar.list[value]) {
+        return "tabbar item not found";
+      }
+    }
+  }
+};
+var API_SET_TAB_BAR_ITEM = "setTabBarItem";
+var SetTabBarItemProtocol = /* @__PURE__ */ extend({
+  text: String,
+  iconPath: String,
+  selectedIconPath: String,
+  pagePath: String
+}, IndexProtocol);
+var SetTabBarItemOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: /* @__PURE__ */ extend({
+    pagePath(value, params) {
+      if (value) {
+        params.pagePath = removeLeadingSlash(value);
+      }
+    }
+  }, IndexOptions.formatArgs)
+};
+var API_SET_TAB_BAR_STYLE = "setTabBarStyle";
+var SetTabBarStyleProtocol = {
+  color: String,
+  selectedColor: String,
+  backgroundColor: String,
+  backgroundImage: String,
+  backgroundRepeat: String,
+  borderStyle: String
+};
+var GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
+var SetTabBarStyleOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: {
+    backgroundImage(value, params) {
+      if (value && !GRADIENT_RE.test(value)) {
+        params.backgroundImage = getRealPath$1(value);
+      }
+    },
+    borderStyle(value, params) {
+      if (value) {
+        params.borderStyle = value === "white" ? "white" : "black";
+      }
+    }
+  }
+};
+var API_HIDE_TAB_BAR = "hideTabBar";
+var API_SHOW_TAB_BAR = "showTabBar";
+var API_HIDE_TAB_BAR_RED_DOT = "hideTabBarRedDot";
+var HideTabBarRedDotProtocol = IndexProtocol;
+var HideTabBarRedDotOptions = IndexOptions;
+var API_SHOW_TAB_BAR_RED_DOT = "showTabBarRedDot";
+var ShowTabBarRedDotProtocol = IndexProtocol;
+var ShowTabBarRedDotOptions = IndexOptions;
+var API_REMOVE_TAB_BAR_BADGE = "removeTabBarBadge";
+var RemoveTabBarBadgeProtocol = IndexProtocol;
+var RemoveTabBarBadgeOptions = IndexOptions;
+var API_SET_TAB_BAR_BADGE = "setTabBarBadge";
+var SetTabBarBadgeProtocol = /* @__PURE__ */ extend({
+  text: {
+    type: String,
+    required: true
+  }
+}, IndexProtocol);
+var SetTabBarBadgeOptions = {
+  beforeInvoke: IndexOptions.beforeInvoke,
+  formatArgs: /* @__PURE__ */ extend({
+    text(value, params) {
+      if (getLen(value) >= 4) {
+        params.text = "...";
+      }
+    }
+  }, IndexOptions.formatArgs)
+};
 var ANI_SHOW = "pop-in";
 var ANI_DURATION = 300;
 var ANI_CLOSE = "pop-out";
@@ -1351,6 +1486,16 @@ function initRouteOptions(path, openType) {
   }
   return routeOptions;
 }
+var nativeApp;
+function getNativeApp() {
+  return nativeApp;
+}
+function setNativeApp(app) {
+  nativeApp = app;
+}
+function getPageManager() {
+  return nativeApp.pageManager;
+}
 function setupPage(component) {
   var oldSetup = component.setup;
   component.inheritAttrs = false;
@@ -1374,6 +1519,11 @@ function setupPage(component) {
   return component;
 }
 function initScope(pageId, vm, pageInstance) {
+  {
+    vm.$getAppPage = function() {
+      return getNativeApp().pageManager.findPageById(pageId + "");
+    };
+  }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {
       pageInstance.eventChannel = new EventChannel(pageId);
@@ -1396,16 +1546,6 @@ function createFactory(component) {
     }
     return setupPage(component);
   };
-}
-var nativeApp;
-function getNativeApp() {
-  return nativeApp;
-}
-function setNativeApp(app) {
-  nativeApp = app;
-}
-function getPageManager() {
-  return nativeApp.pageManager;
 }
 var ON_POP_GESTURE = "onPopGesture";
 function parsePageStyle(route) {
@@ -1740,6 +1880,9 @@ function init() {
   page.startRender();
   page.show(null);
 }
+function getTabBar() {
+  return tabBar0;
+}
 function getTabIndex(path) {
   var list = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : getTabList();
   var selected = -1;
@@ -1878,6 +2021,153 @@ function _switchTab(_ref2) {
   }
   return Promise.resolve();
 }
+var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
+  var {
+    index: index2,
+    text
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var tabBar = getTabBar();
+  if (tabBar === null) {
+    reject("tabBar is not exist");
+    return;
+  }
+  tabBar.setTabBarBadge(/* @__PURE__ */ new Map([["index", index2], ["text", text]]));
+  resolve();
+}, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
+var removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, (_ref, _ref2) => {
+  var {
+    index: index2
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var tabBar = getTabBar();
+  if (tabBar === null) {
+    reject("tabBar is not exist");
+    return;
+  }
+  tabBar.removeTabBarBadge(/* @__PURE__ */ new Map([["index", index2]]));
+  resolve();
+}, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
+var setTabBarItem = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_ITEM, (_ref, _ref2) => {
+  var {
+    index: index2,
+    text,
+    iconPath,
+    selectedIconPath,
+    pagePath,
+    visible,
+    iconfont
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var tabBar = getTabBar();
+  if (tabBar === null) {
+    reject("tabBar is not exist");
+    return;
+  }
+  var item = /* @__PURE__ */ new Map([["index", index2], ["text", text], ["iconPath", iconPath], ["selectedIconPath", selectedIconPath], ["pagePath", pagePath], ["visible", visible]]);
+  if (!!iconfont) {
+    var iconfontOptions = iconfont;
+    var _iconfont = /* @__PURE__ */ new Map([["text", iconfontOptions.text], ["selectedText", iconfontOptions.selectedText], ["fontSize", iconfontOptions.fontSize], ["color", iconfontOptions.color], ["selectedColor", iconfontOptions.selectedColor]]);
+    item.set("iconfont", _iconfont);
+  }
+  tabBar.setTabBarItem(item);
+  resolve();
+}, SetTabBarItemProtocol, SetTabBarItemOptions);
+var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (options, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  var tabBar = getTabBar();
+  if (tabBar === null) {
+    reject("tabBar is not exist");
+    return;
+  }
+  var style = /* @__PURE__ */ new Map([["color", options.color], ["selectedColor", options.selectedColor], ["backgroundColor", options.backgroundColor], ["backgroundImage", options.backgroundImage], ["backgroundRepeat", options.backgroundRepeat]]);
+  if (isString(options.borderStyle)) {
+    style.set("borderStyle", getBorderStyle(options.borderStyle));
+  }
+  if (!!options.midButton) {
+    var midButtonOptions = options.midButton;
+    var midButton = /* @__PURE__ */ new Map([["width", midButtonOptions.width], ["height", midButtonOptions.height], ["iconPath", midButtonOptions.iconPath], ["text", midButtonOptions.text], ["iconPath", midButtonOptions.iconPath], ["iconWidth", midButtonOptions.iconWidth], ["backgroundImage", midButtonOptions.backgroundImage]]);
+    if (!!midButtonOptions.iconfont) {
+      var iconfontOptions = midButtonOptions.iconfont;
+      var iconfont = /* @__PURE__ */ new Map([["text", iconfontOptions.text], ["selectedText", iconfontOptions.selectedText], ["fontSize", iconfontOptions.fontSize], ["color", iconfontOptions.color], ["selectedColor", iconfontOptions.selectedColor]]);
+      midButton.set("iconfont", iconfont);
+    }
+    style.set("midButton", midButton);
+  }
+  tabBar.setTabBarStyle(style);
+  resolve();
+}, SetTabBarStyleProtocol, SetTabBarStyleOptions);
+var hideTabBar = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR, (options, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  var tabBar = getTabBar();
+  if (tabBar === null) {
+    reject("tabBar is not exist");
+    return;
+  }
+  tabBar.hideTabBar(/* @__PURE__ */ new Map([["animation", options === null || options === void 0 ? void 0 : options.animation]]));
+  resolve();
+});
+var showTabBar = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR, (args, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  var tabBar = getTabBar();
+  var animation2 = args && args.animation;
+  if (tabBar === null) {
+    reject("tabBar is not exist");
+    return;
+  }
+  tabBar.showTabBar(/* @__PURE__ */ new Map([["animation", animation2]]));
+  resolve();
+});
+var showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, (_ref, _ref2) => {
+  var {
+    index: index2
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var tabBar = getTabBar();
+  if (tabBar === null) {
+    reject("tabBar is not exist");
+    return;
+  }
+  tabBar.showTabBarRedDot(/* @__PURE__ */ new Map([["index", index2]]));
+  resolve();
+}, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
+var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, (_ref, _ref2) => {
+  var {
+    index: index2
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var tabBar = getTabBar();
+  if (tabBar === null) {
+    reject("tabBar is not exist");
+    return;
+  }
+  tabBar.hideTabBarRedDot(/* @__PURE__ */ new Map([["index", index2]]));
+  resolve();
+}, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
 var callbackId = 1;
 var proxy;
 var callbacks = {};
@@ -2210,6 +2500,8 @@ function requireUTSPlugin(name) {
 }
 const uni$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  hideTabBar,
+  hideTabBarRedDot,
   initUTSClassName,
   initUTSIndexClassName,
   initUTSPackageName,
@@ -2220,7 +2512,13 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   redirectTo,
   registerUTSInterface,
   registerUTSPlugin,
+  removeTabBarBadge,
   requireUTSPlugin,
+  setTabBarBadge,
+  setTabBarItem,
+  setTabBarStyle,
+  showTabBar,
+  showTabBarRedDot,
   switchTab
 }, Symbol.toStringTag, { value: "Module" });
 function initGlobalEvent(app) {
