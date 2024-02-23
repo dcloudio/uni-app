@@ -9493,11 +9493,11 @@ var CLASS_AND_STYLES = {
     class: [ATTR_HOVER_CLASS],
     style: []
   },
-  'u-input': {
+  input: {
     class: [ATTR_PLACEHOLDER_CLASS],
     style: [ATTR_PLACEHOLDER_STYLE]
   },
-  'u-textarea': {
+  textarea: {
     class: [ATTR_PLACEHOLDER_CLASS],
     style: [ATTR_PLACEHOLDER_STYLE]
   },
@@ -9506,6 +9506,9 @@ var CLASS_AND_STYLES = {
     style: [ATTR_INDICATOR_STYLE, ATTR_MASK_STYLE]
   }
 };
+/**
+ * 类比 vuejs-core 仓库的 runtime-core
+ */
 function transformAttr(el, key, value, instance) {
   if (!value) {
     return [key, value];
@@ -9516,7 +9519,7 @@ function transformAttr(el, key, value, instance) {
     if (opts['class'].indexOf(camelized) > -1) {
       return [camelized, parseClassList([value], instance, el)];
     }
-    if (opts['style'].indexOf(key) > -1) {
+    if (opts['style'].indexOf(camelized) > -1) {
       if (isString(value)) {
         return [camelized, parseStringStyle(value)];
       }
@@ -9597,6 +9600,171 @@ function createInvoker(initialValue, instance) {
   invoker.modifiers = [...modifiers];
   return invoker;
 }
+var backgroundColor = 'backgroundColor';
+var backgroundImage = 'backgroundImage';
+var transformBackground = function (prop, value) {
+  var result = new Map();
+  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+    result.set(backgroundColor, value);
+  } else if (/^linear-gradient(.+)$/.test(value)) {
+    result.set(backgroundImage, value);
+  } else {
+    result.set(prop, value);
+  }
+  return result;
+};
+var borderWidth = 'Width';
+var borderStyle = 'Style';
+var borderColor = 'Color';
+var transformBorder = function (prop, value) {
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+  var values = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+    var index = splitResult.findIndex(str => item.test(str));
+    return index < 0 ? null : splitResult.splice(index, 1)[0];
+  });
+  var result = new Map();
+  if (splitResult.length != 0) {
+    result.set(prop, value);
+    return result;
+  }
+  result.set(prop + borderWidth, (values[0] == null ? 'medium' : values[0]).trim());
+  result.set(prop + borderStyle, (values[1] == null ? 'none' : values[1]).trim());
+  result.set(prop + borderColor, (values[2] == null ? '#000000' : values[2]).trim());
+  return result;
+};
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
+var transformBorderColor = function (prop, value) {
+  var property = hyphenate(prop).split('-')[1];
+  property = capitalize(property);
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+  var result = new Map();
+  switch (splitResult.length) {
+    case 1:
+      result.set(prop, value);
+      return result;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  result.set(borderTop + property, splitResult[0]);
+  result.set(borderRight + property, splitResult[1]);
+  result.set(borderBottom + property, splitResult[2]);
+  result.set(borderLeft + property, splitResult[3]);
+  return result;
+};
+var borderTopLeftRadius = 'borderTopLeftRadius';
+var borderTopRightRadius = 'borderTopRightRadius';
+var borderBottomRightRadius = 'borderBottomRightRadius';
+var borderBottomLeftRadius = 'borderBottomLeftRadius';
+var transformBorderRadius = function (prop, value) {
+  var splitResult = value.split(/\s+/);
+  var result = new Map();
+  if (value.includes('/')) {
+    result.set(prop, value);
+    return result;
+  }
+  switch (splitResult.length) {
+    case 1:
+      result.set(prop, value);
+      return result;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  result.set(borderTopLeftRadius, splitResult[0]);
+  result.set(borderTopRightRadius, splitResult[1]);
+  result.set(borderBottomRightRadius, splitResult[2]);
+  result.set(borderBottomLeftRadius, splitResult[3]);
+  return result;
+};
+var transformBorderStyle = transformBorderColor;
+var transformBorderWidth = transformBorderColor;
+var top = 'Top';
+var right = 'Right';
+var bottom = 'Bottom';
+var left = 'Left';
+var transformMargin = function (prop, value) {
+  var splitResult = value.split(/\s+/);
+  switch (splitResult.length) {
+    case 1:
+      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+      break;
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  var result = new Map();
+  result.set(prop + top, splitResult[0]);
+  result.set(prop + right, splitResult[1]);
+  result.set(prop + bottom, splitResult[2]);
+  result.set(prop + left, splitResult[3]);
+  return result;
+};
+var transformPadding = transformMargin;
+var properties = ['transitionProperty', 'transitionDuration', 'transitionTimingFunction', 'transitionDelay'];
+var transformTransition = function (prop, value) {
+  var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+  var match = CHUNK_REGEXP.exec(value);
+  var result = new Map();
+  if (match == null) {
+    result.set(prop, value);
+    return result;
+  }
+  var len = match.length; //as Int
+  for (var i = 1; i < len && i <= 4; i++) {
+    var val = match[i];
+    if (match[i] != null && val.length > 0) {
+      result.set(properties[i - 1], val);
+    }
+  }
+  return result;
+};
+var importantRE = /\s*!important$/;
+/**
+ * 聚合所有可展开的 css 解析逻辑
+ */
+var DeclTransforms = new Map([['transition', transformTransition], ['margin', transformMargin], ['padding', transformPadding], ['border', transformBorder], ['borderTop', transformBorder], ['borderRight', transformBorder], ['borderBottom', transformBorder], ['borderLeft', transformBorder], ['borderStyle', transformBorderStyle], ['borderWidth', transformBorderWidth], ['borderColor', transformBorderColor], ['borderRadius', transformBorderRadius], ['background', transformBackground]]);
+/**
+ * eg: width, null => map [['border', '']]
+ */
+function expandStyle(prop, value) {
+  // 为 null 时，设置为空字符串
+  if (value == null) {
+    return new Map([[prop, '']]);
+  }
+  // 强转为字符串
+  if (!isString(value)) {
+    value = '' + value;
+  }
+  var important = importantRE.test(value);
+  // TODO 运行时的样式不支持 !important，需要把 !important 移除
+  var newVal = important ? value.replace(importantRE, '') : value;
+  var transform = DeclTransforms.get(prop);
+  if (transform != null) {
+    return transform(prop, newVal);
+  }
+  return new Map([[prop, newVal]]);
+}
+
+/**
+ * 解析 style，返回 Map
+ * eg: width, null => map [['width', '']]
+ */
+function parseStyleDecl(prop, value) {
+  return expandStyle(prop, value);
+}
 function patchStyle(el, prev, next) {
   if (!next) {
     // TODO remove styles
@@ -9609,23 +9777,60 @@ function patchStyle(el, prev, next) {
   var batchedStyles = new Map();
   var isPrevObj = prev && !isString(prev);
   if (isPrevObj) {
-    for (var key in prev) {
-      if (next[key] == null) {
-        batchedStyles.set(camelize(key), '');
+    (function () {
+      var classStyle = getExtraClassStyle(el);
+      var style = getExtraStyle(el);
+      for (var key in prev) {
+        var _key = camelize(key);
+        if (next[_key] == null) {
+          // const value = next[key]
+          var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : '';
+          // 传递简写 css kye value => Map [[key, value]]
+          parseStyleDecl(key, value).forEach((value, key) => {
+            batchedStyles.set(key, value);
+            // 把style中的样式移除掉，否则style的优先级始终比class高
+            style === null || style === void 0 ? void 0 : style.delete(key);
+          });
+          // batchedStyles.set(camelize(key), '')
+        }
       }
-    }
-    for (var _key21 in next) {
-      var value = next[_key21];
-      batchedStyles.set(camelize(_key21), value);
-    }
+
+      for (var _key21 in next) {
+        var _value2 = next[_key21];
+        // const prevValue = prev[key]
+        // if (!isSame(prevValue, value))
+        {
+          parseStyleDecl(camelize(_key21), _value2).forEach((value, key) => {
+            batchedStyles.set(key, value);
+            style === null || style === void 0 ? void 0 : style.set(key, value);
+          });
+        }
+      }
+    })();
   } else {
-    for (var _key22 in next) {
-      batchedStyles.set(camelize(_key22), next[_key22]);
+    for (var key in next) {
+      var value = next[key];
+      setBatchedStyles(batchedStyles, camelize(key), value);
     }
     setExtraStyle(el, batchedStyles);
   }
   // TODO validateStyles(el, batchedStyles)
+  if (batchedStyles.size == 0) {
+    return;
+  }
+  // validateStyles(el, batchedStyles)
   el.updateStyle(batchedStyles);
+}
+/**
+ * 接受和解析 css key,value 在 batchedStyles 添加对应样式
+ * @param batchedStyles
+ * @param key
+ * @param value
+ */
+function setBatchedStyles(batchedStyles, key, value) {
+  parseStyleDecl(key, value).forEach((value, key) => {
+    batchedStyles.set(key, value);
+  });
 }
 var vModelTags = ['u-input', 'u-textarea'];
 var patchProp = function (el, key, prevValue, nextValue) {
@@ -9738,8 +9943,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len12 = arguments.length, args = new Array(_len12 > 1 ? _len12 - 1 : 0), _key23 = 1; _key23 < _len12; _key23++) {
-      args[_key23 - 1] = arguments[_key23];
+    for (var _len12 = arguments.length, args = new Array(_len12 > 1 ? _len12 - 1 : 0), _key22 = 1; _key22 < _len12; _key22++) {
+      args[_key22 - 1] = arguments[_key22];
     }
     return fn(event, ...args);
   };
