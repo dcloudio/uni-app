@@ -554,6 +554,7 @@ export async function compile(
       },
     },
   }
+  // console.log('bundle options', options)
   const result = await bundle(UTSTarget.KOTLIN, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {
