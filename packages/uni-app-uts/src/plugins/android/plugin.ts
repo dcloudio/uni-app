@@ -12,6 +12,7 @@ import {
   resolveMainPathOnce,
   resolveUTSCompiler,
   utsPlugins,
+  buildUniExtApiProviders,
 } from '@dcloudio/uni-cli-shared'
 import {
   DEFAULT_APPID,
@@ -142,6 +143,9 @@ export function uniAppPlugin(): UniVitePlugin {
           pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
         }
       }
+
+      await buildUniExtApiProviders()
+
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'main.uts'),
         {

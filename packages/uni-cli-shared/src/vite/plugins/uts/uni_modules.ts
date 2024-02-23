@@ -5,6 +5,7 @@ import { once } from '@dcloudio/uni-shared'
 
 import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
 import { parseVueRequest } from '../../utils'
+import { getUniExtApiProviders } from '../../../uni_modules'
 
 const UTSProxyRE = /\?uts-proxy$/
 function isUTSProxy(id: string) {
@@ -29,10 +30,51 @@ interface UniUTSPluginOptions {
 
 export const utsPlugins = new Set<string>()
 
+let uniExtApiCompiler = async () => {}
+
 export function uniUTSUniModulesPlugin(
   options: UniUTSPluginOptions = {}
 ): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
+
+  const compilePlugin = (pluginDir: string) => {
+    utsPlugins.add(path.basename(pluginDir))
+
+    const pkgJson = require(path.join(pluginDir, 'package.json'))
+
+    const extApiProvider = resolveExtApiProvider(pkgJson)
+
+    return resolveUTSCompiler().compile(pluginDir, {
+      isX: !!options.x,
+      isSingleThread: !!options.isSingleThread,
+      isPlugin: true,
+      extApis: options.extApis,
+      sourceMap: process.env.NODE_ENV === 'development',
+      transform: {
+        uniExtApiProviderName: extApiProvider?.name,
+        uniExtApiProviderService: extApiProvider?.service,
+      },
+    })
+  }
+
+  uniExtApiCompiler = async () => {
+    // 获取 provider 扩展
+    const plugins = getUniExtApiProviders()
+      .filter((provider) => !utsPlugins.has(provider.plugin))
+      .map((provider) => provider.plugin)
+    for (const plugin of plugins) {
+      const result = await compilePlugin(
+        path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', plugin)
+      )
+      if (result) {
+        // 时机不对，不能addWatch
+        // result.deps.forEach((dep) => {
+        //   this.addWatchFile(dep)
+        // })
+      }
+    }
+  }
+
   return {
     name: 'uni:uts-uni_modules',
     apply: 'build',
@@ -85,23 +127,7 @@ export function uniUTSUniModulesPlugin(
         })
       }
       const compile = once(() => {
-        utsPlugins.add(path.basename(pluginDir))
-
-        const pkgJson = require(path.join(pluginDir, 'package.json'))
-
-        const extApiProvider = resolveExtApiProvider(pkgJson)
-
-        return resolveUTSCompiler().compile(pluginDir, {
-          isX: !!options.x,
-          isSingleThread: !!options.isSingleThread,
-          isPlugin: true,
-          extApis: options.extApis,
-          sourceMap: process.env.NODE_ENV === 'development',
-          transform: {
-            uniExtApiProviderName: extApiProvider?.name,
-            uniExtApiProviderService: extApiProvider?.service,
-          },
-        })
+        return compilePlugin(pluginDir)
       })
       utsModuleCaches.set(pluginDir, compile)
       const result = await compile()
@@ -117,7 +143,12 @@ export function uniUTSUniModulesPlugin(
         }
       }
     },
+    async generateBundle() {},
   }
+}
+
+export async function buildUniExtApiProviders() {
+  await uniExtApiCompiler()
 }
 
 export function resolveExtApiProvider(pkg: Record<string, any>) {
