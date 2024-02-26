@@ -866,6 +866,7 @@ class UniElement extends HTMLElement {
   constructor() {
     super();
     this._props = {};
+    this.__isUniElement = true;
   }
   attachVmProps(props2) {
     this._props = props2;

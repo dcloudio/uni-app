@@ -30,6 +30,7 @@ import {
   isUniCloudSupported,
   parseExtApiDefaultParameters,
   parseInjectModules,
+  resolveConfigProvider,
 } from './utils'
 import { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -93,6 +94,7 @@ export async function runKotlinProd(
   filename: string,
   components: Record<string, string>,
   {
+    pluginId,
     isPlugin,
     isX,
     isSingleThread,
@@ -101,6 +103,7 @@ export async function runKotlinProd(
     transform,
     sourceMap,
   }: {
+    pluginId: string
     isPlugin: boolean
     isX: boolean
     isSingleThread: boolean
@@ -152,6 +155,7 @@ export async function runKotlinProd(
     package: parseKotlinPackage(filename).package + '.',
     hookClass,
     result,
+    provider: resolveConfigProvider('app-android', pluginId, transform),
   })
 
   return result
@@ -300,6 +304,16 @@ export async function runKotlinDev(
         path.resolve(path.dirname(kotlinFile), chunk)
       ) || []
     )
+
+    const uniModuleDeps: string[] = []
+    if (transform?.uniExtApiProviderServicePlugin) {
+      uniModuleDeps.push(
+        ...getUniModulesCacheJarsByPlugin(
+          cacheDir,
+          transform.uniExtApiProviderServicePlugin
+        )
+      )
+    }
     const options = {
       pageCount: 0,
       kotlinc: resolveKotlincArgs(
@@ -310,6 +324,7 @@ export async function runKotlinDev(
           .concat(resolveLibs(filename))
           .concat(deps)
           .concat(resDeps)
+          .concat(uniModuleDeps)
         // .concat(getUniModulesCacheJars(cacheDir))
         // .concat(getUniModulesJars(outputDir))
       ),
@@ -504,6 +519,15 @@ export async function compile(
   if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
     imports.push('io.dcloud.unicloud.*')
   }
+  // 本地 provider
+  if (transform?.uniExtApiProviderServicePlugin) {
+    imports.push(
+      parseKotlinPackageWithPluginId(
+        transform.uniExtApiProviderServicePlugin,
+        true
+      ) + '.*'
+    )
+  }
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
@@ -685,6 +709,16 @@ export function checkAndroidVersionTips(
 export function getUniModulesEncryptCacheJars(cacheDir: string) {
   if (cacheDir) {
     return sync('uni_modules/*/*.jar', {
+      cwd: cacheDir,
+      absolute: true,
+    })
+  }
+  return []
+}
+
+function getUniModulesCacheJarsByPlugin(cacheDir: string, plugin: string) {
+  if (cacheDir) {
+    return sync('app-android/uts/uni_modules/' + plugin + '/index.jar', {
       cwd: cacheDir,
       absolute: true,
     })

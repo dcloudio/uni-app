@@ -26,6 +26,7 @@ import {
   ERR_MSG_PLACEHOLDER,
   genConfigJson,
   resolveAndroidComponents,
+  resolveConfigProvider,
   resolveIOSComponents,
   resolvePackage,
 } from './utils'
@@ -190,6 +191,7 @@ export async function compile(
       }
       if (filename) {
         await getCompiler('kotlin').runProd(filename, androidComponents, {
+          pluginId: pkg.id,
           isX,
           isSingleThread,
           isPlugin,
@@ -226,6 +228,7 @@ export async function compile(
       }
       if (filename) {
         await getCompiler('swift').runProd(filename, iosComponents, {
+          pluginId: pkg.id,
           isX,
           isSingleThread,
           isPlugin: true, // iOS 目前仅有 plugin 模式
@@ -322,7 +325,8 @@ export async function compile(
             pluginRelativeDir,
             pkg.is_uni_modules,
             inputDir,
-            outputDir
+            outputDir,
+            resolveConfigProvider(utsPlatform, pkg.id, transform)
           )
 
           console.log(cacheTips(pkg.id))
@@ -369,7 +373,8 @@ export async function compile(
           pluginRelativeDir,
           pkg.is_uni_modules,
           inputDir,
-          outputDir
+          outputDir,
+          resolveConfigProvider(utsPlatform, pkg.id, transform)
         )
         const res = await getCompiler(compilerType).runDev(filename, {
           components,

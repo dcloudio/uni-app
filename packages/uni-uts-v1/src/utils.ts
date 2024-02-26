@@ -86,6 +86,7 @@ export interface UTSPlatformResourceOptions {
   package: string
   hookClass: string
   result: UTSResult
+  provider?: { name: string; service: string; class: string }
 }
 export function genUTSPlatformResource(
   filename: string,
@@ -115,7 +116,8 @@ export function genUTSPlatformResource(
     utsOutputDir,
     options.hookClass,
     options.components,
-    options.package
+    options.package,
+    options.provider
   )
 
   // 生产模式下，需要将生成的平台文件转移到 src 下
@@ -363,9 +365,10 @@ export function genConfigJson(
   pluginRelativeDir: string,
   is_uni_modules: boolean,
   inputDir: string,
-  outputDir: string
+  outputDir: string,
+  provider?: { name: string; service: string; class: string }
 ) {
-  if (!Object.keys(components).length && !hookClass) {
+  if (!Object.keys(components).length && !hookClass && !provider) {
     return
   }
   const pluginId = basename(pluginRelativeDir)
@@ -390,7 +393,8 @@ export function genConfigJson(
     components,
     platform === 'app-android'
       ? parseKotlinPackageWithPluginId(pluginId, is_uni_modules) + '.'
-      : parseSwiftPackageWithPluginId(pluginId, is_uni_modules)
+      : parseSwiftPackageWithPluginId(pluginId, is_uni_modules),
+    provider
   )
 }
 
@@ -401,13 +405,15 @@ function copyConfigJson(
   outputDir: string,
   hookClass: string,
   componentsObj: Record<string, string>,
-  namespace: string
+  namespace: string,
+  provider?: { name: string; service: string; class: string }
 ) {
   const configJsonFilename = resolve(inputDir, 'config.json')
   const outputConfigJsonFilename = resolve(outputDir, 'config.json')
   const hasComponents = !!Object.keys(componentsObj).length
   const hasHookClass = !!hookClass
-  if (hasComponents || hasHookClass) {
+  const hasProvider = !!provider
+  if (hasComponents || hasHookClass || hasProvider) {
     const configJson: Record<string, any> = fs.existsSync(configJsonFilename)
       ? parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
       : {}
@@ -422,6 +428,9 @@ function copyConfigJson(
     }
     if (hasHookClass) {
       configJson.hooksClass = hookClass
+    }
+    if (hasProvider) {
+      configJson.provider = provider
     }
     fs.outputFileSync(
       outputConfigJsonFilename,
@@ -637,4 +646,32 @@ export function normalizeExtApiModules(json: Record<string, any>) {
     }
   })
   return res
+}
+
+export function resolveConfigProvider(
+  platform: 'app-android' | 'app-ios',
+  plugin: string,
+  transform: UTSOutputOptions['transform']
+) {
+  if (transform?.uniExtApiProviderName && transform?.uniExtApiProviderService) {
+    return {
+      name: transform.uniExtApiProviderName,
+      service: transform.uniExtApiProviderService,
+      class:
+        (platform === 'app-android'
+          ? parseKotlinPackageWithPluginId(plugin, true)
+          : parseSwiftPackageWithPluginId(plugin, true)) +
+        '.' +
+        formatExtApiProviderName(
+          transform.uniExtApiProviderService,
+          transform.uniExtApiProviderName
+        ),
+    }
+  }
+}
+
+function formatExtApiProviderName(service: string, name: string) {
+  return `UniExtApi${capitalize(camelize(service))}${capitalize(
+    camelize(name)
+  )}Provider`
 }
