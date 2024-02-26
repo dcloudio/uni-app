@@ -7,7 +7,7 @@ import {
   provide,
   watch,
 } from 'vue'
-import type { ComputedRef, Ref, VNode } from 'vue'
+import type { ComputedRef, Ref, VNode, ComponentPublicInstance } from 'vue'
 import { UniElement } from '../../helpers/UniElement'
 import { useCustomEvent, EmitEvent } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
@@ -18,10 +18,29 @@ export function isHTMlElement(node: Node | null): node is HTMLElement {
 }
 
 export type ListViewItemStatus = {
-  vnode: VNode | null
+  itemId: number
   visible: Ref<boolean>
   cachedSize: number
   seen: boolean
+}
+
+function getListItem(root: VNode): ComponentPublicInstance[] {
+  const children: ComponentPublicInstance[] = []
+  if (root) {
+    walk(root, children)
+  }
+  return children
+}
+
+function walk(vnode: VNode, children: ComponentPublicInstance[]) {
+  if (vnode.component) {
+    children.push(vnode.component.proxy!)
+  } else if (vnode.shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
+    const vnodes = vnode.children as VNode[]
+    for (let i = 0; i < vnodes.length; i++) {
+      walk(vnodes[i], children)
+    }
+  }
 }
 
 class UniListViewElement extends UniElement {}
@@ -277,12 +296,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           // TODO 热刷新的时候会进入此分支，暂未深入排查
           return
         }
-        const children = Array.from(contentNode.childNodes)
+        const listItemInstances = getListItem(visibleVnode!)
+        const childrenIds = listItemInstances.map(
+          (item) => item.$?.exposed?.itemId
+        )
         cachedItems.sort((a, b) => {
-          return (
-            children.indexOf(a.vnode?.el as HTMLElement) -
-            children.indexOf(b.vnode?.el as HTMLElement)
-          )
+          return childrenIds.indexOf(a.itemId) - childrenIds.indexOf(b.itemId)
         })
         totalSize.value = cachedItems.reduce((total, item) => {
           return total + item.cachedSize
@@ -378,8 +397,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         isVertical.value ? 'width' : 'height'
       }: 100%; ${isVertical.value ? 'top' : 'left'}: ${placehoderSize.value}px;`
     })
+
+    let visibleVnode = null as VNode | null
     return () => {
       const defaultSlot = slots.default && slots.default()
+      visibleVnode = (
+        <div
+          ref={visibleRef}
+          class="uni-list-view-visible"
+          style={visibleStyle.value}
+        >
+          {defaultSlot}
+        </div>
+      )
       return (
         <uni-list-view ref={rootRef} class="uni-list-view">
           <div
@@ -392,13 +422,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             style={containerStyle.value}
           >
             <div class="uni-list-view-content" style={contentStyle.value}>
-              <div
-                ref={visibleRef}
-                class="uni-list-view-visible"
-                style={visibleStyle.value}
-              >
-                {defaultSlot}
-              </div>
+              {visibleVnode}
             </div>
           </div>
           <ResizeSensor onResize={onResize} />
