@@ -46,9 +46,7 @@ function _switchTab({ url, path, query }: SwitchTabOptions) {
     return Promise.reject(`tab ${path} not found`)
   }
   const pages = getCurrentPages()
-  setTimeout(() => {
-    switchSelect(selected, path, query)
-  }, 0)
+  switchSelect(selected, path, query)
   for (let index = pages.length - 1; index >= 0; index--) {
     const page = pages[index] as ComponentPublicInstance
     if (isTabPage(page)) {
