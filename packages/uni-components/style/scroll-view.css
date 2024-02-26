@@ -22,6 +22,7 @@ uni-scroll-view[hidden] {
 
 .uni-scroll-view-scrollbar-hidden {
   -moz-scrollbars: none;
+  scrollbar-width: none;
 }
 
 .uni-scroll-view-content {

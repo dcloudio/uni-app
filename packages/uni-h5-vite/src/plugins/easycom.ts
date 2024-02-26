@@ -51,6 +51,8 @@ const baseComponents = [
   'text',
   'textarea',
   'view',
+  'list-view',
+  'list-item',
 ]
 
 interface UniEasycomPluginOptions {

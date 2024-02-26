@@ -193,7 +193,8 @@ uni-app uni-scroll-view {
 }
 
 uni-app .uni-scroll-view,
-uni-app .uni-scroll-view-content {
+uni-app .uni-scroll-view-content,
+uni-app .uni-list-view-visible {
   flex-direction: inherit;
   align-items: inherit;
   align-content: inherit;
