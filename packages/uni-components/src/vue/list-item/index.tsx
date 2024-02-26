@@ -31,13 +31,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const visible = ref(false)
 
     // let cachedSize = 0
-    // let seen = false
+    const seen = ref(false)
     // let vnode: VNode | null = null
     const status: ListViewItemStatus = {
       itemId: listItemId++,
       visible,
       cachedSize: 0,
-      seen: false,
+      seen,
     }
 
     expose({
@@ -53,7 +53,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       unregisterItem(status)
     })
     const realVisible = computed(() => {
-      return visible.value || !status.seen
+      return visible.value || !status.seen.value
     })
     return () => {
       nextTick(() => {
@@ -62,7 +62,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           status.cachedSize = isVertical
             ? rootNode.clientHeight
             : rootNode.clientWidth
-          status.seen = true
+          seen.value = true
         }
       })
       if (!realVisible.value) {

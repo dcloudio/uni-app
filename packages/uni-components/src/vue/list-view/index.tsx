@@ -21,7 +21,7 @@ export type ListViewItemStatus = {
   itemId: number
   visible: Ref<boolean>
   cachedSize: number
-  seen: boolean
+  seen: Ref<boolean>
 }
 
 function getListItem(root: VNode): ComponentPublicInstance[] {
@@ -109,8 +109,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return props.direction === 'vertical'
     })
     const defaultItemSize = 40
-    const cacheScreenCount = 5
-    const loadScreenThreshold = 2
+    const cacheScreenCount = 3
+    const loadScreenThreshold = 1
 
     let rootSize = 0
 
@@ -132,11 +132,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const rearrangeOffsetMin = placehoderSize.value + loadScreenThresholdSize
       const rearrangeOffsetMax =
         placehoderSize.value + visibleSize.value - loadScreenThresholdSize
-      return (
-        (offset > loadScreenThresholdSize && offset < rearrangeOffsetMin) ||
-        (offset > rearrangeOffsetMax &&
-          offset < totalSize.value - loadScreenThresholdSize)
-      )
+      // return (
+      //   (offset > loadScreenThresholdSize && offset < rearrangeOffsetMin) ||
+      //   (offset > rearrangeOffsetMax &&
+      //     offset < totalSize.value - loadScreenThresholdSize)
+      // )
+      return offset < rearrangeOffsetMin || offset > rearrangeOffsetMax
     }
 
     // 用户传入的属性
@@ -306,7 +307,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         totalSize.value = cachedItems.reduce((total, item) => {
           return total + item.cachedSize
         }, 0)
-        rearrange()
+        // rearrange()
       }, 1)
     }
     provide('__listViewRegisterItem', (status: ListViewItemStatus) => {
@@ -318,15 +319,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     provide('__listViewUnregisterItem', (status: ListViewItemStatus) => {
       const index = cachedItems.indexOf(status)
       index > -1 && cachedItems.splice(index, 1)
-      nextTick(() => {
-        sortCachedItems()
-      })
+      // nextTick(() => {
+      //   sortCachedItems()
+      // })
     })
 
     // 列表整体刷新，谨慎使用
     function refresh() {
       cachedItems.map((item) => {
-        item.seen = false
+        item.seen.value = false
       })
       nextTick(() => {
         nextTick(() => {
