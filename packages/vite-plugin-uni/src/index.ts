@@ -239,17 +239,16 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       if (fs.existsSync(sourceMapPath)) {
         emptyDir(sourceMapPath)
       }
+      plugins.push(
+        uniMovePlugin({
+          apply: 'build',
+          enforce: 'post',
+          cwd: process.env.UNI_OUTPUT_DIR,
+          pattern: '**/*.js.map',
+          dest: sourceMapPath,
+        })
+      )
     }
-
-    plugins.push(
-      uniMovePlugin({
-        apply: 'build',
-        enforce: 'post',
-        cwd: process.env.UNI_OUTPUT_DIR,
-        pattern: '**/*.js.map',
-        dest: sourceMapPath,
-      })
-    )
   }
 
   rewriteCompilerSfcParse()
