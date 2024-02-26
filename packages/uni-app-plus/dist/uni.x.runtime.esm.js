@@ -1872,8 +1872,10 @@ function init() {
     if (index2 !== selected0) {
       var item = list[index2];
       var path = item.pagePath;
-      if (isString(path)) {
+      if (isString(path) && findPageRoute(path)) {
         switchSelect(index2, path);
+      } else {
+        console.error("switchTab: pagePath not found");
       }
     }
   });
@@ -2008,9 +2010,7 @@ function _switchTab(_ref2) {
     return Promise.reject("tab ".concat(path, " not found"));
   }
   var pages2 = getCurrentPages();
-  setTimeout(() => {
-    switchSelect(selected, path, query);
-  }, 0);
+  switchSelect(selected, path, query);
   for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
     var page = pages2[index2];
     if (isTabPage(page)) {
