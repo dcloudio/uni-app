@@ -307,7 +307,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         totalSize.value = cachedItems.reduce((total, item) => {
           return total + item.cachedSize
         }, 0)
-        // rearrange()
+        rearrange()
       }, 1)
     }
     provide('__listViewRegisterItem', (status: ListViewItemStatus) => {
@@ -319,9 +319,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     provide('__listViewUnregisterItem', (status: ListViewItemStatus) => {
       const index = cachedItems.indexOf(status)
       index > -1 && cachedItems.splice(index, 1)
-      // nextTick(() => {
-      //   sortCachedItems()
-      // })
+      nextTick(() => {
+        sortCachedItems()
+      })
     })
 
     // 列表整体刷新，谨慎使用
@@ -351,6 +351,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       rootSize = isVertical.value
         ? rootRef.value!.clientHeight
         : rootRef.value!.clientWidth
+      if (!rootSize) {
+        return
+      }
       const offsetMin = Math.max(offset - rootSize * cacheScreenCount, 0)
       const offsetMax = offset + rootSize * (cacheScreenCount + 1)
       let tempTotalSize = 0
