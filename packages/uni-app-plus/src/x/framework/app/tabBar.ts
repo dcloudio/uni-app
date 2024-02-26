@@ -90,8 +90,10 @@ function init() {
     if (index !== selected0) {
       const item = list![index]
       const path = item.pagePath
-      if (isString(path)) {
+      if (isString(path) && findPageRoute(path as string)) {
         switchSelect(index, path as string)
+      } else {
+        console.error('switchTab: pagePath not found')
       }
     }
   })
