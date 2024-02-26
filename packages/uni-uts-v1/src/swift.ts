@@ -8,6 +8,7 @@ import {
   isColorSupported,
   moveRootIndexSourceMap,
   parseSwiftPackageWithPluginId,
+  resolveConfigProvider,
   resolveIOSDir,
   resolvePackage,
   resolveUTSPlatformFile,
@@ -42,6 +43,7 @@ export async function runSwiftProd(
   filename: string,
   components: Record<string, string>,
   {
+    pluginId,
     isPlugin,
     isX,
     isSingleThread,
@@ -50,6 +52,7 @@ export async function runSwiftProd(
     sourceMap,
     hookClass,
   }: {
+    pluginId: string
     isPlugin: boolean
     isX: boolean
     isSingleThread: boolean
@@ -92,6 +95,7 @@ export async function runSwiftProd(
     package: parseSwiftPackage(filename).namespace,
     hookClass,
     result,
+    provider: resolveConfigProvider('app-ios', pluginId, transform),
   })
 }
 

@@ -28,7 +28,12 @@ export interface Exports {
   [name: string]: Define | Defines | false
 }
 
-const extApiProviders: { plugin: string; service: string; name?: string }[] = []
+const extApiProviders: {
+  plugin: string
+  service: string
+  name?: string
+  servicePlugin?: string
+}[] = []
 
 export function getUniExtApiProviders() {
   return extApiProviders

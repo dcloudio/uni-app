@@ -1,4 +1,5 @@
 import type { Plugin } from 'vite'
+import fs from 'fs'
 import path from 'path'
 
 import { once } from '@dcloudio/uni-shared'
@@ -43,7 +44,21 @@ export function uniUTSUniModulesPlugin(
     const pkgJson = require(path.join(pluginDir, 'package.json'))
 
     const extApiProvider = resolveExtApiProvider(pkgJson)
-
+    // 如果是 provider 扩展，需要判断 provider 的宿主插件是否在本地，在的话，自动导入该宿主插件包名
+    let uniExtApiProviderServicePlugin = ''
+    if (extApiProvider?.servicePlugin) {
+      if (
+        fs.existsSync(
+          path.resolve(
+            process.env.UNI_INPUT_DIR,
+            'uni_modules',
+            extApiProvider.servicePlugin
+          )
+        )
+      ) {
+        uniExtApiProviderServicePlugin = extApiProvider.servicePlugin
+      }
+    }
     return resolveUTSCompiler().compile(pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
@@ -53,18 +68,19 @@ export function uniUTSUniModulesPlugin(
       transform: {
         uniExtApiProviderName: extApiProvider?.name,
         uniExtApiProviderService: extApiProvider?.service,
+        uniExtApiProviderServicePlugin,
       },
     })
   }
 
   uniExtApiCompiler = async () => {
     // 获取 provider 扩展
-    const plugins = getUniExtApiProviders()
-      .filter((provider) => !utsPlugins.has(provider.plugin))
-      .map((provider) => provider.plugin)
+    const plugins = getUniExtApiProviders().filter(
+      (provider) => !utsPlugins.has(provider.plugin)
+    )
     for (const plugin of plugins) {
       const result = await compilePlugin(
-        path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', plugin)
+        path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', plugin.plugin)
       )
       if (result) {
         // 时机不对，不能addWatch
@@ -153,12 +169,17 @@ export async function buildUniExtApiProviders() {
 
 export function resolveExtApiProvider(pkg: Record<string, any>) {
   const provider = pkg.uni_modules?.['uni-ext-api']?.provider as
-    | { name?: string; service?: string }
+    | {
+        name?: string
+        plugin?: string
+        service: string
+        servicePlugin: string
+      }
     | undefined
   if (provider?.service) {
-    return {
-      name: provider.name,
-      service: provider.service,
+    if (provider.name && !provider.servicePlugin) {
+      provider.servicePlugin = 'uni-' + provider.service
     }
+    return provider
   }
 }
