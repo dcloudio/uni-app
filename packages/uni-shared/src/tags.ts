@@ -44,6 +44,8 @@ export const BUILT_IN_TAG_NAMES = [
   'video',
   'view',
   'web-view',
+  'list-view',
+  'list-item',
   'cloud-db-element', // TODO暂时放在此处
 ]
 

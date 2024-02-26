@@ -28,6 +28,8 @@ export {
   Textarea,
   View,
   //#if _X_
+  ListView,
+  ListItem,
   UniElement,
   UniElement as UniElementImpl,
   //#endif

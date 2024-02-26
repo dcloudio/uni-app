@@ -38,6 +38,8 @@ import Switch from './switch/index'
 import Text from './text/index'
 import Textarea from './textarea/index'
 import View from './view/index'
+import ListView from './list-view/index'
+import ListItem from './list-item/index'
 export {
   Button,
   Canvas,
@@ -67,4 +69,6 @@ export {
   Text,
   Textarea,
   View,
+  ListView,
+  ListItem,
 }
