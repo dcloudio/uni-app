@@ -12,6 +12,8 @@ import type { ListViewItemStatus } from '../list-view/index'
 import { UniElement } from '../../helpers/UniElement'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 
+let listItemId = 0
+
 class UniListItemElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ListItem',
@@ -22,7 +24,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     class: UniListItemElement,
   },
   //#endif
-  setup(props, { slots }) {
+  setup(props, { slots, expose }) {
     const rootRef = ref<HTMLElement | Node | null>(null)
     const isVertical = inject('__listViewIsVertical') as ComputedRef<boolean>
 
@@ -32,11 +34,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     // let seen = false
     // let vnode: VNode | null = null
     const status: ListViewItemStatus = {
-      vnode: null,
+      itemId: listItemId++,
       visible,
       cachedSize: 0,
       seen: false,
     }
+
+    expose({
+      itemId: status.itemId,
+    })
 
     const registerItem = inject('__listViewRegisterItem') as Function
     const unregisterItem = inject('__listViewUnregisterItem') as Function
@@ -60,15 +66,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         }
       })
       if (!realVisible.value) {
-        status.vnode = <></>
-        return status.vnode
+        return null
       }
-      status.vnode = (
+      return (
         <uni-list-item ref={rootRef}>
           {slots.default && slots.default()}
         </uni-list-item>
       )
-      return status.vnode
     }
   },
 })
