@@ -349,16 +349,21 @@ try {
   }
 } catch (e) {}
 
-rules.push({
+let tsLoader
+try {
+  tsLoader = require.resolve('ts-loader', {
+    paths: [require.resolve('@vue/cli-plugin-babel')]
+  })
+} catch (error) {}
+
+tsLoader && rules.push({
   test: /\.ts$/,
   use: [{
     loader: require.resolve('babel-loader', {
       paths: [require.resolve('@vue/cli-plugin-babel')]
     })
   }, {
-    loader: require.resolve('ts-loader', {
-      paths: [require.resolve('@vue/cli-plugin-babel')]
-    }),
+    loader: tsLoader,
     options: Object.assign({
       transpileOnly: false,
       appendTsSuffixTo: ['\\.nvue$', '\\.vue$'],
