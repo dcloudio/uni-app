@@ -1,6 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, computed, onMounted, resolveComponent, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, withDirectives, resolveDirective } from "vue";
+import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize, parseStringStyle } from "@vue/shared";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, computed, onMounted, resolveComponent, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, withDirectives, resolveDirective, nextTick } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
 var _core = { exports: {} };
@@ -2795,6 +2795,21 @@ function $dispatch(context, componentName, eventName) {
     parent[eventName](...do_not_transform_spread);
   }
 }
+function $dispatchParent(context, componentName, eventName) {
+  var _parent$$options2;
+  var parent = context.$parent;
+  var name = parent === null || parent === void 0 ? void 0 : (_parent$$options2 = parent.$options) === null || _parent$$options2 === void 0 ? void 0 : _parent$$options2.name;
+  if (parent !== null && (name === null || componentName === name)) {
+    if (typeof parent[eventName] === "function") {
+      for (var _len2 = arguments.length, do_not_transform_spread = new Array(_len2 > 3 ? _len2 - 3 : 0), _key2 = 3; _key2 < _len2; _key2++) {
+        do_not_transform_spread[_key2 - 3] = arguments[_key2];
+      }
+      return parent[eventName](...do_not_transform_spread);
+    } else {
+      warn("dispatchParent: ".concat(componentName, " has no method ").concat(eventName));
+    }
+  }
+}
 var BUTTON_COMPONENT_NAME = "Button";
 var UNI_BUTTON_ELEMENT_NAME = "uni-button-element";
 var buttonProps = {
@@ -4335,6 +4350,419 @@ const form$1 = /* @__PURE__ */ Object.defineProperty({
   UniFormSubmitEvent,
   default: form
 }, Symbol.toStringTag, { value: "Module" });
+var _style_picker_view = {
+  "uni-picker-view": {
+    "": {
+      position: "relative"
+    }
+  },
+  "uni-picker-view-wrapper": {
+    "": {
+      display: "flex",
+      flexDirection: "row",
+      position: "absolute",
+      top: "0",
+      left: "0",
+      right: "0",
+      bottom: "0",
+      overflow: "hidden"
+    }
+  }
+};
+var _style_picker_column = {
+  "uni-picker-view-column": {
+    "": {
+      flex: "1",
+      position: "relative",
+      alignItems: "stretch",
+      overflow: "hidden"
+    }
+  },
+  "uni-picker-view-mask": {
+    "": {
+      position: "absolute",
+      top: "0",
+      left: "0",
+      right: "0",
+      bottom: "0",
+      pointerEvents: "none"
+    }
+  },
+  "uni-picker-view-mask-top": {
+    "": {
+      bottom: "0",
+      backgroundImage: "linear-gradient(to bottom,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))"
+    }
+  },
+  "uni-picker-view-mask-bottom": {
+    "": {
+      top: "0",
+      backgroundImage: "linear-gradient(to top,rgba(255, 255, 255, 0.95),rgba(255, 255, 255, 0.6))"
+    }
+  },
+  "uni-picker-view-group": {
+    "": {
+      flexDirection: "column",
+      position: "absolute",
+      top: "0",
+      left: "0",
+      right: "0",
+      bottom: "0"
+    }
+  },
+  "uni-picker-view-content": {
+    "": {
+      flexDirection: "column",
+      paddingTop: "0",
+      paddingRight: "0",
+      paddingBottom: "0",
+      paddingLeft: "0"
+    }
+  },
+  "uni-picker-view-indicator": {
+    "": {
+      position: "absolute",
+      left: "0",
+      right: "0",
+      top: "0",
+      height: "34px",
+      borderColor: "#e5e5e5",
+      borderTopWidth: "1px",
+      borderBottomWidth: "1px",
+      pointerEvents: "none"
+    }
+  }
+};
+class UniPickerViewColumnElement extends UniElementImpl {
+  constructor(data, pageNode) {
+    super(data, pageNode);
+    this._getAttribute = (key) => {
+      return null;
+    };
+  }
+  getAttribute(key) {
+    var value = this._getAttribute(key);
+    if (value != null) {
+      return value;
+    }
+    return super.getAttribute(key);
+  }
+}
+class UniPickerViewChangeEventDetail {
+  constructor(value) {
+    this.value = value;
+  }
+}
+class UniPickerViewChangeEvent extends CustomEvent {
+  constructor(value) {
+    super("change", {
+      detail: new UniPickerViewChangeEventDetail(value)
+    });
+  }
+}
+class UniPickerViewElement extends UniElementImpl {
+  constructor(data, pageNode) {
+    super(data, pageNode);
+    this._getAttribute = (key) => {
+      return null;
+    };
+  }
+  getAttribute(key) {
+    var value = this._getAttribute(key);
+    if (value != null) {
+      return value;
+    }
+    return super.getAttribute(key);
+  }
+}
+const pickerView = /* @__PURE__ */ defineBuiltInComponent({
+  name: "PickerView",
+  rootElement: {
+    name: "uni-picker-view-element",
+    // @ts-expect-error not web element
+    class: UniPickerViewElement
+  },
+  props: {
+    value: {
+      type: Array,
+      default: []
+    },
+    indicatorStyle: {
+      type: String,
+      default: ""
+    },
+    maskTopStyle: {
+      type: String,
+      default: ""
+    },
+    maskBottomStyle: {
+      type: String,
+      default: ""
+    }
+  },
+  emits: ["change"],
+  setup(props, _ref) {
+    var {
+      emit,
+      expose,
+      slots
+    } = _ref;
+    var data = reactive({
+      $uniPickerViewElement: null,
+      $items: [],
+      valueSync: []
+    });
+    watchEffect(() => {
+      var val = props.value;
+      val.forEach((_val, index2) => {
+        if (data.$items.length > index2) {
+          var _data$$items$index$$$;
+          var fn = (_data$$items$index$$$ = data.$items[index2].$.exposed) === null || _data$$items$index$$$ === void 0 ? void 0 : _data$$items$index$$$.setCurrent;
+          console.log(fn, _val);
+          fn(_val);
+        }
+      });
+      data.valueSync = [...val];
+    });
+    var pickerViewElementRef = ref();
+    var instance = getCurrentInstance();
+    var _pickerViewUpdateHandler = (vm, type) => {
+      if (type == "add") {
+        data.$items.push(vm);
+        if (data.$items.length > data.valueSync.length) {
+          data.valueSync.push(0);
+        }
+      } else {
+        var index2 = data.$items.indexOf(vm);
+        if (index2 != -1) {
+          data.$items.splice(index2, 1);
+          data.valueSync.splice(index2, 1);
+        }
+      }
+    };
+    var getItemValue = (vm) => {
+      var index2 = data.$items.indexOf(vm);
+      if (index2 != -1) {
+        if (props.value.length > index2) {
+          return props.value[index2];
+        }
+      }
+      return 0;
+    };
+    var setItemValue = (vm, val) => {
+      var index2 = data.$items.indexOf(vm);
+      if (index2 != -1) {
+        if (data.valueSync.length > index2) {
+          data.valueSync[index2] = val;
+        }
+        emit("change", new UniPickerViewChangeEvent([...data.valueSync]));
+      }
+    };
+    expose({
+      _pickerViewUpdateHandler,
+      getItemValue,
+      setItemValue
+    });
+    onMounted(() => {
+      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+        if (!instance || !pickerViewElementRef.value)
+          return;
+        pickerViewElementRef.value._getAttribute = (key) => {
+          var _props$keyString$toSt, _props$keyString;
+          var keyString = camelize(key);
+          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
+        };
+      });
+    });
+    var styleUniPickerView = _style_picker_view["uni-picker-view"][""];
+    var styleUniPickerViewWrapper = _style_picker_view["uni-picker-view-wrapper"][""];
+    return () => {
+      return createVNode(resolveComponent("uni-picker-view-element"), {
+        "ref": pickerViewElementRef,
+        "class": "uni-picker-view",
+        "style": styleUniPickerView
+      }, {
+        default: () => {
+          var _slots$default;
+          return [createVNode("view", {
+            "class": "uni-picker-view-wrapper",
+            "style": styleUniPickerViewWrapper
+          }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)];
+        }
+      }, 8, ["style"]);
+    };
+  }
+});
+const pickerView$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: pickerView
+}, Symbol.toStringTag, { value: "Module" });
+const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
+  name: "PickerViewColumn",
+  rootElement: {
+    name: "uni-picker-view-column-element",
+    // @ts-ignore
+    class: UniPickerViewColumnElement
+  },
+  setup(_props, _ref) {
+    var {
+      slots,
+      expose
+    } = _ref;
+    var instance = getCurrentInstance();
+    var pickerColumnRef = ref();
+    var indicator = ref();
+    var scrollViewRef = ref();
+    var contentRef = ref();
+    var data = reactive({
+      height: 0,
+      indicatorHeight: 0,
+      current: 0,
+      scrollToElementTime: 0,
+      maskTopStyle: "",
+      maskBottomStyle: "",
+      indicatorStyle: "",
+      contentStyle: "",
+      _isMounted: false
+    });
+    var contentStyle = computed(() => {
+      return Object.assign({}, _style_picker_column["uni-picker-view-content"][""], parseStringStyle(data.contentStyle));
+    });
+    var maskTopStyle = computed(() => {
+      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-top"][""], parseStringStyle(data.maskTopStyle));
+    });
+    var maskBottomStyle = computed(() => {
+      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""], _style_picker_column["uni-picker-view-mask-bottom"][""], parseStringStyle(data.maskBottomStyle));
+    });
+    var indicatorStyle = computed(() => {
+      return Object.assign({}, _style_picker_column["uni-picker-view-indicator"][""], parseStringStyle(data.indicatorStyle));
+    });
+    var styleUniPickerViewColumn = computed(() => {
+      return Object.assign({}, _style_picker_column["uni-picker-view-column"][""]);
+    });
+    var styleUniPickerViewGroup = computed(() => {
+      return Object.assign({}, _style_picker_column["uni-picker-view-group"][""]);
+    });
+    var styleViewMask = computed(() => {
+      return Object.assign({}, _style_picker_column["uni-picker-view-mask"][""]);
+    });
+    var init2 = () => {
+      data.height = pickerColumnRef.value.offsetHeight;
+      data.indicatorHeight = indicator.value.offsetHeight;
+      var padding = (data.height - data.indicatorHeight) / 2;
+      var maskPosition = "".concat(data.height - padding, "px");
+      data.maskTopStyle += ";bottom:".concat(maskPosition);
+      data.maskBottomStyle += ";top:".concat(maskPosition);
+      data.indicatorStyle += ";top:".concat(padding, "px");
+      data.contentStyle = "padding-top:".concat(padding, "px;padding-bottom:").concat(padding, "px");
+      nextTick(() => {
+        if (data.current != 0) {
+          setCurrent(data.current);
+        }
+        data._isMounted = true;
+      });
+    };
+    var onScrollend = (e) => {
+      console.log("onScrollend");
+      if (Date.now() - data.scrollToElementTime < 200) {
+        return;
+      }
+      var y = e.detail.scrollTop;
+      var current = Math.round(y / data.indicatorHeight);
+      if (y % data.indicatorHeight != 0) {
+        setCurrent(current);
+      } else {
+        data.current = current;
+      }
+    };
+    var setCurrent = (current) => {
+      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+        var scrollTop = current * data.indicatorHeight;
+        scrollViewRef.value.setAnyAttribute("scroll-top", scrollTop);
+        data.current = current;
+        data.scrollToElementTime = Date.now();
+      });
+    };
+    var created = () => {
+      var _instance$parent;
+      var $parent = (instance === null || instance === void 0 ? void 0 : (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.type.name) === "PickerView" ? instance === null || instance === void 0 ? void 0 : instance.parent : null;
+      if ($parent !== null) {
+        data.indicatorStyle = $parent.props["indicatorStyle"];
+        data.maskTopStyle = $parent.props["maskTopStyle"];
+        data.maskBottomStyle = $parent.props["maskBottomStyle"];
+        $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "_pickerViewUpdateHandler", instance === null || instance === void 0 ? void 0 : instance.proxy, "add");
+        data.current = $dispatchParent(instance === null || instance === void 0 ? void 0 : instance.proxy, "PickerView", "getItemValue", instance === null || instance === void 0 ? void 0 : instance.proxy);
+      }
+    };
+    created();
+    expose({
+      setCurrent
+    });
+    onMounted(() => {
+      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+        if (!instance || !pickerColumnRef.value)
+          return;
+        setTimeout(() => {
+          init2();
+        }, 500);
+      });
+    });
+    onUnmounted(() => {
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx2, "PickerView", "_pickerViewUpdateHandler", ctx2, "remove");
+    });
+    watch(() => data.current, (val, oldVal) => {
+      if (data._isMounted && val != oldVal) {
+        var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+        $dispatch(ctx2, "PickerView", "setItemValue", ctx2, val);
+      }
+    });
+    return () => {
+      return createVNode(resolveComponent("uni-picker-view-column-element"), {
+        "class": "uni-picker-view-column",
+        "style": styleUniPickerViewColumn.value,
+        "ref": pickerColumnRef
+      }, {
+        default: () => {
+          var _slots$default;
+          return [createVNode("scroll-view", {
+            "deceleration-rate": 0.3,
+            "onScrollend": onScrollend,
+            "class": "uni-picker-view-group",
+            "style": styleUniPickerViewGroup.value,
+            "scroll-with-animation": data._isMounted,
+            "direction": "vertical",
+            "show-scrollbar": false,
+            "ref": scrollViewRef
+          }, [createVNode("view", {
+            "class": "uni-picker-view-content",
+            "style": contentStyle.value,
+            "ref": contentRef
+          }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)], 44, ["onScrollend", "scroll-with-animation"]), createVNode("view", {
+            "userInteractionEnabled": false,
+            "class": "uni-picker-view-mask",
+            "style": styleViewMask.value
+          }, [createVNode("view", {
+            "class": "uni-picker-view-mask uni-picker-view-mask-top",
+            "style": maskTopStyle.value
+          }, null, 4), createVNode("view", {
+            "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
+            "style": maskBottomStyle.value
+          }, null, 4)], 4), createVNode("view", {
+            "ref": indicator,
+            "class": "uni-picker-view-indicator",
+            "style": indicatorStyle.value
+          }, null, 4)];
+        },
+        _: 1
+      }, 8, ["style"]);
+    };
+  }
+});
+const pickerViewColumn$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  default: pickerViewColumn
+}, Symbol.toStringTag, { value: "Module" });
 const components = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Button: button$1,
@@ -4342,6 +4770,8 @@ const components = /* @__PURE__ */ Object.defineProperty({
   CheckboxGroup: checkboxGroup$1,
   Form: form$1,
   Navigator: navigator$1,
+  PickerView: pickerView$1,
+  PickerViewColumn: pickerViewColumn$1,
   Progress: progress$1,
   Radio: radio$1,
   RadioGroup: radioGroup$1
