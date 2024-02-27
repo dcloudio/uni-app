@@ -288,6 +288,7 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
             spaceId: space.id,
             clientSecret: space.clientSecret,
             endpoint: space.apiEndpoint,
+            workspaceFolder: space.workspaceFolder,
           }
         case 'alipay': {
           return {
@@ -297,6 +298,7 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
             spaceAppId: space.spaceAppId,
             accessKey: space.accessKey,
             secretKey: space.secretKey,
+            workspaceFolder: space.workspaceFolder,
           }
         }
         case 'tencent':
@@ -305,6 +307,7 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
             provider: space.provider,
             spaceName: space.name,
             spaceId: space.id,
+            workspaceFolder: space.workspaceFolder,
           }
         }
       }
