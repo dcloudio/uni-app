@@ -276,8 +276,8 @@ importers:
   packages/uni-app:
     dependencies:
       '@dcloudio/types':
-        specifier: ^3.4.6
-        version: 3.4.6
+        specifier: ^3.4.8
+        version: 3.4.8
       '@dcloudio/uni-cloud':
         specifier: 3.0.0-alpha-4000120240201002
         version: link:../uni-cloud
