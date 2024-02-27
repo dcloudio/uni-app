@@ -82,3 +82,9 @@ export function createPushMessage (params, callbackId) {
     errMsg: 'createPushMessage:ok'
   })
 }
+
+let channelManager
+
+export function getChannelManager () {
+  return channelManager || (channelManager = plus.push.getChannelManager())
+}
