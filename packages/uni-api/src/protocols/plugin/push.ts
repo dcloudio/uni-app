@@ -80,3 +80,6 @@ export const CreatePushMessageOptions: ApiOptions<API_TYPE_CREATE_PUSH_MESSAGE> 
       },
     },
   }
+
+export type API_TYPE_GET_CHANNEL_MANAGER = typeof uni.getChannelManager
+export const API_GET_CHANNEL_MANAGER = 'getChannelManager'
