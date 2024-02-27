@@ -19,13 +19,13 @@ function getSize(isVertical: boolean, el: HTMLElement) {
   if (isVertical) {
     return (
       parseFloat(style.marginTop) +
-      el.offsetHeight +
+      el.getBoundingClientRect().height +
       parseFloat(style.marginBottom)
     )
   } else {
     return (
       parseFloat(style.marginLeft) +
-      el.offsetWidth +
+      el.getBoundingClientRect().width +
       parseFloat(style.marginRight)
     )
   }
