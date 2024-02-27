@@ -13,6 +13,13 @@ export { showTabBarRedDot } from './tabBar/showTabBarRedDot'
 export { hideTabBarRedDot } from './tabBar/hideTabBarRedDot'
 // export { onTabBarMidButtonTap } from './tabBar/onTabBarMidButtonTap'
 
+// navigation
+export { setNavigationBarColor } from './navigationBar/setNavigationBarColor'
+export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
+
+// dom
+export { getElementById } from './dom/getElementById'
+
 export {
   initUTSProxyClass,
   initUTSProxyFunction,
