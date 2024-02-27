@@ -51,7 +51,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       type: String,
       default: 'vertical',
       validator: (val: string) => {
-        return ['vertical', 'horizontal'].includes(val)
+        return ['none', 'vertical', 'horizontal'].includes(val)
       },
     },
     showScrollbar: {
@@ -106,7 +106,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const visibleSize = ref(0)
     const totalSize = ref(0)
     const isVertical = computed(() => {
-      return props.direction === 'vertical'
+      return props.direction !== 'horizontal'
     })
     const defaultItemSize = 40
     const cacheScreenCount = 5
@@ -388,7 +388,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
      */
     const containerStyle = computed(() => {
       return `${
-        isVertical.value ? 'overflow-y: auto;' : 'overflow-x: auto;'
+        props.direction === 'none'
+          ? 'overflow: hidden;'
+          : isVertical.value
+          ? 'overflow-y: auto;'
+          : 'overflow-x: auto;'
       }scroll-behavior: ${props.scrollWithAnimation ? 'smooth' : 'auto'};`
     })
     const contentStyle = computed(() => {
