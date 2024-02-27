@@ -14,6 +14,23 @@ import { defineBuiltInComponent } from '@dcloudio/uni-components'
 
 let listItemId = 0
 
+function getSize(isVertical: boolean, el: HTMLElement) {
+  var style = window.getComputedStyle(el)
+  if (isVertical) {
+    return (
+      parseFloat(style.marginTop) +
+      el.offsetHeight +
+      parseFloat(style.marginBottom)
+    )
+  } else {
+    return (
+      parseFloat(style.marginLeft) +
+      el.offsetWidth +
+      parseFloat(style.marginRight)
+    )
+  }
+}
+
 class UniListItemElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ListItem',
@@ -59,9 +76,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       nextTick(() => {
         const rootNode = rootRef.value! as HTMLElement | Node
         if (realVisible.value && isHTMlElement(rootNode)) {
-          status.cachedSize = isVertical
-            ? rootNode.clientHeight
-            : rootNode.clientWidth
+          status.cachedSize = getSize(isVertical.value, rootNode)
           seen.value = true
         }
       })

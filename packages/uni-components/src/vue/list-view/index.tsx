@@ -109,8 +109,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return props.direction === 'vertical'
     })
     const defaultItemSize = 40
-    const cacheScreenCount = 3
-    const loadScreenThreshold = 1
+    const cacheScreenCount = 5
+    const loadScreenThreshold = 3
 
     let rootSize = 0
 
