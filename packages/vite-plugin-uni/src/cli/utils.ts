@@ -166,6 +166,9 @@ export function initEnv(
       M['dev.performance'] +
         (process.env.UNI_PLATFORM.startsWith('mp-')
           ? M['dev.performance.mp']
+          : '') +
+        (process.env.UNI_PLATFORM === 'web' || process.env.UNI_PLATFORM === 'h5'
+          ? M['dev.performance.web']
           : '')
     )
   }

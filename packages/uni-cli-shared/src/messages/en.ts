@@ -9,6 +9,8 @@ export default {
     'Especially the sourcemap of app-nvue has a greater impact',
   'dev.performance.mp':
     'To officially release, please click the release menu or use the cli release command to release',
+  'dev.performance.web':
+    '\nVite is compiled on demand, and clicking on an uncompiled page at runtime will compile first and then load, resulting in a slower display, and there is no such problem after release.',
   'build.done': 'DONE  Build complete.',
   'dev.watching.start': 'Compiling...',
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
