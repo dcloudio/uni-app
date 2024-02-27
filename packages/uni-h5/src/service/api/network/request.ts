@@ -24,6 +24,9 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
     },
     { resolve, reject }
   ) => {
+    if (__X__) {
+      timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout
+    }
     let body = null
     // 根据请求类型处理数据
     const contentType = normalizeContentType(header)

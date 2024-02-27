@@ -72,6 +72,10 @@ export const uploadFile = defineTaskApi<API_TYPE_UPLOAD_FILE>(
     },
     { resolve, reject }
   ) => {
+    if (__X__) {
+      timeout =
+        timeout == null ? __uniConfig.networkTimeout.uploadFile : timeout
+    }
     var uploadTask = new UploadTask()
     if (!isArray(files) || !files.length) {
       files = [

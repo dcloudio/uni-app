@@ -64,6 +64,10 @@ export const downloadFile = defineTaskApi<API_TYPE_DOWNLOAD_FILE>(
     { url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile },
     { resolve, reject }
   ) => {
+    if (__X__) {
+      timeout =
+        timeout == null ? __uniConfig.networkTimeout.downloadFile : timeout
+    }
     var timer: ReturnType<typeof setTimeout>
     var xhr = new XMLHttpRequest()
     var downloadTask = new DownloadTask(xhr)
