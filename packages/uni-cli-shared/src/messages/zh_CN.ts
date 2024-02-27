@@ -8,6 +8,8 @@ export default {
   'dev.performance.nvue': '尤其是 app-nvue 的 sourcemap 影响较大',
   'dev.performance.mp':
     '若要正式发布，请点击发行菜单或使用 cli 发布命令进行发布',
+  'dev.performance.web':
+    '\nvite是按需编译，运行时点击某个未编译页面会先编译后加载，导致显示较慢，发行后无此问题。',
   'build.done': 'DONE  Build complete.',
   'dev.watching.start': '开始差量编译...',
   'dev.watching.end': 'DONE  Build complete. Watching for changes...',
