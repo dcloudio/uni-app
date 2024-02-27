@@ -482,7 +482,6 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uts.UTSAndroid',
   'io.dcloud.uts.*',
   'io.dcloud.uniapp.*',
-  'io.dcloud.uniapp.extapi.*',
 ]
 
 const DEFAULT_IMPORTS_X = [
@@ -527,6 +526,9 @@ export async function compile(
         true
       ) + '.*'
     )
+  } else {
+    // 本地 provider 的时候，不要引入 io.dcloud.uniapp.extapi.*，因为里边包含了相同的类型定义
+    imports.push('io.dcloud.uniapp.extapi.*')
   }
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
