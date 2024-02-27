@@ -11,7 +11,7 @@ module.exports = {
       style: '.jxss',
       template: '.jxml'
     },
-    subPackages: false,
+    subPackages: true,
     project: 'project.config.json'
   },
   copyWebpackOptions (platformOptions, vueOptions) {
