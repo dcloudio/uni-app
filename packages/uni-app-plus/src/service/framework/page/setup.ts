@@ -72,6 +72,11 @@ export function initScope(
     vm.$getAppPage = function () {
       return getNativeApp().pageManager.findPageById(pageId + '')!
     }
+    Object.defineProperty(vm, '$appPage', {
+      get() {
+        return this.$getAppPage()
+      },
+    })
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {
