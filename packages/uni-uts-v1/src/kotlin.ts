@@ -614,6 +614,8 @@ export function resolveKotlincArgs(
     )}`,
     '-P',
     'plugin:io.dcloud.uts.kotlin:tag=UTS',
+    '-P',
+    'plugin:io.dcloud.uts.kotlin:console=true',
   ]
 }
 
