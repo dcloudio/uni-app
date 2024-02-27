@@ -411,8 +411,8 @@
   },
   "uni-requestPayment-alipay": {
     "uni": {
-      "requestPaymentByAli": {
-        "name": "requestPaymentByAli",
+      "requestPayment": {
+        "name": "requestPayment",
         "app": {
           "js": false,
           "kotlin": true,
