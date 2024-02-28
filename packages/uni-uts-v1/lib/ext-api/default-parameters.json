@@ -36,14 +36,14 @@
       "null"
     ]
   },
-  "uni-createWebviewContext": {
-    "createWebviewContext": [
-      null,
+  "uni-exit": {
+    "exit": [
       "null"
     ]
   },
-  "uni-exit": {
-    "exit": [
+  "uni-createWebviewContext": {
+    "createWebviewContext": [
+      null,
       "null"
     ]
   },
