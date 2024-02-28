@@ -120,10 +120,21 @@ export function initTabBar(): boolean {
   return true
 }
 
-export function clearTabBar() {
+export function clearTabBarStatus() {
   tabBar0 = null
   selected0 = -1
   tabs.clear()
+}
+
+export function removeTabBarPage(page: Page) {
+  const pagePath = getRealPath(page.$route?.path ?? '', true)
+  if (tabs.get(pagePath) === page) {
+    tabs.delete(pagePath)
+    if (getTabIndex(pagePath) === selected0) {
+      selected0 = -1
+    }
+  }
+  // TODO tabs.size === 0 remove tabBar
 }
 
 export function getTabBar(): ITabsNode | null {
@@ -154,12 +165,17 @@ function findPageRoute(path: string) {
   return __uniRoutes.find((route) => route.path === path)!
 }
 
-function createTab(path: string, query: Record<string, string>): Page {
+function createTab(
+  path: string,
+  query: Record<string, string>,
+  callback?: () => void
+): Page {
   currentPageRoute = findPageRoute(path)
   showWebview(
     registerPage({ url: path, path, query, openType: 'switchTab' }),
     'none',
-    0
+    0,
+    callback
   )
   const page = getCurrentPage() as Page
   currentPageRoute = null
@@ -209,13 +225,15 @@ class TabPageInfo {
 
 function getTabPage(
   path: string,
-  query: Record<string, string> = {}
+  query: Record<string, string> = {},
+  rebuild: boolean = false,
+  callback?: () => void
 ): TabPageInfo {
   let page = findTabPage(path)
   let isFirst = false
-  if (page === null) {
+  if (page === null || rebuild) {
     isFirst = true
-    page = createTab(path, query)
+    page = createTab(path, query, callback)
     tabs.set(path, page!)
   }
   return new TabPageInfo(page, isFirst)
@@ -224,7 +242,9 @@ function getTabPage(
 export function switchSelect(
   selected: number,
   path: string,
-  query: Record<string, string> = {}
+  query: Record<string, string> = {},
+  rebuild: boolean = false,
+  callback?: () => void
 ) {
   let shouldShow = false
   if (tabBar0 === null) {
@@ -236,7 +256,7 @@ export function switchSelect(
   // 执行beforeRoute
   // invokeArrayFns(beforeRouteHooks, type)
 
-  const pageInfo = getTabPage(getRealPath(path, true), query)
+  const pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback)
   const page = pageInfo.page
   if (currentPage !== page) {
     shouldShow = true

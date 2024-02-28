@@ -10,8 +10,8 @@ import { getCurrentPage } from '@dcloudio/uni-core'
 import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { registerPage } from '../../framework/page'
 import { RouteOptions } from '../../../service/api/route/utils'
-import { showWebview } from './webview'
-import { getNativeApp } from '../../framework/app/app'
+import { closeWebview, showWebview } from './webview'
+import { ComponentPublicInstance } from 'vue'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -37,7 +37,9 @@ function _redirectTo({
   query,
 }: RedirectToOptions): Promise<undefined> {
   const lastPage = getCurrentPage()
-  lastPage && removePage(lastPage)
+  if (lastPage) {
+    removePage(lastPage)
+  }
 
   return new Promise((resolve) => {
     showWebview(
@@ -51,15 +53,11 @@ function _redirectTo({
       0,
       () => {
         if (lastPage) {
-          const nPage = getNativeApp().pageManager.findPageById(
-            lastPage.$page.id + ''
-          )!
-          // TODO preload removePreloadWebview
-          nPage.close(new Map<string, any>([['animationType', 'none']]))
+          closeWebview((lastPage as ComponentPublicInstance).$appPage!, 'none')
         }
         resolve(undefined)
+        // TODO setStatusBarStyle()
       }
     )
-    // TODO setStatusBarStyle()
   })
 }

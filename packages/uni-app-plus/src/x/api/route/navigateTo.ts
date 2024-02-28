@@ -10,14 +10,10 @@ import {
 } from '@dcloudio/uni-api'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
-import {
-  // navigate,
-  RouteOptions,
-} from '../../../service/api/route/utils'
+import { RouteOptions } from '../../../service/api/route/utils'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page'
 import { getWebviewId } from '../../../service/framework/webview/utils'
-// import { setStatusBarStyle } from '../../statusBar'
 
 export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   args,
@@ -73,10 +69,9 @@ function _navigateTo({
       aniDuration,
       () => {
         resolve({ eventChannel })
+        // TODO setStatusBarStyle()
       }
     )
-    // TODO uni-app x
-    // setStatusBarStyle()
   })
 }
 

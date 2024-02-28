@@ -2,6 +2,7 @@ export { navigateTo } from './route/navigateTo'
 export { navigateBack } from './route/navigateBack'
 export { redirectTo } from './route/redirectTo'
 export { switchTab } from './route/switchTab'
+export { reLaunch } from './route/reLaunch'
 
 export { setTabBarBadge } from './tabBar/setTabBarBadge'
 export { removeTabBarBadge } from './tabBar/removeTabBarBadge'
