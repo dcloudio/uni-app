@@ -115,6 +115,14 @@
 
     dataList : Array<UTSJSONObject> = []
 
+    override get tagName(): string {
+      return 'UNICLOUD-DB'
+    }
+
+    override get nodeName(): string {
+      return this.tagName
+    }
+
     loadData(options : UTSJSONObject = {}) {
       this.onLoadData({
         clear: options.getBoolean('clear'),
