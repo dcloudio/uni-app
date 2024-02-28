@@ -927,7 +927,8 @@
         }
       },
       "defaultValue": {
-        "uvue": "0",
+        "uvue-app": "0",
+        "uvue-web": "auto",
         "w3c": "auto"
       }
     },
@@ -1259,7 +1260,7 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "center | flex-star | flex-end | space-between | space-around",
+      "syntax": "center | flex-start | flex-end | space-between | space-around",
       "values": [
         {
           "name": "center",
@@ -5568,7 +5569,8 @@
         "textarea"
       ],
       "defaultValue": {
-        "uvue": "left",
+        "uvue-app": "left",
+        "uvue-web": "start",
         "w3c": "start"
       }
     },
@@ -7149,7 +7151,8 @@
         }
       },
       "defaultValue": {
-        "uvue": "50% 50%",
+        "uvue-app": "50% 50%",
+        "uvue-web": "50% 50% 0",
         "w3c": "50% 50% 0"
       }
     },
@@ -7354,7 +7357,7 @@
       }
     },
     {
-      "name": "@documentNon-standardDeprecated",
+      "name": "@document",
       "description": "@document CSS at 规则根据文档的 URL 限制其中包含的样式规则。它主要用于用户定义的样式表，但也可用于作者定义的样式表。",
       "uniPlatform": {
         "app": {
