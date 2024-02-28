@@ -12775,6 +12775,7 @@ const CreatePushMessageOptions = {
         },
     },
 };
+const API_GET_CHANNEL_MANAGER = 'getChannelManager';
 
 const API_CREATE_REWARDED_VIDEO_AD = 'createRewardedVideoAd';
 const CreateRewardedVideoAdOptions = {
@@ -17096,6 +17097,8 @@ const createPushMessage = defineAsyncApi(API_CREATE_PUSH_MESSAGE, (opts, { resol
     plus.push.createMessage(opts.content, opts.payload, options);
     resolve();
 }, undefined, CreatePushMessageOptions);
+let channelManager;
+const getChannelManager = defineSyncApi(API_GET_CHANNEL_MANAGER, () => channelManager || (channelManager = plus.push.getChannelManager()));
 
 const registerRuntime = defineSyncApi('registerRuntime', (runtime) => {
     // @ts-expect-error
@@ -19782,6 +19785,7 @@ var uni$1 = {
   getBeacons: getBeacons,
   getBluetoothAdapterState: getBluetoothAdapterState,
   getBluetoothDevices: getBluetoothDevices,
+  getChannelManager: getChannelManager,
   getCheckBoxState: getCheckBoxState,
   getClipboardData: getClipboardData,
   getConnectedBluetoothDevices: getConnectedBluetoothDevices,

@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, hyphenate, camelize, normalizeStyle as normalizeStyle$1, normalizeClass as normalizeClass$1, isString, isFunction, isPlainObject, extend, isArray, capitalize } from '@vue/shared';
+import { isHTMLTag, isSVGTag, hyphenate, camelize, normalizeStyle as normalizeStyle$1, isArray, isString, parseStringStyle, normalizeClass as normalizeClass$1, isFunction, isPlainObject, extend, capitalize } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
     'ad',
@@ -44,6 +44,8 @@ const BUILT_IN_TAG_NAMES = [
     'video',
     'view',
     'web-view',
+    'list-view',
+    'list-item',
     'cloud-db-element', // TODO暂时放在此处
 ];
 const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
@@ -344,32 +346,59 @@ function customizeEvent(str) {
     return camelize(str.replace(customizeRE, '-'));
 }
 function normalizeStyle(value) {
-    if (!(value instanceof Map)) {
+    if (value instanceof Map) {
+        const styleObject = {};
+        value.forEach((value, key) => {
+            styleObject[key] = value;
+        });
+        return normalizeStyle$1(styleObject);
+    }
+    else if (isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = isString(item)
+                ? parseStringStyle(item)
+                : normalizeStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else {
         return normalizeStyle$1(value);
     }
-    const styleObject = {};
-    value.forEach((value, key) => {
-        styleObject[key] = value;
-    });
-    return styleObject;
 }
 function normalizeClass(value) {
-    if (!(value instanceof Map)) {
-        return normalizeClass$1(value);
-    }
     let res = '';
-    value.forEach((value, key) => {
-        if (value) {
-            res += key + ' ';
+    if (value instanceof Map) {
+        value.forEach((value, key) => {
+            if (value) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            const normalized = normalizeClass(value[i]);
+            if (normalized) {
+                res += normalized + ' ';
+            }
         }
-    });
+    }
+    else {
+        res = normalizeClass$1(value);
+    }
     return res.trim();
 }
 function normalizeProps(props) {
     if (!props)
         return null;
     let { class: klass, style } = props;
-    if (klass && typeof klass !== 'string') {
+    if (klass && !isString(klass)) {
         props.class = normalizeClass(klass);
     }
     if (style) {
