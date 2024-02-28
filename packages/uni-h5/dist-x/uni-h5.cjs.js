@@ -7652,7 +7652,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
         if (!contentNode) {
           return;
         }
-        const listItemInstances = getListItem(visibleVnode);
+        const listItemInstances = getListItem(visibleVNode);
         const childrenIds = listItemInstances.map((item) => {
           var _a, _b;
           return (_b = (_a = item.$) == null ? void 0 : _a.exposed) == null ? void 0 : _b.itemId;
@@ -7737,10 +7737,10 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     const visibleStyle = vue.computed(() => {
       return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${placehoderSize.value}px;`;
     });
-    let visibleVnode = null;
+    let visibleVNode = null;
     return () => {
       const defaultSlot = slots.default && slots.default();
-      visibleVnode = vue.createVNode("div", {
+      visibleVNode = vue.createVNode("div", {
         "ref": visibleRef,
         "class": "uni-list-view-visible",
         "style": visibleStyle.value
@@ -7755,7 +7755,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.createVNode("div", {
         "class": "uni-list-view-content",
         "style": contentStyle.value
-      }, [visibleVnode], 4)], 4), vue.createVNode(ResizeSensor, {
+      }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
         "onResize": onResize
       }, null, 8, ["onResize"])], 512);
     };

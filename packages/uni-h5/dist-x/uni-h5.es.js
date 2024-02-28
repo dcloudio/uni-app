@@ -15579,6 +15579,41 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       lastCheckScrollEndOffset = currentOffset;
       requestAnimationFrame(checkScrollEnd);
     }
+    let touchStart = {
+      x: 0,
+      y: 0
+    };
+    function __handleTouchStart(event) {
+      if (event.touches.length === 1) {
+        touchStart = {
+          x: event.touches[0].pageX,
+          y: event.touches[0].pageY
+        };
+      }
+    }
+    function __handleTouchMove(event) {
+      const containerEl = containerRef.value;
+      if (touchStart === null)
+        return;
+      let y = event.touches[0].pageY;
+      if (!isVertical.value) {
+        return;
+      }
+      let needStop = false;
+      if (containerEl.scrollTop === 0 && y > touchStart.y) {
+        needStop = false;
+      } else if (containerEl.scrollHeight === containerEl.offsetHeight + containerEl.scrollTop && y < touchStart.y) {
+        needStop = false;
+      } else {
+        needStop = true;
+      }
+      if (needStop) {
+        event.stopPropagation();
+      }
+    }
+    function __handleTouchEnd(event) {
+      touchStart = null;
+    }
     onMounted(() => {
       renderStoped = false;
       let lastScrollOffset = 0;
@@ -15616,6 +15651,10 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       nextTick(() => {
         checkScrollEnd();
       });
+      const containerEl = containerRef.value;
+      containerEl.addEventListener("touchstart", __handleTouchStart);
+      containerEl.addEventListener("touchmove", __handleTouchMove);
+      containerEl.addEventListener("touchend", __handleTouchEnd);
       const rootElement = rootRef.value;
       const containerElement = containerRef.value;
       Object.defineProperties(rootElement, {
@@ -15648,6 +15687,12 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       });
       rootElement.attachVmProps(props2);
     });
+    onBeforeUnmount(() => {
+      const containerEl = containerRef.value;
+      containerEl.removeEventListener("touchstart", __handleTouchStart);
+      containerEl.removeEventListener("touchmove", __handleTouchMove);
+      containerEl.removeEventListener("touchend", __handleTouchEnd);
+    });
     onUnmounted(() => {
       renderStoped = true;
     });
@@ -15663,7 +15708,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
         if (!contentNode) {
           return;
         }
-        const listItemInstances = getListItem(visibleVnode);
+        const listItemInstances = getListItem(visibleVNode);
         const childrenIds = listItemInstances.map((item) => {
           var _a, _b;
           return (_b = (_a = item.$) == null ? void 0 : _a.exposed) == null ? void 0 : _b.itemId;
@@ -15748,10 +15793,10 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     const visibleStyle = computed(() => {
       return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${placehoderSize.value}px;`;
     });
-    let visibleVnode = null;
+    let visibleVNode = null;
     return () => {
       const defaultSlot = slots.default && slots.default();
-      visibleVnode = createVNode("div", {
+      visibleVNode = createVNode("div", {
         "ref": visibleRef,
         "class": "uni-list-view-visible",
         "style": visibleStyle.value
@@ -15766,7 +15811,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "class": "uni-list-view-content",
         "style": contentStyle.value
-      }, [visibleVnode], 4)], 4), createVNode(ResizeSensor, {
+      }, [visibleVNode], 4)], 4), createVNode(ResizeSensor, {
         "onResize": onResize2
       }, null, 8, ["onResize"])], 512);
     };
