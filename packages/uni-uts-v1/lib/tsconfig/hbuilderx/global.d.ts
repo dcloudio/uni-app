@@ -15,6 +15,7 @@ import {
   createElementVNode as createElementVNodeOrigin,
   createCommentVNode as createCommentVNodeOrigin,
   isVNode as isVNodeOrigin,
+  nextTick as nextTickOrigin,
   queuePostFlushCb as queuePostFlushCbOrigin,
   watchEffect as watchEffectOrigin,
   watchPostEffect as watchPostEffectOrigin,
@@ -130,6 +131,7 @@ declare global {
   const createElementVNode: typeof createElementVNodeOrigin
   const createCommentVNode: typeof createCommentVNodeOrigin
   const isVNode: typeof isVNodeOrigin
+  const nextTick: typeof nextTickOrigin
   const queuePostFlushCb: typeof queuePostFlushCbOrigin
   const watchEffect: typeof watchEffectOrigin
   const watchPostEffect: typeof watchPostEffectOrigin
