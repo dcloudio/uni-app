@@ -297,7 +297,8 @@ var serviceContext = (function () {
     'getPushClientId',
     'onPushMessage',
     'offPushMessage',
-    'createPushMessage'
+    'createPushMessage',
+    'getChannelManager'
   ];
 
   const apis = [
@@ -10118,6 +10119,12 @@ var serviceContext = (function () {
     });
   }
 
+  let channelManager;
+
+  function getChannelManager () {
+    return channelManager || (channelManager = plus.push.getChannelManager())
+  }
+
   function requireNativePlugin$1 (name) {
     return weex.requireModule(name)
   }
@@ -10692,7 +10699,7 @@ var serviceContext = (function () {
   }
   const initUTSProxyFunction = initUTSStaticMethod;
   function parseClassMethodName(name, methods) {
-      if (hasOwn(methods, name + 'ByJs')) {
+      if (typeof name === 'string' && hasOwn(methods, name + 'ByJs')) {
           return name + 'ByJs';
       }
       return name;
@@ -12949,6 +12956,7 @@ var serviceContext = (function () {
     onPush: onPush,
     offPush: offPush,
     createPushMessage: createPushMessage,
+    getChannelManager: getChannelManager,
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
