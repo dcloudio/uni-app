@@ -1,6 +1,7 @@
 import {
   ref,
   onUnmounted,
+  onBeforeUnmount,
   onMounted,
   nextTick,
   computed,
@@ -188,6 +189,48 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       lastCheckScrollEndOffset = currentOffset
       requestAnimationFrame(checkScrollEnd)
     }
+
+    let touchStart: { x: number; y: number } | null = {
+      x: 0,
+      y: 0,
+    }
+
+    function __handleTouchStart(event: TouchEvent) {
+      if (event.touches.length === 1) {
+        touchStart = {
+          x: event.touches[0].pageX,
+          y: event.touches[0].pageY,
+        }
+      }
+    }
+    function __handleTouchMove(event: TouchEvent) {
+      const containerEl = containerRef.value!
+      if (touchStart === null) return
+      // let x = event.touches[0].pageX
+      let y = event.touches[0].pageY
+      if (!isVertical.value) {
+        return
+      }
+      let needStop = false
+      if (containerEl.scrollTop === 0 && y > touchStart.y) {
+        needStop = false
+      } else if (
+        containerEl.scrollHeight ===
+          containerEl.offsetHeight + containerEl.scrollTop &&
+        y < touchStart.y
+      ) {
+        needStop = false
+      } else {
+        needStop = true
+      }
+      if (needStop) {
+        event.stopPropagation()
+      }
+    }
+    function __handleTouchEnd(event: TouchEvent) {
+      touchStart = null
+    }
+
     onMounted(() => {
       renderStoped = false
       let lastScrollOffset = 0
@@ -242,6 +285,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         checkScrollEnd()
       })
 
+      //兼容页面下拉刷新
+      const containerEl = containerRef.value!
+      containerEl.addEventListener('touchstart', __handleTouchStart)
+      containerEl.addEventListener('touchmove', __handleTouchMove)
+      containerEl.addEventListener('touchend', __handleTouchEnd)
+
       //#if _X_ && !_NODE_JS_
       const rootElement = rootRef.value as UniListViewElement
       const containerElement = containerRef.value as HTMLElement
@@ -277,6 +326,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       //#endif
     })
 
+    onBeforeUnmount(() => {
+      const containerEl = containerRef.value!
+      containerEl.removeEventListener('touchstart', __handleTouchStart)
+      containerEl.removeEventListener('touchmove', __handleTouchMove)
+      containerEl.removeEventListener('touchend', __handleTouchEnd)
+    })
+
     onUnmounted(() => {
       renderStoped = true
     })
@@ -297,7 +353,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           // TODO 热刷新的时候会进入此分支，暂未深入排查
           return
         }
-        const listItemInstances = getListItem(visibleVnode!)
+        const listItemInstances = getListItem(visibleVNode!)
         const childrenIds = listItemInstances.map(
           (item) => item.$?.exposed?.itemId
         )
@@ -406,10 +462,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }: 100%; ${isVertical.value ? 'top' : 'left'}: ${placehoderSize.value}px;`
     })
 
-    let visibleVnode = null as VNode | null
+    let visibleVNode = null as VNode | null
     return () => {
       const defaultSlot = slots.default && slots.default()
-      visibleVnode = (
+      visibleVNode = (
         <div
           ref={visibleRef}
           class="uni-list-view-visible"
@@ -430,7 +486,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             style={containerStyle.value}
           >
             <div class="uni-list-view-content" style={contentStyle.value}>
-              {visibleVnode}
+              {visibleVNode}
             </div>
           </div>
           <ResizeSensor onResize={onResize} />
