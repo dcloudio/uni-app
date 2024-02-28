@@ -1931,7 +1931,7 @@ function init() {
     if (index2 !== selected0) {
       var item = list[index2];
       var path = item.pagePath;
-      if (isString(path) && findPageRoute(path)) {
+      if (isString(path) && findPageRoute(getRealPath(path, true))) {
         switchSelect(index2, path);
       } else {
         console.error("switchTab: pagePath not found");
