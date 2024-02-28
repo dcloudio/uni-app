@@ -1050,8 +1050,23 @@ function wrapperTaskApi(name, fn, protocol, options) {
     });
   };
 }
+function wrapperSyncApi(name, fn, protocol, options) {
+  return function() {
+    for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+      args[_key] = arguments[_key];
+    }
+    var errMsg = beforeInvokeApi(name, args, protocol, options);
+    if (errMsg) {
+      throw new Error(errMsg);
+    }
+    return fn.apply(null, args);
+  };
+}
 function wrapperAsyncApi(name, fn, protocol, options) {
   return wrapperTaskApi(name, fn, protocol, options);
+}
+function defineSyncApi(name, fn, protocol, options) {
+  return wrapperSyncApi(name, fn, void 0, options);
 }
 function defineAsyncApi(name, fn, protocol, options) {
   return promisify(name, wrapperAsyncApi(name, fn, void 0, options));
@@ -1262,6 +1277,7 @@ var BaseRouteProtocol = {
 };
 var API_NAVIGATE_TO = "navigateTo";
 var API_REDIRECT_TO = "redirectTo";
+var API_RE_LAUNCH = "reLaunch";
 var API_SWITCH_TAB = "switchTab";
 var API_NAVIGATE_BACK = "navigateBack";
 var API_PRELOAD_PAGE = "preloadPage";
@@ -1273,9 +1289,11 @@ var NavigateBackProtocol = /* @__PURE__ */ extend({
   }
 }, createAnimationProtocol(ANIMATION_OUT));
 var RedirectToProtocol = BaseRouteProtocol;
+var ReLaunchProtocol = BaseRouteProtocol;
 var SwitchTabProtocol = BaseRouteProtocol;
 var NavigateToOptions = /* @__PURE__ */ createRouteOptions(API_NAVIGATE_TO);
 var RedirectToOptions = /* @__PURE__ */ createRouteOptions(API_REDIRECT_TO);
+var ReLaunchOptions = /* @__PURE__ */ createRouteOptions(API_RE_LAUNCH);
 var SwitchTabOptions = /* @__PURE__ */ createRouteOptions(API_SWITCH_TAB);
 var NavigateBackOptions = {
   formatArgs: {
@@ -1364,6 +1382,41 @@ function createNormalizeUrl(type) {
     }
   };
 }
+var FRONT_COLORS = ["#ffffff", "#000000"];
+var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
+var SetNavigationBarColorOptions = {
+  formatArgs: {
+    animation(animation2, params) {
+      if (!animation2) {
+        animation2 = {
+          duration: 0,
+          timingFunc: "linear"
+        };
+      }
+      params.animation = {
+        duration: animation2.duration || 0,
+        timingFunc: animation2.timingFunc || "linear"
+      };
+    }
+  }
+};
+var SetNavigationBarColorProtocol = {
+  frontColor: {
+    type: String,
+    required: true,
+    validator(frontColor) {
+      if (FRONT_COLORS.indexOf(frontColor) === -1) {
+        return 'invalid frontColor "'.concat(frontColor, '"');
+      }
+    }
+  },
+  backgroundColor: {
+    type: String,
+    required: true
+  },
+  animation: Object
+};
+var API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
 var IndexProtocol = {
   index: {
     type: Number,
@@ -1787,7 +1840,9 @@ function _redirectTo(_ref3) {
     query
   } = _ref3;
   var lastPage = getCurrentPage();
-  lastPage && removePage(lastPage);
+  if (lastPage) {
+    removePage(lastPage);
+  }
   return new Promise((resolve) => {
     showWebview(registerPage({
       url,
@@ -1796,8 +1851,7 @@ function _redirectTo(_ref3) {
       openType: "redirectTo"
     }), "none", 0, () => {
       if (lastPage) {
-        var nPage = getNativeApp().pageManager.findPageById(lastPage.$page.id + "");
-        nPage.close(/* @__PURE__ */ new Map([["animationType", "none"]]));
+        closeWebview(lastPage.$appPage, "none");
       }
       resolve(void 0);
     });
@@ -1909,14 +1963,14 @@ var currentPageRoute = null;
 function findPageRoute(path) {
   return __uniRoutes.find((route) => route.path === path);
 }
-function createTab(path, query) {
+function createTab(path, query, callback) {
   currentPageRoute = findPageRoute(path);
   showWebview(registerPage({
     url: path,
     path,
     query,
     openType: "switchTab"
-  }), "none", 0);
+  }), "none", 0, callback);
   var page = getCurrentPage();
   currentPageRoute = null;
   tabBar0.appendItem(page.$page.id.toString());
@@ -1955,23 +2009,27 @@ class TabPageInfo {
 }
 function getTabPage(path) {
   var query = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+  var rebuild = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
+  var callback = arguments.length > 3 ? arguments[3] : void 0;
   var page = findTabPage(path);
   var isFirst = false;
-  if (page === null) {
+  if (page === null || rebuild) {
     isFirst = true;
-    page = createTab(path, query);
+    page = createTab(path, query, callback);
     tabs.set(path, page);
   }
   return new TabPageInfo(page, isFirst);
 }
 function switchSelect(selected, path) {
   var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+  var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
+  var callback = arguments.length > 4 ? arguments[4] : void 0;
   var shouldShow = false;
   if (tabBar0 === null) {
     init();
   }
   var currentPage = getCurrentPage();
-  var pageInfo = getTabPage(getRealPath(path, true), query);
+  var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
   var page = pageInfo.page;
   if (currentPage !== page) {
     shouldShow = true;
@@ -1984,6 +2042,10 @@ function switchSelect(selected, path) {
     invokeHook(page, ON_SHOW);
   }
   selected0 = selected;
+}
+function closePage(page, animationType, animationDuration) {
+  removePage(page);
+  closeWebview(page.$getAppPage(), animationType, animationDuration);
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2014,18 +2076,61 @@ function _switchTab(_ref2) {
   if (selected == -1) {
     return Promise.reject("tab ".concat(path, " not found"));
   }
-  var pages2 = getCurrentPages();
+  var pages2 = getAllPages();
   switchSelect(selected, path, query);
   for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
     var page = pages2[index2];
     if (isTabPage(page)) {
       break;
     }
-    var nPage = getNativeApp().pageManager.findPageById(page.$page.id + "");
-    nPage.close(/* @__PURE__ */ new Map([["animationType", "none"]]));
+    closePage(page, "none");
   }
   return Promise.resolve();
 }
+var $reLaunch = (_ref, _ref2) => {
+  var {
+    url
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  _reLaunch({
+    url,
+    path,
+    query
+  }).then(resolve).catch(reject);
+};
+function _reLaunch(_ref3) {
+  var {
+    url,
+    path,
+    query
+  } = _ref3;
+  return new Promise((resolve) => {
+    var pages2 = getAllPages().slice(0);
+    var selected = getTabIndex(path);
+    function callback() {
+      pages2.forEach((page) => closePage(page, "none"));
+      resolve(void 0);
+    }
+    if (selected === -1) {
+      showWebview(registerPage({
+        url,
+        path,
+        query,
+        openType: "reLaunch"
+      }), "none", 0, callback);
+    } else {
+      switchSelect(selected, path, query, true, callback);
+    }
+  });
+}
+var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {
     index: index2,
@@ -2173,6 +2278,50 @@ var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, 
   tabBar.hideTabBarRedDot(/* @__PURE__ */ new Map([["index", index2]]));
   resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
+var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
+  var {
+    frontColor,
+    backgroundColor
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var page = getCurrentPage();
+  if (!page) {
+    return reject("getCurrentPages is empty");
+  }
+  var appPage = page.$getAppPage();
+  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBar", /* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]])]]));
+  resolve();
+}, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
+var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  var page = getCurrentPage();
+  if (page == null) {
+    reject("page is not ready");
+    return;
+  }
+  var appPage = page.$getAppPage();
+  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBar", /* @__PURE__ */ new Map([["navigationBarTitleText", options.title]])]]));
+  resolve();
+});
+var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
+  var _page$$el;
+  var page = getCurrentPage();
+  if (page == null) {
+    return null;
+  }
+  var bodyNode = (_page$$el = page.$el) === null || _page$$el === void 0 ? void 0 : _page$$el.parentNode;
+  if (bodyNode == null) {
+    console.warn("bodyNode is null");
+    return null;
+  }
+  return bodyNode.querySelector("#".concat(id2));
+});
 var callbackId = 1;
 var proxy;
 var callbacks = {};
@@ -2505,6 +2654,7 @@ function requireUTSPlugin(name) {
 }
 const uni$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  getElementById,
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,
@@ -2514,11 +2664,14 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   initUTSProxyFunction,
   navigateBack,
   navigateTo,
+  reLaunch,
   redirectTo,
   registerUTSInterface,
   registerUTSPlugin,
   removeTabBarBadge,
   requireUTSPlugin,
+  setNavigationBarColor,
+  setNavigationBarTitle,
   setTabBarBadge,
   setTabBarItem,
   setTabBarStyle,
