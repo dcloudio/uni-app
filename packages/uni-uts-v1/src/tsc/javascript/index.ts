@@ -22,6 +22,7 @@ export const uts2js: uts2js = (options) => {
         sourceMap: process.env.UNI_UTS_PLATFORM === 'web',
         ignoreDeprecations: '5.0',
         preserveValueImports: true,
+        importsNotUsedAsValues: 'preserve',
         verbatimModuleSyntax: false,
       },
     },
