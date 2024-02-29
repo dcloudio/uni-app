@@ -139,7 +139,7 @@ export const UVUE_IOS_BUILT_IN_TAGS = [
   'swiper',
   'swiper-item',
   'rich-text',
-  'button',
+  // 'button',
   'list-view',
   'list-item',
   'switch',
