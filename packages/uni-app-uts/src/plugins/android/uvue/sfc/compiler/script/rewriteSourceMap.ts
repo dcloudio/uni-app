@@ -117,10 +117,10 @@ export function rewriteSourceMap(
       } else if (node.type === 'ClassDeclaration') {
         if (node.implements && node.implements.length > 0) {
           // 已有接口
-          s.appendRight(startOffset + node.body.start! - 1, `, IUTSSourceMap`)
+          s.appendRight(startOffset + node.body.start!, `, IUTSSourceMap`)
         } else {
           s.appendRight(
-            startOffset + node.body.start! - 1,
+            startOffset + node.body.start!,
             ` implements IUTSSourceMap`
           )
         }
