@@ -111,6 +111,18 @@
   //#endif
   //#ifdef WEB
   export class UniCloudDBElement extends UniElementImpl {
+    constructor(data : INodeData, pageNode : PageNode) {
+      super(data, pageNode);
+      const TagName = 'UNICLOUD-DB';
+      Object.defineProperty(this, 'tagName', {
+        value: TagName,
+        writable: false
+      });
+      Object.defineProperty(this, 'nodeName', {
+        value: TagName,
+        writable: false
+      });
+    }
   //#endif
 
     dataList : Array<UTSJSONObject> = []
