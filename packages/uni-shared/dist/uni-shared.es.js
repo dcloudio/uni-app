@@ -128,6 +128,7 @@ const UVUE_BUILT_IN_TAGS = [
     'button',
 ];
 const UVUE_IOS_BUILT_IN_TAGS = [
+    'scroll-view',
     'web-view',
     'slider',
     'swiper',
@@ -135,7 +136,10 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'rich-text',
     'button',
     'list-view',
+    'list-item',
     'switch',
+    'sticky-header',
+    'sticky-section',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',

@@ -133,6 +133,7 @@ export const UVUE_BUILT_IN_TAGS = [
 ]
 
 export const UVUE_IOS_BUILT_IN_TAGS = [
+  'scroll-view',
   'web-view',
   'slider',
   'swiper',
@@ -140,7 +141,10 @@ export const UVUE_IOS_BUILT_IN_TAGS = [
   'rich-text',
   'button',
   'list-view',
+  'list-item',
   'switch',
+  'sticky-header',
+  'sticky-section',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
