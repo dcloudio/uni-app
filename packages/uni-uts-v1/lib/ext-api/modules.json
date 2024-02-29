@@ -534,7 +534,7 @@
       "createVideoContext": {
         "name": "createVideoContext",
         "app": {
-          "js": false,
+          "js": true,
           "kotlin": true,
           "swift": false
         }
