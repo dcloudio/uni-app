@@ -19,7 +19,8 @@ export class UniProgressActiveendEvent extends CustomEvent<UniProgressActiveendE
 }
 export class UniProgressElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
-    super()
+    // @ts-ignore
+    super(data, pageNode)
   }
 
   override getAttribute(key: string): string {
