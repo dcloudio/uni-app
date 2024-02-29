@@ -82,7 +82,10 @@ export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin[] {
   // 重写readFileSync，拦截.scss文件读取，实现条件编译
-  rewriteScssReadFileSync()
+  if (process.env.UNI_APP_X === 'true') {
+    // 仅处理 x，非 x 不需要，还需要找时间排查下，为啥 x 需要，而非 x 不需要。
+    rewriteScssReadFileSync()
+  }
 
   // 三方插件（如vitest）可能提供了自己的入口命令，需要补充 env 初始化逻辑
   initEnv('unknown', { platform: process.env.UNI_PLATFORM || 'h5' })
