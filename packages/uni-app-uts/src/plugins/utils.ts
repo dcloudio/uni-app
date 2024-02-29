@@ -1,5 +1,5 @@
 import path from 'node:path'
-import { isAppNVueNativeTag } from '@dcloudio/uni-shared'
+import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import {
   MANIFEST_JSON_UTS,
   PAGES_JSON_UTS,
@@ -50,7 +50,7 @@ export function createUniOptions(
       platform === 'ios'
         ? {
             isNativeTag(tag) {
-              return matchUTSComponent(tag) || isAppNVueNativeTag(tag)
+              return matchUTSComponent(tag) || isAppIOSUVueNativeTag(tag)
             },
             nodeTransforms: [transformTapToClick, transformUTSComponent],
           }
