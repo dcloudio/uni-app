@@ -46,6 +46,8 @@ const BUILT_IN_TAG_NAMES = [
     'video',
     'view',
     'web-view',
+    'list-view',
+    'list-item',
     'cloud-db-element', // TODO暂时放在此处
 ];
 const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
@@ -124,6 +126,18 @@ const UVUE_BUILT_IN_TAGS = [
     'sticky-section',
     // 自定义
     'uni-slider',
+    // 原生实现
+    'button',
+];
+const UVUE_IOS_BUILT_IN_TAGS = [
+    'web-view',
+    'slider',
+    'swiper',
+    'swiper-item',
+    'rich-text',
+    'button',
+    'list-view',
+    'switch',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -195,6 +209,19 @@ function isAppUVueNativeTag(tag) {
     }
     // u-text,u-video...
     if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
+}
+function isAppIOSUVueNativeTag(tag) {
+    // 前端实现的内置组件都会注册一个根组件
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     return false;
@@ -1651,6 +1678,7 @@ exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
 exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
+exports.UVUE_IOS_BUILT_IN_TAGS = UVUE_IOS_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;
 exports.UniElement = UniElement;
@@ -1691,6 +1719,7 @@ exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
+exports.isAppIOSUVueNativeTag = isAppIOSUVueNativeTag;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isAppUVueNativeTag = isAppUVueNativeTag;

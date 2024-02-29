@@ -262,6 +262,8 @@ export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (a
 
 export declare function invokeCreateVueAppHook(app: App): void;
 
+export declare function isAppIOSUVueNativeTag(tag: string): boolean;
+
 export declare function isAppNativeTag(tag: string): boolean;
 
 export declare function isAppNVueNativeTag(tag: string): boolean;
@@ -879,6 +881,8 @@ export declare class UniTextNode extends UniBaseNode {
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
 export declare const UVUE_BUILT_IN_TAGS: string[];
+
+export declare const UVUE_IOS_BUILT_IN_TAGS: string[];
 
 declare interface Vue_2 {
     createApp: typeof createApp;
