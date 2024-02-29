@@ -1,6 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, computed, onMounted, resolveComponent, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, withDirectives, resolveDirective, nextTick } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, computed, onMounted, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, withDirectives, resolveDirective, nextTick } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
 var _core = { exports: {} };
@@ -3314,7 +3314,8 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
       return basicStyle;
     });
     return () => {
-      return createVNode(resolveComponent("uni-button-element"), {
+      var _slots$default;
+      return createVNode("uni-button-element", {
         "class": "ub",
         "style": styleText.value,
         "onTouchstart": touchstart,
@@ -3322,12 +3323,7 @@ const button = /* @__PURE__ */ defineBuiltInComponent({
         "onTouchcancel": touchcancel,
         "onTouchmove": touchmove,
         "onClick": _onClick
-      }, {
-        default: () => {
-          var _slots$default;
-          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
-        }
-      }, 8, ["style", "onTouchstart", "onTouchend", "onTouchcancel", "onTouchmove", "onClick"]);
+      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 44, ["onTouchstart", "onTouchend", "onTouchcancel", "onTouchmove", "onClick"]);
     };
   }
 });
@@ -3512,24 +3508,19 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       });
     };
     return () => {
-      return createVNode(resolveComponent("uni-checkbox-element"), {
+      var _slots$default;
+      return createVNode("uni-checkbox-element", {
         "dataUncType": "uni-checkbox",
         "onClick": _onClick,
         "class": "uni-checkbox",
         "style": styles["uni-checkbox"]
-      }, {
-        default: () => {
-          var _slots$default;
-          return [createVNode("view", {
-            "class": "uni-checkbox-input",
-            "style": checkInputStyle.value
-          }, [checkboxChecked.value ? createVNode("text", {
-            "class": "uni-icon",
-            "style": iconStyle.value
-          }, [icon], 4) : null], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
-        },
-        _: 2
-      }, 8, ["onClick", "style"]);
+      }, [createVNode("view", {
+        "class": "uni-checkbox-input",
+        "style": checkInputStyle.value
+      }, [checkboxChecked.value ? createVNode("text", {
+        "class": "uni-icon",
+        "style": iconStyle.value
+      }, [icon], 4) : null], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
     };
   }
 });
@@ -3666,14 +3657,10 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
       _setValue
     });
     return () => {
-      return createVNode(resolveComponent("uni-checkbox-group-element"), {
+      var _slots$default;
+      return createVNode("uni-checkbox-group-element", {
         "ref": uniCheckboxGroupElementRef
-      }, {
-        default: () => {
-          var _slots$default;
-          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
-        }
-      }, 512);
+      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
     };
   }
 });
@@ -3874,25 +3861,20 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
       );
     };
     return () => {
-      return createVNode(resolveComponent("uni-radio-element"), {
+      var _slots$default;
+      return createVNode("uni-radio-element", {
         "dataUncType": "uni-radio",
         "class": "uni-radio",
         "style": styleUniRadio.value,
         "ref": uniRadioElementRef,
         "onClick": _onClick
-      }, {
-        default: () => {
-          var _slots$default;
-          return [createVNode("view", {
-            "class": "uni-radio-input",
-            "style": styleUniRadioInput.value
-          }, [radioChecked.value ? createVNode("text", {
-            "class": "uni-radio-input-icon",
-            "style": styleUniRadioInputIcon.value
-          }, [icon], 4) : null], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
-        },
-        _: 2
-      }, 8, ["style", "onClick"]);
+      }, [createVNode("view", {
+        "class": "uni-radio-input",
+        "style": styleUniRadioInput.value
+      }, [radioChecked.value ? createVNode("text", {
+        "class": "uni-radio-input-icon",
+        "style": styleUniRadioInputIcon.value
+      }, [icon], 4) : null], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
     };
   }
 });
@@ -4031,14 +4013,10 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
       _changeHandler
     });
     return () => {
-      return createVNode(resolveComponent("uni-radio-group-element"), {
+      var _slots$default;
+      return createVNode("uni-radio-group-element", {
         "ref": uniRadioGroupElementRef
-      }, {
-        default: () => {
-          var _slots$default;
-          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
-        }
-      }, 512);
+      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
     };
   }
 });
@@ -4159,19 +4137,15 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
       }
     };
     return () => {
-      return createVNode(resolveComponent("uni-navigator-element"), {
+      var _slots$default;
+      return createVNode("uni-navigator-element", {
         "ref": $uniNavigatorElement,
         "onClick": _onClick,
         "hoverClass": props.hoverClass,
         "hoverStopPropagation": props.hoverStopPropagation,
         "hoverStartTime": props.hoverStartTime,
         "hoverStayTime": props.hoverStayTime
-      }, {
-        default: () => {
-          var _slots$default;
-          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
-        }
-      }, 8, ["onClick", "hoverClass", "hoverStopPropagation", "hoverStartTime", "hoverStayTime"]);
+      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 8, ["onClick", "hoverClass", "hoverStopPropagation", "hoverStartTime", "hoverStayTime"]);
     };
   }
 });
@@ -4370,22 +4344,19 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
       clearTimer();
     });
     return () => {
-      return createVNode(resolveComponent("uni-progress-element"), {
+      return createVNode("uni-progress-element", {
         "class": "uni-progress",
         "style": styleUniProgress
-      }, {
-        default: () => [createVNode("view", {
-          "class": "uni-progress-bar",
-          "style": barStyle.value
-        }, [createVNode("view", {
-          "class": "uni-progress-inner-bar",
-          "style": innerBarStyle.value
-        }, null, 4)], 4), withDirectives(createVNode("text", {
-          "class": "uni-progress-info",
-          "style": textStyle.value
-        }, [textStr], 4), [[resolveDirective("if"), "showInfo"]])],
-        _: 2
-      }, 8, ["style"]);
+      }, [createVNode("view", {
+        "class": "uni-progress-bar",
+        "style": barStyle.value
+      }, [createVNode("view", {
+        "class": "uni-progress-inner-bar",
+        "style": innerBarStyle.value
+      }, null, 4)], 4), withDirectives(createVNode("text", {
+        "class": "uni-progress-info",
+        "style": textStyle.value
+      }, [textStr], 4), [[resolveDirective("if"), "showInfo"]])], 4);
     };
   }
 });
@@ -4490,14 +4461,10 @@ const form = /* @__PURE__ */ defineBuiltInComponent({
       reset
     });
     return () => {
-      return createVNode(resolveComponent("uni-form-element"), {
+      var _slots$default;
+      return createVNode("uni-form-element", {
         "ref": formRef
-      }, {
-        default: () => {
-          var _slots$default;
-          return [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)];
-        }
-      }, 512);
+      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
     };
   }
 });
@@ -4735,19 +4702,15 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
     var styleUniPickerView = _style_picker_view["uni-picker-view"][""];
     var styleUniPickerViewWrapper = _style_picker_view["uni-picker-view-wrapper"][""];
     return () => {
-      return createVNode(resolveComponent("uni-picker-view-element"), {
+      var _slots$default;
+      return createVNode("uni-picker-view-element", {
         "ref": pickerViewElementRef,
         "class": "uni-picker-view",
         "style": styleUniPickerView
-      }, {
-        default: () => {
-          var _slots$default;
-          return [createVNode("view", {
-            "class": "uni-picker-view-wrapper",
-            "style": styleUniPickerViewWrapper
-          }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)];
-        }
-      }, 8, ["style"]);
+      }, [createVNode("view", {
+        "class": "uni-picker-view-wrapper",
+        "style": styleUniPickerViewWrapper
+      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)], 4);
     };
   }
 });
@@ -4876,44 +4839,39 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     return () => {
-      return createVNode(resolveComponent("uni-picker-view-column-element"), {
+      var _slots$default;
+      return createVNode("uni-picker-view-column-element", {
         "class": "uni-picker-view-column",
         "style": styleUniPickerViewColumn.value,
         "ref": pickerColumnRef
-      }, {
-        default: () => {
-          var _slots$default;
-          return [createVNode("scroll-view", {
-            "deceleration-rate": 0.3,
-            "onScrollend": onScrollend,
-            "class": "uni-picker-view-group",
-            "style": styleUniPickerViewGroup.value,
-            "scroll-with-animation": data._isMounted,
-            "direction": "vertical",
-            "show-scrollbar": false,
-            "ref": scrollViewRef
-          }, [createVNode("view", {
-            "class": "uni-picker-view-content",
-            "style": contentStyle.value,
-            "ref": contentRef
-          }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)], 44, ["onScrollend", "scroll-with-animation"]), createVNode("view", {
-            "userInteractionEnabled": false,
-            "class": "uni-picker-view-mask",
-            "style": styleViewMask.value
-          }, [createVNode("view", {
-            "class": "uni-picker-view-mask uni-picker-view-mask-top",
-            "style": maskTopStyle.value
-          }, null, 4), createVNode("view", {
-            "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
-            "style": maskBottomStyle.value
-          }, null, 4)], 4), createVNode("view", {
-            "ref": indicator,
-            "class": "uni-picker-view-indicator",
-            "style": indicatorStyle.value
-          }, null, 4)];
-        },
-        _: 1
-      }, 8, ["style"]);
+      }, [createVNode("scroll-view", {
+        "deceleration-rate": 0.3,
+        "onScrollend": onScrollend,
+        "class": "uni-picker-view-group",
+        "style": styleUniPickerViewGroup.value,
+        "scroll-with-animation": data._isMounted,
+        "direction": "vertical",
+        "show-scrollbar": false,
+        "ref": scrollViewRef
+      }, [createVNode("view", {
+        "class": "uni-picker-view-content",
+        "style": contentStyle.value,
+        "ref": contentRef
+      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 4)], 44, ["onScrollend", "scroll-with-animation"]), createVNode("view", {
+        "userInteractionEnabled": false,
+        "class": "uni-picker-view-mask",
+        "style": styleViewMask.value
+      }, [createVNode("view", {
+        "class": "uni-picker-view-mask uni-picker-view-mask-top",
+        "style": maskTopStyle.value
+      }, null, 4), createVNode("view", {
+        "class": "uni-picker-view-mask uni-picker-view-mask-bottom",
+        "style": maskBottomStyle.value
+      }, null, 4)], 4), createVNode("view", {
+        "ref": indicator,
+        "class": "uni-picker-view-indicator",
+        "style": indicatorStyle.value
+      }, null, 4)], 4);
     };
   }
 });
