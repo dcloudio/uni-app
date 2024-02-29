@@ -5,10 +5,10 @@ export const RADIO_ROOT_ELEMENT = 'uni-radio-element'
 
 // export class UniCheckboxElement extends UniElement {}
 export class UniRadioElement extends UniElementImpl {
-  // constructor(data: INodeData, pageNode: PageNode) {
-  //   super(data, pageNode)
-  // }
-
+  constructor(data: INodeData, pageNode: PageNode) {
+    // @ts-ignore
+    super(data, pageNode)
+  }
   // override getAttribute(key: string): string | null {
   //   const value = this._getAttribute(key)
   //   if (value != null) {

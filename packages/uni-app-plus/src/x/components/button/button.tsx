@@ -18,10 +18,6 @@ import {
 import { styleList } from './style'
 const FORM_TYPES = ['submit', 'reset']
 
-// todo
-// 2  动态设置 updateStyle 不生效，hover-class 能读取，赋值不生效
-// 4 后续表格设定 reset/submit 时候验证是否生效
-
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: BUTTON_COMPONENT_NAME,
   rootElement: {
