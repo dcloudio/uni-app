@@ -33,13 +33,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       _timerId: 0,
       _lastPercent: 0,
     })
-    const textStr = `${data.curPercent}%`
+    const textStr = computed(() => {
+      return `${data.curPercent}%`
+    })
 
     const instance = getCurrentInstance()
 
-    const styleUniProgress = computed(() => _style['uni-progress'])
-    const styleUniProgressBar = computed(() => _style['uni-progress-bar'])
-    // const styleUniProgressInfo = computed(() => _style['uni-progress-info'])
+    const styleUniProgress = computed(() => _style['uni-progress'][''])
+    const styleUniProgressBar = computed(() => _style['uni-progress-bar'][''])
 
     const barStyle = computed(() => {
       const style = {
@@ -47,7 +48,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         borderRadius: `${props.borderRadius}px`,
         backgroundColor: props.backgroundColor,
       }
-      return Object.assign({}, styleUniProgressBar.value[''], style)
+      return Object.assign({}, styleUniProgressBar.value, style)
     })
 
     const innerBarStyle = computed(() => {
@@ -65,7 +66,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         minWidth: `${fontSize * 2}px`,
       }
 
-      return Object.assign({}, style)
+      return Object.assign({}, _style['uni-progress-info'][''], style)
     })
 
     const finalPercent = computed((): number => {
@@ -128,20 +129,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     return () => {
       return (
-        <uni-progress-element class="uni-progress" style={styleUniProgress}>
+        <uni-progress-element
+          class="uni-progress"
+          style={styleUniProgress.value}
+        >
           <view class="uni-progress-bar" style={barStyle.value}>
             <view
               class="uni-progress-inner-bar"
               style={innerBarStyle.value}
             ></view>
           </view>
-          <text
-            v-if="showInfo"
-            class="uni-progress-info"
-            style={textStyle.value}
-          >
-            {textStr}
-          </text>
+          {props.showInfo ? (
+            <view class="uni-progress-info" style={textStyle.value}>
+              {textStr.value}
+            </view>
+          ) : null}
         </uni-progress-element>
       )
     }
