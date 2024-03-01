@@ -323,6 +323,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             containerElement.scrollTop = val
           },
         },
+        scrollBy: {
+          get() {
+            return containerElement.scrollBy.bind(containerElement)
+          },
+        },
       })
       rootElement.attachVmProps(props)
       //#endif

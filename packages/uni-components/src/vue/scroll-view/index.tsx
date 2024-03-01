@@ -199,6 +199,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             main.value!.scrollTop = val
           },
         },
+        scrollBy: {
+          get() {
+            return main.value!.scrollBy.bind(main.value!)
+          },
+        },
       })
       rootElement.attachVmProps(props)
     })
