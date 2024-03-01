@@ -1,6 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, computed, onMounted, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, withDirectives, resolveDirective, nextTick } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, computed, onMounted, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
 var _core = { exports: {} };
@@ -3334,6 +3334,9 @@ const button$1 = /* @__PURE__ */ Object.defineProperty({
 var CHECKBOX_NAME = "Checkbox";
 var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
 class UniCheckboxElement extends UniElementImpl {
+  constructor(data, pageNode) {
+    super(data, pageNode);
+  }
 }
 var checkboxProps = {
   checked: {
@@ -3671,8 +3674,8 @@ const checkboxGroup$1 = /* @__PURE__ */ Object.defineProperty({
 var RADIO_NAME = "Radio";
 var RADIO_ROOT_ELEMENT = "uni-radio-element";
 class UniRadioElement extends UniElementImpl {
-  constructor() {
-    super(...arguments);
+  constructor(data, pageNode) {
+    super(data, pageNode);
     this._getAttribute = (key) => {
       return null;
     };
@@ -4026,7 +4029,7 @@ const radioGroup$1 = /* @__PURE__ */ Object.defineProperty({
 }, Symbol.toStringTag, { value: "Module" });
 class UniNavigatorElement extends UniElementImpl {
   constructor(data, pageNode) {
-    super(data);
+    super(data, pageNode);
     this._getAttribute = (key) => {
       return null;
     };
@@ -4172,7 +4175,7 @@ class UniProgressActiveendEvent extends CustomEvent {
 }
 class UniProgressElement extends UniElementImpl {
   constructor(data, pageNode) {
-    super();
+    super(data, pageNode);
     this._getAttribute = (key) => {
       return null;
     };
@@ -4266,17 +4269,19 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
       _timerId: 0,
       _lastPercent: 0
     });
-    var textStr = "".concat(data.curPercent, "%");
+    var textStr = computed(() => {
+      return "".concat(data.curPercent, "%");
+    });
     var instance = getCurrentInstance();
-    var styleUniProgress = computed(() => _style["uni-progress"]);
-    var styleUniProgressBar = computed(() => _style["uni-progress-bar"]);
+    var styleUniProgress = computed(() => _style["uni-progress"][""]);
+    var styleUniProgressBar = computed(() => _style["uni-progress-bar"][""]);
     var barStyle = computed(() => {
       var style = {
         height: "".concat(props.strokeWidth, "px"),
         borderRadius: "".concat(props.borderRadius, "px"),
         backgroundColor: props.backgroundColor
       };
-      return Object.assign({}, styleUniProgressBar.value[""], style);
+      return Object.assign({}, styleUniProgressBar.value, style);
     });
     var innerBarStyle = computed(() => {
       var style = {
@@ -4292,7 +4297,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
         fontSize: "".concat(fontSize, "px"),
         minWidth: "".concat(fontSize * 2, "px")
       };
-      return Object.assign({}, style);
+      return Object.assign({}, _style["uni-progress-info"][""], style);
     });
     var finalPercent = computed(() => {
       var percent = props.percent;
@@ -4346,17 +4351,17 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       return createVNode("uni-progress-element", {
         "class": "uni-progress",
-        "style": styleUniProgress
+        "style": styleUniProgress.value
       }, [createVNode("view", {
         "class": "uni-progress-bar",
         "style": barStyle.value
       }, [createVNode("view", {
         "class": "uni-progress-inner-bar",
         "style": innerBarStyle.value
-      }, null, 4)], 4), withDirectives(createVNode("text", {
+      }, null, 4)], 4), props.showInfo ? createVNode("view", {
         "class": "uni-progress-info",
         "style": textStyle.value
-      }, [textStr], 4), [[resolveDirective("if"), "showInfo"]])], 4);
+      }, [textStr.value], 4) : null], 4);
     };
   }
 });

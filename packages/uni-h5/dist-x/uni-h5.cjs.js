@@ -899,7 +899,7 @@ class UniElement extends HTMLElement {
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -959,7 +959,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1035,7 +1035,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1914,7 +1914,7 @@ const props$q = {
     default: true
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -2388,7 +2388,7 @@ const props$p = {
     default: ""
   }
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2484,7 +2484,7 @@ const props$o = {
     default: ""
   }
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$o,
   setup(props2, {
@@ -2822,7 +2822,7 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2883,7 +2883,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2950,7 +2950,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$l,
   setup(props2, {
@@ -3783,7 +3783,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -4331,7 +4331,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -4982,7 +4982,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -5315,7 +5315,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -5399,7 +5399,7 @@ const props$i = {
     default: ""
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$i,
   // emits: ['change'],
@@ -5878,7 +5878,7 @@ const props$g = {
     }
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -5977,7 +5977,7 @@ const props$f = {
     default: false
   }
 };
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -6903,7 +6903,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$d,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -7132,7 +7132,7 @@ const props$c = {
     default: ""
   }
 };
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$c,
   setup(props2, {
@@ -7177,7 +7177,7 @@ const props$b = {
     default: ""
   }
 };
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$b,
   emits: ["change"],
@@ -7290,7 +7290,7 @@ function normalizeText(text, { space, decode }) {
 function parseText(text, options) {
   return normalizeText(text, options).split(uniShared.LINEFEED);
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -7364,7 +7364,7 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
   emits: ["confirm", "linechange", ...emit],
@@ -7505,7 +7505,7 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: shared.extend({}, hoverProps),
   setup(props2, {
@@ -7525,6 +7525,288 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
         }, binding), [slots.default && slots.default()], 16);
       }
       return vue.createVNode("uni-view", {
+        "ref": rootRef
+      }, [slots.default && slots.default()], 512);
+    };
+  }
+});
+function isHTMlElement(node) {
+  return !!(node && node.nodeType === 1);
+}
+function getListItem(root) {
+  const children = [];
+  if (root) {
+    walk(root, children);
+  }
+  return children;
+}
+function walk(vnode, children) {
+  if (vnode.component) {
+    children.push(vnode.component.proxy);
+  } else if (vnode.shapeFlag & 16) {
+    const vnodes = vnode.children;
+    for (let i = 0; i < vnodes.length; i++) {
+      walk(vnodes[i], children);
+    }
+  }
+}
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ListView",
+  props: {
+    direction: {
+      type: String,
+      default: "vertical",
+      validator: (val) => {
+        return ["none", "vertical", "horizontal"].includes(val);
+      }
+    },
+    showScrollbar: {
+      type: [Boolean, String],
+      default: true
+    },
+    upperThreshold: {
+      type: [Number, String],
+      default: 50
+    },
+    lowerThreshold: {
+      type: [Number, String],
+      default: 50
+    },
+    scrollTop: {
+      type: [Number, String],
+      default: 0
+    },
+    scrollLeft: {
+      type: [Number, String],
+      default: 0
+    },
+    // 暂不支持
+    // scrollIntoView: {
+    //   type: String,
+    //   default: '',
+    // },
+    scrollWithAnimation: {
+      type: [Boolean, String],
+      default: false
+    }
+  },
+  emits: [
+    "scroll",
+    "scrolltoupper",
+    "scrolltolower"
+    // 有触发时机，但是由于没有原生事件暂不支持
+    // 'scrollend',
+  ],
+  setup(props2, {
+    slots,
+    expose,
+    emit: emit2
+  }) {
+    const rootRef = vue.ref(null);
+    const containerRef = vue.ref(null);
+    const visibleRef = vue.ref(null);
+    const placehoderSize = vue.ref(0);
+    const visibleSize = vue.ref(0);
+    const totalSize = vue.ref(0);
+    const isVertical = vue.computed(() => {
+      return props2.direction !== "horizontal";
+    });
+    const defaultItemSize = 40;
+    const cacheScreenCount = 5;
+    let rootSize = 0;
+    vue.provide("__listViewIsVertical", isVertical);
+    vue.provide("__listViewDefaultItemSize", defaultItemSize);
+    vue.computed(() => {
+      const val = Number(props2.upperThreshold);
+      return isNaN(val) ? 50 : val;
+    });
+    vue.computed(() => {
+      const val = Number(props2.lowerThreshold);
+      return isNaN(val) ? 50 : val;
+    });
+    const scrollTopNumber = vue.computed(() => {
+      return Number(props2.scrollTop) || 0;
+    });
+    const scrollLeftNumber = vue.computed(() => {
+      return Number(props2.scrollLeft) || 0;
+    });
+    vue.watch(scrollTopNumber, (val) => {
+      if (containerRef.value) {
+        containerRef.value.scrollTop = val;
+      }
+    });
+    vue.watch(scrollLeftNumber, (val) => {
+      if (containerRef.value) {
+        containerRef.value.scrollLeft = val;
+      }
+    });
+    const cachedItems = [];
+    let sortTimeout = null;
+    function sortCachedItems() {
+      if (sortTimeout !== null) {
+        clearTimeout(sortTimeout);
+        sortTimeout = null;
+      }
+      sortTimeout = setTimeout(() => {
+        const contentNode = visibleRef.value;
+        if (!contentNode) {
+          return;
+        }
+        const listItemInstances = getListItem(visibleVNode);
+        const childrenIds = listItemInstances.map((item) => {
+          var _a, _b;
+          return (_b = (_a = item.$) == null ? void 0 : _a.exposed) == null ? void 0 : _b.itemId;
+        });
+        cachedItems.sort((a, b) => {
+          return childrenIds.indexOf(a.itemId) - childrenIds.indexOf(b.itemId);
+        });
+        totalSize.value = cachedItems.reduce((total, item) => {
+          return total + item.cachedSize;
+        }, 0);
+        rearrange();
+      }, 1);
+    }
+    vue.provide("__listViewRegisterItem", (status) => {
+      cachedItems.push(status);
+      vue.nextTick(() => {
+        sortCachedItems();
+      });
+    });
+    vue.provide("__listViewUnregisterItem", (status) => {
+      const index2 = cachedItems.indexOf(status);
+      index2 > -1 && cachedItems.splice(index2, 1);
+      vue.nextTick(() => {
+        sortCachedItems();
+      });
+    });
+    function refresh() {
+      cachedItems.map((item) => {
+        item.seen.value = false;
+      });
+      vue.nextTick(() => {
+        vue.nextTick(() => {
+          rearrange();
+        });
+      });
+    }
+    expose({
+      refresh
+    });
+    function onResize() {
+      refresh();
+    }
+    function rearrange() {
+      const offset = isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
+      rootSize = isVertical.value ? rootRef.value.clientHeight : rootRef.value.clientWidth;
+      if (!rootSize) {
+        return;
+      }
+      const offsetMin = Math.max(offset - rootSize * cacheScreenCount, 0);
+      const offsetMax = offset + rootSize * (cacheScreenCount + 1);
+      let tempTotalSize = 0;
+      let tempVisibleSize = 0;
+      let start = false, end = false;
+      for (let i = 0; i < cachedItems.length; i++) {
+        const item = cachedItems[i];
+        const itemSize = item.cachedSize || defaultItemSize;
+        const nextTotalSize = tempTotalSize + itemSize;
+        if (!start && nextTotalSize > offsetMin) {
+          placehoderSize.value = tempTotalSize;
+          start = true;
+        }
+        if (start && !end) {
+          tempVisibleSize += itemSize;
+          item.visible.value = true;
+        } else {
+          item.visible.value = false;
+        }
+        if (!end && nextTotalSize >= offsetMax) {
+          end = true;
+        }
+        tempTotalSize = nextTotalSize;
+      }
+      totalSize.value = tempTotalSize;
+      visibleSize.value = tempVisibleSize;
+    }
+    const containerStyle = vue.computed(() => {
+      return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
+    });
+    const contentStyle = vue.computed(() => {
+      return `position: relative; ${isVertical.value ? "height" : "width"}: ${totalSize.value}px;`;
+    });
+    const visibleStyle = vue.computed(() => {
+      return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${placehoderSize.value}px;`;
+    });
+    let visibleVNode = null;
+    return () => {
+      const defaultSlot = slots.default && slots.default();
+      visibleVNode = vue.createVNode("div", {
+        "ref": visibleRef,
+        "class": "uni-list-view-visible",
+        "style": visibleStyle.value
+      }, [defaultSlot], 4);
+      return vue.createVNode("uni-list-view", {
+        "ref": rootRef,
+        "class": "uni-list-view"
+      }, [vue.createVNode("div", {
+        "ref": containerRef,
+        "class": `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`,
+        "style": containerStyle.value
+      }, [vue.createVNode("div", {
+        "class": "uni-list-view-content",
+        "style": contentStyle.value
+      }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
+        "onResize": onResize
+      }, null, 8, ["onResize"])], 512);
+    };
+  }
+});
+let listItemId = 0;
+function getSize(isVertical, el) {
+  var style = window.getComputedStyle(el);
+  if (isVertical) {
+    return parseFloat(style.marginTop) + el.getBoundingClientRect().height + parseFloat(style.marginBottom);
+  } else {
+    return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
+  }
+}
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ListItem",
+  props: {},
+  setup(props2, {
+    slots,
+    expose
+  }) {
+    const rootRef = vue.ref(null);
+    const isVertical = vue.inject("__listViewIsVertical");
+    const visible = vue.ref(false);
+    const seen = vue.ref(false);
+    const status = {
+      itemId: listItemId++,
+      visible,
+      cachedSize: 0,
+      seen
+    };
+    expose({
+      itemId: status.itemId
+    });
+    vue.inject("__listViewRegisterItem");
+    vue.inject("__listViewUnregisterItem");
+    const realVisible = vue.computed(() => {
+      return visible.value || !status.seen.value;
+    });
+    return () => {
+      vue.nextTick(() => {
+        const rootNode = rootRef.value;
+        if (realVisible.value && isHTMlElement(rootNode)) {
+          status.cachedSize = getSize(isVertical.value, rootNode);
+          seen.value = true;
+        }
+      });
+      if (!realVisible.value) {
+        return null;
+      }
+      return vue.createVNode("uni-list-item", {
         "ref": rootRef
       }, [slots.default && slots.default()], 512);
     };
@@ -11146,6 +11428,9 @@ const request = /* @__PURE__ */ defineTaskApi(
     withCredentials,
     timeout = __uniConfig.networkTimeout.request
   }, { resolve, reject }) => {
+    {
+      timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout;
+    }
     let body = null;
     const contentType = normalizeContentType(header);
     if (method !== "GET") {
@@ -12693,48 +12978,50 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$x;
+exports.Button = index$z;
 exports.Camera = index$3;
-exports.Canvas = index$w;
-exports.Checkbox = index$u;
-exports.CheckboxGroup = index$v;
+exports.Canvas = index$y;
+exports.Checkbox = index$w;
+exports.CheckboxGroup = index$x;
 exports.CoverImage = index$8;
 exports.CoverView = index$9;
-exports.Editor = index$t;
-exports.Form = index$z;
-exports.Icon = index$s;
-exports.Image = index$r;
+exports.Editor = index$v;
+exports.Form = index$B;
+exports.Icon = index$u;
+exports.Image = index$t;
 exports.Input = Input;
-exports.Label = index$y;
+exports.Label = index$A;
 exports.LayoutComponent = LayoutComponent;
+exports.ListItem = index$e;
+exports.ListView = index$f;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Map = index$a;
-exports.MovableArea = index$q;
-exports.MovableView = index$p;
-exports.Navigator = index$o;
+exports.MovableArea = index$s;
+exports.MovableView = index$r;
+exports.Navigator = index$q;
 exports.PageComponent = index;
 exports.Picker = index$7;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$n;
+exports.Progress = index$p;
 exports.Radio = indexX$2;
-exports.RadioGroup = index$m;
+exports.RadioGroup = index$o;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$l;
-exports.ScrollView = index$k;
+exports.RichText = index$n;
+exports.ScrollView = index$m;
 exports.Slider = indexX$1;
-exports.Swiper = index$j;
-exports.SwiperItem = index$i;
-exports.Switch = index$h;
-exports.Text = index$g;
-exports.Textarea = index$f;
+exports.Swiper = index$l;
+exports.SwiperItem = index$k;
+exports.Switch = index$j;
+exports.Text = index$i;
+exports.Textarea = index$h;
 exports.UniElement = UniElement;
 exports.UniElementImpl = UniElement;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$b;
-exports.View = index$e;
+exports.View = index$g;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
