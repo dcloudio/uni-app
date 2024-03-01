@@ -18,8 +18,10 @@ import {
   parseUniExtApis,
   resolveSourceMapPath,
   rewriteScssReadFileSync,
+  rewriteExistsSyncHasRootFile,
   uniUTSExtApiReplace,
   uniViteInjectPlugin,
+  isInHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -28,7 +30,7 @@ import { uniCopyPlugin } from './plugins/copy'
 import { uniMovePlugin } from './plugins/move'
 import {
   initExtraPlugins,
-  initFixedEsbuildInitTSConfck,
+  // initFixedEsbuildInitTSConfck,
   initPluginUniOptions,
   rewriteCompilerSfcParse,
 } from './utils'
@@ -85,6 +87,10 @@ export default function uniPlugin(
   if (process.env.UNI_APP_X === 'true') {
     // 仅处理 x，非 x 不需要，还需要找时间排查下，为啥 x 需要，而非 x 不需要。
     rewriteScssReadFileSync()
+  }
+
+  if (isInHBuilderX()) {
+    rewriteExistsSyncHasRootFile()
   }
 
   // 三方插件（如vitest）可能提供了自己的入口命令，需要补充 env 初始化逻辑
@@ -185,7 +191,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   })
   plugins.push(...uniPlugins)
 
-  plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
+  // plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
 
   // 执行 build 命令时，vite 强制了 NODE_ENV
   // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L405
@@ -275,7 +281,7 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
 
   plugins.push(...uniPlugins)
 
-  plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
+  // plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
 
   // 执行 build 命令时，vite 强制了 NODE_ENV
   // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L405
