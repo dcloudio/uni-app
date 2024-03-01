@@ -5570,7 +5570,7 @@
       ],
       "defaultValue": {
         "uvue-app": "left",
-        "uvue-web": "start",
+        "uvue-web": "left",
         "w3c": "start"
       }
     },
