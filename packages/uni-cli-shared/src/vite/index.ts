@@ -57,8 +57,6 @@ export function rewriteExistsSyncHasRootFile() {
   )
   fs.existsSync = (path) => {
     if (path === pnpmWorkspaceYaml) {
-      // 仅重写一次，用于绕过 vite，避免后续其他地方真的需要判断
-      fs.existsSync = existsSync
       return true
     }
     return existsSync(path)
