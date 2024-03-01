@@ -1,0 +1,7 @@
+uni-sticky-header {
+  pointer-events: none;
+  position: -webkit-sticky !important;
+  position: sticky !important;
+  top: 0px;
+  z-index: 1;
+}

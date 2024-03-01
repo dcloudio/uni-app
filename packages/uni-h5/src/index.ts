@@ -30,6 +30,8 @@ export {
   //#if _X_
   ListView,
   ListItem,
+  StickySection,
+  StickyHeader,
   UniElement,
   UniElement as UniElementImpl,
   //#endif

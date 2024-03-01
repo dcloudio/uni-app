@@ -142,7 +142,9 @@ uni-app uni-checkbox-group,
 uni-app uni-scroll-view,
 uni-app uni-list-view,
 uni-app uni-unicloud-db,
-uni-app uni-custom-tab-bar {
+uni-app uni-custom-tab-bar,
+uni-app uni-sticky-section,
+uni-app uni-sticky-header {
   display: flex;
   align-items: stretch;
   align-content: stretch;
@@ -164,7 +166,9 @@ uni-app uni-radio-group,
 uni-app uni-checkbox-group,
 uni-app uni-scroll-view,
 uni-app uni-list-view,
-uni-app uni-unicloud-db {
+uni-app uni-unicloud-db,
+uni-app uni-sticky-section,
+uni-app uni-sticky-header {
   flex-direction: column;
 }
 
@@ -201,7 +205,8 @@ uni-app .uni-list-view-visible {
   justify-content: inherit;
 }
 
-uni-app .uni-scroll-view-content {
+uni-app .uni-scroll-view-content,
+uni-app .uni-sticky-header-wrapper {
   display: flex;
   min-height: 0px;
 }

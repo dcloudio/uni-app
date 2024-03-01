@@ -34,7 +34,13 @@ function getListItem(root: VNode): ComponentPublicInstance[] {
 }
 
 function walk(vnode: VNode, children: ComponentPublicInstance[]) {
-  if (vnode.component) {
+  if (
+    vnode.component &&
+    vnode.component.type &&
+    vnode.component.type.name === 'StickySection'
+  ) {
+    children.push(...getListItem(vnode.component.subTree))
+  } else if (vnode.component) {
     children.push(vnode.component.proxy!)
   } else if (vnode.shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
     const vnodes = vnode.children as VNode[]

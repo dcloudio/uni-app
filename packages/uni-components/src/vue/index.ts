@@ -40,6 +40,8 @@ import Textarea from './textarea/index'
 import View from './view/index'
 import ListView from './list-view/index'
 import ListItem from './list-item/index'
+import StickySection from './sticky-section/index'
+import StickyHeader from './sticky-header/index'
 export {
   Button,
   Canvas,
@@ -71,4 +73,6 @@ export {
   View,
   ListView,
   ListItem,
+  StickySection,
+  StickyHeader,
 }

@@ -53,6 +53,8 @@ const baseComponents = [
   'view',
   'list-view',
   'list-item',
+  'sticky-section',
+  'sticky-header',
 ]
 
 interface UniEasycomPluginOptions {
