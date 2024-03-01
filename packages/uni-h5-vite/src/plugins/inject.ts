@@ -14,7 +14,12 @@ import {
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
-const apiJson = require(path.resolve(__dirname, '../../lib/api.json'))
+const apiJson = require(path.resolve(
+  __dirname,
+  process.env.UNI_APP_X === 'true'
+    ? '../../lib/api.json'
+    : '../../lib/api.x.json'
+))
 const uniInjectPluginOptions: Partial<InjectOptions> = {
   exclude: [...COMMON_EXCLUDE],
   'uni.': [
