@@ -184,6 +184,16 @@ export function initEnv(
 
   initUVueEnv()
 
+  const pkg = require(path.resolve(__dirname, '../../package.json'))
+
+  process.env.UNI_COMPILER_VERSION =
+    process.env.UNI_COMPILER_VERSION ||
+    pkg['uni-app']?.['compilerVersion'] ||
+    ''
+  process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
+    ? 'a'
+    : 'r'
+
   initPreContext(
     process.env.UNI_PLATFORM,
     process.env.UNI_CUSTOM_CONTEXT,
