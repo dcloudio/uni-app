@@ -38,23 +38,33 @@ export default [
         if (opts.filter(id)) {
           const platform = process.env.UNI_PLATFORM
           // 仅 app-android
-          if (
-            platform === 'app' &&
-            process.env.UNI_APP_X === 'true' &&
-            process.env.UNI_UTS_PLATFORM === 'app-android'
-          ) {
+          if (platform === 'app' && process.env.UNI_APP_X === 'true') {
             // app-webview，不增加 initAutomator
             if (process.env.UNI_AUTOMATOR_APP_WEBVIEW === 'true') {
               return null
             }
-            const automatorPath = normalizePath(
-              resolveBuiltIn(`@dcloudio/uni-app-uts/lib/automator/index.uts`)
-            )
-            return {
-              code:
-                // 增加个换行，避免最后是注释且无换行
-                code + `;\nimport { initAutomator } from '${automatorPath}';`,
-              map: null,
+            if (process.env.UNI_UTS_PLATFORM === 'app-android') {
+              const automatorPath = normalizePath(
+                resolveBuiltIn(
+                  `@dcloudio/uni-app-uts/lib/automator/android/index.uts`
+                )
+              )
+              return {
+                code:
+                  // 增加个换行，避免最后是注释且无换行
+                  code + `;\nimport { initAutomator } from '${automatorPath}';`,
+                map: null,
+              }
+            } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+              const automatorPath = normalizePath(
+                resolveBuiltIn(
+                  `@dcloudio/uni-app-uts/lib/automator/ios/automator.js`
+                )
+              )
+              return {
+                code: code + `;\nimport '${automatorPath}';`,
+                map: null,
+              }
             }
           }
           const automatorPath = normalizePath(
