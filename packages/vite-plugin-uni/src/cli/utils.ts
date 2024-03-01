@@ -184,7 +184,7 @@ export function initEnv(
 
   initUVueEnv()
 
-  const pkg = require(path.resolve(__dirname, '../../package.json'))
+  const pkg = require('../../package.json')
 
   process.env.UNI_COMPILER_VERSION =
     process.env.UNI_COMPILER_VERSION ||
@@ -206,11 +206,10 @@ export function initEnv(
     process.env.UNI_PLATFORM === 'web' ||
     process.env.UNI_PLATFORM === 'h5'
   ) {
-    const pkg = require('../../package.json')
     console.log(
       M['app.compiler.version'].replace(
         '{version}',
-        pkg['uni-app']['compilerVersion'] +
+        process.env.UNI_COMPILER_VERSION +
           `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）`
       )
     )
