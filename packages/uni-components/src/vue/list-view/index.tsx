@@ -206,13 +206,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     function __handleTouchMove(event: TouchEvent) {
       const containerEl = containerRef.value!
       if (touchStart === null) return
-      // let x = event.touches[0].pageX
+      let x = event.touches[0].pageX
       let y = event.touches[0].pageY
       if (!isVertical.value) {
         return
       }
       let needStop = false
-      if (containerEl.scrollTop === 0 && y > touchStart.y) {
+      if (Math.abs(touchStart.y - y) < Math.abs(touchStart.x - x)) {
+        needStop = false
+      } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
         needStop = false
       } else if (
         containerEl.scrollHeight ===
