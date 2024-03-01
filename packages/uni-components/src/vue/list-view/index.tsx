@@ -33,6 +33,7 @@ function getListItem(root: VNode): ComponentPublicInstance[] {
   return children
 }
 
+// TODO 暂时仅计算list-item的高度，sticky-section、sticky-header暂不统计
 function walk(vnode: VNode, children: ComponentPublicInstance[]) {
   if (
     vnode.component &&
@@ -40,7 +41,11 @@ function walk(vnode: VNode, children: ComponentPublicInstance[]) {
     vnode.component.type.name === 'StickySection'
   ) {
     children.push(...getListItem(vnode.component.subTree))
-  } else if (vnode.component) {
+  } else if (
+    vnode.component &&
+    vnode.component.type &&
+    vnode.component.type.name === 'ListItem'
+  ) {
     children.push(vnode.component.proxy!)
   } else if (vnode.shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
     const vnodes = vnode.children as VNode[]
