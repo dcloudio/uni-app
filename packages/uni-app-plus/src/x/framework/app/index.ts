@@ -23,6 +23,7 @@ const defaultApp = {
 function initAppVm(appVm: ComponentPublicInstance) {
   appVm.$vm = appVm
   appVm.$mpType = 'app'
+  // appVm.load
   // TODO uni-app x useI18n
 }
 

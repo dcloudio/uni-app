@@ -86,29 +86,38 @@ function getLoadFontFaceOptions(
 export const loadFontFace = defineAsyncApi(
   API_LOAD_FONT_FACE,
   (options: LoadFontFaceOptions, res) => {
+    const page = getCurrentPage() as any
     if (options.global === true) {
       if (checkOptionSource(options, res)) {
-        // const app = getApp()
-        // const fontInfo = getLoadFontFaceOptions(options, res)
-        // ;(globalThis as any).nativeApp.loadFontFace(fontInfo)
-        // native.loadFontFace(getLoadFontFaceOptions(options, res))
+        // const app = page!.$appPage as any
+
+        // 先用
+        // const app = getNatvieApp()
+
+        const fontInfo = getLoadFontFaceOptions(options, res)
+        // const app = (globalThis as any).nativeApp.loadFontFace(fontInfo)
+
+        ;(globalThis as any).nativeApp.loadFontFace(
+          fontInfo.family,
+          fontInfo.source,
+          fontInfo.success,
+          fontInfo.fail
+        )
       }
     } else {
-      const page = getCurrentPage() as any
       if (!page) {
         res.reject('page is not ready', 99)
         // reject(new LoadFontFaceErrorImpl('page is not ready', 99), 99)
         return
       }
 
-      if (page.$fontFamilySet.has(options.family)) {
-        return
-      }
+      // if (page.$fontFamilySet.has(options.family)) {
+      //   return
+      // }
 
       if (checkOptionSource(options, res)) {
-        page.$fontFamilySet.add(options.family)
+        // page.$fontFamilySet.add(options.family)
         const fontInfo = getLoadFontFaceOptions(options, res)
-        // todo 这里需要等待联调，接收参数
         page.$appPage!.loadFontFace(fontInfo)
       }
     }

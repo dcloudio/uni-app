@@ -32,6 +32,9 @@ export function initPageVm(
   pageVm.$vm = pageVm
   pageVm.$page = page
   pageVm.$mpType = 'page'
+  // todo
+  // pageVm.$fontFamilySet = new Set()
+  // pageVm.$
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true
     // TODO preload? 初始化时，状态肯定是激活
