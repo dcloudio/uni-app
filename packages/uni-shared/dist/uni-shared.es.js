@@ -124,6 +124,8 @@ const UVUE_BUILT_IN_TAGS = [
     'sticky-section',
     // 自定义
     'uni-slider',
+    // 原生实现
+    'button',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',

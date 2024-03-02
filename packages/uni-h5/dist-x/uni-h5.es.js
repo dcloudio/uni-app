@@ -13514,6 +13514,11 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
           set(val) {
             main.value.scrollTop = val;
           }
+        },
+        scrollBy: {
+          get() {
+            return main.value.scrollBy.bind(main.value);
+          }
         }
       });
       rootElement.attachVmProps(props2);
@@ -15595,12 +15600,15 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       const containerEl = containerRef.value;
       if (touchStart === null)
         return;
+      let x = event.touches[0].pageX;
       let y = event.touches[0].pageY;
       if (!isVertical.value) {
         return;
       }
       let needStop = false;
-      if (containerEl.scrollTop === 0 && y > touchStart.y) {
+      if (Math.abs(touchStart.y - y) < Math.abs(touchStart.x - x)) {
+        needStop = false;
+      } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
         needStop = false;
       } else if (containerEl.scrollHeight === containerEl.offsetHeight + containerEl.scrollTop && y < touchStart.y) {
         needStop = false;
@@ -15682,6 +15690,11 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
           },
           set(val) {
             containerElement.scrollTop = val;
+          }
+        },
+        scrollBy: {
+          get() {
+            return containerElement.scrollBy.bind(containerElement);
           }
         }
       });
@@ -24141,6 +24154,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   removeStorageSync,
   removeTabBarBadge,
   request,
+  rpx2px: upx2px,
   saveFile,
   saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum,
@@ -26677,6 +26691,7 @@ export {
   removeStorageSync,
   removeTabBarBadge,
   request,
+  upx2px as rpx2px,
   saveFile,
   saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum,
