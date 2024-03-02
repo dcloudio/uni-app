@@ -73,6 +73,8 @@ export function initPluginVueOptions(
       isCustomElement,
       nodeTransforms,
       directiveTransforms,
+      whitespace,
+      decodeEntities,
     },
   } = uniPluginOptions
 
@@ -98,6 +100,14 @@ export function initPluginVueOptions(
       }
       return false
     }
+  }
+
+  if (whitespace) {
+    compilerOptions.whitespace = whitespace
+  }
+
+  if (decodeEntities) {
+    compilerOptions.decodeEntities = decodeEntities
   }
 
   if (isCustomElement) {

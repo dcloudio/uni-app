@@ -52,7 +52,36 @@ export function createUniOptions(
             isNativeTag(tag) {
               return matchUTSComponent(tag) || isAppIOSUVueNativeTag(tag)
             },
-            nodeTransforms: [transformTapToClick, transformUTSComponent],
+            nodeTransforms: [
+              transformTapToClick,
+              transformUTSComponent,
+              // TODO 合并复用安卓插件逻辑
+              function (node, context) {
+                if (node.type === 1) {
+                  const children: typeof node.children = []
+                  for (const child of node.children) {
+                    if (child.type === 2) {
+                      // 去除空白文本节点
+                      if (!child.content.trim()) {
+                        continue
+                      }
+                    }
+                    children.push(child)
+                  }
+                  node.children = children
+                } else if (node.type === 2) {
+                  const parent = context.parent
+                  if (parent && parent.type === 1 && parent.tag === 'text') {
+                    // 解析文本节点换行
+                    node.content = JSON.parse(`"${node.content}"`)
+                  }
+                }
+              },
+            ],
+            whitespace: 'preserve',
+            decodeEntities: (text) => {
+              return text
+            },
           }
         : {},
   }
