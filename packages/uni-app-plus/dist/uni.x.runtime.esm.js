@@ -1,6 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, computed, onMounted, isInSSRComponentSetup, ref, watchEffect, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, computed, onMounted, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
 var _core = { exports: {} };
@@ -238,12 +238,12 @@ var hide$2 = _hide;
 var redefine$2 = _redefineExports;
 var ctx = _ctx;
 var PROTOTYPE$1 = "prototype";
-var $export$2 = function(type, name, source) {
-  var IS_FORCED = type & $export$2.F;
-  var IS_GLOBAL = type & $export$2.G;
-  var IS_STATIC = type & $export$2.S;
-  var IS_PROTO = type & $export$2.P;
-  var IS_BIND = type & $export$2.B;
+var $export$1 = function(type, name, source) {
+  var IS_FORCED = type & $export$1.F;
+  var IS_GLOBAL = type & $export$1.G;
+  var IS_STATIC = type & $export$1.S;
+  var IS_PROTO = type & $export$1.P;
+  var IS_BIND = type & $export$1.B;
   var target = IS_GLOBAL ? global$1 : IS_STATIC ? global$1[name] || (global$1[name] = {}) : (global$1[name] || {})[PROTOTYPE$1];
   var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
   var expProto = exports[PROTOTYPE$1] || (exports[PROTOTYPE$1] = {});
@@ -255,7 +255,7 @@ var $export$2 = function(type, name, source) {
     out = (own ? target : source)[key];
     exp = IS_BIND && own ? ctx(out, global$1) : IS_PROTO && typeof out == "function" ? ctx(Function.call, out) : out;
     if (target)
-      redefine$2(target, key, out, type & $export$2.U);
+      redefine$2(target, key, out, type & $export$1.U);
     if (exports[key] != out)
       hide$2(exports, key, exp);
     if (IS_PROTO && expProto[key] != out)
@@ -263,15 +263,15 @@ var $export$2 = function(type, name, source) {
   }
 };
 global$1.core = core;
-$export$2.F = 1;
-$export$2.G = 2;
-$export$2.S = 4;
-$export$2.P = 8;
-$export$2.B = 16;
-$export$2.W = 32;
-$export$2.U = 64;
-$export$2.R = 128;
-var _export = $export$2;
+$export$1.F = 1;
+$export$1.G = 2;
+$export$1.S = 4;
+$export$1.P = 8;
+$export$1.B = 16;
+$export$1.W = 32;
+$export$1.U = 64;
+$export$1.R = 128;
+var _export = $export$1;
 var ceil = Math.ceil;
 var floor = Math.floor;
 var _toInteger = function(it) {
@@ -289,12 +289,12 @@ var _toAbsoluteIndex = function(index2, length) {
   index2 = toInteger(index2);
   return index2 < 0 ? max(index2 + length, 0) : min(index2, length);
 };
-var toIObject$3 = _toIobject;
+var toIObject$2 = _toIobject;
 var toLength = _toLength;
 var toAbsoluteIndex = _toAbsoluteIndex;
 var _arrayIncludes = function(IS_INCLUDES) {
   return function($this, el, fromIndex) {
-    var O = toIObject$3($this);
+    var O = toIObject$2($this);
     var length = toLength(O.length);
     var index2 = toAbsoluteIndex(fromIndex, length);
     var value;
@@ -320,11 +320,11 @@ var _sharedKey = function(key) {
   return shared[key] || (shared[key] = uid(key));
 };
 var has$2 = _has;
-var toIObject$2 = _toIobject;
+var toIObject$1 = _toIobject;
 var arrayIndexOf = _arrayIncludes(false);
 var IE_PROTO$2 = _sharedKey("IE_PROTO");
 var _objectKeysInternal = function(object, names) {
-  var O = toIObject$2(object);
+  var O = toIObject$1(object);
   var i = 0;
   var result = [];
   var key;
@@ -347,10 +347,10 @@ var _objectKeys = Object.keys || function keys(O) {
 };
 var dP = _objectDp;
 var anObject$1 = _anObject;
-var getKeys$2 = _objectKeys;
+var getKeys$1 = _objectKeys;
 var _objectDps = _descriptors ? Object.defineProperties : function defineProperties(O, Properties) {
   anObject$1(O);
-  var keys2 = getKeys$2(Properties);
+  var keys2 = getKeys$1(Properties);
   var length = keys2.length;
   var i = 0;
   var P;
@@ -446,7 +446,7 @@ var _objectGpo = Object.getPrototypeOf || function(O) {
   }
   return O instanceof Object ? ObjectProto : null;
 };
-var $export$1 = _export;
+var $export = _export;
 var redefine$1 = _redefineExports;
 var hide$1 = _hide;
 var Iterators$2 = _iterators;
@@ -476,7 +476,7 @@ var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
           return new Constructor(this, kind);
         };
     }
-    return function entries2() {
+    return function entries() {
       return new Constructor(this, kind);
     };
   };
@@ -486,7 +486,7 @@ var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
   var proto = Base.prototype;
   var $native = proto[ITERATOR$1] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
   var $default = $native || getMethod(DEFAULT);
-  var $entries2 = DEFAULT ? !DEF_VALUES ? $default : getMethod("entries") : void 0;
+  var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod("entries") : void 0;
   var $anyNative = NAME == "Array" ? proto.entries || $native : $native;
   var methods, key, IteratorPrototype2;
   if ($anyNative) {
@@ -512,7 +512,7 @@ var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
     methods = {
       values: DEF_VALUES ? $default : getMethod(VALUES),
       keys: IS_SET ? $default : getMethod(KEYS),
-      entries: $entries2
+      entries: $entries
     };
     if (FORCED)
       for (key in methods) {
@@ -520,16 +520,16 @@ var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCE
           redefine$1(proto, key, methods[key]);
       }
     else
-      $export$1($export$1.P + $export$1.F * (BUGGY || VALUES_BUG), NAME, methods);
+      $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
   }
   return methods;
 };
 var addToUnscopables = _addToUnscopables;
 var step = _iterStep;
 var Iterators$1 = _iterators;
-var toIObject$1 = _toIobject;
+var toIObject = _toIobject;
 var es6_array_iterator = _iterDefine(Array, "Array", function(iterated, kind) {
-  this._t = toIObject$1(iterated);
+  this._t = toIObject(iterated);
   this._i = 0;
   this._k = kind;
 }, function() {
@@ -551,7 +551,7 @@ addToUnscopables("keys");
 addToUnscopables("values");
 addToUnscopables("entries");
 var $iterators = es6_array_iterator;
-var getKeys$1 = _objectKeys;
+var getKeys = _objectKeys;
 var redefine = _redefineExports;
 var global = _globalExports;
 var hide = _hide;
@@ -596,7 +596,7 @@ var DOMIterables = {
   TextTrackList: false,
   TouchList: false
 };
-for (var collections = getKeys$1(DOMIterables), i = 0; i < collections.length; i++) {
+for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
   var NAME = collections[i];
   var explicit = DOMIterables[NAME];
   var Collection = global[NAME];
@@ -1208,29 +1208,6 @@ function initLaunchOptions(_ref2) {
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
-var _objectPie = {};
-_objectPie.f = {}.propertyIsEnumerable;
-var DESCRIPTORS = _descriptors;
-var getKeys = _objectKeys;
-var toIObject = _toIobject;
-var isEnum = _objectPie.f;
-var _objectToArray = function(isEntries) {
-  return function(it) {
-    var O = toIObject(it);
-    var keys2 = getKeys(O);
-    var length = keys2.length;
-    var i = 0;
-    var result = [];
-    var key;
-    while (length > i) {
-      key = keys2[i++];
-      if (!DESCRIPTORS || isEnum.call(O, key)) {
-        result.push(isEntries ? [key, O[key]] : O[key]);
-      }
-    }
-    return result;
-  };
-};
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
   [ON_PAGE_NOT_FOUND]: [],
@@ -2786,13 +2763,6 @@ function registerApp(appVm, app) {
   initAppLaunch(appVm);
   __uniConfig.ready = true;
 }
-var $export = _export;
-var $entries = _objectToArray(true);
-$export($export.S, "Object", {
-  entries: function entries(it) {
-    return $entries(it);
-  }
-});
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
@@ -2968,369 +2938,6 @@ function $dispatchParent(context, componentName, eventName) {
     }
   }
 }
-var BUTTON_COMPONENT_NAME = "Button";
-var UNI_BUTTON_ELEMENT_NAME = "uni-button-element";
-var buttonProps = {
-  hoverClass: {
-    type: String,
-    default: "button-hover"
-  },
-  disabled: {
-    type: Boolean,
-    default: false
-  },
-  type: {
-    type: String,
-    default: "default"
-  },
-  size: {
-    type: String,
-    default: "default"
-  },
-  plain: {
-    type: Boolean,
-    default: false
-  },
-  // TODO: loading
-  loading: {
-    type: Boolean,
-    default: false
-  },
-  hoverStartTime: {
-    type: Number,
-    default: 20
-  },
-  hoverStayTime: {
-    type: Number,
-    default: 70
-  },
-  openType: {
-    type: String,
-    default: ""
-  },
-  formType: {
-    type: String,
-    default: ""
-  }
-};
-class UniButtonElement extends UniTextElementImpl {
-  // constructor(data: INodeData) {
-  //   super()
-  //   // super(data)
-  // }
-}
-var hoverStyles = /* @__PURE__ */ new Map([["default", /* @__PURE__ */ new Map([["color", "rgba(0, 0, 0, 0.6)"], ["backgroundColor", "#dedede"]])], ["primary", /* @__PURE__ */ new Map([["color", "rgba(255, 255, 255, 0.6)"], ["backgroundColor", "#0062cc"]])], ["warn", /* @__PURE__ */ new Map([["color", "rgba(255, 255, 255, 0.6)"], ["backgroundColor", "#ce3c39"]])], ["default-plain", /* @__PURE__ */ new Map([["color", "rgba(53, 53, 53, 0.6)"], ["borderColor", "rgba(53, 53, 53, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])], ["primary-plain", /* @__PURE__ */ new Map([["color", "rgba(0, 122, 255, 0.6)"], ["borderColor", "rgba(0, 122, 255, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])], ["warn-plain", /* @__PURE__ */ new Map([["color", "rgba(230, 67, 64, 0.6)"], ["borderColor", "rgba(230, 67, 64, 0.6)"], ["backgroundColor", "rgba(0, 0, 0, 0)"]])]]);
-var _style_0$1$1 = {
-  ub: {
-    "": {
-      position: "relative",
-      textAlign: "center",
-      paddingLeft: "14px",
-      paddingRight: "14px",
-      overflow: "hidden",
-      color: "#000000",
-      backgroundColor: "#f8f8f8",
-      borderRadius: "5px",
-      borderStyle: "solid",
-      borderWidth: "0.5px",
-      borderColor: "rgba(0, 0, 0, 0.2)",
-      fontSize: "18px",
-      lineHeight: "2.55555556"
-    }
-  },
-  "ub-default": {
-    "": {
-      color: "#000000",
-      backgroundColor: "#f8f8f8"
-    }
-  },
-  "ub-primary": {
-    "": {
-      color: "#ffffff",
-      backgroundColor: "#007aff"
-    }
-  },
-  "ub-warn": {
-    "": {
-      color: "#ffffff",
-      backgroundColor: "#e64340"
-    }
-  },
-  "ub-default-plain": {
-    "": {
-      color: "#353535",
-      borderColor: "#353535",
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      borderWidth: "1px"
-    }
-  },
-  "ub-primary-plain": {
-    "": {
-      color: "#007aff",
-      borderColor: "#007aff",
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      borderWidth: "1px"
-    }
-  },
-  "ub-warn-plain": {
-    "": {
-      color: "#e64340",
-      borderColor: "#e64340",
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      borderWidth: "1px"
-    }
-  },
-  "ub-default-disabled": {
-    "": {
-      color: "rgba(0, 0, 0, 0.3)",
-      backgroundColor: "#f7f7f7"
-    }
-  },
-  "ub-primary-disabled": {
-    "": {
-      color: "rgba(255, 255, 255, 0.6)",
-      backgroundColor: "rgba(0, 122, 255, 0.6)"
-    }
-  },
-  "ub-warn-disabled": {
-    "": {
-      color: "rgba(255, 255, 255, 0.6)",
-      backgroundColor: "#ec8b89"
-    }
-  },
-  "ub-default-disabled-plain": {
-    "": {
-      color: "rgba(0, 0, 0, 0.2)",
-      borderColor: "rgba(0, 0, 0, 0.2)",
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      borderWidth: "1px"
-    }
-  },
-  "ub-primary-disabled-plain": {
-    "": {
-      color: "rgba(0, 0, 0, 0.2)",
-      borderColor: "rgba(0, 0, 0, 0.2)",
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      borderWidth: "1px"
-    }
-  },
-  "ub-warn-disabled-plain": {
-    "": {
-      color: "rgba(0, 0, 0, 0.2)",
-      borderColor: "rgba(0, 0, 0, 0.2)",
-      backgroundColor: "rgba(0, 0, 0, 0)",
-      borderWidth: "1px"
-    }
-  },
-  "ub-mini": {
-    "": {
-      paddingTop: "0",
-      paddingBottom: "0",
-      paddingRight: "17.5px",
-      paddingLeft: "17.5px",
-      lineHeight: "2.3",
-      fontSize: "13px"
-    }
-  }
-};
-var styleList$1 = _style_0$1$1;
-var FORM_TYPES = ["submit", "reset"];
-const button = /* @__PURE__ */ defineBuiltInComponent({
-  name: BUTTON_COMPONENT_NAME,
-  rootElement: {
-    name: UNI_BUTTON_ELEMENT_NAME,
-    // @ts-expect-error not web element
-    class: UniButtonElement
-  },
-  // styles: buttonStyle,
-  props: buttonProps,
-  // emits: ['click'],
-  setup(props, _ref) {
-    var {
-      emit,
-      slots
-    } = _ref;
-    var $buttonEl = null;
-    var $originHoverStyle = /* @__PURE__ */ new Map();
-    var $hoverStyle = /* @__PURE__ */ new Map();
-    var $hoverClassStyle = /* @__PURE__ */ new Map();
-    var $hoverStartTimer = null;
-    var $hoverStayTimer = null;
-    var $hoverTouch = false;
-    var $hovering = false;
-    var instance;
-    var btnCls = computed(() => {
-      var cl = "ub-" + props.type;
-      if (props.disabled) {
-        cl += "-disabled";
-      }
-      if (props.plain) {
-        cl += "-plain";
-      }
-      if (props.size == "mini") {
-        cl += " ub-mini";
-      }
-      return cl;
-    });
-    function parseHoverClass() {
-      var cl = props.hoverClass;
-      if (cl == "button-hover" || cl.length == 0) {
-        return;
-      }
-      var styles2 = $buttonEl.ext.get("styles");
-      if (styles2 != null) {
-        var _styles$cl;
-        var style = (_styles$cl = styles2[cl]) !== null && _styles$cl !== void 0 ? _styles$cl : {};
-        style = new Map(Object.entries(style));
-        if (style != null) {
-          style.forEach((val) => {
-            val = new Map(Object.entries(val));
-            $hoverClassStyle = val;
-          });
-        }
-      }
-    }
-    onMounted(() => {
-      var _instance;
-      instance = getCurrentInstance();
-      (_instance = instance) === null || _instance === void 0 ? void 0 : _instance.$waitNativeRender(() => {
-        var _instance$proxy;
-        if (!instance)
-          return;
-        $buttonEl = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
-        parseHoverClass();
-      });
-    });
-    function setHoverStyle() {
-      var hoverStyle;
-      if (props.hoverClass == "button-hover") {
-        var _hoverStyles$get;
-        var plain = props.plain ? "-plain" : "";
-        hoverStyle = (_hoverStyles$get = hoverStyles.get(props.type + plain)) !== null && _hoverStyles$get !== void 0 ? _hoverStyles$get : hoverStyles.get("default");
-      } else {
-        hoverStyle = $hoverClassStyle;
-      }
-      var currentStyle = $buttonEl.style;
-      $hoverStyle = /* @__PURE__ */ new Map();
-      $originHoverStyle = /* @__PURE__ */ new Map();
-      hoverStyle.forEach((val, key) => {
-        $hoverStyle.set(key, val);
-        $originHoverStyle.set(key, currentStyle.getPropertyValue(key));
-      });
-    }
-    function clearHoverStyle() {
-      var hoverStyle = $hoverStyle;
-      var currentStyle = $buttonEl.style;
-      hoverStyle.forEach((val, key) => {
-        currentStyle.getPropertyValue(key);
-        if (currentStyle.getPropertyValue(key) != val) {
-          hoverStyle.set(key, currentStyle.getPropertyValue(key));
-        } else {
-          hoverStyle.set(key, $originHoverStyle.get(key));
-        }
-      });
-    }
-    function updateStyle() {
-      if ($hoverStyle.size == 0) {
-        return;
-      }
-      var style = /* @__PURE__ */ new Map();
-      $hoverStyle.forEach((val, key) => {
-        style.set(key, val);
-      });
-      $buttonEl.updateStyle(style);
-    }
-    function touchstart() {
-      if (props.disabled || props.hoverClass == "none" || $hovering) {
-        return;
-      }
-      $hoverTouch = true;
-      setHoverStyle();
-      $hoverStartTimer = setTimeout(() => {
-        $hovering = true;
-        updateStyle();
-        if (!$hoverTouch) {
-          touchend();
-        }
-      }, props.hoverStartTime);
-    }
-    function touchend() {
-      $hoverTouch = false;
-      if ($hovering) {
-        clearTimeout($hoverStayTimer);
-        $hoverStayTimer = setTimeout(() => {
-          $hovering = false;
-          clearHoverStyle();
-          updateStyle();
-        }, props.hoverStayTime);
-      }
-    }
-    function touchcancel() {
-      $hoverTouch = false;
-      $hovering = false;
-      clearHoverStyle();
-      updateStyle();
-      clearTimeout($hoverStartTimer);
-    }
-    function touchmove(event) {
-      if (props.disabled || props.hoverClass == "none") {
-        return;
-      }
-      var {
-        clientX,
-        clientY
-      } = event.touches[0];
-      var {
-        height,
-        width,
-        left,
-        top
-      } = $buttonEl.getBoundingClientRect();
-      var isMovedOutside = clientX < left || clientX > left + width || clientY < top || clientY > top + height;
-      if (isMovedOutside) {
-        touchcancel();
-      }
-    }
-    function _onClick($event) {
-      if (props.disabled) {
-        return;
-      }
-      if (FORM_TYPES.indexOf(props.formType) > -1) {
-        var _instance2;
-        var ctx2 = (_instance2 = instance) === null || _instance2 === void 0 ? void 0 : _instance2.proxy;
-        $dispatch(ctx2, "Form", props.formType);
-      }
-    }
-    var styleText = computed(() => {
-      var classList = btnCls.value.split(" ");
-      var basicStyle = Object.assign({}, styleList$1["ub"][""]);
-      classList.forEach((cl) => {
-        var _styleList$cl$, _styleList$cl;
-        var style = (_styleList$cl$ = (_styleList$cl = styleList$1[cl]) === null || _styleList$cl === void 0 ? void 0 : _styleList$cl[""]) !== null && _styleList$cl$ !== void 0 ? _styleList$cl$ : {};
-        if (style) {
-          Object.assign(basicStyle, style);
-        }
-      });
-      return basicStyle;
-    });
-    return () => {
-      var _slots$default;
-      return createVNode("uni-button-element", {
-        "class": "ub",
-        "style": styleText.value,
-        "onTouchstart": touchstart,
-        "onTouchend": touchend,
-        "onTouchcancel": touchcancel,
-        "onTouchmove": touchmove,
-        "onClick": _onClick
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 44, ["onTouchstart", "onTouchend", "onTouchcancel", "onTouchmove", "onClick"]);
-    };
-  }
-});
-const button$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  default: button
-}, Symbol.toStringTag, { value: "Module" });
 var CHECKBOX_NAME = "Checkbox";
 var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
 class UniCheckboxElement extends UniElementImpl {
@@ -4886,7 +4493,6 @@ const pickerViewColumn$1 = /* @__PURE__ */ Object.defineProperty({
 }, Symbol.toStringTag, { value: "Module" });
 const components = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
-  Button: button$1,
   Checkbox: checkbox$1,
   CheckboxGroup: checkboxGroup$1,
   Form: form$1,

@@ -46,7 +46,9 @@ const BUILT_IN_TAG_NAMES = [
     'web-view',
     'list-view',
     'list-item',
-    'cloud-db-element', // TODO暂时放在此处
+    'sticky-section',
+    'sticky-header',
+    'cloud-db-element',
 ];
 const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag);
 const TAGS = [

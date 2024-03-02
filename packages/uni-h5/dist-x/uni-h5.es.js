@@ -2169,7 +2169,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2239,7 +2239,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2382,7 +2382,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -4823,13 +4823,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$v = 0;
+let index$x = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$v++);
+    const callbackId = String(index$x++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -7283,7 +7283,7 @@ const props$x = {
 };
 class UniCanvasElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -7770,7 +7770,7 @@ const props$w = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$w,
   emits: ["change"],
@@ -7876,7 +7876,7 @@ const props$v = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$v,
   rootElement: {
@@ -8888,7 +8888,7 @@ const props$t = /* @__PURE__ */ extend({}, props$u, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$t,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -8960,7 +8960,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -9037,7 +9037,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$s,
   rootElement: {
@@ -11511,7 +11511,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -12689,7 +12689,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -12799,7 +12799,7 @@ const props$p = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$p,
   // emits: ['change'],
@@ -13333,7 +13333,7 @@ const props$n = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -13513,6 +13513,11 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
           },
           set(val) {
             main.value.scrollTop = val;
+          }
+        },
+        scrollBy: {
+          get() {
+            return main.value.scrollBy.bind(main.value);
           }
         }
       });
@@ -15000,7 +15005,7 @@ const props$i = {
 };
 class UniSwitchElement extends UniElement {
 }
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$i,
   emits: ["change"],
@@ -15145,7 +15150,7 @@ function parseText(text2, options) {
 }
 class UniTextElement extends UniElement {
 }
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   rootElement: {
     name: "uni-text",
@@ -15237,7 +15242,7 @@ class UniTextareaElement extends UniElement {
     (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
   }
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$h,
   emits: ["confirm", "linechange", ...emit],
@@ -15399,7 +15404,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
 });
 class UniViewElement extends UniElement {
 }
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: extend({}, hoverProps),
   rootElement: {
@@ -15443,7 +15448,9 @@ function getListItem(root) {
   return children;
 }
 function walk(vnode, children) {
-  if (vnode.component) {
+  if (vnode.component && vnode.component.type && vnode.component.type.name === "StickySection") {
+    children.push(...getListItem(vnode.component.subTree));
+  } else if (vnode.component && vnode.component.type && vnode.component.type.name === "ListItem") {
     children.push(vnode.component.proxy);
   } else if (vnode.shapeFlag & 16) {
     const vnodes = vnode.children;
@@ -15454,7 +15461,7 @@ function walk(vnode, children) {
 }
 class UniListViewElement extends UniElement {
 }
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props: {
     direction: {
@@ -15595,12 +15602,15 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       const containerEl = containerRef.value;
       if (touchStart === null)
         return;
+      let x = event.touches[0].pageX;
       let y = event.touches[0].pageY;
       if (!isVertical.value) {
         return;
       }
       let needStop = false;
-      if (containerEl.scrollTop === 0 && y > touchStart.y) {
+      if (Math.abs(touchStart.y - y) < Math.abs(touchStart.x - x)) {
+        needStop = false;
+      } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
         needStop = false;
       } else if (containerEl.scrollHeight === containerEl.offsetHeight + containerEl.scrollTop && y < touchStart.y) {
         needStop = false;
@@ -15682,6 +15692,11 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
           },
           set(val) {
             containerElement.scrollTop = val;
+          }
+        },
+        scrollBy: {
+          get() {
+            return containerElement.scrollBy.bind(containerElement);
           }
         }
       });
@@ -15828,7 +15843,7 @@ function getSize(isVertical, el) {
 }
 class UniListItemElement extends UniElement {
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   rootElement: {
@@ -15877,6 +15892,85 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-list-item", {
         "ref": rootRef
       }, [slots.default && slots.default()], 512);
+    };
+  }
+});
+class UniStickySectionElement extends UniElement {
+}
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
+  name: "StickySection",
+  props: {
+    padding: {
+      type: Array,
+      default: [0, 0, 0, 0]
+    }
+  },
+  rootElement: {
+    name: "uni-sticky-section",
+    class: UniStickySectionElement
+  },
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const style = computed(() => {
+      return {
+        paddingTop: props2.padding[0] + "px",
+        paddingRight: props2.padding[1] + "px",
+        paddingBottom: props2.padding[2] + "px",
+        paddingLeft: props2.padding[3] + "px"
+      };
+    });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      var _a;
+      return createVNode("uni-sticky-section", {
+        "ref": rootRef,
+        "style": style
+      }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
+    };
+  }
+});
+class UniStickyHeaderElement extends UniElement {
+}
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
+  name: "StickyHeader",
+  props: {
+    padding: {
+      type: Array,
+      default: [0, 0, 0, 0]
+    }
+  },
+  rootElement: {
+    name: "uni-sticky-header",
+    class: UniStickyHeaderElement
+  },
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const style = computed(() => {
+      return {
+        paddingTop: props2.padding[0] + "px",
+        paddingRight: props2.padding[1] + "px",
+        paddingBottom: props2.padding[2] + "px",
+        paddingLeft: props2.padding[3] + "px",
+        top: 0 - props2.padding[0] + "px"
+      };
+    });
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(props2);
+    });
+    return () => {
+      var _a;
+      return createVNode("uni-sticky-header", {
+        "ref": rootRef,
+        "style": style.value
+      }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
     };
   }
 });
@@ -24141,6 +24235,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   removeStorageSync,
   removeTabBarBadge,
   request,
+  rpx2px: upx2px,
   saveFile,
   saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum,
@@ -26500,50 +26595,52 @@ export {
   index$4 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$w as Button,
+  index$y as Button,
   index$3 as Camera,
-  index$u as Canvas,
-  index$s as Checkbox,
-  index$t as CheckboxGroup,
+  index$w as Canvas,
+  index$u as Checkbox,
+  index$v as CheckboxGroup,
   index$8 as CoverImage,
   index$9 as CoverView,
-  index$r as Editor,
-  index$y as Form,
-  index$q as Icon,
-  index$p as Image,
+  index$t as Editor,
+  index$A as Form,
+  index$s as Icon,
+  index$r as Image,
   Input,
-  index$x as Label,
+  index$z as Label,
   LayoutComponent,
-  index$f as ListItem,
-  index$g as ListView,
+  index$h as ListItem,
+  index$i as ListView,
   index$2 as LivePlayer,
   index$1 as LivePusher,
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$o as Navigator,
+  index$q as Navigator,
   index as PageComponent,
   index$7 as Picker,
   PickerView,
   PickerViewColumn,
-  index$n as Progress,
+  index$p as Progress,
   indexX$2 as Radio,
-  index$m as RadioGroup,
+  index$o as RadioGroup,
   ResizeSensor,
-  index$l as RichText,
+  index$n as RichText,
   ScrollView,
   indexX$1 as Slider,
+  index$f as StickyHeader,
+  index$g as StickySection,
   Swiper,
   SwiperItem,
-  index$k as Switch,
-  index$j as Text,
-  index$i as Textarea,
+  index$m as Switch,
+  index$l as Text,
+  index$k as Textarea,
   UniElement,
   UniElement as UniElementImpl,
   UniServiceJSBridge$1 as UniServiceJSBridge,
   UniViewJSBridge$1 as UniViewJSBridge,
   index$c as Video,
-  index$h as View,
+  index$j as View,
   indexX as WebView,
   addInterceptor,
   addPhoneContact,
@@ -26677,6 +26774,7 @@ export {
   removeStorageSync,
   removeTabBarBadge,
   request,
+  upx2px as rpx2px,
   saveFile,
   saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum,
