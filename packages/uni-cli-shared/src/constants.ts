@@ -1,6 +1,5 @@
 export const PUBLIC_DIR = 'static'
-export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx']
-export const X_EXTNAME_JS = ['.uts', ...EXTNAME_JS]
+export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx', '.uts']
 export const EXTNAME_TS = ['.ts', '.tsx']
 export const EXTNAME_VUE = ['.vue', '.nvue', '.uvue']
 export const X_EXTNAME_VUE = ['.uvue', '.vue']
