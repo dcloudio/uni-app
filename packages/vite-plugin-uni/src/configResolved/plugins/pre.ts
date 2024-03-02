@@ -12,7 +12,6 @@ import {
   preNVueJs,
   preNVueHtml,
   X_EXTNAME_VUE,
-  X_EXTNAME_JS,
 } from '@dcloudio/uni-cli-shared'
 import { UniPluginFilterOptions } from '.'
 
@@ -27,7 +26,7 @@ export function uniPrePlugin(
   const isX = process.env.UNI_APP_X === 'true'
   const PRE_JS_EXTNAME = ['.json', '.css']
     .concat(isX ? X_EXTNAME_VUE : EXTNAME_VUE)
-    .concat(isX ? X_EXTNAME_JS : EXTNAME_JS)
+    .concat(EXTNAME_JS) // 因为 1.0 也会使用 uts uni_modules，所以 EXTNAME_JS 直接包含了 .uts 后缀
   const PRE_HTML_EXTNAME = isX ? X_EXTNAME_VUE : EXTNAME_VUE
 
   const filter = createFilter(options.include, options.exclude)
