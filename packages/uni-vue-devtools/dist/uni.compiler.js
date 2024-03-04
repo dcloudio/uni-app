@@ -9,8 +9,6 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 var fs__default = /*#__PURE__*/_interopDefault(fs);
 var path__default = /*#__PURE__*/_interopDefault(path);
 
-// eslint-disable-next-line no-restricted-globals
-const { initDevtoolsServer } = require('../lib/front/server.js');
 let copied = false;
 let initializedServer = false;
 const uniVueDevtoolsPlugin = () => {
@@ -23,7 +21,9 @@ const uniVueDevtoolsPlugin = () => {
                 let __VUE_DEVTOOLS_TEST_PORT__;
                 if (process.env.__VUE_PROD_DEVTOOLS__ && !initializedServer) {
                     initializedServer = true;
-                    const { socketHosts, socketPort, testConnectionPort } = await initDevtoolsServer();
+                    const { socketHosts, socketPort, testConnectionPort } = 
+                    // eslint-disable-next-line no-restricted-globals
+                    await require('../lib/front/server.js').initDevtoolsServer();
                     __VUE_DEVTOOLS_HOSTS__ = socketHosts;
                     __VUE_DEVTOOLS_PORT__ = socketPort;
                     __VUE_DEVTOOLS_TEST_PORT__ = testConnectionPort;
