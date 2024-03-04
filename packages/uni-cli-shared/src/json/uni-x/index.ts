@@ -62,10 +62,7 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
   if (pagePathNodes.length) {
     for (const node of pagePathNodes) {
       const pagePath: string = node.value ?? ''
-      if (
-        fs.existsSync(path.join(inputDir, pagePath + '.uvue')) ||
-        fs.existsSync(path.join(inputDir, pagePath + '.vue'))
-      ) {
+      if (pageExistsWithCaseSync(path.join(inputDir, pagePath))) {
         continue
       }
       const { line, column } = offsetToLineColumn(jsonStr, node.offset)
@@ -78,10 +75,22 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
         },
         offsetStart: node.offset,
         offsetEnd: node.offset + node.length,
-      } as CheckPagesJsonError
+      } as unknown as CheckPagesJsonError
     }
   }
   return true
+}
+
+function pageExistsWithCaseSync(pagePath: string) {
+  try {
+    const files = fs.readdirSync(path.dirname(pagePath))
+    const basename = path.basename(pagePath)
+    const uvuePage = basename + '.uvue'
+    const vuePage = basename + '.vue'
+    return files.some((file) => file === uvuePage || file === vuePage)
+  } catch (e) {
+    return false
+  }
 }
 
 function findSubPackageRoot(node: Node) {
