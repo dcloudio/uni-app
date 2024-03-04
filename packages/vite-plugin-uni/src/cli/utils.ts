@@ -122,8 +122,6 @@ export function initEnv(
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
 
-  initDebug()
-
   initCustomScripts(options)
 
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
@@ -357,13 +355,6 @@ export function printStartupDuration(
         `ready in ${Math.ceil(startupDuration)}ms.`
       )}\n`
     )
-  }
-}
-
-function initDebug() {
-  const debugFile = path.resolve(process.env.UNI_INPUT_DIR, 'DEBUG')
-  if (fs.existsSync(debugFile)) {
-    process.env.DEBUG = fs.readFileSync(debugFile, 'utf8')
   }
 }
 

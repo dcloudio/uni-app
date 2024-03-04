@@ -26,4 +26,42 @@ if (
 ) {
   process.env.NODE_ENV = 'production'
 }
+
+function initDebug() {
+  if (!process.env.DEBUG && process.env.UNI_INPUT_DIR) {
+    const fs = require('fs')
+    const path = require('path')
+    const debugFile = path.resolve(process.env.UNI_INPUT_DIR, 'DEBUG')
+    if (fs.existsSync(debugFile)) {
+      process.env.DEBUG = fs.readFileSync(debugFile, 'utf8')
+    }
+  }
+  if (process.env.DEBUG) {
+    const debug = require('debug')
+    const mod = require('module')
+    const { PerformanceObserver } = require('perf_hooks')
+
+    const debugRequire = debug('uni:require')
+
+    // Monkey patch the require function
+    mod.Module.prototype.require = performance.timerify(
+      mod.Module.prototype.require
+    )
+    require = performance.timerify(require)
+
+    // Activate the observer
+    const obs = new PerformanceObserver((list) => {
+      const entries = list.getEntries()
+      entries.sort((a, b) => b.duration - a.duration).forEach((entry) => {
+        debugRequire(entry[0], entry.duration)
+      })
+      obs.disconnect()
+    })
+    obs.observe({
+      entryTypes: ['function'],
+      buffered: true,
+    })
+  }
+}
+initDebug()
 require('../dist/cli/index.js')

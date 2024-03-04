@@ -15,7 +15,7 @@ export interface UniPrePluginOptions {
 
 const debugPreJs = debug('uni:pre-js')
 const debugPreHtml = debug('uni:pre-html')
-const debugPreJsTry = debug('uni:pre-js-try')
+// const debugPreJsTry = debug('uni:pre-js-try')
 
 const PRE_HTML_EXTNAME = ['.vue', '.uvue']
 const PRE_JS_EXTNAME = ['.json', '.css', '.uts', '.ts'].concat(PRE_HTML_EXTNAME)
@@ -25,7 +25,7 @@ export function uniPrePlugin(options: UniPrePluginOptions = {}): Plugin {
   const preJsFile = preUVueJs
   const preHtmlFile = preUVueHtml
   return {
-    name: 'uni:pre',
+    name: 'uni:pre-android',
     transform(code, id) {
       if (!filter(id)) {
         return
@@ -36,7 +36,7 @@ export function uniPrePlugin(options: UniPrePluginOptions = {}): Plugin {
       const isJs = PRE_JS_EXTNAME.includes(extname)
       const isPre = isHtml || isJs
       if (isPre) {
-        debugPreJsTry(id)
+        // debugPreJsTry(id)
       }
       const hasEndif = isPre && code.includes('#endif')
       if (!hasEndif) {

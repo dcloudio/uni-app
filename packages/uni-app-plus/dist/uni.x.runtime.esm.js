@@ -87,7 +87,7 @@ var _ie8DomDefine = !_descriptors && !_fails(function() {
   }).a != 7;
 });
 var isObject = _isObject;
-var _toPrimitive$1 = function(it, S) {
+var _toPrimitive = function(it, S) {
   if (!isObject(it))
     return it;
   var fn, val;
@@ -101,7 +101,7 @@ var _toPrimitive$1 = function(it, S) {
 };
 var anObject$2 = _anObject;
 var IE8_DOM_DEFINE = _ie8DomDefine;
-var toPrimitive = _toPrimitive$1;
+var toPrimitive = _toPrimitive;
 var dP$2 = Object.defineProperty;
 _objectDp.f = _descriptors ? Object.defineProperty : function defineProperty(O, P, Attributes) {
   anObject$2(O);
@@ -2875,36 +2875,6 @@ var defineSystemComponent = (options) => {
   };
   return defineComponent(options);
 };
-function _defineProperty(obj, key, value) {
-  key = _toPropertyKey(key);
-  if (key in obj) {
-    Object.defineProperty(obj, key, {
-      value,
-      enumerable: true,
-      configurable: true,
-      writable: true
-    });
-  } else {
-    obj[key] = value;
-  }
-  return obj;
-}
-function _toPrimitive(input, hint) {
-  if (typeof input !== "object" || input === null)
-    return input;
-  var prim = input[Symbol.toPrimitive];
-  if (prim !== void 0) {
-    var res = prim.call(input, hint || "default");
-    if (typeof res !== "object")
-      return res;
-    throw new TypeError("@@toPrimitive must return a primitive value.");
-  }
-  return (hint === "string" ? String : Number)(input);
-}
-function _toPropertyKey(arg) {
-  var key = _toPrimitive(arg, "string");
-  return typeof key === "symbol" ? key : String(key);
-}
 function $dispatch(context, componentName, eventName) {
   var _parent, _parent$$options;
   var parent = context.$parent;
@@ -3976,117 +3946,6 @@ const progress$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   default: progress
 }, Symbol.toStringTag, { value: "Module" });
-class UniFormElement extends UniElementImpl {
-  constructor(data, pageNode) {
-    super(data, pageNode);
-    _defineProperty(this, "_getAttribute", (key) => {
-      return null;
-    });
-  }
-}
-class UniFormSubmitEventDetail {
-  constructor(value) {
-    _defineProperty(this, "value", {});
-    this.value = value;
-  }
-}
-class UniFormResetEventDetail {
-}
-class UniFormSubmitEvent extends CustomEvent {
-  constructor(value) {
-    super("change", {
-      detail: new UniFormSubmitEventDetail(value)
-    });
-  }
-}
-class UniFormResetEvent extends CustomEvent {
-  constructor() {
-    super("change", {
-      detail: new UniFormResetEventDetail()
-    });
-  }
-}
-const form = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Form",
-  rootElement: {
-    name: "uni-form-element",
-    // @ts-expect-error not web element
-    class: UniFormElement
-  },
-  emits: ["submit", "reset"],
-  setup(_ref, _ref2) {
-    var {
-      emit,
-      slots,
-      expose
-    } = _ref2;
-    var formRef = ref(null);
-    var instance;
-    function setFormControlsData(formData) {
-      var controls = [];
-      findFormControls(instance.subTree, controls);
-      controls.forEach((control, _) => {
-        setFormData(formData, control.name, control.value);
-      });
-    }
-    function setFormData(formData, name, value) {
-      formData[name] = value;
-    }
-    function findFormControls(vNode, controls) {
-      if (!Array.isArray(vNode.children)) {
-        return;
-      }
-      var vNodes = vNode.children;
-      vNodes.forEach((node) => {
-        if (node.el instanceof UniFormControlElement) {
-          var control = node.el;
-          if (control.name.length > 0) {
-            controls.push(control);
-          }
-        } else if (node.component != null)
-          ;
-        else {
-          findFormControls(node, controls);
-        }
-      });
-    }
-    function submit() {
-      var form_data_out = {};
-      setFormControlsData(form_data_out);
-      emit("submit", new UniFormSubmitEvent(form_data_out));
-    }
-    function reset() {
-      var controls = [];
-      findFormControls(instance.subTree, controls);
-      controls.forEach((control, _) => {
-        control.reset();
-      });
-      emit("reset", new UniFormResetEvent());
-    }
-    onMounted(() => {
-      instance = getCurrentInstance();
-      instance.$waitNativeRender(() => {
-      });
-    });
-    expose({
-      submit,
-      reset
-    });
-    return () => {
-      var _slots$default;
-      return createVNode("uni-form-element", {
-        "ref": formRef
-      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
-    };
-  }
-});
-const form$1 = /* @__PURE__ */ Object.defineProperty({
-  __proto__: null,
-  UniFormElement,
-  UniFormResetEvent,
-  UniFormSubmitEvent,
-  default: form
-}, Symbol.toStringTag, { value: "Module" });
 var _style_picker_view = {
   "uni-picker-view": {
     "": {
@@ -4495,7 +4354,6 @@ const components = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Checkbox: checkbox$1,
   CheckboxGroup: checkboxGroup$1,
-  Form: form$1,
   Navigator: navigator$1,
   PickerView: pickerView$1,
   PickerViewColumn: pickerViewColumn$1,

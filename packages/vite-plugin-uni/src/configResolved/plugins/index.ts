@@ -56,7 +56,10 @@ export function initPlugins(
 
   addPlugin(
     plugins,
-    uniSSRPlugin(config, extend({ exclude: [...COMMON_EXCLUDE] }, options)),
+    uniSSRPlugin(
+      config,
+      extend({ exclude: [...COMMON_EXCLUDE, /\/@dcloudio\/uni-app/] }, options)
+    ),
     'vite:vue'
   )
 

@@ -12,7 +12,6 @@ import {
   normalizeNodeModules,
   normalizePath,
   removeExt,
-  version,
 } from './utils'
 import { matchEasycom, type EasycomMatcher } from './easycom'
 
@@ -137,8 +136,8 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
         paths: [process.env.UNI_CLI_CONTEXT],
       })
     } catch (e) {
-      let utsCompilerVersion = version
-      if (version.startsWith('2.0.')) {
+      let utsCompilerVersion = require('../package.json').version
+      if (utsCompilerVersion.startsWith('2.0.')) {
         utsCompilerVersion = '^3.0.0-alpha-3060920221117001'
       }
       console.error(

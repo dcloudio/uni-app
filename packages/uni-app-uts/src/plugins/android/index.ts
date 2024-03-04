@@ -4,7 +4,7 @@ import {
   resolveUTSCompiler,
   uniUTSUniModulesPlugin,
 } from '@dcloudio/uni-cli-shared'
-import { uniPrePlugin } from '../pre'
+import { uniPrePlugin } from './pre'
 import { uniAppPlugin } from './plugin'
 import { uniAppCssPlugin } from './css'
 import { uniAppMainPlugin } from './mainUTS'

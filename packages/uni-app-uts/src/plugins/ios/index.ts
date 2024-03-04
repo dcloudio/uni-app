@@ -10,7 +10,6 @@ import {
 
 import { uniAppIOSPlugin } from './plugin'
 import { uniAppIOSMainPlugin } from './mainUTS'
-import { uniPrePlugin } from '../pre'
 import { uniAppManifestPlugin } from './manifestJson'
 import { uniAppPagesPlugin } from './pagesJson'
 import * as vueCompilerDom from '@vue/compiler-dom'
@@ -18,7 +17,6 @@ import * as uniCliShared from '@dcloudio/uni-cli-shared'
 
 export function init() {
   return [
-    uniPrePlugin(),
     uniHBuilderXConsolePlugin(),
     uniUTSUniModulesPlugin({
       x: true,
