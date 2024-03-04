@@ -1,5 +1,4 @@
 import { SFCDescriptor } from '@vue/compiler-sfc'
-import consolidate from '@vue/consolidate'
 import { compile } from '../compiler'
 import { TemplateCompilerOptions } from '../compiler/options'
 import { genRenderFunctionDecl } from '../compiler/utils'
@@ -23,9 +22,7 @@ export function genTemplate(
   }
   const { preprocessLang, preprocessOptions } = options
   const preprocessor = preprocessLang
-    ? (consolidate[preprocessLang as keyof typeof consolidate] as
-        | PreProcessor
-        | undefined)
+    ? (require('@vue/consolidate')[preprocessLang] as PreProcessor | undefined)
     : false
   return compile(
     preprocessor
