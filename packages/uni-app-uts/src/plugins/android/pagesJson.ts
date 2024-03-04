@@ -56,7 +56,7 @@ export function uniAppPagesPlugin(): Plugin {
           if (err.loc) {
             const error = createRollupError(
               'uni:app-pages',
-              'pages.json',
+              pagesJsonPath,
               err,
               code
             )
