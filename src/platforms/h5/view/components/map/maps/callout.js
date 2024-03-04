@@ -171,7 +171,11 @@ export function createCallout (maps) {
   }
   if (!IS_AMAP) {
     const prototype = Callout.prototype
-    const overlay = new (maps.OverlayView || maps.Overlay)()
+    let overview = maps.OverlayView || maps.Overlay
+    if(!overview){
+      throw "请设置地图 key，以及在模版中引用平台方提供的 sdk script 脚本"
+    }
+    const overlay = new (overview)()
     for (const key in overlay) {
       if (!(key in prototype)) {
         prototype[key] = overlay[key]
