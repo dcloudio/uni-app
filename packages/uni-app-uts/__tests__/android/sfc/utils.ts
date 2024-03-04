@@ -7,6 +7,7 @@ import {
 } from '../../../src/plugins/android/uvue/sfc/compiler/compileScript'
 import { genTemplateCode } from '../../../src/plugins/android/uvue/code/template'
 import { resolveGenTemplateCodeOptions } from '../../../src/plugins/android/uvue/sfc/template'
+
 export const mockId = 'xxxxxxxx'
 
 export function compileSFCScript(
@@ -34,6 +35,7 @@ export function compileSFCScript(
         className,
         sourceMap: false,
         bindingMetadata: result.bindings,
+        preprocessLang: descriptor.template?.lang,
       })
     )
     result.content = result.content.replace(

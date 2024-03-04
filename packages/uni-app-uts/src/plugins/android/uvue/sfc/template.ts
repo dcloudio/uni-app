@@ -29,6 +29,8 @@ export function resolveGenTemplateCodeOptions(
     className: string
     sourceMap: boolean
     bindingMetadata?: BindingMetadata
+    preprocessLang?: string
+    preprocessOptions?: any
   }
 ): TemplateCompilerOptions {
   const inputRoot = normalizePath(options.rootDir)
