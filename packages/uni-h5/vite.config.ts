@@ -61,6 +61,10 @@ if (FORMAT === 'es') {
   })
 }
 
+function realIsH5CustomElement(tag: string) {
+  return isH5CustomElement(tag, isX)
+}
+
 export default defineConfig({
   root: __dirname,
   define: {
@@ -100,11 +104,11 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          isCustomElement: isH5CustomElement,
+          isCustomElement: realIsH5CustomElement,
         },
       },
     }),
-    vueJsx({ optimize: true, isCustomElement: isH5CustomElement }),
+    vueJsx({ optimize: true, isCustomElement: realIsH5CustomElement }),
   ],
   esbuild: {
     // 强制为 es2015，否则默认为 esnext，将会生成 __publicField 代码，
