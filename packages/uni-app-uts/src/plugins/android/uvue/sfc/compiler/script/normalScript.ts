@@ -1,4 +1,5 @@
 import MagicString from 'magic-string'
+import type { RawSourceMap } from 'source-map-js'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
@@ -50,6 +51,13 @@ export function processNormalScript(
 
     if (s.hasChanged()) {
       content = s.toString()
+      if (ctx.options.sourceMap) {
+        map = s.generateMap({
+          source: relativeFilename,
+          hires: true,
+          includeContent: true,
+        }) as unknown as RawSourceMap
+      }
     }
     return {
       ...script,
