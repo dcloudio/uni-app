@@ -8,50 +8,66 @@ import {
   provide,
   watch,
 } from 'vue'
-import type { ComputedRef, Ref, VNode, ComponentPublicInstance } from 'vue'
+import type { ComputedRef, Ref, VNode } from 'vue'
 import { UniElement } from '../../helpers/UniElement'
 import { useCustomEvent, EmitEvent } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import ResizeSensor from '../resize-sensor/index'
+import {
+  ListItemStatus,
+  StickyHeaderStatus,
+  StickySectionStatus,
+} from './types'
 
 export function isHTMlElement(node: Node | null): node is HTMLElement {
   return !!(node && node.nodeType === 1)
 }
 
 export type ListViewItemStatus = {
-  itemId: number
+  itemId: 'ListItem' | 'StickySection' | 'StickyHeader'
   visible: Ref<boolean>
   cachedSize: number
   seen: Ref<boolean>
 }
 
-function getListItem(root: VNode): ComponentPublicInstance[] {
-  const children: ComponentPublicInstance[] = []
+function getChildren(root: VNode): VNode[] {
+  const children: VNode[] = []
   if (root) {
     walk(root, children)
   }
   return children
 }
 
-// TODO 暂时仅计算list-item的高度，sticky-section、sticky-header暂不统计
-function walk(vnode: VNode, children: ComponentPublicInstance[]) {
-  if (
-    vnode.component &&
-    vnode.component.type &&
-    vnode.component.type.name === 'StickySection'
-  ) {
-    children.push(...getListItem(vnode.component.subTree))
-  } else if (
-    vnode.component &&
-    vnode.component.type &&
-    vnode.component.type.name === 'ListItem'
-  ) {
-    children.push(vnode.component.proxy!)
+function walk(vnode: VNode, children: VNode[]) {
+  if (vnode.component) {
+    children.push(vnode)
   } else if (vnode.shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
     const vnodes = vnode.children as VNode[]
     for (let i = 0; i < vnodes.length; i++) {
       walk(vnodes[i], children)
     }
+  }
+}
+
+// 遍历子节点
+function traverseListView(
+  visibleVNode: VNode,
+  callback: (child: VNode) => void
+) {
+  const children = getChildren(visibleVNode)
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
+    callback(child) // list-item or sticky-header or sticky-section
+  }
+}
+function traverseStickySection(
+  stickySectionVNode: VNode,
+  callback: (child: VNode) => void
+) {
+  const children = getChildren(stickySectionVNode.component!.subTree)
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i]
+    callback(child) // list-item or sticky-header
   }
 }
 
@@ -131,6 +147,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
+    handleTouchEvent(isVertical, containerRef)
+
     function getOffset() {
       return isVertical.value
         ? containerRef.value!.scrollTop
@@ -201,49 +219,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       requestAnimationFrame(checkScrollEnd)
     }
 
-    let touchStart: { x: number; y: number } | null = {
-      x: 0,
-      y: 0,
-    }
-
-    function __handleTouchStart(event: TouchEvent) {
-      if (event.touches.length === 1) {
-        touchStart = {
-          x: event.touches[0].pageX,
-          y: event.touches[0].pageY,
-        }
-      }
-    }
-    function __handleTouchMove(event: TouchEvent) {
-      const containerEl = containerRef.value!
-      if (touchStart === null) return
-      let x = event.touches[0].pageX
-      let y = event.touches[0].pageY
-      if (!isVertical.value) {
-        return
-      }
-      let needStop = false
-      if (Math.abs(touchStart.y - y) < Math.abs(touchStart.x - x)) {
-        needStop = false
-      } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
-        needStop = false
-      } else if (
-        containerEl.scrollHeight ===
-          containerEl.offsetHeight + containerEl.scrollTop &&
-        y < touchStart.y
-      ) {
-        needStop = false
-      } else {
-        needStop = true
-      }
-      if (needStop) {
-        event.stopPropagation()
-      }
-    }
-    function __handleTouchEnd(event: TouchEvent) {
-      touchStart = null
-    }
-
     onMounted(() => {
       renderStoped = false
       let lastScrollOffset = 0
@@ -288,21 +263,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           rearrange()
         }
       })
-      // scrollend chrome114版本起支持
-      // scrollRef.value!.addEventListener('scrollend', () => {
-      //   nextTick(() => {
-      //     rearrange()
-      //   })
-      // })
+
       nextTick(() => {
         checkScrollEnd()
       })
-
-      //兼容页面下拉刷新
-      const containerEl = containerRef.value!
-      containerEl.addEventListener('touchstart', __handleTouchStart)
-      containerEl.addEventListener('touchmove', __handleTouchMove)
-      containerEl.addEventListener('touchend', __handleTouchEnd)
 
       //#if _X_ && !_NODE_JS_
       const rootElement = rootRef.value as UniListViewElement
@@ -344,64 +308,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       //#endif
     })
 
-    onBeforeUnmount(() => {
-      const containerEl = containerRef.value!
-      containerEl.removeEventListener('touchstart', __handleTouchStart)
-      containerEl.removeEventListener('touchmove', __handleTouchMove)
-      containerEl.removeEventListener('touchend', __handleTouchEnd)
-    })
-
     onUnmounted(() => {
       renderStoped = true
     })
 
-    // 缓存列表项状态
-    const cachedItems = [] as ListViewItemStatus[]
-
-    // 对cachedItems进行排序
-    let sortTimeout: any = null
-    function sortCachedItems() {
-      if (sortTimeout !== null) {
-        clearTimeout(sortTimeout)
-        sortTimeout = null
-      }
-      sortTimeout = setTimeout(() => {
-        const contentNode = visibleRef.value!
-        if (!contentNode) {
-          // TODO 热刷新的时候会进入此分支，暂未深入排查
-          return
-        }
-        const listItemInstances = getListItem(visibleVNode!)
-        const childrenIds = listItemInstances.map(
-          (item) => item.$?.exposed?.itemId
-        )
-        cachedItems.sort((a, b) => {
-          return childrenIds.indexOf(a.itemId) - childrenIds.indexOf(b.itemId)
-        })
-        totalSize.value = cachedItems.reduce((total, item) => {
-          return total + item.cachedSize
-        }, 0)
-        rearrange()
-      }, 1)
-    }
-    provide('__listViewRegisterItem', (status: ListViewItemStatus) => {
-      cachedItems.push(status)
-      nextTick(() => {
-        sortCachedItems()
-      })
-    })
-    provide('__listViewUnregisterItem', (status: ListViewItemStatus) => {
-      const index = cachedItems.indexOf(status)
-      index > -1 && cachedItems.splice(index, 1)
-      nextTick(() => {
-        sortCachedItems()
-      })
-    })
-
     // 列表整体刷新，谨慎使用
     function refresh() {
-      cachedItems.map((item) => {
-        item.seen.value = false
+      traverseAllItems((child) => {
+        const exposed = child.component!.exposed
+        if (exposed?.__listViewChildStatus.seen.value) {
+          exposed.__listViewChildStatus.seen.value = false
+        }
       })
       nextTick(() => {
         nextTick(() => {
@@ -417,14 +334,34 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       refresh()
     }
 
+    function traverseAllItems(callback: (child: VNode) => void) {
+      traverseListView(visibleVNode!, (child) => {
+        const childType = child.component?.type.name
+        if (childType === 'StickySection') {
+          traverseStickySection(child, function () {
+            const childType = child.component?.type.name
+            if (childType === 'ListItem') {
+              callback(child)
+            }
+          })
+        } else if (childType === 'ListItem') {
+          callback(child)
+        }
+      })
+    }
+
     // 计算需要显示的item
     function rearrange() {
+      if (!visibleVNode) {
+        return
+      }
+      const containerEl = containerRef.value!
       const offset = isVertical.value
-        ? containerRef.value!.scrollTop
-        : containerRef.value!.scrollLeft
+        ? containerEl.scrollTop
+        : containerEl.scrollLeft
       rootSize = isVertical.value
-        ? rootRef.value!.clientHeight
-        : rootRef.value!.clientWidth
+        ? containerEl.clientHeight
+        : containerEl.clientWidth
       if (!rootSize) {
         return
       }
@@ -432,29 +369,47 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const offsetMax = offset + rootSize * (cacheScreenCount + 1)
       let tempTotalSize = 0
       let tempVisibleSize = 0
+      let tempPlaceholderSize = 0
       let start = false,
         end = false
-      for (let i = 0; i < cachedItems.length; i++) {
-        const item = cachedItems[i]
-        const itemSize = item.cachedSize || defaultItemSize
-        const nextTotalSize = tempTotalSize + itemSize
-        if (!start && nextTotalSize > offsetMin) {
-          placehoderSize.value = tempTotalSize
-          start = true
+
+      function callback(child: VNode) {
+        const childType = child.component?.type.name
+        const status = child.component?.exposed?.__listViewChildStatus
+        if (childType === 'StickySection') {
+          const { headSize, tailSize } = status as StickySectionStatus
+          tempTotalSize += headSize.value
+          traverseStickySection(child, callback)
+          tempTotalSize += tailSize.value
+        } else if (childType === 'ListItem') {
+          const { cachedSize } = status as ListItemStatus
+          const itemSize = cachedSize
+          tempTotalSize += itemSize
+          if (!start && tempTotalSize > offsetMin) {
+            start = true
+          }
+          if (!start) {
+            tempPlaceholderSize += itemSize
+          }
+          if (start && !end) {
+            tempVisibleSize += itemSize
+            status.visible.value = true
+          } else {
+            status.visible.value = false
+          }
+          if (!end && tempTotalSize >= offsetMax) {
+            end = true
+          }
+        } else if (childType === 'StickyHeader') {
+          const { cachedSize } = status as StickyHeaderStatus
+          tempTotalSize += cachedSize
+          tempVisibleSize += cachedSize
         }
-        if (start && !end) {
-          tempVisibleSize += itemSize
-          item.visible.value = true
-        } else {
-          item.visible.value = false
-        }
-        if (!end && nextTotalSize >= offsetMax) {
-          end = true
-        }
-        tempTotalSize = nextTotalSize
       }
+      traverseListView(visibleVNode!, callback)
       totalSize.value = tempTotalSize
       visibleSize.value = tempVisibleSize
+      placehoderSize.value = tempPlaceholderSize
     }
 
     /**
@@ -513,3 +468,66 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
   },
 })
+
+function handleTouchEvent(
+  isVertical: ComputedRef<boolean>,
+  containerRef: Ref<HTMLElement | null>
+) {
+  let touchStart: { x: number; y: number } | null = {
+    x: 0,
+    y: 0,
+  }
+
+  function __handleTouchStart(event: TouchEvent) {
+    if (event.touches.length === 1) {
+      touchStart = {
+        x: event.touches[0].pageX,
+        y: event.touches[0].pageY,
+      }
+    }
+  }
+  function __handleTouchMove(event: TouchEvent) {
+    const containerEl = containerRef.value!
+    if (touchStart === null) return
+    let x = event.touches[0].pageX
+    let y = event.touches[0].pageY
+    if (!isVertical.value) {
+      return
+    }
+    let needStop = false
+    if (Math.abs(touchStart.y - y) < Math.abs(touchStart.x - x)) {
+      needStop = false
+    } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
+      needStop = false
+    } else if (
+      containerEl.scrollHeight ===
+        containerEl.offsetHeight + containerEl.scrollTop &&
+      y < touchStart.y
+    ) {
+      needStop = false
+    } else {
+      needStop = true
+    }
+    if (needStop) {
+      event.stopPropagation()
+    }
+  }
+  function __handleTouchEnd(event: TouchEvent) {
+    touchStart = null
+  }
+
+  onMounted(() => {
+    //兼容页面下拉刷新
+    const containerEl = containerRef.value!
+    containerEl.addEventListener('touchstart', __handleTouchStart)
+    containerEl.addEventListener('touchmove', __handleTouchMove)
+    containerEl.addEventListener('touchend', __handleTouchEnd)
+  })
+
+  onBeforeUnmount(() => {
+    const containerEl = containerRef.value!
+    containerEl.removeEventListener('touchstart', __handleTouchStart)
+    containerEl.removeEventListener('touchmove', __handleTouchMove)
+    containerEl.removeEventListener('touchend', __handleTouchEnd)
+  })
+}
