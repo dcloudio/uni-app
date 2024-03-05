@@ -1,4 +1,11 @@
-import { inject, ref, nextTick, computed } from 'vue'
+import {
+  inject,
+  ref,
+  nextTick,
+  computed,
+  onMounted,
+  onBeforeUnmount,
+} from 'vue'
 import type { ComputedRef } from 'vue'
 import { isHTMlElement } from '../list-view/index'
 import type { ListItemStatus } from '../list-view/types'
@@ -48,6 +55,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     expose({
       __listViewChildStatus: status,
+    })
+
+    const registerItem = inject('__listViewRegisterItem') as Function
+    const unregisterItem = inject('__listViewUnregisterItem') as Function
+    onMounted(() => {
+      registerItem(status)
+    })
+    onBeforeUnmount(() => {
+      unregisterItem(status)
     })
 
     const realVisible = computed(() => {
