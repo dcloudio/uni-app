@@ -155,7 +155,11 @@ async function build (target) {
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'es', UNI_APP_X: 'true' }, process.env, env),
+          env: Object.assign(
+            { FORMAT: 'es', UNI_APP_X: 'true' },
+            process.env,
+            env
+          ),
           cwd: pkgDir,
         }
       )
@@ -164,7 +168,11 @@ async function build (target) {
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'cjs', UNI_APP_X: 'true' }, process.env, env),
+          env: Object.assign(
+            { FORMAT: 'cjs', UNI_APP_X: 'true' },
+            process.env,
+            env
+          ),
           cwd: pkgDir,
         }
       )
@@ -182,14 +190,21 @@ async function build (target) {
     }
   }
   if (hasTscBundler) {
+    const enableSourceMap = process.env.ENABLE_SOURCEMAP === 'true'
     const args = [
       '--listEmittedFiles',
       '-p',
+      // enable sourcemap
       path.resolve(pkgDir, 'tsconfig.json'),
     ]
     if (types) {
       args.push('--declaration')
     }
+
+    if (enableSourceMap) {
+      args.push('--sourceMap')
+    }
+
     await execa('tsc', args, {
       stdio: 'inherit',
     })
@@ -200,7 +215,12 @@ async function build (target) {
       [
         '-c',
         '--environment',
-        [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`, transpileOnly ? `TRANSPILE_ONLY:true` : ``]
+        [
+          `NODE_ENV:${env}`,
+          types ? `TYPES:true` : ``,
+          `TARGET:${target}`,
+          transpileOnly ? `TRANSPILE_ONLY:true` : ``,
+        ]
           .filter(Boolean)
           .join(','),
       ],

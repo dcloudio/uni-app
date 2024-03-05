@@ -23,6 +23,8 @@ const packageDir = path.resolve(packagesDir, process.env.TARGET)
 const resolve = (p) => path.resolve(packageDir, p)
 const pkg = require(resolve(`package.json`))
 
+const enableSourcemap = process.env.ENABLE_SOURCEMAP === 'true'
+
 // ensure TS checks only once for each build
 let hasTSChecked = false
 
@@ -36,7 +38,8 @@ function normalizeOutput(file, output = {}) {
       file,
       format: file.includes('.cjs.') ? 'cjs' : 'es',
       exports: 'auto',
-      interop: 'auto'
+      interop: 'auto',
+      sourcemap: enableSourcemap,
     },
     output
   )
@@ -87,8 +90,11 @@ function resolveTsconfigJson() {
 function createConfig(entryFile, output, buildOption) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
   const tsOptions = {
-    check: !process.env.TRANSPILE_ONLY &&
-      (!process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked),
+    check:
+      !process.env.TRANSPILE_ONLY &&
+      !process.env.CI &&
+      process.env.NODE_ENV === 'production' &&
+      !hasTSChecked,
     tsconfig: resolveTsconfigJson(),
     cacheRoot: path.resolve(__dirname, 'node_modules/.rts2_cache'),
     tsconfigOverride: {
@@ -114,8 +120,8 @@ function createConfig(entryFile, output, buildOption) {
     buildOption.external === false
       ? []
       : Array.isArray(buildOption.external)
-        ? buildOption.external
-        : [
+      ? buildOption.external
+      : [
           'vue',
           '@vue/shared',
           ...Object.keys(pkg.dependencies || {}),
@@ -188,14 +194,14 @@ function createConfig(entryFile, output, buildOption) {
       buildOption.treeshake === false
         ? false
         : {
-          moduleSideEffects(id) {
-            if (id.endsWith('polyfill.ts')) {
-              console.log('[WARN]:sideEffects[' + id + ']')
-              return true
-            }
-            return false
+            moduleSideEffects(id) {
+              if (id.endsWith('polyfill.ts')) {
+                console.log('[WARN]:sideEffects[' + id + ']')
+                return true
+              }
+              return false
+            },
           },
-        },
   }
 }
 
@@ -221,5 +227,9 @@ function createReplacePlugin(buildOption, format) {
       replacements[key] = process.env[key]
     }
   })
-  return replace({ delimiters: ['', ''], values: replacements, preventAssignment: true })
+  return replace({
+    delimiters: ['', ''],
+    values: replacements,
+    preventAssignment: true,
+  })
 }

@@ -61,6 +61,8 @@ if (FORMAT === 'es') {
   })
 }
 
+const enableSourcemap = process.env.ENABLE_SOURCEMAP === 'true'
+
 export default defineConfig({
   root: __dirname,
   define: {
@@ -150,5 +152,6 @@ export default defineConfig({
         }
       },
     },
+    sourcemap: enableSourcemap,
   },
 })
