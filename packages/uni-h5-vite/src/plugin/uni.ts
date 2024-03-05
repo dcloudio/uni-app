@@ -9,9 +9,13 @@ import {
 import { isH5NativeTag, isH5CustomElement } from '@dcloudio/uni-shared'
 import { CompilerOptions } from '@vue/compiler-core'
 
+function realIsH5CustomElement(tag: string) {
+  return isH5CustomElement(tag, process.env.UNI_APP_X === 'true')
+}
+
 export const compilerOptions: CompilerOptions = {
   isNativeTag: isH5NativeTag,
-  isCustomElement: isH5CustomElement,
+  isCustomElement: realIsH5CustomElement,
   nodeTransforms: [
     transformH5BuiltInComponents,
     transformTapToClick,

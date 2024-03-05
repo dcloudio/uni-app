@@ -44,9 +44,6 @@ export const BUILT_IN_TAG_NAMES = [
   'video',
   'view',
   'web-view',
-  'list-view',
-  'list-item',
-  'cloud-db-element', // TODO暂时放在此处
 ]
 
 export const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)
@@ -132,6 +129,29 @@ export const UVUE_BUILT_IN_TAGS = [
   'button',
 ]
 
+export const UVUE_WEB_BUILT_IN_TAGS = [
+  'list-view',
+  'list-item',
+  'sticky-section',
+  'sticky-header',
+  'cloud-db-element',
+].map((tag) => 'uni-' + tag)
+
+export const UVUE_IOS_BUILT_IN_TAGS = [
+  'scroll-view',
+  'web-view',
+  'slider',
+  'swiper',
+  'swiper-item',
+  'rich-text',
+  'button',
+  'list-view',
+  'list-item',
+  'switch',
+  'sticky-header',
+  'sticky-section',
+]
+
 export const NVUE_U_BUILT_IN_TAGS = [
   'u-text',
   'u-image',
@@ -145,12 +165,25 @@ export const NVUE_U_BUILT_IN_TAGS = [
   'u-rich-text',
 ]
 
+export const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag)
+
 export function isBuiltInComponent(tag: string) {
+  if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+    return false
+  }
   // h5 平台会被转换为 v-uni-
-  return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1
+  const realTag = 'uni-' + tag.replace('v-uni-', '')
+  // TODO 区分x和非x
+  return (
+    BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+    UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1
+  )
 }
 
-export function isH5CustomElement(tag: string) {
+export function isH5CustomElement(tag: string, isX = false) {
+  if (isX && UVUE_WEB_BUILT_IN_TAGS.indexOf(tag) !== -1) {
+    return true
+  }
   return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1
 }
 
