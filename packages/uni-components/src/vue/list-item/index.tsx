@@ -1,18 +1,9 @@
-import {
-  inject,
-  onMounted,
-  onBeforeUnmount,
-  ref,
-  nextTick,
-  computed,
-} from 'vue'
+import { inject, ref, nextTick, computed } from 'vue'
 import type { ComputedRef } from 'vue'
 import { isHTMlElement } from '../list-view/index'
-import type { ListViewItemStatus } from '../list-view/index'
+import type { ListItemStatus } from '../list-view/types'
 import { UniElement } from '../../helpers/UniElement'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-
-let listItemId = 0
 
 function getSize(isVertical: boolean, el: HTMLElement) {
   var style = window.getComputedStyle(el)
@@ -46,29 +37,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const isVertical = inject('__listViewIsVertical') as ComputedRef<boolean>
 
     const visible = ref(false)
-
-    // let cachedSize = 0
     const seen = ref(false)
-    // let vnode: VNode | null = null
-    const status: ListViewItemStatus = {
-      itemId: listItemId++,
+
+    const status: ListItemStatus = {
+      type: 'ListItem',
       visible,
       cachedSize: 0,
       seen,
     }
 
     expose({
-      itemId: status.itemId,
+      __listViewChildStatus: status,
     })
 
-    const registerItem = inject('__listViewRegisterItem') as Function
-    const unregisterItem = inject('__listViewUnregisterItem') as Function
-    onMounted(() => {
-      registerItem(status)
-    })
-    onBeforeUnmount(() => {
-      unregisterItem(status)
-    })
     const realVisible = computed(() => {
       return visible.value || !status.seen.value
     })
