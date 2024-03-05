@@ -18,6 +18,7 @@ import {
   StickyHeaderStatus,
   StickySectionStatus,
 } from './types'
+import { debounce } from '@dcloudio/uni-shared'
 
 export function isHTMlElement(node: Node | null): node is HTMLElement {
   return !!(node && node.nodeType === 1)
@@ -140,10 +141,26 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const cacheScreenCount = 5
     const loadScreenThreshold = 3
 
-    let rootSize = 0
+    let containerSize = 0
 
     provide('__listViewIsVertical', isVertical)
     provide('__listViewDefaultItemSize', defaultItemSize)
+
+    const onItemChange = debounce(
+      () => {
+        nextTick(() => {
+          rearrange()
+        })
+      },
+      10,
+      { clearTimeout, setTimeout }
+    )
+    provide('__listViewRegisterItem', (status: ListViewItemStatus) => {
+      onItemChange()
+    })
+    provide('__listViewUnregisterItem', (status: ListViewItemStatus) => {
+      onItemChange()
+    })
 
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
@@ -158,16 +175,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     // 根据滚动位置判断是否需要重新排列
     function shouldRearrange() {
       const offset = getOffset()
-      const loadScreenThresholdSize = rootSize * loadScreenThreshold
+      const loadScreenThresholdSize = containerSize * loadScreenThreshold
       const rearrangeOffsetMin = placehoderSize.value + loadScreenThresholdSize
       const rearrangeOffsetMax =
         placehoderSize.value + visibleSize.value - loadScreenThresholdSize
-      // return (
-      //   (offset > loadScreenThresholdSize && offset < rearrangeOffsetMin) ||
-      //   (offset > rearrangeOffsetMax &&
-      //     offset < totalSize.value - loadScreenThresholdSize)
-      // )
-      return offset < rearrangeOffsetMin || offset > rearrangeOffsetMax
+      return (
+        (offset < rearrangeOffsetMin && placehoderSize.value > 0) ||
+        (offset > rearrangeOffsetMax &&
+          placehoderSize.value + visibleSize.value < totalSize.value)
+      )
     }
 
     // 用户传入的属性
@@ -355,18 +371,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (!visibleVNode) {
         return
       }
-      const containerEl = containerRef.value!
+      const containerEl = containerRef.value
+      if (!containerEl) {
+        return
+      }
       const offset = isVertical.value
         ? containerEl.scrollTop
         : containerEl.scrollLeft
-      rootSize = isVertical.value
+      containerSize = isVertical.value
         ? containerEl.clientHeight
         : containerEl.clientWidth
-      if (!rootSize) {
+      if (!containerSize) {
         return
       }
-      const offsetMin = Math.max(offset - rootSize * cacheScreenCount, 0)
-      const offsetMax = offset + rootSize * (cacheScreenCount + 1)
+      const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0)
+      const offsetMax = offset + containerSize * (cacheScreenCount + 1)
       let tempTotalSize = 0
       let tempVisibleSize = 0
       let tempPlaceholderSize = 0
