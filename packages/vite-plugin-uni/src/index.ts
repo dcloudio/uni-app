@@ -1,5 +1,5 @@
 import fs from 'fs'
-import debug from 'debug'
+// import debug from 'debug'
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
@@ -45,7 +45,7 @@ import { AutoImportOptions } from '@dcloudio/uni-cli-shared'
 
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
-const debugUni = debug('uni:plugin')
+// const debugUni = debug('uni:plugin')
 
 initModuleAlias()
 
@@ -160,7 +160,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
     (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5',
     options
   )
-  debugUni(uniPlugins)
+  // debugUni(uniPlugins)
 
   const uniPluginOptions = initPluginUniOptions(uniPlugins)
 
@@ -266,7 +266,7 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
     (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5',
     options
   )
-  debugUni(uniPlugins)
+  // debugUni(uniPlugins)
 
   const uniPluginOptions = initPluginUniOptions(uniPlugins)
 

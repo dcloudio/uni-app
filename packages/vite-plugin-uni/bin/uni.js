@@ -52,7 +52,7 @@ function initDebug() {
     // Activate the observer
     const obs = new PerformanceObserver((list) => {
       const entries = list.getEntries()
-      entries.sort((a, b) => b.duration - a.duration).forEach((entry) => {
+      entries.sort((a, b) => b.duration - a.duration).filter(e => e.duration > 20).forEach((entry) => {
         debugRequire(entry[0], entry.duration)
       })
       obs.disconnect()

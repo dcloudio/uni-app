@@ -1,5 +1,5 @@
 import path from 'path'
-import debug from 'debug'
+// import debug from 'debug'
 import { extend, isString } from '@vue/shared'
 import { Plugin, ResolvedConfig } from 'vite'
 import { FilterPattern } from '@rollup/pluginutils'
@@ -16,7 +16,7 @@ import { uniPreVuePlugin } from './preVue'
 import { uniSSRPlugin } from './ssr'
 import { uniResolveIdPlugin } from './resolveId'
 
-const debugPlugin = debug('uni:plugin')
+// const debugPlugin = debug('uni:plugin')
 
 export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
   include?: FilterPattern
@@ -80,10 +80,10 @@ export function initPlugins(
     } catch (e) {}
   }
 
-  if (process.env.DEBUG) {
-    debugPlugin(plugins.length)
-    debugPlugin(plugins.map((p) => (p as Plugin).name))
-  }
+  // if (process.env.DEBUG) {
+  // debugPlugin(plugins.length)
+  // debugPlugin(plugins.map((p) => (p as Plugin).name))
+  // }
 }
 
 function addPlugin(
