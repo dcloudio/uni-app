@@ -16,7 +16,12 @@ export function $dispatch(
     }
   }
   if (parent != null) {
-    parent[eventName](...do_not_transform_spread)
+    if (typeof parent[eventName] === 'function') {
+      parent[eventName](...do_not_transform_spread)
+    } else {
+      // warn
+      warn(`dispatch: ${componentName} has no method ${eventName}`)
+    }
   }
 }
 
