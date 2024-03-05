@@ -80,11 +80,11 @@ export function rewriteSourceMap(
             const start = id.loc!.start
             s.appendRight(
               startOffset + init.start! + 1,
-              `\n__$originalPosition: new UTSSourceMapPosition("${
+              ` __$originalPosition: new UTSSourceMapPosition("${
                 id.name
               }", "${fileName}", ${startLine + start.line}, ${
                 start.column + 1
-              }),\n`
+              }), `
             )
           }
         } else if (
@@ -110,9 +110,9 @@ export function rewriteSourceMap(
         const start = node.id.loc!.start
         s.appendRight(
           startOffset + node.typeAnnotation.start! + 1,
-          `\n__$originalPosition: UTSSourceMapPosition<"${
+          ` __$originalPosition: UTSSourceMapPosition<"${
             node.id.name
-          }", "${fileName}", ${startLine + start.line}, ${start.column + 1}>\n`
+          }", "${fileName}", ${startLine + start.line}, ${start.column + 1}>;`
         )
       } else if (node.type === 'ClassDeclaration') {
         if (node.implements && node.implements.length > 0) {
@@ -128,11 +128,9 @@ export function rewriteSourceMap(
         const start = node.id.loc!.start
         s.appendRight(
           startOffset + node.body.start! + 1,
-          `\noverride __$getOriginalPosition(): UTSSourceMapPosition {
-  return new UTSSourceMapPosition("${node.id.name}", "${fileName}", ${
-            startLine + start.line
-          }, ${start.column + 1});
-}\n`
+          ` override __$getOriginalPosition(): UTSSourceMapPosition { return new UTSSourceMapPosition("${
+            node.id.name
+          }", "${fileName}", ${startLine + start.line}, ${start.column + 1});} `
         )
       }
     },
