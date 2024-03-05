@@ -9,6 +9,7 @@ import {
   componentGetData,
   componentSetData,
   getElementByIdOrNodeId,
+  removeUniPrefix
   // @ts-ignore
 } from './util.uts'
 // @ts-ignore
@@ -33,9 +34,8 @@ export const getElement = (
     callback
   )
   if (element != null) {
-    let selector = params.selector
-    if (selector.startsWith('uni-')) {
-      selector = selector.replace('uni-', '')
+    if (params.selector.startsWith('uni-')) {
+      const selector = removeUniPrefix(params.selector)
       const component = getComponentVmBySelector(
         params.pageId,
         selector,
@@ -51,7 +51,7 @@ export const getElement = (
     }
     // @ts-ignore
     const list: UTSJSONObject[] = []
-    getValidNodes(element, selector, list)
+    getValidNodes(element, params.selector, list)
     if (list.length > 0) {
       callback(list[0], null)
     } else {
@@ -71,13 +71,9 @@ export const getElements = (
     callback
   )
   if (element != null) {
-    let selector = params.selector
-    if (selector.startsWith('uni-')) {
-      selector = selector.replace('uni-', '')
-    }
     // @ts-ignore
     const list: UTSJSONObject[] = []
-    getValidNodes(element, selector, list, true)
+    getValidNodes(element, removeUniPrefix(params.selector), list, true)
     callback({ elements: list }, null)
   }
 }

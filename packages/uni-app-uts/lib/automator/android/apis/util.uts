@@ -321,3 +321,10 @@ function map2Object(data: Map<string, any | null>): UTSJSONObject {
   })
   return result
 }
+
+export function removeUniPrefix(selector: string): string {
+  if (selector.startsWith("uni-")) {
+    return selector.replace("uni-", "");
+  }
+  return selector;
+}

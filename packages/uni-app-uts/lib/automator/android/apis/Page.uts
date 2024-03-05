@@ -1,7 +1,7 @@
 // @ts-ignore
 import type { Callback } from '../index.uts'
 // @ts-ignore
-import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes } from './util.uts'
+import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes, removeUniPrefix } from './util.uts'
 
 export type GetDataParams = {
   pageId: string
@@ -70,13 +70,9 @@ export const getElement = (params: GetElementParams, callback: Callback): void =
   if (page == null) {
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
-    let selector = params.selector
-    if (selector.startsWith('uni-')) {
-      selector = selector.replace('uni-', '')
-    }
     // @ts-ignore
     const list: UTSJSONObject[] = []
-    getValidComponentsOrNodes(page.$.subTree, selector, list)
+    getValidComponentsOrNodes(page.$.subTree, removeUniPrefix(params.selector), list)
     if (list.length > 0) {
       callback(list[0], null)
     } else {
@@ -90,11 +86,7 @@ export const getElements = (params: GetElementParams, callback: Callback): void 
   if (page == null) {
     callback(null, { errMsg: `Page[${params.pageId}] not exists` })
   } else {
-    let selector = params.selector
-    if (selector.startsWith('uni-')) {
-      selector = selector.replace('uni-', '')
-    }
-    const elements = page.$querySelectorAll(selector)
+    const elements = page.$querySelectorAll(removeUniPrefix(params.selector))
     // @ts-ignore
     const result = [] as UTSJSONObject[]
     elements?.forEach(element => {
