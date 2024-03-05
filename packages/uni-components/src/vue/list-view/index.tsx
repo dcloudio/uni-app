@@ -1,6 +1,5 @@
 import {
   ref,
-  onUnmounted,
   onBeforeUnmount,
   onMounted,
   nextTick,
@@ -214,29 +213,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     })
 
-    let isScrolling = false
-    let renderStoped = true
-    let lastCheckScrollEndOffset = 0
-    function checkScrollEnd() {
-      if (renderStoped) {
-        return
-      }
-      const currentOffset = getOffset()
-      if (isScrolling && lastCheckScrollEndOffset === currentOffset) {
-        // 模拟scrollend
-        isScrolling = false
-        nextTick(() => {
-          if (shouldRearrange()) {
-            rearrange()
-          }
-        })
-      }
-      lastCheckScrollEndOffset = currentOffset
-      requestAnimationFrame(checkScrollEnd)
-    }
-
     onMounted(() => {
-      renderStoped = false
       let lastScrollOffset = 0
       containerRef.value!.addEventListener('scroll', function ($event) {
         const target = $event.target as HTMLElement
@@ -274,14 +251,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         }
 
         lastScrollOffset = currentOffset
-        isScrolling = true
         if (shouldRearrange()) {
           rearrange()
         }
-      })
-
-      nextTick(() => {
-        checkScrollEnd()
       })
 
       //#if _X_ && !_NODE_JS_
@@ -322,10 +294,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
       rootElement.attachVmProps(props)
       //#endif
-    })
-
-    onUnmounted(() => {
-      renderStoped = true
     })
 
     // 列表整体刷新，谨慎使用
