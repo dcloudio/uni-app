@@ -346,12 +346,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const offset = isVertical.value
         ? containerEl.scrollTop
         : containerEl.scrollLeft
-      containerSize = isVertical.value
-        ? containerEl.clientHeight
-        : containerEl.clientWidth
-      if (!containerSize) {
-        return
-      }
+      containerSize =
+        (isVertical.value
+          ? containerEl.clientHeight
+          : containerEl.clientWidth) || 1 // list-view初始大小为0时，list-item需要撑起容器高度
       const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0)
       const offsetMax = offset + containerSize * (cacheScreenCount + 1)
       let tempTotalSize = 0
