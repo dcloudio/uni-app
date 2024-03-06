@@ -144,3 +144,20 @@ export function relativeInputDir(filename: string) {
   }
   return filename
 }
+
+export function normalizeManifestJson(userManifestJson: Record<string, any>) {
+  const app = userManifestJson.app || {}
+  const x = userManifestJson['uni-app-x'] || {}
+  x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
+  return {
+    id: userManifestJson.appid || '',
+    name: userManifestJson.name || '',
+    description: userManifestJson.description || '',
+    version: {
+      name: userManifestJson.versionName || '',
+      code: userManifestJson.versionCode || '',
+    },
+    'uni-app-x': x,
+    app,
+  }
+}

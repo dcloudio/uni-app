@@ -2,7 +2,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { Plugin } from 'vite'
 import { MANIFEST_JSON_UTS, parseJson } from '@dcloudio/uni-cli-shared'
-import { isManifest } from '../utils'
+import { isManifest, normalizeManifestJson } from '../utils'
 
 let outputManifestJson: Record<string, any> | undefined = undefined
 
@@ -43,18 +43,7 @@ export function uniAppManifestPlugin(): Plugin {
       }
     },
     writeBundle() {
-      const app = manifestJson.app || {}
-      outputManifestJson = {
-        id: manifestJson.appid || '',
-        name: manifestJson.name || '',
-        description: manifestJson.description || '',
-        version: {
-          name: manifestJson.versionName || '',
-          code: manifestJson.versionCode || '',
-        },
-        'uni-app-x': manifestJson['uni-app-x'] || {},
-        app,
-      }
+      outputManifestJson = normalizeManifestJson(manifestJson)
       if (process.env.NODE_ENV !== 'production') {
         // 发行模式下，需要等解析ext-api模块
         fs.outputFileSync(
