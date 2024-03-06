@@ -9,7 +9,7 @@
   import { SlotsType } from 'vue'
   //#endif
 
-  //#ifdef WEB
+  //#ifdef WEB || APP-IOS
   let registerFlag = false
   //#endif
 
@@ -103,13 +103,13 @@
     return options as T | null
   }
 
-  //#ifdef APP
+  //#ifdef APP-ANDROID
   export class UniCloudDBElement extends UniViewElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
       super(data, pageNode)
     }
   //#endif
-  //#ifdef WEB
+  //#ifdef WEB || APP-IOS
   export class UniCloudDBElement extends UniElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
       super(data, pageNode);
@@ -154,7 +154,7 @@
     }
     // @ts-ignore
     remove(id : any, options : UTSJSONObject) {
-      //#ifdef WEB
+      //#ifdef WEB || APP-IOS
       // @ts-ignore
       if (arguments.length == 0) {
         super.remove()
@@ -303,12 +303,12 @@
         error: null as UniCloudError | null
       }
     },
-    //#ifdef WEB
+    //#ifdef WEB || APP-IOS
     beforeCreate() {
       if (!registerFlag) {
         registerFlag = true
         // @ts-ignore
-        window.customElements.define(
+        customElements.define(
           'uni-cloud-db-element',
           UniCloudDBElement,
         )
