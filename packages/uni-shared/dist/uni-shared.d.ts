@@ -274,7 +274,7 @@ export declare function isComponentInternalInstance(vm: unknown): vm is Componen
 
 export declare function isComponentTag(tag: string): boolean;
 
-export declare function isH5CustomElement(tag: string): boolean;
+export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;
 
 export declare function isH5NativeTag(tag: string): boolean;
 
@@ -698,6 +698,8 @@ export declare const UNI_SSR_TITLE = "title";
 
 export declare const UNI_STORAGE_LOCALE = "UNI_LOCALE";
 
+export declare const UNI_UI_CONFLICT_TAGS: string[];
+
 export declare class UniBaseNode extends UniNode {
     attributes: Record<string, unknown>;
     style: null | string | Record<string, string | string[]>;
@@ -879,6 +881,10 @@ export declare class UniTextNode extends UniBaseNode {
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
 export declare const UVUE_BUILT_IN_TAGS: string[];
+
+export declare const UVUE_IOS_BUILT_IN_TAGS: string[];
+
+export declare const UVUE_WEB_BUILT_IN_TAGS: string[];
 
 declare interface Vue_2 {
     createApp: typeof createApp;

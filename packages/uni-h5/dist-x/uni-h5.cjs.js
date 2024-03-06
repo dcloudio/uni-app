@@ -899,7 +899,7 @@ class UniElement extends HTMLElement {
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$B = /* @__PURE__ */ defineBuiltInComponent({
+const index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -959,7 +959,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1035,7 +1035,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1914,7 +1914,7 @@ const props$q = {
     default: true
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -2388,7 +2388,7 @@ const props$p = {
     default: ""
   }
 };
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$p,
   emits: ["change"],
@@ -2484,7 +2484,7 @@ const props$o = {
     default: ""
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$o,
   setup(props2, {
@@ -2822,7 +2822,7 @@ const props$m = /* @__PURE__ */ shared.extend({}, props$n, {
     default: false
   }
 });
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$m,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -2883,7 +2883,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -2950,7 +2950,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$l,
   setup(props2, {
@@ -3783,7 +3783,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -4331,7 +4331,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -4982,7 +4982,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -5315,7 +5315,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -5399,7 +5399,7 @@ const props$i = {
     default: ""
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$i,
   // emits: ['change'],
@@ -5878,7 +5878,7 @@ const props$g = {
     }
   }
 };
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -5977,7 +5977,7 @@ const props$f = {
     default: false
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -6903,7 +6903,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$d,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -7132,7 +7132,7 @@ const props$c = {
     default: ""
   }
 };
-const index$k = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$c,
   setup(props2, {
@@ -7177,7 +7177,7 @@ const props$b = {
     default: ""
   }
 };
-const index$j = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$b,
   emits: ["change"],
@@ -7290,7 +7290,7 @@ function normalizeText(text, { space, decode }) {
 function parseText(text, options) {
   return normalizeText(text, options).split(uniShared.LINEFEED);
 }
-const index$i = /* @__PURE__ */ defineBuiltInComponent({
+const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
     selectable: {
@@ -7364,7 +7364,7 @@ const props$a = /* @__PURE__ */ shared.extend({}, props$k, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-const index$h = /* @__PURE__ */ defineBuiltInComponent({
+const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$a,
   emits: ["confirm", "linechange", ...emit],
@@ -7505,7 +7505,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const index$g = /* @__PURE__ */ defineBuiltInComponent({
+const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: shared.extend({}, hoverProps),
   setup(props2, {
@@ -7533,7 +7533,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
 function isHTMlElement(node) {
   return !!(node && node.nodeType === 1);
 }
-function getListItem(root) {
+function getChildren(root) {
   const children = [];
   if (root) {
     walk(root, children);
@@ -7542,7 +7542,7 @@ function getListItem(root) {
 }
 function walk(vnode, children) {
   if (vnode.component) {
-    children.push(vnode.component.proxy);
+    children.push(vnode);
   } else if (vnode.shapeFlag & 16) {
     const vnodes = vnode.children;
     for (let i = 0; i < vnodes.length; i++) {
@@ -7550,7 +7550,21 @@ function walk(vnode, children) {
     }
   }
 }
-const index$f = /* @__PURE__ */ defineBuiltInComponent({
+function traverseListView(visibleVNode, callback) {
+  const children = getChildren(visibleVNode);
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    callback(child);
+  }
+}
+function traverseStickySection(stickySectionVNode, callback) {
+  const children = getChildren(stickySectionVNode.component.subTree);
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    callback(child);
+  }
+}
+const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props: {
     direction: {
@@ -7613,9 +7627,23 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     });
     const defaultItemSize = 40;
     const cacheScreenCount = 5;
-    let rootSize = 0;
+    let containerSize = 0;
     vue.provide("__listViewIsVertical", isVertical);
     vue.provide("__listViewDefaultItemSize", defaultItemSize);
+    const onItemChange = uniShared.debounce(() => {
+      vue.nextTick(() => {
+        rearrange();
+      });
+    }, 10, {
+      clearTimeout,
+      setTimeout
+    });
+    vue.provide("__listViewRegisterItem", (status) => {
+      onItemChange();
+    });
+    vue.provide("__listViewUnregisterItem", (status) => {
+      onItemChange();
+    });
     vue.computed(() => {
       const val = Number(props2.upperThreshold);
       return isNaN(val) ? 50 : val;
@@ -7640,48 +7668,12 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
-    const cachedItems = [];
-    let sortTimeout = null;
-    function sortCachedItems() {
-      if (sortTimeout !== null) {
-        clearTimeout(sortTimeout);
-        sortTimeout = null;
-      }
-      sortTimeout = setTimeout(() => {
-        const contentNode = visibleRef.value;
-        if (!contentNode) {
-          return;
-        }
-        const listItemInstances = getListItem(visibleVNode);
-        const childrenIds = listItemInstances.map((item) => {
-          var _a, _b;
-          return (_b = (_a = item.$) == null ? void 0 : _a.exposed) == null ? void 0 : _b.itemId;
-        });
-        cachedItems.sort((a, b) => {
-          return childrenIds.indexOf(a.itemId) - childrenIds.indexOf(b.itemId);
-        });
-        totalSize.value = cachedItems.reduce((total, item) => {
-          return total + item.cachedSize;
-        }, 0);
-        rearrange();
-      }, 1);
-    }
-    vue.provide("__listViewRegisterItem", (status) => {
-      cachedItems.push(status);
-      vue.nextTick(() => {
-        sortCachedItems();
-      });
-    });
-    vue.provide("__listViewUnregisterItem", (status) => {
-      const index2 = cachedItems.indexOf(status);
-      index2 > -1 && cachedItems.splice(index2, 1);
-      vue.nextTick(() => {
-        sortCachedItems();
-      });
-    });
     function refresh() {
-      cachedItems.map((item) => {
-        item.seen.value = false;
+      traverseAllItems((child) => {
+        const exposed = child.component.exposed;
+        if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
+          exposed.__listViewChildStatus.seen.value = false;
+        }
       });
       vue.nextTick(() => {
         vue.nextTick(() => {
@@ -7695,38 +7687,87 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     function onResize() {
       refresh();
     }
+    function traverseAllItems(callback) {
+      traverseListView(visibleVNode, (child) => {
+        var _a;
+        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
+        if (childType === "StickySection") {
+          traverseStickySection(child, function() {
+            var _a2;
+            const childType2 = (_a2 = child.component) == null ? void 0 : _a2.type.name;
+            if (childType2 === "ListItem") {
+              callback(child);
+            }
+          });
+        } else if (childType === "ListItem") {
+          callback(child);
+        }
+      });
+    }
     function rearrange() {
-      const offset = isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
-      rootSize = isVertical.value ? rootRef.value.clientHeight : rootRef.value.clientWidth;
-      if (!rootSize) {
+      if (!visibleVNode) {
         return;
       }
-      const offsetMin = Math.max(offset - rootSize * cacheScreenCount, 0);
-      const offsetMax = offset + rootSize * (cacheScreenCount + 1);
+      const containerEl = containerRef.value;
+      if (!containerEl) {
+        return;
+      }
+      const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
+      containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+      if (!containerSize) {
+        return;
+      }
+      const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0);
+      const offsetMax = offset + containerSize * (cacheScreenCount + 1);
       let tempTotalSize = 0;
       let tempVisibleSize = 0;
+      let tempPlaceholderSize = 0;
       let start = false, end = false;
-      for (let i = 0; i < cachedItems.length; i++) {
-        const item = cachedItems[i];
-        const itemSize = item.cachedSize || defaultItemSize;
-        const nextTotalSize = tempTotalSize + itemSize;
-        if (!start && nextTotalSize > offsetMin) {
-          placehoderSize.value = tempTotalSize;
-          start = true;
+      function callback(child) {
+        var _a, _b, _c;
+        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
+        const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
+        if (childType === "StickySection") {
+          const {
+            headSize,
+            tailSize
+          } = status;
+          tempTotalSize += headSize.value;
+          traverseStickySection(child, callback);
+          tempTotalSize += tailSize.value;
+        } else if (childType === "ListItem") {
+          const {
+            cachedSize
+          } = status;
+          const itemSize = cachedSize;
+          tempTotalSize += itemSize;
+          if (!start && tempTotalSize > offsetMin) {
+            start = true;
+          }
+          if (!start) {
+            tempPlaceholderSize += itemSize;
+          }
+          if (start && !end) {
+            tempVisibleSize += itemSize;
+            status.visible.value = true;
+          } else {
+            status.visible.value = false;
+          }
+          if (!end && tempTotalSize >= offsetMax) {
+            end = true;
+          }
+        } else if (childType === "StickyHeader") {
+          const {
+            cachedSize
+          } = status;
+          tempTotalSize += cachedSize;
+          tempVisibleSize += cachedSize;
         }
-        if (start && !end) {
-          tempVisibleSize += itemSize;
-          item.visible.value = true;
-        } else {
-          item.visible.value = false;
-        }
-        if (!end && nextTotalSize >= offsetMax) {
-          end = true;
-        }
-        tempTotalSize = nextTotalSize;
       }
+      traverseListView(visibleVNode, callback);
       totalSize.value = tempTotalSize;
       visibleSize.value = tempVisibleSize;
+      placehoderSize.value = tempPlaceholderSize;
     }
     const containerStyle = vue.computed(() => {
       return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
@@ -7761,7 +7802,6 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let listItemId = 0;
 function getSize(isVertical, el) {
   var style = window.getComputedStyle(el);
   if (isVertical) {
@@ -7770,7 +7810,7 @@ function getSize(isVertical, el) {
     return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
   }
 }
-const index$e = /* @__PURE__ */ defineBuiltInComponent({
+const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
   setup(props2, {
@@ -7782,13 +7822,13 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     const visible = vue.ref(false);
     const seen = vue.ref(false);
     const status = {
-      itemId: listItemId++,
+      type: "ListItem",
       visible,
       cachedSize: 0,
       seen
     };
     expose({
-      itemId: status.itemId
+      __listViewChildStatus: status
     });
     vue.inject("__listViewRegisterItem");
     vue.inject("__listViewUnregisterItem");
@@ -7809,6 +7849,95 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
       return vue.createVNode("uni-list-item", {
         "ref": rootRef
       }, [slots.default && slots.default()], 512);
+    };
+  }
+});
+const index$f = /* @__PURE__ */ defineBuiltInComponent({
+  name: "StickySection",
+  props: {
+    padding: {
+      type: Array,
+      default: [0, 0, 0, 0]
+    }
+  },
+  setup(props2, {
+    slots,
+    expose
+  }) {
+    const rootRef = vue.ref(null);
+    const isVertical = vue.inject("__listViewIsVertical");
+    const style = vue.computed(() => {
+      return {
+        paddingTop: props2.padding[0] + "px",
+        paddingRight: props2.padding[1] + "px",
+        paddingBottom: props2.padding[2] + "px",
+        paddingLeft: props2.padding[3] + "px"
+      };
+    });
+    const headSize = vue.computed(() => {
+      return isVertical ? props2.padding[0] : props2.padding[3];
+    });
+    const tailSize = vue.computed(() => {
+      return isVertical ? props2.padding[2] : props2.padding[1];
+    });
+    const status = {
+      type: "StickySection",
+      headSize,
+      tailSize
+    };
+    expose({
+      __listViewChildStatus: status
+    });
+    return () => {
+      var _a;
+      return vue.createVNode("uni-sticky-section", {
+        "ref": rootRef,
+        "style": style.value
+      }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
+    };
+  }
+});
+const index$e = /* @__PURE__ */ defineBuiltInComponent({
+  name: "StickyHeader",
+  props: {
+    padding: {
+      type: Array,
+      default: [0, 0, 0, 0]
+    }
+  },
+  setup(props2, {
+    slots,
+    expose
+  }) {
+    const rootRef = vue.ref(null);
+    const isVertical = vue.inject("__listViewIsVertical");
+    const style = vue.computed(() => {
+      return {
+        paddingTop: props2.padding[0] + "px",
+        paddingRight: props2.padding[1] + "px",
+        paddingBottom: props2.padding[2] + "px",
+        paddingLeft: props2.padding[3] + "px",
+        top: 0 - props2.padding[0] + "px"
+      };
+    });
+    const status = {
+      type: "StickyHeader",
+      cachedSize: 0
+    };
+    expose({
+      __listViewChildStatus: status
+    });
+    return () => {
+      var _a;
+      vue.nextTick(() => {
+        const rootEl = rootRef.value;
+        const rect = rootEl.getBoundingClientRect();
+        status.cachedSize = isVertical ? rect.height : rect.width;
+      });
+      return vue.createVNode("uni-sticky-header", {
+        "ref": rootRef,
+        "style": style.value
+      }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
     };
   }
 });
@@ -12978,50 +13107,52 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$z;
+exports.Button = index$B;
 exports.Camera = index$3;
-exports.Canvas = index$y;
-exports.Checkbox = index$w;
-exports.CheckboxGroup = index$x;
+exports.Canvas = index$A;
+exports.Checkbox = index$y;
+exports.CheckboxGroup = index$z;
 exports.CoverImage = index$8;
 exports.CoverView = index$9;
-exports.Editor = index$v;
-exports.Form = index$B;
-exports.Icon = index$u;
-exports.Image = index$t;
+exports.Editor = index$x;
+exports.Form = index$D;
+exports.Icon = index$w;
+exports.Image = index$v;
 exports.Input = Input;
-exports.Label = index$A;
+exports.Label = index$C;
 exports.LayoutComponent = LayoutComponent;
-exports.ListItem = index$e;
-exports.ListView = index$f;
+exports.ListItem = index$g;
+exports.ListView = index$h;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Map = index$a;
-exports.MovableArea = index$s;
-exports.MovableView = index$r;
-exports.Navigator = index$q;
+exports.MovableArea = index$u;
+exports.MovableView = index$t;
+exports.Navigator = index$s;
 exports.PageComponent = index;
 exports.Picker = index$7;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$p;
+exports.Progress = index$r;
 exports.Radio = indexX$2;
-exports.RadioGroup = index$o;
+exports.RadioGroup = index$q;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$n;
-exports.ScrollView = index$m;
+exports.RichText = index$p;
+exports.ScrollView = index$o;
 exports.Slider = indexX$1;
-exports.Swiper = index$l;
-exports.SwiperItem = index$k;
-exports.Switch = index$j;
-exports.Text = index$i;
-exports.Textarea = index$h;
+exports.StickyHeader = index$e;
+exports.StickySection = index$f;
+exports.Swiper = index$n;
+exports.SwiperItem = index$m;
+exports.Switch = index$l;
+exports.Text = index$k;
+exports.Textarea = index$j;
 exports.UniElement = UniElement;
 exports.UniElementImpl = UniElement;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
 exports.UniViewJSBridge = UniViewJSBridge$1;
 exports.Video = index$b;
-exports.View = index$g;
+exports.View = index$i;
 exports.WebView = indexX;
 exports.clearStorage = clearStorage;
 exports.clearStorageSync = clearStorageSync;
