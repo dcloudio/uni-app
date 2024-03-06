@@ -14,6 +14,7 @@ import { CliOptions } from '.'
 import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
+import { stopProfiler } from './action'
 
 export function initUVueEnv() {
   // 直接指定了
@@ -43,7 +44,7 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
   const watcher = (await buildUVue(options)) as RollupWatcher
   let isFirstStart = true
   let isFirstEnd = true
-  watcher.on('event', (event) => {
+  watcher.on('event', async (event) => {
     if (event.code === 'BUNDLE_START') {
       if (isFirstStart) {
         isFirstStart = false
@@ -61,6 +62,9 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
         isFirstEnd = false
         output('log', M['dev.watching.end'])
         printStartupDuration(createLogger(options.logLevel), false)
+        await stopProfiler((message) =>
+          createLogger(options.logLevel).info(message)
+        )
         return
       }
       if (dex) {
@@ -91,6 +95,10 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
   } catch (e: any) {
     console.error(`Build failed with errors.`)
     process.exit(1)
+  } finally {
+    await stopProfiler((message) =>
+      createLogger(options.logLevel).info(message)
+    )
   }
 }
 

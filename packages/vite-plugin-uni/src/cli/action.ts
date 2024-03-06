@@ -1,6 +1,9 @@
+import fs from 'fs'
+import path from 'path'
+import colors from 'picocolors'
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
-import type { BuildOptions, ServerOptions } from 'vite'
+import { createLogger, type BuildOptions, type ServerOptions } from 'vite'
 import {
   APP_CONFIG_SERVICE,
   APP_SERVICE_FILENAME,
@@ -47,7 +50,7 @@ export async function runDev(options: CliOptions & ServerOptions) {
       initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
-      watcher.on('event', (event) => {
+      watcher.on('event', async (event) => {
         if (event.code === 'BUNDLE_START') {
           if (isFirstStart) {
             isFirstStart = false
@@ -73,6 +76,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
             if (process.env.UNI_UTS_TIPS) {
               console.warn(process.env.UNI_UTS_TIPS)
             }
+            await stopProfiler((message) =>
+              createLogger(options.logLevel).info(message)
+            )
             return
           }
           if (options.platform === 'app') {
@@ -146,5 +152,40 @@ export async function runBuild(options: CliOptions & BuildOptions) {
   } catch (e: any) {
     console.error(`Build failed with errors.`)
     process.exit(1)
+  } finally {
+    await stopProfiler((message) =>
+      createLogger(options.logLevel).info(message)
+    )
   }
+}
+
+let profileSession = global.__vite_profile_session
+
+let profileCount = 0
+
+export const stopProfiler = (
+  log: (message: string) => void
+): void | Promise<void> => {
+  if (!profileSession) return
+  return new Promise((res, rej) => {
+    profileSession!.post('Profiler.stop', (err: any, result: any) => {
+      // Write profile to disk, upload, etc.
+      if (!err) {
+        const outPath = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          `./profile-${profileCount++}.cpuprofile`
+        )
+        fs.writeFileSync(outPath, JSON.stringify(result.profile))
+        log(
+          colors.yellow(
+            `CPU profile written to ${colors.white(colors.dim(outPath))}`
+          )
+        )
+        profileSession = undefined
+        res()
+      } else {
+        rej(err)
+      }
+    })
+  })
 }

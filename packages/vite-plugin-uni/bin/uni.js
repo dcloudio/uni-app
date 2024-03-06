@@ -33,7 +33,7 @@ function initDebug() {
     const path = require('path')
     const debugFile = path.resolve(process.env.UNI_INPUT_DIR, 'DEBUG')
     if (fs.existsSync(debugFile)) {
-      process.env.DEBUG = fs.readFileSync(debugFile, 'utf8')
+      process.env.DEBUG = fs.readFileSync(debugFile, 'utf8').trim()
     }
   }
   if (process.env.DEBUG) {
@@ -61,7 +61,20 @@ function initDebug() {
       entryTypes: ['function'],
       buffered: true,
     })
+    if (process.env.DEBUG === "*") {
+      const inspector = require('inspector')
+      const session = (global.__vite_profile_session = new inspector.Session())
+      session.connect()
+      session.post('Profiler.enable', () => {
+        session.post('Profiler.start', () => {
+          require('../dist/cli/index.js')
+        })
+      })
+    }
   }
 }
 initDebug()
-require('../dist/cli/index.js')
+if (!global.__vite_profile_session) {
+  require('../dist/cli/index.js')
+}
+
