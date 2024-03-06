@@ -91,14 +91,13 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
       isX: true,
     })
     await buildUVue(options)
+    await stopProfiler((message) =>
+      createLogger(options.logLevel).info(message)
+    )
     console.log(M['build.done'])
   } catch (e: any) {
     console.error(`Build failed with errors.`)
     process.exit(1)
-  } finally {
-    await stopProfiler((message) =>
-      createLogger(options.logLevel).info(message)
-    )
   }
 }
 

@@ -145,6 +145,9 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     await (options.ssr && options.platform === 'h5'
       ? buildSSR(options)
       : build(options))
+    await stopProfiler((message) =>
+      createLogger(options.logLevel).info(message)
+    )
     console.log(M['build.done'])
     if (options.platform !== 'h5') {
       showRunPrompt(options.platform as PLATFORM)
@@ -152,10 +155,6 @@ export async function runBuild(options: CliOptions & BuildOptions) {
   } catch (e: any) {
     console.error(`Build failed with errors.`)
     process.exit(1)
-  } finally {
-    await stopProfiler((message) =>
-      createLogger(options.logLevel).info(message)
-    )
   }
 }
 
