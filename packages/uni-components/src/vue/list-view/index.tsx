@@ -171,6 +171,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         : containerRef.value!.scrollLeft
     }
 
+    function resetContainerSize() {
+      const containerEl = containerRef.value!
+      containerSize = isVertical.value
+        ? containerEl.clientHeight
+        : containerEl.clientWidth
+    }
+
+    watch(isVertical, () => {
+      resetContainerSize()
+    })
+
     // 根据滚动位置判断是否需要重新排列
     function shouldRearrange() {
       const offset = getOffset()
@@ -214,6 +225,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     onMounted(() => {
+      resetContainerSize()
       let lastScrollOffset = 0
       containerRef.value!.addEventListener('scroll', function ($event) {
         const target = $event.target as HTMLElement
@@ -315,6 +327,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     function onResize() {
+      resetContainerSize()
       refresh()
     }
 
@@ -346,12 +359,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const offset = isVertical.value
         ? containerEl.scrollTop
         : containerEl.scrollLeft
-      containerSize =
-        (isVertical.value
-          ? containerEl.clientHeight
-          : containerEl.clientWidth) || 1 // list-view初始大小为0时，list-item需要撑起容器高度
       const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0)
-      const offsetMax = offset + containerSize * (cacheScreenCount + 1)
+      const offsetMax = Math.max(
+        offset + containerSize * (cacheScreenCount + 1),
+        offsetMin + 1
+      )
       let tempTotalSize = 0
       let tempVisibleSize = 0
       let tempPlaceholderSize = 0
