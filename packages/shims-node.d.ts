@@ -74,3 +74,5 @@ declare module 'estree-walker' {
     } & ThisType<{ skip: () => void }>
   )
 }
+
+declare var __vite_profile_session: import('node:inspector').Session | undefined

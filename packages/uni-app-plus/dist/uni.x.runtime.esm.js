@@ -2887,10 +2887,14 @@ function $dispatch(context, componentName, eventName) {
     }
   }
   if (parent != null) {
-    for (var _len = arguments.length, do_not_transform_spread = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
-      do_not_transform_spread[_key - 3] = arguments[_key];
+    if (typeof parent[eventName] === "function") {
+      for (var _len = arguments.length, do_not_transform_spread = new Array(_len > 3 ? _len - 3 : 0), _key = 3; _key < _len; _key++) {
+        do_not_transform_spread[_key - 3] = arguments[_key];
+      }
+      parent[eventName](...do_not_transform_spread);
+    } else {
+      warn("dispatch: ".concat(componentName, " has no method ").concat(eventName));
     }
-    parent[eventName](...do_not_transform_spread);
   }
 }
 function $dispatchParent(context, componentName, eventName) {

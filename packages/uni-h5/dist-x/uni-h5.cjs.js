@@ -7533,7 +7533,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
 function isHTMlElement(node) {
   return !!(node && node.nodeType === 1);
 }
-function getListItem(root) {
+function getChildren(root) {
   const children = [];
   if (root) {
     walk(root, children);
@@ -7541,15 +7541,27 @@ function getListItem(root) {
   return children;
 }
 function walk(vnode, children) {
-  if (vnode.component && vnode.component.type && vnode.component.type.name === "StickySection") {
-    children.push(...getListItem(vnode.component.subTree));
-  } else if (vnode.component && vnode.component.type && vnode.component.type.name === "ListItem") {
-    children.push(vnode.component.proxy);
+  if (vnode.component) {
+    children.push(vnode);
   } else if (vnode.shapeFlag & 16) {
     const vnodes = vnode.children;
     for (let i = 0; i < vnodes.length; i++) {
       walk(vnodes[i], children);
     }
+  }
+}
+function traverseListView(visibleVNode, callback) {
+  const children = getChildren(visibleVNode);
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    callback(child);
+  }
+}
+function traverseStickySection(stickySectionVNode, callback) {
+  const children = getChildren(stickySectionVNode.component.subTree);
+  for (let i = 0; i < children.length; i++) {
+    const child = children[i];
+    callback(child);
   }
 }
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
@@ -7615,9 +7627,23 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     });
     const defaultItemSize = 40;
     const cacheScreenCount = 5;
-    let rootSize = 0;
+    let containerSize = 0;
     vue.provide("__listViewIsVertical", isVertical);
     vue.provide("__listViewDefaultItemSize", defaultItemSize);
+    const onItemChange = uniShared.debounce(() => {
+      vue.nextTick(() => {
+        rearrange();
+      });
+    }, 10, {
+      clearTimeout,
+      setTimeout
+    });
+    vue.provide("__listViewRegisterItem", (status) => {
+      onItemChange();
+    });
+    vue.provide("__listViewUnregisterItem", (status) => {
+      onItemChange();
+    });
     vue.computed(() => {
       const val = Number(props2.upperThreshold);
       return isNaN(val) ? 50 : val;
@@ -7642,48 +7668,12 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         containerRef.value.scrollLeft = val;
       }
     });
-    const cachedItems = [];
-    let sortTimeout = null;
-    function sortCachedItems() {
-      if (sortTimeout !== null) {
-        clearTimeout(sortTimeout);
-        sortTimeout = null;
-      }
-      sortTimeout = setTimeout(() => {
-        const contentNode = visibleRef.value;
-        if (!contentNode) {
-          return;
-        }
-        const listItemInstances = getListItem(visibleVNode);
-        const childrenIds = listItemInstances.map((item) => {
-          var _a, _b;
-          return (_b = (_a = item.$) == null ? void 0 : _a.exposed) == null ? void 0 : _b.itemId;
-        });
-        cachedItems.sort((a, b) => {
-          return childrenIds.indexOf(a.itemId) - childrenIds.indexOf(b.itemId);
-        });
-        totalSize.value = cachedItems.reduce((total, item) => {
-          return total + item.cachedSize;
-        }, 0);
-        rearrange();
-      }, 1);
-    }
-    vue.provide("__listViewRegisterItem", (status) => {
-      cachedItems.push(status);
-      vue.nextTick(() => {
-        sortCachedItems();
-      });
-    });
-    vue.provide("__listViewUnregisterItem", (status) => {
-      const index2 = cachedItems.indexOf(status);
-      index2 > -1 && cachedItems.splice(index2, 1);
-      vue.nextTick(() => {
-        sortCachedItems();
-      });
-    });
     function refresh() {
-      cachedItems.map((item) => {
-        item.seen.value = false;
+      traverseAllItems((child) => {
+        const exposed = child.component.exposed;
+        if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
+          exposed.__listViewChildStatus.seen.value = false;
+        }
       });
       vue.nextTick(() => {
         vue.nextTick(() => {
@@ -7697,38 +7687,87 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     function onResize() {
       refresh();
     }
+    function traverseAllItems(callback) {
+      traverseListView(visibleVNode, (child) => {
+        var _a;
+        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
+        if (childType === "StickySection") {
+          traverseStickySection(child, function() {
+            var _a2;
+            const childType2 = (_a2 = child.component) == null ? void 0 : _a2.type.name;
+            if (childType2 === "ListItem") {
+              callback(child);
+            }
+          });
+        } else if (childType === "ListItem") {
+          callback(child);
+        }
+      });
+    }
     function rearrange() {
-      const offset = isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
-      rootSize = isVertical.value ? rootRef.value.clientHeight : rootRef.value.clientWidth;
-      if (!rootSize) {
+      if (!visibleVNode) {
         return;
       }
-      const offsetMin = Math.max(offset - rootSize * cacheScreenCount, 0);
-      const offsetMax = offset + rootSize * (cacheScreenCount + 1);
+      const containerEl = containerRef.value;
+      if (!containerEl) {
+        return;
+      }
+      const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
+      containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+      if (!containerSize) {
+        return;
+      }
+      const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0);
+      const offsetMax = offset + containerSize * (cacheScreenCount + 1);
       let tempTotalSize = 0;
       let tempVisibleSize = 0;
+      let tempPlaceholderSize = 0;
       let start = false, end = false;
-      for (let i = 0; i < cachedItems.length; i++) {
-        const item = cachedItems[i];
-        const itemSize = item.cachedSize || defaultItemSize;
-        const nextTotalSize = tempTotalSize + itemSize;
-        if (!start && nextTotalSize > offsetMin) {
-          placehoderSize.value = tempTotalSize;
-          start = true;
+      function callback(child) {
+        var _a, _b, _c;
+        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
+        const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
+        if (childType === "StickySection") {
+          const {
+            headSize,
+            tailSize
+          } = status;
+          tempTotalSize += headSize.value;
+          traverseStickySection(child, callback);
+          tempTotalSize += tailSize.value;
+        } else if (childType === "ListItem") {
+          const {
+            cachedSize
+          } = status;
+          const itemSize = cachedSize;
+          tempTotalSize += itemSize;
+          if (!start && tempTotalSize > offsetMin) {
+            start = true;
+          }
+          if (!start) {
+            tempPlaceholderSize += itemSize;
+          }
+          if (start && !end) {
+            tempVisibleSize += itemSize;
+            status.visible.value = true;
+          } else {
+            status.visible.value = false;
+          }
+          if (!end && tempTotalSize >= offsetMax) {
+            end = true;
+          }
+        } else if (childType === "StickyHeader") {
+          const {
+            cachedSize
+          } = status;
+          tempTotalSize += cachedSize;
+          tempVisibleSize += cachedSize;
         }
-        if (start && !end) {
-          tempVisibleSize += itemSize;
-          item.visible.value = true;
-        } else {
-          item.visible.value = false;
-        }
-        if (!end && nextTotalSize >= offsetMax) {
-          end = true;
-        }
-        tempTotalSize = nextTotalSize;
       }
+      traverseListView(visibleVNode, callback);
       totalSize.value = tempTotalSize;
       visibleSize.value = tempVisibleSize;
+      placehoderSize.value = tempPlaceholderSize;
     }
     const containerStyle = vue.computed(() => {
       return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
@@ -7763,7 +7802,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let listItemId = 0;
 function getSize(isVertical, el) {
   var style = window.getComputedStyle(el);
   if (isVertical) {
@@ -7784,13 +7822,13 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     const visible = vue.ref(false);
     const seen = vue.ref(false);
     const status = {
-      itemId: listItemId++,
+      type: "ListItem",
       visible,
       cachedSize: 0,
       seen
     };
     expose({
-      itemId: status.itemId
+      __listViewChildStatus: status
     });
     vue.inject("__listViewRegisterItem");
     vue.inject("__listViewUnregisterItem");
@@ -7823,9 +7861,11 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     }
   },
   setup(props2, {
-    slots
+    slots,
+    expose
   }) {
     const rootRef = vue.ref(null);
+    const isVertical = vue.inject("__listViewIsVertical");
     const style = vue.computed(() => {
       return {
         paddingTop: props2.padding[0] + "px",
@@ -7834,11 +7874,25 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
         paddingLeft: props2.padding[3] + "px"
       };
     });
+    const headSize = vue.computed(() => {
+      return isVertical ? props2.padding[0] : props2.padding[3];
+    });
+    const tailSize = vue.computed(() => {
+      return isVertical ? props2.padding[2] : props2.padding[1];
+    });
+    const status = {
+      type: "StickySection",
+      headSize,
+      tailSize
+    };
+    expose({
+      __listViewChildStatus: status
+    });
     return () => {
       var _a;
       return vue.createVNode("uni-sticky-section", {
         "ref": rootRef,
-        "style": style
+        "style": style.value
       }, [(_a = slots.default) == null ? void 0 : _a.call(slots)], 4);
     };
   }
@@ -7852,9 +7906,11 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
     }
   },
   setup(props2, {
-    slots
+    slots,
+    expose
   }) {
     const rootRef = vue.ref(null);
+    const isVertical = vue.inject("__listViewIsVertical");
     const style = vue.computed(() => {
       return {
         paddingTop: props2.padding[0] + "px",
@@ -7864,8 +7920,20 @@ const index$e = /* @__PURE__ */ defineBuiltInComponent({
         top: 0 - props2.padding[0] + "px"
       };
     });
+    const status = {
+      type: "StickyHeader",
+      cachedSize: 0
+    };
+    expose({
+      __listViewChildStatus: status
+    });
     return () => {
       var _a;
+      vue.nextTick(() => {
+        const rootEl = rootRef.value;
+        const rect = rootEl.getBoundingClientRect();
+        status.cachedSize = isVertical ? rect.height : rect.width;
+      });
       return vue.createVNode("uni-sticky-header", {
         "ref": rootRef,
         "style": style.value
