@@ -113,7 +113,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     const onScrollend = (e: ScrollEvent) => {
-      console.log('onScrollend')
       if (Date.now() - data.scrollToElementTime < 200) {
         return
       }

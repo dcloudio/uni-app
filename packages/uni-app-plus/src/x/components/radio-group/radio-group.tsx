@@ -1,6 +1,6 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { onMounted, getCurrentInstance, ref, onUnmounted, camelize } from 'vue'
+import { onMounted, getCurrentInstance, ref, camelize } from 'vue'
 import {
   RADIOGROUP_NAME,
   RADIOGROUP_ROOT_ELEMENT,
@@ -9,7 +9,6 @@ import {
   UniRadioGroupChangeEvent,
   UniRadioGroupElement,
 } from './model'
-import { $dispatch } from '../../utils'
 
 /**
  * radio-group 组件
@@ -109,28 +108,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ? props[keyString]?.toString() ?? null
             : null
         }
-
-        // for form
-        const ctx = instance?.proxy
-        $dispatch(
-          ctx,
-          'Form',
-          'formControlUpdate',
-          uniRadioGroupElementRef.value,
-          'add'
-        )
       })
-    })
-
-    onUnmounted(() => {
-      const ctx = instance?.proxy
-      $dispatch(
-        ctx,
-        'Form',
-        'formControlUpdate',
-        uniRadioGroupElementRef.value,
-        'remove'
-      )
     })
 
     expose({
