@@ -51,8 +51,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       val.forEach((_val, index) => {
         if (data.$items.length > index) {
           const fn = data.$items[index].$.exposed?.setCurrent
-          // data.$items[index].$.exposed?.setCurrent?.(val)
-          console.log(fn, _val)
           fn(_val)
         }
       })

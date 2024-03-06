@@ -3,14 +3,12 @@ import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
   CHECKBOX_GROUP_NAME,
   CHECKBOX_GROUP_ROOT_ELEMENT,
-  // UniCheckboxGroupChangeEvent,
   checkboxGroupProps,
   CheckboxInfo,
   UniCheckboxGroupChangeEvent,
   UniCheckboxGroupElement,
 } from './model'
-import { getCurrentInstance, onMounted, onUnmounted, ref, camelize } from 'vue'
-import { $dispatch } from '../../utils'
+import { getCurrentInstance, onMounted, ref, camelize } from 'vue'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: CHECKBOX_GROUP_NAME,
@@ -88,29 +86,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ? props[keyString]?.toString() ?? null
             : null
         }
-
-        // for form
-        const ctx = instance.proxy
-        $dispatch(
-          ctx,
-          'Form',
-          'formControlUpdate',
-          uniCheckboxGroupElementRef.value,
-          'add'
-        )
       })
-    })
-
-    onUnmounted(() => {
-      // for form
-      const ctx = instance?.proxy
-      $dispatch(
-        ctx,
-        'Form',
-        'formControlUpdate',
-        uniCheckboxGroupElementRef.value,
-        'remove'
-      )
     })
 
     expose({
