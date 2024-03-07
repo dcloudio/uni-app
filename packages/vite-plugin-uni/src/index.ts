@@ -75,8 +75,13 @@ export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin[] {
   // 重写readFileSync，拦截.scss文件读取，实现条件编译
-  if (process.env.UNI_APP_X === 'true') {
-    // 仅处理 x，非 x 不需要，还需要找时间排查下，为啥 x 需要，而非 x 不需要。
+  if (
+    process.env.UNI_APP_X === 'true' ||
+    process.env.UNI_PLATFORM === 'web' ||
+    process.env.UNI_PLATFORM === 'h5'
+  ) {
+    // 1.0 的非 web 端，都是自定义 css 插件，里边做了条件编译，不需要拦截
+    // 重写readFileSync，拦截.scss文件读取，实现条件编译，不适用于 1.0 的 app 端，因为要同时可以区分 nvue 和 vue
     rewriteScssReadFileSync()
   }
 
