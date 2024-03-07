@@ -529,21 +529,6 @@
       }
     }
   },
-  "uni-video": {
-    "uni": {
-      "createVideoContext": {
-        "name": "createVideoContext",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true
-        }
-      }
-    },
-    "components": [
-      "video"
-    ]
-  },
   "uni-websocket": {
     "uni": {
       "connectSocket": {
