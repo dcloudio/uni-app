@@ -720,8 +720,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       '@types/module-alias':
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.0.4
+        version: 2.0.4
       '@types/resolve':
         specifier: ^1.20.2
         version: 1.20.2
@@ -940,8 +940,8 @@ importers:
         specifier: ^2.0.3
         version: 2.0.3
       '@types/module-alias':
-        specifier: ^2.0.1
-        version: 2.0.1
+        specifier: ^2.0.4
+        version: 2.0.4
       '@types/resolve':
         specifier: ^1.20.2
         version: 1.20.2
@@ -4656,8 +4656,8 @@ packages:
     resolution: {integrity: sha512-Jus9s4CDbqwocc5pOAnh8ShfrnMcPHuJYzVcSUU7lrh8Ni5HuIqX3oilL86p3dlTrk0LzHRCgA/GQ7uNCw6l2Q==}
     dev: true
 
-  /@types/module-alias@2.0.1:
-    resolution: {integrity: sha512-DN/CCT1HQG6HquBNJdLkvV+4v5l/oEuwOHUPLxI+Eub0NED+lk0YUfba04WGH90EINiUrNgClkNnwGmbICeWMQ==}
+  /@types/module-alias@2.0.4:
+    resolution: {integrity: sha512-5+G/QXO/DvHZw60FjvbDzO4JmlD/nG5m2/vVGt25VN1eeP3w2bCoks1Wa7VuptMPM1TxJdx6RjO70N9Fw0nZPA==}
     dev: true
 
   /@types/ms@0.7.31:

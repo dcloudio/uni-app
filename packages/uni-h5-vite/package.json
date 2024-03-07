@@ -35,7 +35,7 @@
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
     "@types/mime": "^2.0.3",
-    "@types/module-alias": "^2.0.1",
+    "@types/module-alias": "^2.0.4",
     "@types/resolve": "^1.20.2",
     "@vue/compiler-core": "3.3.11",
     "esbuild": "^0.17.5",

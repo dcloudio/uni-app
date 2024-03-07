@@ -33,13 +33,26 @@ export function initModuleAlias() {
   }
   if (isInHBuilderX()) {
     // 又是为了复用 HBuilderX 的插件逻辑，硬编码映射
-    Object.keys(hbxPlugins).forEach((name) => {
+    Object.keys(hbxPlugins).forEach((lang) => {
+      const realPath = path.resolve(
+        process.env.UNI_HBUILDERX_PLUGINS,
+        hbxPlugins[lang as keyof typeof hbxPlugins]
+      )
       moduleAlias.addAlias(
-        name,
-        path.resolve(
-          process.env.UNI_HBUILDERX_PLUGINS,
-          hbxPlugins[name as keyof typeof hbxPlugins]
-        )
+        lang,
+        // @ts-expect-error
+        () => {
+          try {
+            require.resolve(realPath)
+          } catch (e) {
+            const msg = moduleAliasFormatter.format(
+              `Preprocessor dependency "${lang}" not found. Did you install it?`
+            )
+            console.error(msg)
+            process.exit(0)
+          }
+          return realPath
+        }
       )
     })
     // web 平台用了 vite 内置 css 插件，该插件会加载预编译器如scss、less等，需要转向到 HBuilderX 的对应编译器插件
@@ -109,7 +122,10 @@ export const moduleAliasFormatter: Formatter = {
   format(msg) {
     let lang = ''
     let preprocessor = ''
-    if (msg.includes(`"sass"`)) {
+    if (msg.includes(`"pug"`)) {
+      lang = 'pug'
+      preprocessor = 'compile-pug-cli'
+    } else if (msg.includes(`"sass"`)) {
       lang = 'sass'
       preprocessor = 'compile-dart-sass'
     } else if (msg.includes(`"less"`)) {

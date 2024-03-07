@@ -127,6 +127,8 @@ export const UVUE_BUILT_IN_TAGS = [
   'uni-slider',
   // 原生实现
   'button',
+  'nested-scroll-header',
+  'nested-scroll-body',
 ]
 
 export const UVUE_WEB_BUILT_IN_TAGS = [
