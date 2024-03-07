@@ -23,6 +23,7 @@ declare module '@vue/runtime-core' {
     $getAppWebview?: () => PlusWebviewWebviewObject
     // X iOS
     $appPage?: UniPage
+    $fontFamilySet: Set<string>
     $getAppPage?: () => UniPage
     $requireNativePlugin?: (name: string) => unknown
     getOpenerEventChannel: () => EventChannel | undefined

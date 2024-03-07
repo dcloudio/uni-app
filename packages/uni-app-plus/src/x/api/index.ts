@@ -21,6 +21,9 @@ export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 // dom
 export { getElementById } from './dom/getElementById'
 
+// ui
+export { loadFontFace } from './ui/loadFontFace'
+
 export {
   initUTSProxyClass,
   initUTSProxyFunction,
