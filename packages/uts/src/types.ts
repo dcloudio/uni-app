@@ -61,6 +61,7 @@ export type UTSOutputOptions = {
     uniExtApiProviderName?: string
     uniExtApiProviderService?: string
     uniExtApiProviderServicePlugin?: string
+    uniExtApiProviders?: [string, string, string][]
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
     disableReactiveObject?: boolean

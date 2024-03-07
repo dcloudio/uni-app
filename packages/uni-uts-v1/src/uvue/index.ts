@@ -67,6 +67,8 @@ export interface CompileAppOptions {
   extApiComponents: string[]
   uvueClassNamePrefix?: string
   autoImports?: Record<string, [[string, string]]>
+  // service、name、class
+  extApiProviders?: [string, string, string][]
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -140,6 +142,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
+        uniExtApiProviders: options.extApiProviders,
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,

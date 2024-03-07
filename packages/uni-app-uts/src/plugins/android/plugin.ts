@@ -13,6 +13,9 @@ import {
   resolveUTSCompiler,
   utsPlugins,
   buildUniExtApiProviders,
+  getUniExtApiProviderRegisters,
+  capitalize,
+  camelize,
 } from '@dcloudio/uni-cli-shared'
 import {
   DEFAULT_APPID,
@@ -166,6 +169,7 @@ export function uniAppPlugin(): UniVitePlugin {
           extApiComponents: [...getExtApiComponents()],
           uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
           autoImports: getUTSEasyComAutoImports(),
+          extApiProviders: parseUniExtApiProviders(manifestJson),
         }
       )
       if (res) {
@@ -267,4 +271,45 @@ const ${className}Styles = []`,
     }
   })
   return res
+}
+
+function parseUniExtApiProviders(
+  manifestJson: Record<string, any>
+): [string, string, string][] {
+  const providers: [string, string, string][] = []
+  const customProviders = getUniExtApiProviderRegisters()
+  const userModules = manifestJson.app?.distribute?.modules || {}
+  const userModuleNames = Object.keys(userModules)
+  if (userModuleNames.length) {
+    const systemProviders = resolveUTSCompiler().parseExtApiProviders()
+    userModuleNames.forEach((moduleName) => {
+      const systemProvider = systemProviders[moduleName]
+      if (systemProvider) {
+        const userModule = userModules[moduleName]
+        Object.keys(userModule).forEach((providerName) => {
+          if (systemProvider.providers.includes(providerName)) {
+            if (
+              !customProviders.find(
+                (customProvider) =>
+                  customProvider.service === systemProvider.service &&
+                  customProvider.name === providerName
+              )
+            ) {
+              providers.push([
+                systemProvider.service,
+                providerName,
+                `UniExtApi${capitalize(
+                  camelize(systemProvider.service)
+                )}${capitalize(camelize(providerName))}Provider`,
+              ])
+            }
+          }
+        })
+      }
+    })
+  }
+  customProviders.forEach((provider) => {
+    providers.push([provider.service, provider.name, provider.class])
+  })
+  return providers
 }

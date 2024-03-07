@@ -601,6 +601,43 @@ export function parseExtApiModules() {
   return normalizeExtApiModules(require('../lib/ext-api/modules.json'))
 }
 
+export function parseExtApiProviders() {
+  const modules = require('../lib/ext-api/modules.json')
+  const providers: {
+    [name: string]: {
+      service: string
+      providers: string[]
+    }
+  } = {}
+  const moduleNames = Object.keys(modules)
+  // 第一遍，先遍历出来所有的service
+  moduleNames.forEach((name) => {
+    const module = modules[name]
+    const providerOptions = module.provider
+    if (providerOptions?.service && !providerOptions?.name) {
+      providers[name] = {
+        service: providerOptions.service,
+        providers: [],
+      }
+    }
+  })
+  // 第二遍，遍历所有provider
+  moduleNames.forEach((name) => {
+    const module = modules[name]
+    const providerOptions = module.provider
+    if (providerOptions?.name && providerOptions?.service) {
+      const moduleName = Object.keys(providers).find(
+        (moduleName) =>
+          providers[moduleName].service === providerOptions.service
+      )
+      if (moduleName) {
+        providers[moduleName].providers.push(providerOptions.name)
+      }
+    }
+  })
+  return providers
+}
+
 export type DefineOptions = {
   name?: string
   app?:

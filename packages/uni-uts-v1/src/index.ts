@@ -58,7 +58,7 @@ export const sourcemap = {
 
 export { compileApp, CompileAppOptions } from './uvue/index'
 
-export { parseInjectModules } from './utils'
+export { parseInjectModules, parseExtApiProviders } from './utils'
 
 export * from './sourceMap'
 

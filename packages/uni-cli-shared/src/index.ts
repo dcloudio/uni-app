@@ -28,6 +28,7 @@ export {
   Define,
   DefineOptions,
   Defines,
+  getUniExtApiProviderRegisters,
 } from './uni_modules'
 
 export { M } from './messages'

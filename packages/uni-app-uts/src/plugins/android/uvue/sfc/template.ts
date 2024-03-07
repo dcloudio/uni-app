@@ -33,7 +33,13 @@ export function resolveGenTemplateCodeOptions(
     preprocessOptions?: any
   }
 ): TemplateCompilerOptions {
-  const block = descriptor.template!
+  const block = descriptor.template
+  if (!block) {
+    return {
+      ...options,
+      filename: relativeFileName,
+    }
+  }
   const inputRoot = normalizePath(options.rootDir)
   const templateStartLine = descriptor.template?.loc.start.line ?? 0
   let preprocessOptions = block.lang && options.preprocessOptions
