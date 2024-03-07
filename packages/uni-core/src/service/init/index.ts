@@ -32,8 +32,8 @@ export function initPageVm(
   pageVm.$vm = pageVm
   pageVm.$page = page
   pageVm.$mpType = 'page'
-  // todo
-  // pageVm.$fontFamilySet = new Set()
+  // new
+  pageVm.$fontFamilySet = new Set()
   // pageVm.$
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true

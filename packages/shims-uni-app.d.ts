@@ -15,12 +15,7 @@ declare namespace Page {
       openType: UniApp.OpenType
       eventChannel: unknown
       statusBarStyle?: 'dark' | 'light'
-      // todo
-      $fontFamilySet3: Map<string>
     }
-    // todo
-    // $appPage: any
-    $fontFamilySet: Map<string>
   }
 }
 declare namespace UniNamespace {

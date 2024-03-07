@@ -7,9 +7,9 @@ import {
   LoadFontFaceErrCode,
   LoadFontFaceOptions,
 } from '@dcloudio/uni-app-x/types/uni'
-
-// import { LoadFontFaceError } from '@dcloudio/uni-app-x/types/uni/core/lib/ui/load-font-face/interface'
+import { ComponentPublicInstance } from 'vue'
 import { getCurrentPage } from '@dcloudio/uni-core'
+import { getNativeApp } from '../../framework/app/app'
 
 // export abstract class LoadFontFaceError extends UniError {
 //   abstract override errCode: LoadFontFaceErrCode
@@ -86,37 +86,27 @@ function getLoadFontFaceOptions(
 export const loadFontFace = defineAsyncApi(
   API_LOAD_FONT_FACE,
   (options: LoadFontFaceOptions, res) => {
-    const page = getCurrentPage() as any
     if (options.global === true) {
       if (checkOptionSource(options, res)) {
-        // const app = page!.$appPage as any
-
-        // 先用
-        // const app = getNatvieApp()
-
+        const app = getNativeApp()
         const fontInfo = getLoadFontFaceOptions(options, res)
-        // const app = (globalThis as any).nativeApp.loadFontFace(fontInfo)
-
-        ;(globalThis as any).nativeApp.loadFontFace(
-          fontInfo.family,
-          fontInfo.source,
-          fontInfo.success,
-          fontInfo.fail
-        )
+        app.loadFontFace(fontInfo)
       }
     } else {
+      const page = getCurrentPage() as unknown as ComponentPublicInstance
+
       if (!page) {
         res.reject('page is not ready', 99)
         // reject(new LoadFontFaceErrorImpl('page is not ready', 99), 99)
         return
       }
 
-      // if (page.$fontFamilySet.has(options.family)) {
-      //   return
-      // }
+      if (page!.$fontFamilySet.has(options.family)) {
+        return
+      }
 
       if (checkOptionSource(options, res)) {
-        // page.$fontFamilySet.add(options.family)
+        page!.$fontFamilySet.add(options.family)
         const fontInfo = getLoadFontFaceOptions(options, res)
         page.$appPage!.loadFontFace(fontInfo)
       }
