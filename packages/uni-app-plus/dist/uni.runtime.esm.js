@@ -1922,9 +1922,7 @@ function initPageVm(pageVm, page) {
     pageVm.$vm = pageVm;
     pageVm.$page = page;
     pageVm.$mpType = 'page';
-    // todo
-    // pageVm.$fontFamilySet = new Set()
-    // pageVm.$
+    pageVm.$fontFamilySet = new Set();
     if (page.meta.isTabBar) {
         pageVm.$.__isTabBar = true;
         // TODO preload? 初始化时，状态肯定是激活
@@ -2146,10 +2144,6 @@ function initVueApp(appVm) {
     });
 }
 
-// type IPage = ComponentPublicInstance & {
-//   $page: Page.PageInstance
-//   $appPage: any
-// }
 const pages = [];
 function addCurrentPage(page) {
     const $page = page.$page;
@@ -2173,7 +2167,6 @@ function getAllPages() {
 }
 function getCurrentPages$1() {
     const curPages = [];
-    console.log('get cur page');
     pages.forEach((page) => {
         if (page.$.__isTabBar) {
             if (page.$.__isActive) {
