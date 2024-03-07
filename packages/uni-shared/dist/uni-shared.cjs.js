@@ -125,6 +125,8 @@ const UVUE_BUILT_IN_TAGS = [
     'uni-slider',
     // 原生实现
     'button',
+    'nested-scroll-header',
+    'nested-scroll-body',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -141,6 +143,7 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'swiper-item',
     'rich-text',
     'button',
+    'form',
     'list-view',
     'list-item',
     'switch',

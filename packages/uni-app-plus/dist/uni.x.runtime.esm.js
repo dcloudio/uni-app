@@ -3226,13 +3226,7 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
           var keyString = camelize(key);
           return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
         };
-        var ctx2 = instance.proxy;
-        $dispatch(ctx2, "Form", "formControlUpdate", uniCheckboxGroupElementRef.value, "add");
       });
-    });
-    onUnmounted(() => {
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx2, "Form", "formControlUpdate", uniCheckboxGroupElementRef.value, "remove");
     });
     expose({
       _checkboxGroupUpdateHandler,
@@ -3582,13 +3576,7 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
           var keyString = camelize(key);
           return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
         };
-        var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-        $dispatch(ctx2, "Form", "formControlUpdate", uniRadioGroupElementRef.value, "add");
       });
-    });
-    onUnmounted(() => {
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx2, "Form", "formControlUpdate", uniRadioGroupElementRef.value, "remove");
     });
     expose({
       _radioGroupUpdateHandler,
@@ -4118,7 +4106,6 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
         if (data.$items.length > index2) {
           var _data$$items$index$$$;
           var fn = (_data$$items$index$$$ = data.$items[index2].$.exposed) === null || _data$$items$index$$$ === void 0 ? void 0 : _data$$items$index$$$.setCurrent;
-          console.log(fn, _val);
           fn(_val);
         }
       });
@@ -4259,7 +4246,6 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       });
     };
     var onScrollend = (e) => {
-      console.log("onScrollend");
       if (Date.now() - data.scrollToElementTime < 200) {
         return;
       }

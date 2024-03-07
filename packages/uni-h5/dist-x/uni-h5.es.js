@@ -15563,6 +15563,13 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     function getOffset() {
       return isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
     }
+    function resetContainerSize() {
+      const containerEl = containerRef.value;
+      containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+    }
+    watch(isVertical, () => {
+      resetContainerSize();
+    });
     function shouldRearrange() {
       const offset = getOffset();
       const loadScreenThresholdSize = containerSize * loadScreenThreshold;
@@ -15595,6 +15602,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     onMounted(() => {
+      resetContainerSize();
       let lastScrollOffset = 0;
       containerRef.value.addEventListener("scroll", function($event) {
         const target = $event.target;
@@ -15680,6 +15688,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       refresh
     });
     function onResize2() {
+      resetContainerSize();
       refresh();
     }
     function traverseAllItems(callback) {
@@ -15708,12 +15717,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         return;
       }
       const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
-      containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
-      if (!containerSize) {
-        return;
-      }
       const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0);
-      const offsetMax = offset + containerSize * (cacheScreenCount + 1);
+      const offsetMax = Math.max(offset + containerSize * (cacheScreenCount + 1), offsetMin + 1);
       let tempTotalSize = 0;
       let tempVisibleSize = 0;
       let tempPlaceholderSize = 0;
