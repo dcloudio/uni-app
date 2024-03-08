@@ -741,6 +741,7 @@ function initPageVm(pageVm, page) {
   pageVm.$vm = pageVm;
   pageVm.$page = page;
   pageVm.$mpType = "page";
+  pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true;
     pageVm.$.__isActive = true;
@@ -1359,6 +1360,7 @@ function createNormalizeUrl(type) {
     }
   };
 }
+var API_LOAD_FONT_FACE = "loadFontFace";
 var FRONT_COLORS = ["#ffffff", "#000000"];
 var API_SET_NAVIGATION_BAR_COLOR = "setNavigationBarColor";
 var SetNavigationBarColorOptions = {
@@ -2299,6 +2301,64 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   }
   return bodyNode.querySelector("#".concat(id2));
 });
+var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)/;
+function removeUrlWrap(source) {
+  if (source.startsWith("url(")) {
+    source = source.substring(4, source.length - 1);
+  }
+  if (source.startsWith('"') || source.startsWith("'")) {
+    source = source.substring(1, source.length - 1);
+  }
+  return source;
+}
+function checkOptionSource(options, res) {
+  options.source = removeUrlWrap(options.source);
+  if (!SOURCE_REG.test(options.source)) {
+    res.reject("loadFontFace:fail, source is invalid.", 101);
+    return false;
+  }
+  return true;
+}
+function getLoadFontFaceOptions(options, res) {
+  return {
+    family: options.family,
+    source: options.source,
+    success: (_) => {
+      res.resolve(null);
+    },
+    fail: (error) => {
+      res.reject(
+        // new LoadFontFaceErrorImpl(
+        error.errMsg,
+        error.errCode
+        // )
+      );
+    }
+  };
+}
+var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, res) => {
+  if (options.global === true) {
+    if (checkOptionSource(options, res)) {
+      var app = getNativeApp();
+      var fontInfo = getLoadFontFaceOptions(options, res);
+      app.loadFontFace(fontInfo);
+    }
+  } else {
+    var page = getCurrentPage();
+    if (!page) {
+      res.reject("page is not ready", 99);
+      return;
+    }
+    if (page.$fontFamilySet.has(options.family)) {
+      return;
+    }
+    if (checkOptionSource(options, res)) {
+      page.$fontFamilySet.add(options.family);
+      var _fontInfo = getLoadFontFaceOptions(options, res);
+      page.$appPage.loadFontFace(_fontInfo);
+    }
+  }
+});
 var callbackId = 1;
 var proxy;
 var callbacks = {};
@@ -2639,6 +2699,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   initUTSPackageName,
   initUTSProxyClass,
   initUTSProxyFunction,
+  loadFontFace,
   navigateBack,
   navigateTo,
   reLaunch,

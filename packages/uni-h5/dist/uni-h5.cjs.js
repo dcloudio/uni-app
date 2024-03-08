@@ -562,6 +562,7 @@ function initPageVm(pageVm, page) {
   pageVm.$vm = pageVm;
   pageVm.$page = page;
   pageVm.$mpType = "page";
+  pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true;
     pageVm.$.__isActive = true;
@@ -3292,7 +3293,7 @@ function useBase(props2, rootRef, emit2) {
   });
   const maxlength = vue.computed(() => {
     var maxlength2 = Number(props2.maxlength);
-    return maxlength2 === -1 ? Infinity : isNaN(maxlength2) || maxlength2 <= 0 ? 140 : maxlength2;
+    return isNaN(maxlength2) || maxlength2 <= 0 ? Infinity : maxlength2;
   });
   const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
   const state = vue.reactive({
@@ -5305,10 +5306,7 @@ function useProgressState(props2) {
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = vue.computed(() => {
-    if (typeof props2.percent === "string" && !/^-?\d*\.?\d*$/.test(props2.percent)) {
-      return 0;
-    }
-    let realValue = parseFloat(props2.percent);
+    let realValue = Number(props2.percent);
     if (Number.isNaN(realValue) || realValue < 0) {
       realValue = 0;
     } else if (realValue > 100) {
