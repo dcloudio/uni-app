@@ -1613,6 +1613,11 @@ const preCssExtNames = ['.scss', '.sass', '.styl', '.stylus']
  * 目前主要解决 scss 文件被 @import 的条件编译
  */
 export function rewriteScssReadFileSync() {
+  // 目前 1.0 App 端，只要包含了APP-NVUE条件编译，就不pre，因为区分不出来APP-NVUE
+  const ignoreAppNVue =
+    process.env.UNI_APP_X !== 'true' &&
+    (process.env.UNI_PLATFORM === 'app' ||
+      process.env.UNI_PLATFORM === 'app-plus')
   const { readFileSync } = nodeFs
   nodeFs.readFileSync = ((filepath, options) => {
     const content = readFileSync(filepath, options)
@@ -1620,10 +1625,12 @@ export function rewriteScssReadFileSync() {
       isString(filepath) &&
       isString(content) &&
       preCssExtNames.includes(path.extname(filepath)) &&
-      content.includes('#endif') &&
+      content.includes('#endif')
       // 目前无法区分app-nvue
-      !content.includes('APP-NVUE')
     ) {
+      if (ignoreAppNVue && content.includes('APP-NVUE')) {
+        return content
+      }
       return preCss(content)
     }
     return content
