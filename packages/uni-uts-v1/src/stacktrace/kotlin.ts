@@ -28,7 +28,10 @@ export function hbuilderFormatter(m: MessageSourceLocation) {
   let msg = m.type + ': ' + m.message
   if (m.type === 'warning') {
     // 忽略部分警告
-    if (msg.includes(`Classpath entry points to a non-existent location:`)) {
+    if (
+      msg.includes(`Classpath entry points to a non-existent location:`) &&
+      !msg.includes('.gradle') // gradle 的警告需要输出
+    ) {
       return ''
     }
     msg
