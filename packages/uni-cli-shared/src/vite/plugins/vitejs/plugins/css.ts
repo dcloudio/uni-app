@@ -1620,7 +1620,9 @@ export function rewriteScssReadFileSync() {
       isString(filepath) &&
       isString(content) &&
       preCssExtNames.includes(path.extname(filepath)) &&
-      content.includes('#endif')
+      content.includes('#endif') &&
+      // 目前无法区分app-nvue
+      !content.includes('APP-NVUE')
     ) {
       return preCss(content)
     }
