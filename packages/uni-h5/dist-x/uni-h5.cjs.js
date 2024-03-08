@@ -7644,6 +7644,13 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     vue.provide("__listViewUnregisterItem", (status) => {
       onItemChange();
     });
+    function resetContainerSize() {
+      const containerEl = containerRef.value;
+      containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+    }
+    vue.watch(isVertical, () => {
+      resetContainerSize();
+    });
     vue.computed(() => {
       const val = Number(props2.upperThreshold);
       return isNaN(val) ? 50 : val;
@@ -7685,6 +7692,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       refresh
     });
     function onResize() {
+      resetContainerSize();
       refresh();
     }
     function traverseAllItems(callback) {
@@ -7713,12 +7721,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         return;
       }
       const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
-      containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
-      if (!containerSize) {
-        return;
-      }
       const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0);
-      const offsetMax = offset + containerSize * (cacheScreenCount + 1);
+      const offsetMax = Math.max(offset + containerSize * (cacheScreenCount + 1), offsetMin + 1);
       let tempTotalSize = 0;
       let tempVisibleSize = 0;
       let tempPlaceholderSize = 0;
