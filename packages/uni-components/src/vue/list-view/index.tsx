@@ -6,10 +6,21 @@ import {
   computed,
   provide,
   watch,
+  reactive,
 } from 'vue'
-import type { ComputedRef, Ref, VNode } from 'vue'
+import type {
+  ComputedRef,
+  Ref,
+  VNode,
+  ExtractPropTypes,
+  SetupContext,
+} from 'vue'
 import { UniElement } from '../../helpers/UniElement'
-import { useCustomEvent, EmitEvent } from '../../helpers/useEvent'
+import {
+  useCustomEvent,
+  EmitEvent,
+  CustomEventTrigger,
+} from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import ResizeSensor from '../resize-sensor/index'
 import {
@@ -18,6 +29,8 @@ import {
   StickySectionStatus,
 } from './types'
 import { debounce } from '@dcloudio/uni-shared'
+import Refresher from '../refresher'
+import type { RefreshState } from '../refresher/types'
 
 export function isHTMlElement(node: Node | null): node is HTMLElement {
   return !!(node && node.nodeType === 1)
@@ -71,53 +84,82 @@ function traverseStickySection(
   }
 }
 
+const props = {
+  direction: {
+    type: String,
+    default: 'vertical',
+    validator: (val: string) => {
+      return ['none', 'vertical', 'horizontal'].includes(val)
+    },
+  },
+  showScrollbar: {
+    type: [Boolean, String],
+    default: true,
+  },
+  upperThreshold: {
+    type: [Number, String],
+    default: 50,
+  },
+  lowerThreshold: {
+    type: [Number, String],
+    default: 50,
+  },
+  scrollTop: {
+    type: [Number, String],
+    default: 0,
+  },
+  scrollLeft: {
+    type: [Number, String],
+    default: 0,
+  },
+  // 暂不支持
+  // scrollIntoView: {
+  //   type: String,
+  //   default: '',
+  // },
+  scrollWithAnimation: {
+    type: [Boolean, String],
+    default: false,
+  },
+  refresherEnabled: {
+    type: [Boolean, String],
+    default: false,
+  },
+  refresherThreshold: {
+    type: Number,
+    default: 45,
+  },
+  refresherDefaultStyle: {
+    type: String,
+    default: 'black',
+  },
+  refresherBackground: {
+    type: String,
+    default: '#fff',
+  },
+  refresherTriggered: {
+    type: [Boolean, String],
+    default: false,
+  },
+}
+
+type Props = ExtractPropTypes<typeof props>
+
 class UniListViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ListView',
-  props: {
-    direction: {
-      type: String,
-      default: 'vertical',
-      validator: (val: string) => {
-        return ['none', 'vertical', 'horizontal'].includes(val)
-      },
-    },
-    showScrollbar: {
-      type: [Boolean, String],
-      default: true,
-    },
-    upperThreshold: {
-      type: [Number, String],
-      default: 50,
-    },
-    lowerThreshold: {
-      type: [Number, String],
-      default: 50,
-    },
-    scrollTop: {
-      type: [Number, String],
-      default: 0,
-    },
-    scrollLeft: {
-      type: [Number, String],
-      default: 0,
-    },
-    // 暂不支持
-    // scrollIntoView: {
-    //   type: String,
-    //   default: '',
-    // },
-    scrollWithAnimation: {
-      type: [Boolean, String],
-      default: false,
-    },
-  },
+  props,
   emits: [
     'scroll',
     'scrolltoupper',
     'scrolltolower',
     // 有触发时机，但是由于没有原生事件暂不支持
     // 'scrollend',
+    'refresherrefresh',
+    'refresherrestore',
+    'refresherpulling',
+    'refresherabort',
+    'update:refresherTriggered',
   ],
   //#if _X_ && !_NODE_JS_
   rootElement: {
@@ -125,30 +167,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     class: UniListViewElement,
   },
   //#endif
-  setup(props, { slots, expose, emit }) {
-    // TODO 按照功能拆分代码
+  setup(props, { slots, emit }) {
     const rootRef = ref<HTMLElement | null>(null)
     const containerRef = ref<HTMLElement | null>(null)
     const visibleRef = ref<HTMLElement | null>(null)
-    const placehoderSize = ref(0)
-    const visibleSize = ref(0)
-    const totalSize = ref(0)
-    const isVertical = computed(() => {
-      return props.direction !== 'horizontal'
-    })
-    const defaultItemSize = 40
-    const cacheScreenCount = 5
-    const loadScreenThreshold = 3
 
-    let containerSize = 0
+    const { isVertical, state } = useListViewState(props)
 
     provide('__listViewIsVertical', isVertical)
-    provide('__listViewDefaultItemSize', defaultItemSize)
+    provide('__listViewDefaultItemSize', state.defaultItemSize)
 
     const onItemChange = debounce(
       () => {
         nextTick(() => {
-          rearrange()
+          _rearrange()
         })
       },
       10,
@@ -163,7 +195,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
-    handleTouchEvent(isVertical, containerRef)
+    handleTouchEvent(
+      isVertical,
+      containerRef,
+      props,
+      state,
+      trigger,
+      emit as SetupContext['emit']
+    )
 
     function getOffset() {
       return isVertical.value
@@ -173,7 +212,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     function resetContainerSize() {
       const containerEl = containerRef.value!
-      containerSize = isVertical.value
+      state.containerSize = isVertical.value
         ? containerEl.clientHeight
         : containerEl.clientWidth
     }
@@ -181,20 +220,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     watch(isVertical, () => {
       resetContainerSize()
     })
-
-    // 根据滚动位置判断是否需要重新排列
-    function shouldRearrange() {
-      const offset = getOffset()
-      const loadScreenThresholdSize = containerSize * loadScreenThreshold
-      const rearrangeOffsetMin = placehoderSize.value + loadScreenThresholdSize
-      const rearrangeOffsetMax =
-        placehoderSize.value + visibleSize.value - loadScreenThresholdSize
-      return (
-        (offset < rearrangeOffsetMin && placehoderSize.value > 0) ||
-        (offset > rearrangeOffsetMax &&
-          placehoderSize.value + visibleSize.value < totalSize.value)
-      )
-    }
 
     // 用户传入的属性
     const upperThresholdNumber: ComputedRef<number> = computed(() => {
@@ -263,8 +288,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         }
 
         lastScrollOffset = currentOffset
-        if (shouldRearrange()) {
-          rearrange()
+        if (_shouldRearrange()) {
+          _rearrange()
         }
       })
 
@@ -309,7 +334,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     // 列表整体刷新，谨慎使用
-    function refresh() {
+    function forceRearrange() {
       traverseAllItems((child) => {
         const exposed = child.component!.exposed
         if (exposed?.__listViewChildStatus.seen.value) {
@@ -318,17 +343,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
       nextTick(() => {
         nextTick(() => {
-          rearrange()
+          _rearrange()
         })
       })
     }
-    expose({
-      refresh,
-    })
 
     function onResize() {
       resetContainerSize()
-      refresh()
+      forceRearrange()
     }
 
     function traverseAllItems(callback: (child: VNode) => void) {
@@ -348,65 +370,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     // 计算需要显示的item
-    function rearrange() {
-      if (!visibleVNode) {
-        return
-      }
-      const containerEl = containerRef.value
-      if (!containerEl) {
-        return
-      }
-      const offset = isVertical.value
-        ? containerEl.scrollTop
-        : containerEl.scrollLeft
-      const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0)
-      const offsetMax = Math.max(
-        offset + containerSize * (cacheScreenCount + 1),
-        offsetMin + 1
-      )
-      let tempTotalSize = 0
-      let tempVisibleSize = 0
-      let tempPlaceholderSize = 0
-      let start = false,
-        end = false
-
-      function callback(child: VNode) {
-        const childType = child.component?.type.name
-        const status = child.component?.exposed?.__listViewChildStatus
-        if (childType === 'StickySection') {
-          const { headSize, tailSize } = status as StickySectionStatus
-          tempTotalSize += headSize.value
-          traverseStickySection(child, callback)
-          tempTotalSize += tailSize.value
-        } else if (childType === 'ListItem') {
-          const { cachedSize } = status as ListItemStatus
-          const itemSize = cachedSize
-          tempTotalSize += itemSize
-          if (!start && tempTotalSize > offsetMin) {
-            start = true
-          }
-          if (!start) {
-            tempPlaceholderSize += itemSize
-          }
-          if (start && !end) {
-            tempVisibleSize += itemSize
-            status.visible.value = true
-          } else {
-            status.visible.value = false
-          }
-          if (!end && tempTotalSize >= offsetMax) {
-            end = true
-          }
-        } else if (childType === 'StickyHeader') {
-          const { cachedSize } = status as StickyHeaderStatus
-          tempTotalSize += cachedSize
-          tempVisibleSize += cachedSize
-        }
-      }
-      traverseListView(visibleVNode!, callback)
-      totalSize.value = tempTotalSize
-      visibleSize.value = tempVisibleSize
-      placehoderSize.value = tempPlaceholderSize
+    function _rearrange() {
+      rearrange(visibleVNode!, containerRef, isVertical, state)
+    }
+    function _shouldRearrange() {
+      return shouldRearrange(containerRef, isVertical, state)
     }
 
     /**
@@ -423,17 +391,25 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
     const contentStyle = computed(() => {
       return `position: relative; ${isVertical.value ? 'height' : 'width'}: ${
-        totalSize.value
+        state.totalSize
       }px;`
     })
     const visibleStyle = computed(() => {
       return `position: absolute; ${
         isVertical.value ? 'width' : 'height'
-      }: 100%; ${isVertical.value ? 'top' : 'left'}: ${placehoderSize.value}px;`
+      }: 100%; ${isVertical.value ? 'top' : 'left'}: ${state.placehoderSize}px;`
     })
 
     let visibleVNode = null as VNode | null
     return () => {
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold,
+      } = props
+      const { refresherHeight, refreshState } = state
+
       const defaultSlot = slots.default && slots.default()
       visibleVNode = (
         <div
@@ -456,6 +432,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             style={containerStyle.value}
           >
             <div class="uni-list-view-content" style={contentStyle.value}>
+              {refresherEnabled ? (
+                <Refresher
+                  refreshState={refreshState}
+                  refresherHeight={refresherHeight}
+                  refresherThreshold={refresherThreshold}
+                  refresherDefaultStyle={refresherDefaultStyle}
+                  refresherBackground={refresherBackground}
+                >
+                  {refresherDefaultStyle == 'none'
+                    ? slots.refresher && slots.refresher()
+                    : null}
+                </Refresher>
+              ) : null}
               {visibleVNode}
             </div>
           </div>
@@ -466,10 +455,181 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
 })
 
+interface State {
+  defaultItemSize: number
+  totalSize: number
+  placehoderSize: number
+  visibleSize: number
+  containerSize: number
+  cacheScreenCount: number
+  loadScreenThreshold: number
+  refresherHeight: number
+  refreshState: RefreshState
+}
+
+function useListViewState(props: Props) {
+  const isVertical = computed(() => {
+    return props.direction !== 'horizontal'
+  })
+  const state: State = reactive({
+    defaultItemSize: 40,
+    totalSize: 0,
+    placehoderSize: 0,
+    visibleSize: 0,
+    containerSize: 0,
+    cacheScreenCount: 5,
+    loadScreenThreshold: 3,
+    refresherHeight: 0,
+    refreshState: '',
+  })
+  return {
+    state,
+    isVertical,
+  }
+}
+
+// 根据滚动位置判断是否需要重新排列
+function shouldRearrange(
+  containerRef: Ref<HTMLElement | null>,
+  isVertical: ComputedRef<boolean>,
+  state: State
+) {
+  const offset = isVertical.value
+    ? containerRef.value!.scrollTop
+    : containerRef.value!.scrollLeft
+  const loadScreenThresholdSize =
+    state.containerSize * state.loadScreenThreshold
+  const rearrangeOffsetMin = state.placehoderSize + loadScreenThresholdSize
+  const rearrangeOffsetMax =
+    state.placehoderSize + state.visibleSize - loadScreenThresholdSize
+  return (
+    (offset < rearrangeOffsetMin && state.placehoderSize > 0) ||
+    (offset > rearrangeOffsetMax &&
+      state.placehoderSize + state.visibleSize < state.totalSize)
+  )
+}
+
+function rearrange(
+  visibleVNode: VNode,
+  containerRef: Ref<HTMLElement | null>,
+  isVertical: ComputedRef<boolean>,
+  state: State
+) {
+  if (!visibleVNode) {
+    return
+  }
+  const containerEl = containerRef.value
+  if (!containerEl) {
+    return
+  }
+  const offset = isVertical.value
+    ? containerEl.scrollTop
+    : containerEl.scrollLeft
+  const offsetMin = Math.max(
+    offset - state.containerSize * state.cacheScreenCount,
+    0
+  )
+  const offsetMax = Math.max(
+    offset + state.containerSize * (state.cacheScreenCount + 1),
+    offsetMin + 1
+  )
+  let tempTotalSize = 0
+  let tempVisibleSize = 0
+  let tempPlaceholderSize = 0
+  let start = false,
+    end = false
+
+  function callback(child: VNode) {
+    const childType = child.component?.type.name
+    const status = child.component?.exposed?.__listViewChildStatus
+    if (childType === 'StickySection') {
+      const { headSize, tailSize } = status as StickySectionStatus
+      tempTotalSize += headSize.value
+      traverseStickySection(child, callback)
+      tempTotalSize += tailSize.value
+    } else if (childType === 'ListItem') {
+      const { cachedSize } = status as ListItemStatus
+      const itemSize = cachedSize
+      tempTotalSize += itemSize
+      if (!start && tempTotalSize > offsetMin) {
+        start = true
+      }
+      if (!start) {
+        tempPlaceholderSize += itemSize
+      }
+      if (start && !end) {
+        tempVisibleSize += itemSize
+        status.visible.value = true
+      } else {
+        status.visible.value = false
+      }
+      if (!end && tempTotalSize >= offsetMax) {
+        end = true
+      }
+    } else if (childType === 'StickyHeader') {
+      const { cachedSize } = status as StickyHeaderStatus
+      tempTotalSize += cachedSize
+      tempVisibleSize += cachedSize
+    }
+  }
+  traverseListView(visibleVNode!, callback)
+  state.totalSize = tempTotalSize
+  state.visibleSize = tempVisibleSize
+  state.placehoderSize = tempPlaceholderSize
+}
+
 function handleTouchEvent(
   isVertical: ComputedRef<boolean>,
-  containerRef: Ref<HTMLElement | null>
+  containerRef: Ref<HTMLElement | null>,
+  props: Props,
+  state: State,
+  trigger: CustomEventTrigger,
+  emit: SetupContext['emit']
 ) {
+  let beforeRefreshing = false
+  let triggerAbort = false
+  let toUpperNumber = 0
+
+  function _setRefreshState(_state: RefreshState) {
+    if (!props.refresherEnabled) return
+    switch (_state) {
+      case 'refreshing':
+        state.refresherHeight = props.refresherThreshold
+        // 之前是刷新状态则不再触发刷新
+        if (!beforeRefreshing) {
+          beforeRefreshing = true
+          trigger('refresherrefresh', {} as Event, {})
+          emit('update:refresherTriggered', true)
+        }
+        break
+      case 'restore':
+      case 'refresherabort':
+        beforeRefreshing = false
+        state.refresherHeight = toUpperNumber = 0
+        if (_state === 'restore') {
+          triggerAbort = false
+          trigger('refresherrestore', {} as Event, {})
+        }
+        if (_state === 'refresherabort' && triggerAbort) {
+          triggerAbort = false
+          trigger('refresherabort', {} as Event, {})
+        }
+        break
+    }
+    state.refreshState = _state
+  }
+
+  watch(
+    () => props.refresherTriggered,
+    (val) => {
+      if (val === true) {
+        _setRefreshState('refreshing')
+      } else if (val === false) {
+        _setRefreshState('restore')
+      }
+    }
+  )
+
   let touchStart: { x: number; y: number } | null = {
     x: 0,
     y: 0,
@@ -496,28 +656,69 @@ function handleTouchEvent(
       needStop = false
     } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
       needStop = false
+      // 刷新时，阻止页面滚动
+      if (props.refresherEnabled && event.cancelable !== false)
+        event.preventDefault()
     } else if (
       containerEl.scrollHeight ===
         containerEl.offsetHeight + containerEl.scrollTop &&
       y < touchStart.y
     ) {
       needStop = false
+      return
     } else {
       needStop = true
     }
     if (needStop) {
       event.stopPropagation()
     }
+    if (!props.refresherEnabled) {
+      return
+    }
+    if (containerEl.scrollTop === 0 && event.touches.length === 1) {
+      // 如果容器滑动到达顶端，则进入下拉状态
+      _setRefreshState('pulling')
+    }
+
+    if (props.refresherEnabled && state.refreshState === 'pulling') {
+      const dy = y - touchStart.y
+
+      if (toUpperNumber === 0) {
+        toUpperNumber = y
+      }
+
+      if (!beforeRefreshing) {
+        state.refresherHeight = y - toUpperNumber
+        // 之前为刷新状态则不再触发pulling
+        if (state.refresherHeight > 0) {
+          triggerAbort = true
+          trigger('refresherpulling', event, {
+            deltaY: dy,
+          })
+        }
+      } else {
+        state.refresherHeight = dy + props.refresherThreshold
+        // 如果之前在刷新状态，则不触发刷新中断
+        triggerAbort = false
+      }
+    }
   }
   function __handleTouchEnd(event: TouchEvent) {
     touchStart = null
+    if (state.refresherHeight >= props.refresherThreshold) {
+      _setRefreshState('refreshing')
+    } else {
+      _setRefreshState('refresherabort')
+    }
   }
 
   onMounted(() => {
     //兼容页面下拉刷新
     const containerEl = containerRef.value!
     containerEl.addEventListener('touchstart', __handleTouchStart)
-    containerEl.addEventListener('touchmove', __handleTouchMove)
+    containerEl.addEventListener('touchmove', __handleTouchMove, {
+      passive: false,
+    })
     containerEl.addEventListener('touchend', __handleTouchEnd)
   })
 

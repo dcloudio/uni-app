@@ -20,10 +20,10 @@ import {
   EmitEvent,
 } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-
+import Refresher from '../refresher'
+import type { RefreshState } from '../refresher/types'
 type HTMLRef = Ref<HTMLElement | null>
 type Props = ExtractPropTypes<typeof props>
-type RefreshState = 'refreshing' | 'restore' | 'pulling' | 'refresherabort' | ''
 type Direction = 'x' | 'y'
 interface State {
   lastScrollTop: number
@@ -31,7 +31,6 @@ interface State {
   lastScrollToUpperTime: number
   lastScrollToLowerTime: number
   refresherHeight: number
-  refreshRotate: number
   refreshState: RefreshState
 }
 
@@ -92,7 +91,7 @@ const props = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: 'back',
+    default: 'black',
   },
   refresherBackground: {
     type: String,
@@ -132,7 +131,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const main: HTMLRef = ref(null)
     const wrap: HTMLRef = ref(null)
     const content: HTMLRef = ref(null)
-    const refresherinner: HTMLRef = ref(null)
 
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
@@ -210,9 +208,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     //#endif
 
     return () => {
-      const { refresherEnabled, refresherBackground, refresherDefaultStyle } =
-        props
-      const { refresherHeight, refreshState, refreshRotate } = state
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold,
+      } = props
+      const { refresherHeight, refreshState } = state
 
       return (
         <uni-scroll-view ref={rootRef}>
@@ -224,58 +226,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             >
               <div ref={content} class="uni-scroll-view-content">
                 {refresherEnabled ? (
-                  <div
-                    ref={refresherinner}
-                    style={{
-                      backgroundColor: refresherBackground,
-                      height: refresherHeight + 'px',
-                    }}
-                    class="uni-scroll-view-refresher"
+                  <Refresher
+                    refreshState={refreshState}
+                    refresherHeight={refresherHeight}
+                    refresherThreshold={refresherThreshold}
+                    refresherDefaultStyle={refresherDefaultStyle}
+                    refresherBackground={refresherBackground}
                   >
-                    {refresherDefaultStyle !== 'none' ? (
-                      <div class="uni-scroll-view-refresh">
-                        <div class="uni-scroll-view-refresh-inner">
-                          {refreshState == 'pulling' ? (
-                            <svg
-                              key="refresh__icon"
-                              style={{
-                                transform: 'rotate(' + refreshRotate + 'deg)',
-                              }}
-                              fill="#2BD009"
-                              class="uni-scroll-view-refresh__icon"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
-                              <path d="M0 0h24v24H0z" fill="none" />
-                            </svg>
-                          ) : null}
-                          {refreshState == 'refreshing' ? (
-                            <svg
-                              key="refresh__spinner"
-                              class="uni-scroll-view-refresh__spinner"
-                              width="24"
-                              height="24"
-                              viewBox="25 25 50 50"
-                            >
-                              <circle
-                                cx="50"
-                                cy="50"
-                                r="20"
-                                fill="none"
-                                style="color: #2bd009"
-                                stroke-width="3"
-                              />
-                            </svg>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : null}
                     {refresherDefaultStyle == 'none'
                       ? slots.refresher && slots.refresher()
                       : null}
-                  </div>
+                  </Refresher>
                 ) : null}
                 {slots.default && slots.default()}
               </div>
@@ -301,7 +262,6 @@ function useScrollViewState(props: Props) {
     lastScrollToUpperTime: 0,
     lastScrollToLowerTime: 0,
     refresherHeight: 0,
-    refreshRotate: 0,
     refreshState: '',
   })
 
@@ -667,9 +627,6 @@ function useScrollViewLoader(
           // 如果之前在刷新状态，则不触发刷新中断
           triggerAbort = false
         }
-
-        const route = state.refresherHeight / props.refresherThreshold
-        state.refreshRotate = (route > 1 ? 1 : route) * 360
       }
     }
     let __handleTouchStart = function (event: TouchEvent) {

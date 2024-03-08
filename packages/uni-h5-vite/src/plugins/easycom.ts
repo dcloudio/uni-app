@@ -42,6 +42,7 @@ const baseComponents = [
   'radio',
   'radio-group',
   'resize-sensor',
+  'refresher',
   'rich-text',
   'scroll-view',
   'slider',
