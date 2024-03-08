@@ -1,7 +1,7 @@
 import {
   normalizeExtApiDefaultParameters,
   normalizeExtApiModules,
-  parseExtApiModules,
+  // parseExtApiModules,
 } from '../src/utils'
 
 describe('ext-api', () => {
@@ -175,9 +175,10 @@ describe('ext-api', () => {
       'uni.getStorage': 'uni-storage',
       'uni.getStorageInfo': 'uni-storage',
     })
-    expect(parseExtApiModules()).toMatchObject({
-      'uni.createVideoContext': 'uni-video',
-      'component.video': 'uni-video',
-    })
+    // TODO 目前暂时屏蔽了 uts-video 的编译
+    // expect(parseExtApiModules()).toMatchObject({
+    //   'uni.createVideoContext': 'uni-video',
+    //   'component.video': 'uni-video',
+    // })
   })
 })
