@@ -13,6 +13,7 @@ import { normalizePath } from '../../utils'
 import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
 import { normalizeAppXUniConfig } from './uniConfig'
 import { offsetToLineColumn } from '../../vite/plugins/vitejs/utils'
+import { preUVueJson } from '../../preprocess'
 
 export { parseUniXFlexDirection, parseUniXSplashScreen } from './manifest'
 interface CheckPagesJsonError extends CompilerError {
@@ -153,6 +154,8 @@ function walkNode(node: Node, pagePathNodes: Node[]) {
 }
 
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {
+  // 先条件编译
+  jsonStr = preUVueJson(jsonStr)
   checkPagesJson(jsonStr, process.env.UNI_INPUT_DIR)
   const pagesJson: UniApp.PagesJson = {
     pages: [],
@@ -162,9 +165,9 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
     pages: [],
     globalStyle: {} as UniApp.PagesJson['globalStyle'],
   }
-  // preprocess
   try {
-    userPagesJson = parseJson(jsonStr, true)
+    // 此处不需要条件编译了
+    userPagesJson = parseJson(jsonStr, false)
   } catch (e) {
     console.error(`[vite] Error: pages.json parse failed.\n`, jsonStr, e)
   }

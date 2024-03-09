@@ -85,7 +85,7 @@ export function initPreContext(
 
   if (platform === 'app' || platform === 'app-plus') {
     defaultContext.APP = true
-    defaultContext.APP_PLUS = true
+    defaultContext.APP_PLUS = isX ? false : true
 
     vueContext.APP_VUE = true
 
