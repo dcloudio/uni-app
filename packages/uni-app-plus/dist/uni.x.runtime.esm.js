@@ -1580,12 +1580,9 @@ function setupPage(component) {
 }
 function initScope(pageId, vm, pageInstance) {
   {
-    vm.$getAppPage = function() {
-      return getNativeApp().pageManager.findPageById(pageId + "");
-    };
-    Object.defineProperty(vm, "$appPage", {
+    Object.defineProperty(vm, "$nativePage", {
       get() {
-        return this.$getAppPage();
+        return getNativeApp().pageManager.findPageById(pageId + "");
       }
     });
   }
@@ -1858,7 +1855,7 @@ function _redirectTo(_ref3) {
       openType: "redirectTo"
     }), "none", 0, () => {
       if (lastPage) {
-        closeWebview(lastPage.$appPage, "none");
+        closeWebview(lastPage.$nativePage, "none");
       }
       resolve(void 0);
     });
@@ -2052,7 +2049,7 @@ function switchSelect(selected, path) {
 }
 function closePage(page, animationType, animationDuration) {
   removePage(page);
-  closeWebview(page.$getAppPage(), animationType, animationDuration);
+  closeWebview(page.$nativePage, animationType, animationDuration);
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2298,7 +2295,7 @@ var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
   if (!page) {
     return reject("getCurrentPages is empty");
   }
-  var appPage = page.$getAppPage();
+  var appPage = page.$nativePage;
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBar", /* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]])]]));
   resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
@@ -2312,7 +2309,7 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
     reject("page is not ready");
     return;
   }
-  var appPage = page.$getAppPage();
+  var appPage = page.$nativePage;
   appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBar", /* @__PURE__ */ new Map([["navigationBarTitleText", options.title]])]]));
   resolve();
 });
@@ -2383,7 +2380,7 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
     if (checkOptionSource(options, res)) {
       page.$fontFamilySet.add(options.family);
       var _fontInfo = getLoadFontFaceOptions(options, res);
-      page.$appPage.loadFontFace(_fontInfo);
+      page.$nativePage.loadFontFace(_fontInfo);
     }
   }
 });

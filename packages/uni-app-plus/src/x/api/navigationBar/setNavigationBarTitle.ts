@@ -5,18 +5,19 @@ import {
   SetNavigationBarTitleProtocol,
 } from '@dcloudio/uni-api'
 import { getCurrentPage } from '@dcloudio/uni-core'
+import { ComponentPublicInstance } from 'vue'
 
 export const setNavigationBarTitle =
   defineAsyncApi<API_TYPE_SET_NAVIGATION_BAR_TITLE>(
     API_SET_NAVIGATION_BAR_TITLE,
     (options, { resolve, reject }) => {
-      const page = getCurrentPage() as any
+      const page = getCurrentPage() as ComponentPublicInstance
       if (page == null) {
         reject('page is not ready')
         return
       }
 
-      const appPage = page.$getAppPage()
+      const appPage = page.$nativePage
 
       appPage!.updateStyle(
         new Map<string, any | null>([

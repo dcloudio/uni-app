@@ -69,12 +69,9 @@ export function initScope(
       $getAppWebview,
     }
   } else {
-    vm.$getAppPage = function () {
-      return getNativeApp().pageManager.findPageById(pageId + '')!
-    }
-    Object.defineProperty(vm, '$appPage', {
+    Object.defineProperty(vm, '$nativePage', {
       get() {
-        return this.$getAppPage()
+        return getNativeApp().pageManager.findPageById(pageId + '')
       },
     })
   }

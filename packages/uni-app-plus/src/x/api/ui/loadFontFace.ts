@@ -108,7 +108,7 @@ export const loadFontFace = defineAsyncApi(
       if (checkOptionSource(options, res)) {
         page!.$fontFamilySet.add(options.family)
         const fontInfo = getLoadFontFaceOptions(options, res)
-        page.$appPage!.loadFontFace(fontInfo)
+        page.$nativePage!.loadFontFace(fontInfo)
       }
     }
   },

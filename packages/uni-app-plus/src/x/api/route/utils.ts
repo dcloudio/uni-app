@@ -8,5 +8,5 @@ export function closePage(
   animationDuration?: number
 ) {
   removePage(page)
-  closeWebview(page.$getAppPage!(), animationType, animationDuration)
+  closeWebview(page.$nativePage!, animationType, animationDuration)
 }
