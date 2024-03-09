@@ -1,4 +1,4 @@
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, computed, onMounted, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
 var _wks = { exports: {} };
@@ -1209,6 +1209,34 @@ function initLaunchOptions(_ref2) {
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
+var API_ON = "$on";
+var API_ONCE = "$once";
+var API_OFF = "$off";
+var API_EMIT = "$emit";
+var emitter = new Emitter();
+var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
+  emitter.on(name, callback);
+  return () => emitter.off(name, callback);
+});
+var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
+  emitter.once(name, callback);
+  return () => emitter.off(name, callback);
+});
+var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
+  if (!name) {
+    emitter.e = {};
+    return;
+  }
+  if (!isArray(name))
+    name = [name];
+  name.forEach((n) => emitter.off(n, callback));
+});
+var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
+  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+    args[_key - 1] = arguments[_key];
+  }
+  emitter.emit(name, ...args);
+});
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
   [ON_PAGE_NOT_FOUND]: [],
@@ -2691,6 +2719,10 @@ function requireUTSPlugin(name) {
 }
 const uni$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  $emit,
+  $off,
+  $on,
+  $once,
   getElementById,
   hideTabBar,
   hideTabBarRedDot,

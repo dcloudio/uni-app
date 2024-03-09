@@ -24,6 +24,9 @@ export { getElementById } from './dom/getElementById'
 // ui
 export { loadFontFace } from './ui/loadFontFace'
 
+// base
+export { $emit, $off, $on, $once } from './base/event-bus'
+
 export {
   initUTSProxyClass,
   initUTSProxyFunction,
