@@ -26,13 +26,13 @@
       "null"
     ]
   },
-  "uni-getDeviceInfo": {
-    "getDeviceInfo": [
+  "uni-getAppBaseInfo": {
+    "getAppBaseInfo": [
       "null"
     ]
   },
-  "uni-getAppBaseInfo": {
-    "getAppBaseInfo": [
+  "uni-getDeviceInfo": {
+    "getDeviceInfo": [
       "null"
     ]
   },
