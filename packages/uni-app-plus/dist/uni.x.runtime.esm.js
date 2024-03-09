@@ -1,5 +1,5 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, capitalize, parseStringStyle } from "@vue/shared";
+import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, capitalize, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, computed, onMounted, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
@@ -1209,6 +1209,58 @@ function initLaunchOptions(_ref2) {
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
+var API_ADD_INTERCEPTOR = "addInterceptor";
+var API_REMOVE_INTERCEPTOR = "removeInterceptor";
+function mergeInterceptorHook(interceptors2, interceptor) {
+  Object.keys(interceptor).forEach((hook) => {
+    if (isFunction(interceptor[hook])) {
+      interceptors2[hook] = mergeHook(interceptors2[hook], interceptor[hook]);
+    }
+  });
+}
+function removeInterceptorHook(interceptors2, interceptor) {
+  if (!interceptors2 || !interceptor) {
+    return;
+  }
+  Object.keys(interceptor).forEach((name) => {
+    var hooks = interceptors2[name];
+    var hook = interceptor[name];
+    if (isArray(hooks) && isFunction(hook)) {
+      remove(hooks, hook);
+    }
+  });
+}
+function mergeHook(parentVal, childVal) {
+  var res = childVal ? parentVal ? parentVal.concat(childVal) : isArray(childVal) ? childVal : [childVal] : parentVal;
+  return res ? dedupeHooks(res) : res;
+}
+function dedupeHooks(hooks) {
+  var res = [];
+  for (var i = 0; i < hooks.length; i++) {
+    if (res.indexOf(hooks[i]) === -1) {
+      res.push(hooks[i]);
+    }
+  }
+  return res;
+}
+var addInterceptor = /* @__PURE__ */ defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
+  if (isString(method) && isPlainObject(interceptor)) {
+    mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
+  } else if (isPlainObject(method)) {
+    mergeInterceptorHook(globalInterceptors, method);
+  }
+});
+var removeInterceptor = /* @__PURE__ */ defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
+  if (isString(method)) {
+    if (isPlainObject(interceptor)) {
+      removeInterceptorHook(scopedInterceptors[method], interceptor);
+    } else {
+      delete scopedInterceptors[method];
+    }
+  } else if (isPlainObject(method)) {
+    removeInterceptorHook(globalInterceptors, method);
+  }
+});
 var API_ON = "$on";
 var API_ONCE = "$once";
 var API_OFF = "$off";
@@ -1613,6 +1665,33 @@ function createFactory(component) {
   };
 }
 var ON_POP_GESTURE = "onPopGesture";
+function loadFontFaceByStyles(styles2, global2) {
+  var fontFaces = styles2["@FONT-FACE"];
+  if (!fontFaces)
+    return;
+  Object.keys(fontFaces).forEach((keys2) => {
+    var value = fontFaces[keys2];
+    var fontFamily = value["fontFamily"];
+    var fontWeight = value["fontWeight"];
+    var fontStyle = value["fontStyle"];
+    var fontVariant = value["fontVariant"];
+    var src = value["src"];
+    if (fontFamily != null && src != null) {
+      loadFontFace({
+        global: global2,
+        family: fontFamily,
+        source: src,
+        desc: {
+          style: fontStyle,
+          weight: fontWeight,
+          variant: fontVariant
+        }
+      });
+    } else {
+      console.warn("loadFontFace: fail, font-family or src is null");
+    }
+  });
+}
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -1679,6 +1758,10 @@ function registerPage(_ref) {
   nativePage.addPageEventListener(ON_READY, (_) => {
     invokeHook(page, ON_READY);
   });
+  var pageCSSStyle = page.$options.__styles;
+  if (pageCSSStyle) {
+    loadFontFaceByStyles(pageCSSStyle, false);
+  }
   return nativePage;
 }
 function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
@@ -2723,6 +2806,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   $off,
   $on,
   $once,
+  addInterceptor,
   getElementById,
   hideTabBar,
   hideTabBarRedDot,
@@ -2738,6 +2822,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   redirectTo,
   registerUTSInterface,
   registerUTSPlugin,
+  removeInterceptor,
   removeTabBarBadge,
   requireUTSPlugin,
   setNavigationBarColor,

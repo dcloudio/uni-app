@@ -20,6 +20,7 @@ import { getVueApp } from '../../../service/framework/app/vueApp'
 import { VuePageComponent } from '../../../service/framework/page/define'
 import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
+import { loadFontFaceByStyles } from '../utils'
 
 type PageNodeOptions = {}
 
@@ -136,6 +137,11 @@ export function registerPage({
   nativePage.addPageEventListener(ON_READY, (_) => {
     invokeHook(page, ON_READY)
   })
+  // 加载当前页面字体
+  const pageCSSStyle = page.$options.__styles as Record<string, any> | undefined
+  if (pageCSSStyle) {
+    loadFontFaceByStyles(pageCSSStyle, false)
+  }
   return nativePage
 }
 
