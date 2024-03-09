@@ -53,7 +53,10 @@ function _redirectTo({
       0,
       () => {
         if (lastPage) {
-          closeWebview((lastPage as ComponentPublicInstance).$appPage!, 'none')
+          closeWebview(
+            (lastPage as ComponentPublicInstance).$nativePage!,
+            'none'
+          )
         }
         resolve(undefined)
         // TODO setStatusBarStyle()
