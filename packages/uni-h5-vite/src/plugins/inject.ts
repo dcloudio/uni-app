@@ -17,8 +17,8 @@ import {
 const apiJson = require(path.resolve(
   __dirname,
   process.env.UNI_APP_X === 'true'
-    ? '../../lib/api.json'
-    : '../../lib/api.x.json'
+    ? '../../lib/api.x.json'
+    : '../../lib/api.json'
 ))
 const uniInjectPluginOptions: Partial<InjectOptions> = {
   exclude: [...COMMON_EXCLUDE],
