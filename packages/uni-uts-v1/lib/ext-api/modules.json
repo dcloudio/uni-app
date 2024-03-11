@@ -137,6 +137,18 @@
       }
     }
   },
+  "uni-getProvider": {
+    "uni": {
+      "getProvider": {
+        "name": "getProvider",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-getSystemInfo": {
     "uni": {
       "getSystemInfo": {
