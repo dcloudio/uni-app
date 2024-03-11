@@ -7268,7 +7268,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$x = {
+const props$y = {
   canvasId: {
     type: String,
     default: ""
@@ -7290,7 +7290,7 @@ const index$w = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$x,
+  props: props$y,
   computed: {
     id() {
       return this.canvasId;
@@ -7763,7 +7763,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$w = {
+const props$x = {
   name: {
     type: String,
     default: ""
@@ -7773,7 +7773,7 @@ class UniCheckboxGroupElement extends UniElement {
 }
 const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$w,
+  props: props$x,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -7833,7 +7833,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$v = {
+const props$w = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -7879,7 +7879,7 @@ class UniCheckboxElement extends UniElement {
 }
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$v,
+  props: props$w,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -8020,7 +8020,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$u = {
+const props$v = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -8861,7 +8861,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$t = /* @__PURE__ */ extend({}, props$u, {
+const props$u = /* @__PURE__ */ extend({}, props$v, {
   id: {
     type: String,
     default: ""
@@ -8891,7 +8891,7 @@ class UniEditorElement extends UniElement {
 }
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$t,
+  props: props$u,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -8999,7 +8999,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$s = {
+const props$t = {
   src: {
     type: String,
     default: ""
@@ -9040,7 +9040,7 @@ class UniImageElement extends UniElement {
 }
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$s,
+  props: props$t,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -9401,7 +9401,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$r = /* @__PURE__ */ extend(
+const props$s = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -9493,7 +9493,7 @@ const props$r = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$u
+  props$v
 );
 const emit = [
   "input",
@@ -9524,7 +9524,9 @@ function useBase(props2, rootRef, emit2) {
   });
   const maxlength = computed(() => {
     var maxlength2 = Number(props2.maxlength);
-    return isNaN(maxlength2) || maxlength2 <= 0 ? Infinity : maxlength2;
+    {
+      return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
+    }
   });
   const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
   const state2 = reactive({
@@ -9543,7 +9545,10 @@ function useBase(props2, rootRef, emit2) {
   );
   watch(
     () => state2.maxlength,
-    (val) => state2.value = state2.value.slice(0, val)
+    (val) => state2.value = state2.value.slice(0, val),
+    {
+      immediate: true
+    }
   );
   return {
     fieldRef,
@@ -9730,7 +9735,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$q = /* @__PURE__ */ extend({}, props$r, {
+const props$r = /* @__PURE__ */ extend({}, props$s, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9748,7 +9753,7 @@ class UniInputElement extends UniElement {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$q,
+  props: props$r,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -12761,7 +12766,10 @@ function useProgressState(props2) {
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = computed(() => {
-    let realValue = Number(props2.percent);
+    if (typeof props2.percent === "string" && !/^-?\d*\.?\d*$/.test(props2.percent)) {
+      return 0;
+    }
+    let realValue = parseFloat(props2.percent);
     if (Number.isNaN(realValue) || realValue < 0) {
       realValue = 0;
     } else if (realValue > 100) {
@@ -12795,7 +12803,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$p = {
+const props$q = {
   name: {
     type: String,
     default: ""
@@ -12805,7 +12813,7 @@ class UniRadioGroupElement extends UniElement {
 }
 const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$p,
+  props: props$q,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -12897,7 +12905,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$o = {
+const props$p = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -12943,7 +12951,7 @@ class UniRadioElement extends UniElement {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$o,
+  props: props$p,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -13327,7 +13335,7 @@ function parseHtml(html) {
   });
   return results.children;
 }
-const props$n = {
+const props$o = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -13342,7 +13350,7 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$n,
+  props: props$o,
   emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -13378,8 +13386,106 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
     }, h("div", {}, _vnode.value));
   }
 });
+const Refresher = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Refresher",
+  props: {
+    refreshState: {
+      type: String,
+      default: ""
+    },
+    refresherHeight: {
+      type: Number,
+      default: 0
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: "black"
+    },
+    refresherBackground: {
+      type: String,
+      default: "#fff"
+    }
+  },
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const rootStyle = computed(() => {
+      const style = {
+        backgroundColor: props2.refresherBackground
+      };
+      switch (props2.refreshState) {
+        case "pulling":
+          style.height = props2.refresherHeight + "px";
+          break;
+        case "refreshing":
+          style.height = props2.refresherThreshold + "px";
+          style.transition = "height 0.3s";
+          break;
+        case "":
+        case "refresherabort":
+        case "restore":
+          style.height = "0px";
+          style.transition = "height 0.3s";
+          break;
+      }
+      return style;
+    });
+    const refreshRotate = computed(() => {
+      const route = props2.refresherHeight / props2.refresherThreshold;
+      return (route > 1 ? 1 : route) * 360;
+    });
+    return () => {
+      const {
+        refreshState,
+        refresherDefaultStyle
+      } = props2;
+      return createVNode("div", {
+        "ref": rootRef,
+        "style": rootStyle.value,
+        "class": "uni-scroll-view-refresher"
+      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresh"
+      }, [createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [refreshState == "pulling" ? createVNode("svg", {
+        "key": "refresh__icon",
+        "style": {
+          transform: "rotate(" + refreshRotate.value + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
+        "key": "refresh__spinner",
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.default && slots.default() : null], 4);
+    };
+  }
+});
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$m = {
+const props$n = {
   direction: {
     type: [String],
     default: "vertical"
@@ -13434,7 +13540,7 @@ const props$m = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: "back"
+    default: "black"
   },
   refresherBackground: {
     type: String,
@@ -13452,7 +13558,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$m,
+  props: props$n,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -13466,7 +13572,6 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
     const main = ref(null);
     const wrap = ref(null);
     const content = ref(null);
-    const refresherinner = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     const {
       state: state2,
@@ -13531,12 +13636,12 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       const {
         refresherEnabled,
         refresherBackground,
-        refresherDefaultStyle
+        refresherDefaultStyle,
+        refresherThreshold
       } = props2;
       const {
         refresherHeight,
-        refreshState,
-        refreshRotate
+        refreshState
       } = state2;
       return createVNode("uni-scroll-view", {
         "ref": rootRef
@@ -13550,46 +13655,15 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "ref": content,
         "class": "uni-scroll-view-content"
-      }, [refresherEnabled ? createVNode("div", {
-        "ref": refresherinner,
-        "style": {
-          backgroundColor: refresherBackground,
-          height: refresherHeight + "px"
-        },
-        "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
-        "class": "uni-scroll-view-refresh"
-      }, [createVNode("div", {
-        "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? createVNode("svg", {
-        "key": "refresh__icon",
-        "style": {
-          transform: "rotate(" + refreshRotate + "deg)"
-        },
-        "fill": "#2BD009",
-        "class": "uni-scroll-view-refresh__icon",
-        "width": "24",
-        "height": "24",
-        "viewBox": "0 0 24 24"
-      }, [createVNode("path", {
-        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-      }, null), createVNode("path", {
-        "d": "M0 0h24v24H0z",
-        "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
-        "key": "refresh__spinner",
-        "class": "uni-scroll-view-refresh__spinner",
-        "width": "24",
-        "height": "24",
-        "viewBox": "25 25 50 50"
-      }, [createVNode("circle", {
-        "cx": "50",
-        "cy": "50",
-        "r": "20",
-        "fill": "none",
-        "style": "color: #2bd009",
-        "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
+      }, [refresherEnabled ? createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -13606,7 +13680,6 @@ function useScrollViewState(props2) {
     lastScrollToUpperTime: 0,
     lastScrollToLowerTime: 0,
     refresherHeight: 0,
-    refreshRotate: 0,
     refreshState: ""
   });
   return {
@@ -13884,8 +13957,6 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
           state2.refresherHeight = dy + props2.refresherThreshold;
           triggerAbort = false;
         }
-        const route = state2.refresherHeight / props2.refresherThreshold;
-        state2.refreshRotate = (route > 1 ? 1 : route) * 360;
       }
     };
     let __handleTouchStart = function(event) {
@@ -13942,7 +14013,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$l = {
+const props$m = {
   name: {
     type: String,
     default: ""
@@ -14037,7 +14108,7 @@ class UniSliderElement extends UniElement {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$l,
+  props: props$m,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -14181,7 +14252,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$k = {
+const props$l = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -14684,7 +14755,7 @@ class UniSwiperElement extends UniElement {
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$k,
+  props: props$l,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -14914,7 +14985,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$j = {
+const props$k = {
   itemId: {
     type: String,
     default: ""
@@ -14924,7 +14995,7 @@ class UniSwiperItemElement extends UniElement {
 }
 const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$j,
+  props: props$k,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -14981,7 +15052,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$i = {
+const props$j = {
   name: {
     type: String,
     default: ""
@@ -15011,7 +15082,7 @@ class UniSwitchElement extends UniElement {
 }
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$i,
+  props: props$j,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -15217,7 +15288,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$h = /* @__PURE__ */ extend({}, props$r, {
+const props$i = /* @__PURE__ */ extend({}, props$s, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -15248,7 +15319,7 @@ class UniTextareaElement extends UniElement {
 }
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$h,
+  props: props$i,
   emits: ["confirm", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -15475,54 +15546,80 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
+const props$h = {
+  direction: {
+    type: String,
+    default: "vertical",
+    validator: (val) => {
+      return ["none", "vertical", "horizontal"].includes(val);
+    }
+  },
+  showScrollbar: {
+    type: [Boolean, String],
+    default: true
+  },
+  upperThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  lowerThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  scrollTop: {
+    type: [Number, String],
+    default: 0
+  },
+  scrollLeft: {
+    type: [Number, String],
+    default: 0
+  },
+  // 暂不支持
+  // scrollIntoView: {
+  //   type: String,
+  //   default: '',
+  // },
+  scrollWithAnimation: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherEnabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherThreshold: {
+    type: Number,
+    default: 45
+  },
+  refresherDefaultStyle: {
+    type: String,
+    default: "black"
+  },
+  refresherBackground: {
+    type: String,
+    default: "#fff"
+  },
+  refresherTriggered: {
+    type: [Boolean, String],
+    default: false
+  }
+};
 class UniListViewElement extends UniElement {
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: {
-    direction: {
-      type: String,
-      default: "vertical",
-      validator: (val) => {
-        return ["none", "vertical", "horizontal"].includes(val);
-      }
-    },
-    showScrollbar: {
-      type: [Boolean, String],
-      default: true
-    },
-    upperThreshold: {
-      type: [Number, String],
-      default: 50
-    },
-    lowerThreshold: {
-      type: [Number, String],
-      default: 50
-    },
-    scrollTop: {
-      type: [Number, String],
-      default: 0
-    },
-    scrollLeft: {
-      type: [Number, String],
-      default: 0
-    },
-    // 暂不支持
-    // scrollIntoView: {
-    //   type: String,
-    //   default: '',
-    // },
-    scrollWithAnimation: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
+  props: props$h,
   emits: [
     "scroll",
     "scrolltoupper",
-    "scrolltolower"
+    "scrolltolower",
     // 有触发时机，但是由于没有原生事件暂不支持
     // 'scrollend',
+    "refresherrefresh",
+    "refresherrestore",
+    "refresherpulling",
+    "refresherabort",
+    "update:refresherTriggered"
   ],
   rootElement: {
     name: "uni-list-view",
@@ -15530,27 +15627,20 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup(props2, {
     slots,
-    expose,
     emit: emit2
   }) {
     const rootRef = ref(null);
     const containerRef = ref(null);
     const visibleRef = ref(null);
-    const placehoderSize = ref(0);
-    const visibleSize = ref(0);
-    const totalSize = ref(0);
-    const isVertical = computed(() => {
-      return props2.direction !== "horizontal";
-    });
-    const defaultItemSize = 40;
-    const cacheScreenCount = 5;
-    const loadScreenThreshold = 3;
-    let containerSize = 0;
+    const {
+      isVertical,
+      state: state2
+    } = useListViewState(props2);
     provide("__listViewIsVertical", isVertical);
-    provide("__listViewDefaultItemSize", defaultItemSize);
+    provide("__listViewDefaultItemSize", state2.defaultItemSize);
     const onItemChange = debounce(() => {
       nextTick(() => {
-        rearrange();
+        _rearrange();
       });
     }, 10, {
       clearTimeout,
@@ -15563,24 +15653,17 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       onItemChange();
     });
     const trigger = useCustomEvent(rootRef, emit2);
-    handleTouchEvent(isVertical, containerRef);
+    handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2);
     function getOffset() {
       return isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
     }
     function resetContainerSize() {
       const containerEl = containerRef.value;
-      containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+      state2.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
     }
     watch(isVertical, () => {
       resetContainerSize();
     });
-    function shouldRearrange() {
-      const offset = getOffset();
-      const loadScreenThresholdSize = containerSize * loadScreenThreshold;
-      const rearrangeOffsetMin = placehoderSize.value + loadScreenThresholdSize;
-      const rearrangeOffsetMax = placehoderSize.value + visibleSize.value - loadScreenThresholdSize;
-      return offset < rearrangeOffsetMin && placehoderSize.value > 0 || offset > rearrangeOffsetMax && placehoderSize.value + visibleSize.value < totalSize.value;
-    }
     const upperThresholdNumber = computed(() => {
       const val = Number(props2.upperThreshold);
       return isNaN(val) ? 50 : val;
@@ -15634,8 +15717,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
           });
         }
         lastScrollOffset = currentOffset;
-        if (shouldRearrange()) {
-          rearrange();
+        if (_shouldRearrange()) {
+          _rearrange();
         }
       });
       const rootElement = rootRef.value;
@@ -15675,7 +15758,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       });
       rootElement.attachVmProps(props2);
     });
-    function refresh() {
+    function forceRearrange() {
       traverseAllItems((child) => {
         const exposed = child.component.exposed;
         if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
@@ -15684,16 +15767,13 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       });
       nextTick(() => {
         nextTick(() => {
-          rearrange();
+          _rearrange();
         });
       });
     }
-    expose({
-      refresh
-    });
     function onResize2() {
       resetContainerSize();
-      refresh();
+      forceRearrange();
     }
     function traverseAllItems(callback) {
       traverseListView(visibleVNode, (child) => {
@@ -15712,78 +15792,33 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         }
       });
     }
-    function rearrange() {
-      if (!visibleVNode) {
-        return;
-      }
-      const containerEl = containerRef.value;
-      if (!containerEl) {
-        return;
-      }
-      const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
-      const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0);
-      const offsetMax = Math.max(offset + containerSize * (cacheScreenCount + 1), offsetMin + 1);
-      let tempTotalSize = 0;
-      let tempVisibleSize = 0;
-      let tempPlaceholderSize = 0;
-      let start = false, end = false;
-      function callback(child) {
-        var _a, _b, _c;
-        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-        const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
-        if (childType === "StickySection") {
-          const {
-            headSize,
-            tailSize
-          } = status;
-          tempTotalSize += headSize.value;
-          traverseStickySection(child, callback);
-          tempTotalSize += tailSize.value;
-        } else if (childType === "ListItem") {
-          const {
-            cachedSize
-          } = status;
-          const itemSize = cachedSize;
-          tempTotalSize += itemSize;
-          if (!start && tempTotalSize > offsetMin) {
-            start = true;
-          }
-          if (!start) {
-            tempPlaceholderSize += itemSize;
-          }
-          if (start && !end) {
-            tempVisibleSize += itemSize;
-            status.visible.value = true;
-          } else {
-            status.visible.value = false;
-          }
-          if (!end && tempTotalSize >= offsetMax) {
-            end = true;
-          }
-        } else if (childType === "StickyHeader") {
-          const {
-            cachedSize
-          } = status;
-          tempTotalSize += cachedSize;
-          tempVisibleSize += cachedSize;
-        }
-      }
-      traverseListView(visibleVNode, callback);
-      totalSize.value = tempTotalSize;
-      visibleSize.value = tempVisibleSize;
-      placehoderSize.value = tempPlaceholderSize;
+    function _rearrange() {
+      rearrange(visibleVNode, containerRef, isVertical, state2);
+    }
+    function _shouldRearrange() {
+      return shouldRearrange(containerRef, isVertical, state2);
     }
     const containerStyle = computed(() => {
       return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
     const contentStyle = computed(() => {
-      return `position: relative; ${isVertical.value ? "height" : "width"}: ${totalSize.value}px;`;
+      return `position: relative; ${isVertical.value ? "height" : "width"}: ${state2.totalSize}px;`;
     });
     const visibleStyle = computed(() => {
-      return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${placehoderSize.value}px;`;
+      return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${state2.placehoderSize}px;`;
     });
     let visibleVNode = null;
     return () => {
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState
+      } = state2;
       const defaultSlot = slots.default && slots.default();
       visibleVNode = createVNode("div", {
         "ref": visibleRef,
@@ -15800,13 +15835,147 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "class": "uni-list-view-content",
         "style": contentStyle.value
-      }, [visibleVNode], 4)], 4), createVNode(ResizeSensor, {
+      }, [refresherEnabled ? createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, visibleVNode], 4)], 4), createVNode(ResizeSensor, {
         "onResize": onResize2
       }, null, 8, ["onResize"])], 512);
     };
   }
 });
-function handleTouchEvent(isVertical, containerRef) {
+function useListViewState(props2) {
+  const isVertical = computed(() => {
+    return props2.direction !== "horizontal";
+  });
+  const state2 = reactive({
+    defaultItemSize: 40,
+    totalSize: 0,
+    placehoderSize: 0,
+    visibleSize: 0,
+    containerSize: 0,
+    cacheScreenCount: 5,
+    loadScreenThreshold: 3,
+    refresherHeight: 0,
+    refreshState: ""
+  });
+  return {
+    state: state2,
+    isVertical
+  };
+}
+function shouldRearrange(containerRef, isVertical, state2) {
+  const offset = isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
+  const loadScreenThresholdSize = state2.containerSize * state2.loadScreenThreshold;
+  const rearrangeOffsetMin = state2.placehoderSize + loadScreenThresholdSize;
+  const rearrangeOffsetMax = state2.placehoderSize + state2.visibleSize - loadScreenThresholdSize;
+  return offset < rearrangeOffsetMin && state2.placehoderSize > 0 || offset > rearrangeOffsetMax && state2.placehoderSize + state2.visibleSize < state2.totalSize;
+}
+function rearrange(visibleVNode, containerRef, isVertical, state2) {
+  if (!visibleVNode) {
+    return;
+  }
+  const containerEl = containerRef.value;
+  if (!containerEl) {
+    return;
+  }
+  const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
+  const offsetMin = Math.max(offset - state2.containerSize * state2.cacheScreenCount, 0);
+  const offsetMax = Math.max(offset + state2.containerSize * (state2.cacheScreenCount + 1), offsetMin + 1);
+  let tempTotalSize = 0;
+  let tempVisibleSize = 0;
+  let tempPlaceholderSize = 0;
+  let start = false, end = false;
+  function callback(child) {
+    var _a, _b, _c;
+    const childType = (_a = child.component) == null ? void 0 : _a.type.name;
+    const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
+    if (childType === "StickySection") {
+      const {
+        headSize,
+        tailSize
+      } = status;
+      tempTotalSize += headSize.value;
+      traverseStickySection(child, callback);
+      tempTotalSize += tailSize.value;
+    } else if (childType === "ListItem") {
+      const {
+        cachedSize
+      } = status;
+      const itemSize = cachedSize;
+      tempTotalSize += itemSize;
+      if (!start && tempTotalSize > offsetMin) {
+        start = true;
+      }
+      if (!start) {
+        tempPlaceholderSize += itemSize;
+      }
+      if (start && !end) {
+        tempVisibleSize += itemSize;
+        status.visible.value = true;
+      } else {
+        status.visible.value = false;
+      }
+      if (!end && tempTotalSize >= offsetMax) {
+        end = true;
+      }
+    } else if (childType === "StickyHeader") {
+      const {
+        cachedSize
+      } = status;
+      tempTotalSize += cachedSize;
+      tempVisibleSize += cachedSize;
+    }
+  }
+  traverseListView(visibleVNode, callback);
+  state2.totalSize = tempTotalSize;
+  state2.visibleSize = tempVisibleSize;
+  state2.placehoderSize = tempPlaceholderSize;
+}
+function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2) {
+  let beforeRefreshing = false;
+  let triggerAbort = false;
+  let toUpperNumber = 0;
+  function _setRefreshState(_state) {
+    if (!props2.refresherEnabled)
+      return;
+    switch (_state) {
+      case "refreshing":
+        state2.refresherHeight = props2.refresherThreshold;
+        if (!beforeRefreshing) {
+          beforeRefreshing = true;
+          trigger("refresherrefresh", {}, {});
+          emit2("update:refresherTriggered", true);
+        }
+        break;
+      case "restore":
+      case "refresherabort":
+        beforeRefreshing = false;
+        state2.refresherHeight = toUpperNumber = 0;
+        if (_state === "restore") {
+          triggerAbort = false;
+          trigger("refresherrestore", {}, {});
+        }
+        if (_state === "refresherabort" && triggerAbort) {
+          triggerAbort = false;
+          trigger("refresherabort", {}, {});
+        }
+        break;
+    }
+    state2.refreshState = _state;
+  }
+  watch(() => props2.refresherTriggered, (val) => {
+    if (val === true) {
+      _setRefreshState("refreshing");
+    } else if (val === false) {
+      _setRefreshState("restore");
+    }
+  });
   let touchStart = {
     x: 0,
     y: 0
@@ -15833,22 +16002,56 @@ function handleTouchEvent(isVertical, containerRef) {
       needStop = false;
     } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
       needStop = false;
+      if (props2.refresherEnabled && event.cancelable !== false)
+        event.preventDefault();
     } else if (containerEl.scrollHeight === containerEl.offsetHeight + containerEl.scrollTop && y < touchStart.y) {
       needStop = false;
+      return;
     } else {
       needStop = true;
     }
     if (needStop) {
       event.stopPropagation();
     }
+    if (!props2.refresherEnabled) {
+      return;
+    }
+    if (containerEl.scrollTop === 0 && event.touches.length === 1) {
+      _setRefreshState("pulling");
+    }
+    if (props2.refresherEnabled && state2.refreshState === "pulling") {
+      const dy = y - touchStart.y;
+      if (toUpperNumber === 0) {
+        toUpperNumber = y;
+      }
+      if (!beforeRefreshing) {
+        state2.refresherHeight = y - toUpperNumber;
+        if (state2.refresherHeight > 0) {
+          triggerAbort = true;
+          trigger("refresherpulling", event, {
+            deltaY: dy
+          });
+        }
+      } else {
+        state2.refresherHeight = dy + props2.refresherThreshold;
+        triggerAbort = false;
+      }
+    }
   }
   function __handleTouchEnd(event) {
     touchStart = null;
+    if (state2.refresherHeight >= props2.refresherThreshold) {
+      _setRefreshState("refreshing");
+    } else {
+      _setRefreshState("refresherabort");
+    }
   }
   onMounted(() => {
     const containerEl = containerRef.value;
     containerEl.addEventListener("touchstart", __handleTouchStart);
-    containerEl.addEventListener("touchmove", __handleTouchMove);
+    containerEl.addEventListener("touchmove", __handleTouchMove, {
+      passive: false
+    });
     containerEl.addEventListener("touchend", __handleTouchEnd);
   });
   onBeforeUnmount(() => {
