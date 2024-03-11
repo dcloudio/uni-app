@@ -109,7 +109,7 @@ export const getWindowProperties = (params: GetWindowPropertiesParams, callback:
     callback(null, { errMsg: 'Page.getWindowProperties:fail, Page not found.' })
     return
   }
-  const document = page.$appPage!.document
+  const document = page.$nativePage!.document
   const rootNode = document.childNodes[0]
   const properties = params.names.map((name): any | null => {
     switch (name) {
