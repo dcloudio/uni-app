@@ -220,7 +220,13 @@ function useBase(
   })
   const maxlength = computed(() => {
     var maxlength = Number(props.maxlength)
-    return isNaN(maxlength) ? 140 : maxlength
+    if (__X__) {
+      return isNaN(maxlength) || maxlength < 0
+        ? Infinity
+        : Math.floor(maxlength)
+    } else {
+      return isNaN(maxlength) ? 140 : maxlength
+    }
   })
   const value =
     getValueString(props.modelValue, props.type) ||
@@ -241,7 +247,10 @@ function useBase(
   )
   watch(
     () => state.maxlength,
-    (val) => (state.value = state.value.slice(0, val))
+    (val) => (state.value = state.value.slice(0, val)),
+    {
+      immediate: __X__ ? true : false,
+    }
   )
   return {
     fieldRef,
