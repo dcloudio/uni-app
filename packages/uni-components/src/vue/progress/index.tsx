@@ -107,8 +107,14 @@ function useProgressState(props: ProgressProps) {
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`
   })
   const realPercent = computed(() => {
+    if (
+      typeof props.percent === 'string' &&
+      !/^-?\d*\.?\d*$/.test(props.percent)
+    ) {
+      return 0
+    }
     // 确保最终计算时使用的是 Number 类型的值，并且在有效范围内。
-    let realValue = Number(props.percent)
+    let realValue = parseFloat(props.percent as string)
     if (Number.isNaN(realValue) || realValue < 0) {
       realValue = 0
     } else if (realValue > 100) {

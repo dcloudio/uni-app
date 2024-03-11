@@ -220,7 +220,11 @@ function useBase(
   })
   const maxlength = computed(() => {
     var maxlength = Number(props.maxlength)
-    return isNaN(maxlength) || maxlength <= 0 ? Infinity : maxlength
+    return maxlength === -1
+      ? Infinity
+      : isNaN(maxlength) || maxlength <= 0
+      ? 140
+      : maxlength
   })
   const value =
     getValueString(props.modelValue, props.type) ||
