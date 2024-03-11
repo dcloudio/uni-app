@@ -150,7 +150,7 @@ export const nodeList2VNode = /*#__PURE__*/ (
     }
     if (!hasOwn(node, 'type') || node.type === 'node') {
       let nodeProps = { [scopeId]: '' }
-      const tagName = node.name.toLowerCase()
+      const tagName = node.name?.toLowerCase()
       if (!hasOwn(TAGS, tagName)) {
         return
       }
