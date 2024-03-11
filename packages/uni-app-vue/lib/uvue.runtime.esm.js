@@ -8836,6 +8836,27 @@ function setVarsOnVNode(vnode, vars) {
     }
 }
 
+const getModelAssigner = (vnode) => {
+    const fn = vnode.props['onUpdate:modelValue'];
+    return isArray(fn) ? value => invokeArrayFns(fn, value) : fn;
+};
+const vModelText = {
+    created(el, _binding, _vnode, _prevVNode) {
+        const trigger = getModelAssigner(_vnode);
+        el.addEventListener('input', (_) => {
+            trigger(el.getAnyAttribute('value'));
+        });
+    },
+    mounted(el, _binding, _vnode, _prevVNode) {
+        var _a;
+        el.setAnyAttribute('value', (_a = _binding.value) !== null && _a !== void 0 ? _a : '');
+    },
+    beforeUpdate(el, _binding, _vnode, _prevVNode) {
+        var _a;
+        el.setAnyAttribute('value', (_a = _binding.value) !== null && _a !== void 0 ? _a : '');
+    }
+};
+
 const systemModifiers = ['ctrl', 'shift', 'alt', 'meta'];
 const modifierGuards = {
     stop: e => e.stopPropagation(),
@@ -8880,10 +8901,7 @@ const withKeys = (fn, modifiers) => {
 
 const vShow = {
     beforeMount(el, { value }, { transition }) {
-        el._vod =
-            el.style.getPropertyValue('display') === 'none'
-                ? ''
-                : 'flex';
+        el._vod = el.style.getPropertyValue('display') === 'none' ? '' : 'flex';
         if (transition && value) {
             transition.beforeEnter(el);
         }
@@ -8947,4 +8965,4 @@ const createApp = ((...args) => {
     return app;
 });
 
-export { BaseTransition, BaseTransitionPropsValidators, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, Fragment, KeepAlive, Static, Suspense, Teleport, Text, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtools, getCurrentInstance, getTransitionRawChildren, guardReactiveProps, h, handleError, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isRuntimeOnly, isVNode, mergeDefaults, mergeProps, nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, pushScopeId, queuePostFlushCb, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, ssrContextKey, ssrUtils, toHandlers, transformVNodeArgs, useAttrs, useCssModule, useCssStyles, useCssVars, useSSRContext, useSlots, useTransitionState, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
