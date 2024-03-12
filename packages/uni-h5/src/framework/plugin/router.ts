@@ -26,16 +26,16 @@ export function initRouter(app: App) {
   app.use(router)
 }
 
-const scrollBehavior: RouterOptions['scrollBehavior'] = (
-  _to,
-  _from,
-  savedPosition
-) => {
-  if (savedPosition) {
-    return savedPosition
-  }
-  // TODO tabBar?
-}
+// const scrollBehavior: RouterOptions['scrollBehavior'] = (
+//   _to,
+//   _from,
+//   savedPosition
+// ) => {
+//   if (savedPosition) {
+//     return savedPosition
+//   }
+//   // TODO tabBar?
+// }
 
 function createRouterOptions(): RouterOptions {
   return {
@@ -46,9 +46,7 @@ function createRouterOptions(): RouterOptions {
      * 传入scrollBehavior后，vue-router会将history.scrollRestoration设为manual。
      * 导致safari无法保留上一页面的截图，进而导致在iOS手势返回期间上一页面处于白屏状态
      */
-    //#if !_X_
-    scrollBehavior,
-    //#endif
+    // scrollBehavior,
   }
 }
 
