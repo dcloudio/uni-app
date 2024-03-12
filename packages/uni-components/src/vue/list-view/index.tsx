@@ -145,7 +145,7 @@ const props = {
 
 type Props = ExtractPropTypes<typeof props>
 
-class UniListViewElement extends UniElement {}
+export class UniListViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ListView',
   props,

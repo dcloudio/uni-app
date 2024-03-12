@@ -22,7 +22,7 @@ interface UniFormFieldCtx {
   reset?: () => void
 }
 
-class UniFormElement extends UniElement {}
+export class UniFormElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Form',
   emits: ['submit', 'reset'],

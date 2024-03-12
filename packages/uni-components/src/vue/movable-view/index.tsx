@@ -27,7 +27,7 @@ import {
 
 type RootRef = Ref<HTMLElement | null>
 
-class UniMovableViewElement extends UniElement {}
+export class UniMovableViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'MovableView',
   props: movableViewProps,

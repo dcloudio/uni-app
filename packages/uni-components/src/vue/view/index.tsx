@@ -4,7 +4,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import { hoverProps, useHover } from '../../helpers/useHover'
 
-class UniViewElement extends UniElement {}
+export class UniViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'View',
   props: extend({}, hoverProps),

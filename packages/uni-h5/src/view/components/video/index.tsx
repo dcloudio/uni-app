@@ -815,7 +815,7 @@ const props = {
 }
 
 // 仅作实现，X项目中不会依据此类生成d.ts
-class UniVideoElement extends UniElement {}
+export class UniVideoElement extends UniElement {}
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Video',

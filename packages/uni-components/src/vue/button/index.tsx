@@ -10,7 +10,7 @@ import { useListeners } from '../../helpers/useListeners'
 import { buttonProps } from '../../components/button'
 import { UniElement } from '../../helpers/UniElement'
 
-class UniButtonElement extends UniElement {}
+export class UniButtonElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Button',
   props: buttonProps,

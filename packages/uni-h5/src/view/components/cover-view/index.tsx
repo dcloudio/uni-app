@@ -11,7 +11,7 @@ const props = {
 
 type Props = ExtractPropTypes<typeof props>
 
-class UniCoverViewElement extends UniElement {}
+export class UniCoverViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'CoverView',
   compatConfig: {

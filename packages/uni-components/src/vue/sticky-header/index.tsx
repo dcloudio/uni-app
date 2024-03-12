@@ -4,7 +4,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import { StickyHeaderStatus } from '../list-view/types'
 
-class UniStickyHeaderElement extends UniElement {}
+export class UniStickyHeaderElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'StickyHeader',
   props: {

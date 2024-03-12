@@ -50,7 +50,7 @@ const props = {
 
 type SwitchProps = ExtractPropTypes<typeof props>
 
-class UniSwitchElement extends UniElement {}
+export class UniSwitchElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Switch',
   props,

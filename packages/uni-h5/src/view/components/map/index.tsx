@@ -561,7 +561,7 @@ function useMap(
   }
 }
 
-class UniMapElement extends UniElement {}
+export class UniMapElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Map',
   props,

@@ -22,7 +22,7 @@ const props = {
 
 type RootRef = Ref<HTMLElement | null>
 
-class UniWebViewElement extends UniElement {}
+export class UniWebViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'WebView',

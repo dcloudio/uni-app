@@ -206,7 +206,7 @@ type State = {
   }
 }
 
-class UniPickerElement extends UniElement {}
+export class UniPickerElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Picker',
   compatConfig: {

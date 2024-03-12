@@ -32,7 +32,7 @@ const props = {
 
 type CheckBoxGroupProps = ExtractPropTypes<typeof props>
 
-class UniCheckboxGroupElement extends UniElement {}
+export class UniCheckboxGroupElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'CheckboxGroup',
   props,

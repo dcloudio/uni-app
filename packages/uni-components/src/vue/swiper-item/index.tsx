@@ -10,7 +10,7 @@ const props = {
   },
 }
 
-class UniSwiperItemElement extends UniElement {}
+export class UniSwiperItemElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'SwiperItem',
   props,

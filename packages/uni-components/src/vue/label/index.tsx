@@ -7,7 +7,7 @@ import { labelProps, useProvideLabel } from '../../components/label'
 
 export { UniLabelCtx, uniLabelKey } from '../../components/label'
 
-class UniLabelElement extends UniElement {}
+export class UniLabelElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Label',
   props: labelProps,

@@ -15,7 +15,7 @@ import { PROGRESS_VALUES, progressProps } from '../../components/progress'
 type ProgressProps = ExtractPropTypes<typeof progressProps>
 type ProgerssState = ReturnType<typeof useProgressState>
 
-class UniProgressElement extends UniElement {}
+export class UniProgressElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Progress',
   props: progressProps,

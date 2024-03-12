@@ -28,7 +28,7 @@ const props = {
 
 type RadioGroupProps = ExtractPropTypes<typeof props>
 
-class UniRadioGroupElement extends UniElement {}
+export class UniRadioGroupElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'RadioGroup',
   props,
