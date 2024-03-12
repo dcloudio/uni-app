@@ -131,7 +131,7 @@ function resolveSourceMapFile(
   }
 }
 
-const DEFAULT_APPID = 'HBuilder'
+const DEFAULT_APPID = '__UNI__uniappx'
 
 function normalizeAppid(appid: string) {
   return appid.replace(/_/g, '')
