@@ -2068,6 +2068,7 @@ function findTabPage(path) {
   var page = (_tabs$get = tabs.get(path)) !== null && _tabs$get !== void 0 ? _tabs$get : null;
   if (page !== null) {
     var pages2 = getAllPages();
+    pages2.forEach((item) => item.$.__isActive = item === page);
     var index2 = pages2.indexOf(page);
     if (index2 !== pages2.length - 1) {
       pages2.splice(index2, 1);
