@@ -438,9 +438,9 @@
       "rpx2px": {
         "name": "rpx2px",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
