@@ -510,7 +510,9 @@ function useScrollViewLoader(
         // 之前是刷新状态则不再触发刷新
         if (!beforeRefreshing) {
           beforeRefreshing = true
-          trigger('refresherrefresh', {} as Event, {})
+          trigger('refresherrefresh', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
           emit('update:refresherTriggered', true)
         }
         break
@@ -520,15 +522,31 @@ function useScrollViewLoader(
         state.refresherHeight = toUpperNumber = 0
         if (_state === 'restore') {
           triggerAbort = false
-          trigger('refresherrestore', {} as Event, {})
+          trigger('refresherrestore', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
         }
         if (_state === 'refresherabort' && triggerAbort) {
           triggerAbort = false
-          trigger('refresherabort', {} as Event, {})
+          trigger('refresherabort', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
         }
         break
     }
     state.refreshState = _state
+  }
+  type touchPoint = {
+    x: number
+    y: number
+  }
+  let touchStart: touchPoint = {
+    x: 0,
+    y: 0,
+  }
+  let touchEnd: touchPoint = {
+    x: 0,
+    y: props.refresherThreshold,
   }
 
   onMounted(() => {
@@ -541,13 +559,6 @@ function useScrollViewLoader(
       event.preventDefault()
       event.stopPropagation()
       _handleScroll(event as MouseEvent)
-    }
-    let touchStart: {
-      x: number
-      y: number
-    } | null = {
-      x: 0,
-      y: 0,
     }
     let needStop: boolean | null = null
 
@@ -620,6 +631,7 @@ function useScrollViewLoader(
             triggerAbort = true
             trigger('refresherpulling', event, {
               deltaY: dy,
+              dy,
             })
           }
         } else {
@@ -641,7 +653,10 @@ function useScrollViewLoader(
       }
     }
     let __handleTouchEnd = function (event: TouchEvent) {
-      touchStart = null
+      touchEnd = {
+        x: event.changedTouches[0].pageX,
+        y: event.changedTouches[0].pageY,
+      }
       disableScrollBounce({
         disable: false,
       })
@@ -649,6 +664,14 @@ function useScrollViewLoader(
         _setRefreshState('refreshing')
       } else {
         _setRefreshState('refresherabort')
+      }
+      touchStart = {
+        x: 0,
+        y: 0,
+      }
+      touchEnd = {
+        x: 0,
+        y: props.refresherThreshold,
       }
     }
     main.value!.addEventListener(

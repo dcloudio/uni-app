@@ -590,6 +590,19 @@ function handleTouchEvent(
   let triggerAbort = false
   let toUpperNumber = 0
 
+  type touchPoint = {
+    x: number
+    y: number
+  }
+  let touchStart: touchPoint = {
+    x: 0,
+    y: 0,
+  }
+  let touchEnd: touchPoint = {
+    x: 0,
+    y: props.refresherThreshold,
+  }
+
   function _setRefreshState(_state: RefreshState) {
     if (!props.refresherEnabled) return
     switch (_state) {
@@ -598,7 +611,9 @@ function handleTouchEvent(
         // 之前是刷新状态则不再触发刷新
         if (!beforeRefreshing) {
           beforeRefreshing = true
-          trigger('refresherrefresh', {} as Event, {})
+          trigger('refresherrefresh', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
           emit('update:refresherTriggered', true)
         }
         break
@@ -608,11 +623,15 @@ function handleTouchEvent(
         state.refresherHeight = toUpperNumber = 0
         if (_state === 'restore') {
           triggerAbort = false
-          trigger('refresherrestore', {} as Event, {})
+          trigger('refresherrestore', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
         }
         if (_state === 'refresherabort' && triggerAbort) {
           triggerAbort = false
-          trigger('refresherabort', {} as Event, {})
+          trigger('refresherabort', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
         }
         break
     }
@@ -629,11 +648,6 @@ function handleTouchEvent(
       }
     }
   )
-
-  let touchStart: { x: number; y: number } | null = {
-    x: 0,
-    y: 0,
-  }
 
   function __handleTouchStart(event: TouchEvent) {
     if (event.touches.length === 1) {
@@ -694,6 +708,7 @@ function handleTouchEvent(
           triggerAbort = true
           trigger('refresherpulling', event, {
             deltaY: dy,
+            dy,
           })
         }
       } else {
@@ -704,11 +719,22 @@ function handleTouchEvent(
     }
   }
   function __handleTouchEnd(event: TouchEvent) {
-    touchStart = null
+    touchEnd = {
+      x: event.changedTouches[0].pageX,
+      y: event.changedTouches[0].pageY,
+    }
     if (state.refresherHeight >= props.refresherThreshold) {
       _setRefreshState('refreshing')
     } else {
       _setRefreshState('refresherabort')
+    }
+    touchStart = {
+      x: 0,
+      y: 0,
+    }
+    touchEnd = {
+      x: 0,
+      y: props.refresherThreshold,
     }
   }
 
