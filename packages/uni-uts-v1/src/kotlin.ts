@@ -51,7 +51,8 @@ export interface KotlinCompilerServer extends CompilerServer {
     projectPath: string
   ): Promise<{ code: number; msg: string; data?: { dexList: string[] } }>
   checkDependencies?: (
-    configJsonPath: string
+    configJsonPath: string,
+    options?: { type: 1 /*插件*/ | 2 /*项目*/; valid: boolean }
   ) => Promise<{ code: number; msg: string; data: string[] }>
   checkRResources?: (resDir: string) => Promise<{
     code: number
@@ -196,6 +197,7 @@ export type RunKotlinDevResult = UTSResult & {
   changed: string[]
   inject_modules: string[]
   kotlinc: boolean
+  kotlincJars?: string[]
 }
 
 export type RunKotlinBuildResult = UTSResult & {
@@ -314,17 +316,21 @@ export async function runKotlinDev(
         )
       )
     }
+
+    const extraJars = resolveLibs(filename)
+      .concat(deps)
+      .concat(resDeps)
+      .concat(uniModuleDeps)
+
+    result.kotlincJars = extraJars
+
     const options = {
       pageCount: 0,
       kotlinc: resolveKotlincArgs(
         kotlinFiles,
         jarFile,
         getKotlincHome(),
-        (isX ? getDefaultJar(2) : getDefaultJar())
-          .concat(resolveLibs(filename))
-          .concat(deps)
-          .concat(resDeps)
-          .concat(uniModuleDeps)
+        (isX ? getDefaultJar(2) : getDefaultJar()).concat(extraJars)
         // .concat(getUniModulesCacheJars(cacheDir))
         // .concat(getUniModulesJars(outputDir))
       ),
@@ -394,7 +400,7 @@ function checkDeps(
   return Promise.resolve([])
 }
 
-function hasDeps(configJsonFile: string) {
+export function hasDeps(configJsonFile: string) {
   const deps =
     parseJson(fs.readFileSync(configJsonFile, 'utf8')).dependencies || []
   if (isArray(deps) && deps.length) {
@@ -649,13 +655,13 @@ function resolveLibs(filename: string) {
   return libs
 }
 
-function resolveAndroidArchiveOutputPath(aar?: string) {
+export function resolveAndroidArchiveOutputPath(aar: string) {
   return path.resolve(
-    process.env.UNI_OUTPUT_DIR,
-    '../.uts/aar',
-    aar ? aar.replace('.aar', '') : ''
+    kotlinAARDir(process.env.UNI_OUTPUT_DIR),
+    aar.replace('.aar', '')
   )
 }
+
 export function resolveDexFile(jarFile: string) {
   return normalizePath(path.resolve(path.dirname(jarFile), 'classes.dex'))
 }
@@ -804,4 +810,14 @@ export function createStderrListener(
       resolve()
     })
   }
+}
+
+export function kotlinDir(outputDir: string) {
+  return (
+    process.env.UNI_APP_X_CACHE_DIR || path.resolve(outputDir, '../.kotlin')
+  )
+}
+
+function kotlinAARDir(kotlinDir: string) {
+  return path.resolve(kotlinDir, 'aar')
 }

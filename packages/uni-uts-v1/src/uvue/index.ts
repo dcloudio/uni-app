@@ -12,12 +12,14 @@ import {
   KotlinCompilerServer,
   RunKotlinDevResult,
   getUniModulesCacheJars,
-  getUniModulesJars,
   resolveKotlincArgs,
   createStderrListener,
   getUniModulesEncryptCacheJars,
   RunKotlinBuildResult,
   getInjectApis,
+  kotlinDir,
+  resolveAndroidArchiveOutputPath,
+  hasDeps,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
@@ -30,6 +32,7 @@ import {
 } from '../utils'
 import { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
+import { sync } from 'fast-glob'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -195,12 +198,6 @@ export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
 }
 
-function kotlinDir(outputDir: string) {
-  return (
-    process.env.UNI_APP_X_CACHE_DIR || path.resolve(outputDir, '../.kotlin')
-  )
-}
-
 function kotlinSrcDir(kotlinDir: string) {
   return path.resolve(kotlinDir, 'src')
 }
@@ -267,13 +264,14 @@ function syncDexList(
 }
 
 let isFirst = true
+let checkConfigJsonDeps = true
 async function runKotlinDev(
   options: CompileAppOptions,
   result: RunKotlinDevResult,
   hasCache: boolean
 ) {
   result.type = 'kotlin'
-  const { inputDir, outputDir, pageCount } = options
+  const { inputDir, outputDir, pageCount, uni_modules } = options
   const kotlinRootOutDir = kotlinDir(outputDir)
   const kotlinDexOutDir = kotlinDexDir(kotlinRootOutDir)
   const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
@@ -319,7 +317,26 @@ async function runKotlinDev(
         getDefaultJar,
         getKotlincHome,
         compile: compileDex,
+        checkDependencies,
       } = compilerServer
+
+      const libsJars = parseUTSModuleLibsJars(uni_modules)
+
+      let hasError = false
+      const configJsonJars = await parseUTSModuleConfigJsonJars(
+        uni_modules,
+        checkDependencies!,
+        checkConfigJsonDeps,
+        () => {
+          hasError = true
+        }
+      )
+      // 发生错误需要重新check
+      checkConfigJsonDeps = hasError
+
+      // console.log('uni_modules', uni_modules)
+      // console.log('libsJars', libsJars)
+      // console.log('configJsonJars', configJsonJars)
 
       const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
       const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
@@ -333,9 +350,11 @@ async function runKotlinDev(
           getKotlincHome(),
           [kotlinClassOutDir].concat(
             getDefaultJar(2)
-              .concat(getUniModulesEncryptCacheJars(cacheDir))
-              .concat(getUniModulesCacheJars(cacheDir))
-              .concat(getUniModulesJars(outputDir))
+              .concat(getUniModulesEncryptCacheJars(cacheDir)) // 加密插件jar
+              .concat(getUniModulesCacheJars(cacheDir)) // 普通插件jar
+              // .concat(getUniModulesJars(outputDir)) // 容错旧版本插件jar，应该没用了
+              .concat(configJsonJars) // 插件config.json依赖
+              .concat(libsJars) // 插件本地libs
           )
         ).concat(['-module-name', `main-${+Date.now()}`]),
         d8: D8_DEFAULT_ARGS,
@@ -409,4 +428,86 @@ function writeKotlinManifestJson(
     path.resolve(kotlinSrcOutDir, '.manifest.json'),
     JSON.stringify(manifest)
   )
+}
+
+function parseUTSModuleLibsJars(plugins: string[]) {
+  const jars = new Set<string>()
+  plugins.forEach((plugin) => {
+    const libsPath = path.resolve(
+      process.env.UNI_INPUT_DIR,
+      'uni_modules',
+      plugin,
+      'utssdk',
+      'app-android',
+      'libs'
+    )
+    if (fs.existsSync(libsPath)) {
+      sync('*.jar', { cwd: libsPath, absolute: true }).forEach((jar) => {
+        jars.add(jar)
+      })
+      const aars = sync('*.aar', { cwd: libsPath })
+      aars.forEach((name) => {
+        const outputPath = resolveAndroidArchiveOutputPath(name)
+        if (fs.existsSync(outputPath)) {
+          sync('**/*.jar', {
+            cwd: outputPath,
+            absolute: true,
+          }).forEach((jar) => {
+            jars.add(jar)
+          })
+        }
+      })
+    }
+  })
+  return [...jars]
+}
+
+function checkDeps(
+  plugin: string,
+  checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],
+  checkDependenciesValid: boolean,
+  checkError: (plugin: string) => void
+) {
+  const configJsonFile = path.resolve(
+    process.env.UNI_INPUT_DIR,
+    'uni_modules',
+    plugin,
+    'utssdk',
+    'app-android',
+    'config.json'
+  )
+  if (configJsonFile && hasDeps(configJsonFile)) {
+    return checkDependencies(configJsonFile, {
+      type: 2,
+      valid: checkDependenciesValid,
+    }).then(({ code, msg, data }) => {
+      if (code !== 0) {
+        console.error(msg)
+        return []
+      }
+      return data
+    })
+  }
+  return Promise.resolve([])
+}
+
+async function parseUTSModuleConfigJsonJars(
+  plugins: string[],
+  checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],
+  checkDependenciesValid: boolean,
+  checkError: (plugin: string) => void
+) {
+  const deps = new Set<string>()
+
+  for (const plugin of plugins) {
+    ;(
+      await checkDeps(
+        plugin,
+        checkDependencies,
+        checkDependenciesValid,
+        checkError
+      )
+    ).forEach((dep) => deps.add(dep))
+  }
+  return [...deps]
 }

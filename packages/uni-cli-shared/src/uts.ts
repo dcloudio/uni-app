@@ -1,3 +1,4 @@
+// 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
@@ -16,8 +17,6 @@ import {
 import { matchEasycom, type EasycomMatcher } from './easycom'
 
 import { parseUniExtApis } from './uni_modules'
-
-// 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
 
 function once<T extends (...args: any[]) => any>(
   fn: T,
