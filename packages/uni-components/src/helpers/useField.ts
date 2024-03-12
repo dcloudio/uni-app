@@ -143,7 +143,7 @@ export const props = /*#__PURE__*/ extend(
     },
     maxlength: {
       type: [Number, String],
-      default: 140,
+      default: __X__ ? Infinity : 140,
     },
     confirmType: {
       type: String,
