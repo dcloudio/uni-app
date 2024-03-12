@@ -9927,8 +9927,8 @@ var getModelAssigner = vnode => {
 var vModelText = {
   created(el, _binding, _vnode, _prevVNode) {
     var trigger = getModelAssigner(_vnode);
-    el.addEventListener('input', _ => {
-      trigger(el.getAnyAttribute('value'));
+    el.addEventListener('input', event => {
+      trigger(event.detail.value);
     });
   },
   mounted(el, _binding, _vnode, _prevVNode) {
