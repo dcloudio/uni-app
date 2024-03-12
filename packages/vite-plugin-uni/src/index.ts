@@ -14,13 +14,13 @@ import {
   emptyDir,
   initAutoImportOptions,
   initModuleAlias,
-  parseUniExtApis,
   resolveSourceMapPath,
   rewriteScssReadFileSync,
   rewriteExistsSyncHasRootFile,
   uniUTSExtApiReplace,
   uniViteInjectPlugin,
   isInHBuilderX,
+  parseUniExtApisOnce,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -131,7 +131,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   ) {
     plugins.push(uniUTSExtApiReplace())
   } else {
-    const injects = parseUniExtApis(
+    const injects = parseUniExtApisOnce(
       true,
       process.env.UNI_UTS_PLATFORM,
       'javascript'

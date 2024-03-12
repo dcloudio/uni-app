@@ -8,7 +8,7 @@ import { isJsFile } from '../../utils/url'
 
 const escape = (str: string) => str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&')
 
-const parseUniExtApisOnce = once(parseUniExtApis)
+export const parseUniExtApisOnce = once(parseUniExtApis)
 
 export function uniUTSExtApiReplace(): Plugin {
   const injects = parseUniExtApisOnce(
