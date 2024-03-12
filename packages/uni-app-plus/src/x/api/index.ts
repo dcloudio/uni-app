@@ -20,6 +20,7 @@ export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 
 // dom
 export { getElementById } from './dom/getElementById'
+export { pageScrollTo } from './dom/pageScrollTo'
 
 // ui
 export { loadFontFace } from './ui/loadFontFace'
