@@ -37,7 +37,7 @@ const props = /*#__PURE__*/ extend({}, keyboardProps, {
   },
 })
 
-class UniEditorElement extends UniElement {}
+export class UniEditorElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Editor',
   props,

@@ -29,7 +29,7 @@ function getSize(isVertical: boolean, el: HTMLElement) {
   }
 }
 
-class UniListItemElement extends UniElement {}
+export class UniListItemElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ListItem',
   props: {},

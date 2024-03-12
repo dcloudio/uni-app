@@ -62,7 +62,7 @@ const IMAGE_MODES = {
   'bottom right': ['right bottom'],
 }
 
-class UniImageElement extends UniElement {}
+export class UniImageElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Image',
   props,

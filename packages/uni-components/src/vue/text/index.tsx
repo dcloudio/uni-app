@@ -11,7 +11,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import { DecodeOptions, parseText } from '../../helpers/text'
 
-class UniTextElement extends UniElement {}
+export class UniTextElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Text',
   //#if _X_ && !_NODE_JS_

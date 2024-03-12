@@ -89,7 +89,7 @@ function useCustomClick(dom: HTMLElement) {
   })
 }
 
-class UniPickerViewColumnElement extends UniElement {}
+export class UniPickerViewColumnElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerViewColumn',
   //#if _X_ && !_NODE_JS_

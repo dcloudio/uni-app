@@ -71,7 +71,7 @@ function traverseStickySection(
   }
 }
 
-class UniListViewElement extends UniElement {}
+export class UniListViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ListView',
   props: {

@@ -3,7 +3,7 @@ import { getRealPath } from '@dcloudio/uni-platform'
 import { useCustomEvent, EmitEvent, UniElement } from '@dcloudio/uni-components'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 
-class UniCoverImageElement extends UniElement {}
+export class UniCoverImageElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'CoverImage',
   compatConfig: {

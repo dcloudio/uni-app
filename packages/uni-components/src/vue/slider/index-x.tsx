@@ -75,7 +75,7 @@ const getValuePercentage = (value: number, min: number, max: number) => {
   return (100 * (value - min)) / (max - min) + '%'
 }
 
-class UniSliderElement extends UniElement {
+export class UniSliderElement extends UniElement {
   htmlSlider: HTMLInputElement | undefined
   trackValue: HTMLElement | undefined
   thumbValue: HTMLElement | undefined

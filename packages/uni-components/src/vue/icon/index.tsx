@@ -62,7 +62,7 @@ const ICONS = {
   },
 }
 
-class UniIconElement extends UniElement {}
+export class UniIconElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Icon',
   props: {

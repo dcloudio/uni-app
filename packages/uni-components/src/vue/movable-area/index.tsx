@@ -19,7 +19,7 @@ export interface MovableViewContext {
 export type AddMovableViewContext = (context: MovableViewContext) => void
 export type RemoveMovableViewContext = (context: MovableViewContext) => void
 
-class UniMovableAreaElement extends UniElement {}
+export class UniMovableAreaElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'MovableArea',

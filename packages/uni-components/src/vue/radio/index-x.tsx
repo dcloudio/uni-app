@@ -55,7 +55,7 @@ const props = {
   },
 }
 
-class UniRadioElement extends UniElement {}
+export class UniRadioElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Radio',
   props,

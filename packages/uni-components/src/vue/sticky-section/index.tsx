@@ -4,7 +4,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import { StickySectionStatus } from '../list-view/types'
 
-class UniStickySectionElement extends UniElement {}
+export class UniStickySectionElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'StickySection',
   props: {

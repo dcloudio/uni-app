@@ -19,7 +19,7 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   },
 })
 
-class UniInputElement extends UniElement {
+export class UniInputElement extends UniElement {
   focus(options?: FocusOptions | undefined): void {
     this.querySelector('input')?.focus(options)
   }

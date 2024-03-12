@@ -55,7 +55,7 @@ const props = {
   },
 }
 
-class UniCheckboxElement extends UniElement {}
+export class UniCheckboxElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Checkbox',
   props,

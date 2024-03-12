@@ -10,7 +10,7 @@ import {
   navigatorProps,
 } from '../../components/navigator'
 
-class UniNavigatorElement extends UniElement {}
+export class UniNavigatorElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Navigator',
   inheritAttrs: false,

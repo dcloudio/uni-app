@@ -53,7 +53,7 @@ function useState(props: Props): State {
   return state
 }
 
-class UniPickerViewElement extends UniElement {}
+export class UniPickerViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerView',
   props: pickerViewProps,

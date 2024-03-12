@@ -72,7 +72,7 @@ type Props = ExtractPropTypes<typeof props>
 type MultipleArray = Array<Array<number | string | number[]>>
 type LinearGradient = Parameters<CanvasFillStrokeStyles['createLinearGradient']>
 
-class UniCanvasElement extends UniElement {}
+export class UniCanvasElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'Canvas',

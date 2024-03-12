@@ -104,7 +104,7 @@ const props = {
   },
 }
 
-class UniScrollViewElement extends UniElement {}
+export class UniScrollViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'ScrollView',
   compatConfig: {

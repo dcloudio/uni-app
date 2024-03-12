@@ -634,7 +634,7 @@ function useLayout(
   }
 }
 
-class UniSwiperElement extends UniElement {}
+export class UniSwiperElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Swiper',
   props,

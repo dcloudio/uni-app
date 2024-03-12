@@ -9,7 +9,7 @@ import { nodeList2VNode } from './nodes-parser'
 import { props, parseHtml } from '../../components/rich-text'
 import { UniElement } from '../../helpers/UniElement'
 
-class UniRichTextElement extends UniElement {}
+export class UniRichTextElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'RichText',
   compatConfig: {
