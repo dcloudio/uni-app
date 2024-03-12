@@ -134,7 +134,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
     const injects = parseUniExtApisOnce(
       true,
       process.env.UNI_UTS_PLATFORM,
-      'javascript'
+      process.env.UNI_UTS_TARGET_LANGUAGE
     )
     if (Object.keys(injects).length) {
       plugins.push(

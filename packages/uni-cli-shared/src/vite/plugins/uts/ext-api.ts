@@ -14,7 +14,7 @@ export function uniUTSExtApiReplace(): Plugin {
   const injects = parseUniExtApisOnce(
     true,
     process.env.UNI_UTS_PLATFORM,
-    'javascript'
+    process.env.UNI_UTS_TARGET_LANGUAGE
   )
   const injectApis = Object.keys(injects)
   const firstPass = new RegExp(`(?:${injectApis.map(escape).join('|')})`, 'g')
