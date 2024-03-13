@@ -12,7 +12,6 @@ import {
   ExtractPropTypes,
 } from 'vue'
 import { extend, isFunction } from '@vue/shared'
-import { debounce } from '@dcloudio/uni-shared'
 import { getCurrentPageId, registerViewMethod } from '@dcloudio/uni-core'
 import { throttle } from './throttle'
 import { useCustomEvent, CustomEventTrigger } from './useEvent'
@@ -265,13 +264,9 @@ function useValueSync(
   emit: SetupContext['emit'],
   trigger: CustomEventTrigger
 ) {
-  const valueChangeFn = debounce(
-    (val: any) => {
-      state.value = getValueString(val, props.type)
-    },
-    100,
-    { setTimeout, clearTimeout }
-  )
+  const valueChangeFn = throttle((val: any) => {
+    state.value = getValueString(val, props.type)
+  }, 100)
   watch(() => props.modelValue, valueChangeFn)
   watch(() => props.value, valueChangeFn)
   const triggerInputFn = throttle((event: Event, detail: InputEventDetail) => {
