@@ -4555,6 +4555,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         "style": maskBottomStyle.value
       }, null, 4)], 4), createVNode("view", {
         "ref": indicator,
+        "userInteractionEnabled": false,
         "class": "uni-picker-view-indicator",
         "style": indicatorStyle.value
       }, null, 4)], 4);
