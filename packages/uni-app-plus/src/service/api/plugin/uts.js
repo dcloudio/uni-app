@@ -1,5 +1,6 @@
 import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared';
 
+// 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
 const callbacks = {};
