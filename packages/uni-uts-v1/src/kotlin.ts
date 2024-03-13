@@ -151,6 +151,7 @@ export async function runKotlinProd(
 
   genUTSPlatformResource(filename, {
     isX,
+    pluginId,
     inputDir,
     outputDir,
     platform: 'app-android',
@@ -160,6 +161,7 @@ export async function runKotlinProd(
     hookClass,
     result,
     provider: resolveConfigProvider('app-android', pluginId, transform),
+    uniModules,
   })
 
   return result

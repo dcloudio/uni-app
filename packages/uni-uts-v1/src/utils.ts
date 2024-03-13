@@ -79,6 +79,7 @@ export function resolvePackage(filename: string) {
 
 export interface UTSPlatformResourceOptions {
   isX: boolean
+  pluginId: string
   inputDir: string
   outputDir: string
   platform: typeof process.env.UNI_UTS_PLATFORM
@@ -88,6 +89,7 @@ export interface UTSPlatformResourceOptions {
   hookClass: string
   result: UTSResult
   provider?: { name: string; service: string; class: string }
+  uniModules: string[]
 }
 export function genUTSPlatformResource(
   filename: string,
@@ -108,6 +110,26 @@ export function genUTSPlatformResource(
         return !['.uts', '.vue'].includes(path.extname(src))
       },
     })
+  }
+
+  if (options.uniModules && options.uniModules.length) {
+    const pkgJsonFile = path.resolve(
+      options.inputDir,
+      'uni_modules',
+      options.pluginId,
+      'package.json'
+    )
+    if (fs.existsSync(pkgJsonFile)) {
+      fs.copyFileSync(
+        pkgJsonFile,
+        path.resolve(
+          options.outputDir,
+          'uni_modules',
+          options.pluginId,
+          'package.json'
+        )
+      )
+    }
   }
 
   copyConfigJson(
@@ -149,7 +171,11 @@ export function genUTSPlatformResource(
 
 export function moveRootIndexSourceMap(
   filename: string,
-  { inputDir, platform, extname }: Omit<UTSPlatformResourceOptions, 'hookClass'>
+  {
+    inputDir,
+    platform,
+    extname,
+  }: Omit<UTSPlatformResourceOptions, 'hookClass' | 'pluginId' | 'uniModules'>
 ) {
   if (isRootIndex(filename, platform)) {
     const sourceMapFilename = path
@@ -201,7 +227,7 @@ export function resolveUTSPlatformFile(
     outputDir,
     platform,
     extname,
-  }: Omit<UTSPlatformResourceOptions, 'hookClass'>
+  }: Omit<UTSPlatformResourceOptions, 'hookClass' | 'pluginId' | 'uniModules'>
 ) {
   let platformFile = path
     .resolve(outputDir, path.relative(inputDir, filename))

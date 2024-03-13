@@ -90,6 +90,7 @@ export async function runSwiftProd(
   }
   genUTSPlatformResource(filename, {
     isX,
+    pluginId,
     inputDir,
     outputDir,
     platform: 'app-ios',
@@ -99,6 +100,7 @@ export async function runSwiftProd(
     hookClass,
     result,
     provider: resolveConfigProvider('app-ios', pluginId, transform),
+    uniModules,
   })
 }
 
