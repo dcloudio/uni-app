@@ -20,6 +20,7 @@ import {
   kotlinDir,
   resolveAndroidArchiveOutputPath,
   hasDeps,
+  getUniModulesJars,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
@@ -352,7 +353,7 @@ async function runKotlinDev(
             getDefaultJar(2)
               .concat(getUniModulesEncryptCacheJars(cacheDir)) // 加密插件jar
               .concat(getUniModulesCacheJars(cacheDir)) // 普通插件jar
-              // .concat(getUniModulesJars(outputDir)) // 容错旧版本插件jar，应该没用了
+              .concat(getUniModulesJars(outputDir)) // cli版本插件jar（没有指定cache的时候）
               .concat(configJsonJars) // 插件config.json依赖
               .concat(libsJars) // 插件本地libs
           )
