@@ -7,7 +7,8 @@ import {
   API_TYPE_UN_PRELOAD_PAGE,
   UnPreloadPageProtocol,
   defineAsyncApi,
-  defineSyncApi,
+  PreloadPageOptions,
+  UnPreloadPageOptions,
 } from '@dcloudio/uni-api'
 import { initPageInternalInstance } from '@dcloudio/uni-core'
 import {
@@ -18,25 +19,28 @@ import { createNVuePage } from '../../framework/page/register'
 import { initRouteOptions } from '../../framework/page/routeOptions'
 import { preloadWebviews } from '../../framework/page/preLoad'
 
-export const unPreloadPage = defineSyncApi<API_TYPE_UN_PRELOAD_PAGE>(
+export const unPreloadPage = defineAsyncApi<API_TYPE_UN_PRELOAD_PAGE>(
   API_UN_PRELOAD_PAGE,
-  ({ url }) => {
+  ({ url }, { resolve, reject }) => {
     const webview = closePreloadWebview({
       url,
     })
     if (webview) {
-      return {
+      resolve({
+        // @ts-expect-error
         id: webview.id,
+        // @ts-expect-error
         url,
+        // @ts-expect-error
         errMsg: 'unPreloadPage:ok',
-      }
+      })
+      return
     }
-    return {
-      url,
-      errMsg: 'unPreloadPage:fail not found',
-    }
+    reject('not found')
+    return
   },
-  UnPreloadPageProtocol
+  UnPreloadPageProtocol,
+  UnPreloadPageOptions
 )
 
 export const preloadPage = defineAsyncApi<API_TYPE_PRELOAD_PAGE>(
@@ -74,5 +78,6 @@ export const preloadPage = defineAsyncApi<API_TYPE_PRELOAD_PAGE>(
       errMsg: 'preloadPage:ok',
     })
   },
-  PreloadPageProtocol
+  PreloadPageProtocol,
+  PreloadPageOptions
 )
