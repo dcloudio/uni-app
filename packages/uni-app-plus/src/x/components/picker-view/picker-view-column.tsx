@@ -242,6 +242,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           </view>
           <view
             ref={indicator}
+            // @ts-ignore
+            userInteractionEnabled={false}
             class="uni-picker-view-indicator"
             style={indicatorStyle.value}
           ></view>
