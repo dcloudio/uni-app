@@ -894,7 +894,8 @@ function checkDepsByPlugin(
     'app-android',
     'config.json'
   )
-  if (configJsonFile && hasDeps(configJsonFile)) {
+
+  if (fs.existsSync(configJsonFile) && hasDeps(configJsonFile)) {
     return checkDependencies(configJsonFile, {
       type: checkType,
       valid: checkDependenciesValid,
