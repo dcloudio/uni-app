@@ -147,4 +147,4 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
 })
 
-export { UniPickerViewChangeEvent }
+export { UniPickerViewChangeEvent, UniPickerViewElement }
