@@ -160,3 +160,5 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
   },
 })
+
+export { UniCheckboxElement }
