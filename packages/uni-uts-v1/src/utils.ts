@@ -37,6 +37,7 @@ interface ToOptions {
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
+  uniModules: string[]
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions

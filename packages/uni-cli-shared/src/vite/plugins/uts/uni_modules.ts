@@ -6,7 +6,7 @@ import { once } from '@dcloudio/uni-shared'
 
 import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
 import { parseVueRequest } from '../../utils'
-import { getUniExtApiProviders } from '../../../uni_modules'
+import { getUniExtApiProviders, parseUTSModuleDeps } from '../../../uni_modules'
 
 const UTSProxyRE = /\?uts-proxy$/
 function isUTSProxy(id: string) {
@@ -59,12 +59,19 @@ export function uniUTSUniModulesPlugin(
         uniExtApiProviderServicePlugin = extApiProvider.servicePlugin
       }
     }
+    // 处理依赖的 uts 插件
+    const deps = parseUTSModuleDeps(
+      pkgJson.uni_modules?.dependencies || [],
+      process.env.UNI_INPUT_DIR
+    )
+
     return resolveUTSCompiler().compile(pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,
       extApis: options.extApis,
       sourceMap: process.env.NODE_ENV === 'development',
+      uni_modules: deps,
       transform: {
         uniExtApiProviderName: extApiProvider?.name,
         uniExtApiProviderService: extApiProvider?.service,

@@ -321,3 +321,16 @@ export const camelize = cacheStringFunction((str: string): string => {
 export const capitalize = cacheStringFunction(
   (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
 )
+
+/**
+ * 解析 UTS 类型的模块依赖列表
+ * @param deps
+ * @param inputDir
+ * @returns
+ */
+export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
+  const modulesDir = path.resolve(inputDir, 'uni_modules')
+  return deps.filter((dep) => {
+    return fs.existsSync(path.resolve(modulesDir, dep, 'utssdk'))
+  })
+}

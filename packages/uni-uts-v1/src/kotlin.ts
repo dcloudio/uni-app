@@ -103,6 +103,7 @@ export async function runKotlinProd(
     extApis,
     transform,
     sourceMap,
+    uniModules,
   }: {
     pluginId: string
     isPlugin: boolean
@@ -112,6 +113,7 @@ export async function runKotlinProd(
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
     sourceMap?: boolean
+    uniModules: string[]
   }
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -130,6 +132,7 @@ export async function runKotlinProd(
     isPlugin,
     extApis,
     transform,
+    uniModules,
   })
   if (!result) {
     return
@@ -217,6 +220,7 @@ interface RunKotlinDevOptions {
   is_uni_modules: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
+  uniModules: string[]
 }
 
 export async function runKotlinDev(
@@ -232,6 +236,7 @@ export async function runKotlinDev(
     extApis,
     transform,
     sourceMap,
+    uniModules,
   }: RunKotlinDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -250,6 +255,7 @@ export async function runKotlinDev(
     isPlugin,
     extApis,
     transform,
+    uniModules,
   })) as RunKotlinDevResult
   if (!result) {
     return
