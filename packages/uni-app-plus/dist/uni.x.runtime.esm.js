@@ -2515,6 +2515,9 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
 var callbackId = 1;
 var proxy;
 var callbacks = {};
+function isComponentPublicInstance(instance) {
+  return instance && instance.$ && instance.$.proxy === instance;
+}
 function normalizeArg(arg) {
   if (typeof arg === "function") {
     var oldId = Object.keys(callbacks).find((id22) => callbacks[id22] === arg);
@@ -2522,9 +2525,20 @@ function normalizeArg(arg) {
     callbacks[id2] = arg;
     return id2;
   } else if (isPlainObject(arg)) {
-    Object.keys(arg).forEach((name) => {
-      arg[name] = normalizeArg(arg[name]);
-    });
+    if (isComponentPublicInstance(arg)) {
+      var nodeId = "";
+      var el = arg.$el;
+      if (el && el.getNodeId) {
+        nodeId = el.getNodeId();
+      }
+      return {
+        nodeId
+      };
+    } else {
+      Object.keys(arg).forEach((name) => {
+        arg[name] = normalizeArg(arg[name]);
+      });
+    }
   }
   return arg;
 }

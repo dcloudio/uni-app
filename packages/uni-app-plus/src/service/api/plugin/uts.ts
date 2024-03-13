@@ -11,6 +11,10 @@ let callbackId = 1
 let proxy: any
 const callbacks: Record<string, Function> = {}
 
+function isComponentPublicInstance(instance: any) {
+  return instance && instance.$ && instance.$.proxy === instance
+}
+
 export function normalizeArg(arg: unknown) {
   if (typeof arg === 'function') {
     // 查找该函数是否已缓存
@@ -19,9 +23,20 @@ export function normalizeArg(arg: unknown) {
     callbacks[id] = arg
     return id
   } else if (isPlainObject(arg)) {
-    Object.keys(arg).forEach((name) => {
-      ;(arg as any)[name] = normalizeArg((arg as any)[name])
-    })
+    if (isComponentPublicInstance(arg)) {
+      let nodeId = ''
+      // @ts-expect-error
+      const el = arg.$el
+      // 非 x 可能不存在 getNodeId 方法？
+      if (el && el.getNodeId) {
+        nodeId = el.getNodeId()
+      }
+      return { nodeId }
+    } else {
+      Object.keys(arg).forEach((name) => {
+        ;(arg as any)[name] = normalizeArg((arg as any)[name])
+      })
+    }
   }
   return arg
 }
