@@ -43,3 +43,11 @@ export function $dispatchParent(
     }
   }
 }
+
+export function isVueComponent(comp: any) {
+  const has$option = typeof comp.$ === 'object'
+  const has$nativePage = typeof comp.$nativePage === 'object'
+  const has$mpType = typeof comp.$mpType === 'string'
+
+  return has$option && has$nativePage && has$mpType
+}

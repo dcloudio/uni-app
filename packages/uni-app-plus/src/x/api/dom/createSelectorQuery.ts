@@ -10,6 +10,7 @@ import {
 import { getCurrentPage } from '@dcloudio/uni-core'
 // import { isFunction } from 'util'
 import type { ComponentPublicInstance } from 'vue'
+import { isVueComponent } from '../../utils'
 
 const isFunction = (val: any): val is Function => typeof val === 'function'
 
@@ -33,8 +34,8 @@ class NodesRefImpl implements NodesRef {
   boundingClientRect(
     callback?: SelectorQueryNodeInfoCallback | null
   ): SelectorQuery {
-    const hasArgs = arguments.length > 0
-    if (hasArgs && !!callback) {
+    const hasArg = callback === null || typeof callback === 'function'
+    if (hasArg) {
       this._selectorQuery._push(
         this._selector,
         this._component,
@@ -126,14 +127,13 @@ class SelectorQueryImpl implements SelectorQuery {
         }
       })
     })
-    // TODO
     return this._nodesRef
   }
 
   in(component: any | null): SelectorQuery {
-    // if (component instanceof ComponentPublicInstance) {
-    this._component = component as ComponentPublicInstance
-    // }
+    if (isVueComponent(component)) {
+      this._component = component as ComponentPublicInstance
+    }
     return this
   }
 
@@ -191,9 +191,10 @@ function querySelf(element: Element | null, selector: string): Element | null {
 
   const selectorType = selector.charAt(0)
   const selectorName = selector.slice(1)
-  // todo 判断 element.classList 如何处理
-  // if (selectorType == '.' && element!.classList.includes(selectorName)) {
-  if (selectorType == '.') {
+  if (
+    selectorType == '.' &&
+    Array.from(element!.classList).includes(selectorName)
+  ) {
     return element
   }
   if (selectorType == '#' && element!.getAttribute('id') == selectorName) {
@@ -241,10 +242,6 @@ function requestComponentInfo(
   }
   callback(result)
 }
-
-// export const createSelectorQuery = () => {
-//   console.log('createSelectorQuery')
-// }
 
 export const createSelectorQuery: CreateSelectorQuery =
   function (): SelectorQuery {
