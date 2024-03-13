@@ -49,7 +49,6 @@ export function preprocess(source: string, options: PreprocessOptions) {
 
         const variant = startMatches.value[1]
         const test = (startMatches.value[2] || '').trim()
-        console.log('aaaaa', variant)
         switch (variant) {
           case 'ifdef':
             if (testPasses(test, context)) {

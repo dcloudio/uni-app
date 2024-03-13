@@ -8,6 +8,7 @@ exports[`preprocess html #ifdef match 1`] = `
 <view>c</view>
 <template>
   ",
+  "isInPreprocessor": [Function],
   "map": SourceMap {
     "file": "test",
     "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC",
@@ -37,6 +38,7 @@ exports[`preprocess html #ifdef not match 1`] = `
 <view>c</view>
 <template>
 ",
+  "isInPreprocessor": [Function],
   "map": SourceMap {
     "file": "test",
     "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAId,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;",
@@ -86,6 +88,7 @@ b3
 c
 </style>
 ",
+  "isInPreprocessor": [Function],
   "map": SourceMap {
     "file": "test",
     "mappings": "AAAA,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEf,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAMhB,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AAEf,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACd,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACV,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACR,CAAC;AAED,CAAC;AAED,CAAC,CAAC;AAEF,CAAC,CAAC,CAAC;AAMH,CAAC,CAAC;AAEF,CAAC;AACD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACT,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;AACP,CAAC;AAED,CAAC;AAED,CAAC,CAAC;AAEF,CAAC,CAAC,CAAC;AAMH,CAAC,CAAC;AAEF,CAAC;AACD,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC,CAAC;",
@@ -158,6 +161,7 @@ exports[`preprocess js #ifdef match 1`] = `
 b
 c
 ",
+  "isInPreprocessor": [Function],
   "map": SourceMap {
     "file": "test",
     "mappings": "AAAA,CAAC;AAED,CAAC;AAED,CAAC;",
@@ -187,6 +191,7 @@ b11
 b3
 c
 ",
+  "isInPreprocessor": [Function],
   "map": SourceMap {
     "file": "test",
     "mappings": "AAAA,CAAC;AAED,CAAC;AAED,CAAC,CAAC;AAEF,CAAC,CAAC,CAAC;AAMH,CAAC,CAAC;AAEF,CAAC;",
@@ -222,6 +227,7 @@ exports[`preprocess js #ifdef not match 1`] = `
   "code": "a
 c
 ",
+  "isInPreprocessor": [Function],
   "map": SourceMap {
     "file": "test",
     "mappings": "AAAA,CAAC;AAID,CAAC;",
@@ -248,6 +254,7 @@ exports[`preprocess js #ifndef match 1`] = `
 b
 c
 ",
+  "isInPreprocessor": [Function],
   "map": SourceMap {
     "file": "test",
     "mappings": "AAAA,CAAC;AAED,CAAC;AAED,CAAC;",
@@ -273,6 +280,7 @@ exports[`preprocess js #ifndef not match 1`] = `
   "code": "a
 c
 ",
+  "isInPreprocessor": [Function],
   "map": SourceMap {
     "file": "test",
     "mappings": "AAAA,CAAC;AAID,CAAC;",
