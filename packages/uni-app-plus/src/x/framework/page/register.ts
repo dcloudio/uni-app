@@ -138,7 +138,9 @@ export function registerPage({
     invokeHook(page, ON_READY)
   })
   // 加载当前页面字体
-  const pageCSSStyle = page.$options.__styles as Record<string, any> | undefined
+  const pageCSSStyle = page.$options.styles as
+    | Array<Record<string, any>>
+    | undefined
   if (pageCSSStyle) {
     loadFontFaceByStyles(pageCSSStyle, false)
   }

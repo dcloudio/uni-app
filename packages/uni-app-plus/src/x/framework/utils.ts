@@ -7,19 +7,24 @@ import { loadFontFace } from '../api'
  * @param global 是否全局生效
  */
 export function loadFontFaceByStyles(
-  styles: Record<string, any>,
+  styles: Array<Record<string, any>>,
   global: boolean
 ) {
-  const fontFaces = styles['@FONT-FACE'] as Record<string, any> | undefined
-  if (!fontFaces) return
+  // 遍历数组，找到 @font-face 规则
+  const fontFaceStyle = [] as Array<Record<string, any>>
+  styles.forEach((style) => {
+    if (style['@FONT-FACE']) {
+      fontFaceStyle.push(...style['@FONT-FACE'])
+    }
+  })
+  if (fontFaceStyle.length === 0) return
 
-  Object.keys(fontFaces).forEach((keys) => {
-    const value = fontFaces[keys] as Record<string, any>
-    const fontFamily = value['fontFamily'] as string | null
-    const fontWeight = value['fontWeight'] as string | null
-    const fontStyle = value['fontStyle'] as string | null
-    const fontVariant = value['fontVariant'] as string | null
-    const src = value['src'] as string | null
+  fontFaceStyle.forEach((style) => {
+    const fontFamily = style['fontFamily'] as string | null
+    const fontWeight = style['fontWeight'] as string | null
+    const fontStyle = style['fontStyle'] as string | null
+    const fontVariant = style['fontVariant'] as string | null
+    const src = style['src'] as string | null
 
     if (fontFamily != null && src != null) {
       loadFontFace({
