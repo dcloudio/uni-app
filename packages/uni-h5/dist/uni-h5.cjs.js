@@ -5711,12 +5711,13 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
   if (!nodeList || shared.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
+    var _a;
     if (!shared.isPlainObject(node)) {
       return;
     }
     if (!shared.hasOwn(node, "type") || node.type === "node") {
       let nodeProps = { [scopeId]: "" };
-      const tagName = node.name.toLowerCase();
+      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
       if (!shared.hasOwn(TAGS, tagName)) {
         return;
       }
@@ -5818,10 +5819,12 @@ function parseHtml(html) {
         text
       };
       const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
       }
-      parent.children.push(node);
     }
   });
   return results.children;
@@ -6252,7 +6255,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         state.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
-          trigger("refresherrefresh", {}, {});
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -6262,16 +6267,28 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         state.refresherHeight = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {});
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {});
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         break;
     }
     state.refreshState = _state;
   }
+  let touchStart = {
+    x: 0,
+    y: 0
+  };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
   vue.watch(scrollTopNumber, (val) => {
     _scrollTopChanged(val);
   });
@@ -7915,17 +7932,16 @@ function initRouter(app) {
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  }
-};
 function createRouterOptions() {
   return {
     history: initHistory(),
     strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes,
-    scrollBehavior
+    routes: __uniRoutes
+    /**
+     * 传入scrollBehavior后，vue-router会将history.scrollRestoration设为manual。
+     * 导致safari无法保留上一页面的截图，进而导致在iOS手势返回期间上一页面处于白屏状态
+     */
+    // scrollBehavior,
   };
 }
 function initHistory() {

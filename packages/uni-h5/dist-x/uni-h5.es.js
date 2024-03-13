@@ -9465,7 +9465,7 @@ const props$s = /* @__PURE__ */ extend(
     },
     maxlength: {
       type: [Number, String],
-      default: 140
+      default: Infinity
     },
     confirmType: {
       type: String,
@@ -13220,12 +13220,13 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
   if (!nodeList || isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
+    var _a;
     if (!isPlainObject(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
       let nodeProps = { [scopeId]: "" };
-      const tagName = node.name.toLowerCase();
+      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
       if (!hasOwn(TAGS, tagName)) {
         return;
       }
@@ -13327,10 +13328,12 @@ function parseHtml(html) {
         text: text2
       };
       const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
       }
-      parent.children.push(node);
     }
   });
   return results.children;
@@ -13863,7 +13866,9 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
-          trigger("refresherrefresh", {}, {});
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -13873,16 +13878,28 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.refresherHeight = toUpperNumber = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {});
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {});
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         break;
     }
     state2.refreshState = _state;
   }
+  let touchStart = {
+    x: 0,
+    y: 0
+  };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
   onMounted(() => {
     nextTick(() => {
       _scrollTopChanged(scrollTopNumber.value);
@@ -13893,10 +13910,6 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       event.preventDefault();
       event.stopPropagation();
       _handleScroll(event);
-    };
-    let touchStart = {
-      x: 0,
-      y: 0
     };
     let needStop = null;
     let __handleTouchMove = function(event) {
@@ -13950,7 +13963,8 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
           if (state2.refresherHeight > 0) {
             triggerAbort = true;
             trigger("refresherpulling", event, {
-              deltaY: dy
+              deltaY: dy,
+              dy
             });
           }
         } else {
@@ -13968,12 +13982,23 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       }
     };
     let __handleTouchEnd = function(event) {
-      touchStart = null;
+      touchEnd = {
+        x: event.changedTouches[0].pageX,
+        y: event.changedTouches[0].pageY
+      };
       if (state2.refresherHeight >= props2.refresherThreshold) {
         _setRefreshState("refreshing");
       } else {
         _setRefreshState("refresherabort");
       }
+      touchStart = {
+        x: 0,
+        y: 0
+      };
+      touchEnd = {
+        x: 0,
+        y: props2.refresherThreshold
+      };
     };
     main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
     main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
@@ -15941,6 +15966,14 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
   let beforeRefreshing = false;
   let triggerAbort = false;
   let toUpperNumber = 0;
+  let touchStart = {
+    x: 0,
+    y: 0
+  };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
   function _setRefreshState(_state) {
     if (!props2.refresherEnabled)
       return;
@@ -15949,7 +15982,9 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
         state2.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
-          trigger("refresherrefresh", {}, {});
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -15959,11 +15994,15 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
         state2.refresherHeight = toUpperNumber = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {});
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {});
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         break;
     }
@@ -15976,10 +16015,6 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
       _setRefreshState("restore");
     }
   });
-  let touchStart = {
-    x: 0,
-    y: 0
-  };
   function __handleTouchStart(event) {
     if (event.touches.length === 1) {
       touchStart = {
@@ -16029,7 +16064,8 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
         if (state2.refresherHeight > 0) {
           triggerAbort = true;
           trigger("refresherpulling", event, {
-            deltaY: dy
+            deltaY: dy,
+            dy
           });
         }
       } else {
@@ -16039,12 +16075,23 @@ function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emi
     }
   }
   function __handleTouchEnd(event) {
-    touchStart = null;
+    touchEnd = {
+      x: event.changedTouches[0].pageX,
+      y: event.changedTouches[0].pageY
+    };
     if (state2.refresherHeight >= props2.refresherThreshold) {
       _setRefreshState("refreshing");
     } else {
       _setRefreshState("refresherabort");
     }
+    touchStart = {
+      x: 0,
+      y: 0
+    };
+    touchEnd = {
+      x: 0,
+      y: props2.refresherThreshold
+    };
   }
   onMounted(() => {
     const containerEl = containerRef.value;
@@ -17706,17 +17753,16 @@ function initRouter(app) {
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  }
-};
 function createRouterOptions() {
   return {
     history: initHistory(),
     strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes,
-    scrollBehavior
+    routes: __uniRoutes
+    /**
+     * 传入scrollBehavior后，vue-router会将history.scrollRestoration设为manual。
+     * 导致safari无法保留上一页面的截图，进而导致在iOS手势返回期间上一页面处于白屏状态
+     */
+    // scrollBehavior,
   };
 }
 function removeCurrentPages(delta = 1) {
@@ -26893,10 +26939,47 @@ export {
   index$m as Switch,
   index$l as Text,
   index$k as Textarea,
+  UniButtonElement,
+  UniCanvasElement,
+  UniCheckboxElement,
+  UniCheckboxGroupElement,
+  UniCoverImageElement,
+  UniCoverViewElement,
+  UniEditorElement,
   UniElement,
   UniElement as UniElementImpl,
+  UniFormElement,
+  UniIconElement,
+  UniImageElement,
+  UniInputElement,
+  UniLabelElement,
+  UniListItemElement,
+  UniListViewElement,
+  UniMapElement,
+  UniMovableAreaElement,
+  UniMovableViewElement,
+  UniNavigatorElement,
+  UniPickerElement,
+  UniPickerViewColumnElement,
+  UniPickerViewElement,
+  UniProgressElement,
+  UniRadioElement,
+  UniRadioGroupElement,
+  UniRichTextElement,
+  UniScrollViewElement,
   UniServiceJSBridge$1 as UniServiceJSBridge,
+  UniSliderElement,
+  UniStickyHeaderElement,
+  UniStickySectionElement,
+  UniSwiperElement,
+  UniSwiperItemElement,
+  UniSwitchElement,
+  UniTextElement,
+  UniTextareaElement,
+  UniVideoElement,
+  UniViewElement,
   UniViewJSBridge$1 as UniViewJSBridge,
+  UniWebViewElement,
   index$c as Video,
   index$j as View,
   indexX as WebView,

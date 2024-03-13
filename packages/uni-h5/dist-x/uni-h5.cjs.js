@@ -900,6 +900,8 @@ class UniElement extends HTMLElement {
   }
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
+class UniFormElement extends UniElement {
+}
 const index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
@@ -959,6 +961,8 @@ function useProvideLabel() {
     }
   });
   return handlers;
+}
+class UniLabelElement extends UniElement {
 }
 const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
@@ -1036,6 +1040,8 @@ const buttonProps = {
     default: false
   }
 };
+class UniButtonElement extends UniElement {
+}
 const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
@@ -1915,6 +1921,8 @@ const props$r = {
     default: true
   }
 };
+class UniCanvasElement extends UniElement {
+}
 const index$A = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
@@ -2389,6 +2397,8 @@ const props$q = {
     default: ""
   }
 };
+class UniCheckboxGroupElement extends UniElement {
+}
 const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$q,
@@ -2485,6 +2495,8 @@ const props$p = {
     default: ""
   }
 };
+class UniCheckboxElement extends UniElement {
+}
 const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$p,
@@ -2823,6 +2835,8 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
+class UniEditorElement extends UniElement {
+}
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$n,
@@ -2884,6 +2898,8 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
+class UniIconElement extends UniElement {
+}
 const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
@@ -2951,6 +2967,8 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
+class UniImageElement extends UniElement {
+}
 const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$m,
@@ -3291,7 +3309,7 @@ const props$l = /* @__PURE__ */ shared.extend(
     },
     maxlength: {
       type: [Number, String],
-      default: 140
+      default: Infinity
     },
     confirmType: {
       type: String,
@@ -3562,6 +3580,12 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
+class UniInputElement extends UniElement {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
+  }
+}
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$k,
@@ -3789,6 +3813,8 @@ const movableAreaProps = {
     default: false
   }
 };
+class UniMovableAreaElement extends UniElement {
+}
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -4336,6 +4362,8 @@ const movableViewProps = {
 };
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
+}
+class UniMovableViewElement extends UniElement {
 }
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
@@ -4988,6 +5016,8 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
+class UniNavigatorElement extends UniElement {
+}
 const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
@@ -5079,6 +5109,8 @@ function useState$2(props2) {
   });
   return state;
 }
+class UniPickerViewElement extends UniElement {
+}
 const PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
   props: pickerViewProps,
@@ -5162,6 +5194,8 @@ function useScopedClass(indicatorHeightRef) {
   }
   vue.watch(() => indicatorHeightRef.value, updateStyle);
   return className;
+}
+class UniPickerViewColumnElement extends UniElement {
 }
 const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
@@ -5321,6 +5355,8 @@ const progressProps = {
     default: 0
   }
 };
+class UniProgressElement extends UniElement {
+}
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
@@ -5411,6 +5447,8 @@ const props$j = {
     default: ""
   }
 };
+class UniRadioGroupElement extends UniElement {
+}
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
@@ -5533,6 +5571,8 @@ const props$i = {
     default: "#ffffff"
   }
 };
+class UniRadioElement extends UniElement {
+}
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$i,
@@ -5767,12 +5807,13 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
   if (!nodeList || shared.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
+    var _a;
     if (!shared.isPlainObject(node)) {
       return;
     }
     if (!shared.hasOwn(node, "type") || node.type === "node") {
       let nodeProps = { [scopeId]: "" };
-      const tagName = node.name.toLowerCase();
+      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
       if (!shared.hasOwn(TAGS, tagName)) {
         return;
       }
@@ -5874,10 +5915,12 @@ function parseHtml(html) {
         text
       };
       const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
       }
-      parent.children.push(node);
     }
   });
   return results.children;
@@ -5890,6 +5933,8 @@ const props$h = {
     }
   }
 };
+class UniRichTextElement extends UniElement {
+}
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
@@ -6087,6 +6132,8 @@ const props$g = {
     default: false
   }
 };
+class UniScrollViewElement extends UniElement {
+}
 const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
@@ -6314,7 +6361,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         state.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
-          trigger("refresherrefresh", {}, {});
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -6324,16 +6373,28 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         state.refresherHeight = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {});
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {});
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         break;
     }
     state.refreshState = _state;
   }
+  let touchStart = {
+    x: 0,
+    y: 0
+  };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
   vue.watch(scrollTopNumber, (val) => {
     _scrollTopChanged(val);
   });
@@ -6980,6 +7041,8 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
+class UniSwiperElement extends UniElement {
+}
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
@@ -7209,6 +7272,8 @@ const props$d = {
     default: ""
   }
 };
+class UniSwiperItemElement extends UniElement {
+}
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
@@ -7254,6 +7319,8 @@ const props$c = {
     default: ""
   }
 };
+class UniSwitchElement extends UniElement {
+}
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$c,
@@ -7367,6 +7434,8 @@ function normalizeText(text, { space, decode }) {
 function parseText(text, options) {
   return normalizeText(text, options).split(uniShared.LINEFEED);
 }
+class UniTextElement extends UniElement {
+}
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
@@ -7441,6 +7510,12 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
+class UniTextareaElement extends UniElement {
+  focus(options) {
+    var _a;
+    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
+  }
+}
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
@@ -7582,6 +7657,8 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+class UniViewElement extends UniElement {
+}
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: shared.extend({}, hoverProps),
@@ -7699,6 +7776,8 @@ const props$a = {
     default: false
   }
 };
+class UniListViewElement extends UniElement {
+}
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props: props$a,
@@ -7946,6 +8025,14 @@ function rearrange(visibleVNode, containerRef, isVertical, state) {
 function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit2) {
   let beforeRefreshing = false;
   let triggerAbort = false;
+  let touchStart = {
+    x: 0,
+    y: 0
+  };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
   function _setRefreshState(_state) {
     if (!props2.refresherEnabled)
       return;
@@ -7954,7 +8041,9 @@ function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit
         state.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
-          trigger("refresherrefresh", {}, {});
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -7964,11 +8053,15 @@ function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit
         state.refresherHeight = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {});
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {});
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         break;
     }
@@ -7989,6 +8082,8 @@ function getSize(isVertical, el) {
   } else {
     return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
   }
+}
+class UniListItemElement extends UniElement {
 }
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
@@ -8032,6 +8127,8 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+class UniStickySectionElement extends UniElement {
+}
 const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
@@ -8077,6 +8174,8 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+class UniStickyHeaderElement extends UniElement {
+}
 const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
@@ -8635,17 +8734,16 @@ function initRouter(app) {
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
-  if (savedPosition) {
-    return savedPosition;
-  }
-};
 function createRouterOptions() {
   return {
     history: initHistory(),
     strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes,
-    scrollBehavior
+    routes: __uniRoutes
+    /**
+     * 传入scrollBehavior后，vue-router会将history.scrollRestoration设为manual。
+     * 导致safari无法保留上一页面的截图，进而导致在iOS手势返回期间上一页面处于白屏状态
+     */
+    // scrollBehavior,
   };
 }
 function initHistory() {
@@ -9378,6 +9476,8 @@ const props$9 = {
     default: true
   }
 };
+class UniVideoElement extends UniElement {
+}
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$9,
@@ -9608,6 +9708,8 @@ const props$8 = {
     default: ""
   }
 };
+class UniWebViewElement extends UniElement {
+}
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
@@ -10848,6 +10950,8 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
+class UniMapElement extends UniElement {
+}
 const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
@@ -10884,6 +10988,8 @@ const props$1 = {
     default: 0
   }
 };
+class UniCoverViewElement extends UniElement {
+}
 const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
@@ -10924,6 +11030,8 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+class UniCoverImageElement extends UniElement {
+}
 const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
@@ -11099,6 +11207,8 @@ const props = {
     default: ""
   }
 };
+class UniPickerElement extends UniElement {
+}
 const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
@@ -13327,10 +13437,47 @@ exports.SwiperItem = index$m;
 exports.Switch = index$l;
 exports.Text = index$k;
 exports.Textarea = index$j;
+exports.UniButtonElement = UniButtonElement;
+exports.UniCanvasElement = UniCanvasElement;
+exports.UniCheckboxElement = UniCheckboxElement;
+exports.UniCheckboxGroupElement = UniCheckboxGroupElement;
+exports.UniCoverImageElement = UniCoverImageElement;
+exports.UniCoverViewElement = UniCoverViewElement;
+exports.UniEditorElement = UniEditorElement;
 exports.UniElement = UniElement;
 exports.UniElementImpl = UniElement;
+exports.UniFormElement = UniFormElement;
+exports.UniIconElement = UniIconElement;
+exports.UniImageElement = UniImageElement;
+exports.UniInputElement = UniInputElement;
+exports.UniLabelElement = UniLabelElement;
+exports.UniListItemElement = UniListItemElement;
+exports.UniListViewElement = UniListViewElement;
+exports.UniMapElement = UniMapElement;
+exports.UniMovableAreaElement = UniMovableAreaElement;
+exports.UniMovableViewElement = UniMovableViewElement;
+exports.UniNavigatorElement = UniNavigatorElement;
+exports.UniPickerElement = UniPickerElement;
+exports.UniPickerViewColumnElement = UniPickerViewColumnElement;
+exports.UniPickerViewElement = UniPickerViewElement;
+exports.UniProgressElement = UniProgressElement;
+exports.UniRadioElement = UniRadioElement;
+exports.UniRadioGroupElement = UniRadioGroupElement;
+exports.UniRichTextElement = UniRichTextElement;
+exports.UniScrollViewElement = UniScrollViewElement;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
+exports.UniSliderElement = UniSliderElement;
+exports.UniStickyHeaderElement = UniStickyHeaderElement;
+exports.UniStickySectionElement = UniStickySectionElement;
+exports.UniSwiperElement = UniSwiperElement;
+exports.UniSwiperItemElement = UniSwiperItemElement;
+exports.UniSwitchElement = UniSwitchElement;
+exports.UniTextElement = UniTextElement;
+exports.UniTextareaElement = UniTextareaElement;
+exports.UniVideoElement = UniVideoElement;
+exports.UniViewElement = UniViewElement;
 exports.UniViewJSBridge = UniViewJSBridge$1;
+exports.UniWebViewElement = UniWebViewElement;
 exports.Video = index$b;
 exports.View = index$i;
 exports.WebView = indexX;

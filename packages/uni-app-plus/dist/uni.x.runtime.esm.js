@@ -1476,6 +1476,17 @@ var SetNavigationBarColorProtocol = {
   animation: Object
 };
 var API_SET_NAVIGATION_BAR_TITLE = "setNavigationBarTitle";
+var API_PAGE_SCROLL_TO = "pageScrollTo";
+var PageScrollToProtocol = {
+  scrollTop: Number,
+  selector: String,
+  duration: Number
+};
+var PageScrollToOptions = {
+  formatArgs: {
+    duration: 300
+  }
+};
 var IndexProtocol = {
   index: {
     type: Number,
@@ -2410,6 +2421,39 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   }
   return bodyNode.querySelector("#".concat(id2));
 });
+function queryElementTop(component, selector) {
+  var _component$$el;
+  var scrollNode = (_component$$el = component.$el) === null || _component$$el === void 0 ? void 0 : _component$$el.querySelector(selector);
+  if (scrollNode != null) {
+    return scrollNode.getBoundingClientRect().top;
+  }
+  return null;
+}
+var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
+  var currentPage = getCurrentPage();
+  var scrollViewNode = currentPage === null || currentPage === void 0 ? void 0 : currentPage.$el;
+  if (scrollViewNode == null || scrollViewNode.tagName != "SCROLL-VIEW") {
+    res.reject("selector invalid");
+    return;
+  }
+  var top = options.scrollTop;
+  if (!!options.selector) {
+    top = queryElementTop(currentPage, options.selector);
+    if (top != null) {
+      var currentScrollTop = scrollViewNode.scrollTop;
+      top += currentScrollTop;
+    }
+  }
+  if (top == null || top < 0) {
+    res.reject("top or selector invalid");
+    return;
+  }
+  if (options.offsetTop != null) {
+    top += options.offsetTop;
+  }
+  scrollViewNode.scrollTop = top;
+  res.resolve();
+}, PageScrollToProtocol, PageScrollToOptions);
 var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)/;
 function removeUrlWrap(source) {
   if (source.startsWith("url(")) {
@@ -2816,6 +2860,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   loadFontFace,
   navigateBack,
   navigateTo,
+  pageScrollTo,
   reLaunch,
   redirectTo,
   registerUTSInterface,
