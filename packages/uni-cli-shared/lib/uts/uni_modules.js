@@ -3,9 +3,33 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.parseInjects = exports.parseUniExtApis = void 0;
+exports.parseUTSModuleDeps = exports.capitalize = exports.camelize = exports.parseInjects = exports.parseUniExtApis = exports.getUniExtApiProviderRegisters = exports.getUniExtApiProviders = void 0;
+// 重要：此文件编译后的js，需同步至 vue2 编译器中 uni-cli-shared/lib/uts/uni_modules.js
 const path_1 = __importDefault(require("path"));
 const fs_extra_1 = __importDefault(require("fs-extra"));
+const extApiProviders = [];
+function getUniExtApiProviders() {
+    return extApiProviders;
+}
+exports.getUniExtApiProviders = getUniExtApiProviders;
+function getUniExtApiProviderRegisters() {
+    const result = [];
+    extApiProviders.forEach((provider) => {
+        if (provider.name && provider.service) {
+            result.push({
+                name: provider.name,
+                service: provider.service,
+                class: `uts.sdk.modules.${(0, exports.camelize)(provider.plugin)}.${(0, exports.capitalize)((0, exports.camelize)('uni-ext-api-' +
+                    provider.service +
+                    '-' +
+                    provider.name +
+                    '-provider'))}`,
+            });
+        }
+    });
+    return result;
+}
+exports.getUniExtApiProviderRegisters = getUniExtApiProviderRegisters;
 function parseUniExtApis(vite = true, platform, language = 'javascript') {
     if (!process.env.UNI_INPUT_DIR) {
         return {};
@@ -15,6 +39,7 @@ function parseUniExtApis(vite = true, platform, language = 'javascript') {
         return {};
     }
     const injects = {};
+    extApiProviders.length = 0;
     fs_extra_1.default.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
         // 必须以 uni- 开头
         if (!uniModuleDir.startsWith('uni-')) {
@@ -32,6 +57,11 @@ function parseUniExtApis(vite = true, platform, language = 'javascript') {
                 exports = pkg.uni_modules['uni-ext-api'];
             }
             if (exports) {
+                const provider = exports.provider;
+                if (provider && provider.service) {
+                    provider.plugin = uniModuleDir;
+                    extApiProviders.push(provider);
+                }
                 const curInjects = parseInjects(vite, platform, language, `@/uni_modules/${uniModuleDir}`, uniModuleRootDir, exports);
                 Object.assign(injects, curInjects);
             }
@@ -74,15 +104,27 @@ function parseInjects(vite = true, platform, language, source, uniModuleRootDir,
     });
     const injects = {};
     if (Object.keys(rootDefines).length) {
+        const platformIndexFileName = path_1.default.resolve(uniModuleRootDir, 'utssdk', platform);
+        const rootIndexFileName = path_1.default.resolve(uniModuleRootDir, 'utssdk', 'index.uts');
         let hasPlatformFile = uniModuleRootDir
-            ? fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'index.uts')) ||
-                fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', platform))
+            ? fs_extra_1.default.existsSync(rootIndexFileName) || fs_extra_1.default.existsSync(platformIndexFileName)
             : true;
         if (!hasPlatformFile) {
             if (platform === 'app') {
                 hasPlatformFile =
                     fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-android')) ||
                         fs_extra_1.default.existsSync(path_1.default.resolve(uniModuleRootDir, 'utssdk', 'app-ios'));
+            }
+        }
+        // 其他平台修改source，直接指向目标文件，否则 uts2js 找不到类型信息
+        if (platform !== 'app' &&
+            platform !== 'app-android' &&
+            platform !== 'app-ios') {
+            if (fs_extra_1.default.existsSync(platformIndexFileName)) {
+                source = `${source}/utssdk/${platform}/index.uts`;
+            }
+            else if (fs_extra_1.default.existsSync(rootIndexFileName)) {
+                source = `${source}/utssdk/index.uts`;
             }
         }
         for (const key in rootDefines) {
@@ -173,3 +215,34 @@ const toTypeString = (value) => objectToString.call(value);
 function isPlainObject(val) {
     return toTypeString(val) === '[object Object]';
 }
+const cacheStringFunction = (fn) => {
+    const cache = Object.create(null);
+    return ((str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    });
+};
+const camelizeRE = /-(\w)/g;
+/**
+ * @private
+ */
+exports.camelize = cacheStringFunction((str) => {
+    return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''));
+});
+/**
+ * @private
+ */
+exports.capitalize = cacheStringFunction((str) => str.charAt(0).toUpperCase() + str.slice(1));
+/**
+ * 解析 UTS 类型的模块依赖列表
+ * @param deps
+ * @param inputDir
+ * @returns
+ */
+function parseUTSModuleDeps(deps, inputDir) {
+    const modulesDir = path_1.default.resolve(inputDir, 'uni_modules');
+    return deps.filter((dep) => {
+        return fs_extra_1.default.existsSync(path_1.default.resolve(modulesDir, dep, 'utssdk'));
+    });
+}
+exports.parseUTSModuleDeps = parseUTSModuleDeps;
