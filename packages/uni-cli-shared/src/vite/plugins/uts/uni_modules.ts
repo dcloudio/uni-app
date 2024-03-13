@@ -38,7 +38,7 @@ export function uniUTSUniModulesPlugin(
 ): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
 
-  const compilePlugin = (pluginDir: string) => {
+  const compilePlugin = async (pluginDir: string) => {
     utsPlugins.add(path.basename(pluginDir))
 
     const pkgJson = require(path.join(pluginDir, 'package.json'))
@@ -59,13 +59,21 @@ export function uniUTSUniModulesPlugin(
         uniExtApiProviderServicePlugin = extApiProvider.servicePlugin
       }
     }
+    const compiler = resolveUTSCompiler()
     // 处理依赖的 uts 插件
     const deps = parseUTSModuleDeps(
       pkgJson.uni_modules?.dependencies || [],
       process.env.UNI_INPUT_DIR
     )
+    if (deps.length) {
+      for (const dep of deps) {
+        await compilePlugin(
+          path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', dep)
+        )
+      }
+    }
 
-    return resolveUTSCompiler().compile(pluginDir, {
+    return compiler.compile(pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,

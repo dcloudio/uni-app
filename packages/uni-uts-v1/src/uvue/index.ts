@@ -18,9 +18,9 @@ import {
   RunKotlinBuildResult,
   getInjectApis,
   kotlinDir,
-  resolveAndroidArchiveOutputPath,
-  hasDeps,
   getUniModulesJars,
+  parseUTSModuleConfigJsonJars,
+  parseUTSModuleLibsJars,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
@@ -33,7 +33,6 @@ import {
 } from '../utils'
 import { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
-import { sync } from 'fast-glob'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -325,6 +324,7 @@ async function runKotlinDev(
 
       let hasError = false
       const configJsonJars = await parseUTSModuleConfigJsonJars(
+        2,
         uni_modules,
         checkDependencies!,
         checkConfigJsonDeps,
@@ -429,86 +429,4 @@ function writeKotlinManifestJson(
     path.resolve(kotlinSrcOutDir, '.manifest.json'),
     JSON.stringify(manifest)
   )
-}
-
-function parseUTSModuleLibsJars(plugins: string[]) {
-  const jars = new Set<string>()
-  plugins.forEach((plugin) => {
-    const libsPath = path.resolve(
-      process.env.UNI_INPUT_DIR,
-      'uni_modules',
-      plugin,
-      'utssdk',
-      'app-android',
-      'libs'
-    )
-    if (fs.existsSync(libsPath)) {
-      sync('*.jar', { cwd: libsPath, absolute: true }).forEach((jar) => {
-        jars.add(jar)
-      })
-      const aars = sync('*.aar', { cwd: libsPath })
-      aars.forEach((name) => {
-        const outputPath = resolveAndroidArchiveOutputPath(name)
-        if (fs.existsSync(outputPath)) {
-          sync('**/*.jar', {
-            cwd: outputPath,
-            absolute: true,
-          }).forEach((jar) => {
-            jars.add(jar)
-          })
-        }
-      })
-    }
-  })
-  return [...jars]
-}
-
-function checkDeps(
-  plugin: string,
-  checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],
-  checkDependenciesValid: boolean,
-  checkError: (plugin: string) => void
-) {
-  const configJsonFile = path.resolve(
-    process.env.UNI_INPUT_DIR,
-    'uni_modules',
-    plugin,
-    'utssdk',
-    'app-android',
-    'config.json'
-  )
-  if (configJsonFile && hasDeps(configJsonFile)) {
-    return checkDependencies(configJsonFile, {
-      type: 2,
-      valid: checkDependenciesValid,
-    }).then(({ code, msg, data }) => {
-      if (code !== 0) {
-        console.error(msg)
-        return []
-      }
-      return data
-    })
-  }
-  return Promise.resolve([])
-}
-
-async function parseUTSModuleConfigJsonJars(
-  plugins: string[],
-  checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],
-  checkDependenciesValid: boolean,
-  checkError: (plugin: string) => void
-) {
-  const deps = new Set<string>()
-
-  for (const plugin of plugins) {
-    ;(
-      await checkDeps(
-        plugin,
-        checkDependencies,
-        checkDependenciesValid,
-        checkError
-      )
-    ).forEach((dep) => deps.add(dep))
-  }
-  return [...deps]
 }
