@@ -21,6 +21,7 @@ export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 // dom
 export { getElementById } from './dom/getElementById'
 export { pageScrollTo } from './dom/pageScrollTo'
+export { createSelectorQuery } from './dom/createSelectorQuery'
 
 // ui
 export { loadFontFace } from './ui/loadFontFace'
