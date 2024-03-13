@@ -1,6 +1,6 @@
 import { NodeTransform } from '@vue/compiler-core'
 import { isElementNode } from '../../vite/utils/ast'
-import { matchUTSComponent } from '../../uts'
+import { matchUTSComponent } from '../../utsUtils'
 
 /**
  * 将uts组件保存到自定义组件列表中

@@ -10,13 +10,11 @@ import {
   capitalize,
   installDepTips,
   isArray,
-  normalizeNodeModules,
   normalizePath,
-  removeExt,
 } from './utils'
-import { matchEasycom, type EasycomMatcher } from './easycom'
 
 import { parseUniExtApis } from './uni_modules'
+import type { EasycomMatcher } from './easycom'
 
 function once<T extends (...args: any[]) => any>(
   fn: T,
@@ -135,7 +133,15 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
         paths: [process.env.UNI_CLI_CONTEXT],
       })
     } catch (e) {
-      let utsCompilerVersion = require('../package.json').version
+      let utsCompilerVersion = ''
+      try {
+        utsCompilerVersion = require('../package.json').version
+      } catch (e) {
+        try {
+          // vue2
+          utsCompilerVersion = require('../../package.json').version
+        } catch (e) {}
+      }
       if (utsCompilerVersion.startsWith('2.0.')) {
         utsCompilerVersion = '^3.0.0-alpha-3060920221117001'
       }
@@ -344,59 +350,3 @@ export const parseUniExtApiNamespacesJsOnce = once(
     return namespaces
   }
 )
-
-export function matchUTSComponent(tag: string) {
-  const source = matchEasycom(tag)
-  return !!(source && source.includes('uts-proxy'))
-}
-
-export function genUTSClassName(fileName: string, prefix: string = 'Gen') {
-  return (
-    prefix +
-    capitalize(
-      camelize(
-        verifySymbol(
-          removeExt(
-            normalizeNodeModules(fileName)
-              .replace(/[\/|_]/g, '-')
-              .replace(/-+/g, '-')
-          )
-        )
-      )
-    )
-  )
-}
-
-function isValidStart(c: string): boolean {
-  return !!c.match(/^[A-Za-z_-]$/)
-}
-
-function isValidContinue(c: string): boolean {
-  return !!c.match(/^[A-Za-z0-9_-]$/)
-}
-
-function verifySymbol(s: string) {
-  const chars = Array.from(s)
-
-  if (isValidStart(chars[0]) && chars.slice(1).every(isValidContinue)) {
-    return s
-  }
-
-  const buf: string[] = []
-  let hasStart = false
-
-  for (const c of chars) {
-    if (!hasStart && isValidStart(c)) {
-      hasStart = true
-      buf.push(c)
-    } else if (isValidContinue(c)) {
-      buf.push(c)
-    }
-  }
-
-  if (buf.length === 0) {
-    buf.push('_')
-  }
-
-  return buf.join('')
-}

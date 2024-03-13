@@ -21,6 +21,7 @@ export * from './esbuild'
 export * from './resolve'
 export * from './scripts'
 export * from './platform'
+export * from './utsUtils'
 
 export {
   parseUniExtApis,

@@ -773,7 +773,7 @@ export function getUniModulesJars(outputDir: string, plugins?: string[]) {
 
 function createPluginGlob(plugins?: string[]) {
   if (plugins && plugins.length) {
-    return `(${plugins.join('|')})`
+    return plugins.length > 1 ? `(${plugins.join('|')})` : plugins[0]
   }
   return '*'
 }
