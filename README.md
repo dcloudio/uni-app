@@ -87,3 +87,7 @@
 - 评测：[跨端开发框架深度横评之2020版](https://juejin.im/post/5e8e8d5a6fb9a03c6d3d9f42)
 - 评测：[深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
 - [uni-app在App端和flutter、react native的比较](https://ask.dcloud.net.cn/article/36083)
+
+## 贡献指南
+
+如果你想参与贡献，请先阅读[贡献指南](.github/CONTRIBUTING.md)。
