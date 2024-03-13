@@ -18,8 +18,9 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
 
   // 加载全局字体
   const appStyle = appVm.$options.styles
-  if (appStyle && appStyle.fontFace) {
-    loadFontFaceByStyles(appStyle.fontFace, true)
+  console.log('appStyle', appStyle)
+  if (appStyle) {
+    loadFontFaceByStyles(appStyle, true)
   }
 
   // TODO uni-app x
