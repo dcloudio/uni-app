@@ -12,6 +12,7 @@ import {
   ExtractPropTypes,
 } from 'vue'
 import { extend, isFunction } from '@vue/shared'
+import { debounce } from '@dcloudio/uni-shared'
 import { getCurrentPageId, registerViewMethod } from '@dcloudio/uni-core'
 import { throttle } from './throttle'
 import { useCustomEvent, CustomEventTrigger } from './useEvent'
@@ -142,7 +143,7 @@ export const props = /*#__PURE__*/ extend(
     },
     maxlength: {
       type: [Number, String],
-      default: __X__ ? Infinity : 140,
+      default: 140,
     },
     confirmType: {
       type: String,
@@ -219,13 +220,7 @@ function useBase(
   })
   const maxlength = computed(() => {
     var maxlength = Number(props.maxlength)
-    if (__X__) {
-      return isNaN(maxlength) || maxlength < 0
-        ? Infinity
-        : Math.floor(maxlength)
-    } else {
-      return isNaN(maxlength) ? 140 : maxlength
-    }
+    return isNaN(maxlength) ? 140 : maxlength
   })
   const value =
     getValueString(props.modelValue, props.type) ||
@@ -246,10 +241,7 @@ function useBase(
   )
   watch(
     () => state.maxlength,
-    (val) => (state.value = state.value.slice(0, val)),
-    {
-      immediate: __X__ ? true : false,
-    }
+    (val) => (state.value = state.value.slice(0, val))
   )
   return {
     fieldRef,
@@ -264,9 +256,22 @@ function useValueSync(
   emit: SetupContext['emit'],
   trigger: CustomEventTrigger
 ) {
+  // #if _X_
+  //@ts-ignore
   const valueChangeFn = throttle((val: any) => {
     state.value = getValueString(val, props.type)
   }, 100)
+  // #endif
+  // #if !_X_
+  //@ts-ignore
+  const valueChangeFn = debounce(
+    (val: any) => {
+      state.value = getValueString(val, props.type)
+    },
+    100,
+    { setTimeout, clearTimeout }
+  )
+  // #endif
   watch(() => props.modelValue, valueChangeFn)
   watch(() => props.value, valueChangeFn)
   const triggerInputFn = throttle((event: Event, detail: InputEventDetail) => {
