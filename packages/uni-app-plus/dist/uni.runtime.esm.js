@@ -12240,6 +12240,10 @@ const NavigateBackOptions = {
         },
     },
 };
+const PreloadPageOptions = 
+/*#__PURE__*/ createRouteOptions(API_PRELOAD_PAGE);
+const UnPreloadPageOptions = 
+/*#__PURE__*/ createRouteOptions(API_UN_PRELOAD_PAGE);
 function createAnimationProtocol(animationTypes) {
     return {
         animationType: {
@@ -19688,22 +19692,24 @@ function _switchTab({ url, path, query, }) {
     });
 }
 
-const unPreloadPage = defineSyncApi(API_UN_PRELOAD_PAGE, ({ url }) => {
+const unPreloadPage = defineAsyncApi(API_UN_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
     const webview = closePreloadWebview({
         url,
     });
     if (webview) {
-        return {
+        resolve({
+            // @ts-expect-error
             id: webview.id,
+            // @ts-expect-error
             url,
+            // @ts-expect-error
             errMsg: 'unPreloadPage:ok',
-        };
+        });
+        return;
     }
-    return {
-        url,
-        errMsg: 'unPreloadPage:fail not found',
-    };
-}, UnPreloadPageProtocol);
+    reject('not found');
+    return;
+}, UnPreloadPageProtocol, UnPreloadPageOptions);
 const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve }) => {
     // 防止热更等情况重复 preloadPage
     if (preloadWebviews[url]) {
@@ -19728,7 +19734,7 @@ const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve }) => {
         url,
         errMsg: 'preloadPage:ok',
     });
-}, PreloadPageProtocol);
+}, PreloadPageProtocol, PreloadPageOptions);
 
 var uni$1 = {
   __proto__: null,
