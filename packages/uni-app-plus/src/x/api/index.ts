@@ -29,6 +29,7 @@ export { loadFontFace } from './ui/loadFontFace'
 // base
 export { $emit, $off, $on, $once } from './base/event-bus'
 export { removeInterceptor, addInterceptor } from './base/interceptor'
+export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
 
 export {
   initUTSProxyClass,
