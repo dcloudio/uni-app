@@ -325,6 +325,33 @@
       }
     }
   },
+  "uni-payment": {
+    "provider": {
+      "service": "payment"
+    },
+    "uni": {
+      "requestPayment": {
+        "name": "requestPayment",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-payment-alipay": {
+    "provider": {
+      "service": "payment",
+      "name": "alipay"
+    }
+  },
+  "uni-payment-wxpay": {
+    "provider": {
+      "service": "payment",
+      "name": "wxpay"
+    }
+  },
   "uni-prompt": {
     "uni": {
       "showToast": {
@@ -413,18 +440,6 @@
       },
       "createPushMessage": {
         "name": "createPushMessage",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false
-        }
-      }
-    }
-  },
-  "uni-requestPayment-alipay": {
-    "uni": {
-      "requestPayment": {
-        "name": "requestPayment",
         "app": {
           "js": false,
           "kotlin": true,
