@@ -74,6 +74,12 @@ export function initScope(
         return getNativeApp().pageManager.findPageById(pageId + '')
       },
     })
+
+    Object.defineProperty(vm, '$viewToTempFilePath', {
+      get() {
+        return vm.$nativePage!.viewToTempFilePath
+      },
+    })
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {

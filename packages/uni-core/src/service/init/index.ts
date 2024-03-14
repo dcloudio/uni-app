@@ -33,9 +33,7 @@ export function initPageVm(
   pageVm.$page = page
   pageVm.$mpType = 'page'
   pageVm.$fontFamilySet = new Set()
-  pageVm.$viewToTempFilePath = () => {
-    return pageVm.$nativePage!.viewToTempFilePath
-  }
+
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true
     // TODO preload? 初始化时，状态肯定是激活
