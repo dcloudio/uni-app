@@ -12,6 +12,7 @@ import { registerPage } from '../../framework/page'
 import { RouteOptions } from '../../../service/api/route/utils'
 import { closeWebview, showWebview } from './webview'
 import { ComponentPublicInstance } from 'vue'
+import { setStatusBarStyle } from '../../statusBar'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -59,7 +60,7 @@ function _redirectTo({
           )
         }
         resolve(undefined)
-        // TODO setStatusBarStyle()
+        setStatusBarStyle()
       }
     )
   })

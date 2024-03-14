@@ -13,6 +13,7 @@ import { showWebview } from './webview'
 import { registerPage } from '../../framework/page/register'
 import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import { closePage } from './utils'
+import { setStatusBarStyle } from '../../statusBar'
 
 interface ReLaunchOptions extends RouteOptions {}
 
@@ -37,7 +38,7 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
     function callback() {
       pages.forEach((page) => closePage(page, 'none'))
       resolve(undefined)
-      // TODO setStatusBarStyle()
+      setStatusBarStyle()
     }
     if (selected === -1) {
       showWebview(

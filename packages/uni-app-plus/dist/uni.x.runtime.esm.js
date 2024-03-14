@@ -1792,6 +1792,13 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   }
   return mountPage(component);
 }
+function setStatusBarStyle() {
+  var page = getCurrentPage();
+  if (page) {
+    var nativePage = page.$nativePage;
+    nativePage.applyStatusBarStyle();
+  }
+}
 var $navigateTo = (args, _ref) => {
   var {
     resolve,
@@ -1840,6 +1847,7 @@ function _navigateTo(_ref2) {
       resolve({
         eventChannel
       });
+      setStatusBarStyle();
     });
   });
 }
@@ -1908,6 +1916,7 @@ function back(delta, animationType, animationDuration) {
     closeWebview(webview2, animationType, animationDuration, () => {
       pages2.slice(len - delta, len).forEach((page) => removePage(page));
       invokeHook(ON_SHOW);
+      setStatusBarStyle();
     });
   };
   var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
@@ -1952,6 +1961,7 @@ function _redirectTo(_ref3) {
         closeWebview(lastPage.$nativePage, "none");
       }
       resolve(void 0);
+      setStatusBarStyle();
     });
   });
 }
@@ -2216,6 +2226,7 @@ function _reLaunch(_ref3) {
     function callback() {
       pages2.forEach((page) => closePage(page, "none"));
       resolve(void 0);
+      setStatusBarStyle();
     }
     if (selected === -1) {
       showWebview(registerPage({

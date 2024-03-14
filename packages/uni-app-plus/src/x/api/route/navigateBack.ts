@@ -13,6 +13,7 @@ import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { closeWebview } from './webview'
 import { IPage } from '@dcloudio/uni-app-x/types/native'
 import { getNativeApp } from '../../framework/app/app'
+import { setStatusBarStyle } from '../../statusBar'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -90,8 +91,8 @@ function back(
         .forEach((page) => removePage(page as ComponentPublicInstance))
       // 前一个页面触发 onShow
       invokeHook(ON_SHOW)
+      setStatusBarStyle()
     })
-    // TODO setStatusBarStyle()
   }
 
   const webview = getNativeApp().pageManager.findPageById(
