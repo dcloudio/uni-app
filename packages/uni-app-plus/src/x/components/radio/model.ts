@@ -3,7 +3,6 @@
 export const RADIO_NAME = 'Radio'
 export const RADIO_ROOT_ELEMENT = 'uni-radio-element'
 
-// export class UniCheckboxElement extends UniElement {}
 export class UniRadioElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
     // @ts-ignore

@@ -3,7 +3,6 @@
 export const CHECKBOX_NAME = 'Checkbox'
 export const CHECKBOX_ROOT_ELEMENT = 'uni-checkbox-element'
 
-// export class UniCheckboxElement extends UniElement {}
 export class UniCheckboxElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
     // @ts-ignore

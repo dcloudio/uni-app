@@ -24,6 +24,7 @@ declare module '@vue/runtime-core' {
     // X iOS start
     $nativePage?: UniPage | null
     $fontFamilySet: Set<string>
+    $viewToTempFilePath: (options: ViewToTempFilePathOptions) => void
     // X iOS end
     $requireNativePlugin?: (name: string) => unknown
     getOpenerEventChannel: () => EventChannel | undefined
