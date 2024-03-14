@@ -1421,6 +1421,9 @@ importers:
       colors:
         specifier: ^1.4.0
         version: 1.4.0
+      debug:
+        specifier: ^4.3.3
+        version: 4.3.4(supports-color@8.1.1)
       fast-glob:
         specifier: ^3.2.11
         version: 3.2.11
