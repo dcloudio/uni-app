@@ -195,10 +195,10 @@ function findTabPage(path: string): Page | null {
   // return page
   const page = tabs.get(path) ?? null
   // fix CurrentPage
+  const pages = getAllPages()
+  pages.forEach((item) => (item.$.__isActive = item === page))
+  // 暂时同时保留安卓端逻辑
   if (page !== null) {
-    const pages = getAllPages()
-    pages.forEach((item) => (item.$.__isActive = item === page))
-    // 暂时同时保留安卓端逻辑
     const index = pages.indexOf(page!)
     if (index !== pages.length - 1) {
       pages.splice(index, 1)
