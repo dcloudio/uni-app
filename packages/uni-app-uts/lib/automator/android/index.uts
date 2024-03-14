@@ -52,6 +52,8 @@ import {
   getAttributes,
   GetStylesParams,
   getStyles,
+  TriggerEventParams,
+  triggerEvent
   // @ts-ignore
 } from './apis/Element.uts'
 
@@ -195,6 +197,10 @@ export function onMessage(msg: string) {
         case 'Element.getStyles':
           // @ts-ignore
           getStyles(JSON.parse<GetStylesParams>(params)!, callback)
+          break
+        case 'Element.triggerEvent':
+          // @ts-ignore
+          triggerEvent(JSON.parse<TriggerEventParams>(params)!, callback)
           break
       }
     }

@@ -530,3 +530,59 @@ export const getStyles = (
     callback({ styles }, null)
   }
 }
+
+type CustomEventDetail = {
+  value?: string
+}
+
+export type TriggerEventParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+  type: string;
+  detail: CustomEventDetail;
+}
+
+export const triggerEvent = (params: TriggerEventParams, callback: Callback) => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const tagName = dom.tagName.toLocaleLowerCase();
+    const type = params.type;
+    const detail = params.detail;
+    const functionName = `${tagName}.${type}`
+    switch (functionName) {
+      case 'input.input':
+        dom.dispatchEvent(
+          type,
+          // @ts-ignore
+          new UniInputEvent(
+            type,
+            // @ts-expect-error
+            UniInputEventDetail(detail.value!, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+      case 'textarea.input':
+        dom.dispatchEvent(
+          type,
+          // @ts-ignore
+          new UniInputEvent(
+            type,
+            // @ts-ignore
+            UniInputEventDetail(detail.value!, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+    }
+    callback(null, {
+      errMsg: `${functionName} not exists`,
+    })
+  }
+}
