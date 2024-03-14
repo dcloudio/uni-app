@@ -212,6 +212,18 @@ export const callFunction = (
         )
         callback({ result: `${functionName} success` }, null)
         break
+      case 'textarea.input':
+        element.dispatchEvent(
+          'input',
+          // @ts-ignore
+          new InputEvent(
+            'input',
+            // @ts-ignore
+            InputEventDetail(params.args[0] as string, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
       case 'scroll-view.scrollTo':
         if (element.tagName == 'SCROLL-VIEW') {
           // @ts-ignore
