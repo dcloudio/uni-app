@@ -1,5 +1,5 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction, isArray, isPromise, hasOwn, remove, capitalize, parseStringStyle } from "@vue/shared";
+import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, computed, onMounted, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
@@ -809,7 +809,7 @@ function getApiCallbacks(args) {
   var apiCallbacks = {};
   for (var name in args) {
     var fn = args[name];
-    if (isFunction(fn)) {
+    if (isFunction$1(fn)) {
       apiCallbacks[name] = tryCatch(fn);
       delete args[name];
     }
@@ -836,16 +836,16 @@ function createAsyncApiCallback(name) {
     fail,
     complete
   } = getApiCallbacks(args);
-  var hasSuccess = isFunction(success);
-  var hasFail = isFunction(fail);
-  var hasComplete = isFunction(complete);
+  var hasSuccess = isFunction$1(success);
+  var hasFail = isFunction$1(fail);
+  var hasComplete = isFunction$1(complete);
   var callbackId2 = invokeCallbackId++;
   addInvokeCallback(callbackId2, name, (res) => {
     res = res || {};
     res.errMsg = normalizeErrMsg$1(res.errMsg, name);
-    isFunction(beforeAll) && beforeAll(res);
+    isFunction$1(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
-      isFunction(beforeSuccess) && beforeSuccess(res, args);
+      isFunction$1(beforeSuccess) && beforeSuccess(res, args);
       hasSuccess && success(res);
     } else {
       hasFail && fail(res);
@@ -903,7 +903,7 @@ function wrapperOptions(interceptors) {
     var oldCallback = options[name];
     options[name] = function callbackInterceptor(res) {
       queue(hooks, res, options).then((res2) => {
-        return isFunction(oldCallback) && oldCallback(res2) || res2;
+        return isFunction$1(oldCallback) && oldCallback(res2) || res2;
       });
     };
   });
@@ -955,7 +955,7 @@ function invokeApi(method, api, options, params) {
   return api(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction(args[cb]))) {
+  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find((cb) => isFunction$1(args[cb]))) {
     return true;
   }
   return false;
@@ -990,7 +990,7 @@ function formatApiArgs(args, options) {
   for (var i = 0; i < keys2.length; i++) {
     var name = keys2[i];
     var formatterOrDefaultValue = formatArgs[name];
-    if (isFunction(formatterOrDefaultValue)) {
+    if (isFunction$1(formatterOrDefaultValue)) {
       var errMsg = formatterOrDefaultValue(args[0][name], params);
       if (isString(errMsg)) {
         return errMsg;
@@ -1192,6 +1192,9 @@ function backbuttonListener() {
 }
 var enterOptions = /* @__PURE__ */ createLaunchOptions();
 var launchOptions = /* @__PURE__ */ createLaunchOptions();
+function getLaunchOptions() {
+  return extend({}, launchOptions);
+}
 function initLaunchOptions(_ref2) {
   var {
     path,
@@ -1213,7 +1216,7 @@ var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
 function mergeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((hook) => {
-    if (isFunction(interceptor[hook])) {
+    if (isFunction$1(interceptor[hook])) {
       interceptors2[hook] = mergeHook(interceptors2[hook], interceptor[hook]);
     }
   });
@@ -1225,7 +1228,7 @@ function removeInterceptorHook(interceptors2, interceptor) {
   Object.keys(interceptor).forEach((name) => {
     var hooks = interceptors2[name];
     var hook = interceptor[name];
-    if (isArray(hooks) && isFunction(hook)) {
+    if (isArray(hooks) && isFunction$1(hook)) {
       remove(hooks, hook);
     }
   });
@@ -1648,6 +1651,11 @@ function initScope(pageId, vm, pageInstance) {
         return getNativeApp().pageManager.findPageById(pageId + "");
       }
     });
+    Object.defineProperty(vm, "$viewToTempFilePath", {
+      get() {
+        return vm.$nativePage.viewToTempFilePath;
+      }
+    });
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {
@@ -1658,7 +1666,7 @@ function initScope(pageId, vm, pageInstance) {
   return vm;
 }
 function isVuePageAsyncComponent(component) {
-  return isFunction(component);
+  return isFunction$1(component);
 }
 var pagesMap = /* @__PURE__ */ new Map();
 function definePage(pagePath, asyncComponent) {
@@ -1674,16 +1682,20 @@ function createFactory(component) {
 }
 var ON_POP_GESTURE = "onPopGesture";
 function loadFontFaceByStyles(styles2, global2) {
-  var fontFaces = styles2["@FONT-FACE"];
-  if (!fontFaces)
+  var fontFaceStyle = [];
+  styles2.forEach((style) => {
+    if (style["@FONT-FACE"]) {
+      fontFaceStyle.push(...style["@FONT-FACE"]);
+    }
+  });
+  if (fontFaceStyle.length === 0)
     return;
-  Object.keys(fontFaces).forEach((keys2) => {
-    var value = fontFaces[keys2];
-    var fontFamily = value["fontFamily"];
-    var fontWeight = value["fontWeight"];
-    var fontStyle = value["fontStyle"];
-    var fontVariant = value["fontVariant"];
-    var src = value["src"];
+  fontFaceStyle.forEach((style) => {
+    var fontFamily = style["fontFamily"];
+    var fontWeight = style["fontWeight"];
+    var fontStyle = style["fontStyle"];
+    var fontVariant = style["fontVariant"];
+    var src = style["src"];
     if (fontFamily != null && src != null) {
       loadFontFace({
         global: global2,
@@ -1766,7 +1778,7 @@ function registerPage(_ref) {
   nativePage.addPageEventListener(ON_READY, (_) => {
     invokeHook(page, ON_READY);
   });
-  var pageCSSStyle = page.$options.__styles;
+  var pageCSSStyle = page.$options.styles;
   if (pageCSSStyle) {
     loadFontFaceByStyles(pageCSSStyle, false);
   }
@@ -2087,9 +2099,9 @@ function createTab(path, query, callback) {
 function findTabPage(path) {
   var _tabs$get;
   var page = (_tabs$get = tabs.get(path)) !== null && _tabs$get !== void 0 ? _tabs$get : null;
+  var pages2 = getAllPages();
+  pages2.forEach((item) => item.$.__isActive = item === page);
   if (page !== null) {
-    var pages2 = getAllPages();
-    pages2.forEach((item) => item.$.__isActive = item === page);
     var index2 = pages2.indexOf(page);
     if (index2 !== pages2.length - 1) {
       pages2.splice(index2, 1);
@@ -2465,6 +2477,174 @@ var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, 
   scrollViewNode.scrollTop = top;
   res.resolve();
 }, PageScrollToProtocol, PageScrollToOptions);
+function isVueComponent(comp) {
+  var has$option = typeof comp.$ === "object";
+  var has$nativePage = typeof comp.$nativePage === "object";
+  var has$mpType = typeof comp.$mpType === "string";
+  return has$option && has$nativePage && has$mpType;
+}
+var isFunction = (val) => typeof val === "function";
+class NodesRefImpl {
+  constructor(selectorQuery, component, selector, single) {
+    this._selectorQuery = selectorQuery;
+    this._component = component;
+    this._selector = selector;
+    this._single = single;
+  }
+  boundingClientRect(callback) {
+    var hasArg = callback === null || typeof callback === "function";
+    if (hasArg) {
+      this._selectorQuery._push(this._selector, this._component, this._single, {
+        id: true,
+        dataset: true,
+        rect: true,
+        size: true
+      }, callback);
+      return this._selectorQuery;
+    } else {
+      return this.boundingClientRect(null);
+    }
+  }
+  fields(fields, callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, fields, callback);
+    return this._selectorQuery;
+  }
+  scrollOffset(callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, {
+      id: true,
+      dataset: true,
+      scrollOffset: true
+    }, callback);
+    return this._selectorQuery;
+  }
+  context(callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, {
+      context: true
+    }, callback);
+    return this._selectorQuery;
+  }
+  node(_callback) {
+    return this._selectorQuery;
+  }
+}
+class SelectorQueryImpl {
+  constructor(component) {
+    this._component = null;
+    this._component = component;
+    this._queue = [];
+    this._queueCb = [];
+  }
+  exec(callback) {
+    var _this$_component, _this$_component$$;
+    (_this$_component = this._component) === null || _this$_component === void 0 ? void 0 : (_this$_component$$ = _this$_component.$) === null || _this$_component$$ === void 0 ? void 0 : _this$_component$$.$waitNativeRender(() => {
+      requestComponentInfo(this._component, this._queue, (res) => {
+        var queueCbs = this._queueCb;
+        res.forEach((info, _index) => {
+          var queueCb = queueCbs[_index];
+          if (isFunction(queueCb)) {
+            queueCb(info);
+          }
+        });
+        if (callback && isFunction(callback)) {
+          callback(res);
+        }
+      });
+    });
+    return this._nodesRef;
+  }
+  in(component) {
+    if (isVueComponent(component)) {
+      this._component = component;
+    }
+    return this;
+  }
+  select(selector) {
+    this._nodesRef = new NodesRefImpl(this, this._component, selector, true);
+    return this._nodesRef;
+  }
+  selectAll(selector) {
+    this._nodesRef = new NodesRefImpl(this, this._component, selector, false);
+    return this._nodesRef;
+  }
+  selectViewport() {
+    this._nodesRef = new NodesRefImpl(this, null, "", true);
+    return this._nodesRef;
+  }
+  _push(selector, component, single, fields, callback) {
+    this._queue.push({
+      component,
+      selector,
+      single,
+      fields
+    });
+    this._queueCb.push(callback);
+  }
+}
+function getNodeInfo(node) {
+  var _node$getAttribute;
+  var rect = node.getBoundingClientRect();
+  var nodeInfo = {
+    id: (_node$getAttribute = node.getAttribute("id")) === null || _node$getAttribute === void 0 ? void 0 : _node$getAttribute.toString(),
+    dataset: null,
+    left: rect.left,
+    top: rect.top,
+    right: rect.right,
+    bottom: rect.bottom,
+    width: rect.width,
+    height: rect.height
+  };
+  return nodeInfo;
+}
+function querySelf(element, selector) {
+  if (element == null || selector.length < 2) {
+    return null;
+  }
+  var selectorType = selector.charAt(0);
+  var selectorName = selector.slice(1);
+  if (selectorType == "." && Array.from(element.classList).includes(selectorName)) {
+    return element;
+  }
+  if (selectorType == "#" && element.getAttribute("id") == selectorName) {
+    return element;
+  }
+  if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
+    return element;
+  }
+  return null;
+}
+function requestComponentInfo(vueComponent, queue2, callback) {
+  var result = [];
+  var el = vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$el;
+  if (el != null) {
+    queue2.forEach((item) => {
+      if (item.single) {
+        var element = querySelf(el, item.selector);
+        if (element == null) {
+          element = el.querySelector(item.selector);
+        }
+        if (element != null) {
+          result.push(getNodeInfo(element));
+        }
+      } else {
+        var nodesInfo = [];
+        var _element = querySelf(el, item.selector);
+        if (_element != null) {
+          nodesInfo.push(getNodeInfo(_element));
+        }
+        var findNodes = el.querySelectorAll(item.selector);
+        findNodes === null || findNodes === void 0 ? void 0 : findNodes.forEach((node) => {
+          nodesInfo.push(getNodeInfo(node));
+        });
+        result.push(nodesInfo);
+      }
+    });
+  }
+  callback(result);
+}
+var createSelectorQuery = function() {
+  var instance = getCurrentPage();
+  return new SelectorQueryImpl(instance);
+};
 var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)/;
 function removeUrlWrap(source) {
   if (source.startsWith("url(")) {
@@ -2523,6 +2703,10 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
     }
   }
 });
+var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
+var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
+  return getLaunchOptions();
+});
 var callbackId = 1;
 var proxy;
 var callbacks = {};
@@ -2538,11 +2722,14 @@ function normalizeArg(arg) {
   } else if (isPlainObject(arg)) {
     if (isComponentPublicInstance(arg)) {
       var nodeId = "";
+      var pageId = "";
       var el = arg.$el;
       if (el && el.getNodeId) {
+        pageId = el.pageId;
         nodeId = el.getNodeId();
       }
       return {
+        pageId,
         nodeId
       };
     } else {
@@ -2874,7 +3061,9 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   $on,
   $once,
   addInterceptor,
+  createSelectorQuery,
   getElementById,
+  getLaunchOptionsSync,
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,
@@ -2923,8 +3112,9 @@ function initAppLaunch(appVm) {
   invokeHook(appVm, ON_LAUNCH, args);
   invokeHook(appVm, ON_SHOW, args);
   var appStyle = appVm.$options.styles;
-  if (appStyle && appStyle.fontFace) {
-    loadFontFaceByStyles(appStyle.fontFace, true);
+  console.log("appStyle", appStyle);
+  if (appStyle) {
+    loadFontFaceByStyles(appStyle, true);
   }
 }
 var isLaunchWebviewReady = false;
@@ -3360,6 +3550,7 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
 });
 const checkbox$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  UniCheckboxElement,
   default: checkbox
 }, Symbol.toStringTag, { value: "Module" });
 var CHECKBOX_GROUP_NAME = "CheckboxGroup";
@@ -3494,6 +3685,8 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
 });
 const checkboxGroup$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  UniCheckboxGroupChangeEvent,
+  UniCheckboxGroupElement,
   default: checkboxGroup
 }, Symbol.toStringTag, { value: "Module" });
 var RADIO_NAME = "Radio";
@@ -3708,6 +3901,7 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
 });
 const radio$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  UniRadioElement,
   default: radio
 }, Symbol.toStringTag, { value: "Module" });
 var RADIOGROUP_NAME = "RadioGroup";
@@ -3844,6 +4038,8 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
 });
 const radioGroup$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  UniRadioGroupChangeEvent,
+  UniRadioGroupElement,
   default: radioGroup
 }, Symbol.toStringTag, { value: "Module" });
 class UniNavigatorElement extends UniElementImpl {
@@ -3973,6 +4169,7 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
 });
 const navigator$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  UniNavigatorElement,
   default: navigator
 }, Symbol.toStringTag, { value: "Module" });
 var BACKGROUND_COLOR = "#EBEBEB";
@@ -4186,6 +4383,8 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
 });
 const progress$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  UniProgressActiveendEvent,
+  UniProgressElement,
   default: progress
 }, Symbol.toStringTag, { value: "Module" });
 var _style_picker_view = {
@@ -4428,6 +4627,8 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
 });
 const pickerView$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  UniPickerViewChangeEvent,
+  UniPickerViewElement,
   default: pickerView
 }, Symbol.toStringTag, { value: "Module" });
 const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
@@ -4589,6 +4790,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
 });
 const pickerViewColumn$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
+  UniPickerViewColumnElement,
   default: pickerViewColumn
 }, Symbol.toStringTag, { value: "Module" });
 const components = /* @__PURE__ */ Object.defineProperty({

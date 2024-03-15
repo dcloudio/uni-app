@@ -18,13 +18,15 @@ function normalizeArg(arg) {
     else if (isPlainObject(arg)) {
         if (isComponentPublicInstance(arg)) {
             let nodeId = '';
+            let pageId = '';
             // @ts-expect-error
             const el = arg.$el;
             // 非 x 可能不存在 getNodeId 方法？
             if (el && el.getNodeId) {
+                pageId = el.pageId;
                 nodeId = el.getNodeId();
             }
-            return { nodeId };
+            return { pageId, nodeId };
         }
         else {
             Object.keys(arg).forEach((name) => {
