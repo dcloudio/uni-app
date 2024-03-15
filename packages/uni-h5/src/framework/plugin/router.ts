@@ -42,13 +42,7 @@ function createRouterOptions(): RouterOptions {
     history: initHistory(),
     strict: !!__uniConfig.router!.strict,
     routes: __uniRoutes as unknown as RouteRecordRaw[],
-    /**
-     * 传入scrollBehavior后，vue-router会将history.scrollRestoration设为manual。
-     * 导致safari无法保留上一页面的截图，进而导致在iOS手势返回期间上一页面处于白屏状态
-     */
-    //#if !_X_
     scrollBehavior,
-    //#endif
   }
 }
 
