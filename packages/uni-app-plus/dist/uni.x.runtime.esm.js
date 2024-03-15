@@ -1012,9 +1012,10 @@ function invokeFail(id2, name, errMsg) {
   var errRes = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : {};
   var apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
   delete errRes.errCode;
-  return invokeCallback(id2, typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : extend({
+  var res = extend({
     errMsg: apiErrMsg
-  }, errRes));
+  }, errRes);
+  return invokeCallback(id2, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (options && options.beforeInvoke) {
@@ -1680,6 +1681,7 @@ function createFactory(component) {
     return setupPage(component);
   };
 }
+var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
 function loadFontFaceByStyles(styles2, global2) {
   var fontFaceStyle = [];
@@ -2713,7 +2715,12 @@ var callbacks = {};
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
 }
+function toRaw(observed) {
+  var raw = observed && observed.__v_raw;
+  return raw ? toRaw(raw) : observed;
+}
 function normalizeArg(arg) {
+  arg = toRaw(arg);
   if (typeof arg === "function") {
     var oldId = Object.keys(callbacks).find((id22) => callbacks[id22] === arg);
     var id2 = oldId ? parseInt(oldId) : callbackId++;
@@ -3092,7 +3099,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   switchTab
 }, Symbol.toStringTag, { value: "Module" });
 function initGlobalEvent(app) {
-  app.addKeyEventListener("onBackButton", () => {
+  app.addKeyEventListener(ON_BACK_BUTTON, () => {
     backbuttonListener();
     return true;
   });

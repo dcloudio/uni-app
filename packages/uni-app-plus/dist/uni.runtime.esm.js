@@ -515,11 +515,8 @@ function invokeSuccess(id, name, res) {
 function invokeFail(id, name, errMsg, errRes = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
     delete errRes.errCode;
-    return invokeCallback(id, typeof UniError !== 'undefined'
-        ? typeof errRes.errCode !== 'undefined'
-            ? new UniError(name, errRes.errCode, apiErrMsg)
-            : new UniError(apiErrMsg, errRes)
-        : extend({ errMsg: apiErrMsg }, errRes));
+    let res = extend({ errMsg: apiErrMsg }, errRes);
+    return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
@@ -17319,7 +17316,12 @@ const callbacks = {};
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
 }
+function toRaw(observed) {
+    const raw = observed && observed.__v_raw;
+    return raw ? toRaw(raw) : observed;
+}
 function normalizeArg(arg) {
+    arg = toRaw(arg);
     if (typeof arg === 'function') {
         // 查找该函数是否已缓存
         const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);

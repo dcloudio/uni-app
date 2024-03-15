@@ -16,7 +16,13 @@ function isComponentPublicInstance(instance: any) {
   return instance && instance.$ && instance.$.proxy === instance
 }
 
+function toRaw(observed?: unknown): unknown {
+  const raw = observed && (observed as any).__v_raw
+  return raw ? toRaw(raw) : observed
+}
+
 export function normalizeArg(arg: unknown) {
+  arg = toRaw(arg)
   if (typeof arg === 'function') {
     // 查找该函数是否已缓存
     const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
