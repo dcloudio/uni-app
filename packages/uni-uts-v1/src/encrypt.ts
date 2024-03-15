@@ -44,8 +44,15 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
     ? createRollupCommonjsCode(pluginDir, pluginRelativeDir)
     : createWebpackCommonjsCode(pluginRelativeDir)
   if (process.env.NODE_ENV !== 'development') {
-    // 复制插件目录
-    fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
+    // 生成wgt和本地生成资源，无需复制加密插件目录
+    const needCopy = !(
+      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+      process.env.UNI_APP_PRODUCTION_TYPE === 'LOCAL_PACKAGING'
+    )
+    if (needCopy) {
+      // 复制插件目录
+      fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
+    }
     return {
       dir: outputPluginDir,
       code,
