@@ -183,8 +183,19 @@ export async function compile(
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
+    // uts 插件 wgt 模式，本地资源模式不需要编译
+    if (
+      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+      process.env.UNI_APP_PRODUCTION_TYPE === 'LOCAL_PACKAGING'
+    ) {
+      return createResult(outputPluginDir, errMsg, code, deps, meta)
+    }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
-    if (utsPlatform === 'app-android' || utsPlatform === 'app') {
+    if (
+      utsPlatform === 'app-android' ||
+      utsPlatform === 'app' ||
+      utsPlatform === 'app-plus'
+    ) {
       let filename =
         resolvePlatformIndex('app-android', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
@@ -222,7 +233,11 @@ export async function compile(
         }
       }
     }
-    if (utsPlatform === 'app-ios' || utsPlatform === 'app') {
+    if (
+      utsPlatform === 'app-ios' ||
+      utsPlatform === 'app' ||
+      utsPlatform === 'app-plus'
+    ) {
       let filename =
         resolvePlatformIndex('app-ios', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
