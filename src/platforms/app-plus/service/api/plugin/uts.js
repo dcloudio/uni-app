@@ -7,7 +7,12 @@ const callbacks = {};
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
 }
+function toRaw(observed) {
+    const raw = observed && observed.__v_raw;
+    return raw ? toRaw(raw) : observed;
+}
 function normalizeArg(arg) {
+    arg = toRaw(arg);
     if (typeof arg === 'function') {
         // 查找该函数是否已缓存
         const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
@@ -18,13 +23,15 @@ function normalizeArg(arg) {
     else if (isPlainObject(arg)) {
         if (isComponentPublicInstance(arg)) {
             let nodeId = '';
+            let pageId = '';
             // @ts-expect-error
             const el = arg.$el;
             // 非 x 可能不存在 getNodeId 方法？
             if (el && el.getNodeId) {
+                pageId = el.pageId;
                 nodeId = el.getNodeId();
             }
-            return { nodeId };
+            return { pageId, nodeId };
         }
         else {
             Object.keys(arg).forEach((name) => {
