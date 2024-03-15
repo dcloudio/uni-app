@@ -1,5 +1,6 @@
 import path, { basename, join, relative } from 'path'
 import fs from 'fs-extra'
+import { makeLegalIdentifier } from '@rollup/pluginutils'
 import { APP_PLATFORM } from './manifest/utils'
 import { normalizePath } from './shared'
 
@@ -8,21 +9,15 @@ export function isEncrypt(pluginDir: string) {
 }
 
 function createRollupCommonjsCode(
-  pluginDir: string,
+  _pluginDir: string,
   pluginRelativeDir: string
 ) {
+  const name = makeLegalIdentifier(pluginRelativeDir)
   return `
 import * as commonjsHelpers from "\0commonjsHelpers.js"
-
-import { __module, exports as __exports } from "\0${normalizePath(
-    pluginDir
-  )}?commonjs-module"
-
-Object.defineProperty(__exports, '__esModule', { value: true })      
-__module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
-
-export default /*@__PURE__*/commonjsHelpers.getDefaultExportFromCjs(__exports);
-export { __exports as __moduleExports };
+const ${name} = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
+export default /*@__PURE__*/commonjsHelpers.getDefaultExportFromCjs(${name});
+export { ${name} as __moduleExports };
 `
 }
 function createWebpackCommonjsCode(pluginRelativeDir: string) {
