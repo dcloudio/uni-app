@@ -95,6 +95,14 @@ export function genUTSPlatformResource(
   filename: string,
   options: UTSPlatformResourceOptions
 ) {
+  // uts 插件 wgt 模式，本地资源模式不需要拷贝
+  if (
+    process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+    process.env.UNI_APP_PRODUCTION_TYPE === 'LOCAL_PACKAGING'
+  ) {
+    return
+  }
+
   const platformFile = resolveUTSPlatformFile(filename, options)
   const { platform } = options
   const utsInputDir = resolveUTSPlatformDir(filename, platform)
