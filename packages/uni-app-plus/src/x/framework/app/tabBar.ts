@@ -127,7 +127,7 @@ export function clearTabBarStatus() {
 }
 
 export function removeTabBarPage(page: Page) {
-  const pagePath = getRealPath(page.$route?.path ?? '', true)
+  const pagePath = getRealPath(page.route, true)
   if (tabs.get(pagePath) === page) {
     tabs.delete(pagePath)
     if (getTabIndex(pagePath) === selected0) {
@@ -159,8 +159,6 @@ export function getTabIndex(path: string, list = getTabList()): number {
   return selected
 }
 
-let currentPageRoute: unknown = null
-
 function findPageRoute(path: string) {
   return __uniRoutes.find((route) => route.path === path)!
 }
@@ -170,7 +168,6 @@ function createTab(
   query: Record<string, string>,
   callback?: () => void
 ): Page {
-  currentPageRoute = findPageRoute(path)
   showWebview(
     registerPage({ url: path, path, query, openType: 'switchTab' }),
     'none',
@@ -178,7 +175,6 @@ function createTab(
     callback
   )
   const page = getCurrentPage() as Page
-  currentPageRoute = null
   tabBar0!.appendItem(page!.$page.id.toString())
   return page
 }
@@ -209,9 +205,6 @@ function findTabPage(path: string): Page | null {
 }
 
 export function isTabPage(page: Page): boolean {
-  if (page.$route === currentPageRoute) {
-    return true
-  }
   let has = false
   tabs.forEach((value: Page, key: string) => {
     if (value === page) {

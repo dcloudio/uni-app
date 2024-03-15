@@ -7,12 +7,14 @@ import {
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { removePage } from '../../../service/framework/page/getCurrentPages'
+import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import { registerPage } from '../../framework/page'
 import { RouteOptions } from '../../../service/api/route/utils'
-import { closeWebview, showWebview } from './webview'
+import { showWebview } from './webview'
 import { ComponentPublicInstance } from 'vue'
 import { setStatusBarStyle } from '../../statusBar'
+import { isTabPage } from '../../framework/app/tabBar'
+import { closePage } from './utils'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -37,10 +39,8 @@ function _redirectTo({
   path,
   query,
 }: RedirectToOptions): Promise<undefined> {
-  const lastPage = getCurrentPage()
-  if (lastPage) {
-    removePage(lastPage)
-  }
+  const lastPage = getCurrentPage() as ComponentPublicInstance
+  // 与 uni-app x 安卓一致，后移除页面
 
   return new Promise((resolve) => {
     showWebview(
@@ -48,20 +48,31 @@ function _redirectTo({
         url,
         path,
         query,
-        openType: 'redirectTo',
+        openType:
+          isTabPage(lastPage) || getAllPages().length === 1
+            ? 'reLaunch'
+            : 'redirectTo',
       }),
       'none',
       0,
       () => {
         if (lastPage) {
-          closeWebview(
-            (lastPage as ComponentPublicInstance).$nativePage!,
-            'none'
-          )
+          removePages(lastPage)
         }
         resolve(undefined)
         setStatusBarStyle()
       }
     )
   })
+}
+
+function removePages(currentPage: ComponentPublicInstance) {
+  if (isTabPage(currentPage)) {
+    const pages = getAllPages().slice(0, -1)
+    pages.forEach((page) => {
+      closePage(page, 'none')
+    })
+  } else {
+    closePage(currentPage, 'none')
+  }
 }

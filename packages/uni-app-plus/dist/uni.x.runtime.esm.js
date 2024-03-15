@@ -1936,49 +1936,6 @@ function back(delta, animationType, animationDuration) {
   var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
   backPage(webview);
 }
-var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
-  var {
-    url
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  _redirectTo({
-    url,
-    path,
-    query
-  }).then(resolve).catch(reject);
-}, RedirectToProtocol, RedirectToOptions);
-function _redirectTo(_ref3) {
-  var {
-    url,
-    path,
-    query
-  } = _ref3;
-  var lastPage = getCurrentPage();
-  if (lastPage) {
-    removePage(lastPage);
-  }
-  return new Promise((resolve) => {
-    showWebview(registerPage({
-      url,
-      path,
-      query,
-      openType: "redirectTo"
-    }), "none", 0, () => {
-      if (lastPage) {
-        closeWebview(lastPage.$nativePage, "none");
-      }
-      resolve(void 0);
-      setStatusBarStyle();
-    });
-  });
-}
 function hasLeadingSlash(str) {
   return str.indexOf("/") == 0;
 }
@@ -2063,6 +2020,15 @@ function init() {
   page.startRender();
   page.show(null);
 }
+function removeTabBarPage(page) {
+  var pagePath = getRealPath(page.route, true);
+  if (tabs.get(pagePath) === page) {
+    tabs.delete(pagePath);
+    if (getTabIndex(pagePath) === selected0) {
+      selected0 = -1;
+    }
+  }
+}
 function getTabBar() {
   return tabBar0;
 }
@@ -2081,12 +2047,10 @@ function getTabIndex(path) {
   }
   return selected;
 }
-var currentPageRoute = null;
 function findPageRoute(path) {
   return __uniRoutes.find((route) => route.path === path);
 }
 function createTab(path, query, callback) {
-  currentPageRoute = findPageRoute(path);
   showWebview(registerPage({
     url: path,
     path,
@@ -2094,7 +2058,6 @@ function createTab(path, query, callback) {
     openType: "switchTab"
   }), "none", 0, callback);
   var page = getCurrentPage();
-  currentPageRoute = null;
   tabBar0.appendItem(page.$page.id.toString());
   return page;
 }
@@ -2113,9 +2076,6 @@ function findTabPage(path) {
   return page;
 }
 function isTabPage(page) {
-  if (page.$route === currentPageRoute) {
-    return true;
-  }
   var has2 = false;
   tabs.forEach((value, key) => {
     if (value === page) {
@@ -2167,8 +2127,59 @@ function switchSelect(selected, path) {
   selected0 = selected;
 }
 function closePage(page, animationType, animationDuration) {
-  removePage(page);
   closeWebview(page.$nativePage, animationType, animationDuration);
+  removePage(page);
+  removeTabBarPage(page);
+}
+var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
+  var {
+    url
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  _redirectTo({
+    url,
+    path,
+    query
+  }).then(resolve).catch(reject);
+}, RedirectToProtocol, RedirectToOptions);
+function _redirectTo(_ref3) {
+  var {
+    url,
+    path,
+    query
+  } = _ref3;
+  var lastPage = getCurrentPage();
+  return new Promise((resolve) => {
+    showWebview(registerPage({
+      url,
+      path,
+      query,
+      openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
+    }), "none", 0, () => {
+      if (lastPage) {
+        removePages(lastPage);
+      }
+      resolve(void 0);
+      setStatusBarStyle();
+    });
+  });
+}
+function removePages(currentPage) {
+  if (isTabPage(currentPage)) {
+    var pages2 = getAllPages().slice(0, -1);
+    pages2.forEach((page) => {
+      closePage(page, "none");
+    });
+  } else {
+    closePage(currentPage, "none");
+  }
 }
 var $switchTab = (args, _ref) => {
   var {
@@ -2199,7 +2210,7 @@ function _switchTab(_ref2) {
   if (selected == -1) {
     return Promise.reject("tab ".concat(path, " not found"));
   }
-  var pages2 = getAllPages();
+  var pages2 = getCurrentPages();
   switchSelect(selected, path, query);
   for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
     var page = pages2[index2];

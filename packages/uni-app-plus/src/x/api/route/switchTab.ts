@@ -14,7 +14,6 @@ import {
   switchSelect,
 } from '../../framework/app/tabBar'
 import { ComponentPublicInstance } from 'vue'
-import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import { closePage } from './utils'
 
 export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (
@@ -46,7 +45,7 @@ function _switchTab({ url, path, query }: SwitchTabOptions) {
   if (selected == -1) {
     return Promise.reject(`tab ${path} not found`)
   }
-  const pages = getAllPages()
+  const pages = getCurrentPages()
   switchSelect(selected, path, query)
   for (let index = pages.length - 1; index >= 0; index--) {
     const page = pages[index] as ComponentPublicInstance
