@@ -8437,10 +8437,8 @@ function createComponentInstance(vnode, parent, suspense) {
     ec: null,
     sp: null,
     $waitNativeRender(fn) {
-      var _a, _b, _c;
-      // TODO find document by ComponentInternalInstance props
-      var pageId = (_b = (_a = this.root.proxy) === null || _a === void 0 ? void 0 : _a.$el) === null || _b === void 0 ? void 0 : _b.pageId;
-      var document = pageId && ((_c = __pageManager.findPageById(pageId)) === null || _c === void 0 ? void 0 : _c.document);
+      var _a, _b;
+      var document = (_b = (_a = this.proxy) === null || _a === void 0 ? void 0 : _a.$nativePage) === null || _b === void 0 ? void 0 : _b.document;
       if (document) {
         document.waitNativeRender(fn);
       } else {
@@ -9387,16 +9385,12 @@ function updateClassStyles(el) {
   // validateStyles(el, oldClassStyle)
   el.updateStyle(styles);
 }
-var rootPage = null;
-var rootDocument = null;
+var rootDocument;
 function getDocument() {
-  if (!rootPage) {
-    rootPage = __pageManager.createPage('', '', new Map());
-  }
-  if (!rootDocument) {
-    rootDocument = rootPage.document;
-  }
   return rootDocument;
+}
+function setDocument(document) {
+  rootDocument = document;
 }
 /**
  * 判断是否在document中
@@ -10061,10 +10055,8 @@ var createApp = function () {
     mount
   } = app;
   app.mount = container => {
-    if (container === '#app') {
-      container = getDocument().body;
-    }
-    return mount(container);
+    setDocument(container);
+    return mount(container.body);
   };
   return app;
 };
