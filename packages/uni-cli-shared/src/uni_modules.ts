@@ -194,6 +194,14 @@ export function parseInjects(
       } else if (fs.existsSync(rootIndexFileName)) {
         source = `${source}/utssdk/index.uts`
       }
+    } else if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+      if (
+        fs.existsSync(
+          path.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts')
+        )
+      ) {
+        source = `${source}/utssdk/app-js/index.uts`
+      }
     }
 
     for (const key in rootDefines) {
@@ -259,17 +267,23 @@ function parseInject(
             if (p === 'app') {
               const appOptions = defineOptions.app
               if (isPlainObject(appOptions)) {
-                if (language === 'javascript') {
-                  if (appOptions.js === false) {
-                    return
-                  }
-                } else if (language === 'kotlin') {
-                  if (appOptions.kotlin === false) {
-                    return
-                  }
-                } else if (language === 'swift') {
-                  if (appOptions.swift === false) {
-                    return
+                // js engine 下且存在 app-js，不检查
+                const skipCheck =
+                  process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' &&
+                  source.includes('app-js')
+                if (!skipCheck) {
+                  if (language === 'javascript') {
+                    if (appOptions.js === false) {
+                      return
+                    }
+                  } else if (language === 'kotlin') {
+                    if (appOptions.kotlin === false) {
+                      return
+                    }
+                  } else if (language === 'swift') {
+                    if (appOptions.swift === false) {
+                      return
+                    }
                   }
                 }
               }

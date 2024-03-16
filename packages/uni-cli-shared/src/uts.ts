@@ -50,6 +50,15 @@ export function resolveUTSAppModule(
       (includeUTSSDK && parentDir === 'utssdk')
     ) {
       const basedir = parentDir === 'uni_modules' ? 'utssdk' : ''
+      if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+        // js engine
+        if (parentDir === 'uni_modules') {
+          const appJsIndex = path.resolve(id, basedir, 'app-js', 'index.uts')
+          if (fs.existsSync(appJsIndex)) {
+            return appJsIndex
+          }
+        }
+      }
       if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
       }

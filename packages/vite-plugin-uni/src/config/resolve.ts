@@ -13,7 +13,8 @@ import { VitePluginUniResolvedOptions } from '..'
 
 function resolveUTSModuleProxyFile(id: string, importer: string) {
   const file = resolveUTSAppModule(id, importer)
-  if (file) {
+  if (file && !file.endsWith('.uts')) {
+    // app-js 会返回完整路径
     return file + '?uts-proxy'
   }
 }

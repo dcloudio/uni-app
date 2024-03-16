@@ -30,6 +30,13 @@ export function initUVueEnv() {
   if (manifestJson['uni-app-x']?.singleThread === false) {
     process.env.UNI_APP_X_SINGLE_THREAD = 'false'
   }
+  if (process.env.UNI_PLATFORM === 'app') {
+    process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'native'
+    // 如果是app-ios，目前强制使用js引擎
+    if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+      process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
+    }
+  }
 }
 
 export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
