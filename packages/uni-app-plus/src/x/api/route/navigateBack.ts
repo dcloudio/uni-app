@@ -23,6 +23,8 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       return reject(`getCurrentPages is empty`)
     }
     if (
+      // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
+      (args as any).from !== 'popGesture' &&
       invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {
         from: (args as any).from || 'navigateBack',
       })
