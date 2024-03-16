@@ -1521,10 +1521,11 @@ function invokeSuccess(id, name, res) {
 }
 function invokeFail(id, name, errMsg, errRes = {}) {
   const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
-  return invokeCallback(
-    id,
-    typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : shared.extend({ errMsg: apiErrMsg }, errRes)
-  );
+  let res = shared.extend({ errMsg: apiErrMsg }, errRes);
+  if (typeof UniError !== "undefined") {
+    res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+  }
+  return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -3401,13 +3402,9 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state, emit2, trigger) {
-  const valueChangeFn = uniShared.debounce(
-    (val) => {
-      state.value = getValueString(val, props2.type);
-    },
-    100,
-    { setTimeout, clearTimeout }
-  );
+  const valueChangeFn = throttle((val) => {
+    state.value = getValueString(val, props2.type);
+  }, 100);
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -8734,16 +8731,17 @@ function initRouter(app) {
   app.router = router;
   app.use(router);
 }
+const scrollBehavior = (_to, _from, savedPosition) => {
+  if (savedPosition) {
+    return savedPosition;
+  }
+};
 function createRouterOptions() {
   return {
     history: initHistory(),
     strict: !!__uniConfig.router.strict,
-    routes: __uniRoutes
-    /**
-     * 传入scrollBehavior后，vue-router会将history.scrollRestoration设为manual。
-     * 导致safari无法保留上一页面的截图，进而导致在iOS手势返回期间上一页面处于白屏状态
-     */
-    // scrollBehavior,
+    routes: __uniRoutes,
+    scrollBehavior
   };
 }
 function initHistory() {

@@ -384,11 +384,8 @@ function invokeSuccess(id, name, res) {
 function invokeFail(id, name, errMsg, errRes = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
     delete errRes.errCode;
-    return invokeCallback(id, typeof UniError !== 'undefined'
-        ? typeof errRes.errCode !== 'undefined'
-            ? new UniError(name, errRes.errCode, apiErrMsg)
-            : new UniError(apiErrMsg, errRes)
-        : extend({ errMsg: apiErrMsg }, errRes));
+    let res = extend({ errMsg: apiErrMsg }, errRes);
+    return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
