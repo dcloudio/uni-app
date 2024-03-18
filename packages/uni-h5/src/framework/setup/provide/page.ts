@@ -111,7 +111,7 @@ function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
     const type = history.state.__type__
     if (
       (type === 'redirectTo' || type === 'reLaunch') &&
-      getCurrentPages().length === 0
+      !history?.state?.back
     ) {
       pageMeta.isEntry = true
       pageMeta.isQuit = true

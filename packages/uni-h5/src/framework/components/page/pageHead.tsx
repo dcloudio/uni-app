@@ -264,7 +264,7 @@ function createPageHeadSearchInputTsx(
 }
 
 function onPageHeadBackButton() {
-  if (getCurrentPages().length === 1) {
+  if (!history.state?.back) {
     uni.reLaunch({
       url: '/',
     })
