@@ -14,6 +14,7 @@ import { closeWebview } from './webview'
 import { IPage } from '@dcloudio/uni-app-x/types/native'
 import { getNativeApp } from '../../framework/app/app'
 import { setStatusBarStyle } from '../../statusBar'
+import { isDirectPage, reLaunchEntryPage } from './direct'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -22,7 +23,9 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     if (!page) {
       return reject(`getCurrentPages is empty`)
     }
-    if (
+    if (isDirectPage(page as ComponentPublicInstance)) {
+      reLaunchEntryPage()
+    } else if (
       // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
       (args as any).from !== 'popGesture' &&
       invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {

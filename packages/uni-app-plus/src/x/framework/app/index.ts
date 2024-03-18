@@ -44,6 +44,7 @@ export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
+  initEntryPagePath(app)
 
   setNativeApp(app)
 
@@ -83,4 +84,21 @@ export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
   __uniConfig.ready = true
 
   // nav
+}
+
+function initEntryPagePath(app: IApp) {
+  const redirectInfo = app.getRedirectInfo()
+  if (redirectInfo?.debug?.url) {
+    const url = redirectInfo.debug.url
+    if (url != __uniConfig.entryPagePath) {
+      __uniConfig.realEntryPagePath = __uniConfig.entryPagePath
+      __uniConfig.entryPagePath = url
+      return
+    }
+  }
+  if (__uniConfig.conditionUrl) {
+    __uniConfig.realEntryPagePath = __uniConfig.entryPagePath
+    const conditionUrl = __uniConfig.conditionUrl
+    __uniConfig.entryPagePath = conditionUrl
+  }
 }

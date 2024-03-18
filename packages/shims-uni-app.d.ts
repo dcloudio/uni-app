@@ -41,6 +41,7 @@ declare namespace UniNamespace {
   }
 
   interface UniConfig {
+    conditionUrl?: string
     ready?: boolean
     router?: {
       strict: boolean

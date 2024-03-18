@@ -1875,70 +1875,6 @@ function initAnimation(path, animationType, animationDuration) {
   var meta = getRouteMeta(path);
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
-var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
-  var page = getCurrentPage();
-  if (!page) {
-    return reject("getCurrentPages is empty");
-  }
-  if (
-    // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
-    args.from !== "popGesture" && invokeHook(page, ON_BACK_PRESS, {
-      from: args.from || "navigateBack"
-    })
-  ) {
-    return reject("cancel");
-  }
-  try {
-    uni.hideToast();
-    uni.hideLoading();
-  } catch (error) {
-    console.warn(error);
-  }
-  if (page.$page.meta.isQuit)
-    ;
-  else {
-    var {
-      delta,
-      animationType,
-      animationDuration
-    } = args;
-    back(delta, animationType, animationDuration);
-  }
-  return resolve();
-}, NavigateBackProtocol, NavigateBackOptions);
-function back(delta, animationType, animationDuration) {
-  var pages2 = getCurrentPages();
-  var len = pages2.length;
-  var currentPage = pages2[len - 1];
-  if (delta > 1) {
-    pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
-      closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$page.id + ""), "none", 0);
-    });
-  }
-  var backPage = function(webview2) {
-    if (animationType) {
-      animationDuration = animationDuration || ANI_DURATION;
-    } else {
-      if (currentPage.$page.openType === "redirectTo") {
-        animationType = ANI_CLOSE;
-        animationDuration = ANI_DURATION;
-      } else {
-        animationType = "auto";
-      }
-    }
-    closeWebview(webview2, animationType, animationDuration, () => {
-      pages2.slice(len - delta, len).forEach((page) => removePage(page));
-      invokeHook(ON_SHOW);
-      setStatusBarStyle();
-    });
-  };
-  var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
-  backPage(webview);
-}
 function hasLeadingSlash(str) {
   return str.indexOf("/") == 0;
 }
@@ -2134,6 +2070,128 @@ function closePage(page, animationType, animationDuration) {
   removePage(page);
   removeTabBarPage(page);
 }
+var $reLaunch = (_ref, _ref2) => {
+  var {
+    url
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  _reLaunch({
+    url,
+    path,
+    query
+  }).then(resolve).catch(reject);
+};
+function _reLaunch(_ref3) {
+  var {
+    url,
+    path,
+    query
+  } = _ref3;
+  return new Promise((resolve) => {
+    var pages2 = getAllPages().slice(0);
+    var selected = getTabIndex(path);
+    function callback() {
+      pages2.forEach((page) => closePage(page, "none"));
+      resolve(void 0);
+      setStatusBarStyle();
+    }
+    if (selected === -1) {
+      showWebview(registerPage({
+        url,
+        path,
+        query,
+        openType: "reLaunch"
+      }), "none", 0, callback);
+    } else {
+      switchSelect(selected, path, query, true, callback);
+    }
+  });
+}
+var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+function isDirectPage(page) {
+  return !!__uniConfig.realEntryPagePath && getRealPath(page.$page.route) == getRealPath(parseUrl(__uniConfig.entryPagePath).path);
+}
+function reLaunchEntryPage() {
+  var _uniConfig$entryPage;
+  __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+  __uniConfig.realEntryPagePath = "";
+  reLaunch({
+    url: (_uniConfig$entryPage = __uniConfig.entryPagePath) !== null && _uniConfig$entryPage !== void 0 && _uniConfig$entryPage.startsWith("/") ? __uniConfig.entryPagePath : "/" + __uniConfig.entryPagePath
+  });
+}
+var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  var page = getCurrentPage();
+  if (!page) {
+    return reject("getCurrentPages is empty");
+  }
+  if (isDirectPage(page)) {
+    reLaunchEntryPage();
+  } else if (
+    // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
+    args.from !== "popGesture" && invokeHook(page, ON_BACK_PRESS, {
+      from: args.from || "navigateBack"
+    })
+  ) {
+    return reject("cancel");
+  }
+  try {
+    uni.hideToast();
+    uni.hideLoading();
+  } catch (error) {
+    console.warn(error);
+  }
+  if (page.$page.meta.isQuit)
+    ;
+  else {
+    var {
+      delta,
+      animationType,
+      animationDuration
+    } = args;
+    back(delta, animationType, animationDuration);
+  }
+  return resolve();
+}, NavigateBackProtocol, NavigateBackOptions);
+function back(delta, animationType, animationDuration) {
+  var pages2 = getCurrentPages();
+  var len = pages2.length;
+  var currentPage = pages2[len - 1];
+  if (delta > 1) {
+    pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
+      closeWebview(getNativeApp().pageManager.findPageById(deltaPage.$page.id + ""), "none", 0);
+    });
+  }
+  var backPage = function(webview2) {
+    if (animationType) {
+      animationDuration = animationDuration || ANI_DURATION;
+    } else {
+      if (currentPage.$page.openType === "redirectTo") {
+        animationType = ANI_CLOSE;
+        animationDuration = ANI_DURATION;
+      } else {
+        animationType = "auto";
+      }
+    }
+    closeWebview(webview2, animationType, animationDuration, () => {
+      pages2.slice(len - delta, len).forEach((page) => removePage(page));
+      invokeHook(ON_SHOW);
+      setStatusBarStyle();
+    });
+  };
+  var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
+  backPage(webview);
+}
 var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
   var {
     url
@@ -2224,51 +2282,6 @@ function _switchTab(_ref2) {
   }
   return Promise.resolve();
 }
-var $reLaunch = (_ref, _ref2) => {
-  var {
-    url
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  _reLaunch({
-    url,
-    path,
-    query
-  }).then(resolve).catch(reject);
-};
-function _reLaunch(_ref3) {
-  var {
-    url,
-    path,
-    query
-  } = _ref3;
-  return new Promise((resolve) => {
-    var pages2 = getAllPages().slice(0);
-    var selected = getTabIndex(path);
-    function callback() {
-      pages2.forEach((page) => closePage(page, "none"));
-      resolve(void 0);
-      setStatusBarStyle();
-    }
-    if (selected === -1) {
-      showWebview(registerPage({
-        url,
-        path,
-        query,
-        openType: "reLaunch"
-      }), "none", 0, callback);
-    } else {
-      switchSelect(selected, path, query, true, callback);
-    }
-  });
-}
-var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {
     index: index2,
@@ -3212,6 +3225,7 @@ function getApp$1() {
   console.error("[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.");
 }
 function registerApp(appVm, app) {
+  initEntryPagePath(app);
   setNativeApp(app);
   initVueApp(appVm);
   appCtx = appVm;
@@ -3223,6 +3237,23 @@ function registerApp(appVm, app) {
   initSubscribeHandlers();
   initAppLaunch(appVm);
   __uniConfig.ready = true;
+}
+function initEntryPagePath(app) {
+  var _redirectInfo$debug;
+  var redirectInfo = app.getRedirectInfo();
+  if (redirectInfo !== null && redirectInfo !== void 0 && (_redirectInfo$debug = redirectInfo.debug) !== null && _redirectInfo$debug !== void 0 && _redirectInfo$debug.url) {
+    var url = redirectInfo.debug.url;
+    if (url != __uniConfig.entryPagePath) {
+      __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
+      __uniConfig.entryPagePath = url;
+      return;
+    }
+  }
+  if (__uniConfig.conditionUrl) {
+    __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
+    var conditionUrl = __uniConfig.conditionUrl;
+    __uniConfig.entryPagePath = conditionUrl;
+  }
 }
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
