@@ -1884,9 +1884,12 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   if (!page) {
     return reject("getCurrentPages is empty");
   }
-  if (invokeHook(page, ON_BACK_PRESS, {
-    from: args.from || "navigateBack"
-  })) {
+  if (
+    // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
+    args.from !== "popGesture" && invokeHook(page, ON_BACK_PRESS, {
+      from: args.from || "navigateBack"
+    })
+  ) {
     return reject("cancel");
   }
   try {
