@@ -33,7 +33,10 @@ function initDebug() {
     const path = require('path')
     const debugFile = path.resolve(process.env.UNI_INPUT_DIR, 'DEBUG')
     if (fs.existsSync(debugFile)) {
-      process.env.DEBUG = fs.readFileSync(debugFile, 'utf8').trim()
+      const debugFileStat = fs.statSync(debugFile)
+      if (debugFileStat.isFile()) {
+        process.env.DEBUG = fs.readFileSync(debugFile, 'utf8').trim()
+      }
     }
   }
   if (process.env.DEBUG) {
