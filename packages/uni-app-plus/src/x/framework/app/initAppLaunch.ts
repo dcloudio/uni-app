@@ -18,7 +18,6 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
 
   // 加载全局字体
   const appStyle = appVm.$options.styles
-  console.log('appStyle', appStyle)
   if (appStyle) {
     loadFontFaceByStyles(appStyle, true)
   }
