@@ -1,5 +1,6 @@
 export * from './transforms'
 export * from './utils'
 export * from './parse'
+export { rewriteCompileScriptSetupLangOnce } from './polyfill'
 export { transformUniH5Jsx } from './babel'
 export { isExternalUrl } from './transforms/templateUtils'

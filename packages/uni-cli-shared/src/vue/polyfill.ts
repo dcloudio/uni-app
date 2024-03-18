@@ -1,14 +1,18 @@
 import { once } from '@dcloudio/uni-shared'
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+
 import {
   SFCDescriptor,
   SFCScriptBlock,
   SFCScriptCompileOptions,
 } from '@vue/compiler-sfc'
+import { resolveBuiltIn } from '../resolve'
 
-export const rewriteCompileScriptOnce = once(rewriteCompileScript)
-
-function rewriteCompileScript() {
+export const rewriteCompileScriptSetupLangOnce = once(
+  rewriteCompileScriptSetupLang
+)
+// 临时重写lang，用于激活 compileScript 内部判断，确保 setup 生成 export default defineComponent({})
+// uts2js (iOS|web)
+function rewriteCompileScriptSetupLang() {
   const compiler = require(resolveBuiltIn('@vue/compiler-sfc'))
   const { compileScript } = compiler
   // script-setup + v-bind
