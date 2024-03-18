@@ -235,14 +235,16 @@ export function cssPlugin(
             options?.isAndroidX
               ? ({
                   emitFile(emittedFile: EmittedAsset) {
-                    // 直接写入目标目录
-                    fs.outputFileSync(
-                      path.resolve(
-                        process.env.UNI_OUTPUT_DIR,
-                        emittedFile.fileName!
-                      ),
-                      emittedFile.source!
+                    const fileName = path.resolve(
+                      process.env.UNI_OUTPUT_DIR,
+                      emittedFile.fileName!
                     )
+                    // 忽略static（可能有只读文件，写入覆盖只读会报错权限）
+                    if (normalizePath(fileName).includes('/static/')) {
+                      return
+                    }
+                    // 直接写入目标目录
+                    fs.outputFileSync(fileName, emittedFile.source!)
                   },
                 } as PluginContext)
               : this,
