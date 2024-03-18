@@ -170,6 +170,12 @@ export function initPluginVueOptions(
       vueOptions.compiler = createNVueCompiler()
     }
   }
+  if (!vueOptions.script) {
+    vueOptions.script = {}
+  }
+  // @ts-expect-error
+  vueOptions.script.defineModel = true
+
   if (isX) {
     if (!vueOptions.script) {
       vueOptions.script = {
