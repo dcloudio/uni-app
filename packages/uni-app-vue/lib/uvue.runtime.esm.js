@@ -7229,8 +7229,8 @@ function createComponentInstance(vnode, parent, suspense) {
         ec: null,
         sp: null,
         $waitNativeRender(fn) {
-            var _a, _b;
-            const document = (_b = (_a = this.proxy) === null || _a === void 0 ? void 0 : _a.$nativePage) === null || _b === void 0 ? void 0 : _b.document;
+            var _a, _b, _c;
+            const document = (_c = (_b = (_a = this.proxy) === null || _a === void 0 ? void 0 : _a.$root) === null || _b === void 0 ? void 0 : _b.$nativePage) === null || _c === void 0 ? void 0 : _c.document;
             if (document) {
                 document.waitNativeRender(fn);
             }
