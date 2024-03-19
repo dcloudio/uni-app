@@ -15,6 +15,7 @@ import {
 import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 import { getNativeApp } from '../../../x/framework/app/app'
+import { loadFontFaceByStyles } from '../../../x/framework/utils' //'packages/uni-app-plus/src/x/framework/utils.ts'
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -28,6 +29,8 @@ export function setupPage(component: VuePageComponent) {
     }
     const instance = getCurrentInstance()!
     const pageVm = instance.proxy!
+    // instance.root
+
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
     addCurrentPage(
       initScope(
@@ -36,6 +39,26 @@ export function setupPage(component: VuePageComponent) {
         __pageInstance as Page.PageInstance['$page']
       )
     )
+
+    function handleChildComponentStyles(component: VuePageComponent) {
+      if (component.components) {
+        const componentsList = Object.keys(component.components)
+        if (componentsList.length > 0) {
+          // console.log('含有子组件')
+          componentsList.forEach((name) => {
+            const childComp = component.components![name] as any
+            const style = childComp.styles
+            loadFontFaceByStyles(style, false)
+            if (childComp.components) {
+              handleChildComponentStyles(childComp)
+            }
+          })
+        }
+      }
+    }
+
+    handleChildComponentStyles(component)
+
     if (!__X__) {
       onMounted(() => {
         nextTick(() => {
@@ -78,6 +101,12 @@ export function initScope(
     Object.defineProperty(vm, '$viewToTempFilePath', {
       get() {
         return vm.$nativePage!.viewToTempFilePath
+      },
+    })
+
+    Object.defineProperty(vm, '$loadFontFace', {
+      get() {
+        return vm.$nativePage!.loadFontFace
       },
     })
   }
