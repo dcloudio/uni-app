@@ -12,6 +12,7 @@ import {
   ExtractPropTypes,
 } from 'vue'
 import { extend, isFunction } from '@vue/shared'
+import { debounce } from '@dcloudio/uni-shared'
 import { getCurrentPageId, registerViewMethod } from '@dcloudio/uni-core'
 import { throttle } from './throttle'
 import { useCustomEvent, CustomEventTrigger } from './useEvent'
