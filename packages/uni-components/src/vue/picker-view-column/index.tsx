@@ -116,9 +116,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const resizeSensorRef: Ref<ComponentPublicInstance | null> = ref(null)
     const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value as ComponentPublicInstance
-      indicatorHeight.value = (
-        __X__ ? resizeSensor : resizeSensor.$el
-      ).offsetHeight
+      indicatorHeight.value = resizeSensor.$el.offsetHeight
     }
     if (__PLATFORM__ !== 'app') {
       onMounted(initIndicatorHeight)

@@ -72,8 +72,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const resizeSensorRef: Ref<ComponentPublicInstance | null> = ref(null)
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value as ComponentPublicInstance
-      resizeSensor &&
-        (state.height = (__X__ ? resizeSensor : resizeSensor.$el).offsetHeight)
+      resizeSensor && (state.height = resizeSensor.$el.offsetHeight)
     }
     if (__PLATFORM__ !== 'app') {
       onMounted(onMountedCallback)
