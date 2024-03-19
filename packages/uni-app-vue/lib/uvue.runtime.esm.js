@@ -7229,8 +7229,8 @@ function createComponentInstance(vnode, parent, suspense) {
         ec: null,
         sp: null,
         $waitNativeRender(fn) {
-            var _a, _b;
-            const document = (_b = (_a = this.proxy) === null || _a === void 0 ? void 0 : _a.$nativePage) === null || _b === void 0 ? void 0 : _b.document;
+            var _a, _b, _c;
+            const document = (_c = (_b = (_a = this.proxy) === null || _a === void 0 ? void 0 : _a.$root) === null || _b === void 0 ? void 0 : _b.$nativePage) === null || _c === void 0 ? void 0 : _c.document;
             if (document) {
                 document.waitNativeRender(fn);
             }
@@ -7251,6 +7251,16 @@ function createComponentInstance(vnode, parent, suspense) {
     if (vnode.ce) {
         vnode.ce(instance);
     }
+    // like android vuejs-core
+    function initInstance() {
+        console.log(2);
+        if (instance.root === instance) ;
+        else {
+            // 这里是页面
+            console.log('是页面，需要合并 css 字体样式');
+        }
+    }
+    initInstance();
     return instance;
 }
 let currentInstance = null;
