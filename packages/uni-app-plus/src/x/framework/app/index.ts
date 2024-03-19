@@ -88,9 +88,10 @@ export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
 
 function initEntryPagePath(app: IApp) {
   const redirectInfo = app.getRedirectInfo()
-  if (redirectInfo?.debug?.url) {
-    const url = redirectInfo.debug.url
-    if (url != __uniConfig.entryPagePath) {
+  const debugInfo = redirectInfo.get('debug')
+  if (debugInfo) {
+    const url = debugInfo.get('url')
+    if (url && url != __uniConfig.entryPagePath) {
       __uniConfig.realEntryPagePath = __uniConfig.entryPagePath
       __uniConfig.entryPagePath = url
       return

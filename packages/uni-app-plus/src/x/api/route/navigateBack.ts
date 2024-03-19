@@ -23,9 +23,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     if (!page) {
       return reject(`getCurrentPages is empty`)
     }
-    if (isDirectPage(page as ComponentPublicInstance)) {
-      reLaunchEntryPage()
-    } else if (
+    if (
       // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
       (args as any).from !== 'popGesture' &&
       invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {
@@ -46,8 +44,12 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     }
     // TODO isDirectPage
     else {
-      const { delta, animationType, animationDuration } = args!
-      back(delta!, animationType, animationDuration)
+      if (isDirectPage(page as ComponentPublicInstance)) {
+        return reLaunchEntryPage()
+      } else {
+        const { delta, animationType, animationDuration } = args!
+        back(delta!, animationType, animationDuration)
+      }
     }
     return resolve()
   },
