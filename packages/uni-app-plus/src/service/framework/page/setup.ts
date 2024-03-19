@@ -47,7 +47,7 @@ export function setupPage(component: VuePageComponent) {
           // console.log('含有子组件')
           componentsList.forEach((name) => {
             const childComp = component.components![name] as any
-            const style = childComp.styles
+            const style = childComp?.styles ?? []
             loadFontFaceByStyles(style, false)
             if (childComp.components) {
               handleChildComponentStyles(childComp)
