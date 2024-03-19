@@ -77,7 +77,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       if (responseType === 'text' && dataType === 'json') {
         try {
           //#if _X_
-          res = new (globalThis as any).UTSJSONObject(JSON.parse(res))
+          res = new UTSJSONObject(JSON.parse(res))
           //#else
           res = JSON.parse(res)
           //#endif

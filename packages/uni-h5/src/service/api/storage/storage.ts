@@ -36,7 +36,7 @@ function parseValue(value: any) {
         if (typeof object.data === type) {
           //#if _X_
           if (type === 'object' && !Array.isArray(object.data)) {
-            return new (globalThis as any).UTSJSONObject(object.data)
+            return new UTSJSONObject(object.data)
           }
           return object.data
           //#else

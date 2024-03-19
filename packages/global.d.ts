@@ -71,3 +71,7 @@ declare var __uniRoutes: UniApp.UniRoutes
 declare var __uniConfig: UniApp.UniConfig
 declare var UniViewJSBridge: UniApp.UniViewJSBridge
 declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
+// TODO X 引入真实类型
+declare class UTSJSONObject {
+  constructor(obj: Record<string, any>)
+}
