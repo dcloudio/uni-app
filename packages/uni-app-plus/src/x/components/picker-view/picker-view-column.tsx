@@ -164,24 +164,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     created()
 
     expose({
-      setCurrent,
+      setCurrent, // for pick-view
     })
 
     onMounted(() => {
       instance?.$waitNativeRender(() => {
         if (!instance || !pickerColumnRef.value) return
 
-        // pickerColumnRef.value!._getAttribute = (key: string): string | null => {
-        //   const keyString = camelize(key) as keyof typeof props
-        //   //  return props[keyString] !== null
-        //   //    ? props[keyString]?.toString() ?? null
-        //   //    : null
-        //   return null
-        // }
-
         setTimeout(() => {
           init()
-        }, 500)
+        }, 0)
       })
     })
 
