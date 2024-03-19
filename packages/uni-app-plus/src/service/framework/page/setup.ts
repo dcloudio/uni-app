@@ -15,6 +15,7 @@ import {
 import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
 import { getNativeApp } from '../../../x/framework/app/app'
+import { loadFontFaceByStyles } from '../../../x/framework/utils'
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -36,6 +37,25 @@ export function setupPage(component: VuePageComponent) {
         __pageInstance as Page.PageInstance['$page']
       )
     )
+
+    function handleChildComponentStyles(component: VuePageComponent) {
+      if (component.components) {
+        const componentsList = Object.keys(component.components)
+        if (componentsList.length > 0) {
+          componentsList.forEach((name) => {
+            const childComp = component.components![name] as any
+            const style = childComp?.styles ?? []
+            loadFontFaceByStyles(style, false)
+            if (childComp.components) {
+              handleChildComponentStyles(childComp)
+            }
+          })
+        }
+      }
+    }
+
+    handleChildComponentStyles(component)
+
     if (!__X__) {
       onMounted(() => {
         nextTick(() => {
