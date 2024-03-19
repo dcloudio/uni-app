@@ -8,7 +8,7 @@ import {
   onMounted,
   reactive,
   ref,
-  watchEffect,
+  watch,
 } from 'vue'
 import { _style_picker_view as _style } from './style'
 import { UniPickerViewChangeEvent, UniPickerViewElement } from './model'
@@ -46,16 +46,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       valueSync: [] as number[],
     })
 
-    watchEffect(() => {
-      const val = props.value
-      val.forEach((_val, index) => {
-        if (data.$items.length > index) {
-          const fn = data.$items[index].$.exposed?.setCurrent
-          fn(_val)
-        }
-      })
-      data.valueSync = [...val]
-    })
+    watch(
+      () => props.value,
+      (val) => {
+        val.forEach((_val, index) => {
+          if (data.$items.length > index) {
+            const fn = data.$items[index].$.exposed?.setCurrent
+            fn(_val)
+          }
+        })
+        data.valueSync = [...val]
+      }
+    )
 
     const pickerViewElementRef = ref<UniPickerViewElement>()
 
