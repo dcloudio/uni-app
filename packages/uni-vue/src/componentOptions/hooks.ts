@@ -55,8 +55,11 @@ export function initHooks(
     try {
       invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
       delete instance.attrs.__pageQuery
-      if (publicThis.$page?.openType !== 'preloadPage') {
-        invokeHook(publicThis, ON_SHOW)
+      // 暂时通过运行时判断 X
+      if (__PLATFORM__ !== 'app' || !Object.hasOwn(publicThis, '$nativePage')) {
+        if (publicThis.$page?.openType !== 'preloadPage') {
+          invokeHook(publicThis, ON_SHOW)
+        }
       }
     } catch (e: any) {
       console.error(e.message + LINEFEED + e.stack)

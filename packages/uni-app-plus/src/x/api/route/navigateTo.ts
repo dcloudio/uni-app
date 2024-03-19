@@ -64,15 +64,21 @@ function _navigateTo({
   invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
-    showWebview(
-      registerPage({ url, path, query, openType: 'navigateTo', eventChannel }),
-      aniType,
-      aniDuration,
-      () => {
+    const noAnimation = aniType === 'none' || aniDuration === 0
+    function callback(page: IPage) {
+      showWebview(page, aniType, aniDuration, () => {
         resolve({ eventChannel })
         setStatusBarStyle()
-      }
+      })
+    }
+    // 有动画时先执行 show
+    const page = registerPage(
+      { url, path, query, openType: 'navigateTo', eventChannel },
+      noAnimation ? undefined : callback
     )
+    if (noAnimation) {
+      callback(page)
+    }
   })
 }
 

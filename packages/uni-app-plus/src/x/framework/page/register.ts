@@ -4,6 +4,7 @@ import { IPage } from '@dcloudio/uni-app-x/types/native'
 import {
   EventChannel,
   ON_READY,
+  ON_SHOW,
   ON_UNLOAD,
   formatLog,
 } from '@dcloudio/uni-shared'
@@ -83,19 +84,25 @@ function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
   return style
 }
 
-export function registerPage({
-  url,
-  path,
-  query,
-  openType,
-  webview,
-  nvuePageVm,
-  eventChannel,
-}: RegisterPageOptions) {
+export function registerPage(
+  {
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    nvuePageVm,
+    eventChannel,
+  }: RegisterPageOptions,
+  onCreated?: (page: IPage) => void
+) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
   const nativePage = getPageManager().createPage(url, id.toString(), pageStyle)
+  if (onCreated) {
+    onCreated(nativePage)
+  }
   routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
@@ -121,6 +128,9 @@ export function registerPage({
     {},
     nativePage
   ) as ComponentPublicInstance
+  nativePage.addPageEventListener(ON_SHOW, (_) => {
+    invokeHook(page, ON_SHOW)
+  })
   nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
     uni.navigateBack({
       from: 'popGesture',
