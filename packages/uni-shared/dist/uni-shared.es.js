@@ -137,16 +137,8 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'scroll-view',
     'web-view',
     'slider',
-    'swiper',
-    'swiper-item',
-    'rich-text',
-    'button',
     'form',
-    'list-view',
-    'list-item',
     'switch',
-    'sticky-header',
-    'sticky-section',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -238,6 +230,9 @@ function isAppIOSUVueNativeTag(tag) {
         return true;
     }
     if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {

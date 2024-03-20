@@ -143,16 +143,8 @@ export const UVUE_IOS_BUILT_IN_TAGS = [
   'scroll-view',
   'web-view',
   'slider',
-  'swiper',
-  'swiper-item',
-  'rich-text',
-  'button',
   'form',
-  'list-view',
-  'list-item',
   'switch',
-  'sticky-header',
-  'sticky-section',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
@@ -258,6 +250,9 @@ export function isAppIOSUVueNativeTag(tag: string) {
     return true
   }
   if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+    return true
+  }
+  if (UVUE_BUILT_IN_TAGS.includes(tag)) {
     return true
   }
   if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {
