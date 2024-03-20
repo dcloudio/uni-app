@@ -63,8 +63,8 @@ export function initHooks(
         invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
       }
       delete instance.attrs.__pageQuery
-      // 暂时通过运行时判断 X
-      if (__PLATFORM__ !== 'app' || !Object.hasOwn(publicThis, '$nativePage')) {
+      // iOS-X 与安卓一致使用页面 onShow 时机
+      if (__PLATFORM__ !== 'app' || !__X__) {
         if (publicThis.$page?.openType !== 'preloadPage') {
           invokeHook(publicThis, ON_SHOW)
         }
