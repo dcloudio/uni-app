@@ -3265,14 +3265,14 @@ function initService(app) {
 }
 function initComponentInstance(app) {
   app.mixin({
-    beforeCreate() {
-      Object.defineProperty(this, "$nativePage", {
-        get() {
-          var _this$$root;
-          var pageId = (_this$$root = this.$root) === null || _this$$root === void 0 || (_this$$root = _this$$root.$el) === null || _this$$root === void 0 ? void 0 : _this$$root.pageId;
-          return getNativeApp().pageManager.findPageById(pageId + "");
-        }
-      });
+    beforeMount() {
+      var vm = this;
+      var instance = vm.$;
+      if (instance.type.mpType === "app") {
+        return;
+      }
+      var pageId = instance.root.attrs.__pageId;
+      vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
     }
   });
 }
