@@ -431,20 +431,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             }`}
             style={containerStyle.value}
           >
+            {refresherEnabled ? (
+              <Refresher
+                refreshState={refreshState}
+                refresherHeight={refresherHeight}
+                refresherThreshold={refresherThreshold}
+                refresherDefaultStyle={refresherDefaultStyle}
+                refresherBackground={refresherBackground}
+              >
+                {refresherDefaultStyle == 'none'
+                  ? slots.refresher && slots.refresher()
+                  : null}
+              </Refresher>
+            ) : null}
             <div class="uni-list-view-content" style={contentStyle.value}>
-              {refresherEnabled ? (
-                <Refresher
-                  refreshState={refreshState}
-                  refresherHeight={refresherHeight}
-                  refresherThreshold={refresherThreshold}
-                  refresherDefaultStyle={refresherDefaultStyle}
-                  refresherBackground={refresherBackground}
-                >
-                  {refresherDefaultStyle == 'none'
-                    ? slots.refresher && slots.refresher()
-                    : null}
-                </Refresher>
-              ) : null}
               {visibleVNode}
             </div>
           </div>

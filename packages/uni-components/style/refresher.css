@@ -1,6 +1,15 @@
 .uni-scroll-view-refresher {
   position: relative;
   overflow: hidden;
+  flex-shrink: 0;
+}
+
+.uni-scroll-view-refresher-container {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  flex-direction: column-reverse;
 }
 
 .uni-scroll-view-refresh {

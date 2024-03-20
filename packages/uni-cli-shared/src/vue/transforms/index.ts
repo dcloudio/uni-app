@@ -10,6 +10,7 @@ export * from './transformComponent'
 export * from './transformEvent'
 export * from './transformTag'
 export * from './transformUTSComponent'
+export * from './transformRefresherSlot'
 export { createAssetUrlTransformWithOptions } from './templateTransformAssetUrl'
 export { createSrcsetTransformWithOptions } from './templateTransformSrcset'
 export {

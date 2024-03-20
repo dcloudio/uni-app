@@ -55,7 +55,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return (route > 1 ? 1 : route) * 360
     })
     return () => {
-      const { refreshState, refresherDefaultStyle } = props
+      const { refreshState, refresherDefaultStyle, refresherThreshold } = props
       return (
         <div
           ref={rootRef}
@@ -102,9 +102,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               </div>
             </div>
           ) : null}
-          {refresherDefaultStyle == 'none'
-            ? slots.default && slots.default()
-            : null}
+          {refresherDefaultStyle === 'none' ? (
+            <div
+              class="uni-scroll-view-refresher-container"
+              style={{ height: `${refresherThreshold}px` }}
+            >
+              {slots.default && slots.default()}
+            </div>
+          ) : null}
         </div>
       )
     }

@@ -224,20 +224,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               style={mainStyle.value}
               class={scrollBarClassName.value}
             >
+              {refresherEnabled ? (
+                <Refresher
+                  refreshState={refreshState}
+                  refresherHeight={refresherHeight}
+                  refresherThreshold={refresherThreshold}
+                  refresherDefaultStyle={refresherDefaultStyle}
+                  refresherBackground={refresherBackground}
+                >
+                  {refresherDefaultStyle == 'none'
+                    ? slots.refresher && slots.refresher()
+                    : null}
+                </Refresher>
+              ) : null}
               <div ref={content} class="uni-scroll-view-content">
-                {refresherEnabled ? (
-                  <Refresher
-                    refreshState={refreshState}
-                    refresherHeight={refresherHeight}
-                    refresherThreshold={refresherThreshold}
-                    refresherDefaultStyle={refresherDefaultStyle}
-                    refresherBackground={refresherBackground}
-                  >
-                    {refresherDefaultStyle == 'none'
-                      ? slots.refresher && slots.refresher()
-                      : null}
-                  </Refresher>
-                ) : null}
                 {slots.default && slots.default()}
               </div>
             </div>
