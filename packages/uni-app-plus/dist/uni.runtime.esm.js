@@ -10,6 +10,7 @@ import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInsta
  * Licensed under the MIT license.
  */
 
+
 var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 // Use a lookup table to find the index.
@@ -1174,6 +1175,7 @@ function useI18n() {
 }
 
 // This file is created by scripts/i18n.js
+// Do not modify this file!!!!!!!!!
 function normalizeMessages(module, keys, values) {
     return keys.reduce((res, name, index) => {
         res[module + name] = values[index];
@@ -2537,7 +2539,7 @@ var common = {};
 	  }
 	};
 
-	exports.setTyped(TYPED_OK);
+	exports.setTyped(TYPED_OK); 
 } (common));
 
 var deflate$4 = {};
@@ -9854,7 +9856,7 @@ const predefinedColor = {
 function checkColor(e) {
     // 其他开发者适配的echarts会传入一个undefined到这里
     e = e || '#000000';
-    var t = null;
+    let t = null;
     if ((t = /^#([0-9|A-F|a-f]{6})$/.exec(e)) != null) {
         const n = parseInt(t[1].slice(0, 2), 16);
         const o = parseInt(t[1].slice(2, 4), 16);
@@ -17172,7 +17174,7 @@ const sendShareMsg = function (service, params, resolve, reject, method = 'share
         ? 'openCustomerServiceChat'
         : 'send';
     try {
-        // @ts-expect-error openCustomerServiceChat
+        // openCustomerServiceChat
         service[serviceMethod](params, () => {
             resolve();
         }, errorCallback);

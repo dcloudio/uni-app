@@ -479,7 +479,7 @@ function genComponentsConfigJson(
   const res: { name: string; class: string; delegateClass?: string }[] = []
   Object.keys(components).forEach((name) => {
     const normalized = capitalize(camelize(name))
-    const options: typeof res[0] = {
+    const options: (typeof res)[0] = {
       name,
       class: namespace + normalized + 'Component',
     }

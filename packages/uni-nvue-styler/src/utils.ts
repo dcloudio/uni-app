@@ -229,7 +229,7 @@ export function supportedPropertyReason(k: string) {
 }
 
 export function getSupportedPlatforms(uniPlatform: UniPlatform | undefined) {
-  const supportedPlatforms = []
+  const supportedPlatforms: string[] = []
   if (uniPlatform?.app?.android?.unixVer !== 'x') {
     supportedPlatforms.push('app-android')
   }

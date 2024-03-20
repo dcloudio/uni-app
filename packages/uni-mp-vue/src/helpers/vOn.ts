@@ -10,7 +10,6 @@ import {
 import {
   callWithAsyncErrorHandling,
   ComponentInternalInstance,
-  ErrorCodes,
   getCurrentInstance,
 } from 'vue'
 
@@ -83,7 +82,7 @@ function createInvoker(
       callWithAsyncErrorHandling(
         patchStopImmediatePropagation(e, eventValue),
         instance,
-        ErrorCodes.NATIVE_EVENT_HANDLER,
+        5 /* ErrorCodes.NATIVE_EVENT_HANDLER */,
         args
       )
 

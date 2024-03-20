@@ -29,7 +29,7 @@ type RequestTaskState = {
 
 const cookiesParse = (header: Record<string, string>) => {
   let cookiesStr = header['Set-Cookie'] || header['set-cookie']
-  let cookiesArr = []
+  let cookiesArr: string[] = []
   if (!cookiesStr) {
     return []
   }
@@ -149,7 +149,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
           !isString(data) &&
           !(data instanceof ArrayBuffer)
         ) {
-          const bodyArray = []
+          const bodyArray: string[] = []
           for (const key in data) {
             if (hasOwn(data, key)) {
               bodyArray.push(

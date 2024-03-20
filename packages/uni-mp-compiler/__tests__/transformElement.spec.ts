@@ -271,17 +271,18 @@ export function render(_ctx, _cache) {
       )
     })
 
-    test('v-is', () => {
-      const onError = jest.fn()
-      parseWithElementTransform(`<view v-is="'foo'" />`, {
-        onError,
-      })
-      expect(onError).toHaveBeenCalledTimes(1)
-      expect(onError).toHaveBeenCalledWith(
-        expect.objectContaining({
-          code: MPErrorCodes.X_V_IS_NOT_SUPPORTED,
-        })
-      )
-    })
+    // v-is 已废弃
+    // test('v-is', () => {
+    //   const onError = jest.fn()
+    //   parseWithElementTransform(`<view v-is="'foo'" />`, {
+    //     onError,
+    //   })
+    //   expect(onError).toHaveBeenCalledTimes(1)
+    //   expect(onError).toHaveBeenCalledWith(
+    //     expect.objectContaining({
+    //       code: MPErrorCodes.X_V_IS_NOT_SUPPORTED,
+    //     })
+    //   )
+    // })
   })
 })

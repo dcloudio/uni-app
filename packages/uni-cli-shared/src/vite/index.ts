@@ -31,7 +31,6 @@ interface UniVitePluginUniOptions {
     directiveTransforms?: CompilerOptions['directiveTransforms']
     nodeTransforms?: CompilerOptions['nodeTransforms']
     whitespace?: CompilerOptions['whitespace']
-    decodeEntities?: CompilerOptions['decodeEntities']
   }
   jsxOptions?: {
     babelPlugins?: any[]

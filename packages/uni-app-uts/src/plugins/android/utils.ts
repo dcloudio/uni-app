@@ -79,7 +79,7 @@ export async function parseImports(
   tryResolve?: ReturnType<typeof createTryResolve>
 ) {
   await init
-  let res: ReturnType<typeof parse> = [[], [], false]
+  let res: ReturnType<typeof parse> = [[], [], false, false]
   try {
     res = parse(code)
   } catch (err: any) {

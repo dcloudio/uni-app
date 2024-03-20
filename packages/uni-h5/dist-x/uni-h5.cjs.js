@@ -6021,7 +6021,8 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       const {
         refreshState,
-        refresherDefaultStyle
+        refresherDefaultStyle,
+        refresherThreshold
       } = props2;
       return vue.createVNode("div", {
         "ref": rootRef,
@@ -6059,7 +6060,12 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.default && slots.default() : null], 4);
+      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? vue.createVNode("div", {
+        "class": "uni-scroll-view-refresher-container",
+        "style": {
+          height: `${refresherThreshold}px`
+        }
+      }, [slots.default && slots.default()]) : null], 4);
     };
   }
 });
@@ -6189,9 +6195,6 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
         "ref": main,
         "style": mainStyle.value,
         "class": scrollBarClassName.value
-      }, [vue.createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
       }, [refresherEnabled ? vue.createVNode(Refresher, {
         "refreshState": refreshState,
         "refresherHeight": refresherHeight,
@@ -6200,7 +6203,10 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
         "refresherBackground": refresherBackground
       }, {
         default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -7921,9 +7927,6 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "ref": containerRef,
         "class": `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`,
         "style": containerStyle.value
-      }, [vue.createVNode("div", {
-        "class": "uni-list-view-content",
-        "style": contentStyle.value
       }, [refresherEnabled ? vue.createVNode(Refresher, {
         "refreshState": refreshState,
         "refresherHeight": refresherHeight,
@@ -7932,7 +7935,10 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
         "refresherBackground": refresherBackground
       }, {
         default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
+        "class": "uni-list-view-content",
+        "style": contentStyle.value
+      }, [visibleVNode], 4)], 4), vue.createVNode(ResizeSensor, {
         "onResize": onResize
       }, null, 8, ["onResize"])], 512);
     };
@@ -8256,10 +8262,18 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+      if (true) {
+        invokeHook(
+          publicThis,
+          uniShared.ON_LOAD,
+          new UTSJSONObject(instance.attrs.__pageQuery || {})
+        );
+      }
       delete instance.attrs.__pageQuery;
-      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
-        invokeHook(publicThis, uniShared.ON_SHOW);
+      if (true) {
+        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+          invokeHook(publicThis, uniShared.ON_SHOW);
+        }
       }
     } catch (e2) {
       console.error(e2.message + uniShared.LINEFEED + e2.stack);
@@ -11895,7 +11909,7 @@ const request = /* @__PURE__ */ defineTaskApi(
       let res = responseType === "text" ? xhr.responseText : xhr.response;
       if (responseType === "text" && dataType2 === "json") {
         try {
-          res = new globalThis.UTSJSONObject(JSON.parse(res));
+          res = new UTSJSONObject(JSON.parse(res));
         } catch (error) {
         }
       }
@@ -11979,7 +11993,7 @@ function parseValue(value) {
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
           if (type === "object" && !Array.isArray(object.data)) {
-            return new globalThis.UTSJSONObject(object.data);
+            return new UTSJSONObject(object.data);
           }
           return object.data;
         }

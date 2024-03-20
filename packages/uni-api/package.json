@@ -15,7 +15,7 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "dependencies": {
-    "@vue/shared": "3.3.11"
+    "@vue/shared": "3.4.21"
   },
   "devDependencies": {
     "@dcloudio/uni-shared": "3.0.0-alpha-4000020240117001"

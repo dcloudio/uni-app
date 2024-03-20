@@ -184,7 +184,7 @@ export function traverseNode(
   context.currentNode = node
   // apply transform plugins
   const { nodeTransforms } = context
-  const exitFns = []
+  const exitFns: Array<() => void> = []
   for (let i = 0; i < nodeTransforms.length; i++) {
     const onExit = nodeTransforms[i](node, context as any)
     if (onExit) {
@@ -543,7 +543,7 @@ export function createStructuralDirectiveTransform(
       // if (node.tagType === ElementTypes.TEMPLATE && props.some(isVSlot)) {
       //   return
       // }
-      const exitFns = []
+      const exitFns: Array<() => void> = []
       for (let i = 0; i < props.length; i++) {
         const prop = props[i]
         if (prop.type === NodeTypes.DIRECTIVE && matches(prop.name)) {

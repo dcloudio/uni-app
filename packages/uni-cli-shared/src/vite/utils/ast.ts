@@ -12,7 +12,6 @@ import type {
 
 import {
   Node,
-  TextModes,
   NodeTypes,
   ElementNode,
   DirectiveNode,
@@ -89,7 +88,7 @@ export function parseVue(code: string, errors: SyntaxError[]) {
   return parse(code, {
     isNativeTag: () => true,
     isPreTag: () => true,
-    getTextMode: () => TextModes.DATA,
+    parseMode: 'sfc',
     onError: (e: any) => {
       errors.push(e)
     },

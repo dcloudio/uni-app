@@ -169,7 +169,7 @@ function createTouchEvent(evt: MouseEvent, top: number) {
 }
 
 function normalizeTouchEvent(touches: TouchList, top: number) {
-  const res = []
+  const res: any[] = []
   for (let i = 0; i < touches.length; i++) {
     const {
       identifier,

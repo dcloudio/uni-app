@@ -72,6 +72,7 @@ function resolveEasycom(component, easycom) {
 }
 
 /// <reference types="@dcloudio/types" />
+// @ts-ignore
 const createHook = (lifecycle) => (hook, target = getCurrentInstance()) => {
     // post-create lifecycle registrations are noops during SSR
     !isInSSRComponentSetup && injectHook(lifecycle, hook, target);

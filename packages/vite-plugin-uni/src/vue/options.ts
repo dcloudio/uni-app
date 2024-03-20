@@ -74,7 +74,6 @@ export function initPluginVueOptions(
       nodeTransforms,
       directiveTransforms,
       whitespace,
-      decodeEntities,
     },
   } = uniPluginOptions
 
@@ -104,10 +103,6 @@ export function initPluginVueOptions(
 
   if (whitespace) {
     compilerOptions.whitespace = whitespace
-  }
-
-  if (decodeEntities) {
-    compilerOptions.decodeEntities = decodeEntities
   }
 
   if (isCustomElement) {
@@ -173,8 +168,6 @@ export function initPluginVueOptions(
   if (!vueOptions.script) {
     vueOptions.script = {}
   }
-  // @ts-expect-error
-  vueOptions.script.defineModel = true
 
   if (isX) {
     if (!vueOptions.script) {

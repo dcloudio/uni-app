@@ -12,7 +12,7 @@ module.exports = {
     __VUE_OPTIONS_API__: true,
     __VUE_PROD_DEVTOOLS__: false,
     // source-map
-    __PLATFORM_WEB__: false,
+    __PLATFORM_WEB__: false
   },
   coverageDirectory: 'coverage',
   coverageReporters: ['html', 'lcov', 'text'],
@@ -30,5 +30,8 @@ module.exports = {
   rootDir: __dirname,
   testMatch: ['<rootDir>/packages/**/__tests__/**/*spec.[jt]s?(x)'],
   testPathIgnorePatterns: ['/node_modules/'],
-  transform: { 'service\\.runtime\\.esm\\.js$': ['ts-jest'] },
+  transform: {
+    'service\\.runtime\\.esm\\.js$': ['ts-jest', {
+    }]
+  },
 }

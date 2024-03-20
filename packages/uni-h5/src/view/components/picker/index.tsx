@@ -97,7 +97,7 @@ function getDateValueArray(
     }
   }
   const inputArray = String(valueStr).split(splitStr)
-  let value = []
+  let value: number[] = []
   for (let i = 0; i < max; i++) {
     const val = inputArray[i]
     value.push(array[i].indexOf(val))

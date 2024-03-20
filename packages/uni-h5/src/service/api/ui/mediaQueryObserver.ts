@@ -8,7 +8,7 @@ let listeners: any = {}
 
 // 拼接媒体查询条件
 function handleMediaQueryStr($props: UniApp.DescriptorOptions) {
-  const mediaQueryArr = []
+  const mediaQueryArr: string[] = []
   const propsMenu = [
     'width',
     'minWidth',

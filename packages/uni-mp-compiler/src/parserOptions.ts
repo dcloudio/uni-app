@@ -1,17 +1,11 @@
 import {
-  TextModes,
   ParserOptions,
   ElementNode,
   Namespaces,
   NodeTypes,
 } from '@vue/compiler-core'
-import { makeMap, isVoidTag, isHTMLTag, isSVGTag } from '@vue/shared'
-import { decodeHtml } from './decodeHtml'
-
-const isRawTextContainer = /*#__PURE__*/ makeMap(
-  'style,iframe,script,noscript',
-  true
-)
+import { isVoidTag, isHTMLTag, isSVGTag } from '@vue/shared'
+// import { decodeHtml } from './decodeHtml'
 
 export const enum DOMNamespaces {
   HTML = Namespaces.HTML,
@@ -23,7 +17,6 @@ export const parserOptions: ParserOptions = {
   isVoidTag,
   isNativeTag: (tag) => isHTMLTag(tag) || isSVGTag(tag),
   isPreTag: (tag) => tag === 'pre',
-  decodeEntities: decodeHtml,
 
   // https://html.spec.whatwg.org/multipage/parsing.html#tree-construction-dispatcher
   getNamespace(tag: string, parent: ElementNode | undefined): DOMNamespaces {
@@ -73,17 +66,5 @@ export const parserOptions: ParserOptions = {
     }
     return ns
   },
-
-  // https://html.spec.whatwg.org/multipage/parsing.html#parsing-html-fragments
-  getTextMode({ tag, ns }: ElementNode): TextModes {
-    if (ns === DOMNamespaces.HTML) {
-      if (tag === 'textarea' || tag === 'title') {
-        return TextModes.RCDATA
-      }
-      if (isRawTextContainer(tag)) {
-        return TextModes.RAWTEXT
-      }
-    }
-    return TextModes.DATA
-  },
+  parseMode: 'html',
 }

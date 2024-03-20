@@ -67,7 +67,7 @@ interface NVueDomModule {
 }
 
 function findNVueElementIds(reqs: Array<SelectorQueryRequest>) {
-  const ids = []
+  const ids: string[] = []
   for (let i = 0; i < reqs.length; i++) {
     const selector = reqs[i].selector
     if (selector.indexOf('#') === 0) {

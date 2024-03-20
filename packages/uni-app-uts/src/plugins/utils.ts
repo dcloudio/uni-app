@@ -71,9 +71,6 @@ export function createUniOptions(
                 }
               },
             ],
-            decodeEntities: (text) => {
-              return text
-            },
           }
         : {},
   }

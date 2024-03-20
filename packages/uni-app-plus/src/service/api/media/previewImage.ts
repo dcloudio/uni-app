@@ -38,7 +38,7 @@ export const previewImage = defineAsyncApi<API_TYPE_PREVIEW_IMAGE>(
       indicator,
       loop,
       onLongPress: function (res: any) {
-        let itemList = []
+        let itemList: string[] = []
         let itemColor = ''
 
         const hasLongPressActions =

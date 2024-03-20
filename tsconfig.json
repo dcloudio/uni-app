@@ -14,6 +14,7 @@
     "esModuleInterop": true,
     "removeComments": false,
     "skipLibCheck": true,
+    "noImplicitAny": false,
     "jsx": "preserve",
     "lib": ["esnext", "dom"],
     "types": ["jest", "@dcloudio/types", "miniprogram-api-typings"],

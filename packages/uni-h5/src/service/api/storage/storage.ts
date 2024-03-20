@@ -170,7 +170,7 @@ export const getStorageInfoSync = defineSyncApi<typeof uni.getStorageInfoSync>(
   'getStorageInfoSync',
   () => {
     const length = (localStorage && localStorage.length) || 0
-    const keys = []
+    const keys: string[] = []
     let currentSize = 0
     for (let index = 0; index < length; index++) {
       const key = <string>localStorage.key(index)

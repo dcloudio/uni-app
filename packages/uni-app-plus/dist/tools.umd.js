@@ -4,6 +4,12 @@
   (global = typeof globalThis !== 'undefined' ? globalThis : global || self, factory(global.Tools = {}));
 })(this, (function (exports) { 'use strict';
 
+  /**
+  * @vue/shared v3.4.21
+  * (c) 2018-present Yuxi (Evan) You and Vue contributors
+  * @license MIT
+  **/
+
   !!(process.env.NODE_ENV !== "production") ? Object.freeze({}) : {};
   !!(process.env.NODE_ENV !== "production") ? Object.freeze([]) : [];
   const hasOwnProperty = Object.prototype.hasOwnProperty;

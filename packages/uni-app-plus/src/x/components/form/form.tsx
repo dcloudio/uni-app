@@ -11,7 +11,6 @@ import {
 
 export class UniFormElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
-    // @ts-expect-error
     super(data, pageNode)
   }
 
@@ -91,7 +90,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
       const vNodes = vNode.children as VNode[]
       vNodes.forEach((node: VNode) => {
-        if (node.el instanceof UniFormControlElement<unknown>) {
+        if (node.el instanceof UniFormControlElement) {
           const control = node.el as UniFormControlElement<unknown>
           if (control.name.length > 0) {
             controls.push(control)

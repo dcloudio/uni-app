@@ -1636,7 +1636,7 @@ export function rewriteScssReadFileSync() {
       return preCss(content)
     }
     return content
-  }) as typeof nodeFs['readFileSync']
+  }) as (typeof nodeFs)['readFileSync']
   // TODO 在 web 端，目前使用的是 vite 内置的 css 预处理
   // 最新的 vite less 使用的是 readFile，https://github.com/vitejs/vite/blob/main/packages/vite/src/node/plugins/css.ts#L2336
   // 拦截 readFile 的话，要考虑的细节较多，暂不实现了

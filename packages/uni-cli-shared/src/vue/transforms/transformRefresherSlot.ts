@@ -6,6 +6,7 @@ import {
   ConstantTypes,
   ElementTypes,
   NodeTypes,
+  ElementNode,
 } from '@vue/compiler-core'
 import { isElementNode, isAttributeNode } from '../../vite/utils/ast'
 
@@ -22,7 +23,7 @@ export function transformRefresherSlot(node: RootNode | TemplateChildNode) {
   if (node.tag !== 'scroll-view' && node.tag !== 'list-view') {
     return
   }
-  let refresher = null,
+  let refresher: ElementNode | null = null,
     refresherIndex = -1
   for (let i = 0; i < node.children.length; i++) {
     const child = node.children[i]

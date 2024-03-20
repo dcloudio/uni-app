@@ -101,6 +101,7 @@ function resolveEasycom(component, easycom) {
 }
 
 /// <reference types="@dcloudio/types" />
+// @ts-ignore
 const createHook = (lifecycle) => (hook, target = vue.getCurrentInstance()) => {
     // post-create lifecycle registrations are noops during SSR
     !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);

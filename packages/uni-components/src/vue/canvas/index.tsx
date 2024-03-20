@@ -180,7 +180,7 @@ function useListeners(
     )
     events.forEach((event) => {
       let existing = ($listeners as any)[event]
-      let eventHandler = []
+      let eventHandler: Array<(...args: any[]) => any> = []
       if (existing) {
         eventHandler.push(
           withWebEvent(($event) => {

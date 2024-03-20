@@ -20,6 +20,10 @@ export function createTransformComponentLink(
     if (!isUserComponent(node, context)) {
       return
     }
+    // 新版本的 vue，识别 template 有差异，可能认为是自定义组件
+    if (node.tag === 'template') {
+      return
+    }
     if (type === NodeTypes.DIRECTIVE) {
       node.props.push({
         type: NodeTypes.DIRECTIVE,

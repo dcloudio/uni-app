@@ -81,9 +81,7 @@ export const uts2js: uts2js = (options) => {
       typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
     })
   }
-  // @ts-expect-error
   if (isFunction(globalThis.uts2js)) {
-    // @ts-expect-error
     return globalThis.uts2js(options)
   }
   return require('../../../lib/javascript').uts2js(options)

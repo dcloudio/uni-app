@@ -242,7 +242,7 @@ export function uniViteInjectPlugin(
 const escape = (str: string) => str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&')
 
 const flatten = (startNode: BaseNode) => {
-  const parts = []
+  const parts: string[] = []
   let node = startNode
   while (isMemberExpression(node)) {
     parts.unshift((node.property as Identifier).name)

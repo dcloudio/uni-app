@@ -1,4 +1,4 @@
-import { isString } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { isComponentTag } from '@dcloudio/uni-shared'
 import {
   AttributeNode,
@@ -15,6 +15,8 @@ import {
   TemplateChildNode,
   TransformContext,
   isStaticExp,
+  SourceLocation,
+  Position,
 } from '@vue/compiler-core'
 import { createAssetUrlTransformWithOptions } from './transforms/templateTransformAssetUrl'
 import { createSrcsetTransformWithOptions } from './transforms/templateTransformSrcset'
@@ -52,6 +54,7 @@ export function createAttributeNode(
   return {
     type: NodeTypes.ATTRIBUTE,
     loc: locStub,
+    nameLoc: locStub,
     name,
     value: {
       type: NodeTypes.TEXT,
@@ -151,4 +154,66 @@ export function renameProp(name: string, prop?: DirectiveNode | AttributeNode) {
   } else {
     prop.name = name
   }
+}
+
+// @vue/compiler-core 没有导出 getLoc，先使用旧版本的 getInnerRange
+export function getInnerRange(
+  loc: SourceLocation,
+  offset: number,
+  length: number
+): SourceLocation {
+  const source = loc.source.slice(offset, offset + length)
+  const newLoc: SourceLocation = {
+    source,
+    start: advancePositionWithClone(loc.start, loc.source, offset),
+    end: loc.end,
+  }
+
+  if (length != null) {
+    newLoc.end = advancePositionWithClone(
+      loc.start,
+      loc.source,
+      offset + length
+    )
+  }
+
+  return newLoc
+}
+
+export function advancePositionWithClone(
+  pos: Position,
+  source: string,
+  numberOfCharacters: number = source.length
+): Position {
+  return advancePositionWithMutation(
+    extend({}, pos),
+    source,
+    numberOfCharacters
+  )
+}
+
+// advance by mutation without cloning (for performance reasons), since this
+// gets called a lot in the parser
+export function advancePositionWithMutation(
+  pos: Position,
+  source: string,
+  numberOfCharacters: number = source.length
+): Position {
+  let linesCount = 0
+  let lastNewLinePos = -1
+  for (let i = 0; i < numberOfCharacters; i++) {
+    if (source.charCodeAt(i) === 10 /* newline char code */) {
+      linesCount++
+      lastNewLinePos = i
+    }
+  }
+
+  pos.offset += numberOfCharacters
+  pos.line += linesCount
+  pos.column =
+    lastNewLinePos === -1
+      ? pos.column + numberOfCharacters
+      : numberOfCharacters - lastNewLinePos
+
+  return pos
 }

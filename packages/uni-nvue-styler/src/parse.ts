@@ -94,7 +94,7 @@ function mapToInitString(
   isRoot: boolean = false,
   mapOf = ''
 ): string {
-  const entries = []
+  const entries: string[] = []
   for (let [key, value] of map) {
     if (value instanceof Map) {
       // trim

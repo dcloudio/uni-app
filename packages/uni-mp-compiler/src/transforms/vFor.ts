@@ -1,11 +1,10 @@
 import { extend, isString } from '@vue/shared'
-import { isElementNode } from '@dcloudio/uni-cli-shared'
+import { getInnerRange, isElementNode } from '@dcloudio/uni-cli-shared'
 import {
   createCompilerError,
   createSimpleExpression,
   ErrorCodes,
   ExpressionNode,
-  getInnerRange,
   SimpleExpressionNode,
   SourceLocation,
   ElementTypes,

@@ -71,7 +71,7 @@ export async function transformMain(
 
   let templatePreambleCode: string | undefined = undefined
   let templateCode = ''
-  let templateMap = undefined
+  let templateMap: RawSourceMap | undefined = undefined
   let templateImportsCode = ''
   let templateImportEasyComponentsCode = ''
   let templateImportUTSComponentsCode = ''

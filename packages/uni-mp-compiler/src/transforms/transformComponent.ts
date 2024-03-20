@@ -45,7 +45,10 @@ export const transformComponent: NodeTransform = (node, context) => {
   if (!isUserComponent(node, context as any)) {
     return
   }
-
+  // 新版本的 vue，识别 template 有差异，可能认为是自定义组件
+  if (node.tag === 'template') {
+    return
+  }
   addComponentType(node, context)
 
   addVueId(node, context)

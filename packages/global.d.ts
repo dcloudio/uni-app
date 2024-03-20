@@ -75,3 +75,8 @@ declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
 declare class UTSJSONObject {
   constructor(obj: Record<string, any>)
 }
+// 解决 test-dts 使用了小程序的Require导致编译器require.resolve,require.cache报错
+interface Require {
+  resolve: NodeRequire['resolve']
+  cache: NodeRequire['cache']
+}

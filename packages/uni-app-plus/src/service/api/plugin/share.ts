@@ -103,7 +103,7 @@ const sendShareMsg = function (
     ? 'openCustomerServiceChat'
     : 'send'
   try {
-    // @ts-expect-error openCustomerServiceChat
+    // openCustomerServiceChat
     service[serviceMethod](
       params,
       () => {

@@ -21,6 +21,7 @@ import {
   uniViteInjectPlugin,
   isInHBuilderX,
   parseUniExtApisOnce,
+  AutoImportOptions,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -41,7 +42,6 @@ import {
 } from './vue'
 import { initEnv } from './cli/utils'
 import { uniUVuePlugin } from './uvue/plugins'
-import { AutoImportOptions } from '@dcloudio/uni-cli-shared'
 
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 

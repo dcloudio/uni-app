@@ -4013,7 +4013,7 @@ const predefinedColor = {
 };
 function checkColor(e2) {
   e2 = e2 || "#000000";
-  var t2 = null;
+  let t2 = null;
   if ((t2 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
     const n = parseInt(t2[1].slice(0, 2), 16);
     const o2 = parseInt(t2[1].slice(2, 4), 16);
@@ -11634,7 +11634,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const onMountedCallback = () => {
       const resizeSensor = resizeSensorRef.value;
-      resizeSensor && (state2.height = resizeSensor.offsetHeight);
+      resizeSensor && (state2.height = resizeSensor.$el.offsetHeight);
     };
     {
       onMounted(onMountedCallback);
@@ -12472,7 +12472,7 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const resizeSensorRef = ref(null);
     const initIndicatorHeight = () => {
       const resizeSensor = resizeSensorRef.value;
-      indicatorHeight.value = resizeSensor.offsetHeight;
+      indicatorHeight.value = resizeSensor.$el.offsetHeight;
     };
     {
       onMounted(initIndicatorHeight);
@@ -13442,7 +13442,8 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       const {
         refreshState,
-        refresherDefaultStyle
+        refresherDefaultStyle,
+        refresherThreshold
       } = props2;
       return createVNode("div", {
         "ref": rootRef,
@@ -13480,7 +13481,12 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.default && slots.default() : null], 4);
+      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresher-container",
+        "style": {
+          height: `${refresherThreshold}px`
+        }
+      }, [slots.default && slots.default()]) : null], 4);
     };
   }
 });
@@ -13652,9 +13658,6 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "ref": main,
         "style": mainStyle.value,
         "class": scrollBarClassName.value
-      }, [createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
       }, [refresherEnabled ? createVNode(Refresher, {
         "refreshState": refreshState,
         "refresherHeight": refresherHeight,
@@ -13663,7 +13666,10 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "refresherBackground": refresherBackground
       }, {
         default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -15854,9 +15860,6 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "ref": containerRef,
         "class": `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`,
         "style": containerStyle.value
-      }, [createVNode("div", {
-        "class": "uni-list-view-content",
-        "style": contentStyle.value
       }, [refresherEnabled ? createVNode(Refresher, {
         "refreshState": refreshState,
         "refresherHeight": refresherHeight,
@@ -15865,7 +15868,10 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "refresherBackground": refresherBackground
       }, {
         default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, visibleVNode], 4)], 4), createVNode(ResizeSensor, {
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
+        "class": "uni-list-view-content",
+        "style": contentStyle.value
+      }, [visibleVNode], 4)], 4), createVNode(ResizeSensor, {
         "onResize": onResize2
       }, null, 8, ["onResize"])], 512);
     };
@@ -16372,10 +16378,18 @@ function initHooks(options, instance2, publicThis) {
   if (mpType === "page") {
     instance2.__isVisible = true;
     try {
-      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
+      if (true) {
+        invokeHook(
+          publicThis,
+          ON_LOAD,
+          new UTSJSONObject(instance2.attrs.__pageQuery || {})
+        );
+      }
       delete instance2.attrs.__pageQuery;
-      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
-        invokeHook(publicThis, ON_SHOW);
+      if (true) {
+        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+          invokeHook(publicThis, ON_SHOW);
+        }
       }
     } catch (e2) {
       console.error(e2.message + LINEFEED + e2.stack);
@@ -20793,7 +20807,7 @@ function parseValue(value) {
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
           if (type === "object" && !Array.isArray(object.data)) {
-            return new globalThis.UTSJSONObject(object.data);
+            return new UTSJSONObject(object.data);
           }
           return object.data;
         }
@@ -21635,7 +21649,7 @@ const request = /* @__PURE__ */ defineTaskApi(
       let res = responseType === "text" ? xhr.responseText : xhr.response;
       if (responseType === "text" && dataType2 === "json") {
         try {
-          res = new globalThis.UTSJSONObject(JSON.parse(res));
+          res = new UTSJSONObject(JSON.parse(res));
         } catch (error) {
         }
       }

@@ -2574,8 +2574,8 @@ class SelectorQueryImpl {
     this._queueCb = [];
   }
   exec(callback) {
-    var _this$_component, _this$_component$$;
-    (_this$_component = this._component) === null || _this$_component === void 0 ? void 0 : (_this$_component$$ = _this$_component.$) === null || _this$_component$$ === void 0 ? void 0 : _this$_component$$.$waitNativeRender(() => {
+    var _this$_component;
+    (_this$_component = this._component) === null || _this$_component === void 0 || (_this$_component = _this$_component.$) === null || _this$_component === void 0 || _this$_component.$waitNativeRender(() => {
       requestComponentInfo(this._component, this._queue, (res) => {
         var queueCbs = this._queueCb;
         res.forEach((info, _index) => {
@@ -2671,7 +2671,7 @@ function requestComponentInfo(vueComponent, queue2, callback) {
           nodesInfo.push(getNodeInfo(_element));
         }
         var findNodes = el.querySelectorAll(item.selector);
-        findNodes === null || findNodes === void 0 ? void 0 : findNodes.forEach((node) => {
+        findNodes === null || findNodes === void 0 || findNodes.forEach((node) => {
           nodesInfo.push(getNodeInfo(node));
         });
         result.push(nodesInfo);
@@ -3268,8 +3268,8 @@ function initComponentInstance(app) {
     beforeCreate() {
       Object.defineProperty(this, "$nativePage", {
         get() {
-          var _this$$root, _this$$root$$el;
-          var pageId = (_this$$root = this.$root) === null || _this$$root === void 0 ? void 0 : (_this$$root$$el = _this$$root.$el) === null || _this$$root$$el === void 0 ? void 0 : _this$$root$$el.pageId;
+          var _this$$root;
+          var pageId = (_this$$root = this.$root) === null || _this$$root === void 0 || (_this$$root = _this$$root.$el) === null || _this$$root === void 0 ? void 0 : _this$$root.pageId;
           return getNativeApp().pageManager.findPageById(pageId + "");
         }
       });
@@ -3443,14 +3443,14 @@ var defineSystemComponent = (options) => {
   return defineComponent(options);
 };
 function $dispatch(context, componentName, eventName) {
-  var _parent, _parent$$options;
+  var _parent;
   var parent = context.$parent;
-  var name = (_parent = parent) === null || _parent === void 0 ? void 0 : (_parent$$options = _parent.$options) === null || _parent$$options === void 0 ? void 0 : _parent$$options.name;
+  var name = (_parent = parent) === null || _parent === void 0 || (_parent = _parent.$options) === null || _parent === void 0 ? void 0 : _parent.name;
   while (parent != null && (name == null || componentName != name)) {
     parent = parent.$parent;
     if (parent != null) {
-      var _parent2, _parent2$$options;
-      name = (_parent2 = parent) === null || _parent2 === void 0 ? void 0 : (_parent2$$options = _parent2.$options) === null || _parent2$$options === void 0 ? void 0 : _parent2$$options.name;
+      var _parent2;
+      name = (_parent2 = parent) === null || _parent2 === void 0 || (_parent2 = _parent2.$options) === null || _parent2 === void 0 ? void 0 : _parent2.name;
     }
   }
   if (parent != null) {
@@ -3465,9 +3465,9 @@ function $dispatch(context, componentName, eventName) {
   }
 }
 function $dispatchParent(context, componentName, eventName) {
-  var _parent$$options2;
+  var _parent$$options;
   var parent = context.$parent;
-  var name = parent === null || parent === void 0 ? void 0 : (_parent$$options2 = parent.$options) === null || _parent$$options2 === void 0 ? void 0 : _parent$$options2.name;
+  var name = parent === null || parent === void 0 || (_parent$$options = parent.$options) === null || _parent$$options === void 0 ? void 0 : _parent$$options.name;
   if (parent !== null && (name === null || componentName === name)) {
     if (typeof parent[eventName] === "function") {
       for (var _len2 = arguments.length, do_not_transform_spread = new Array(_len2 > 3 ? _len2 - 3 : 0), _key2 = 3; _key2 < _len2; _key2++) {
@@ -3781,7 +3781,7 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
       });
     };
     onMounted(() => {
-      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         if (!instance)
           return;
         if (!uniCheckboxGroupElementRef.value)
@@ -3969,7 +3969,7 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
     });
     var instance = getCurrentInstance();
     onMounted(() => {
-      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         if (instance === null)
           return;
         uniRadioElementRef.value._getAttribute = (key) => {
@@ -4134,7 +4134,7 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
       });
     };
     onMounted(() => {
-      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         if (!instance)
           return;
         if (!uniRadioGroupElementRef.value)
@@ -4232,7 +4232,7 @@ const navigator = /* @__PURE__ */ defineBuiltInComponent({
     var $uniNavigatorElement = ref();
     var instance = getCurrentInstance();
     onMounted(() => {
-      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         if (!instance)
           return;
         $uniNavigatorElement.value._getAttribute = (key) => {
@@ -4476,7 +4476,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
       clearInterval(data._timerId);
     };
     onMounted(() => {
-      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         var _instance$proxy;
         if (!instance)
           return;
@@ -4727,7 +4727,7 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
       setItemValue
     });
     onMounted(() => {
-      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         if (!instance || !pickerViewElementRef.value)
           return;
         pickerViewElementRef.value._getAttribute = (key) => {
@@ -4836,7 +4836,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       }
     };
     var setCurrent = (current) => {
-      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         var scrollTop = current * data.indicatorHeight;
         scrollViewRef.value.setAnyAttribute("scroll-top", scrollTop);
         data.current = current;
@@ -4845,7 +4845,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     };
     var created = () => {
       var _instance$parent;
-      var $parent = (instance === null || instance === void 0 ? void 0 : (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.type.name) === "PickerView" ? instance === null || instance === void 0 ? void 0 : instance.parent : null;
+      var $parent = (instance === null || instance === void 0 || (_instance$parent = instance.parent) === null || _instance$parent === void 0 ? void 0 : _instance$parent.type.name) === "PickerView" ? instance === null || instance === void 0 ? void 0 : instance.parent : null;
       if ($parent !== null) {
         data.indicatorStyle = $parent.props["indicatorStyle"];
         data.maskTopStyle = $parent.props["maskTopStyle"];
@@ -4859,7 +4859,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       setCurrent
     });
     onMounted(() => {
-      instance === null || instance === void 0 ? void 0 : instance.$waitNativeRender(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         if (!instance || !pickerColumnRef.value)
           return;
         setTimeout(() => {

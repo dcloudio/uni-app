@@ -27,7 +27,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
     if (__X__) {
       timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout
     }
-    let body = null
+    let body: string | ArrayBuffer | null = null
     // 根据请求类型处理数据
     const contentType = normalizeContentType(header)
     if (method !== 'GET') {
@@ -41,7 +41,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
             body = data!.toString()
           }
         } else if (contentType === 'urlencoded') {
-          const bodyArray = []
+          const bodyArray: string[] = []
           for (const key in data) {
             if (hasOwn(data, key)) {
               bodyArray.push(

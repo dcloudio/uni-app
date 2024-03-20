@@ -3324,7 +3324,7 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state, emit2, trigger) {
-  const valueChangeFn = debounce(
+  const valueChangeFn = uniShared.debounce(
     (val) => {
       state.value = getValueString(val, props2.type);
     },
@@ -5924,7 +5924,8 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       const {
         refreshState,
-        refresherDefaultStyle
+        refresherDefaultStyle,
+        refresherThreshold
       } = props2;
       return vue.createVNode("div", {
         "ref": rootRef,
@@ -5962,7 +5963,12 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.default && slots.default() : null], 4);
+      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? vue.createVNode("div", {
+        "class": "uni-scroll-view-refresher-container",
+        "style": {
+          height: `${refresherThreshold}px`
+        }
+      }, [slots.default && slots.default()]) : null], 4);
     };
   }
 });
@@ -6090,9 +6096,6 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
         "ref": main,
         "style": mainStyle.value,
         "class": scrollBarClassName.value
-      }, [vue.createVNode("div", {
-        "ref": content,
-        "class": "uni-scroll-view-content"
       }, [refresherEnabled ? vue.createVNode(Refresher, {
         "refreshState": refreshState,
         "refresherHeight": refresherHeight,
@@ -6101,7 +6104,10 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
         "refresherBackground": refresherBackground
       }, {
         default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
-      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
+        "ref": content,
+        "class": "uni-scroll-view-content"
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -7588,10 +7594,16 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+      if (false)
+        ;
+      else {
+        invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+      }
       delete instance.attrs.__pageQuery;
-      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
-        invokeHook(publicThis, uniShared.ON_SHOW);
+      if (true) {
+        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+          invokeHook(publicThis, uniShared.ON_SHOW);
+        }
       }
     } catch (e2) {
       console.error(e2.message + uniShared.LINEFEED + e2.stack);

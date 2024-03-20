@@ -731,7 +731,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       trigger
     )
 
-    let createNavigationTsx: () => JSX.Element | null = () => null
+    let createNavigationTsx: () => any = () => null
     if (__PLATFORM__ === 'h5') {
       createNavigationTsx = useSwiperNavigation(
         rootRef,
