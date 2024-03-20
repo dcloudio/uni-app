@@ -1,5 +1,5 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, parseStringStyle } from "@vue/shared";
+import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, computed, onMounted, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
@@ -1613,16 +1613,6 @@ function initRouteOptions(path, openType) {
   }
   return routeOptions;
 }
-var nativeApp;
-function getNativeApp() {
-  return nativeApp;
-}
-function setNativeApp(app) {
-  nativeApp = app;
-}
-function getPageManager() {
-  return nativeApp.pageManager;
-}
 function setupPage(component) {
   var oldSetup = component.setup;
   component.inheritAttrs = false;
@@ -1647,11 +1637,6 @@ function setupPage(component) {
 }
 function initScope(pageId, vm, pageInstance) {
   {
-    Object.defineProperty(vm, "$nativePage", {
-      get() {
-        return getNativeApp().pageManager.findPageById(pageId + "");
-      }
-    });
     Object.defineProperty(vm, "$viewToTempFilePath", {
       get() {
         return vm.$nativePage.viewToTempFilePath;
@@ -1680,6 +1665,16 @@ function createFactory(component) {
     }
     return setupPage(component);
   };
+}
+var nativeApp;
+function getNativeApp() {
+  return nativeApp;
+}
+function setNativeApp(app) {
+  nativeApp = app;
+}
+function getPageManager() {
+  return nativeApp.pageManager;
 }
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
@@ -1738,7 +1733,7 @@ function parsePageStyle(route) {
   }
   return style;
 }
-function registerPage(_ref) {
+function registerPage(_ref, onCreated) {
   var {
     url,
     path,
@@ -1752,6 +1747,9 @@ function registerPage(_ref) {
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = parsePageStyle(routeOptions);
   var nativePage = getPageManager().createPage(url, id2.toString(), pageStyle);
+  if (onCreated) {
+    onCreated(nativePage);
+  }
   routeOptions.meta.id = parseInt(nativePage.pageId);
   var route = path.slice(1);
   var pageInstance = initPageInternalInstance(
@@ -1764,6 +1762,9 @@ function registerPage(_ref) {
     "light"
   );
   var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
+  nativePage.addPageEventListener(ON_SHOW, (_) => {
+    invokeHook(page, ON_SHOW);
+  });
   nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
     uni.navigateBack({
       from: "popGesture",
@@ -1851,18 +1852,25 @@ function _navigateTo(_ref2) {
   invokeHook(ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
-    showWebview(registerPage({
+    var noAnimation = aniType === "none" || aniDuration === 0;
+    function callback(page2) {
+      showWebview(page2, aniType, aniDuration, () => {
+        resolve({
+          eventChannel
+        });
+        setStatusBarStyle();
+      });
+    }
+    var page = registerPage({
       url,
       path,
       query,
       openType: "navigateTo",
       eventChannel
-    }), aniType, aniDuration, () => {
-      resolve({
-        eventChannel
-      });
-      setStatusBarStyle();
-    });
+    }, noAnimation ? void 0 : callback);
+    if (noAnimation) {
+      callback(page);
+    }
   });
 }
 function initAnimation(path, animationType, animationDuration) {
@@ -2116,7 +2124,7 @@ function _reLaunch(_ref3) {
 }
 var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function isDirectPage(page) {
-  return !!__uniConfig.realEntryPagePath && getRealPath(page.$page.route) == getRealPath(parseUrl(__uniConfig.entryPagePath).path);
+  return !!__uniConfig.realEntryPagePath && getRealPath(page.$page.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
 }
 function reLaunchEntryPage() {
   var _uniConfig$entryPage;
@@ -2135,9 +2143,7 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   if (!page) {
     return reject("getCurrentPages is empty");
   }
-  if (isDirectPage(page)) {
-    reLaunchEntryPage();
-  } else if (
+  if (
     // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
     args.from !== "popGesture" && invokeHook(page, ON_BACK_PRESS, {
       from: args.from || "navigateBack"
@@ -2154,12 +2160,16 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
   if (page.$page.meta.isQuit)
     ;
   else {
-    var {
-      delta,
-      animationType,
-      animationDuration
-    } = args;
-    back(delta, animationType, animationDuration);
+    if (isDirectPage(page)) {
+      return reLaunchEntryPage();
+    } else {
+      var {
+        delta,
+        animationType,
+        animationDuration
+      } = args;
+      back(delta, animationType, animationDuration);
+    }
   }
   return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
@@ -3088,12 +3098,62 @@ function requireUTSPlugin(name) {
   }
   return define;
 }
+function __log__(type, filename) {
+  for (var _len = arguments.length, args = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
+    args[_key - 2] = arguments[_key];
+  }
+  var res = normalizeLog(type, filename, args);
+  res && console[type](res);
+}
+function isDebugMode() {
+  return typeof __channelId__ === "string" && __channelId__;
+}
+function jsonStringifyReplacer(k, p) {
+  switch (toRawType(p)) {
+    case "Function":
+      return "function() { [native code] }";
+    default:
+      return p;
+  }
+}
+function normalizeLog(type, filename, args) {
+  if (isDebugMode()) {
+    args.push(filename.replace("at ", "uni-app:///"));
+    return console[type].apply(console, args);
+  }
+  var msgs = args.map(function(v) {
+    var type2 = toTypeString(v).toLowerCase();
+    if (["[object object]", "[object array]", "[object module]"].indexOf(type2) !== -1) {
+      try {
+        v = "---BEGIN:JSON---" + JSON.stringify(v, jsonStringifyReplacer) + "---END:JSON---";
+      } catch (e) {
+        v = type2;
+      }
+    } else {
+      if (v === null) {
+        v = "---NULL---";
+      } else if (v === void 0) {
+        v = "---UNDEFINED---";
+      } else {
+        var vType = toRawType(v).toUpperCase();
+        if (vType === "NUMBER" || vType === "BOOLEAN") {
+          v = "---BEGIN:" + vType + "---" + v + "---END:" + vType + "---";
+        } else {
+          v = String(v);
+        }
+      }
+    }
+    return v;
+  });
+  return msgs.join("---COMMA---") + " " + filename;
+}
 const uni$1 = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   $emit,
   $off,
   $on,
   $once,
+  __log__,
   addInterceptor,
   createSelectorQuery,
   getElementById,
@@ -3146,7 +3206,6 @@ function initAppLaunch(appVm) {
   invokeHook(appVm, ON_LAUNCH, args);
   invokeHook(appVm, ON_SHOW, args);
   var appStyle = appVm.$options.styles;
-  console.log("appStyle", appStyle);
   if (appStyle) {
     loadFontFaceByStyles(appStyle, true);
   }
@@ -3204,6 +3263,19 @@ function initOn(app) {
 function initService(app) {
   initOn(app);
 }
+function initComponentInstance(app) {
+  app.mixin({
+    beforeCreate() {
+      Object.defineProperty(this, "$nativePage", {
+        get() {
+          var _this$$root, _this$$root$$el;
+          var pageId = (_this$$root = this.$root) === null || _this$$root === void 0 ? void 0 : (_this$$root$$el = _this$$root.$el) === null || _this$$root$$el === void 0 ? void 0 : _this$$root$$el.pageId;
+          return getNativeApp().pageManager.findPageById(pageId + "");
+        }
+      });
+    }
+  });
+}
 var appCtx;
 var defaultApp = {
   globalData: {}
@@ -3224,26 +3296,29 @@ function getApp$1() {
   }
   console.error("[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.");
 }
-function registerApp(appVm, app) {
-  initEntryPagePath(app);
-  setNativeApp(app);
+function registerApp(appVm, nativeApp2) {
+  initEntryPagePath(nativeApp2);
+  setNativeApp(nativeApp2);
   initVueApp(appVm);
   appCtx = appVm;
   initAppVm(appCtx);
   extend(appCtx, defaultApp);
   defineGlobalData(appCtx, defaultApp.globalData);
-  initService(app);
-  initGlobalEvent(app);
+  initService(nativeApp2);
+  initGlobalEvent(nativeApp2);
   initSubscribeHandlers();
   initAppLaunch(appVm);
   __uniConfig.ready = true;
 }
+function initApp(app) {
+  initComponentInstance(app);
+}
 function initEntryPagePath(app) {
-  var _redirectInfo$debug;
   var redirectInfo = app.getRedirectInfo();
-  if (redirectInfo !== null && redirectInfo !== void 0 && (_redirectInfo$debug = redirectInfo.debug) !== null && _redirectInfo$debug !== void 0 && _redirectInfo$debug.url) {
-    var url = redirectInfo.debug.url;
-    if (url != __uniConfig.entryPagePath) {
+  var debugInfo = redirectInfo.get("debug");
+  if (debugInfo) {
+    var url = debugInfo.get("url");
+    if (url && url != __uniConfig.entryPagePath) {
       __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
       __uniConfig.entryPagePath = url;
       return;
@@ -4862,6 +4937,7 @@ const index = {
   getCurrentPages: getCurrentPages$1,
   __definePage: definePage,
   __registerApp: registerApp,
+  initApp,
   components
 };
 export {
