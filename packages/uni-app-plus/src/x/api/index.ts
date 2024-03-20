@@ -30,6 +30,8 @@ export { loadFontFace } from './ui/loadFontFace'
 export { $emit, $off, $on, $once } from './base/event-bus'
 export { removeInterceptor, addInterceptor } from './base/interceptor'
 export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
+export { startPullDownRefresh } from './dom/startPullDownRefresh'
+export { stopPullDownRefresh } from './dom/stopPullDownRefresh'
 
 export {
   initUTSProxyClass,
