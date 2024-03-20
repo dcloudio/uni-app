@@ -1,17 +1,16 @@
 import type { App, ComponentPublicInstance } from 'vue'
-import type { UniElement } from '@dcloudio/uni-app-x/types/native'
 import { getNativeApp } from './app'
 
 export function initComponentInstance(app: App) {
   app.mixin({
-    beforeCreate(this: ComponentPublicInstance) {
-      Object.defineProperty(this, '$nativePage', {
-        get(this: ComponentPublicInstance) {
-          const pageId = (this.$root?.$el as UniElement & { pageId: string })
-            ?.pageId
-          return getNativeApp().pageManager.findPageById(pageId + '')
-        },
-      })
+    beforeMount(this: ComponentPublicInstance) {
+      const vm = this
+      const instance = vm.$
+      if ((instance.type as any).mpType === 'app') {
+        return
+      }
+      const pageId = instance.root.attrs.__pageId
+      vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + '')
     },
   })
 }
