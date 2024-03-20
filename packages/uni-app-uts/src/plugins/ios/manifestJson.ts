@@ -44,13 +44,10 @@ export function uniAppManifestPlugin(): Plugin {
     },
     writeBundle() {
       outputManifestJson = normalizeManifestJson(manifestJson)
-      if (process.env.NODE_ENV !== 'production') {
-        // 发行模式下，需要等解析ext-api模块
-        fs.outputFileSync(
-          path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
-          JSON.stringify(outputManifestJson, null, 2)
-        )
-      }
+      fs.outputFileSync(
+        path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
+        JSON.stringify(outputManifestJson, null, 2)
+      )
     },
   }
 }
