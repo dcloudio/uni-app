@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import { ComponentPublicInstance, App } from 'vue'
 import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
 import { defineGlobalData } from '@dcloudio/uni-core'
@@ -14,6 +14,7 @@ import { IApp } from '@dcloudio/uni-app-x/types/native'
 import { initService } from './initService'
 // import { initKeyboardEvent } from '../dom/keyboard'
 import { setNativeApp } from './app'
+import { initComponentInstance } from './initComponentInstance'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
@@ -40,13 +41,13 @@ export function getApp({ allowDefault = false } = {}) {
   )
 }
 
-export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
+export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
-  initEntryPagePath(app)
+  initEntryPagePath(nativeApp)
 
-  setNativeApp(app)
+  setNativeApp(nativeApp)
 
   // // 定制 useStore （主要是为了 nvue 共享）
   // if ((uni as any).Vuex && (appVm as any).$store) {
@@ -68,11 +69,11 @@ export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
 
   defineGlobalData(appCtx, defaultApp.globalData)
 
-  initService(app)
+  initService(nativeApp)
 
   // initEntry()
   // initTabBar()
-  initGlobalEvent(app)
+  initGlobalEvent(nativeApp)
   // initKeyboardEvent()
   initSubscribeHandlers()
 
@@ -84,6 +85,10 @@ export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
   __uniConfig.ready = true
 
   // nav
+}
+
+export function initApp(app: App) {
+  initComponentInstance(app)
 }
 
 function initEntryPagePath(app: IApp) {

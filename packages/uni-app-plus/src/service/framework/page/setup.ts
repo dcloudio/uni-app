@@ -14,7 +14,6 @@ import {
 } from 'vue'
 import type { VuePageComponent } from './define'
 import { addCurrentPage } from './getCurrentPages'
-import { getNativeApp } from '../../../x/framework/app/app'
 
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
@@ -69,12 +68,6 @@ export function initScope(
       $getAppWebview,
     }
   } else {
-    Object.defineProperty(vm, '$nativePage', {
-      get() {
-        return getNativeApp().pageManager.findPageById(pageId + '')
-      },
-    })
-
     Object.defineProperty(vm, '$viewToTempFilePath', {
       get() {
         return vm.$nativePage!.viewToTempFilePath
