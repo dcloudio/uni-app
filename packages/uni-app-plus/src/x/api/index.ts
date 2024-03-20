@@ -20,11 +20,13 @@ export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 
 // dom
 export { getElementById } from './dom/getElementById'
-export { pageScrollTo } from './dom/pageScrollTo'
 export { createSelectorQuery } from './dom/createSelectorQuery'
 
 // ui
+export { pageScrollTo } from './ui/pageScrollTo'
 export { loadFontFace } from './ui/loadFontFace'
+export { startPullDownRefresh } from './ui/startPullDownRefresh'
+export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
 
 // base
 export { $emit, $off, $on, $once } from './base/event-bus'
