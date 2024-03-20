@@ -41,3 +41,5 @@ export {
   registerUTSPlugin,
   registerUTSInterface,
 } from '../../service/api/plugin/uts'
+// 临时使用 1.0 的日志格式
+export { __log__ } from '../../service/api/plugin/log'

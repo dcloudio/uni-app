@@ -21,7 +21,8 @@ export function uniAppIOSMainPlugin(): Plugin {
           const __global__ = typeof globalThis === 'undefined' ? Function('return this')() : globalThis
           __global__.__uniX = true
           __global__.__f__ = (type,filename: string,...args) => {
-            console[type].apply(console, [...args, filename])
+            uni.__log__(type, filename, ...args)
+            // console[type].apply(console, [...args, filename])
           }
           ${code}
           createApp().app.mount("#app");
