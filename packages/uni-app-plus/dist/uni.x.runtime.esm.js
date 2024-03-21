@@ -2768,6 +2768,11 @@ var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
   return getLaunchOptions();
 });
+var env = {
+  USER_DATA_PATH: "unifile://usr/",
+  CACHE_PATH: "unifile://cache/",
+  SANDBOX_PATH: "unifile://sandbox/"
+};
 var callbackId = 1;
 var proxy;
 var callbacks = {};
@@ -3178,6 +3183,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   __log__,
   addInterceptor,
   createSelectorQuery,
+  env,
   getElementById,
   getLaunchOptionsSync,
   hideTabBar,
