@@ -7300,6 +7300,13 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
   vnode.patchFlag !== 32) {
     currentBlock.push(vnode);
   }
+  if (type == "button") {
+    if (vnode.props == null)
+      vnode.props = /* @__PURE__ */ new Map();
+    if (!vnode.props["hoverClass"] && !vnode.props["hover-class"]) {
+      vnode.props["hoverClass"] = "button-hover";
+    }
+  }
   return vnode;
 }
 const createVNode = !!(process.env.NODE_ENV !== "production") ? createVNodeWithArgsTransform : _createVNode;
@@ -8624,7 +8631,13 @@ function transformAttr(el, key, value, instance) {
   if (opts) {
     const camelized = camelize(key);
     if (opts["class"].indexOf(camelized) > -1) {
-      return [camelized, parseClassList([value], instance, el)];
+      const classStyle = parseClassList([value], instance, el);
+      if (el.tagName === "BUTTON") {
+        if (value === "none" || value == "button-hover" && classStyle.size == 0) {
+          return [camelized, value];
+        }
+      }
+      return [camelized, classStyle];
     }
     if (opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
