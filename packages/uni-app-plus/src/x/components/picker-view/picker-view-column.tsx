@@ -108,7 +108,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         if (data.current != 0) {
           setCurrent(data.current)
         }
-        data._isMounted = true
       })
     }
 
@@ -127,12 +126,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
 
     const setCurrent = (current: number) => {
-      instance?.$waitNativeRender(() => {
-        let scrollTop = current * data.indicatorHeight
-        scrollViewRef.value!.setAnyAttribute('scroll-top', scrollTop)
-        data.current = current
-        data.scrollToElementTime = Date.now()
-      })
+      let scrollTop = current * data.indicatorHeight
+      scrollViewRef.value!.setAnyAttribute('scroll-top', scrollTop)
+      data.current = current
+      data.scrollToElementTime = Date.now()
     }
 
     const created = () => {
@@ -171,17 +168,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       instance?.$waitNativeRender(() => {
         if (!instance || !pickerColumnRef.value) return
 
-        // pickerColumnRef.value!._getAttribute = (key: string): string | null => {
-        //   const keyString = camelize(key) as keyof typeof props
-        //   //  return props[keyString] !== null
-        //   //    ? props[keyString]?.toString() ?? null
-        //   //    : null
-        //   return null
-        // }
+        init()
 
         setTimeout(() => {
-          init()
-        }, 500)
+          data._isMounted = true
+        }, 1000)
       })
     })
 
