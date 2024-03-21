@@ -45,7 +45,7 @@
     "@dcloudio/types": "3.4.8",
     "@dcloudio/uni-api": "3.0.0-alpha-4000620240320001",
     "@dcloudio/uni-app": "3.0.0-alpha-4000620240320001",
-    "@dcloudio/uni-app-x": "^0.7.4",
+    "@dcloudio/uni-app-x": "^0.7.11",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.34.5",
     "@rollup/plugin-alias": "^4.0.2",
