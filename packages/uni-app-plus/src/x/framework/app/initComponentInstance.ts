@@ -1,5 +1,6 @@
 import type { App, ComponentPublicInstance } from 'vue'
 import { getNativeApp } from './app'
+import { loadFontFaceByStyles } from '../utils'
 
 export function initComponentInstance(app: App) {
   app.mixin({
@@ -11,6 +12,8 @@ export function initComponentInstance(app: App) {
       }
       const pageId = instance.root.attrs.__pageId
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + '')
+
+      loadFontFaceByStyles(vm.$options.styles ?? [], false)
     },
   })
 }
