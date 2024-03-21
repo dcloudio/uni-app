@@ -1681,6 +1681,7 @@ function getPageManager() {
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
 function loadFontFaceByStyles(styles2, global2) {
+  styles2 = Array.isArray(styles2) ? styles2 : [styles2];
   var fontFaceStyle = [];
   styles2.forEach((style) => {
     if (style["@FONT-FACE"]) {
@@ -3296,6 +3297,7 @@ function initService(app) {
 function initComponentInstance(app) {
   app.mixin({
     beforeMount() {
+      var _vm$$options$styles;
       var vm = this;
       var instance = vm.$;
       if (instance.type.mpType === "app") {
@@ -3303,6 +3305,7 @@ function initComponentInstance(app) {
       }
       var pageId = instance.root.attrs.__pageId;
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+      loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
     }
   });
 }
@@ -4706,8 +4709,7 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
       $items: [],
       valueSync: []
     });
-    watchEffect(() => {
-      var val = props.value;
+    watch(() => props.value, (val) => {
       val.forEach((_val, index2) => {
         if (data.$items.length > index2) {
           var _data$$items$index$$$;
@@ -4850,7 +4852,6 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         if (data.current != 0) {
           setCurrent(data.current);
         }
-        data._isMounted = true;
       });
     };
     var onScrollend = (e) => {
@@ -4866,12 +4867,10 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       }
     };
     var setCurrent = (current) => {
-      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
-        var scrollTop = current * data.indicatorHeight;
-        scrollViewRef.value.setAnyAttribute("scroll-top", scrollTop);
-        data.current = current;
-        data.scrollToElementTime = Date.now();
-      });
+      var scrollTop = current * data.indicatorHeight;
+      scrollViewRef.value.setAnyAttribute("scroll-top", scrollTop);
+      data.current = current;
+      data.scrollToElementTime = Date.now();
     };
     var created = () => {
       var _instance$parent;
@@ -4892,9 +4891,10 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       instance === null || instance === void 0 || instance.$waitNativeRender(() => {
         if (!instance || !pickerColumnRef.value)
           return;
+        init2();
         setTimeout(() => {
-          init2();
-        }, 500);
+          data._isMounted = true;
+        }, 1e3);
       });
     });
     onUnmounted(() => {

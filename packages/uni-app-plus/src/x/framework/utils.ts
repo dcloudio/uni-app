@@ -10,6 +10,8 @@ export function loadFontFaceByStyles(
   styles: Array<Record<string, any>>,
   global: boolean
 ) {
+  // TODO will fix by otto
+  styles = Array.isArray(styles) ? styles : [styles]
   // 遍历数组，找到 @font-face 规则
   const fontFaceStyle = [] as Array<Record<string, any>>
   styles.forEach((style) => {
