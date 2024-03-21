@@ -5846,7 +5846,7 @@ function createHydrationFunctions(rendererInternals) {
   } = rendererInternals;
   const hydrate = (vnode, container) => {
     if (!container.hasChildNodes()) {
-      (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && warn$1(
+      (!!(process.env.NODE_ENV !== "production") || false) && warn$1(
         `Attempting to hydrate existing markup but container is empty. Performing full mount instead.`
       );
       patch(null, vnode, container);
@@ -5906,7 +5906,7 @@ function createHydrationFunctions(rendererInternals) {
         } else {
           if (node.data !== vnode.children) {
             hasMismatch = true;
-            (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && warn$1(
+            (!!(process.env.NODE_ENV !== "production") || false) && warn$1(
               `Hydration text mismatch in`,
               node.parentNode,
               `
@@ -6040,7 +6040,7 @@ function createHydrationFunctions(rendererInternals) {
             rendererInternals,
             hydrateNode
           );
-        } else if (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) {
+        } else if (!!(process.env.NODE_ENV !== "production") || false) {
           warn$1("Invalid HostVNode type:", type, `(${typeof type})`);
         }
     }
@@ -6081,7 +6081,7 @@ function createHydrationFunctions(rendererInternals) {
         let hasWarned = false;
         while (next) {
           hasMismatch = true;
-          if ((!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && !hasWarned) {
+          if ((!!(process.env.NODE_ENV !== "production") || false) && !hasWarned) {
             warn$1(
               `Hydration children mismatch on`,
               el,
@@ -6097,7 +6097,7 @@ Server rendered element contains more child nodes than client vdom.`
       } else if (shapeFlag & 8) {
         if (el.textContent !== vnode.children) {
           hasMismatch = true;
-          (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && warn$1(
+          (!!(process.env.NODE_ENV !== "production") || false) && warn$1(
             `Hydration text content mismatch on`,
             el,
             `
@@ -6175,7 +6175,7 @@ Server rendered element contains more child nodes than client vdom.`
         continue;
       } else {
         hasMismatch = true;
-        if ((!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && !hasWarned) {
+        if ((!!(process.env.NODE_ENV !== "production") || false) && !hasWarned) {
           warn$1(
             `Hydration children mismatch on`,
             container,
@@ -6223,7 +6223,7 @@ Server rendered element contains fewer child nodes than client vdom.`
   };
   const handleMismatch = (node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragment) => {
     hasMismatch = true;
-    (!!(process.env.NODE_ENV !== "production") || __VUE_PROD_HYDRATION_MISMATCH_DETAILS__) && warn$1(
+    (!!(process.env.NODE_ENV !== "production") || false) && warn$1(
       `Hydration node mismatch:
 - rendered on server:`,
       node,
@@ -6446,10 +6446,6 @@ function isSupported() {
 
 function initFeatureFlags() {
   const needWarn = [];
-  if (typeof __VUE_PROD_HYDRATION_MISMATCH_DETAILS__ !== "boolean") {
-    !!(process.env.NODE_ENV !== "production") && needWarn.push(`__VUE_PROD_HYDRATION_MISMATCH_DETAILS__`);
-    getGlobalThis().__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
-  }
   if (!!(process.env.NODE_ENV !== "production") && needWarn.length) {
     const multi = needWarn.length > 1;
     console.warn(

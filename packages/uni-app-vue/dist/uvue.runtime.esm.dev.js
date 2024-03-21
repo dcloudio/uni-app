@@ -6197,10 +6197,6 @@ function isSupported() {
 }
 function initFeatureFlags() {
   var needWarn = [];
-  if (typeof __VUE_PROD_HYDRATION_MISMATCH_DETAILS__ !== "boolean") {
-    needWarn.push("__VUE_PROD_HYDRATION_MISMATCH_DETAILS__");
-    getGlobalThis().__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
-  }
   if (needWarn.length) {
     var multi = needWarn.length > 1;
     console.warn("Feature flag".concat(multi ? "s" : "", " ").concat(needWarn.join(", "), " ").concat(multi ? "are" : "is", " not explicitly defined. You are running the esm-bundler build of Vue, which expects these compile-time feature flags to be globally injected via the bundler config in order to get better tree-shaking in the production bundle.\n\nFor more details, see https://link.vuejs.org/feature-flags."));

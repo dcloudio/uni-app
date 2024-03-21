@@ -18,6 +18,7 @@ export default defineConfig({
     __APP_VIEW__: false,
     __VUE_OPTIONS_API__: true,
     __VUE_PROD_DEVTOOLS__: false,
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: false,
     __UNI_FEATURE_WX__: true,
     __UNI_FEATURE_PROMISE__: false,
     __UNI_FEATURE_I18N_EN__: true,

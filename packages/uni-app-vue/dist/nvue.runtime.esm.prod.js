@@ -3452,7 +3452,6 @@ function createHydrationFunctions(rendererInternals) {
   } = rendererInternals;
   var hydrate = (vnode, container) => {
     if (!container.hasChildNodes()) {
-      __VUE_PROD_HYDRATION_MISMATCH_DETAILS__ && warn$1("Attempting to hydrate existing markup but container is empty. Performing full mount instead.");
       patch(null, vnode, container);
       flushPostFlushCbs();
       container._vnode = vnode;
@@ -3495,7 +3494,6 @@ function createHydrationFunctions(rendererInternals) {
         } else {
           if (node.data !== vnode.children) {
             hasMismatch = true;
-            __VUE_PROD_HYDRATION_MISMATCH_DETAILS__ && warn$1("Hydration text mismatch in", node.parentNode, "\n  - rendered on server: ".concat(JSON.stringify(node.data), "\n  - expected on client: ").concat(JSON.stringify(vnode.children)));
             node.data = vnode.children;
           }
           nextNode = nextSibling(node);
@@ -3575,9 +3573,7 @@ function createHydrationFunctions(rendererInternals) {
           }
         } else if (shapeFlag & 128) {
           nextNode = vnode.type.hydrate(node, vnode, parentComponent, parentSuspense, getContainerType(parentNode(node)), slotScopeIds, optimized, rendererInternals, hydrateNode);
-        } else if (__VUE_PROD_HYDRATION_MISMATCH_DETAILS__) {
-          warn$1("Invalid HostVNode type:", type, "(".concat(typeof type, ")"));
-        }
+        } else ;
     }
     if (ref != null) {
       setRef(ref, null, parentSuspense, vnode);
@@ -3613,13 +3609,8 @@ function createHydrationFunctions(rendererInternals) {
       // skip if element has innerHTML / textContent
       !(props && (props.innerHTML || props.textContent))) {
         var next = hydrateChildren(el.firstChild, vnode, el, parentComponent, parentSuspense, slotScopeIds, optimized);
-        var hasWarned = false;
         while (next) {
           hasMismatch = true;
-          if (__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ && !hasWarned) {
-            warn$1("Hydration children mismatch on", el, "\nServer rendered element contains more child nodes than client vdom.");
-            hasWarned = true;
-          }
           var cur = next;
           next = next.nextSibling;
           remove(cur);
@@ -3627,7 +3618,6 @@ function createHydrationFunctions(rendererInternals) {
       } else if (shapeFlag & 8) {
         if (el.textContent !== vnode.children) {
           hasMismatch = true;
-          __VUE_PROD_HYDRATION_MISMATCH_DETAILS__ && warn$1("Hydration text content mismatch on", el, "\n  - rendered on server: ".concat(el.textContent, "\n  - expected on client: ").concat(vnode.children));
           el.textContent = vnode.children;
         }
       }
@@ -3665,7 +3655,6 @@ function createHydrationFunctions(rendererInternals) {
     optimized = optimized || !!parentVNode.dynamicChildren;
     var children = parentVNode.children;
     var l = children.length;
-    var hasWarned = false;
     for (var i = 0; i < l; i++) {
       var vnode = optimized ? children[i] : children[i] = normalizeVNode(children[i]);
       if (node) {
@@ -3674,10 +3663,6 @@ function createHydrationFunctions(rendererInternals) {
         continue;
       } else {
         hasMismatch = true;
-        if (__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ && !hasWarned) {
-          warn$1("Hydration children mismatch on", container, "\nServer rendered element contains fewer child nodes than client vdom.");
-          hasWarned = true;
-        }
         patch(null, vnode, container, null, parentComponent, parentSuspense, getContainerType(container), slotScopeIds);
       }
     }
@@ -3702,7 +3687,6 @@ function createHydrationFunctions(rendererInternals) {
   };
   var handleMismatch = (node, vnode, parentComponent, parentSuspense, slotScopeIds, isFragment) => {
     hasMismatch = true;
-    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__ && warn$1("Hydration node mismatch:\n- rendered on server:", node, node.nodeType === 3 /* TEXT */ ? "(text)" : isComment(node) && node.data === "[" ? "(start of fragment)" : "", "\n- expected on client:", vnode.type);
     vnode.el = null;
     if (isFragment) {
       var end = locateClosingAnchor(node);
@@ -3758,11 +3742,6 @@ function createHydrationFunctions(rendererInternals) {
   };
   return [hydrate, hydrateNode];
 }
-function initFeatureFlags() {
-  if (typeof __VUE_PROD_HYDRATION_MISMATCH_DETAILS__ !== "boolean") {
-    getGlobalThis().__VUE_PROD_HYDRATION_MISMATCH_DETAILS__ = false;
-  }
-}
 var queuePostRenderEffect = queueEffectWithSuspense;
 function createRenderer(options) {
   return baseCreateRenderer(options);
@@ -3771,9 +3750,6 @@ function createHydrationRenderer(options) {
   return baseCreateRenderer(options, createHydrationFunctions);
 }
 function baseCreateRenderer(options, createHydrationFns) {
-  {
-    initFeatureFlags();
-  }
   var target = getGlobalThis();
   target.__VUE__ = true;
   var {

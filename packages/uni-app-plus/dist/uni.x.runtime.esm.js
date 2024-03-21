@@ -1491,6 +1491,8 @@ var PageScrollToOptions = {
     duration: 300
   }
 };
+var API_START_PULL_DOWN_REFRESH = "startPullDownRefresh";
+var API_STOP_PULL_DOWN_REFRESH = "stopPullDownRefresh";
 var IndexProtocol = {
   index: {
     type: Number,
@@ -2483,39 +2485,6 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   }
   return bodyNode.querySelector("#".concat(id2));
 });
-function queryElementTop(component, selector) {
-  var _component$$el;
-  var scrollNode = (_component$$el = component.$el) === null || _component$$el === void 0 ? void 0 : _component$$el.querySelector(selector);
-  if (scrollNode != null) {
-    return scrollNode.getBoundingClientRect().top;
-  }
-  return null;
-}
-var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
-  var currentPage = getCurrentPage();
-  var scrollViewNode = currentPage === null || currentPage === void 0 ? void 0 : currentPage.$el;
-  if (scrollViewNode == null || scrollViewNode.tagName != "SCROLL-VIEW") {
-    res.reject("selector invalid");
-    return;
-  }
-  var top = options.scrollTop;
-  if (!!options.selector) {
-    top = queryElementTop(currentPage, options.selector);
-    if (top != null) {
-      var currentScrollTop = scrollViewNode.scrollTop;
-      top += currentScrollTop;
-    }
-  }
-  if (top == null || top < 0) {
-    res.reject("top or selector invalid");
-    return;
-  }
-  if (options.offsetTop != null) {
-    top += options.offsetTop;
-  }
-  scrollViewNode.scrollTop = top;
-  res.resolve();
-}, PageScrollToProtocol, PageScrollToOptions);
 function isVueComponent(comp) {
   var has$option = typeof comp.$ === "object";
   var has$nativePage = typeof comp.$nativePage === "object";
@@ -2684,6 +2653,39 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage();
   return new SelectorQueryImpl(instance);
 };
+function queryElementTop(component, selector) {
+  var _component$$el;
+  var scrollNode = (_component$$el = component.$el) === null || _component$$el === void 0 ? void 0 : _component$$el.querySelector(selector);
+  if (scrollNode != null) {
+    return scrollNode.getBoundingClientRect().top;
+  }
+  return null;
+}
+var pageScrollTo = /* @__PURE__ */ defineAsyncApi(API_PAGE_SCROLL_TO, (options, res) => {
+  var currentPage = getCurrentPage();
+  var scrollViewNode = currentPage === null || currentPage === void 0 ? void 0 : currentPage.$el;
+  if (scrollViewNode == null || scrollViewNode.tagName != "SCROLL-VIEW") {
+    res.reject("selector invalid");
+    return;
+  }
+  var top = options.scrollTop;
+  if (!!options.selector) {
+    top = queryElementTop(currentPage, options.selector);
+    if (top != null) {
+      var currentScrollTop = scrollViewNode.scrollTop;
+      top += currentScrollTop;
+    }
+  }
+  if (top == null || top < 0) {
+    res.reject("top or selector invalid");
+    return;
+  }
+  if (options.offsetTop != null) {
+    top += options.offsetTop;
+  }
+  scrollViewNode.scrollTop = top;
+  res.resolve();
+}, PageScrollToProtocol, PageScrollToOptions);
 var SOURCE_REG = /(.+\.((ttf)|(otf)|(woff2?))$)|(^(http|https):\/\/.+)/;
 function removeUrlWrap(source) {
   if (source.startsWith("url(")) {
@@ -2741,6 +2743,26 @@ var loadFontFace = /* @__PURE__ */ defineAsyncApi(API_LOAD_FONT_FACE, (options, 
       page.$nativePage.loadFontFace(_fontInfo);
     }
   }
+});
+var startPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_START_PULL_DOWN_REFRESH, (_options, res) => {
+  var page = getCurrentPage();
+  if (page === null) {
+    res.reject("page is not ready");
+    return;
+  }
+  page.$nativePage.startPullDownRefresh({
+    success: res.resolve,
+    fail: res.reject
+  });
+});
+var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, res) => {
+  var page = getCurrentPage();
+  if (page === null) {
+    res.reject("page is not ready");
+    return;
+  }
+  page.$nativePage.stopPullDownRefresh();
+  res.resolve();
 });
 var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
@@ -3183,6 +3205,8 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   setTabBarStyle,
   showTabBar,
   showTabBarRedDot,
+  startPullDownRefresh,
+  stopPullDownRefresh,
   switchTab
 }, Symbol.toStringTag, { value: "Module" });
 function initGlobalEvent(app) {
