@@ -4341,17 +4341,11 @@ function toHandlers(obj, preserveCaseIfNecessary) {
   return ret;
 }
 
-function isUniBuiltInComponentInstance(p) {
-  return p && p.$options && (p.$options.__reserved || p.$options.rootElement);
-}
 const getPublicInstance = (i) => {
   if (!i)
     return null;
   if (isStatefulComponent(i)) {
     const p = getExposeProxy(i) || i.proxy;
-    if (__X__ && isUniBuiltInComponentInstance(p)) {
-      return getPublicInstance(i.parent);
-    }
     return p;
   }
   return getPublicInstance(i.parent);
@@ -4374,26 +4368,8 @@ const publicPropertiesMap = (
     // fixed by xxxxxx
     $forceUpdate: (i) => i.f || (i.f = () => {
       queueJob(i.update);
-      if (!__X__) {
+      {
         return;
-      }
-      const subTree = i.subTree;
-      if (subTree.shapeFlag & 16) {
-        const vnodes = subTree.children;
-        vnodes.forEach((vnode) => {
-          if (!vnode.component) {
-            return;
-          }
-          const p = getExposeProxy(vnode.component) || vnode.component.proxy;
-          if (isUniBuiltInComponentInstance(p)) {
-            p.$forceUpdate();
-          }
-        });
-      } else if (subTree.component) {
-        const p = getExposeProxy(subTree.component) || subTree.component.proxy;
-        if (isUniBuiltInComponentInstance(p)) {
-          p.$forceUpdate();
-        }
       }
     }),
     $nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
@@ -5898,7 +5874,7 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
   if (isAsyncWrapper(vnode) && !isUnmount) {
     return;
   }
-  const refValue = vnode.shapeFlag & 4 && !(__X__ && vnode.component.type.rootElement) ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
+  const refValue = vnode.shapeFlag & 4 && true ? getExposeProxy(vnode.component) || vnode.component.proxy : vnode.el;
   const value = isUnmount ? null : refValue;
   const { i: owner, r: ref } = rawRef;
   if (!owner) {
