@@ -126,7 +126,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     class: UniScrollViewElement,
   },
   //#endif
-  setup(props, { emit, slots }) {
+  setup(props, { emit, slots, expose }) {
     const rootRef: HTMLRef = ref(null)
     const main: HTMLRef = ref(null)
     const wrap: HTMLRef = ref(null)
@@ -206,6 +206,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       rootElement.attachVmProps(props)
     })
     //#endif
+
+    expose({
+      // 自动化测试需要暴露main从而获取scrollLeft
+      $getMain() {
+        return main.value
+      },
+    })
 
     return () => {
       const {

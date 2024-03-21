@@ -13572,7 +13572,8 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup(props2, {
     emit: emit2,
-    slots
+    slots,
+    expose
   }) {
     const rootRef = ref(null);
     const main = ref(null);
@@ -13637,6 +13638,12 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         }
       });
       rootElement.attachVmProps(props2);
+    });
+    expose({
+      // 自动化测试需要暴露main从而获取scrollLeft
+      $getMain() {
+        return main.value;
+      }
     });
     return () => {
       const {

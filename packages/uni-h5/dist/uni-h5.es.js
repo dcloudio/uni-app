@@ -13333,7 +13333,8 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
-    slots
+    slots,
+    expose
   }) {
     const rootRef = ref(null);
     const main = ref(null);
@@ -13361,6 +13362,12 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         className += " uni-scroll-view-scrollbar-hidden";
       }
       return className;
+    });
+    expose({
+      // 自动化测试需要暴露main从而获取scrollLeft
+      $getMain() {
+        return main.value;
+      }
     });
     return () => {
       const {
