@@ -1,6 +1,7 @@
 html,
 body {
   line-height: 1.2;
+  font-family: -apple-system, HelveticaNeue;
 }
 
 uni-app uni-page-body {
