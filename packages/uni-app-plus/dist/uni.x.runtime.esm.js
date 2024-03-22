@@ -1,4 +1,4 @@
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, computed, onMounted, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
 var _wks = { exports: {} };
@@ -1784,6 +1784,15 @@ function registerPage(_ref, onCreated) {
   nativePage.addPageEventListener(ON_READY, (_) => {
     invokeHook(page, ON_READY);
   });
+  nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+    invokeHook(page, ON_PULL_DOWN_REFRESH);
+  });
+  nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+    invokeHook(page, ON_REACH_BOTTOM);
+  });
+  nativePage.addPageEventListener(ON_RESIZE, (_) => {
+    invokeHook(page, ON_RESIZE);
+  });
   var pageCSSStyle = page.$options.styles;
   if (pageCSSStyle) {
     loadFontFaceByStyles(pageCSSStyle, false);
@@ -3296,8 +3305,7 @@ function initService(app) {
 }
 function initComponentInstance(app) {
   app.mixin({
-    beforeMount() {
-      var _vm$$options$styles;
+    beforeCreate() {
       var vm = this;
       var instance = vm.$;
       if (instance.type.mpType === "app") {
@@ -3305,6 +3313,14 @@ function initComponentInstance(app) {
       }
       var pageId = instance.root.attrs.__pageId;
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+    },
+    beforeMount() {
+      var _vm$$options$styles;
+      var vm = this;
+      var instance = vm.$;
+      if (instance.type.mpType === "app") {
+        return;
+      }
       loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
     }
   });
@@ -3940,7 +3956,6 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
     class: UniRadioElement
   },
   props: radioProps,
-  styles: styleList,
   setup(props, _ref) {
     var {
       slots,

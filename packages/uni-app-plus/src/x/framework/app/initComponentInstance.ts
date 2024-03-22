@@ -4,7 +4,7 @@ import { loadFontFaceByStyles } from '../utils'
 
 export function initComponentInstance(app: App) {
   app.mixin({
-    beforeMount(this: ComponentPublicInstance) {
+    beforeCreate(this: ComponentPublicInstance) {
       const vm = this
       const instance = vm.$
       if ((instance.type as any).mpType === 'app') {
@@ -12,7 +12,13 @@ export function initComponentInstance(app: App) {
       }
       const pageId = instance.root.attrs.__pageId
       vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + '')
-
+    },
+    beforeMount(this: ComponentPublicInstance) {
+      const vm = this
+      const instance = vm.$
+      if ((instance.type as any).mpType === 'app') {
+        return
+      }
       loadFontFaceByStyles(vm.$options.styles ?? [], false)
     },
   })
