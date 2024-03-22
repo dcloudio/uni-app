@@ -7,6 +7,9 @@ import {
   ON_SHOW,
   ON_UNLOAD,
   formatLog,
+  ON_PULL_DOWN_REFRESH,
+  ON_RESIZE,
+  ON_REACH_BOTTOM,
 } from '@dcloudio/uni-shared'
 import {
   initPageInternalInstance,
@@ -128,6 +131,7 @@ export function registerPage(
     {},
     nativePage
   ) as ComponentPublicInstance
+
   nativePage.addPageEventListener(ON_SHOW, (_) => {
     invokeHook(page, ON_SHOW)
   })
@@ -147,6 +151,19 @@ export function registerPage(
   nativePage.addPageEventListener(ON_READY, (_) => {
     invokeHook(page, ON_READY)
   })
+
+  nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+    invokeHook(page, ON_PULL_DOWN_REFRESH)
+  })
+
+  nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+    invokeHook(page, ON_REACH_BOTTOM)
+  })
+
+  nativePage.addPageEventListener(ON_RESIZE, (_) => {
+    invokeHook(page, ON_RESIZE)
+  })
+
   // 加载当前页面字体
   const pageCSSStyle = page.$options.styles as
     | Array<Record<string, any>>
