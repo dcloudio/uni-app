@@ -4350,6 +4350,15 @@ const getPublicInstance = (i) => {
   }
   return getPublicInstance(i.parent);
 };
+const createForceUpdate = (i) => {
+  return function() {
+    i.effect.dirty = true;
+    queueJob(i.update);
+    {
+      return;
+    }
+  };
+};
 const publicPropertiesMap = (
   // Move PURE marker to new line to workaround compiler discarding it
   // due to type annotation
@@ -4366,12 +4375,7 @@ const publicPropertiesMap = (
     $emit: (i) => i.emit,
     $options: (i) => resolveMergedOptions(i) ,
     // fixed by xxxxxx
-    $forceUpdate: (i) => i.f || (i.f = () => {
-      queueJob(i.update);
-      {
-        return;
-      }
-    }),
+    $forceUpdate: (i) => i.f || (i.f = createForceUpdate(i)),
     $nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
     $watch: (i) => instanceWatch.bind(i) 
   })

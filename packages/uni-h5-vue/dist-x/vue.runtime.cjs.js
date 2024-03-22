@@ -4342,7 +4342,7 @@ function toHandlers(obj, preserveCaseIfNecessary) {
 }
 
 function isUniBuiltInComponentInstance(p) {
-  return p && p.$options && (p.$options.__reserved || p.$options.rootElement);
+  return !!(p && p.$options && (p.$options.__reserved || p.$options.rootElement));
 }
 const getPublicInstance = (i) => {
   if (!i)
@@ -4355,6 +4355,37 @@ const getPublicInstance = (i) => {
     return p;
   }
   return getPublicInstance(i.parent);
+};
+function getCompatChildren(instance) {
+  const root = instance.subTree;
+  const children = [];
+  if (root) {
+    walk(root, children);
+  }
+  return children;
+}
+function walk(vnode, children) {
+  if (vnode.component) {
+    children.push(vnode.component);
+  } else if (vnode.shapeFlag & 16) {
+    const vnodes = vnode.children;
+    for (let i = 0; i < vnodes.length; i++) {
+      walk(vnodes[i], children);
+    }
+  }
+}
+const createForceUpdate = (i) => {
+  return function() {
+    i.effect.dirty = true;
+    queueJob(i.update);
+    const children = getCompatChildren(i);
+    children.forEach((child) => {
+      const p = getExposeProxy(child) || child.proxy;
+      if (isUniBuiltInComponentInstance(p)) {
+        p.$forceUpdate();
+      }
+    });
+  };
 };
 const publicPropertiesMap = (
   // Move PURE marker to new line to workaround compiler discarding it
@@ -4372,27 +4403,7 @@ const publicPropertiesMap = (
     $emit: (i) => i.emit,
     $options: (i) => resolveMergedOptions(i) ,
     // fixed by xxxxxx
-    $forceUpdate: (i) => i.f || (i.f = () => {
-      queueJob(i.update);
-      const subTree = i.subTree;
-      if (subTree.shapeFlag & 16) {
-        const vnodes = subTree.children;
-        vnodes.forEach((vnode) => {
-          if (!vnode.component) {
-            return;
-          }
-          const p = getExposeProxy(vnode.component) || vnode.component.proxy;
-          if (isUniBuiltInComponentInstance(p)) {
-            p.$forceUpdate();
-          }
-        });
-      } else if (subTree.component) {
-        const p = getExposeProxy(subTree.component) || subTree.component.proxy;
-        if (isUniBuiltInComponentInstance(p)) {
-          p.$forceUpdate();
-        }
-      }
-    }),
+    $forceUpdate: (i) => i.f || (i.f = createForceUpdate(i)),
     $nextTick: (i) => i.n || (i.n = nextTick.bind(i.proxy)),
     $watch: (i) => instanceWatch.bind(i) 
   })
