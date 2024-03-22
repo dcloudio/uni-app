@@ -8,10 +8,13 @@ import {
   normalizeUniAppXAppConfig,
   normalizeUniAppXAppPagesJson,
   parseManifestJsonOnce,
+  parseVueRequest,
+  removeExt,
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
 import { isPages } from '../utils'
+import { isVue } from '../android/utils'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
@@ -36,18 +39,22 @@ export function uniAppPagesPlugin(): Plugin {
       }
     },
     transform(code, id) {
-      if (isFirst) {
-        if (id.endsWith('.uvue')) {
-          const pagePath = normalizePath(
-            path.relative(process.env.UNI_INPUT_DIR, id)
-          ).replace('.uvue', '')
-          const index = allPagePaths.indexOf(pagePath)
-          if (index > -1) {
+      if (isFirst && allPagePaths.length) {
+        const { filename } = parseVueRequest(id)
+        if (isVue(filename)) {
+          const vueFilename = removeExt(
+            normalizePath(path.relative(process.env.UNI_INPUT_DIR, filename))
+          )
+          // 项目内的
+          if (!vueFilename.startsWith('.')) {
+            // const index = allPagePaths.indexOf(pagePath)
+            // if (index > -1) {
             console.log(
-              `当前工程${allPagePaths.length}个页面，正在编译${pagePath}...${
+              `当前工程${allPagePaths.length}个页面，正在编译${vueFilename}...${
                 runByHBuilderX() ? '\u200b' : '\r'
               }`
             )
+            // }
           }
         }
       }
