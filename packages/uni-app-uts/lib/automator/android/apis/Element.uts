@@ -226,10 +226,10 @@ export const callFunction = (
         break
       case 'scroll-view.scrollTo':
         if (element.tagName == 'SCROLL-VIEW') {
-          // @ts-ignore
-          const arg = JSON.parse<Coordinate>(JSON.stringify(params.args[0]))!
-          element.scrollLeft = arg.x
-          element.scrollTop = arg.y
+          const x: number = params.args[0] as number
+          const y: number = params.args[1] as number
+          element.scrollLeft = x
+          element.scrollTop = y
           callback({ result: `${functionName} success` }, null)
         } else {
           callback(null, {
