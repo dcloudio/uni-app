@@ -19,7 +19,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     class: UniRadioElement,
   },
   props: radioProps,
-  styles: styleList,
   setup(props, { slots, expose }) {
     const uniRadioElementRef = ref<UniRadioElement>()
 
