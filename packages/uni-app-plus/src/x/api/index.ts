@@ -27,6 +27,7 @@ export { pageScrollTo } from './ui/pageScrollTo'
 export { loadFontFace } from './ui/loadFontFace'
 export { startPullDownRefresh } from './ui/startPullDownRefresh'
 export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
+export { setEnablePullDownRefresh } from './ui/setEnablePullDownRefresh'
 
 // base
 export { $emit, $off, $on, $once } from './base/event-bus'
