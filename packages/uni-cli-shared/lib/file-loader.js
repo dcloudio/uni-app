@@ -1,16 +1,35 @@
 const path = require('path')
+const webpack = require('webpack')
 const {
-  normalizeNodeModules
+  normalizePath
+  // normalizeNodeModules
 } = require('./util')
+
+let inputDir
 
 module.exports = {
   loader: 'file-loader',
   options: {
-    publicPath (url, resourcePath, context) {
-      return '/' + normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
-    },
-    outputPath (url, resourcePath, context) {
-      return normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
+    name (resourcePath, resourceQuery) {
+      if (!inputDir) {
+        inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+      }
+      resourcePath = normalizePath(resourcePath)
+      if (resourcePath.startsWith(inputDir)) {
+        const relativePath = normalizePath(path.relative(inputDir,
+          resourcePath))
+        if (relativePath.startsWith('static/') || relativePath.includes(
+          '/static/')) {
+          return relativePath
+        }
+      }
+      return `assets/[name].[hash:8]${webpack.version[0] > 4 ? '' : '.'}[ext]`
     }
+    // publicPath (url, resourcePath, context) {
+    //   return '/' + normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
+    // },
+    // outputPath (url, resourcePath, context) {
+    //   return normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, resourcePath))
+    // }
   }
 }

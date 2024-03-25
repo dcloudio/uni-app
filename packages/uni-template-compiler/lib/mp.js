@@ -120,6 +120,19 @@ const tags = {
     'page-container',
     'page-meta',
     'lottie'
+  ],
+  // 抖音小程序平台独有组件
+  'mp-toutiao': [
+    'aweme-data',
+    'consume-card',
+    'pay-button',
+    'rate-button',
+    'member-button',
+    'confirm-receipt-button',
+    'live-preview',
+    'aweme-live-book',
+    'aweme-user-card',
+    'rtc-room'
   ]
 }
 

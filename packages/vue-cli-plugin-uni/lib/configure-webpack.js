@@ -94,15 +94,27 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
 
   const tsLoaderOptions = require('./util').getTsLoadOptions()
 
-  function updateTsLoader (rawRules, fakeFile, loader) {
+  function updateTsLoader (rawRules, fakeFile, loader, appendUTS = false) {
     const matchRule = rawRules.find(createMatcher(fakeFile))
     if (matchRule && matchRule.use) {
       if (isInHBuilderX) {
         matchRule.use.forEach(matchUse => {
           if (matchUse.loader.includes('ts-loader')) {
             Object.assign(matchUse.options, tsLoaderOptions)
+            if (appendUTS) {
+              if (!Array.isArray(matchUse.options.appendTsSuffixTo)) {
+                matchUse.options.appendTsSuffixTo = [matchUse.options.appendTsSuffixTo]
+              }
+              matchUse.options.appendTsSuffixTo.push(/\.uts$/)
+            }
           }
         })
+      }
+      if (appendUTS) {
+        if (!Array.isArray(matchRule.test)) {
+          matchRule.test = [matchRule.test]
+        }
+        matchRule.test.push(/\.uts$/)
       }
       matchRule.use.push(loader)
     }
@@ -160,7 +172,7 @@ module.exports = function configureWebpack (platformOptions, manifestPlatformOpt
     updateTsLoader(rawRules, 'foo.ts', {
       loader: resolve('packages/webpack-preprocess-loader'),
       options: jsPreprocessOptions
-    })
+    }, true)
     updateTsLoader(rawRules, 'foo.tsx', {
       loader: resolve('packages/webpack-preprocess-loader'),
       options: jsPreprocessOptions

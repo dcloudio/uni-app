@@ -387,10 +387,29 @@ export default {
       success,
       fail,
       complete,
+      confirmTitle,
+      confirmContent,
       needConfirm = true,
       needLoading = true,
       loadingTitle = ''
     } = {}) {
+      if (!needConfirm) {
+        this._doUpdate(id, value, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
+        return
+      }
+      uni.showModal({
+        title: confirmTitle || t('uniCloud.component.update.showModal.title'),
+        content: confirmContent || t('uniCloud.component.update.showModal.content'),
+        showCancel: true,
+        success: (res) => {
+          if (!res.confirm) {
+            return
+          }
+          this._doUpdate(id, value, action, success, fail, complete, needConfirm, needLoading, loadingTitle)
+        }
+      })
+    },
+    _doUpdate (id, value, action, success, fail, complete, needConfirm, needLoading, loadingTitle) {
       if (needLoading) {
         uni.showLoading({
           title: loadingTitle
@@ -402,7 +421,7 @@ export default {
         db = db.action(action)
       }
 
-      return db.collection(this.getMainCollection()).doc(id).update(value).then((res) => {
+      db.collection(this.getMainCollection()).doc(id).update(value).then((res) => {
         success && success(res)
         if (showToast) {
           uni.showToast({

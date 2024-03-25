@@ -37,7 +37,10 @@
         :disabled="disabled"
         :maxlength="maxlengthNumber"
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
-        :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
+        :style="{
+          'overflow-y': autoHeight ? 'hidden' : 'auto',
+          ...(cursorColor && { caretColor: cursorColor })
+        }"
         :enterkeyhint="confirmType"
         :inputmode="inputmode"
         class="uni-textarea-textarea"
@@ -61,7 +64,10 @@
         :readonly="disabled"
         :maxlength="maxlengthNumber"
         :class="{ 'uni-textarea-textarea-fix-margin': fixMargin }"
-        :style="{ 'overflow-y': autoHeight ? 'hidden' : 'auto' }"
+        :style="{
+          'overflow-y': autoHeight ? 'hidden' : 'auto',
+          ...(cursorColor && { caretColor: cursorColor })
+        }"
         class="uni-textarea-textarea"
         @focus="($event) => $event.target.blur()"
       />
@@ -120,6 +126,10 @@ export default {
       validator (value) {
         return !!~INPUT_MODES.indexOf(value)
       }
+    },
+    cursorColor: {
+      type: String,
+      default: ''
     }
   },
   data () {

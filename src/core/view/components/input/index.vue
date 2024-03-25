@@ -25,6 +25,7 @@
         :enterkeyhint="confirmType"
         :pattern="type === 'number' ? '[0-9]*' : null"
         class="uni-input-input"
+        :style="cursorColor ? { caretColor: cursorColor } : {}"
         :autocomplete="autocomplete"
         :inputmode="inputmode"
         @change.stop
@@ -47,6 +48,7 @@
         :maxlength="maxlength"
         :step="_step"
         class="uni-input-input"
+        :style="cursorColor ? { caretColor: cursorColor } : {}"
         @focus="($event) => $event.target.blur()"
       >
     </div>
@@ -115,6 +117,10 @@ export default {
       validator (value) {
         return !!~INPUT_MODES.indexOf(value)
       }
+    },
+    cursorColor: {
+      type: String,
+      default: ''
     }
   },
   data () {

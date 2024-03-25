@@ -449,7 +449,7 @@ export default {
         type: data.a4,
         display_type: data.a5,
         container_id: id,
-        count: 1
+        count: data.a6 || 1
       })
       coral.ready().then(async (res) => {
         if (res.ret === 0) {

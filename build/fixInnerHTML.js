@@ -11,7 +11,7 @@ module.exports = function () {
     const fileContent = fs.readFileSync(filePath, {
       encoding: 'utf8'
     })
-    fs.writeFileSync(filePath, fileContent.replace(/\.innerHTML\b/g, '["inner"+"HTML"]'), {
+    fs.writeFileSync(filePath, fileContent.replace(/\.innerHTML\b/g, '[["inner", "HTML"].join("")]'), {
       encoding: 'utf8'
     })
   })

@@ -29,7 +29,7 @@ module.exports = {
       'custom-tab-bar'
     ]
     const workers = platformOptions.workers
-    workers && copyOptions.push(workers)
+    workers && copyOptions.push(typeof workers === 'object' ? workers.path : workers)
 
     const wxcomponentsDir = path.resolve(process.env.UNI_INPUT_DIR, COMPONENTS_DIR_NAME)
     const ignore = ['**/*.vue', '**/*.css'] // v3 会自动转换生成vue,css文件，需要过滤

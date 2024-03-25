@@ -35,8 +35,11 @@ module.exports = {
   loader: 'url-loader',
   options () {
     if (process.env.UNI_PLATFORM === 'h5') {
-      // h5平台，不对 url-loader 作调整，默认limit:4096，也不修改file-loader输出路径
-      return {}
+      // h5平台，不对 url-loader 作调整，默认limit:4096，也不修改file-loader输出路径（已做处理）
+      return {
+        ...defaultOptions,
+        limit: 4096
+      }
     }
     if (inlineLimit) {
       return {

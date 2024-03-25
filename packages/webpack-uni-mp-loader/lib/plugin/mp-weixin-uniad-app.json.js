@@ -1,11 +1,11 @@
 const UNI_PLUGINS = [{
   name: 'uni-ad',
-  version: '1.1.11',
+  version: '1.2.1',
   provider: 'wxf72d316417b6767f'
 },
 {
   name: 'coral-adv',
-  version: '1.0.18',
+  version: '1.0.24',
   provider: 'wx0e203209e27b1e66'
 }
 ]

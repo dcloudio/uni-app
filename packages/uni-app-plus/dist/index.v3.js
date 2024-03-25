@@ -297,7 +297,8 @@ var serviceContext = (function () {
     'getPushClientId',
     'onPushMessage',
     'offPushMessage',
-    'createPushMessage'
+    'createPushMessage',
+    'getChannelManager'
   ];
 
   const apis = [
@@ -10118,6 +10119,12 @@ var serviceContext = (function () {
     });
   }
 
+  let channelManager;
+
+  function getChannelManager () {
+    return channelManager || (channelManager = plus.push.getChannelManager())
+  }
+
   function requireNativePlugin$1 (name) {
     return weex.requireModule(name)
   }
@@ -10561,7 +10568,9 @@ var serviceContext = (function () {
   }
   function getProxy() {
       if (!proxy) {
-          proxy = uni.requireNativePlugin('UTS-Proxy');
+          {
+              proxy = uni.requireNativePlugin('UTS-Proxy');
+          }
       }
       return proxy;
   }
@@ -10682,7 +10691,7 @@ var serviceContext = (function () {
   }
   function initUTSStaticMethod(async, opts) {
       if (opts.main && !opts.method) {
-          if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+          if (isUTSiOS()) {
               opts.method = 's_' + opts.name;
           }
       }
@@ -10690,7 +10699,7 @@ var serviceContext = (function () {
   }
   const initUTSProxyFunction = initUTSStaticMethod;
   function parseClassMethodName(name, methods) {
-      if (hasOwn(methods, name + 'ByJs')) {
+      if (typeof name === 'string' && hasOwn(methods, name + 'ByJs')) {
           return name + 'ByJs';
       }
       return name;
@@ -10725,13 +10734,14 @@ var serviceContext = (function () {
           staticProps = options.staticProps;
       }
       // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
-      if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+      if (isUTSiOS()) {
           if (constructorParams.find((p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0)) {
               constructorParams.push({ name: '_byJs', type: 'boolean' });
           }
       }
       const ProxyClass = class UTSClass {
           constructor(...params) {
+              this.__instanceId = 0;
               if (errMsg) {
                   throw new Error(errMsg);
               }
@@ -10739,13 +10749,21 @@ var serviceContext = (function () {
               // 初始化实例 ID
               if (!isProxyInterface) {
                   // 初始化未指定时，每次都要创建instanceId
-                  instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                  this.__instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
               }
-              if (!instanceId) {
+              else if (typeof instanceId === 'number') {
+                  this.__instanceId = instanceId;
+              }
+              if (!this.__instanceId) {
                   throw new Error(`new ${cls} is failed`);
               }
-              const proxy = new Proxy(this, {
+              const instance = this;
+              const proxy = new Proxy(instance, {
                   get(_, name) {
+                      // 重要：禁止响应式
+                      if (name === '__v_skip') {
+                          return true;
+                      }
                       if (!target[name]) {
                           //实例方法
                           name = parseClassMethodName(name, methods);
@@ -10755,14 +10773,14 @@ var serviceContext = (function () {
                                   name,
                                   params,
                                   return: returnOptions,
-                              }, baseOptions), instanceId, proxy);
+                              }, baseOptions), instance.__instanceId, proxy);
                           }
                           else if (props.includes(name)) {
                               // 实例属性
                               return invokePropGetter({
                                   moduleName,
                                   moduleType,
-                                  id: instanceId,
+                                  id: instance.__instanceId,
                                   name: name,
                                   errMsg,
                               });
@@ -10794,32 +10812,29 @@ var serviceContext = (function () {
           },
       });
   }
+  function isUTSAndroid() {
+      return typeof plus !== 'undefined' && plus.os.name === 'Android';
+  }
+  function isUTSiOS() {
+      return !isUTSAndroid();
+  }
   function initUTSPackageName(name, is_uni_modules) {
-      if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+      if (isUTSAndroid()) {
           return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
       }
       return '';
   }
   function initUTSIndexClassName(moduleName, is_uni_modules) {
-      if (typeof plus === 'undefined') {
-          return '';
-      }
-      return initUTSClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+      return initUTSClassName(moduleName, isUTSAndroid() ? 'IndexKt' : 'IndexSwift', is_uni_modules);
   }
   function initUTSClassName(moduleName, className, is_uni_modules) {
-      if (typeof plus === 'undefined') {
-          return '';
-      }
-      if (plus.os.name === 'Android') {
+      if (isUTSAndroid()) {
           return className;
       }
-      if (plus.os.name === 'iOS') {
-          return ('UTSSDK' +
-              (is_uni_modules ? 'Modules' : '') +
-              capitalize(moduleName) +
-              capitalize(className));
-      }
-      return '';
+      return ('UTSSDK' +
+          (is_uni_modules ? 'Modules' : '') +
+          capitalize(moduleName) +
+          capitalize(className));
   }
   const interfaceDefines = {};
   function registerUTSInterface(name, define) {
@@ -12941,6 +12956,7 @@ var serviceContext = (function () {
     onPush: onPush,
     offPush: offPush,
     createPushMessage: createPushMessage,
+    getChannelManager: getChannelManager,
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
