@@ -14,6 +14,7 @@ import {
   MANIFEST_JSON_JS,
   checkPagesJson,
   createRollupError,
+  preUVueJson,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR } from '../utils'
 
@@ -30,7 +31,7 @@ export function uniPagesJsonPlugin(): Plugin {
             // 调整换行符，确保 parseTree 的loc正确
             code = code.replace(/\r\n/g, '\n')
             try {
-              checkPagesJson(code, process.env.UNI_INPUT_DIR)
+              checkPagesJson(preUVueJson(code), process.env.UNI_INPUT_DIR)
             } catch (err: any) {
               if (err.loc) {
                 const error = createRollupError(
@@ -292,8 +293,11 @@ function generateConfig(
   delete pagesJson.subPackages
   delete pagesJson.subpackages
   pagesJson.compilerVersion = process.env.UNI_COMPILER_VERSION
-  const vueType = process.env.UNI_APP_X === 'true' ? 'uvue' : 'nvue'
-  return `${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
+  const isX = process.env.UNI_APP_X === 'true'
+  const vueType = isX ? 'uvue' : 'nvue'
+
+  return `${isX ? `${globalName}.__uniX = true` : ''}
+  ${globalName}.__uniConfig=extend(${JSON.stringify(pagesJson)},{
   appId,
   appName,
   appVersion,

@@ -11,7 +11,7 @@ type LazyElementFn = (
   context: {
     isMiniProgramComponent(
       name: string
-    ): 'plugin' | 'component' | 'dynamicLib' | undefined
+    ): 'plugin' | 'component' | 'dynamicLib' | 'ext' | undefined
   }
 ) =>
   | {

@@ -9,10 +9,16 @@ const { preprocess } = require('../../lib/preprocess')
 export { initPreContext } from './context'
 
 export function preJs(jsCode: string) {
+  if (process.env.UNI_APP_X === 'true') {
+    return preUVueJs(jsCode)
+  }
   return preprocess(jsCode, getPreVueContext(), { type: 'js' })
 }
 
 export function preHtml(htmlCode: string) {
+  if (process.env.UNI_APP_X === 'true') {
+    return preUVueHtml(htmlCode)
+  }
   return preprocess(htmlCode, getPreVueContext(), { type: 'html' })
 }
 

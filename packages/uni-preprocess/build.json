@@ -1,0 +1,12 @@
+[
+  {
+    "input": {
+      "src/index.ts": ["dist/index.cjs.js"]
+    }
+  },
+  {
+    "input": {
+      "src/index.ts": ["dist/index.es.js"]
+    }
+  }
+]

@@ -916,7 +916,11 @@ var Debug;
     return true;
   }
   function fail(message, stackCrawlMark) {
+    var _a;
     debugger;
+    if ((_a = globalThis.__utsHacker__) == null ? void 0 : _a.ignoreAllDebugFail) {
+      return;
+    }
     const e = new Error(message ? `Debug Failure. ${message}` : "Debug Failure.");
     if (Error.captureStackTrace) {
       Error.captureStackTrace(e, stackCrawlMark || fail);
@@ -28175,7 +28179,13 @@ function tryFile(fileName, onlyRecordFailures, state) {
   return forEach(state.compilerOptions.moduleSuffixes, (suffix) => tryFileLookup(fileNameNoExtension + suffix + ext, onlyRecordFailures, state));
 }
 function tryFileLookup(fileName, onlyRecordFailures, state) {
-  var _a;
+  var _a, _b, _c;
+  if ((_a = globalThis.__utsHacker__) == null ? void 0 : _a.tryFileLookup) {
+    const result = (_b = globalThis.__utsHacker__) == null ? void 0 : _b.tryFileLookup(fileName);
+    if (result) {
+      return result;
+    }
+  }
   if (!onlyRecordFailures) {
     if (state.host.fileExists(fileName)) {
       if (state.traceEnabled) {
@@ -28188,7 +28198,7 @@ function tryFileLookup(fileName, onlyRecordFailures, state) {
       }
     }
   }
-  (_a = state.failedLookupLocations) == null ? void 0 : _a.push(fileName);
+  (_c = state.failedLookupLocations) == null ? void 0 : _c.push(fileName);
   return void 0;
 }
 function loadNodeModuleFromDirectory(extensions, candidate, onlyRecordFailures, state, considerPackageJson = true) {

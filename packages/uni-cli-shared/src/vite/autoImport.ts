@@ -20,6 +20,8 @@ const uniPreset = {
     'onLastPageBackPress',
     'onExit',
     // Page
+    'onPageShow',
+    'onPageHide',
     'onLoad',
     'onReady',
     'onUnload',
@@ -29,6 +31,52 @@ const uniPreset = {
     'onTabItemTap',
     'onReachBottom',
     'onPullDownRefresh',
+    // 辅助
+    'renderComponentSlot',
+  ],
+}
+const uniH5Preset = {
+  from: '@dcloudio/uni-h5',
+  imports: [
+    'UniElement',
+    'UniElementImpl',
+    'UniButtonElement',
+    'UniCanvasElement',
+    'UniCheckboxElement',
+    'UniCheckboxGroupElement',
+    'UniEditorElement',
+    'UniFormElement',
+    'UniIconElement',
+    'UniImageElement',
+    'UniInputElement',
+    'UniLabelElement',
+    'UniMovableAreaElement',
+    'UniMovableViewElement',
+    'UniNavigatorElement',
+    'UniPickerViewElement',
+    'UniPickerViewColumnElement',
+    'UniProgressElement',
+    'UniRadioElement',
+    'UniRadioGroupElement',
+    'UniRichTextElement',
+    'UniScrollViewElement',
+    'UniSliderElement',
+    'UniSwiperElement',
+    'UniSwiperItemElement',
+    'UniSwitchElement',
+    'UniTextElement',
+    'UniTextareaElement',
+    'UniViewElement',
+    'UniListViewElement',
+    'UniListItemElement',
+    'UniStickySectionElement',
+    'UniStickyHeaderElement',
+    'UniVideoElement',
+    'UniWebViewElement',
+    'UniMapElement',
+    'UniCoverViewElement',
+    'UniCoverImageElement',
+    'UniPickerElement',
   ],
 }
 const cloudPreset = {
@@ -103,12 +151,17 @@ export function initAutoImportOptions(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   { imports = [], ...userOptions }: AutoImportOptions
 ): AutoImportOptions {
+  const autoImport = [uniPreset, cloudPreset, vuePreset]
+  if (platform === 'web') {
+    autoImport.push(uniH5Preset)
+  }
   return {
     ...userOptions,
-    include: [/\.[u]?ts$/, /\.[u]?vue$/, /\.[u]?vue\?vue/],
+    include: [/\.[u]?ts$/, /\.[u]?vue/],
+    exclude: [/[\\/]\.git[\\/]/],
     imports: (imports as any[]).concat(
       // app-android 平台暂不注入其他
-      platform === 'app-android' ? [] : [uniPreset, cloudPreset, vuePreset]
+      platform === 'app-android' ? [] : autoImport
     ),
     dts: false,
   }

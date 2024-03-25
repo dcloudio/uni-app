@@ -77,6 +77,7 @@ export function resolvePackage(filename: string) {
 }
 
 export interface UTSPlatformResourceOptions {
+  isX: boolean
   inputDir: string
   outputDir: string
   platform: typeof process.env.UNI_UTS_PLATFORM
@@ -85,6 +86,7 @@ export interface UTSPlatformResourceOptions {
   package: string
   hookClass: string
   result: UTSResult
+  provider?: { name: string; service: string; class: string }
 }
 export function genUTSPlatformResource(
   filename: string,
@@ -108,11 +110,14 @@ export function genUTSPlatformResource(
   }
 
   copyConfigJson(
+    platform,
+    options.isX,
     utsInputDir,
     utsOutputDir,
     options.hookClass,
     options.components,
-    options.package
+    options.package,
+    options.provider
   )
 
   // 生产模式下，需要将生成的平台文件转移到 src 下
@@ -253,22 +258,26 @@ export function getCompilerServer<T extends CompilerServer>(
     console.error(`HBuilderX is not found`)
     return
   }
+  const isAndroid = pluginName === 'uniapp-runextension'
   const compilerServerPath = path.resolve(
     process.env.UNI_HBUILDERX_PLUGINS,
-    `${pluginName}/out/${
-      pluginName === 'uniapp-runextension' ? 'main.js' : 'external.js'
-    }`
+    `${pluginName}/out/${isAndroid ? 'main.js' : 'external.js'}`
   )
-  if (fs.existsSync(compilerServerPath)) {
+  const installed = isAndroid
+    ? fs.existsSync(compilerServerPath) &&
+      fs.existsSync(
+        path.resolve(
+          process.env.UNI_HBUILDERX_PLUGINS,
+          `uts-development-android/out/external.js`
+        )
+      )
+    : fs.existsSync(compilerServerPath)
+  if (installed) {
     // eslint-disable-next-line no-restricted-globals
     return require(compilerServerPath)
   } else {
     if (runByHBuilderX()) {
-      installHBuilderXPlugin(
-        pluginName === 'uniapp-runextension'
-          ? 'uts-development-android'
-          : pluginName
-      )
+      installHBuilderXPlugin(isAndroid ? 'uts-development-android' : pluginName)
     } else {
       console.error(compilerServerPath + ' is not found')
     }
@@ -350,14 +359,16 @@ export function genComponentsCode(
 
 export function genConfigJson(
   platform: 'app-android' | 'app-ios',
+  isX: boolean,
   hookClass: string,
   components: Record<string, string>,
   pluginRelativeDir: string,
   is_uni_modules: boolean,
   inputDir: string,
-  outputDir: string
+  outputDir: string,
+  provider?: { name: string; service: string; class: string }
 ) {
-  if (!Object.keys(components).length && !hookClass) {
+  if (!Object.keys(components).length && !hookClass && !provider) {
     return
   }
   const pluginId = basename(pluginRelativeDir)
@@ -374,37 +385,52 @@ export function genConfigJson(
     platform
   )
   copyConfigJson(
+    platform,
+    isX,
     utsInputDir,
     utsOutputDir,
     hookClass,
     components,
     platform === 'app-android'
       ? parseKotlinPackageWithPluginId(pluginId, is_uni_modules) + '.'
-      : parseSwiftPackageWithPluginId(pluginId, is_uni_modules)
+      : parseSwiftPackageWithPluginId(pluginId, is_uni_modules),
+    provider
   )
 }
 
 function copyConfigJson(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  isX: boolean,
   inputDir: string,
   outputDir: string,
   hookClass: string,
   componentsObj: Record<string, string>,
-  namespace: string
+  namespace: string,
+  provider?: { name: string; service: string; class: string }
 ) {
   const configJsonFilename = resolve(inputDir, 'config.json')
   const outputConfigJsonFilename = resolve(outputDir, 'config.json')
   const hasComponents = !!Object.keys(componentsObj).length
   const hasHookClass = !!hookClass
-  if (hasComponents || hasHookClass) {
+  const hasProvider = !!provider
+  if (hasComponents || hasHookClass || hasProvider) {
     const configJson: Record<string, any> = fs.existsSync(configJsonFilename)
       ? parseJson(fs.readFileSync(configJsonFilename, 'utf8'))
       : {}
     //存在组件
     if (hasComponents) {
-      configJson.components = genComponentsConfigJson(componentsObj, namespace)
+      configJson.components = genComponentsConfigJson(
+        platform,
+        isX,
+        componentsObj,
+        namespace
+      )
     }
     if (hasHookClass) {
       configJson.hooksClass = hookClass
+    }
+    if (hasProvider) {
+      configJson.provider = provider
     }
     fs.outputFileSync(
       outputConfigJsonFilename,
@@ -418,15 +444,22 @@ function copyConfigJson(
 }
 
 function genComponentsConfigJson(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  isX: boolean,
   components: Record<string, string>,
   namespace: string
 ) {
-  const res: { name: string; class: string }[] = []
+  const res: { name: string; class: string; delegateClass?: string }[] = []
   Object.keys(components).forEach((name) => {
-    res.push({
+    const normalized = capitalize(camelize(name))
+    const options: typeof res[0] = {
       name,
-      class: namespace + capitalize(camelize(name)) + 'Component',
-    })
+      class: namespace + normalized + 'Component',
+    }
+    if (isX && platform === 'app-ios') {
+      options['delegateClass'] = normalized + 'ElementImpl'
+    }
+    res.push(options)
   })
   return res
 }
@@ -535,6 +568,35 @@ export function normalizeExtApiDefaultParameters(json: Record<string, any>) {
   return res
 }
 
+export function parseInjectModules(
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]>,
+  extApiComponents: string[]
+) {
+  const modules = new Set<string>()
+  const extApiModules = parseExtApiModules()
+  inject_apis.forEach((api) => {
+    if (api.startsWith('uniCloud.')) {
+      modules.add('uni-cloud-client')
+    } else {
+      if (
+        extApiModules[api] &&
+        // 非本地
+        !hasOwn(localExtApis, api.replace('uni.', ''))
+      ) {
+        modules.add(extApiModules[api])
+      }
+    }
+  })
+  extApiComponents.forEach((component) => {
+    const name = 'component.' + component
+    if (extApiModules[name]) {
+      modules.add(extApiModules[name])
+    }
+  })
+  return [...modules]
+}
+
 export function parseExtApiModules() {
   return normalizeExtApiModules(require('../lib/ext-api/modules.json'))
 }
@@ -584,4 +646,32 @@ export function normalizeExtApiModules(json: Record<string, any>) {
     }
   })
   return res
+}
+
+export function resolveConfigProvider(
+  platform: 'app-android' | 'app-ios',
+  plugin: string,
+  transform: UTSOutputOptions['transform']
+) {
+  if (transform?.uniExtApiProviderName && transform?.uniExtApiProviderService) {
+    return {
+      name: transform.uniExtApiProviderName,
+      service: transform.uniExtApiProviderService,
+      class:
+        (platform === 'app-android'
+          ? parseKotlinPackageWithPluginId(plugin, true)
+          : parseSwiftPackageWithPluginId(plugin, true)) +
+        '.' +
+        formatExtApiProviderName(
+          transform.uniExtApiProviderService,
+          transform.uniExtApiProviderName
+        ),
+    }
+  }
+}
+
+function formatExtApiProviderName(service: string, name: string) {
+  return `UniExtApi${capitalize(camelize(service))}${capitalize(
+    camelize(name)
+  )}Provider`
 }

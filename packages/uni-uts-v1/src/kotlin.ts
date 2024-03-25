@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import path, { join } from 'path'
 import AdmZip from 'adm-zip'
 import { sync } from 'fast-glob'
-import { isArray } from '@vue/shared'
+import { hasOwn, isArray } from '@vue/shared'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
@@ -29,6 +29,8 @@ import {
   resolveSourceMapFile,
   isUniCloudSupported,
   parseExtApiDefaultParameters,
+  parseInjectModules,
+  resolveConfigProvider,
 } from './utils'
 import { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -76,10 +78,23 @@ function parseKotlinPackage(filename: string) {
   }
 }
 
+const pluginInjectApis = new Set<string>()
+
+function addInjectApis(apis: string[]) {
+  apis.forEach((api) => {
+    pluginInjectApis.add(api)
+  })
+}
+
+export function getInjectApis() {
+  return [...pluginInjectApis]
+}
+
 export async function runKotlinProd(
   filename: string,
   components: Record<string, string>,
   {
+    pluginId,
     isPlugin,
     isX,
     isSingleThread,
@@ -88,6 +103,7 @@ export async function runKotlinProd(
     transform,
     sourceMap,
   }: {
+    pluginId: string
     isPlugin: boolean
     isX: boolean
     isSingleThread: boolean
@@ -120,7 +136,17 @@ export async function runKotlinProd(
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
   }
+
+  if (result.inject_apis && result.inject_apis.length) {
+    if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
+      updateManifestModules(inputDir, result.inject_apis)
+    } else {
+      addInjectApis(result.inject_apis)
+    }
+  }
+
   genUTSPlatformResource(filename, {
+    isX,
     inputDir,
     outputDir,
     platform: 'app-android',
@@ -129,7 +155,40 @@ export async function runKotlinProd(
     package: parseKotlinPackage(filename).package + '.',
     hookClass,
     result,
+    provider: resolveConfigProvider('app-android', pluginId, transform),
   })
+
+  return result
+}
+
+function updateManifestModules(inputDir: string, inject_apis: string[]) {
+  const filename = path.resolve(inputDir, 'manifest.json')
+  if (fs.existsSync(filename)) {
+    const content = fs.readFileSync(filename, 'utf8')
+    try {
+      const json = JSON.parse(content)
+      if (!json.app) {
+        json.app = {}
+      }
+      if (!json.app.distribute) {
+        json.app.distribute = {}
+      }
+      if (!json.app.distribute.modules) {
+        json.app.distribute.modules = {}
+      }
+      const modules = json.app.distribute.modules
+      let updated = false
+      parseInjectModules(inject_apis, {}, []).forEach((name) => {
+        if (!hasOwn(modules, name)) {
+          modules[name] = {}
+          updated = true
+        }
+      })
+      if (updated) {
+        fs.outputFileSync(filename, JSON.stringify(json, null, 2))
+      }
+    } catch (e) {}
+  }
 }
 
 export type RunKotlinDevResult = UTSResult & {
@@ -200,6 +259,7 @@ export async function runKotlinDev(
   result.changed = []
 
   const kotlinFile = resolveUTSPlatformFile(filename, {
+    isX,
     inputDir,
     outputDir,
     platform: 'app-android',
@@ -214,7 +274,7 @@ export async function runKotlinDev(
       'uniapp-runextension'
     )
     if (!compilerServer) {
-      throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
+      throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
     }
     const {
       getDefaultJar,
@@ -244,6 +304,16 @@ export async function runKotlinDev(
         path.resolve(path.dirname(kotlinFile), chunk)
       ) || []
     )
+
+    const uniModuleDeps: string[] = []
+    if (transform?.uniExtApiProviderServicePlugin) {
+      uniModuleDeps.push(
+        ...getUniModulesCacheJarsByPlugin(
+          cacheDir,
+          transform.uniExtApiProviderServicePlugin
+        )
+      )
+    }
     const options = {
       pageCount: 0,
       kotlinc: resolveKotlincArgs(
@@ -254,6 +324,7 @@ export async function runKotlinDev(
           .concat(resolveLibs(filename))
           .concat(deps)
           .concat(resDeps)
+          .concat(uniModuleDeps)
         // .concat(getUniModulesCacheJars(cacheDir))
         // .concat(getUniModulesJars(outputDir))
       ),
@@ -411,7 +482,6 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uts.UTSAndroid',
   'io.dcloud.uts.*',
   'io.dcloud.uniapp.*',
-  'io.dcloud.uniapp.extapi.*',
 ]
 
 const DEFAULT_IMPORTS_X = [
@@ -447,6 +517,18 @@ export async function compile(
   }
   if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
     imports.push('io.dcloud.unicloud.*')
+  }
+  // 本地 provider
+  if (transform?.uniExtApiProviderServicePlugin) {
+    imports.push(
+      parseKotlinPackageWithPluginId(
+        transform.uniExtApiProviderServicePlugin,
+        true
+      ) + '.*'
+    )
+  } else {
+    // 本地 provider 的时候，不要引入 io.dcloud.uniapp.extapi.*，因为里边包含了相同的类型定义
+    imports.push('io.dcloud.uniapp.extapi.*')
   }
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
@@ -498,9 +580,11 @@ export async function compile(
       },
     },
   }
+  // console.log('bundle options', options)
   const result = await bundle(UTSTarget.KOTLIN, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {
+      isX,
       inputDir,
       outputDir,
       platform: 'app-android',
@@ -532,6 +616,8 @@ export function resolveKotlincArgs(
     )}`,
     '-P',
     'plugin:io.dcloud.uts.kotlin:tag=UTS',
+    '-P',
+    'plugin:io.dcloud.uts.kotlin:console=true',
   ]
 }
 
@@ -627,6 +713,16 @@ export function checkAndroidVersionTips(
 export function getUniModulesEncryptCacheJars(cacheDir: string) {
   if (cacheDir) {
     return sync('uni_modules/*/*.jar', {
+      cwd: cacheDir,
+      absolute: true,
+    })
+  }
+  return []
+}
+
+function getUniModulesCacheJarsByPlugin(cacheDir: string, plugin: string) {
+  if (cacheDir) {
+    return sync('app-android/uts/uni_modules/' + plugin + '/index.jar', {
       cwd: cacheDir,
       absolute: true,
     })

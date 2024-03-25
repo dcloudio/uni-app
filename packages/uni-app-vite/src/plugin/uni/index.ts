@@ -12,15 +12,15 @@ import {
   transformMatchMedia,
   transformTapToClick,
   UniViteCopyPluginOptions,
+  matchUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 
 import { initNVueNodeTransforms } from '../../nvue'
 import { initNVueDirectiveTransforms } from '../../nvue/plugin'
-import { isUTSComponent } from '../../nvue/utils'
 import { transformWxsProps } from './transforms/transformWxsProps'
 
 function isAppNVueNativeTag(tag: string) {
-  return isUTSComponent(tag) || baseIsAppNVueNativeTag(tag)
+  return matchUTSComponent(tag) || baseIsAppNVueNativeTag(tag)
 }
 
 export function uniOptions(

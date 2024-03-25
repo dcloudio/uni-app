@@ -9,10 +9,12 @@ import {
   capitalize,
   installDepTips,
   isArray,
+  normalizeNodeModules,
   normalizePath,
+  removeExt,
   version,
 } from './utils'
-import type { EasycomMatcher } from './easycom'
+import { matchEasycom, type EasycomMatcher } from './easycom'
 
 import { parseUniExtApis } from './uni_modules'
 
@@ -184,9 +186,7 @@ export function initUTSComponents(
 ): EasycomMatcher[] {
   utsComponents.clear()
   const components: EasycomMatcher[] = []
-  if (platform !== 'app' && platform !== 'app-plus') {
-    return components
-  }
+  const isApp = platform === 'app' || platform === 'app-plus'
   const easycomsObj: Record<
     string,
     { source: string; kotlinPackage: string; swiftModule: string }
@@ -220,7 +220,7 @@ export function initUTSComponents(
               is_uni_modules_utssdk ? path.dirname(dir) : dir
             )
             easycomsObj[`^${name}$`] = {
-              source: `${importDir}?uts-proxy`,
+              source: isApp ? `${importDir}?uts-proxy` : normalizePath(file),
               kotlinPackage: parseKotlinPackageWithPluginId(
                 pluginId,
                 is_uni_modules_utssdk
@@ -346,3 +346,59 @@ export const parseUniExtApiNamespacesJsOnce = once(
     return namespaces
   }
 )
+
+export function matchUTSComponent(tag: string) {
+  const source = matchEasycom(tag)
+  return !!(source && source.includes('uts-proxy'))
+}
+
+export function genUTSClassName(fileName: string, prefix: string = 'Gen') {
+  return (
+    prefix +
+    capitalize(
+      camelize(
+        verifySymbol(
+          removeExt(
+            normalizeNodeModules(fileName)
+              .replace(/[\/|_]/g, '-')
+              .replace(/-+/g, '-')
+          )
+        )
+      )
+    )
+  )
+}
+
+function isValidStart(c: string): boolean {
+  return !!c.match(/^[A-Za-z_-]$/)
+}
+
+function isValidContinue(c: string): boolean {
+  return !!c.match(/^[A-Za-z0-9_-]$/)
+}
+
+function verifySymbol(s: string) {
+  const chars = Array.from(s)
+
+  if (isValidStart(chars[0]) && chars.slice(1).every(isValidContinue)) {
+    return s
+  }
+
+  const buf: string[] = []
+  let hasStart = false
+
+  for (const c of chars) {
+    if (!hasStart && isValidStart(c)) {
+      hasStart = true
+      buf.push(c)
+    } else if (isValidContinue(c)) {
+      buf.push(c)
+    }
+  }
+
+  if (buf.length === 0) {
+    buf.push('_')
+  }
+
+  return buf.join('')
+}

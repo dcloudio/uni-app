@@ -7,6 +7,7 @@ import {
   DownloadFileOptions,
 } from '@dcloudio/uni-api'
 import { fileToUrl, getFileName } from '../../../helpers/file'
+import { type DownloadFileFail } from '@dcloudio/uni-app-x/types/uni'
 /**
  * 下载任务
  */
@@ -60,9 +61,13 @@ class DownloadTask implements UniApp.DownloadTask {
 export const downloadFile = defineTaskApi<API_TYPE_DOWNLOAD_FILE>(
   API_DOWNLOAD_FILE,
   (
-    { url, header, timeout = __uniConfig.networkTimeout.downloadFile },
+    { url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile },
     { resolve, reject }
   ) => {
+    if (__X__) {
+      timeout =
+        timeout == null ? __uniConfig.networkTimeout.downloadFile : timeout
+    }
     var timer: ReturnType<typeof setTimeout>
     var xhr = new XMLHttpRequest()
     var downloadTask = new DownloadTask(xhr)
@@ -93,11 +98,11 @@ export const downloadFile = defineTaskApi<API_TYPE_DOWNLOAD_FILE>(
     }
     xhr.onabort = function () {
       clearTimeout(timer)
-      reject('abort')
+      reject<Partial<DownloadFileFail>>('abort', { errCode: 600003 })
     }
     xhr.onerror = function () {
       clearTimeout(timer)
-      reject()
+      reject<Partial<DownloadFileFail>>('', { errCode: 602001 })
     }
     xhr.onprogress = function (event) {
       downloadTask._callbacks.forEach((callback) => {
@@ -117,7 +122,7 @@ export const downloadFile = defineTaskApi<API_TYPE_DOWNLOAD_FILE>(
     timer = setTimeout(function () {
       xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null
       downloadTask.abort()
-      reject('timeout')
+      reject<Partial<DownloadFileFail>>('timeout', { errCode: 5 })
     }, timeout)
     return downloadTask
   },

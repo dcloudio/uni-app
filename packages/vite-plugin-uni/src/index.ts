@@ -1,5 +1,4 @@
 import fs from 'fs'
-import path from 'path'
 import debug from 'debug'
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
@@ -15,10 +14,13 @@ import {
   emptyDir,
   initAutoImportOptions,
   initModuleAlias,
-  initPreContext,
   parseUniExtApis,
   resolveSourceMapPath,
+  rewriteScssReadFileSync,
+  rewriteExistsSyncHasRootFile,
+  uniUTSExtApiReplace,
   uniViteInjectPlugin,
+  isInHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -27,7 +29,7 @@ import { uniCopyPlugin } from './plugins/copy'
 import { uniMovePlugin } from './plugins/move'
 import {
   initExtraPlugins,
-  initFixedEsbuildInitTSConfck,
+  // initFixedEsbuildInitTSConfck,
   initPluginUniOptions,
   rewriteCompilerSfcParse,
 } from './utils'
@@ -45,15 +47,7 @@ export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
 const debugUni = debug('uni:plugin')
 
-const pkg = require(path.resolve(__dirname, '../package.json'))
-
 initModuleAlias()
-
-process.env.UNI_COMPILER_VERSION =
-  process.env.UNI_COMPILER_VERSION || pkg['uni-app']?.['compilerVersion'] || ''
-process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
-  ? 'a'
-  : 'r'
 
 export interface VitePluginUniOptions {
   uvue?: boolean
@@ -80,6 +74,13 @@ let isFirst = true
 export default function uniPlugin(
   rawOptions: VitePluginUniOptions = {}
 ): Plugin[] {
+  // 重写readFileSync，拦截.scss 等文件读取，实现条件编译，
+  rewriteScssReadFileSync()
+
+  if (isInHBuilderX()) {
+    rewriteExistsSyncHasRootFile()
+  }
+
   // 三方插件（如vitest）可能提供了自己的入口命令，需要补充 env 初始化逻辑
   initEnv('unknown', { platform: process.env.UNI_PLATFORM || 'h5' })
 
@@ -95,13 +96,6 @@ export default function uniPlugin(
 
   options.platform = (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5'
   options.inputDir = process.env.UNI_INPUT_DIR
-
-  initPreContext(
-    options.platform,
-    process.env.UNI_CUSTOM_CONTEXT,
-    process.env.UNI_UTS_PLATFORM,
-    process.env.UNI_APP_X === 'true'
-  )
 
   const plugins =
     process.env.UNI_APP_X === 'true' &&
@@ -129,15 +123,20 @@ export default function uniPlugin(
 function createPlugins(options: VitePluginUniResolvedOptions) {
   const plugins: Plugin[] = []
 
-  const injects = parseUniExtApis(
-    true,
-    process.env.UNI_UTS_PLATFORM,
-    'javascript'
-  )
-  if (Object.keys(injects).length) {
-    plugins.push(
-      uniViteInjectPlugin('uni:ext-api-inject', injects as InjectOptions)
+  // uni x 需要插入到指定位置，此插件执行太早，又会引发 vue 文件的不支持，该插件是解析ast的，所以必须是合法的js或ts代码
+  if (process.env.UNI_APP_X === 'true') {
+    plugins.push(uniUTSExtApiReplace())
+  } else {
+    const injects = parseUniExtApis(
+      true,
+      process.env.UNI_UTS_PLATFORM,
+      'javascript'
     )
+    if (Object.keys(injects).length) {
+      plugins.push(
+        uniViteInjectPlugin('uni:ext-api-inject', injects as InjectOptions)
+      )
+    }
   }
 
   // 仅限 h5
@@ -180,7 +179,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   })
   plugins.push(...uniPlugins)
 
-  plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
+  // plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
 
   // 执行 build 命令时，vite 强制了 NODE_ENV
   // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L405
@@ -233,17 +232,16 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       if (fs.existsSync(sourceMapPath)) {
         emptyDir(sourceMapPath)
       }
+      plugins.push(
+        uniMovePlugin({
+          apply: 'build',
+          enforce: 'post',
+          cwd: process.env.UNI_OUTPUT_DIR,
+          pattern: '**/*.js.map',
+          dest: sourceMapPath,
+        })
+      )
     }
-
-    plugins.push(
-      uniMovePlugin({
-        apply: 'build',
-        enforce: 'post',
-        cwd: process.env.UNI_OUTPUT_DIR,
-        pattern: '**/*.js.map',
-        dest: sourceMapPath,
-      })
-    )
   }
 
   rewriteCompilerSfcParse()
@@ -271,7 +269,7 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
 
   plugins.push(...uniPlugins)
 
-  plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
+  // plugins.push(...initFixedEsbuildInitTSConfck(process.env.UNI_INPUT_DIR))
 
   // 执行 build 命令时，vite 强制了 NODE_ENV
   // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/build.ts#L405

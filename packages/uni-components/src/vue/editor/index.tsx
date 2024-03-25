@@ -1,7 +1,8 @@
 import { extend } from '@vue/shared'
-import { Ref, ref } from 'vue'
+import { Ref, ref, onMounted } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useCustomEvent } from '../../helpers/useEvent'
+import { UniElement } from '../../helpers/UniElement'
 import {
   props as keyboardProps,
   emit as keyboardEmit,
@@ -36,15 +37,28 @@ const props = /*#__PURE__*/ extend({}, keyboardProps, {
   },
 })
 
+export class UniEditorElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Editor',
   props,
   emit: ['ready', 'focus', 'blur', 'input', 'statuschange', ...keyboardEmit],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-editor',
+    class: UniEditorElement,
+  },
+  //#endif
   setup(props, { emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent(rootRef, emit)
     useQuill(props, rootRef, trigger)
     useKeyboard(props, rootRef, trigger)
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniEditorElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       return <uni-editor ref={rootRef} id={props.id} class="ql-container" />
     }

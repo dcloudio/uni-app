@@ -25,17 +25,17 @@ export interface UniPluginFilterOptions extends VitePluginUniResolvedOptions {
 
 const UNI_H5_RE = /@dcloudio\/uni-h5/
 
-const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
-  exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
-}
-const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
-  exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
-}
-
 export function initPlugins(
   config: ResolvedConfig,
   options: VitePluginUniResolvedOptions
 ) {
+  const uniPrePluginOptions: Partial<UniPluginFilterOptions> = {
+    exclude: [...COMMON_EXCLUDE, UNI_H5_RE],
+  }
+  const uniPreCssPluginOptions: Partial<UniPluginFilterOptions> = {
+    exclude: [...COMMON_EXCLUDE],
+  }
+
   const plugins = config.plugins as Plugin[]
 
   addPlugin(plugins, uniResolveIdPlugin(options), 'vite:resolve', 'pre')

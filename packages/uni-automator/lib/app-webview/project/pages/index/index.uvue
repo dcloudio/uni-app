@@ -1,0 +1,79 @@
+<template>
+	<web-view ref="webview" id="webview" style="flex:1" :webview-styles='webviewStyles' :src="src" @message="message"
+		@error="error" />
+</template>
+
+<script>
+export default {
+	data() {
+		return {
+			src: process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC,
+			webviewElement: null as UniWebViewElement | null,
+			webviewContext: null as WebviewContext | null,
+			webviewStyles: {
+				progress: false
+			},
+		}
+	},
+	onReady() {
+		this.webviewElement = this.$refs['webview'] as UniWebViewElement
+		this.webviewContext = uni.createWebviewContext('webview', this)
+
+	},
+	methods: {
+		initAutomator() {
+			const options = {
+				wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
+			}
+			this.webviewContext!.evalJS(`initRuntimeAutomator(${JSON.stringify(options)})`)
+			console.log('initRuntimeAutomator...')
+		},
+		message(msg: UniWebViewMessageEvent) {
+			const data = msg.detail.data!
+			const id = data.get("id") as number
+			const type = data.get("type") as string
+			const dataObj = data.get("data") as UTSJSONObject
+			const action = dataObj.getString("action")!
+			const args = dataObj.get("args")
+			if (type != 'automator') {
+				return;
+			}
+			if (action == 'ready') {
+				this.initAutomator()
+			} else {
+				console.log(id, action, args)
+				if (action == 'captureScreenshot') {
+					// 调用截图
+					this.webviewElement!.takeSnapshot({
+						success: (res) => {
+							const fileManager = uni.getFileSystemManager()
+							fileManager.readFile({
+								encoding: 'base64',
+								filePath: res.tempFilePath,
+								success: (readFileRes) => {
+									this.callback(id, { data: readFileRes.data }, '')
+								},
+								fail: (error) => {
+									this.callback(id, '', error.message)
+								},
+							} as ReadFileOptions)
+
+						},
+						fail: (res) => {
+							this.callback(id, '', res.errMsg)
+						}
+					})
+
+				}
+
+			}
+		},
+		error(event: WebViewErrorEvent) {
+			console.log('webview load error', JSON.stringify(event.detail));
+		},
+		callback(id: number, res: any | null, error: string) {
+			this.webviewContext!.evalJS(`onPostMessageFromUniXWebView(${id},${JSON.stringify(res)},${JSON.stringify(error)})`)
+		}
+	}
+}
+</script>

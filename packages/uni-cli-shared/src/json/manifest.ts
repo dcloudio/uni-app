@@ -126,6 +126,10 @@ export function getRouterOptions(manifestJson: Record<string, any>): {
 }
 
 export function isEnableTreeShaking(manifestJson: Record<string, any>) {
+  // 自动化测试时，一定不摇树
+  if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
+    return false
+  }
   return manifestJson.h5?.optimization?.treeShaking?.enable !== false
 }
 

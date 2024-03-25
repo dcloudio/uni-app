@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[` 1`] = `"UTSAndroid.consoleDebugError(UTSAndroid.consoleDebugError(JSON.parse('{"a":1}'), " at test.uvue:1"), " at test.uvue:1")"`;
+
+exports[` 2`] = `
+"
+// 变量
+const msg = 'Hello!'
+
+// 函数
+function log() {
+    console.log(msg, " at test.uvue:7")
+}  
+  "
+`;
+
+exports[`rewrite JSON.parse 1`] = `"UTSAndroid.consoleDebugError(JSON.parse('{"a":1}'), " at test.uvue:1");UTSAndroid.consoleDebugError(JSON.parseObject('{"a":1}'), " at test.uvue:1");UTSAndroid.consoleDebugError(JSON.parseArray('[1,2,3]'), " at test.uvue:1")"`;
+
+exports[`rewrite JSON.parse 2`] = `
+"UTSAndroid.consoleDebugError(JSON.parse('{"a":1}'), " at test.uvue:1");
+UTSAndroid.consoleDebugError(JSON.parseObject('{"a":1}'), " at test.uvue:2");
+UTSAndroid.consoleDebugError(JSON.parseArray('[1,2,3]'), " at test.uvue:3")"
+`;
+
+exports[`rewrite console 1`] = `"console.log(1, " at test.uvue:1")"`;
+
+exports[`rewrite console 2`] = `
+"
+
+console.log("at test.uvue:3")
+"
+`;
+
+exports[`rewrite decode/encode 1`] = `
+"
+UTSAndroid.consoleDebugError(decodeURI(''), " at test.uvue:2")
+UTSAndroid.consoleDebugError(decodeURIComponent(''), " at test.uvue:3")
+UTSAndroid.consoleDebugError(encodeURI(''), " at test.uvue:4")
+UTSAndroid.consoleDebugError(encodeURIComponent(''), " at test.uvue:5")
+"
+`;

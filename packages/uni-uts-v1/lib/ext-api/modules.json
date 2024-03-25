@@ -1,4 +1,28 @@
 {
+  "uni-ad": {
+    "uni": {
+      "createRewardedVideoAd": {
+        "name": "createRewardedVideoAd",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-createRequestPermissionListener": {
+    "uni": {
+      "createRequestPermissionListener": {
+        "name": "createRequestPermissionListener",
+        "app": {
+          "js": true,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
   "uni-createWebviewContext": {
     "uni": {
       "createWebviewContext": {
@@ -34,9 +58,9 @@
       "getFileSystemManager": {
         "name": "getFileSystemManager",
         "app": {
-          "js": true,
+          "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": false
         }
       }
     }
@@ -377,6 +401,30 @@
       },
       "createPushMessage": {
         "name": "createPushMessage",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-requestPayment-alipay": {
+    "uni": {
+      "requestPayment": {
+        "name": "requestPayment",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    }
+  },
+  "uni-rpx2px": {
+    "uni": {
+      "rpx2px": {
+        "name": "rpx2px",
         "app": {
           "js": false,
           "kotlin": true,

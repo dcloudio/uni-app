@@ -26,6 +26,7 @@ import {
   ERR_MSG_PLACEHOLDER,
   genConfigJson,
   resolveAndroidComponents,
+  resolveConfigProvider,
   resolveIOSComponents,
   resolvePackage,
 } from './utils'
@@ -56,6 +57,8 @@ export const sourcemap = {
 }
 
 export { compileApp, CompileAppOptions } from './uvue/index'
+
+export { parseInjectModules } from './utils'
 
 export * from './sourceMap'
 
@@ -178,8 +181,19 @@ export async function compile(
 
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
+    // uts 插件 wgt 模式，本地资源模式不需要编译
+    if (
+      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+      process.env.UNI_APP_PRODUCTION_TYPE === 'LOCAL_PACKAGING'
+    ) {
+      return createResult(outputPluginDir, errMsg, code, deps, meta)
+    }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
-    if (utsPlatform === 'app-android' || utsPlatform === 'app') {
+    if (
+      utsPlatform === 'app-android' ||
+      utsPlatform === 'app' ||
+      utsPlatform === 'app-plus'
+    ) {
       let filename =
         resolvePlatformIndex('app-android', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
@@ -188,6 +202,7 @@ export async function compile(
       }
       if (filename) {
         await getCompiler('kotlin').runProd(filename, androidComponents, {
+          pluginId: pkg.id,
           isX,
           isSingleThread,
           isPlugin,
@@ -215,7 +230,11 @@ export async function compile(
         }
       }
     }
-    if (utsPlatform === 'app-ios' || utsPlatform === 'app') {
+    if (
+      utsPlatform === 'app-ios' ||
+      utsPlatform === 'app' ||
+      utsPlatform === 'app-plus'
+    ) {
       let filename =
         resolvePlatformIndex('app-ios', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
@@ -224,6 +243,7 @@ export async function compile(
       }
       if (filename) {
         await getCompiler('swift').runProd(filename, iosComponents, {
+          pluginId: pkg.id,
           isX,
           isSingleThread,
           isPlugin,
@@ -312,6 +332,7 @@ export async function compile(
           // 处理 config.json
           genConfigJson(
             utsPlatform,
+            isX,
             (utsPlatform === 'app-android'
               ? proxyCodeOptions.androidHookClass
               : proxyCodeOptions.iOSHookClass) || '',
@@ -319,7 +340,8 @@ export async function compile(
             pluginRelativeDir,
             pkg.is_uni_modules,
             inputDir,
-            outputDir
+            outputDir,
+            resolveConfigProvider(utsPlatform, pkg.id, transform)
           )
 
           console.log(cacheTips(pkg.id))
@@ -358,6 +380,7 @@ export async function compile(
         // 处理 config.json
         genConfigJson(
           utsPlatform,
+          isX,
           (utsPlatform === 'app-android'
             ? proxyCodeOptions.androidHookClass
             : proxyCodeOptions.iOSHookClass) || '',
@@ -365,7 +388,8 @@ export async function compile(
           pluginRelativeDir,
           pkg.is_uni_modules,
           inputDir,
-          outputDir
+          outputDir,
+          resolveConfigProvider(utsPlatform, pkg.id, transform)
         )
         const res = await getCompiler(compilerType).runDev(filename, {
           components,

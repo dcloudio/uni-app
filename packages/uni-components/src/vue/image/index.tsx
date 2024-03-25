@@ -10,6 +10,7 @@ import {
 } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
 import ResizeSensor from '../resize-sensor/index'
 
@@ -61,15 +62,39 @@ const IMAGE_MODES = {
   'bottom right': ['right bottom'],
 }
 
+export class UniImageElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Image',
   props,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-image',
+    class: UniImageElement,
+  },
+  //#endif
   setup(props, { emit }) {
     const rootRef = ref<HTMLElement | null>(null)
     const state = useImageState(rootRef, props)
     const trigger = useCustomEvent(rootRef, emit)
     const { fixSize } = useImageSize(rootRef, props, state)
     useImageLoader(state, props, rootRef, fixSize, trigger)
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniImageElement
+      Object.defineProperty(rootElement, 'src', {
+        get() {
+          return (rootElement.querySelector('img') as HTMLImageElement).src
+        },
+        set(value) {
+          rootElement.querySelector(
+            'div'
+          )!.style.backgroundImage = `url("${value}")`
+          ;(rootElement.querySelector('img') as HTMLImageElement).src = value
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       return (
         <uni-image ref={rootRef}>

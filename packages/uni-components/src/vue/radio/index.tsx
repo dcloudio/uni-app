@@ -1,8 +1,9 @@
-import { onBeforeUnmount, watch, inject, ref, computed } from 'vue'
+import { onBeforeUnmount, onMounted, watch, inject, ref, computed } from 'vue'
 import type { Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
+import { UniElement } from '../../helpers/UniElement'
 import { UniRadioGroupCtx, uniRadioGroupKey } from '../radio-group'
 import { UniFormCtx, uniFormKey } from '../form'
 import { uniLabelKey, UniLabelCtx } from '../label'
@@ -54,14 +55,25 @@ const props = {
   },
 }
 
+class UniRadioElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Radio',
   props,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-radio',
+    class: UniRadioElement,
+  },
+  //#endif
   setup(props, { slots }) {
+    const rootRef = ref<HTMLElement | null>(null)
     const radioChecked = ref(props.checked)
     const radioValue = ref(props.value)
+    //#if _X_ && !_NODE_JS_
+    const initialCheckedValue = props.checked
+    //#endif
 
-    const radioStyle = computed(() => {
+    function getRadioStyle(checked: boolean | string) {
       if (props.disabled) {
         return {
           backgroundColor: '#E1E1E1',
@@ -78,6 +90,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         if (props.backgroundColor) style.backgroundColor = props.backgroundColor
       }
       return style
+    }
+
+    const radioStyle = computed(() => {
+      return getRadioStyle(radioChecked.value)
     })
 
     watch(
@@ -89,7 +105,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     const reset = () => {
+      //#if _X_ && !_NODE_JS_
+      radioChecked.value = initialCheckedValue
+      //#else
       radioChecked.value = false
+      //#endif
     }
 
     const { uniCheckGroup, uniLabel, field } = useRadioInject(
@@ -115,11 +135,53 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
     useListeners(props, { 'label-click': _onClick })
 
+    //#if _X_ && !_NODE_JS_
+    const checkedCache = ref(radioChecked.value)
+    watch(
+      () => radioChecked.value,
+      (value) => {
+        checkedCache.value = value
+      }
+    )
+    onMounted(() => {
+      const rootElement = rootRef.value as UniRadioElement
+      Object.defineProperty(rootElement, 'checked', {
+        get() {
+          return checkedCache.value
+        },
+        set(value: boolean | string) {
+          checkedCache.value = value
+          const style = getRadioStyle(value)
+          const checkboxInputElement = rootElement.querySelector(
+            '.uni-checkbox-input'
+          ) as HTMLElement
+          for (const key in style) {
+            const value = style[key as keyof typeof style]
+            value && checkboxInputElement.style.setProperty(key, value)
+          }
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const booleanAttrs = useBooleanAttr(props, 'disabled')
 
+      let realCheckValue: boolean | string
+
+      //#if _X_ && !_NODE_JS_
+      realCheckValue = checkedCache.value
+      //#else
+      realCheckValue = radioChecked.value
+      //#endif
+
       return (
-        <uni-radio {...booleanAttrs} onClick={_onClick}>
+        <uni-radio
+          {...booleanAttrs}
+          id={props.id}
+          onClick={_onClick}
+          ref={rootRef}
+        >
           <div
             class="uni-radio-wrapper"
             style={{
@@ -134,7 +196,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               class={{ 'uni-radio-input-disabled': props.disabled }}
               style={radioStyle.value}
             >
-              {radioChecked.value
+              {realCheckValue
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
                     props.disabled ? '#ADADAD' : props.iconColor,

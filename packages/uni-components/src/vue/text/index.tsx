@@ -1,9 +1,25 @@
-import { VNode, Component, createTextVNode, createVNode, Comment } from 'vue'
+import {
+  VNode,
+  Component,
+  createTextVNode,
+  createVNode,
+  Comment,
+  ref,
+  onMounted,
+} from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import { DecodeOptions, parseText } from '../../helpers/text'
 
+export class UniTextElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Text',
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-text',
+    class: UniTextElement,
+  },
+  //#endif
   props: {
     selectable: {
       type: [Boolean, String],
@@ -19,6 +35,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     },
   },
   setup(props, { slots }) {
+    const rootRef = ref<HTMLElement | null>(null)
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniTextElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const children: VNode[] = []
       if (slots.default) {
@@ -57,7 +80,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         })
       }
       return (
-        <uni-text selectable={props.selectable ? true : null}>
+        <uni-text ref={rootRef} selectable={props.selectable ? true : null}>
           {createVNode('span', null, children)}
         </uni-text>
       )

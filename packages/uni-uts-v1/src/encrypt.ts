@@ -1,5 +1,6 @@
 import path, { basename, join, relative } from 'path'
 import fs from 'fs-extra'
+import { makeLegalIdentifier } from '@rollup/pluginutils'
 import { APP_PLATFORM } from './manifest/utils'
 import { normalizePath } from './shared'
 
@@ -8,21 +9,15 @@ export function isEncrypt(pluginDir: string) {
 }
 
 function createRollupCommonjsCode(
-  pluginDir: string,
+  _pluginDir: string,
   pluginRelativeDir: string
 ) {
+  const name = makeLegalIdentifier(pluginRelativeDir)
   return `
 import * as commonjsHelpers from "\0commonjsHelpers.js"
-
-import { __module, exports as __exports } from "\0${normalizePath(
-    pluginDir
-  )}?commonjs-module"
-
-Object.defineProperty(__exports, '__esModule', { value: true })      
-__module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
-
-export default /*@__PURE__*/commonjsHelpers.getDefaultExportFromCjs(__exports);
-export { __exports as __moduleExports };
+const ${name} = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
+export default /*@__PURE__*/commonjsHelpers.getDefaultExportFromCjs(${name});
+export { ${name} as __moduleExports };
 `
 }
 function createWebpackCommonjsCode(pluginRelativeDir: string) {
@@ -44,8 +39,15 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
     ? createRollupCommonjsCode(pluginDir, pluginRelativeDir)
     : createWebpackCommonjsCode(pluginRelativeDir)
   if (process.env.NODE_ENV !== 'development') {
-    // 复制插件目录
-    fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
+    // 生成wgt和本地生成资源，无需复制加密插件目录
+    const needCopy = !(
+      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
+      process.env.UNI_APP_PRODUCTION_TYPE === 'LOCAL_PACKAGING'
+    )
+    if (needCopy) {
+      // 复制插件目录
+      fs.copySync(pluginDir, join(outputDir, pluginRelativeDir))
+    }
     return {
       dir: outputPluginDir,
       code,

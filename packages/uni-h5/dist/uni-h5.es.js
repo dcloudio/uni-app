@@ -930,8 +930,11 @@ var out = safeAreaInsets;
 const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
 const onEventPrevent = /* @__PURE__ */ withModifiers(() => {
 }, ["prevent"]);
-const onEventStop = /* @__PURE__ */ withModifiers(() => {
-}, ["stop"]);
+const onEventStop = /* @__PURE__ */ withModifiers(
+  (_event) => {
+  },
+  ["stop"]
+);
 function getWindowOffsetCssVar(style, name) {
   return parseInt((style.getPropertyValue(name).match(/\d+/) || ["0"])[0]);
 }
@@ -1566,14 +1569,17 @@ function findUniTarget(target) {
 }
 function createNativeEvent(evt, htmlElement = false) {
   const { type, timeStamp, target, currentTarget } = evt;
+  let realTarget, realCurrentTarget;
+  realTarget = normalizeTarget(
+    htmlElement ? target : findUniTarget(target)
+  );
+  realCurrentTarget = normalizeTarget(currentTarget);
   const event = {
     type,
     timeStamp,
-    target: normalizeTarget(
-      htmlElement ? target : findUniTarget(target)
-    ),
+    target: realTarget,
     detail: {},
-    currentTarget: normalizeTarget(currentTarget)
+    currentTarget: realCurrentTarget
   };
   if (evt._stopped) {
     event._stopped = true;
@@ -1624,7 +1630,14 @@ function createTouchEvent(evt, top) {
 function normalizeTouchEvent(touches, top) {
   const res = [];
   for (let i = 0; i < touches.length; i++) {
-    const { identifier, pageX, pageY, clientX, clientY, force } = touches[i];
+    const {
+      identifier,
+      pageX,
+      pageY,
+      clientX,
+      clientY,
+      force
+    } = touches[i];
     res.push({
       identifier,
       pageX,
@@ -1955,6 +1968,32 @@ const defineUnsupportedComponent = (name) => {
     }
   });
 };
+function withWebEvent(fn) {
+  return fn.__wwe = true, fn;
+}
+function useCustomEvent(ref2, emit2) {
+  return (name, evt, detail) => {
+    if (ref2.value) {
+      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+    }
+  };
+}
+function useNativeEvent(emit2) {
+  return (name, evt) => {
+    emit2(name, createNativeEvent(evt));
+  };
+}
+function normalizeCustomEvent(name, domEvt, el, detail) {
+  let target;
+  target = normalizeTarget(el);
+  return {
+    type: detail.type || name,
+    timeStamp: domEvt.timeStamp || 0,
+    target,
+    currentTarget: target,
+    detail
+  };
+}
 const hoverProps = {
   hoverClass: {
     type: String,
@@ -2044,11 +2083,11 @@ function useHover(props2) {
   return {
     hovering,
     binding: {
-      onTouchstartPassive,
-      onMousedown,
-      onTouchend,
-      onMouseup,
-      onTouchcancel
+      onTouchstartPassive: withWebEvent(onTouchstartPassive),
+      onMousedown: withWebEvent(onMousedown),
+      onTouchend: withWebEvent(onTouchend),
+      onMouseup: withWebEvent(onMouseup),
+      onTouchcancel: withWebEvent(onTouchcancel)
     }
   };
 }
@@ -2062,31 +2101,6 @@ function useBooleanAttr(props2, keys) {
     }
     return res;
   }, /* @__PURE__ */ Object.create(null));
-}
-function withWebEvent(fn) {
-  return fn.__wwe = true, fn;
-}
-function useCustomEvent(ref2, emit2) {
-  return (name, evt, detail) => {
-    if (ref2.value) {
-      emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
-    }
-  };
-}
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
-function normalizeCustomEvent(name, domEvt, el, detail) {
-  const target = normalizeTarget(el);
-  return {
-    type: detail.type || name,
-    timeStamp: domEvt.timeStamp || 0,
-    target,
-    currentTarget: target,
-    detail
-  };
 }
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$z = /* @__PURE__ */ defineBuiltInComponent({
@@ -2155,6 +2169,7 @@ const index$y = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const pageId = useCurrentPageId();
     const handlers = useProvideLabel();
     const pointer = computed(() => props2.for || slots.default && slots.default.length);
@@ -2174,6 +2189,7 @@ const index$y = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     return () => createVNode("uni-label", {
+      "ref": rootRef,
       "class": {
         "uni-label-pointer": pointer
       },
@@ -2332,8 +2348,9 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
       return createVNode("uni-button", mergeProps({
         "ref": rootRef,
         "onClick": onClick,
+        "id": props2.id,
         "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick"]);
+      }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -2462,6 +2479,12 @@ function getRootInfo(fields2) {
 function getNodeInfo(el, fields2) {
   const info = {};
   const { top, topWindowHeight } = getWindowOffset();
+  if (fields2.node) {
+    const tagName = el.tagName.split("-")[1];
+    if (tagName) {
+      info.node = el.querySelector(tagName);
+    }
+  }
   if (fields2.id) {
     info.id = el.id;
   }
@@ -3042,15 +3065,17 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id2, name, res) {
-  return invokeCallback(
-    id2,
-    extend(res || {}, { errMsg: name + ":ok" })
-  );
+  const result = {
+    errMsg: name + ":ok"
+  };
+  return invokeCallback(id2, extend(res || {}, result));
 }
-function invokeFail(id2, name, errMsg, errRes) {
+function invokeFail(id2, name, errMsg, errRes = {}) {
+  const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  delete errRes.errCode;
   return invokeCallback(
     id2,
-    extend({ errMsg: name + ":fail" + (errMsg ? " " + errMsg : "") }, errRes)
+    typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : extend({ errMsg: apiErrMsg }, errRes)
   );
 }
 function beforeInvokeApi(name, args, protocol, options) {
@@ -4845,7 +4870,16 @@ class NodesRef {
     );
     return this._selectorQuery;
   }
-  node(_callback) {
+  node(callback) {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        node: true
+      },
+      callback
+    );
     return this._selectorQuery;
   }
 }
@@ -7092,8 +7126,9 @@ const pixelRatio = /* @__PURE__ */ function() {
   return (window.devicePixelRatio || 1) / backingStore;
 }();
 function wrapper(canvas, hidpi = true) {
-  canvas.width = canvas.offsetWidth * (hidpi ? pixelRatio : 1);
-  canvas.height = canvas.offsetHeight * (hidpi ? pixelRatio : 1);
+  const pixel_ratio = hidpi ? pixelRatio : 1;
+  canvas.width = canvas.offsetWidth * pixel_ratio;
+  canvas.height = canvas.offsetHeight * pixel_ratio;
   canvas.getContext("2d").__hidpi__ = hidpi;
 }
 let isHidpi = false;
@@ -7289,6 +7324,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     slots
   }) {
     initHidpiOnce();
+    const rootRef = ref(null);
     const canvas = ref(null);
     const sensor = ref(null);
     const actionsWaiting = ref(false);
@@ -7317,6 +7353,7 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
         disableScroll
       } = props2;
       return createVNode("uni-canvas", mergeProps({
+        "ref": rootRef,
         "canvas-id": canvasId,
         "disable-scroll": disableScroll
       }, $attrs.value, $excludeAttrs.value, _listeners.value), [createVNode("canvas", {
@@ -7849,9 +7886,13 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const checkboxChecked = ref(props2.checked);
+    const checkboxCheckedBool = computed(() => {
+      return checkboxChecked.value === "true" || checkboxChecked.value === true;
+    });
     const checkboxValue = ref(props2.value);
-    const checkboxStyle = computed(() => {
+    function getCheckBoxStyle(checked) {
       if (props2.disabled) {
         return {
           backgroundColor: "#E1E1E1",
@@ -7859,7 +7900,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
         };
       }
       const style = {};
-      if (checkboxChecked.value) {
+      if (checked) {
         if (props2.activeBorderColor)
           style.borderColor = props2.activeBorderColor;
         if (props2.activeBackgroundColor)
@@ -7871,6 +7912,9 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           style.backgroundColor = props2.backgroundColor;
       }
       return style;
+    }
+    const checkboxStyle = computed(() => {
+      return getCheckBoxStyle(checkboxCheckedBool.value);
     });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       checkboxChecked.value = newChecked;
@@ -7902,8 +7946,12 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = checkboxChecked.value;
       return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        "id": props2.id,
+        "onClick": _onClick,
+        "ref": rootRef
       }), [createVNode("div", {
         "class": "uni-checkbox-wrapper",
         "style": {
@@ -7914,7 +7962,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [checkboxChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -8895,12 +8943,15 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
     }
   },
   setup(props2) {
+    const rootRef = ref(null);
     const path = computed(() => ICONS[props2.type]);
     return () => {
       const {
         value
       } = path;
-      return createVNode("uni-icon", null, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))]);
+      return createVNode("uni-icon", {
+        "ref": rootRef
+      }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
     };
   }
 });
@@ -9372,6 +9423,10 @@ const props$r = /* @__PURE__ */ extend(
       type: String,
       default: void 0,
       validator: (value) => !!~INPUT_MODES.indexOf(value)
+    },
+    cursorColor: {
+      type: String,
+      default: ""
     }
   },
   props$u
@@ -9626,7 +9681,8 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
   props: props$q,
   emits: ["confirm", ...emit],
   setup(props2, {
-    emit: emit2
+    emit: emit2,
+    expose
   }) {
     const INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
     const AUTOCOMPLETES = ["off", "one-time-code"];
@@ -9729,6 +9785,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       });
       !props2.confirmHold && input.blur();
     }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state2.value = detail.value;
+      }
+    });
     return () => {
       let inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
         "key": "disabled-input",
@@ -9740,8 +9803,11 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "maxlength": state2.maxlength,
         "step": step.value,
         "class": "uni-input-input",
+        "style": props2.cursorColor ? {
+          caretColor: props2.cursorColor
+        } : {},
         "onFocus": (event) => event.target.blur()
-      }, null, 40, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : withDirectives(createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : withDirectives(createVNode("input", {
         "key": "input",
         "ref": fieldRef,
         "onUpdate:modelValue": ($event) => state2.value = $event,
@@ -9752,10 +9818,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "enterkeyhint": props2.confirmType,
         "pattern": props2.type === "number" ? "[0-9]*" : void 0,
         "class": "uni-input-input",
+        "style": props2.cursorColor ? {
+          caretColor: props2.cursorColor
+        } : {},
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": props2.inputmode
-      }, null, 40, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vModelDynamic, state2.value]]);
+      }, null, 44, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vModelDynamic, state2.value]]);
       return createVNode("uni-input", {
         "ref": rootRef
       }, [createVNode("div", {
@@ -11350,6 +11419,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const vm = getCurrentInstance();
     const __scopeId = vm && vm.vnode.scopeId || "";
     const {
@@ -11363,19 +11433,20 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
         url
       } = props2;
       const hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
-      const navigatorTsx = createVNode("uni-navigator", mergeProps({
-        "class": hasHoverClass && hovering.value ? hoverClass : ""
-      }, hasHoverClass && binding, vm ? vm.attrs : {}, {
-        [__scopeId]: ""
-      }, {
-        "onClick": onClick
-      }), [slots.default && slots.default()], 16, ["onClick"]);
-      return props2.renderLink ? createVNode("a", {
+      const innerNode = props2.renderLink ? createVNode("a", {
         "class": "navigator-wrap",
         "href": url,
         "onClick": onEventPrevent,
         "onMousedown": onEventPrevent
-      }, [navigatorTsx], 40, ["href", "onClick", "onMousedown"]) : navigatorTsx;
+      }, [slots.default && slots.default()], 40, ["href", "onClick", "onMousedown"]) : slots.default && slots.default();
+      return createVNode("uni-navigator", mergeProps({
+        "class": hasHoverClass && hovering.value ? hoverClass : "",
+        "ref": rootRef
+      }, hasHoverClass && binding, vm ? vm.attrs : {}, {
+        [__scopeId]: ""
+      }, {
+        "onClick": onClick
+      }), [innerNode], 16, ["onClick"]);
     };
   }
 });
@@ -12460,6 +12531,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
+    const rootRef = ref(null);
     const state2 = useProgressState(props2);
     _activeAnimation(state2, props2);
     watch(() => state2.realPercent, (newValue, oldValue) => {
@@ -12477,7 +12549,8 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
         currentPercent
       } = state2;
       return createVNode("uni-progress", {
-        "class": "uni-progress"
+        "class": "uni-progress",
+        "ref": rootRef
       }, [createVNode("div", {
         "style": outerBarStyle,
         "class": "uni-progress-bar"
@@ -12489,7 +12562,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
         createVNode("p", {
           "class": "uni-progress-info"
         }, [currentPercent + "%"])
-      ) : ""]);
+      ) : ""], 512);
     };
   }
 });
@@ -12672,9 +12745,10 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const radioChecked = ref(props2.checked);
     const radioValue = ref(props2.value);
-    const radioStyle = computed(() => {
+    function getRadioStyle(checked) {
       if (props2.disabled) {
         return {
           backgroundColor: "#E1E1E1",
@@ -12692,6 +12766,9 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
           style.backgroundColor = props2.backgroundColor;
       }
       return style;
+    }
+    const radioStyle = computed(() => {
+      return getRadioStyle(radioChecked.value);
     });
     watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
       radioChecked.value = newChecked;
@@ -12724,8 +12801,12 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = radioChecked.value;
       return createVNode("uni-radio", mergeProps(booleanAttrs, {
-        "onClick": _onClick
+        "id": props2.id,
+        "onClick": _onClick,
+        "ref": rootRef
       }), [createVNode("div", {
         "class": "uni-radio-wrapper",
         "style": {
@@ -12736,7 +12817,7 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [radioChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -13061,6 +13142,10 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
 const props$m = {
+  direction: {
+    type: [String],
+    default: "vertical"
+  },
   scrollX: {
     type: [Boolean, String],
     default: false
@@ -13068,6 +13153,10 @@ const props$m = {
   scrollY: {
     type: [Boolean, String],
     default: false
+  },
+  showScrollbar: {
+    type: [Boolean, String],
+    default: true
   },
   upperThreshold: {
     type: [Number, String],
@@ -13140,12 +13229,22 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       scrollTopNumber,
       scrollLeftNumber
     } = useScrollViewState(props2);
-    useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
+    const {
+      realScrollX,
+      realScrollY
+    } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = computed(() => {
       let style = "";
-      props2.scrollX ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
-      props2.scrollY ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+      realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+      realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
       return style;
+    });
+    const scrollBarClassName = computed(() => {
+      let className = "uni-scroll-view";
+      if (props2.showScrollbar === false) {
+        className += " uni-scroll-view-scrollbar-hidden";
+      }
+      return className;
     });
     return () => {
       const {
@@ -13166,7 +13265,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("div", {
         "ref": main,
         "style": mainStyle.value,
-        "class": "uni-scroll-view"
+        "class": scrollBarClassName.value
       }, [createVNode("div", {
         "ref": content,
         "class": "uni-scroll-view-content"
@@ -13209,7 +13308,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "fill": "none",
         "style": "color: #2bd009",
         "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 4)], 512)], 512);
+      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -13241,6 +13340,12 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
   let triggerAbort = false;
   let __transitionEnd = () => {
   };
+  const realScrollX = computed(() => {
+    return props2.scrollX;
+  });
+  const realScrollY = computed(() => {
+    return props2.scrollY;
+  });
   const upperThresholdNumber = computed(() => {
     let val = Number(props2.upperThreshold);
     return isNaN(val) ? 50 : val;
@@ -13288,7 +13393,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       deltaX: state2.lastScrollLeft - target.scrollLeft,
       deltaY: state2.lastScrollTop - target.scrollTop
     });
-    if (props2.scrollY) {
+    if (realScrollY.value) {
       if (target.scrollTop <= upperThresholdNumber.value && state2.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
         trigger("scrolltoupper", $event, {
           direction: "top"
@@ -13302,7 +13407,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.lastScrollToLowerTime = $event.timeStamp;
       }
     }
-    if (props2.scrollX) {
+    if (realScrollX.value) {
       if (target.scrollLeft <= upperThresholdNumber.value && state2.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state2.lastScrollToUpperTime > 200) {
         trigger("scrolltoupper", $event, {
           direction: "left"
@@ -13320,7 +13425,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     state2.lastScrollLeft = target.scrollLeft;
   }
   function _scrollTopChanged(val) {
-    if (props2.scrollY) {
+    if (realScrollY.value) {
       {
         if (props2.scrollWithAnimation) {
           scrollTo2(val, "y");
@@ -13331,7 +13436,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     }
   }
   function _scrollLeftChanged(val) {
-    if (props2.scrollX) {
+    if (realScrollX.value) {
       {
         if (props2.scrollWithAnimation) {
           scrollTo2(val, "x");
@@ -13351,7 +13456,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       if (element) {
         let mainRect = main.value.getBoundingClientRect();
         let elRect = element.getBoundingClientRect();
-        if (props2.scrollX) {
+        if (realScrollX.value) {
           let left = elRect.left - mainRect.left;
           let scrollLeft = main.value.scrollLeft;
           let x = scrollLeft + left;
@@ -13361,7 +13466,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
             main.value.scrollLeft = x;
           }
         }
-        if (props2.scrollY) {
+        if (realScrollY.value) {
           let top = elRect.top - mainRect.top;
           let scrollTop = main.value.scrollTop;
           let y = scrollTop + top;
@@ -13381,10 +13486,10 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     content.value.style.webkitTransform = "";
     let _main = main.value;
     if (direction2 === "x") {
-      _main.style.overflowX = props2.scrollX ? "auto" : "hidden";
+      _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
       _main.scrollLeft = val;
     } else if (direction2 === "y") {
-      _main.style.overflowY = props2.scrollY ? "auto" : "hidden";
+      _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
       _main.scrollTop = val;
     }
     content.value.removeEventListener("transitionend", __transitionEnd);
@@ -13441,7 +13546,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       let y = event.touches[0].pageY;
       let _main = main.value;
       if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
-        if (props2.scrollX) {
+        if (realScrollX.value) {
           if (_main.scrollLeft === 0 && x > touchStart.x) {
             needStop = false;
             return;
@@ -13454,7 +13559,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
           needStop = false;
         }
       } else {
-        if (props2.scrollY) {
+        if (realScrollY.value) {
           if (_main.scrollTop === 0 && y > touchStart.y) {
             needStop = false;
             if (props2.refresherEnabled && event.cancelable !== false)
@@ -13524,8 +13629,8 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
     });
   });
   onActivated(() => {
-    props2.scrollY && (main.value.scrollTop = state2.lastScrollTop);
-    props2.scrollX && (main.value.scrollLeft = state2.lastScrollLeft);
+    realScrollY.value && (main.value.scrollTop = state2.lastScrollTop);
+    realScrollX.value && (main.value.scrollLeft = state2.lastScrollLeft);
   });
   watch(scrollTopNumber, (val) => {
     _scrollTopChanged(val);
@@ -13543,6 +13648,10 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       _setRefreshState("restore");
     }
   });
+  return {
+    realScrollX,
+    realScrollY
+  };
 }
 const props$l = {
   name: {
@@ -13655,11 +13764,14 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const getValueWidth = (value, min, max) => {
+  max = Number(max);
+  min = Number(min);
+  return 100 * (value - min) / (max - min) + "%";
+};
 function useSliderState(props2, sliderValue) {
   const _getValueWidth = () => {
-    const max = Number(props2.max);
-    const min = Number(props2.min);
-    return 100 * (sliderValue.value - min) / (max - min) + "%";
+    return getValueWidth(sliderValue.value, props2.min, props2.max);
   };
   const _getBgColor = () => {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
@@ -14617,7 +14729,10 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         switchInputStyle["backgroundColor"] = color;
         switchInputStyle["borderColor"] = color;
       }
+      let realCheckValue;
+      realCheckValue = switchChecked.value;
       return createVNode("uni-switch", mergeProps({
+        "id": props2.id,
         "ref": rootRef
       }, booleanAttrs, {
         "onClick": _onClick
@@ -14628,7 +14743,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
         "style": switchInputStyle
       }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
-      }, [switchChecked.value ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
     };
   }
 });
@@ -14661,22 +14776,37 @@ const SPACE_UNICODE = {
   emsp: " ",
   nbsp: " "
 };
-function parseText(text2, options) {
-  return text2.replace(/\\n/g, LINEFEED).split(LINEFEED).map((text22) => {
-    return normalizeText(text22, options);
-  });
-}
 function normalizeText(text2, { space, decode: decode2 }) {
-  if (!text2) {
-    return text2;
-  }
-  if (space && SPACE_UNICODE[space]) {
-    text2 = text2.replace(/ /g, SPACE_UNICODE[space]);
+  let result = "";
+  let isEscape = false;
+  for (let char of text2) {
+    if (space && SPACE_UNICODE[space] && char === " ") {
+      char = SPACE_UNICODE[space];
+    }
+    if (isEscape) {
+      if (char === "n") {
+        result += LINEFEED;
+      } else if (char === "\\") {
+        result += "\\";
+      } else {
+        result += "\\" + char;
+      }
+      isEscape = false;
+    } else {
+      if (char === "\\") {
+        isEscape = true;
+      } else {
+        result += char;
+      }
+    }
   }
   if (!decode2) {
-    return text2;
+    return result;
   }
-  return text2.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+  return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
+}
+function parseText(text2, options) {
+  return normalizeText(text2, options).split(LINEFEED);
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
@@ -14697,6 +14827,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     return () => {
       const children = [];
       if (slots.default) {
@@ -14726,6 +14857,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         });
       }
       return createVNode("uni-text", {
+        "ref": rootRef,
         "selectable": props2.selectable ? true : null
       }, [createVNode("span", null, children)], 8, ["selectable"]);
     };
@@ -14759,7 +14891,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
   props: props$h,
   emits: ["confirm", "linechange", ...emit],
   setup(props2, {
-    emit: emit2
+    emit: emit2,
+    expose
   }) {
     const rootRef = ref(null);
     const wrapperRef = ref(null);
@@ -14824,6 +14957,13 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
     {
       setFixMargin();
     }
+    expose({
+      $triggerInput: (detail) => {
+        emit2("update:modelValue", detail.value);
+        emit2("update:value", detail.value);
+        state2.value = detail.value;
+      }
+    });
     return () => {
       let textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
         "key": "disabled-textarea",
@@ -14837,7 +14977,11 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }
         },
         "onFocus": (event) => event.target.blur()
       }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
@@ -14853,7 +14997,11 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
           "uni-textarea-textarea-fix-margin": fixMargin
         },
         "style": {
-          overflowY: props2.autoHeight ? "hidden" : "auto"
+          overflowY: props2.autoHeight ? "hidden" : "auto",
+          /* eslint-disable no-restricted-syntax */
+          ...props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }
         },
         "onKeydown": onKeyDownEnter,
         "onKeyup": onKeyUpEnter
@@ -14888,6 +15036,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const rootRef = ref(null);
     const {
       hovering,
       binding
@@ -14896,10 +15045,13 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
       const hoverClass = props2.hoverClass;
       if (hoverClass && hoverClass !== "none") {
         return createVNode("uni-view", mergeProps({
-          "class": hovering.value ? hoverClass : ""
+          "class": hovering.value ? hoverClass : "",
+          "ref": rootRef
         }, binding), [slots.default && slots.default()], 16);
       }
-      return createVNode("uni-view", null, [slots.default && slots.default()]);
+      return createVNode("uni-view", {
+        "ref": rootRef
+      }, [slots.default && slots.default()], 512);
     };
   }
 });
@@ -15677,6 +15829,7 @@ function setupPage(comp) {
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
       instance2.proxy.$page.options = query;
+      instance2.proxy.options = query;
       const pageMeta = usePageMeta();
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
@@ -16037,6 +16190,7 @@ function useFullscreen(trigger, containerRef, videoRef, userActionState, rootRef
 function useVideo(props2, attrs2, trigger) {
   const videoRef = ref(null);
   const src = computed(() => getRealPath(props2.src));
+  const muted = computed(() => props2.muted === "true" || props2.muted === true);
   const state2 = reactive({
     start: false,
     src,
@@ -16044,7 +16198,8 @@ function useVideo(props2, attrs2, trigger) {
     currentTime: 0,
     duration: 0,
     progress: 0,
-    buffered: 0
+    buffered: 0,
+    muted
   });
   watch(() => src.value, () => {
     state2.playing = false;
@@ -16054,6 +16209,10 @@ function useVideo(props2, attrs2, trigger) {
     trigger("progress", {}, {
       buffered
     });
+  });
+  watch(() => muted.value, (muted2) => {
+    const video = videoRef.value;
+    video.muted = muted2;
   });
   function onDurationChange({
     target
@@ -16132,6 +16291,10 @@ function useVideo(props2, attrs2, trigger) {
       video.currentTime = position;
     }
   }
+  function stop() {
+    seek(0);
+    pause();
+  }
   function playbackRate(rate) {
     const video = videoRef.value;
     video.playbackRate = rate;
@@ -16141,6 +16304,7 @@ function useVideo(props2, attrs2, trigger) {
     state: state2,
     play,
     pause,
+    stop,
     seek,
     playbackRate,
     toggle,
@@ -16359,9 +16523,10 @@ function useDanmu(props2, videoState) {
     sendDanmu
   };
 }
-function useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
   const methods = {
     play,
+    stop,
     pause,
     seek,
     sendDanmu,
@@ -16501,6 +16666,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       state: videoState,
       play,
       pause,
+      stop,
       seek,
       playbackRate,
       toggle,
@@ -16542,11 +16708,12 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
       clickProgress,
       toggleControls
     } = useControls(props2, videoState, seek);
-    useContext(play, pause, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+    useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
     return () => {
       return createVNode("uni-video", {
         "ref": rootRef,
-        "id": props2.id
+        "id": props2.id,
+        "onClick": toggleControls
       }, [createVNode("div", {
         "ref": containerRef,
         "class": "uni-video-container",
@@ -16569,7 +16736,6 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-video",
         "webkit-playsinline": true,
         "playsinline": true,
-        "onClick": toggleControls,
         "onDurationchange": onDurationChange,
         "onLoadedmetadata": onLoadedMetadata,
         "onProgress": onProgress,
@@ -16586,7 +16752,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "onX5videoenterfullscreen": () => emitFullscreenChange(true),
         "onWebkitendfullscreen": () => emitFullscreenChange(false),
         "onX5videoexitfullscreen": () => emitFullscreenChange(false)
-      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onClick", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
+      }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
         "class": "uni-video-bar uni-video-bar-full",
         "onClick": withModifiers(() => {
         }, ["stop"])
@@ -16683,7 +16849,7 @@ const index$d = /* @__PURE__ */ defineBuiltInComponent({
         "class": "uni-video-toast-title"
       }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
         "class": "uni-video-slots"
-      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id"]);
+      }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
     };
   }
 });
@@ -18496,6 +18662,8 @@ const getNetworkType = /* @__PURE__ */ defineAsyncApi(
       networkType = connection.type;
       if (networkType === "cellular" && connection.effectiveType) {
         networkType = connection.effectiveType.replace("slow-", "");
+      } else if (!networkType && connection.effectiveType) {
+        networkType = connection.effectiveType;
       } else if (!["none", "wifi"].includes(networkType)) {
         networkType = "unknown";
       }
@@ -19617,7 +19785,7 @@ const request = /* @__PURE__ */ defineTaskApi(
   ({
     url,
     data,
-    header,
+    header = {},
     method,
     dataType: dataType2,
     responseType,
@@ -19662,7 +19830,7 @@ const request = /* @__PURE__ */ defineTaskApi(
     const timer = setTimeout(function() {
       xhr.onload = xhr.onabort = xhr.onerror = null;
       requestTask.abort();
-      reject("timeout");
+      reject("timeout", { errCode: 5 });
     }, timeout);
     xhr.responseType = responseType;
     xhr.onload = function() {
@@ -19684,11 +19852,11 @@ const request = /* @__PURE__ */ defineTaskApi(
     };
     xhr.onabort = function() {
       clearTimeout(timer);
-      reject("abort");
+      reject("abort", { errCode: 600003 });
     };
     xhr.onerror = function() {
       clearTimeout(timer);
-      reject();
+      reject(void 0, { errCode: 5 });
     };
     xhr.withCredentials = withCredentials;
     xhr.send(body);
@@ -19779,7 +19947,7 @@ class DownloadTask {
 }
 const downloadFile = /* @__PURE__ */ defineTaskApi(
   API_DOWNLOAD_FILE,
-  ({ url, header, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
+  ({ url, header = {}, timeout = __uniConfig.networkTimeout.downloadFile }, { resolve, reject }) => {
     var timer;
     var xhr = new XMLHttpRequest();
     var downloadTask = new DownloadTask(xhr);
@@ -19808,11 +19976,11 @@ const downloadFile = /* @__PURE__ */ defineTaskApi(
     };
     xhr.onabort = function() {
       clearTimeout(timer);
-      reject("abort");
+      reject("abort", { errCode: 600003 });
     };
     xhr.onerror = function() {
       clearTimeout(timer);
-      reject();
+      reject("", { errCode: 602001 });
     };
     xhr.onprogress = function(event) {
       downloadTask._callbacks.forEach((callback) => {
@@ -19832,7 +20000,7 @@ const downloadFile = /* @__PURE__ */ defineTaskApi(
     timer = setTimeout(function() {
       xhr.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
       downloadTask.abort();
-      reject("timeout");
+      reject("timeout", { errCode: 5 });
     }, timeout);
     return downloadTask;
   },
@@ -19885,8 +20053,8 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
     filePath,
     name,
     files: files2,
-    header,
-    formData,
+    header = {},
+    formData = {},
     timeout = __uniConfig.networkTimeout.uploadFile
   }, { resolve, reject }) => {
     var uploadTask = new UploadTask();
@@ -19930,11 +20098,11 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
       };
       xhr.onerror = function() {
         clearTimeout(timer);
-        reject();
+        reject("", { errCode: 602001 });
       };
       xhr.onabort = function() {
         clearTimeout(timer);
-        reject("abort");
+        reject("abort", { errCode: 600003 });
       };
       xhr.onload = function() {
         clearTimeout(timer);
@@ -19948,12 +20116,12 @@ const uploadFile = /* @__PURE__ */ defineTaskApi(
         timer = setTimeout(function() {
           xhr.upload.onprogress = xhr.onload = xhr.onabort = xhr.onerror = null;
           uploadTask.abort();
-          reject("timeout");
+          reject("timeout", { errCode: 5 });
         }, timeout);
         xhr.send(form);
         uploadTask._xhr = xhr;
       } else {
-        reject("abort");
+        reject("abort", { errCode: 600003 });
       }
     }
     Promise.all(
@@ -20053,12 +20221,19 @@ ${e2};at socketTask.on${capitalize(
     const ws = this._webSocket;
     try {
       if (ws.readyState !== ws.OPEN) {
+        callOptions(options, {
+          errMsg: `sendSocketMessage:fail SocketTask.readyState is not OPEN`,
+          errCode: 10002
+        });
         throw new Error("SocketTask.readyState is not OPEN");
       }
       ws.send(data);
       callOptions(options, "sendSocketMessage:ok");
     } catch (error) {
-      callOptions(options, `sendSocketMessage:fail ${error}`);
+      callOptions(options, {
+        errMsg: `sendSocketMessage:fail ${error}`,
+        errCode: 602001
+      });
     }
   }
   /**
@@ -20102,7 +20277,9 @@ const connectSocket = /* @__PURE__ */ defineTaskApi(
       protocols,
       (error, socketTask) => {
         if (error) {
-          reject(error.toString());
+          reject(error.toString(), {
+            errCode: 600009
+          });
           return;
         }
         socketTasks.push(socketTask);
@@ -21223,6 +21400,11 @@ function onModalClose(type, content) {
   isConfirm && showModalState.editable && (res.content = content);
   currentShowModalResolve && currentShowModalResolve(res);
 }
+const hideModal = () => {
+  if (showModalState) {
+    showModalState.visible = false;
+  }
+};
 const showModal = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_MODAL,
   (args, { resolve }) => {
@@ -21795,6 +21977,11 @@ function onActionSheetClose(tapIndex) {
     resolveAction && resolveAction({ tapIndex });
   }
 }
+const hideActionSheet = () => {
+  if (showActionSheetState) {
+    showActionSheetState.visible = false;
+  }
+};
 const showActionSheet = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_ACTION_SHEET,
   (args, { resolve, reject }) => {
@@ -21822,6 +22009,13 @@ const showActionSheet = /* @__PURE__ */ defineAsyncApi(
 const loadFontFace = /* @__PURE__ */ defineAsyncApi(
   API_LOAD_FONT_FACE,
   ({ family, source, desc }, { resolve, reject }) => {
+    if (source.startsWith(`url("`) || source.startsWith(`url('`)) {
+      source = `url('${getRealPath(source.substring(5, source.length - 2))}')`;
+    } else if (source.startsWith("url(")) {
+      source = `url('${getRealPath(source.substring(4, source.length - 1))}')`;
+    } else {
+      source = getRealPath(source);
+    }
     addFont(family, source, desc).then(() => {
       resolve();
     }).catch((err) => {
@@ -22884,6 +23078,13 @@ const setRightWindowStyle = /* @__PURE__ */ defineSyncApi("setRightWindowStyle",
     state2.rightWindowStyle = style;
   }
 });
+const getElementById = /* @__PURE__ */ defineSyncApi(
+  "getElementById",
+  (id2) => {
+    const uniPageBody = document.querySelector("uni-page-body");
+    return uniPageBody ? uniPageBody.querySelector(`#${id2}`) : null;
+  }
+);
 const saveImageToPhotosAlbum = /* @__PURE__ */ defineAsyncApi(
   API_SAVE_IMAGE_TO_PHOTOS_ALBUM,
   createUnsupportedAsyncApi(API_SAVE_IMAGE_TO_PHOTOS_ALBUM)
@@ -23028,6 +23229,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getAppBaseInfo,
   getClipboardData,
   getDeviceInfo,
+  getElementById,
   getEnterOptionsSync,
   getFileInfo,
   getImageInfo,
@@ -23053,9 +23255,11 @@ const api = /* @__PURE__ */ Object.defineProperty({
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
+  hideModal,
   hideNavigationBarLoading,
   hideRightWindow,
   hideTabBar,
@@ -23809,6 +24013,7 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   setup(props2, {
     slots
   }) {
+    const root = ref(null);
     const content = ref(null);
     watch(() => props2.scrollTop, (val) => {
       setScrollTop(val);
@@ -23833,7 +24038,8 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       return createVNode("uni-cover-view", {
-        "scroll-top": props2.scrollTop
+        "scroll-top": props2.scrollTop,
+        "ref": root
       }, [createVNode("div", {
         "ref": content,
         "class": "uni-cover-view"
@@ -24795,7 +25001,7 @@ function createBackButtonTsx(navigationBar, isQuit) {
     return createVNode("div", {
       "class": "uni-page-head-btn",
       "onClick": onPageHeadBackButton
-    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 27)], 8, ["onClick"]);
+    }, [createSvgIconVNode(ICON_PATH_BACK, navigationBar.type === "transparent" ? "#fff" : navigationBar.titleColor, 26)], 8, ["onClick"]);
   }
 }
 function createButtonsTsx(btns) {
@@ -25513,6 +25719,7 @@ export {
   getClipboardData,
   getCurrentPages$1 as getCurrentPages,
   getDeviceInfo,
+  getElementById,
   getEnterOptionsSync,
   getFileInfo,
   getImageInfo,
@@ -25539,9 +25746,11 @@ export {
   getTopWindowStyle,
   getVideoInfo,
   getWindowInfo,
+  hideActionSheet,
   hideKeyboard,
   hideLeftWindow,
   hideLoading,
+  hideModal,
   hideNavigationBarLoading,
   hideRightWindow,
   hideTabBar,

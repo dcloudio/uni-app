@@ -13,7 +13,7 @@ export interface UniViteFilterPluginOptions {
 
 export function injectAssetPlugin(
   config: ResolvedConfig,
-  options?: { isAppX: boolean }
+  options?: { isAndroidX: boolean }
 ) {
   replacePlugins([assetPlugin(config, options)], config)
 }

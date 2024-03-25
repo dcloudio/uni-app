@@ -1,8 +1,10 @@
 import path from 'path'
 import fs from 'fs-extra'
+import { OutputBundle, PluginContext } from 'rollup'
 import {
   UniVitePlugin,
   emptyDir,
+  getUTSEasyComAutoImports,
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
@@ -10,10 +12,8 @@ import {
   resolveMainPathOnce,
   resolveUTSCompiler,
   utsPlugins,
-  injectAssetPlugin,
-  AutoImportOptions,
+  buildUniExtApiProviders,
 } from '@dcloudio/uni-cli-shared'
-import type { Plugin } from 'vite'
 import {
   DEFAULT_APPID,
   parseImports,
@@ -23,45 +23,16 @@ import {
   getUniCloudObjectInfo,
   getExtApiComponents,
   UVUE_CLASS_NAME_PREFIX,
-  initAutoImportOnce,
-  getAutoImports,
   createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
-import { createUniOptions } from '../utils'
+import { configResolved, createUniOptions } from '../utils'
+import { genClassName } from '../..'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
-const REMOVED_PLUGINS = [
-  'vite:build-metadata',
-  'vite:modulepreload-polyfill',
-  'vite:css',
-  'vite:esbuild',
-  'vite:wasm-helper',
-  'vite:worker',
-  // 'vite:asset', // replace
-  'vite:wasm-fallback',
-  'vite:define',
-  'vite:css-post',
-  'vite:build-html',
-  'vite:html-inline-proxy',
-  'vite:worker-import-meta-url',
-  'vite:asset-import-meta-url',
-  'vite:force-systemjs-wrap-complete',
-  'vite:watch-package-data',
-  'commonjs',
-  'vite:data-uri',
-  'vite:dynamic-import-vars',
-  'vite:import-glob',
-  'vite:build-import-analysis',
-  'vite:esbuild-transpile',
-  'vite:terser',
-  'vite:reporter',
-]
 let isFirst = true
-export function uniAppPlugin(options: {
-  autoImportOptions?: AutoImportOptions
-}): UniVitePlugin {
+export function uniAppPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const mainUTS = resolveMainPathOnce(inputDir)
@@ -77,12 +48,10 @@ export function uniAppPlugin(options: {
   }
   emptyOutDir()
 
-  const autoImport = initAutoImportOnce(options.autoImportOptions)
-
   return {
     name: 'uni:app-uts',
     apply: 'build',
-    uni: createUniOptions(),
+    uni: createUniOptions('android'),
     config() {
       return {
         base: '/', // 强制 base
@@ -134,17 +103,7 @@ export function uniAppPlugin(options: {
       }
     },
     configResolved(config) {
-      const plugins = config.plugins as Plugin[]
-      const len = plugins.length
-      for (let i = len - 1; i >= 0; i--) {
-        const plugin = plugins[i]
-        if (REMOVED_PLUGINS.includes(plugin.name)) {
-          plugins.splice(i, 1)
-        }
-      }
-      // 强制不inline
-      config.build.assetsInlineLimit = 0
-      injectAssetPlugin(config, { isAppX: true })
+      configResolved(config, true)
     },
     async transform(code, id) {
       if (process.env.UNI_APP_X_TSC === 'true') {
@@ -162,10 +121,7 @@ export function uniAppPlugin(options: {
         this.emitFile({
           type: 'asset',
           fileName: normalizeFilename(fileName, isMainUTS),
-          source: normalizeCode(
-            (await autoImport.transform!(code, id)).code,
-            isMainUTS
-          ),
+          source: normalizeCode(code, isMainUTS),
         })
       }
       code = await parseImports(
@@ -173,6 +129,10 @@ export function uniAppPlugin(options: {
         createTryResolve(id, this.resolve.bind(this))
       )
       return code
+    },
+    generateBundle(_, bundle) {
+      // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
+      checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
     async writeBundle() {
       let pageCount = 0
@@ -183,6 +143,9 @@ export function uniAppPlugin(options: {
           pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
         }
       }
+
+      await buildUniExtApiProviders()
+
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'main.uts'),
         {
@@ -202,7 +165,7 @@ export function uniAppPlugin(options: {
           ),
           extApiComponents: [...getExtApiComponents()],
           uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-          autoImports: getAutoImports(),
+          autoImports: getUTSEasyComAutoImports(),
         }
       )
       if (res) {
@@ -238,7 +201,9 @@ export function uniAppPlugin(options: {
             }
             if (modules) {
               modules.forEach((name) => {
-                app.distribute.modules[name] = {}
+                const value = app.distribute.modules[name]
+                app.distribute.modules[name] =
+                  typeof value === 'object' && value !== null ? value : {}
               })
             }
             fs.outputFileSync(
@@ -263,9 +228,11 @@ function normalizeCode(code: string, isMain = false) {
   if (!isMain) {
     return code
   }
-  const automatorCode = process.env.UNI_AUTOMATOR_WS_ENDPOINT
-    ? 'initAutomator();'
-    : ''
+  const automatorCode =
+    process.env.UNI_AUTOMATOR_WS_ENDPOINT &&
+    process.env.UNI_AUTOMATOR_APP_WEBVIEW !== 'true'
+      ? 'initAutomator();'
+      : ''
   return `${code}
 export function main(app: IApp) {
     definePageRoutes();
@@ -274,4 +241,30 @@ export function main(app: IApp) {
     (createApp()['app'] as VueApp).mount(app);
 }
 `
+}
+
+function checkUTSEasyComAutoImports(
+  inputDir: string,
+  bundle: OutputBundle,
+  ctx: PluginContext
+) {
+  const res = getUTSEasyComAutoImports()
+  Object.keys(res).forEach((fileName) => {
+    if (fileName.endsWith('.vue') || fileName.endsWith('.uvue')) {
+      if (fileName.startsWith('@/')) {
+        fileName = fileName.slice(2)
+      }
+      const relativeFileName = parseUTSRelativeFilename(fileName, inputDir)
+      if (!bundle[relativeFileName]) {
+        const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
+        ctx.emitFile({
+          type: 'asset',
+          fileName: relativeFileName,
+          source: `function ${className}Render(): any | null { return null }
+const ${className}Styles = []`,
+        })
+      }
+    }
+  })
+  return res
 }

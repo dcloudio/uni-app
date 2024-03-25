@@ -43,7 +43,10 @@ export function uniAppPagesPlugin(): Plugin {
             parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
           ),
         })
-        return normalizeAppPagesJson(pagesJson)
+        return {
+          code: normalizeAppPagesJson(pagesJson),
+          map: null,
+        }
       }
     },
   }

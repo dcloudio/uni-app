@@ -121,7 +121,7 @@ export function initPluginVueOptions(
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
   }
-  if (options.platform === 'h5') {
+  if (options.platform === 'h5' || options.platform === 'web') {
     templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
       isExternalUrl(options.base) ? options.base : ''
     )
@@ -148,14 +148,37 @@ export function initPluginVueOptions(
   compilerOptions.hoistStatic = false
   // 小程序使用了
   ;(compilerOptions as any).root = process.env.UNI_INPUT_DIR
-  // app-nvue 需要启用 customElement 机制来内联 styles
-  if (process.env.UNI_COMPILER === 'nvue') {
+  const isX = process.env.UNI_APP_X === 'true'
+  // app-nvue | app-uvue 需要启用 customElement 机制来内联 styles
+  if (
+    process.env.UNI_COMPILER === 'nvue' ||
+    (isX && options.platform === 'app')
+  ) {
     vueOptions.customElement = true
-    if (process.env.UNI_RENDERER_NATIVE !== 'appService') {
+    if (process.env.UNI_RENDERER_NATIVE !== 'appService' || isX) {
       // nvue 需要使用自己的 compiler，来移除 scoped
       vueOptions.compiler = createNVueCompiler()
     }
   }
+  if (isX) {
+    if (!vueOptions.script) {
+      vueOptions.script = {
+        babelParserPlugins: [],
+      }
+    }
+    if (!vueOptions.script.babelParserPlugins) {
+      vueOptions.script.babelParserPlugins = []
+    }
+
+    if (!vueOptions.script.babelParserPlugins.includes('typescript')) {
+      vueOptions.script.babelParserPlugins.push('typescript')
+    }
+    // decorators or decorators-legacy
+    if (!vueOptions.script.babelParserPlugins.includes('decorators')) {
+      vueOptions.script.babelParserPlugins.push('decorators')
+    }
+  }
+
   return vueOptions
 }
 

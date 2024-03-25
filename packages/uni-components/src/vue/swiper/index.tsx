@@ -15,6 +15,7 @@ import {
 } from 'vue'
 import { extend } from '@vue/shared'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import { useCustomEvent, CustomEventTrigger } from '../../helpers/useEvent'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
 import { flatVNode } from '../../helpers/flatVNode'
@@ -633,6 +634,7 @@ function useLayout(
   }
 }
 
+export class UniSwiperElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Swiper',
   props,
@@ -643,6 +645,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     'update:current',
     'update:currentItemId',
   ],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-swiper',
+    class: UniSwiperElement,
+  },
+  //#endif
   setup(props, { slots, emit }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent(rootRef, emit as SetupContext['emit'])
@@ -736,6 +744,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       )
     }
 
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniSwiperElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const defaultSlots = slots.default && slots.default()
       // TODO filter

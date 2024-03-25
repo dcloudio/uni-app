@@ -81,11 +81,11 @@ export function onMessage(msg: string) {
     return
   }
   const params = JSON.stringify(json.params)
-  const res = new Map<string, any | null>([['id', json.id]])
+  const res = { id: json.id }
   try {
     const callback = (result?: any | null, error?: any | null) => {
-      res.set('result', result)
-      res.set('error', error)
+      res['result'] = result
+      res['error'] = error
       send(res)
     }
     if (method.startsWith('App.')) {
@@ -199,7 +199,7 @@ export function onMessage(msg: string) {
       }
     }
   } catch (error) {
-    res.set('error', { message: error.stackTraceToString() })
+    res['error'] = { message: error.stackTraceToString() }
     send(res)
   }
 }

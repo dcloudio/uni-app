@@ -12,6 +12,7 @@ import {
   parseScripts,
   getPlatformDir,
   output,
+  initPreContext,
 } from '@dcloudio/uni-cli-shared'
 
 import { CliOptions } from '.'
@@ -165,6 +166,9 @@ export function initEnv(
       M['dev.performance'] +
         (process.env.UNI_PLATFORM.startsWith('mp-')
           ? M['dev.performance.mp']
+          : '') +
+        (process.env.UNI_PLATFORM === 'web' || process.env.UNI_PLATFORM === 'h5'
+          ? M['dev.performance.web']
           : '')
     )
   }
@@ -180,16 +184,32 @@ export function initEnv(
 
   initUVueEnv()
 
+  const pkg = require('../../package.json')
+
+  process.env.UNI_COMPILER_VERSION =
+    process.env.UNI_COMPILER_VERSION ||
+    pkg['uni-app']?.['compilerVersion'] ||
+    ''
+  process.env.UNI_COMPILER_VERSION_TYPE = pkg.version.includes('alpha')
+    ? 'a'
+    : 'r'
+
+  initPreContext(
+    process.env.UNI_PLATFORM,
+    process.env.UNI_CUSTOM_CONTEXT,
+    process.env.UNI_UTS_PLATFORM,
+    process.env.UNI_APP_X === 'true'
+  )
+
   if (
     process.env.UNI_PLATFORM === 'app' ||
     process.env.UNI_PLATFORM === 'web' ||
     process.env.UNI_PLATFORM === 'h5'
   ) {
-    const pkg = require('../../package.json')
     console.log(
       M['app.compiler.version'].replace(
         '{version}',
-        pkg['uni-app']['compilerVersion'] +
+        process.env.UNI_COMPILER_VERSION +
           `（${process.env.UNI_APP_X === 'true' ? 'uni-app x' : 'vue3'}）`
       )
     )
@@ -256,8 +276,14 @@ function initDevtools({ devtools, devtoolsHost, devtoolsPort }: CliOptions) {
 }
 
 function initAutomator({ autoHost, autoPort }: CliOptions) {
+  const hasAutoHostOrPort =
+    autoHost || autoPort || process.env.UNI_AUTOMATOR_HOST
   // 发行分包,插件也不需要自动化测试
-  if (!autoPort || process.env.UNI_SUBPACKAGE || process.env.UNI_MP_PLUGIN) {
+  if (
+    !hasAutoHostOrPort ||
+    process.env.UNI_SUBPACKAGE ||
+    process.env.UNI_MP_PLUGIN
+  ) {
     return
   }
   process.env.UNI_AUTOMATOR_WS_ENDPOINT =

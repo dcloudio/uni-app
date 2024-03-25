@@ -42,6 +42,13 @@ function getNodeInfo(
 ): SelectorQueryNodeInfo {
   const info: SelectorQueryNodeInfo = {}
   const { top, topWindowHeight } = getWindowOffset()
+  if (fields.node) {
+    // TODO
+    const tagName = el.tagName.split('-')[1]
+    if (tagName) {
+      info.node = el.querySelector(tagName)
+    }
+  }
   if (fields.id) {
     info.id = el.id
   }

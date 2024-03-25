@@ -115,6 +115,9 @@ describe('uts-module', () => {
 
     const errMsg = 'xx插件编译失败，无法使用'
     const WifiManagerError = initUTSProxyClass({
+      constructor: {
+        params: [],
+      },
       errMsg,
       staticMethods: {
         staticPreparePermission: {

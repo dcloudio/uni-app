@@ -1,8 +1,9 @@
-import { onBeforeUnmount, watch, inject, ref, computed } from 'vue'
+import { onBeforeUnmount, onMounted, watch, inject, ref, computed } from 'vue'
 import type { Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
+import { UniElement } from '../../helpers/UniElement'
 import { UniCheckGroupCtx, uniCheckGroupKey } from '../checkbox-group'
 import { UniFormCtx, uniFormKey } from '../form'
 import { uniLabelKey, UniLabelCtx } from '../label'
@@ -54,14 +55,28 @@ const props = {
   },
 }
 
+export class UniCheckboxElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Checkbox',
   props,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-checkbox',
+    class: UniCheckboxElement,
+  },
+  //#endif
   setup(props, { slots }) {
+    const rootRef = ref<HTMLElement | null>(null)
     const checkboxChecked = ref(props.checked)
+    const checkboxCheckedBool = computed(() => {
+      return checkboxChecked.value === 'true' || checkboxChecked.value === true
+    })
     const checkboxValue = ref(props.value)
+    //#if _X_ && !_NODE_JS_
+    const initialCheckedValue = props.checked
+    //#endif
 
-    const checkboxStyle = computed(() => {
+    function getCheckBoxStyle(checked: boolean) {
       if (props.disabled) {
         return {
           backgroundColor: '#E1E1E1',
@@ -70,7 +85,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
       const style: { borderColor?: string; backgroundColor?: string } = {}
       // 兼容旧版本样式
-      if (checkboxChecked.value) {
+      if (checked) {
         if (props.activeBorderColor) style.borderColor = props.activeBorderColor
         if (props.activeBackgroundColor)
           style.backgroundColor = props.activeBackgroundColor
@@ -79,6 +94,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         if (props.backgroundColor) style.backgroundColor = props.backgroundColor
       }
       return style
+    }
+
+    const checkboxStyle = computed(() => {
+      return getCheckBoxStyle(checkboxCheckedBool.value)
     })
 
     watch(
@@ -90,7 +109,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     const reset = () => {
+      //#if _X_ && !_NODE_JS_
+      checkboxChecked.value = initialCheckedValue
+      //#else
       checkboxChecked.value = false
+      //#endif
     }
 
     const { uniCheckGroup, uniLabel } = useCheckboxInject(
@@ -116,11 +139,54 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
     useListeners(props, { 'label-click': _onClick })
 
+    //#if _X_ && !_NODE_JS_
+    // disable之后也要能获取已设置的value
+    let checkedCache = ref(checkboxCheckedBool.value)
+    watch(
+      () => checkboxCheckedBool.value,
+      (newChecked) => {
+        checkedCache.value = newChecked
+      }
+    )
+    onMounted(() => {
+      const rootElement = rootRef.value as UniCheckboxElement
+      Object.defineProperty(rootElement, 'checked', {
+        get() {
+          return checkedCache.value
+        },
+        set(val) {
+          checkedCache.value = val
+          const style = getCheckBoxStyle(val)
+          const checkboxInputElement = rootElement.querySelector(
+            '.uni-checkbox-input'
+          ) as HTMLElement
+          for (const key in style) {
+            const value = style[key as keyof typeof style]
+            value && checkboxInputElement.style.setProperty(key, value)
+          }
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const booleanAttrs = useBooleanAttr(props, 'disabled')
 
+      let realCheckValue: boolean | string
+
+      //#if _X_ && !_NODE_JS_
+      realCheckValue = checkedCache.value
+      //#else
+      realCheckValue = checkboxChecked.value
+      //#endif
+
       return (
-        <uni-checkbox {...booleanAttrs} onClick={_onClick}>
+        <uni-checkbox
+          {...booleanAttrs}
+          id={props.id}
+          onClick={_onClick}
+          ref={rootRef}
+        >
           <div
             class="uni-checkbox-wrapper"
             style={{ '--HOVER-BD-COLOR': props.activeBorderColor }}
@@ -131,7 +197,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               class={{ 'uni-checkbox-input-disabled': props.disabled }}
               style={checkboxStyle.value}
             >
-              {checkboxChecked.value
+              {realCheckValue
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
                     props.disabled ? '#ADADAD' : props.iconColor || props.color,

@@ -1,6 +1,7 @@
-import { extend, isArray, isMap, isIntegerKey, hasOwn, isSymbol, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isOn, isModelListener, toNumber, remove, isSet, isPlainObject, invokeArrayFns, isBuiltInDirective, isGloballyWhitelisted, isReservedProp, EMPTY_ARR, NO, normalizeClass, normalizeStyle, isSpecialBooleanAttr, includeBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
-export { camelize, capitalize, normalizeClass, normalizeProps, normalizeStyle, toDisplayString, toHandlerKey } from '@vue/shared';
-import { isRootHook, isRootImmediateHook, ON_LOAD, createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared';
+import { extend, isArray, isMap, isIntegerKey, hasOwn, isSymbol, isObject, hasChanged, makeMap, capitalize, toRawType, def, isFunction, NOOP, isString, isPromise, getGlobalThis, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isOn, isModelListener, toNumber, remove, isSet, isPlainObject, invokeArrayFns, isBuiltInDirective, isGloballyWhitelisted, isReservedProp, EMPTY_ARR, NO, isSpecialBooleanAttr, includeBooleanAttr, looseIndexOf, looseEqual, isHTMLTag, isSVGTag } from '@vue/shared';
+export { camelize, capitalize, toDisplayString, toHandlerKey } from '@vue/shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass, normalizeStyle, createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared';
+export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 
 function warn$1(msg, ...args) {
     console.warn(`[Vue warn] ${msg}`, ...args);
@@ -1435,10 +1436,10 @@ function logError(err, type, contextVNode, throwInDev = true) {
             popWarningContext();
         }
         // crash in dev by default so it's more noticeable
-        if (throwInDev) {
-            throw err;
-        }
-        else {
+        // 不要 crash，经常会导致整个App运行失败，比如路由跳转失败，不能返回了
+        /* if (throwInDev) {
+          throw err
+        } else */ {
             console.error(err);
         }
     }
@@ -4425,6 +4426,9 @@ function toHandlers(obj, preserveCaseIfNecessary) {
     return ret;
 }
 
+function isUniBuiltInComponentInstance(p) {
+    return p && p.$options && (p.$options.__reserved || p.$options.rootElement);
+}
 /**
  * #2437 In Vue 3, functional components do not have a public instance proxy but
  * they exist in the internal parent chain. For code that relies on traversing
@@ -4433,8 +4437,13 @@ function toHandlers(obj, preserveCaseIfNecessary) {
 const getPublicInstance = (i) => {
     if (!i)
         return null;
-    if (isStatefulComponent(i))
-        return getExposeProxy(i) || i.proxy;
+    if (isStatefulComponent(i)) {
+        const p = getExposeProxy(i) || i.proxy;
+        if (isUniBuiltInComponentInstance(p)) {
+            return getPublicInstance(i.parent);
+        }
+        return p;
+    }
     return getPublicInstance(i.parent);
 };
 const publicPropertiesMap = 
@@ -4452,7 +4461,29 @@ const publicPropertiesMap =
     $root: i => getPublicInstance(i.root),
     $emit: i => i.emit,
     $options: i => (__VUE_OPTIONS_API__ ? resolveMergedOptions(i) : i.type),
-    $forceUpdate: i => i.f || (i.f = () => queueJob(i.update)),
+    $forceUpdate: i => i.f ||
+        (i.f = () => {
+            queueJob(i.update);
+            const subTree = i.subTree;
+            if (subTree.shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
+                const vnodes = subTree.children;
+                vnodes.forEach(vnode => {
+                    if (!vnode.component) {
+                        return;
+                    }
+                    const p = getExposeProxy(vnode.component) || vnode.component.proxy;
+                    if (isUniBuiltInComponentInstance(p)) {
+                        p.$forceUpdate();
+                    }
+                });
+            }
+            else if (subTree.component) {
+                const p = getExposeProxy(subTree.component) || subTree.component.proxy;
+                if (isUniBuiltInComponentInstance(p)) {
+                    p.$forceUpdate();
+                }
+            }
+        }),
     $nextTick: i => i.n || (i.n = nextTick.bind(i.proxy)),
     $watch: i => (__VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP)
 });
@@ -5888,7 +5919,7 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode, isUnmount = false) {
         return;
     }
     const refValue = vnode.shapeFlag & 4 /* ShapeFlags.STATEFUL_COMPONENT */ &&
-        (!vnode.component.type.__reserved) // fixed by xxxxxx 非 x 项目或者非内置组件
+        !(vnode.component.type.rootElement) // fixed by xxxxxx 非 x 项目或者非内置组件
         ? getExposeProxy(vnode.component) || vnode.component.proxy
         : vnode.el;
     const value = isUnmount ? null : refValue;
@@ -6840,7 +6871,12 @@ function baseCreateRenderer(options, createHydrationFns) {
             // a fragment can only have array children
             // since they are either generated by the compiler, or implicitly created
             // from arrays.
-            mountChildren(n2.children, container, fragmentEndAnchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
+            mountChildren(
+            // #10007
+            // such fragment like `<></>` will be compiled into
+            // a fragment which doesn't have a children.
+            // In this case fallback to an empty array
+            (n2.children || []), container, fragmentEndAnchor, parentComponent, parentSuspense, isSVG, slotScopeIds, optimized);
         }
         else {
             if (patchFlag > 0 &&
@@ -9358,9 +9394,16 @@ const nodeOps = {
         }
     },
     createElement: (tag, isSVG, is, props) => {
+        /**
+         * fix chrome version 64
+         * document.createElement('uni-text', undefined) instanceof customElements.get('uni-text') // false
+         * document.createElement('uni-text') instanceof customElements.get('uni-text') // true
+         */
         const el = isSVG
             ? doc.createElementNS(svgNS, tag)
-            : doc.createElement(tag, is ? { is } : undefined);
+            : is
+                ? doc.createElement(tag, { is })
+                : doc.createElement(tag);
         if (tag === 'select' && props && props.multiple != null) {
             el.setAttribute('multiple', props.multiple);
         }

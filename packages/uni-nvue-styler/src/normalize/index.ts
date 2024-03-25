@@ -1,5 +1,5 @@
-import type { Plugin, Declaration, Helpers, Rule } from 'postcss'
 import { camelize, hasOwn, isFunction, isString } from '@vue/shared'
+import type { Plugin, Declaration, Helpers, Rule } from 'postcss'
 import {
   LENGTH_REGEXP,
   SUPPORT_CSS_UNIT,
@@ -97,6 +97,15 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
   let result, log
   const normalize = getNormalizeMap(options)[name]
 
+  if (options.type === 'uvue') {
+    if (hasCssVar(value)) {
+      return {
+        value: normalizeCssVar(value),
+        log,
+      }
+    }
+  }
+
   if (isFunction(normalize)) {
     if (!isFunction(value)) {
       result = normalize(value, options, {
@@ -128,4 +137,15 @@ export function normalizeDecl(decl: Declaration, options: NormalizeOptions) {
     value: result.value,
     log,
   }
+}
+
+function hasCssVar(value: string) {
+  return value.includes('var(')
+}
+
+function normalizeCssVar(value: string) {
+  return value
+    .replaceAll(`var(--window-top)`, `CSS_VAR_WINDOW_TOP`)
+    .replaceAll(`var(--window-bottom)`, `CSS_VAR_WINDOW_BOTTOM`)
+    .replaceAll(`var(--status-bar-height)`, `CSS_VAR_STATUS_BAR_HEIGHT`)
 }

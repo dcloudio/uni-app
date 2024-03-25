@@ -125,6 +125,31 @@ export const UVUE_BUILT_IN_TAGS = [
   'sticky-section',
   // 自定义
   'uni-slider',
+  // 原生实现
+  'button',
+]
+
+export const UVUE_WEB_BUILT_IN_TAGS = [
+  'list-view',
+  'list-item',
+  'sticky-section',
+  'sticky-header',
+  'cloud-db-element',
+].map((tag) => 'uni-' + tag)
+
+export const UVUE_IOS_BUILT_IN_TAGS = [
+  'scroll-view',
+  'web-view',
+  'slider',
+  'swiper',
+  'swiper-item',
+  'rich-text',
+  'button',
+  'list-view',
+  'list-item',
+  'switch',
+  'sticky-header',
+  'sticky-section',
 ]
 
 export const NVUE_U_BUILT_IN_TAGS = [
@@ -140,13 +165,30 @@ export const NVUE_U_BUILT_IN_TAGS = [
   'u-rich-text',
 ]
 
+export const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag)
+
 export function isBuiltInComponent(tag: string) {
+  if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+    return false
+  }
   // h5 平台会被转换为 v-uni-
-  return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1
+  const realTag = 'uni-' + tag.replace('v-uni-', '')
+  // TODO 区分x和非x
+  return (
+    BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+    UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1
+  )
 }
 
-export function isH5CustomElement(tag: string) {
+export function isH5CustomElement(tag: string, isX = false) {
+  if (isX && UVUE_WEB_BUILT_IN_TAGS.indexOf(tag) !== -1) {
+    return true
+  }
   return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1
+}
+
+export function isUniXElement(name: string) {
+  return /^I?Uni.*Element(?:Impl)?$/.test(name)
 }
 
 export function isH5NativeTag(tag: string) {

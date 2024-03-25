@@ -20,6 +20,11 @@ export function useFormField(
     return
   }
   const instance = getCurrentInstance()!
+  //#if _X_ && !_NODE_JS_
+  const initialValue: string = isString(value)
+    ? (instance.proxy as any)[value]
+    : value.value
+  //#endif
   const ctx = {
     submit(): [string, any] {
       const proxy = instance.proxy
@@ -30,9 +35,17 @@ export function useFormField(
     },
     reset() {
       if (isString(value)) {
+        //#if _X_ && !_NODE_JS_
+        ;(instance.proxy as any)[value] = initialValue
+        //#else
         ;(instance.proxy as any)[value] = ''
+        //#endif
       } else {
+        //#if _X_ && !_NODE_JS_
+        value.value = initialValue
+        //#else
         value.value = ''
+        //#endif
       }
     },
   }

@@ -4,6 +4,9 @@ import {
   API_TYPE_CREATE_PUSH_MESSAGE,
   CreatePushMessageOptions,
   defineAsyncApi,
+  API_GET_CHANNEL_MANAGER,
+  API_TYPE_GET_CHANNEL_MANAGER,
+  defineSyncApi,
 } from '@dcloudio/uni-api'
 import { getAppAuthorizeSetting } from '../device/getAppAuthorizeSetting'
 export const createPushMessage = defineAsyncApi<API_TYPE_CREATE_PUSH_MESSAGE>(
@@ -21,4 +24,11 @@ export const createPushMessage = defineAsyncApi<API_TYPE_CREATE_PUSH_MESSAGE>(
   },
   undefined,
   CreatePushMessageOptions
+)
+
+let channelManager: PlusPushChannelManager
+
+export const getChannelManager = defineSyncApi<API_TYPE_GET_CHANNEL_MANAGER>(
+  API_GET_CHANNEL_MANAGER,
+  () => channelManager || (channelManager = plus.push.getChannelManager())
 )

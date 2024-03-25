@@ -8,6 +8,7 @@ import {
   isColorSupported,
   moveRootIndexSourceMap,
   parseSwiftPackageWithPluginId,
+  resolveConfigProvider,
   resolveIOSDir,
   resolvePackage,
   resolveUTSPlatformFile,
@@ -42,6 +43,7 @@ export async function runSwiftProd(
   filename: string,
   components: Record<string, string>,
   {
+    pluginId,
     isPlugin,
     isX,
     isSingleThread,
@@ -50,6 +52,7 @@ export async function runSwiftProd(
     sourceMap,
     hookClass,
   }: {
+    pluginId: string
     isPlugin: boolean
     isX: boolean
     isSingleThread: boolean
@@ -83,6 +86,7 @@ export async function runSwiftProd(
     throw parseUTSSyntaxError(result.error, inputDir)
   }
   genUTSPlatformResource(filename, {
+    isX,
     inputDir,
     outputDir,
     platform: 'app-ios',
@@ -91,6 +95,7 @@ export async function runSwiftProd(
     package: parseSwiftPackage(filename).namespace,
     hookClass,
     result,
+    provider: resolveConfigProvider('app-ios', pluginId, transform),
   })
 }
 
@@ -137,7 +142,7 @@ export async function runSwiftDev(
     'uts-development-ios'
   )
   if (!compilerServer) {
-    throw `项目使用了uts插件，正在安装 uts iOS 运行扩展...`
+    throw new Error(`项目使用了uts插件，正在安装 uts iOS 运行扩展...`)
   }
   if (compilerServer.checkEnv) {
     const { code, msg } = compilerServer.checkEnv()
@@ -170,6 +175,7 @@ export async function runSwiftDev(
   result.type = 'swift'
 
   const swiftFile = resolveUTSPlatformFile(filename, {
+    isX,
     inputDir,
     outputDir,
     platform: 'app-ios',
@@ -267,7 +273,7 @@ export async function compile(
       package: namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'swift',
-      imports: ['DCloudUTSFoundation'],
+      imports: ['DCloudUTSFoundation', ...(isX ? ['DCloudUniappRuntime'] : [])],
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
@@ -280,6 +286,7 @@ export async function compile(
   const result = await bundle(UTSTarget.SWIFT, options)
   sourceMap &&
     moveRootIndexSourceMap(filename, {
+      isX,
       inputDir,
       outputDir,
       platform: 'app-ios',

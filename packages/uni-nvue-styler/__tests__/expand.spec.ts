@@ -189,7 +189,7 @@ describe('nvue-styler: expand', () => {
           {
             type: 'decl',
             prop: `${border}-width`,
-            value: 'thin',
+            value: 'medium',
           },
           {
             type: 'decl',

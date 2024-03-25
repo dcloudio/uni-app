@@ -2,6 +2,7 @@ import { Ref, ref, computed, watch, onMounted, HTMLAttributes } from 'vue'
 import { extend } from '@vue/shared'
 import { LINEFEED } from '@dcloudio/uni-shared'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 import {
   props as fieldProps,
   emit as fieldEmit,
@@ -40,11 +41,22 @@ function setFixMargin() {
       window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING
 }
 
+export class UniTextareaElement extends UniElement {
+  focus(options?: FocusOptions | undefined): void {
+    this.querySelector('textarea')?.focus(options)
+  }
+}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Textarea',
   props,
   emits: ['confirm', 'linechange', ...fieldEmit],
-  setup(props, { emit }) {
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-textarea',
+    class: UniTextareaElement,
+  },
+  //#endif
+  setup(props, { emit, expose }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const wrapperRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
@@ -112,6 +124,29 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       setFixMargin()
     }
 
+    expose({
+      $triggerInput: (detail: { value: string }) => {
+        emit('update:modelValue', detail.value)
+        emit('update:value', detail.value)
+        state.value = detail.value
+      },
+    })
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniTextareaElement
+      Object.defineProperty(rootElement, 'value', {
+        get() {
+          return state.value
+        },
+        set(value: string) {
+          rootElement.querySelector('textarea')!.value = value
+        },
+      })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
+
     return () => {
       let textareaNode =
         props.disabled && fixDisabledColor ? (
@@ -126,7 +161,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               'uni-textarea-textarea': true,
               'uni-textarea-textarea-fix-margin': fixMargin,
             }}
-            style={{ overflowY: props.autoHeight ? 'hidden' : 'auto' }}
+            style={{
+              overflowY: props.autoHeight ? 'hidden' : 'auto',
+              /* eslint-disable no-restricted-syntax */
+              ...(props.cursorColor && { caretColor: props.cursorColor }),
+            }}
             // fix: 禁止 readonly 状态获取焦点
             onFocus={(event: Event) =>
               (event.target as HTMLInputElement).blur()
@@ -146,7 +185,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               'uni-textarea-textarea': true,
               'uni-textarea-textarea-fix-margin': fixMargin,
             }}
-            style={{ overflowY: props.autoHeight ? 'hidden' : 'auto' }}
+            style={{
+              overflowY: props.autoHeight ? 'hidden' : 'auto',
+              /* eslint-disable no-restricted-syntax */
+              ...(props.cursorColor && { caretColor: props.cursorColor }),
+            }}
             onKeydown={onKeyDownEnter}
             onKeyup={onKeyUpEnter}
           />

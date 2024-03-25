@@ -15,6 +15,10 @@ import {
   CloseSocketProtocol,
 } from '@dcloudio/uni-api'
 import { callOptions } from '@dcloudio/uni-shared'
+import {
+  type ConnectSocketFail,
+  type SendSocketMessageErrorCode,
+} from '@dcloudio/uni-app-x/types/uni'
 
 type eventName = keyof WebSocketEventMap
 
@@ -110,17 +114,31 @@ class SocketTask implements UniApp.SocketTask {
    * 发送
    * @param {any} data
    */
-  send(options: UniApp.SendSocketMessageOptions) {
+  send(
+    options: UniApp.SendSocketMessageOptions &
+      Pick<UniApp.CloseSocketOptions, 'fail'>
+  ) {
     const data = (options || {}).data
     const ws = <WebSocket>this._webSocket
+    type CallOptions = {
+      errMsg: string
+      errCode: SendSocketMessageErrorCode
+    }
     try {
       if (ws.readyState !== ws.OPEN) {
+        callOptions(options, {
+          errMsg: `sendSocketMessage:fail SocketTask.readyState is not OPEN`,
+          errCode: 10002,
+        } as CallOptions)
         throw new Error('SocketTask.readyState is not OPEN')
       }
       ws.send(data)
       callOptions(options, 'sendSocketMessage:ok')
     } catch (error) {
-      callOptions(options, `sendSocketMessage:fail ${error}`)
+      callOptions(options, {
+        errMsg: `sendSocketMessage:fail ${error}`,
+        errCode: 602001,
+      } as CallOptions)
     }
   }
 
@@ -166,7 +184,9 @@ export const connectSocket = defineTaskApi<API_TYPE_CONNECT_SOCKET>(
       protocols,
       (error: Error, socketTask: SocketTask) => {
         if (error) {
-          reject(error.toString())
+          reject<Partial<ConnectSocketFail>>(error.toString(), {
+            errCode: 600009,
+          })
           return
         }
         socketTasks.push(socketTask)
@@ -195,7 +215,7 @@ function callSocketTask(
         success() {
           resolve()
         },
-        fail({ errMsg }: any) {
+        fail({ errMsg }: { errMsg: string }) {
           reject(errMsg.replace('sendSocketMessage:fail ', ''))
         },
         complete: undefined,

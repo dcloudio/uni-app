@@ -71,6 +71,7 @@ export interface CodegenContext
       | 'className'
       | 'originalLineOffset'
       | 'generatedLineOffset'
+      | 'inMap'
     >
   > {
   source: string
@@ -98,8 +99,9 @@ function createCodegenContext(
     rootDir = '',
     targetLanguage = 'kotlin',
     mode = 'default',
-    prefixIdentifiers = false,
+    prefixIdentifiers = mode === 'module',
     bindingMetadata = {},
+    inline = false,
     sourceMap = false,
     filename = '',
     matchEasyCom = NOOP,
@@ -114,6 +116,7 @@ function createCodegenContext(
     mode,
     prefixIdentifiers,
     bindingMetadata,
+    inline,
     sourceMap,
     filename,
     source: ast.loc.source,
@@ -203,19 +206,31 @@ export function generate(
 ): CodegenResult {
   const context = createCodegenContext(ast, options)
   const { mode, deindent, indent, push, newline } = context
-  if (mode === 'function') {
-    push(UTS_COMPONENT_ELEMENT_IMPORTS)
+  const isSetupInlined = !!options.inline
+  // preambles
+  // in setup() inline mode, the preamble is generated in a sub context
+  // and returned separately.
+  // const preambleContext = isSetupInlined
+  //   ? createCodegenContext(ast, options)
+  //   : context
+  // 目前不分割
+  const preambleContext = context
+
+  if (mode === 'module') {
+    preambleContext.push(UTS_COMPONENT_ELEMENT_IMPORTS)
     newline()
-    genEasyComImports(ast.components, context)
+    genEasyComImports(ast.components, preambleContext)
     if (ast.imports.length) {
-      genImports(ast.imports, context)
+      genImports(ast.imports, preambleContext)
       newline()
     }
     push(genRenderFunctionDecl(options) + ` {`)
     newline()
-    push(`const _ctx = this`)
-    newline()
-    push(`const _cache = this.$.renderCache`)
+    if (!isSetupInlined) {
+      push(`const _ctx = this`)
+      newline()
+      push(`const _cache = this.$.renderCache`)
+    }
     // generate asset resolution statements
     if (ast.components.length) {
       newline()
@@ -241,12 +256,12 @@ export function generate(
   } else {
     push(`null`)
   }
-  if (mode === 'function') {
+  if (mode === 'module') {
     deindent()
     push(`}`)
   }
 
-  context.code = context.code.replace(
+  preambleContext.code = preambleContext.code.replace(
     UTS_COMPONENT_ELEMENT_IMPORTS,
     context.importUTSElements.length
       ? context.importUTSElements.join(';') + ';'
@@ -256,6 +271,7 @@ export function generate(
   return {
     ast,
     code: context.code,
+    // preamble: isSetupInlined ? preambleContext.code : ``,
     easyComponentAutoImports: context.easyComponentAutoImports,
     importEasyComponents: context.importEasyComponents,
     importUTSComponents: context.importUTSComponents,
@@ -272,9 +288,20 @@ function genImports(importsOptions: ImportItem[], context: CodegenContext) {
     return
   }
   importsOptions.forEach((imports) => {
-    context.push(`import `)
-    genNode(imports.exp, context)
-    context.push(` from '${imports.path}'`)
+    if (isString(imports.exp)) {
+      context.push(`import ${imports.exp} from '${imports.path}'`)
+    } else if (isSimpleExpressionNode(imports.exp)) {
+      // 解决静态资源导入 sourcemap 映射问题
+      context.push(
+        `import ${imports.exp.content} from '${imports.path}'`,
+        imports.exp
+      )
+    } else {
+      context.push(`import `)
+      genNode(imports.exp, context)
+      context.push(` from '${imports.path}'`)
+    }
+
     context.newline()
   })
 }

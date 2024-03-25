@@ -4,11 +4,16 @@ import { extend, isArray, isString } from '@vue/shared'
 import { CompilerError } from '@vue/compiler-core'
 import { ParseError, parseTree, printParseErrorCode, Node } from 'jsonc-parser'
 import { parseJson } from '../json'
-import { removePlatformStyle, validatePages } from '../pages'
+import {
+  filterPlatformPages,
+  removePlatformStyle,
+  validatePages,
+} from '../pages'
 import { normalizePath } from '../../utils'
 import { normalizeAppUniRoutes } from '../app/pages/uniRoutes'
 import { normalizeAppXUniConfig } from './uniConfig'
 import { offsetToLineColumn } from '../../vite/plugins/vitejs/utils'
+import { preUVueJson } from '../../preprocess'
 
 export { parseUniXFlexDirection, parseUniXSplashScreen } from './manifest'
 interface CheckPagesJsonError extends CompilerError {
@@ -58,10 +63,7 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
   if (pagePathNodes.length) {
     for (const node of pagePathNodes) {
       const pagePath: string = node.value ?? ''
-      if (
-        fs.existsSync(path.join(inputDir, pagePath + '.uvue')) ||
-        fs.existsSync(path.join(inputDir, pagePath + '.vue'))
-      ) {
+      if (pageExistsWithCaseSync(path.join(inputDir, pagePath))) {
         continue
       }
       const { line, column } = offsetToLineColumn(jsonStr, node.offset)
@@ -74,10 +76,22 @@ export function checkPagesJson(jsonStr: string, inputDir: string) {
         },
         offsetStart: node.offset,
         offsetEnd: node.offset + node.length,
-      } as CheckPagesJsonError
+      } as unknown as CheckPagesJsonError
     }
   }
   return true
+}
+
+function pageExistsWithCaseSync(pagePath: string) {
+  try {
+    const files = fs.readdirSync(path.dirname(pagePath))
+    const basename = path.basename(pagePath)
+    const uvuePage = basename + '.uvue'
+    const vuePage = basename + '.vue'
+    return files.some((file) => file === uvuePage || file === vuePage)
+  } catch (e) {
+    return false
+  }
 }
 
 function findSubPackageRoot(node: Node) {
@@ -140,6 +154,8 @@ function walkNode(node: Node, pagePathNodes: Node[]) {
 }
 
 export function normalizeUniAppXAppPagesJson(jsonStr: string) {
+  // 先条件编译
+  jsonStr = preUVueJson(jsonStr)
   checkPagesJson(jsonStr, process.env.UNI_INPUT_DIR)
   const pagesJson: UniApp.PagesJson = {
     pages: [],
@@ -149,9 +165,9 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
     pages: [],
     globalStyle: {} as UniApp.PagesJson['globalStyle'],
   }
-  // preprocess
   try {
-    userPagesJson = parseJson(jsonStr, true)
+    // 此处不需要条件编译了
+    userPagesJson = parseJson(jsonStr, false)
   } catch (e) {
     console.error(`[vite] Error: pages.json parse failed.\n`, jsonStr, e)
   }
@@ -181,6 +197,8 @@ export function normalizeUniAppXAppPagesJson(jsonStr: string) {
   if (userPagesJson.uniIdRouter) {
     pagesJson.uniIdRouter = userPagesJson.uniIdRouter
   }
+  // 是否应该用 process.env.UNI_UTS_PLATFORM
+  filterPlatformPages(process.env.UNI_PLATFORM, pagesJson)
   return pagesJson
 }
 

@@ -13,6 +13,7 @@ declare module '@vue/runtime-core' {
 
   interface ComponentCustomProperties {
     route: string
+    options?: Page.PageInstance['$page']['options']
     $scope: {
       $getAppWebview?: () => PlusWebviewWebviewObject
       setData(data: Record<string, unknown>, callback?: () => void): void
@@ -43,6 +44,8 @@ declare module '@vue/runtime-core' {
     $wxsModules?: string[]
     // 暂定 h5
     $pageInstance: ComponentInternalInstance
+    // x
+    $waitNativeRender: (fn: () => void) => void
   }
 
   export const onBeforeActivate: (fn: () => void) => void

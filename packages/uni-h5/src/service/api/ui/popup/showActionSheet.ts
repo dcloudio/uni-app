@@ -31,6 +31,12 @@ function onActionSheetClose(tapIndex: number) {
   }
 }
 
+export const hideActionSheet = () => {
+  if (showActionSheetState) {
+    showActionSheetState.visible = false
+  }
+}
+
 export const showActionSheet = defineAsyncApi<API_TYPE_SHOW_ACTION_SHEET>(
   API_SHOW_ACTION_SHEET,
   (args, { resolve, reject }) => {

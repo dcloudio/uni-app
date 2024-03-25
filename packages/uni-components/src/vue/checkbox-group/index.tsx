@@ -1,4 +1,4 @@
-import { inject, provide, ref } from 'vue'
+import { inject, provide, ref, onMounted } from 'vue'
 import type { Ref, ExtractPropTypes, ComputedRef } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
 import { UniFormCtx, uniFormKey } from '../form'
@@ -8,6 +8,7 @@ import {
   EmitEvent,
 } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '../../helpers/component'
+import { UniElement } from '../../helpers/UniElement'
 
 export const uniCheckGroupKey = PolySymbol(__DEV__ ? 'uniCheckGroup' : 'ucg')
 
@@ -31,16 +32,29 @@ const props = {
 
 type CheckBoxGroupProps = ExtractPropTypes<typeof props>
 
+export class UniCheckboxGroupElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'CheckboxGroup',
   props,
   emits: ['change'],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-checkbox-group',
+    class: UniCheckboxGroupElement,
+  },
+  //#endif
   setup(props, { emit, slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
     useProvideCheckGroup(props, trigger)
 
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniCheckboxGroupElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       return (
         <uni-checkbox-group ref={rootRef}>
@@ -60,7 +74,13 @@ function useProvideCheckGroup(
   const getFieldsValue = () =>
     fields.reduce((res, field) => {
       if (field.value.checkboxChecked) {
+        //#if _X_ && !_NODE_JS_
+        // @ts-ignore
+        res.push(field.value.value + '')
+        //#else
+        // @ts-ignore
         res.push(field.value.value)
+        //#endif
       }
       return res
     }, new Array())

@@ -102,7 +102,8 @@ export const getDOMProperties = (
   if (dom != null) {
     const properties = params.names.map((name: string): any | null => {
       if (name == 'innerText') {
-        if (dom.tagName == 'TEXT' || dom.tagName == 'UNI-BUTTON-ELEMENT') {
+        // @ts-expect-error
+        if (isTextElement(dom)) {
           return dom.getAttribute('value')
         } else {
           return getChildrenText(dom)
@@ -145,18 +146,16 @@ export const getProperties = (
   if (params.nodeId != null) {
     component = getComponentVmByNodeId(params.pageId, params.nodeId!, callback)
   }
-  if (dom != null) {
-    const properties = params.names.map((name: string): any | null => {
-      const attribute =
-        dom.getAttribute(name) != null
-          ? dom.getAttribute(name)
-          : component != null
-            ? component.$props[toCamelCase(name)]
-            : null
-      return attribute
-    })
-    callback({ properties }, null)
-  }
+  const properties = params.names.map((name: string): any | null => {
+    if (component != null && component.$props[toCamelCase(name)] != null) {
+      return component.$props[toCamelCase(name)]
+    }
+    if (dom != null) {
+      return dom.getAttribute(name)
+    }
+    return null
+  })
+  callback({ properties }, null)
 }
 
 export type GetAttributesParams = {
@@ -225,20 +224,18 @@ export const callFunction = (
           element.scrollTop = arg.y
           callback({ result: `${functionName} success` }, null)
         } else {
-          callback(
-            null,
-            { errMsg: `${functionName} fail, element is not scroll-view` }
-          )
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
         }
         break
       case 'swiper.swipeTo':
         if (element.tagName == 'SWIPER') {
           callback(null, { errMsg: `${functionName} not support` })
         } else {
-          callback(
-            null,
-            { errMsg: `${functionName} fail, element is not swiper` }
-          )
+          callback(null, {
+            errMsg: `${functionName} fail, element is not swiper`,
+          })
           return
         }
         break
@@ -246,10 +243,9 @@ export const callFunction = (
         if (element.tagName == 'SCROLL-VIEW') {
           callback({ result: element.scrollWidth }, null)
         } else {
-          callback(
-            null,
-            { errMsg: `${functionName} fail, element is not scroll-view` }
-          )
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
           return
         }
         break
@@ -257,10 +253,29 @@ export const callFunction = (
         if (element.tagName == 'SCROLL-VIEW') {
           callback({ result: element.scrollHeight }, null)
         } else {
-          callback(
-            null,
-            { errMsg: `${functionName} fail, element is not scroll-view` }
-          )
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+          return
+        }
+        break
+      case 'scroll-view.scrollTop':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollTop }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+          return
+        }
+        break
+      case 'scroll-view.scrollLeft':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollLeft }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
           return
         }
         break

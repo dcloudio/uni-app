@@ -1,4 +1,4 @@
-import { inject, onBeforeUnmount, ref } from 'vue'
+import { inject, onBeforeUnmount, ref, onMounted } from 'vue'
 import { useI18n, initI18nButtonMsgsOnce } from '@dcloudio/uni-core'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useHover } from '../../helpers/useHover'
@@ -8,10 +8,18 @@ import { UniFormCtx, uniFormKey } from '../form'
 import { uniLabelKey, UniLabelCtx } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { buttonProps } from '../../components/button'
+import { UniElement } from '../../helpers/UniElement'
 
+export class UniButtonElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Button',
   props: buttonProps,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-button',
+    class: UniButtonElement,
+  },
+  //#endif
   setup(props, { slots }) {
     const rootRef = ref<HTMLElement | null>(null)
     if (__PLATFORM__ === 'app') {
@@ -61,7 +69,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
     }
     useListeners(props, { 'label-click': onClick })
-
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniButtonElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
     return () => {
       const hoverClass = props.hoverClass
       const booleanAttrs = useBooleanAttr(props, 'disabled')
@@ -73,6 +86,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-button
           ref={rootRef}
           onClick={onClick}
+          id={props.id}
           class={hasHoverClass && hovering.value ? hoverClass : ''}
           {...(hasHoverClass && binding)}
           {...booleanAttrs}

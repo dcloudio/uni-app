@@ -15,22 +15,24 @@ import {
   parseAssets,
   preUVueCss,
   normalizeNodeModules,
+  genUTSClassName,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
-import { genClassName, isVue } from './utils'
-import { ResolvedOptions, getDescriptor } from './uvue/descriptorCache'
+import {
+  ResolvedOptions,
+  getDescriptor,
+  getResolvedOptions,
+} from './uvue/descriptorCache'
+import { isVue } from './utils'
 
 export function uniAppCssPlugin(): Plugin {
   const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   let resolvedConfig: ResolvedConfig
   const name = 'uni:app-uvue-css'
   const descriptorOptions: ResolvedOptions = {
-    root: process.env.UNI_INPUT_DIR,
+    ...getResolvedOptions(),
     sourceMap: false,
-    // eslint-disable-next-line no-restricted-globals
-    compiler: require('@vue/compiler-sfc'),
-    targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE,
   }
   return {
     name,
@@ -76,7 +78,7 @@ export function uniAppCssPlugin(): Plugin {
               resolvedConfig.logger.error(colors.red(msg))
             }
           })
-          return `export const ${genClassName(
+          return `export const ${genUTSClassName(
             filename.replace('.style.uts', '')
           )}Styles = ${code}`
         },
@@ -84,7 +86,7 @@ export function uniAppCssPlugin(): Plugin {
       // 增加 css plugins
       insertBeforePlugin(
         cssPlugin(config, {
-          isAppX: true,
+          isAndroidX: true,
           getDescriptor: (filename) => {
             return getDescriptor(filename, descriptorOptions, false)
           },

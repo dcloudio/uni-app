@@ -1,6 +1,5 @@
 import path from 'path'
 import moduleAlias from 'module-alias'
-import resovle, { SyncOpts } from 'resolve'
 import { isInHBuilderX } from './env'
 import type { Formatter } from '../logs/format'
 
@@ -43,16 +42,47 @@ export function initModuleAlias() {
         )
       )
     })
-    // https://github.com/vitejs/vite/blob/892916d040a035edde1add93c192e0b0c5c9dd86/packages/vite/src/node/plugins/css.ts#L1481
-    const oldSync = resovle.sync
-    resovle.sync = (id: string, opts?: SyncOpts) => {
-      if ((hbxPlugins as any)[id]) {
-        return path.resolve(
-          process.env.UNI_HBUILDERX_PLUGINS,
-          hbxPlugins[id as keyof typeof hbxPlugins]
-        )
+    // web 平台用了 vite 内置 css 插件，该插件会加载预编译器如scss、less等，需要转向到 HBuilderX 的对应编译器插件
+    if (
+      process.env.UNI_PLATFORM === 'h5' ||
+      process.env.UNI_PLATFORM === 'web'
+    ) {
+      // https://github.com/vitejs/vite/blob/main/packages/vite/src/node/packages.ts#L92
+      // 拦截预编译器
+      const join = path.join
+      path.join = function (...paths: string[]): string {
+        if (paths.length === 4) {
+          // path.join(basedir, 'node_modules', pkgName, 'package.json')
+          // const basedir = paths[0]
+          const nodeModules = paths[1] // = node_modules
+          const pkgName = paths[2]
+          const packageJson = paths[3] // = package.json
+          if (
+            nodeModules === 'node_modules' &&
+            packageJson === 'package.json' &&
+            (hbxPlugins as any)[pkgName]
+          ) {
+            return path.resolve(
+              process.env.UNI_HBUILDERX_PLUGINS,
+              hbxPlugins[pkgName as keyof typeof hbxPlugins],
+              packageJson
+            )
+          }
+        }
+        return join(...paths)
       }
-      return oldSync(id, opts)
+
+      // https://github.com/vitejs/vite/blob/892916d040a035edde1add93c192e0b0c5c9dd86/packages/vite/src/node/plugins/css.ts#L1481
+      // const oldSync = resovle.sync
+      // resovle.sync = (id: string, opts?: SyncOpts) => {
+      //   if ((hbxPlugins as any)[id]) {
+      //     return path.resolve(
+      //       process.env.UNI_HBUILDERX_PLUGINS,
+      //       hbxPlugins[id as keyof typeof hbxPlugins]
+      //     )
+      //   }
+      //   return oldSync(id, opts)
+      // }
     }
   }
 }

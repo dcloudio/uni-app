@@ -2,27 +2,20 @@ import fs from 'fs'
 import path from 'path'
 import { ImportSpecifier, init, parse } from 'es-module-lexer'
 import {
-  AutoImportOptions,
+  // AutoImportOptions,
   createResolveErrorMsg,
   createRollupError,
-  initAutoImportOptions,
+  // initAutoImportOptions,
   normalizeNodeModules,
   normalizePath,
   offsetToStartAndEnd,
   parseUniExtApiNamespacesJsOnce,
-  removeExt,
 } from '@dcloudio/uni-cli-shared'
-import {
-  camelize,
-  capitalize,
-  isArray,
-  isPlainObject,
-  isString,
-} from '@vue/shared'
+import { isArray, isPlainObject, isString } from '@vue/shared'
 
-import AutoImport from 'unplugin-auto-import/vite'
-import { once } from '@dcloudio/uni-shared'
-import type { SourceMapInput, PluginContext } from 'rollup'
+// import AutoImport from 'unplugin-auto-import/vite'
+// import { once } from '@dcloudio/uni-shared'
+import type { /*SourceMapInput, */ PluginContext } from 'rollup'
 import { Position, SourceLocation } from '@vue/compiler-core'
 
 import { createCompilerError } from './uvue/compiler/errors'
@@ -52,7 +45,11 @@ export function createTryResolve(
   offsetStart?: Position,
   origCode: string = ''
 ) {
-  return async (source: string, code: string, { ss, se }: ImportSpecifier) => {
+  return async (
+    source: string,
+    code: string,
+    { ss, se }: ImportSpecifier
+  ): Promise<boolean | void> => {
     const resolved = await wrapResolve(resolve)(source, importer)
     if (!resolved) {
       const { start, end } = offsetToStartAndEnd(code, ss, se)
@@ -116,7 +113,11 @@ export async function parseImports(
   for (const specifier of imports) {
     const source = code.slice(specifier.s, specifier.e)
     if (tryResolve) {
-      await tryResolve(source, code, specifier)
+      const res = await tryResolve(source, code, specifier)
+      if (res === false) {
+        // 忽略该import
+        continue
+      }
     }
     importsCode.push(`import "${source}"`)
   }
@@ -227,12 +228,12 @@ function serialize(obj: unknown, ts = false): string {
   }
 }
 
-export function parseUTSRelativeFilename(filename: string) {
+export function parseUTSRelativeFilename(filename: string, root?: string) {
   if (!path.isAbsolute(filename)) {
     return filename
   }
   return normalizeNodeModules(
-    path.relative(process.env.UNI_INPUT_DIR, filename)
+    path.relative(root ?? process.env.UNI_INPUT_DIR, filename)
   )
 }
 
@@ -287,6 +288,7 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
             spaceId: space.id,
             clientSecret: space.clientSecret,
             endpoint: space.apiEndpoint,
+            workspaceFolder: space.workspaceFolder,
           }
         case 'alipay': {
           return {
@@ -296,6 +298,7 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
             spaceAppId: space.spaceAppId,
             accessKey: space.accessKey,
             secretKey: space.secretKey,
+            workspaceFolder: space.workspaceFolder,
           }
         }
         case 'tencent':
@@ -304,6 +307,7 @@ export function getUniCloudSpaceList(): Array<UniCloudSpace> {
             provider: space.provider,
             spaceName: space.name,
             spaceId: space.id,
+            workspaceFolder: space.workspaceFolder,
           }
         }
       }
@@ -363,100 +367,33 @@ export function getExtApiComponents() {
   return extApiComponents
 }
 
-export function genClassName(fileName: string, prefix: string = 'Gen') {
-  return (
-    prefix +
-    capitalize(
-      camelize(
-        verifySymbol(
-          removeExt(
-            normalizeNodeModules(fileName)
-              .replace(/[\/|_]/g, '-')
-              .replace(/-+/g, '-')
-          )
-        )
-      )
-    )
-  )
-}
+// export const initAutoImportOnce = once(initAutoImport)
 
-function isValidStart(c: string): boolean {
-  return !!c.match(/^[A-Za-z_-]$/)
-}
-
-function isValidContinue(c: string): boolean {
-  return !!c.match(/^[A-Za-z0-9_-]$/)
-}
-
-function verifySymbol(s: string) {
-  const chars = Array.from(s)
-
-  if (isValidStart(chars[0]) && chars.slice(1).every(isValidContinue)) {
-    return s
-  }
-
-  const buf: string[] = []
-  let hasStart = false
-
-  for (const c of chars) {
-    if (!hasStart && isValidStart(c)) {
-      hasStart = true
-      buf.push(c)
-    } else if (isValidContinue(c)) {
-      buf.push(c)
-    }
-  }
-
-  if (buf.length === 0) {
-    buf.push('_')
-  }
-
-  return buf.join('')
-}
-
-export const initAutoImportOnce = once(initAutoImport)
-
-function initAutoImport(autoImportOptions?: AutoImportOptions) {
-  const options = initAutoImportOptions(
-    process.env.UNI_UTS_PLATFORM,
-    autoImportOptions || {}
-  )
-  if ((options.imports as any[]).length === 0) {
-    return {
-      transform(code: string, id: string) {
-        return { code }
-      },
-    }
-  }
-  const autoImport = AutoImport(options) as {
-    transform(
-      code: string,
-      id: string
-    ): Promise<{ code: string; map?: SourceMapInput }>
-  }
-  const { transform } = autoImport
-  autoImport.transform = async function (code, id) {
-    const result = await transform.call(this, code, id)
-    if (result) {
-      return result
-    }
-    return { code }
-  }
-  return autoImport
-}
-
-const autoImports: Record<string, [[string, string]]> = {}
-
-export function getAutoImports() {
-  return autoImports
-}
-
-export function addAutoImports(source: string, imports: [string, string]) {
-  if (!autoImports[source]) {
-    autoImports[source] = [imports]
-  } else {
-    if (!autoImports[source].find((item) => item[0] === imports[0])) {
-      autoImports[source].push(imports)
-    }
-  }
-}
+// function initAutoImport(autoImportOptions?: AutoImportOptions) {
+//   const options = initAutoImportOptions(
+//     process.env.UNI_UTS_PLATFORM,
+//     autoImportOptions || {}
+//   )
+//   if ((options.imports as any[]).length === 0) {
+//     return {
+//       transform(code: string, id: string) {
+//         return { code }
+//       },
+//     }
+//   }
+//   const autoImport = AutoImport(options) as {
+//     transform(
+//       code: string,
+//       id: string
+//     ): Promise<{ code: string; map?: SourceMapInput }>
+//   }
+//   const { transform } = autoImport
+//   autoImport.transform = async function (code, id) {
+//     const result = await transform.call(this, code, id)
+//     if (result) {
+//       return result
+//     }
+//     return { code }
+//   }
+//   return autoImport
+// }

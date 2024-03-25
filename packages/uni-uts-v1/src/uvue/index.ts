@@ -17,6 +17,7 @@ import {
   createStderrListener,
   getUniModulesEncryptCacheJars,
   RunKotlinBuildResult,
+  getInjectApis,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
@@ -25,11 +26,10 @@ import {
   resolveUniAppXSourceMapPath,
   isUniCloudSupported,
   parseExtApiDefaultParameters,
-  parseExtApiModules,
+  parseInjectModules,
 } from '../utils'
 import { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
-import { hasOwn } from '@vue/shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -101,6 +101,8 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         // 自动化测试
         NODE_ENV: process.env.NODE_ENV,
         UNI_AUTOMATOR_WS_ENDPOINT: process.env.UNI_AUTOMATOR_WS_ENDPOINT || '',
+        UNI_AUTOMATOR_APP_WEBVIEW_SRC:
+          process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC || '',
       },
     },
   }
@@ -178,7 +180,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       result.inject_apis &&
       result.inject_apis.find((api) => api.startsWith('uniCloud.'))
     ) {
-      throw `应用未关联服务空间，请在uniCloud目录右键关联服务空间`
+      throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
     }
     return runKotlinBuild(options, result)
   }
@@ -293,7 +295,7 @@ async function runKotlinDev(
         'uniapp-runextension'
       )
       if (!compilerServer) {
-        throw `项目使用了uts插件，正在安装 uts Android 运行扩展...`
+        throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
       }
       // 检查是否有缓存文件
       if (isFirst) {
@@ -379,41 +381,12 @@ async function runKotlinDev(
 async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
   ;(result as RunKotlinBuildResult).type = 'kotlin'
   ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
-    result.inject_apis || [],
+    (result.inject_apis || []).concat(getInjectApis()),
     options.extApis || {},
     options.extApiComponents
   )
   ;(result as RunKotlinBuildResult).kotlinc = false
   return result as RunKotlinBuildResult
-}
-
-function parseInjectModules(
-  inject_apis: string[],
-  localExtApis: Record<string, [string, string]>,
-  extApiComponents: string[]
-) {
-  const modules = new Set<string>()
-  const extApiModules = parseExtApiModules()
-  inject_apis.forEach((api) => {
-    if (api.startsWith('uniCloud.')) {
-      modules.add('uni-cloud-client')
-    } else {
-      if (
-        extApiModules[api] &&
-        // 非本地
-        !hasOwn(localExtApis, api.replace('uni.', ''))
-      ) {
-        modules.add(extApiModules[api])
-      }
-    }
-  })
-  extApiComponents.forEach((component) => {
-    const name = 'component.' + component
-    if (extApiModules[name]) {
-      modules.add(extApiModules[name])
-    }
-  })
-  return [...modules]
 }
 
 function readKotlinManifestJson(

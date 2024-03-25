@@ -28,6 +28,17 @@ export interface Exports {
   [name: string]: Define | Defines | false
 }
 
+const extApiProviders: {
+  plugin: string
+  service: string
+  name?: string
+  servicePlugin?: string
+}[] = []
+
+export function getUniExtApiProviders() {
+  return extApiProviders
+}
+
 export function parseUniExtApis(
   vite = true,
   platform: typeof process.env.UNI_UTS_PLATFORM,
@@ -42,6 +53,7 @@ export function parseUniExtApis(
   }
 
   const injects: Injects = {}
+  extApiProviders.length = 0
   fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
     // 必须以 uni- 开头
     if (!uniModuleDir.startsWith('uni-')) {
@@ -59,6 +71,11 @@ export function parseUniExtApis(
         exports = pkg.uni_modules['uni-ext-api']
       }
       if (exports) {
+        const provider = exports.provider as any
+        if (provider && provider.service) {
+          provider.plugin = uniModuleDir
+          extApiProviders.push(provider)
+        }
         const curInjects = parseInjects(
           vite,
           platform,
@@ -75,7 +92,7 @@ export function parseUniExtApis(
 }
 
 type Inject = string | string[]
-type Injects = {
+export type Injects = {
   [name: string]:
     | string
     | [string, string]
@@ -122,9 +139,18 @@ export function parseInjects(
   })
   const injects: Injects = {}
   if (Object.keys(rootDefines).length) {
+    const platformIndexFileName = path.resolve(
+      uniModuleRootDir,
+      'utssdk',
+      platform
+    )
+    const rootIndexFileName = path.resolve(
+      uniModuleRootDir,
+      'utssdk',
+      'index.uts'
+    )
     let hasPlatformFile = uniModuleRootDir
-      ? fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'index.uts')) ||
-        fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', platform))
+      ? fs.existsSync(rootIndexFileName) || fs.existsSync(platformIndexFileName)
       : true
     if (!hasPlatformFile) {
       if (platform === 'app') {
@@ -133,6 +159,18 @@ export function parseInjects(
             path.resolve(uniModuleRootDir, 'utssdk', 'app-android')
           ) ||
           fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios'))
+      }
+    }
+    // 其他平台修改source，直接指向目标文件，否则 uts2js 找不到类型信息
+    if (
+      platform !== 'app' &&
+      platform !== 'app-android' &&
+      platform !== 'app-ios'
+    ) {
+      if (fs.existsSync(platformIndexFileName)) {
+        source = `${source}/utssdk/${platform}/index.uts`
+      } else if (fs.existsSync(rootIndexFileName)) {
+        source = `${source}/utssdk/index.uts`
       }
     }
 

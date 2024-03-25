@@ -1,3 +1,5 @@
+import fs from 'fs'
+import path from 'path'
 import type { Plugin } from 'vite'
 import type { EmittedAsset } from 'rollup'
 import type { ParserOptions } from '@vue/compiler-core'
@@ -42,3 +44,21 @@ export * from './utils'
 export * from './plugins'
 export * from './features'
 export * from './autoImport'
+
+// https://github.com/vitejs/vite/blob/aac2ef77521f66ddd908f9d97020b8df532148cf/packages/vite/src/node/server/searchRoot.ts#L38
+// vite 在初始化阶段会执行 initTSConfck，此时会 searchForWorkspaceRoot，如果找到了 pnpm-workspace.yaml 文件，会将其作为 root
+// HBuilderX 项目，root 一定是 UNI_INPUT_DIR，所以需要重写 fs.existsSync，不重写的话，可能会找错，
+// 一旦找错目录，而该目录下有 N 多文件目录，会导致遍历及其缓慢
+export function rewriteExistsSyncHasRootFile() {
+  const existsSync = fs.existsSync
+  const pnpmWorkspaceYaml = path.join(
+    process.env.UNI_INPUT_DIR,
+    'pnpm-workspace.yaml'
+  )
+  fs.existsSync = (path) => {
+    if (path === pnpmWorkspaceYaml) {
+      return true
+    }
+    return existsSync(path)
+  }
+}

@@ -11,11 +11,11 @@ body {
   height: 100%;
 }
 
-body,
+/* body,
 uni-page-body {
   background-color: var(--UI-BG-0);
   color: var(--UI-FG-0);
-}
+} */
 
 body {
   overflow-x: hidden;

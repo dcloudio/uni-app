@@ -48,6 +48,7 @@ export type UTSOutputOptions = {
   isPlugin?: boolean
   split?: boolean
   disableSplitManifest?: boolean
+  removeImports?: boolean
   uniAppX?: {
     uvueOutDir: string
   }
@@ -57,6 +58,9 @@ export type UTSOutputOptions = {
     uniExtApiDefaultNamespace?: string
     uniExtApiNamespaces?: Record<string, [string, string]>
     uniExtApiDefaultParameters?: Record<string, string[]>
+    uniExtApiProviderName?: string
+    uniExtApiProviderService?: string
+    uniExtApiProviderServicePlugin?: string
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
     disableReactiveObject?: boolean

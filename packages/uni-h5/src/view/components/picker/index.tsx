@@ -26,6 +26,7 @@ import {
   defineBuiltInComponent,
   CustomEventTrigger,
   EmitEvent,
+  UniElement,
 } from '@dcloudio/uni-components'
 import { formatDateTime } from '@dcloudio/uni-shared'
 import { usePopupStyle } from '../../../helpers/usePopupStyle'
@@ -205,6 +206,7 @@ type State = {
   }
 }
 
+export class UniPickerElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Picker',
   compatConfig: {
@@ -212,6 +214,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   props,
   emits: ['change', 'cancel', 'columnchange'],
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-picker',
+    class: UniPickerElement,
+  },
+  //#endif
   setup(props, { emit, slots }) {
     initI18nPickerMsgsOnce()
     const { t } = useI18n()
@@ -271,6 +279,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     onMounted(() => {
       pickerRender.value = true
     })
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniPickerElement
+      // TODO
+      // Object.defineProperty(rootElement, 'value', {
+      //   get() {
+
+      //   },
+      //   set(val) {
+      //   },
+      // })
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       const { visible, contentVisible, valueArray, popupStyle, valueSync } =

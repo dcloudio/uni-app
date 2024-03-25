@@ -123,6 +123,29 @@ const UVUE_BUILT_IN_TAGS = [
     'sticky-section',
     // 自定义
     'uni-slider',
+    // 原生实现
+    'button',
+];
+const UVUE_WEB_BUILT_IN_TAGS = [
+    'list-view',
+    'list-item',
+    'sticky-section',
+    'sticky-header',
+    'cloud-db-element',
+].map((tag) => 'uni-' + tag);
+const UVUE_IOS_BUILT_IN_TAGS = [
+    'scroll-view',
+    'web-view',
+    'slider',
+    'swiper',
+    'swiper-item',
+    'rich-text',
+    'button',
+    'list-view',
+    'list-item',
+    'switch',
+    'sticky-header',
+    'sticky-section',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -136,12 +159,25 @@ const NVUE_U_BUILT_IN_TAGS = [
     'u-ad-draw',
     'u-rich-text',
 ];
+const UNI_UI_CONFLICT_TAGS = ['list-item'].map((tag) => 'uni-' + tag);
 function isBuiltInComponent(tag) {
+    if (UNI_UI_CONFLICT_TAGS.indexOf(tag) !== -1) {
+        return false;
+    }
     // h5 平台会被转换为 v-uni-
-    return BUILT_IN_TAGS.indexOf('uni-' + tag.replace('v-uni-', '')) !== -1;
+    const realTag = 'uni-' + tag.replace('v-uni-', '');
+    // TODO 区分x和非x
+    return (BUILT_IN_TAGS.indexOf(realTag) !== -1 ||
+        UVUE_WEB_BUILT_IN_TAGS.indexOf(realTag) !== -1);
 }
-function isH5CustomElement(tag) {
+function isH5CustomElement(tag, isX = false) {
+    if (isX && UVUE_WEB_BUILT_IN_TAGS.indexOf(tag) !== -1) {
+        return true;
+    }
     return TAGS.indexOf(tag) !== -1 || BUILT_IN_TAGS.indexOf(tag) !== -1;
+}
+function isUniXElement(name) {
+    return /^I?Uni.*Element(?:Impl)?$/.test(name);
 }
 function isH5NativeTag(tag) {
     return (tag !== 'head' &&
@@ -340,6 +376,67 @@ function dynamicSlotName(name) {
 const customizeRE = /:/g;
 function customizeEvent(str) {
     return shared.camelize(str.replace(customizeRE, '-'));
+}
+function normalizeStyle(value) {
+    if (value instanceof Map) {
+        const styleObject = {};
+        value.forEach((value, key) => {
+            styleObject[key] = value;
+        });
+        return shared.normalizeStyle(styleObject);
+    }
+    else if (shared.isArray(value)) {
+        const res = {};
+        for (let i = 0; i < value.length; i++) {
+            const item = value[i];
+            const normalized = shared.isString(item)
+                ? shared.parseStringStyle(item)
+                : normalizeStyle(item);
+            if (normalized) {
+                for (const key in normalized) {
+                    res[key] = normalized[key];
+                }
+            }
+        }
+        return res;
+    }
+    else {
+        return shared.normalizeStyle(value);
+    }
+}
+function normalizeClass(value) {
+    let res = '';
+    if (value instanceof Map) {
+        value.forEach((value, key) => {
+            if (value) {
+                res += key + ' ';
+            }
+        });
+    }
+    else if (shared.isArray(value)) {
+        for (let i = 0; i < value.length; i++) {
+            const normalized = normalizeClass(value[i]);
+            if (normalized) {
+                res += normalized + ' ';
+            }
+        }
+    }
+    else {
+        res = shared.normalizeClass(value);
+    }
+    return res.trim();
+}
+function normalizeProps(props) {
+    if (!props)
+        return null;
+    let { class: klass, style } = props;
+    if (klass && !shared.isString(klass)) {
+        props.class = normalizeClass(klass);
+    }
+    if (style) {
+        props.style = normalizeStyle(style);
+    }
+    return props;
 }
 
 let lastLogTime = 0;
@@ -564,10 +661,12 @@ function scrollTo(scrollTop, duration, isH5) {
     if (shared.isString(scrollTop)) {
         const el = document.querySelector(scrollTop);
         if (el) {
-            const { height, top } = el.getBoundingClientRect();
+            const { top } = el.getBoundingClientRect();
             scrollTop = top + window.pageYOffset;
-            if (isH5) {
-                scrollTop -= height;
+            // 如果存在，减去 <uni-page-head> 高度
+            const pageHeader = document.querySelector('uni-page-head');
+            if (pageHeader) {
+                scrollTop -= pageHeader.offsetHeight;
             }
         }
     }
@@ -1418,10 +1517,13 @@ E.prototype = {
         var evts = e[name];
         var liveEvents = [];
         if (evts && callback) {
-            for (var i = 0, len = evts.length; i < len; i++) {
-                if (evts[i].fn !== callback && evts[i].fn._ !== callback)
-                    liveEvents.push(evts[i]);
+            for (var i = evts.length - 1; i >= 0; i--) {
+                if (evts[i].fn === callback || evts[i].fn._ === callback) {
+                    evts.splice(i, 1);
+                    break;
+                }
             }
+            liveEvents = evts;
         }
         // Remove event from queue to prevent memory leak
         // Suggested by https://github.com/lazd
@@ -1580,7 +1682,10 @@ exports.UNI_SSR_GLOBAL_DATA = UNI_SSR_GLOBAL_DATA;
 exports.UNI_SSR_STORE = UNI_SSR_STORE;
 exports.UNI_SSR_TITLE = UNI_SSR_TITLE;
 exports.UNI_STORAGE_LOCALE = UNI_STORAGE_LOCALE;
+exports.UNI_UI_CONFLICT_TAGS = UNI_UI_CONFLICT_TAGS;
 exports.UVUE_BUILT_IN_TAGS = UVUE_BUILT_IN_TAGS;
+exports.UVUE_IOS_BUILT_IN_TAGS = UVUE_IOS_BUILT_IN_TAGS;
+exports.UVUE_WEB_BUILT_IN_TAGS = UVUE_WEB_BUILT_IN_TAGS;
 exports.UniBaseNode = UniBaseNode;
 exports.UniCommentNode = UniCommentNode;
 exports.UniElement = UniElement;
@@ -1633,8 +1738,12 @@ exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
 exports.isUniLifecycleHook = isUniLifecycleHook;
+exports.isUniXElement = isUniXElement;
+exports.normalizeClass = normalizeClass;
 exports.normalizeDataset = normalizeDataset;
 exports.normalizeEventType = normalizeEventType;
+exports.normalizeProps = normalizeProps;
+exports.normalizeStyle = normalizeStyle;
 exports.normalizeStyles = normalizeStyles;
 exports.normalizeTabBarStyles = normalizeTabBarStyles;
 exports.normalizeTarget = normalizeTarget;

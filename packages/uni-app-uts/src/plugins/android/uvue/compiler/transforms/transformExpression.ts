@@ -9,8 +9,13 @@
 //   support and the code is wrapped in `with (this) { ... }`.
 import { NodeTransform, TransformContext } from '../transform'
 
-import { makeMap, hasOwn, isString } from '@vue/shared'
-import { Node, Identifier } from '@babel/types'
+import { makeMap, hasOwn, isString, isArray } from '@vue/shared'
+import {
+  Node,
+  Identifier,
+  UpdateExpression,
+  AssignmentExpression,
+} from '@babel/types'
 
 import { parse } from '@babel/parser'
 import {
@@ -21,11 +26,14 @@ import {
   createCompoundExpression,
   createSimpleExpression,
   ExpressionNode,
+  IS_REF,
+  isInDestructureAssignment,
   isSimpleIdentifier,
   isStaticProperty,
   isStaticPropertyKey,
   NodeTypes,
   SimpleExpressionNode,
+  UNREF,
   walkIdentifiers,
 } from '@vue/compiler-core'
 
@@ -39,6 +47,10 @@ const GLOBALS_WHITE_LISTED =
 const isGloballyWhitelisted = /*#__PURE__*/ makeMap(GLOBALS_WHITE_LISTED)
 
 const isLiteralWhitelisted = /*#__PURE__*/ makeMap('true,false,null,this')
+
+// a heuristic safeguard to bail constant expressions on presence of
+// likely function invocation and member access
+const constantBailRE = /\w\s*\(|\.[^\d]/
 
 export const transformExpression: NodeTransform = (node, context) => {
   if (node.type === NodeTypes.INTERPOLATION) {
@@ -101,16 +113,102 @@ export function processExpression(
     return node
   }
 
-  const { bindingMetadata } = context
+  const { inline, bindingMetadata } = context
   const rewriteIdentifier = (raw: string, parent?: Node, id?: Identifier) => {
     const type = hasOwn(bindingMetadata, raw) && bindingMetadata[raw]
-    if (type && type.startsWith('setup')) {
-      // setup bindings in non-inline mode
-      return `$setup.${raw}`
-    } else if (type === BindingTypes.PROPS_ALIASED) {
-      return `$props['${bindingMetadata.__propsAliases![raw]}']`
-    } else if (type) {
-      return `$${type}.${raw}`
+    if (inline) {
+      // x = y
+      const isAssignmentLVal =
+        parent && parent.type === 'AssignmentExpression' && parent.left === id
+      // x++
+      const isUpdateArg =
+        parent && parent.type === 'UpdateExpression' && parent.argument === id
+      // ({ x } = y)
+      const isDestructureAssignment =
+        parent && isInDestructureAssignment(parent, parentStack)
+
+      if (
+        isConst(type) ||
+        type === BindingTypes.SETUP_REACTIVE_CONST ||
+        localVars[raw]
+      ) {
+        return raw
+      } else if (type === BindingTypes.SETUP_REF) {
+        return `${raw}.value`
+      } else if (type === BindingTypes.SETUP_MAYBE_REF) {
+        // const binding that may or may not be ref
+        // if it's not a ref, then assignments don't make sense -
+        // so we ignore the non-ref assignment case and generate code
+        // that assumes the value to be a ref for more efficiency
+        return isAssignmentLVal || isUpdateArg || isDestructureAssignment
+          ? `${raw}.value`
+          : `${context.helperString(UNREF)}(${raw})`
+      } else if (type === BindingTypes.SETUP_LET) {
+        if (isAssignmentLVal) {
+          // let binding.
+          // this is a bit more tricky as we need to cover the case where
+          // let is a local non-ref value, and we need to replicate the
+          // right hand side value.
+          // x = y --> isRef(x) ? x.value = y : x = y
+          const { right: rVal, operator } = parent as AssignmentExpression
+          const rExp = rawExp.slice(rVal.start! - 1, rVal.end! - 1)
+          const rExpString = stringifyExpression(
+            processExpression(
+              createSimpleExpression(rExp, false),
+              context,
+              false,
+              false,
+              knownIds
+            )
+          )
+          return `${context.helperString(
+            IS_REF
+          )}(${raw}) ? ${raw}.value ${operator} ${rExpString} : ${raw}`
+        } else if (isUpdateArg) {
+          // make id replace parent in the code range so the raw update operator
+          // is removed
+          id!.start = parent!.start
+          id!.end = parent!.end
+          const { prefix: isPrefix, operator } = parent as UpdateExpression
+          const prefix = isPrefix ? operator : ``
+          const postfix = isPrefix ? `` : operator
+          // let binding.
+          // x++ --> isRef(a) ? a.value++ : a++
+          return `${context.helperString(
+            IS_REF
+          )}(${raw}) ? ${prefix}${raw}.value${postfix} : ${prefix}${raw}${postfix}`
+        } else if (isDestructureAssignment) {
+          // TODO
+          // let binding in a destructure assignment - it's very tricky to
+          // handle both possible cases here without altering the original
+          // structure of the code, so we just assume it's not a ref here
+          // for now
+          return raw
+        } else {
+          return `${context.helperString(UNREF)}(${raw})`
+        }
+      }
+      // else if (type === BindingTypes.PROPS) {
+      //   // use __props which is generated by compileScript so in ts mode
+      //   // it gets correct type
+      //   return genPropsAccessExp(raw)
+      // } else if (type === BindingTypes.PROPS_ALIASED) {
+      //   // prop with a different local alias (from defineProps() destructure)
+      //   return genPropsAccessExp(bindingMetadata.__propsAliases![raw])
+      // }
+    } else {
+      // if (
+      //   (type && type.startsWith('setup')) ||
+      //   type === BindingTypes.LITERAL_CONST
+      // ) {
+      //   // setup bindings in non-inline mode
+      //   // return `$setup.${raw}`
+      //   return `$setup.${raw}`
+      // } else if (type === BindingTypes.PROPS_ALIASED) {
+      //   return `$props['${bindingMetadata.__propsAliases![raw]}']`
+      // } else if (type) {
+      //   return `$${type}.${raw}`
+      // }
     }
     // fallback to ctx
     return `_ctx.${raw}`
@@ -119,13 +217,18 @@ export function processExpression(
   // fast path if expression is a simple identifier.
   const rawExp = node.content
   // bail constant on parens (function invocation) and dot (member access)
-  const bailConstant = rawExp.indexOf(`(`) > -1 || rawExp.indexOf('.') > 0
+  const bailConstant = constantBailRE.test(rawExp)
 
   if (isSimpleIdentifier(rawExp)) {
     const isScopeVarReference = context.identifiers[rawExp]
     const isAllowedGlobal = isGloballyWhitelisted(rawExp)
     const isLiteral = isLiteralWhitelisted(rawExp)
-    if (!asParams && !isScopeVarReference && !isAllowedGlobal && !isLiteral) {
+    if (
+      !asParams &&
+      !isScopeVarReference &&
+      !isLiteral &&
+      (!isAllowedGlobal || bindingMetadata[rawExp])
+    ) {
       // const bindings exposed from setup can be skipped for patching but
       // cannot be hoisted to module scope
       if (bindingMetadata[node.content] === BindingTypes.SETUP_CONST) {
@@ -264,8 +367,12 @@ function canPrefix(id: Identifier) {
   return true
 }
 
-export function stringifyExpression(exp: ExpressionNode | string): string {
-  if (isString(exp)) {
+export function stringifyExpression(
+  exp: ExpressionNode | string | (ExpressionNode | string)[]
+): string {
+  if (isArray(exp)) {
+    return exp.map(stringifyExpression).join('')
+  } else if (isString(exp)) {
     return exp
   } else if (exp.type === NodeTypes.SIMPLE_EXPRESSION) {
     return exp.content
@@ -274,4 +381,10 @@ export function stringifyExpression(exp: ExpressionNode | string): string {
       .map(stringifyExpression)
       .join('')
   }
+}
+
+function isConst(type: unknown) {
+  return (
+    type === BindingTypes.SETUP_CONST || type === BindingTypes.LITERAL_CONST
+  )
 }

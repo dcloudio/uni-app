@@ -7,6 +7,8 @@ export * from './console'
 export * from './dynamicImportPolyfill'
 export * from './uts/uni_modules'
 export * from './uts/uvue'
+export * from './uts/ext-api'
+export * from './easycom'
 
 export { assetPlugin, parseAssets, getAssetHash } from './vitejs/plugins/asset'
 export {
@@ -16,6 +18,7 @@ export {
   minifyCSS,
   cssLangRE,
   commonjsProxyRE,
+  rewriteScssReadFileSync,
 } from './vitejs/plugins/css'
 
 export {

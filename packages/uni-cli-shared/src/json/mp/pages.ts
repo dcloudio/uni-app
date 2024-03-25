@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn } from '@vue/shared'
 import { parseJson } from '../json'
-import { validatePages } from '../pages'
+import { filterPlatformPages, validatePages } from '../pages'
 import { AppJson, NetworkTimeout, PageWindowOptions } from './types'
 import { parseTabBar, parseWindowOptions } from './utils'
 import { normalizePath } from '../../utils'
@@ -167,6 +167,8 @@ function parsePagesJson(
       appJson.tabBar = tabBar
     }
   }
+
+  filterPlatformPages(platform, pagesJson)
   ;['preloadRule', 'workers', 'plugins', 'entryPagePath'].forEach((name) => {
     if (hasOwn(pagesJson, name)) {
       appJson[name] = pagesJson[name]

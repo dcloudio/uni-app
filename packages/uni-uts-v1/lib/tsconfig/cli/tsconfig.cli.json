@@ -1,0 +1,8 @@
+{
+  "extends": "../tsconfig.vue.json",
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "useDefineForClassFields": false,
+    "lib": ["ESNext"],
+  }
+}

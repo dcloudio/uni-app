@@ -1,3 +1,4 @@
+@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testUts;
 import io.dcloud.uniapp.*;
 import io.dcloud.uniapp.extapi.*;

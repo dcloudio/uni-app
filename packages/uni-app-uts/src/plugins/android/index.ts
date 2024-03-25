@@ -1,6 +1,5 @@
 import path from 'path'
 import {
-  AutoImportOptions,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
   uniUTSUniModulesPlugin,
@@ -15,7 +14,7 @@ import { uniAppUVuePlugin } from './uvue'
 import { uniCloudPlugin } from './unicloud'
 import { parseImports, parseUTSRelativeFilename } from './utils'
 
-export function init(options: { autoImportOptions?: AutoImportOptions }) {
+export function init() {
   return [
     uniPrePlugin(),
     uniUTSUniModulesPlugin({
@@ -26,13 +25,13 @@ export function init(options: { autoImportOptions?: AutoImportOptions }) {
         process.env.UNI_UTS_TARGET_LANGUAGE
       ),
     }),
-    uniAppPlugin(options),
+    uniAppPlugin(),
     // 需要放到 uniAppPlugin 之后(TSC模式无需)，让 uniAppPlugin 先 emit 出真实的 main.uts，然后 MainPlugin 再返回仅包含 import 的 js code
     uniAppMainPlugin(),
     uniAppManifestPlugin(),
     uniAppPagesPlugin(),
     uniAppCssPlugin(),
-    uniAppUVuePlugin(options),
+    uniAppUVuePlugin(),
     uniCloudPlugin(),
     ...(process.env.UNI_APP_X_TSC === 'true'
       ? [

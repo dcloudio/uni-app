@@ -56,7 +56,7 @@ const miniProgram = {
 };
 const options = {
     // ？
-    cdn: 4,
+    cdn: 11,
     vite: {
         inject: {
             uni: [path__default.default.resolve(__dirname, 'uni.api.esm.js'), 'default'],

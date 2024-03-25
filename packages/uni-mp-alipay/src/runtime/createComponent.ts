@@ -20,7 +20,7 @@ import {
   initChildVues,
   createVueComponent,
   RelationOptions,
-  createObserver,
+  initPropsObserver,
 } from './util'
 
 declare function Component<
@@ -127,10 +127,9 @@ export function initCreateComponent() {
           return createVueComponent('component', this, vueOptions, parent)
         })
       }
-      mpComponentOptions.deriveDataFromProps = createObserver()
-    } else {
-      mpComponentOptions.didUpdate = createObserver(true)
     }
+
+    initPropsObserver(mpComponentOptions)
 
     initWxsCallMethods(
       mpComponentOptions.methods as WechatMiniprogram.Component.MethodOption,

@@ -1,12 +1,11 @@
 export const PUBLIC_DIR = 'static'
-export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx']
-export const X_EXTNAME_JS = ['.uts', ...EXTNAME_JS]
+export const EXTNAME_JS = ['.js', '.ts', '.jsx', '.tsx', '.uts']
 export const EXTNAME_TS = ['.ts', '.tsx']
 export const EXTNAME_VUE = ['.vue', '.nvue', '.uvue']
 export const X_EXTNAME_VUE = ['.uvue', '.vue']
 export const EXTNAME_VUE_TEMPLATE = ['.vue', '.nvue', '.uvue', '.jsx', '.tsx']
 export const EXTNAME_VUE_RE = /\.(vue|nvue|uvue)$/
-export const EXTNAME_JS_RE = /\.(js|jsx|ts|tsx|mjs)$/
+export const EXTNAME_JS_RE = /\.(js|jsx|ts|uts|tsx|mjs)$/
 export const EXTNAME_TS_RE = /\.tsx?$/
 
 const COMMON_EXTENSIONS = [
@@ -50,6 +49,7 @@ export const H5_API_STYLE_PATH = '@dcloudio/uni-h5/style/api/'
 export const H5_FRAMEWORK_STYLE_PATH = '@dcloudio/uni-h5/style/framework/'
 export const H5_COMPONENTS_STYLE_PATH = '@dcloudio/uni-h5/style/'
 export const BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style/'
+export const X_BASE_COMPONENTS_STYLE_PATH = '@dcloudio/uni-components/style-x/'
 
 export const COMMON_EXCLUDE = [
   /\/pages\.json\.js$/,
@@ -61,8 +61,6 @@ export const COMMON_EXCLUDE = [
   /\/vue-i18n\//,
   /\/@dcloudio\/uni-h5-vue/,
   /\/@dcloudio\/uni-shared/,
-  /\/@dcloudio\/uni-h5\/style/,
-  /\/@dcloudio\/uni-components\/style/,
 ]
 
 export const KNOWN_ASSET_TYPES = [

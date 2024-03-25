@@ -5,7 +5,8 @@ import os from 'os'
 import path from 'path'
 import remapping from '@ampproject/remapping'
 import type { DecodedSourceMap, RawSourceMap } from '@ampproject/remapping'
-import { SourceLocation } from '@vue/compiler-core'
+import { Position, SourceLocation } from '@vue/compiler-core'
+import { LinesAndColumns } from 'lines-and-columns'
 
 export function slash(p: string): string {
   return p.replace(/\\/g, '/')
@@ -69,7 +70,7 @@ export function offsetToStartAndEnd(
   startOffset: number,
   endOffset: number
 ): SourceLocation {
-  const lines = source.split(splitRE)
+  const lines = new LinesAndColumns(source)
   return {
     start: offsetToLineColumnByLines(lines, startOffset),
     end: offsetToLineColumnByLines(lines, endOffset),
@@ -77,25 +78,23 @@ export function offsetToStartAndEnd(
   }
 }
 
-function offsetToLineColumnByLines(lines: string[], offset: number) {
-  let currentOffset = 0
-  for (let i = 0; i < lines.length; i++) {
-    const lineLength = lines[i].length + 1 // Adding 1 for the newline character
-    if (currentOffset + lineLength > offset) {
-      const line = i + 1 // Line numbers start from 1
-      const column = offset - currentOffset // Column numbers start from 0
-      return { line, column, offset }
-    }
-    currentOffset += lineLength
-  }
-  return { line: lines.length, column: lines[lines.length - 1].length, offset }
-}
-
 export function offsetToLineColumn(
   source: string,
   offset: number
 ): { line: number; column: number } {
-  return offsetToLineColumnByLines(source.split(splitRE), offset)
+  return offsetToLineColumnByLines(new LinesAndColumns(source), offset)
+}
+
+export function offsetToLineColumnByLines(
+  lines: LinesAndColumns,
+  offset: number
+): Position {
+  let location = lines.locationForIndex(offset)
+  if (!location) {
+    location = lines.locationForIndex(offset)!
+  }
+  // lines-and-columns is 0-indexed while positions are 1-indexed
+  return { line: location.line + 1, column: location.column, offset: 0 }
 }
 
 export function posToNumber(
@@ -103,16 +102,16 @@ export function posToNumber(
   pos: number | { line: number; column: number }
 ): number {
   if (typeof pos === 'number') return pos
-  const lines = source.split(splitRE)
-  return posToNumberByLines(lines, pos.line, pos.column)
+  return posToNumberByLines(new LinesAndColumns(source), pos.line, pos.column)
 }
 
-function posToNumberByLines(lines: string[], line: number, column: number) {
-  let start = 0
-  for (let i = 0; i < line - 1; i++) {
-    start += lines[i].length + 1
-  }
-  return start + column
+function posToNumberByLines(
+  lines: LinesAndColumns,
+  line: number,
+  column: number
+) {
+  // lines-and-columns is 0-indexed while positions are 1-indexed
+  return lines.indexForLocation({ line: line - 1, column }) || 0
 }
 
 export function locToStartAndEnd(
@@ -122,7 +121,7 @@ export function locToStartAndEnd(
     end: { line: number; column: number }
   }
 ) {
-  const lines = source.split(splitRE)
+  const lines = new LinesAndColumns(source)
   const start = posToNumberByLines(lines, loc.start.line, loc.start.column)
   const end = loc.end
     ? posToNumberByLines(lines, loc.end.line, loc.end.column)

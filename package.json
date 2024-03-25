@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-3090920231215001",
+  "version": "3.0.0-alpha-4000620240323001",
   "workspaces": [
     "packages/*"
   ],
@@ -42,10 +42,10 @@
   "devDependencies": {
     "@babel/core": "^7.21.3",
     "@babel/preset-env": "^7.20.2",
-    "@dcloudio/types": "3.3.2",
-    "@dcloudio/uni-api": "3.0.0-alpha-3090920231215001",
-    "@dcloudio/uni-app": "3.0.0-alpha-3090920231215001",
-    "@dcloudio/uni-app-x": "^0.6.1",
+    "@dcloudio/types": "3.4.8",
+    "@dcloudio/uni-api": "3.0.0-alpha-4000620240323001",
+    "@dcloudio/uni-app": "3.0.0-alpha-4000620240323001",
+    "@dcloudio/uni-app-x": "^0.7.4",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.34.5",
     "@rollup/plugin-alias": "^4.0.2",
@@ -62,11 +62,11 @@
     "@typescript-eslint/parser": "^5.59.1",
     "@vitejs/plugin-vue": "^4.2.1",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
-    "@vue/compiler-sfc": "3.2.47",
-    "@vue/reactivity": "3.2.47",
-    "@vue/runtime-core": "3.2.47",
-    "@vue/runtime-dom": "3.2.47",
-    "@vue/shared": "3.2.47",
+    "@vue/compiler-sfc": "3.3.11",
+    "@vue/reactivity": "3.3.11",
+    "@vue/runtime-core": "3.3.11",
+    "@vue/runtime-dom": "3.3.11",
+    "@vue/shared": "3.3.11",
     "core-js": "^2.6.12",
     "cypress": "^10.7.0",
     "enquirer": "^2.3.6",
@@ -91,7 +91,7 @@
     "ts-jest": "^29.1.0",
     "typescript": "^5.0.4",
     "vite": "4.3.5",
-    "vue": "3.2.47",
+    "vue": "3.3.11",
     "vue-router": "^4.1.6",
     "yorkie": "^2.0.0"
   },

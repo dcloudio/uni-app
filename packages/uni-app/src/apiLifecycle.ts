@@ -142,3 +142,7 @@ export const onNavigationBarSearchInputFocusChanged =
   /*#__PURE__*/ createHook<onNavigationBarSearchInputFocusChangedHook>(
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED
   )
+
+// for uni-app-x web
+export const onPageHide = onHide
+export const onPageShow = onShow

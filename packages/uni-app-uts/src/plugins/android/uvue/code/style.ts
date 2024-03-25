@@ -4,7 +4,7 @@ import { ResolvedOptions, setSrcDescriptor } from '../descriptorCache'
 
 export function genStyle(
   _: SFCDescriptor,
-  { className }: { className: string; filename: string }
+  { className }: { className: string }
 ) {
   return `/*${className}Styles*/`
 }

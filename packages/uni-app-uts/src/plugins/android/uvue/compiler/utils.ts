@@ -1,20 +1,31 @@
 import path from 'path'
 import { type Node } from '@babel/types'
-import { camelize, capitalize } from '@vue/shared'
 import { ExpressionNode, createSimpleExpression } from '@vue/compiler-core'
 import { MagicString, walk } from '@vue/compiler-sfc'
 import { parseExpression } from '@babel/parser'
-import { normalizePath } from '@dcloudio/uni-cli-shared'
-import { CompilerOptions } from './options'
+import {
+  genUTSComponentPublicInstanceIdent,
+  genUTSComponentPublicInstanceImported,
+  normalizePath,
+} from '@dcloudio/uni-cli-shared'
+import { TemplateCompilerOptions } from './options'
 import { stringifyExpression } from './transforms/transformExpression'
 import { TransformContext } from './transform'
 import { CompilerError } from './errors'
-import { genClassName } from '../../utils'
+
+export const __DEV__ = true
+export const __BROWSER__ = false
+export const __COMPAT__ = false
 
 export function genRenderFunctionDecl({
   className = '',
-}: CompilerOptions): string {
-  return `function ${className}Render(): VNode | null`
+}: // inline = false,
+TemplateCompilerOptions): string {
+  // if(inline){
+  //   return `(): VNode | null =>`
+  // }
+  // 调整返回值类型为 any | null, 支持 <template>some text</template>
+  return `function ${className}Render(): any | null`
 }
 
 export function rewriteObjectExpression(
@@ -46,37 +57,6 @@ export function rewriteObjectExpression(
 
 export function onCompilerError(error: CompilerError) {}
 
-export function genImportComponentPublicInstance(
-  rootDir: string,
-  tagName: string,
-  fileName: string
-) {
-  if (fileName.includes('@dcloudio')) {
-    return ''
-  }
-  return `, { ${genComponentPublicInstanceImported(
-    rootDir,
-    fileName
-  )} as ${genComponentPublicInstanceIdent(tagName)} }`
-}
-
-export function genComponentPublicInstanceIdent(tagName: string) {
-  return capitalize(camelize(tagName)) + 'ComponentPublicInstance'
-}
-
-export function genComponentPublicInstanceImported(
-  root: string,
-  fileName: string
-) {
-  if (path.isAbsolute(fileName)) {
-    fileName = normalizePath(path.relative(root, fileName))
-  }
-  if (fileName.startsWith('@/')) {
-    return genClassName(fileName.replace('@/', '')) + 'ComponentPublicInstance'
-  }
-  return genClassName(fileName) + 'ComponentPublicInstance'
-}
-
 export function addEasyComponentAutoImports(
   easyComponentAutoImports: Record<string, [string, string]>,
   rootDir: string,
@@ -87,11 +67,12 @@ export function addEasyComponentAutoImports(
   if (fileName.includes('@dcloudio')) {
     return
   }
-  if (path.isAbsolute(fileName)) {
+  rootDir = normalizePath(rootDir)
+  if (path.isAbsolute(fileName) && fileName.startsWith(rootDir)) {
     fileName = '@/' + normalizePath(path.relative(rootDir, fileName))
   }
   easyComponentAutoImports[fileName] = [
-    genComponentPublicInstanceImported(rootDir, fileName),
-    genComponentPublicInstanceIdent(tagName),
+    genUTSComponentPublicInstanceImported(rootDir, fileName),
+    genUTSComponentPublicInstanceIdent(tagName),
   ]
 }

@@ -177,7 +177,7 @@ flexBasis: fill;
     expect(messages[0]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `max-content` is not supported for `height` (supported values are: `number`|`pixel`|`percent`)',
+        text: 'ERROR: property value `max-content` is not supported for `height` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
     expect(messages[1]).toEqual(
@@ -477,7 +477,6 @@ flexBasis: fill;
 }
 .boo {
   margin: abc;
-  padding: abc;
 }
 .flex {
   flex: 1;
@@ -495,21 +494,38 @@ flexBasis: fill;
     expect(json).toEqual({
       foo: {
         '': {
-          margin: 100,
-          padding: 50,
+          marginLeft: 100,
+          marginRight: 100,
+          marginTop: 100,
+          marginBottom: 100,
+          paddingLeft: 50,
+          paddingRight: 50,
+          paddingTop: 50,
+          paddingBottom: 50,
           flexFlow: 'row nowrap',
         },
       },
       bar: {
         '': {
-          margin: '10 auto',
+          marginTop: 10,
+          marginBottom: 10,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          paddingBottom: 10,
+          paddingTop: 10,
           flexFlow: 'row',
         },
       },
       baz: {
         '': {
-          margin: '10rpx 20 30',
-          padding: '10 20 30 40rpx',
+          marginTop: '10rpx',
+          marginBottom: 30,
+          marginLeft: 20,
+          marginRight: 20,
+          paddingTop: 10,
+          paddingBottom: 30,
+          paddingLeft: '40rpx',
+          paddingRight: 20,
         },
       },
       flex: {
@@ -525,32 +541,47 @@ flexBasis: fill;
     )
     expect(messages[1]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `10px auto` is not supported for `padding` (supported values are: `number`|`pixel`|`percent`)',
+        text: 'ERROR: property value `min-content` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
       })
     )
     expect(messages[2]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `margin` (supported values are: `number`|`pixel`|`percent`|`auto`)',
+        text: 'ERROR: property value `2 unset` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
       })
     )
     expect(messages[3]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `padding` (supported values are: `number`|`pixel`|`percent`)',
+        text: 'ERROR: property value `1 abc 100px` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
       })
     )
     expect(messages[4]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `min-content` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
+        text: 'ERROR: property value `auto` is not supported for `padding-right` (supported values are: `number`|`pixel`|`percent`)',
       })
     )
     expect(messages[5]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `2 unset` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
+        text: 'ERROR: property value `auto` is not supported for `padding-left` (supported values are: `number`|`pixel`|`percent`)',
       })
     )
     expect(messages[6]).toEqual(
       expect.objectContaining({
-        text: 'ERROR: property value `1 abc 100px` is not supported for `flex` (supported values are: `number`|`pixel`|`initial`|`auto`|`none`)',
+        text: 'ERROR: property value `abc` is not supported for `margin-top` (supported values are: `number`|`pixel`|`percent`|`auto`)',
+      })
+    )
+    expect(messages[7]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `abc` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`|`auto`)',
+      })
+    )
+    expect(messages[8]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `abc` is not supported for `margin-bottom` (supported values are: `number`|`pixel`|`percent`|`auto`)',
+      })
+    )
+    expect(messages[9]).toEqual(
+      expect.objectContaining({
+        text: 'ERROR: property value `abc` is not supported for `margin-left` (supported values are: `number`|`pixel`|`percent`|`auto`)',
       })
     )
   })
@@ -653,48 +684,41 @@ flexBasis: fill;
     const { json, messages } = await objectifierRule(`
 .foo{
   transition-duration: 200ms;
-  transition-delay: 0.5s
+  transition-delay: abc
 },
 .bar{
   transition-duration: 200;
-  transition-delay: abc
+  transition-delay: 0.5s
 }
 `)
     expect(json).toEqual({
       '@TRANSITION': {
         bar: {
-          duration: 200,
+          delay: '0.5s',
         },
         foo: {
-          delay: 500,
-          duration: 200,
+          duration: '200ms',
         },
       },
       foo: {
         '': {
-          transitionDuration: 200,
-          transitionDelay: 500,
+          transitionDuration: '200ms',
         },
       },
       bar: {
         '': {
-          transitionDuration: 200,
+          transitionDelay: '0.5s',
         },
       },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
-        text: 'NOTE: property value `200ms` is autofixed to `200`',
+        text: 'ERROR: property value `abc` is not supported for `transition-delay` (supported values are: `number of seconds`|`milliseconds`)',
       })
     )
     expect(messages[1]).toEqual(
       expect.objectContaining({
-        text: 'NOTE: property value `0.5s` is autofixed to `500`',
-      })
-    )
-    expect(messages[2]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `transition-delay` (supported values are: `number of seconds`|`milliseconds`)',
+        text: 'ERROR: property value `200` is not supported for `transition-duration` (supported values are: `number of seconds`|`milliseconds`)',
       })
     )
   })

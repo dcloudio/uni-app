@@ -9,7 +9,7 @@ export function render(_ctx, _cache) {
   return (_openBlock(), _createElementBlock("u-input", {
     modelValue: _ctx.text,
     onInput: _cache[0] || (_cache[0] = $event => ((_ctx.text) = $event.detail.value))
-  }, null, 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_1))
+  }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_1))
 }"
 `;
 
@@ -47,7 +47,7 @@ export function render(_ctx, _cache) {
   return (_openBlock(), _createElementBlock("u-textarea", {
     modelValue: _ctx.text,
     onInput: _cache[0] || (_cache[0] = $event => ((_ctx.text) = $event.detail.value))
-  }, null, 40 /* PROPS, HYDRATE_EVENTS */, _hoisted_1))
+  }, null, 40 /* PROPS, NEED_HYDRATION */, _hoisted_1))
 }"
 `;
 
@@ -70,7 +70,7 @@ const _hoisted_2 = [
 ]
 
 export function render(_ctx, _cache) {
-  return (_openBlock(), _createElementBlock("u-video", null, _hoisted_2))
+  return (_openBlock(), _createElementBlock("u-video", null, [..._hoisted_2]))
 }"
 `;
 
@@ -84,7 +84,7 @@ const _hoisted_3 = [
 ]
 
 export function render(_ctx, _cache) {
-  return (_openBlock(), _createElementBlock("view", _hoisted_1, _hoisted_3))
+  return (_openBlock(), _createElementBlock("view", _hoisted_1, [..._hoisted_3]))
 }"
 `;
 
@@ -98,7 +98,7 @@ const _hoisted_3 = [
 ]
 
 export function render(_ctx, _cache) {
-  return (_openBlock(), _createElementBlock("view", _hoisted_1, _hoisted_3))
+  return (_openBlock(), _createElementBlock("view", _hoisted_1, [..._hoisted_3]))
 }"
 `;
 

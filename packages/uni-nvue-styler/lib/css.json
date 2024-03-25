@@ -1,13 +1,36 @@
 {
   "version": 1.0,
-  "properties": [{
+  "properties": [
+    {
       "name": "width",
       "restrictions": [
         "length",
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
-      "values": [{
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -21,6 +44,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -38,6 +65,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -55,6 +86,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -68,14 +103,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "min-width",
@@ -83,7 +120,8 @@
         "length"
       ],
       "syntax": "<length>",
-      "values": [{
+      "values": [
+        {
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -97,6 +135,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -114,6 +156,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -131,6 +177,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -148,6 +198,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -165,6 +219,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -178,13 +236,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0px",
-        "web": "auto"
+        "uvue": "0px",
+        "w3c": "auto"
       }
     },
     {
@@ -193,7 +256,8 @@
         "length"
       ],
       "syntax": "<length>",
-      "values": [{
+      "values": [
+        {
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -207,6 +271,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -224,6 +292,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -241,6 +313,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -258,6 +334,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -275,6 +355,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -288,14 +372,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "none",
-        "web": "none"
-      }
+      "defaultValue": "none"
     },
     {
       "name": "height",
@@ -304,7 +390,29 @@
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
-      "values": [{
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -318,6 +426,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -335,6 +447,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -352,6 +468,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -365,14 +485,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "min-height",
@@ -380,7 +502,8 @@
         "length"
       ],
       "syntax": "<length>",
-      "values": [{
+      "values": [
+        {
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -394,6 +517,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -411,6 +538,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -428,6 +559,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -445,6 +580,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -462,6 +601,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -475,13 +618,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0px",
-        "web": "auto"
+        "uvue": "0px",
+        "w3c": "auto"
       }
     },
     {
@@ -490,7 +638,8 @@
         "length"
       ],
       "syntax": "<length>",
-      "values": [{
+      "values": [
+        {
           "name": "fit-content",
           "uniPlatform": {
             "app": {
@@ -504,6 +653,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -521,6 +674,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -538,6 +695,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -555,6 +716,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -572,6 +737,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -585,14 +754,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "none",
-        "web": "none"
-      }
+      "defaultValue": "none"
     },
     {
       "name": "position",
@@ -600,14 +771,69 @@
         "enum"
       ],
       "syntax": " relative | absolute | fixed",
-      "values": [{
-          "name": "relative"
+      "values": [
+        {
+          "name": "relative",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "absolute"
+          "name": "absolute",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "fixed"
+          "name": "fixed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "static",
@@ -623,6 +849,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -640,6 +870,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -653,13 +887,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "relative",
-        "web": "static"
+        "uvue": "relative",
+        "w3c": "static"
       }
     },
     {
@@ -678,13 +917,19 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0",
-        "web": "auto"
+        "uvue-app": "0",
+        "uvue-web": "auto",
+        "w3c": "auto"
       }
     },
     {
@@ -694,9 +939,29 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -706,14 +971,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "bottom",
@@ -722,9 +989,29 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -734,14 +1021,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "left",
@@ -750,9 +1039,29 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -762,14 +1071,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "right",
@@ -778,9 +1089,29 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -790,14 +1121,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "flex-direction",
@@ -805,17 +1138,90 @@
         "enum"
       ],
       "syntax": "row | row-reverse | column | column-reverse",
-      "values": [{
-          "name": "row"
+      "values": [
+        {
+          "name": "row",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "row-reverse"
+          "name": "row-reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "column"
+          "name": "column",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "column-reverse"
+          "name": "column-reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -827,16 +1233,26 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
+        "view",
+        "scroll-view",
+        "list-view",
+        "list-item",
+        "swiper-item",
+        "navigator"
       ],
       "defaultValue": {
-        "app-uvue": "column",
-        "web": "row"
+        "uvue": "column",
+        "w3c": "row"
       }
     },
     {
@@ -844,26 +1260,117 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "center | flex-star | flex-end | space-between | space-around",
-      "values": [{
+      "syntax": "center | flex-start | flex-end | space-between | space-around",
+      "values": [
+        {
           "name": "center",
-          "description": "元素紧密地排列在主轴方向居中对齐"
+          "description": "元素紧密地排列在主轴方向居中对齐",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "flex-start",
-          "description": "元素紧密地排列在容器主轴起始侧"
+          "description": "元素紧密地排列在容器主轴起始侧",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "flex-end",
-          "description": "元素紧密地排列在容器主轴结束侧"
+          "description": "元素紧密地排列在容器主轴结束侧",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "space-between",
-          "description": "在主轴上均匀分配元素。相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐"
+          "description": "在主轴上均匀分配元素。相邻元素间距离相同。第一个元素与主轴首对齐，最后一个元素与主轴尾对齐",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "space-around",
-          "description": "元素沿着主轴均匀分布在容器中。相邻项之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样"
+          "description": "元素沿着主轴均匀分布在容器中。相邻项之间的间距，主轴起始位置到第一个元素的间距，主轴结束位置到最后一个元素的间距，都完全一样",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -875,16 +1382,26 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
+        "view",
+        "scroll-view",
+        "list-view",
+        "list-item",
+        "swiper-item",
+        "navigator"
       ],
       "defaultValue": {
-        "app-uvue": "flex-start",
-        "web": "normal"
+        "uvue": "flex-start",
+        "w3c": "normal"
       }
     },
     {
@@ -893,14 +1410,69 @@
         "enum"
       ],
       "syntax": "nowrap | wrap | wrap-reverse",
-      "values": [{
-          "name": "nowrap"
+      "values": [
+        {
+          "name": "nowrap",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "wrap"
+          "name": "wrap",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "wrap-reverse"
+          "name": "wrap-reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -912,17 +1484,24 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
+        "view",
+        "scroll-view",
+        "list-view",
+        "list-item",
+        "swiper-item",
+        "navigator"
       ],
-      "defaultValue": {
-        "app-uvue": "nowrap",
-        "web": "nowrap"
-      }
+      "defaultValue": "nowrap"
     },
     {
       "name": "align-items",
@@ -930,17 +1509,90 @@
         "enum"
       ],
       "syntax": "center | flex-start | flex-end | stretch",
-      "values": [{
-          "name": "center"
+      "values": [
+        {
+          "name": "center",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "flex-start"
+          "name": "flex-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "flex-end"
+          "name": "flex-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "stretch"
+          "name": "stretch",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "baseline",
@@ -956,6 +1608,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -969,16 +1625,26 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
+        "view",
+        "scroll-view",
+        "list-view",
+        "list-item",
+        "swiper-item",
+        "navigator"
       ],
       "defaultValue": {
-        "app-uvue": "stretch",
-        "web": "normal"
+        "uvue": "stretch",
+        "w3c": "normal"
       }
     },
     {
@@ -987,20 +1653,111 @@
         "enum"
       ],
       "syntax": "auto | center | flex-start | flex-end | stretch",
-      "values": [{
-          "name": "auto"
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "center"
+          "name": "center",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "flex-start"
+          "name": "flex-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "flex-end"
+          "name": "flex-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "stretch"
+          "name": "stretch",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "baseline",
@@ -1016,6 +1773,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -1029,14 +1790,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "align-content",
@@ -1045,23 +1808,132 @@
       ],
       "description": "CSS 的 align-content 属性用于设置交叉轴方向多个行或列的分布方式",
       "syntax": "center | flex-start | flex-end | space-between | space-around | stretch",
-      "values": [{
-          "name": "center"
+      "values": [
+        {
+          "name": "center",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "flex-start"
+          "name": "flex-start",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "flex-end"
+          "name": "flex-end",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "space-between"
+          "name": "space-between",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "space-around"
+          "name": "space-around",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "stretch"
+          "name": "stretch",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -1073,16 +1945,26 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
+        "view",
+        "scroll-view",
+        "list-view",
+        "list-item",
+        "swiper-item",
+        "navigator"
       ],
       "defaultValue": {
-        "app-uvue": "stretch",
-        "web": "normal"
+        "uvue": "stretch",
+        "w3c": "normal"
       }
     },
     {
@@ -1094,14 +1976,69 @@
         "enum"
       ],
       "syntax": "none | [ <'flex-grow'> <'flex-shrink'>? || <'flex-basis'> ]",
-      "values": [{
-          "name": "initial"
+      "values": [
+        {
+          "name": "initial",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "auto"
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "none"
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -1113,13 +2050,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "none",
-        "web": "initial"
+        "uvue": "none",
+        "w3c": "initial"
       }
     },
     {
@@ -1137,14 +2079,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "flex-shrink",
@@ -1161,13 +2105,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0",
-        "web": "1"
+        "uvue": "0",
+        "w3c": "1"
       }
     },
     {
@@ -1178,8 +2127,27 @@
         "percentage"
       ],
       "syntax": "auto | <length> | <percentage>",
-      "values": [{
-          "name": "auto"
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "content",
@@ -1195,6 +2163,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -1208,14 +2180,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
-      }
+      "defaultValue": "auto"
     },
     {
       "name": "flex-flow",
@@ -1224,26 +2198,153 @@
         "enum"
       ],
       "syntax": "<'flex-direction'> || <'flex-wrap'>",
-      "values": [{
-          "name": "column"
+      "values": [
+        {
+          "name": "column",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "column-reverse"
+          "name": "column-reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "row"
+          "name": "row",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "row-reverse"
+          "name": "row-reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "nowrap"
+          "name": "nowrap",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "wrap"
+          "name": "wrap",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "wrap-reverse"
+          "name": "wrap-reverse",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -1255,12 +2356,22 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "view", "scroll-view", "list-view", "list-item", "swiper-item", "navigator"
+        "view",
+        "scroll-view",
+        "list-view",
+        "list-item",
+        "swiper-item",
+        "navigator"
       ]
     },
     {
@@ -1270,11 +2381,48 @@
         "enum"
       ],
       "syntax": "flex | none",
-      "values": [{
-          "name": "flex"
+      "values": [
+        {
+          "name": "flex",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "none"
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -1286,13 +2434,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "flex",
-        "web": "inline"
+        "uvue": "flex",
+        "w3c": "inline"
       }
     },
     {
@@ -1301,12 +2454,49 @@
         "enum"
       ],
       "syntax": " visible | hidden ",
-      "values": [{
+      "values": [
+        {
           "name": "visible",
-          "description": "暂时仅view组件支持visible，其他组件支持不支持"
+          "description": "暂时仅view组件支持visible，其他组件支持不支持",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "hidden"
+          "name": "hidden",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "scroll",
@@ -1322,6 +2512,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -1339,6 +2533,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -1356,6 +2554,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -1369,13 +2571,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "hidden",
-        "web": "visible"
+        "uvue": "hidden",
+        "w3c": "visible"
       }
     },
     {
@@ -1384,11 +2591,48 @@
         "enum"
       ],
       "syntax": "visible | hidden",
-      "values": [{
-          "name": "visible"
+      "values": [
+        {
+          "name": "visible",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "hidden"
+          "name": "hidden",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -1400,14 +2644,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "visible",
-        "web": "visible"
-      }
+      "defaultValue": "visible"
     },
     {
       "name": "opacity",
@@ -1424,14 +2670,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "1",
-        "web": "1"
-      }
+      "defaultValue": "1"
     },
     {
       "name": "box-sizing",
@@ -1439,11 +2687,48 @@
         "enum"
       ],
       "syntax": "content-box | border-box",
-      "values": [{
-          "name": "content-box"
+      "values": [
+        {
+          "name": "content-box",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "border-box"
+          "name": "border-box",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -1455,13 +2740,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "border-box",
-        "web": "content-box"
+        "uvue": "border-box",
+        "w3c": "content-box"
       }
     },
     {
@@ -1471,7 +2761,8 @@
         "gradient"
       ],
       "syntax": "[ <bg-layer> , ]* <final-bg-layer>",
-      "values": [{
+      "values": [
+        {
           "name": "fixed",
           "uniPlatform": {
             "app": {
@@ -1485,6 +2776,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -1502,6 +2797,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -1519,6 +2818,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -1536,6 +2839,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -1549,8 +2856,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -1569,14 +2881,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "transparent",
-        "web": "transparent"
-      }
+      "defaultValue": "transparent"
     },
     {
       "name": "background-image",
@@ -1584,9 +2898,29 @@
         "gradient"
       ],
       "syntax": "<bg-image>#",
-      "values": [{
-        "name": "linear-gradient"
-      }],
+      "values": [
+        {
+          "name": "linear-gradient",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1596,8 +2930,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -1607,8 +2946,27 @@
         "enum"
       ],
       "syntax": "<box>#",
-      "values": [{
-          "name": "border-box"
+      "values": [
+        {
+          "name": "border-box",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "padding-box",
@@ -1624,6 +2982,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -1641,6 +3003,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -1654,14 +3020,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "border-box",
-        "web": "border-box"
-      }
+      "defaultValue": "border-box"
     },
     {
       "name": "padding",
@@ -1680,8 +3048,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -1701,14 +3074,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "padding-top",
@@ -1726,14 +3101,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "padding-right",
@@ -1751,14 +3128,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "padding-bottom",
@@ -1776,14 +3155,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin",
@@ -1793,9 +3174,29 @@
         "percentage"
       ],
       "syntax": "[ <length> | <percentage> | auto ]{1,4}",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1805,14 +3206,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin-left",
@@ -1821,9 +3224,29 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1833,14 +3256,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin-top",
@@ -1849,9 +3274,29 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1861,14 +3306,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin-right",
@@ -1877,9 +3324,29 @@
         "percentage"
       ],
       "syntax": "<length> | <percentage> | auto",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1889,14 +3356,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "margin-bottom",
@@ -1906,9 +3375,29 @@
       ],
       "description": "margin-bottom 属性设置与元素相关联的盒子模型的下外边距。可以为负值",
       "syntax": "<length> | <percentage> | auto",
-      "values": [{
-        "name": "auto"
-      }],
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -1918,14 +3407,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0",
-        "web": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "border",
@@ -1938,16 +3429,88 @@
       "syntax": "<line-width> || <line-style> || <color>",
       "values": [
         {
-          "name" : "none"
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name" : "solid"
+          "name": "solid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name" : "dashed"
+          "name": "dashed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name" : "dotted"
+          "name": "dotted",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -1959,12 +3522,17 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "0"
+        "uvue": "0"
       }
     },
     {
@@ -1973,17 +3541,90 @@
         "enum"
       ],
       "syntax": "<line-style>{1,4}",
-      "values": [{
-          "name": "none"
+      "values": [
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "solid"
+          "name": "solid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dashed"
+          "name": "dashed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dotted"
+          "name": "dotted",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -1995,8 +3636,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2006,17 +3652,90 @@
         "enum"
       ],
       "syntax": "<line-style>",
-      "values": [{
-          "name": "none"
+      "values": [
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "solid"
+          "name": "solid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dashed"
+          "name": "dashed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dotted"
+          "name": "dotted",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2028,8 +3747,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2039,17 +3763,90 @@
         "enum"
       ],
       "syntax": "<line-style>",
-      "values": [{
-          "name": "none"
+      "values": [
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "solid"
+          "name": "solid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dashed"
+          "name": "dashed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dotted"
+          "name": "dotted",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2061,8 +3858,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2072,17 +3874,90 @@
         "enum"
       ],
       "syntax": "<line-style>",
-      "values": [{
-          "name": "none"
+      "values": [
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "solid"
+          "name": "solid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dashed"
+          "name": "dashed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dotted"
+          "name": "dotted",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2094,8 +3969,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2105,17 +3985,90 @@
         "enum"
       ],
       "syntax": "none | solid | dashed | dotted",
-      "values": [{
-          "name": "none"
+      "values": [
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "solid"
+          "name": "solid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dashed"
+          "name": "dashed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dotted"
+          "name": "dotted",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2127,8 +4080,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2139,7 +4097,8 @@
         "enum"
       ],
       "syntax": "<line-width>{1,4}",
-      "values": [{
+      "values": [
+        {
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -2150,8 +4109,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2166,8 +4130,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2182,8 +4151,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -2197,14 +4171,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "thin",
-        "web": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-left-width",
@@ -2213,7 +4189,8 @@
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
-      "values": [{
+      "values": [
+        {
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -2224,8 +4201,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2240,8 +4222,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2256,8 +4243,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -2271,14 +4263,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "thin",
-        "web": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-top-width",
@@ -2287,7 +4281,8 @@
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
-      "values": [{
+      "values": [
+        {
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -2298,8 +4293,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2314,8 +4314,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2330,8 +4335,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -2345,14 +4355,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "thin",
-        "web": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-right-width",
@@ -2361,7 +4373,8 @@
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
-      "values": [{
+      "values": [
+        {
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -2372,8 +4385,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2388,8 +4406,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2404,8 +4427,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -2419,14 +4447,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "thin",
-        "web": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-bottom-width",
@@ -2435,7 +4465,8 @@
         "enum"
       ],
       "syntax": "<length> | thin | medium | thick",
-      "values": [{
+      "values": [
+        {
           "name": "thin",
           "uniPlatform": {
             "app": {
@@ -2446,8 +4477,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2462,8 +4498,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         },
@@ -2478,8 +4519,13 @@
               },
               "ios": {
                 "osVer": "9.0",
-                "uniVer": "√"
+                "uniVer": "√",
+                "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -2493,14 +4539,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "thin",
-        "web": "medium"
-      }
+      "defaultValue": "medium"
     },
     {
       "name": "border-color",
@@ -2517,8 +4565,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2537,8 +4590,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2557,8 +4615,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2577,8 +4640,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2597,8 +4665,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2617,8 +4690,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2637,8 +4715,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2657,8 +4740,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2677,8 +4765,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2697,8 +4790,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -2719,13 +4817,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "border-bottom",
@@ -2744,13 +4845,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "border-left",
@@ -2769,13 +4873,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "border-right",
@@ -2794,13 +4901,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0"
-      }
+      "defaultValue": "0"
     },
     {
       "name": "color",
@@ -2818,16 +4928,24 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button", "input", "textarea"
+        "text",
+        "button",
+        "input",
+        "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "#000000",
-        "web": "canvastext"
+        "uvue": "#000000",
+        "w3c": "canvastext"
       }
     },
     {
@@ -2846,16 +4964,24 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button", "input", "textarea"
+        "text",
+        "button",
+        "input",
+        "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "16px",
-        "web": "medium"
+        "uvue": "16px",
+        "w3c": "medium"
       }
     },
     {
@@ -2864,11 +4990,48 @@
         "enum"
       ],
       "syntax": "normal | italic | oblique <angle>{0,2}",
-      "values": [{
-          "name": "italic"
+      "values": [
+        {
+          "name": "italic",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "normal"
+          "name": "normal",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2880,17 +5043,20 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ],
-      "defaultValue": {
-        "app-uvue": "normal",
-        "web": "normal"
-      }
+      "defaultValue": "normal"
     },
     {
       "name": "font-weight",
@@ -2898,17 +5064,90 @@
         "enum"
       ],
       "syntax": "<font-weight-absolute>{1,2}",
-      "values": [{
-          "name": "normal"
+      "values": [
+        {
+          "name": "normal",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "bold"
+          "name": "bold",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "400"
+          "name": "400",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "700"
+          "name": "700",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -2920,17 +5159,20 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ],
-      "defaultValue": {
-        "app-uvue": "normal",
-        "web": "normal"
-      }
+      "defaultValue": "normal"
     },
     {
       "name": "text-decoration",
@@ -2949,12 +5191,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ]
     },
     {
@@ -2963,11 +5211,48 @@
         "enum"
       ],
       "syntax": "none | [ underline || overline || line-through || blink ] | spelling-error | grammar-error",
-      "values": [{
-          "name": "underline"
+      "values": [
+        {
+          "name": "underline",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "line-through"
+          "name": "line-through",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
           "name": "overline",
@@ -2983,6 +5268,10 @@
                 "uniVer": "√",
                 "unixVer": "x"
               }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
             }
           }
         }
@@ -2996,17 +5285,20 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ],
-      "defaultValue": {
-        "app-uvue": "none",
-        "web": "none"
-      }
+      "defaultValue": "none"
     },
     {
       "name": "text-decoration-color",
@@ -3023,12 +5315,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ]
     },
     {
@@ -3037,17 +5335,90 @@
         "enum"
       ],
       "syntax": "solid | double | dotted | dashed | wavy",
-      "values": [{
-          "name": "solid"
+      "values": [
+        {
+          "name": "solid",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dashed"
+          "name": "dashed",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "dotted"
+          "name": "dotted",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "wavy"
+          "name": "wavy",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3059,12 +5430,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ]
     },
     {
@@ -3082,12 +5459,18 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ]
     },
     {
@@ -3096,14 +5479,69 @@
         "enum"
       ],
       "syntax": "start | end | left | right | center | justify | match-parent",
-      "values": [{
-          "name": "left"
+      "values": [
+        {
+          "name": "left",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "center"
+          "name": "center",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "right"
+          "name": "right",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3115,16 +5553,25 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button", "input", "textarea"
+        "text",
+        "button",
+        "input",
+        "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "left",
-        "web": "start"
+        "uvue-app": "left",
+        "uvue-web": "left",
+        "w3c": "start"
       }
     },
     {
@@ -3133,20 +5580,111 @@
         "font"
       ],
       "syntax": "<family-name>",
-      "values": [{
-          "name": "cursive"
+      "values": [
+        {
+          "name": "cursive",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "fantasy"
+          "name": "fantasy",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "monospace"
+          "name": "monospace",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "sans-serif"
+          "name": "sans-serif",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "serif"
+          "name": "serif",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3158,12 +5696,20 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button", "input", "textarea"
+        "text",
+        "button",
+        "input",
+        "textarea"
       ]
     },
     {
@@ -3172,11 +5718,48 @@
         "enum"
       ],
       "syntax": "[ clip | ellipsis | <string> ]{1,2}",
-      "values": [{
-          "name": "clip"
+      "values": [
+        {
+          "name": "clip",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "ellipsis"
+          "name": "ellipsis",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3188,17 +5771,20 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ],
-      "defaultValue": {
-        "app-uvue": "clip",
-        "web": "clip"
-      }
+      "defaultValue": "clip"
     },
     {
       "name": "line-height",
@@ -3216,16 +5802,23 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button", "textarea"
+        "text",
+        "button",
+        "textarea"
       ],
       "defaultValue": {
-        "app-uvue": "1.2",
-        "web": "normal"
+        "uvue": "1.2",
+        "w3c": "normal"
       }
     },
     {
@@ -3244,16 +5837,22 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "x"
+            "uniVer": "x",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "x",
+          "unixVer": "x"
         }
       },
       "unixTags": [
-        "text", "button", "input", "textarea"
+        "text",
+        "button",
+        "input",
+        "textarea"
       ],
-      "defaultValue": {
-        "app-uvue": "-1"
-      }
+      "defaultValue": "-1"
     },
     {
       "name": "letter-spacing",
@@ -3270,17 +5869,97 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "unixTags": [
-        "text", "button"
+        "text",
+        "button"
       ],
       "defaultValue": {
-        "app-uvue": "0",
-        "web": "normal"
+        "uvue": "0",
+        "w3c": "normal"
       }
+    },
+    {
+      "name": "white-space",
+      "restrictions": [
+        "enum"
+      ],
+      "syntax": "normal | pre | nowrap | pre-wrap | pre-line | break-spaces | [ <'white-space-collapse'> || <'text-wrap'> || <'white-space-trim'> ]",
+      "values": [
+        {
+          "name": "normal",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.0"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "nowrap",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.0"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "4.0"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      },
+      "unixTags": [
+        "text",
+        "button"
+      ],
+      "defaultValue": "normal"
     },
     {
       "name": "box-shadow",
@@ -3290,9 +5969,29 @@
         "color"
       ],
       "syntax": "none | <shadow>#",
-      "values": [{
-        "name": "inset"
-      }],
+      "values": [
+        {
+          "name": "inset",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -3302,8 +6001,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -3323,8 +6027,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -3334,77 +6043,510 @@
         "enum"
       ],
       "syntax": "none | <single-transition-property>#",
-      "values": [{
-          "name": "width"
+      "values": [
+        {
+          "name": "width",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "height"
+          "name": "height",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "margin"
+          "name": "margin",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "margin-top"
+          "name": "margin-top",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "margin-bottom"
+          "name": "margin-bottom",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "margin-left"
+          "name": "margin-left",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "margin-right"
+          "name": "margin-right",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "left"
+          "name": "left",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "right"
+          "name": "right",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "top"
+          "name": "top",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "bottom"
+          "name": "bottom",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "padding"
+          "name": "padding",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "padding-left"
+          "name": "padding-left",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "padding-right"
+          "name": "padding-right",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "padding-top"
+          "name": "padding-top",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "padding-bottom"
+          "name": "padding-bottom",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "opacity"
+          "name": "opacity",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "background-color"
+          "name": "background-color",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "border-color"
+          "name": "border-color",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "border-top-color"
+          "name": "border-top-color",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "border-bottom-color"
+          "name": "border-bottom-color",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "border-left-color"
+          "name": "border-left-color",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "border-right-color"
+          "name": "border-right-color",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "transform"
+          "name": "transform",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3416,13 +6558,19 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "none",
-        "web": "all"
+        "uvue-app": "none",
+        "uvue-web": "all",
+        "w3c": "all"
       }
     },
     {
@@ -3440,14 +6588,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0s",
-        "web": "0s"
-      }
+      "defaultValue": "0s"
     },
     {
       "name": "transition-timing-function",
@@ -3455,23 +6605,132 @@
         "enum"
       ],
       "syntax": "<easing-function>#",
-      "values": [{
-          "name": "ease"
+      "values": [
+        {
+          "name": "ease",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "ease-in"
+          "name": "ease-in",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "ease-out"
+          "name": "ease-out",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "ease-in-out"
+          "name": "ease-in-out",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "linear"
+          "name": "linear",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "cubic-bezier"
+          "name": "cubic-bezier",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3483,14 +6742,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "ease",
-        "web": "ease"
-      }
+      "defaultValue": "ease"
     },
     {
       "name": "transition-delay",
@@ -3507,14 +6768,16 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "0s",
-        "web": "0s"
-      }
+      "defaultValue": "0s"
     },
     {
       "name": "transform",
@@ -3522,35 +6785,216 @@
         "enum"
       ],
       "syntax": "none | <transform-list>",
-      "values": [{
-          "name": "rotate(<angle>)"
+      "values": [
+        {
+          "name": "rotate(<angle>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "rotateX(<angle>)"
+          "name": "rotateX(<angle>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "rotateY(<angle>)"
+          "name": "rotateY(<angle>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "rotateZ(<angle>)"
+          "name": "rotateZ(<angle>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "scale(<number> <number>)"
+          "name": "scale(<number> <number>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "scaleX(<number>)"
+          "name": "scaleX(<number>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "scaleY(<number>)"
+          "name": "scaleY(<number>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "translate(<length/percentage> <length/percentage>)"
+          "name": "translate(<length/percentage> <length/percentage>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "translateX(<length/percentage>)"
+          "name": "translateX(<length/percentage>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "translateY(<length/percentage>)"
+          "name": "translateY(<length/percentage>)",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3562,8 +7006,13 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       }
     },
@@ -3576,20 +7025,111 @@
         "enum"
       ],
       "syntax": "[ <length-percentage> | left | center | right | top | bottom ] | [ [ <length-percentage> | left | center | right ] && [ <length-percentage> | top | center | bottom ] ] <length>?",
-      "values": [{
-          "name": "top"
+      "values": [
+        {
+          "name": "top",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "left"
+          "name": "left",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "right"
+          "name": "right",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "bottom"
+          "name": "bottom",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "center"
+          "name": "center",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3601,13 +7141,19 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "√"
+            "uniVer": "√",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
       "defaultValue": {
-        "app-uvue": "50% 50%",
-        "web": "50% 50% 0"
+        "uvue-app": "50% 50%",
+        "uvue-web": "50% 50% 0",
+        "w3c": "50% 50% 0"
       }
     },
     {
@@ -3616,11 +7162,48 @@
         "enum"
       ],
       "syntax": "auto | none",
-      "values": [{
-          "name": "auto"
+      "values": [
+        {
+          "name": "auto",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         },
         {
-          "name": "none"
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "9.0",
+                "uniVer": "√",
+                "unixVer": "x"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -3632,13 +7215,357 @@
           },
           "ios": {
             "osVer": "9.0",
-            "uniVer": "x"
+            "uniVer": "x",
+            "unixVer": "x"
           }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
         }
       },
-      "defaultValue": {
-        "app-uvue": "auto",
-        "web": "auto"
+      "defaultValue": "auto"
+    }
+  ],
+  "atDirectives": [
+    {
+      "name": "@import",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "3.9+"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@font-face",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "5.0",
+            "uniVer": "√",
+            "unixVer": "3.9+"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@charset",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@color-profile",
+      "description": "@color-profile CSS at-rule 定义并命名一个颜色配置文件，稍后可以在 color() 函数中使用该配置文件来指定颜色。",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@container",
+      "description": "@container CSS at-rule 是将样式应用于包含上下文的条件组规则。 样式声明按条件筛选，如果条件为 true，则应用于容器。 当容器更改大小时，将评估条件。你还可以给这个收纳盒贴上一个名字，这样它就会专门整理那些名字相同的容器。当它整理容器的时候，会仔细检查每个容器的所有细节，确保所有条件都符合才会应用样式。",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@counter-style",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@document",
+      "description": "@document CSS at 规则根据文档的 URL 限制其中包含的样式规则。它主要用于用户定义的样式表，但也可用于作者定义的样式表。",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@font-feature-values",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@font-palette-values",
+      "description": "@font-palette-values CSS at-rule 允许您自定义字体制作者创建的字体调色板的默认值。",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@keyframes",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@layer",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@media",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@namespace",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@page",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@property",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
+      }
+    },
+    {
+      "name": "@supports",
+      "uniPlatform": {
+        "app": {
+          "android": {
+            "osVer": "x",
+            "uniVer": "√",
+            "unixVer": "x"
+          },
+          "ios": {
+            "osVer": "9.0",
+            "uniVer": "√",
+            "unixVer": "x"
+          }
+        },
+        "web": {
+          "uniVer": "√",
+          "unixVer": "4.0"
+        }
       }
     }
   ]

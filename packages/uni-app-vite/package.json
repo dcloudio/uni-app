@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-vite",
-  "version": "3.0.0-alpha-3090920231215001",
+  "version": "3.0.0-alpha-4000620240323001",
   "description": "uni-app-vite",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,14 +19,14 @@
   "license": "Apache-2.0",
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-3090920231215001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-3090920231215001",
-    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-3090920231215001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-3090920231215001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4000620240323001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4000620240323001",
+    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-4000620240323001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4000620240323001",
     "@rollup/pluginutils": "^4.2.0",
     "@vitejs/plugin-vue": "^4.2.1",
-    "@vue/compiler-dom": "3.2.47",
-    "@vue/compiler-sfc": "3.2.47",
+    "@vue/compiler-dom": "3.3.11",
+    "@vue/compiler-sfc": "3.3.11",
     "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "picocolors": "^1.0.0"
@@ -34,11 +34,11 @@
   "devDependencies": {
     "@types/debug": "^4.1.7",
     "@types/fs-extra": "^9.0.13",
-    "@vue/compiler-core": "3.2.47",
+    "@vue/compiler-core": "3.3.11",
     "esbuild": "^0.17.5",
     "postcss": "^8.4.21",
     "rollup": "^3.7.0",
     "vite": "^4.0.0",
-    "vue": "3.2.47"
+    "vue": "3.3.11"
   }
 }

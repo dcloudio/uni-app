@@ -5,6 +5,7 @@ import { ComponentOptionsBase as ComponentOptionsBase_2 } from 'vue';
 import type { ComponentPublicInstance } from '@vue/runtime-core';
 import { ComponentPublicInstance as ComponentPublicInstance_2 } from 'vue';
 import { createApp } from 'vue';
+import type { NormalizedStyle } from '@vue/shared';
 import type { RendererNode } from '@vue/runtime-core';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
@@ -257,7 +258,7 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
-export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance_2<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase_2<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | null, info: string) => void) | undefined;
+export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance_2<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase_2<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
 
 export declare function invokeCreateVueAppHook(app: App): void;
 
@@ -273,7 +274,7 @@ export declare function isComponentInternalInstance(vm: unknown): vm is Componen
 
 export declare function isComponentTag(tag: string): boolean;
 
-export declare function isH5CustomElement(tag: string): boolean;
+export declare function isH5CustomElement(tag: string, isX?: boolean): boolean;
 
 export declare function isH5NativeTag(tag: string): boolean;
 
@@ -284,6 +285,8 @@ export declare function isRootHook(name: string): boolean;
 export declare function isRootImmediateHook(name: string): boolean;
 
 export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
+
+export declare function isUniXElement(name: string): boolean;
 
 export declare interface IUniPageNode {
     pageId: number;
@@ -325,9 +328,15 @@ export declare const NODE_TYPE_PAGE = 0;
 
 export declare const NODE_TYPE_TEXT = 3;
 
+export declare function normalizeClass(value: unknown): string;
+
 export declare function normalizeDataset(el: Element): any;
 
 export declare function normalizeEventType(type: string, options?: AddEventListenerOptions): string;
+
+export declare function normalizeProps(props: Record<string, any> | null): Record<string, any> | null;
+
+export declare function normalizeStyle(value: unknown): NormalizedStyle | string | undefined;
 
 export declare function normalizeStyles<T extends Object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
 
@@ -625,7 +634,7 @@ export declare function resolveOwnerEl(instance: ComponentInternalInstance, mult
 
 export declare function resolveOwnerEl(instance: ComponentInternalInstance): RendererNode | null;
 
-export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string>, {}> | undefined;
+export declare function resolveOwnerVm(vm: ComponentInternalInstance): ComponentPublicInstance<{}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | undefined;
 
 export declare const RESPONSIVE_MIN_WIDTH = 768;
 
@@ -688,6 +697,8 @@ export declare const UNI_SSR_STORE = "store";
 export declare const UNI_SSR_TITLE = "title";
 
 export declare const UNI_STORAGE_LOCALE = "UNI_LOCALE";
+
+export declare const UNI_UI_CONFLICT_TAGS: string[];
 
 export declare class UniBaseNode extends UniNode {
     attributes: Record<string, unknown>;
@@ -870,6 +881,10 @@ export declare class UniTextNode extends UniBaseNode {
 export declare function updateElementStyle(element: HTMLElement, styles: Partial<CSSStyleDeclaration>): void;
 
 export declare const UVUE_BUILT_IN_TAGS: string[];
+
+export declare const UVUE_IOS_BUILT_IN_TAGS: string[];
+
+export declare const UVUE_WEB_BUILT_IN_TAGS: string[];
 
 declare interface Vue_2 {
     createApp: typeof createApp;

@@ -507,10 +507,19 @@ function formatApiArgs(args, options) {
     }
 }
 function invokeSuccess(id, name, res) {
-    return invokeCallback(id, extend((res || {}), { errMsg: name + ':ok' }));
+    const result = {
+        errMsg: name + ':ok',
+    };
+    return invokeCallback(id, extend((res || {}), result));
 }
-function invokeFail(id, name, errMsg, errRes) {
-    return invokeCallback(id, extend({ errMsg: name + ':fail' + (errMsg ? ' ' + errMsg : '') }, errRes));
+function invokeFail(id, name, errMsg, errRes = {}) {
+    const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
+    delete errRes.errCode;
+    return invokeCallback(id, typeof UniError !== 'undefined'
+        ? typeof errRes.errCode !== 'undefined'
+            ? new UniError(name, errRes.errCode, apiErrMsg)
+            : new UniError(apiErrMsg, errRes)
+        : extend({ errMsg: apiErrMsg }, errRes));
 }
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
@@ -10780,8 +10789,10 @@ class NodesRef {
         }, callback);
         return this._selectorQuery;
     }
-    node(_callback) {
-        // TODO
+    node(callback) {
+        this._selectorQuery._push(this._selector, this._component, this._single, {
+            node: true,
+        }, callback);
         return this._selectorQuery;
     }
 }
@@ -12764,6 +12775,7 @@ const CreatePushMessageOptions = {
         },
     },
 };
+const API_GET_CHANNEL_MANAGER = 'getChannelManager';
 
 const API_CREATE_REWARDED_VIDEO_AD = 'createRewardedVideoAd';
 const CreateRewardedVideoAdOptions = {
@@ -14955,6 +14967,7 @@ const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
         }
     }
     if (method !== 'GET' &&
+        contentType &&
         contentType.indexOf('application/json') === 0 &&
         isPlainObject(data)) {
         data = JSON.stringify(data);
@@ -17084,6 +17097,8 @@ const createPushMessage = defineAsyncApi(API_CREATE_PUSH_MESSAGE, (opts, { resol
     plus.push.createMessage(opts.content, opts.payload, options);
     resolve();
 }, undefined, CreatePushMessageOptions);
+let channelManager;
+const getChannelManager = defineSyncApi(API_GET_CHANNEL_MANAGER, () => channelManager || (channelManager = plus.push.getChannelManager()));
 
 const registerRuntime = defineSyncApi('registerRuntime', (runtime) => {
     // @ts-expect-error
@@ -17315,7 +17330,9 @@ function initUTSInstanceMethod(async, opts, instanceId, proxy) {
 }
 function getProxy() {
     if (!proxy) {
-        proxy = uni.requireNativePlugin('UTS-Proxy');
+        {
+            proxy = uni.requireNativePlugin('UTS-Proxy');
+        }
     }
     return proxy;
 }
@@ -17436,7 +17453,7 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
 }
 function initUTSStaticMethod(async, opts) {
     if (opts.main && !opts.method) {
-        if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+        if (isUTSiOS()) {
             opts.method = 's_' + opts.name;
         }
     }
@@ -17479,7 +17496,7 @@ function initUTSProxyClass(options) {
         staticProps = options.staticProps;
     }
     // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
-    if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+    if (isUTSiOS()) {
         if (constructorParams.find((p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0)) {
             constructorParams.push({ name: '_byJs', type: 'boolean' });
         }
@@ -17505,6 +17522,10 @@ function initUTSProxyClass(options) {
             const instance = this;
             const proxy = new Proxy(instance, {
                 get(_, name) {
+                    // 重要：禁止响应式
+                    if (name === '__v_skip') {
+                        return true;
+                    }
                     if (!target[name]) {
                         //实例方法
                         name = parseClassMethodName(name, methods);
@@ -17553,32 +17574,29 @@ function initUTSProxyClass(options) {
         },
     });
 }
+function isUTSAndroid() {
+    return typeof plus !== 'undefined' && plus.os.name === 'Android';
+}
+function isUTSiOS() {
+    return !isUTSAndroid();
+}
 function initUTSPackageName(name, is_uni_modules) {
-    if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+    if (isUTSAndroid()) {
         return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
     }
     return '';
 }
 function initUTSIndexClassName(moduleName, is_uni_modules) {
-    if (typeof plus === 'undefined') {
-        return '';
-    }
-    return initUTSClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+    return initUTSClassName(moduleName, isUTSAndroid() ? 'IndexKt' : 'IndexSwift', is_uni_modules);
 }
 function initUTSClassName(moduleName, className, is_uni_modules) {
-    if (typeof plus === 'undefined') {
-        return '';
-    }
-    if (plus.os.name === 'Android') {
+    if (isUTSAndroid()) {
         return className;
     }
-    if (plus.os.name === 'iOS') {
-        return ('UTSSDK' +
-            (is_uni_modules ? 'Modules' : '') +
-            capitalize(moduleName) +
-            capitalize(className));
-    }
-    return '';
+    return ('UTSSDK' +
+        (is_uni_modules ? 'Modules' : '') +
+        capitalize(moduleName) +
+        capitalize(className));
 }
 const interfaceDefines = {};
 function registerUTSInterface(name, define) {
@@ -19097,16 +19115,18 @@ function setupPage(component) {
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
         addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
-        onMounted(() => {
-            nextTick(() => {
-                // onShow被延迟，故onReady也同时延迟
-                invokeHook(pageVm, ON_READY);
+        {
+            onMounted(() => {
+                nextTick(() => {
+                    // onShow被延迟，故onReady也同时延迟
+                    invokeHook(pageVm, ON_READY);
+                });
+                // TODO preloadSubPackages
             });
-            // TODO preloadSubPackages
-        });
-        onBeforeUnmount(() => {
-            invokeHook(pageVm, ON_UNLOAD);
-        });
+            onBeforeUnmount(() => {
+                invokeHook(pageVm, ON_UNLOAD);
+            });
+        }
         if (oldSetup) {
             return oldSetup(__pageQuery, ctx);
         }
@@ -19765,6 +19785,7 @@ var uni$1 = {
   getBeacons: getBeacons,
   getBluetoothAdapterState: getBluetoothAdapterState,
   getBluetoothDevices: getBluetoothDevices,
+  getChannelManager: getChannelManager,
   getCheckBoxState: getCheckBoxState,
   getClipboardData: getClipboardData,
   getConnectedBluetoothDevices: getConnectedBluetoothDevices,

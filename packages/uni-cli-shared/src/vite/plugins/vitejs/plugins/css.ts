@@ -1,3 +1,4 @@
+import nodeFs from 'fs'
 import fs from 'fs-extra'
 import path from 'path'
 import glob from 'fast-glob'
@@ -184,9 +185,9 @@ function wrapResolve(
 export function cssPlugin(
   config: ResolvedConfig,
   options: {
-    isAppX: boolean
+    isAndroidX: boolean
     getDescriptor?(filename: string): SFCDescriptor | undefined
-  } = { isAppX: false }
+  } = { isAndroidX: false }
 ): Plugin {
   let server: ViteDevServer
   let moduleCache: Map<string, Record<string, string>>
@@ -231,7 +232,7 @@ export function cssPlugin(
           return fileToUrl(
             resolved,
             config,
-            options?.isAppX
+            options?.isAndroidX
               ? ({
                   emitFile(emittedFile: EmittedAsset) {
                     // 直接写入目标目录
@@ -1192,6 +1193,8 @@ const scss: SassStylePreprocessor = async (
   isNVue
 ) => {
   const render = loadPreprocessor(PreprocessLang.sass, root).render
+  // NOTE: `sass` always runs it's own importer first, and only falls back to
+  // the `importer` option when it can't resolve a path
   const internalImporter: Sass.Importer = (url, importer, done) => {
     resolvers.sass(url, importer).then((resolved) => {
       if (resolved) {
@@ -1602,4 +1605,34 @@ const preProcessors = Object.freeze({
 
 function isPreProcessor(lang: any): lang is PreprocessLang {
   return lang && lang in preProcessors
+}
+
+const preCssExtNames = ['.scss', '.sass', '.styl', '.stylus']
+/**
+ * 重写 readFileSync
+ * 目前主要解决 scss 文件被 @import 的条件编译
+ */
+export function rewriteScssReadFileSync() {
+  // 目前 1.0 App 端，只要包含了APP-NVUE条件编译，就不pre，因为区分不出来APP-NVUE
+  const ignoreAppNVue =
+    process.env.UNI_APP_X !== 'true' &&
+    (process.env.UNI_PLATFORM === 'app' ||
+      process.env.UNI_PLATFORM === 'app-plus')
+  const { readFileSync } = nodeFs
+  nodeFs.readFileSync = ((filepath, options) => {
+    const content = readFileSync(filepath, options)
+    if (
+      isString(filepath) &&
+      isString(content) &&
+      preCssExtNames.includes(path.extname(filepath)) &&
+      content.includes('#endif')
+      // 目前无法区分app-nvue
+    ) {
+      if (ignoreAppNVue && content.includes('APP-NVUE')) {
+        return content
+      }
+      return preCss(content)
+    }
+    return content
+  }) as typeof nodeFs['readFileSync']
 }

@@ -1,9 +1,15 @@
-import Video from './video/index'
+import Video, { UniVideoElement } from './video/index'
+//#if _X_
+// @ts-ignore
+import WebView, { UniWebViewElement } from './web-view/index-x'
+//#else
+// @ts-ignore
 import WebView from './web-view/index'
-import Map from './map/index'
-import CoverView from './cover-view'
-import CoverImage from './cover-image'
-import Picker from './picker/index'
+//#endif
+import Map, { UniMapElement } from './map/index'
+import CoverView, { UniCoverViewElement } from './cover-view'
+import CoverImage, { UniCoverImageElement } from './cover-image'
+import Picker, { UniPickerElement } from './picker/index'
 
 import Ad from './ad/index'
 import AdContentPage from './ad-content-page/index'
@@ -25,4 +31,12 @@ export {
   Camera,
   LivePlayer,
   LivePusher,
+  //#if _X_
+  UniVideoElement,
+  UniWebViewElement,
+  UniMapElement,
+  UniCoverViewElement,
+  UniCoverImageElement,
+  UniPickerElement,
+  //#endif
 }

@@ -3,6 +3,7 @@ import { defineBuiltInComponent } from '../../helpers/component'
 import { withWebEvent } from '../../helpers/useEvent'
 import { useAttrs } from '../../helpers/useAttrs'
 import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
+import { UniElement } from '../../helpers/UniElement'
 import ResizeSensor from '../resize-sensor/index'
 import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
@@ -18,10 +19,17 @@ export interface MovableViewContext {
 export type AddMovableViewContext = (context: MovableViewContext) => void
 export type RemoveMovableViewContext = (context: MovableViewContext) => void
 
+export class UniMovableAreaElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   inheritAttrs: false,
   name: 'MovableArea',
   props: movableAreaProps,
+  //#if _X_ && !_NODE_JS_
+  rootElement: {
+    name: 'uni-movable-area',
+    class: UniMovableAreaElement,
+  },
+  //#endif
   setup(props, { slots }) {
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const _isMounted = ref(false)
@@ -89,6 +97,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     provide('movableAreaRootRef', rootRef)
     provide('addMovableViewContext', addMovableViewContext)
     provide('removeMovableViewContext', removeMovableViewContext)
+
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniMovableAreaElement
+      rootElement.attachVmProps(props)
+    })
+    //#endif
 
     return () => {
       const defaultSlots = slots.default && slots.default()

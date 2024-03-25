@@ -12,6 +12,10 @@ uni-switch[disabled] {
   cursor: not-allowed;
 }
 
+uni-switch[disabled] .uni-switch-input {
+  opacity: 0.7;
+}
+
 .uni-switch-wrapper {
   display: inline-flex;
   align-items: center;
@@ -30,10 +34,6 @@ uni-switch[disabled] {
   box-sizing: border-box;
   background-color: #dfdfdf;
   transition: background-color 0.1s, border 0.1s;
-}
-
-uni-switch[disabled] .uni-switch-input {
-  opacity: 0.7;
 }
 
 .uni-switch-input:before {
