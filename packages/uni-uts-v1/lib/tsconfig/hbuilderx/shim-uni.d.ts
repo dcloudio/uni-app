@@ -56,3 +56,5 @@ declare module 'vue' {
     defineComponent as defineApp
   }
 }
+
+declare const UTS: any
