@@ -70,7 +70,7 @@ export function initScope(
   } else {
     Object.defineProperty(vm, '$viewToTempFilePath', {
       get() {
-        return vm.$nativePage!.viewToTempFilePath
+        return vm.$nativePage!.viewToTempFilePath.bind(vm.$nativePage!)
       },
     })
   }
