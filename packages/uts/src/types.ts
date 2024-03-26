@@ -49,6 +49,7 @@ export type UTSOutputOptions = {
   split?: boolean
   disableSplitManifest?: boolean
   removeImports?: boolean
+  dropImports?: string[]
   uniAppX?: {
     uvueOutDir: string
   }
