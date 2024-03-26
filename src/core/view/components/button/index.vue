@@ -178,6 +178,7 @@ export default {
     line-height: 2.55555556;
     border-radius: 5px;
     -webkit-tap-highlight-color: transparent;
+    overflow: hidden;
     color: #000000;
     background-color: #f8f8f8;
     cursor: pointer;
@@ -261,28 +262,47 @@ export default {
 
   uni-button[type="primary"][plain] {
     color: #007aff;
+    border: 1px solid #007aff;
     background-color: transparent;
   }
 
   uni-button[type="primary"][plain][disabled] {
     color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.2);
   }
 
   uni-button[type="primary"][plain]:after {
-    border-color:#007aff;
+    border-width: 0;
   }
 
   uni-button[type="default"][plain] {
     color: #353535;
+    border: 1px solid #353535;
     background-color: transparent;
   }
 
   uni-button[type="default"][plain][disabled] {
     color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.2);
   }
 
   uni-button[type="default"][plain]:after {
-    border-color: #353535;
+    border-width: 0;
+  }
+
+  uni-button[plain] {
+    color: #353535;
+    border: 1px solid #353535;
+    background-color: transparent;
+  }
+
+  uni-button[plain][disabled] {
+    color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.2);
+  }
+
+  uni-button[plain]:after {
+    border-width: 0;
   }
 
   uni-button[plain][native] .uni-button-cover-view-inner {
@@ -291,32 +311,17 @@ export default {
 
   uni-button[type="warn"][plain] {
     color: #e64340;
+    border: 1px solid #e64340;
     background-color: transparent;
   }
 
   uni-button[type="warn"][plain][disabled] {
     color: rgba(0, 0, 0, 0.2);
+    border-color: rgba(0, 0, 0, 0.2);
   }
 
   uni-button[type="warn"][plain]:after {
-    border-color: #e64340;
-  }
-
-  uni-button[plain] {
-    color: #353535;
-    background-color: transparent;
-  }
-
-  uni-button[plain][disabled] {
-    color: rgba(0, 0, 0, 0.2);
-  }
-
-  uni-button[plain]:after {
-    border-color: #353535;
-  }
-
-  uni-button[plain][disabled]:after {
-    border-color: rgba(0, 0, 0, 0.2);
+    border-width: 0;
   }
 
   uni-button[size="mini"] {
@@ -390,11 +395,8 @@ export default {
 
   .button-hover[plain] {
     color: rgba(53, 53, 53, 0.6);
-    background-color: transparent;
-  }
-
-  .button-hover[plain]:after {
     border-color: rgba(53, 53, 53, 0.6);
+    background-color: transparent;
   }
 
   .button-hover[type="primary"] {
@@ -404,11 +406,8 @@ export default {
 
   .button-hover[type="primary"][plain] {
     color: rgba(0, 122, 255, 0.6);
-    background-color: transparent;
-  }
-
-  .button-hover[type="primary"][plain]:after {
     border-color: rgba(0, 122, 255, 0.6);
+    background-color: transparent;
   }
 
   .button-hover[type="default"] {
@@ -418,11 +417,8 @@ export default {
 
   .button-hover[type="default"][plain] {
     color: rgba(53, 53, 53, 0.6);
-    background-color: transparent;
-  }
-
-  .button-hover[type="default"][plain]:after {
     border-color: rgba(53, 53, 53, 0.6);
+    background-color: transparent;
   }
 
   .button-hover[type="warn"] {
@@ -432,11 +428,8 @@ export default {
 
   .button-hover[type="warn"][plain] {
     color: rgba(230, 67, 64, 0.6);
-    background-color: transparent;
-  }
-
-  .button-hover[type="warn"][plain]:after {
     border-color: rgba(230, 67, 64, 0.6);
+    background-color: transparent;
   }
 
   @media (prefers-color-scheme: dark) {
@@ -465,10 +458,7 @@ export default {
 
     uni-button[type='default'][plain] {
       color: #d6d6d6;
-    }
-
-    uni-button[type='default'][plain]:after {
-      border-color: #d6d6d6;
+      border: 1px solid #d6d6d6;
     }
 
     .button-hover[type='default'][plain] {
@@ -477,16 +467,9 @@ export default {
       background-color: rgba(50, 50, 50, 0.2);
     }
 
-    .button-hover[type='default'][plain]:after {
-      border-color: rgba(150, 150, 150, 0.6);
-    }
-
     uni-button[type='default'][plain][disabled] {
-      color: hsla(0, 0%, 100%, 0.2);
-    }
-
-    uni-button[type='default'][plain][disabled]:after {
       border-color: hsla(0, 0%, 100%, 0.2);
+      color: hsla(0, 0%, 100%, 0.2);
     }
   }
 </style>
