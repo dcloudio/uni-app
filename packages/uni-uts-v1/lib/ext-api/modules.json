@@ -1,16 +1,4 @@
 {
-  "uni-ad": {
-    "uni": {
-      "createRewardedVideoAd": {
-        "name": "createRewardedVideoAd",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false
-        }
-      }
-    }
-  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
