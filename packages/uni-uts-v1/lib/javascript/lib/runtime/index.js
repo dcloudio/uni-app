@@ -185,7 +185,8 @@ let UTSJSONObject$1 = class UTSJSONObject {
             return null;
         }
         let value = this;
-        for (let key of keyPathArr) {
+        for (let i = 0; i < keyPathArr.length; i++) {
+            let key = keyPathArr[i];
             if (value instanceof Object) {
                 value = value[key];
             }
