@@ -117,7 +117,7 @@ export function getBrowserInfo () {
     model = 'PC'
     osname = 'PC'
     deviceType = 'pc'
-    const osversionFind = ua.match(/\((.+?)\)/)[1]
+    const osversionFind = (ua.match(/\((.+?)\)/) || [])[1] || '';
 
     if (isWindows) {
       osname = 'Windows'
