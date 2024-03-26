@@ -7,6 +7,7 @@ import {
   ref,
   watchEffect,
   StyleValue,
+  watch,
 } from 'vue'
 
 import { $dispatch } from '../../utils'
@@ -44,6 +45,19 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     watchEffect(() => {
       checkboxChecked.value = props.checked
     })
+
+    watch(
+      () => checkboxChecked.value,
+      (val) => {
+        const ctx = instance?.proxy
+        if (!ctx) return
+        $dispatch(ctx, 'CheckboxGroup', '_changeHandler', {
+          name: checkboxValue.value,
+          checked: checkboxChecked.value,
+          setCheckboxChecked,
+        })
+      }
+    )
 
     watchEffect(() => {
       checkboxValue.value = props.value.toString()
@@ -130,13 +144,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (props.disabled) return
       emit('click', $event)
       checkboxChecked.value = !checkboxChecked.value
-
-      const ctx = instance?.proxy
-      $dispatch(ctx, 'CheckboxGroup', '_changeHandler', {
-        name: checkboxValue.value,
-        checked: checkboxChecked.value,
-        setCheckboxChecked,
-      })
     }
 
     return () => {

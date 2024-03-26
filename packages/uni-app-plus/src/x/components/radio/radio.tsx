@@ -1,13 +1,19 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { watchEffect, ref, computed, onMounted, StyleValue } from 'vue'
+import {
+  watchEffect,
+  ref,
+  computed,
+  onMounted,
+  StyleValue,
+  onUnmounted,
+  getCurrentInstance,
+} from 'vue'
 import {
   RADIO_NAME,
   RADIO_ROOT_ELEMENT,
   UniRadioElement,
   radioProps,
 } from './model'
-import { onUnmounted } from 'vue'
-import { getCurrentInstance } from 'vue'
 import { styleList } from './style'
 import { $dispatch } from '../../utils'
 
