@@ -96,7 +96,8 @@ export function registerPage(
     nvuePageVm,
     eventChannel,
   }: RegisterPageOptions,
-  onCreated?: (page: IPage) => void
+  onCreated?: (page: IPage) => void,
+  delay = 0
 ) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
@@ -122,47 +123,53 @@ export function registerPage(
     // TODO ThemeMode
     'light'
   )
-  const page = createVuePage(
-    id,
-    route,
-    query,
-    pageInstance,
-    {},
-    nativePage
-  ) as ComponentPublicInstance
+  function fn() {
+    const page = createVuePage(
+      id,
+      route,
+      query,
+      pageInstance,
+      {},
+      nativePage
+    ) as ComponentPublicInstance
 
-  nativePage.addPageEventListener(ON_SHOW, (_) => {
-    invokeHook(page, ON_SHOW)
-  })
-  nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
-    uni.navigateBack({
-      from: 'popGesture',
-      fail(e) {
-        if (e.errMsg.endsWith('cancel')) {
-          nativePage.show()
-        }
-      },
-    } as UniApp.NavigateBackOptions)
-  })
-  nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-    invokeHook(page, ON_UNLOAD)
-  })
-  nativePage.addPageEventListener(ON_READY, (_) => {
-    invokeHook(page, ON_READY)
-  })
+    nativePage.addPageEventListener(ON_SHOW, (_) => {
+      invokeHook(page, ON_SHOW)
+    })
+    nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+      uni.navigateBack({
+        from: 'popGesture',
+        fail(e) {
+          if (e.errMsg.endsWith('cancel')) {
+            nativePage.show()
+          }
+        },
+      } as UniApp.NavigateBackOptions)
+    })
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD)
+    })
+    nativePage.addPageEventListener(ON_READY, (_) => {
+      invokeHook(page, ON_READY)
+    })
 
-  nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-    invokeHook(page, ON_PULL_DOWN_REFRESH)
-  })
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH)
+    })
 
-  nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-    invokeHook(page, ON_REACH_BOTTOM)
-  })
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM)
+    })
 
-  nativePage.addPageEventListener(ON_RESIZE, (_) => {
-    invokeHook(page, ON_RESIZE)
-  })
-
+    nativePage.addPageEventListener(ON_RESIZE, (_) => {
+      invokeHook(page, ON_RESIZE)
+    })
+  }
+  if (delay) {
+    setTimeout(fn, delay)
+  } else {
+    fn()
+  }
   return nativePage
 }
 

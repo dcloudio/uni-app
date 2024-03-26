@@ -74,7 +74,9 @@ function _navigateTo({
     // 有动画时先执行 show
     const page = registerPage(
       { url, path, query, openType: 'navigateTo', eventChannel },
-      noAnimation ? undefined : callback
+      noAnimation ? undefined : callback,
+      // 有动画时延迟创建 vm
+      noAnimation ? 1 : 0
     )
     if (noAnimation) {
       callback(page)
