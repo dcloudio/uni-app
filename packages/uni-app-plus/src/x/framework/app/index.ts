@@ -98,13 +98,21 @@ function initEntryPagePath(app: IApp) {
     const url = debugInfo.get('url')
     if (url && url != __uniConfig.entryPagePath) {
       __uniConfig.realEntryPagePath = __uniConfig.entryPagePath
-      __uniConfig.entryPagePath = url
+      const [path, query] = url.split('?')
+      __uniConfig.entryPagePath = path
+      if (query) {
+        __uniConfig.entryPageQuery = `?${query}`
+      }
       return
     }
   }
   if (__uniConfig.conditionUrl) {
     __uniConfig.realEntryPagePath = __uniConfig.entryPagePath
     const conditionUrl = __uniConfig.conditionUrl
-    __uniConfig.entryPagePath = conditionUrl
+    const [path, query] = conditionUrl.split('?')
+    __uniConfig.entryPagePath = path
+    if (query) {
+      __uniConfig.entryPageQuery = `?${query}`
+    }
   }
 }
