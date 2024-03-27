@@ -72,7 +72,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           : 0
       return AUTOCOMPLETES[index]
     })
-
+    let pointCount = 0
     let cache = ref('')
     let resetCache: (() => void) | null
     const rootRef: Ref<HTMLElement | null> = ref(null)
@@ -86,6 +86,30 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             input.removeEventListener('blur', resetCache)
             resetCache = null
           }
+          //ios 16之后number类型连续输入3个小数点后会自动删除数字
+          if (
+            plus.os.version &&
+            plus.os.name === 'iOS' &&
+            parseFloat(plus.os.version) >= 16.0
+          ) {
+            if (cache.value && !state.value && !input.value) {
+              pointCount = pointCount >= 2 ? pointCount : pointCount + 1
+              if (cache.value.includes('.')) {
+                input.value = cache.value
+                return true
+              }
+              return false
+            }
+            if (
+              cache.value.includes('.') &&
+              state.value == cache.value.slice(0, -1) &&
+              pointCount >= 2
+            ) {
+              state.value = input.value = cache.value
+              return true
+            }
+          }
+          pointCount = 0
           if (input.validity && !input.validity.valid) {
             if (
               ((!cache.value || !input.value) &&
@@ -103,26 +127,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             }
             // 处理小数点
             if (cache.value) {
-              if (cache.value.indexOf('.') !== -1) {
-                // 删除到小数点时
-                if (
-                  (event as InputEvent).data !== '.' &&
-                  (event as InputEvent).inputType === 'deleteContentBackward'
-                ) {
-                  const dotIndex = cache.value.indexOf('.')
-                  cache.value =
-                    input.value =
-                    state.value =
-                      cache.value.slice(0, dotIndex)
-                  return true
-                }
-              } else if ((event as InputEvent).data === '.') {
+              if ((event as InputEvent).data === '.') {
                 // 输入小数点时
                 cache.value += '.'
-                resetCache = () => {
-                  cache.value = input.value = cache.value.slice(0, -1)
-                }
-                input.addEventListener('blur', resetCache)
                 return false
               }
             }
