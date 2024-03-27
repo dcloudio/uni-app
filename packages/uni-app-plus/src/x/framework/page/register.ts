@@ -78,7 +78,8 @@ function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
     style.set('navigationBar', navigationBar)
     if (
       navigationBar.navigationBarTextStyle !== 'custom' &&
-      !routeMeta.isQuit
+      !routeMeta.isQuit &&
+      routeMeta.route !== __uniConfig.realEntryPagePath
     ) {
       navigationBar['navigationBarAutoBackButton'] = true
     }
