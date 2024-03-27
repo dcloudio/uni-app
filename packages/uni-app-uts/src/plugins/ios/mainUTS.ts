@@ -20,10 +20,6 @@ export function uniAppIOSMainPlugin(): Plugin {
           import './${PAGES_JSON_UTS}'
           const __global__ = typeof globalThis === 'undefined' ? Function('return this')() : globalThis
           __global__.__uniX = true
-          __global__.__f__ = (type,filename: string,...args) => {
-            uni.__log__(type, filename, ...args)
-            // console[type].apply(console, [...args, filename])
-          }
           ${code}
           createApp().app.mount("#app");
           `,

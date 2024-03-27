@@ -17,7 +17,7 @@ import * as uniCliShared from '@dcloudio/uni-cli-shared'
 
 export function init() {
   return [
-    uniHBuilderXConsolePlugin(),
+    uniHBuilderXConsolePlugin('uni.__log__'),
     uniUTSUniModulesPlugin({
       x: true,
       isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
