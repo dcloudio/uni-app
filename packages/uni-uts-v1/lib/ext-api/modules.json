@@ -84,7 +84,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -156,7 +156,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getSystemInfoSync": {
@@ -164,7 +164,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getWindowInfo": {
@@ -172,7 +172,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -208,7 +208,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "previewImage": {
@@ -216,7 +216,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "closePreviewImage": {
@@ -224,7 +224,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getImageInfo": {
@@ -240,7 +240,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "compressImage": {
@@ -320,7 +320,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
