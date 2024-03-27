@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-quickapp-native",
-  "version": "2.0.2-4000620240325001",
+  "version": "2.0.2-4000720240327001",
   "description": "uni-app quickapp-native",
   "main": "dist/vue.prod.js",
   "repository": {
