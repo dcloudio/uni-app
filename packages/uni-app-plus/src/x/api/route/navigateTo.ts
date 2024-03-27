@@ -76,7 +76,7 @@ function _navigateTo({
       { url, path, query, openType: 'navigateTo', eventChannel },
       noAnimation ? undefined : callback,
       // 有动画时延迟创建 vm
-      noAnimation ? 1 : 0
+      noAnimation ? 0 : 1
     )
     if (noAnimation) {
       callback(page)
