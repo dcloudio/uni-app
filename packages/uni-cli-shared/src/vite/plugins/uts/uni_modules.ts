@@ -120,6 +120,10 @@ export function uniUTSUniModulesPlugin(
         options.x !== true
       )
       if (module) {
+        // app-js 会直接返回 index.uts 路径，不需要 uts-proxy
+        if (module.endsWith('.uts')) {
+          return module
+        }
         // prefix the polyfill id with \0 to tell other plugins not to try to load or transform it
         return module + '?uts-proxy'
       }
