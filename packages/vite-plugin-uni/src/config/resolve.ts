@@ -45,15 +45,7 @@ export function createResolve(
   options: VitePluginUniResolvedOptions,
   _config: UserConfig
 ): UserConfig['resolve'] {
-  const alias: Alias[] =
-    process.env.UNI_APP_X === 'true'
-      ? [
-          {
-            find: 'tslib',
-            replacement: '\0tslib.js',
-          },
-        ]
-      : []
+  const alias: Alias[] = []
   return {
     // 必须使用alias解析，插件定制的resolveId，不会被应用到css等预处理器中
     alias: [
