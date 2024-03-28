@@ -5746,7 +5746,8 @@ function baseCreateRenderer(options, createHydrationFns) {
             const key = propsToUpdate[i];
             const prev = oldProps[key];
             const next = newProps[key];
-            if (next !== prev || key === "value" || hostForcePatchProp && hostForcePatchProp(el, key)) {
+            if (next !== prev || // key === 'value' || // fixed by xxxxxx
+            hostForcePatchProp && hostForcePatchProp(el, key)) {
               hostPatchProp(
                 el,
                 key,
@@ -7302,7 +7303,7 @@ function createBaseVNode(type, props = null, children = null, patchFlag = 0, dyn
   }
   if (type == "button") {
     if (vnode.props == null)
-      vnode.props = /* @__PURE__ */ new Map();
+      vnode.props = {};
     if (!vnode.props["hoverClass"] && !vnode.props["hover-class"]) {
       vnode.props["hoverClass"] = "button-hover";
     }

@@ -6509,7 +6509,9 @@ function baseCreateRenderer(options, createHydrationFns) {
             var key = propsToUpdate[i];
             var prev = oldProps[key];
             var next = newProps[key];
-            if (next !== prev || key === "value" || hostForcePatchProp && hostForcePatchProp(el, key)) {
+            if (next !== prev ||
+            // key === 'value' || // fixed by xxxxxx
+            hostForcePatchProp && hostForcePatchProp(el, key)) {
               hostPatchProp(el, key, prev, next, namespace, n1.children, parentComponent, parentSuspense, unmountChildren,
               // fixed by xxxxxx
               n2.hostInstance);
@@ -7777,6 +7779,12 @@ function createBaseVNode(type) {
   vnode.patchFlag !== 32) {
     currentBlock.push(vnode);
   }
+  if (type == "button") {
+    if (vnode.props == null) vnode.props = {};
+    if (!vnode.props["hoverClass"] && !vnode.props["hover-class"]) {
+      vnode.props["hoverClass"] = "button-hover";
+    }
+  }
   return vnode;
 }
 var createVNode = createVNodeWithArgsTransform;
@@ -9027,7 +9035,13 @@ function transformAttr(el, key, value, instance) {
   if (opts) {
     var camelized = camelize(key);
     if (opts["class"].indexOf(camelized) > -1) {
-      return [camelized, parseClassList([value], instance, el)];
+      var classStyle = parseClassList([value], instance, el);
+      if (el.tagName === "BUTTON") {
+        if (value === "none" || value == "button-hover" && classStyle.size == 0) {
+          return [camelized, value];
+        }
+      }
+      return [camelized, classStyle];
     }
     if (opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
