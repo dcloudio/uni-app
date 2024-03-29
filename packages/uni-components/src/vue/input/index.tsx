@@ -86,30 +86,32 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             input.removeEventListener('blur', resetCache)
             resetCache = null
           }
-          //ios 16之后number类型连续输入3个小数点后会自动删除数字
-          if (
-            plus.os.version &&
-            plus.os.name === 'iOS' &&
-            parseFloat(plus.os.version) >= 16.0
-          ) {
-            if (cache.value && !state.value && !input.value) {
-              pointCount = pointCount >= 2 ? pointCount : pointCount + 1
-              if (cache.value.includes('.')) {
-                input.value = cache.value
+          if (__PLATFORM__ === 'app') {
+            //ios 16之后number类型连续输入3个小数点后会自动删除数字
+            if (
+              plus.os.version &&
+              plus.os.name === 'iOS' &&
+              parseFloat(plus.os.version) >= 16.0
+            ) {
+              if (cache.value && !state.value && !input.value) {
+                pointCount = pointCount >= 2 ? pointCount : pointCount + 1
+                if (cache.value.includes('.')) {
+                  input.value = cache.value
+                  return true
+                }
+                return false
+              }
+              if (
+                cache.value.includes('.') &&
+                state.value == cache.value.slice(0, -1) &&
+                pointCount >= 2
+              ) {
+                state.value = input.value = cache.value
                 return true
               }
-              return false
             }
-            if (
-              cache.value.includes('.') &&
-              state.value == cache.value.slice(0, -1) &&
-              pointCount >= 2
-            ) {
-              state.value = input.value = cache.value
-              return true
-            }
+            pointCount = 0
           }
-          pointCount = 0
           if (input.validity && !input.validity.valid) {
             if (
               ((!cache.value || !input.value) &&
@@ -126,12 +128,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               return false
             }
             // 处理小数点
-            if (cache.value) {
-              if ((event as InputEvent).data === '.') {
-                // 输入小数点时
-                cache.value += '.'
-                return false
-              }
+            if (cache.value && (event as InputEvent).data === '.') {
+              cache.value += '.'
+              return false
             }
             cache.value =
               state.value =
@@ -140,6 +139,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             // 输入非法字符不触发 input 事件
             return false
           } else {
+            // 处理在 chrome 中输入 . 不上屏的问题
+            if (cache.value && (event as InputEvent).data === '.') {
+              cache.value += '.'
+              return false
+            }
             cache.value = input.value
           }
 
@@ -157,7 +161,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       () => state.value,
       (value) => {
         if (props.type === 'number' && !(cache.value === '-' && value === '')) {
-          cache.value = value
+          cache.value = value.toString()
         }
       }
     )
@@ -242,7 +246,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-input ref={rootRef}>
           <div class="uni-input-wrapper">
             <div
-              v-show={!(state.value.length || cache.value === '-')}
+              v-show={
+                !(
+                  state.value.length ||
+                  cache.value === '-' ||
+                  cache.value.includes('.')
+                )
+              }
               {...scopedAttrsState.attrs}
               style={props.placeholderStyle}
               class={['uni-input-placeholder', props.placeholderClass]}
