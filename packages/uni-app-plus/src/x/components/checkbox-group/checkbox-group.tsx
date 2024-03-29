@@ -106,4 +106,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
 })
 
-export { UniCheckboxGroupChangeEvent, UniCheckboxGroupElement }
+export {
+  UniCheckboxGroupChangeEvent,
+  UniCheckboxGroupElement,
+  UniCheckboxGroupElement as UniCheckboxGroupElementImpl,
+}

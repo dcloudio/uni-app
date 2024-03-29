@@ -168,4 +168,4 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
 })
 
-export { UniCheckboxElement }
+export { UniCheckboxElement, UniCheckboxElement as UniCheckboxElementImpl }
