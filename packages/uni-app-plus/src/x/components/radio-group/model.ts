@@ -23,12 +23,12 @@ export class UniRadioGroupElement extends UniFormControlElement<string> {
     super(data, pageNode)
   }
 
-  override getAttribute(key: string): string {
+  override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {
       return value
     }
-    return super.getAttribute(key)
+    return super.getAnyAttribute(key)
   }
 
   override get value(): string {

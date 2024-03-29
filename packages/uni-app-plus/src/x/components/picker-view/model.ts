@@ -4,12 +4,12 @@ export class UniPickerViewColumnElement extends UniElementImpl {
     super(data, pageNode)
   }
 
-  override getAttribute(key: string): string {
+  override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {
       return value
     }
-    return super.getAttribute(key)
+    return super.getAnyAttribute(key)
   }
 
   _getAttribute = (key: string): string | null => {
@@ -38,12 +38,12 @@ export class UniPickerViewElement extends UniElementImpl {
     super(data, pageNode)
   }
 
-  override getAttribute(key: string): string {
+  override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {
       return value
     }
-    return super.getAttribute(key)
+    return super.getAnyAttribute(key)
   }
 
   _getAttribute = (key: string): string | null => {

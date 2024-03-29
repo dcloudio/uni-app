@@ -31,12 +31,12 @@ export class UniCheckboxGroupElement extends UniFormControlElement<string[]> {
     this._setValue(value)
   }
 
-  override getAttribute(key: string): string {
+  override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {
       return value
     }
-    return super.getAttribute(key)
+    return super.getAnyAttribute(key)
   }
 
   // 这个会被重写
