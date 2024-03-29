@@ -29,12 +29,22 @@ export default {
 			console.log('initRuntimeAutomator...')
 		},
 		message(msg: UniWebViewMessageEvent) {
-			const data = msg.detail.data!
+      // #ifdef APP-ANDROID
+      const data = msg.detail.data!
 			const id = data.get("id") as number
 			const type = data.get("type") as string
 			const dataObj = data.get("data") as UTSJSONObject
 			const action = dataObj.getString("action")!
 			const args = dataObj.get("args")
+      // #endif
+      // #ifndef APP-ANDROID
+      const data = msg.detail.data!
+			const id = data["id"] as number
+			const type = data["type"] as string
+			const dataObj = data["data"]
+			const action = dataObj["action"]! 
+			const args = dataObj["args"]
+      // #endif
 			if (type != 'automator') {
 				return;
 			}
