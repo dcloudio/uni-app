@@ -8,6 +8,7 @@ import {
   watchEffect,
   StyleValue,
   watch,
+  camelize,
 } from 'vue'
 
 import { $dispatch } from '../../utils'
@@ -34,6 +35,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const icon = '\uEA08'
 
     const instance = getCurrentInstance()
+
+    const elementRef = ref<UniCheckboxElement | null>()
 
     const checkboxChecked = ref(props.checked)
     const checkboxValue = ref('')
@@ -123,6 +126,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         },
         'add'
       )
+
+      instance?.$waitNativeRender(() => {
+        if (!instance) return
+        elementRef.value = instance.proxy?.$el as UniCheckboxElement
+        elementRef.value!._getAttribute = (key: string): string | null => {
+          const keyString = camelize(key) as keyof typeof props
+          return props[keyString] !== null
+            ? props[keyString]?.toString() ?? null
+            : null
+        }
+      })
     })
 
     onUnload(() => {

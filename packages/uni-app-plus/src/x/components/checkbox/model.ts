@@ -8,6 +8,18 @@ export class UniCheckboxElement extends UniElementImpl {
     // @ts-ignore
     super(data, pageNode)
   }
+
+  override getAnyAttribute(key: string): string {
+    const value = this._getAttribute(key)
+    if (value != null) {
+      return value
+    }
+    return super.getAnyAttribute(key)
+  }
+
+  _getAttribute = (key: string): string | null => {
+    return null
+  }
 }
 
 // UniElementImpl
