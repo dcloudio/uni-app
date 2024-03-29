@@ -7,6 +7,7 @@ import {
   StyleValue,
   onUnmounted,
   getCurrentInstance,
+  camelize,
 } from 'vue'
 import {
   RADIO_NAME,
@@ -116,16 +117,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         uniRadioElementRef.value!._getAttribute = (
           key: string
         ): string | null => {
-          // const keyString = camelize(key)
-
-          // if (this.$props.has(keyString)) {
-          //       const value = this.$props.get(keyString)
-          //       if (value != null) {
-          //         return value.toString()
-          //       }
-          //       return ''
-          //     }
-          return null
+          const keyString = camelize(key) as keyof typeof props
+          return props[keyString] !== null
+            ? props[keyString]?.toString() ?? null
+            : null
         }
       })
 
