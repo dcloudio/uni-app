@@ -25731,10 +25731,14 @@ const index = defineSystemComponent({
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
+    const pageStyle = {};
     useDocumentTitle(pageMeta);
     return () => createVNode(
       "uni-page",
-      { "data-page": pageMeta.route },
+      {
+        "data-page": pageMeta.route,
+        style: pageStyle
+      },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
     );
   }
