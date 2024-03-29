@@ -5,11 +5,546 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
+function arrayPop(array) {
+  if (array.length === 0) {
+    return null;
+  }
+  return array.pop();
+}
+function arrayShift(array) {
+  if (array.length === 0) {
+    return null;
+  }
+  return array.shift();
+}
+function arrayFind(array, predicate) {
+  const index2 = array.findIndex(predicate);
+  if (index2 < 0) {
+    return null;
+  }
+  return array[index2];
+}
+function arrayFindLast(array, predicate) {
+  const index2 = array.findLastIndex(predicate);
+  if (index2 < 0) {
+    return null;
+  }
+  return array[index2];
+}
+function arrayAt(array, index2) {
+  if (index2 < -array.length || index2 >= array.length) {
+    return null;
+  }
+  return array.at(index2);
+}
+var IDENTIFIER;
+(function(IDENTIFIER2) {
+  IDENTIFIER2["UTSJSONObject"] = "UTSJSONObject";
+  IDENTIFIER2["JSON"] = "JSON";
+  IDENTIFIER2["UTS"] = "UTS";
+  IDENTIFIER2["DEFINE_COMPONENT"] = "defineComponent";
+  IDENTIFIER2["VUE"] = "vue";
+  IDENTIFIER2["GLOBAL_THIS"] = "globalThis";
+  IDENTIFIER2["UTS_TYPE"] = "UTSType";
+  IDENTIFIER2["UTS_METADATA"] = "$UTSMetadata$";
+  IDENTIFIER2["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
+  IDENTIFIER2["JSON_FIELD"] = "JSON_FIELD";
+})(IDENTIFIER || (IDENTIFIER = {}));
+var UTS_CLASS_METADATA_KIND;
+(function(UTS_CLASS_METADATA_KIND2) {
+  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["CLASS"] = 0] = "CLASS";
+  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["INTERFACE"] = 1] = "INTERFACE";
+  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["TYPE"] = 2] = "TYPE";
+})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+function getType$1(val) {
+  return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
+}
+function isPlainObject(val) {
+  if (val == null || typeof val !== "object") {
+    return false;
+  }
+  const proto = Object.getPrototypeOf(val);
+  return proto === Object.prototype || proto === null;
+}
+class UTSError extends Error {
+  constructor(message) {
+    super(message);
+  }
+}
+function isUTSMetadata(metadata) {
+  return !!(metadata && metadata.kind in UTS_CLASS_METADATA_KIND && metadata.interfaces);
+}
+function isNativeType(proto) {
+  return !proto || proto === Object.prototype;
+}
+const utsMetadataKey = IDENTIFIER.UTS_METADATA;
+function getParentTypeList(type) {
+  const metadata = utsMetadataKey in type ? type[utsMetadataKey] : {};
+  let interfaces = [];
+  if (!isUTSMetadata(metadata)) {
+    interfaces = [];
+  } else {
+    interfaces = metadata.interfaces || [];
+  }
+  const proto = Object.getPrototypeOf(type);
+  if (!isNativeType(proto)) {
+    interfaces.push(proto.constructor);
+  }
+  return interfaces;
+}
+function isImplementationOf(leftType, rightType, visited = []) {
+  if (isNativeType(leftType)) {
+    return false;
+  }
+  if (leftType === rightType) {
+    return true;
+  }
+  visited.push(leftType);
+  const parentTypeList = getParentTypeList(leftType);
+  return parentTypeList.some((parentType) => {
+    if (visited.includes(parentType)) {
+      return false;
+    }
+    return isImplementationOf(parentType, rightType, visited);
+  });
+}
+function isInstanceOf(value, type) {
+  const isNativeInstanceofType = value instanceof type;
+  if (isNativeInstanceofType || typeof value !== "object") {
+    return isNativeInstanceofType;
+  }
+  const proto = Object.getPrototypeOf(value).constructor;
+  return isImplementationOf(proto, type);
+}
+function isBaseType(type) {
+  return type === Number || type === String || type === Boolean;
+}
+function isUnknownType(type) {
+  return type === "Unknown";
+}
+function isAnyType(type) {
+  return type === "Any";
+}
+function isUTSType(type) {
+  return type && type.prototype && type.prototype instanceof UTSType;
+}
+class UTSType {
+  static get$UTSMetadata$(...args) {
+    return {
+      kind: UTS_CLASS_METADATA_KIND.TYPE,
+      interfaces: [],
+      fields: {}
+    };
+  }
+  get $UTSMetadata$() {
+    return UTSType.get$UTSMetadata$();
+  }
+  // TODO 缓存withGenerics结果
+  static withGenerics(parent, generics, isJSONParse = false) {
+    if (isJSONParse) {
+      const illegalGeneric = generics.find((item) => !(item === Array || isBaseType(item) || isUnknownType(item) || isAnyType(item) || item === UTSJSONObject || item.prototype && item.prototype instanceof UTSType));
+      if (illegalGeneric) {
+        throw new Error("Generic is not UTSType or Array or UTSJSONObject or base type, generic: " + illegalGeneric);
+      }
+    }
+    if (parent === Array) {
+      return class UTSArray extends UTSType {
+        constructor(options, isJSONParse2 = false) {
+          if (!Array.isArray(options)) {
+            throw new UTSError(`Failed to contruct type, ${options} is not an array`);
+          }
+          super();
+          return options.map((item) => {
+            return item == null ? null : isBaseType(generics[0]) || isUnknownType(generics[0]) || isAnyType(generics[0]) ? item : generics[0] === Array ? new Array(...item) : new generics[0](item, void 0, isJSONParse2);
+          });
+        }
+      };
+    } else if (isUTSType(parent)) {
+      return class VirtualClassWithGenerics extends parent {
+        static get$UTSMetadata$() {
+          return parent.get$UTSMetadata$(...generics);
+        }
+        constructor(options, metadata = VirtualClassWithGenerics.get$UTSMetadata$(), isJSONParse2 = false) {
+          super(options, metadata, isJSONParse2);
+        }
+      };
+    } else {
+      return parent;
+    }
+  }
+  constructor() {
+  }
+  static initProps(options, metadata, isJSONParse = false) {
+    const obj = {};
+    if (!metadata.fields) {
+      return obj;
+    }
+    for (const key in metadata.fields) {
+      const { type, optional, jsonField } = metadata.fields[key];
+      const realKey = isJSONParse ? jsonField || key : key;
+      if (options[realKey] == null) {
+        if (optional) {
+          obj[key] = null;
+          continue;
+        } else {
+          throw new UTSError(`Failed to contruct type, missing required property: ${key}`);
+        }
+      }
+      if (isUTSType(type)) {
+        obj[key] = new type(options[realKey], void 0, isJSONParse);
+      } else if (type === Array) {
+        if (!Array.isArray(options[realKey])) {
+          throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
+        }
+        obj[key] = options[realKey].map((item) => {
+          return item == null ? null : item;
+        });
+      } else {
+        obj[key] = options[realKey];
+      }
+    }
+    return obj;
+  }
+}
+const OriginalJSON = JSON;
+function parseObjectOrArray(object, utsType) {
+  const objectType = getType$1(object);
+  if (object === null || objectType !== "object" && objectType !== "array") {
+    return object;
+  }
+  if (utsType || utsType === UTSJSONObject) {
+    try {
+      return new utsType(object, void 0, true);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+  if (objectType === "array") {
+    return object.map((value) => {
+      return parseObjectOrArray(value);
+    });
+  } else if (objectType === "object") {
+    return new UTSJSONObject(object);
+  }
+  return object;
+}
+const UTSJSON = {
+  parse: (text2, reviver, utsType) => {
+    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
+      utsType = reviver;
+      reviver = void 0;
+    }
+    try {
+      const parseResult = OriginalJSON.parse(text2, reviver);
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseArray(text2, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text2);
+      if (Array.isArray(parseResult)) {
+        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
+      }
+      return null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseObject(text2, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text2);
+      if (Array.isArray(parseResult)) {
+        return null;
+      }
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  stringify: (value) => {
+    return OriginalJSON.stringify(value);
+  }
+};
+function mapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+function stringCodePointAt(str, pos) {
+  if (pos < 0 || pos >= str.length) {
+    return null;
+  }
+  return str.codePointAt(pos);
+}
+function stringAt(str, pos) {
+  if (pos < -str.length || pos >= str.length) {
+    return null;
+  }
+  return str.at(pos);
+}
+function weakMapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+const UTS = {
+  arrayAt,
+  arrayFind,
+  arrayFindLast,
+  arrayPop,
+  arrayShift,
+  isInstanceOf,
+  UTSType,
+  mapGet,
+  stringAt,
+  stringCodePointAt,
+  weakMapGet,
+  JSON: UTSJSON
+};
+let UniError$1 = class UniError2 extends Error {
+  constructor(errSubject, errCode, errMsg) {
+    let options = {};
+    if (errMsg == null) {
+      errMsg = errSubject;
+      options = errCode;
+      errCode = options.errCode || 0;
+      errSubject = options.errSubject || "";
+    }
+    super(errMsg);
+    this.name = "UniError";
+    this.errSubject = errSubject;
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+  }
+  toString() {
+    return this.errMsg;
+  }
+  toJSON() {
+    return {
+      errSubject: this.errSubject,
+      errCode: this.errCode,
+      errMsg: this.errMsg,
+      data: this.data,
+      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
+    };
+  }
+};
+function initUTSJSONObjectProperties(obj) {
+  const propertyList = [
+    "_resolveKeyPath",
+    "_getValue",
+    "toJSON",
+    "get",
+    "set",
+    "getAny",
+    "getString",
+    "getNumber",
+    "getBoolean",
+    "getJSON",
+    "getArray",
+    "toMap",
+    "forEach"
+  ];
+  const propertyDescriptorMap = {};
+  for (let i = 0; i < propertyList.length; i++) {
+    const property = propertyList[i];
+    propertyDescriptorMap[property] = {
+      enumerable: false,
+      value: obj[property]
+    };
+  }
+  Object.defineProperties(obj, propertyDescriptorMap);
+}
+let UTSJSONObject$1 = class UTSJSONObject2 {
+  constructor(content = {}) {
+    for (const key in content) {
+      if (Object.prototype.hasOwnProperty.call(content, key)) {
+        const value = content[key];
+        if (isPlainObject(value)) {
+          this[key] = new UTSJSONObject2(value);
+        } else if (getType$1(value) === "array") {
+          this[key] = value.map((item) => {
+            if (isPlainObject(item)) {
+              return new UTSJSONObject2(item);
+            } else {
+              return item;
+            }
+          });
+        } else {
+          this[key] = value;
+        }
+      }
+    }
+    initUTSJSONObjectProperties(this);
+  }
+  _resolveKeyPath(keyPath) {
+    let token = "";
+    const keyPathArr = [];
+    let inOpenParentheses = false;
+    for (let i = 0; i < keyPath.length; i++) {
+      const word = keyPath[i];
+      switch (word) {
+        case ".":
+          if (token.length > 0) {
+            keyPathArr.push(token);
+            token = "";
+          }
+          break;
+        case "[": {
+          inOpenParentheses = true;
+          if (token.length > 0) {
+            keyPathArr.push(token);
+            token = "";
+          }
+          break;
+        }
+        case "]":
+          if (inOpenParentheses) {
+            if (token.length > 0) {
+              const tokenFirstChar = token[0];
+              const tokenLastChar = token[token.length - 1];
+              if (tokenFirstChar === '"' && tokenLastChar === '"' || tokenFirstChar === "'" && tokenLastChar === "'" || tokenFirstChar === "`" && tokenLastChar === "`") {
+                if (token.length > 2) {
+                  token = token.slice(1, -1);
+                } else {
+                  return [];
+                }
+              } else if (!/^\d+$/.test(token)) {
+                return [];
+              }
+              keyPathArr.push(token);
+              token = "";
+            } else {
+              return [];
+            }
+            inOpenParentheses = false;
+          } else {
+            return [];
+          }
+          break;
+        default:
+          token += word;
+          break;
+      }
+      if (i === keyPath.length - 1) {
+        if (token.length > 0) {
+          keyPathArr.push(token);
+          token = "";
+        }
+      }
+    }
+    return keyPathArr;
+  }
+  _getValue(keyPath) {
+    const keyPathArr = this._resolveKeyPath(keyPath);
+    if (keyPathArr.length === 0) {
+      return null;
+    }
+    let value = this;
+    for (let i = 0; i < keyPathArr.length; i++) {
+      const key = keyPathArr[i];
+      if (value instanceof Object) {
+        value = value[key];
+      } else {
+        return null;
+      }
+    }
+    return value;
+  }
+  get(key) {
+    return this._getValue(key);
+  }
+  set(key, value) {
+    this[key] = value;
+  }
+  getAny(key) {
+    return this._getValue(key);
+  }
+  getString(key) {
+    const value = this._getValue(key);
+    if (typeof value === "string") {
+      return value;
+    } else {
+      return null;
+    }
+  }
+  getNumber(key) {
+    const value = this._getValue(key);
+    if (typeof value === "number") {
+      return value;
+    } else {
+      return null;
+    }
+  }
+  getBoolean(key) {
+    const boolean = this._getValue(key);
+    if (typeof boolean === "boolean") {
+      return boolean;
+    } else {
+      return null;
+    }
+  }
+  getJSON(key) {
+    let value = this._getValue(key);
+    if (value instanceof Object) {
+      return new UTSJSONObject2(value);
+    } else {
+      return null;
+    }
+  }
+  getArray(key) {
+    let value = this._getValue(key);
+    if (value instanceof Array) {
+      return value;
+    } else {
+      return null;
+    }
+  }
+  toMap() {
+    let map = /* @__PURE__ */ new Map();
+    for (let key in this) {
+      map.set(key, this[key]);
+    }
+    return map;
+  }
+  forEach(callback) {
+    for (let key in this) {
+      callback(this[key], key);
+    }
+  }
+};
+function getGlobal() {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  throw new Error("unable to locate window object");
+}
+const realGlobal = getGlobal();
+realGlobal.UTSJSONObject = UTSJSONObject$1;
+realGlobal.UniError = UniError$1;
+realGlobal.UTS = UTS;
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -1372,7 +1907,7 @@ class ComponentDescriptor {
     if (isString(style)) {
       style = parseStringStyle(style);
     }
-    if (isPlainObject(style)) {
+    if (isPlainObject$1(style)) {
       this.$el.__wxsStyle = style;
       this.forceUpdate("style");
     }
@@ -2300,7 +2835,7 @@ function _addListeners(id2, listeners2, watch2) {
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject(listeners2)) {
+  if (!isPlainObject$1(listeners2)) {
     return;
   }
   Object.keys(listeners2).forEach((name) => {
@@ -2322,7 +2857,7 @@ function _removeListeners(id2, listeners2, watch2) {
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject(listeners2)) {
+  if (!isPlainObject$1(listeners2)) {
     return;
   }
   Object.keys(listeners2).forEach((name) => {
@@ -2815,7 +3350,7 @@ function validateProtocols(name, args, protocol, onFail) {
   }
 }
 function validateProp(name, value, prop, isAbsent) {
-  if (!isPlainObject(prop)) {
+  if (!isPlainObject$1(prop)) {
     prop = { type: prop };
   }
   const { type, required, validator: validator2 } = prop;
@@ -2987,7 +3522,7 @@ function normalizeErrMsg$1(errMsg, name) {
   return name + errMsg.substring(errMsg.indexOf(":fail"));
 }
 function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-  if (!isPlainObject(args)) {
+  if (!isPlainObject$1(args)) {
     args = {};
   }
   const { success, fail, complete } = getApiCallbacks(args);
@@ -3114,7 +3649,7 @@ function invokeApi(method, api2, options, params) {
   return api2(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
+  if (isPlainObject$1(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
     (cb) => isFunction(args[cb])
   )) {
     return true;
@@ -3146,7 +3681,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (!options || !isPlainObject$1(options.formatArgs) && isPlainObject$1(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -3452,12 +3987,12 @@ function dedupeHooks(hooks) {
 const addInterceptor = /* @__PURE__ */ defineSyncApi(
   API_ADD_INTERCEPTOR,
   (method, interceptor) => {
-    if (isString(method) && isPlainObject(interceptor)) {
+    if (isString(method) && isPlainObject$1(interceptor)) {
       mergeInterceptorHook(
         scopedInterceptors[method] || (scopedInterceptors[method] = {}),
         interceptor
       );
-    } else if (isPlainObject(method)) {
+    } else if (isPlainObject$1(method)) {
       mergeInterceptorHook(globalInterceptors, method);
     }
   },
@@ -3467,12 +4002,12 @@ const removeInterceptor = /* @__PURE__ */ defineSyncApi(
   API_REMOVE_INTERCEPTOR,
   (method, interceptor) => {
     if (isString(method)) {
-      if (isPlainObject(interceptor)) {
+      if (isPlainObject$1(interceptor)) {
         removeInterceptorHook(scopedInterceptors[method], interceptor);
       } else {
         delete scopedInterceptors[method];
       }
-    } else if (isPlainObject(method)) {
+    } else if (isPlainObject$1(method)) {
       removeInterceptorHook(globalInterceptors, method);
     }
   },
@@ -4288,7 +4823,7 @@ class CanvasContext {
     });
   }
   set font(value) {
-    var self = this;
+    var self2 = this;
     this.state.font = value;
     var fontFormat = value.match(
       /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
@@ -4304,19 +4839,19 @@ class CanvasContext {
             method: "setFontStyle",
             data: [value2]
           });
-          self.state.fontStyle = value2;
+          self2.state.fontStyle = value2;
         } else if (["bold", "normal"].indexOf(value2) > -1) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
           });
-          self.state.fontWeight = value2;
+          self2.state.fontWeight = value2;
         } else if (index2 === 0) {
           actions.push({
             method: "setFontStyle",
             data: ["normal"]
           });
-          self.state.fontStyle = "normal";
+          self2.state.fontStyle = "normal";
         } else if (index2 === 1) {
           pushAction();
         }
@@ -4341,7 +4876,7 @@ class CanvasContext {
         method: "setFontWeight",
         data: ["normal"]
       });
-      self.state.fontWeight = "normal";
+      self2.state.fontWeight = "normal";
     }
   }
   get font() {
@@ -5777,7 +6312,7 @@ function stringifyQuery(url, data) {
       let v2 = data[key];
       if (typeof v2 === "undefined" || v2 === null) {
         v2 = "";
-      } else if (isPlainObject(v2)) {
+      } else if (isPlainObject$1(v2)) {
         v2 = JSON.stringify(v2);
       }
       params[encode(key)] = encode(v2);
@@ -5810,7 +6345,7 @@ const RequestOptions = {
       params.data = value || "";
     },
     url(value, params) {
-      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
+      if (params.method === HTTP_METHODS[0] && isPlainObject$1(params.data) && Object.keys(params.data).length) {
         params.url = stringifyQuery(value, params.data);
       }
     },
@@ -13203,7 +13738,7 @@ function processClickEvent(node, triggerItemClick) {
   }
 }
 function normalizeAttrs(tagName, attrs2) {
-  if (!isPlainObject(attrs2))
+  if (!isPlainObject$1(attrs2))
     return;
   for (const key in attrs2) {
     if (hasOwn(attrs2, key)) {
@@ -13218,7 +13753,7 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
     return [];
   return nodeList.map((node) => {
     var _a;
-    if (!isPlainObject(node)) {
+    if (!isPlainObject$1(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
@@ -18056,7 +18591,7 @@ function onResize() {
   });
 }
 function onMessage(evt) {
-  if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
     UniServiceJSBridge.emit(
       ON_WEB_INVOKE_APP_SERVICE,
       evt.data.data,

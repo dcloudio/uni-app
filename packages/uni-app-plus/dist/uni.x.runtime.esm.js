@@ -1,6 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
-import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, computed, onMounted, camelize, onUnmounted, reactive, watch, nextTick } from "vue";
+import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
 var _wks = { exports: {} };
 var _shared = { exports: {} };
 var _core = { exports: {} };
@@ -1641,7 +1641,7 @@ function initScope(pageId, vm, pageInstance) {
   {
     Object.defineProperty(vm, "$viewToTempFilePath", {
       get() {
-        return vm.$nativePage.viewToTempFilePath;
+        return vm.$nativePage.viewToTempFilePath.bind(vm.$nativePage);
       }
     });
   }
@@ -1680,38 +1680,6 @@ function getPageManager() {
 }
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
-function loadFontFaceByStyles(styles2, global2) {
-  styles2 = Array.isArray(styles2) ? styles2 : [styles2];
-  var fontFaceStyle = [];
-  styles2.forEach((style) => {
-    if (style["@FONT-FACE"]) {
-      fontFaceStyle.push(...style["@FONT-FACE"]);
-    }
-  });
-  if (fontFaceStyle.length === 0)
-    return;
-  fontFaceStyle.forEach((style) => {
-    var fontFamily = style["fontFamily"];
-    var fontWeight = style["fontWeight"];
-    var fontStyle = style["fontStyle"];
-    var fontVariant = style["fontVariant"];
-    var src = style["src"];
-    if (fontFamily != null && src != null) {
-      loadFontFace({
-        global: global2,
-        family: fontFamily,
-        source: src,
-        desc: {
-          style: fontStyle,
-          weight: fontWeight,
-          variant: fontVariant
-        }
-      });
-    } else {
-      console.warn("loadFontFace: fail, font-family or src is null");
-    }
-  });
-}
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -1730,7 +1698,7 @@ function parsePageStyle(route) {
   });
   if (Object.keys(navigationBar).length) {
     style.set("navigationBar", navigationBar);
-    if (navigationBar.navigationBarTextStyle !== "custom" && !routeMeta.isQuit) {
+    if (navigationBar.navigationBarTextStyle !== "custom" && !routeMeta.isQuit && routeMeta.route !== __uniConfig.realEntryPagePath) {
       navigationBar["navigationBarAutoBackButton"] = true;
     }
   }
@@ -1746,6 +1714,7 @@ function registerPage(_ref, onCreated) {
     nvuePageVm,
     eventChannel
   } = _ref;
+  var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = parsePageStyle(routeOptions);
@@ -1764,38 +1733,41 @@ function registerPage(_ref, onCreated) {
     // TODO ThemeMode
     "light"
   );
-  var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-  nativePage.addPageEventListener(ON_SHOW, (_) => {
-    invokeHook(page, ON_SHOW);
-  });
-  nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
-    uni.navigateBack({
-      from: "popGesture",
-      fail(e2) {
-        if (e2.errMsg.endsWith("cancel")) {
-          nativePage.show();
-        }
-      }
+  function fn() {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
+    nativePage.addPageEventListener(ON_SHOW, (_) => {
+      invokeHook(page, ON_SHOW);
     });
-  });
-  nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-    invokeHook(page, ON_UNLOAD);
-  });
-  nativePage.addPageEventListener(ON_READY, (_) => {
-    invokeHook(page, ON_READY);
-  });
-  nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
-    invokeHook(page, ON_PULL_DOWN_REFRESH);
-  });
-  nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
-    invokeHook(page, ON_REACH_BOTTOM);
-  });
-  nativePage.addPageEventListener(ON_RESIZE, (_) => {
-    invokeHook(page, ON_RESIZE);
-  });
-  var pageCSSStyle = page.$options.styles;
-  if (pageCSSStyle) {
-    loadFontFaceByStyles(pageCSSStyle, false);
+    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
+      uni.navigateBack({
+        from: "popGesture",
+        fail(e2) {
+          if (e2.errMsg.endsWith("cancel")) {
+            nativePage.show();
+          }
+        }
+      });
+    });
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD);
+    });
+    nativePage.addPageEventListener(ON_READY, (_) => {
+      invokeHook(page, ON_READY);
+    });
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH);
+    });
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM);
+    });
+    nativePage.addPageEventListener(ON_RESIZE, (_) => {
+      invokeHook(page, ON_RESIZE);
+    });
+  }
+  if (delay) {
+    setTimeout(fn, delay);
+  } else {
+    fn();
   }
   return nativePage;
 }
@@ -1873,13 +1845,18 @@ function _navigateTo(_ref2) {
         setStatusBarStyle();
       });
     }
-    var page = registerPage({
-      url,
-      path,
-      query,
-      openType: "navigateTo",
-      eventChannel
-    }, noAnimation ? void 0 : callback);
+    var page = registerPage(
+      {
+        url,
+        path,
+        query,
+        openType: "navigateTo",
+        eventChannel
+      },
+      noAnimation ? void 0 : callback,
+      // 有动画时延迟创建 vm
+      noAnimation ? 0 : 1
+    );
     if (noAnimation) {
       callback(page);
     }
@@ -3231,6 +3208,38 @@ function initGlobalEvent(app) {
     return true;
   });
 }
+function loadFontFaceByStyles(styles2, global2) {
+  styles2 = Array.isArray(styles2) ? styles2 : [styles2];
+  var fontFaceStyle = [];
+  styles2.forEach((style) => {
+    if (style["@FONT-FACE"]) {
+      fontFaceStyle.push(...style["@FONT-FACE"]);
+    }
+  });
+  if (fontFaceStyle.length === 0)
+    return;
+  fontFaceStyle.forEach((style) => {
+    var fontFamily = style["fontFamily"];
+    var fontWeight = style["fontWeight"];
+    var fontStyle = style["fontStyle"];
+    var fontVariant = style["fontVariant"];
+    var src = style["src"];
+    if (fontFamily != null && src != null) {
+      loadFontFace({
+        global: global2,
+        family: fontFamily,
+        source: src,
+        desc: {
+          style: fontStyle,
+          weight: fontWeight,
+          variant: fontVariant
+        }
+      });
+    } else {
+      console.warn("loadFontFace: fail, font-family or src is null");
+    }
+  });
+}
 function initAppLaunch(appVm) {
   injectAppHooks(appVm.$);
   var {
@@ -3369,14 +3378,22 @@ function initEntryPagePath(app) {
     var url = debugInfo.get("url");
     if (url && url != __uniConfig.entryPagePath) {
       __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
-      __uniConfig.entryPagePath = url;
+      var [path, query] = url.split("?");
+      __uniConfig.entryPagePath = path;
+      if (query) {
+        __uniConfig.entryPageQuery = "?".concat(query);
+      }
       return;
     }
   }
   if (__uniConfig.conditionUrl) {
     __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
     var conditionUrl = __uniConfig.conditionUrl;
-    __uniConfig.entryPagePath = conditionUrl;
+    var [_path, _query] = conditionUrl.split("?");
+    __uniConfig.entryPagePath = _path;
+    if (_query) {
+      __uniConfig.entryPageQuery = "?".concat(_query);
+    }
   }
 }
 function converPx(value) {
@@ -3639,6 +3656,16 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
     watchEffect(() => {
       checkboxChecked.value = props.checked;
     });
+    watch(() => checkboxChecked.value, (val) => {
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      if (!ctx2)
+        return;
+      $dispatch(ctx2, "CheckboxGroup", "_changeHandler", {
+        name: checkboxValue.value,
+        checked: checkboxChecked.value,
+        setCheckboxChecked
+      });
+    });
     watchEffect(() => {
       checkboxValue.value = props.value.toString();
     });
@@ -3700,12 +3727,6 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
         return;
       emit("click", $event);
       checkboxChecked.value = !checkboxChecked.value;
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx2, "CheckboxGroup", "_changeHandler", {
-        name: checkboxValue.value,
-        checked: checkboxChecked.value,
-        setCheckboxChecked
-      });
     };
     return () => {
       var _slots$default;

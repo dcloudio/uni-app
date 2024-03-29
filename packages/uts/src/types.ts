@@ -42,6 +42,7 @@ export type UTSOutputOptions = {
   extname: string
   logFilename?: boolean
   noColor?: boolean
+  public?: boolean // only for swift
   isX?: boolean
   isApp?: boolean
   isSingleThread?: boolean
