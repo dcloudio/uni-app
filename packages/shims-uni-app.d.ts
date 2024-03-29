@@ -224,6 +224,7 @@ declare namespace UniNamespace {
     onReachBottomDistance?: number
     pageOrientation?: 'auto' | 'portrait' | 'landscape'
     backgroundColor?: string
+    backgroundColorContent?: string
     maxWidth?: string | number
     // app-plus
     scrollIndicator?: 'none'
