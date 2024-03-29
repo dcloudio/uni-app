@@ -116,8 +116,12 @@ export function initEnv(
     process.env.UNI_SUB_PLATFORM = options.platform
     options.platform = 'quickapp-webview'
   }
-  process.env.VITE_ROOT_DIR =
-    process.env.VITE_ROOT_DIR || process.env.UNI_INPUT_DIR || process.cwd()
+  if (isInHBuilderX()) {
+    process.env.VITE_ROOT_DIR =
+      process.env.VITE_ROOT_DIR || process.env.UNI_INPUT_DIR || process.cwd()
+  } else {
+    process.env.VITE_ROOT_DIR = process.env.VITE_ROOT_DIR || process.cwd()
+  }
 
   process.env.UNI_INPUT_DIR =
     process.env.UNI_INPUT_DIR || path.resolve(process.cwd(), 'src')
