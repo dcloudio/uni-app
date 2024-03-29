@@ -188,14 +188,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           onClick={_onClick}
         >
           <view class="uni-radio-input" style={styleUniRadioInput.value}>
-            {radioChecked.value ? (
-              <text
-                class="uni-radio-input-icon"
-                style={styleUniRadioInputIcon.value}
-              >
-                {icon}
-              </text>
-            ) : null}
+            <text
+              class="uni-radio-input-icon"
+              style={styleUniRadioInputIcon.value}
+            >
+              {radioChecked.value ? icon : ''}
+            </text>
           </view>
           {slots.default?.()}
         </uni-radio-element>

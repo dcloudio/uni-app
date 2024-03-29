@@ -27,5 +27,7 @@ export const styles = {
   ['uni-icon']: {
     'font-family': 'uniappx_components',
     'font-size': '16px',
+    width: '16px',
+    height: '16px',
   },
 }

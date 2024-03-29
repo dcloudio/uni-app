@@ -23,6 +23,8 @@ const _style_0$1 = {
     '': {
       fontFamily: 'uniappx_components',
       fontSize: '14px',
+      width: '14px',
+      height: '14px',
     },
   },
 }
