@@ -155,11 +155,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           style={styles['uni-checkbox']}
         >
           <view class="uni-checkbox-input" style={checkInputStyle.value}>
-            {checkboxChecked.value ? (
-              <text class="uni-icon" style={iconStyle.value}>
-                {icon}
-              </text>
-            ) : null}
+            <text class="uni-icon" style={iconStyle.value}>
+              {checkboxChecked.value ? icon : ''}
+            </text>
           </view>
           {slots.default?.()}
         </uni-checkbox-element>
