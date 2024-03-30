@@ -31,7 +31,7 @@
     "@dcloudio/uni-shared": "3.0.0-alpha-4010120240329001",
     "@rollup/pluginutils": "^5.0.5",
     "@vitejs/plugin-legacy": "^4.0.3",
-    "@vitejs/plugin-vue": "^4.2.1",
+    "@vitejs/plugin-vue": "^4.6.2",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
     "@vue/compiler-core": "3.4.21",
     "@vue/compiler-dom": "3.4.21",
