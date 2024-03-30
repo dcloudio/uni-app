@@ -1260,9 +1260,23 @@ export function inferRuntimeType(
             m.type === 'TSCallSignatureDeclaration' ||
             m.type === 'TSConstructSignatureDeclaration'
           ) {
-            types.add('Function')
+            types.add(
+              'Function as PropType<' +
+                ctx.source.slice(
+                  m.start! + scope.offset,
+                  m.end! + scope.offset
+                ) +
+                '>'
+            )
           } else {
-            types.add('Object')
+            types.add(
+              'Object as PropType<' +
+                ctx.source.slice(
+                  m.start! + scope.offset,
+                  m.end! + scope.offset
+                ) +
+                '>'
+            )
           }
         }
         return types.size ? Array.from(types) : ['Object']
@@ -1278,11 +1292,25 @@ export function inferRuntimeType(
         break
       case 'TSMethodSignature':
       case 'TSFunctionType':
-        return ['Function']
+        return [
+          'Function as PropType<' +
+            ctx.source.slice(
+              node.start! + scope.offset,
+              node.end! + scope.offset
+            ) +
+            '>',
+        ]
       case 'TSArrayType':
       case 'TSTupleType':
         // TODO (nice to have) generate runtime element type/length checks
-        return ['Array']
+        return [
+          'Array as PropType<' +
+            ctx.source.slice(
+              node.start! + scope.offset,
+              node.end! + scope.offset
+            ) +
+            '>',
+        ]
 
       case 'TSLiteralType':
         switch (node.literal.type) {
@@ -1303,69 +1331,78 @@ export function inferRuntimeType(
           return inferRuntimeType(ctx, resolved, resolved._ownerScope)
         }
         if (node.typeName.type === 'Identifier') {
-          switch (node.typeName.name) {
-            case 'Array':
-            case 'Function':
-            case 'Object':
-            case 'Set':
-            case 'Map':
-            case 'WeakSet':
-            case 'WeakMap':
-            case 'Date':
-            case 'Promise':
-            case 'Error':
-              return [node.typeName.name]
+          return [
+            ctx.source.slice(
+              node.start! + scope.offset,
+              node.end! + scope.offset
+            ),
+          ]
+          // switch (node.typeName.name) {
+          //   case 'Array':
+          //   case 'Function':
+          //   case 'Object':
+          //   case 'Set':
+          //   case 'Map':
+          //   case 'WeakSet':
+          //   case 'WeakMap':
+          //   case 'Date':
+          //   case 'Promise':
+          //   case 'Error':
+          //     return [node.typeName.name]
 
-            // TS built-in utility types
-            // https://www.typescriptlang.org/docs/handbook/utility-types.html
-            case 'Partial':
-            case 'Required':
-            case 'Readonly':
-            case 'Record':
-            case 'Pick':
-            case 'Omit':
-            case 'InstanceType':
-              return ['Object']
+          //   // TS built-in utility types
+          //   // https://www.typescriptlang.org/docs/handbook/utility-types.html
+          //   case 'Partial':
+          //   case 'Required':
+          //   case 'Readonly':
+          //   case 'Record':
+          //   case 'Pick':
+          //   case 'Omit':
+          //   case 'InstanceType':
+          //     return ['Object']
 
-            case 'Uppercase':
-            case 'Lowercase':
-            case 'Capitalize':
-            case 'Uncapitalize':
-              return ['String']
+          //   case 'Uppercase':
+          //   case 'Lowercase':
+          //   case 'Capitalize':
+          //   case 'Uncapitalize':
+          //     return ['String']
 
-            case 'Parameters':
-            case 'ConstructorParameters':
-              return ['Array']
+          //   case 'Parameters':
+          //   case 'ConstructorParameters':
+          //     return ['Array']
 
-            case 'NonNullable':
-              if (node.typeParameters && node.typeParameters.params[0]) {
-                return inferRuntimeType(
-                  ctx,
-                  node.typeParameters.params[0],
-                  scope
-                ).filter((t) => t !== 'null')
-              }
-              break
-            case 'Extract':
-              if (node.typeParameters && node.typeParameters.params[1]) {
-                return inferRuntimeType(
-                  ctx,
-                  node.typeParameters.params[1],
-                  scope
-                )
-              }
-              break
-            case 'Exclude':
-            case 'OmitThisParameter':
-              if (node.typeParameters && node.typeParameters.params[0]) {
-                return inferRuntimeType(
-                  ctx,
-                  node.typeParameters.params[0],
-                  scope
-                )
-              }
-              break
-          }
+          //   case 'NonNullable':
+          //     if (node.typeParameters && node.typeParameters.params[0]) {
+          //       return inferRuntimeType(
+          //         ctx,
+          //         node.typeParameters.params[0],
+          //         scope
+          //       ).filter((t) => t !== 'null')
+          //     }
+          //     break
+          //   case 'Extract':
+          //     if (node.typeParameters && node.typeParameters.params[1]) {
+          //       return inferRuntimeType(
+          //         ctx,
+          //         node.typeParameters.params[1],
+          //         scope
+          //       )
+          //     }
+          //     break
+          //   case 'Exclude':
+          //   case 'OmitThisParameter':
+          //     if (node.typeParameters && node.typeParameters.params[0]) {
+          //       return inferRuntimeType(
+          //         ctx,
+          //         node.typeParameters.params[0],
+          //         scope
+          //       )
+          //     }
+          //     break
+          //   default:
+          //     // fixed by xxxxxx 未知的类型也返回，比如UTSJSONObject
+          //     return [node.typeName.name]
+          // }
         }
         // cannot infer, fallback to UNKNOWN: ThisParameterType
         break

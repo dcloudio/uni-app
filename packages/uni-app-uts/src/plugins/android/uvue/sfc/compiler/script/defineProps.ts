@@ -1,3 +1,4 @@
+import { isArray } from '@vue/shared'
 import {
   Node,
   LVal,
@@ -277,10 +278,21 @@ function resolveRuntimePropsFromType(
         }
       }
     }
+
+    let hasNull = false
+    type = type || [`null`]
+
+    if (isArray(type)) {
+      if (type.find((t) => t === 'null')) {
+        hasNull = true
+        type = type.filter((t) => t !== 'null')
+      }
+    }
+
     props.push({
       key,
-      required: !e.optional,
-      type: type || [`null`],
+      required: !e.optional && !hasNull,
+      type,
       skipCheck,
     })
   }
