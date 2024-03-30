@@ -61,7 +61,7 @@
     "@types/react": "^18.2.67",
     "@types/sass": "~1.43.1",
     "@typescript-eslint/parser": "^7.3.1",
-    "@vitejs/plugin-vue": "^4.2.1",
+    "@vitejs/plugin-vue": "^4.6.2",
     "@vitejs/plugin-vue-jsx": "^3.0.1",
     "@vue/compiler-sfc": "3.4.21",
     "@vue/reactivity": "3.4.21",
