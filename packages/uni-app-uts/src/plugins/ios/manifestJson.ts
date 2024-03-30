@@ -1,8 +1,16 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { Plugin } from 'vite'
-import { MANIFEST_JSON_UTS, parseJson } from '@dcloudio/uni-cli-shared'
-import { isManifest, normalizeManifestJson } from '../utils'
+import {
+  MANIFEST_JSON_UTS,
+  parseJson,
+  resolveUTSCompiler,
+} from '@dcloudio/uni-cli-shared'
+import {
+  isManifest,
+  normalizeManifestJson,
+  updateManifestModules,
+} from '../utils'
 
 let outputManifestJson: Record<string, any> | undefined = undefined
 
@@ -42,11 +50,40 @@ export function uniAppManifestPlugin(): Plugin {
         return `export default ${JSON.stringify(manifestJson)}`
       }
     },
-    writeBundle() {
+    buildEnd() {
       outputManifestJson = normalizeManifestJson(manifestJson)
+
+      const manifest = outputManifestJson
+      if (process.env.NODE_ENV !== 'development') {
+        // 生产模式，记录使用到的modules
+        const ids = Array.from(this.getModuleIds())
+        const uniExtApis = new Set<string>()
+        ids.forEach((id) => {
+          const moduleInfo = this.getModuleInfo(id)
+          if (
+            moduleInfo &&
+            moduleInfo.meta &&
+            Array.isArray(moduleInfo.meta.uniExtApis)
+          ) {
+            moduleInfo.meta.uniExtApis.forEach((api) => {
+              uniExtApis.add(api)
+            })
+          }
+        })
+        if (uniExtApis.size) {
+          const modules = resolveUTSCompiler().parseInjectModules(
+            [...uniExtApis],
+            {},
+            []
+          )
+          // 执行了摇树逻辑，就需要设置 modules 节点
+          updateManifestModules(manifest, modules)
+        }
+      }
+
       fs.outputFileSync(
         path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
-        JSON.stringify(outputManifestJson, null, 2)
+        JSON.stringify(manifest, null, 2)
       )
     },
   }

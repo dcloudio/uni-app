@@ -29,7 +29,11 @@ import {
   createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
-import { configResolved, createUniOptions } from '../utils'
+import {
+  configResolved,
+  createUniOptions,
+  updateManifestModules,
+} from '../utils'
 import { genClassName } from '../..'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
@@ -196,20 +200,7 @@ export function uniAppPlugin(): UniVitePlugin {
           const manifest = getOutputManifestJson()!
           if (manifest) {
             // 执行了摇树逻辑，就需要设置 modules 节点
-            const app = manifest.app
-            if (!app.distribute) {
-              app.distribute = {}
-            }
-            if (!app.distribute.modules) {
-              app.distribute.modules = {}
-            }
-            if (modules) {
-              modules.forEach((name) => {
-                const value = app.distribute.modules[name]
-                app.distribute.modules[name] =
-                  typeof value === 'object' && value !== null ? value : {}
-              })
-            }
+            updateManifestModules(manifest, modules)
             fs.outputFileSync(
               path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
               JSON.stringify(manifest, null, 2)

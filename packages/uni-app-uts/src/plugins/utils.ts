@@ -158,3 +158,25 @@ export function normalizeManifestJson(userManifestJson: Record<string, any>) {
     app,
   }
 }
+
+export function updateManifestModules(
+  manifest: Record<string, any>,
+  modules: string[]
+) {
+  // 执行了摇树逻辑，就需要设置 modules 节点
+  const app = manifest.app
+  if (!app.distribute) {
+    app.distribute = {}
+  }
+  if (!app.distribute.modules) {
+    app.distribute.modules = {}
+  }
+  if (modules) {
+    modules.forEach((name) => {
+      const value = app.distribute.modules[name]
+      app.distribute.modules[name] =
+        typeof value === 'object' && value !== null ? value : {}
+    })
+  }
+  return manifest
+}
