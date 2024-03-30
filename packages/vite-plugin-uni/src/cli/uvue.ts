@@ -14,6 +14,7 @@ import { CliOptions } from '.'
 import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'
+import { stopProfiler } from './action'
 
 export function initUVueEnv() {
   // 直接指定了
@@ -29,6 +30,13 @@ export function initUVueEnv() {
   if (manifestJson['uni-app-x']?.singleThread === false) {
     process.env.UNI_APP_X_SINGLE_THREAD = 'false'
   }
+  if (process.env.UNI_PLATFORM === 'app') {
+    process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'native'
+    // 如果是app-ios，目前强制使用js引擎
+    if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
+      process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'js'
+    }
+  }
 }
 
 export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
@@ -43,7 +51,7 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
   const watcher = (await buildUVue(options)) as RollupWatcher
   let isFirstStart = true
   let isFirstEnd = true
-  watcher.on('event', (event) => {
+  watcher.on('event', async (event) => {
     if (event.code === 'BUNDLE_START') {
       if (isFirstStart) {
         isFirstStart = false
@@ -61,6 +69,9 @@ export async function runUVueAndroidDev(options: CliOptions & ServerOptions) {
         isFirstEnd = false
         output('log', M['dev.watching.end'])
         printStartupDuration(createLogger(options.logLevel), false)
+        await stopProfiler((message) =>
+          createLogger(options.logLevel).info(message)
+        )
         return
       }
       if (dex) {
@@ -87,6 +98,9 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
       isX: true,
     })
     await buildUVue(options)
+    await stopProfiler((message) =>
+      createLogger(options.logLevel).info(message)
+    )
     console.log(M['build.done'])
   } catch (e: any) {
     console.error(`Build failed with errors.`)

@@ -2,11 +2,7 @@ function getDefaultExportFromCjs (x) {
 	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
 }
 
-var gtpushMinExports = {};
-var gtpushMin = {
-  get exports(){ return gtpushMinExports; },
-  set exports(v){ gtpushMinExports = v; },
-};
+var gtpushMin = {exports: {}};
 
 /*! For license information please see gtpush-min.js.LICENSE.txt */
 
@@ -100,6 +96,7 @@ var gtpushMin = {
 	
 } (gtpushMin));
 
+var gtpushMinExports = gtpushMin.exports;
 var GtPush = /*@__PURE__*/getDefaultExportFromCjs(gtpushMinExports);
 
 function initPushNotification() {

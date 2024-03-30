@@ -1186,24 +1186,25 @@ describe('compiler: element transform', () => {
       })
     })
 
-    test('v-is', () => {
-      const { node, root } = parseWithBind(`<view v-is="'foo'" />`)
-      expect(root.helpers).toContain(RESOLVE_DYNAMIC_COMPONENT)
-      expect(node).toMatchObject({
-        tag: {
-          callee: RESOLVE_DYNAMIC_COMPONENT,
-          arguments: [
-            {
-              type: NodeTypes.SIMPLE_EXPRESSION,
-              content: `'foo'`,
-              isStatic: false,
-            },
-          ],
-        },
-        // should skip v-is runtime check
-        directives: undefined,
-      })
-    })
+    // 已废弃，交由 :is="vue:my-row-component" 实现
+    // test('v-is', () => {
+    //   const { node, root } = parseWithBind(`<view v-is="'foo'" />`)
+    //   expect(root.helpers).toContain(RESOLVE_DYNAMIC_COMPONENT)
+    //   expect(node).toMatchObject({
+    //     tag: {
+    //       callee: RESOLVE_DYNAMIC_COMPONENT,
+    //       arguments: [
+    //         {
+    //           type: NodeTypes.SIMPLE_EXPRESSION,
+    //           content: `'foo'`,
+    //           isStatic: false,
+    //         },
+    //       ],
+    //     },
+    //     // should skip v-is runtime check
+    //     directives: undefined,
+    //   })
+    // })
 
     // #3934
     test('normal component with is prop', () => {

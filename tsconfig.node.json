@@ -7,11 +7,10 @@
     "noUnusedLocals": true,
     "esModuleInterop": true,
     "experimentalDecorators": true,
+    "noImplicitAny": false,
     "outDir": "dist",
     "module": "commonjs",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "sourceMap": false,
     "skipLibCheck": true
   }

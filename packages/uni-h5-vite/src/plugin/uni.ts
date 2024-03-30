@@ -5,6 +5,7 @@ import {
   transformTapToClick,
   transformUniH5Jsx,
   UniVitePlugin,
+  transformRefresherSlot,
 } from '@dcloudio/uni-cli-shared'
 import { isH5NativeTag, isH5CustomElement } from '@dcloudio/uni-shared'
 import { CompilerOptions } from '@vue/compiler-core'
@@ -17,6 +18,7 @@ export const compilerOptions: CompilerOptions = {
   isNativeTag: isH5NativeTag,
   isCustomElement: realIsH5CustomElement,
   nodeTransforms: [
+    transformRefresherSlot,
     transformH5BuiltInComponents,
     transformTapToClick,
     transformMatchMedia,

@@ -1,11 +1,11 @@
 import path from 'path'
-import debug from 'debug'
+// import debug from 'debug'
 import { Plugin } from 'vite'
 import { resolveBuiltIn, resolveUTSModule } from '@dcloudio/uni-cli-shared'
 
 import { VitePluginUniResolvedOptions } from '../..'
 
-const debugResolve = debug('uni:resolve-id')
+// const debugResolve = debug('uni:resolve-id')
 
 const BUILT_IN_MODULES = {
   'vue-router': 'dist/vue-router.esm-bundler.js',
@@ -31,7 +31,7 @@ export function uniResolveIdPlugin(
     resolveId(id, importer) {
       const cache = resolveCache[id]
       if (cache) {
-        debugResolve('cache', id, cache)
+        // debugResolve('cache', id, cache)
         return cache
       }
       if (BUILT_IN_MODULES[id as BuiltInModulesKey]) {

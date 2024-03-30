@@ -6,6 +6,7 @@ import {
   injectCssPlugin,
   injectCssPostPlugin,
   resolveMainPathOnce,
+  rewriteCompileScriptSetupLangOnce,
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
@@ -13,7 +14,7 @@ import { uniAppCssPlugin } from './css'
 export function uniAppIOSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-
+  rewriteCompileScriptSetupLangOnce()
   // 开始编译时，清空输出目录
   function emptyOutDir() {
     if (fs.existsSync(outputDir)) {

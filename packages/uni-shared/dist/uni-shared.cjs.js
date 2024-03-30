@@ -125,6 +125,8 @@ const UVUE_BUILT_IN_TAGS = [
     'uni-slider',
     // 原生实现
     'button',
+    'nested-scroll-header',
+    'nested-scroll-body',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -137,15 +139,8 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'scroll-view',
     'web-view',
     'slider',
-    'swiper',
-    'swiper-item',
-    'rich-text',
-    'button',
-    'list-view',
-    'list-item',
+    'form',
     'switch',
-    'sticky-header',
-    'sticky-section',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -227,6 +222,22 @@ function isAppUVueNativeTag(tag) {
     }
     // u-text,u-video...
     if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
+}
+function isAppIOSUVueNativeTag(tag) {
+    // 前端实现的内置组件都会注册一个根组件
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     return false;
@@ -1726,6 +1737,7 @@ exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
+exports.isAppIOSUVueNativeTag = isAppIOSUVueNativeTag;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isAppUVueNativeTag = isAppUVueNativeTag;

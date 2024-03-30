@@ -96,7 +96,7 @@ function useVisibleList(
     extend({ type: 'midButton' }, tabBar.midButton)
   )
   function setVisibleList() {
-    let tempList = []
+    let tempList: UniNamespace.TabBarItemOptions[] = []
     tempList = tabBar.list.filter((item) => item.visible !== false)
 
     if (__UNI_FEATURE_TABBAR_MIDBUTTON__ && tabBar.midButton) {

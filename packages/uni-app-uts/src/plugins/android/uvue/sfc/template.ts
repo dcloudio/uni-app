@@ -29,14 +29,32 @@ export function resolveGenTemplateCodeOptions(
     className: string
     sourceMap: boolean
     bindingMetadata?: BindingMetadata
+    preprocessLang?: string
+    preprocessOptions?: any
   }
 ): TemplateCompilerOptions {
+  const block = descriptor.template
+  if (!block) {
+    return {
+      ...options,
+      filename: relativeFileName,
+    }
+  }
   const inputRoot = normalizePath(options.rootDir)
   const templateStartLine = descriptor.template?.loc.start.line ?? 0
+  let preprocessOptions = block.lang && options.preprocessOptions
+  if (block.lang === 'pug') {
+    preprocessOptions = {
+      doctype: 'html',
+      ...preprocessOptions,
+    }
+  }
   return {
     ...options,
     filename: relativeFileName,
     inMap: descriptor.template?.map,
+    preprocessLang: block.lang === 'html' ? undefined : block.lang,
+    preprocessOptions,
     matchEasyCom: (tag, uts) => {
       const source = matchEasycom(tag)
       if (uts && source) {

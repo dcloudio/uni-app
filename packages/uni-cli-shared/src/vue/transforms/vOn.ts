@@ -101,7 +101,7 @@ function createDataEventOptsProp(
   exp: ExpressionNode,
   context: TransformContext
 ): DirectiveNode {
-  const children = []
+  const children: CompoundExpressionNode['children'] = []
   const stringify = name === ATTR_DATA_EVENT_OPTS
   if (stringify) {
     children.push(context.helperString(STRINGIFY_JSON) + '(')

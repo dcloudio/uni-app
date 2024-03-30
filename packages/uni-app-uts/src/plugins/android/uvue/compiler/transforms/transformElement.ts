@@ -35,15 +35,14 @@ import {
   createObjectProperty,
   createSimpleExpression,
   createVNodeCall,
-  findDir,
   findProp,
   getConstantType,
-  getInnerRange,
   isCoreComponent,
   isStaticArgOf,
   isStaticExp,
   toValidAssetId,
 } from '@vue/compiler-core'
+import { getInnerRange } from '@dcloudio/uni-cli-shared'
 
 import { NodeTransform, TransformContext } from '../transform'
 
@@ -279,17 +278,17 @@ export function resolveComponentType(
   }
 
   // 1.5 v-is (TODO: remove in 3.4)
-  const isDir = !isExplicitDynamic && findDir(node, 'is')
-  if (isDir && isDir.exp) {
-    if (__DEV__) {
-      context.onWarn(
-        createCompilerError(ErrorCodes.DEPRECATION_V_IS, isDir.loc)
-      )
-    }
-    return createCallExpression(context.helper(RESOLVE_DYNAMIC_COMPONENT), [
-      isDir.exp,
-    ])
-  }
+  // const isDir = !isExplicitDynamic && findDir(node, 'is')
+  // if (isDir && isDir.exp) {
+  //   if (__DEV__) {
+  //     context.onWarn(
+  //       createCompilerError(ErrorCodes.DEPRECATION_V_IS, isDir.loc)
+  //     )
+  //   }
+  //   return createCallExpression(context.helper(RESOLVE_DYNAMIC_COMPONENT), [
+  //     isDir.exp,
+  //   ])
+  // }
 
   // 2. built-in components (Teleport, Transition, KeepAlive, Suspense...)
   const builtIn = isCoreComponent(tag) || context.isBuiltInComponent(tag)

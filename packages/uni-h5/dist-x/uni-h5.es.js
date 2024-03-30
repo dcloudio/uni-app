@@ -5,11 +5,546 @@ var __publicField = (obj, key, value) => {
   return value;
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
-import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
+import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
+function arrayPop(array) {
+  if (array.length === 0) {
+    return null;
+  }
+  return array.pop();
+}
+function arrayShift(array) {
+  if (array.length === 0) {
+    return null;
+  }
+  return array.shift();
+}
+function arrayFind(array, predicate) {
+  const index2 = array.findIndex(predicate);
+  if (index2 < 0) {
+    return null;
+  }
+  return array[index2];
+}
+function arrayFindLast(array, predicate) {
+  const index2 = array.findLastIndex(predicate);
+  if (index2 < 0) {
+    return null;
+  }
+  return array[index2];
+}
+function arrayAt(array, index2) {
+  if (index2 < -array.length || index2 >= array.length) {
+    return null;
+  }
+  return array.at(index2);
+}
+var IDENTIFIER;
+(function(IDENTIFIER2) {
+  IDENTIFIER2["UTSJSONObject"] = "UTSJSONObject";
+  IDENTIFIER2["JSON"] = "JSON";
+  IDENTIFIER2["UTS"] = "UTS";
+  IDENTIFIER2["DEFINE_COMPONENT"] = "defineComponent";
+  IDENTIFIER2["VUE"] = "vue";
+  IDENTIFIER2["GLOBAL_THIS"] = "globalThis";
+  IDENTIFIER2["UTS_TYPE"] = "UTSType";
+  IDENTIFIER2["UTS_METADATA"] = "$UTSMetadata$";
+  IDENTIFIER2["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
+  IDENTIFIER2["JSON_FIELD"] = "JSON_FIELD";
+})(IDENTIFIER || (IDENTIFIER = {}));
+var UTS_CLASS_METADATA_KIND;
+(function(UTS_CLASS_METADATA_KIND2) {
+  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["CLASS"] = 0] = "CLASS";
+  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["INTERFACE"] = 1] = "INTERFACE";
+  UTS_CLASS_METADATA_KIND2[UTS_CLASS_METADATA_KIND2["TYPE"] = 2] = "TYPE";
+})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+function getType$1(val) {
+  return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
+}
+function isPlainObject(val) {
+  if (val == null || typeof val !== "object") {
+    return false;
+  }
+  const proto = Object.getPrototypeOf(val);
+  return proto === Object.prototype || proto === null;
+}
+class UTSError extends Error {
+  constructor(message) {
+    super(message);
+  }
+}
+function isUTSMetadata(metadata) {
+  return !!(metadata && metadata.kind in UTS_CLASS_METADATA_KIND && metadata.interfaces);
+}
+function isNativeType(proto) {
+  return !proto || proto === Object.prototype;
+}
+const utsMetadataKey = IDENTIFIER.UTS_METADATA;
+function getParentTypeList(type) {
+  const metadata = utsMetadataKey in type ? type[utsMetadataKey] : {};
+  let interfaces = [];
+  if (!isUTSMetadata(metadata)) {
+    interfaces = [];
+  } else {
+    interfaces = metadata.interfaces || [];
+  }
+  const proto = Object.getPrototypeOf(type);
+  if (!isNativeType(proto)) {
+    interfaces.push(proto.constructor);
+  }
+  return interfaces;
+}
+function isImplementationOf(leftType, rightType, visited = []) {
+  if (isNativeType(leftType)) {
+    return false;
+  }
+  if (leftType === rightType) {
+    return true;
+  }
+  visited.push(leftType);
+  const parentTypeList = getParentTypeList(leftType);
+  return parentTypeList.some((parentType) => {
+    if (visited.includes(parentType)) {
+      return false;
+    }
+    return isImplementationOf(parentType, rightType, visited);
+  });
+}
+function isInstanceOf(value, type) {
+  const isNativeInstanceofType = value instanceof type;
+  if (isNativeInstanceofType || typeof value !== "object") {
+    return isNativeInstanceofType;
+  }
+  const proto = Object.getPrototypeOf(value).constructor;
+  return isImplementationOf(proto, type);
+}
+function isBaseType(type) {
+  return type === Number || type === String || type === Boolean;
+}
+function isUnknownType(type) {
+  return type === "Unknown";
+}
+function isAnyType(type) {
+  return type === "Any";
+}
+function isUTSType(type) {
+  return type && type.prototype && type.prototype instanceof UTSType;
+}
+class UTSType {
+  static get$UTSMetadata$(...args) {
+    return {
+      kind: UTS_CLASS_METADATA_KIND.TYPE,
+      interfaces: [],
+      fields: {}
+    };
+  }
+  get $UTSMetadata$() {
+    return UTSType.get$UTSMetadata$();
+  }
+  // TODO 缓存withGenerics结果
+  static withGenerics(parent, generics, isJSONParse = false) {
+    if (isJSONParse) {
+      const illegalGeneric = generics.find((item) => !(item === Array || isBaseType(item) || isUnknownType(item) || isAnyType(item) || item === UTSJSONObject || item.prototype && item.prototype instanceof UTSType));
+      if (illegalGeneric) {
+        throw new Error("Generic is not UTSType or Array or UTSJSONObject or base type, generic: " + illegalGeneric);
+      }
+    }
+    if (parent === Array) {
+      return class UTSArray extends UTSType {
+        constructor(options, isJSONParse2 = false) {
+          if (!Array.isArray(options)) {
+            throw new UTSError(`Failed to contruct type, ${options} is not an array`);
+          }
+          super();
+          return options.map((item) => {
+            return item == null ? null : isBaseType(generics[0]) || isUnknownType(generics[0]) || isAnyType(generics[0]) ? item : generics[0] === Array ? new Array(...item) : new generics[0](item, void 0, isJSONParse2);
+          });
+        }
+      };
+    } else if (isUTSType(parent)) {
+      return class VirtualClassWithGenerics extends parent {
+        static get$UTSMetadata$() {
+          return parent.get$UTSMetadata$(...generics);
+        }
+        constructor(options, metadata = VirtualClassWithGenerics.get$UTSMetadata$(), isJSONParse2 = false) {
+          super(options, metadata, isJSONParse2);
+        }
+      };
+    } else {
+      return parent;
+    }
+  }
+  constructor() {
+  }
+  static initProps(options, metadata, isJSONParse = false) {
+    const obj = {};
+    if (!metadata.fields) {
+      return obj;
+    }
+    for (const key in metadata.fields) {
+      const { type, optional, jsonField } = metadata.fields[key];
+      const realKey = isJSONParse ? jsonField || key : key;
+      if (options[realKey] == null) {
+        if (optional) {
+          obj[key] = null;
+          continue;
+        } else {
+          throw new UTSError(`Failed to contruct type, missing required property: ${key}`);
+        }
+      }
+      if (isUTSType(type)) {
+        obj[key] = new type(options[realKey], void 0, isJSONParse);
+      } else if (type === Array) {
+        if (!Array.isArray(options[realKey])) {
+          throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
+        }
+        obj[key] = options[realKey].map((item) => {
+          return item == null ? null : item;
+        });
+      } else {
+        obj[key] = options[realKey];
+      }
+    }
+    return obj;
+  }
+}
+const OriginalJSON = JSON;
+function parseObjectOrArray(object, utsType) {
+  const objectType = getType$1(object);
+  if (object === null || objectType !== "object" && objectType !== "array") {
+    return object;
+  }
+  if (utsType || utsType === UTSJSONObject) {
+    try {
+      return new utsType(object, void 0, true);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  }
+  if (objectType === "array") {
+    return object.map((value) => {
+      return parseObjectOrArray(value);
+    });
+  } else if (objectType === "object") {
+    return new UTSJSONObject(object);
+  }
+  return object;
+}
+const UTSJSON = {
+  parse: (text2, reviver, utsType) => {
+    if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
+      utsType = reviver;
+      reviver = void 0;
+    }
+    try {
+      const parseResult = OriginalJSON.parse(text2, reviver);
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseArray(text2, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text2);
+      if (Array.isArray(parseResult)) {
+        return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : void 0);
+      }
+      return null;
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  parseObject(text2, utsType) {
+    try {
+      const parseResult = OriginalJSON.parse(text2);
+      if (Array.isArray(parseResult)) {
+        return null;
+      }
+      return parseObjectOrArray(parseResult, utsType);
+    } catch (error) {
+      console.error(error);
+      return null;
+    }
+  },
+  stringify: (value) => {
+    return OriginalJSON.stringify(value);
+  }
+};
+function mapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+function stringCodePointAt(str, pos) {
+  if (pos < 0 || pos >= str.length) {
+    return null;
+  }
+  return str.codePointAt(pos);
+}
+function stringAt(str, pos) {
+  if (pos < -str.length || pos >= str.length) {
+    return null;
+  }
+  return str.at(pos);
+}
+function weakMapGet(map, key) {
+  if (!map.has(key)) {
+    return null;
+  }
+  return map.get(key);
+}
+const UTS = {
+  arrayAt,
+  arrayFind,
+  arrayFindLast,
+  arrayPop,
+  arrayShift,
+  isInstanceOf,
+  UTSType,
+  mapGet,
+  stringAt,
+  stringCodePointAt,
+  weakMapGet,
+  JSON: UTSJSON
+};
+let UniError$1 = class UniError2 extends Error {
+  constructor(errSubject, errCode, errMsg) {
+    let options = {};
+    if (errMsg == null) {
+      errMsg = errSubject;
+      options = errCode;
+      errCode = options.errCode || 0;
+      errSubject = options.errSubject || "";
+    }
+    super(errMsg);
+    this.name = "UniError";
+    this.errSubject = errSubject;
+    this.errCode = errCode;
+    this.errMsg = errMsg;
+  }
+  toString() {
+    return this.errMsg;
+  }
+  toJSON() {
+    return {
+      errSubject: this.errSubject,
+      errCode: this.errCode,
+      errMsg: this.errMsg,
+      data: this.data,
+      cause: this.cause && typeof this.cause.toJSON === "function" ? this.cause.toJSON() : this.cause
+    };
+  }
+};
+function initUTSJSONObjectProperties(obj) {
+  const propertyList = [
+    "_resolveKeyPath",
+    "_getValue",
+    "toJSON",
+    "get",
+    "set",
+    "getAny",
+    "getString",
+    "getNumber",
+    "getBoolean",
+    "getJSON",
+    "getArray",
+    "toMap",
+    "forEach"
+  ];
+  const propertyDescriptorMap = {};
+  for (let i = 0; i < propertyList.length; i++) {
+    const property = propertyList[i];
+    propertyDescriptorMap[property] = {
+      enumerable: false,
+      value: obj[property]
+    };
+  }
+  Object.defineProperties(obj, propertyDescriptorMap);
+}
+let UTSJSONObject$1 = class UTSJSONObject2 {
+  constructor(content = {}) {
+    for (const key in content) {
+      if (Object.prototype.hasOwnProperty.call(content, key)) {
+        const value = content[key];
+        if (isPlainObject(value)) {
+          this[key] = new UTSJSONObject2(value);
+        } else if (getType$1(value) === "array") {
+          this[key] = value.map((item) => {
+            if (isPlainObject(item)) {
+              return new UTSJSONObject2(item);
+            } else {
+              return item;
+            }
+          });
+        } else {
+          this[key] = value;
+        }
+      }
+    }
+    initUTSJSONObjectProperties(this);
+  }
+  _resolveKeyPath(keyPath) {
+    let token = "";
+    const keyPathArr = [];
+    let inOpenParentheses = false;
+    for (let i = 0; i < keyPath.length; i++) {
+      const word = keyPath[i];
+      switch (word) {
+        case ".":
+          if (token.length > 0) {
+            keyPathArr.push(token);
+            token = "";
+          }
+          break;
+        case "[": {
+          inOpenParentheses = true;
+          if (token.length > 0) {
+            keyPathArr.push(token);
+            token = "";
+          }
+          break;
+        }
+        case "]":
+          if (inOpenParentheses) {
+            if (token.length > 0) {
+              const tokenFirstChar = token[0];
+              const tokenLastChar = token[token.length - 1];
+              if (tokenFirstChar === '"' && tokenLastChar === '"' || tokenFirstChar === "'" && tokenLastChar === "'" || tokenFirstChar === "`" && tokenLastChar === "`") {
+                if (token.length > 2) {
+                  token = token.slice(1, -1);
+                } else {
+                  return [];
+                }
+              } else if (!/^\d+$/.test(token)) {
+                return [];
+              }
+              keyPathArr.push(token);
+              token = "";
+            } else {
+              return [];
+            }
+            inOpenParentheses = false;
+          } else {
+            return [];
+          }
+          break;
+        default:
+          token += word;
+          break;
+      }
+      if (i === keyPath.length - 1) {
+        if (token.length > 0) {
+          keyPathArr.push(token);
+          token = "";
+        }
+      }
+    }
+    return keyPathArr;
+  }
+  _getValue(keyPath) {
+    const keyPathArr = this._resolveKeyPath(keyPath);
+    if (keyPathArr.length === 0) {
+      return null;
+    }
+    let value = this;
+    for (let i = 0; i < keyPathArr.length; i++) {
+      const key = keyPathArr[i];
+      if (value instanceof Object) {
+        value = value[key];
+      } else {
+        return null;
+      }
+    }
+    return value;
+  }
+  get(key) {
+    return this._getValue(key);
+  }
+  set(key, value) {
+    this[key] = value;
+  }
+  getAny(key) {
+    return this._getValue(key);
+  }
+  getString(key) {
+    const value = this._getValue(key);
+    if (typeof value === "string") {
+      return value;
+    } else {
+      return null;
+    }
+  }
+  getNumber(key) {
+    const value = this._getValue(key);
+    if (typeof value === "number") {
+      return value;
+    } else {
+      return null;
+    }
+  }
+  getBoolean(key) {
+    const boolean = this._getValue(key);
+    if (typeof boolean === "boolean") {
+      return boolean;
+    } else {
+      return null;
+    }
+  }
+  getJSON(key) {
+    let value = this._getValue(key);
+    if (value instanceof Object) {
+      return new UTSJSONObject2(value);
+    } else {
+      return null;
+    }
+  }
+  getArray(key) {
+    let value = this._getValue(key);
+    if (value instanceof Array) {
+      return value;
+    } else {
+      return null;
+    }
+  }
+  toMap() {
+    let map = /* @__PURE__ */ new Map();
+    for (let key in this) {
+      map.set(key, this[key]);
+    }
+    return map;
+  }
+  forEach(callback) {
+    for (let key in this) {
+      callback(this[key], key);
+    }
+  }
+};
+function getGlobal() {
+  if (typeof globalThis !== "undefined") {
+    return globalThis;
+  }
+  if (typeof self !== "undefined") {
+    return self;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  if (typeof window !== "undefined") {
+    return window;
+  }
+  throw new Error("unable to locate window object");
+}
+const realGlobal = getGlobal();
+realGlobal.UTSJSONObject = UTSJSONObject$1;
+realGlobal.UniError = UniError$1;
+realGlobal.UTS = UTS;
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -1372,7 +1907,7 @@ class ComponentDescriptor {
     if (isString(style)) {
       style = parseStringStyle(style);
     }
-    if (isPlainObject(style)) {
+    if (isPlainObject$1(style)) {
       this.$el.__wxsStyle = style;
       this.forceUpdate("style");
     }
@@ -1760,6 +2295,7 @@ function initPageVm(pageVm, page) {
   pageVm.$vm = pageVm;
   pageVm.$page = page;
   pageVm.$mpType = "page";
+  pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true;
     pageVm.$.__isActive = true;
@@ -2299,7 +2835,7 @@ function _addListeners(id2, listeners2, watch2) {
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject(listeners2)) {
+  if (!isPlainObject$1(listeners2)) {
     return;
   }
   Object.keys(listeners2).forEach((name) => {
@@ -2321,7 +2857,7 @@ function _removeListeners(id2, listeners2, watch2) {
   if (watch2 && !id2) {
     return;
   }
-  if (!isPlainObject(listeners2)) {
+  if (!isPlainObject$1(listeners2)) {
     return;
   }
   Object.keys(listeners2).forEach((name) => {
@@ -2814,7 +3350,7 @@ function validateProtocols(name, args, protocol, onFail) {
   }
 }
 function validateProp(name, value, prop, isAbsent) {
-  if (!isPlainObject(prop)) {
+  if (!isPlainObject$1(prop)) {
     prop = { type: prop };
   }
   const { type, required, validator: validator2 } = prop;
@@ -2986,7 +3522,7 @@ function normalizeErrMsg$1(errMsg, name) {
   return name + errMsg.substring(errMsg.indexOf(":fail"));
 }
 function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = {}) {
-  if (!isPlainObject(args)) {
+  if (!isPlainObject$1(args)) {
     args = {};
   }
   const { success, fail, complete } = getApiCallbacks(args);
@@ -3113,7 +3649,7 @@ function invokeApi(method, api2, options, params) {
   return api2(options, ...params);
 }
 function hasCallback(args) {
-  if (isPlainObject(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
+  if (isPlainObject$1(args) && [API_SUCCESS, API_FAIL, API_COMPLETE].find(
     (cb) => isFunction(args[cb])
   )) {
     return true;
@@ -3145,7 +3681,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (!options || !isPlainObject$1(options.formatArgs) && isPlainObject$1(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -3174,10 +3710,11 @@ function invokeSuccess(id2, name, res) {
 }
 function invokeFail(id2, name, errMsg, errRes = {}) {
   const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
-  return invokeCallback(
-    id2,
-    typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : extend({ errMsg: apiErrMsg }, errRes)
-  );
+  let res = extend({ errMsg: apiErrMsg }, errRes);
+  if (typeof UniError !== "undefined") {
+    res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
+  }
+  return invokeCallback(id2, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -3450,12 +3987,12 @@ function dedupeHooks(hooks) {
 const addInterceptor = /* @__PURE__ */ defineSyncApi(
   API_ADD_INTERCEPTOR,
   (method, interceptor) => {
-    if (isString(method) && isPlainObject(interceptor)) {
+    if (isString(method) && isPlainObject$1(interceptor)) {
       mergeInterceptorHook(
         scopedInterceptors[method] || (scopedInterceptors[method] = {}),
         interceptor
       );
-    } else if (isPlainObject(method)) {
+    } else if (isPlainObject$1(method)) {
       mergeInterceptorHook(globalInterceptors, method);
     }
   },
@@ -3465,12 +4002,12 @@ const removeInterceptor = /* @__PURE__ */ defineSyncApi(
   API_REMOVE_INTERCEPTOR,
   (method, interceptor) => {
     if (isString(method)) {
-      if (isPlainObject(interceptor)) {
+      if (isPlainObject$1(interceptor)) {
         removeInterceptorHook(scopedInterceptors[method], interceptor);
       } else {
         delete scopedInterceptors[method];
       }
-    } else if (isPlainObject(method)) {
+    } else if (isPlainObject$1(method)) {
       removeInterceptorHook(globalInterceptors, method);
     }
   },
@@ -4011,7 +4548,7 @@ const predefinedColor = {
 };
 function checkColor(e2) {
   e2 = e2 || "#000000";
-  var t2 = null;
+  let t2 = null;
   if ((t2 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
     const n = parseInt(t2[1].slice(0, 2), 16);
     const o2 = parseInt(t2[1].slice(2, 4), 16);
@@ -4286,7 +4823,7 @@ class CanvasContext {
     });
   }
   set font(value) {
-    var self = this;
+    var self2 = this;
     this.state.font = value;
     var fontFormat = value.match(
       /^(([\w\-]+\s)*)(\d+r?px)(\/(\d+\.?\d*(r?px)?))?\s+(.*)/
@@ -4302,19 +4839,19 @@ class CanvasContext {
             method: "setFontStyle",
             data: [value2]
           });
-          self.state.fontStyle = value2;
+          self2.state.fontStyle = value2;
         } else if (["bold", "normal"].indexOf(value2) > -1) {
           actions.push({
             method: "setFontWeight",
             data: [value2]
           });
-          self.state.fontWeight = value2;
+          self2.state.fontWeight = value2;
         } else if (index2 === 0) {
           actions.push({
             method: "setFontStyle",
             data: ["normal"]
           });
-          self.state.fontStyle = "normal";
+          self2.state.fontStyle = "normal";
         } else if (index2 === 1) {
           pushAction();
         }
@@ -4339,7 +4876,7 @@ class CanvasContext {
         method: "setFontWeight",
         data: ["normal"]
       });
-      self.state.fontWeight = "normal";
+      self2.state.fontWeight = "normal";
     }
   }
   get font() {
@@ -5775,7 +6312,7 @@ function stringifyQuery(url, data) {
       let v2 = data[key];
       if (typeof v2 === "undefined" || v2 === null) {
         v2 = "";
-      } else if (isPlainObject(v2)) {
+      } else if (isPlainObject$1(v2)) {
         v2 = JSON.stringify(v2);
       }
       params[encode(key)] = encode(v2);
@@ -5808,7 +6345,7 @@ const RequestOptions = {
       params.data = value || "";
     },
     url(value, params) {
-      if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
+      if (params.method === HTTP_METHODS[0] && isPlainObject$1(params.data) && Object.keys(params.data).length) {
         params.url = stringifyQuery(value, params.data);
       }
     },
@@ -7267,7 +7804,7 @@ function getTempCanvas(width = 0, height = 0) {
   tempCanvas.height = height;
   return tempCanvas;
 }
-const props$x = {
+const props$y = {
   canvasId: {
     type: String,
     default: ""
@@ -7289,7 +7826,7 @@ const index$w = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$x,
+  props: props$y,
   computed: {
     id() {
       return this.canvasId;
@@ -7762,7 +8299,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
   });
 }
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$w = {
+const props$x = {
   name: {
     type: String,
     default: ""
@@ -7772,7 +8309,7 @@ class UniCheckboxGroupElement extends UniElement {
 }
 const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
-  props: props$w,
+  props: props$x,
   emits: ["change"],
   rootElement: {
     name: "uni-checkbox-group",
@@ -7832,7 +8369,7 @@ function useProvideCheckGroup(props2, trigger) {
   }
   return getFieldsValue;
 }
-const props$v = {
+const props$w = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -7878,7 +8415,7 @@ class UniCheckboxElement extends UniElement {
 }
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
-  props: props$v,
+  props: props$w,
   rootElement: {
     name: "uni-checkbox",
     class: UniCheckboxElement
@@ -8019,7 +8556,7 @@ function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
 let resetTimer;
 function iosHideKeyboard() {
 }
-const props$u = {
+const props$v = {
   cursorSpacing: {
     type: [Number, String],
     default: 0
@@ -8860,7 +9397,7 @@ function useQuill(props2, rootRef, trigger) {
     });
   });
 }
-const props$t = /* @__PURE__ */ extend({}, props$u, {
+const props$u = /* @__PURE__ */ extend({}, props$v, {
   id: {
     type: String,
     default: ""
@@ -8890,7 +9427,7 @@ class UniEditorElement extends UniElement {
 }
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
-  props: props$t,
+  props: props$u,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
   rootElement: {
     name: "uni-editor",
@@ -8998,7 +9535,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$s = {
+const props$t = {
   src: {
     type: String,
     default: ""
@@ -9039,7 +9576,7 @@ class UniImageElement extends UniElement {
 }
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
-  props: props$s,
+  props: props$t,
   rootElement: {
     name: "uni-image",
     class: UniImageElement
@@ -9400,7 +9937,7 @@ const INPUT_MODES = [
   "email",
   "url"
 ];
-const props$r = /* @__PURE__ */ extend(
+const props$s = /* @__PURE__ */ extend(
   {},
   {
     name: {
@@ -9464,7 +10001,7 @@ const props$r = /* @__PURE__ */ extend(
     },
     maxlength: {
       type: [Number, String],
-      default: 140
+      default: Infinity
     },
     confirmType: {
       type: String,
@@ -9492,7 +10029,7 @@ const props$r = /* @__PURE__ */ extend(
       default: ""
     }
   },
-  props$u
+  props$v
 );
 const emit = [
   "input",
@@ -9523,7 +10060,9 @@ function useBase(props2, rootRef, emit2) {
   });
   const maxlength = computed(() => {
     var maxlength2 = Number(props2.maxlength);
-    return isNaN(maxlength2) ? 140 : maxlength2;
+    {
+      return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
+    }
   });
   const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
   const state2 = reactive({
@@ -9542,7 +10081,10 @@ function useBase(props2, rootRef, emit2) {
   );
   watch(
     () => state2.maxlength,
-    (val) => state2.value = state2.value.slice(0, val)
+    (val) => state2.value = state2.value.slice(0, val),
+    {
+      immediate: true
+    }
   );
   return {
     fieldRef,
@@ -9551,13 +10093,9 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state2, emit2, trigger) {
-  const valueChangeFn = debounce(
-    (val) => {
-      state2.value = getValueString(val, props2.type);
-    },
-    100,
-    { setTimeout, clearTimeout }
-  );
+  const valueChangeFn = throttle((val) => {
+    state2.value = getValueString(val, props2.type);
+  }, 100);
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -9729,7 +10267,7 @@ function useField(props2, rootRef, emit2, beforeInput) {
     trigger
   };
 }
-const props$q = /* @__PURE__ */ extend({}, props$r, {
+const props$r = /* @__PURE__ */ extend({}, props$s, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -9747,7 +10285,7 @@ class UniInputElement extends UniElement {
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
-  props: props$q,
+  props: props$r,
   emits: ["confirm", ...emit],
   rootElement: {
     name: "uni-input",
@@ -12760,9 +13298,15 @@ function useProgressState(props2) {
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = computed(() => {
+    if (typeof props2.percent === "string" && !/^-?\d*\.?\d*$/.test(props2.percent)) {
+      return 0;
+    }
     let realValue = parseFloat(props2.percent);
-    realValue < 0 && (realValue = 0);
-    realValue > 100 && (realValue = 100);
+    if (Number.isNaN(realValue) || realValue < 0) {
+      realValue = 0;
+    } else if (realValue > 100) {
+      realValue = 100;
+    }
     return realValue;
   });
   const state2 = reactive({
@@ -12791,7 +13335,7 @@ function _activeAnimation(state2, props2) {
   }
 }
 const uniRadioGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$p = {
+const props$q = {
   name: {
     type: String,
     default: ""
@@ -12801,7 +13345,7 @@ class UniRadioGroupElement extends UniElement {
 }
 const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
-  props: props$p,
+  props: props$q,
   // emits: ['change'],
   rootElement: {
     name: "uni-radio-group",
@@ -12893,7 +13437,7 @@ function useProvideRadioGroup(props2, trigger) {
   }
   return fields2;
 }
-const props$o = {
+const props$p = {
   checked: {
     type: [Boolean, String],
     default: false
@@ -12939,7 +13483,7 @@ class UniRadioElement extends UniElement {
 }
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
-  props: props$o,
+  props: props$p,
   rootElement: {
     name: "uni-radio",
     class: UniRadioElement
@@ -13194,7 +13738,7 @@ function processClickEvent(node, triggerItemClick) {
   }
 }
 function normalizeAttrs(tagName, attrs2) {
-  if (!isPlainObject(attrs2))
+  if (!isPlainObject$1(attrs2))
     return;
   for (const key in attrs2) {
     if (hasOwn(attrs2, key)) {
@@ -13208,12 +13752,13 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
   if (!nodeList || isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
-    if (!isPlainObject(node)) {
+    var _a;
+    if (!isPlainObject$1(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
       let nodeProps = { [scopeId]: "" };
-      const tagName = node.name.toLowerCase();
+      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
       if (!hasOwn(TAGS, tagName)) {
         return;
       }
@@ -13315,15 +13860,17 @@ function parseHtml(html) {
         text: text2
       };
       const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
       }
-      parent.children.push(node);
     }
   });
   return results.children;
 }
-const props$n = {
+const props$o = {
   nodes: {
     type: [Array, String],
     default: function() {
@@ -13338,7 +13885,7 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$n,
+  props: props$o,
   emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
   rootElement: {
     name: "uni-rich-text",
@@ -13374,8 +13921,112 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
     }, h("div", {}, _vnode.value));
   }
 });
+const Refresher = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Refresher",
+  props: {
+    refreshState: {
+      type: String,
+      default: ""
+    },
+    refresherHeight: {
+      type: Number,
+      default: 0
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: "black"
+    },
+    refresherBackground: {
+      type: String,
+      default: "#fff"
+    }
+  },
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const rootStyle = computed(() => {
+      const style = {
+        backgroundColor: props2.refresherBackground
+      };
+      switch (props2.refreshState) {
+        case "pulling":
+          style.height = props2.refresherHeight + "px";
+          break;
+        case "refreshing":
+          style.height = props2.refresherThreshold + "px";
+          style.transition = "height 0.3s";
+          break;
+        case "":
+        case "refresherabort":
+        case "restore":
+          style.height = "0px";
+          style.transition = "height 0.3s";
+          break;
+      }
+      return style;
+    });
+    const refreshRotate = computed(() => {
+      const route = props2.refresherHeight / props2.refresherThreshold;
+      return (route > 1 ? 1 : route) * 360;
+    });
+    return () => {
+      const {
+        refreshState,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      return createVNode("div", {
+        "ref": rootRef,
+        "style": rootStyle.value,
+        "class": "uni-scroll-view-refresher"
+      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresh"
+      }, [createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [refreshState == "pulling" ? createVNode("svg", {
+        "key": "refresh__icon",
+        "style": {
+          transform: "rotate(" + refreshRotate.value + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
+        "key": "refresh__spinner",
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresher-container",
+        "style": {
+          height: `${refresherThreshold}px`
+        }
+      }, [slots.default && slots.default()]) : null], 4);
+    };
+  }
+});
 const passiveOptions = /* @__PURE__ */ passive(true);
-const props$m = {
+const props$n = {
   direction: {
     type: [String],
     default: "vertical"
@@ -13430,7 +14081,7 @@ const props$m = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: "back"
+    default: "black"
   },
   refresherBackground: {
     type: String,
@@ -13448,7 +14099,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: props$m,
+  props: props$n,
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   rootElement: {
     name: "uni-scroll-view",
@@ -13456,13 +14107,13 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup(props2, {
     emit: emit2,
-    slots
+    slots,
+    expose
   }) {
     const rootRef = ref(null);
     const main = ref(null);
     const wrap = ref(null);
     const content = ref(null);
-    const refresherinner = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     const {
       state: state2,
@@ -13523,16 +14174,22 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       });
       rootElement.attachVmProps(props2);
     });
+    expose({
+      // 自动化测试需要暴露main从而获取scrollLeft
+      $getMain() {
+        return main.value;
+      }
+    });
     return () => {
       const {
         refresherEnabled,
         refresherBackground,
-        refresherDefaultStyle
+        refresherDefaultStyle,
+        refresherThreshold
       } = props2;
       const {
         refresherHeight,
-        refreshState,
-        refreshRotate
+        refreshState
       } = state2;
       return createVNode("uni-scroll-view", {
         "ref": rootRef
@@ -13543,49 +14200,18 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "ref": main,
         "style": mainStyle.value,
         "class": scrollBarClassName.value
-      }, [createVNode("div", {
+      }, [refresherEnabled ? createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
         "ref": content,
         "class": "uni-scroll-view-content"
-      }, [refresherEnabled ? createVNode("div", {
-        "ref": refresherinner,
-        "style": {
-          backgroundColor: refresherBackground,
-          height: refresherHeight + "px"
-        },
-        "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
-        "class": "uni-scroll-view-refresh"
-      }, [createVNode("div", {
-        "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? createVNode("svg", {
-        "key": "refresh__icon",
-        "style": {
-          transform: "rotate(" + refreshRotate + "deg)"
-        },
-        "fill": "#2BD009",
-        "class": "uni-scroll-view-refresh__icon",
-        "width": "24",
-        "height": "24",
-        "viewBox": "0 0 24 24"
-      }, [createVNode("path", {
-        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-      }, null), createVNode("path", {
-        "d": "M0 0h24v24H0z",
-        "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
-        "key": "refresh__spinner",
-        "class": "uni-scroll-view-refresh__spinner",
-        "width": "24",
-        "height": "24",
-        "viewBox": "25 25 50 50"
-      }, [createVNode("circle", {
-        "cx": "50",
-        "cy": "50",
-        "r": "20",
-        "fill": "none",
-        "style": "color: #2bd009",
-        "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -13602,7 +14228,6 @@ function useScrollViewState(props2) {
     lastScrollToUpperTime: 0,
     lastScrollToLowerTime: 0,
     refresherHeight: 0,
-    refreshRotate: 0,
     refreshState: ""
   });
   return {
@@ -13786,7 +14411,9 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
-          trigger("refresherrefresh", {}, {});
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -13796,16 +14423,28 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.refresherHeight = toUpperNumber = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {});
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {});
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         break;
     }
     state2.refreshState = _state;
   }
+  let touchStart = {
+    x: 0,
+    y: 0
+  };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
   onMounted(() => {
     nextTick(() => {
       _scrollTopChanged(scrollTopNumber.value);
@@ -13816,10 +14455,6 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       event.preventDefault();
       event.stopPropagation();
       _handleScroll(event);
-    };
-    let touchStart = {
-      x: 0,
-      y: 0
     };
     let needStop = null;
     let __handleTouchMove = function(event) {
@@ -13873,15 +14508,14 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
           if (state2.refresherHeight > 0) {
             triggerAbort = true;
             trigger("refresherpulling", event, {
-              deltaY: dy
+              deltaY: dy,
+              dy
             });
           }
         } else {
           state2.refresherHeight = dy + props2.refresherThreshold;
           triggerAbort = false;
         }
-        const route = state2.refresherHeight / props2.refresherThreshold;
-        state2.refreshRotate = (route > 1 ? 1 : route) * 360;
       }
     };
     let __handleTouchStart = function(event) {
@@ -13893,12 +14527,23 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       }
     };
     let __handleTouchEnd = function(event) {
-      touchStart = null;
+      touchEnd = {
+        x: event.changedTouches[0].pageX,
+        y: event.changedTouches[0].pageY
+      };
       if (state2.refresherHeight >= props2.refresherThreshold) {
         _setRefreshState("refreshing");
       } else {
         _setRefreshState("refresherabort");
       }
+      touchStart = {
+        x: 0,
+        y: 0
+      };
+      touchEnd = {
+        x: 0,
+        y: props2.refresherThreshold
+      };
     };
     main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
     main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
@@ -13938,7 +14583,7 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28;
-const props$l = {
+const props$m = {
   name: {
     type: String,
     default: ""
@@ -14033,7 +14678,7 @@ class UniSliderElement extends UniElement {
 }
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
-  props: props$l,
+  props: props$m,
   emits: ["changing", "change"],
   rootElement: {
     name: "uni-slider",
@@ -14177,7 +14822,7 @@ function useSliderLoader(props2, sliderRef, trigger) {
     _onChange
   };
 }
-const props$k = {
+const props$l = {
   indicatorDots: {
     type: [Boolean, String],
     default: false
@@ -14680,7 +15325,7 @@ class UniSwiperElement extends UniElement {
 }
 const Swiper = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
-  props: props$k,
+  props: props$l,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
   rootElement: {
     name: "uni-swiper",
@@ -14910,7 +15555,7 @@ const useSwiperNavigation = (rootRef, props2, state2, onSwiperDotClick, swiperCo
   }
   return createNavigationTsx;
 };
-const props$j = {
+const props$k = {
   itemId: {
     type: String,
     default: ""
@@ -14920,7 +15565,7 @@ class UniSwiperItemElement extends UniElement {
 }
 const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
-  props: props$j,
+  props: props$k,
   rootElement: {
     name: "uni-swiper-item",
     class: UniSwiperItemElement
@@ -14977,7 +15622,7 @@ const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$i = {
+const props$j = {
   name: {
     type: String,
     default: ""
@@ -15007,7 +15652,7 @@ class UniSwitchElement extends UniElement {
 }
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
-  props: props$i,
+  props: props$j,
   emits: ["change"],
   rootElement: {
     name: "uni-switch",
@@ -15213,7 +15858,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-const props$h = /* @__PURE__ */ extend({}, props$r, {
+const props$i = /* @__PURE__ */ extend({}, props$s, {
   placeholderClass: {
     type: String,
     default: "input-placeholder"
@@ -15244,7 +15889,7 @@ class UniTextareaElement extends UniElement {
 }
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
-  props: props$h,
+  props: props$i,
   emits: ["confirm", "linechange", ...emit],
   rootElement: {
     name: "uni-textarea",
@@ -15471,54 +16116,80 @@ function traverseStickySection(stickySectionVNode, callback) {
     callback(child);
   }
 }
+const props$h = {
+  direction: {
+    type: String,
+    default: "vertical",
+    validator: (val) => {
+      return ["none", "vertical", "horizontal"].includes(val);
+    }
+  },
+  showScrollbar: {
+    type: [Boolean, String],
+    default: true
+  },
+  upperThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  lowerThreshold: {
+    type: [Number, String],
+    default: 50
+  },
+  scrollTop: {
+    type: [Number, String],
+    default: 0
+  },
+  scrollLeft: {
+    type: [Number, String],
+    default: 0
+  },
+  // 暂不支持
+  // scrollIntoView: {
+  //   type: String,
+  //   default: '',
+  // },
+  scrollWithAnimation: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherEnabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  refresherThreshold: {
+    type: Number,
+    default: 45
+  },
+  refresherDefaultStyle: {
+    type: String,
+    default: "black"
+  },
+  refresherBackground: {
+    type: String,
+    default: "#fff"
+  },
+  refresherTriggered: {
+    type: [Boolean, String],
+    default: false
+  }
+};
 class UniListViewElement extends UniElement {
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
-  props: {
-    direction: {
-      type: String,
-      default: "vertical",
-      validator: (val) => {
-        return ["none", "vertical", "horizontal"].includes(val);
-      }
-    },
-    showScrollbar: {
-      type: [Boolean, String],
-      default: true
-    },
-    upperThreshold: {
-      type: [Number, String],
-      default: 50
-    },
-    lowerThreshold: {
-      type: [Number, String],
-      default: 50
-    },
-    scrollTop: {
-      type: [Number, String],
-      default: 0
-    },
-    scrollLeft: {
-      type: [Number, String],
-      default: 0
-    },
-    // 暂不支持
-    // scrollIntoView: {
-    //   type: String,
-    //   default: '',
-    // },
-    scrollWithAnimation: {
-      type: [Boolean, String],
-      default: false
-    }
-  },
+  props: props$h,
   emits: [
     "scroll",
     "scrolltoupper",
-    "scrolltolower"
+    "scrolltolower",
     // 有触发时机，但是由于没有原生事件暂不支持
     // 'scrollend',
+    "refresherrefresh",
+    "refresherrestore",
+    "refresherpulling",
+    "refresherabort",
+    "update:refresherTriggered"
   ],
   rootElement: {
     name: "uni-list-view",
@@ -15526,27 +16197,20 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
   },
   setup(props2, {
     slots,
-    expose,
     emit: emit2
   }) {
     const rootRef = ref(null);
     const containerRef = ref(null);
     const visibleRef = ref(null);
-    const placehoderSize = ref(0);
-    const visibleSize = ref(0);
-    const totalSize = ref(0);
-    const isVertical = computed(() => {
-      return props2.direction !== "horizontal";
-    });
-    const defaultItemSize = 40;
-    const cacheScreenCount = 5;
-    const loadScreenThreshold = 3;
-    let containerSize = 0;
+    const {
+      isVertical,
+      state: state2
+    } = useListViewState(props2);
     provide("__listViewIsVertical", isVertical);
-    provide("__listViewDefaultItemSize", defaultItemSize);
+    provide("__listViewDefaultItemSize", state2.defaultItemSize);
     const onItemChange = debounce(() => {
       nextTick(() => {
-        rearrange();
+        _rearrange();
       });
     }, 10, {
       clearTimeout,
@@ -15559,24 +16223,17 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       onItemChange();
     });
     const trigger = useCustomEvent(rootRef, emit2);
-    handleTouchEvent(isVertical, containerRef);
+    handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2);
     function getOffset() {
       return isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
     }
     function resetContainerSize() {
       const containerEl = containerRef.value;
-      containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
+      state2.containerSize = isVertical.value ? containerEl.clientHeight : containerEl.clientWidth;
     }
     watch(isVertical, () => {
       resetContainerSize();
     });
-    function shouldRearrange() {
-      const offset = getOffset();
-      const loadScreenThresholdSize = containerSize * loadScreenThreshold;
-      const rearrangeOffsetMin = placehoderSize.value + loadScreenThresholdSize;
-      const rearrangeOffsetMax = placehoderSize.value + visibleSize.value - loadScreenThresholdSize;
-      return offset < rearrangeOffsetMin && placehoderSize.value > 0 || offset > rearrangeOffsetMax && placehoderSize.value + visibleSize.value < totalSize.value;
-    }
     const upperThresholdNumber = computed(() => {
       const val = Number(props2.upperThreshold);
       return isNaN(val) ? 50 : val;
@@ -15630,8 +16287,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
           });
         }
         lastScrollOffset = currentOffset;
-        if (shouldRearrange()) {
-          rearrange();
+        if (_shouldRearrange()) {
+          _rearrange();
         }
       });
       const rootElement = rootRef.value;
@@ -15671,7 +16328,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       });
       rootElement.attachVmProps(props2);
     });
-    function refresh() {
+    function forceRearrange() {
       traverseAllItems((child) => {
         const exposed = child.component.exposed;
         if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
@@ -15680,16 +16337,13 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       });
       nextTick(() => {
         nextTick(() => {
-          rearrange();
+          _rearrange();
         });
       });
     }
-    expose({
-      refresh
-    });
     function onResize2() {
       resetContainerSize();
-      refresh();
+      forceRearrange();
     }
     function traverseAllItems(callback) {
       traverseListView(visibleVNode, (child) => {
@@ -15708,78 +16362,33 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         }
       });
     }
-    function rearrange() {
-      if (!visibleVNode) {
-        return;
-      }
-      const containerEl = containerRef.value;
-      if (!containerEl) {
-        return;
-      }
-      const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
-      const offsetMin = Math.max(offset - containerSize * cacheScreenCount, 0);
-      const offsetMax = Math.max(offset + containerSize * (cacheScreenCount + 1), offsetMin + 1);
-      let tempTotalSize = 0;
-      let tempVisibleSize = 0;
-      let tempPlaceholderSize = 0;
-      let start = false, end = false;
-      function callback(child) {
-        var _a, _b, _c;
-        const childType = (_a = child.component) == null ? void 0 : _a.type.name;
-        const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
-        if (childType === "StickySection") {
-          const {
-            headSize,
-            tailSize
-          } = status;
-          tempTotalSize += headSize.value;
-          traverseStickySection(child, callback);
-          tempTotalSize += tailSize.value;
-        } else if (childType === "ListItem") {
-          const {
-            cachedSize
-          } = status;
-          const itemSize = cachedSize;
-          tempTotalSize += itemSize;
-          if (!start && tempTotalSize > offsetMin) {
-            start = true;
-          }
-          if (!start) {
-            tempPlaceholderSize += itemSize;
-          }
-          if (start && !end) {
-            tempVisibleSize += itemSize;
-            status.visible.value = true;
-          } else {
-            status.visible.value = false;
-          }
-          if (!end && tempTotalSize >= offsetMax) {
-            end = true;
-          }
-        } else if (childType === "StickyHeader") {
-          const {
-            cachedSize
-          } = status;
-          tempTotalSize += cachedSize;
-          tempVisibleSize += cachedSize;
-        }
-      }
-      traverseListView(visibleVNode, callback);
-      totalSize.value = tempTotalSize;
-      visibleSize.value = tempVisibleSize;
-      placehoderSize.value = tempPlaceholderSize;
+    function _rearrange() {
+      rearrange(visibleVNode, containerRef, isVertical, state2);
+    }
+    function _shouldRearrange() {
+      return shouldRearrange(containerRef, isVertical, state2);
     }
     const containerStyle = computed(() => {
       return `${props2.direction === "none" ? "overflow: hidden;" : isVertical.value ? "overflow-y: auto;" : "overflow-x: auto;"}scroll-behavior: ${props2.scrollWithAnimation ? "smooth" : "auto"};`;
     });
     const contentStyle = computed(() => {
-      return `position: relative; ${isVertical.value ? "height" : "width"}: ${totalSize.value}px;`;
+      return `position: relative; ${isVertical.value ? "height" : "width"}: ${state2.totalSize}px;`;
     });
     const visibleStyle = computed(() => {
-      return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${placehoderSize.value}px;`;
+      return `position: absolute; ${isVertical.value ? "width" : "height"}: 100%; ${isVertical.value ? "top" : "left"}: ${state2.placehoderSize}px;`;
     });
     let visibleVNode = null;
     return () => {
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      const {
+        refresherHeight,
+        refreshState
+      } = state2;
       const defaultSlot = slots.default && slots.default();
       visibleVNode = createVNode("div", {
         "ref": visibleRef,
@@ -15793,7 +16402,15 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
         "ref": containerRef,
         "class": `uni-list-view-container ${props2.showScrollbar === false ? "uni-list-view-scrollbar-hidden" : ""}`,
         "style": containerStyle.value
-      }, [createVNode("div", {
+      }, [refresherEnabled ? createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
         "class": "uni-list-view-content",
         "style": contentStyle.value
       }, [visibleVNode], 4)], 4), createVNode(ResizeSensor, {
@@ -15802,11 +16419,147 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function handleTouchEvent(isVertical, containerRef) {
+function useListViewState(props2) {
+  const isVertical = computed(() => {
+    return props2.direction !== "horizontal";
+  });
+  const state2 = reactive({
+    defaultItemSize: 40,
+    totalSize: 0,
+    placehoderSize: 0,
+    visibleSize: 0,
+    containerSize: 0,
+    cacheScreenCount: 5,
+    loadScreenThreshold: 3,
+    refresherHeight: 0,
+    refreshState: ""
+  });
+  return {
+    state: state2,
+    isVertical
+  };
+}
+function shouldRearrange(containerRef, isVertical, state2) {
+  const offset = isVertical.value ? containerRef.value.scrollTop : containerRef.value.scrollLeft;
+  const loadScreenThresholdSize = state2.containerSize * state2.loadScreenThreshold;
+  const rearrangeOffsetMin = state2.placehoderSize + loadScreenThresholdSize;
+  const rearrangeOffsetMax = state2.placehoderSize + state2.visibleSize - loadScreenThresholdSize;
+  return offset < rearrangeOffsetMin && state2.placehoderSize > 0 || offset > rearrangeOffsetMax && state2.placehoderSize + state2.visibleSize < state2.totalSize;
+}
+function rearrange(visibleVNode, containerRef, isVertical, state2) {
+  if (!visibleVNode) {
+    return;
+  }
+  const containerEl = containerRef.value;
+  if (!containerEl) {
+    return;
+  }
+  const offset = isVertical.value ? containerEl.scrollTop : containerEl.scrollLeft;
+  const offsetMin = Math.max(offset - state2.containerSize * state2.cacheScreenCount, 0);
+  const offsetMax = Math.max(offset + state2.containerSize * (state2.cacheScreenCount + 1), offsetMin + 1);
+  let tempTotalSize = 0;
+  let tempVisibleSize = 0;
+  let tempPlaceholderSize = 0;
+  let start = false, end = false;
+  function callback(child) {
+    var _a, _b, _c;
+    const childType = (_a = child.component) == null ? void 0 : _a.type.name;
+    const status = (_c = (_b = child.component) == null ? void 0 : _b.exposed) == null ? void 0 : _c.__listViewChildStatus;
+    if (childType === "StickySection") {
+      const {
+        headSize,
+        tailSize
+      } = status;
+      tempTotalSize += headSize.value;
+      traverseStickySection(child, callback);
+      tempTotalSize += tailSize.value;
+    } else if (childType === "ListItem") {
+      const {
+        cachedSize
+      } = status;
+      const itemSize = cachedSize;
+      tempTotalSize += itemSize;
+      if (!start && tempTotalSize > offsetMin) {
+        start = true;
+      }
+      if (!start) {
+        tempPlaceholderSize += itemSize;
+      }
+      if (start && !end) {
+        tempVisibleSize += itemSize;
+        status.visible.value = true;
+      } else {
+        status.visible.value = false;
+      }
+      if (!end && tempTotalSize >= offsetMax) {
+        end = true;
+      }
+    } else if (childType === "StickyHeader") {
+      const {
+        cachedSize
+      } = status;
+      tempTotalSize += cachedSize;
+      tempVisibleSize += cachedSize;
+    }
+  }
+  traverseListView(visibleVNode, callback);
+  state2.totalSize = tempTotalSize;
+  state2.visibleSize = tempVisibleSize;
+  state2.placehoderSize = tempPlaceholderSize;
+}
+function handleTouchEvent(isVertical, containerRef, props2, state2, trigger, emit2) {
+  let beforeRefreshing = false;
+  let triggerAbort = false;
+  let toUpperNumber = 0;
   let touchStart = {
     x: 0,
     y: 0
   };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
+  function _setRefreshState(_state) {
+    if (!props2.refresherEnabled)
+      return;
+    switch (_state) {
+      case "refreshing":
+        state2.refresherHeight = props2.refresherThreshold;
+        if (!beforeRefreshing) {
+          beforeRefreshing = true;
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
+          emit2("update:refresherTriggered", true);
+        }
+        break;
+      case "restore":
+      case "refresherabort":
+        beforeRefreshing = false;
+        state2.refresherHeight = toUpperNumber = 0;
+        if (_state === "restore") {
+          triggerAbort = false;
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
+        }
+        if (_state === "refresherabort" && triggerAbort) {
+          triggerAbort = false;
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
+        }
+        break;
+    }
+    state2.refreshState = _state;
+  }
+  watch(() => props2.refresherTriggered, (val) => {
+    if (val === true) {
+      _setRefreshState("refreshing");
+    } else if (val === false) {
+      _setRefreshState("restore");
+    }
+  });
   function __handleTouchStart(event) {
     if (event.touches.length === 1) {
       touchStart = {
@@ -15829,22 +16582,68 @@ function handleTouchEvent(isVertical, containerRef) {
       needStop = false;
     } else if (containerEl.scrollTop === 0 && y > touchStart.y) {
       needStop = false;
+      if (props2.refresherEnabled && event.cancelable !== false)
+        event.preventDefault();
     } else if (containerEl.scrollHeight === containerEl.offsetHeight + containerEl.scrollTop && y < touchStart.y) {
       needStop = false;
+      return;
     } else {
       needStop = true;
     }
     if (needStop) {
       event.stopPropagation();
     }
+    if (!props2.refresherEnabled) {
+      return;
+    }
+    if (containerEl.scrollTop === 0 && event.touches.length === 1) {
+      _setRefreshState("pulling");
+    }
+    if (props2.refresherEnabled && state2.refreshState === "pulling") {
+      const dy = y - touchStart.y;
+      if (toUpperNumber === 0) {
+        toUpperNumber = y;
+      }
+      if (!beforeRefreshing) {
+        state2.refresherHeight = y - toUpperNumber;
+        if (state2.refresherHeight > 0) {
+          triggerAbort = true;
+          trigger("refresherpulling", event, {
+            deltaY: dy,
+            dy
+          });
+        }
+      } else {
+        state2.refresherHeight = dy + props2.refresherThreshold;
+        triggerAbort = false;
+      }
+    }
   }
   function __handleTouchEnd(event) {
-    touchStart = null;
+    touchEnd = {
+      x: event.changedTouches[0].pageX,
+      y: event.changedTouches[0].pageY
+    };
+    if (state2.refresherHeight >= props2.refresherThreshold) {
+      _setRefreshState("refreshing");
+    } else {
+      _setRefreshState("refresherabort");
+    }
+    touchStart = {
+      x: 0,
+      y: 0
+    };
+    touchEnd = {
+      x: 0,
+      y: props2.refresherThreshold
+    };
   }
   onMounted(() => {
     const containerEl = containerRef.value;
     containerEl.addEventListener("touchstart", __handleTouchStart);
-    containerEl.addEventListener("touchmove", __handleTouchMove);
+    containerEl.addEventListener("touchmove", __handleTouchMove, {
+      passive: false
+    });
     containerEl.addEventListener("touchend", __handleTouchEnd);
   });
   onBeforeUnmount(() => {
@@ -16121,10 +16920,18 @@ function initHooks(options, instance2, publicThis) {
   if (mpType === "page") {
     instance2.__isVisible = true;
     try {
-      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
+      if (true) {
+        invokeHook(
+          publicThis,
+          ON_LOAD,
+          new UTSJSONObject(instance2.attrs.__pageQuery || {})
+        );
+      }
       delete instance2.attrs.__pageQuery;
-      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
-        invokeHook(publicThis, ON_SHOW);
+      if (true) {
+        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+          invokeHook(publicThis, ON_SHOW);
+        }
       }
     } catch (e2) {
       console.error(e2.message + LINEFEED + e2.stack);
@@ -17784,7 +18591,7 @@ function onResize() {
   });
 }
 function onMessage(evt) {
-  if (isPlainObject(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
+  if (isPlainObject$1(evt.data) && evt.data.type === WEB_INVOKE_APPSERVICE) {
     UniServiceJSBridge.emit(
       ON_WEB_INVOKE_APP_SERVICE,
       evt.data.data,
@@ -20542,7 +21349,7 @@ function parseValue(value) {
       if (keys.length === 2 && "data" in object) {
         if (typeof object.data === type) {
           if (type === "object" && !Array.isArray(object.data)) {
-            return new globalThis.UTSJSONObject(object.data);
+            return new UTSJSONObject(object.data);
           }
           return object.data;
         }
@@ -21384,7 +22191,7 @@ const request = /* @__PURE__ */ defineTaskApi(
       let res = responseType === "text" ? xhr.responseText : xhr.response;
       if (responseType === "text" && dataType2 === "json") {
         try {
-          res = new globalThis.UTSJSONObject(JSON.parse(res));
+          res = new UTSJSONObject(JSON.parse(res));
         } catch (error) {
         }
       }
@@ -26618,10 +27425,17 @@ const index = defineSystemComponent({
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
+    const pageStyle = {};
+    if (pageMeta.backgroundColorContent) {
+      pageStyle.backgroundColor = pageMeta.backgroundColorContent;
+    }
     useDocumentTitle(pageMeta);
     return () => createVNode(
       "uni-page",
-      { "data-page": pageMeta.route },
+      {
+        "data-page": pageMeta.route,
+        style: pageStyle
+      },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
     );
   }

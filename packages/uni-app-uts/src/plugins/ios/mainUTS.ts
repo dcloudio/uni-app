@@ -18,6 +18,8 @@ export function uniAppIOSMainPlugin(): Plugin {
           code: `
           import './${MANIFEST_JSON_UTS}'
           import './${PAGES_JSON_UTS}'
+          const __global__ = typeof globalThis === 'undefined' ? Function('return this')() : globalThis
+          __global__.__uniX = true
           ${code}
           createApp().app.mount("#app");
           `,

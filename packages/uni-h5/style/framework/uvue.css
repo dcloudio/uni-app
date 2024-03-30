@@ -1,13 +1,27 @@
 html,
 body {
   line-height: 1.2;
+  font-family: -apple-system, HelveticaNeue;
 }
 
 uni-app uni-page-body {
   height: 100%;
   overflow: visible;
+  position: relative;
 }
 
+uni-app uni-page-body,
+uni-app uni-top-window,
+uni-app uni-left-window,
+uni-app uni-right-window {
+  position: relative;
+  z-index: 0;
+}
+
+uni-app uni-left-window .uni-left-window,
+uni-app uni-right-window .uni-right-window {
+  height: 100%;
+}
 uni-app.uni-app--showtabbar uni-page-body::after {
   content: '';
   display: block;
@@ -119,6 +133,7 @@ uni-app uni-web-view {
   min-height: 0px;
   min-width: 0px;
   border-width: medium;
+  z-index: 0;
 }
 
 uni-app uni-text {
@@ -127,6 +142,9 @@ uni-app uni-text {
 
 /* 与开发者元素接触的容器 */
 uni-app uni-page-body,
+uni-app uni-left-window .uni-left-window,
+uni-app uni-right-window .uni-right-window,
+uni-app uni-top-window .uni-top-window,
 uni-app uni-animation-view,
 uni-app uni-block,
 uni-app uni-view,
@@ -154,6 +172,9 @@ uni-app uni-sticky-header {
 
 /* 此样式可被manifest.json内配置的flex-direction重置 */
 uni-app uni-page-body,
+uni-app uni-left-window .uni-left-window,
+uni-app uni-right-window .uni-right-window,
+uni-app uni-top-window .uni-top-window,
 uni-app uni-view,
 uni-app uni-label,
 uni-app uni-swiper,
@@ -199,11 +220,18 @@ uni-app uni-scroll-view {
 
 uni-app .uni-scroll-view,
 uni-app .uni-scroll-view-content,
-uni-app .uni-list-view-visible {
+uni-app .uni-list-view-visible,
+uni-app uni-navigator a {
   flex-direction: inherit;
   align-items: inherit;
   align-content: inherit;
   justify-content: inherit;
+}
+
+uni-app uni-navigator a {
+  display: flex;
+  width: 100%;
+  height: 100%;
 }
 
 uni-app .uni-scroll-view-content,

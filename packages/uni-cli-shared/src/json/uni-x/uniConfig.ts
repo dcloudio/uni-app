@@ -7,6 +7,10 @@ interface AppXUniConfig {
   compilerVersion: string
   fallbackLocale: unknown
   tabBar: unknown
+  entryPagePath: string
+  entryPageQuery?: string
+  conditionUrl?: string
+  realEntryPagePath?: string
 }
 
 export function normalizeAppXUniConfig(
@@ -21,6 +25,10 @@ export function normalizeAppXUniConfig(
     ...parseEntryPagePath(pagesJson),
     tabBar: pagesJson.tabBar,
     fallbackLocale: manifestJson.fallbackLocale,
+  }
+  if (config.realEntryPagePath) {
+    config.conditionUrl = config.entryPagePath
+    config.entryPagePath = config.realEntryPagePath
   }
   // TODO 待支持分包
   return JSON.stringify(config)

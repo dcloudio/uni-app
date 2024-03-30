@@ -12,7 +12,7 @@ import type {
   ServerOptions,
   ViteDevServer,
 } from 'vite'
-import express from 'express'
+
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
 import { CliOptions } from '.'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
@@ -60,7 +60,8 @@ export async function createServer(options: CliOptions & ServerOptions) {
 export async function createSSRServer(
   options: CliOptions & ServerOptions
 ): Promise<ViteDevServer> {
-  const app = express()
+  // 延迟加载
+  const app = (await import('express')).default()
   /**
    * @type {import('vite').ViteDevServer}
    */

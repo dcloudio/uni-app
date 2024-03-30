@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import { ComponentPublicInstance, App } from 'vue'
 import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
 import { defineGlobalData } from '@dcloudio/uni-core'
@@ -13,6 +13,8 @@ import { initVueApp } from '../../../service/framework/app/vueApp'
 import { IApp } from '@dcloudio/uni-app-x/types/native'
 import { initService } from './initService'
 // import { initKeyboardEvent } from '../dom/keyboard'
+import { setNativeApp } from './app'
+import { initComponentInstance } from './initComponentInstance'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
@@ -39,18 +41,13 @@ export function getApp({ allowDefault = false } = {}) {
   )
 }
 
-let nativeApp: IApp
-
-export function getNativeApp() {
-  return nativeApp
-}
-
-export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
+export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
   if (__DEV__) {
     console.log(formatLog('registerApp'))
   }
+  initEntryPagePath(nativeApp)
 
-  nativeApp = app
+  setNativeApp(nativeApp)
 
   // // 定制 useStore （主要是为了 nvue 共享）
   // if ((uni as any).Vuex && (appVm as any).$store) {
@@ -72,11 +69,11 @@ export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
 
   defineGlobalData(appCtx, defaultApp.globalData)
 
-  initService(app)
+  initService(nativeApp)
 
   // initEntry()
   // initTabBar()
-  initGlobalEvent(app)
+  initGlobalEvent(nativeApp)
   // initKeyboardEvent()
   initSubscribeHandlers()
 
@@ -88,4 +85,34 @@ export function registerApp(appVm: ComponentPublicInstance, app: IApp) {
   __uniConfig.ready = true
 
   // nav
+}
+
+export function initApp(app: App) {
+  initComponentInstance(app)
+}
+
+function initEntryPagePath(app: IApp) {
+  const redirectInfo = app.getRedirectInfo()
+  const debugInfo = redirectInfo.get('debug')
+  if (debugInfo) {
+    const url = debugInfo.get('url')
+    if (url && url != __uniConfig.entryPagePath) {
+      __uniConfig.realEntryPagePath = __uniConfig.entryPagePath
+      const [path, query] = url.split('?')
+      __uniConfig.entryPagePath = path
+      if (query) {
+        __uniConfig.entryPageQuery = `?${query}`
+      }
+      return
+    }
+  }
+  if (__uniConfig.conditionUrl) {
+    __uniConfig.realEntryPagePath = __uniConfig.entryPagePath
+    const conditionUrl = __uniConfig.conditionUrl
+    const [path, query] = conditionUrl.split('?')
+    __uniConfig.entryPagePath = path
+    if (query) {
+      __uniConfig.entryPageQuery = `?${query}`
+    }
+  }
 }

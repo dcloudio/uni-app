@@ -73,6 +73,7 @@ export function initPluginVueOptions(
       isCustomElement,
       nodeTransforms,
       directiveTransforms,
+      whitespace,
     },
   } = uniPluginOptions
 
@@ -98,6 +99,10 @@ export function initPluginVueOptions(
       }
       return false
     }
+  }
+
+  if (whitespace) {
+    compilerOptions.whitespace = whitespace
   }
 
   if (isCustomElement) {
@@ -160,6 +165,10 @@ export function initPluginVueOptions(
       vueOptions.compiler = createNVueCompiler()
     }
   }
+  if (!vueOptions.script) {
+    vueOptions.script = {}
+  }
+
   if (isX) {
     if (!vueOptions.script) {
       vueOptions.script = {

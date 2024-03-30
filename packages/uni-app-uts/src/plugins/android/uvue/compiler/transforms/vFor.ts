@@ -30,7 +30,6 @@ import {
 } from '@vue/compiler-core'
 import { createCompilerError, ErrorCodes } from '../errors'
 import {
-  getInnerRange,
   findProp,
   isTemplateNode,
   isSlotOutlet,
@@ -39,6 +38,7 @@ import {
   getVNodeHelper,
   // findDir
 } from '@vue/compiler-core'
+import { getInnerRange } from '@dcloudio/uni-cli-shared'
 import {
   RENDER_LIST,
   OPEN_BLOCK,
@@ -302,6 +302,8 @@ export function processFor(
     }
   }
 
+  parseResult.finalized = true
+
   const forNode: ForNode = {
     type: NodeTypes.FOR,
     loc: dir.loc,
@@ -351,6 +353,7 @@ export interface ForParseResult {
   value: ExpressionNode | undefined
   key: ExpressionNode | undefined
   index: ExpressionNode | undefined
+  finalized: boolean
 }
 
 export function parseForExpression(
@@ -373,6 +376,7 @@ export function parseForExpression(
     value: undefined,
     key: undefined,
     index: undefined,
+    finalized: false,
   }
   // if (!__BROWSER__ && context.prefixIdentifiers) {
   if (context.prefixIdentifiers) {

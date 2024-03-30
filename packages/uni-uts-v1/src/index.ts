@@ -58,7 +58,7 @@ export const sourcemap = {
 
 export { compileApp, CompileAppOptions } from './uvue/index'
 
-export { parseInjectModules } from './utils'
+export { parseInjectModules, parseExtApiProviders } from './utils'
 
 export * from './sourceMap'
 
@@ -111,6 +111,7 @@ interface CompilerOptions {
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
   sourceMap?: boolean
+  uni_modules?: string[]
 }
 
 // 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
@@ -124,6 +125,7 @@ export async function compile(
     transform,
     sourceMap,
     isSingleThread,
+    uni_modules,
   }: CompilerOptions = {
     isX: false,
     isPlugin: true,
@@ -210,6 +212,7 @@ export async function compile(
           transform,
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.androidHookClass || '',
+          uniModules: uni_modules || [],
         })
         if (cacheDir) {
           // 存储 sourcemap
@@ -246,11 +249,12 @@ export async function compile(
           pluginId: pkg.id,
           isX,
           isSingleThread,
-          isPlugin,
+          isPlugin: true, // iOS 目前仅有 plugin 模式
           extApis,
           transform,
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.iOSHookClass || '',
+          uniModules: uni_modules || [],
         })
         if (cacheDir) {
           storeSourceMap(
@@ -402,6 +406,7 @@ export async function compile(
           extApis,
           transform,
           sourceMap: !!sourceMap,
+          uniModules: uni_modules || [],
         })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {

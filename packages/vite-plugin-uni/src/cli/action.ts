@@ -1,6 +1,9 @@
+import fs from 'fs'
+import path from 'path'
+import colors from 'picocolors'
 import { extend } from '@vue/shared'
 import { RollupWatcher } from 'rollup'
-import type { BuildOptions, ServerOptions } from 'vite'
+import { createLogger, type BuildOptions, type ServerOptions } from 'vite'
 import {
   APP_CONFIG_SERVICE,
   APP_SERVICE_FILENAME,
@@ -18,6 +21,7 @@ import {
 } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { runUVueAndroidBuild, runUVueAndroidDev } from './uvue'
+import { FSWatcher } from 'chokidar'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, {
@@ -41,13 +45,13 @@ export async function runDev(options: CliOptions & ServerOptions) {
       const server = await (options.ssr
         ? createSSRServer(options)
         : createServer(options))
-      initEasycom(server.watcher)
+      initEasycom(server.watcher as FSWatcher)
     } else {
       const watcher = (await build(options)) as RollupWatcher
       initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
-      watcher.on('event', (event) => {
+      watcher.on('event', async (event) => {
         if (event.code === 'BUNDLE_START') {
           if (isFirstStart) {
             isFirstStart = false
@@ -73,6 +77,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
             if (process.env.UNI_UTS_TIPS) {
               console.warn(process.env.UNI_UTS_TIPS)
             }
+            await stopProfiler((message) =>
+              createLogger(options.logLevel).info(message)
+            )
             return
           }
           if (options.platform === 'app') {
@@ -139,6 +146,9 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     await (options.ssr && options.platform === 'h5'
       ? buildSSR(options)
       : build(options))
+    await stopProfiler((message) =>
+      createLogger(options.logLevel).info(message)
+    )
     console.log(M['build.done'])
     if (options.platform !== 'h5') {
       showRunPrompt(options.platform as PLATFORM)
@@ -147,4 +157,35 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     console.error(`Build failed with errors.`)
     process.exit(1)
   }
+}
+
+let profileSession = global.__vite_profile_session
+
+let profileCount = 0
+
+export const stopProfiler = (
+  log: (message: string) => void
+): void | Promise<void> => {
+  if (!profileSession) return
+  return new Promise((res, rej) => {
+    profileSession!.post('Profiler.stop', (err: any, result: any) => {
+      // Write profile to disk, upload, etc.
+      if (!err) {
+        const outPath = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          `./profile-${profileCount++}.cpuprofile`
+        )
+        fs.writeFileSync(outPath, JSON.stringify(result.profile))
+        log(
+          colors.yellow(
+            `CPU profile written to ${colors.white(colors.dim(outPath))}`
+          )
+        )
+        profileSession = undefined
+        res()
+      } else {
+        rej(err)
+      }
+    })
+  })
 }

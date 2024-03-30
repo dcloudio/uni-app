@@ -37,7 +37,7 @@ function resolveJsonObj(
       const _isI18nStr = (value: any) =>
         isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)
       const _name = names[0]
-      let filterJsonObj = []
+      let filterJsonObj: Array<Record<string, any>> = []
       if (
         isArray(jsonObj) &&
         (filterJsonObj = jsonObj.filter((item) => _isI18nStr(item[_name])))

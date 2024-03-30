@@ -384,11 +384,8 @@ function invokeSuccess(id, name, res) {
 function invokeFail(id, name, errMsg, errRes = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
     delete errRes.errCode;
-    return invokeCallback(id, typeof UniError !== 'undefined'
-        ? typeof errRes.errCode !== 'undefined'
-            ? new UniError(name, errRes.errCode, apiErrMsg)
-            : new UniError(apiErrMsg, errRes)
-        : extend({ errMsg: apiErrMsg }, errRes));
+    let res = extend({ errMsg: apiErrMsg }, errRes);
+    return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
@@ -1331,7 +1328,7 @@ const request = {
                     value: data,
                 };
             },
-            method: 'method',
+            method: 'method', // TODO 支付宝小程序仅支持 get,post
             responseType: false,
         };
     },
@@ -1508,7 +1505,7 @@ const getSavedFileList = {
     returnValue(fromRes, toRes) {
         toRes.fileList = fromRes.fileList.map((file) => {
             return {
-                filePath: file.apFilePath,
+                filePath: file.apFilePath, // mini-types file.d.ts 不正确
                 createTime: file.createTime,
                 size: file.size,
             };

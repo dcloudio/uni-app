@@ -9,6 +9,8 @@ import {
   buildProps,
   createCompilerError,
   ErrorCodes,
+  AttributeNode,
+  DirectiveNode,
 } from '@vue/compiler-core'
 import { isSlotOutlet, isStaticArgOf, isStaticExp } from '@vue/compiler-core'
 import { PropsExpression } from '@vue/compiler-core'
@@ -66,7 +68,7 @@ export function processSlotOutlet(
   let slotName: string | ExpressionNode = `"default"`
   let slotProps: PropsExpression | undefined = undefined
 
-  const nonNameProps = []
+  const nonNameProps: Array<AttributeNode | DirectiveNode> = []
   for (let i = 0; i < node.props.length; i++) {
     const p = node.props[i]
     if (p.type === NodeTypes.ATTRIBUTE) {

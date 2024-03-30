@@ -30,6 +30,7 @@ interface UniVitePluginUniOptions {
     isCustomElement?: ParserOptions['isCustomElement']
     directiveTransforms?: CompilerOptions['directiveTransforms']
     nodeTransforms?: CompilerOptions['nodeTransforms']
+    whitespace?: CompilerOptions['whitespace']
   }
   jsxOptions?: {
     babelPlugins?: any[]

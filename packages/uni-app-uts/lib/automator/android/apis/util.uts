@@ -5,7 +5,7 @@ import { IUniNativeDocument } from 'io.dcloud.uniapp.dom'
 
 // @ts-ignore
 function getPageId(page: Page): string {
-  return page.$appPage!.pageId
+  return page.$nativePage!.pageId
 }
 // @ts-ignore
 function getPagePath(page: Page): string {
@@ -162,7 +162,7 @@ export function getElementById(
     callback(null, { errMsg: `Page[${pageId}] not exists` })
     return null
   }
-  const document = page.$appPage!.document
+  const document = page.$nativePage!.document
   const element = (document as IUniNativeDocument).getNativeElementById(elementId)
   if (element == null) {
     callback(null, { errMsg: `element[${elementId}] not exists` })
@@ -320,4 +320,11 @@ function map2Object(data: Map<string, any | null>): UTSJSONObject {
     result[key] = value
   })
   return result
+}
+
+export function removeUniPrefix(selector: string): string {
+  if (selector.startsWith("uni-")) {
+    return selector.replace("uni-", "");
+  }
+  return selector;
 }

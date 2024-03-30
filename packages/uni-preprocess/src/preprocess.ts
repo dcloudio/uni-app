@@ -11,17 +11,32 @@ export interface PreprocessOptions {
 }
 
 export function preprocess(source: string, options: PreprocessOptions) {
+  let isInPreprocessor = (_offset: number) => false
   if (!source.includes('#endif')) {
     return {
       code: source,
       map: options.sourceMap
         ? new MagicString(source).generateMap(options.sourceMap)
         : null,
+      isInPreprocessor,
     }
   }
 
   const context = options.context || {}
   const s = new MagicString(source)
+
+  // [[start,end]]
+  const ranges: [number, number][] = []
+
+  isInPreprocessor = (offset: number) => {
+    for (let i = 0; i < ranges.length; i++) {
+      const range = ranges[i]
+      if (range[0] <= offset && offset < range[1]) {
+        return true
+      }
+    }
+    return false
+  }
 
   function preprocessByType(type: PreprocessType) {
     replaceRecursive(
@@ -34,7 +49,6 @@ export function preprocess(source: string, options: PreprocessOptions) {
 
         const variant = startMatches.value[1]
         const test = (startMatches.value[2] || '').trim()
-
         switch (variant) {
           case 'ifdef':
             if (testPasses(test, context)) {
@@ -43,6 +57,7 @@ export function preprocess(source: string, options: PreprocessOptions) {
             } else {
               s.remove(startMatches.start, endMatches.end)
             }
+            ranges.push([startMatches.start, endMatches.end])
             return
           case 'ifndef':
             if (!testPasses(test, context)) {
@@ -51,6 +66,7 @@ export function preprocess(source: string, options: PreprocessOptions) {
             } else {
               s.remove(startMatches.start, endMatches.end)
             }
+            ranges.push([startMatches.start, endMatches.end])
             return
           default:
             throw new Error('Unknown if variant ' + variant + '.')
@@ -68,6 +84,7 @@ export function preprocess(source: string, options: PreprocessOptions) {
   return {
     code: s.toString(),
     map: options.sourceMap ? s.generateMap(options.sourceMap) : null,
+    isInPreprocessor,
   }
 }
 

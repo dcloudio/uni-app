@@ -9,8 +9,13 @@ import {
 import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
+import { transformOn } from './transforms/vOn'
+import { transformModel } from './transforms/vModel'
 
-const directiveTransforms = {}
+const directiveTransforms = {
+  on: transformOn,
+  model: transformModel,
+}
 
 export const compilerOptions: CompilerOptions = {
   nodeTransforms: [transformRef, transformComponentLink, transformMatchMedia],

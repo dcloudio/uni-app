@@ -71,3 +71,12 @@ declare var __uniRoutes: UniApp.UniRoutes
 declare var __uniConfig: UniApp.UniConfig
 declare var UniViewJSBridge: UniApp.UniViewJSBridge
 declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
+// TODO X 引入真实类型
+declare class UTSJSONObject {
+  constructor(obj: Record<string, any>)
+}
+// 解决 test-dts 使用了小程序的Require导致编译器require.resolve,require.cache报错
+interface Require {
+  resolve: NodeRequire['resolve']
+  cache: NodeRequire['cache']
+}

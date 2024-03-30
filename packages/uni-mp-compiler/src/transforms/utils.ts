@@ -8,6 +8,7 @@ import {
   isReferenced,
   isTemplateLiteral,
   MemberExpression,
+  Node,
   numericLiteral,
   objectProperty,
   SpreadElement,
@@ -188,11 +189,13 @@ export function findReferencedScope(
 
 export function isReferencedByIds(node: Expression, knownIds: string[]) {
   let referenced = false
+  // @ts-ignore
   walk(node, {
     enter(node, parent) {
       if (referenced) {
         return this.skip()
       }
+      // @ts-ignore
       if (!isIdentifier(node)) {
         return
       }
@@ -208,7 +211,7 @@ export function isReferencedByIds(node: Expression, knownIds: string[]) {
   return referenced
 }
 
-export function isStaticLiteral(value: object | null | undefined) {
+export function isStaticLiteral(value: Node | null | undefined) {
   return isLiteral(value) && !isTemplateLiteral(value)
 }
 

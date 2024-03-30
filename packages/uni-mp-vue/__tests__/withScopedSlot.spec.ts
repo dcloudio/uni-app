@@ -25,7 +25,7 @@ const tests: Record<string, Data> = {
 }
 
 function createArrayData(index: number, data: Data) {
-  const arr = []
+  const arr: Data[] = []
   arr[index] = data
   return arr
 }

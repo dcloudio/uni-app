@@ -27,6 +27,7 @@ describe('compiler', () => {
       isSingleThread: false,
       isPlugin: true,
       components: {},
+      uniModules: [],
     })
     expect(existsSync(kotlinFile)).toBeTruthy()
   })
@@ -44,6 +45,7 @@ describe('compiler', () => {
       isSingleThread: false,
       isPlugin: true,
       components: {},
+      uniModules: [],
     })
     expect(existsSync(swiftFile)).toBeTruthy()
   })

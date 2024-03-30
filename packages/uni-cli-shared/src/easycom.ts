@@ -9,7 +9,8 @@ import { once } from '@dcloudio/uni-shared'
 import { normalizePath } from './utils'
 import { parsePagesJson, parsePagesJsonOnce } from './json/pages'
 import { M } from './messages'
-import { genUTSClassName, initUTSComponents } from './uts'
+import { initUTSComponents } from './uts'
+import { genUTSClassName } from './utsUtils'
 
 interface EasycomOption {
   isX?: boolean

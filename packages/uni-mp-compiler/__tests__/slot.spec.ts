@@ -65,6 +65,16 @@ describe('compiler: transform slot', () => {
 }`
     )
   })
+  test('names slots with fallback content 带横线', () => {
+    assert(
+      `<button><slot name="text-name">Submit</slot></button>`,
+      `<button><block wx:if="{{$slots['text-name']}}"><slot name="text-name"></slot></block><block wx:else>Submit</block></button>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
+
   test('names slots with fallback content', () => {
     assert(
       `<button><slot name="text">Submit</slot></button>`,

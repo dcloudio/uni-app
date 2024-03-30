@@ -134,6 +134,9 @@ export type TemplateCompilerOptions = {
    * e.g. platform native elements, e.g. `<div>` for browsers
    */
   isNativeTag?: (tag: string) => boolean
+
+  preprocessLang?: string
+  preprocessOptions?: any
 } & TransformOptions &
   CodegenOptions
 

@@ -92,6 +92,12 @@ export const NavigateBackOptions: ApiOptions<API_TYPE_NAVIGATE_BACK> = {
   },
 }
 
+export const PreloadPageOptions: ApiOptions<API_TYPE_PRELOAD_PAGE> =
+  /*#__PURE__*/ createRouteOptions(API_PRELOAD_PAGE)
+
+export const UnPreloadPageOptions: ApiOptions<API_TYPE_UN_PRELOAD_PAGE> =
+  /*#__PURE__*/ createRouteOptions(API_UN_PRELOAD_PAGE)
+
 function createAnimationProtocol(animationTypes: string[]) {
   return {
     animationType: {

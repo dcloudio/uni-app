@@ -262,6 +262,8 @@ export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (a
 
 export declare function invokeCreateVueAppHook(app: App): void;
 
+export declare function isAppIOSUVueNativeTag(tag: string): boolean;
+
 export declare function isAppNativeTag(tag: string): boolean;
 
 export declare function isAppNVueNativeTag(tag: string): boolean;

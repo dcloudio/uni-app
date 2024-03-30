@@ -9,6 +9,7 @@ import {
   componentGetData,
   componentSetData,
   getElementByIdOrNodeId,
+  removeUniPrefix
   // @ts-ignore
 } from './util.uts'
 // @ts-ignore
@@ -33,9 +34,8 @@ export const getElement = (
     callback
   )
   if (element != null) {
-    let selector = params.selector
-    if (selector.startsWith('uni-')) {
-      selector = selector.replace('uni-', '')
+    if (params.selector.startsWith('uni-')) {
+      const selector = removeUniPrefix(params.selector)
       const component = getComponentVmBySelector(
         params.pageId,
         selector,
@@ -51,7 +51,7 @@ export const getElement = (
     }
     // @ts-ignore
     const list: UTSJSONObject[] = []
-    getValidNodes(element, selector, list)
+    getValidNodes(element, params.selector, list)
     if (list.length > 0) {
       callback(list[0], null)
     } else {
@@ -71,13 +71,9 @@ export const getElements = (
     callback
   )
   if (element != null) {
-    let selector = params.selector
-    if (selector.startsWith('uni-')) {
-      selector = selector.replace('uni-', '')
-    }
     // @ts-ignore
     const list: UTSJSONObject[] = []
-    getValidNodes(element, selector, list, true)
+    getValidNodes(element, removeUniPrefix(params.selector), list, true)
     callback({ elements: list }, null)
   }
 }
@@ -216,12 +212,24 @@ export const callFunction = (
         )
         callback({ result: `${functionName} success` }, null)
         break
+      case 'textarea.input':
+        element.dispatchEvent(
+          'input',
+          // @ts-ignore
+          new InputEvent(
+            'input',
+            // @ts-ignore
+            InputEventDetail(params.args[0] as string, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
       case 'scroll-view.scrollTo':
         if (element.tagName == 'SCROLL-VIEW') {
-          // @ts-ignore
-          const arg = JSON.parse<Coordinate>(JSON.stringify(params.args[0]))!
-          element.scrollLeft = arg.x
-          element.scrollTop = arg.y
+          const x: number = params.args[0] as number
+          const y: number = params.args[1] as number
+          element.scrollLeft = x
+          element.scrollTop = y
           callback({ result: `${functionName} success` }, null)
         } else {
           callback(null, {
@@ -532,5 +540,61 @@ export const getStyles = (
       return dom.style.getPropertyValue(name)
     })
     callback({ styles }, null)
+  }
+}
+
+type CustomEventDetail = {
+  value?: string
+}
+
+export type TriggerEventParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+  type: string;
+  detail: CustomEventDetail;
+}
+
+export const triggerEvent = (params: TriggerEventParams, callback: Callback) => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const tagName = dom.tagName.toLocaleLowerCase();
+    const type = params.type;
+    const detail = params.detail;
+    const functionName = `${tagName}.${type}`
+    switch (functionName) {
+      case 'input.input':
+        dom.dispatchEvent(
+          type,
+          // @ts-ignore
+          new UniInputEvent(
+            type,
+            // @ts-expect-error
+            UniInputEventDetail(detail.value!, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+      case 'textarea.input':
+        dom.dispatchEvent(
+          type,
+          // @ts-ignore
+          new UniInputEvent(
+            type,
+            // @ts-ignore
+            UniInputEventDetail(detail.value!, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+    }
+    callback(null, {
+      errMsg: `${functionName} not exists`,
+    })
   }
 }

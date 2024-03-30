@@ -106,7 +106,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     useSubscribe(
       (type: string, data: any) => {
         if (livePusher) {
-          // @ts-expect-error
           livePusher[type as any](data)
         }
       },

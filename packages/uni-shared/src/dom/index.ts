@@ -37,7 +37,7 @@ export function addFont(
   }
   return new Promise((resolve) => {
     const style = document.createElement('style')
-    const values = []
+    const values: string[] = []
     if (desc) {
       const { style, weight, stretch, unicodeRange, variant, featureSettings } =
         desc as FontFaceDescriptors

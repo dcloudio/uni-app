@@ -67,6 +67,12 @@ export function initScope(
     ;(vm.$ as any).ctx!.$scope = {
       $getAppWebview,
     }
+  } else {
+    Object.defineProperty(vm, '$viewToTempFilePath', {
+      get() {
+        return vm.$nativePage!.viewToTempFilePath.bind(vm.$nativePage!)
+      },
+    })
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {

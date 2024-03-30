@@ -13,6 +13,9 @@ import {
   resolveUTSCompiler,
   utsPlugins,
   buildUniExtApiProviders,
+  getUniExtApiProviderRegisters,
+  capitalize,
+  camelize,
 } from '@dcloudio/uni-cli-shared'
 import {
   DEFAULT_APPID,
@@ -26,7 +29,11 @@ import {
   createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
-import { configResolved, createUniOptions } from '../utils'
+import {
+  configResolved,
+  createUniOptions,
+  updateManifestModules,
+} from '../utils'
 import { genClassName } from '../..'
 
 const uniCloudSpaceList = getUniCloudSpaceList()
@@ -166,6 +173,7 @@ export function uniAppPlugin(): UniVitePlugin {
           extApiComponents: [...getExtApiComponents()],
           uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
           autoImports: getUTSEasyComAutoImports(),
+          extApiProviders: parseUniExtApiProviders(manifestJson),
         }
       )
       if (res) {
@@ -192,20 +200,7 @@ export function uniAppPlugin(): UniVitePlugin {
           const manifest = getOutputManifestJson()!
           if (manifest) {
             // 执行了摇树逻辑，就需要设置 modules 节点
-            const app = manifest.app
-            if (!app.distribute) {
-              app.distribute = {}
-            }
-            if (!app.distribute.modules) {
-              app.distribute.modules = {}
-            }
-            if (modules) {
-              modules.forEach((name) => {
-                const value = app.distribute.modules[name]
-                app.distribute.modules[name] =
-                  typeof value === 'object' && value !== null ? value : {}
-              })
-            }
+            updateManifestModules(manifest, modules)
             fs.outputFileSync(
               path.resolve(process.env.UNI_OUTPUT_DIR, 'manifest.json'),
               JSON.stringify(manifest, null, 2)
@@ -267,4 +262,45 @@ const ${className}Styles = []`,
     }
   })
   return res
+}
+
+function parseUniExtApiProviders(
+  manifestJson: Record<string, any>
+): [string, string, string][] {
+  const providers: [string, string, string][] = []
+  const customProviders = getUniExtApiProviderRegisters()
+  const userModules = manifestJson.app?.distribute?.modules || {}
+  const userModuleNames = Object.keys(userModules)
+  if (userModuleNames.length) {
+    const systemProviders = resolveUTSCompiler().parseExtApiProviders()
+    userModuleNames.forEach((moduleName) => {
+      const systemProvider = systemProviders[moduleName]
+      if (systemProvider) {
+        const userModule = userModules[moduleName]
+        Object.keys(userModule).forEach((providerName) => {
+          if (systemProvider.providers.includes(providerName)) {
+            if (
+              !customProviders.find(
+                (customProvider) =>
+                  customProvider.service === systemProvider.service &&
+                  customProvider.name === providerName
+              )
+            ) {
+              providers.push([
+                systemProvider.service,
+                providerName,
+                `UniExtApi${capitalize(
+                  camelize(systemProvider.service)
+                )}${capitalize(camelize(providerName))}Provider`,
+              ])
+            }
+          }
+        })
+      }
+    })
+  }
+  customProviders.forEach((provider) => {
+    providers.push([provider.service, provider.name, provider.class])
+  })
+  return providers
 }

@@ -1,0 +1,33 @@
+export const styles = {
+  ['uni-checkbox']: {
+    'flex-direction': 'row',
+    'align-items': 'center',
+  },
+  ['uni-checkbox-input']: {
+    'justify-content': 'center',
+    'align-items': 'center',
+    position: 'relative',
+    'border-top-width': '1px',
+    'border-right-width': '1px',
+    'border-bottom-width': '1px',
+    'border-left-width': '1px',
+    'border-top-style': 'solid',
+    'border-right-style': 'solid',
+    'border-bottom-style': 'solid',
+    'border-left-style': 'solid',
+    'border-top-left-radius': '3px',
+    'border-top-right-radius': '3px',
+    'border-bottom-right-radius': '3px',
+    'border-bottom-left-radius': '3px',
+    width: '22px',
+    height: '22px',
+    'margin-right': '5px',
+    'box-sizing': 'content-box',
+  },
+  ['uni-icon']: {
+    'font-family': 'uniappx_components',
+    'font-size': '16px',
+    width: '16px',
+    height: '16px',
+  },
+}

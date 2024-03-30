@@ -10,19 +10,23 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefault(path);
 
+function getDefaultExportFromCjs (x) {
+	return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
 var uniad_app_json = function (appJson) {
   if (!appJson.plugins) {
     appJson.plugins = {};
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.1.10',
+      version: '1.2.1',
       provider: 'wxf72d316417b6767f',
     };
   }
   if (!appJson.plugins['coral-adv']) {
     appJson.plugins['coral-adv'] = {
-      version: '1.0.18',
+      version: '1.0.24',
       provider: 'wx0e203209e27b1e66',
     };
   }
@@ -35,7 +39,7 @@ var uniad_app_json = function (appJson) {
   }
 };
 
-var uniadAppJson = uniad_app_json;
+var uniadAppJson = /*@__PURE__*/getDefaultExportFromCjs(uniad_app_json);
 
 const AD_COMPONENTS = [
     'uniad',
@@ -51,7 +55,7 @@ function transformAd(node, context) {
     const adpidProp = compilerCore.findProp(node, 'adpid');
     if (node.tag === 'ad' && adpidProp) {
         node.tag = 'uniad';
-        node.tagType = 1 /* ElementTypes.COMPONENT */;
+        node.tagType = compilerCore.ElementTypes.COMPONENT;
     }
     if (appJsonUniadFlag) {
         return;
@@ -181,7 +185,7 @@ const miniProgram = {
     component: {
         dir: COMPONENTS_DIR,
         vShow: uniCliShared.COMPONENT_CUSTOM_HIDDEN,
-        getPropertySync: false,
+        getPropertySync: false, // 为了避免 Setting data field "uP" to undefined is invalid 警告
         normalizeName: (name) => name.startsWith('wx-') ? name.replace('wx-', 'weixin-') : name,
     },
 };

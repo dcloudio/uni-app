@@ -22,7 +22,7 @@ import { createCompilerError } from './uvue/compiler/errors'
 
 export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 
-export const DEFAULT_APPID = 'HBuilder'
+export const DEFAULT_APPID = '__UNI__uniappx'
 
 export const ENTRY_FILENAME = 'main.uts'
 
@@ -79,7 +79,7 @@ export async function parseImports(
   tryResolve?: ReturnType<typeof createTryResolve>
 ) {
   await init
-  let res: ReturnType<typeof parse> = [[], [], false]
+  let res: ReturnType<typeof parse> = [[], [], false, false]
   try {
     res = parse(code)
   } catch (err: any) {

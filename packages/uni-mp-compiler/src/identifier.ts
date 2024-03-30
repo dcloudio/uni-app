@@ -4,7 +4,7 @@ export default class IdentifierGenerator {
   private _nextIds: number[] = [0]
 
   next(): string {
-    const r = []
+    const r: string[] = []
     for (const char of this._nextIds) {
       r.unshift(this._chars[char])
     }

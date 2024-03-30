@@ -79,7 +79,7 @@ function wrapperOptions(
 }
 
 export function wrapperReturnValue(method: string, returnValue: unknown) {
-  const returnValueHooks = []
+  const returnValueHooks: Function[] = []
   if (isArray(globalInterceptors.returnValue)) {
     returnValueHooks.push(...globalInterceptors.returnValue)
   }

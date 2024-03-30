@@ -19,11 +19,18 @@ export default defineSystemComponent({
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId())
     const navigationBar = pageMeta.navigationBar
+    const pageStyle = {} as Record<string, any>
+    if (__X__ && pageMeta.backgroundColorContent) {
+      pageStyle.backgroundColor = pageMeta.backgroundColorContent
+    }
     useDocumentTitle(pageMeta)
     return () =>
       createVNode(
         'uni-page',
-        { 'data-page': pageMeta.route },
+        {
+          'data-page': pageMeta.route,
+          style: pageStyle,
+        },
         __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== 'custom'
           ? [createVNode(PageHead), createPageBodyVNode(ctx)]
           : [createPageBodyVNode(ctx)]

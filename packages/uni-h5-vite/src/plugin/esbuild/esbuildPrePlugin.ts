@@ -12,14 +12,15 @@ export function esbuildPrePlugin(): Plugin {
       build.onLoad({ filter: JS_TYPES_RE }, ({ path: id }) => {
         let ext = path.extname(id).slice(1)
         if (ext === 'mjs') ext = 'js'
-
-        let contents = fs.readFileSync(id, 'utf-8')
-        if (contents.includes('#endif')) {
-          contents = preJs(contents)
-        }
-        return {
-          loader: ext as Loader,
-          contents,
+        if (fs.existsSync(id)) {
+          let contents = fs.readFileSync(id, 'utf-8')
+          if (contents.includes('#endif')) {
+            contents = preJs(contents)
+          }
+          return {
+            loader: ext as Loader,
+            contents,
+          }
         }
       })
     },

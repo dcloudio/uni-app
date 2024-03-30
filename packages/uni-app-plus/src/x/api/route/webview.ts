@@ -4,7 +4,7 @@ export function showWebview(
   nPage: IPage,
   animationType: string,
   animationDuration: number,
-  showCallback: () => void,
+  showCallback?: () => void,
   delay?: number
 ) {
   nPage.startRender()

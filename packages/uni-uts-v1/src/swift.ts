@@ -51,6 +51,7 @@ export async function runSwiftProd(
     transform,
     sourceMap,
     hookClass,
+    uniModules,
   }: {
     pluginId: string
     isPlugin: boolean
@@ -60,6 +61,7 @@ export async function runSwiftProd(
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
     sourceMap?: boolean
+    uniModules: string[]
   }
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -78,6 +80,7 @@ export async function runSwiftProd(
     isPlugin,
     extApis,
     transform,
+    uniModules,
   })
   if (!result) {
     return
@@ -87,6 +90,7 @@ export async function runSwiftProd(
   }
   genUTSPlatformResource(filename, {
     isX,
+    pluginId,
     inputDir,
     outputDir,
     platform: 'app-ios',
@@ -96,6 +100,7 @@ export async function runSwiftProd(
     hookClass,
     result,
     provider: resolveConfigProvider('app-ios', pluginId, transform),
+    uniModules,
   })
 }
 
@@ -116,6 +121,7 @@ interface RunSwiftDevOptions {
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
   sourceMap?: boolean
+  uniModules: string[]
 }
 
 export async function runSwiftDev(
@@ -128,6 +134,7 @@ export async function runSwiftDev(
     extApis,
     transform,
     sourceMap,
+    uniModules,
   }: RunSwiftDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
@@ -164,6 +171,7 @@ export async function runSwiftDev(
     isPlugin,
     extApis,
     transform,
+    uniModules,
   })) as RunSwiftDevResult
 
   if (!result) {
@@ -235,6 +243,7 @@ export async function compile(
     isPlugin,
     extApis,
     transform,
+    uniModules,
   }: ToSwiftOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
@@ -246,6 +255,7 @@ export async function compile(
     filename,
     pluginId,
     paths: {},
+    uniModules,
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {

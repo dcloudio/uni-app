@@ -8,13 +8,13 @@ import { isJsFile } from '../../utils/url'
 
 const escape = (str: string) => str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&')
 
-const parseUniExtApisOnce = once(parseUniExtApis)
+export const parseUniExtApisOnce = once(parseUniExtApis)
 
 export function uniUTSExtApiReplace(): Plugin {
   const injects = parseUniExtApisOnce(
     true,
     process.env.UNI_UTS_PLATFORM,
-    'javascript'
+    process.env.UNI_UTS_TARGET_LANGUAGE
   )
   const injectApis = Object.keys(injects)
   const firstPass = new RegExp(`(?:${injectApis.map(escape).join('|')})`, 'g')
@@ -23,11 +23,6 @@ export function uniUTSExtApiReplace(): Plugin {
     configResolved(config) {
       const index = config.plugins.findIndex((p) => p.name === 'uts')
       if (index > -1) {
-        const injects = parseUniExtApisOnce(
-          true,
-          process.env.UNI_UTS_PLATFORM,
-          'javascript'
-        )
         if (Object.keys(injects).length) {
           // @ts-expect-error
           config.plugins.splice(
@@ -36,13 +31,7 @@ export function uniUTSExtApiReplace(): Plugin {
             AutoImport({
               include: [/\.[u]?ts$/, /\.[u]?vue/],
               exclude: [/[\\/]\.git[\\/]/],
-              imports: injectsToAutoImports(
-                parseUniExtApisOnce(
-                  true,
-                  process.env.UNI_UTS_PLATFORM,
-                  'javascript'
-                )
-              ),
+              imports: injectsToAutoImports(injects),
               dts: false,
             })
           )

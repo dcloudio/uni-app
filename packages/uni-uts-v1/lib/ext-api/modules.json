@@ -58,7 +58,7 @@
       "getFileSystemManager": {
         "name": "getFileSystemManager",
         "app": {
-          "js": false,
+          "js": true,
           "kotlin": true,
           "swift": false
         }
@@ -84,7 +84,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -132,6 +132,18 @@
         "app": {
           "js": false,
           "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-getProvider": {
+    "uni": {
+      "getProvider": {
+        "name": "getProvider",
+        "app": {
+          "js": false,
+          "kotlin": true,
           "swift": false
         }
       }
@@ -144,7 +156,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getSystemInfoSync": {
@@ -152,7 +164,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getWindowInfo": {
@@ -160,7 +172,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -196,7 +208,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "previewImage": {
@@ -204,7 +216,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "closePreviewImage": {
@@ -212,7 +224,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getImageInfo": {
@@ -228,7 +240,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "compressImage": {
@@ -288,7 +300,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "downloadFile": {
@@ -296,7 +308,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -308,9 +320,36 @@
         "app": {
           "js": false,
           "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-payment": {
+    "provider": {
+      "service": "payment"
+    },
+    "uni": {
+      "requestPayment": {
+        "name": "requestPayment",
+        "app": {
+          "js": false,
+          "kotlin": true,
           "swift": false
         }
       }
+    }
+  },
+  "uni-payment-alipay": {
+    "provider": {
+      "service": "payment",
+      "name": "alipay"
+    }
+  },
+  "uni-payment-wxpay": {
+    "provider": {
+      "service": "payment",
+      "name": "wxpay"
     }
   },
   "uni-prompt": {
@@ -409,18 +448,6 @@
       }
     }
   },
-  "uni-requestPayment-alipay": {
-    "uni": {
-      "requestPayment": {
-        "name": "requestPayment",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false
-        }
-      }
-    }
-  },
   "uni-rpx2px": {
     "uni": {
       "rpx2px": {
@@ -428,7 +455,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -536,7 +563,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     },

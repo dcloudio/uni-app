@@ -41,7 +41,7 @@ export interface InjectOptions {
 }
 
 const debugInject = debug('uni:inject')
-const debugInjectTry = debug('uni:inject-try')
+// const debugInjectTry = debug('uni:inject-try')
 
 export function uniViteInjectPlugin(
   name: string,
@@ -87,7 +87,7 @@ export function uniViteInjectPlugin(
       if (!filter(id)) return null
       if (!isJsFile(id)) return null
 
-      debugInjectTry(id)
+      // debugInjectTry(id)
       if (code.search(firstpass) === -1) return null
       if (sep !== '/') id = id.split(sep).join('/')
 
@@ -242,7 +242,7 @@ export function uniViteInjectPlugin(
 const escape = (str: string) => str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&')
 
 const flatten = (startNode: BaseNode) => {
-  const parts = []
+  const parts: string[] = []
   let node = startNode
   while (isMemberExpression(node)) {
     parts.unshift((node.property as Identifier).name)

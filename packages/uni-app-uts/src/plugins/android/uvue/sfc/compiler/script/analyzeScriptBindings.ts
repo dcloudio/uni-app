@@ -101,7 +101,7 @@ function analyzeBindingsFromOptions(node: ObjectExpression): BindingMetadata {
 }
 
 function getObjectExpressionKeys(node: ObjectExpression): string[] {
-  const keys = []
+  const keys: string[] = []
   for (const prop of node.properties) {
     if (prop.type === 'SpreadElement') continue
     const key = resolveObjectKey(prop.key, prop.computed)
@@ -111,7 +111,7 @@ function getObjectExpressionKeys(node: ObjectExpression): string[] {
 }
 
 function getArrayExpressionKeys(node: ArrayExpression): string[] {
-  const keys = []
+  const keys: string[] = []
   for (const element of node.elements) {
     if (element && element.type === 'StringLiteral') {
       keys.push(element.value)

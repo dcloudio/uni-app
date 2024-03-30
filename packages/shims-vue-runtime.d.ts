@@ -1,5 +1,6 @@
 import { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
+import { UniPage } from '@dcloudio/uni-app-x/types/native'
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
     rootElement?:
@@ -20,6 +21,11 @@ declare module '@vue/runtime-core' {
     }
     // 目前 H5,APP 平台 getCurrentPages 中获取的 page 对象调整为 vm 对象
     $getAppWebview?: () => PlusWebviewWebviewObject
+    // X iOS start
+    $nativePage?: UniPage | null
+    $fontFamilySet: Set<string>
+    $viewToTempFilePath: (options: ViewToTempFilePathOptions) => void
+    // X iOS end
     $requireNativePlugin?: (name: string) => unknown
     getOpenerEventChannel: () => EventChannel | undefined
     $page: Page.PageInstance['$page']
@@ -30,7 +36,7 @@ declare module '@vue/runtime-core' {
   type LifecycleHook = Function[] | null
 
   type UniLifecycleHookInstance = {
-    [name in typeof UniLifecycleHooks[number]]: LifecycleHook
+    [name in (typeof UniLifecycleHooks)[number]]: LifecycleHook
   }
   interface ComponentInternalInstance extends UniLifecycleHookInstance {
     __isUnload: boolean

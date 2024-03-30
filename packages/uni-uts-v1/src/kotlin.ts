@@ -51,7 +51,8 @@ export interface KotlinCompilerServer extends CompilerServer {
     projectPath: string
   ): Promise<{ code: number; msg: string; data?: { dexList: string[] } }>
   checkDependencies?: (
-    configJsonPath: string
+    configJsonPath: string,
+    options?: { type: 1 /*插件*/ | 2 /*项目*/; valid: boolean }
   ) => Promise<{ code: number; msg: string; data: string[] }>
   checkRResources?: (resDir: string) => Promise<{
     code: number
@@ -102,6 +103,7 @@ export async function runKotlinProd(
     extApis,
     transform,
     sourceMap,
+    uniModules,
   }: {
     pluginId: string
     isPlugin: boolean
@@ -111,6 +113,7 @@ export async function runKotlinProd(
     extApis?: Record<string, [string, string]>
     transform?: UTSOutputOptions['transform']
     sourceMap?: boolean
+    uniModules: string[]
   }
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -129,6 +132,7 @@ export async function runKotlinProd(
     isPlugin,
     extApis,
     transform,
+    uniModules,
   })
   if (!result) {
     return
@@ -147,6 +151,7 @@ export async function runKotlinProd(
 
   genUTSPlatformResource(filename, {
     isX,
+    pluginId,
     inputDir,
     outputDir,
     platform: 'app-android',
@@ -156,6 +161,7 @@ export async function runKotlinProd(
     hookClass,
     result,
     provider: resolveConfigProvider('app-android', pluginId, transform),
+    uniModules,
   })
 
   return result
@@ -196,6 +202,7 @@ export type RunKotlinDevResult = UTSResult & {
   changed: string[]
   inject_modules: string[]
   kotlinc: boolean
+  kotlincJars?: string[]
 }
 
 export type RunKotlinBuildResult = UTSResult & {
@@ -215,6 +222,7 @@ interface RunKotlinDevOptions {
   is_uni_modules: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
+  uniModules: string[]
 }
 
 export async function runKotlinDev(
@@ -230,6 +238,7 @@ export async function runKotlinDev(
     extApis,
     transform,
     sourceMap,
+    uniModules,
   }: RunKotlinDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
@@ -248,6 +257,7 @@ export async function runKotlinDev(
     isPlugin,
     extApis,
     transform,
+    uniModules,
   })) as RunKotlinDevResult
   if (!result) {
     return
@@ -314,6 +324,18 @@ export async function runKotlinDev(
         )
       )
     }
+
+    const extraJars = resolveLibs(filename)
+      .concat(deps)
+      .concat(resDeps)
+      .concat(uniModuleDeps)
+
+    const depJars = uniModules.length
+      ? getUniModulesEncryptCacheJars(cacheDir, uniModules) // 加密插件jar
+          .concat(getUniModulesCacheJars(cacheDir, uniModules)) // 普通插件jar
+          .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候）
+      : []
+
     const options = {
       pageCount: 0,
       kotlinc: resolveKotlincArgs(
@@ -321,12 +343,8 @@ export async function runKotlinDev(
         jarFile,
         getKotlincHome(),
         (isX ? getDefaultJar(2) : getDefaultJar())
-          .concat(resolveLibs(filename))
-          .concat(deps)
-          .concat(resDeps)
-          .concat(uniModuleDeps)
-        // .concat(getUniModulesCacheJars(cacheDir))
-        // .concat(getUniModulesJars(outputDir))
+          .concat(extraJars)
+          .concat(depJars)
       ),
       d8: resolveD8Args(jarFile),
       sourceRoot: inputDir,
@@ -394,7 +412,7 @@ function checkDeps(
   return Promise.resolve([])
 }
 
-function hasDeps(configJsonFile: string) {
+export function hasDeps(configJsonFile: string) {
   const deps =
     parseJson(fs.readFileSync(configJsonFile, 'utf8')).dependencies || []
   if (isArray(deps) && deps.length) {
@@ -503,6 +521,7 @@ export async function compile(
     isPlugin,
     extApis,
     transform,
+    uniModules,
   }: ToKotlinOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
@@ -540,6 +559,7 @@ export async function compile(
       vue: 'io.dcloud.uniapp.vue',
       '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
     },
+    uniModules,
   }
   const isUTSFileExists = fs.existsSync(filename)
   if (componentsCode) {
@@ -649,13 +669,13 @@ function resolveLibs(filename: string) {
   return libs
 }
 
-function resolveAndroidArchiveOutputPath(aar?: string) {
+export function resolveAndroidArchiveOutputPath(aar: string) {
   return path.resolve(
-    process.env.UNI_OUTPUT_DIR,
-    '../.uts/aar',
-    aar ? aar.replace('.aar', '') : ''
+    kotlinAARDir(process.env.UNI_OUTPUT_DIR),
+    aar.replace('.aar', '')
   )
 }
+
 export function resolveDexFile(jarFile: string) {
   return normalizePath(path.resolve(path.dirname(jarFile), 'classes.dex'))
 }
@@ -710,9 +730,12 @@ export function checkAndroidVersionTips(
   }
 }
 
-export function getUniModulesEncryptCacheJars(cacheDir: string) {
+export function getUniModulesEncryptCacheJars(
+  cacheDir: string,
+  plugins?: string[]
+) {
   if (cacheDir) {
-    return sync('uni_modules/*/*.jar', {
+    return sync(`uni_modules/${createPluginGlob(plugins)}/*.jar`, {
       cwd: cacheDir,
       absolute: true,
     })
@@ -730,21 +753,31 @@ function getUniModulesCacheJarsByPlugin(cacheDir: string, plugin: string) {
   return []
 }
 
-export function getUniModulesCacheJars(cacheDir: string) {
+export function getUniModulesCacheJars(cacheDir: string, plugins?: string[]) {
   if (cacheDir) {
-    return sync('app-android/uts/uni_modules/*/index.jar', {
-      cwd: cacheDir,
-      absolute: true,
-    })
+    return sync(
+      `app-android/uts/uni_modules/${createPluginGlob(plugins)}/index.jar`,
+      {
+        cwd: cacheDir,
+        absolute: true,
+      }
+    )
   }
   return []
 }
 
-export function getUniModulesJars(outputDir: string) {
-  return sync('*/utssdk/app-android/index.jar', {
+export function getUniModulesJars(outputDir: string, plugins?: string[]) {
+  return sync(`${createPluginGlob(plugins)}/utssdk/app-android/index.jar`, {
     cwd: path.resolve(outputDir, 'uni_modules'),
     absolute: true,
   })
+}
+
+function createPluginGlob(plugins?: string[]) {
+  if (plugins && plugins.length) {
+    return plugins.length > 1 ? `(${plugins.join('|')})` : plugins[0]
+  }
+  return '*'
 }
 
 export function createStderrListener(
@@ -804,4 +837,101 @@ export function createStderrListener(
       resolve()
     })
   }
+}
+
+export function kotlinDir(outputDir: string) {
+  return (
+    process.env.UNI_APP_X_CACHE_DIR || path.resolve(outputDir, '../.kotlin')
+  )
+}
+
+function kotlinAARDir(kotlinDir: string) {
+  return path.resolve(kotlinDir, 'aar')
+}
+
+export function parseUTSModuleLibsJars(plugins: string[]) {
+  const jars = new Set<string>()
+  plugins.forEach((plugin) => {
+    const libsPath = path.resolve(
+      process.env.UNI_INPUT_DIR,
+      'uni_modules',
+      plugin,
+      'utssdk',
+      'app-android',
+      'libs'
+    )
+    if (fs.existsSync(libsPath)) {
+      sync('*.jar', { cwd: libsPath, absolute: true }).forEach((jar) => {
+        jars.add(jar)
+      })
+      const aars = sync('*.aar', { cwd: libsPath })
+      aars.forEach((name) => {
+        const outputPath = resolveAndroidArchiveOutputPath(name)
+        if (fs.existsSync(outputPath)) {
+          sync('**/*.jar', {
+            cwd: outputPath,
+            absolute: true,
+          }).forEach((jar) => {
+            jars.add(jar)
+          })
+        }
+      })
+    }
+  })
+  return [...jars]
+}
+
+function checkDepsByPlugin(
+  checkType: 1 | 2,
+  plugin: string,
+  checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],
+  checkDependenciesValid: boolean,
+  checkError: (plugin: string) => void
+) {
+  const configJsonFile = path.resolve(
+    process.env.UNI_INPUT_DIR,
+    'uni_modules',
+    plugin,
+    'utssdk',
+    'app-android',
+    'config.json'
+  )
+
+  if (fs.existsSync(configJsonFile) && hasDeps(configJsonFile)) {
+    return checkDependencies(configJsonFile, {
+      type: checkType,
+      valid: checkDependenciesValid,
+    }).then(({ code, msg, data }) => {
+      if (code !== 0) {
+        console.error(msg)
+        checkError(plugin)
+        return []
+      }
+      return data
+    })
+  }
+  return Promise.resolve([])
+}
+
+export async function parseUTSModuleConfigJsonJars(
+  checkType: 1 | 2,
+  plugins: string[],
+  checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],
+  checkDependenciesValid: boolean,
+  checkError: (plugin: string) => void
+) {
+  const deps = new Set<string>()
+
+  for (const plugin of plugins) {
+    ;(
+      await checkDepsByPlugin(
+        checkType,
+        plugin,
+        checkDependencies,
+        checkDependenciesValid,
+        checkError
+      )
+    ).forEach((dep) => deps.add(dep))
+  }
+  return [...deps]
 }

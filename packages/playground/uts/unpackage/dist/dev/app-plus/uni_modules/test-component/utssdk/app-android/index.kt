@@ -1,22 +1,22 @@
 @file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.modules.modules.testComponent;
+import android.animation.Animator;
+import android.text.TextUtils;
+import android.view.View;
+import com.airbnb.lottie.LottieAnimationView;
+import com.airbnb.lottie.LottieDrawable;
+import com.taobao.weex.annotation.JSMethod;
+import com.taobao.weex.ui.component.WXComponentProp;
+import io.dcloud.feature.uniapp.UniSDKInstance;
+import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
+import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
 import io.dcloud.uts.*;
 import io.dcloud.uts.Map;
+import io.dcloud.uts.component.UTSComponent;
+import io.dcloud.uts.component.UTSSize;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
-import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
-import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
-import android.animation.Animator;
-import com.taobao.weex.annotation.JSMethod;
-import com.airbnb.lottie.LottieAnimationView;
-import com.airbnb.lottie.LottieDrawable;
-import android.text.TextUtils;
-import io.dcloud.uts.component.UTSComponent;
-import io.dcloud.uts.component.UTSSize;
-import io.dcloud.feature.uniapp.UniSDKInstance;
-import android.view.View;
-import com.taobao.weex.ui.component.WXComponentProp;
 open class CustomAnimListener : Animator.AnimatorListener {
     open var comp: UTSComponent<LottieAnimationView>;
     constructor(com: UTSComponent<LottieAnimationView>) : super() {

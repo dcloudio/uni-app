@@ -62,7 +62,9 @@ export function baseCompile(template: string, options: CompilerOptions = {}) {
   const prefixIdentifiers =
     options.prefixIdentifiers === true || options.mode === 'module'
   const ast = (
-    isString(template) ? baseParse(template, options) : template
+    isString(template)
+      ? baseParse(template, { ...options, parseMode: 'html' })
+      : template
   ) as CodegenRootNode
   const [nodeTransforms, directiveTransforms] = getBaseTransformPreset({
     prefixIdentifiers,

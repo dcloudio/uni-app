@@ -140,6 +140,7 @@ function initSocketServer(port) {
     cors: {
       origin: true,
     },
+    maxHttpBufferSize: 1e8
   })
   // Middleman
   io.on('connection', function (socket) {

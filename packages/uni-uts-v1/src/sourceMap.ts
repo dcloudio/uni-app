@@ -156,7 +156,7 @@ export function generatedPositionFor({
       column,
       bias: column === 0 ? BIAS.LEAST_UPPER_BOUND : BIAS.GREATEST_LOWER_BOUND,
     })
-    let source = null
+    let source: string | null = null
     if (outputDir) {
       // 根据 sourceMapFile 和 outputDir，计算出生成后的文件路径
       source = join(

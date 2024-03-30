@@ -205,7 +205,7 @@ function parseApp(instance, parseAppOptions) {
     }
     const appOptions = {
         globalData: (instance.$options && instance.$options.globalData) || {},
-        $vm: instance,
+        $vm: instance, // mp-alipay 组件 data 初始化比 onLaunch 早，提前挂载
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
@@ -476,7 +476,7 @@ function initDefaultProps(options, isBehavior = false) {
     }
     if (options.behaviors) {
         // wx://form-field
-        if (options.behaviors.includes('ks://form-field')) {
+        if (options.behaviors.includes('__GLOBAL__://form-field')) {
             if (!options.properties || !options.properties.name) {
                 properties.name = {
                     type: null,
@@ -655,7 +655,7 @@ function initBehaviors(vueOptions) {
     const behaviors = [];
     if (isArray(vueBehaviors)) {
         vueBehaviors.forEach((behavior) => {
-            behaviors.push(behavior.replace('uni://', 'ks://'));
+            behaviors.push(behavior.replace('uni://', '__GLOBAL__://'));
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
@@ -908,7 +908,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,
-                slots: properties.uS || {},
+                slots: properties.uS || {}, // vueSlots
                 parentComponent: relationOptions.parent && relationOptions.parent.$,
                 onBeforeSetup(instance, options) {
                     initRefs(instance, mpInstance);

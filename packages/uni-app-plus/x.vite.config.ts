@@ -6,7 +6,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 import { cssTarget } from '@dcloudio/uni-cli-shared'
-import { isBuiltInComponent } from '@dcloudio/uni-shared'
+import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import autoprefixer from 'autoprefixer'
 
 function resolve(file: string) {
@@ -112,11 +112,11 @@ export default defineConfig({
     vue({
       template: {
         compilerOptions: {
-          isCustomElement: isBuiltInComponent,
+          isCustomElement: isAppIOSUVueNativeTag,
         },
       },
     }),
-    vueJsx({ optimize: true, isCustomElement: isBuiltInComponent }),
+    vueJsx({ optimize: true, isCustomElement: isAppIOSUVueNativeTag }),
   ],
   build: {
     emptyOutDir: false,

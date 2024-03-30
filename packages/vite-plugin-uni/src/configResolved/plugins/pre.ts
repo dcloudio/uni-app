@@ -17,7 +17,7 @@ import { UniPluginFilterOptions } from '.'
 
 const debugPreJs = debug('uni:pre-js')
 const debugPreHtml = debug('uni:pre-html')
-const debugPreJsTry = debug('uni:pre-js-try')
+// const debugPreJsTry = debug('uni:pre-js-try')
 
 export function uniPrePlugin(
   config: ResolvedConfig,
@@ -46,7 +46,7 @@ export function uniPrePlugin(
       const isJs = PRE_JS_EXTNAME.includes(extname)
       const isPre = isHtml || isJs
       if (isPre) {
-        debugPreJsTry(id)
+        // debugPreJsTry(id)
       }
       const hasEndif = isPre && code.includes('#endif')
       if (!hasEndif) {
