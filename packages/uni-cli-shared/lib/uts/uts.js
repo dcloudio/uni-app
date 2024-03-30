@@ -4,13 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.parseUniExtApiNamespacesJsOnce = exports.parseUniExtApiNamespacesOnce = exports.parseSwiftPackageWithPluginId = exports.parseKotlinPackageWithPluginId = exports.initUTSComponents = exports.parseUTSComponent = exports.isUTSComponent = exports.resolveUTSCompiler = exports.resolveUTSModule = exports.resolveUTSAppModule = void 0;
+// 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
 const fs_1 = __importDefault(require("fs"));
 const path_1 = __importDefault(require("path"));
 const fast_glob_1 = __importDefault(require("fast-glob"));
 const hbx_1 = require("./hbx");
 const utils_1 = require("./utils");
 const uni_modules_1 = require("./uni_modules");
-// 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
 function once(fn, ctx = null) {
     let res;
     return ((...args) => {
@@ -103,8 +103,18 @@ function resolveUTSCompiler() {
             });
         }
         catch (e) {
-            let utsCompilerVersion = utils_1.version;
-            if (utils_1.version.startsWith('2.0.')) {
+            let utsCompilerVersion = '';
+            try {
+                utsCompilerVersion = require('../package.json').version;
+            }
+            catch (e) {
+                try {
+                    // vue2
+                    utsCompilerVersion = require('../../package.json').version;
+                }
+                catch (e) { }
+            }
+            if (utsCompilerVersion.startsWith('2.0.')) {
                 utsCompilerVersion = '^3.0.0-alpha-3060920221117001';
             }
             console.error((0, utils_1.installDepTips)('devDependencies', '@dcloudio/uni-uts-v1', utsCompilerVersion));
@@ -135,9 +145,7 @@ exports.parseUTSComponent = parseUTSComponent;
 function initUTSComponents(inputDir, platform) {
     utsComponents.clear();
     const components = [];
-    if (platform !== 'app' && platform !== 'app-plus') {
-        return components;
-    }
+    const isApp = platform === 'app' || platform === 'app-plus';
     const easycomsObj = {};
     const dirs = resolveUTSComponentDirs(inputDir);
     dirs.forEach((dir) => {
@@ -162,7 +170,7 @@ function initUTSComponents(inputDir, platform) {
                 if (name) {
                     const importDir = (0, utils_1.normalizePath)(is_uni_modules_utssdk ? path_1.default.dirname(dir) : dir);
                     easycomsObj[`^${name}$`] = {
-                        source: `${importDir}?uts-proxy`,
+                        source: isApp ? `${importDir}?uts-proxy` : (0, utils_1.normalizePath)(file),
                         kotlinPackage: parseKotlinPackageWithPluginId(pluginId, is_uni_modules_utssdk),
                         swiftModule: parseSwiftPackageWithPluginId(pluginId, is_uni_modules_utssdk),
                     };
