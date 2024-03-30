@@ -1,6 +1,16 @@
 <template>
-	<web-view ref="webview" id="webview" style="flex:1" :webview-styles='webviewStyles' :src="src" @message="message"
-		@error="error" />
+  <view>
+    <view :style="{ height: `${statusBarHeight}px` }"></view>
+    <web-view
+      ref="webview"
+      id="webview"
+      style="flex: 1;"
+      :webview-styles="webviewStyles"
+      :src="src"
+      @message="message"
+      @error="error"
+    />
+  </view>
 </template>
 
 <script>
@@ -12,10 +22,13 @@ export default {
 			webviewContext: null as WebviewContext | null,
 			webviewStyles: {
 				progress: false
-			},
+      },
+      statusBarHeight: 0
 		}
 	},
-	onReady() {
+  onReady() {
+    const windowInfo = uni.getWindowInfo()
+    this.statusBarHeight = windowInfo.statusBarHeight
 		this.webviewElement = this.$refs['webview'] as UniWebViewElement
 		this.webviewContext = uni.createWebviewContext('webview', this)
 
@@ -42,7 +55,7 @@ export default {
 			const id = data["id"] as number
 			const type = data["type"] as string
 			const dataObj = data["data"]
-			const action = dataObj["action"]! 
+			const action = dataObj["action"]!
 			const args = dataObj["args"]
       // #endif
 			if (type != 'automator') {
@@ -53,8 +66,12 @@ export default {
 			} else {
 				console.log(id, action, args)
 				if (action == 'captureScreenshot') {
-					// 调用截图
-					this.webviewElement!.takeSnapshot({
+          // 调用截图
+          this.$viewToTempFilePath({
+            id: 'webview',
+            offsetY: '44',
+            overwrite: true,
+            wholeContent: true,
 						success: (res) => {
 							const fileManager = uni.getFileSystemManager()
 							fileManager.readFile({
