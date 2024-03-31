@@ -1,6 +1,8 @@
 <template>
-  <view>
+  <view style="flex: 1;">
+    <!-- #ifdef APP-ANDROID -->
     <view :style="{ height: `${statusBarHeight}px` }"></view>
+    <!-- #endif -->
     <web-view
       ref="webview"
       id="webview"
@@ -69,7 +71,12 @@ export default {
           // 调用截图
           this.$viewToTempFilePath({
             id: 'webview',
-            offsetY: '44',
+            // #ifdef APP-ANDROID
+            offsetY: `44`,
+            // #endif
+            // #ifndef APP-ANDROID
+            offsetY: `${48 + this.statusBarHeight}`,
+            // #endif
             overwrite: true,
             wholeContent: true,
 						success: (res) => {
