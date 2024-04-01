@@ -318,7 +318,7 @@ export function genResolveEasycomCode(
   )}, ${name})`
 }
 
-export const UNI_EASYCOM_EXCLUDE = [/App.vue$/, /@dcloudio\/uni-h5/]
+export const UNI_EASYCOM_EXCLUDE = [/@dcloudio\/uni-h5/]
 
 const utsEasyComAutoImports: Record<string, [[string, string]]> = {}
 
