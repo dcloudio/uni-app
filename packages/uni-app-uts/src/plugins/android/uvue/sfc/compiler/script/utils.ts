@@ -56,7 +56,7 @@ export function isCallOf(
 }
 
 export function toRuntimeTypeString(types: string[]) {
-  return types.length > 1 ? `[${types.join(', ')}]` : types[0]
+  return types.length > 1 ? `[${types.join(', ')}]` : types[0] || `Object`
 }
 
 export function getImportedName(
