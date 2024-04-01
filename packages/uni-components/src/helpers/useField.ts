@@ -54,11 +54,15 @@ const UniViewJSBridgeSubscribe = function () {
 const FOCUS_DELAY = 200
 let startTime: number
 
-function getValueString(value: any, type: string) {
+function getValueString(value: any, type: string, maxlength?: number) {
   if (type === 'number' && isNaN(Number(value))) {
     value = ''
   }
-  return value === null ? '' : String(value)
+  const valueStr = value === null ? '' : String(value)
+  if (maxlength == void 0) {
+    return valueStr
+  }
+  return valueStr.slice(0, maxlength)
 }
 
 interface InputEventDetail {
@@ -228,9 +232,18 @@ function useBase(
       return isNaN(maxlength) ? 140 : maxlength
     }
   })
+  // #if _X_
+  // @ts-ignore
+  const value =
+    getValueString(props.modelValue, props.type, maxlength.value) ||
+    getValueString(props.value, props.type, maxlength.value)
+  // #endif
+  // #if !_X_
+  // @ts-ignore
   const value =
     getValueString(props.modelValue, props.type) ||
     getValueString(props.value, props.type)
+  // #endif
   const state: State = reactive({
     value,
     valueOrigin: value,
@@ -261,14 +274,14 @@ function useBase(
 
 function useValueSync(
   props: Props,
-  state: { value: string },
+  state: { value: string; maxlength: number },
   emit: SetupContext['emit'],
   trigger: CustomEventTrigger
 ) {
   // #if _X_
   //@ts-ignore
   const valueChangeFn = throttle((val: any) => {
-    state.value = getValueString(val, props.type)
+    state.value = getValueString(val, props.type, state.maxlength)
   }, 100)
   // #endif
   // #if !_X_
