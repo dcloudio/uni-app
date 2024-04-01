@@ -6042,8 +6042,50 @@
       "restrictions": [
         "enum"
       ],
-      "syntax": "none | <single-transition-property>#",
+      "syntax": " all | none | <single-transition-property>#",
       "values": [
+        {
+          "name": "all",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
         {
           "name": "width",
           "uniPlatform": {
@@ -6568,7 +6610,7 @@
         }
       },
       "defaultValue": {
-        "uvue-app": "none",
+        "uvue-app": "all",
         "uvue-web": "all",
         "w3c": "all"
       }
