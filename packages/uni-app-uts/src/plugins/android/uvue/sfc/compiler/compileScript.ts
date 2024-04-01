@@ -958,8 +958,12 @@ __ins.emit(event, ...do_not_transform_spread)
   }
 
   const propsDecl = genRuntimeProps(ctx)
-  if (propsDecl) runtimeOptions += `\n  props: ${propsDecl},`
-
+  if (propsDecl) {
+    if (ctx.propsInterfaceDecl) {
+      runtimeOptions += `\n  __props: ${ctx.propsInterfaceDecl.id.name},`
+    }
+    runtimeOptions += `\n  props: ${propsDecl},`
+  }
   const emitsDecl = genRuntimeEmits(ctx)
   if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`
 

@@ -1,4 +1,10 @@
-import { CallExpression, Node, ObjectPattern, Program } from '@babel/types'
+import {
+  CallExpression,
+  Node,
+  ObjectPattern,
+  Program,
+  TSInterfaceDeclaration,
+} from '@babel/types'
 import { SFCDescriptor } from '@vue/compiler-sfc'
 import { generateCodeFrame } from '@vue/shared'
 import { parse as babelParse, ParserPlugin } from '@babel/parser'
@@ -42,6 +48,7 @@ export class ScriptCompileContext {
   propsDestructuredBindings: PropsDestructureBindings = Object.create(null)
   propsDestructureRestId: string | undefined
   propsRuntimeDefaults: Node | undefined
+  propsInterfaceDecl: TSInterfaceDeclaration | undefined
 
   // defineEmits
   emitsRuntimeDecl: Node | undefined

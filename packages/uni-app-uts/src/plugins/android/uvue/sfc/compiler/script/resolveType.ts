@@ -1,3 +1,4 @@
+import fsExtra from 'fs-extra'
 import {
   Expression,
   Identifier,
@@ -201,6 +202,9 @@ function innerResolveTypeElements(
             if (!param) param = node.typeParameters!.params[i]
             typeParams[p.name] = param
           })
+        }
+        if (resolved.type === 'TSInterfaceDeclaration') {
+          ;(ctx as ScriptCompileContext).propsInterfaceDecl = resolved
         }
         return resolveTypeElements(
           ctx,
@@ -781,20 +785,25 @@ function resolveFS(ctx: TypeResolveContext): FS | undefined {
     return ctx.fs
   }
 
-  const fs = ctx.options.fs
+  const fs = ctx.options.fs || {
+    fileExists: fsExtra.existsSync,
+    readFile(file: string) {
+      return fsExtra.readFileSync(file, 'utf-8')
+    },
+  }
   if (!fs) {
     return
   }
   return (ctx.fs = {
     fileExists(file) {
-      if (file.endsWith('.vue.ts')) {
-        file = file.replace(/\.ts$/, '')
+      if (file.startsWith('@/')) {
+        file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
       }
       return fs.fileExists(file)
     },
     readFile(file) {
-      if (file.endsWith('.vue.ts')) {
-        file = file.replace(/\.ts$/, '')
+      if (file.startsWith('@/')) {
+        file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
       }
       return fs.readFile(file)
     },
@@ -843,6 +852,12 @@ function importSourceToScope(
     } else if (source.startsWith('.')) {
       // relative import - fast path
       const filename = joinPaths(dirname(scope.filename), source)
+      resolved = resolveExt(filename, fs)
+    } else if (source.startsWith('@/')) {
+      const filename = joinPaths(
+        process.env.UNI_INPUT_DIR,
+        source.replace('@/', '')
+      )
       resolved = resolveExt(filename, fs)
     } else {
       // module or aliased import - use full TS resolution, only supported in Node
@@ -1239,6 +1254,8 @@ export function inferRuntimeType(
 ): string[] {
   try {
     switch (node.type) {
+      case 'TSAnyKeyword':
+        return []
       case 'TSStringKeyword':
         return ['String']
       case 'TSNumberKeyword':
@@ -1262,7 +1279,7 @@ export function inferRuntimeType(
           ) {
             types.add(
               'Function as PropType<' +
-                ctx.source.slice(
+                scope.source.slice(
                   m.start! + scope.offset,
                   m.end! + scope.offset
                 ) +
@@ -1271,7 +1288,7 @@ export function inferRuntimeType(
           } else {
             types.add(
               'Object as PropType<' +
-                ctx.source.slice(
+                scope.source.slice(
                   m.start! + scope.offset,
                   m.end! + scope.offset
                 ) +
@@ -1294,7 +1311,7 @@ export function inferRuntimeType(
       case 'TSFunctionType':
         return [
           'Function as PropType<' +
-            ctx.source.slice(
+            scope.source.slice(
               node.start! + scope.offset,
               node.end! + scope.offset
             ) +
@@ -1305,7 +1322,7 @@ export function inferRuntimeType(
         // TODO (nice to have) generate runtime element type/length checks
         return [
           'Array as PropType<' +
-            ctx.source.slice(
+            scope.source.slice(
               node.start! + scope.offset,
               node.end! + scope.offset
             ) +
@@ -1332,7 +1349,7 @@ export function inferRuntimeType(
         }
         if (node.typeName.type === 'Identifier') {
           return [
-            ctx.source.slice(
+            scope.source.slice(
               node.start! + scope.offset,
               node.end! + scope.offset
             ),
