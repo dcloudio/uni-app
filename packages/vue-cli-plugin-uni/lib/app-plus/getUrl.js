@@ -7,9 +7,10 @@ module.exports = function (url, options) {
   } // eslint-disable-next-line no-underscore-dangle, no-param-reassign
 
   url = url && url.__esModule ? url.default : url
-
+  let isAbsoluteFile = false
   if (typeof url !== 'string') {
     if (url.protocol && url.protocol === 'file:' && url.pathname) {
+      isAbsoluteFile = true
       url = url.pathname
     } else {
       return url
@@ -29,6 +30,9 @@ module.exports = function (url, options) {
 
   if (/["'() \t\n]/.test(url) || options.needQuotes) {
     return '"'.concat(url.replace(/"/g, '\\"').replace(/\n/g, '\\n'), '"')
+  }
+  if (isAbsoluteFile) {
+    return url
   }
   if (url.indexOf('/') === 0) {
     return url.substr(1)
