@@ -2882,7 +2882,7 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
-            "unixVer": "x"
+            "unixVer": "4.11"
           }
         },
         "web": {
@@ -2911,7 +2911,7 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "4.11"
               }
             },
             "web": {
@@ -2931,7 +2931,7 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
-            "unixVer": "x"
+            "unixVer": "4.11"
           }
         },
         "web": {
@@ -6018,6 +6018,50 @@
         "enum"
       ],
       "syntax": "<single-transition>#",
+      "values":[
+        {
+          "name": "all",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        },
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "5.0",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "12.0",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
+        }
+      ],
       "uniPlatform": {
         "app": {
           "android": {
