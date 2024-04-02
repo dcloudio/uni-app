@@ -9921,11 +9921,15 @@ const UniViewJSBridgeSubscribe = function() {
     getSelectedTextRange
   );
 };
-function getValueString(value, type) {
+function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  return value === null ? "" : String(value);
+  const valueStr = value === null ? "" : String(value);
+  if (maxlength == void 0) {
+    return valueStr;
+  }
+  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",
@@ -10064,7 +10068,7 @@ function useBase(props2, rootRef, emit2) {
       return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
     }
   });
-  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  const value = getValueString(props2.modelValue, props2.type, maxlength.value) || getValueString(props2.value, props2.type, maxlength.value);
   const state2 = reactive({
     value,
     valueOrigin: value,
@@ -10094,7 +10098,7 @@ function useBase(props2, rootRef, emit2) {
 }
 function useValueSync(props2, state2, emit2, trigger) {
   const valueChangeFn = throttle((val) => {
-    state2.value = getValueString(val, props2.type);
+    state2.value = getValueString(val, props2.type, state2.maxlength);
   }, 100);
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
@@ -16920,13 +16924,7 @@ function initHooks(options, instance2, publicThis) {
   if (mpType === "page") {
     instance2.__isVisible = true;
     try {
-      if (true) {
-        invokeHook(
-          publicThis,
-          ON_LOAD,
-          new UTSJSONObject(instance2.attrs.__pageQuery || {})
-        );
-      }
+      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
       delete instance2.attrs.__pageQuery;
       if (true) {
         if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {

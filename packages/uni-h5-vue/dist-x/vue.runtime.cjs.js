@@ -1476,9 +1476,7 @@ function logError(err, type, contextVNode, throwInDev = true) {
     if (contextVNode) {
       popWarningContext();
     }
-    if (throwInDev) {
-      throw err;
-    } else {
+    {
       console.error(err);
     }
   }

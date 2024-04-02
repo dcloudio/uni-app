@@ -9320,11 +9320,15 @@ const UniViewJSBridgeSubscribe = function() {
     getSelectedTextRange
   );
 };
-function getValueString(value, type) {
+function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  return value === null ? "" : String(value);
+  const valueStr = value === null ? "" : String(value);
+  if (maxlength == void 0) {
+    return valueStr;
+  }
+  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",
@@ -15262,11 +15266,7 @@ function initHooks(options, instance2, publicThis) {
   if (mpType === "page") {
     instance2.__isVisible = true;
     try {
-      if (false)
-        ;
-      else {
-        invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
-      }
+      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
       delete instance2.attrs.__pageQuery;
       if (true) {
         if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
