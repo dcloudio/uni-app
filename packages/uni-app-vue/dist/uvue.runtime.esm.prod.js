@@ -7150,6 +7150,10 @@ var DeprecationTypes = null;
 var NODE_EXT_STYLES = "styles";
 var NODE_EXT_CLASS_STYLE = "classStyle";
 var NODE_EXT_STYLE = "style";
+var NODE_EXT_IS_TEXT_NODE = "isTextNode";
+var NODE_EXT_CHILD_NODE = "childNode";
+var NODE_EXT_PARENT_NODE = "parentNode";
+var NODE_EXT_CHILD_NODES = "childNodes";
 function setNodeExtraData(el, name, value) {
   el.ext.set(name, value);
 }
@@ -7176,6 +7180,33 @@ function setExtraStyle(el, style) {
 }
 function isCommentNode(node) {
   return node.nodeName == "#comment";
+}
+function isExtraTextNode(el) {
+  return getNodeExtraData(el, NODE_EXT_IS_TEXT_NODE) === true;
+}
+function setExtraIsTextNode(el, isTextNode) {
+  setNodeExtraData(el, NODE_EXT_IS_TEXT_NODE, isTextNode);
+}
+function isTextElement(value) {
+  return value instanceof UniTextElement;
+}
+function getExtraChildNode(el) {
+  return getNodeExtraData(el, NODE_EXT_CHILD_NODE);
+}
+function setExtraChildNode(el, childNode) {
+  setNodeExtraData(el, NODE_EXT_CHILD_NODE, childNode);
+}
+function setExtraParentNode(el, parentNode) {
+  setNodeExtraData(el, NODE_EXT_PARENT_NODE, parentNode);
+}
+function getExtraChildNodes(el) {
+  return getNodeExtraData(el, NODE_EXT_CHILD_NODES);
+}
+function setExtraChildNodes(el, childNodes) {
+  setNodeExtraData(el, NODE_EXT_CHILD_NODES, childNodes);
+}
+function getExtraParentNode(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_NODE);
 }
 function each(obj) {
   return Object.keys(obj);
@@ -7382,8 +7413,28 @@ function setDocument(document) {
 function isInDocument(parent) {
   return !!parent.pageId;
 }
+function updateTextNode(node) {
+  var childNode = getExtraChildNode(node);
+  if (childNode !== null) {
+    var text = childNode.getAttribute("value");
+    node.setAttribute("value", text || "");
+  }
+}
 var nodeOps = {
   insert: (el, parent, anchor) => {
+    if (isTextElement(parent)) {
+      if (isExtraTextNode(el)) {
+        var childNode = getExtraChildNode(parent);
+        if (childNode !== null) {
+          console.error("Multiple text nodes are not allowed.");
+        } else {
+          setExtraChildNode(parent, el);
+          setExtraParentNode(el, parent);
+          updateTextNode(parent);
+        }
+        return;
+      }
+    }
     if (!anchor) {
       parent.appendChild(el);
     } else {
@@ -7397,6 +7448,14 @@ var nodeOps = {
   remove: child => {
     var parent = child.parentNode;
     if (parent) {
+      var childNodes = getExtraChildNodes(parent);
+      if (childNodes !== null) {
+        var index = childNodes.indexOf(child);
+        if (index !== -1) {
+          childNodes.splice(index, 1);
+          setExtraChildNodes(parent, childNodes);
+        }
+      }
       parent.removeChild(child);
     }
   },
@@ -7406,6 +7465,7 @@ var nodeOps = {
   createText: (text, container) => {
     var textNode = getDocument().createElement("text");
     textNode.setAttribute("value", text);
+    setExtraIsTextNode(textNode, true);
     return textNode;
   },
   createComment: (text, container) => {
@@ -7413,6 +7473,10 @@ var nodeOps = {
   },
   setText: (node, text) => {
     node.setAttribute("value", text);
+    var parent = getExtraParentNode(node);
+    if (parent !== null) {
+      updateTextNode(parent);
+    }
   },
   setElementText: (el, text) => {
     if (el.tagName !== "TEXT") {
