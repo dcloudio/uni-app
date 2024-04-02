@@ -3765,11 +3765,15 @@ const UniViewJSBridgeSubscribe = function() {
     getSelectedTextRange
   );
 };
-function getValueString(value, type) {
+function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  return value === null ? "" : String(value);
+  const valueStr = value === null ? "" : String(value);
+  if (maxlength == void 0) {
+    return valueStr;
+  }
+  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",
@@ -3908,7 +3912,7 @@ function useBase(props2, rootRef, emit2) {
       return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
     }
   });
-  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  const value = getValueString(props2.modelValue, props2.type, maxlength.value) || getValueString(props2.value, props2.type, maxlength.value);
   const state = vue.reactive({
     value,
     valueOrigin: value,
@@ -3938,7 +3942,7 @@ function useBase(props2, rootRef, emit2) {
 }
 function useValueSync(props2, state, emit2, trigger) {
   const valueChangeFn = throttle((val) => {
-    state.value = getValueString(val, props2.type);
+    state.value = getValueString(val, props2.type, state.maxlength);
   }, 100);
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
@@ -8804,13 +8808,7 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      if (true) {
-        invokeHook(
-          publicThis,
-          uniShared.ON_LOAD,
-          new UTSJSONObject(instance.attrs.__pageQuery || {})
-        );
-      }
+      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
       delete instance.attrs.__pageQuery;
       if (true) {
         if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {

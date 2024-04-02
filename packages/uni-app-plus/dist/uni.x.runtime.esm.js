@@ -3550,6 +3550,16 @@ var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
 class UniCheckboxElement extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
+    this._getAttribute = (key) => {
+      return null;
+    };
+  }
+  getAnyAttribute(key) {
+    var value = this._getAttribute(key);
+    if (value != null) {
+      return value;
+    }
+    return super.getAnyAttribute(key);
   }
 }
 var checkboxProps = {
@@ -3624,7 +3634,9 @@ var styles = {
   },
   ["uni-icon"]: {
     "font-family": "uniappx_components",
-    "font-size": "16px"
+    "font-size": "16px",
+    width: "16px",
+    height: "16px"
   }
 };
 var createHook = (lifecycle) => function(hook) {
@@ -3648,6 +3660,7 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
     } = _ref;
     var icon = "";
     var instance = getCurrentInstance();
+    var elementRef = ref();
     var checkboxChecked = ref(props.checked);
     var checkboxValue = ref("");
     var setCheckboxChecked = (checked) => {
@@ -3713,6 +3726,17 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
         name: checkboxValue.value,
         checked: checkboxChecked.value
       }, "add");
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
+        var _instance$proxy;
+        if (!instance)
+          return;
+        elementRef.value = (_instance$proxy = instance.proxy) === null || _instance$proxy === void 0 ? void 0 : _instance$proxy.$el;
+        elementRef.value._getAttribute = (key) => {
+          var _props$keyString$toSt, _props$keyString;
+          var keyString = camelize(key);
+          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
+        };
+      });
     });
     onUnload(() => {
       var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
@@ -3738,10 +3762,10 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("view", {
         "class": "uni-checkbox-input",
         "style": checkInputStyle.value
-      }, [checkboxChecked.value ? createVNode("text", {
+      }, [createVNode("text", {
         "class": "uni-icon",
         "style": iconStyle.value
-      }, [icon], 4) : null], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
+      }, [checkboxChecked.value ? icon : ""], 4)], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
     };
   }
 });
@@ -3777,12 +3801,12 @@ class UniCheckboxGroupElement extends UniFormControlElement {
   set value(value) {
     this._setValue(value);
   }
-  getAttribute(key) {
+  getAnyAttribute(key) {
     var value = this._getAttribute(key);
     if (value != null) {
       return value;
     }
-    return super.getAttribute(key);
+    return super.getAnyAttribute(key);
   }
   reset() {
     this.value = this._initialValue.slice(0);
@@ -3895,6 +3919,13 @@ class UniRadioElement extends UniElementImpl {
       return null;
     };
   }
+  getAnyAttribute(key) {
+    var value = this._getAttribute(key);
+    if (value != null) {
+      return value;
+    }
+    return super.getAnyAttribute(key);
+  }
 }
 var radioProps = {
   checked: {
@@ -3964,7 +3995,9 @@ var _style_0$1 = {
   "uni-radio-input-icon": {
     "": {
       fontFamily: "uniappx_components",
-      fontSize: "14px"
+      fontSize: "14px",
+      width: "14px",
+      height: "14px"
     }
   }
 };
@@ -4042,7 +4075,9 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
         if (instance === null)
           return;
         uniRadioElementRef.value._getAttribute = (key) => {
-          return null;
+          var _props$keyString$toSt, _props$keyString;
+          var keyString = camelize(key);
+          return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
         };
       });
       var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
@@ -4088,10 +4123,10 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
       }, [createVNode("view", {
         "class": "uni-radio-input",
         "style": styleUniRadioInput.value
-      }, [radioChecked.value ? createVNode("text", {
+      }, [createVNode("text", {
         "class": "uni-radio-input-icon",
         "style": styleUniRadioInputIcon.value
-      }, [icon], 4) : null], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
+      }, [radioChecked.value ? icon : ""], 4)], 4), (_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 12, ["onClick"]);
     };
   }
 });
@@ -4121,12 +4156,12 @@ class UniRadioGroupElement extends UniFormControlElement {
     this._setValue = (value) => {
     };
   }
-  getAttribute(key) {
+  getAnyAttribute(key) {
     var value = this._getAttribute(key);
     if (value != null) {
       return value;
     }
-    return super.getAttribute(key);
+    return super.getAnyAttribute(key);
   }
   get value() {
     return this._getValue();
@@ -4244,6 +4279,13 @@ class UniNavigatorElement extends UniElementImpl {
     this._getAttribute = (key) => {
       return null;
     };
+  }
+  getAnyAttribute(key) {
+    var value = this._getAttribute(key);
+    if (value != null) {
+      return value;
+    }
+    return super.getAnyAttribute(key);
   }
 }
 var navigatorProps = {
@@ -4392,12 +4434,12 @@ class UniProgressElement extends UniElementImpl {
       return null;
     };
   }
-  getAttribute(key) {
+  getAnyAttribute(key) {
     var value = this._getAttribute(key);
     if (value != null) {
       return value;
     }
-    return super.getAttribute(key);
+    return super.getAnyAttribute(key);
   }
 }
 var progressProps = {
@@ -4673,12 +4715,12 @@ class UniPickerViewColumnElement extends UniElementImpl {
       return null;
     };
   }
-  getAttribute(key) {
+  getAnyAttribute(key) {
     var value = this._getAttribute(key);
     if (value != null) {
       return value;
     }
-    return super.getAttribute(key);
+    return super.getAnyAttribute(key);
   }
 }
 class UniPickerViewChangeEventDetail {
@@ -4700,12 +4742,12 @@ class UniPickerViewElement extends UniElementImpl {
       return null;
     };
   }
-  getAttribute(key) {
+  getAnyAttribute(key) {
     var value = this._getAttribute(key);
     if (value != null) {
       return value;
     }
-    return super.getAttribute(key);
+    return super.getAnyAttribute(key);
   }
 }
 const pickerView = /* @__PURE__ */ defineBuiltInComponent({
