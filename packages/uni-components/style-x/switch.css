@@ -32,7 +32,7 @@ uni-switch[disabled] .uni-switch-input {
   outline: 0;
   border-radius: 16px;
   box-sizing: border-box;
-  background-color: rgba(0,0,0,.1);
+  background-color: #e9e9ea;
   transition: background-color 0.1s, border 0.1s;
 }
 
