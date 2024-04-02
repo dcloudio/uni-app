@@ -53,15 +53,7 @@ export function initHooks(
     instance.__isVisible = true
     // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
     try {
-      if (__X__) {
-        invokeHook(
-          publicThis,
-          ON_LOAD,
-          new UTSJSONObject(instance.attrs.__pageQuery || {})
-        )
-      } else {
-        invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
-      }
+      invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
       delete instance.attrs.__pageQuery
       // iOS-X 与安卓一致使用页面 onShow 时机
       if (__PLATFORM__ !== 'app' || !__X__) {
