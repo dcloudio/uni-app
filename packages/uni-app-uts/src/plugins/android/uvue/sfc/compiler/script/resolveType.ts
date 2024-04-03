@@ -1250,12 +1250,13 @@ function recordImport(node: Node, imports: TypeScope['imports']) {
 export function inferRuntimeType(
   ctx: TypeResolveContext,
   node: Node & MaybeWithScope,
+  from: 'defineProps' | 'defineModel',
   scope = node._ownerScope || ctxToScope(ctx)
 ): string[] {
   try {
     switch (node.type) {
-      case 'TSAnyKeyword':
-        return []
+      // case 'TSAnyKeyword':
+      //   return []
       case 'TSStringKeyword':
         return ['String']
       case 'TSNumberKeyword':
@@ -1277,23 +1278,31 @@ export function inferRuntimeType(
             m.type === 'TSCallSignatureDeclaration' ||
             m.type === 'TSConstructSignatureDeclaration'
           ) {
-            types.add(
-              'Function as PropType<' +
-                scope.source.slice(
-                  m.start! + scope.offset,
-                  m.end! + scope.offset
-                ) +
-                '>'
-            )
+            if (from === 'defineProps') {
+              types.add(
+                'Function as PropType<' +
+                  scope.source.slice(
+                    m.start! + scope.offset,
+                    m.end! + scope.offset
+                  ) +
+                  '>'
+              )
+            } else {
+              types.add('Function')
+            }
           } else {
-            types.add(
-              'Object as PropType<' +
-                scope.source.slice(
-                  m.start! + scope.offset,
-                  m.end! + scope.offset
-                ) +
-                '>'
-            )
+            if (from === 'defineProps') {
+              types.add(
+                'Object as PropType<' +
+                  scope.source.slice(
+                    m.start! + scope.offset,
+                    m.end! + scope.offset
+                  ) +
+                  '>'
+              )
+            } else {
+              types.add('Object')
+            }
           }
         }
         return types.size ? Array.from(types) : ['Object']
@@ -1303,30 +1312,35 @@ export function inferRuntimeType(
           return inferRuntimeType(
             ctx,
             node.typeAnnotation.typeAnnotation,
+            from,
             scope
           )
         }
         break
       case 'TSMethodSignature':
+        return ['Function']
       case 'TSFunctionType':
-        return [
-          'Function as PropType<' +
-            scope.source.slice(
-              node.start! + scope.offset,
-              node.end! + scope.offset
-            ) +
-            '>',
-        ]
+        let type = 'Function'
+        if (from === 'defineProps') {
+          const fnType = scope.source.slice(
+            node.start! + scope.offset,
+            node.end! + scope.offset
+          )
+          type = 'Function as PropType<' + fnType + '>'
+        }
+        return [type]
       case 'TSArrayType':
       case 'TSTupleType':
         // TODO (nice to have) generate runtime element type/length checks
         return [
-          'Array as PropType<' +
-            scope.source.slice(
-              node.start! + scope.offset,
-              node.end! + scope.offset
-            ) +
-            '>',
+          from === 'defineProps'
+            ? 'Array as PropType<' +
+              scope.source.slice(
+                node.start! + scope.offset,
+                node.end! + scope.offset
+              ) +
+              '>'
+            : 'Array',
         ]
 
       case 'TSLiteralType':
@@ -1345,7 +1359,7 @@ export function inferRuntimeType(
       case 'TSTypeReference': {
         const resolved = resolveTypeReference(ctx, node, scope)
         if (resolved) {
-          return inferRuntimeType(ctx, resolved, resolved._ownerScope)
+          return inferRuntimeType(ctx, resolved, from, resolved._ownerScope)
         }
         if (node.typeName.type === 'Identifier') {
           return [
@@ -1426,12 +1440,12 @@ export function inferRuntimeType(
       }
 
       case 'TSParenthesizedType':
-        return inferRuntimeType(ctx, node.typeAnnotation, scope)
+        return inferRuntimeType(ctx, node.typeAnnotation, from, scope)
 
       case 'TSUnionType':
-        return flattenTypes(ctx, node.types, scope)
+        return flattenTypes(ctx, node.types, from, scope)
       case 'TSIntersectionType': {
-        return flattenTypes(ctx, node.types, scope).filter(
+        return flattenTypes(ctx, node.types, from, scope).filter(
           (t) => t !== UNKNOWN_TYPE
         )
       }
@@ -1444,7 +1458,7 @@ export function inferRuntimeType(
 
       case 'TSIndexedAccessType': {
         const types = resolveIndexType(ctx, node, scope)
-        return flattenTypes(ctx, types, scope)
+        return flattenTypes(ctx, types, from, scope)
       }
 
       case 'ClassDeclaration':
@@ -1459,7 +1473,7 @@ export function inferRuntimeType(
         )
         const resolved = resolveTypeReference(ctx, node, sourceScope)
         if (resolved) {
-          return inferRuntimeType(ctx, resolved, resolved._ownerScope)
+          return inferRuntimeType(ctx, resolved, from, resolved._ownerScope)
         }
         break
       }
@@ -1470,7 +1484,7 @@ export function inferRuntimeType(
           // typeof only support identifier in local scope
           const matched = scope.declares[id.name]
           if (matched) {
-            return inferRuntimeType(ctx, matched, matched._ownerScope)
+            return inferRuntimeType(ctx, matched, from, matched._ownerScope)
           }
         }
         break
@@ -1485,15 +1499,16 @@ export function inferRuntimeType(
 function flattenTypes(
   ctx: TypeResolveContext,
   types: TSType[],
+  from: 'defineProps' | 'defineModel',
   scope: TypeScope
 ): string[] {
   if (types.length === 1) {
-    return inferRuntimeType(ctx, types[0], scope)
+    return inferRuntimeType(ctx, types[0], from, scope)
   }
   return [
     ...new Set(
       ([] as string[]).concat(
-        ...types.map((t) => inferRuntimeType(ctx, t, scope))
+        ...types.map((t) => inferRuntimeType(ctx, t, from, scope))
       )
     ),
   ]

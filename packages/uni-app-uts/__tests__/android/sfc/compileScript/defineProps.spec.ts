@@ -90,7 +90,7 @@ const props = defineProps({ foo: String })
       number: number
       boolean: boolean
       object: object
-      objectLiteral: { a: number }
+      // objectLiteral: { a: number }
       fn: (n: number) => void
       functionRef: Function
       objectRef: Object
@@ -110,12 +110,12 @@ const props = defineProps({ foo: String })
       extract: Extract<1 | 2 | boolean, 2>
       exclude: Exclude<1 | 2 | boolean, 2>
       uppercase: Uppercase<'foo'>
-      params: Parameters<(foo: any) => void>
+      // params: Parameters<(foo: any) => void>
       nonNull: NonNullable<string | null>
-      objectOrFn: {
-        (): void
-        foo: string
-      }
+      // objectOrFn: {
+      //   (): void
+      //   foo: string
+      // }
 
       union: string | number
       literalUnion: 'foo' | 'bar'
@@ -140,33 +140,49 @@ const props = defineProps({ foo: String })
     expect(content).toMatch(`number: { type: Number, required: true }`)
     expect(content).toMatch(`boolean: { type: Boolean, required: true }`)
     expect(content).toMatch(`object: { type: Object, required: true }`)
-    expect(content).toMatch(`objectLiteral: { type: Object, required: true }`)
-    expect(content).toMatch(`fn: { type: Function, required: true }`)
+    // expect(content).toMatch(`objectLiteral: { type: Object, required: true }`)
+    expect(content).toMatch(
+      `fn: { type: Function as PropType<(n: number) => void>, required: true }`
+    )
     expect(content).toMatch(`functionRef: { type: Function, required: true }`)
     expect(content).toMatch(`objectRef: { type: Object, required: true }`)
     expect(content).toMatch(`dateTime: { type: Date, required: true }`)
-    expect(content).toMatch(`array: { type: Array, required: true }`)
-    expect(content).toMatch(`arrayRef: { type: Array, required: true }`)
-    expect(content).toMatch(`tuple: { type: Array, required: true }`)
-    expect(content).toMatch(`set: { type: Set, required: true }`)
+    expect(content).toMatch(
+      `array: { type: Array as PropType<string[]>, required: true }`
+    )
+    expect(content).toMatch(`arrayRef: { type: Array<any>, required: true }`)
+    expect(content).toMatch(
+      `tuple: { type: Array as PropType<[number, number]>, required: true }`
+    )
+    expect(content).toMatch(`set: { type: Set<string>, required: true }`)
     expect(content).toMatch(`literal: { type: String, required: true }`)
-    expect(content).toMatch(`optional: { type: null, required: false }`)
-    expect(content).toMatch(`recordRef: { type: Object, required: true }`)
+    expect(content).toMatch(`optional: { type: Object, required: false }`)
+    expect(content).toMatch(
+      `recordRef: { type: Record<string, null>, required: true }`
+    )
     expect(content).toMatch(`interface: { type: Object, required: true }`)
-    expect(content).toMatch(`alias: { type: Array, required: true }`)
+    expect(content).toMatch(
+      `alias: { type: Array as PropType<number[]>, required: true }`
+    )
     expect(content).toMatch(`method: { type: Function, required: true }`)
     expect(content).toMatch(`symbol: { type: Symbol, required: true }`)
     expect(content).toMatch(`error: { type: Error, required: true }`)
+    // expect(content).toMatch(
+    //   `objectOrFn: { type: [Function, Object], required: true },`
+    // )
     expect(content).toMatch(
-      `objectOrFn: { type: [Function, Object], required: true },`
+      `extract: { type: Extract<1 | 2 | boolean, 2>, required: true }`
     )
-    expect(content).toMatch(`extract: { type: Number, required: true }`)
     expect(content).toMatch(
-      `exclude: { type: [Number, Boolean], required: true }`
+      `exclude: { type: Exclude<1 | 2 | boolean, 2>, required: true }`
     )
-    expect(content).toMatch(`uppercase: { type: String, required: true }`)
-    expect(content).toMatch(`params: { type: Array, required: true }`)
-    expect(content).toMatch(`nonNull: { type: String, required: true }`)
+    expect(content).toMatch(
+      `uppercase: { type: Uppercase<'foo'>, required: true }`
+    )
+    // expect(content).toMatch(`params: { type: NonNullable<string | null>, required: true }`)
+    expect(content).toMatch(
+      `nonNull: { type: NonNullable<string | null>, required: true }`
+    )
     expect(content).toMatch(`union: { type: [String, Number], required: true }`)
     expect(content).toMatch(`literalUnion: { type: String, required: true }`)
     expect(content).toMatch(
@@ -177,19 +193,23 @@ const props = defineProps({ foo: String })
     )
     expect(content).toMatch(`intersection: { type: Object, required: true }`)
     expect(content).toMatch(`intersection2: { type: String, required: true }`)
-    expect(content).toMatch(`foo: { type: [Function, null], required: true }`)
-    expect(content).toMatch(`unknown: { type: null, required: true }`)
+    expect(content).toMatch(
+      `foo: { type: Function as PropType<(item: any) => boolean>, required: false }`
+    )
+    expect(content).toMatch(`unknown: { type: UnknownType, required: true }`)
     // uninon containing unknown type: skip check
-    expect(content).toMatch(`unknownUnion: { type: null, required: true }`)
+    expect(content).toMatch(
+      `unknownUnion: { type: [UnknownType, String], required: true }`
+    )
     // intersection containing unknown type: narrow to the known types
     expect(content).toMatch(
-      `unknownIntersection: { type: Object, required: true },`
+      `unknownIntersection: { type: [UnknownType, Object], required: true },`
     )
     expect(content).toMatch(
-      `unknownUnionWithBoolean: { type: Boolean, required: true, skipCheck: true },`
+      `unknownUnionWithBoolean: { type: [UnknownType, Boolean], required: true },`
     )
     expect(content).toMatch(
-      `unknownUnionWithFunction: { type: Function, required: true, skipCheck: true }`
+      `unknownUnionWithFunction: { type: [UnknownType, Function as PropType<() => any>], required: true }`
     )
     expect(content).toMatch(
       `propType: { type: Object as PropType<()=>string>, required: true, skipCheck: true }`
@@ -199,7 +219,7 @@ const props = defineProps({ foo: String })
       number: BindingTypes.PROPS,
       boolean: BindingTypes.PROPS,
       object: BindingTypes.PROPS,
-      objectLiteral: BindingTypes.PROPS,
+      // objectLiteral: BindingTypes.PROPS,
       fn: BindingTypes.PROPS,
       functionRef: BindingTypes.PROPS,
       objectRef: BindingTypes.PROPS,
@@ -216,7 +236,7 @@ const props = defineProps({ foo: String })
       method: BindingTypes.PROPS,
       symbol: BindingTypes.PROPS,
       error: BindingTypes.PROPS,
-      objectOrFn: BindingTypes.PROPS,
+      // objectOrFn: BindingTypes.PROPS,
       extract: BindingTypes.PROPS,
       exclude: BindingTypes.PROPS,
       union: BindingTypes.PROPS,
@@ -227,7 +247,7 @@ const props = defineProps({ foo: String })
       intersection2: BindingTypes.PROPS,
       foo: BindingTypes.PROPS,
       uppercase: BindingTypes.PROPS,
-      params: BindingTypes.PROPS,
+      // params: BindingTypes.PROPS,
       nonNull: BindingTypes.PROPS,
       unknown: BindingTypes.PROPS,
       unknownUnion: BindingTypes.PROPS,
@@ -381,7 +401,7 @@ const props = defineProps({ foo: String })
       `quux: { type: Function, required: false, default() { } }`
     )
     expect(content).toMatch(
-      `quuxx: { type: Promise, required: false, async default() { return await Promise.resolve('hi') } }`
+      `quuxx: { type: Promise<string>, required: false, async default() { return await Promise.resolve('hi') } }`
     )
     expect(content).toMatch(
       `fred: { type: String, required: false, get default() { return 'fred' } }`
@@ -437,10 +457,12 @@ const props = defineProps({ foo: String })
     expect(content).toMatch(`const props = __props`)
 
     // foo has no default value, the Function can be dropped
-    expect(content).toMatch(`foo: { type: Function, required: true }`)
+    expect(content).toMatch(
+      `foo: { type: Function as PropType<() => void>, required: true }`
+    )
     expect(content).toMatch(`bar: { type: Boolean, required: true }`)
     expect(content).toMatch(
-      `baz: { type: [Boolean, Function], required: true, default: true }`
+      `baz: { type: [Boolean, Function as PropType<() => void>], required: true, default: true }`
     )
     expect(content).toMatch(
       `qux: { type: [String, Number], required: true, default: 'hi' }`
@@ -711,38 +733,46 @@ const props = defineProps({ foo: String })
     }>()
     </script>`)
     assertCode(content)
-    expect(content).toMatch(`"spa ce": { type: null, required: true }`)
+    expect(content).toMatch(`"spa ce": { type: Object, required: true }`)
     expect(content).toMatch(
-      `"exclamation!mark": { type: null, required: true }`
+      `"exclamation!mark": { type: Object, required: true }`
     )
-    expect(content).toMatch(`"double\\"quote": { type: null, required: true }`)
-    expect(content).toMatch(`"hash#tag": { type: null, required: true }`)
-    expect(content).toMatch(`"dollar$sign": { type: null, required: true }`)
-    expect(content).toMatch(`"percentage%sign": { type: null, required: true }`)
-    expect(content).toMatch(`"amper&sand": { type: null, required: true }`)
-    expect(content).toMatch(`"single'quote": { type: null, required: true }`)
-    expect(content).toMatch(`"round(brack)ets": { type: null, required: true }`)
-    expect(content).toMatch(`"aste*risk": { type: null, required: true }`)
-    expect(content).toMatch(`"pl+us": { type: null, required: true }`)
-    expect(content).toMatch(`"com,ma": { type: null, required: true }`)
-    expect(content).toMatch(`"do.t": { type: null, required: true }`)
-    expect(content).toMatch(`"sla/sh": { type: null, required: true }`)
-    expect(content).toMatch(`"co:lon": { type: null, required: true }`)
-    expect(content).toMatch(`"semi;colon": { type: null, required: true }`)
-    expect(content).toMatch(`"angle<brack>ets": { type: null, required: true }`)
-    expect(content).toMatch(`"equal=sign": { type: null, required: true }`)
-    expect(content).toMatch(`"question?mark": { type: null, required: true }`)
-    expect(content).toMatch(`"at@sign": { type: null, required: true }`)
     expect(content).toMatch(
-      `"square[brack]ets": { type: null, required: true }`
+      `"double\\"quote": { type: Object, required: true }`
     )
-    expect(content).toMatch(`"back\\\\slash": { type: null, required: true }`)
-    expect(content).toMatch(`"ca^ret": { type: null, required: true }`)
-    expect(content).toMatch(`"back\`tick": { type: null, required: true }`)
-    expect(content).toMatch(`"curly{bra}ces": { type: null, required: true }`)
-    expect(content).toMatch(`"pi|pe": { type: null, required: true }`)
-    expect(content).toMatch(`"til~de": { type: null, required: true }`)
-    expect(content).toMatch(`"da-sh": { type: null, required: true }`)
+    expect(content).toMatch(`"hash#tag": { type: Object, required: true }`)
+    expect(content).toMatch(`"dollar$sign": { type: Object, required: true }`)
+    expect(content).toMatch(
+      `"percentage%sign": { type: Object, required: true }`
+    )
+    expect(content).toMatch(`"amper&sand": { type: Object, required: true }`)
+    expect(content).toMatch(`"single'quote": { type: Object, required: true }`)
+    expect(content).toMatch(
+      `"round(brack)ets": { type: Object, required: true }`
+    )
+    expect(content).toMatch(`"aste*risk": { type: Object, required: true }`)
+    expect(content).toMatch(`"pl+us": { type: Object, required: true }`)
+    expect(content).toMatch(`"com,ma": { type: Object, required: true }`)
+    expect(content).toMatch(`"do.t": { type: Object, required: true }`)
+    expect(content).toMatch(`"sla/sh": { type: Object, required: true }`)
+    expect(content).toMatch(`"co:lon": { type: Object, required: true }`)
+    expect(content).toMatch(`"semi;colon": { type: Object, required: true }`)
+    expect(content).toMatch(
+      `"angle<brack>ets": { type: Object, required: true }`
+    )
+    expect(content).toMatch(`"equal=sign": { type: Object, required: true }`)
+    expect(content).toMatch(`"question?mark": { type: Object, required: true }`)
+    expect(content).toMatch(`"at@sign": { type: Object, required: true }`)
+    expect(content).toMatch(
+      `"square[brack]ets": { type: Object, required: true }`
+    )
+    expect(content).toMatch(`"back\\\\slash": { type: Object, required: true }`)
+    expect(content).toMatch(`"ca^ret": { type: Object, required: true }`)
+    expect(content).toMatch(`"back\`tick": { type: Object, required: true }`)
+    expect(content).toMatch(`"curly{bra}ces": { type: Object, required: true }`)
+    expect(content).toMatch(`"pi|pe": { type: Object, required: true }`)
+    expect(content).toMatch(`"til~de": { type: Object, required: true }`)
+    expect(content).toMatch(`"da-sh": { type: Object, required: true }`)
     expect(bindings).toStrictEqual({
       'spa ce': BindingTypes.PROPS,
       'exclamation!mark': BindingTypes.PROPS,

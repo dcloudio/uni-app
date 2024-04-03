@@ -27,6 +27,7 @@ exports[`defineProps custom element retains the props type & default value & pro
       
 export default {
   __name: 'app.ce',
+  __props: Props,
   props: {
     foo: { type: Number, required: false, default: 5.5 }
   },
@@ -81,7 +82,7 @@ return "INLINE_RENDER"
 exports[`defineProps destructure without enabling reactive destructure 1`] = `
 "export default {
   props: {
-    foo: { type: null, required: true }
+    foo: { type: Foo, required: true }
   },
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
@@ -99,34 +100,34 @@ return "INLINE_RENDER"
 exports[`defineProps should escape names w/ special symbols 1`] = `
 "export default {
   props: {
-    "spa ce": { type: null, required: true },
-    "exclamation!mark": { type: null, required: true },
-    "double\\"quote": { type: null, required: true },
-    "hash#tag": { type: null, required: true },
-    "dollar$sign": { type: null, required: true },
-    "percentage%sign": { type: null, required: true },
-    "amper&sand": { type: null, required: true },
-    "single'quote": { type: null, required: true },
-    "round(brack)ets": { type: null, required: true },
-    "aste*risk": { type: null, required: true },
-    "pl+us": { type: null, required: true },
-    "com,ma": { type: null, required: true },
-    "do.t": { type: null, required: true },
-    "sla/sh": { type: null, required: true },
-    "co:lon": { type: null, required: true },
-    "semi;colon": { type: null, required: true },
-    "angle<brack>ets": { type: null, required: true },
-    "equal=sign": { type: null, required: true },
-    "question?mark": { type: null, required: true },
-    "at@sign": { type: null, required: true },
-    "square[brack]ets": { type: null, required: true },
-    "back\\\\slash": { type: null, required: true },
-    "ca^ret": { type: null, required: true },
-    "back\`tick": { type: null, required: true },
-    "curly{bra}ces": { type: null, required: true },
-    "pi|pe": { type: null, required: true },
-    "til~de": { type: null, required: true },
-    "da-sh": { type: null, required: true }
+    "spa ce": { type: Object, required: true },
+    "exclamation!mark": { type: Object, required: true },
+    "double\\"quote": { type: Object, required: true },
+    "hash#tag": { type: Object, required: true },
+    "dollar$sign": { type: Object, required: true },
+    "percentage%sign": { type: Object, required: true },
+    "amper&sand": { type: Object, required: true },
+    "single'quote": { type: Object, required: true },
+    "round(brack)ets": { type: Object, required: true },
+    "aste*risk": { type: Object, required: true },
+    "pl+us": { type: Object, required: true },
+    "com,ma": { type: Object, required: true },
+    "do.t": { type: Object, required: true },
+    "sla/sh": { type: Object, required: true },
+    "co:lon": { type: Object, required: true },
+    "semi;colon": { type: Object, required: true },
+    "angle<brack>ets": { type: Object, required: true },
+    "equal=sign": { type: Object, required: true },
+    "question?mark": { type: Object, required: true },
+    "at@sign": { type: Object, required: true },
+    "square[brack]ets": { type: Object, required: true },
+    "back\\\\slash": { type: Object, required: true },
+    "ca^ret": { type: Object, required: true },
+    "back\`tick": { type: Object, required: true },
+    "curly{bra}ces": { type: Object, required: true },
+    "pi|pe": { type: Object, required: true },
+    "til~de": { type: Object, required: true },
+    "da-sh": { type: Object, required: true }
   },
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
@@ -161,6 +162,7 @@ exports[`defineProps w/ exported interface 1`] = `
 "export interface Props { x?: number }
     
 export default {
+  __props: Props,
   props: {
     x: { type: Number, required: false }
   },
@@ -181,6 +183,7 @@ exports[`defineProps w/ exported interface in normal script 1`] = `
 "export interface Props { x?: number }
     
 export default {
+  __props: Props,
   props: {
     x: { type: Number, required: false }
   },
@@ -227,6 +230,7 @@ exports[`defineProps w/ extends interface 1`] = `
       interface Foo { x?: number }
     
 export default {
+  __props: Foo,
   props: {
     z: { type: Number, required: true },
     y: { type: String, required: true },
@@ -249,6 +253,7 @@ exports[`defineProps w/ interface 1`] = `
 "interface Props { x?: number }
     
 export default {
+  __props: Props,
   props: {
     x: { type: Number, required: false }
   },
@@ -294,41 +299,38 @@ export default {
     number: { type: Number, required: true },
     boolean: { type: Boolean, required: true },
     object: { type: Object, required: true },
-    objectLiteral: { type: Object, required: true },
-    fn: { type: Function, required: true },
+    fn: { type: Function as PropType<(n: number) => void>, required: true },
     functionRef: { type: Function, required: true },
     objectRef: { type: Object, required: true },
     dateTime: { type: Date, required: true },
-    array: { type: Array, required: true },
-    arrayRef: { type: Array, required: true },
-    tuple: { type: Array, required: true },
-    set: { type: Set, required: true },
+    array: { type: Array as PropType<string[]>, required: true },
+    arrayRef: { type: Array<any>, required: true },
+    tuple: { type: Array as PropType<[number, number]>, required: true },
+    set: { type: Set<string>, required: true },
     literal: { type: String, required: true },
-    optional: { type: null, required: false },
-    recordRef: { type: Object, required: true },
+    optional: { type: Object, required: false },
+    recordRef: { type: Record<string, null>, required: true },
     interface: { type: Object, required: true },
-    alias: { type: Array, required: true },
+    alias: { type: Array as PropType<number[]>, required: true },
     method: { type: Function, required: true },
     symbol: { type: Symbol, required: true },
     error: { type: Error, required: true },
-    extract: { type: Number, required: true },
-    exclude: { type: [Number, Boolean], required: true },
-    uppercase: { type: String, required: true },
-    params: { type: Array, required: true },
-    nonNull: { type: String, required: true },
-    objectOrFn: { type: [Function, Object], required: true },
+    extract: { type: Extract<1 | 2 | boolean, 2>, required: true },
+    exclude: { type: Exclude<1 | 2 | boolean, 2>, required: true },
+    uppercase: { type: Uppercase<'foo'>, required: true },
+    nonNull: { type: NonNullable<string | null>, required: true },
     union: { type: [String, Number], required: true },
     literalUnion: { type: String, required: true },
     literalUnionNumber: { type: Number, required: true },
     literalUnionMixed: { type: [String, Number, Boolean], required: true },
     intersection: { type: Object, required: true },
     intersection2: { type: String, required: true },
-    foo: { type: [Function, null], required: true },
-    unknown: { type: null, required: true },
-    unknownUnion: { type: null, required: true },
-    unknownIntersection: { type: Object, required: true },
-    unknownUnionWithBoolean: { type: Boolean, required: true, skipCheck: true },
-    unknownUnionWithFunction: { type: Function, required: true, skipCheck: true },
+    foo: { type: Function as PropType<(item: any) => boolean>, required: false },
+    unknown: { type: UnknownType, required: true },
+    unknownUnion: { type: [UnknownType, String], required: true },
+    unknownIntersection: { type: [UnknownType, Object], required: true },
+    unknownUnionWithBoolean: { type: [UnknownType, Boolean], required: true },
+    unknownUnionWithFunction: { type: [UnknownType, Function as PropType<() => any>], required: true },
     propType: { type: Object as PropType<()=>string>, required: true, skipCheck: true }
   },
   setup(__props: GenAnonymous) {
@@ -370,6 +372,7 @@ exports[`defineProps withDefaults (static) + normal script 1`] = `
       }
     
 export default {
+  __props: Props,
   props: {
     a: { type: String, required: false, default: "a" }
   },
@@ -394,7 +397,7 @@ exports[`defineProps withDefaults (static) 1`] = `
     baz: { type: Boolean, required: true },
     qux: { type: Function, required: false, default() { return 1 } },
     quux: { type: Function, required: false, default() { } },
-    quuxx: { type: Promise, required: false, async default() { return await Promise.resolve('hi') } },
+    quuxx: { type: Promise<string>, required: false, async default() { return await Promise.resolve('hi') } },
     fred: { type: String, required: false, get default() { return 'fred' } }
   },
   setup(__props: GenAnonymous) {
@@ -413,9 +416,9 @@ return "INLINE_RENDER"
 exports[`defineProps withDefaults (static) w/ production mode 1`] = `
 "export default {
   props: {
-    foo: { type: Function, required: true },
+    foo: { type: Function as PropType<() => void>, required: true },
     bar: { type: Boolean, required: true },
-    baz: { type: [Boolean, Function], required: true, default: true },
+    baz: { type: [Boolean, Function as PropType<() => void>], required: true, default: true },
     qux: { type: [String, Number], required: true, default: 'hi' }
   },
   setup(__props: GenAnonymous) {

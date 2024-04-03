@@ -83,7 +83,7 @@ export function processDefineModel(
   // register binding type
   ctx.bindingMetadata[modelName] = BindingTypes.PROPS
 
-  const runtimeTypes = type && inferRuntimeType(ctx, type)
+  const runtimeTypes = type && inferRuntimeType(ctx, type, 'defineModel')
   let runtimeType =
     runtimeTypes && runtimeTypes.length === 1 ? runtimeTypes[0] : undefined
 
@@ -146,7 +146,7 @@ export function genModelProps(ctx: ScriptCompileContext) {
   for (const [name, { type, options }] of Object.entries(ctx.modelDecls)) {
     let skipCheck = false
 
-    let runtimeTypes = type && inferRuntimeType(ctx, type)
+    let runtimeTypes = type && inferRuntimeType(ctx, type, 'defineModel')
     if (runtimeTypes) {
       const hasUnknownType = runtimeTypes.includes(UNKNOWN_TYPE)
 
