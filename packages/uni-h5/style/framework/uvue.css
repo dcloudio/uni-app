@@ -170,6 +170,10 @@ uni-app uni-sticky-header {
   justify-content: flex-start;
 }
 
+uni-app uni-sticky-header {
+  z-index: 1;
+}
+
 /* 此样式可被manifest.json内配置的flex-direction重置 */
 uni-app uni-page-body,
 uni-app uni-left-window .uni-left-window,
