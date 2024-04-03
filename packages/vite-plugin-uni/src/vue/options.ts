@@ -182,24 +182,21 @@ export function initPluginVueOptions(
   })
 
   if (!vueOptions.script.fs) {
+    function resolveFile(file: string) {
+      if (file.startsWith('@/')) {
+        file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
+      }
+      return file
+    }
     vueOptions.script.fs = {
       fileExists(file) {
-        if (file.startsWith('@/')) {
-          file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
-        }
-        return fsExtra.existsSync(file)
+        return fsExtra.existsSync(resolveFile(file))
       },
       readFile(file) {
-        if (file.startsWith('@/')) {
-          file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
-        }
-        return fsExtra.readFileSync(file, 'utf-8')
+        return fsExtra.readFileSync(resolveFile(file), 'utf-8')
       },
       realpath(file) {
-        if (file.startsWith('@/')) {
-          file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
-        }
-        return file
+        return resolveFile(file)
       },
     }
   }
