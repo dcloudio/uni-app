@@ -4,7 +4,7 @@ import { isInHBuilderX } from './env'
 import type { Formatter } from '../logs/format'
 
 const hbxPlugins = {
-  // typescript: 'compile-typescript/node_modules/typescript',
+  typescript: 'compile-typescript/node_modules/typescript',
   less: 'compile-less/node_modules/less',
   sass: 'compile-dart-sass/node_modules/sass',
   stylus: 'compile-stylus/node_modules/stylus',
@@ -134,6 +134,9 @@ export const moduleAliasFormatter: Formatter = {
     } else if (msg.includes('"stylus"')) {
       lang = 'stylus'
       preprocessor = 'compile-stylus'
+    } else if (msg.includes('"typescript"')) {
+      lang = 'typescript'
+      preprocessor = 'compile-typescript'
     }
     if (lang) {
       // 仅提醒一次

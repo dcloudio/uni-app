@@ -1,8 +1,10 @@
+import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type {
   SFCStyleCompileOptions,
   TemplateCompiler,
 } from '@vue/compiler-sfc'
+import { registerTS } from '@vue/compiler-sfc'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
   EXTNAME_VUE_RE,
@@ -16,6 +18,7 @@ import {
 
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
+import { resolveUniTypeScript } from '@dcloudio/uni-cli-shared'
 
 const pluginVuePath = require.resolve('@vitejs/plugin-vue')
 const normalizedPluginVuePath = normalizePath(pluginVuePath)
@@ -167,6 +170,38 @@ export function initPluginVueOptions(
   }
   if (!vueOptions.script) {
     vueOptions.script = {}
+  }
+
+  // TODO 目前暂不支持通过@/开头引入文件，因为需要tsconfig.json配置，建议使用相对路径
+  // https://github.com/vuejs/core/blob/main/packages/compiler-sfc/src/script/resolveType.ts#L911
+  registerTS(() => {
+    if (isX) {
+      return resolveUniTypeScript()
+    }
+    return require('typescript')
+  })
+
+  if (!vueOptions.script.fs) {
+    vueOptions.script.fs = {
+      fileExists(file) {
+        if (file.startsWith('@/')) {
+          file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
+        }
+        return fsExtra.existsSync(file)
+      },
+      readFile(file) {
+        if (file.startsWith('@/')) {
+          file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
+        }
+        return fsExtra.readFileSync(file, 'utf-8')
+      },
+      realpath(file) {
+        if (file.startsWith('@/')) {
+          file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
+        }
+        return file
+      },
+    }
   }
 
   if (isX) {
