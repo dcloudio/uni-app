@@ -4066,6 +4066,18 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
     watchEffect(() => {
       radioValue.value = props.value.toString();
     });
+    watch(() => radioChecked.value, (val) => {
+      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      if (!ctx2)
+        return;
+      if (val) {
+        $dispatch(ctx2, "RadioGroup", "_changeHandler", {
+          name: radioValue.value,
+          checked: radioChecked.value,
+          setRadioChecked
+        });
+      }
+    });
     expose({
       radioValue
     });
@@ -4099,18 +4111,6 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
       if (props.disabled || radioChecked.value)
         return;
       radioChecked.value = !radioChecked.value;
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(
-        ctx2,
-        "RadioGroup",
-        "_changeHandler",
-        // more info
-        {
-          name: radioValue.value,
-          checked: radioChecked.value,
-          setRadioChecked
-        }
-      );
     };
     return () => {
       var _slots$default;
