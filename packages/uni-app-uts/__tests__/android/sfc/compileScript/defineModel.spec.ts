@@ -130,7 +130,7 @@ describe('defineModel()', () => {
     expect(content).toMatch(
       '"disabled": { type: Number, ...{ required: false } }'
     )
-    expect(content).toMatch('"any": { type: Boolean, skipCheck: true }')
+    expect(content).toMatch('"any": { type: [Object, Boolean] }')
     expect(content).toMatch(
       'emits: ["update:modelValue", "update:count", "update:disabled", "update:any"]'
     )

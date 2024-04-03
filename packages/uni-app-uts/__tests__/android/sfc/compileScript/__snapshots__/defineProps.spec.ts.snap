@@ -331,7 +331,8 @@ export default {
     unknownIntersection: { type: [UnknownType, Object], required: true },
     unknownUnionWithBoolean: { type: [UnknownType, Boolean], required: true },
     unknownUnionWithFunction: { type: [UnknownType, Function as PropType<() => any>], required: true },
-    propType: { type: Object as PropType<()=>string>, required: true, skipCheck: true }
+    propType: { type: Object as PropType<()=>string>, required: true, skipCheck: true },
+    any: { type: Object, required: false }
   },
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;

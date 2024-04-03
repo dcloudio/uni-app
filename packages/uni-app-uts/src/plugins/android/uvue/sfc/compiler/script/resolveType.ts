@@ -1255,8 +1255,8 @@ export function inferRuntimeType(
 ): string[] {
   try {
     switch (node.type) {
-      // case 'TSAnyKeyword':
-      //   return []
+      case 'TSAnyKeyword':
+        return ['Object']
       case 'TSStringKeyword':
         return ['String']
       case 'TSNumberKeyword':
