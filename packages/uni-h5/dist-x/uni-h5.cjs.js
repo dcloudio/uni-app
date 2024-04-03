@@ -8808,7 +8808,10 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+      const query = instance.attrs.__pageQuery;
+      if (false)
+        ;
+      invokeHook(publicThis, uniShared.ON_LOAD, query);
       delete instance.attrs.__pageQuery;
       if (true) {
         if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {

@@ -16924,7 +16924,10 @@ function initHooks(options, instance2, publicThis) {
   if (mpType === "page") {
     instance2.__isVisible = true;
     try {
-      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
+      const query = instance2.attrs.__pageQuery;
+      if (false)
+        ;
+      invokeHook(publicThis, ON_LOAD, query);
       delete instance2.attrs.__pageQuery;
       if (true) {
         if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
