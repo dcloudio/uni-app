@@ -263,24 +263,25 @@ function resolveRuntimePropsFromType(
   for (const key in elements.props) {
     const e = elements.props[key]
     let type = parsePropType(ctx, e)
+
     let skipCheck = false
     if (type.length) {
       skipCheck = true
     } else {
-      type = inferRuntimeType(ctx, e)
+      type = inferRuntimeType(ctx, e, 'defineProps')
       // skip check for result containing unknown types
       if (type.includes(UNKNOWN_TYPE)) {
         if (type.includes('Boolean') || type.includes('Function')) {
           type = type.filter((t) => t !== UNKNOWN_TYPE)
           skipCheck = true
         } else {
-          type = ['null']
+          type = ['Object']
         }
       }
     }
 
     let hasNull = false
-    type = type || [`null`]
+    type = type || []
 
     if (isArray(type)) {
       if (type.find((t) => t === 'null')) {
