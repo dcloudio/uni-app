@@ -2882,7 +2882,7 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
-            "unixVer": "x"
+            "unixVer": "4.11"
           }
         },
         "web": {
@@ -2911,7 +2911,7 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "x"
+                "unixVer": "4.11"
               }
             },
             "web": {
@@ -2931,7 +2931,7 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
-            "unixVer": "x"
+            "unixVer": "4.11"
           }
         },
         "web": {
