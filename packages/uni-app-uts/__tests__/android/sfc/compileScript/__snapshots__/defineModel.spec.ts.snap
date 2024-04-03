@@ -100,7 +100,7 @@ exports[`defineModel() w/ types, basic usage 1`] = `
     "modelValue": { type: [Boolean, String] },
     "count": { type: Number },
     "disabled": { type: Number, ...{ required: false } },
-    "any": { type: Boolean, skipCheck: true },
+    "any": { type: [Object, Boolean] },
   },
   emits: ["update:modelValue", "update:count", "update:disabled", "update:any"],
   setup(__props: GenAnonymous) {

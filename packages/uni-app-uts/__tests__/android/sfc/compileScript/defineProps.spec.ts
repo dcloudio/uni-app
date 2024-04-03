@@ -132,6 +132,7 @@ const props = defineProps({ foo: String })
       unknownUnionWithFunction: UnknownType | (() => any)
 
       propType: PropType<()=>string>
+      any: any | null
 
     }>()
     </script>`)
@@ -214,6 +215,8 @@ const props = defineProps({ foo: String })
     expect(content).toMatch(
       `propType: { type: Object as PropType<()=>string>, required: true, skipCheck: true }`
     )
+    expect(content).toMatch(`any: { type: Object, required: false }`)
+
     expect(bindings).toStrictEqual({
       string: BindingTypes.PROPS,
       number: BindingTypes.PROPS,
@@ -255,6 +258,7 @@ const props = defineProps({ foo: String })
       unknownUnionWithBoolean: BindingTypes.PROPS,
       unknownUnionWithFunction: BindingTypes.PROPS,
       propType: BindingTypes.PROPS,
+      any: BindingTypes.PROPS,
     })
   })
 
