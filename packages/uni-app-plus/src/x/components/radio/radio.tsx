@@ -8,6 +8,7 @@ import {
   onUnmounted,
   getCurrentInstance,
   camelize,
+  watch,
 } from 'vue'
 import {
   RADIO_NAME,
@@ -104,6 +105,22 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       radioValue.value = props.value.toString()
     })
 
+    watch(
+      () => radioChecked.value,
+      (val) => {
+        const ctx = instance?.proxy
+        if (!ctx) return
+        if (val) {
+          // 通知 group 发生变化，需要携带当前的 name
+          $dispatch(ctx, 'RadioGroup', '_changeHandler', {
+            name: radioValue.value,
+            checked: radioChecked.value,
+            setRadioChecked,
+          })
+        }
+      }
+    )
+
     expose({
       radioValue,
     })
@@ -158,20 +175,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       // 只允许点击一次，从不选中到选中
       if (props.disabled || radioChecked.value) return
       radioChecked.value = !radioChecked.value
-
-      const ctx = instance?.proxy
-      // 通知 group 发生变化，需要携带当前的 name
-      $dispatch(
-        ctx,
-        'RadioGroup',
-        '_changeHandler',
-        // more info
-        {
-          name: radioValue.value,
-          checked: radioChecked.value,
-          setRadioChecked,
-        }
-      )
     }
     return () => {
       return (
