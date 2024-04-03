@@ -359,3 +359,18 @@ export const parseUniExtApiNamespacesJsOnce = once(
     return namespaces
   }
 )
+
+export function resolveUniTypeScript() {
+  if (isInHBuilderX()) {
+    return require(path.resolve(
+      process.env.UNI_HBUILDERX_PLUGINS,
+      'uniapp-uts-v1',
+      'node_modules',
+      '@dcloudio',
+      'uni-uts-v1',
+      'lib',
+      'typescript'
+    ))
+  }
+  return require('@dcloudio/uni-uts-v1/lib/typescript')
+}
