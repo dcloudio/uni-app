@@ -1606,7 +1606,7 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "x"
               }
             },
             "web": {
