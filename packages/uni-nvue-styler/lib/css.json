@@ -928,7 +928,7 @@
       },
       "defaultValue": {
         "uvue-app": "0",
-        "uvue-web": "auto",
+        "uvue-web": "0",
         "w3c": "auto"
       }
     },
