@@ -1,15 +1,16 @@
 import { isPromise } from '@vue/shared'
-import { ComponentPublicInstance } from 'vue'
-import { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { ComponentPublicInstance } from 'vue'
+import type { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
 import {
-  EventChannel,
+  ON_PAGE_SCROLL,
+  ON_PULL_DOWN_REFRESH,
+  ON_REACH_BOTTOM,
   ON_READY,
+  ON_RESIZE,
   ON_SHOW,
   ON_UNLOAD,
   formatLog,
-  ON_PULL_DOWN_REFRESH,
-  ON_RESIZE,
-  ON_REACH_BOTTOM,
 } from '@dcloudio/uni-shared'
 import {
   initPageInternalInstance,
@@ -21,7 +22,7 @@ import { genWebviewId } from '../../../service/framework/webview/utils'
 import { initRouteOptions } from '../../../service/framework/page/routeOptions'
 import { pagesMap } from '../../../service/framework/page/define'
 import { getVueApp } from '../../../service/framework/app/vueApp'
-import { VuePageComponent } from '../../../service/framework/page/define'
+import type { VuePageComponent } from '../../../service/framework/page/define'
 import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 
@@ -154,6 +155,10 @@ export function registerPage(
       invokeHook(page, ON_READY)
     })
 
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, arg)
+    })
+
     nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH)
     })
@@ -194,8 +199,7 @@ function createVuePage(
         __pageQuery,
         __pageInstance,
       },
-      // @ts-ignore
-      pageNode
+      pageNode as unknown as UniNode
     )
   if (isPromise(component)) {
     return component.then((component) => mountPage(component))
