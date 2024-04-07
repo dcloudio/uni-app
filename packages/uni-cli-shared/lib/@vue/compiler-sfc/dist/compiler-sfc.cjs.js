@@ -18397,7 +18397,10 @@ function importSourceToScope(ctx, node, scope, source) {
     } else if (source.startsWith(".")) {
       const filename = joinPaths(path$3.dirname(scope.filename), source);
       resolved = resolveExt(filename, fs);
-    } else {
+	  // fixed by xxxxxx
+    } else if(process.env.UNI_INPUT_DIR && source.startsWith("@/")) {
+	  resolved = resolveExt(joinPaths(process.env.UNI_INPUT_DIR, source.replace("@/", "")), fs);
+	} else {
       if (!ts) {
         if (loadTS)
           ts = loadTS();
@@ -18539,7 +18542,8 @@ function fileToScope(ctx, filename, asGlobal = false) {
 }
 function parseFile(filename, content, parserPlugins) {
   const ext = path$3.extname(filename);
-  if (ext === ".ts" || ext === ".tsx") {
+  // fixed by xxxxxx
+  if (ext === ".uts" || ext === ".ts" || ext === ".tsx") {
     return parser$1.parse(content, {
       plugins: resolveParserPlugins(
         ext.slice(1),
@@ -18548,7 +18552,8 @@ function parseFile(filename, content, parserPlugins) {
       ),
       sourceType: "module"
     }).program.body;
-  } else if (ext === ".vue") {
+	// fixed by xxxxxx
+  } else if (ext === ".vue" || ext === ".uvue" || ext === ".nvue") {
     const {
       descriptor: { script, scriptSetup }
     } = parse$2(content);
