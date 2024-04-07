@@ -22,6 +22,7 @@ uni-app uni-left-window .uni-left-window,
 uni-app uni-right-window .uni-right-window {
   height: 100%;
 }
+
 uni-app.uni-app--showtabbar uni-page-body::after {
   content: '';
   display: block;
@@ -257,4 +258,101 @@ uni-app .uni-textarea-textarea {
 /* 覆盖 video 的 poster 背景 */
 uni-app .uni-video-cover {
   background-color: unset;
+}
+
+/**
+ * 界面相关api样式
+ */
+body .uni-toast {
+  width: 120px;
+  height: 120px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  background-color: #4c4c4c;
+}
+
+body .uni-toast__icon {
+  margin: 8px 0px;
+}
+
+body .uni-toast__content {
+  margin: 0px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.8)
+}
+
+body .uni-modal {
+  border-radius: 12px;
+}
+
+body .uni-modal__hd {
+  padding: 32px 24px 16px;
+}
+
+body .weui-dialog__title {
+  font-weight: 700;
+  font-size: 17px;
+  line-height: 1.4;
+  -webkit-line-clamp: unset;
+}
+
+body .uni-modal__bd {
+  font-size: 17px;
+  padding: 0 24px;
+  margin-bottom: 32px;
+  min-height: unset;
+  max-height: 300px;
+  overflow: hidden auto;
+  hyphens: auto;
+}
+
+body .uni-modal__ft {
+  line-height: 56px;
+  font-size: 17px;
+}
+
+body .uni-modal__btn {
+  font-weight: 700;
+}
+
+body .uni-modal__btn_primary {
+  color: #576b95;
+}
+
+body .uni-actionsheet {
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  border-top-left-radius: 12px;
+  border-top-right-radius: 12px;
+  background-color: #f7f7f7;
+  overflow: hidden;
+}
+
+body .uni-actionsheet__menu {
+  border-radius: 0px;
+  background-color: #ffffff;
+}
+
+body .uni-actionsheet__action {
+  border-radius: 0px;
+  margin-top: 8px;
+}
+
+body .uni-actionsheet__cell,
+body .uni-actionsheet__title {
+  padding: 16px;
+  line-height: 24px;
+}
+
+body .uni-actionsheet__cell {
+  font-size: 17px;
+}
+
+body .uni-actionsheet__title {
+  font-size: 14px;
+  color: #747474;
 }

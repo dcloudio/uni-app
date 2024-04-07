@@ -53,7 +53,13 @@ const props = {
   },
   confirmColor: {
     type: String,
+    //#if _X_
+    default: '#576b95',
+    //#endif
+    //#if !_X_
+    // @ts-ignore
     default: '#007aff',
+    //#endif
   },
   visible: {
     type: Boolean,
