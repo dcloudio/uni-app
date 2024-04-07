@@ -1,8 +1,9 @@
 import path from 'path'
 import { type Node } from '@babel/types'
 import { ExpressionNode, createSimpleExpression } from '@vue/compiler-core'
-import { MagicString, walk } from '@vue/compiler-sfc'
+import { walk } from 'estree-walker'
 import { parseExpression } from '@babel/parser'
+import MagicString from 'magic-string'
 import {
   genUTSComponentPublicInstanceIdent,
   genUTSComponentPublicInstanceImported,

@@ -12,7 +12,7 @@ const hbxPlugins = {
 } as const
 
 export function initModuleAlias() {
-  const compilerSfcPath = require.resolve('@vue/compiler-sfc')
+  const compilerSfcPath = path.resolve(__dirname, '../../lib/@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
   moduleAlias.addAliases({
     '@vue/shared': require.resolve('@vue/shared'),

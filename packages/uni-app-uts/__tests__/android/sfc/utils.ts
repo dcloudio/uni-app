@@ -1,4 +1,4 @@
-import { parse, SFCParseOptions } from '@vue/compiler-sfc'
+import type { SFCParseOptions } from '@vue/compiler-sfc'
 import { parse as babelParse } from '@babel/parser'
 
 import {
@@ -16,7 +16,7 @@ export function compileSFCScript(
   parseOptions?: SFCParseOptions
 ) {
   const className = 'GenAnonymous'
-  const { descriptor } = parse(src, parseOptions)
+  const { descriptor } = require('@vue/compiler-sfc').parse(src, parseOptions)
   const result = compileScript(descriptor, {
     ...options,
     id: mockId,
