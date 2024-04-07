@@ -15540,12 +15540,13 @@ class ScriptCompileContext {
     const plugins = resolveParserPlugins(
       scriptLang || scriptSetupLang,
       options.babelParserPlugins
-    );
-    function parse(input, offset) {
+    );// fixed by xxxxxx
+    function parse(input, offset, startLine) {
       try {
         return parser$1.parse(input, {
           plugins,
-          sourceType: "module"
+          sourceType: "module",
+		  startLine,
         }).program;
       } catch (e) {
         e.message = `[vue/compiler-sfc] ${e.message}
@@ -15559,8 +15560,8 @@ ${shared.generateCodeFrame(
         throw e;
       }
     }
-    this.scriptAst = descriptor.script && parse(descriptor.script.content, descriptor.script.loc.start.offset);
-    this.scriptSetupAst = descriptor.scriptSetup && parse(descriptor.scriptSetup.content, this.startOffset);
+    this.scriptAst = descriptor.script && parse(descriptor.script.content, descriptor.script.loc.start.offset, descriptor.script.loc.start.line);// fixed by xxxxxx
+    this.scriptSetupAst = descriptor.scriptSetup && parse(descriptor.scriptSetup.content, this.startOffset, descriptor.scriptSetup.loc.start.line);// fixed by xxxxxx
   }
   helper(key) {
     this.helperImports.add(key);

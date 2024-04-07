@@ -88,11 +88,12 @@ export class ScriptCompileContext {
       options.babelParserPlugins
     )
 
-    function parse(input: string, offset: number): Program {
+    function parse(input: string, offset: number, startLine: number): Program {
       try {
         return babelParse(input, {
           plugins,
           sourceType: 'module',
+          startLine,
         }).program
       } catch (e: any) {
         e.message = `[vue/compiler-sfc] ${e.message}\n\n${
@@ -108,11 +109,19 @@ export class ScriptCompileContext {
 
     this.scriptAst =
       descriptor.script &&
-      parse(descriptor.script.content, descriptor.script.loc.start.offset)
+      parse(
+        descriptor.script.content,
+        descriptor.script.loc.start.offset,
+        descriptor.script.loc.start.line
+      )
 
     this.scriptSetupAst =
       descriptor.scriptSetup &&
-      parse(descriptor.scriptSetup!.content, this.startOffset!)
+      parse(
+        descriptor.scriptSetup!.content,
+        this.startOffset!,
+        descriptor.scriptSetup.loc.start.line
+      )
   }
 
   getString(node: Node, scriptSetup = true): string {
