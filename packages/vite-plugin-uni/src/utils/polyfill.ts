@@ -7,7 +7,7 @@ import {
   normalizePath,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
-import { SFCParseOptions } from '@vue/compiler-sfc'
+import type { SFCParseOptions } from '@vue/compiler-sfc'
 import { Plugin } from 'vite'
 import { isString } from '@vue/shared'
 /**

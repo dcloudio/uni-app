@@ -1,4 +1,4 @@
-import { SFCDescriptor } from '@vue/compiler-sfc'
+import type { SFCDescriptor } from '@vue/compiler-sfc'
 
 export function genScript(
   { script }: SFCDescriptor,

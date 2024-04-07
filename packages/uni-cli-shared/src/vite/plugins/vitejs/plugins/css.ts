@@ -5,6 +5,7 @@ import glob from 'fast-glob'
 import colors from 'picocolors'
 import postcssrc from 'postcss-load-config'
 import { dataToEsm } from '@rollup/pluginutils'
+import type { SFCDescriptor } from '@vue/compiler-sfc'
 import {
   EmittedAsset,
   ExistingRawSourceMap,
@@ -47,7 +48,7 @@ import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
 import { createRollupError } from '../../../utils/utils'
 import { createCompilerError } from '@vue/compiler-core'
 import { createResolveErrorMsg } from '../../../../utils'
-import { SFCDescriptor } from '@vue/compiler-sfc'
+
 import { parseVueRequest } from '../../../utils'
 // const debug = createDebugger('vite:css')
 

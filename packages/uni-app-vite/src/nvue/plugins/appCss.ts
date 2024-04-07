@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import type { PluginContext } from 'rollup'
 import fs from 'fs-extra'
-import { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
+import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import {
   createRollupError,
   hash,

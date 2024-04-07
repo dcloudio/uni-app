@@ -18,7 +18,7 @@ import {
 import { walk } from 'estree-walker'
 import type { RawSourceMap } from 'source-map-js'
 import { processNormalScript } from './script/normalScript'
-import { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
+import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { warnOnce } from './warn'
 import { ScriptCompileContext } from './script/context'
 import {

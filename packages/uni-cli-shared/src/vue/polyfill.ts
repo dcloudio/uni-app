@@ -1,6 +1,6 @@
 import { once } from '@dcloudio/uni-shared'
 
-import {
+import type {
   SFCDescriptor,
   SFCScriptBlock,
   SFCScriptCompileOptions,

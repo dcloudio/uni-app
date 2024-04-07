@@ -1,7 +1,7 @@
 import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
-import {
+import type {
   SFCAsyncStyleCompileOptions,
   SFCDescriptor,
   SFCParseOptions,

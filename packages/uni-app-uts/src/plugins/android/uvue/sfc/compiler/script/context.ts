@@ -5,7 +5,7 @@ import {
   Program,
   TSInterfaceDeclaration,
 } from '@babel/types'
-import { SFCDescriptor } from '@vue/compiler-sfc'
+import type { SFCDescriptor } from '@vue/compiler-sfc'
 import { generateCodeFrame } from '@vue/shared'
 import { parse as babelParse, ParserPlugin } from '@babel/parser'
 import { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
