@@ -6,7 +6,7 @@ import { once } from '@dcloudio/uni-shared'
 
 import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
 import { parseVueRequest } from '../../utils'
-import { getUniExtApiProviders, parseUTSModuleDeps } from '../../../uni_modules'
+import { getUniExtApiPlugins, parseUTSModuleDeps } from '../../../uni_modules'
 
 const UTSProxyRE = /\?uts-proxy$/
 function isUTSProxy(id: string) {
@@ -89,8 +89,8 @@ export function uniUTSUniModulesPlugin(
   }
 
   uniExtApiCompiler = async () => {
-    // 获取 provider 扩展
-    const plugins = getUniExtApiProviders().filter(
+    // 获取 provider 扩展(编译所有uni)
+    const plugins = getUniExtApiPlugins().filter(
       (provider) => !utsPlugins.has(provider.plugin)
     )
     for (const plugin of plugins) {
@@ -182,7 +182,7 @@ export function uniUTSUniModulesPlugin(
   }
 }
 
-export async function buildUniExtApiProviders() {
+export async function buildUniExtApis() {
   await uniExtApiCompiler()
 }
 
