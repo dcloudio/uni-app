@@ -1,12 +1,12 @@
 import { hasOwn } from '@vue/shared'
 import {
-  MPComponentInstance,
-  MPComponentOptions,
-  initMocks,
-  handleEvent,
-  nextSetDataTick,
+  type MPComponentInstance,
+  type MPComponentOptions,
   fixSetDataEnd,
   fixSetDataStart,
+  handleEvent,
+  initMocks,
+  nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 import { ON_INIT, ON_LOAD, ON_SHOW } from '@dcloudio/uni-shared'
 

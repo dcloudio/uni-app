@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { handleEvent, MPComponentOptions } from '@dcloudio/uni-mp-core'
+import { type MPComponentOptions, handleEvent } from '@dcloudio/uni-mp-core'
 import * as baseParseOptions from '@dcloudio/uni-mp-weixin/src/runtime/parseOptions'
 
 export function parse(pageOptions: MPComponentOptions) {

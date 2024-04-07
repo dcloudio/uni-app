@@ -1,23 +1,23 @@
 import {
-  createCompoundExpression,
-  DirectiveNode,
-  isSlotOutlet,
+  type DirectiveNode,
   NodeTypes,
+  createCompoundExpression,
+  isSlotOutlet,
 } from '@vue/compiler-core'
 
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 import { ATTR_VUE_SLOTS, rewriteExpression } from './utils'
 import {
+  createVirtualHostClass,
   findStaticClassIndex,
   isClassBinding,
   rewriteClass,
-  createVirtualHostClass,
 } from './transformClass'
 import {
+  createVirtualHostStyle,
   findStaticStyleIndex,
   isStyleBinding,
   rewriteStyle,
-  createVirtualHostStyle,
 } from './transformStyle'
 import { TO_DISPLAY_STRING } from '../runtimeHelpers'
 import { rewriteSlot } from './transformSlot'

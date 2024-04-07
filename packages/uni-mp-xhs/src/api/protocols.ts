@@ -1,9 +1,9 @@
 import {
-  redirectTo,
   navigateTo as _navigateTo,
-  previewImage,
   getSystemInfo,
   getSystemInfoSync,
+  previewImage,
+  redirectTo,
 } from '@dcloudio/uni-mp-core'
 
 export { redirectTo, previewImage, getSystemInfo, getSystemInfoSync }

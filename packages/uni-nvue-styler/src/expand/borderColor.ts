@@ -1,5 +1,5 @@
 import { capitalize, hyphenate } from '@vue/shared'
-import { createDecl, TransformDecl } from '../utils'
+import { type TransformDecl, createDecl } from '../utils'
 
 const borderTop = __NODE_JS__ ? 'border-top-' : 'borderTop'
 const borderRight = __NODE_JS__ ? 'border-right-' : 'borderRight'

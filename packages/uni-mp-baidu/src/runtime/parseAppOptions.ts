@@ -1,6 +1,6 @@
-import {
-  MiniProgramAppOptions,
+import type {
   MiniProgramAppInstance,
+  MiniProgramAppOptions,
 } from '@dcloudio/uni-mp-core'
 import { ON_SHOW } from '@dcloudio/uni-shared'
 

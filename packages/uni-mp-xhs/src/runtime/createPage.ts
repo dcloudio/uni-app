@@ -1,30 +1,30 @@
 import {
-  ComponentOptions,
-  // @ts-ignore
+  type ComponentOptions,
+  // @ts-expect-error
   devtoolsComponentAdded,
 } from 'vue'
 
 import {
+  $destroyComponent,
   PAGE_INIT_HOOKS,
+  handleEvent,
   initData,
   initHooks,
-  initUnknownHooks,
-  $destroyComponent,
-  initWxsCallMethods,
   initRuntimeHooks,
-  handleEvent,
+  initUnknownHooks,
+  initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 
 import {
-  addLeadingSlash,
   ON_LOAD,
-  ON_SHOW,
   ON_READY,
+  ON_SHOW,
   ON_UNLOAD,
+  addLeadingSlash,
   stringifyQuery,
 } from '@dcloudio/uni-shared'
 
-import { handleLink, initSpecialMethods, createVueComponent } from './util'
+import { createVueComponent, handleLink, initSpecialMethods } from './util'
 
 import { extend, isPlainObject } from '@vue/shared'
 

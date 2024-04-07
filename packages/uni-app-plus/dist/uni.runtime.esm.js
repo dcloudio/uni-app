@@ -1730,7 +1730,7 @@ function addEventListener(pageId, callback) {
         }
     }
     else {
-        // @ts-ignore
+        // @ts-expect-error
         window.__plusMessage = onPlusMessage$1;
     }
     callbacks$3[pageId] = callback;

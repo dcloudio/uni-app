@@ -7,12 +7,12 @@ import type {
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
   EXTNAME_VUE_RE,
-  UniVitePlugin,
-  uniPostcssScopedPlugin,
+  type UniVitePlugin,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   isExternalUrl,
   normalizePath,
+  uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'

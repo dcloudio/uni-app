@@ -1,6 +1,6 @@
 import {
+  type BinaryExpression,
   binaryExpression,
-  BinaryExpression,
   callExpression,
   identifier,
   objectExpression,
@@ -9,25 +9,25 @@ import {
 } from '@babel/types'
 import { isString } from '@vue/shared'
 import {
-  ComponentNode,
-  CompoundExpressionNode,
+  type ComponentNode,
+  type CompoundExpressionNode,
+  type DirectiveNode,
+  ElementTypes,
+  ErrorCodes,
+  type ExpressionNode,
+  NodeTypes,
+  type TemplateChildNode,
+  type TemplateNode,
   createCompilerError,
   createCompoundExpression,
   createSimpleExpression,
-  DirectiveNode,
-  ElementTypes,
-  ErrorCodes,
-  ExpressionNode,
   findDir,
   findProp,
   isStaticExp,
   isTemplateNode,
   locStub,
-  NodeTypes,
-  TemplateChildNode,
-  TemplateNode,
 } from '@vue/compiler-core'
-import { dynamicSlotName, SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
+import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
   createBindDirectiveNode,
   isUserComponent,
@@ -35,14 +35,18 @@ import {
 import { WITH_SCOPED_SLOT } from '../runtimeHelpers'
 import { parseExpr } from '../ast'
 import { genExpr } from '../codegen'
-import { CodegenScope, CodegenVForScope } from '../options'
-import { isVForScope, NodeTransform, TransformContext } from '../transform'
+import type { CodegenScope, CodegenVForScope } from '../options'
+import {
+  type NodeTransform,
+  type TransformContext,
+  isVForScope,
+} from '../transform'
 import {
   ATTR_VUE_ID,
   ATTR_VUE_SLOTS,
+  SCOPED_SLOT_IDENTIFIER,
   rewriteExpression,
   rewriteExpressionWithoutProperty,
-  SCOPED_SLOT_IDENTIFIER,
 } from './utils'
 import { createVForArrowFunctionExpression } from './vFor'
 import { DYNAMIC_SLOT } from '../runtimeHelpers'

@@ -1,6 +1,6 @@
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { normalizePath } from '@dcloudio/uni-cli-shared'
-import { VitePluginUniResolvedOptions } from '..'
+import type { VitePluginUniResolvedOptions } from '..'
 
 export function createResolveId(
   options: VitePluginUniResolvedOptions

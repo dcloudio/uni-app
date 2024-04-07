@@ -914,7 +914,7 @@ function initInjections(instance) {
     }
 }
 
-// @ts-ignore
+// @ts-expect-error
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {
     function attached() {
         initSetRef(this);

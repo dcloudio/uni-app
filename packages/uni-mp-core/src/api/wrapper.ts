@@ -1,13 +1,13 @@
-import { isFunction, isString, hasOwn, isPlainObject } from '@vue/shared'
+import { hasOwn, isFunction, isPlainObject, isString } from '@vue/shared'
 
-import {
-  MPProtocols,
-  MPProtocolArgsValue,
+import type {
   MPProtocolArgs,
+  MPProtocolArgsValue,
   MPProtocolObject,
+  MPProtocols,
 } from './protocols'
 
-import { isSyncApi, isContextApi } from './promise'
+import { isContextApi, isSyncApi } from './promise'
 
 const CALLBACKS = ['success', 'fail', 'cancel', 'complete']
 

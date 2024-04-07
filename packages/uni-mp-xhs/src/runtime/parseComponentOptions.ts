@@ -1,6 +1,6 @@
 import {
-  MPComponentInstance,
-  MPComponentOptions,
+  type MPComponentInstance,
+  type MPComponentOptions,
   handleEvent,
 } from '@dcloudio/uni-mp-core'
 import { handleLink } from '@dcloudio/uni-mp-weixin'

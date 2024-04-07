@@ -7,9 +7,9 @@ import {
   parseManifestJsonOnce,
   parsePagesJsonOnce,
 } from '@dcloudio/uni-cli-shared'
-import { CliOptions } from '.'
+import type { CliOptions } from '.'
 import { addConfigFile, cleanOptions } from './utils'
-import { RollupWatcher, RollupWatcherEvent } from 'rollup'
+import type { RollupWatcher, RollupWatcherEvent } from 'rollup'
 
 export async function buildByVite(inlineConfig: InlineConfig) {
   return import('vite').then(({ build }) => build(inlineConfig))

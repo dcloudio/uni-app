@@ -1,8 +1,8 @@
-import { existsSync, readFileSync, statSync, outputFileSync } from 'fs-extra'
+import { existsSync, outputFileSync, readFileSync, statSync } from 'fs-extra'
 import { join } from 'path'
 import md5 from 'md5-file'
 import glob from 'fast-glob'
-import { APP_PLATFORM } from './utils'
+import type { APP_PLATFORM } from './utils'
 
 const fileCaches = new Map<
   string,

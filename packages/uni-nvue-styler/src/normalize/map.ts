@@ -1,6 +1,11 @@
-import { NormalizeOptions, supportedEnumReason } from '../utils'
+import { type NormalizeOptions, supportedEnumReason } from '../utils'
 import { camelize } from '@vue/shared'
-import { CssJSON, Normalize, Property, Restriction } from '../utils'
+import {
+  type CssJSON,
+  type Normalize,
+  type Property,
+  Restriction,
+} from '../utils'
 import { normalizeColor } from './color'
 import { createEnumNormalize, createEnumNormalizeWithPlatform } from './enum'
 import { normalizeFlexWrap } from './flexWrap'

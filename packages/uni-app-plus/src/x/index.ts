@@ -1,8 +1,8 @@
 import * as uni from './api/index'
-import { getApp, registerApp as __registerApp, initApp } from './framework/app'
+import { registerApp as __registerApp, getApp, initApp } from './framework/app'
 import {
-  getCurrentPages,
   definePage as __definePage,
+  getCurrentPages,
 } from '../service/framework/page'
 import * as components from './components'
 

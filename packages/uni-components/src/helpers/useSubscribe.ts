@@ -1,9 +1,9 @@
 import {
-  watch,
-  onMounted,
-  onBeforeUnmount,
+  type ComponentPublicInstance,
   getCurrentInstance,
-  ComponentPublicInstance,
+  onBeforeUnmount,
+  onMounted,
+  watch,
 } from 'vue'
 import {
   getCurrentPageId,

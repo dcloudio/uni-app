@@ -1,4 +1,4 @@
-import { Normalize, normalizeReasons } from '../utils'
+import { type Normalize, normalizeReasons } from '../utils'
 
 export function createCombinedNormalize(normalizes: Normalize[]): Normalize {
   return (v, options) => {

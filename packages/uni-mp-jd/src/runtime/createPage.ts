@@ -1,20 +1,20 @@
-import { ComponentOptions } from 'vue'
+import type { ComponentOptions } from 'vue'
 
-import { addLeadingSlash, ON_LOAD, stringifyQuery } from '@dcloudio/uni-shared'
+import { ON_LOAD, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared'
 
 import {
+  type CustomComponentInstanceProperty,
   parseComponent,
-  CustomComponentInstanceProperty,
 } from './createComponent'
 
 import {
   PAGE_INIT_HOOKS,
+  type ParseComponentOptions,
   initHooks,
-  initUnknownHooks,
-  initRuntimeHooks,
   initMixinRuntimeHooks,
   initPageProps,
-  ParseComponentOptions,
+  initRuntimeHooks,
+  initUnknownHooks,
 } from '@dcloudio/uni-mp-core'
 
 function parsePage(

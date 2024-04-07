@@ -1,5 +1,5 @@
-import { UserConfig } from 'vite'
-import { VitePluginUniResolvedOptions } from '..'
+import type { UserConfig } from 'vite'
+import type { VitePluginUniResolvedOptions } from '..'
 
 export function createOptimizeDeps(
   _options: VitePluginUniResolvedOptions

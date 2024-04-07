@@ -1,10 +1,14 @@
 import type { ComponentInternalInstance } from '@vue/runtime-core'
 import { extend } from '@vue/shared'
 
-import { UniElement } from './Element'
+import type { UniElement } from './Element'
 import { DOMException } from './DOMException'
-import { normalizeEventType, UniEventListener, UniEventTarget } from './Event'
-import { UniCSSStyleDeclarationJSON } from './Style'
+import {
+  type UniEventListener,
+  UniEventTarget,
+  normalizeEventType,
+} from './Event'
+import type { UniCSSStyleDeclarationJSON } from './Style'
 import { encodeModifier } from './encode'
 
 export const NODE_TYPE_PAGE = 0

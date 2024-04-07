@@ -1,4 +1,4 @@
-import { NUM_REGEXP, Normalize, supportedEnumReason } from '../utils'
+import { NUM_REGEXP, type Normalize, supportedEnumReason } from '../utils'
 
 export const normalizeTimingFunction: Normalize = (v) => {
   v = (v || '').toString()

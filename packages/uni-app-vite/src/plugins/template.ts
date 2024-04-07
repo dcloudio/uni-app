@@ -1,6 +1,6 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { templateDir } from '../utils'
 import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
 

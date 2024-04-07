@@ -2,17 +2,17 @@ import fs from 'fs'
 import path from 'path'
 import colors from 'picocolors'
 import { extend } from '@vue/shared'
-import { RollupWatcher } from 'rollup'
-import { createLogger, type BuildOptions, type ServerOptions } from 'vite'
+import type { RollupWatcher } from 'rollup'
+import { type BuildOptions, type ServerOptions, createLogger } from 'vite'
 import {
   APP_CONFIG_SERVICE,
   APP_SERVICE_FILENAME,
   M,
   output,
 } from '@dcloudio/uni-cli-shared'
-import { CliOptions } from '.'
+import type { CliOptions } from '.'
 import { build, buildSSR } from './build'
-import { createServer, createSSRServer } from './server'
+import { createSSRServer, createServer } from './server'
 import {
   type PLATFORM,
   initEnv,
@@ -21,7 +21,7 @@ import {
 } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { runUVueAndroidBuild, runUVueAndroidDev } from './uvue'
-import { FSWatcher } from 'chokidar'
+import type { FSWatcher } from 'chokidar'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, {

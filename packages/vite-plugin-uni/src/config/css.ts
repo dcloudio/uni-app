@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { UserConfig } from 'vite'
-import { VitePluginUniResolvedOptions } from '..'
+import type { UserConfig } from 'vite'
+import type { VitePluginUniResolvedOptions } from '..'
 import { preCss } from '@dcloudio/uni-cli-shared'
 
 function resolveAdditionalData(inputDir: string, config: UserConfig) {

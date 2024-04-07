@@ -2,7 +2,7 @@ import { hasOwn, isFunction } from '@vue/shared'
 
 import { initGetProvider } from '@dcloudio/uni-mp-core'
 
-import { $on, $off } from '@dcloudio/uni-api/src/service/base/eventBus'
+import { $off, $on } from '@dcloudio/uni-api/src/service/base/eventBus'
 
 let onKeyboardHeightChangeCallback: undefined | ((result: any) => void)
 

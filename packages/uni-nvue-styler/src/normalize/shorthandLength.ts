@@ -1,5 +1,5 @@
 import { isFunction } from '@vue/shared'
-import { Normalize } from '../utils'
+import type { Normalize } from '../utils'
 import { normalizeLength } from './length'
 
 export const normalizeShorthandLength: Normalize = (v, options) => {

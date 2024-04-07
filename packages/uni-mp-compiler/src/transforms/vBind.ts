@@ -1,13 +1,13 @@
 import { camelize } from '@vue/shared'
 import {
+  ErrorCodes,
   NodeTypes,
   createCompilerError,
-  ErrorCodes,
   createObjectProperty,
   createSimpleExpression,
 } from '@vue/compiler-core'
-import { DirectiveTransform } from '../transform'
-import { createMPCompilerError, MPErrorCodes } from '../errors'
+import type { DirectiveTransform } from '../transform'
+import { MPErrorCodes, createMPCompilerError } from '../errors'
 
 export const transformBind: DirectiveTransform = (dir, _node, context) => {
   const { exp, modifiers, loc } = dir

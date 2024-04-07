@@ -988,7 +988,6 @@ function removeStyle(id2) {
   let style = sheetsMap.get(id2);
   if (style) {
     if (style instanceof CSSStyleSheet) {
-      document.adoptedStyleSheets.indexOf(style);
       document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
         (s) => s !== style
       );
@@ -11388,7 +11387,6 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -21401,6 +21399,7 @@ const props$6 = {
   },
   confirmColor: {
     type: String,
+    // @ts-ignore
     default: "#007aff"
   },
   visible: {

@@ -3,14 +3,14 @@ import fs from 'fs'
 import path from 'path'
 import type { Plugin, ResolvedConfig, ServerOptions } from 'vite'
 import {
-  isInHBuilderX,
-  normalizePath,
   getDevServerOptions,
-  resolveMainPathOnce,
-  parseManifestJsonOnce,
   initPostcssPlugin,
-  parseRpx2UnitOnce,
+  isInHBuilderX,
   isSsr,
+  normalizePath,
+  parseManifestJsonOnce,
+  parseRpx2UnitOnce,
+  resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import { createDefine } from '../utils'
 import { esbuildPrePlugin } from './esbuild/esbuildPrePlugin'

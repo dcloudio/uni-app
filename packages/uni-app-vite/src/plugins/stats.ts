@@ -1,4 +1,4 @@
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { hash } from '@dcloudio/uni-cli-shared'
 
 const emittedHashMap = new WeakMap<ResolvedConfig, Map<string, string>>()

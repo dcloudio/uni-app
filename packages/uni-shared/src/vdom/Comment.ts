@@ -1,5 +1,5 @@
-import { UniElement } from './Element'
-import { IUniPageNode, NODE_TYPE_COMMENT, UniNode } from './Node'
+import type { UniElement } from './Element'
+import { type IUniPageNode, NODE_TYPE_COMMENT, UniNode } from './Node'
 
 export class UniCommentNode extends UniNode {
   constructor(text: string, container: UniElement | IUniPageNode) {

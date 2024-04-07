@@ -1,9 +1,9 @@
 import {
-  parseManifestJsonOnce,
-  getAppRenderer,
   getAppCodeSpliting,
+  getAppRenderer,
   getNVueCompiler,
   getNVueStyleCompiler,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 export function initNVueEnv() {

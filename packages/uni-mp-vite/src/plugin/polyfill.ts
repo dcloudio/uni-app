@@ -65,7 +65,6 @@ function rewriteCompileScript() {
  * 重写 parse，解决相同内容被缓存，未触发 template 编译的问题
  */
 function rewriteCompilerSfcParse() {
-  // @ts-ignore
   const compilerSfc = require(resolveBuiltIn('@vue/compiler-sfc'))
   const { parse } = compilerSfc
   compilerSfc.parse = (

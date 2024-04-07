@@ -1,19 +1,19 @@
 import {
-  ConditionalExpression,
+  type ConditionalExpression,
+  type ObjectExpression,
   isConditionalExpression,
   isSpreadElement,
-  ObjectExpression,
 } from '@babel/types'
 import {
+  type DirectiveNode,
+  type ElementNode,
+  ErrorCodes,
+  type IfBranchNode,
+  type IfNode,
+  NodeTypes,
+  type SimpleExpressionNode,
   createCompilerError,
   createSimpleExpression,
-  DirectiveNode,
-  ElementNode,
-  ErrorCodes,
-  IfBranchNode,
-  IfNode,
-  NodeTypes,
-  SimpleExpressionNode,
 } from '@vue/compiler-core'
 import {
   createObjectExpression,
@@ -21,11 +21,11 @@ import {
   createVIfSpreadElement,
   parseExpr,
 } from '../ast'
-import { CodegenScope } from '../options'
+import type { CodegenScope } from '../options'
 import {
+  type NodeTransform,
+  type TransformContext,
   createStructuralDirectiveTransform,
-  NodeTransform,
-  TransformContext,
   traverseNode,
 } from '../transform'
 import { processExpression } from './transformExpression'

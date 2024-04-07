@@ -1,7 +1,7 @@
-import {
-  PropType,
-  ExtractPropTypes,
+import type {
   ComponentInternalInstance,
+  ExtractPropTypes,
+  PropType,
   WritableComputedRef,
 } from 'vue'
 import { isArray } from '@vue/shared'

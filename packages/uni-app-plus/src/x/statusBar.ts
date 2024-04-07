@@ -1,6 +1,6 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { ComponentPublicInstance } from 'vue'
-import { UniPage } from '@dcloudio/uni-app-x/types/native'
+import type { ComponentPublicInstance } from 'vue'
+import type { UniPage } from '@dcloudio/uni-app-x/types/native'
 
 interface UniPageFix extends UniPage {
   applyStatusBarStyle(): void

@@ -1,32 +1,32 @@
 import { camelize, capitalize } from '@vue/shared'
 import {
-  NodeTypes,
-  ElementTypes,
-  createCompilerError,
-  ErrorCodes,
-  ElementNode,
-  TemplateLiteral,
-  Property,
-  ExpressionNode,
-  isCoreComponent,
   BindingTypes,
-  UNREF,
-  toValidAssetId,
-  findDir,
-  DirectiveNode,
-  ComponentNode,
+  type ComponentNode,
+  type DirectiveNode,
+  type ElementNode,
+  ElementTypes,
+  ErrorCodes,
+  type ExpressionNode,
+  NodeTypes,
+  type Property,
   RESOLVE_COMPONENT,
+  type TemplateLiteral,
+  UNREF,
+  createCompilerError,
+  findDir,
+  isCoreComponent,
   isStaticArgOf,
+  toValidAssetId,
 } from '@vue/compiler-core'
 import { isComponentTag } from '@dcloudio/uni-shared'
 
-import { createMPCompilerError, MPErrorCodes } from '../errors'
+import { MPErrorCodes, createMPCompilerError } from '../errors'
 
 import {
   BindingComponentTypes,
-  DirectiveTransform,
-  NodeTransform,
-  TransformContext,
+  type DirectiveTransform,
+  type NodeTransform,
+  type TransformContext,
 } from '../transform'
 import { transformModel } from './vModel'
 import { addStaticClass } from '@dcloudio/uni-cli-shared'

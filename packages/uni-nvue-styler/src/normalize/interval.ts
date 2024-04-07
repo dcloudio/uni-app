@@ -1,4 +1,4 @@
-import { autofixedReason, Normalize, supportedEnumReason } from '../utils'
+import { type Normalize, autofixedReason, supportedEnumReason } from '../utils'
 
 export const normalizeInterval: Normalize = (v, options) => {
   v = (v || 0).toString()

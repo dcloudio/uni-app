@@ -1,9 +1,9 @@
 import {
+  type Normalize,
+  type PropertyValue,
   defaultValueReason,
   getSupportedPlatforms,
-  Normalize,
   supportedEnumReason,
-  PropertyValue,
 } from '../utils'
 
 export function createEnumNormalize(items: Array<string | number>): Normalize {

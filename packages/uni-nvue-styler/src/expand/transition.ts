@@ -1,5 +1,5 @@
 import type { Declaration } from 'postcss'
-import { createDecl, TransformDecl } from '../utils'
+import { type TransformDecl, createDecl } from '../utils'
 
 const transitionProperty = __NODE_JS__
   ? 'transition-property'

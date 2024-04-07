@@ -1,6 +1,6 @@
 import type { ResolvedConfig } from 'vite'
 import {
-  UniVitePlugin,
+  type UniVitePlugin,
   rewriteCompileScriptSetupLangOnce,
 } from '@dcloudio/uni-cli-shared'
 import { createHandleHotUpdate } from './handleHotUpdate'

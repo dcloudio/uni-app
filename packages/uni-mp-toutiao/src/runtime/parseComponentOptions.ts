@@ -1,15 +1,15 @@
 import { hasOwn } from '@vue/shared'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import {
-  MPComponentInstance,
-  MPComponentOptions,
+  type MPComponentInstance,
+  type MPComponentOptions,
   nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 
 import { findVmByVueId } from '@dcloudio/uni-mp-core'
 
 import { initInjections, initProvide } from './apiInject'
-import { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
+import type { ParseComponentOptions } from 'packages/uni-mp-core/src/runtime/component'
 import { ON_READY } from '@dcloudio/uni-shared'
 
 export { initLifetimes } from './componentLifetimes'

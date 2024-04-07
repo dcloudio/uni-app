@@ -7,7 +7,7 @@ import {
   removeExt,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '../plugin'
+import type { UniMiniProgramPluginOptions } from '../plugin'
 import { createNonAppGenerateBundle } from './subpackage'
 import { extend } from '@vue/shared'
 import { notFound } from '../plugin/build'

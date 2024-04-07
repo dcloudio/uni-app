@@ -1,25 +1,25 @@
 import {
-  Ref,
-  ref,
-  SetupContext,
-  watch,
-  onMounted,
-  onBeforeMount,
+  type ExtractPropTypes,
+  type HTMLAttributes,
+  type Ref,
+  type SetupContext,
   computed,
-  reactive,
   nextTick,
-  HTMLAttributes,
-  ExtractPropTypes,
+  onBeforeMount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
 import { extend, isFunction } from '@vue/shared'
 import { debounce } from '@dcloudio/uni-shared'
 import { getCurrentPageId, registerViewMethod } from '@dcloudio/uni-core'
 import { throttle } from './throttle'
-import { useCustomEvent, CustomEventTrigger } from './useEvent'
+import { type CustomEventTrigger, useCustomEvent } from './useEvent'
 import { useUserAction } from './useUserAction'
 import {
-  props as keyboardProps,
   emit as keyboardEmit,
+  props as keyboardProps,
   useKeyboard,
 } from './useKeyboard'
 import { useScopedAttrs } from './useScopedAttrs'
@@ -233,13 +233,13 @@ function useBase(
     }
   })
   // #if _X_
-  // @ts-ignore
+  // @ts-expect-error
   const value =
     getValueString(props.modelValue, props.type, maxlength.value) ||
     getValueString(props.value, props.type, maxlength.value)
   // #endif
   // #if !_X_
-  // @ts-ignore
+  // @ts-expect-error
   const value =
     getValueString(props.modelValue, props.type) ||
     getValueString(props.value, props.type)
@@ -279,13 +279,13 @@ function useValueSync(
   trigger: CustomEventTrigger
 ) {
   // #if _X_
-  //@ts-ignore
+  //@ts-expect-error
   const valueChangeFn = throttle((val: any) => {
     state.value = getValueString(val, props.type, state.maxlength)
   }, 100)
   // #endif
   // #if !_X_
-  //@ts-ignore
+  //@ts-expect-error
   const valueChangeFn = debounce(
     (val: any) => {
       state.value = getValueString(val, props.type)

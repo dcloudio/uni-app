@@ -1,12 +1,12 @@
 import { camelize } from '@vue/shared'
 import {
-  ComponentNode,
+  type ComponentNode,
+  type DirectiveNode,
+  type ElementNode,
+  NodeTypes,
   createSimpleExpression,
-  DirectiveNode,
-  ElementNode,
   isSimpleIdentifier,
   isStaticExp,
-  NodeTypes,
 } from '@vue/compiler-core'
 import {
   createAttributeNode,
@@ -15,7 +15,11 @@ import {
   isDirectiveNode,
   isUserComponent,
 } from '@dcloudio/uni-cli-shared'
-import { isVForScope, NodeTransform, TransformContext } from '../transform'
+import {
+  type NodeTransform,
+  type TransformContext,
+  isVForScope,
+} from '../transform'
 import {
   ATTR_COM_TYPE,
   ATTR_VUE_ID,
@@ -25,16 +29,16 @@ import {
   ATTR_VUE_SLOTS,
   rewirteWithHelper,
 } from './utils'
-import { genExpr, genBabelExpr } from '../codegen'
+import { genBabelExpr, genExpr } from '../codegen'
 import {
-  Expression,
+  type Expression,
+  type ObjectProperty,
+  type SpreadElement,
   identifier,
   logicalExpression,
   objectExpression,
   objectProperty,
-  ObjectProperty,
   spreadElement,
-  SpreadElement,
   stringLiteral,
 } from '@babel/types'
 import { RENDER_PROPS } from '../runtimeHelpers'

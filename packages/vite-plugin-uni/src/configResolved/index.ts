@@ -1,14 +1,14 @@
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { extend, isString } from '@vue/shared'
 import {
   checkUpdate,
-  isWindows,
   formatErrMsg,
   formatInfoMsg,
   formatWarnMsg,
   isInHybridNVue,
+  isWindows,
 } from '@dcloudio/uni-cli-shared'
-import { VitePluginUniResolvedOptions } from '..'
+import type { VitePluginUniResolvedOptions } from '..'
 
 import { initEnv } from './env'
 import { initOptions } from './options'

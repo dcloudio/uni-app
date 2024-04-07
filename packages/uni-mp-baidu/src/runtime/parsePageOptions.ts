@@ -1,5 +1,8 @@
 import { extend } from '@vue/shared'
-import { MPComponentOptions, MPComponentInstance } from '@dcloudio/uni-mp-core'
+import type {
+  MPComponentInstance,
+  MPComponentOptions,
+} from '@dcloudio/uni-mp-core'
 import { ON_LOAD, ON_SHOW, stringifyQuery } from '@dcloudio/uni-shared'
 
 import { parse as parseComponentOptions } from './parseComponentOptions'

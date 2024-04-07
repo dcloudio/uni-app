@@ -1,4 +1,4 @@
-import { Normalize } from '../utils'
+import type { Normalize } from '../utils'
 
 export const normalizeGradient: Normalize = (v) => {
   v = (v || '').toString()

@@ -1,4 +1,4 @@
-import { defineI18nProperty, defineI18nProperties } from './useI18n'
+import { defineI18nProperties, defineI18nProperty } from './useI18n'
 import { isEnableLocale } from './utils'
 
 export function initNavigationBarI18n(

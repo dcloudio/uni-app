@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { ConfigEnv, UserConfig } from 'vite'
+import type { ConfigEnv, UserConfig } from 'vite'
 
 import {
   emptyDir,

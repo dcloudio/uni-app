@@ -6,12 +6,12 @@ import { extend } from '@vue/shared'
 import {
   API_DEPS_CSS,
   COMMON_EXCLUDE,
-  InjectOptions,
+  type InjectOptions,
   buildInCssSet,
-  uniViteInjectPlugin,
   isCombineBuiltInCss,
   isEnableTreeShaking,
   parseManifestJsonOnce,
+  uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 const apiJson = require(path.resolve(

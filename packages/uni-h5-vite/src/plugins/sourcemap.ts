@@ -1,6 +1,6 @@
 import { normalizePath } from '@dcloudio/uni-cli-shared'
-import { isAbsolute, join, dirname } from 'path'
-import { Plugin, TransformResult, ViteDevServer } from 'vite'
+import { dirname, isAbsolute, join } from 'path'
+import type { Plugin, TransformResult, ViteDevServer } from 'vite'
 
 export function uniPostSourceMapPlugin(): Plugin {
   return {

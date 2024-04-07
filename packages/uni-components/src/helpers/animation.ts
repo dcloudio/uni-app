@@ -1,5 +1,5 @@
-import { ComponentOptionsMixin } from 'vue'
-import { AnimationAction, MPAnimation } from '@dcloudio/uni-api'
+import type { ComponentOptionsMixin } from 'vue'
+import type { AnimationAction, MPAnimation } from '@dcloudio/uni-api'
 
 function converPx(value: string) {
   if (/^-?\d+[ur]px$/i.test(value)) {

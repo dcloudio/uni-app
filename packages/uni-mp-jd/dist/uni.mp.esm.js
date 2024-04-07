@@ -698,7 +698,7 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-// @ts-ignore
+// @ts-expect-error
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {
@@ -882,7 +882,7 @@ function initCreatePage(parseOptions) {
 
 function initRelation(mpInstance, detail) {
     // 兼容triggerEvent
-    // @ts-ignore
+    // @ts-expect-error
     mpInstance._triggerEvent('__l', detail);
 }
 var parseOptions = extend({}, baseParseOptions, {

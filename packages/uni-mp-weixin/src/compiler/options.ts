@@ -2,13 +2,13 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN,
+  type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
-  MiniProgramCompilerOptions,
   transformComponentLink,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 
 import source from './project.config.json'

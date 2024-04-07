@@ -1,5 +1,5 @@
 import { getTheme } from '../service/api/base/getBrowserInfo'
-import { normalizeStyles, ON_THEME_CHANGE } from '@dcloudio/uni-shared'
+import { ON_THEME_CHANGE, normalizeStyles } from '@dcloudio/uni-shared'
 import { isReactive, reactive, watch } from 'vue'
 
 export { getTheme }

@@ -30,11 +30,11 @@ export class UniElement extends HTMLElement {
 
   get style() {
     const originalStyle = super.style
-    // @ts-ignore
+    // @ts-expect-error
     if (originalStyle.__patchRpx__) {
       return originalStyle
     }
-    // @ts-ignore
+    // @ts-expect-error
     originalStyle.__patchRpx__ = true
     const originalSetProperty = originalStyle.setProperty.bind(originalStyle)
     super.style.setProperty = function (

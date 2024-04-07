@@ -1,7 +1,7 @@
-import { OutputAsset, OutputChunk } from 'rollup'
+import type { OutputAsset, OutputChunk } from 'rollup'
 import type { Plugin } from 'vite'
 import { isMiniProgramPageFile, relativeFile } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '../plugin'
+import type { UniMiniProgramPluginOptions } from '../plugin'
 
 export function uniSubpackagePlugin({
   style: { extname },

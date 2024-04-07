@@ -1,4 +1,7 @@
-import { resolveVueI18nRuntime, UniVitePlugin } from '@dcloudio/uni-cli-shared'
+import {
+  type UniVitePlugin,
+  resolveVueI18nRuntime,
+} from '@dcloudio/uni-cli-shared'
 
 import { uniOptions } from './uni'
 import { buildOptions } from './build'

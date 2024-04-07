@@ -1,15 +1,15 @@
 import { extend, hasOwn } from '@vue/shared'
-import { ComponentOptions, ComponentPublicInstance } from 'vue'
+import type { ComponentOptions, ComponentPublicInstance } from 'vue'
 // @ts-expect-error
 import { getExposeProxy } from 'vue'
 
 import {
-  initWxsCallMethods,
-  initProps,
-  initData,
+  type ParseComponentOptions,
   initBehaviors,
+  initData,
+  initProps,
   initPropsObserver,
-  ParseComponentOptions,
+  initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 
 function applyOptions(

@@ -1,19 +1,19 @@
 import type { Plugin, ResolvedConfig } from 'vite'
 import {
   API_DEPS_CSS,
-  FEATURE_DEFINES,
-  H5_FRAMEWORK_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
-  normalizeIdentifier,
-  normalizePagesJson,
-  defineUniPagesJsonPlugin,
-  normalizePagesRoute,
-  normalizePagePath,
-  isEnableTreeShaking,
-  parseManifestJsonOnce,
+  type FEATURE_DEFINES,
+  H5_FRAMEWORK_STYLE_PATH,
   MANIFEST_JSON_JS,
   checkPagesJson,
   createRollupError,
+  defineUniPagesJsonPlugin,
+  isEnableTreeShaking,
+  normalizeIdentifier,
+  normalizePagePath,
+  normalizePagesJson,
+  normalizePagesRoute,
+  parseManifestJsonOnce,
   preUVueJson,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR } from '../utils'

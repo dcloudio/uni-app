@@ -117,17 +117,14 @@ function report(type: string, err: any) {
   }, 10)
 }
 
-// @ts-ignore
 global.__error_reporting__ = report
 
 process
   .on('unhandledRejection', (reason, p) => {
-    // @ts-ignore
     global.__error_reporting__('unhandledRejection', reason)
     console.log(reason)
   })
   .on('uncaughtException', (err) => {
-    // @ts-ignore
     global.__error_reporting__('uncaughtException', err.stack)
     console.log(err)
   })

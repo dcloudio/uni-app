@@ -6,7 +6,7 @@ import type { LogErrorOptions } from 'vite'
 import { NodeTypes } from '@vue/compiler-core'
 import { isString } from '@vue/shared'
 import { normalizePath } from '../utils'
-import { Formatter } from '../logs/format'
+import type { Formatter } from '../logs/format'
 
 import { EXTNAME_VUE_RE } from '../constants'
 import { parseVue } from '../vite/utils/ast'

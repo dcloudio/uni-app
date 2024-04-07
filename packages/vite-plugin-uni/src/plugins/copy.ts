@@ -5,13 +5,13 @@ import type { Plugin } from 'vite'
 
 import {
   PUBLIC_DIR,
-  uniViteCopyPlugin,
-  UniViteCopyPluginTarget,
-  parseSubpackagesRootOnce,
-  normalizePath,
+  type UniViteCopyPluginTarget,
   getPlatforms,
+  normalizePath,
+  parseSubpackagesRootOnce,
+  uniViteCopyPlugin,
 } from '@dcloudio/uni-cli-shared'
-import { VitePluginUniResolvedOptions } from '..'
+import type { VitePluginUniResolvedOptions } from '..'
 
 const debugCopy = debug('uni:copy')
 

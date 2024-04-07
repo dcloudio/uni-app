@@ -1,5 +1,5 @@
 import path from 'path'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
 import {
   APP_CONFIG,

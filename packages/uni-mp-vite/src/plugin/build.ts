@@ -1,24 +1,24 @@
 import fs from 'fs'
 import path from 'path'
 import debug from 'debug'
-import { BuildOptions, UserConfig } from 'vite'
+import type { BuildOptions, UserConfig } from 'vite'
 
 import {
-  emptyDir,
+  DEFAULT_ASSETS_RE,
   EXTNAME_JS_RE,
-  normalizePath,
+  M,
+  dynamicImportPolyfill,
+  emptyDir,
   hasJsonFile,
+  isCSSRequest,
+  isMiniProgramAssetFile,
+  normalizeMiniProgramFilename,
+  normalizePath,
+  parseManifestJsonOnce,
   removeExt,
   resolveMainPathOnce,
-  normalizeMiniProgramFilename,
-  isCSSRequest,
-  parseManifestJsonOnce,
-  M,
-  isMiniProgramAssetFile,
-  dynamicImportPolyfill,
-  DEFAULT_ASSETS_RE,
 } from '@dcloudio/uni-cli-shared'
-import { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
+import type { GetManualChunk, GetModuleInfo, PreRenderedChunk } from 'rollup'
 import {
   isUniComponentUrl,
   isUniPageUrl,

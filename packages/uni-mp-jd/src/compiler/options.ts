@@ -2,12 +2,12 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN_BIND,
-  MiniProgramCompilerOptions,
+  type MiniProgramCompilerOptions,
   transformComponentLink,
   transformRef,
   // transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 // import { transformSwiper } from './transforms/transformSwiper'

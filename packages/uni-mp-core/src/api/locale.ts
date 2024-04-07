@@ -1,4 +1,4 @@
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n'
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n'
 import { isFunction } from '@vue/shared'
 
 export const getLocale: typeof uni.getLocale = () => {

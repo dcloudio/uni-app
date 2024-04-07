@@ -9,9 +9,9 @@ import {
   resolvePluginFiles,
 } from './manifest'
 import {
-  APP_PLATFORM,
-  CheckOptions,
-  CheckResult,
+  type APP_PLATFORM,
+  type CheckOptions,
+  type CheckResult,
   customResourceChangedTips,
   customResourceTips,
 } from './utils'

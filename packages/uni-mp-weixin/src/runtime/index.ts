@@ -1,7 +1,7 @@
 import {
   initCreateApp,
-  initCreatePage,
   initCreateComponent,
+  initCreatePage,
   initCreatePluginApp,
   initCreateSubpackageApp,
 } from '@dcloudio/uni-mp-core'

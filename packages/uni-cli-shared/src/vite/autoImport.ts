@@ -1,4 +1,4 @@
-import { Options } from 'unplugin-auto-import/types'
+import type { Options } from 'unplugin-auto-import/types'
 
 export type AutoImportOptions = Options
 

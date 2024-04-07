@@ -6,6 +6,7 @@ module.exports = {
   parserOptions: {
     sourceType: 'module',
   },
+  plugins: ['import', '@typescript-eslint'],
   rules: {
     'no-unused-vars': [
       'error',
@@ -22,6 +23,20 @@ module.exports = {
       'ObjectExpression > SpreadElement',
       'ObjectPattern > RestElement',
     ],
+    'sort-imports': ['error', { ignoreDeclarationSort: true }],
+    // This rule enforces the preference for using '@ts-expect-error' comments in TypeScript
+    // code to indicate intentional type errors, improving code clarity and maintainability.
+    '@typescript-eslint/prefer-ts-expect-error': 'error',
+    // Enforce the use of 'import type' for importing types
+    '@typescript-eslint/consistent-type-imports': [
+      'error',
+      {
+        fixStyle: 'inline-type-imports',
+        disallowTypeAnnotations: false,
+      },
+    ],
+    // Enforce the use of top-level import type qualifier when an import only has specifiers with inline type qualifiers
+    '@typescript-eslint/no-import-type-side-effects': 'error',
   },
   overrides: [
     // tests, no restrictions (runs in Node / jest with jsdom)

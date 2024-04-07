@@ -911,7 +911,7 @@ var parseAppOptions = /*#__PURE__*/Object.freeze({
   parse: parse$2
 });
 
-// @ts-ignore
+// @ts-expect-error
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {

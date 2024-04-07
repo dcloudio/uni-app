@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { ResolvedConfig } from 'vite'
+import type { ResolvedConfig } from 'vite'
 
 import { getPlatformManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 

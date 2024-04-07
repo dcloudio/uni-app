@@ -1,6 +1,6 @@
 import { getValueByDataPath } from '@dcloudio/uni-shared'
 import type { ComponentInternalInstance } from 'vue'
-//@ts-ignore
+//@ts-expect-error
 import { diff, getCurrentInstance, setCurrentRenderingInstance } from 'vue'
 
 export interface ScopedSlotInvokers {

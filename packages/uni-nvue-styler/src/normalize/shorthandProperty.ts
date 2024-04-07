@@ -1,4 +1,4 @@
-import { Normalize } from '../utils'
+import type { Normalize } from '../utils'
 
 export function normalizeShorthandProperty(normalize: Normalize): Normalize {
   return (v, options) => {

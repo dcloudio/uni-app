@@ -9,29 +9,29 @@ import type {
 
 import {
   D8_DEFAULT_ARGS,
-  KotlinCompilerServer,
-  RunKotlinDevResult,
-  getUniModulesCacheJars,
-  resolveKotlincArgs,
+  type KotlinCompilerServer,
+  type RunKotlinBuildResult,
+  type RunKotlinDevResult,
   createStderrListener,
-  getUniModulesEncryptCacheJars,
-  RunKotlinBuildResult,
   getInjectApis,
-  kotlinDir,
+  getUniModulesCacheJars,
+  getUniModulesEncryptCacheJars,
   getUniModulesJars,
+  kotlinDir,
   parseUTSModuleConfigJsonJars,
   parseUTSModuleLibsJars,
+  resolveKotlincArgs,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
-  resolveUniAppXSourceMapPath,
   isUniCloudSupported,
   parseExtApiDefaultParameters,
   parseInjectModules,
+  resolveUniAppXSourceMapPath,
 } from '../utils'
-import { KotlinManifestCache } from '../stacktrace/kotlin'
+import type { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [

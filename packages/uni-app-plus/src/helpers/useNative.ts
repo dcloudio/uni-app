@@ -1,12 +1,12 @@
 import {
-  Ref,
+  type Ref,
+  computed,
+  inject,
+  onBeforeUnmount,
+  onMounted,
+  provide,
   reactive,
   ref,
-  computed,
-  provide,
-  inject,
-  onMounted,
-  onBeforeUnmount,
 } from 'vue'
 import { getNavigationBarHeight } from './navigationBar'
 import { getRealPath } from '../platform/getRealPath'

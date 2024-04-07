@@ -1,8 +1,8 @@
 import {
-  Normalize,
-  supportedPropertyReason,
+  type Normalize,
+  type UniPlatform,
   getSupportedPlatforms,
-  UniPlatform,
+  supportedPropertyReason,
 } from '../utils'
 
 export function normalizePlatform(

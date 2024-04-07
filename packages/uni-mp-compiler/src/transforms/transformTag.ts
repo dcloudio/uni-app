@@ -3,7 +3,7 @@ import {
   isElementNode,
 } from '@dcloudio/uni-cli-shared'
 import { ElementTypes } from '@vue/compiler-core'
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 
 export const transformTag: NodeTransform = (node, _) => {
   if (!isElementNode(node)) {

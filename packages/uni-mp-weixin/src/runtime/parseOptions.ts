@@ -1,4 +1,7 @@
-import { MPComponentInstance, RelationOptions } from '@dcloudio/uni-mp-core'
+import type {
+  MPComponentInstance,
+  RelationOptions,
+} from '@dcloudio/uni-mp-core'
 
 import { findVmByVueId } from '@dcloudio/uni-mp-core'
 

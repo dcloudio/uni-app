@@ -1,19 +1,19 @@
 import {
   EventChannel,
-  invokeArrayFns,
   SLOT_DEFAULT_NAME,
+  invokeArrayFns,
 } from '@dcloudio/uni-shared'
 import { capitalize, hasOwn, isArray, isFunction } from '@vue/shared'
 
 import {
-  ComponentPublicInstance,
-  ComponentInternalInstance,
-  // @ts-ignore
-  devtoolsComponentRemoved,
-  // @ts-ignore
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+  // @ts-expect-error
   devtoolsComponentAdded,
+  // @ts-expect-error
+  devtoolsComponentRemoved,
 } from 'vue'
-import { MPComponentInstance } from './component'
+import type { MPComponentInstance } from './component'
 
 const MP_METHODS = [
   'createSelectorQuery',

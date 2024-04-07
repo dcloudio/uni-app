@@ -1,18 +1,18 @@
 import { invokeHook } from '@dcloudio/uni-core'
 import {
-  isUniLifecycleHook,
   LINEFEED,
   ON_LOAD,
   ON_SHOW,
+  isUniLifecycleHook,
 } from '@dcloudio/uni-shared'
 import { isArray, isFunction } from '@vue/shared'
 
-import {
-  ComponentOptions,
+import type {
   ComponentInternalInstance,
+  ComponentOptions,
   ComponentPublicInstance,
 } from 'vue'
-// @ts-ignore
+
 import { injectHook } from 'vue'
 
 function injectLifecycleHook(
