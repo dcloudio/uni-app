@@ -996,13 +996,16 @@ function formatApiArgs(args, options) {
   }
 }
 function invokeSuccess(id2, name, res) {
-  return invokeCallback(id2, extend(res || {}, {
+  var result = {
     errMsg: name + ":ok"
-  }));
+  };
+  return invokeCallback(id2, extend(res || {}, result));
 }
 function invokeFail(id2, name, errMsg, errRes) {
-  return invokeCallback(id2, extend({
-    errMsg: name + ":fail" + (errMsg ? " " + errMsg : "")
+  var apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
+  delete errRes.errCode;
+  return invokeCallback(id2, typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : extend({
+    errMsg: apiErrMsg
   }, errRes));
 }
 function beforeInvokeApi(name, args, protocol, options) {

@@ -8,7 +8,8 @@
 * 克隆仓库到本地后，执行 ```pnpm install``` 安装开发依赖。
 
 ## 开发
-
+* 得先执行一遍`npm run build`把一些共享包给安装了
+* 如果安装失败，注意检查一下pnpm的镜像源
 * 执行命令编译指定包，如：```npm run build uni-mp-weixin```。
 * 执行 ```npm run lint``` 检查代码风格。
 * 执行 ```npm run test``` 运行测试。

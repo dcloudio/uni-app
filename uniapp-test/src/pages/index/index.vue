@@ -1,9 +1,6 @@
 <template>
   <view class="content">
-    <image class="logo" src="/static/logo.png"></image>
-    <view class="text-area">
-      <text class="title">{{ title }}</text>
-    </view>
+    <input type="digit" v-model="value" @input="onInput" @change="onInput" :focus="true"/>
   </view>
 </template>
 
@@ -11,11 +8,13 @@
 export default {
   data() {
     return {
-      title: 'Hello',
+      value: 1,
+      cache: 1,
     }
   },
   onLoad() {},
-  methods: {},
+  methods: {
+  },
 }
 </script>
 
