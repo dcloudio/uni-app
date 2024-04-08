@@ -48,7 +48,6 @@ export const HTML_TO_MINI_PROGRAM_TAGS: Record<string, string> = {
   select: 'picker',
   option: 'view',
   optgroup: 'view',
-  // label: 'label',
   fieldset: 'view',
   datalist: 'picker',
   legend: 'view',

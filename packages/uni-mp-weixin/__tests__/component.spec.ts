@@ -237,4 +237,13 @@ describe('mp-weixin: transform component', () => {
 }`
     )
   })
+  test(`skyline gesture`, () => {
+    assert(
+      `<span/>`,
+      `<span/>`,
+      `(_ctx, _cache) => {
+  return {}
+}`
+    )
+  })
 })
