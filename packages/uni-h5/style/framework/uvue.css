@@ -15,7 +15,6 @@ uni-app uni-top-window,
 uni-app uni-left-window,
 uni-app uni-right-window {
   position: relative;
-  z-index: 0;
 }
 
 uni-app uni-left-window .uni-left-window,
@@ -134,7 +133,6 @@ uni-app uni-web-view {
   min-height: 0px;
   min-width: 0px;
   border-width: medium;
-  z-index: 0;
 }
 
 uni-app uni-text {
@@ -169,10 +167,6 @@ uni-app uni-sticky-header {
   align-items: stretch;
   align-content: stretch;
   justify-content: flex-start;
-}
-
-uni-app uni-sticky-header {
-  z-index: 1;
 }
 
 /* 此样式可被manifest.json内配置的flex-direction重置 */
