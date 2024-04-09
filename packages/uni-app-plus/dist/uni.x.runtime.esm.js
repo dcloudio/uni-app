@@ -1,4 +1,4 @@
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
 var _wks = { exports: {} };
@@ -1754,6 +1754,9 @@ function registerPage(_ref, onCreated) {
     nativePage.addPageEventListener(ON_READY, (_) => {
       invokeHook(page, ON_READY);
     });
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, arg);
+    });
     nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH);
     });
@@ -1775,17 +1778,12 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
   var pageNode = nativePage.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
-  var mountPage = (component2) => app.mountPage(
-    component2,
-    {
-      __pageId,
-      __pagePath,
-      __pageQuery,
-      __pageInstance
-    },
-    // @ts-ignore
-    pageNode
-  );
+  var mountPage = (component2) => app.mountPage(component2, {
+    __pageId,
+    __pagePath,
+    __pageQuery,
+    __pageInstance
+  }, pageNode);
   if (isPromise(component)) {
     return component.then((component2) => mountPage(component2));
   }
