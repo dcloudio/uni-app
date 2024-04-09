@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path, { join } from 'path'
 import {
+  type ToSwiftOptions,
   genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
@@ -13,10 +14,9 @@ import {
   resolvePackage,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
-  ToSwiftOptions,
 } from './utils'
 import { parseJson } from './shared'
-import {
+import type {
   UTSBundleOptions,
   UTSInputOptions,
   UTSOutputOptions,

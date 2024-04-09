@@ -1,15 +1,15 @@
 import {
-  API_TYPE_SHOW_ACTION_SHEET,
   API_SHOW_ACTION_SHEET,
-  ShowActionSheetProtocol,
+  type API_TYPE_SHOW_ACTION_SHEET,
   ShowActionSheetOptions,
+  ShowActionSheetProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { once } from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
 import { nextTick, reactive } from 'vue'
-import actionSheet, { Props } from './actionSheet'
-import { ensureRoot, createRootApp } from './utils'
+import actionSheet, { type Props } from './actionSheet'
+import { createRootApp, ensureRoot } from './utils'
 
 let resolveAction: UniApp.ShowActionSheetOptions['success']
 let rejectAction: UniApp.ShowActionSheetOptions['fail']

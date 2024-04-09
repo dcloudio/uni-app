@@ -2,17 +2,17 @@ import { isArray } from '@vue/shared'
 import { Emitter } from '@dcloudio/uni-shared'
 import { defineSyncApi } from '../../helpers/api'
 import {
-  API_ON,
-  API_OFF,
   API_EMIT,
+  API_OFF,
+  API_ON,
   API_ONCE,
-  API_TYPE_ON,
-  API_TYPE_OFF,
-  API_TYPE_EMIT,
-  API_TYPE_ONCE,
-  OnProtocol,
-  OffProtocol,
+  type API_TYPE_EMIT,
+  type API_TYPE_OFF,
+  type API_TYPE_ON,
+  type API_TYPE_ONCE,
   EmitProtocol,
+  OffProtocol,
+  OnProtocol,
   OnceProtocol,
 } from '../../protocols/base/eventBus'
 

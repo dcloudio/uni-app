@@ -5,10 +5,10 @@ import {
   ON_RESIZE,
   ON_SHOW,
 } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance } from '@vue/runtime-core'
+import type { ComponentPublicInstance } from '@vue/runtime-core'
 import { invokeHook } from '../../helpers/hook'
 import { getCurrentPage } from '../../helpers/page'
-import { LaunchOptions } from '../utils'
+import type { LaunchOptions } from '../utils'
 
 export function initOn() {
   const { on } = UniServiceJSBridge

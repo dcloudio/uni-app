@@ -1,14 +1,14 @@
 import { isArray, isFunction } from '@vue/shared'
 
 import {
-  defineTaskApi,
+  type API_TYPE_UPLOAD_FILE,
   API_UPLOAD_FILE,
-  API_TYPE_UPLOAD_FILE,
-  UploadFileProtocol,
   UploadFileOptions,
+  UploadFileProtocol,
+  defineTaskApi,
 } from '@dcloudio/uni-api'
-import { urlToFile, blobToFile } from '../../../helpers/file'
-import { type UploadFileFail } from '@dcloudio/uni-app-x/types/uni'
+import { blobToFile, urlToFile } from '../../../helpers/file'
+import type { UploadFileFail } from '@dcloudio/uni-app-x/types/uni'
 
 /**
  * 上传任务

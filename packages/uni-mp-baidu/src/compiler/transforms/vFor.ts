@@ -1,8 +1,8 @@
 import {
+  type DirectiveNode,
+  type NodeTransform,
   findProp,
   isForElementNode,
-  DirectiveNode,
-  NodeTransform,
   rewriteExpression,
 } from '@dcloudio/uni-mp-compiler'
 

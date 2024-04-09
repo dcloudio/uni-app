@@ -1,5 +1,5 @@
 import fsExtra from 'fs-extra'
-import {
+import type {
   Expression,
   Identifier,
   Node,
@@ -29,16 +29,16 @@ import {
   UNKNOWN_TYPE,
   getId,
   getImportedName,
-  normalizePath,
   joinPaths,
+  normalizePath,
 } from './utils'
-import { ScriptCompileContext, resolveParserPlugins } from './context'
-import { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
+import { type ScriptCompileContext, resolveParserPlugins } from './context'
+import type { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
 import { capitalize, hasOwn } from '@vue/shared'
 import { parse as babelParse } from '@babel/parser'
 // import { parse } from '../parse'
 // import { createCache } from '../cache'
-import { extname, dirname, join } from 'path'
+import { dirname, extname, join } from 'path'
 import * as process from 'process'
 
 /**
@@ -223,7 +223,7 @@ function innerResolveTypeElements(
             )
           }
           if (
-            // @ts-ignore
+            // @ts-expect-error
             SupportedBuiltinsSet.has(typeName)
           ) {
             return resolveBuiltin(
@@ -340,7 +340,7 @@ function mergeElements(
           baseProps[key].key,
           {
             type,
-            // @ts-ignore
+            // @ts-expect-error
             types: [baseProps[key], props[key]],
           },
           baseProps[key]._ownerScope,

@@ -1,4 +1,4 @@
-import { ExtractPropTypes } from 'vue'
+import type { ExtractPropTypes } from 'vue'
 import { Decline, Friction, STD } from './utils'
 export { Decline, Friction, STD }
 export const movableViewProps = {

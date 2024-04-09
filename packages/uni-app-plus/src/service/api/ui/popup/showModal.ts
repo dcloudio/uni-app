@@ -1,9 +1,9 @@
 import {
   API_SHOW_MODAL,
-  API_TYPE_SHOW_MODAL,
-  defineAsyncApi,
+  type API_TYPE_SHOW_MODAL,
   ShowModalOptions,
   ShowModalProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 export const showModal = defineAsyncApi<API_TYPE_SHOW_MODAL>(

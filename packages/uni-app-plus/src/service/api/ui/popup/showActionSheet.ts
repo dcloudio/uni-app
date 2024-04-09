@@ -1,8 +1,8 @@
 import {
-  API_TYPE_SHOW_ACTION_SHEET,
   API_SHOW_ACTION_SHEET,
-  ShowActionSheetProtocol,
+  type API_TYPE_SHOW_ACTION_SHEET,
   ShowActionSheetOptions,
+  ShowActionSheetProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { extend } from '@vue/shared'

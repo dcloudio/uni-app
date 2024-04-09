@@ -1,4 +1,4 @@
-import { NodeTransform } from '@vue/compiler-core'
+import type { NodeTransform } from '@vue/compiler-core'
 import { checkElementNodeTag } from '../../utils'
 
 export const transformPageHead: NodeTransform = (node, context) => {

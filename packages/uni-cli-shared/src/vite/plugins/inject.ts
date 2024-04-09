@@ -2,26 +2,26 @@ import { sep } from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
 
-import type { BaseNode, Program, Identifier } from 'estree'
+import type { BaseNode, Identifier, Program } from 'estree'
 
 import {
+  type FilterPattern,
   attachScopes,
   createFilter,
-  FilterPattern,
   makeLegalIdentifier,
 } from '@rollup/pluginutils'
-import { AcornNode } from 'rollup'
+import type { AcornNode } from 'rollup'
 
 import { walk } from 'estree-walker'
 import { extend, isArray, isString } from '@vue/shared'
 import MagicString from 'magic-string'
 
 import {
+  isAssignmentExpression,
+  isJsFile,
+  isMemberExpression,
   isProperty,
   isReference,
-  isMemberExpression,
-  isJsFile,
-  isAssignmentExpression,
 } from '../utils'
 
 interface Scope {

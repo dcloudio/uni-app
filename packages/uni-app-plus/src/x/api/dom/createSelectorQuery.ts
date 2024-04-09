@@ -1,5 +1,5 @@
-import { SelectorQueryRequest } from '@dcloudio/uni-api'
-import {
+import type { SelectorQueryRequest } from '@dcloudio/uni-api'
+import type {
   CreateSelectorQuery,
   NodeField,
   NodeInfo,

@@ -1,20 +1,20 @@
 import path from 'path'
 import {
   ConstantTypes,
+  type NodeTransform,
+  NodeTypes,
+  type SimpleExpressionNode,
   createCompoundExpression,
   createSimpleExpression,
-  NodeTransform,
-  NodeTypes,
-  SimpleExpressionNode,
 } from '@vue/compiler-core'
 import {
+  isDataUrl,
+  isExternalUrl,
   isRelativeUrl,
   parseUrl,
-  isExternalUrl,
-  isDataUrl,
 } from './templateUtils'
 import {
-  AssetURLOptions,
+  type AssetURLOptions,
   defaultAssetUrlOptions,
 } from './templateTransformAssetUrl'
 

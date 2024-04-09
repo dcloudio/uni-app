@@ -1,4 +1,4 @@
-import {
+import type {
   ArrayPattern,
   Identifier,
   LVal,
@@ -7,7 +7,7 @@ import {
   RestElement,
 } from '@babel/types'
 import { isCallOf } from './utils'
-import { ScriptCompileContext } from './context'
+import type { ScriptCompileContext } from './context'
 import { resolveTypeElements, resolveUnionType } from './resolveType'
 
 export const DEFINE_EMITS = 'defineEmits'

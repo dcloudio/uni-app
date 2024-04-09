@@ -13,30 +13,33 @@ import type {
 import { get } from 'android-versions'
 import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
-  CompilerServer,
-  genUTSPlatformResource,
-  getUTSCompiler,
-  getCompilerServer,
-  moveRootIndexSourceMap,
-  resolveAndroidDir,
-  resolvePackage,
-  resolveUTSPlatformFile,
-  resolveUTSSourceMapPath,
-  ToKotlinOptions,
+  type CompilerServer,
+  type ToKotlinOptions,
   genComponentsCode,
-  parseKotlinPackageWithPluginId,
+  genUTSPlatformResource,
+  getCompilerServer,
+  getUTSCompiler,
   isColorSupported,
-  resolveSourceMapFile,
   isUniCloudSupported,
+  moveRootIndexSourceMap,
   parseExtApiDefaultParameters,
   parseInjectModules,
+  parseKotlinPackageWithPluginId,
+  resolveAndroidDir,
   resolveConfigProvider,
+  resolvePackage,
+  resolveSourceMapFile,
+  resolveUTSPlatformFile,
+  resolveUTSSourceMapPath,
 } from './utils'
-import { Module } from '../types/types'
+import type { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
-import { APP_PLATFORM } from './manifest/utils'
+import type { APP_PLATFORM } from './manifest/utils'
 import { restoreDex } from './manifest'
-import { MessageSourceLocation, hbuilderFormatter } from './stacktrace/kotlin'
+import {
+  type MessageSourceLocation,
+  hbuilderFormatter,
+} from './stacktrace/kotlin'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string

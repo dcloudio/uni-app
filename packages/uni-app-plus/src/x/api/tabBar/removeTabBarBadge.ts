@@ -1,10 +1,10 @@
 import { getTabBar } from '../../framework/app/tabBar'
 import {
-  defineAsyncApi,
-  API_TYPE_REMOVE_TAB_BAR_BADGE,
   API_REMOVE_TAB_BAR_BADGE,
+  type API_TYPE_REMOVE_TAB_BAR_BADGE,
   RemoveTabBarBadgeOptions,
   RemoveTabBarBadgeProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 export const removeTabBarBadge = defineAsyncApi<API_TYPE_REMOVE_TAB_BAR_BADGE>(

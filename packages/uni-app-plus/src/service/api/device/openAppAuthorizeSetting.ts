@@ -1,6 +1,6 @@
 import {
   API_OPEN_APP_AUTHORIZE_SETTING,
-  API_TYPE_OPEN_APP_AUTHORIZE_SETTING,
+  type API_TYPE_OPEN_APP_AUTHORIZE_SETTING,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 type OpenAppAuthorizeSetting = (

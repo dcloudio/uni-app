@@ -6,31 +6,30 @@ import colors from 'picocolors'
 import postcssrc from 'postcss-load-config'
 import { dataToEsm } from '@rollup/pluginutils'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
-import {
+import type {
   EmittedAsset,
   ExistingRawSourceMap,
   PluginContext,
   RollupError,
   SourceMapInput,
 } from 'rollup'
-import { RawSourceMap } from '@ampproject/remapping'
+import type { RawSourceMap } from '@ampproject/remapping'
 import type * as PostCSS from 'postcss'
 import {
-  // createDebugger,
-  isExternalUrl,
   asyncReplace,
   cleanUrl,
+  combineSourcemaps,
   generateCodeFrame,
   isDataUrl,
+  isExternalUrl,
   isObject,
   normalizePath,
   processSrcSet,
-  combineSourcemaps,
 } from '../utils'
-import { Plugin } from '../plugin'
-import { ResolvedConfig } from '../config'
-import { ResolveFn, ViteDevServer } from '../'
-import { fileToUrl, assetUrlRE, getAssetFilename } from './asset'
+import type { Plugin } from '../plugin'
+import type { ResolvedConfig } from '../config'
+import type { ResolveFn, ViteDevServer } from '../'
+import { assetUrlRE, fileToUrl, getAssetFilename } from './asset'
 import MagicString from 'magic-string'
 import * as Postcss from 'postcss'
 import type Sass from 'sass'
@@ -878,7 +877,6 @@ async function resolvePostcssConfig(
   } else {
     const searchPath = isString(inlineOptions) ? inlineOptions : config.root
     try {
-      // @ts-ignore
       result = await postcssrc({}, searchPath)
     } catch (e: any) {
       if (!/No PostCSS Config found/.test(e.message)) {

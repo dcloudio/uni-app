@@ -35,5 +35,4 @@ export {
 export { M } from './messages'
 
 export * from './exports'
-// @ts-ignore
 export { checkUpdate } from './checkUpdate'

@@ -1,6 +1,6 @@
 import { getIsAMap, getIsBMap } from '../../../../helpers/location'
-import { QQMaps, Overlay, LatLng as QLatLng } from './qq/types'
-import { GoogleMaps, OverlayView, LatLng as GLatLng } from './google/types'
+import type { Overlay, LatLng as QLatLng, QQMaps } from './qq/types'
+import type { LatLng as GLatLng, GoogleMaps, OverlayView } from './google/types'
 export interface CalloutOptions {
   map?: any
   position?: GLatLng | QLatLng | AMap.LngLat
@@ -81,35 +81,23 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
     triangle?: HTMLDivElement
     callback?: Function
     Text?: AMap.Text
-    // @ts-ignore
     setMap
-    // @ts-ignore
     getMap
-    // @ts-ignore
     getPanes
-    // @ts-ignore
     getProjection
-    // @ts-ignore
     map_changed
-    // @ts-ignore
+    // @ts-expect-error
     set: (key: string, value: any) => void
-    // @ts-ignore
+    // @ts-expect-error
     get: (key: string) => any
-    // @ts-ignore
+    // @ts-expect-error
     setOptions: (values?: object | null | undefined) => void
-    // @ts-ignore
     bindTo
-    // @ts-ignore
     bindsTo
-    // @ts-ignore
     notify
-    // @ts-ignore
     setValues
-    // @ts-ignore
     unbind
-    // @ts-ignore
     unbindAll
-    // @ts-ignore
     addListener
     set onclick(callback: any) {
       this.div!.onclick = callback
@@ -230,13 +218,9 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
   if (!getIsAMap() && !getIsBMap()) {
     const overlay: OverlayView | Overlay = new ((maps as GoogleMaps)
       .OverlayView || (maps as QQMaps).Overlay)()
-    // @ts-ignore
     Callout.prototype.setMap = overlay.setMap
-    // @ts-ignore
     Callout.prototype.getMap = overlay.getMap
-    // @ts-ignore
     Callout.prototype.getPanes = overlay.getPanes
-    // @ts-ignore
     Callout.prototype.getProjection = overlay.getProjection
     Callout.prototype.map_changed = (overlay as any).map_changed
     Callout.prototype.set = overlay.set
@@ -246,9 +230,7 @@ export function createCallout(maps: QQMaps | GoogleMaps | AMap.NameSpace) {
     Callout.prototype.bindsTo = (overlay as any).bindsTo
     Callout.prototype.notify = overlay.notify
     Callout.prototype.setValues = overlay.setValues
-    // @ts-ignore
     Callout.prototype.unbind = overlay.unbind
-    // @ts-ignore
     Callout.prototype.unbindAll = overlay.unbindAll
     Callout.prototype.addListener = (overlay as any).addListener
   }

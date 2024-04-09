@@ -1,10 +1,10 @@
 import { TEMP_PATH } from '../constants'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 import {
-  API_TYPE_CHOOSE_IMAGE,
   API_CHOOSE_IMAGE,
-  ChooseImageProtocol,
+  type API_TYPE_CHOOSE_IMAGE,
   ChooseImageOptions,
+  ChooseImageProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { initI18nChooseImageMsgsOnce, useI18n } from '@dcloudio/uni-core'
@@ -70,7 +70,7 @@ export const chooseImage = defineAsyncApi<API_TYPE_CHOOSE_IMAGE>(
     }
 
     function openAlbum() {
-      // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
+      // @ts-expect-error 5+此API分单选和多选，多选返回files:string[]
       plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
         maximum: count,
         multiple: true,

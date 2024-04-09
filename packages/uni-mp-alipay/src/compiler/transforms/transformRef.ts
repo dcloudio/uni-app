@@ -1,17 +1,17 @@
 import {
-  createAttributeNode,
-  isUserComponent,
   VUE_REF,
   VUE_REF_IN_FOR,
+  createAttributeNode,
+  isUserComponent,
 } from '@dcloudio/uni-cli-shared'
 import {
-  ComponentNode,
-  findProp,
+  type ComponentNode,
   NodeTypes,
-  RootNode,
-  SimpleExpressionNode,
-  TemplateChildNode,
-  TransformContext,
+  type RootNode,
+  type SimpleExpressionNode,
+  type TemplateChildNode,
+  type TransformContext,
+  findProp,
 } from '@vue/compiler-core'
 
 export function transformRef(

@@ -1,12 +1,11 @@
 import type { App } from 'vue';
-import type { ComponentInternalInstance } from '@vue/runtime-core';
-import { ComponentOptionsBase } from '@vue/runtime-core';
-import { ComponentOptionsBase as ComponentOptionsBase_2 } from 'vue';
-import type { ComponentPublicInstance } from '@vue/runtime-core';
-import { ComponentPublicInstance as ComponentPublicInstance_2 } from 'vue';
-import { createApp } from 'vue';
+import type { ComponentInternalInstance } from 'vue';
+import type { ComponentInternalInstance as ComponentInternalInstance_2 } from '@vue/runtime-core';
+import { ComponentOptionsBase } from 'vue';
+import { ComponentPublicInstance } from 'vue';
+import type { createApp } from 'vue';
 import type { NormalizedStyle } from '@vue/shared';
-import type { RendererNode } from '@vue/runtime-core';
+import type { RendererNode } from 'vue';
 
 export declare const ACTION_TYPE_ADD_EVENT = 8;
 
@@ -258,7 +257,7 @@ Partial<UniNodeJSON | UniNodeJSONMinify>?
 
 export declare const invokeArrayFns: (fns: Function[], arg?: any) => any;
 
-export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance_2<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase_2<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
+export declare const invokeCreateErrorHandler: (app: App, createErrorHandler: (app: App) => App['config']['errorHandler']) => ((err: unknown, instance: ComponentPublicInstance<    {}, {}, {}, {}, {}, {}, {}, {}, false, ComponentOptionsBase<any, any, any, any, any, any, any, any, any, {}, {}, string, {}>, {}, {}> | null, info: string) => void) | undefined;
 
 export declare function invokeCreateVueAppHook(app: App): void;
 
@@ -438,7 +437,7 @@ export declare interface NVueInstanceOption {
     config: NVueConfigAPI;
     document?: NVueDocument;
     Vue?: Vue_2;
-    app?: ComponentPublicInstance_2;
+    app?: ComponentPublicInstance;
     data?: Record<string, unknown>;
 }
 
@@ -789,7 +788,7 @@ export declare class UniNode extends UniEventTarget {
     childNodes: UniNode[];
     pageNode: IUniPageNode | null;
     parentNode: UniNode | null;
-    __vueParentComponent?: ComponentInternalInstance;
+    __vueParentComponent?: ComponentInternalInstance_2;
     protected _text: string | null;
     constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode);
     get firstChild(): UniNode | null;

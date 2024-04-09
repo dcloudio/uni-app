@@ -9,19 +9,19 @@ import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import legacyPlugin from '@vitejs/plugin-legacy'
 
 import {
-  CopyOptions,
-  InjectOptions,
+  type AutoImportOptions,
+  type CopyOptions,
+  type InjectOptions,
   emptyDir,
   initAutoImportOptions,
   initModuleAlias,
-  resolveSourceMapPath,
-  rewriteScssReadFileSync,
-  rewriteExistsSyncHasRootFile,
-  uniUTSExtApiReplace,
-  uniViteInjectPlugin,
   isInHBuilderX,
   parseUniExtApisOnce,
-  AutoImportOptions,
+  resolveSourceMapPath,
+  rewriteExistsSyncHasRootFile,
+  rewriteScssReadFileSync,
+  uniUTSExtApiReplace,
+  uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'

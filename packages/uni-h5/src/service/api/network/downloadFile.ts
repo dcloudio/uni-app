@@ -1,13 +1,13 @@
 import { isFunction } from '@vue/shared'
 import {
-  defineTaskApi,
   API_DOWNLOAD_FILE,
-  API_TYPE_DOWNLOAD_FILE,
-  DownloadFileProtocol,
+  type API_TYPE_DOWNLOAD_FILE,
   DownloadFileOptions,
+  DownloadFileProtocol,
+  defineTaskApi,
 } from '@dcloudio/uni-api'
 import { fileToUrl, getFileName } from '../../../helpers/file'
-import { type DownloadFileFail } from '@dcloudio/uni-app-x/types/uni'
+import type { DownloadFileFail } from '@dcloudio/uni-app-x/types/uni'
 /**
  * 下载任务
  */

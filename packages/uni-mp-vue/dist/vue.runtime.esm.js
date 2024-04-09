@@ -7664,9 +7664,9 @@ var plugin = {
                 createApp(instance);
             }
             else {
-                // @ts-ignore 旧编译器
+                // @ts-expect-error 旧编译器
                 if (typeof createMiniProgramApp !== 'undefined') {
-                    // @ts-ignore
+                    // @ts-expect-error
                     createMiniProgramApp(instance);
                 }
             }

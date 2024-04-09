@@ -1,27 +1,27 @@
 //#region Functions
-import { reactive, nextTick, watch, effectScope } from 'vue'
+import { effectScope, nextTick, reactive, watch } from 'vue'
 import { extend } from '@vue/shared'
 import {
-  defineAsyncApi,
+  API_HIDE_LOADING,
+  API_HIDE_TOAST,
+  API_SHOW_LOADING,
+  API_SHOW_TOAST,
+  ShowLoadingOptions,
+  ShowLoadingProtocol,
   ShowToastOptions,
   ShowToastProtocol,
-  ShowLoadingProtocol,
-  ShowLoadingOptions,
-  API_SHOW_TOAST,
-  API_SHOW_LOADING,
-  API_HIDE_TOAST,
-  API_HIDE_LOADING,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
-import Toast, { ToastProps } from './toast'
-import { ensureRoot, createRootApp } from './utils'
+import Toast, { type ToastProps } from './toast'
+import { createRootApp, ensureRoot } from './utils'
 import { useI18n } from '@dcloudio/uni-core'
 //#endregion
 
 //#region Type
 import type {
-  API_TYPE_SHOW_LOADING,
-  API_TYPE_HIDE_TOAST,
   API_TYPE_HIDE_LOADING,
+  API_TYPE_HIDE_TOAST,
+  API_TYPE_SHOW_LOADING,
   API_TYPE_SHOW_TOAST,
 } from '@dcloudio/uni-api'
 //#endregion

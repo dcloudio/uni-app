@@ -1,32 +1,32 @@
 import {
-  ArrayExpression,
+  type ArrayExpression,
   BindingTypes,
-  CallExpression,
+  type CallExpression,
   CompilerDeprecationTypes,
-  ComponentNode,
+  type ComponentNode,
   ConstantTypes,
-  DirectiveArguments,
-  DirectiveNode,
-  ElementNode,
+  type DirectiveArguments,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
   ErrorCodes,
-  ExpressionNode,
+  type ExpressionNode,
   GUARD_REACTIVE_PROPS,
-  JSChildNode,
+  type JSChildNode,
   KEEP_ALIVE,
   MERGE_PROPS,
   NORMALIZE_CLASS,
   NORMALIZE_PROPS,
   NORMALIZE_STYLE,
   NodeTypes,
-  ObjectExpression,
-  Property,
+  type ObjectExpression,
+  type Property,
   RESOLVE_DYNAMIC_COMPONENT,
   SUSPENSE,
   TELEPORT,
-  TemplateTextChildNode,
+  type TemplateTextChildNode,
   UNREF,
-  VNodeCall,
+  type VNodeCall,
   buildSlots,
   checkCompatEnabled,
   createArrayExpression,
@@ -44,23 +44,23 @@ import {
 } from '@vue/compiler-core'
 import { getInnerRange } from '@dcloudio/uni-cli-shared'
 
-import { NodeTransform, TransformContext } from '../transform'
+import type { NodeTransform, TransformContext } from '../transform'
 
 import {
-  PatchFlags,
   PatchFlagNames,
-  isSymbol,
-  isOn,
-  isObject,
-  isReservedProp,
-  capitalize,
+  PatchFlags,
   camelize,
+  capitalize,
   isBuiltInDirective,
+  isObject,
+  isOn,
+  isReservedProp,
+  isSymbol,
 } from '@vue/shared'
 import { createCompilerError } from '../errors'
 import {
-  RESOLVE_DIRECTIVE,
   RESOLVE_COMPONENT,
+  RESOLVE_DIRECTIVE,
   TO_HANDLERS,
 } from '../runtimeHelpers'
 import { __BROWSER__, __COMPAT__, __DEV__ } from '../utils'

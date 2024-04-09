@@ -1,12 +1,12 @@
 import { nextTick, reactive } from 'vue'
 import {
   API_CHOOSE_LOCATION,
-  API_TYPE_CHOOSE_LOCATION,
-  defineAsyncApi,
+  type API_TYPE_CHOOSE_LOCATION,
   ChooseLocationProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { ensureRoot, createRootApp } from '../../ui/popup/utils'
-import LoctaionPicker, { Props, Poi } from './LoctaionPicker'
+import { createRootApp, ensureRoot } from '../../ui/popup/utils'
+import LoctaionPicker, { type Poi, type Props } from './LoctaionPicker'
 
 let state: Props | null = null
 

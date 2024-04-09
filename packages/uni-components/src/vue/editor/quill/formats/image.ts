@@ -1,4 +1,4 @@
-import QuillClass from 'quill'
+import type QuillClass from 'quill'
 import { getRealPath } from '@dcloudio/uni-platform'
 
 export default function (Quill: typeof QuillClass) {

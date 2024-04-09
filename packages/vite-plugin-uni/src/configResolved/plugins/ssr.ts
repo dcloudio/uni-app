@@ -1,19 +1,19 @@
 import debug from 'debug'
 import crypto from 'crypto'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 
 import { walk } from 'estree-walker'
-import { CallExpression } from 'estree'
+import type { CallExpression } from 'estree'
 
 import { createFilter } from '@rollup/pluginutils'
 import MagicString from 'magic-string'
 import {
-  isIdentifier,
   isCallExpression,
+  isIdentifier,
   isMemberExpression,
   withSourcemap,
 } from '@dcloudio/uni-cli-shared'
-import { UniPluginFilterOptions } from '.'
+import type { UniPluginFilterOptions } from '.'
 
 const debugSSR = debug('uni:ssr')
 

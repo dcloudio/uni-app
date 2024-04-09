@@ -1,4 +1,4 @@
-import { extend, capitalize, isFunction } from '@vue/shared'
+import { capitalize, extend, isFunction } from '@vue/shared'
 import {
   API_CREATE_INNER_AUDIO_CONTEXT,
   defineSyncApi,
@@ -6,7 +6,7 @@ import {
 import type { API_TYPE_CREATEE_INNER_AUDIO_CONTEXT } from '@dcloudio/uni-api'
 import { once } from '@dcloudio/uni-shared'
 import {
-  InnerAudioContextEvent,
+  type InnerAudioContextEvent,
   innerAudioContextEventNames,
   innerAudioContextOffEventNames,
 } from '@dcloudio/uni-api'
@@ -133,7 +133,6 @@ function setAudioState({
       audio.setSessionCategory(sessionCategory)
     }
     if (playbackRate && audio.playbackRate) {
-      // @ts-ignore
       audio.playbackRate(playbackRate)
     }
     initStateChage(audioId)

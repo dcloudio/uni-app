@@ -11,8 +11,8 @@ import type {
   RenderedChunk,
 } from 'rollup'
 import { isFunction, isString } from '@vue/shared'
-import { Plugin } from '../plugin'
-import { ResolvedConfig } from '../config'
+import type { Plugin } from '../plugin'
+import type { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
 import { withSourcemap } from '../../../../vite/utils/utils'
 import { normalizeNodeModules } from '../../../../utils'

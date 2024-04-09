@@ -1,9 +1,9 @@
 import {
-  defineSyncApi,
   API_CREATE_FULL_SCREEN_VIDEO_AD,
-  API_TYPE_CREATE_FULL_SCREEN_VIDEO_AD,
+  type API_TYPE_CREATE_FULL_SCREEN_VIDEO_AD,
   CreateFullScreenVideoAdOptions,
   CreateFullScreenVideoAdProtocol,
+  defineSyncApi,
 } from '@dcloudio/uni-api'
 
 import { AdBase } from './adBase'

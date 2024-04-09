@@ -1,5 +1,5 @@
-import { PropType } from 'vue'
-import { Point } from './interface'
+import type { PropType } from 'vue'
+import type { Point } from './interface'
 
 // MapPolygon 组件的 props 属性配置
 export default {

@@ -2,9 +2,9 @@ import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
 import { ON_SHOW } from '@dcloudio/uni-shared'
 import { isDirectPage, reLaunchEntryPage } from '../../../../api/route/direct'
 import {
+  type StatusBarStyle,
   lastStatusBarStyle,
   setStatusBarStyle,
-  StatusBarStyle,
 } from '../../../../statusBar'
 import { removeCurrentPage } from '../../../page/getCurrentPages'
 

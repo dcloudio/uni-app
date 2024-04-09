@@ -1,4 +1,4 @@
-import { ComponentPublicInstance, ref } from 'vue'
+import { type ComponentPublicInstance, ref } from 'vue'
 import { useI18n } from '../../i18n'
 import { initOn } from './on'
 import { initSubscribe } from './subscribe'

@@ -1,7 +1,7 @@
-import { IApp } from '@dcloudio/uni-app-x/types/native'
+import type { IApp } from '@dcloudio/uni-app-x/types/native'
 import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 export function initOn(app: IApp) {
   app.addEventListener(ON_SHOW, function (event) {

@@ -1,11 +1,11 @@
 import { extend } from '@vue/shared'
 import {
   API_CREATE_PUSH_MESSAGE,
-  API_TYPE_CREATE_PUSH_MESSAGE,
+  API_GET_CHANNEL_MANAGER,
+  type API_TYPE_CREATE_PUSH_MESSAGE,
+  type API_TYPE_GET_CHANNEL_MANAGER,
   CreatePushMessageOptions,
   defineAsyncApi,
-  API_GET_CHANNEL_MANAGER,
-  API_TYPE_GET_CHANNEL_MANAGER,
   defineSyncApi,
 } from '@dcloudio/uni-api'
 import { getAppAuthorizeSetting } from '../device/getAppAuthorizeSetting'

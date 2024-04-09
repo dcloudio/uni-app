@@ -1,13 +1,13 @@
 import {
-  BaseElementNode,
-  DirectiveNode,
-  ElementNode,
+  type BaseElementNode,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
-  NodeTransform,
+  type NodeTransform,
   NodeTypes,
-  SimpleExpressionNode,
+  type SimpleExpressionNode,
 } from '@vue/compiler-core'
-import { createDOMCompilerError, ErrorCodes } from '../errors'
+import { ErrorCodes, createDOMCompilerError } from '../errors'
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 
 export const transformVHtml: NodeTransform = (node, context) => {

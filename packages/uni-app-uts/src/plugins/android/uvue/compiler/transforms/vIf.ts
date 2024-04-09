@@ -1,21 +1,22 @@
-import { PatchFlags, PatchFlagNames } from '@vue/shared'
+import { PatchFlagNames, PatchFlags } from '@vue/shared'
 import {
-  AttributeNode,
-  BlockCodegenNode,
+  type AttributeNode,
+  type BlockCodegenNode,
   CREATE_COMMENT,
-  CacheExpression,
+  type CacheExpression,
   ConstantTypes,
-  DirectiveNode,
-  ElementNode,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
   FRAGMENT,
-  IfBranchNode,
-  IfConditionalExpression,
-  IfNode,
-  MemoExpression,
+  type IfBranchNode,
+  type IfConditionalExpression,
+  type IfNode,
+  type MemoExpression,
   NodeTypes,
-  SimpleExpressionNode,
-  TextNode,
+  type SimpleExpressionNode,
+  type TextNode,
+  convertToBlock,
   createCallExpression,
   createConditionalExpression,
   createObjectExpression,
@@ -27,15 +28,14 @@ import {
   getMemoedVNodeCall,
   injectProp,
   locStub,
-  convertToBlock,
 } from '@vue/compiler-core'
 
 import {
-  TransformContext,
+  type TransformContext,
   createStructuralDirectiveTransform,
   traverseNode,
 } from '../transform'
-import { createCompilerError, ErrorCodes } from '../errors'
+import { ErrorCodes, createCompilerError } from '../errors'
 import { processExpression } from './transformExpression'
 
 export const transformIf = createStructuralDirectiveTransform(

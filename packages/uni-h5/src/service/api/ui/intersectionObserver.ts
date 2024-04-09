@@ -1,7 +1,7 @@
 import {
+  type AddIntersectionObserverArgs,
+  type RemoveIntersectionObserverArgs,
   requestComponentObserver,
-  AddIntersectionObserverArgs,
-  RemoveIntersectionObserverArgs,
 } from '@dcloudio/uni-api'
 import { findElem } from '../../../platform/dom'
 

@@ -1,10 +1,10 @@
-import { App } from 'vue'
-import { RouterOptions, RouteRecordRaw } from 'vue-router'
+import type { App } from 'vue'
+import type { RouteRecordRaw, RouterOptions } from 'vue-router'
 import {
-  createRouter,
-  createWebHistory,
-  createWebHashHistory,
   createMemoryHistory,
+  createRouter,
+  createWebHashHistory,
+  createWebHistory,
 } from 'vue-router'
 import { getCurrentPages, normalizeRouteKey, removePage } from '../setup/page'
 //#if _X_

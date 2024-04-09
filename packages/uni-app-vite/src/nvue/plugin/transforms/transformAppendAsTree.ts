@@ -3,7 +3,7 @@ import {
   isElementNode,
   renameProp,
 } from '@dcloudio/uni-cli-shared'
-import { findProp, NodeTransform } from '@vue/compiler-core'
+import { type NodeTransform, findProp } from '@vue/compiler-core'
 
 const unitaryTags = [
   'cell',

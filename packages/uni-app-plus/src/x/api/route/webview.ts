@@ -1,4 +1,4 @@
-import { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { IPage } from '@dcloudio/uni-app-x/types/native'
 
 export function showWebview(
   nPage: IPage,

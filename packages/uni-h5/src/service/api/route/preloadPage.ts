@@ -1,6 +1,6 @@
 import {
   API_PRELOAD_PAGE,
-  API_TYPE_PRELOAD_PAGE,
+  type API_TYPE_PRELOAD_PAGE,
   PreloadPageProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'

@@ -1,21 +1,25 @@
-import { ParserPlugin } from '@babel/parser'
-import { GeneratorOptions } from '@babel/generator'
-import {
+import type { ParserPlugin } from '@babel/parser'
+import type { GeneratorOptions } from '@babel/generator'
+import type {
   CallExpression,
   Expression,
   ObjectExpression,
   ObjectProperty,
   SpreadElement,
 } from '@babel/types'
-import {
-  NodeTransform as VueNodeTransform,
+import type {
   DirectiveTransform as VueDirectiveTransform,
+  NodeTransform as VueNodeTransform,
 } from '@vue/compiler-core'
-import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
-import { BindingMetadata, CompilerError, RootNode } from '@vue/compiler-core'
-import IdentifierGenerator from './identifier'
-import { TransformContext } from './transform'
-import { VForOptions } from './transforms/vFor'
+import type { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
+import type {
+  BindingMetadata,
+  CompilerError,
+  RootNode,
+} from '@vue/compiler-core'
+import type IdentifierGenerator from './identifier'
+import type { TransformContext } from './transform'
+import type { VForOptions } from './transforms/vFor'
 
 export interface CodegenRootNode extends RootNode {
   renderData: ObjectExpression | CallExpression

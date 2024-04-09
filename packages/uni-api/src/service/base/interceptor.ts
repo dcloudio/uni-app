@@ -7,11 +7,11 @@ import {
 } from '@vue/shared'
 
 import {
-  HOOKS,
-  Interceptor,
-  scopedInterceptors,
+  type HOOKS,
+  type Interceptor,
+  type Interceptors,
   globalInterceptors,
-  Interceptors,
+  scopedInterceptors,
 } from '../../helpers/interceptor'
 
 import { defineSyncApi } from '../../helpers/api'

@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 import {
   APP_SERVICE_FILENAME,
-  UniVitePlugin,
+  type UniVitePlugin,
   emptyDir,
   injectCssPlugin,
   injectCssPostPlugin,

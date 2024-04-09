@@ -1,4 +1,4 @@
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 function replaceModuleExports(code: string) {
   return code.replace(/module\.exports\s*=/, 'export default ')
 }

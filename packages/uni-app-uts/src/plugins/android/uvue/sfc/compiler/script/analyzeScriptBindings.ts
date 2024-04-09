@@ -1,10 +1,10 @@
-import {
+import type {
   ArrayExpression,
   Node,
   ObjectExpression,
   Statement,
 } from '@babel/types'
-import { BindingMetadata, BindingTypes } from '@vue/compiler-dom'
+import { type BindingMetadata, BindingTypes } from '@vue/compiler-dom'
 import { resolveObjectKey } from './utils'
 
 /**

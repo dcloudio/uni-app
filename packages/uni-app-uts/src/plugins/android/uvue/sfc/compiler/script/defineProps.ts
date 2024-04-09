@@ -1,26 +1,26 @@
 import { isArray } from '@vue/shared'
-import {
-  Node,
-  LVal,
-  ObjectProperty,
-  ObjectMethod,
-  ObjectExpression,
+import type {
   Expression,
-  TSPropertySignature,
+  LVal,
+  Node,
+  ObjectExpression,
+  ObjectMethod,
+  ObjectProperty,
   TSMethodSignature,
+  TSPropertySignature,
 } from '@babel/types'
 import { BindingTypes, isFunctionType } from '@vue/compiler-dom'
-import { ScriptCompileContext } from './context'
+import type { ScriptCompileContext } from './context'
 import { inferRuntimeType, resolveTypeElements } from './resolveType'
 import {
-  resolveObjectKey,
   UNKNOWN_TYPE,
   concatStrings,
-  isLiteralNode,
-  isCallOf,
-  unwrapTSNode,
-  toRuntimeTypeString,
   getEscapedPropName,
+  isCallOf,
+  isLiteralNode,
+  resolveObjectKey,
+  toRuntimeTypeString,
+  unwrapTSNode,
 } from './utils'
 import { genModelProps } from './defineModel'
 import { getObjectOrArrayExpressionKeys } from './analyzeScriptBindings'

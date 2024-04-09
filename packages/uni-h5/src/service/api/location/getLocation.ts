@@ -1,14 +1,14 @@
 import {
-  defineAsyncApi,
   API_GET_LOCATION,
-  API_TYPE_GET_LOCATION,
-  GetLocationProtocol,
+  type API_TYPE_GET_LOCATION,
   GetLocationOptions,
+  GetLocationProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import {
   MapType,
+  type TranslateCoordinateSystemOptions,
   getMapInfo,
-  TranslateCoordinateSystemOptions,
   translateCoordinateSystem,
 } from '../../../helpers/location'
 import { getJSONP } from '../../../helpers/getJSONP'

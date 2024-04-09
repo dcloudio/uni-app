@@ -1,9 +1,9 @@
 import {
-  defineAsyncApi,
   API_REMOVE_SAVED_FILE,
-  API_TYPE_REMOVE_SAVED_FILE,
-  RemoveSavedFileProtocol,
+  type API_TYPE_REMOVE_SAVED_FILE,
   RemoveSavedFileOptions,
+  RemoveSavedFileProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 

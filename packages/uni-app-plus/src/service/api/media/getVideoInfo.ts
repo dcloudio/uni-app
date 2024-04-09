@@ -1,9 +1,9 @@
 import {
-  defineAsyncApi,
   API_GET_VIDEO_INFO,
-  API_TYPE_GET_VIDEO_INFO,
+  type API_TYPE_GET_VIDEO_INFO,
   GetVideoInfoOptions,
   GetVideoInfoProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 

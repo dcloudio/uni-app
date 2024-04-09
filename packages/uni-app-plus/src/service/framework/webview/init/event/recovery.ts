@@ -1,6 +1,6 @@
 import { formatLog } from '@dcloudio/uni-shared'
 import { ON_WEBVIEW_READY } from '../../../../../constants'
-import UniPageNode from '../../../dom/Page'
+import type UniPageNode from '../../../dom/Page'
 import { getPageById } from '../../../page/getCurrentPages'
 
 export function onWebviewRecovery(webview: PlusWebviewWebviewObject) {

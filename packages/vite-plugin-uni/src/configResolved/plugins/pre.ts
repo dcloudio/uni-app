@@ -1,19 +1,19 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import {
-  preJs,
-  preHtml,
   EXTNAME_JS,
   EXTNAME_VUE,
-  parseVueRequest,
-  withSourcemap,
-  preNVueJs,
-  preNVueHtml,
   X_EXTNAME_VUE,
+  parseVueRequest,
+  preHtml,
+  preJs,
+  preNVueHtml,
+  preNVueJs,
+  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
-import { UniPluginFilterOptions } from '.'
+import type { UniPluginFilterOptions } from '.'
 
 const debugPreJs = debug('uni:pre-js')
 const debugPreHtml = debug('uni:pre-html')

@@ -1,14 +1,14 @@
 import { extend } from '@vue/shared'
 import {
+  type CodegenResult,
+  type ParserOptions,
+  type RootNode,
   baseParse,
-  CodegenResult,
-  ParserOptions,
-  RootNode,
 } from '@vue/compiler-core'
 
 import { baseCompile } from './compile'
 import { parserOptions } from './parserOptions'
-import { CompilerOptions } from './options'
+import type { CompilerOptions } from './options'
 export type { CompilerOptions } from './options'
 export { findProp } from '@vue/compiler-core'
 export type {

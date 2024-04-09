@@ -5,7 +5,7 @@ import os from 'os'
 import path from 'path'
 import remapping from '@ampproject/remapping'
 import type { DecodedSourceMap, RawSourceMap } from '@ampproject/remapping'
-import { Position, SourceLocation } from '@vue/compiler-core'
+import type { Position, SourceLocation } from '@vue/compiler-core'
 import { LinesAndColumns } from 'lines-and-columns'
 
 export function slash(p: string): string {

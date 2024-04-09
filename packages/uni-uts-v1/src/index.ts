@@ -2,21 +2,21 @@ import { extend, isArray } from '@vue/shared'
 import { join, relative } from 'path'
 
 import {
-  runKotlinProd,
-  runKotlinDev,
-  resolveAndroidDepFiles,
   checkAndroidVersionTips,
+  resolveAndroidDepFiles,
+  runKotlinDev,
+  runKotlinProd,
 } from './kotlin'
 import {
-  runSwiftProd,
-  runSwiftDev,
-  resolveIOSDepFiles,
   checkIOSVersionTips,
+  resolveIOSDepFiles,
+  runSwiftDev,
+  runSwiftProd,
 } from './swift'
 
 import {
   FORMATS,
-  GenProxyCodeOptions,
+  type GenProxyCodeOptions,
   genProxyCode,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
@@ -47,7 +47,7 @@ import {
 } from './manifest'
 import { cacheTips } from './manifest/utils'
 import { compileEncrypt, isEncrypt } from './encrypt'
-import { UTSOutputOptions } from '@dcloudio/uts'
+import type { UTSOutputOptions } from '@dcloudio/uts'
 
 export * from './tsc'
 

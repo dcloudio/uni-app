@@ -1,12 +1,12 @@
 import { ON_KEYBOARD_HEIGHT_CHANGE } from '@dcloudio/uni-shared'
 import {
-  API_SHOW_KEYBOARD,
   API_HIDE_KEYBOARD,
-  API_TYPE_SHOW_KEYBOARD,
-  API_TYPE_HIDE_KEYBOARD,
+  API_SHOW_KEYBOARD,
+  type API_TYPE_HIDE_KEYBOARD,
+  type API_TYPE_SHOW_KEYBOARD,
   defineAsyncApi,
-  defineOnApi,
   defineOffApi,
+  defineOnApi,
 } from '@dcloudio/uni-api'
 
 export const showKeyboard = defineAsyncApi<API_TYPE_SHOW_KEYBOARD>(

@@ -1,13 +1,13 @@
 import {
   API_RE_LAUNCH,
-  API_TYPE_RE_LAUNCH,
-  defineAsyncApi,
+  type API_TYPE_RE_LAUNCH,
+  type DefineAsyncApiFn,
   ReLaunchOptions,
   ReLaunchProtocol,
-  DefineAsyncApiFn,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
-import { RouteOptions } from '../../../service/api/route/utils'
+import type { RouteOptions } from '../../../service/api/route/utils'
 import { getTabIndex, switchSelect } from '../../framework/app/tabBar'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page/register'

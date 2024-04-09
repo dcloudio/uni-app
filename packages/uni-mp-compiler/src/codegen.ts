@@ -1,30 +1,33 @@
-import { isString, isSymbol, hasOwn } from '@vue/shared'
+import { hasOwn, isString, isSymbol } from '@vue/shared'
 import {
+  type CodegenResult,
+  type CompoundExpressionNode,
+  type InterpolationNode,
+  NodeTypes,
+  type Position,
+  RESOLVE_COMPONENT,
+  type RootNode,
+  type SimpleExpressionNode,
+  TO_DISPLAY_STRING,
+  type TextNode,
   advancePositionWithMutation,
-  CodegenResult,
-  CompoundExpressionNode,
   helperNameMap,
-  InterpolationNode,
   isSimpleIdentifier,
   locStub,
-  NodeTypes,
-  Position,
-  RESOLVE_COMPONENT,
-  RootNode,
-  SimpleExpressionNode,
-  TextNode,
-  TO_DISPLAY_STRING,
 } from '@vue/compiler-core'
-import { Expression } from '@babel/types'
-import { default as babelGenerate, GeneratorOptions } from '@babel/generator'
+import type { Expression } from '@babel/types'
+import {
+  type GeneratorOptions,
+  default as babelGenerate,
+} from '@babel/generator'
 import { addImportDeclaration, matchEasycom } from '@dcloudio/uni-cli-shared'
 import type { SourceMapGenerator } from 'source-map-js'
-import { CodegenOptions, CodegenRootNode } from './options'
+import type { CodegenOptions, CodegenRootNode } from './options'
 
 import {
   BindingComponentTypes,
-  ImportItem,
-  TransformContext,
+  type ImportItem,
+  type TransformContext,
 } from './transform'
 
 interface CodegenContext extends Omit<CodegenOptions, 'renderDataExpr'> {

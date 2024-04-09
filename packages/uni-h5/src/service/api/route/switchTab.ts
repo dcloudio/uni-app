@@ -1,10 +1,10 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import {
   API_SWITCH_TAB,
-  API_TYPE_SWITCH_TAB,
-  defineAsyncApi,
+  type API_TYPE_SWITCH_TAB,
   SwitchTabOptions,
   SwitchTabProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPageVm, invokeHook } from '@dcloudio/uni-core'
 import { getCurrentPagesMap, removePage } from '../../../framework/setup/page'
@@ -55,7 +55,7 @@ function getTabBarPageId(url: string) {
 
 export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   API_SWITCH_TAB,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
     return (
       removeNonTabBarPages(),

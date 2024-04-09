@@ -1,4 +1,4 @@
-import { computed, onMounted, Ref } from 'vue'
+import { type Ref, computed, onMounted } from 'vue'
 import { useOn } from '@dcloudio/uni-components'
 import { hexToRgba } from '../../../helpers/hexToRgba'
 

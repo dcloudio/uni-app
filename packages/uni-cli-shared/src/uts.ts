@@ -2,7 +2,7 @@
 import fs from 'fs'
 import path from 'path'
 import glob from 'fast-glob'
-import * as UTSCompiler from '@dcloudio/uni-uts-v1'
+import type * as UTSCompiler from '@dcloudio/uni-uts-v1'
 
 import { isInHBuilderX } from './hbx'
 import {

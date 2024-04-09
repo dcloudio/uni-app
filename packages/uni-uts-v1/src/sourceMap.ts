@@ -2,15 +2,15 @@ import { hasOwn } from '@vue/shared'
 import { existsSync, readFileSync, statSync } from 'fs'
 import { basename, dirname, join, relative } from 'path'
 import {
-  BasicSourceMapConsumer,
-  IndexedSourceMapConsumer,
-  NullableMappedPosition,
-  NullablePosition,
+  type BasicSourceMapConsumer,
+  type IndexedSourceMapConsumer,
+  type NullableMappedPosition,
+  type NullablePosition,
   SourceMapConsumer,
 } from 'source-map'
 
 import {
-  MappedPosition,
+  type MappedPosition,
   SourceMapConsumer as SourceMapConsumerSync,
 } from 'source-map-js'
 

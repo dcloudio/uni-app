@@ -1,21 +1,21 @@
 import { extend } from '@vue/shared'
 import {
-  useI18n,
   initI18nStartSoterAuthenticationMsgsOnce,
+  useI18n,
 } from '@dcloudio/uni-core'
 import {
-  defineAsyncApi,
-  API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION,
-  API_TYPE_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION,
-  CheckIsSoterEnrolledInDeviceCheckAuthMode,
   API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE,
-  API_TYPE_CHECK_IS_SOTER_ENROLLED_IN_DEVICE,
+  API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION,
+  API_START_SOTER_AUTHENTICATION,
+  type API_TYPE_CHECK_IS_SOTER_ENROLLED_IN_DEVICE,
+  type API_TYPE_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION,
+  type API_TYPE_START_SOTER_AUTHENTICATION,
+  type CheckIsSoterEnrolledInDeviceCheckAuthMode,
   CheckIsSoterEnrolledInDeviceOptions,
   CheckIsSoterEnrolledInDeviceProtocols,
-  API_START_SOTER_AUTHENTICATION,
-  API_TYPE_START_SOTER_AUTHENTICATION,
   StartSoterAuthenticationOptions,
   StartSoterAuthenticationProtocols,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 import { requireNativePlugin } from '../plugin/requireNativePlugin'

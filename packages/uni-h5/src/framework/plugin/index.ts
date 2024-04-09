@@ -1,7 +1,7 @@
-import { App, ComponentPublicInstance } from 'vue'
+import type { App, ComponentPublicInstance } from 'vue'
 
 import { initApp } from '@dcloudio/uni-vue'
-import { initViewPlugin, initServicePlugin } from '@dcloudio/uni-core'
+import { initServicePlugin, initViewPlugin } from '@dcloudio/uni-core'
 
 import { initRouter } from './router'
 

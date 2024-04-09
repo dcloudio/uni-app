@@ -1,5 +1,5 @@
 import { bundleKotlin, bundleSwift } from './api'
-import { UTSBundleOptions, UTSResult, UTSTarget } from './types'
+import { type UTSBundleOptions, type UTSResult, UTSTarget } from './types'
 
 export {
   UTSTarget,

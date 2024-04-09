@@ -1,4 +1,4 @@
-import { isPlainObject, isString, isArray } from '@vue/shared'
+import { isArray, isPlainObject, isString } from '@vue/shared'
 
 export const borderStyles = {
   black: 'rgba(0,0,0,0.4)',

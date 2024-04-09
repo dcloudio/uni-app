@@ -2737,7 +2737,7 @@ function getConsumer(content) {
                 });
             }
             else {
-                // @ts-ignore
+                // @ts-expect-error
                 const consumer = SourceMapConsumer(content);
                 resolve(consumer);
             }

@@ -1,23 +1,23 @@
 import type {
-  Literal,
-  BaseNode,
-  Property,
-  Identifier,
-  CallExpression,
   AssignmentExpression,
+  BaseNode,
+  CallExpression,
+  ExportSpecifier,
+  Identifier,
+  Literal,
   MemberExpression,
   MethodDefinition,
-  ExportSpecifier,
+  Property,
 } from 'estree'
 
 import {
-  Node,
+  type AttributeNode,
+  type CompoundExpressionNode,
+  type DirectiveNode,
+  type ElementNode,
+  type Node,
   NodeTypes,
-  ElementNode,
-  DirectiveNode,
-  SimpleExpressionNode,
-  AttributeNode,
-  CompoundExpressionNode,
+  type SimpleExpressionNode,
 } from '@vue/compiler-core'
 import { parse } from '@vue/compiler-dom'
 

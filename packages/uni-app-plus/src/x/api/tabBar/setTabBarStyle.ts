@@ -1,9 +1,9 @@
 import {
-  defineAsyncApi,
-  API_TYPE_SET_TAB_BAR_STYLE,
   API_SET_TAB_BAR_STYLE,
-  SetTabBarStyleProtocol,
+  type API_TYPE_SET_TAB_BAR_STYLE,
   SetTabBarStyleOptions,
+  SetTabBarStyleProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getBorderStyle, getTabBar } from '../../framework/app/tabBar'
 import { isString } from '@vue/shared'

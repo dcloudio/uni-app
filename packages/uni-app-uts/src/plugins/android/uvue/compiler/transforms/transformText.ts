@@ -1,14 +1,14 @@
 import { isElementNode } from '@dcloudio/uni-cli-shared'
 import {
-  CompoundExpressionNode,
-  ElementNode,
-  InterpolationNode,
+  type CompoundExpressionNode,
+  type ElementNode,
+  type InterpolationNode,
   NodeTypes,
-  TemplateChildNode,
-  TextCallNode,
-  TextNode,
+  type TemplateChildNode,
+  type TextCallNode,
+  type TextNode,
 } from '@vue/compiler-core'
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 
 function isTextNode({ tag }: ElementNode) {
   // TODO 临时解决text节点嵌套的问题

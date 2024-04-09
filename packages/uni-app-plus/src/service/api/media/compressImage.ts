@@ -3,10 +3,10 @@ import { getFileName } from '../../../helpers/file'
 import { TEMP_PATH } from '../constants'
 import {
   API_COMPRESS_IMAGE,
-  API_TYPE_COMPRESS_IMAGE,
-  defineAsyncApi,
+  type API_TYPE_COMPRESS_IMAGE,
   CompressImageOptions,
   CompressImageProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 export const compressImage = defineAsyncApi<API_TYPE_COMPRESS_IMAGE>(

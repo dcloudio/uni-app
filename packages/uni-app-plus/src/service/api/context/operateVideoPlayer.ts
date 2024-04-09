@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { findElmById, invokeVmMethod, invokeVmMethodWithoutArgs } from '../util'
 import { getPageById } from '../../framework/page/getCurrentPages'
 

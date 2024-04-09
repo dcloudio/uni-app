@@ -1,4 +1,4 @@
-import QuillClass from 'quill'
+import type QuillClass from 'quill'
 
 export default function (Quill: typeof QuillClass) {
   const BlockEmbed = Quill.import('blots/block/embed')

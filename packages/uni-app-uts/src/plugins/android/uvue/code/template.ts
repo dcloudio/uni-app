@@ -1,6 +1,6 @@
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import { compile } from '../compiler'
-import { TemplateCompilerOptions } from '../compiler/options'
+import type { TemplateCompilerOptions } from '../compiler/options'
 import { genRenderFunctionDecl } from '../compiler/utils'
 
 export function genTemplate(

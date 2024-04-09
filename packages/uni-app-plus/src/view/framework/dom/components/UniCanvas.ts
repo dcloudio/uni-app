@@ -1,6 +1,6 @@
 import '@dcloudio/uni-components/style/canvas.css'
 import { Canvas } from '@dcloudio/uni-components'
-import { UniNodeJSON } from '@dcloudio/uni-shared'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniComponent } from './UniComponent'
 
 export class UniCanvas extends UniComponent {

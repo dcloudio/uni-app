@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 
-import { VitePluginUniResolvedOptions } from '../..'
+import type { VitePluginUniResolvedOptions } from '../..'
 import { createDefine } from '../../config/define'
 import { createResolve } from '../../config/resolve'
 import { createCss } from '../../config/css'

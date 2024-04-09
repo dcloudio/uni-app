@@ -1,18 +1,18 @@
 import { extend } from '@vue/shared'
 import {
-  defineAsyncApi,
+  API_HIDE_LOADING,
+  API_HIDE_TOAST,
+  API_SHOW_LOADING,
+  API_SHOW_TOAST,
+  type API_TYPE_HIDE_LOADING,
+  type API_TYPE_HIDE_TOAST,
+  type API_TYPE_SHOW_LOADING,
+  type API_TYPE_SHOW_TOAST,
+  ShowLoadingOptions,
+  ShowLoadingProtocol,
   ShowToastOptions,
   ShowToastProtocol,
-  ShowLoadingProtocol,
-  ShowLoadingOptions,
-  API_TYPE_SHOW_TOAST,
-  API_TYPE_SHOW_LOADING,
-  API_TYPE_HIDE_LOADING,
-  API_TYPE_HIDE_TOAST,
-  API_SHOW_TOAST,
-  API_SHOW_LOADING,
-  API_HIDE_TOAST,
-  API_HIDE_LOADING,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 type Resolve = (res?: any) => void

@@ -1,13 +1,13 @@
 import {
-  renameProp,
-  isElementNode,
   createBindDirectiveNode,
+  isElementNode,
+  renameProp,
 } from '@dcloudio/uni-cli-shared'
 import {
+  type NodeTransform,
+  type RootNode,
   createSimpleExpression,
   findProp,
-  NodeTransform,
-  RootNode,
 } from '@vue/compiler-core'
 
 export const transformRenderWhole: NodeTransform = (node, _) => {

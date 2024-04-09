@@ -1,7 +1,7 @@
 import { isDirectiveNode, isElementNode } from '@dcloudio/uni-cli-shared'
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 import { rewriteObjectExpression } from '../utils'
-import { NodeTypes, SimpleExpressionNode } from '@vue/compiler-core'
+import { NodeTypes, type SimpleExpressionNode } from '@vue/compiler-core'
 import { isString } from '@vue/shared'
 
 export const transformObjectExpression: NodeTransform = (node, context) => {

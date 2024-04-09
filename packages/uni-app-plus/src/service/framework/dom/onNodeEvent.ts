@@ -1,5 +1,5 @@
-import { ACTION_TYPE_EVENT, UniEvent } from '@dcloudio/uni-shared'
-import UniPageNode from './Page'
+import type { ACTION_TYPE_EVENT, UniEvent } from '@dcloudio/uni-shared'
+import type UniPageNode from './Page'
 import { hookKeyboardEvent } from './keyboard'
 
 export type EventAction = [

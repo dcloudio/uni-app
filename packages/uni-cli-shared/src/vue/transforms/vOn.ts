@@ -1,18 +1,18 @@
 import { customizeEvent } from '@dcloudio/uni-shared'
 import {
-  ExpressionNode,
-  DirectiveNode,
+  type CompoundExpressionNode,
+  type DirectiveNode,
+  type DirectiveTransform,
+  type ElementNode,
+  ElementTypes,
+  type ExpressionNode,
+  NodeTypes,
+  type TransformContext,
+  createCompoundExpression,
+  createSimpleExpression,
   findProp,
   isStaticExp,
-  NodeTypes,
   locStub,
-  createSimpleExpression,
-  createCompoundExpression,
-  CompoundExpressionNode,
-  DirectiveTransform,
-  ElementNode,
-  TransformContext,
-  ElementTypes,
 } from '@vue/compiler-core'
 import { isUserComponent } from '../utils'
 export function defaultMatch(

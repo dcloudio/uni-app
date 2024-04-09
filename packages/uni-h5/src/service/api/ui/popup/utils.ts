@@ -1,13 +1,13 @@
 import {
+  type Component,
+  createApp,
+  createBlock,
+  createVNode,
+  defineComponent,
+  openBlock,
   ref,
   watch,
   watchEffect,
-  createVNode,
-  Component,
-  defineComponent,
-  createApp,
-  openBlock,
-  createBlock,
 } from 'vue'
 
 import { useKeyboard } from '../../../../helpers/useKeyboard'

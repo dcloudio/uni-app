@@ -1,5 +1,5 @@
-import { Scroller, Options } from './Scroller'
-import { TouchtrackEvent } from '../useTouchtrack'
+import { type Options, Scroller } from './Scroller'
+import type { TouchtrackEvent } from '../useTouchtrack'
 
 export function useScroller(element: HTMLElement, options: Options) {
   interface TouchInfo {

@@ -1,16 +1,16 @@
 import { extend } from '@vue/shared'
 import { nextTick, reactive } from 'vue'
 import {
-  API_PREVIEW_IMAGE,
-  API_TYPE_PREVIEW_IMAGE,
-  defineAsyncApi,
-  PreviewImageProtocol,
-  PreviewImageOptions,
   API_CLOSE_PREVIEW_IMAGE,
-  API_TYPE_CLOSE_PREVIEW_IMAGE,
+  API_PREVIEW_IMAGE,
+  type API_TYPE_CLOSE_PREVIEW_IMAGE,
+  type API_TYPE_PREVIEW_IMAGE,
+  PreviewImageOptions,
+  PreviewImageProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { ensureRoot, createRootApp } from '../../ui/popup/utils'
-import ImagePreview, { Props } from './ImagePreview'
+import { createRootApp, ensureRoot } from '../../ui/popup/utils'
+import ImagePreview, { type Props } from './ImagePreview'
 
 let state: Props | null = null
 let imagePreviewInstance: ReturnType<typeof createRootApp> | null

@@ -2,8 +2,8 @@ import { TEMP_PATH } from '../constants'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 import { initI18nChooseVideoMsgsOnce, useI18n } from '@dcloudio/uni-core'
 import {
-  API_TYPE_CHOOSE_VIDEO,
   API_CHOOSE_VIDEO,
+  type API_TYPE_CHOOSE_VIDEO,
   ChooseVideoOptions,
   ChooseVideoProtocol,
   defineAsyncApi,
@@ -37,7 +37,7 @@ export const chooseVideo = defineAsyncApi<API_TYPE_CHOOSE_VIDEO>(
 
     function openAlbum() {
       plus.gallery.pick(
-        // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
+        // @ts-expect-error 5+此API分单选和多选，多选返回files:string[]
         ({ files }) => successCallback(files[0]),
         errorCallback,
         {

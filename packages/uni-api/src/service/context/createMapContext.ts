@@ -1,9 +1,9 @@
-import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
+import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 import { operateMap } from '@dcloudio/uni-platform'
 import { defineSyncApi } from '../../helpers/api'
 import {
   API_CREATE_MAP_CONTEXT,
-  API_TYPE_CREATE_MAP_CONTEXT,
+  type API_TYPE_CREATE_MAP_CONTEXT,
   CreateMapContextProtocol,
 } from '../../protocols/context/context'
 

@@ -1,19 +1,19 @@
 import { parseQuery } from '@dcloudio/uni-shared'
 import {
   API_PRELOAD_PAGE,
-  API_TYPE_PRELOAD_PAGE,
-  PreloadPageProtocol,
+  type API_TYPE_PRELOAD_PAGE,
+  type API_TYPE_UN_PRELOAD_PAGE,
   API_UN_PRELOAD_PAGE,
-  API_TYPE_UN_PRELOAD_PAGE,
+  PreloadPageOptions,
+  PreloadPageProtocol,
+  UnPreloadPageOptions,
   UnPreloadPageProtocol,
   defineAsyncApi,
-  PreloadPageOptions,
-  UnPreloadPageOptions,
 } from '@dcloudio/uni-api'
 import { initPageInternalInstance } from '@dcloudio/uni-core'
 import {
-  preloadWebview,
   closePreloadWebview,
+  preloadWebview,
 } from '../../framework/page/preLoad'
 import { createNVuePage } from '../../framework/page/register'
 import { initRouteOptions } from '../../framework/page/routeOptions'

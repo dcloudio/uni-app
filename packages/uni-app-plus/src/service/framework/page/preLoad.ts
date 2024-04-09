@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { createWebview } from '../webview'
 import { initRouteOptions } from './routeOptions'
 

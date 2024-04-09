@@ -1,5 +1,5 @@
 import { formatLog } from '@dcloudio/uni-shared'
-import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import { findNodeById } from '../../dom/Page'
 
 export function onWxsInvokeCallMethod(

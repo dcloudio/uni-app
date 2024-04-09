@@ -1,4 +1,8 @@
-import { DirectiveNode, ElementNode, NodeTransform } from '@vue/compiler-core'
+import type {
+  DirectiveNode,
+  ElementNode,
+  NodeTransform,
+} from '@vue/compiler-core'
 import { isFunction } from '@vue/shared'
 import { isElementNode, isSimpleExpressionNode } from '../../vite/utils/ast'
 

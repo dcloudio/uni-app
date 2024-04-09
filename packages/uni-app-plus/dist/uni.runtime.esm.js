@@ -640,7 +640,6 @@ const ArrayBufferToBase64Protocol = [
     },
 ];
 
-// @ts-ignore
 const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
     return decode(base64);
 }, Base64ToArrayBufferProtocol);
@@ -10261,16 +10260,16 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 case 'fill':
                 case 'stroke':
                     return function () {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method: method + 'Path',
-                            // @ts-ignore
+                            // @ts-expect-error
                             data: [...this.path],
                         });
                     };
                 case 'fillRect':
                     return function (x, y, width, height) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method: 'fillPath',
                             data: [
@@ -10283,7 +10282,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                     };
                 case 'strokeRect':
                     return function (x, y, width, height) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method: 'strokePath',
                             data: [
@@ -10301,7 +10300,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                         if (typeof maxWidth === 'number') {
                             data.push(maxWidth);
                         }
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data,
@@ -10342,7 +10341,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                                 : isNumber(sWidth) && isNumber(sHeight)
                                     ? [imageResource, sx, sy, sWidth, sHeight]
                                     : [imageResource, sx, sy];
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data,
@@ -10350,7 +10349,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                     };
                 default:
                     return function (...data) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data,
@@ -10367,14 +10366,14 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 case 'setStrokeStyle':
                     return function (color) {
                         if (typeof color !== 'object') {
-                            // @ts-ignore
+                            // @ts-expect-error
                             this.actions.push({
                                 method,
                                 data: ['normal', checkColor(color)],
                             });
                         }
                         else {
-                            // @ts-ignore
+                            // @ts-expect-error
                             this.actions.push({
                                 method,
                                 data: [color.type, color.data, color.colorStop],
@@ -10384,7 +10383,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 case 'setGlobalAlpha':
                     return function (alpha) {
                         alpha = Math.floor(255 * parseFloat(alpha));
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data: [alpha],
@@ -10393,39 +10392,39 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 case 'setShadow':
                     return function (offsetX, offsetY, blur, color) {
                         color = checkColor(color);
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data: [offsetX, offsetY, blur, color],
                         });
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.shadowBlur = blur;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.shadowColor = color;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.shadowOffsetX = offsetX;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.shadowOffsetY = offsetY;
                     };
                 case 'setLineDash':
                     return function (pattern, offset) {
                         pattern = pattern || [0, 0];
                         offset = offset || 0;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data: [pattern, offset],
                         });
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.lineDash = pattern;
                     };
                 case 'setFontSize':
                     return function (fontSize) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + 'px');
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.fontSize = fontSize;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data: [fontSize],
@@ -10433,7 +10432,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                     };
                 default:
                     return function (...data) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data,
@@ -14369,7 +14368,7 @@ const getAppAuthorizeSetting = defineSyncApi(API_GET_APP_AUTHORIZE_SETTING, () =
     for (const key in appAuthorizeSetting) {
         if (hasOwn$1(appAuthorizeSetting, key)) {
             const value = appAuthorizeSetting[key];
-            // @ts-ignore
+            // @ts-expect-error
             if (value === 'undefined')
                 appAuthorizeSetting[key] = undefined;
         }
@@ -14682,7 +14681,7 @@ const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({ count, sizeType, sourceT
         });
     }
     function openAlbum() {
-        // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
+        // @ts-expect-error 5+此API分单选和多选，多选返回files:string[]
         plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
             maximum: count,
             multiple: true,
@@ -14753,7 +14752,7 @@ const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType, compressed, 
     }
     function openAlbum() {
         plus.gallery.pick(
-        // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
+        // @ts-expect-error 5+此API分单选和多选，多选返回files:string[]
         ({ files }) => successCallback(files[0]), errorCallback, {
             filter: 'video',
             system: false,
@@ -14961,7 +14960,7 @@ class RequestTask {
 }
 const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
     let { header, method, data, timeout, url, responseType, sslVerify, firstIpv4, 
-    // @ts-ignore tls 缺少 types 类型
+    // @ts-expect-error tls 缺少 types 类型
     tls, } = args;
     let contentType;
     for (const name in header) {
@@ -15473,7 +15472,6 @@ function setAudioState({ audioId, src, startTime, autoplay = false, loop = false
             audio.setSessionCategory(sessionCategory);
         }
         if (playbackRate && audio.playbackRate) {
-            // @ts-ignore
             audio.playbackRate(playbackRate);
         }
         initStateChage(audioId);
@@ -16767,18 +16765,18 @@ function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout,
         // __VUE__ 在 uni-jsframework-next 编译时会被替换为 vue
         Vue = __VUE__ = newVue;
         weex = newWeex;
-        // @ts-ignore
+        // @ts-expect-error
         plus = newPlus;
         restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
         plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
         /* eslint-disable no-global-assign */
-        // @ts-ignore
+        // @ts-expect-error
         setTimeout = newSetTimeout;
-        // @ts-ignore
+        // @ts-expect-error
         clearTimeout = newClearTimeout;
-        // @ts-ignore
+        // @ts-expect-error
         setInterval = newSetInterval;
-        // @ts-ignore
+        // @ts-expect-error
         clearInterval = newClearInterval;
     }
     __uniConfig.serviceReady = true;
@@ -16983,7 +16981,7 @@ const baseGetUserInfo = (params, { resolve, reject }) => {
                 }
             }
             let result = {};
-            // @ts-ignore
+            // @ts-expect-error
             if (params.data && params.data.api_name === 'webapi_getuserinfo') {
                 result.data = {
                     data: JSON.stringify(userInfo),

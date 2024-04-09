@@ -1,11 +1,11 @@
 import {
-  API_VIBRATE_SHORT,
   API_VIBRATE_LONG,
+  API_VIBRATE_SHORT,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import {
-  API_TYPE_VIBRATE_SHORT,
+import type {
   API_TYPE_VIBRATE_LONG,
+  API_TYPE_VIBRATE_SHORT,
 } from '@dcloudio/uni-api'
 
 const _isSupport = !!window.navigator.vibrate

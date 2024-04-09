@@ -1,6 +1,5 @@
 export class UniPickerViewColumnElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
-    // @ts-ignore
     super(data, pageNode)
   }
 
@@ -34,7 +33,6 @@ export class UniPickerViewChangeEvent extends CustomEvent<UniPickerViewChangeEve
 
 export class UniPickerViewElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
-    // @ts-ignore
     super(data, pageNode)
   }
 

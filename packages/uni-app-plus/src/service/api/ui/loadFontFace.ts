@@ -1,10 +1,10 @@
 import {
   API_LOAD_FONT_FACE,
-  API_TYPE_LOAD_FONT_FACE,
-  defineAsyncApi,
+  type API_TYPE_LOAD_FONT_FACE,
   LoadFontFaceProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
+import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 
 export const loadFontFace = defineAsyncApi<API_TYPE_LOAD_FONT_FACE>(
   API_LOAD_FONT_FACE,

@@ -5,15 +5,15 @@ import {
 } from '@vue/compiler-dom'
 import type { SFCDescriptor, SFCScriptBlock } from '@vue/compiler-sfc'
 import type { ParserPlugin } from '@babel/parser'
-import {
-  Node,
-  Declaration,
-  ObjectPattern,
+import type {
   ArrayPattern,
-  Identifier,
-  Statement,
   CallExpression,
+  Declaration,
   ExportSpecifier,
+  Identifier,
+  Node,
+  ObjectPattern,
+  Statement,
 } from '@babel/types'
 import { walk } from 'estree-walker'
 import type { RawSourceMap } from 'source-map-js'
@@ -22,30 +22,30 @@ import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { warnOnce } from './warn'
 import { ScriptCompileContext } from './script/context'
 import {
-  processDefineProps,
-  genRuntimeProps,
   DEFINE_PROPS,
   WITH_DEFAULTS,
+  genRuntimeProps,
+  processDefineProps,
 } from './script/defineProps'
 import {
-  processDefineEmits,
-  genRuntimeEmits,
   DEFINE_EMITS,
+  genRuntimeEmits,
+  processDefineEmits,
 } from './script/defineEmits'
 import { DEFINE_EXPOSE, processDefineExpose } from './script/defineExpose'
 import { DEFINE_OPTIONS, processDefineOptions } from './script/defineOptions'
 import { processDefineSlots } from './script/defineSlots'
 import { DEFINE_MODEL, processDefineModel } from './script/defineModel'
 import {
+  getImportedName,
+  isCallOf,
   isLiteralNode,
   unwrapTSNode,
-  isCallOf,
-  getImportedName,
 } from './script/utils'
 import { analyzeScriptBindings } from './script/analyzeScriptBindings'
 import { hasConsole, rewriteConsole } from './script/rewriteConsole'
 import { hasDebugError, rewriteDebugError } from './script/rewriteDebugError'
-import { TypeScope } from './script/resolveType'
+import type { TypeScope } from './script/resolveType'
 import { rewriteSourceMap } from './script/rewriteSourceMap'
 
 export const normalScriptDefaultVar = `__default__`

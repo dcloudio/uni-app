@@ -1,4 +1,4 @@
-import QuillClass from 'quill'
+import type QuillClass from 'quill'
 import { hyphenate } from '@vue/shared'
 
 export default function (Quill: typeof QuillClass) {

@@ -3,7 +3,7 @@ import { initBackgroundColor } from './backgroundColor'
 import { initPopGesture } from './popGesture'
 import { initPullToRefresh } from './pullToRefresh'
 import { initTitleNView } from './titleNView'
-import { DebugRefresh, InitUniPageUrl } from '../utils'
+import type { DebugRefresh, InitUniPageUrl } from '../utils'
 
 export function parseWebviewStyle(
   path: string,

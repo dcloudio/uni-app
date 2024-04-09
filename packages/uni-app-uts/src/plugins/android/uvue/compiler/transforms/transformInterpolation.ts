@@ -1,16 +1,12 @@
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 import {
+  type CompoundExpressionNode,
+  type InterpolationNode,
   NodeTypes,
-  CompoundExpressionNode,
-  // createCallExpression,
-  // CallExpression,
-  // ElementTypes,
+  type TemplateChildNode,
+  type TextNode,
   createCompoundExpression,
-  TextNode,
-  InterpolationNode,
-  TemplateChildNode,
 } from '@vue/compiler-core'
-// import { CREATE_TEXT } from '../runtimeHelpers'
 
 export function isText(
   node: TemplateChildNode

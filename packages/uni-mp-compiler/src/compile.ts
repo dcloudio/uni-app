@@ -1,10 +1,14 @@
 import fs from 'fs'
 import { baseParse } from '@vue/compiler-core'
-import { isString, extend } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { hash, parseFilterNames } from '@dcloudio/uni-cli-shared'
 import { generate } from './codegen'
-import { CodegenRootNode, CompilerOptions } from './options'
-import { DirectiveTransform, NodeTransform, transform } from './transform'
+import type { CodegenRootNode, CompilerOptions } from './options'
+import {
+  type DirectiveTransform,
+  type NodeTransform,
+  transform,
+} from './transform'
 import { transformExpression } from './transforms/transformExpression'
 import { transformIdentifier } from './transforms/transformIdentifier'
 import { transformIf } from './transforms/vIf'

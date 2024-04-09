@@ -1,14 +1,14 @@
 import { isElementNode } from '@dcloudio/uni-cli-shared'
 import {
-  CompoundExpressionNode,
-  ElementNode,
+  type CompoundExpressionNode,
+  type ElementNode,
   ElementTypes,
-  InterpolationNode,
-  NodeTransform,
+  type InterpolationNode,
+  type NodeTransform,
   NodeTypes,
-  TemplateChildNode,
-  TextCallNode,
-  TextNode,
+  type TemplateChildNode,
+  type TextCallNode,
+  type TextNode,
 } from '@vue/compiler-core'
 
 function isTextNode({ tag }: ElementNode) {

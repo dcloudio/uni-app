@@ -1,8 +1,8 @@
-import { extend, capitalize, isFunction } from '@vue/shared'
+import { capitalize, extend, isFunction } from '@vue/shared'
 import {
-  defineSyncApi,
   API_GET_BACKGROUND_AUDIO_MANAGER,
-  API_TYPE_GET_BACKGROUND_AUDIO_MANAGER,
+  type API_TYPE_GET_BACKGROUND_AUDIO_MANAGER,
+  defineSyncApi,
 } from '@dcloudio/uni-api'
 import { once } from '@dcloudio/uni-shared'
 import { getRealPath } from '../../../platform/getRealPath'

@@ -1,19 +1,19 @@
 import {
   extend,
   hasOwn,
-  isString,
   isFunction,
   isPlainObject,
+  isString,
 } from '@vue/shared'
 import { LINEFEED } from '@dcloudio/uni-shared'
 import { validateProtocols } from '../protocol'
 import {
-  invokeCallback,
   createAsyncApiCallback,
-  onKeepAliveApiCallback,
-  offKeepAliveApiCallback,
-  findInvokeCallbackByName,
   createKeepAliveApiCallback,
+  findInvokeCallbackByName,
+  invokeCallback,
+  offKeepAliveApiCallback,
+  onKeepAliveApiCallback,
   removeKeepAliveApiCallback,
 } from './callback'
 import type { CALLBACK_TYPES } from './callback'

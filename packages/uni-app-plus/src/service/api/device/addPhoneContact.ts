@@ -1,9 +1,9 @@
 import {
   API_ADD_PHONE_CONTACT,
-  API_TYPE_ADD_PHONE_CONTACT,
-  defineAsyncApi,
-  AddPhoneContactProtocol,
+  type API_TYPE_ADD_PHONE_CONTACT,
   AddPhoneContactOptions,
+  AddPhoneContactProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 type Schema = Record<

@@ -1,8 +1,8 @@
 import {
-  transformModel as baseTransform,
-  DirectiveTransform,
-  isStaticExp,
+  type DirectiveTransform,
   NodeTypes,
+  transformModel as baseTransform,
+  isStaticExp,
 } from '@vue/compiler-core'
 import { isString } from '@vue/shared'
 const tags = ['u-input', 'u-textarea']

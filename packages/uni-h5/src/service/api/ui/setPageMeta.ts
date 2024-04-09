@@ -1,5 +1,5 @@
-import { ComponentPublicInstance } from 'vue'
-import { SetPageMetaOptions } from '@dcloudio/uni-api'
+import type { ComponentPublicInstance } from 'vue'
+import type { SetPageMetaOptions } from '@dcloudio/uni-api'
 
 export function setCurrentPageMeta(
   _page: ComponentPublicInstance | null,

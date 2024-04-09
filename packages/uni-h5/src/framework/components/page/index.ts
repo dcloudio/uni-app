@@ -1,10 +1,10 @@
 import {
-  withCtx,
+  type SetupContext,
+  createBlock,
+  createVNode,
   openBlock,
   renderSlot,
-  createVNode,
-  createBlock,
-  SetupContext,
+  withCtx,
 } from 'vue'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import { useDocumentTitle } from '../../../helpers/useDocumentTitle'

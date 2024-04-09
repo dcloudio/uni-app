@@ -1,12 +1,12 @@
 import {
-  ElementNode,
-  ForNode,
-  IfNode,
+  type ElementNode,
+  type ForNode,
+  type IfNode,
   NodeTypes,
   SET_BLOCK_TRACKING,
   findDir,
 } from '@vue/compiler-core'
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 
 const seen = new WeakSet()
 

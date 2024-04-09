@@ -31,7 +31,7 @@ function touchstart(evt: TouchEvent) {
     const customEvent = new CustomEvent('longpress', {
       bubbles: true,
       cancelable: true,
-      // @ts-ignore
+      // @ts-expect-error
       target: evt.target,
       currentTarget: evt.currentTarget,
     })

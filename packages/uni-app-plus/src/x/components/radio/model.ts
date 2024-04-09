@@ -5,7 +5,6 @@ export const RADIO_ROOT_ELEMENT = 'uni-radio-element'
 
 export class UniRadioElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
-    // @ts-ignore
     super(data, pageNode)
   }
   override getAnyAttribute(key: string): string {

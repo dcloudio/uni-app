@@ -1,13 +1,13 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { hasOwn } from '@vue/shared'
 import {
   EventChannel,
-  formatLog,
   NAVBAR_HEIGHT,
+  ON_HIDE,
   ON_REACH_BOTTOM_DISTANCE,
   ON_SHOW,
-  ON_HIDE,
-  PageNodeOptions,
+  type PageNodeOptions,
+  formatLog,
 } from '@dcloudio/uni-shared'
 import {
   initPageInternalInstance,
@@ -23,7 +23,7 @@ import { getStatusbarHeight } from '../../../helpers/statusBar'
 import tabBar from '../app/tabBar'
 import { addCurrentPage, getAllPages } from './getCurrentPages'
 import { getBaseSystemInfo } from '../../api/base/getBaseSystemInfo'
-import { preloadWebviews, PreloadWebviewObject } from './preLoad'
+import { type PreloadWebviewObject, preloadWebviews } from './preLoad'
 import { navigateFinish } from '../../api/route/utils'
 import { initScope } from './setup'
 

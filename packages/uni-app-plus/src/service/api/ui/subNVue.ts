@@ -1,6 +1,6 @@
 import { APP_SERVICE_ID } from '../.../../../../constants'
 import { requireNativePlugin } from '../plugin/requireNativePlugin'
-import { PlusWebviewWebviewObjectWithExtras } from '../../framework/webview/init/subNVues'
+import type { PlusWebviewWebviewObjectWithExtras } from '../../framework/webview/init/subNVues'
 
 const EVENT_TYPE_NAME = 'UniAppSubNVue'
 

@@ -1,10 +1,10 @@
 import { getTabBar } from '../../framework/app/tabBar'
 import {
-  defineAsyncApi,
   API_SET_TAB_BAR_ITEM,
-  API_TYPE_SET_TAB_BAR_ITEM,
+  type API_TYPE_SET_TAB_BAR_ITEM,
   SetTabBarItemOptions,
   SetTabBarItemProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 export const setTabBarItem = defineAsyncApi<API_TYPE_SET_TAB_BAR_ITEM>(

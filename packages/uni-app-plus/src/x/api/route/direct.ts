@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { getRealPath } from '../../framework/route'
 import { reLaunch } from './reLaunch'
 import { parseUrl } from '@dcloudio/uni-shared'

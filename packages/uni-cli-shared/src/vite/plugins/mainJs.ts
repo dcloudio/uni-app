@@ -1,7 +1,7 @@
 import path from 'path'
 import { normalizePath } from '../../utils'
 
-import {
+import type {
   CreateUniViteFilterPlugin,
   UniViteFilterPluginOptions,
 } from '../utils/plugin'

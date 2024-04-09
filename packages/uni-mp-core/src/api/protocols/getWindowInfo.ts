@@ -1,4 +1,4 @@
-import { MPProtocol } from './types'
+import type { MPProtocol } from './types'
 import { extend } from '@vue/shared'
 import { addSafeAreaInsets } from './enhanceSystemInfo'
 import { sortObject } from '@dcloudio/uni-shared'

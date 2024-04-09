@@ -1,10 +1,10 @@
 import { getTabBar } from '../../framework/app/tabBar'
 import {
-  defineAsyncApi,
-  API_TYPE_SET_TAB_BAR_BADGE,
   API_SET_TAB_BAR_BADGE,
-  SetTabBarBadgeProtocol,
+  type API_TYPE_SET_TAB_BAR_BADGE,
   SetTabBarBadgeOptions,
+  SetTabBarBadgeProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 export const setTabBarBadge = defineAsyncApi<API_TYPE_SET_TAB_BAR_BADGE>(

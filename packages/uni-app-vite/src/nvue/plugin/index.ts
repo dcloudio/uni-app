@@ -9,13 +9,13 @@ import {
   createTransformTag,
   cssLangRE,
   dynamicImportPolyfill,
+  formatAtFilename,
   generateCodeFrame,
   initPostcssPlugin,
   normalizePath,
   parseVueRequest,
   removeExt,
   resolveMainPathOnce,
-  formatAtFilename,
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'

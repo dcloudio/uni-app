@@ -1,9 +1,9 @@
 import {
   API_OPEN_DOCUMENT,
-  API_TYPE_OPEN_DOCUMENT,
-  defineAsyncApi,
-  OpenDocumentProtocol,
+  type API_TYPE_OPEN_DOCUMENT,
   OpenDocumentOptions,
+  OpenDocumentProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 import { getRealPath } from '../../../platform/getRealPath'

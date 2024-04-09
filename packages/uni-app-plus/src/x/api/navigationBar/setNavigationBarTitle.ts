@@ -1,11 +1,11 @@
 import {
-  defineAsyncApi,
-  API_TYPE_SET_NAVIGATION_BAR_TITLE,
   API_SET_NAVIGATION_BAR_TITLE,
+  type API_TYPE_SET_NAVIGATION_BAR_TITLE,
   SetNavigationBarTitleProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 export const setNavigationBarTitle =
   defineAsyncApi<API_TYPE_SET_NAVIGATION_BAR_TITLE>(

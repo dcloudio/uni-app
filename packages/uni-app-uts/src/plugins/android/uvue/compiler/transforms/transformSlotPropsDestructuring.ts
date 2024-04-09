@@ -1,10 +1,10 @@
 import {
-  CompoundExpressionNode,
+  type CompoundExpressionNode,
   NodeTypes,
-  SimpleExpressionNode,
+  type SimpleExpressionNode,
 } from '@vue/compiler-core'
 import { isString } from '@vue/shared'
-import { CodegenContext } from '../codegen'
+import type { CodegenContext } from '../codegen'
 
 export const SLOT_PROPS_NAME = 'slotProps'
 export function isDestructuringSlotProps(

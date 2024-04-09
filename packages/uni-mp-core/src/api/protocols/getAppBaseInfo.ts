@@ -1,6 +1,6 @@
-import { MPProtocol } from './types'
+import type { MPProtocol } from './types'
 import { extend } from '@vue/shared'
-import { getHostName, getAppLanguage } from './enhanceSystemInfo'
+import { getAppLanguage, getHostName } from './enhanceSystemInfo'
 import { sortObject } from '@dcloudio/uni-shared'
 
 export const getAppBaseInfo: MPProtocol = {

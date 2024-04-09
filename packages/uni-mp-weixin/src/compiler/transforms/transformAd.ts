@@ -1,10 +1,10 @@
-import { isElementNode, findJsonFile } from '@dcloudio/uni-cli-shared'
+import { findJsonFile, isElementNode } from '@dcloudio/uni-cli-shared'
 import {
-  findProp,
-  RootNode,
   ElementTypes,
-  TemplateChildNode,
-  TransformContext,
+  type RootNode,
+  type TemplateChildNode,
+  type TransformContext,
+  findProp,
 } from '@vue/compiler-core'
 
 const AD_COMPONENTS: Array<string> = [

@@ -3,9 +3,9 @@ export function formatAppLog(
   filename: string,
   ...args: unknown[]
 ) {
-  // @ts-ignore
+  // @ts-expect-error
   if (uni.__log__) {
-    // @ts-ignore
+    // @ts-expect-error
     uni.__log__(type, filename, ...args)
   } else {
     ;(console[type] as Function).apply(console, [...args, filename])

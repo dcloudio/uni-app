@@ -1,12 +1,12 @@
 import {
   MapType,
-  getMapInfo,
   getIsAMap,
   getIsBMap,
+  getMapInfo,
 } from '../../../../helpers/location'
 export * from './types'
-import { QQMaps } from './qq/types'
-import { GoogleMaps } from './google/types'
+import type { QQMaps } from './qq/types'
+import type { GoogleMaps } from './google/types'
 
 import { createCallout } from './Callout'
 export { CalloutOptions } from './Callout'

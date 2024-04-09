@@ -1,5 +1,5 @@
 import { isFunction } from '@vue/shared'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 const SUCCESS = 'success'
 const FAIL = 'fail'

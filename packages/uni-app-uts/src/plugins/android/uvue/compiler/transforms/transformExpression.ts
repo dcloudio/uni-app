@@ -7,37 +7,37 @@
 // - This transform is only applied in non-browser builds because it relies on
 //   an additional JavaScript parser. In the browser, there is no source-map
 //   support and the code is wrapped in `with (this) { ... }`.
-import { NodeTransform, TransformContext } from '../transform'
+import type { NodeTransform, TransformContext } from '../transform'
 
-import { makeMap, hasOwn, isString, isArray } from '@vue/shared'
-import {
-  Node,
-  Identifier,
-  UpdateExpression,
+import { hasOwn, isArray, isString, makeMap } from '@vue/shared'
+import type {
   AssignmentExpression,
+  Identifier,
+  Node,
+  UpdateExpression,
 } from '@babel/types'
 
 import { parse } from '@babel/parser'
 import {
-  advancePositionWithClone,
   BindingTypes,
-  CompoundExpressionNode,
+  type CompoundExpressionNode,
   ConstantTypes,
+  type ExpressionNode,
+  IS_REF,
+  NodeTypes,
+  type SimpleExpressionNode,
+  UNREF,
+  advancePositionWithClone,
   createCompoundExpression,
   createSimpleExpression,
-  ExpressionNode,
-  IS_REF,
   isInDestructureAssignment,
   isSimpleIdentifier,
   isStaticProperty,
   isStaticPropertyKey,
-  NodeTypes,
-  SimpleExpressionNode,
-  UNREF,
   walkIdentifiers,
 } from '@vue/compiler-core'
 
-import { createCompilerError, ErrorCodes } from '../errors'
+import { ErrorCodes, createCompilerError } from '../errors'
 
 const GLOBALS_WHITE_LISTED =
   `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI` +

@@ -1,7 +1,7 @@
 import '@dcloudio/uni-components/style/textarea.css'
 import { Textarea } from '@dcloudio/uni-components'
-import { UniNodeJSON } from '@dcloudio/uni-shared'
-import { initVModel, UniComponent } from './UniComponent'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniComponent, initVModel } from './UniComponent'
 
 export class UniTextarea extends UniComponent {
   constructor(

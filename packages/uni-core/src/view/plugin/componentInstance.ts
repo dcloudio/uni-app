@@ -1,4 +1,4 @@
-import { ComponentInternalInstance } from 'vue'
+import type { ComponentInternalInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { normalizeTarget } from '@dcloudio/uni-shared'
 import { getWindowTop } from '../../helpers'
@@ -140,9 +140,9 @@ function normalizeClickEvent(
   evt.detail = { x, y: y - top }
   //#if _X_ && !_NODE_JS_
   // TODO 类型调整
-  // @ts-ignore
+  // @ts-expect-error
   evt.x = x
-  // @ts-ignore
+  // @ts-expect-error
   evt.y = y - top
   //#endif
   evt.touches = evt.changedTouches = [createTouchEvent(mouseEvt, top)]

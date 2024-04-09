@@ -1,4 +1,4 @@
-import { UniNodeJSON } from '@dcloudio/uni-shared'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
 import { animation } from '@dcloudio/uni-components'
 import { UniElement } from './UniElement'
 

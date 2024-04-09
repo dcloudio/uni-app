@@ -1,5 +1,5 @@
 import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
-import { isNavigationFailure, Router } from 'vue-router'
+import { type Router, isNavigationFailure } from 'vue-router'
 import { createPageState } from '../../../framework/setup/page'
 
 export type NavigateType =

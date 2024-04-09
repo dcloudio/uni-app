@@ -1,7 +1,7 @@
 import '@dcloudio/uni-components/style/radio.css'
 import { Radio } from '@dcloudio/uni-components'
-import { UniNodeJSON } from '@dcloudio/uni-shared'
-import { setHolderText, UniComponent } from './UniComponent'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniComponent, setHolderText } from './UniComponent'
 
 export class UniRadio extends UniComponent {
   constructor(

@@ -1,6 +1,6 @@
-import { hasOwn, extend, isPlainObject, isArray, isString } from '@vue/shared'
+import { extend, hasOwn, isArray, isPlainObject, isString } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
-import { createTextVNode, h, VNode } from 'vue'
+import { type VNode, createTextVNode, h } from 'vue'
 
 export const TAGS = {
   a: '',

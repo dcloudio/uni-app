@@ -1,11 +1,11 @@
 import path from 'path'
 import { extend } from '@vue/shared'
-import { ComponentJson, PageWindowOptions, UsingComponents } from './types'
+import type { ComponentJson, PageWindowOptions, UsingComponents } from './types'
 import {
-  removeExt,
-  normalizePath,
-  normalizeNodeModules,
   normalizeMiniProgramFilename,
+  normalizeNodeModules,
+  normalizePath,
+  removeExt,
 } from '../../utils'
 import { relativeFile } from '../../resolve'
 import { isVueSfcFile } from '../../vue/utils'

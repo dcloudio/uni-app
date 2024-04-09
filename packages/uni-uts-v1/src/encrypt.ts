@@ -1,7 +1,7 @@
 import path, { basename, join, relative } from 'path'
 import fs from 'fs-extra'
 import { makeLegalIdentifier } from '@rollup/pluginutils'
-import { APP_PLATFORM } from './manifest/utils'
+import type { APP_PLATFORM } from './manifest/utils'
 import { normalizePath } from './shared'
 
 export function isEncrypt(pluginDir: string) {

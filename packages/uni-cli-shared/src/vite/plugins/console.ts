@@ -1,6 +1,6 @@
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
-import { createFilter, FilterPattern } from '@rollup/pluginutils'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { type FilterPattern, createFilter } from '@rollup/pluginutils'
 
 import { isJsFile, parseVueRequest } from '../utils'
 import { rewriteConsoleExpr } from '../../logs/console'

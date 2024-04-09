@@ -1,6 +1,6 @@
 import { invokeHook } from '@dcloudio/uni-core'
 import { ON_ERROR, UniLifecycleHooks } from '@dcloudio/uni-shared'
-import { App, AppConfig, ComponentPublicInstance } from 'vue'
+import type { App, AppConfig, ComponentPublicInstance } from 'vue'
 
 export function createErrorHandler(app: App) {
   return function errorHandler(

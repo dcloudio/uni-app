@@ -1,11 +1,11 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type {
-  parse,
-  bundle,
-  UTSTarget,
   UTSOutputOptions,
   UTSResult,
+  UTSTarget,
+  bundle,
+  parse,
 } from '@dcloudio/uts'
 import {
   camelize,
@@ -16,7 +16,7 @@ import {
   isString,
 } from '@vue/shared'
 import glob from 'fast-glob'
-import { Module, ModuleItem } from '../types/types'
+import type { Module, ModuleItem } from '../types/types'
 import {
   installHBuilderXPlugin,
   isInHBuilderX,

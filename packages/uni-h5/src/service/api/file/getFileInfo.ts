@@ -1,9 +1,9 @@
 import {
-  defineAsyncApi,
   API_GET_FILE_INFO,
-  API_TYPE_GET_FILE_INFO,
-  GetFileInfoProtocol,
+  type API_TYPE_GET_FILE_INFO,
   GetFileInfoOptions,
+  GetFileInfoProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { urlToFile } from '../../../helpers/file'
 

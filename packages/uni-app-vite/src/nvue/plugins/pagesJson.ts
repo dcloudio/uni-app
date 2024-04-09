@@ -1,14 +1,14 @@
 import path from 'path'
 import type { Plugin, ResolvedConfig } from 'vite'
 import {
-  defineUniPagesJsonPlugin,
-  normalizeAppConfigService,
-  normalizePagesJson,
-  parseManifestJsonOnce,
-  getLocaleFiles,
-  normalizeAppNVuePagesJson,
   APP_CONFIG_SERVICE,
+  defineUniPagesJsonPlugin,
+  getLocaleFiles,
+  normalizeAppConfigService,
+  normalizeAppNVuePagesJson,
+  normalizePagesJson,
   normalizePath,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 interface NVuePages {

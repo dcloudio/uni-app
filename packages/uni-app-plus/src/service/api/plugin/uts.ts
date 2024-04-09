@@ -1,9 +1,9 @@
 // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 import {
-  isPlainObject,
-  hasOwn,
-  extend,
   capitalize,
+  extend,
+  hasOwn,
+  isPlainObject,
   isString,
 } from '@vue/shared'
 declare const uni: any

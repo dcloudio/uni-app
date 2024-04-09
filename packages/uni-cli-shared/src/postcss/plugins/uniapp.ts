@@ -1,11 +1,11 @@
 import { extend } from '@vue/shared'
-import type { Rule, Declaration, Plugin, Root } from 'postcss'
+import type { Declaration, Plugin, Root, Rule } from 'postcss'
 import selectorParser from 'postcss-selector-parser'
 import {
+  COMPONENT_SELECTOR_PREFIX,
   createRpx2Unit,
   defaultRpx2Unit,
   isBuiltInComponent,
-  COMPONENT_SELECTOR_PREFIX,
 } from '@dcloudio/uni-shared'
 
 export interface UniAppCssProcessorOptions {

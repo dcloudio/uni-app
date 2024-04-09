@@ -1,41 +1,41 @@
 import {
-  CacheExpression,
-  ComponentNode,
-  ConstantTypes,
-  DirectiveNode,
-  ElementNode,
+  type CacheExpression,
+  type ComponentNode,
+  type ConstantTypes,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
-  ExpressionNode,
-  JSChildNode,
+  type ExpressionNode,
+  type JSChildNode,
   NodeTypes,
-  ParentNode,
-  PlainElementNode,
-  Property,
-  RootNode,
-  TemplateChildNode,
-  TemplateLiteral,
-  TemplateNode,
+  type ParentNode,
+  type PlainElementNode,
+  type Property,
+  type RootNode,
+  type TemplateChildNode,
+  type TemplateLiteral,
+  type TemplateNode,
+  convertToBlock,
   createCacheExpression,
+  createVNodeCall,
   helperNameMap,
   isSlotOutlet,
   isVSlot,
-  convertToBlock,
-  createVNodeCall,
 } from '@vue/compiler-core'
 import {
+  EMPTY_OBJ,
   NOOP,
+  PatchFlagNames,
+  PatchFlags,
   camelize,
   capitalize,
   isArray,
   isString,
-  PatchFlags,
-  PatchFlagNames,
-  EMPTY_OBJ,
 } from '@vue/shared'
 import { defaultOnError, defaultOnWarn } from './errors'
-import { TransformOptions } from './options'
+import type { TransformOptions } from './options'
 import { FRAGMENT } from './runtimeHelpers'
-import { ParserPlugin } from '@babel/parser'
+import type { ParserPlugin } from '@babel/parser'
 
 // There are two types of transforms:
 //
@@ -335,7 +335,7 @@ function createRootCodegen(root: RootNode, context: TransformContext) {
       patchFlagText += `, ${PatchFlagNames[PatchFlags.DEV_ROOT_FRAGMENT]}`
     }
     root.codegenNode = createVNodeCall(
-      // @ts-ignore
+      // @ts-expect-error
       context,
       helper(FRAGMENT),
       undefined,

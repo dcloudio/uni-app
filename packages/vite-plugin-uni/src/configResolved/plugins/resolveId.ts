@@ -1,9 +1,9 @@
 import path from 'path'
 // import debug from 'debug'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { resolveBuiltIn, resolveUTSModule } from '@dcloudio/uni-cli-shared'
 
-import { VitePluginUniResolvedOptions } from '../..'
+import type { VitePluginUniResolvedOptions } from '../..'
 
 // const debugResolve = debug('uni:resolve-id')
 

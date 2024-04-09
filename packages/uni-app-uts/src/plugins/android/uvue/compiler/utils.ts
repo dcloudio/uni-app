@@ -1,6 +1,6 @@
 import path from 'path'
-import { type Node } from '@babel/types'
-import { ExpressionNode, createSimpleExpression } from '@vue/compiler-core'
+import type { Node } from '@babel/types'
+import { type ExpressionNode, createSimpleExpression } from '@vue/compiler-core'
 import { walk } from 'estree-walker'
 import { parseExpression } from '@babel/parser'
 import MagicString from 'magic-string'
@@ -9,10 +9,10 @@ import {
   genUTSComponentPublicInstanceImported,
   normalizePath,
 } from '@dcloudio/uni-cli-shared'
-import { TemplateCompilerOptions } from './options'
+import type { TemplateCompilerOptions } from './options'
 import { stringifyExpression } from './transforms/transformExpression'
-import { TransformContext } from './transform'
-import { CompilerError } from './errors'
+import type { TransformContext } from './transform'
+import type { CompilerError } from './errors'
 
 export const __DEV__ = true
 export const __BROWSER__ = false

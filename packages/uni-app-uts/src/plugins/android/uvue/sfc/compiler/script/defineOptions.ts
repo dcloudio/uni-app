@@ -1,5 +1,5 @@
-import { Node, ObjectMethod, ObjectProperty } from '@babel/types'
-import { ScriptCompileContext } from './context'
+import type { Node, ObjectMethod, ObjectProperty } from '@babel/types'
+import type { ScriptCompileContext } from './context'
 import { isCallOf, unwrapTSNode } from './utils'
 import { DEFINE_PROPS } from './defineProps'
 import { DEFINE_EMITS } from './defineEmits'

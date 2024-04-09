@@ -1,21 +1,21 @@
 import {
   API_REDIRECT_TO,
-  API_TYPE_REDIRECT_TO,
-  defineAsyncApi,
+  type API_TYPE_REDIRECT_TO,
   RedirectToOptions,
   RedirectToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { removePage } from '../../framework/page/getCurrentPages'
 import { registerPage } from '../../framework/page'
-import { navigate, RouteOptions } from './utils'
+import { type RouteOptions, navigate } from './utils'
 import { showWebview } from './webview'
 import { setStatusBarStyle } from '../../statusBar'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import {
+  type PreloadWebviewObject,
   removePreloadWebview,
-  PreloadWebviewObject,
 } from '../../framework/page/preLoad'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(

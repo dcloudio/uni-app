@@ -1,9 +1,9 @@
-import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
+import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 import { operateVideoPlayer } from '@dcloudio/uni-platform'
 import { defineSyncApi } from '../../helpers/api'
 import {
   API_CREATE_VIDEO_CONTEXT,
-  API_TYPE_CREATE_VIDEO_CONTEXT,
+  type API_TYPE_CREATE_VIDEO_CONTEXT,
 } from '../../protocols/context/context'
 
 const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0]

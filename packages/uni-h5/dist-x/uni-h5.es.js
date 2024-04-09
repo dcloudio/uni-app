@@ -1216,7 +1216,7 @@ function touchstart(evt) {
     const customEvent = new CustomEvent("longpress", {
       bubbles: true,
       cancelable: true,
-      // @ts-ignore
+      // @ts-expect-error
       target: evt.target,
       currentTarget: evt.currentTarget
     });
@@ -4940,7 +4940,7 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
           return function() {
             this.actions.push({
               method: method2 + "Path",
-              // @ts-ignore
+              // @ts-expect-error
               data: [...this.path]
             });
           };
@@ -6758,7 +6758,7 @@ const ShowModalOptions = {
         params.confirmText = t2("uni.showModal.confirm");
       }
     },
-    //@ts-ignore
+    //@ts-expect-error
     confirmColor: "#576b95"
   }
 };
@@ -23465,7 +23465,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
 }
 const navigateTo = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, events, isAutomatedTesting }, { resolve, reject }) => navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject),
   NavigateToProtocol,
   NavigateToOptions
@@ -23480,7 +23480,7 @@ function removeLastPage() {
 }
 const redirectTo = /* @__PURE__ */ defineAsyncApi(
   API_REDIRECT_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return (
       // TODO exists 属性未实现
@@ -23498,7 +23498,7 @@ function removeAllPages() {
 }
 const reLaunch = /* @__PURE__ */ defineAsyncApi(
   API_RE_LAUNCH,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
@@ -23540,7 +23540,7 @@ function getTabBarPageId(url) {
 }
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
     return removeNonTabBarPages(), navigate(
       { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },

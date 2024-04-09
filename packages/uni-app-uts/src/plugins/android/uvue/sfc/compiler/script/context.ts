@@ -1,4 +1,4 @@
-import {
+import type {
   CallExpression,
   Node,
   ObjectPattern,
@@ -7,13 +7,13 @@ import {
 } from '@babel/types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import { generateCodeFrame } from '@vue/shared'
-import { parse as babelParse, ParserPlugin } from '@babel/parser'
-import { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
-import { PropsDestructureBindings } from './defineProps'
-import { ModelDecl } from './defineModel'
+import { type ParserPlugin, parse as babelParse } from '@babel/parser'
+import type { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
+import type { PropsDestructureBindings } from './defineProps'
+import type { ModelDecl } from './defineModel'
 import type { BindingMetadata } from '@vue/compiler-core'
 import MagicString from 'magic-string'
-import { TypeScope } from './resolveType'
+import type { TypeScope } from './resolveType'
 export class ScriptCompileContext {
   scriptAst: Program | null
   scriptSetupAst: Program | null

@@ -1,5 +1,5 @@
 import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
-import { RollupError } from 'rollup'
+import type { RollupError } from 'rollup'
 import type { CompilerError } from '@vue/compiler-sfc'
 import { extend } from '@vue/shared'
 import { codeFrameColumns } from '@babel/code-frame'

@@ -2625,11 +2625,11 @@ ${m.code}
     });
 }
 
-// @ts-ignore
+// @ts-expect-error
 {
-    // @ts-ignore
+    // @ts-expect-error
     if (SourceMapConsumer.initialize) {
-        // @ts-ignore
+        // @ts-expect-error
         SourceMapConsumer.initialize({
             'lib/mappings.wasm': 'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
         });
@@ -2732,7 +2732,7 @@ function getConsumer(content) {
                 });
             }
             else {
-                // @ts-ignore
+                // @ts-expect-error
                 const consumer = SourceMapConsumer(content);
                 resolve(consumer);
             }
