@@ -279,6 +279,18 @@ zIndex: 4;
 .baz {
   transition-property: abc
 }
+.demo_all {
+  transition-property: all
+}
+.demo_none {
+  transition-property: none
+}
+.demo_all_width {
+  transition-property: all,width
+}
+.demo_mix {
+  transition-property: all,width,none,height
+}
 `)
     expect(json).toEqual({
       '@TRANSITION': {
@@ -290,6 +302,18 @@ zIndex: 4;
         },
         foobar: {
           property: 'marginTop,height',
+        },
+        demo_all: {
+          property: 'all',
+        },
+        demo_none: {
+          property: 'none',
+        },
+        demo_all_width: {
+          property: 'all,width',
+        },
+        demo_mix: {
+          property: 'all,width,none,height',
         },
       },
       foo: {
@@ -305,6 +329,26 @@ zIndex: 4;
       foobar: {
         '': {
           transitionProperty: 'marginTop,height',
+        },
+      },
+      demo_all: {
+        '': {
+          transitionProperty: 'all',
+        },
+      },
+      demo_none: {
+        '': {
+          transitionProperty: 'none',
+        },
+      },
+      demo_all_width: {
+        '': {
+          transitionProperty: 'all,width',
+        },
+      },
+      demo_mix: {
+        '': {
+          transitionProperty: 'all,width,none,height',
         },
       },
     })
