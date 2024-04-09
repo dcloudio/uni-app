@@ -36,7 +36,7 @@ function normalizeOutput(file, output = {}) {
       file,
       format: file.includes('.cjs.') ? 'cjs' : 'es',
       exports: 'auto',
-      interop: 'auto'
+      interop: 'auto',
     },
     output
   )
@@ -87,8 +87,11 @@ function resolveTsconfigJson() {
 function createConfig(entryFile, output, buildOption) {
   const shouldEmitDeclarations = process.env.TYPES != null && !hasTSChecked
   const tsOptions = {
-    check: !process.env.TRANSPILE_ONLY &&
-      (!process.env.CI && process.env.NODE_ENV === 'production' && !hasTSChecked),
+    check:
+      !process.env.TRANSPILE_ONLY &&
+      !process.env.CI &&
+      process.env.NODE_ENV === 'production' &&
+      !hasTSChecked,
     tsconfig: resolveTsconfigJson(),
     cacheRoot: path.resolve(__dirname, 'node_modules/.rts2_cache'),
     tsconfigOverride: {
@@ -114,8 +117,8 @@ function createConfig(entryFile, output, buildOption) {
     buildOption.external === false
       ? []
       : Array.isArray(buildOption.external)
-        ? buildOption.external
-        : [
+      ? buildOption.external
+      : [
           'vue',
           '@vue/shared',
           ...Object.keys(pkg.dependencies || {}),
@@ -134,14 +137,16 @@ function createConfig(entryFile, output, buildOption) {
     createReplacePlugin(buildOption, output.format),
   ]
   if (process.env.TARGET !== 'uni-push' && process.env.TARGET !== 'uni-stat') {
-    plugins.unshift(jscc({
-      values: {
-        // 该插件限制了不能以__开头
-        _NODE_JS_: 0,
-        _X_: isX ? 1 : 0,
-      },
-      exclude: ['**/node_modules/**']
-    }))
+    plugins.unshift(
+      jscc({
+        values: {
+          // 该插件限制了不能以__开头
+          _NODE_JS_: 0,
+          _X_: isX ? 1 : 0,
+        },
+        exclude: ['**/node_modules/**'],
+      })
+    )
   }
   if (buildOption.babel) {
     // TODO weex 使用了 buble 编译，暂时先通过 babel 编译一遍，避免 buble 编译失败
@@ -188,14 +193,14 @@ function createConfig(entryFile, output, buildOption) {
       buildOption.treeshake === false
         ? false
         : {
-          moduleSideEffects(id) {
-            if (id.endsWith('polyfill.ts')) {
-              console.log('[WARN]:sideEffects[' + id + ']')
-              return true
-            }
-            return false
+            moduleSideEffects(id) {
+              if (id.endsWith('polyfill.ts')) {
+                console.log('[WARN]:sideEffects[' + id + ']')
+                return true
+              }
+              return false
+            },
           },
-        },
   }
 }
 
@@ -221,5 +226,9 @@ function createReplacePlugin(buildOption, format) {
       replacements[key] = process.env[key]
     }
   })
-  return replace({ delimiters: ['', ''], values: replacements, preventAssignment: true })
+  return replace({
+    delimiters: ['', ''],
+    values: replacements,
+    preventAssignment: true,
+  })
 }

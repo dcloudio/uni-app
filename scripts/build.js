@@ -18,9 +18,11 @@ const multiProcess = args.m
 const buildAllMatching = args.all || args.a
 const transpileOnly = args.transpileOnly
 
+const enable_sourceMap = args.sourcemap === 'true'
+
 run()
 
-async function run () {
+async function run() {
   if (!targets.length) {
     await buildAll(allTargets)
   } else {
@@ -28,7 +30,7 @@ async function run () {
   }
 }
 
-function buildWithChildProcess (target) {
+function buildWithChildProcess(target) {
   const args = [__filename, target]
   devOnly && args.push('-d')
   isRelease && args.push('--release')
@@ -48,7 +50,7 @@ function buildWithChildProcess (target) {
   })
 }
 
-function getTargetGroup (targets) {
+function getTargetGroup(targets) {
   const group = {}
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i]
@@ -62,11 +64,12 @@ function getTargetGroup (targets) {
   return group
 }
 
-async function buildAll (targets) {
+async function buildAll(targets) {
   if (!multiProcess) {
     for (const target of targets) {
       try {
-        await build(target)
+        // here.
+        await build(target, enable_sourceMap)
       } catch (e) {
         console.error(e)
       }
@@ -91,8 +94,7 @@ async function buildAll (targets) {
     )
   }
 }
-
-async function build (target) {
+async function build(target, enable_sourceMap = false) {
   console.log(`\n${colors.bold(target)}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
@@ -110,6 +112,7 @@ async function build (target) {
       tsconfigJson.extends &&
       tsconfigJson.extends.includes('tsconfig.node.json')
     ) {
+      // enable sourcemap
       hasTscBundler = true
     }
   }
@@ -132,7 +135,13 @@ async function build (target) {
     }
     await execa(
       'vite',
-      ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+      [
+        'build',
+        '--config',
+        path.resolve(pkgDir, 'vite.config.ts'),
+        '--sourcemap',
+        enable_sourceMap ? 'inline' : false,
+      ],
       {
         stdio: 'inherit',
         env: Object.assign({ FORMAT: 'es' }, process.env, env),
@@ -142,7 +151,13 @@ async function build (target) {
     if (target === 'uni-h5') {
       await execa(
         'vite',
-        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+        [
+          'build',
+          '--config',
+          path.resolve(pkgDir, 'vite.config.ts'),
+          '--sourcemap',
+          enable_sourceMap ? 'inline' : false,
+        ],
         {
           stdio: 'inherit',
           env: Object.assign({ FORMAT: 'cjs' }, process.env),
@@ -152,19 +167,39 @@ async function build (target) {
       // uni-h5(uni-app x)
       await execa(
         'vite',
-        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+        [
+          'build',
+          '--config',
+          path.resolve(pkgDir, 'vite.config.ts'),
+          '--sourcemap',
+          enable_sourceMap ? 'inline' : false,
+        ],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'es', UNI_APP_X: 'true' }, process.env, env),
+          env: Object.assign(
+            { FORMAT: 'es', UNI_APP_X: 'true' },
+            process.env,
+            env
+          ),
           cwd: pkgDir,
         }
       )
       await execa(
         'vite',
-        ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
+        [
+          'build',
+          '--config',
+          path.resolve(pkgDir, 'vite.config.ts'),
+          '--sourcemap',
+          enable_sourceMap ? 'inline' : false,
+        ],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'cjs', UNI_APP_X: 'true' }, process.env, env),
+          env: Object.assign(
+            { FORMAT: 'cjs', UNI_APP_X: 'true' },
+            process.env,
+            env
+          ),
           cwd: pkgDir,
         }
       )
@@ -172,7 +207,13 @@ async function build (target) {
     if (target === 'uni-app-plus') {
       await execa(
         'vite',
-        ['build', '--config', path.resolve(pkgDir, 'x.vite.config.ts')],
+        [
+          'build',
+          '--config',
+          path.resolve(pkgDir, 'x.vite.config.ts'),
+          '--sourcemap',
+          enable_sourceMap ? 'inline' : false,
+        ],
         {
           stdio: 'inherit',
           env: Object.assign({ FORMAT: 'es' }, process.env, env),
@@ -190,6 +231,9 @@ async function build (target) {
     if (types) {
       args.push('--declaration')
     }
+    if (enable_sourceMap) {
+      args.push('--sourceMap')
+    }
     await execa('tsc', args, {
       stdio: 'inherit',
     })
@@ -200,9 +244,16 @@ async function build (target) {
       [
         '-c',
         '--environment',
-        [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`, transpileOnly ? `TRANSPILE_ONLY:true` : ``]
+        [
+          `NODE_ENV:${env}`,
+          types ? `TYPES:true` : ``,
+          `TARGET:${target}`,
+          transpileOnly ? `TRANSPILE_ONLY:true` : ``,
+        ]
           .filter(Boolean)
           .join(','),
+        '--sourcemap',
+        enable_sourceMap ? 'inline' : false,
       ],
       { stdio: 'inherit' }
     )
