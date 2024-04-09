@@ -99,8 +99,18 @@ const tags = {
     'vertical-drag-gesture-handler',
     'horizontal-drag-gesture-handler',
     'long-press-gesture-handler',
+    // 其他
+    'draggable-sheet',
+    'grid-builder',
     'grid-view',
     'list-view',
+    'list-builder',
+    'nested-scroll-body',
+    'nested-scroll-header',
+    'open-container',
+    'share-element',
+    'snapshot',
+    'span',
     'sticky-header',
     'sticky-section'
   ],

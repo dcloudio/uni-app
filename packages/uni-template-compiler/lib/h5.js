@@ -1,3 +1,4 @@
+import getCompilerOptions from './mp.js'
 const TAGS = {
   br: 'view',
   hr: 'view',
@@ -121,7 +122,9 @@ const TAGS = {
   param: 'view'
 }
 module.exports = {
-  getTagName (tagName) {
-    return TAGS[tagName] || tagName
+  getTagName (tag, platform) {
+    const tempTag = platform && platform.includes('mp') && !getCompilerOptions(platform).isComponent(tag) ? tag : undefined// 在微信小程序中span算是一个内置组件，需要对小程序的内置组件再判断一次
+    const res = tempTag || TAGS[tag] || tag
+    return res
   }
 }

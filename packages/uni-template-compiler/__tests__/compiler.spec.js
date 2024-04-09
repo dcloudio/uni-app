@@ -777,7 +777,7 @@ describe('mp:compiler', () => {
     // TODO vue的数字 item 是从1，小程序是从0，后续考虑抹平差异
     assertCodegen(
       '<div><div v-for="i in 10"><p><span></span></p></div></div>',
-      '<view class="_div"><block wx:for="{{10}}" wx:for-item="i" wx:for-index="__i0__"><view class="_div"><view class="_p"><label class="_span"></label></view></view></block></view>'
+      '<view class="_div"><block wx:for="{{10}}" wx:for-item="i" wx:for-index="__i0__"><view class="_div"><view class="_p"><span></span></view></view></block></view>'
     )
   })
 

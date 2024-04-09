@@ -222,7 +222,7 @@ const {
   getTagName
 } = require('./h5')
 
-function isComponent (tagName) {
+function isComponent (tagName, options) {
   if (
     tagName === 'block' ||
     tagName === 'component' ||
@@ -237,7 +237,7 @@ function isComponent (tagName) {
       return false
     }
   }
-  return !hasOwn(tags, getTagName(tagName.replace(/^v-uni-/, '')))
+  return !hasOwn(tags, getTagName(tagName.replace(/^v-uni-/, ''), options && options.mp.platform))
 }
 
 function makeMap (str, expectsLowerCase) {
