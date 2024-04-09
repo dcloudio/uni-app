@@ -36,7 +36,11 @@ const normalizeProperty: Normalize = (v, options) => {
     .map(camelize)
     .join(',')
 
-  if (v.split(/\s*,\s*/).every((p) => !!getNormalizeMap(options)[p])) {
+  if (
+    v.split(/\s*,\s*/).every((p: any) => {
+      return !!getNormalizeMap(options)[p] || ['all', 'none'].includes(p)
+    })
+  ) {
     return { value: v }
   }
 

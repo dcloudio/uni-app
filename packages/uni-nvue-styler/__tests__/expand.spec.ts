@@ -1,4 +1,4 @@
-import { Declaration, parse, Rule } from 'postcss'
+import { type Declaration, type Rule, parse } from 'postcss'
 import { transformBackground } from '../src/expand/background'
 import { createTransformBorder } from '../src/expand/border'
 import { transformBorderColor } from '../src/expand/borderColor'
@@ -49,6 +49,46 @@ describe('nvue-styler: expand', () => {
         source: decl.source,
       },
     ])
+  })
+
+  test('transform transition all/none', () => {
+    const propertyVal = ['all', 'none', 'width,height', 'all,width,height']
+    propertyVal.forEach((property) => {
+      const decl = parseDecl(`.test {
+  transition: ${property} 500ms ease-in-out 1s
+}
+`)
+      expect(transformTransition(decl)).toEqual([
+        {
+          type: 'decl',
+          prop: 'transition-property',
+          value: property,
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'transition-duration',
+          value: '500ms',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'transition-timing-function',
+          value: 'ease-in-out',
+          raws: decl.raws,
+          source: decl.source,
+        },
+        {
+          type: 'decl',
+          prop: 'transition-delay',
+          value: '1s',
+          raws: decl.raws,
+          source: decl.source,
+        },
+      ])
+    })
   })
   test('transform margin/padding', function () {
     const types = ['margin', 'padding'] as const
