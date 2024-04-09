@@ -26,6 +26,10 @@
     "removeInterceptor": [
       null,
       "null"
+    ],
+    "$off": [
+      null,
+      "null"
     ]
   },
   "uni-getDeviceInfo": {
