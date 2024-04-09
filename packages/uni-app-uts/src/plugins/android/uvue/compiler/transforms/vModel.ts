@@ -1,27 +1,27 @@
 import { camelize, isString } from '@vue/shared'
 import {
   BindingTypes,
-  CompoundExpressionNode,
+  type CompoundExpressionNode,
   ConstantTypes,
+  type DirectiveNode,
+  ElementTypes,
+  type ExpressionNode,
+  NodeTypes,
+  type Property,
   createCompoundExpression,
   createObjectProperty,
   createSimpleExpression,
-  DirectiveNode,
-  ElementTypes,
-  ExpressionNode,
   hasScopeRef,
-  IS_REF,
   isMemberExpression,
   isSimpleIdentifier,
   isStaticExp,
-  NodeTypes,
-  Property,
 } from '@vue/compiler-core'
 import { isCompoundExpressionNode } from '@dcloudio/uni-cli-shared'
 
-import { DirectiveTransform } from '../transform'
+import type { DirectiveTransform } from '../transform'
 
-import { createCompilerError, ErrorCodes } from '../errors'
+import { ErrorCodes, createCompilerError } from '../errors'
+import { TRY_SET_REF_VALUE } from '../runtimeHelpers'
 
 const INPUT_TAGS = ['input', 'textarea']
 const AS = ' as '
@@ -154,16 +154,11 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
     } else {
       // v-model used on a potentially ref binding in <script setup> inline mode.
       // the assignment needs to check whether the binding is actually a ref.
-      const altAssignment =
-        bindingType === BindingTypes.SETUP_LET
-          ? `${rawExp} = ${eventValue}`
-          : ``
+      // innerValue = trySetRefValue(innerValue, `$event`.detail.value)
       assignmentExp = createCompoundExpression([
-        `${eventArg} => {if(${context.helperString(IS_REF)}(${rawExp})) { (`,
-        createSimpleExpression(rawExp, false, exp.loc),
-        `).value = ${eventValue} }${
-          altAssignment ? ` else { ${altAssignment} }` : ``
-        }}`,
+        `${eventArg} => {${rawExp} = ${context.helperString(
+          TRY_SET_REF_VALUE
+        )}(${rawExp}, ${eventValue})}`,
       ])
     }
   } else {

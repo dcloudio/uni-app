@@ -17,6 +17,8 @@ export const WITH_SCOPED_SLOT_CTX = Symbol(`withScopedSlotCtx`)
 
 export const RESOLVE_CACHE = Symbol(`resolveCache`)
 
+export const TRY_SET_REF_VALUE = Symbol(`trySetRefValue`)
+
 registerRuntimeHelpers({
   [IS_TRUE]: 'isTrue',
   [V_SHOW]: 'vShow',
@@ -31,4 +33,5 @@ registerRuntimeHelpers({
   [WITH_SLOT_CTX]: `withSlotCtx`,
   [WITH_SCOPED_SLOT_CTX]: `withScopedSlotCtx`,
   [RESOLVE_CACHE]: `resolveCache`,
+  [TRY_SET_REF_VALUE]: `trySetRefValue`,
 })

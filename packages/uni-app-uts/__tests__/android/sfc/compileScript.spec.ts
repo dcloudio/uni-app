@@ -1,5 +1,5 @@
+import { assertCode, compileSFCScript as compile } from './utils'
 import { BindingTypes } from '@vue/compiler-core'
-import { compileSFCScript as compile, assertCode } from './utils'
 
 describe('SFC compile <script setup>', () => {
   test('should compile JS syntax', () => {
@@ -638,11 +638,11 @@ describe('SFC compile <script setup>', () => {
       expect(content).toMatch(`(count).value = $event.detail.value`)
       // const but maybe ref: assign if ref, otherwise do nothing
       expect(content).toMatch(
-        `if(isRef(maybe)) { (maybe).value = $event.detail.value }`
+        `maybe = trySetRefValue(maybe, $event.detail.value)`
       )
       // let: handle both cases
       expect(content).toMatch(
-        `if(isRef(lett)) { (lett).value = $event.detail.value } else { lett = $event.detail.value }`
+        `lett = trySetRefValue(lett, $event.detail.value)`
       )
       assertCode(content)
     })
