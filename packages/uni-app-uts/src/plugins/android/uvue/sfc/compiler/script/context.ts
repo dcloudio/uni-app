@@ -93,9 +93,11 @@ export class ScriptCompileContext {
         return babelParse(input, {
           plugins,
           sourceType: 'module',
-          startLine,
         }).program
       } catch (e: any) {
+        if (e.loc && startLine) {
+          e.loc.line = e.loc.line + (startLine - 1)
+        }
         e.message = `[vue/compiler-sfc] ${e.message}\n\n${
           descriptor.filename
         }\n${generateCodeFrame(

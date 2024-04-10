@@ -15546,9 +15546,12 @@ class ScriptCompileContext {
         return parser$1.parse(input, {
           plugins,
           sourceType: "module",
-		  startLine,
         }).program;
       } catch (e) {
+		// fixed by xxxxxx
+		if (e.loc && startLine) {
+			e.loc.line = e.loc.line + (startLine - 1)
+		}
         e.message = `[vue/compiler-sfc] ${e.message}
 
 ${descriptor.filename}
