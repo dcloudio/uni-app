@@ -175,7 +175,7 @@ module.exports = {
             const tagNode = path.node.arguments[0]
             if (t.isStringLiteral(tagNode)) {
               // 需要把标签增加到 class 样式中
-              const tagName = getTagName(tagNode.value)
+              const tagName = getTagName(tagNode.value, this.options.platform.name)
               if (tagName !== tagNode.value) {
                 addStaticClass(path, '_' + tagNode.value)
               }

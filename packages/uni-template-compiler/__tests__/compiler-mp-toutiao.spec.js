@@ -103,4 +103,11 @@ describe('mp:compiler-mp-toutiao', () => {
       }
     )
   })
+
+  it('span', () => {
+    assertCodegen(
+      '<span></span>',
+      '<label class="_span"></label>'
+    )
+  })
 })

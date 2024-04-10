@@ -93,4 +93,10 @@ describe('mp:compiler-mp-kuaishou', () => {
       }
     )
   })
+  it('span', () => {
+    assertCodegen(
+      '<span></span>',
+      '<label class="_span"></label>'
+    )
+  })
 })

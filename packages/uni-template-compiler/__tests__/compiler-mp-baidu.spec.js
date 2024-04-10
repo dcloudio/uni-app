@@ -216,4 +216,10 @@ describe('mp:compiler-mp-baidu', () => {
       '<text>{{"我是第一行3\\\\n    我的第二行2"+title}}</text>'
     )
   })
+  it('span', () => {
+    assertCodegen(
+      '<span></span>',
+      '<label class="_span"></label>'
+    )
+  })
 })
