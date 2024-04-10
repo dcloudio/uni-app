@@ -706,12 +706,18 @@ describe('SFC compile <script setup>', () => {
       expect(content).toMatch(`maybe.value = count.value`)
       // let: handle both cases
       expect(content).toMatch(
-        `isRef(lett) ? lett.value = count.value : lett = count.value`
+        `isRef(lett) ? trySetRefValue(lett, count.value) : lett = count.value`
       )
-      expect(content).toMatch(`isRef(v) ? v.value += 1 : v += 1`)
-      expect(content).toMatch(`isRef(v) ? v.value -= 1 : v -= 1`)
-      expect(content).toMatch(`isRef(v) ? v.value = a : v = a`)
-      expect(content).toMatch(`isRef(v) ? v.value = _ctx.a : v = _ctx.a`)
+      expect(content).toMatch(
+        `isRef(v) ? trySetRefValue(v, unref(v.also((_)=>{ v += 1 }))) : v += 1`
+      )
+      expect(content).toMatch(
+        `isRef(v) ? trySetRefValue(v, unref(v.also((_)=>{ v -= 1 }))) : v -= 1`
+      )
+      expect(content).toMatch(`isRef(v) ? trySetRefValue(v, a) : v = a`)
+      expect(content).toMatch(
+        `isRef(v) ? trySetRefValue(v, _ctx.a) : v = _ctx.a`
+      )
       assertCode(content)
     })
 
@@ -741,8 +747,8 @@ describe('SFC compile <script setup>', () => {
       expect(content).toMatch(`maybe.value++`)
       expect(content).toMatch(`--maybe.value`)
       // let: handle both cases
-      expect(content).toMatch(`isRef(lett) ? lett.value++ : lett++`)
-      expect(content).toMatch(`isRef(lett) ? --lett.value : --lett`)
+      expect(content).toMatch(`lett = tryUpdateRefNumber(lett, 1, false)`)
+      expect(content).toMatch(`lett = tryUpdateRefNumber(lett, -1, true)`)
       assertCode(content)
     })
 
