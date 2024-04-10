@@ -14,7 +14,6 @@ export const uts2js: uts2js = (options) => {
   // TODO 目前开发阶段禁用缓存，禁用check
   extend(options, {
     cwd: inputDir,
-    clean: true,
     check: process.env.UNI_UTS_PLATFORM === 'web',
     tsconfigOverride: {
       compilerOptions: {

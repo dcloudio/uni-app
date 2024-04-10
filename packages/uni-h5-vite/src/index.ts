@@ -33,7 +33,7 @@ export default [
           cacheRoot: path.resolve(
             process.env.UNI_APP_X_CACHE_DIR ||
               path.resolve(process.env.UNI_OUTPUT_DIR, '../.web'),
-            '.uts/cache'
+            '.uts2js/cache'
           ),
           modules: {
             vueCompilerDom,
