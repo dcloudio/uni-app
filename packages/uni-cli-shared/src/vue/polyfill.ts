@@ -20,14 +20,7 @@ function rewriteCompileScriptSetupLang() {
     sfc: SFCDescriptor,
     options: SFCScriptCompileOptions
   ): SFCScriptBlock => {
-    const originalScriptSetupLang = sfc.scriptSetup?.lang
-    if (originalScriptSetupLang === 'uts') {
-      sfc.scriptSetup!.lang = 'ts'
-    }
     const result = compileScript(sfc, options)
-    if (originalScriptSetupLang === 'uts') {
-      sfc.scriptSetup!.lang = 'uts'
-    }
     return result
   }
 }
