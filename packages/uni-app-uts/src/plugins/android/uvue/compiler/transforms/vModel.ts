@@ -154,11 +154,12 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
     } else {
       // v-model used on a potentially ref binding in <script setup> inline mode.
       // the assignment needs to check whether the binding is actually a ref.
-      // innerValue = trySetRefValue(innerValue, `$event`.detail.value)
+      // 如果是 const 仅设置值：trySetRefValue(innerValue, `$event`.detail.value)
+      // 如果是 let 需要执行赋值动作 innerValue = trySetRefValue(innerValue, `$event`.detail.value)
       assignmentExp = createCompoundExpression([
-        `${eventArg} => {${rawExp} = ${context.helperString(
-          TRY_SET_REF_VALUE
-        )}(${rawExp}, ${eventValue})}`,
+        `${eventArg} => {${
+          bindingType === BindingTypes.SETUP_LET ? `${rawExp} = ` : ''
+        }${context.helperString(TRY_SET_REF_VALUE)}(${rawExp}, ${eventValue})}`,
       ])
     }
   } else {

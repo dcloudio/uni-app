@@ -616,7 +616,7 @@ function GenAnonymousRender(): any | null {
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"]),
     createElementVNode("input", utsMapOf({
       modelValue: unref(maybe),
-      onInput: ($event: InputEvent) => {maybe = trySetRefValue(maybe, $event.detail.value)}
+      onInput: ($event: InputEvent) => {trySetRefValue(maybe, $event.detail.value)}
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"]),
     createElementVNode("input", utsMapOf({
       modelValue: unref(lett),

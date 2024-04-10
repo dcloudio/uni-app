@@ -637,9 +637,7 @@ describe('SFC compile <script setup>', () => {
       // known const ref: set value
       expect(content).toMatch(`(count).value = $event.detail.value`)
       // const but maybe ref: assign if ref, otherwise do nothing
-      expect(content).toMatch(
-        `maybe = trySetRefValue(maybe, $event.detail.value)`
-      )
+      expect(content).toMatch(`trySetRefValue(maybe, $event.detail.value)`)
       // let: handle both cases
       expect(content).toMatch(
         `lett = trySetRefValue(lett, $event.detail.value)`
