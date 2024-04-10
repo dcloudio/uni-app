@@ -1587,8 +1587,7 @@ var SetTabBarBadgeOptions = {
 var ANI_SHOW = "pop-in";
 var ANI_DURATION = 300;
 var ANI_CLOSE = "pop-out";
-function showWebview(nPage, animationType, animationDuration, showCallback, delay) {
-  nPage.startRender();
+function showWebview(nPage, animationType, animationDuration, showCallback) {
   nPage.show(/* @__PURE__ */ new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
 }
 function closeWebview(nPage, animationType, animationDuration, callback) {
@@ -1766,6 +1765,7 @@ function registerPage(_ref, onCreated) {
     nativePage.addPageEventListener(ON_RESIZE, (_) => {
       invokeHook(page, ON_RESIZE);
     });
+    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);

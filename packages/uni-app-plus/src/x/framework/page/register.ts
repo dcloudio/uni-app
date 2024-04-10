@@ -170,6 +170,7 @@ export function registerPage(
     nativePage.addPageEventListener(ON_RESIZE, (_) => {
       invokeHook(page, ON_RESIZE)
     })
+    nativePage.startRender()
   }
   if (delay) {
     setTimeout(fn, delay)

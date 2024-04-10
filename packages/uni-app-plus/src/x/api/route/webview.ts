@@ -4,10 +4,8 @@ export function showWebview(
   nPage: IPage,
   animationType: string,
   animationDuration: number,
-  showCallback?: () => void,
-  delay?: number
+  showCallback?: () => void
 ) {
-  nPage.startRender()
   nPage.show(
     new Map<string, any>([
       ['animationType', animationType],
