@@ -1,7 +1,7 @@
 /// <reference types="@dcloudio/types" />
 
 import { capitalize } from '@vue/shared';
-import type { ComponentInternalInstance } from '@vue/runtime-core';
+import type { ComponentInternalInstance } from 'vue';
 import { extend } from '@vue/shared';
 import { hasOwn } from '@vue/shared';
 import { isPlainObject } from '@vue/shared';

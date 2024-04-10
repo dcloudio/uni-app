@@ -79,7 +79,7 @@ public class Test1 : NSObject {
 @objc(UTSSDKModulesTestUniPluginTest)
 @objcMembers
 public class Test : NSObject {
-    public init(){
+    override public init(){
         Test1();
     }
     public func test() -> String? {
