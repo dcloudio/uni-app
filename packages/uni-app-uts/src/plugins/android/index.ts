@@ -3,6 +3,7 @@ import {
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
   uniUTSUniModulesPlugin,
+  uniViteSfcSrcImportPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniPrePlugin } from './pre'
 import { uniAppPlugin } from './plugin'
@@ -31,6 +32,8 @@ export function init() {
     uniAppManifestPlugin(),
     uniAppPagesPlugin(),
     uniAppCssPlugin(),
+    // 解决所有的src引入
+    uniViteSfcSrcImportPlugin({ onlyVue: false }),
     uniAppUVuePlugin(),
     uniCloudPlugin(),
     ...(process.env.UNI_APP_X_TSC === 'true'

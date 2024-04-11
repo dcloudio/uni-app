@@ -1,7 +1,11 @@
+import fs from 'fs-extra'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
+import { isVueSfcFile, preUVueHtml } from '@dcloudio/uni-cli-shared'
 import { compile } from '../compiler'
 import type { TemplateCompilerOptions } from '../compiler/options'
 import { genRenderFunctionDecl } from '../compiler/utils'
+import type { TransformPluginContext } from 'rollup'
+import { getDescriptor, getResolvedOptions } from '../descriptorCache'
 
 export function genTemplate(
   { template }: SFCDescriptor,
@@ -71,4 +75,36 @@ function preprocess(
 
   if (err) throw err
   return res
+}
+
+export async function tryResolveTemplateSrc(
+  descriptor: SFCDescriptor,
+  pluginContext?: TransformPluginContext
+) {
+  if (!pluginContext) {
+    return
+  }
+  if (!descriptor.template) {
+    return
+  }
+  if (descriptor.template.src) {
+    const resolved = await pluginContext.resolve(
+      descriptor.template.src,
+      descriptor.filename
+    )
+    if (resolved) {
+      const filename = resolved.id
+      // 如果引入的vue文件，读取对应的template
+      if (isVueSfcFile(filename)) {
+        const srcDescriptor = getDescriptor(filename, getResolvedOptions())
+        if (srcDescriptor && srcDescriptor.template?.content) {
+          descriptor.template.content = srcDescriptor.template.content
+        }
+      } else {
+        descriptor.template.content = preUVueHtml(
+          fs.readFileSync(filename, 'utf-8')
+        )
+      }
+    }
+  }
 }
