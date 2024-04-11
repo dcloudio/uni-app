@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import {
   APP_SERVICE_FILENAME,
   type UniVitePlugin,
+  buildUniExtApis,
   emptyDir,
   injectCssPlugin,
   injectCssPostPlugin,
@@ -53,6 +54,10 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       configResolved(config)
       injectCssPlugin(config)
       injectCssPostPlugin(config, uniAppCssPlugin(config))
+    },
+    async writeBundle() {
+      // x 上暂时编译所有uni ext api，不管代码里是否调用了
+      await buildUniExtApis()
     },
   }
 }

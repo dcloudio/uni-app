@@ -723,9 +723,8 @@ export function resolveConfigProvider(
       service: transform.uniExtApiProviderService,
       class:
         (platform === 'app-android'
-          ? parseKotlinPackageWithPluginId(plugin, true)
+          ? parseKotlinPackageWithPluginId(plugin, true) + '.'
           : parseSwiftPackageWithPluginId(plugin, true)) +
-        '.' +
         formatExtApiProviderName(
           transform.uniExtApiProviderService,
           transform.uniExtApiProviderName
