@@ -20,7 +20,6 @@ import {
   getCompilerServer,
   getUTSCompiler,
   isColorSupported,
-  isUniCloudSupported,
   moveRootIndexSourceMap,
   parseExtApiDefaultParameters,
   parseInjectModules,
@@ -31,6 +30,7 @@ import {
   resolveSourceMapFile,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
+  shouldAutoImportUniCloud,
 } from './utils'
 import type { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
@@ -142,6 +142,17 @@ export async function runKotlinProd(
   }
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
+  }
+
+  const autoImportUniCloud = shouldAutoImportUniCloud()
+  const useUniCloudApi =
+    result.inject_apis &&
+    result.inject_apis.find((api) => api.startsWith('uniCloud.'))
+  if (!autoImportUniCloud && useUniCloudApi) {
+    throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
+  } else if (autoImportUniCloud && !useUniCloudApi) {
+    result.inject_apis = result.inject_apis || []
+    result.inject_apis.push('uniCloud.importObject')
   }
 
   if (result.inject_apis && result.inject_apis.length) {
@@ -537,7 +548,7 @@ export async function compile(
   if (rClass) {
     imports.push(rClass)
   }
-  if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
+  if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
   }
   // 本地 provider

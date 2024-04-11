@@ -572,6 +572,15 @@ export function isUniCloudSupported() {
   }
 }
 
+// 是否应自动引入uniCloud模块
+export function shouldAutoImportUniCloud() {
+  return (
+    isUniCloudSupported() ||
+    process.env.UNI_APP_X_UNICLOUD_OBJECT === 'true' ||
+    process.env.NODE_ENV !== 'production'
+  )
+}
+
 export function parseExtApiDefaultParameters() {
   return normalizeExtApiDefaultParameters(
     require('../lib/ext-api/default-parameters.json')

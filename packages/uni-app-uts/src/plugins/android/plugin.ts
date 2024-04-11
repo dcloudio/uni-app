@@ -152,12 +152,17 @@ export function uniAppPlugin(): UniVitePlugin {
       }
       // x 上暂时编译所有uni ext api，不管代码里是否调用了
       await buildUniExtApis()
-
+      const uniCloudObjectInfo = getUniCloudObjectInfo(uniCloudSpaceList)
+      if (uniCloudObjectInfo.length > 0) {
+        process.env.UNI_APP_X_UNICLOUD_OBJECT = 'true'
+      } else {
+        process.env.UNI_APP_X_UNICLOUD_OBJECT = 'false'
+      }
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'main.uts'),
         {
           pageCount,
-          uniCloudObjectInfo: getUniCloudObjectInfo(uniCloudSpaceList),
+          uniCloudObjectInfo,
           split: split !== false,
           disableSplitManifest: process.env.NODE_ENV !== 'development',
           inputDir: tempOutputDir,

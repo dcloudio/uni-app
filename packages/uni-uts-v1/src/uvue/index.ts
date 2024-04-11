@@ -26,10 +26,10 @@ import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
-  isUniCloudSupported,
   parseExtApiDefaultParameters,
   parseInjectModules,
   resolveUniAppXSourceMapPath,
+  shouldAutoImportUniCloud,
 } from '../utils'
 import type { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
@@ -89,7 +89,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     autoImports,
   } = options
 
-  if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
+  if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
   }
 
@@ -179,14 +179,16 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
   }
-
   if (isProd) {
-    if (
-      !isUniCloudSupported() &&
+    const autoImportUniCloud = shouldAutoImportUniCloud()
+    const useUniCloudApi =
       result.inject_apis &&
       result.inject_apis.find((api) => api.startsWith('uniCloud.'))
-    ) {
+    if (!autoImportUniCloud && useUniCloudApi) {
       throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
+    } else if (autoImportUniCloud && !useUniCloudApi) {
+      result.inject_apis = result.inject_apis || []
+      result.inject_apis.push('uniCloud.importObject')
     }
     return runKotlinBuild(options, result)
   }
