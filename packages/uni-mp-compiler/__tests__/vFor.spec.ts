@@ -1,13 +1,13 @@
 import {
-  ElementNode,
+  type ElementNode,
   ErrorCodes,
-  InterpolationNode,
+  type InterpolationNode,
   NodeTypes,
-  SimpleExpressionNode,
+  type SimpleExpressionNode,
 } from '@vue/compiler-core'
 import { compile } from '../src'
-import { CompilerOptions } from '../src/options'
-import { ForElementNode } from '../src/transforms/vFor'
+import type { CompilerOptions } from '../src/options'
+import type { ForElementNode } from '../src/transforms/vFor'
 import { assert } from './testUtils'
 
 function parseWithForTransform(

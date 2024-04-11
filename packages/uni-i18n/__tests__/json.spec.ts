@@ -1,5 +1,5 @@
 import { I18N_JSON_DELIMITERS } from '@dcloudio/uni-shared'
-import { parseI18nJson, compileI18nJsonStr } from '../src/json'
+import { compileI18nJsonStr, parseI18nJson } from '../src/json'
 const delimiters: [string, string] = I18N_JSON_DELIMITERS
 describe('parseI18nJson', () => {
   test('pages.json->style', () => {

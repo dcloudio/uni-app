@@ -1,13 +1,17 @@
-import { BindingTypes, ElementNode, RootNode } from '@vue/compiler-core'
 import {
+  BindingTypes,
+  type ElementNode,
+  type RootNode,
+} from '@vue/compiler-core'
+import {
+  type SFCTemplateCompileOptions,
+  type TemplateCompiler,
   compileTemplate,
-  SFCTemplateCompileOptions,
-  TemplateCompiler,
 } from '@vue/compiler-sfc'
 import { compile } from '../src'
 import * as MPCompiler from '../src'
 import { MPErrorCodes } from '../src/errors'
-import { CodegenRootNode, CompilerOptions } from '../src/options'
+import type { CodegenRootNode, CompilerOptions } from '../src/options'
 import { BindingComponentTypes } from '../src/transform'
 import { getBaseNodeTransforms } from '@dcloudio/uni-cli-shared'
 

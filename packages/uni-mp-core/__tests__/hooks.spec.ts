@@ -1,4 +1,4 @@
-import { ComponentOptions, defineComponent } from 'vue'
+import { type ComponentOptions, defineComponent } from 'vue'
 import { initHooks, initUnknownHooks } from '../src/runtime/componentHooks'
 
 const vueBasicOptions = defineComponent({

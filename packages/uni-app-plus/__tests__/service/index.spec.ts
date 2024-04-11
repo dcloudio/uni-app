@@ -2,14 +2,14 @@ import { compileTemplate } from '@vue/compiler-sfc'
 
 import { uniAppPlugin } from '../../../uni-app-vite/src/plugin'
 import {
-  ref,
-  nextTick,
-  createApp,
-  createVNode as _createVNode,
-  openBlock as _openBlock,
   createBlock as _createBlock,
   createCommentVNode as _createCommentVNode,
+  createVNode as _createVNode,
+  openBlock as _openBlock,
   withModifiers as _withModifiers,
+  createApp,
+  nextTick,
+  ref,
 } from '../../../uni-app-vue/lib/service.runtime.esm'
 
 import { createPageNode } from '../../src/service/framework/dom/Page'

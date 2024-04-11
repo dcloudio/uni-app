@@ -1,9 +1,9 @@
 import {
-  LOCALE_ZH_HANS,
-  LOCALE_ZH_HANT,
   LOCALE_EN,
   LOCALE_ES,
   LOCALE_FR,
+  LOCALE_ZH_HANS,
+  LOCALE_ZH_HANT,
 } from '../src/I18n'
 
 import { resolveLocale } from '../src/locale'

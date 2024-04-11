@@ -1,16 +1,16 @@
 import { extend } from '@vue/shared'
 import {
-  baseParse as parse,
-  CompilerOptions,
-  transform,
-  ElementNode,
-  transformElement,
+  type CompilerOptions,
+  type ElementNode,
   ErrorCodes,
-  TO_HANDLER_KEY,
-  helperNameMap,
   NodeTypes,
-  ObjectExpression,
-  VNodeCall,
+  type ObjectExpression,
+  TO_HANDLER_KEY,
+  type VNodeCall,
+  helperNameMap,
+  baseParse as parse,
+  transform,
+  transformElement,
 } from '@vue/compiler-core'
 import { transformOn } from '../../../src/plugins/android/uvue/compiler/transforms/vOn'
 import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'

@@ -1,4 +1,4 @@
-import { proxyStyle, UniCSSStyleDeclaration } from '../../src/vdom/Style'
+import { UniCSSStyleDeclaration, proxyStyle } from '../../src/vdom/Style'
 
 describe('vdom', () => {
   test('style', () => {

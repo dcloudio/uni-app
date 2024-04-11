@@ -12,7 +12,7 @@
     "build:app": "node scripts/build.js uni-app-plus uni-app-vite uni-app-vue uni-app-uvue",
     "build:mp": "node scripts/build.js uni-mp-vue uni-mp-vite uni-mp-compiler uni-mp-alipay uni-mp-baidu uni-mp-kuaishou uni-mp-lark uni-mp-qq uni-mp-toutiao uni-mp-weixin uni-mp-xhs uni-quickapp-webview",
     "size": "npm run build size-check",
-    "lint": "eslint packages/*/src/**/*.ts",
+    "lint": "eslint packages/*/src/**/*.ts packages/*/__tests__/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
     "test": "tsc -p ./test-dts/tsconfig.json && node scripts/test.js && jest",
     "test-dts": "tsc -p ./test-dts/tsconfig.json && tsc -p ./test-dts/tsconfig.build.json",

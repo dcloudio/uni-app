@@ -1,5 +1,5 @@
 import { BindingTypes } from '@vue/compiler-core'
-import { compileSFCScript as compile, assertCode } from '../utils'
+import { assertCode, compileSFCScript as compile } from '../utils'
 
 describe('defineProps', () => {
   test('basic usage', () => {

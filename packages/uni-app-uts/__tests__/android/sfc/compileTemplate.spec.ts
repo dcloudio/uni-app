@@ -1,4 +1,4 @@
-import { compileSFCScript as compile, assertCode } from './utils'
+import { assertCode, compileSFCScript as compile } from './utils'
 
 describe('SFC compile template', () => {
   test('template with html', () => {

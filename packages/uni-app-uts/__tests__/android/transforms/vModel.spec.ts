@@ -1,26 +1,26 @@
 import { extend } from '@vue/shared'
 import {
-  baseParse as parse,
-  transform,
-  ElementNode,
-  CompilerOptions,
-  ObjectExpression,
-  PlainElementNode,
-  ComponentNode,
-  NodeTypes,
-  VNodeCall,
-  NORMALIZE_PROPS,
   BindingTypes,
-  ForNode,
+  type CompilerOptions,
+  type ComponentNode,
+  type ElementNode,
   ErrorCodes,
-  transformElement,
+  type ForNode,
+  NORMALIZE_PROPS,
+  NodeTypes,
+  type ObjectExpression,
+  type PlainElementNode,
+  type VNodeCall,
+  baseParse as parse,
   trackSlotScopes,
+  transform,
+  transformElement,
 } from '@vue/compiler-core'
 import { transformFor } from '../../../src/plugins/android/uvue/compiler/transforms/vFor'
 import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
 import { transformModel } from '../../../src/plugins/android/uvue/compiler/transforms/vModel'
 import { generate } from '../../../src/plugins/android/uvue/compiler/codegen'
-import { CallExpression } from '@babel/types'
+import type { CallExpression } from '@babel/types'
 import { assert } from '../testUtils'
 
 function parseWithVModel(template: string, options: CompilerOptions = {}) {

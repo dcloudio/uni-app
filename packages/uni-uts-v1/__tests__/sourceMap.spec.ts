@@ -1,8 +1,8 @@
 import { resolve } from 'path'
 import {
-  resolveUTSPluginSourceMapFile,
   generatedPositionFor,
   originalPositionFor,
+  resolveUTSPluginSourceMapFile,
 } from '../src'
 
 const inputDir = resolve(__dirname, '../../playground/uts')

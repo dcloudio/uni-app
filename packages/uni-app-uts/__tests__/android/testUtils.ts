@@ -1,13 +1,13 @@
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
 import { compile } from '../../src/plugins/android/uvue/compiler/index'
-import { TemplateCompilerOptions } from '../../src/plugins/android/uvue/compiler/options'
+import type { TemplateCompilerOptions } from '../../src/plugins/android/uvue/compiler/options'
 import { NodeTypes } from '@vue/compiler-core'
 import {
-  isString,
-  PatchFlags,
-  ShapeFlags,
   PatchFlagNames,
+  type PatchFlags,
+  type ShapeFlags,
   isArray,
+  isString,
 } from '@vue/shared'
 
 export function assert(
