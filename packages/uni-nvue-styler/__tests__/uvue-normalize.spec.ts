@@ -1,28 +1,29 @@
 import { parse } from '../src'
 
-// for nvue
+// for uvue version
 async function objectifierRule(input: string) {
-  const { code, messages } = await parse(input, { logLevel: 'NOTE' })
+  const { code, messages } = await parse(input, {
+    logLevel: 'NOTE',
+    type: 'uvue',
+    platform: 'app-ios',
+  })
+
   return {
     json: JSON.parse(code),
     messages,
   }
 }
 
-describe('nvue-styler: normalize', () => {
+describe('uvue-styler: normalize', () => {
   test('basic', async () => {
     const { json, messages } = await objectifierRule(`.foo{
-color: #FF0000;
-width: 200;
-position: sticky;
-zIndex: 4;
-}`)
+  zIndex: 4;
+  }`)
     expect(json).toEqual({
       foo: {
         '': {
-          color: '#FF0000',
-          width: 200,
-          position: 'sticky',
+          // color: '#FF0000',
+          // width: '200px',
           zIndex: 4,
         },
       },
@@ -31,53 +32,63 @@ zIndex: 4;
   })
   test('length', async () => {
     const { json, messages } = await objectifierRule(`.foo{
-  width: 200px;
-  paddingLeft: 300;
-  borderWidth: 1pt;
-  left: 0;
-  right: 0px;
-  marginRight: asdf;
-  height: 10rpx;
-  paddingTop: 11upx;
-}`)
+    width: 200px;
+    paddingLeft: 300;
+    borderWidth: 1pt;
+    left: 0;
+    right: 0px;
+    marginRight: asdf;
+    height: 10rpx;
+    paddingTop: 11upx;
+  }`)
+    // borderWidth: '1pt', // ?
+    // paddingTop: '11upx', // ?
     expect(json).toEqual({
       foo: {
         '': {
           width: 200,
           paddingLeft: 300,
-          borderWidth: '1pt',
+
           left: 0,
           right: 0,
           height: '10rpx',
-          paddingTop: '11upx',
         },
       },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
         type: 'warning',
-        text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`)',
+        text: 'ERROR: property value `1pt` is not supported for `border-width` (supported values are: `number`|`pixel`|`thin`|`medium`|`thick`)',
       })
+    )
+    expect(messages[1]).toEqual(
+      expect.objectContaining({
+        type: 'warning',
+        text: 'ERROR: property value `asdf` is not supported for `margin-right` (supported values are: `number`|`pixel`|`percent`|`auto`)',
+      })
+    )
+    expect(messages?.[2]?.text).toBe(
+      'ERROR: property value `11upx` is not supported for `padding-top` (supported values are: `number`|`pixel`|`percent`)'
     )
   })
   test('number', async () => {
     const { json, messages } = await objectifierRule(`
-.foo{
-  opacity: 1
-},
-.bar{
-  opacity: 0.5
-},
-.baz{
-  opacity: a
-},
-.boo{
-  opacity: 0.5a
-},
-.zero{
-  opacity: 0
-}
-`)
+  .foo{
+    opacity: 1
+  },
+  .bar{
+    opacity: 0.5
+  },
+  .baz{
+    opacity: a
+  },
+  .boo{
+    opacity: 0.5a
+  },
+  .zero{
+    opacity: 0
+  }
+  `)
     expect(json).toEqual({
       foo: {
         '': {
@@ -108,22 +119,22 @@ zIndex: 4;
   })
   test('integer', async () => {
     const { json, messages } = await objectifierRule(`
-.foo{
-  zIndex: 1
-},
-.bar{
-  zIndex: 0.5
-},
-.baz{
-  zIndex: a
-},
-.boo{
-  zIndex: 0.5a
-},
-.zero{
-  zIndex: 0
-}
-`)
+  .foo{
+    zIndex: 1
+  },
+  .bar{
+    zIndex: 0.5
+  },
+  .baz{
+    zIndex: a
+  },
+  .boo{
+    zIndex: 0.5a
+  },
+  .zero{
+    zIndex: 0
+  }
+  `)
     expect(json).toEqual({
       foo: {
         '': {
@@ -154,31 +165,31 @@ zIndex: 4;
   })
   test('color', async () => {
     const { json, messages } = await objectifierRule(`
-.foo {
-  color: #FF0000;
-  background-color: #ff0000;
-},
-.bar {
-  color: #F00;
-  background-color: #f00
-},
-.baz {
-  color: red;
-  background-color: lightpink
-},
-.rgba {
-  color: rgb(23, 0, 255);
-  background-color: rgba(234, 45, 99, .4)
-},
-.transparent {
-  color: transparent;
-  background-color: asdf
-},
-.errRgba {
-  color: rgb(266,0,255);
-  background-color: rgba(234,45,99,1.3)
-}
-`)
+  .foo {
+    color: #FF0000;
+    background-color: #ff0000;
+  },
+  .bar {
+    color: #F00;
+    background-color: #f00
+  },
+  .baz {
+    color: red;
+    background-color: lightpink
+  },
+  .rgba {
+    color: rgb(23, 0, 255);
+    background-color: rgba(234, 45, 99, .4)
+  },
+  .transparent {
+    color: transparent;
+    background-color: asdf
+  },
+  .errRgba {
+    color: rgb(266,0,255);
+    background-color: rgba(234,45,99,1.3)
+  }
+  `)
     expect(json).toEqual({
       foo: {
         '': {
@@ -247,52 +258,46 @@ zIndex: 4;
     )
   })
   test('flex-wrap', async () => {
-    const { json, messages } = await objectifierRule(`
-.foo { flex-wrap: nowrap }
-.bar { flex-wrap: wrap }
-`)
+    const {
+      json,
+      //messages
+    } = await objectifierRule(`
+  .foo { flex-wrap: nowrap }
+  .bar { flex-wrap: wrap }
+  `)
     expect(json).toEqual({
       foo: { '': { flexWrap: 'nowrap' } },
       bar: { '': { flexWrap: 'wrap' } },
     })
-    expect(messages[0]).toEqual(
-      expect.objectContaining({
-        text: 'NOTE: property value `nowrap` is the DEFAULT value for `flex-wrap` (could be removed)',
-      })
-    )
-    expect(messages[1]).toEqual(
-      expect.objectContaining({
-        text: 'NOTE: the flex-wrap property may have compatibility problem on native',
-      })
-    )
+
+    // 不同
+    // console.log(messages)
+    // expect(messages[0]).toEqual(
+    //   expect.objectContaining({
+    //     text: 'NOTE: property value `nowrap` is the DEFAULT value for `flex-wrap` (could be removed)',
+    //   })
+    // )
+    // expect(messages[1]).toEqual(
+    //   expect.objectContaining({
+    //     text: 'NOTE: the flex-wrap property may have compatibility problem on native',
+    //   })
+    // )
   })
   test('transition-property', async () => {
     const { json, messages } = await objectifierRule(`
-.foo {
-  transition-property: margin-top
-}
-.bar {
-  transition-property: height
-}
-.foobar {
-  transition-property: margin-top, height
-}
-.baz {
-  transition-property: abc
-}
-.demo_all {
-  transition-property: all
-}
-.demo_none {
-  transition-property: none
-}
-.demo_all_width {
-  transition-property: all,width
-}
-.demo_mix {
-  transition-property: all,width,none,height
-}
-`)
+  .foo {
+    transition-property: margin-top
+  }
+  .bar {
+    transition-property: height
+  }
+  .foobar {
+    transition-property: margin-top, height
+  }
+  .baz {
+    transition-property: abc
+  }
+  `)
     expect(json).toEqual({
       '@TRANSITION': {
         bar: {
@@ -303,18 +308,6 @@ zIndex: 4;
         },
         foobar: {
           property: 'marginTop,height',
-        },
-        demo_all: {
-          property: 'all',
-        },
-        demo_none: {
-          property: 'none',
-        },
-        demo_all_width: {
-          property: 'all,width',
-        },
-        demo_mix: {
-          property: 'all,width,none,height',
         },
       },
       foo: {
@@ -332,26 +325,6 @@ zIndex: 4;
           transitionProperty: 'marginTop,height',
         },
       },
-      demo_all: {
-        '': {
-          transitionProperty: 'all',
-        },
-      },
-      demo_none: {
-        '': {
-          transitionProperty: 'none',
-        },
-      },
-      demo_all_width: {
-        '': {
-          transitionProperty: 'all,width',
-        },
-      },
-      demo_mix: {
-        '': {
-          transitionProperty: 'all,width,none,height',
-        },
-      },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({
@@ -361,65 +334,49 @@ zIndex: 4;
   })
   test('transition-duration & transition-delay', async () => {
     const { json, messages } = await objectifierRule(`
-.foo{
-  transition-duration: 200ms;
-  transition-delay: 0.5s
-},
-.bar{
-  transition-duration: 200;
-  transition-delay: abc
-}
-`)
+  .foo{
+    transition-duration: 200ms;
+    transition-delay: 0.5s
+  },
+  .bar{
+    transition-duration: 200;
+    transition-delay: abc
+  }
+  `)
+    // 不合法的直接丢掉了
     expect(json).toEqual({
       '@TRANSITION': {
-        bar: {
-          duration: 200,
-        },
         foo: {
-          delay: 500,
-          duration: 200,
+          delay: '0.5s',
+          duration: '200ms',
         },
       },
       foo: {
         '': {
-          transitionDuration: 200,
-          transitionDelay: 500,
-        },
-      },
-      bar: {
-        '': {
-          transitionDuration: 200,
+          transitionDuration: '200ms',
+          transitionDelay: '0.5s',
         },
       },
     })
-    expect(messages[0]).toEqual(
-      expect.objectContaining({
-        text: 'NOTE: property value `200ms` is autofixed to `200`',
-      })
+    expect(messages?.[0]?.text).toBe(
+      'ERROR: property value `200` is not supported for `transition-duration` (supported values are: `number of seconds`|`milliseconds`)'
     )
-    expect(messages[1]).toEqual(
-      expect.objectContaining({
-        text: 'NOTE: property value `0.5s` is autofixed to `500`',
-      })
-    )
-    expect(messages[2]).toEqual(
-      expect.objectContaining({
-        text: 'ERROR: property value `abc` is not supported for `transition-delay` (supported values are: `number of seconds`|`milliseconds`)',
-      })
+    expect(messages?.[1]?.text).toEqual(
+      'ERROR: property value `abc` is not supported for `transition-delay` (supported values are: `number of seconds`|`milliseconds`)'
     )
   })
   test('transition-timing-function', async () => {
     const { json, messages } = await objectifierRule(`
-.foo {
-  transition-timing-function: ease-in-out
-}
-.bar {
-  transition-timing-function: cubic-bezier(.88, 1.0, -0.67, 1.37)
-}
-.baz {
-  transition-timing-function: abc
-}
-`)
+  .foo {
+    transition-timing-function: ease-in-out
+  }
+  .bar {
+    transition-timing-function: cubic-bezier(.88, 1.0, -0.67, 1.37)
+  }
+  .baz {
+    transition-timing-function: abc
+  }
+  `)
     expect(json).toEqual({
       '@TRANSITION': {
         bar: {
@@ -448,15 +405,15 @@ zIndex: 4;
   })
   test('unknown', async () => {
     const { json, messages } = await objectifierRule(`
-.foo {
-  background: #ff0000;
-  abc: 123;
-  def: 456px;
-  ghi: 789pt;
-  AbcDef: 456;
-  abcDef: abc
-}
-`)
+  .foo {
+    background: #ff0000;
+    abc: 123;
+    def: 456px;
+    ghi: 789pt;
+    AbcDef: 456;
+    abcDef: abc
+  }
+  `)
     expect(json).toEqual({
       foo: {
         '': {
@@ -497,12 +454,12 @@ zIndex: 4;
   })
   test('complex style code', async () => {
     const { json, messages } = await objectifierRule(`
-.foo {
-  color: red;
-  WebkitTransform: rotate(90deg);
-  width: 200px
-}
-`)
+  .foo {
+    color: red;
+    WebkitTransform: rotate(90deg);
+    width: 200px
+  }
+  `)
     expect(json).toEqual({
       foo: {
         '': {

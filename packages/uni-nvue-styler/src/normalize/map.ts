@@ -38,7 +38,7 @@ const normalizeProperty: Normalize = (v, options) => {
 
   if (
     v.split(/\s*,\s*/).every((p: any) => {
-      return !!getNormalizeMap(options)[p] || ['all', 'none'].includes(p)
+      return !!getNormalizeMap(options)[p]
     })
   ) {
     return { value: v }
