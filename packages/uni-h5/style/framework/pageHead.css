@@ -142,6 +142,10 @@ uni-page-head {
   text-align: left;
 }
 
+.uni-page-head-search-input .uni-input-input:disabled {
+  pointer-events: none;
+}
+
 .uni-page-head-search-placeholder {
   position: absolute;
   max-width: 100%;
