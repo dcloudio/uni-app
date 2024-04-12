@@ -22,7 +22,8 @@
     "paths": {
       "types/alias": ["packages/uni-cli-shared/types/alias.d.ts"],
       "@dcloudio/*": ["packages/*/src"],
-      "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"]
+      "@dcloudio/uni-platform": ["packages/uni-h5/src/platform/index.ts"],
+      "@ohos.*": ["packages/uni-app-harmony/types/ohos/api/@ohos.*.d.ts"]
     }
   },
   "include": [
@@ -41,6 +42,7 @@
     "node_modules/mini-types/types/api/index.d.ts",
     "node_modules/mini-types/types/page.d.ts",
     "node_modules/mini-types/types/component.d.ts",
-    "node_modules/mini-types/types/event.d.ts"
+    "node_modules/mini-types/types/event.d.ts",
+    "packages/uni-app-harmony/global.d.ts"
   ]
 }
