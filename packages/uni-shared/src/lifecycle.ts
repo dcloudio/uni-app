@@ -51,9 +51,16 @@ const PAGE_HOOKS = [
   ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ]
 
-const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW]
-
 export function isRootImmediateHook(name: string) {
+  const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW]
+
+  return PAGE_SYNC_HOOKS.indexOf(name) > -1
+}
+
+// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
+export function isRootImmediateHookX(name: string) {
+  const PAGE_SYNC_HOOKS = [ON_LOAD]
+
   return PAGE_SYNC_HOOKS.indexOf(name) > -1
 }
 
