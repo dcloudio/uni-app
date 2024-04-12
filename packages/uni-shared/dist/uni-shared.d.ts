@@ -285,6 +285,8 @@ export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;
 
+export declare function isRootImmediateHookX(name: string): boolean;
+
 export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
 
 export declare function isUniXElement(name: string): boolean;
