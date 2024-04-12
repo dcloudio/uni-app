@@ -11,10 +11,10 @@ type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
   const inputDir = options.inputDir
-  // TODO 目前开发阶段禁用缓存，禁用check
   extend(options, {
     cwd: inputDir,
     check: process.env.UNI_UTS_PLATFORM === 'web',
+    clean: process.env.NODE_ENV === 'production',
     tsconfigOverride: {
       compilerOptions: {
         rootDir: inputDir,
