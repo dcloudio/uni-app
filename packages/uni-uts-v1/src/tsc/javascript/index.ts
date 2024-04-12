@@ -14,7 +14,7 @@ export const uts2js: uts2js = (options) => {
   extend(options, {
     cwd: inputDir,
     check: process.env.UNI_UTS_PLATFORM === 'web',
-    clean: process.env.NODE_ENV === 'production',
+    noCache: process.env.NODE_ENV === 'production',
     tsconfigOverride: {
       compilerOptions: {
         rootDir: inputDir,
