@@ -60,5 +60,14 @@ describe('mp-kuaishou: transform v-on', () => {
 }`
       )
     })
+    test(`getuserextendinfo`, () => {
+      assert(
+        `<button open-type="getuserextendinfo" @getuserextendinfo="getInfo"></button>`,
+        `<button open-type="getuserextendinfo" bindgetuserextendinfo="__e" data-e-o="{{a}}"></button>`,
+        `(_ctx, _cache) => {
+  return { a: { 'getuserextendinfo': _o(_ctx.getInfo) } }
+}`
+      )
+    })
   })
 })
