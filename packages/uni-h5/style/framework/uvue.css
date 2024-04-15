@@ -4,6 +4,10 @@ body {
   font-family: -apple-system, HelveticaNeue;
 }
 
+body {
+  background-color: var(--background-color-content);
+}
+
 uni-app uni-page-body {
   height: 100%;
   overflow: visible;
