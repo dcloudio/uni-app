@@ -66,7 +66,11 @@ export const options: UniMiniProgramPluginOptions = {
       assets: [COMPONENTS_DIR],
       targets: [
         {
-          src: ['ext.json'],
+          src: [
+            'ext.json',
+            // https://developer.open-douyin.com/docs/resource/zh-CN/mini-app/develop/guide/industry-ability/industrySDK
+            'package.json',
+          ],
           get dest() {
             return process.env.UNI_OUTPUT_DIR
           },
