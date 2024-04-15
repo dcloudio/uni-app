@@ -25,7 +25,8 @@ export function uniAppPlugin(
         base: '/', // app 平台强制 base
         build: buildOptions({ renderer, appService }, config, env),
         optimizeDeps: {
-          disabled: true,
+          noDiscovery: true,
+          include: [],
         },
         resolve: {
           alias: {

@@ -58,8 +58,8 @@ export function uniCssPlugin(): Plugin {
       })
     },
     transformIndexHtml: {
-      enforce: 'post',
-      transform() {
+      order: 'post',
+      handler() {
         if (!fileName) {
           return
         }

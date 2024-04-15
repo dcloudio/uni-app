@@ -1,5 +1,6 @@
 import { normalizePath } from '@dcloudio/uni-cli-shared'
 import { dirname, isAbsolute, join } from 'path'
+import type { SourceMap } from 'rollup'
 import type { Plugin, TransformResult, ViteDevServer } from 'vite'
 
 export function uniPostSourceMapPlugin(): Plugin {
@@ -25,6 +26,9 @@ interface PendingRequest {
   abort: () => void
 }
 
+function isSourceMap(map: any): map is SourceMap {
+  return map && map.sources
+}
 class PendingRequests extends Map<string, PendingRequest> {
   _inputDir!: string
   _server!: ViteDevServer
@@ -42,7 +46,7 @@ class PendingRequests extends Map<string, PendingRequest> {
             const mod = this._server.moduleGraph._getUnresolvedUrlToModule(key)
             if (mod && mod.file && isAbsolute(mod.file)) {
               const dir = normalizePath(dirname(mod.file))
-              if (dir.startsWith(this._inputDir)) {
+              if (dir.startsWith(this._inputDir) && isSourceMap(map)) {
                 for (
                   let sourcesIndex = 0;
                   sourcesIndex < map.sources.length;

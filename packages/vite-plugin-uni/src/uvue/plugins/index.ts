@@ -30,7 +30,8 @@ export function uniUVuePlugin(options: VitePluginUniResolvedOptions): Plugin {
         resolve: createResolve(options, config),
         logLevel: config.logLevel || 'warn', // 默认使用 warn 等级，因为 info 等级vite:report 会输出文件列表等信息
         optimizeDeps: {
-          disabled: true,
+          noDiscovery: true,
+          include: [],
         },
         css: createCss(options, config),
       }

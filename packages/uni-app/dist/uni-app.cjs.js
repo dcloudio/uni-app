@@ -158,19 +158,19 @@ function renderComponentSlot(slots, name, props = null) {
     return null;
 }
 
-Object.defineProperty(exports, 'capitalize', {
+Object.defineProperty(exports, "capitalize", {
   enumerable: true,
   get: function () { return shared.capitalize; }
 });
-Object.defineProperty(exports, 'extend', {
+Object.defineProperty(exports, "extend", {
   enumerable: true,
   get: function () { return shared.extend; }
 });
-Object.defineProperty(exports, 'hasOwn', {
+Object.defineProperty(exports, "hasOwn", {
   enumerable: true,
   get: function () { return shared.hasOwn; }
 });
-Object.defineProperty(exports, 'isPlainObject', {
+Object.defineProperty(exports, "isPlainObject", {
   enumerable: true,
   get: function () { return shared.isPlainObject; }
 });

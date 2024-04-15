@@ -150,7 +150,8 @@ export function uniMiniProgramPlugin(
           },
         },
         optimizeDeps: {
-          disabled: true,
+          noDiscovery: true,
+          include: [],
         },
         build: buildOptions(),
       }

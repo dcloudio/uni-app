@@ -7162,7 +7162,7 @@ function initHidpi() {
     setTransform: [4, 5]
   };
   const proto = CanvasRenderingContext2D.prototype;
-  proto.drawImageByCanvas = function(_super) {
+  proto.drawImageByCanvas = /* @__PURE__ */ function(_super) {
     return function(canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
       if (!this.__hidpi__) {
         return _super.apply(this, arguments);
@@ -7180,7 +7180,7 @@ function initHidpi() {
   }(proto.drawImage);
   if (pixelRatio !== 1) {
     forEach(ratioArgs, function(value, key) {
-      proto[key] = function(_super) {
+      proto[key] = /* @__PURE__ */ function(_super) {
         return function() {
           if (!this.__hidpi__) {
             return _super.apply(this, arguments);
@@ -7199,7 +7199,7 @@ function initHidpi() {
         };
       }(proto[key]);
     });
-    proto.stroke = function(_super) {
+    proto.stroke = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7209,7 +7209,7 @@ function initHidpi() {
         this.lineWidth /= pixelRatio;
       };
     }(proto.stroke);
-    proto.fillText = function(_super) {
+    proto.fillText = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7231,7 +7231,7 @@ function initHidpi() {
         this.font = font2;
       };
     }(proto.fillText);
-    proto.strokeText = function(_super) {
+    proto.strokeText = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7253,7 +7253,7 @@ function initHidpi() {
         this.font = font2;
       };
     }(proto.strokeText);
-    proto.drawImage = function(_super) {
+    proto.drawImage = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -19312,7 +19312,6 @@ const MIMEType = {
     wvx: "x-ms-wvx"
   }
 };
-const MIMEType$1 = MIMEType;
 const ALL = "all";
 addInteractListener();
 function isWXEnv() {
@@ -19340,7 +19339,7 @@ function _createInput({
   inputEl.accept = extension.map((item) => {
     if (type !== ALL) {
       const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType$1[type][MIMEKey] || MIMEKey}`;
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
     } else {
       if (isWXEnv()) {
         return ".";

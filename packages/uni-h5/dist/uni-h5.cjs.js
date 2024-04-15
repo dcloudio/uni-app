@@ -5047,7 +5047,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
       return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
     }
     const getPickerViewColumn = function(columnInstance) {
-      const ref = vue.computed({
+      const ref2 = vue.computed({
         get() {
           const index2 = getItemIndex(columnInstance.vnode);
           return state.value[index2] || 0;
@@ -5068,7 +5068,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
           }
         }
       });
-      return ref;
+      return ref2;
     };
     vue.provide("getPickerViewColumn", getPickerViewColumn);
     vue.provide("pickerViewProps", props2);

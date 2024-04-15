@@ -5670,7 +5670,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
       return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
     }
     const getPickerViewColumn = function(columnInstance) {
-      const ref = vue.computed({
+      const ref2 = vue.computed({
         get() {
           const index2 = getItemIndex(columnInstance.vnode);
           return state.value[index2] || 0;
@@ -5691,7 +5691,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
           }
         }
       });
-      return ref;
+      return ref2;
     };
     vue.provide("getPickerViewColumn", getPickerViewColumn);
     vue.provide("pickerViewProps", props2);
@@ -9264,23 +9264,9 @@ function useTheme(pageStyle, onThemeChangeCallback) {
   onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
   return reactivePageStyle;
 }
-let showActionSheetState;
-const hideActionSheet = () => {
-  if (showActionSheetState) {
-    showActionSheetState.visible = false;
-  }
-};
-let showModalState;
-const hideModal = () => {
-  if (showModalState) {
-    showModalState.visible = false;
-  }
-};
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    hideActionSheet();
-    hideModal();
     uni.hideToast();
     uni.hideLoading();
   });

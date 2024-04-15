@@ -8,7 +8,7 @@ import replace from '@rollup/plugin-replace'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 
-import { OutputChunk } from 'rollup'
+import type { OutputChunk } from 'rollup'
 
 import { stripOptions } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
@@ -29,6 +29,7 @@ const rollupPlugins = [
       defineSyncApi: `/*#__PURE__*/ defineSyncApi`,
       defineAsyncApi: `/*#__PURE__*/ defineAsyncApi`,
       __IMPORT_META_ENV_BASE_URL__: '__IMPORT_META_ENV_BASE_URL__', //直接使用import.meta.env.BASE_URL会被vite替换成'/'
+      __DEV__: `(process.env.NODE_ENV !== 'production')`,
     },
     preventAssignment: true,
   }),
@@ -69,7 +70,6 @@ export default defineConfig({
   root: __dirname,
   define: {
     global: FORMAT === 'cjs' ? 'global' : 'window',
-    __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __TEST__: false,
     __PLATFORM__: JSON.stringify('h5'),
     __APP_VIEW__: false,
@@ -153,6 +153,14 @@ export default defineConfig({
       preserveEntrySignatures: 'strict',
       plugins: rollupPlugins as any,
       onwarn: (msg, warn) => {
+        if (
+          String(msg).includes(
+            'contains an annotation that Rollup cannot interpret'
+          )
+        ) {
+          // ignore TODO 稍后排查为什么会有警告
+          return
+        }
         if (!String(msg).includes('external module "vue" but never used')) {
           warn(msg)
         }
