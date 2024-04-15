@@ -29,6 +29,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       return {
         base: '/', // 强制 base
         build: {
+          sourcemap: process.env.NODE_ENV === 'development' ? 'inline' : false,
           emptyOutDir: false,
           assetsInlineLimit: 0,
           rollupOptions: {

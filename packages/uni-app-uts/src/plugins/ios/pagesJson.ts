@@ -49,11 +49,13 @@ export function uniAppPagesPlugin(): Plugin {
           if (!vueFilename.startsWith('.')) {
             // const index = allPagePaths.indexOf(pagePath)
             // if (index > -1) {
-            console.log(
-              `当前工程${allPagePaths.length}个页面，正在编译${vueFilename}...${
-                runByHBuilderX() ? '\u200b' : '\r'
-              }`
-            )
+            if (runByHBuilderX()) {
+              console.log(
+                `当前工程${
+                  allPagePaths.length
+                }个页面，正在编译${vueFilename}...${'\u200b'}`
+              )
+            }
             // }
           }
         }
@@ -74,7 +76,7 @@ export function uniAppPagesPlugin(): Plugin {
         })
         return {
           code: normalizeAppPagesJson(pagesJson),
-          map: null,
+          map: { mappings: '' },
         }
       }
     },
