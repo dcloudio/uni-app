@@ -1,7 +1,7 @@
 {
-  "name": "@dcloudio/uni-app-plus",
+  "name": "@dcloudio/uni-app-harmony",
   "version": "3.0.0-alpha-4010120240402001",
-  "description": "@dcloudio/uni-app-plus",
+  "description": "@dcloudio/uni-app-harmony",
   "files": [
     "dist",
     "lib",
@@ -13,21 +13,13 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dcloudio/uni-app.git",
-    "directory": "packages/uni-app-plus"
+    "directory": "packages/uni-app-harmony"
   },
   "license": "Apache-2.0",
   "bugs": {
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
-  "uni-app": {
-    "name": "uni-app-plus",
-    "apply": [
-      "app"
-    ],
-    "uvue": true,
-    "main": "dist/uni.compiler.js"
-  },
   "dependencies": {
     "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
