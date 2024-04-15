@@ -1,14 +1,14 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
+  type StyleValue,
+  computed,
   getCurrentInstance,
+  nextTick,
   onMounted,
+  onUnmounted,
   reactive,
   ref,
   watch,
-  computed,
-  onUnmounted,
-  nextTick,
-  StyleValue,
 } from 'vue'
 
 import { parseStringStyle } from '@vue/shared'
@@ -20,7 +20,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerViewColumn',
   rootElement: {
     name: 'uni-picker-view-column-element',
-    // @ts-ignore
+    // @ts-expect-error
     class: UniPickerViewColumnElement,
   },
   setup(_props, { slots, expose }) {
@@ -217,7 +217,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             </view>
           </scroll-view>
           <view
-            // @ts-ignore
             userInteractionEnabled={false}
             class="uni-picker-view-mask"
             style={styleViewMask.value}
@@ -233,7 +232,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           </view>
           <view
             ref={indicator}
-            // @ts-ignore
             userInteractionEnabled={false}
             class="uni-picker-view-indicator"
             style={indicatorStyle.value}
