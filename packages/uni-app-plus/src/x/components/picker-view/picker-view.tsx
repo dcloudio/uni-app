@@ -1,8 +1,8 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
-  ComponentPublicInstance,
-  PropType,
-  StyleValue,
+  type ComponentPublicInstance,
+  type PropType,
+  type StyleValue,
   camelize,
   getCurrentInstance,
   onMounted,
@@ -56,6 +56,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           }
         })
         data.valueSync = [...val]
+      },
+      {
+        immediate: true,
       }
     )
 
