@@ -7,6 +7,11 @@
       "null"
     ]
   },
+  "uni-storage": {
+    "clearStorage": [
+      "null"
+    ]
+  },
   "uni-route": {
     "navigateBack": [
       "null"
@@ -14,11 +19,6 @@
   },
   "uni-pullDownRefresh": {
     "startPullDownRefresh": [
-      "null"
-    ]
-  },
-  "uni-storage": {
-    "clearStorage": [
       "null"
     ]
   },
