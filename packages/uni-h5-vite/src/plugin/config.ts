@@ -42,6 +42,7 @@ export function createConfig(options: {
         ignored: [
           '**/uniCloud-aliyun/**',
           '**/uniCloud-tcb/**',
+          '**/uniCloud-alipay/**',
           '**/uni_modules/uniCloud/**',
           '**/__snapshots__/**',
           normalizePath(path.join(inputDir, 'unpackage/**')),
