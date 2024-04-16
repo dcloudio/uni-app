@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "3.0.0-alpha-4010320240415001",
+    "@dcloudio/uni-app-plus": "3.0.0-alpha-4010320240415001",
     "@dcloudio/uni-components": "3.0.0-alpha-4010320240415001",
     "@dcloudio/uni-i18n": "3.0.0-alpha-4010320240415001",
     "@dcloudio/uni-shared": "3.0.0-alpha-4010320240415001",

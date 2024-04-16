@@ -324,6 +324,9 @@ importers:
         specifier: ^6.0.6
         version: 6.0.16
     devDependencies:
+      '@dcloudio/uni-app-plus':
+        specifier: 3.0.0-alpha-4010320240415001
+        version: link:../uni-app-plus
       '@dcloudio/uni-cli-shared':
         specifier: 3.0.0-alpha-4010320240415001
         version: link:../uni-cli-shared
