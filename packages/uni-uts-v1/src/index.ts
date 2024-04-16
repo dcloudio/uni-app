@@ -184,10 +184,7 @@ export async function compile(
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
     // uts 插件 wgt 模式，本地资源模式不需要编译
-    if (
-      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
-      process.env.UNI_APP_PRODUCTION_TYPE === 'LOCAL_PACKAGING'
-    ) {
+    if (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT') {
       return createResult(outputPluginDir, errMsg, code, deps, meta)
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
