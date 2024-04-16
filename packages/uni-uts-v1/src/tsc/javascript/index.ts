@@ -33,7 +33,7 @@ export const uts2js: uts2js = (options) => {
     options.tsconfigOverride.compilerOptions = {}
   }
   options.tsconfigOverride.compilerOptions.sourceMap =
-    process.env.UNI_UTS_PLATFORM === 'web'
+    process.env.NODE_ENV === 'development'
   if (!options.tsconfig) {
     if (isInHBuilderX()) {
       options.tsconfig = path.resolve(
