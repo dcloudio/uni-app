@@ -1,4 +1,31 @@
+import fs from 'fs'
+import path from 'path'
+
+export interface GenerateRuntimeCodeFrameOptions {
+  cacheDir: string
+  logType?: 'log' | 'info' | 'warn' | 'debug' | 'error'
+}
+
+export const COLORS: Record<string, string> = {
+  warn: '\u200B',
+  error: '\u200C',
+}
+
 export const splitRE = /\r?\n/
+
+export function resolveSourceMapDirByCacheDir(cacheDir: string) {
+  return path.resolve(cacheDir, 'sourcemap')
+}
+
+export function resolveSourceMapFileBySourceFile(
+  file: string,
+  sourceMapDir: string
+) {
+  const sourceMapFile = path.resolve(sourceMapDir, file + '.map')
+  if (fs.existsSync(sourceMapFile)) {
+    return sourceMapFile
+  }
+}
 
 const range: number = 2
 

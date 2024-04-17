@@ -2,7 +2,15 @@ import path from 'path'
 import fs from 'fs-extra'
 import { relative } from '../utils'
 import { originalPositionFor, originalPositionForSync } from '../sourceMap'
-import { generateCodeFrame, lineColumnToStartEnd, splitRE } from './utils'
+import {
+  COLORS,
+  type GenerateRuntimeCodeFrameOptions,
+  generateCodeFrame,
+  lineColumnToStartEnd,
+  resolveSourceMapDirByCacheDir,
+  resolveSourceMapFileBySourceFile,
+  splitRE,
+} from './utils'
 
 export interface MessageSourceLocation {
   type: 'exception' | 'error' | 'warning' | 'info' | 'logging' | 'output'
@@ -175,31 +183,14 @@ function parseFilenameByClassName(className: string) {
   return kotlinManifest.manifest[className.split('$')[0]] || 'index.kt'
 }
 
-function resolveSourceMapFileByKtFile(file: string, sourceMapDir: string) {
-  const sourceMapFile = path.resolve(sourceMapDir, file + '.map')
-  if (fs.existsSync(sourceMapFile)) {
-    return sourceMapFile
-  }
-}
-
-const COLORS: Record<string, string> = {
-  warn: '\u200B',
-  error: '\u200C',
-}
-
-interface GenerateRuntimeCodeFrameOptions {
+interface GenerateKotlinRuntimeCodeFrameOptions
+  extends GenerateRuntimeCodeFrameOptions {
   appid: string
-  cacheDir: string
-  logType?: 'log' | 'info' | 'warn' | 'debug' | 'error'
-}
-
-function resolveSourceMapDirByCacheDir(cacheDir: string) {
-  return path.resolve(cacheDir, 'sourceMap')
 }
 
 export function parseUTSKotlinRuntimeStacktrace(
   stacktrace: string,
-  options: GenerateRuntimeCodeFrameOptions
+  options: GenerateKotlinRuntimeCodeFrameOptions
 ) {
   const appid = normalizeAppid(options.appid || DEFAULT_APPID)
   if (!stacktrace.includes('uni.' + appid + '.')) {
@@ -209,13 +200,10 @@ export function parseUTSKotlinRuntimeStacktrace(
   const re = createRegExp(appid)
   const res: string[] = []
   const lines = stacktrace.split(splitRE)
+  const sourceMapDir = resolveSourceMapDirByCacheDir(options.cacheDir)
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i]
-    const codes = parseUTSKotlinRuntimeStacktraceLine(
-      line,
-      re,
-      resolveSourceMapDirByCacheDir(options.cacheDir)
-    )
+    const codes = parseUTSKotlinRuntimeStacktraceLine(line, re, sourceMapDir)
     if (codes.length && res.length) {
       const color = options.logType
         ? COLORS[options.logType as string] || ''
@@ -245,7 +233,7 @@ function parseUTSKotlinRuntimeStacktraceLine(
   }
 
   const [, className, line] = matches
-  const sourceMapFile = resolveSourceMapFileByKtFile(
+  const sourceMapFile = resolveSourceMapFileBySourceFile(
     parseFilenameByClassName(className),
     sourceMapDir
   )

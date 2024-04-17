@@ -1,6 +1,7 @@
 import picker from '@ohos.file.picker';
 import fs from '@ohos.file.fs';
 import promptAction from '@ohos.promptAction';
+import { getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /**
 * @vue/shared v3.4.21
@@ -39,7 +40,26 @@ const capitalize = cacheStringFunction((str) => {
 });
 
 const LINEFEED = '\n';
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
 
+let lastLogTime = 0;
+function formatLog(module, ...args) {
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
+}
+
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
 function once(fn, ctx = null) {
     let res;
     return ((...args) => {
@@ -49,6 +69,86 @@ function once(fn, ctx = null) {
         }
         return res;
     });
+}
+
+class EventChannel {
+    id;
+    listener;
+    emitCache;
+    constructor(id, events) {
+        this.id = id;
+        this.listener = {};
+        this.emitCache = [];
+        if (events) {
+            Object.keys(events).forEach((name) => {
+                this.on(name, events[name]);
+            });
+        }
+    }
+    emit(eventName, ...args) {
+        const fns = this.listener[eventName];
+        if (!fns) {
+            return this.emitCache.push({
+                eventName,
+                args,
+            });
+        }
+        fns.forEach((opt) => {
+            opt.fn.apply(opt.fn, args);
+        });
+        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
+    }
+    on(eventName, fn) {
+        this._addListener(eventName, 'on', fn);
+        this._clearCache(eventName);
+    }
+    once(eventName, fn) {
+        this._addListener(eventName, 'once', fn);
+        this._clearCache(eventName);
+    }
+    off(eventName, fn) {
+        const fns = this.listener[eventName];
+        if (!fns) {
+            return;
+        }
+        if (fn) {
+            for (let i = 0; i < fns.length;) {
+                if (fns[i].fn === fn) {
+                    fns.splice(i, 1);
+                    i--;
+                }
+                i++;
+            }
+        }
+        else {
+            delete this.listener[eventName];
+        }
+    }
+    _clearCache(eventName) {
+        for (let index = 0; index < this.emitCache.length; index++) {
+            const cache = this.emitCache[index];
+            const _name = eventName
+                ? cache.eventName === eventName
+                    ? eventName
+                    : null
+                : cache.eventName;
+            if (!_name)
+                continue;
+            const location = this.emit.apply(this, [_name, ...cache.args]);
+            if (typeof location === 'number') {
+                this.emitCache.pop();
+                continue;
+            }
+            this.emitCache.splice(index, 1);
+            index--;
+        }
+    }
+    _addListener(eventName, type, fn) {
+        (this.listener[eventName] || (this.listener[eventName] = [])).push({
+            fn,
+            type,
+        });
+    }
 }
 
 const CHOOSE_SIZE_TYPES = ['original', 'compressed'];
@@ -878,6 +978,55 @@ const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
     }
 });
 
+function getCurrentPage() {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    if (len) {
+        return pages[len - 1];
+    }
+}
+function getCurrentPageVm() {
+    const page = getCurrentPage();
+    if (page) {
+        return page.$vm;
+    }
+}
+
+function invokeHook(vm, name, args) {
+    if (isString(vm)) {
+        args = name;
+        name = vm;
+        vm = getCurrentPageVm();
+    }
+    else if (typeof vm === 'number') {
+        const page = getCurrentPages().find((page) => page.$page.id === vm);
+        if (page) {
+            vm = page.$vm;
+        }
+        else {
+            vm = getCurrentPageVm();
+        }
+    }
+    if (!vm) {
+        return;
+    }
+    const hooks = vm.$[name];
+    return hooks && invokeArrayFns(hooks, args);
+}
+
+function initPageVm(pageVm, page) {
+    pageVm.route = page.route;
+    pageVm.$vm = pageVm;
+    pageVm.$page = page;
+    pageVm.$mpType = 'page';
+    pageVm.$fontFamilySet = new Set();
+    if (page.meta.isTabBar) {
+        pageVm.$.__isTabBar = true;
+        // TODO preload? 初始化时，状态肯定是激活
+        pageVm.$.__isActive = true;
+    }
+}
+
 const API_CHOOSE_IMAGE = 'chooseImage';
 const ChooseImageOptions = {
     formatArgs: {
@@ -1031,6 +1180,90 @@ var uni$1 = {
   getSystemInfoSync: getSystemInfoSync
 };
 
-globalThis.uni = uni$1;
+const pages = [];
+function addCurrentPage(page) {
+    const $page = page.$page;
+    if (!$page.meta.isNVue) {
+        return pages.push(page);
+    }
+    // 开发阶段热刷新需要移除旧的相同 id 的 page
+    const index = pages.findIndex((p) => p.$page.id === page.$page.id);
+    if (index > -1) {
+        pages.splice(index, 1, page);
+    }
+    else {
+        pages.push(page);
+    }
+}
 
-export { uni$1 as uni };
+function setupPage(component) {
+    const oldSetup = component.setup;
+    component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
+    component.setup = (_, ctx) => {
+        const { attrs: { __pageId, __pagePath, __pageQuery, __pageInstance }, } = ctx;
+        if (('production' !== 'production')) {
+            console.log(formatLog(__pagePath, 'setup'));
+        }
+        const instance = getCurrentInstance();
+        const pageVm = instance.proxy;
+        initPageVm(pageVm, __pageInstance);
+        addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        {
+            onMounted(() => {
+                nextTick(() => {
+                    // onShow被延迟，故onReady也同时延迟
+                    invokeHook(pageVm, ON_READY);
+                });
+                // TODO preloadSubPackages
+            });
+            onBeforeUnmount(() => {
+                invokeHook(pageVm, ON_UNLOAD);
+            });
+        }
+        if (oldSetup) {
+            return oldSetup(__pageQuery, ctx);
+        }
+    };
+    return component;
+}
+function initScope(pageId, vm, pageInstance) {
+    {
+        const $getAppWebview = () => {
+            return plus.webview.getWebviewById(pageId + '');
+        };
+        vm.$getAppWebview = $getAppWebview;
+        vm.$.ctx.$scope = {
+            $getAppWebview,
+        };
+    }
+    vm.getOpenerEventChannel = () => {
+        if (!pageInstance.eventChannel) {
+            pageInstance.eventChannel = new EventChannel(pageId);
+        }
+        return pageInstance.eventChannel;
+    };
+    return vm;
+}
+
+function isVuePageAsyncComponent(component) {
+    return isFunction(component);
+}
+const pagesMap = new Map();
+function definePage(pagePath, asyncComponent) {
+    pagesMap.set(pagePath, once(createFactory(asyncComponent)));
+}
+function createFactory(component) {
+    return () => {
+        if (isVuePageAsyncComponent(component)) {
+            return component().then((component) => setupPage(component));
+        }
+        return setupPage(component);
+    };
+}
+
+var index = {
+    uni: uni$1,
+    __definePage: definePage,
+};
+
+export { index as default };

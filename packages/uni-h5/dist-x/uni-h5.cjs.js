@@ -13457,6 +13457,17 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
+function updateBackgroundColorContent(backgroundColorContent) {
+  {
+    return;
+  }
+}
+function useBackgroundColorContent(pageMeta) {
+  function update() {
+    updateBackgroundColorContent(pageMeta.backgroundColorContent || "");
+  }
+  vue.watchEffect(update);
+}
 function usePageHeadTransparentBackgroundColor(backgroundColor) {
   const { r, g: g2, b } = hexToRgba(backgroundColor);
   return `rgba(${r},${g2},${b},0)`;
@@ -13915,10 +13926,10 @@ const index = defineSystemComponent({
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
-    if (pageMeta.backgroundColorContent) {
-      pageStyle.backgroundColor = pageMeta.backgroundColorContent;
-    }
     useDocumentTitle(pageMeta);
+    {
+      useBackgroundColorContent(pageMeta);
+    }
     return () => vue.createVNode(
       "uni-page",
       {

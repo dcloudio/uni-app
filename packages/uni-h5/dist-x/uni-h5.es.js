@@ -26691,6 +26691,23 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
+function updateBackgroundColorContent(backgroundColorContent) {
+  if (backgroundColorContent) {
+    document.body.style.setProperty(
+      "--background-color-content",
+      backgroundColorContent
+    );
+  } else {
+    document.body.style.removeProperty("--background-color-content");
+  }
+}
+function useBackgroundColorContent(pageMeta) {
+  function update() {
+    updateBackgroundColorContent(pageMeta.backgroundColorContent || "");
+  }
+  watchEffect(update);
+  onActivated(update);
+}
 function usePageHeadTransparentBackgroundColor(backgroundColor) {
   const { r, g: g2, b } = hexToRgba(backgroundColor);
   return `rgba(${r},${g2},${b},0)`;
@@ -27425,10 +27442,10 @@ const index = defineSystemComponent({
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
-    if (pageMeta.backgroundColorContent) {
-      pageStyle.backgroundColor = pageMeta.backgroundColorContent;
-    }
     useDocumentTitle(pageMeta);
+    {
+      useBackgroundColorContent(pageMeta);
+    }
     return () => createVNode(
       "uni-page",
       {
