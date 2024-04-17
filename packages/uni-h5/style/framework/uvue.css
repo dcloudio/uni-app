@@ -320,37 +320,39 @@ body .uni-modal__btn_primary {
   color: #576b95;
 }
 
-body .uni-actionsheet {
-  left: 0px;
-  right: 0px;
-  bottom: 0px;
-  border-top-left-radius: 12px;
-  border-top-right-radius: 12px;
-  background-color: #f7f7f7;
-  overflow: hidden;
-}
+@media screen and (max-width: 500px) {
+  body .uni-actionsheet {
+    left: 0px;
+    right: 0px;
+    bottom: 0px;
+    border-top-left-radius: 12px;
+    border-top-right-radius: 12px;
+    background-color: #f7f7f7;
+    overflow: hidden;
+  }
 
-body .uni-actionsheet__menu {
-  border-radius: 0px;
-  background-color: #ffffff;
-}
+  body .uni-actionsheet__menu {
+    border-radius: 0px;
+    background-color: #ffffff;
+  }
 
-body .uni-actionsheet__action {
-  border-radius: 0px;
-  margin-top: 8px;
-}
+  body .uni-actionsheet__action {
+    border-radius: 0px;
+    margin-top: 8px;
+  }
 
-body .uni-actionsheet__cell,
-body .uni-actionsheet__title {
-  padding: 16px;
-  line-height: 24px;
-}
+  body .uni-actionsheet__cell,
+  body .uni-actionsheet__title {
+    padding: 16px;
+    line-height: 24px;
+  }
 
-body .uni-actionsheet__cell {
-  font-size: 17px;
-}
+  body .uni-actionsheet__cell {
+    font-size: 17px;
+  }
 
-body .uni-actionsheet__title {
-  font-size: 14px;
-  color: #747474;
+  body .uni-actionsheet__title {
+    font-size: 14px;
+    color: #747474;
+  }
 }
