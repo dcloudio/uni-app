@@ -106,7 +106,7 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
               })
           }
         } else {
-          if (process.env.UNI_PLATFORM === "mp-baidu") {
+          if (langRule.oneOf(type).uses.has('extract-css-loader')){
 						langRule.oneOf(type)
 							.use('extract-css-loader')
 							.tap(options => {
