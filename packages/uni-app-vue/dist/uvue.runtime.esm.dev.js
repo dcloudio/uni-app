@@ -1685,8 +1685,8 @@ function logError(err, type, contextVNode) {
     if (contextVNode) {
       popWarningContext();
     }
-    if (throwInDev) {
-      throw err;
+    if (err instanceof Error) {
+      console.error("---BEGIN:EXCEPTION---".concat(err.message, "\n").concat(err.stack || "", "---END:EXCEPTION---"));
     } else {
       console.error(err);
     }

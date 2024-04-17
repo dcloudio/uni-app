@@ -257,8 +257,9 @@ function logError(err, type, contextVNode, throwInDev = true) {
     if (contextVNode) {
       popWarningContext();
     }
-    if (throwInDev) {
-      throw err;
+    if (err instanceof Error) {
+      console.error(`---BEGIN:EXCEPTION---${err.message}
+${err.stack || ""}---END:EXCEPTION---`);
     } else {
       console.error(err);
     }
