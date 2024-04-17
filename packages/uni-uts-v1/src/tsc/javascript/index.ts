@@ -11,14 +11,15 @@ type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
   const inputDir = options.inputDir
+  const isWeb = process.env.UNI_UTS_PLATFORM === 'web'
   extend(options, {
     cwd: inputDir,
-    check: process.env.UNI_UTS_PLATFORM === 'web',
-    noCache: process.env.NODE_ENV === 'production',
+    check: isWeb,
+    noCache: process.env.NODE_ENV === 'production' || isWeb,
     tsconfigOverride: {
       compilerOptions: {
         rootDir: inputDir,
-        sourceMap: process.env.UNI_UTS_PLATFORM === 'web',
+        sourceMap: isWeb,
         ignoreDeprecations: '5.0',
         preserveValueImports: true,
         importsNotUsedAsValues: 'preserve',
