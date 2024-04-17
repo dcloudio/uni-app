@@ -345,7 +345,10 @@ export function checkIOSVersionTips(
   if (configJsonFile && fs.existsSync(configJsonFile)) {
     try {
       const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
-      if (configJson.deploymentTarget) {
+      if (
+        configJson.deploymentTarget &&
+        parseFloat(configJson.deploymentTarget) > 12
+      ) {
         return `uts插件[${pluginId}]需在 iOS ${configJson.deploymentTarget} 版本及以上方可正常使用`
       }
     } catch (e) {}
