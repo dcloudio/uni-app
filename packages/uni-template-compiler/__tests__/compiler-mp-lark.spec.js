@@ -91,4 +91,10 @@ describe('mp:compiler-mp-lark', () => {
       '<test bind:-data-custom-hidden="{{!(shown)}}" vue-id="551070e6-1" bind:__l="__l" vue-slots="{{[\'default\']}}">hello world</test>'
     )
   })
+  it('span', () => {
+    assertCodegen(
+      '<span></span>',
+      '<label class="_span"></label>'
+    )
+  })
 })

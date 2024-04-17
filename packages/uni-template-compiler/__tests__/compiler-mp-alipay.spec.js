@@ -348,4 +348,10 @@ describe('mp:compiler-mp-alipay', () => {
       '<view>{{array.length}}</view>'
     )
   })
+  it('span', () => {
+    assertCodegen(
+      '<span></span>',
+      '<label class="_span"></label>'
+    )
+  })
 })

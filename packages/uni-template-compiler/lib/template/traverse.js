@@ -237,7 +237,7 @@ function traverseDataNode (dataNode, state, node) {
                   // 自定义组件不支持 hidden 属性
                   const platform = state.options.platform.name
                   const platforms = ['mp-weixin', 'mp-qq', 'mp-jd', 'mp-xhs', 'mp-toutiao', 'mp-lark']
-                  if (isComponent(node.type) && platforms.includes(platform)) {
+                  if (platforms.includes(platform) && isComponent(node.type, platform)) {
                     // 字节跳动|飞书小程序自定义属性不会反应在DOM上，只能使用事件格式
                     key = `${platform === 'mp-toutiao' || platform === 'mp-lark' ? 'bind:-' : ''}${ATTR_DATA_CUSTOM_HIDDEN}`
                   } else {
