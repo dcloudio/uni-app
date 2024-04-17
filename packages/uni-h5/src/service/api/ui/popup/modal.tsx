@@ -1,17 +1,17 @@
 import { onEventPrevent, onEventStop } from '@dcloudio/uni-core'
 import {
+  type ExtractPropTypes,
+  type Ref,
   Transition,
   defineComponent,
-  ExtractPropTypes,
   ref,
-  Ref,
   watchEffect,
 } from 'vue'
-import { usePopup, VNODE_MASK } from './utils'
+import { VNODE_MASK, usePopup } from './utils'
 import {
-  onThemeChange,
-  offThemeChange,
   getTheme,
+  offThemeChange,
+  onThemeChange,
 } from '../../../../helpers/theme'
 
 type ModalTheme = Record<UniApp.ThemeMode, { cancelColor: string }>
@@ -57,7 +57,7 @@ const props = {
     default: '#576b95',
     //#endif
     //#if !_X_
-    // @ts-ignore
+    // @ts-expect-error
     default: '#007aff',
     //#endif
   },
@@ -108,11 +108,15 @@ export default /*#__PURE__*/ defineComponent({
           <uni-modal v-show={visible.value} onTouchmove={onEventPrevent}>
             {VNODE_MASK}
             <div class="uni-modal">
-              {title && (
-                <div class="uni-modal__hd">
-                  <strong class="uni-modal__title" v-text={title}></strong>
-                </div>
-              )}
+              {title ||
+                (__X__ && (
+                  <div class="uni-modal__hd">
+                    <strong
+                      class="uni-modal__title"
+                      v-text={title || ''}
+                    ></strong>
+                  </div>
+                ))}
               {editable ? (
                 <textarea
                   class="uni-modal__textarea"
@@ -126,7 +130,6 @@ export default /*#__PURE__*/ defineComponent({
               ) : (
                 <div
                   class="uni-modal__bd"
-                  // @ts-ignore
                   onTouchmovePassive={onEventStop}
                   v-text={content}
                 ></div>
