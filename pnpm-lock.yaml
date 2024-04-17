@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   '@babel/plugin-transform-block-scoping': 7.19.4
 
@@ -1425,6 +1429,16 @@ importers:
       '@dcloudio/uni-mp-compiler':
         specifier: 3.0.0-alpha-4010320240415001
         version: link:../uni-mp-compiler
+
+  packages/uni-runtime:
+    dependencies:
+      '@vue/shared':
+        specifier: 3.4.21
+        version: 3.4.21
+    devDependencies:
+      '@dcloudio/uni-shared':
+        specifier: 3.0.0-alpha-4010320240415001
+        version: link:../uni-shared
 
   packages/uni-shared:
     dependencies:
@@ -11477,7 +11491,3 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
