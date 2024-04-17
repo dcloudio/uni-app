@@ -687,8 +687,6 @@ class EventChannel {
 
 const eventChannels = {};
 
-const eventChannelStack = [];
-
 let id = 0;
 
 function initEventChannel (events, cache = true) {
@@ -696,31 +694,30 @@ function initEventChannel (events, cache = true) {
   const eventChannel = new EventChannel(id, events);
   if (cache) {
     eventChannels[id] = eventChannel;
-    eventChannelStack.push(eventChannel);
   }
   return eventChannel
 }
 
 function getEventChannel (id) {
-  if (id) {
-    const eventChannel = eventChannels[id];
-    delete eventChannels[id];
-    return eventChannel
-  }
-  return eventChannelStack.shift()
+  const eventChannel = eventChannels[id];
+  delete eventChannels[id];
+  return eventChannel
 }
 
-var navigateTo = {
-  args (fromArgs, toArgs) {
-    const id = initEventChannel(fromArgs.events).id;
-    if (fromArgs.url) {
-      fromArgs.url = fromArgs.url + (fromArgs.url.indexOf('?') === -1 ? '?' : '&') + '__id__=' + id;
+function navigateTo () {
+  let eventChannel;
+  return {
+    args (fromArgs, toArgs) {
+      eventChannel = initEventChannel(fromArgs.events);
+      if (fromArgs.url) {
+        fromArgs.url = fromArgs.url + (fromArgs.url.indexOf('?') === -1 ? '?' : '&') + '__id__=' + eventChannel.id;
+      }
+    },
+    returnValue (fromRes, toRes) {
+      fromRes.eventChannel = eventChannel;
     }
-  },
-  returnValue (fromRes, toRes) {
-    fromRes.eventChannel = getEventChannel();
   }
-};
+}
 
 function findExistsPageIndex (url) {
   const pages = getCurrentPages();
@@ -953,7 +950,7 @@ var getUserProfile = {
 
 // 需要做转换的 API 列表
 const protocols = {
-  navigateTo,
+  navigateTo: navigateTo(),
   redirectTo,
   previewImage,
   getSystemInfo,
@@ -2214,7 +2211,11 @@ function parseBaseApp (vm, {
 
       delete this.$options.mpType;
       delete this.$options.mpInstance;
-      if (this.mpType === 'page' && typeof getApp === 'function') { // hack vue-i18n
+      if (
+        ( this.mpType !== 'app'
+          ) &&
+        typeof getApp === 'function'
+      ) { // hack vue-i18n
         const app = getApp();
         if (app.$vm && app.$vm.$i18n) {
           this._i18n = app.$vm.$i18n;
@@ -2716,7 +2717,7 @@ if (typeof Proxy !== 'undefined' && "mp-lark" !== 'app-plus') {
       uni[name] = promisify(name, todoApis[name]);
     });
     Object.keys(extraApi).forEach(name => {
-      uni[name] = promisify(name, todoApis[name]);
+      uni[name] = promisify(name, extraApi[name]);
     });
   }
 

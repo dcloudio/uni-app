@@ -461,6 +461,7 @@ var en = {
 	"uni.scanCode.flash.on": "Tap to turn light on",
 	"uni.scanCode.flash.off": "Tap to turn light off",
 	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
+	"uni.startSoterAuthentication.waitingContent": "Unrecognizable",
 	"uni.picker.done": "Done",
 	"uni.picker.cancel": "Cancel",
 	"uni.video.danmu": "Danmu",
@@ -497,6 +498,7 @@ var es = {
 	"uni.scanCode.flash.on": "Toque para encender la luz",
 	"uni.scanCode.flash.off": "Toque para apagar la luz",
 	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
+	"uni.startSoterAuthentication.waitingContent": "Irreconocible",
 	"uni.picker.done": "OK",
 	"uni.picker.cancel": "Cancelar",
 	"uni.video.danmu": "Danmu",
@@ -533,6 +535,7 @@ var fr = {
 	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
 	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
 	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
+	"uni.startSoterAuthentication.waitingContent": "Méconnaissable",
 	"uni.picker.done": "OK",
 	"uni.picker.cancel": "Annuler",
 	"uni.video.danmu": "Danmu",
@@ -569,6 +572,7 @@ var zhHans = {
 	"uni.scanCode.flash.on": "轻触照亮",
 	"uni.scanCode.flash.off": "轻触关闭",
 	"uni.startSoterAuthentication.authContent": "指纹识别中...",
+	"uni.startSoterAuthentication.waitingContent": "无法识别",
 	"uni.picker.done": "完成",
 	"uni.picker.cancel": "取消",
 	"uni.video.danmu": "弹幕",
@@ -605,6 +609,7 @@ var zhHant = {
 	"uni.scanCode.flash.on": "輕觸照亮",
 	"uni.scanCode.flash.off": "輕觸關閉",
 	"uni.startSoterAuthentication.authContent": "指紋識別中...",
+	"uni.startSoterAuthentication.waitingContent": "無法識別",
 	"uni.picker.done": "完成",
 	"uni.picker.cancel": "取消",
 	"uni.video.danmu": "彈幕",
@@ -1857,15 +1862,10 @@ class EventChannel {
 
 const eventChannels = {};
 
-const eventChannelStack = [];
-
 function getEventChannel (id) {
-  if (id) {
-    const eventChannel = eventChannels[id];
-    delete eventChannels[id];
-    return eventChannel
-  }
-  return eventChannelStack.shift()
+  const eventChannel = eventChannels[id];
+  delete eventChannels[id];
+  return eventChannel
 }
 
 const hooks = [
@@ -1923,7 +1923,10 @@ function parseBaseApp (vm, {
 
       delete this.$options.mpType;
       delete this.$options.mpInstance;
-      if (this.mpType === 'page' && typeof getApp === 'function') { // hack vue-i18n
+      if (
+        ( this.mpType === 'page') &&
+        typeof getApp === 'function'
+      ) { // hack vue-i18n
         const app = getApp();
         if (app.$vm && app.$vm.$i18n) {
           this._i18n = app.$vm.$i18n;

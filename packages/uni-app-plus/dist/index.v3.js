@@ -282,6 +282,7 @@ var serviceContext = (function () {
     'initUTSPackageName',
     'requireUTSPlugin',
     'registerUTSPlugin',
+    'registerUTSInterface',
   ];
 
   const ad = [
@@ -296,7 +297,8 @@ var serviceContext = (function () {
     'getPushClientId',
     'onPushMessage',
     'offPushMessage',
-    'createPushMessage'
+    'createPushMessage',
+    'getChannelManager'
   ];
 
   const apis = [
@@ -676,7 +678,7 @@ var serviceContext = (function () {
     const modeStyle = themeConfig[mode];
     const styles = {};
     if (!modeStyle) {
-      return styles
+      return pageStyle
     }
     Object.keys(pageStyle).forEach((key) => {
       const styleItem = pageStyle[key]; // Object Array String
@@ -1696,6 +1698,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "Tap to turn light on",
   	"uni.scanCode.flash.off": "Tap to turn light off",
   	"uni.startSoterAuthentication.authContent": "Fingerprint recognition",
+  	"uni.startSoterAuthentication.waitingContent": "Unrecognizable",
   	"uni.picker.done": "Done",
   	"uni.picker.cancel": "Cancel",
   	"uni.video.danmu": "Danmu",
@@ -1732,6 +1735,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "Toque para encender la luz",
   	"uni.scanCode.flash.off": "Toque para apagar la luz",
   	"uni.startSoterAuthentication.authContent": "Reconocimiento de huellas dactilares",
+  	"uni.startSoterAuthentication.waitingContent": "Irreconocible",
   	"uni.picker.done": "OK",
   	"uni.picker.cancel": "Cancelar",
   	"uni.video.danmu": "Danmu",
@@ -1768,6 +1772,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "Appuyez pour activer l'éclairage",
   	"uni.scanCode.flash.off": "Appuyez pour désactiver l'éclairage",
   	"uni.startSoterAuthentication.authContent": "Reconnaissance de l'empreinte digitale",
+  	"uni.startSoterAuthentication.waitingContent": "Méconnaissable",
   	"uni.picker.done": "OK",
   	"uni.picker.cancel": "Annuler",
   	"uni.video.danmu": "Danmu",
@@ -1804,6 +1809,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "轻触照亮",
   	"uni.scanCode.flash.off": "轻触关闭",
   	"uni.startSoterAuthentication.authContent": "指纹识别中...",
+  	"uni.startSoterAuthentication.waitingContent": "无法识别",
   	"uni.picker.done": "完成",
   	"uni.picker.cancel": "取消",
   	"uni.video.danmu": "弹幕",
@@ -1840,6 +1846,7 @@ var serviceContext = (function () {
   	"uni.scanCode.flash.on": "輕觸照亮",
   	"uni.scanCode.flash.off": "輕觸關閉",
   	"uni.startSoterAuthentication.authContent": "指紋識別中...",
+  	"uni.startSoterAuthentication.waitingContent": "無法識別",
   	"uni.picker.done": "完成",
   	"uni.picker.cancel": "取消",
   	"uni.video.danmu": "彈幕",
@@ -6236,7 +6243,7 @@ var serviceContext = (function () {
           case e.AUTHENTICATE_MISMATCH:
             if (waiting) {
               clearTimeout(waitingTimer);
-              waiting.setTitle('无法识别');
+              waiting.setTitle(t('uni.startSoterAuthentication.waitingContent'));
               waitingTimer = setTimeout(() => {
                 waiting && waiting.setTitle(waitingTitle);
               }, 1000);
@@ -6353,7 +6360,7 @@ var serviceContext = (function () {
     const windowOptions = routeOptions.window;
     const titleNView = windowOptions.titleNView;
     routeOptions.meta.statusBarStyle =
-      windowOptions.navigationBarTextStyle === 'black' ? 'dark' : 'light';
+      windowOptions.navigationBarTextStyle === 'white' ? 'light' : 'dark';
     if (
       // 无头
       titleNView === false ||
@@ -6380,13 +6387,13 @@ var serviceContext = (function () {
       titleText:
         titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
       titleColor:
-        windowOptions.navigationBarTextStyle === 'black' ? '#000000' : '#ffffff',
+        windowOptions.navigationBarTextStyle === 'white' ? '#ffffff' : '#000000',
       type: titleNViewTypeList[transparentTitle],
       backgroundColor:
         /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||
         navigationBarBackgroundColor === 'transparent'
           ? navigationBarBackgroundColor
-          : '#f7f7f7',
+          : '#f8f8f8',
       tags:
         titleImage === ''
           ? []
@@ -8144,11 +8151,11 @@ var serviceContext = (function () {
     openAppAuthorizeSetting(ret => {
       if (ret.type === 'success') {
         invoke$1(callbackId, {
-          errMsg: 'getClipboardData:ok'
+          errMsg: 'openAppAuthorizeSetting:ok'
         });
       } else {
         invoke$1(callbackId, {
-          errMsg: 'getClipboardData:fail'
+          errMsg: 'openAppAuthorizeSetting:fail'
         });
       }
     });
@@ -10112,6 +10119,12 @@ var serviceContext = (function () {
     });
   }
 
+  let channelManager;
+
+  function getChannelManager () {
+    return channelManager || (channelManager = plus.push.getChannelManager())
+  }
+
   function requireNativePlugin$1 (name) {
     return weex.requireModule(name)
   }
@@ -10532,10 +10545,19 @@ var serviceContext = (function () {
     return getEnterOptions()
   }
 
+  // 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
   let callbackId = 1;
   let proxy;
   const callbacks$4 = {};
+  function isComponentPublicInstance(instance) {
+      return instance && instance.$ && instance.$.proxy === instance;
+  }
+  function toRaw(observed) {
+      const raw = observed && observed.__v_raw;
+      return raw ? toRaw(raw) : observed;
+  }
   function normalizeArg(arg) {
+      arg = toRaw(arg);
       if (typeof arg === 'function') {
           // 查找该函数是否已缓存
           const oldId = Object.keys(callbacks$4).find((id) => callbacks$4[id] === arg);
@@ -10544,9 +10566,23 @@ var serviceContext = (function () {
           return id;
       }
       else if (isPlainObject(arg)) {
-          Object.keys(arg).forEach((name) => {
-              arg[name] = normalizeArg(arg[name]);
-          });
+          if (isComponentPublicInstance(arg)) {
+              let nodeId = '';
+              let pageId = '';
+              // @ts-expect-error
+              const el = arg.$el;
+              // 非 x 可能不存在 getNodeId 方法？
+              if (el && el.getNodeId) {
+                  pageId = el.pageId;
+                  nodeId = el.getNodeId();
+              }
+              return { pageId, nodeId };
+          }
+          else {
+              Object.keys(arg).forEach((name) => {
+                  arg[name] = normalizeArg(arg[name]);
+              });
+          }
       }
       return arg;
   }
@@ -10555,23 +10591,40 @@ var serviceContext = (function () {
   }
   function getProxy() {
       if (!proxy) {
-          proxy = uni.requireNativePlugin('UTS-Proxy');
+          {
+              proxy = uni.requireNativePlugin('UTS-Proxy');
+          }
       }
       return proxy;
   }
-  function resolveSyncResult(res, returnOptions, instanceId, proxy) {
+  function resolveSyncResult(args, res, returnOptions, instanceId, proxy) {
+      if ((process.env.NODE_ENV !== 'production')) {
+          console.log('uts.invokeSync.result', JSON.stringify([res, returnOptions, instanceId, typeof proxy]));
+      }
+      if (!res) {
+          throw new Error('返回值为：' +
+              JSON.stringify(res) +
+              '；请求参数为：' +
+              JSON.stringify(args));
+      }
       // devtools 环境是字符串？
       if (isString(res)) {
-          res = JSON.parse(res);
-      }
-      if ((process.env.NODE_ENV !== 'production')) {
-          console.log('uts.invokeSync.result', res, returnOptions, instanceId, typeof proxy);
+          try {
+              res = JSON.parse(res);
+          }
+          catch (e) {
+              throw new Error(`JSON.parse(${res}): ` + e);
+          }
       }
       if (res.errMsg) {
           throw new Error(res.errMsg);
       }
       if (returnOptions) {
           if (returnOptions.type === 'interface' && typeof res.params === 'number') {
+              // 返回了 0
+              if (!res.params) {
+                  return null;
+              }
               if (res.params === instanceId && proxy) {
                   return proxy;
               }
@@ -10591,7 +10644,7 @@ var serviceContext = (function () {
       if ((process.env.NODE_ENV !== 'production')) {
           console.log('uts.invokePropGetter.args', args);
       }
-      return resolveSyncResult(getProxy().invokeSync(args, () => { }));
+      return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
   }
   function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
       const invokeCallback = ({ id, name, params, keepAlive, }) => {
@@ -10656,12 +10709,12 @@ var serviceContext = (function () {
           if ((process.env.NODE_ENV !== 'production')) {
               console.log('uts.invokeSync.args', invokeArgs);
           }
-          return resolveSyncResult(getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
+          return resolveSyncResult(invokeArgs, getProxy().invokeSync(invokeArgs, invokeCallback), returnOptions, instanceId, proxy);
       };
   }
   function initUTSStaticMethod(async, opts) {
       if (opts.main && !opts.method) {
-          if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+          if (isUTSiOS()) {
               opts.method = 's_' + opts.name;
           }
       }
@@ -10669,7 +10722,7 @@ var serviceContext = (function () {
   }
   const initUTSProxyFunction = initUTSStaticMethod;
   function parseClassMethodName(name, methods) {
-      if (hasOwn(methods, name + 'ByJs')) {
+      if (typeof name === 'string' && hasOwn(methods, name + 'ByJs')) {
           return name + 'ByJs';
       }
       return name;
@@ -10693,7 +10746,9 @@ var serviceContext = (function () {
       let constructorParams = [];
       let staticMethods = {};
       let staticProps = [];
+      let isProxyInterface = false;
       if (isProxyInterfaceOptions(options)) {
+          isProxyInterface = true;
           instanceId = options.instanceId;
       }
       else {
@@ -10702,27 +10757,36 @@ var serviceContext = (function () {
           staticProps = options.staticProps;
       }
       // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
-      if (typeof plus !== 'undefined' && plus.os.name === 'iOS') {
+      if (isUTSiOS()) {
           if (constructorParams.find((p) => p.type === 'UTSCallback' || p.type.indexOf('JSONObject') > 0)) {
               constructorParams.push({ name: '_byJs', type: 'boolean' });
           }
       }
       const ProxyClass = class UTSClass {
           constructor(...params) {
+              this.__instanceId = 0;
               if (errMsg) {
                   throw new Error(errMsg);
               }
               const target = {};
               // 初始化实例 ID
-              if (isUndefined(instanceId)) {
-                  // 未指定instanceId
-                  instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+              if (!isProxyInterface) {
+                  // 初始化未指定时，每次都要创建instanceId
+                  this.__instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
               }
-              if (!instanceId) {
+              else if (typeof instanceId === 'number') {
+                  this.__instanceId = instanceId;
+              }
+              if (!this.__instanceId) {
                   throw new Error(`new ${cls} is failed`);
               }
-              const proxy = new Proxy(this, {
+              const instance = this;
+              const proxy = new Proxy(instance, {
                   get(_, name) {
+                      // 重要：禁止响应式
+                      if (name === '__v_skip') {
+                          return true;
+                      }
                       if (!target[name]) {
                           //实例方法
                           name = parseClassMethodName(name, methods);
@@ -10732,14 +10796,14 @@ var serviceContext = (function () {
                                   name,
                                   params,
                                   return: returnOptions,
-                              }, baseOptions), instanceId, proxy);
+                              }, baseOptions), instance.__instanceId, proxy);
                           }
                           else if (props.includes(name)) {
                               // 实例属性
                               return invokePropGetter({
                                   moduleName,
                                   moduleType,
-                                  id: instanceId,
+                                  id: instance.__instanceId,
                                   name: name,
                                   errMsg,
                               });
@@ -10771,32 +10835,29 @@ var serviceContext = (function () {
           },
       });
   }
+  function isUTSAndroid() {
+      return typeof plus !== 'undefined' && plus.os.name === 'Android';
+  }
+  function isUTSiOS() {
+      return !isUTSAndroid();
+  }
   function initUTSPackageName(name, is_uni_modules) {
-      if (typeof plus !== 'undefined' && plus.os.name === 'Android') {
+      if (isUTSAndroid()) {
           return 'uts.sdk.' + (is_uni_modules ? 'modules.' : '') + name;
       }
       return '';
   }
   function initUTSIndexClassName(moduleName, is_uni_modules) {
-      if (typeof plus === 'undefined') {
-          return '';
-      }
-      return initUTSClassName(moduleName, plus.os.name === 'iOS' ? 'IndexSwift' : 'IndexKt', is_uni_modules);
+      return initUTSClassName(moduleName, isUTSAndroid() ? 'IndexKt' : 'IndexSwift', is_uni_modules);
   }
   function initUTSClassName(moduleName, className, is_uni_modules) {
-      if (typeof plus === 'undefined') {
-          return '';
-      }
-      if (plus.os.name === 'Android') {
+      if (isUTSAndroid()) {
           return className;
       }
-      if (plus.os.name === 'iOS') {
-          return ('UTSSDK' +
-              (is_uni_modules ? 'Modules' : '') +
-              capitalize(moduleName) +
-              capitalize(className));
-      }
-      return '';
+      return ('UTSSDK' +
+          (is_uni_modules ? 'Modules' : '') +
+          capitalize(moduleName) +
+          capitalize(className));
   }
   const interfaceDefines = {};
   function registerUTSInterface(name, define) {
@@ -11447,9 +11508,9 @@ var serviceContext = (function () {
     });
     try {
       if (type === 'string' && parseValue(value) !== undefined) {
-        plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type);
+        plus.storage.setItemAsync(key + STORAGE_DATA_TYPE, type, () => {});
       } else {
-        plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+        plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => {});
       }
       plus.storage.setItemAsync(key, value, function () {
         invoke$1(callbackId, {
@@ -11552,7 +11613,7 @@ var serviceContext = (function () {
     key
   } = {}, callbackId) {
     // 兼容App端历史格式
-    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE);
+    plus.storage.removeItemAsync(key + STORAGE_DATA_TYPE, () => {});
     plus.storage.removeItemAsync(key, function (res) {
       invoke$1(callbackId, {
         errMsg: 'removeStorage:ok'
@@ -12918,6 +12979,7 @@ var serviceContext = (function () {
     onPush: onPush,
     offPush: offPush,
     createPushMessage: createPushMessage,
+    getChannelManager: getChannelManager,
     requireNativePlugin: requireNativePlugin$1,
     shareAppMessageDirectly: shareAppMessageDirectly,
     share: share,
