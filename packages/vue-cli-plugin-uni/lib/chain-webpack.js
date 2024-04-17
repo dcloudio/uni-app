@@ -106,14 +106,16 @@ module.exports = function chainWebpack (platformOptions, vueOptions, api) {
               })
           }
         } else {
-          langRule.oneOf(type)
-            .use('extract-css-loader')
-            .tap(options => {
-              // 参考 https://github.com/vuejs/vue-cli/commit/b41ed76c5ce54c618587f24b9d14c35cf31a96d4
-              // 修复 部分平台 css 内的资源路径不正确，如uni-icons在百度小程序上引用的字体文件路径
-              options.publicPath = '/'
-              return options
-            })
+          if (process.env.UNI_PLATFORM === "mp-baidu") {
+						langRule.oneOf(type)
+							.use('extract-css-loader')
+							.tap(options => {
+								// 参考 https://github.com/vuejs/vue-cli/commit/b41ed76c5ce54c618587f24b9d14c35cf31a96d4
+								// 修复 部分平台 css 内的资源路径不正确，如uni-icons在百度小程序上引用的字体文件路径
+								if (options) options.publicPath = '/'
+								return options
+							})
+					}
         }
         langRule.oneOf(type)
           .use('uniapp-preprocss')
