@@ -284,8 +284,8 @@ export async function compile(
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'swift',
       imports: [
+        ...(transform?.uniExtApiProviderName ? ['DCloudUTSExtAPI'] : []),
         'DCloudUTSFoundation',
-        'DCloudUTSExtAPI',
         ...(isX ? ['DCloudUniappRuntime'] : []),
       ],
       logFilename: true,
