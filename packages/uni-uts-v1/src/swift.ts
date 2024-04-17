@@ -283,7 +283,11 @@ export async function compile(
       package: namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'swift',
-      imports: ['DCloudUTSFoundation', ...(isX ? ['DCloudUniappRuntime'] : [])],
+      imports: [
+        'DCloudUTSFoundation',
+        'DCloudUTSExtAPI',
+        ...(isX ? ['DCloudUniappRuntime'] : []),
+      ],
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
