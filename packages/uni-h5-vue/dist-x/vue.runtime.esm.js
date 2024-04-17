@@ -4410,6 +4410,22 @@ const publicPropertiesMap = (
     $watch: (i) => __VUE_OPTIONS_API__ ? instanceWatch.bind(i) : NOOP
   })
 );
+{
+  publicPropertiesMap.$callMethod = (i) => {
+    return (methodName, ...args) => {
+      const proxy = getExposeProxy(i) || i.proxy;
+      if (!proxy) {
+        return null;
+      }
+      const method = proxy[methodName];
+      if (method) {
+        return method(...args);
+      }
+      console.error(`method ${methodName} not found`);
+      return null;
+    };
+  };
+}
 const isReservedPrefix = (key) => key === "_" || key === "$";
 const hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 const PublicInstanceProxyHandlers = {
