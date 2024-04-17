@@ -1,17 +1,17 @@
 import {
   API_REDIRECT_TO,
-  API_TYPE_REDIRECT_TO,
-  defineAsyncApi,
+  type API_TYPE_REDIRECT_TO,
   RedirectToOptions,
   RedirectToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import { registerPage } from '../../framework/page'
-import { RouteOptions } from '../../../service/api/route/utils'
+import type { RouteOptions } from '../../../service/api/route/utils'
 import { showWebview } from './webview'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { setStatusBarStyle } from '../../statusBar'
 import { isTabPage } from '../../framework/app/tabBar'
 import { closePage } from './utils'

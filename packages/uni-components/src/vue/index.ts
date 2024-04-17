@@ -17,10 +17,10 @@ import PickerViewColumn, {
 } from './picker-view-column/index'
 import Progress, { UniProgressElement } from './progress/index'
 //#if _X_
-// @ts-ignore
+// @ts-expect-error
 import Radio, { UniRadioElement } from './radio/index-x'
 //#else
-// @ts-ignore
+// @ts-expect-error
 import Radio from './radio/index'
 //#endif
 import RadioGroup, { UniRadioGroupElement } from './radio-group/index'
@@ -28,10 +28,10 @@ import ResizeSensor from './resize-sensor/index'
 import RichText, { UniRichTextElement } from './rich-text'
 import ScrollView, { UniScrollViewElement } from './scroll-view/index'
 //#if _X_
-// @ts-ignore
+// @ts-expect-error
 import Slider, { UniSliderElement } from './slider/index-x'
 //#else
-// @ts-ignore
+// @ts-expect-error
 import Slider from './slider/index'
 //#endif
 import Swiper, { UniSwiperElement } from './swiper/index'

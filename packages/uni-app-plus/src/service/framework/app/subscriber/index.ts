@@ -1,8 +1,8 @@
 import { getRouteOptions, subscribeServiceMethod } from '@dcloudio/uni-core'
 import {
-  addLeadingSlash,
   ON_WXS_INVOKE_CALL_METHOD,
   WEB_INVOKE_APPSERVICE,
+  addLeadingSlash,
 } from '@dcloudio/uni-shared'
 import {
   ON_WEBVIEW_READY,
@@ -17,8 +17,8 @@ import { subscribeNavigator } from './navigator'
 import { subscribeWebviewReady } from './webviewReady'
 import { onWebviewInserted, onWebviewRemoved } from './webviewLifecycle'
 import {
+  type WebInvokeAppService,
   onWebInvokeAppService,
-  WebInvokeAppService,
 } from './webInvokeAppService'
 import { onWxsInvokeCallMethod } from './wxs'
 

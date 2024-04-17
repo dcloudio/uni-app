@@ -1,6 +1,6 @@
 import path from 'path'
 import { extend, isFunction } from '@vue/shared'
-import { RPT2Options } from 'rollup-plugin-typescript2'
+import type { RPT2Options } from 'rollup-plugin-typescript2'
 import { isInHBuilderX } from '../../shared'
 interface UTS2KotlinOptions extends Omit<RPT2Options, 'transformers'> {
   inputDir: string

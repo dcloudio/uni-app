@@ -1,8 +1,8 @@
 import path from 'path'
 import { initLocales } from '../../../i18n'
 import {
-  normalizeNetworkTimeout,
   getPlatformManifestJsonOnce,
+  normalizeNetworkTimeout,
 } from '../../manifest'
 import {
   getNVueCompiler,

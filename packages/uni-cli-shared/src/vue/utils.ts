@@ -1,22 +1,22 @@
 import { extend, isString } from '@vue/shared'
 import { isComponentTag } from '@dcloudio/uni-shared'
 import {
-  AttributeNode,
-  ComponentNode,
-  createSimpleExpression,
-  DirectiveNode,
-  ElementNode,
+  type AttributeNode,
+  type ComponentNode,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
-  isCoreComponent,
-  locStub,
+  type ExpressionNode,
   NodeTypes,
-  RootNode,
-  ExpressionNode,
-  TemplateChildNode,
-  TransformContext,
+  type Position,
+  type RootNode,
+  type SourceLocation,
+  type TemplateChildNode,
+  type TransformContext,
+  createSimpleExpression,
+  isCoreComponent,
   isStaticExp,
-  SourceLocation,
-  Position,
+  locStub,
 } from '@vue/compiler-core'
 import { createAssetUrlTransformWithOptions } from './transforms/templateTransformAssetUrl'
 import { createSrcsetTransformWithOptions } from './transforms/templateTransformSrcset'

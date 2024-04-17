@@ -2,11 +2,11 @@ import {
   createIsCustomElement,
   isMiniProgramNativeTag as isNativeTag,
 } from '@dcloudio/uni-shared'
-import { compile, CompilerOptions } from '@dcloudio/uni-mp-compiler'
+import { type CompilerOptions, compile } from '@dcloudio/uni-mp-compiler'
 
 import {
-  customElements,
   compilerOptions,
+  customElements,
   miniProgram,
 } from '../src/compiler/options'
 

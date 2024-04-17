@@ -4,12 +4,12 @@ import { NodeTypes } from '@vue/compiler-core'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_ON_LINK,
+  type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   createTransformComponentLink,
-  MiniProgramCompilerOptions,
   transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import source from './mini.project.json'
 import { transformRef } from './transforms/transformRef'
 import { event } from './event'

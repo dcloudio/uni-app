@@ -1,4 +1,4 @@
-import { createDecl, TransformDecl } from '../utils'
+import { type TransformDecl, createDecl } from '../utils'
 
 const top = __NODE_JS__ ? '-top' : 'Top'
 const right = __NODE_JS__ ? '-right' : 'Right'

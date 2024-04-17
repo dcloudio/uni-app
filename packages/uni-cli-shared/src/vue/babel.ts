@@ -1,4 +1,4 @@
-import * as BabelCore from '@babel/core'
+import type * as BabelCore from '@babel/core'
 import type { PluginObj } from '@babel/core'
 import { isBuiltInComponent } from '@dcloudio/uni-shared'
 

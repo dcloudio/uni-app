@@ -1,11 +1,11 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin } from 'vite'
-import { FilterPattern, createFilter } from '@rollup/pluginutils'
+import type { Plugin } from 'vite'
+import { type FilterPattern, createFilter } from '@rollup/pluginutils'
 import {
   parseVueRequest,
-  preUVueJs,
   preUVueHtml,
+  preUVueJs,
 } from '@dcloudio/uni-cli-shared'
 
 export interface UniPrePluginOptions {

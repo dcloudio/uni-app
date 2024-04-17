@@ -1,5 +1,5 @@
 import {
-  Node,
+  type Node,
   isCallExpression,
   isIdentifier,
   isMemberExpression,

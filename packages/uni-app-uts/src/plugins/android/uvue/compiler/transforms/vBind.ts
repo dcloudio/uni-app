@@ -1,14 +1,14 @@
 import { camelize } from '@vue/shared'
 import { CAMELIZE } from '@vue/compiler-core'
 import {
+  type ExpressionNode,
+  NodeTypes,
   createObjectProperty,
   createSimpleExpression,
-  ExpressionNode,
-  NodeTypes,
 } from '@vue/compiler-core'
 
 import type { DirectiveTransform } from '../transform'
-import { createCompilerError, ErrorCodes } from '../errors'
+import { ErrorCodes, createCompilerError } from '../errors'
 
 // v-bind without arg is handled directly in ./transformElements.ts due to it affecting
 // codegen for the entire props object. This transform here is only for v-bind

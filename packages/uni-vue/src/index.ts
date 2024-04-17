@@ -1,8 +1,8 @@
-import { App } from 'vue'
+import type { App } from 'vue'
 
 import {
-  invokeCreateVueAppHook,
   invokeCreateErrorHandler,
+  invokeCreateVueAppHook,
 } from '@dcloudio/uni-shared'
 
 import { applyOptions } from './componentOptions'

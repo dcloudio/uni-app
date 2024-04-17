@@ -1,9 +1,9 @@
 import {
-  formatLog,
   ON_APP_ENTER_BACKGROUND,
   ON_APP_ENTER_FOREGROUND,
-  ON_THEME_CHANGE,
   ON_KEYBOARD_HEIGHT_CHANGE,
+  ON_THEME_CHANGE,
+  formatLog,
 } from '@dcloudio/uni-shared'
 import { invokeHostEvent } from '../../api/plugin/sdk'
 import { SDK_UNI_MP_NATIVE_EVENT } from '../../constants'
@@ -11,8 +11,8 @@ import {
   EVENT_BACKBUTTON,
   backbuttonListener,
   getEnterOptions,
-  parseRedirectInfo,
   initEnterOptions,
+  parseRedirectInfo,
 } from './utils'
 import { changePagesNavigatorStyle } from '../../theme'
 import { getCurrentPageId } from '@dcloudio/uni-core'

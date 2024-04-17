@@ -1,23 +1,23 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import {
   API_LOAD_FONT_FACE,
   API_PAGE_SCROLL_TO,
   API_SET_PAGE_META,
-  SelectorQueryRequest,
+  type SelectorQueryRequest,
 } from '@dcloudio/uni-api'
 import {
-  subscribeViewMethod,
-  registerViewMethod,
   getCurrentPageId,
+  registerViewMethod,
+  subscribeViewMethod,
 } from '@dcloudio/uni-core'
 import {
+  addIntersectionObserver,
+  addMediaQueryObserver,
+  removeIntersectionObserver,
+  removeMediaQueryObserver,
   requestComponentInfo,
   setCurrentPageMeta,
-  addIntersectionObserver,
-  removeIntersectionObserver,
-  addMediaQueryObserver,
-  removeMediaQueryObserver,
 } from '../../../../uni-h5/src/platform'
 
 import { loadFontFace } from './dom/font'

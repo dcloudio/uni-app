@@ -8,7 +8,7 @@ import type {
   SFCStyleCompileOptions,
   TemplateCompiler,
 } from '@vue/compiler-sfc'
-import { UniViteCopyPluginOptions } from './plugins/copy'
+import type { UniViteCopyPluginOptions } from './plugins/copy'
 
 export const cssTarget = 'chrome53'
 export interface CopyOptions {

@@ -848,7 +848,7 @@ function initCreatePage() {
     };
 }
 
-// @ts-ignore
+// @ts-expect-error
 function initComponentProps(_rawProps) {
     const propertiesOptions = {
         properties: {},

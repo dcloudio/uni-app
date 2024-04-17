@@ -1,5 +1,5 @@
 import path from 'path'
-import { Plugin, UserConfig } from 'vite'
+import type { Plugin, UserConfig } from 'vite'
 
 import {
   isInHBuilderX,
@@ -8,7 +8,7 @@ import {
   parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
-import { VitePluginUniResolvedOptions } from '..'
+import type { VitePluginUniResolvedOptions } from '..'
 import { createCss } from './css'
 import { createResolve } from './resolve'
 import { createBuild } from './build'

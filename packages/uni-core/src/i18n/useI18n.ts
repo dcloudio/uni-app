@@ -1,10 +1,10 @@
 import { isArray, isString } from '@vue/shared'
 import {
-  getEnvLocale,
   I18N_JSON_DELIMITERS,
   UNI_STORAGE_LOCALE,
+  getEnvLocale,
 } from '@dcloudio/uni-shared'
-import { BuiltInLocale, initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
+import { type BuiltInLocale, initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
 import { isEnableLocale } from './utils'
 
 let i18n: ReturnType<typeof initVueI18n>

@@ -1,13 +1,13 @@
 import {
-  defineAsyncApi,
   API_SET_NAVIGATION_BAR_COLOR,
-  API_TYPE_SET_NAVIGATION_BAR_COLOR,
-  SetNavigationBarColorProtocol,
+  type API_TYPE_SET_NAVIGATION_BAR_COLOR,
   SetNavigationBarColorOptions,
+  SetNavigationBarColorProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 interface SetNavigationbarColorOptions
   extends UniApp.SetNavigationbarColorOptions {

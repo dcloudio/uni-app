@@ -1,10 +1,10 @@
-import { UserConfig } from 'vite'
+import type { UserConfig } from 'vite'
 import {
   cssTarget,
   initEasycomsOnce,
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
-import { VitePluginUniResolvedOptions } from '..'
+import type { VitePluginUniResolvedOptions } from '..'
 import { hasOwn, isArray } from '@vue/shared'
 
 export function createBuild(

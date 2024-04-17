@@ -2,18 +2,18 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   APP_SERVICE_FILENAME,
+  type UniVitePlugin,
   cssPostPlugin,
+  getPlatformManifestJsonOnce,
+  initPostcssPlugin,
   isUniPageSfcFile,
   normalizePath,
   parsePagesJsonOnce,
-  removeExt,
-  resolveMainPathOnce,
-  UniVitePlugin,
-  initPostcssPlugin,
   parseRpx2UnitOnce,
   polyfillCode,
+  removeExt,
   resolveBuiltIn,
-  getPlatformManifestJsonOnce,
+  resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'

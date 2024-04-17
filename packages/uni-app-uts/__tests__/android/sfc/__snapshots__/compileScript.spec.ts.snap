@@ -482,18 +482,18 @@ function GenAnonymousRender(): any | null {
       onClick: () => {maybe.value = count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
     createElementVNode("view", utsMapOf({
-      onClick: () => {isRef(lett) ? lett.value = count.value : lett = count.value}
+      onClick: () => {isRef(lett) ? trySetRefValue(lett, count.value) : lett = count.value}
     }), null, 8 /* PROPS */, ["onClick"]),
     createElementVNode("view", utsMapOf({
-      onClick: () => {isRef(v) ? v.value += 1 : v += 1}
+      onClick: () => {isRef(v) ? trySetRefValue(v, unref(v.also((_)=>{ v += 1 }))) : v += 1}
     }), null, 8 /* PROPS */, ["onClick"]),
     createElementVNode("view", utsMapOf({
-      onClick: () => {isRef(v) ? v.value -= 1 : v -= 1}
+      onClick: () => {isRef(v) ? trySetRefValue(v, unref(v.also((_)=>{ v -= 1 }))) : v -= 1}
     }), null, 8 /* PROPS */, ["onClick"]),
     createElementVNode("view", utsMapOf({
       onClick: () => {
               let a = '' + unref(lett)
-              isRef(v) ? v.value = a : v = a
+              isRef(v) ? trySetRefValue(v, a) : v = a
            }
     }), null, 8 /* PROPS */, ["onClick"]),
     createElementVNode("view", utsMapOf({
@@ -507,7 +507,7 @@ function GenAnonymousRender(): any | null {
                 })
                 let lz = _ctx.z
               })
-              isRef(v) ? v.value = _ctx.a : v = _ctx.a
+              isRef(v) ? trySetRefValue(v, _ctx.a) : v = _ctx.a
            }
     }), null, 8 /* PROPS */, ["onClick"])
   ], 64 /* STABLE_FRAGMENT */)
@@ -581,10 +581,10 @@ function GenAnonymousRender(): any | null {
       onClick: () => {--maybe.value}
     }), null, 8 /* PROPS */, ["onClick"]),
     createElementVNode("view", utsMapOf({
-      onClick: () => {isRef(lett) ? lett.value++ : lett++}
+      onClick: () => {lett = tryUpdateRefNumber(lett, 1, false)}
     }), null, 8 /* PROPS */, ["onClick"]),
     createElementVNode("view", utsMapOf({
-      onClick: () => {isRef(lett) ? --lett.value : --lett}
+      onClick: () => {lett = tryUpdateRefNumber(lett, -1, true)}
     }), null, 8 /* PROPS */, ["onClick"])
   ], 64 /* STABLE_FRAGMENT */)
 }
@@ -616,12 +616,12 @@ function GenAnonymousRender(): any | null {
     }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"]),
     createElementVNode("input", utsMapOf({
       modelValue: unref(maybe),
-      onInput: ($event: InputEvent) => {if(isRef(maybe)) { (maybe).value = $event.detail.value }}
-    }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"]),
+      onInput: ($event: InputEvent) => {trySetRefValue(maybe, $event.detail.value)}
+    }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"]),
     createElementVNode("input", utsMapOf({
       modelValue: unref(lett),
-      onInput: ($event: InputEvent) => {if(isRef(lett)) { (lett).value = $event.detail.value } else { lett = $event.detail.value }}
-    }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue", "onInput"])
+      onInput: ($event: InputEvent) => {lett = trySetRefValue(lett, $event.detail.value)}
+    }), null, 40 /* PROPS, NEED_HYDRATION */, ["modelValue"])
   ], 64 /* STABLE_FRAGMENT */)
 }
 }

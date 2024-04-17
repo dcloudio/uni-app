@@ -1,11 +1,11 @@
 import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
-  MiniProgramCompilerOptions,
+  type MiniProgramCompilerOptions,
   transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.swan.json'
 import { transformFor } from './transforms/vFor'

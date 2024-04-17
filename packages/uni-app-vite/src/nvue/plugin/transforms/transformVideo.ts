@@ -3,11 +3,11 @@ import {
   isElementNode,
 } from '@dcloudio/uni-cli-shared'
 import {
-  createSimpleExpression,
-  ElementNode,
+  type ElementNode,
   ElementTypes,
-  NodeTransform,
+  type NodeTransform,
   NodeTypes,
+  createSimpleExpression,
 } from '@vue/compiler-core'
 
 function isVideo(node: ElementNode) {

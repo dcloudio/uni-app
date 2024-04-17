@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 
-import { MPComponentInstance } from '@dcloudio/uni-mp-core'
+import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
 
 import * as baseParseOptions from '@dcloudio/uni-mp-weixin/src/runtime/parseOptions'
 
@@ -9,7 +9,7 @@ function initRelation(
   detail: Record<string, unknown>
 ) {
   // 兼容triggerEvent
-  // @ts-ignore
+  // @ts-expect-error
   mpInstance._triggerEvent('__l', detail)
 }
 

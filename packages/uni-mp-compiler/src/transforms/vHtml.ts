@@ -3,14 +3,14 @@ import {
   isElementNode,
 } from '@dcloudio/uni-cli-shared'
 import {
-  DirectiveNode,
-  ElementNode,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
-  findDir,
   NodeTypes,
-  PlainElementNode,
+  type PlainElementNode,
+  findDir,
 } from '@vue/compiler-core'
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 
 export const transformHtml: NodeTransform = (node, _) => {
   if (!isElementNode(node)) {

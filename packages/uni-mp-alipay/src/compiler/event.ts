@@ -1,6 +1,6 @@
 import { capitalize } from '@vue/shared'
 import { customizeEvent } from '@dcloudio/uni-shared'
-import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
+import type { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 
 export const event: MiniProgramCompilerOptions['event'] = {
   format(name, { isCatch, isComponent }) {

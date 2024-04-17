@@ -35,8 +35,16 @@ const extApiProviders: {
   servicePlugin?: string
 }[] = []
 
+const extApiPlugins = new Set<string>()
+
 export function getUniExtApiProviders() {
   return extApiProviders
+}
+
+export function getUniExtApiPlugins() {
+  return [...extApiPlugins].map((plugin) => {
+    return { plugin }
+  })
 }
 
 export function getUniExtApiProviderRegisters() {
@@ -76,6 +84,7 @@ export function parseUniExtApis(
 
   const injects: Injects = {}
   extApiProviders.length = 0
+  extApiPlugins.clear()
   fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
     // 必须以 uni- 开头
     if (!uniModuleDir.startsWith('uni-')) {
@@ -98,6 +107,7 @@ export function parseUniExtApis(
           provider.plugin = uniModuleDir
           extApiProviders.push(provider)
         }
+        extApiPlugins.add(uniModuleDir)
         const curInjects = parseInjects(
           vite,
           platform,

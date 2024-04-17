@@ -1,7 +1,7 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
-import { initAppVm, initService, defineGlobalData } from '@dcloudio/uni-core'
+import { defineGlobalData, initAppVm, initService } from '@dcloudio/uni-core'
 
 import { initEntry } from './initEntry'
 import { initTabBar } from './initTabBar'

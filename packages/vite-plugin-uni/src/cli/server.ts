@@ -5,18 +5,18 @@ import colors from 'picocolors'
 import type {
   CommonServerOptions,
   InlineConfig,
+  LogLevel,
   Logger,
   LoggerOptions,
-  LogLevel,
   ResolvedConfig,
   ServerOptions,
   ViteDevServer,
 } from 'vite'
 
 import { parseManifestJson } from '@dcloudio/uni-cli-shared'
-import { CliOptions } from '.'
+import type { CliOptions } from '.'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
-import { AddressInfo, Server } from 'net'
+import type { AddressInfo, Server } from 'net'
 
 function createLogger(level?: LogLevel, options?: LoggerOptions) {
   return import('vite').then(({ createLogger }) => createLogger(level, options))
@@ -211,7 +211,7 @@ function printServerUrls(
           // Node < v18
           ((typeof detail.family === 'string' && detail.family === 'IPv4') ||
             // Node >= v18
-            // @ts-ignore
+            // @ts-expect-error
             (typeof detail.family === 'number' && detail.family === 4))
       )
       .map((detail) => {

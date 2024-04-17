@@ -14,9 +14,9 @@ import {
 
 import { getResolvedScript } from './script'
 import type { ResolvedOptions } from '.'
-import { TemplateCompilerOptions } from '../compiler/options'
+import type { TemplateCompilerOptions } from '../compiler/options'
 import { parseUTSImportFilename } from '../../utils'
-import { CompilerError } from '../compiler/errors'
+import type { CompilerError } from '../compiler/errors'
 
 export function resolveGenTemplateCodeOptions(
   relativeFileName: string,
@@ -153,7 +153,7 @@ export function resolveTemplateCompilerOptions(
   return {
     ...options.template,
     id,
-    // @ts-ignore TODO remove ignore when dep is updated to 3.4
+    // TODO remove ignore when dep is updated to 3.4
     ast: descriptor.template?.ast,
     filename,
     scoped: hasScoped,

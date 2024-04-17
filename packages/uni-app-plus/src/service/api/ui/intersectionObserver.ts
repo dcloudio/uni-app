@@ -1,4 +1,4 @@
-import {
+import type {
   AddIntersectionObserverArgs,
   RemoveIntersectionObserverArgs,
 } from '@dcloudio/uni-api'

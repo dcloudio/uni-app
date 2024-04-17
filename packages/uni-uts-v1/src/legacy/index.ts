@@ -1,8 +1,8 @@
 import fs from 'fs'
 import path from 'path'
 import {
-  BasicSourceMapConsumer,
-  IndexedSourceMapConsumer,
+  type BasicSourceMapConsumer,
+  type IndexedSourceMapConsumer,
   SourceMapConsumer,
 } from 'source-map'
 import { generateCodeFrame } from '../stacktrace/utils'

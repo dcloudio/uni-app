@@ -3,22 +3,22 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import {
   EXTNAME_VUE,
-  parseVueRequest,
+  isAppVue,
   isMiniProgramPageFile,
+  parseMainDescriptor,
   parseProgram,
   parseScriptDescriptor,
   parseTemplateDescriptor,
-  parseMainDescriptor,
-  updateMiniProgramComponentsByMainFilename,
+  parseVueRequest,
+  resolveUTSModule,
   transformDynamicImports,
+  updateMiniProgramComponentsByMainFilename,
   updateMiniProgramComponentsByScriptFilename,
   updateMiniProgramComponentsByTemplateFilename,
   withSourcemap,
-  resolveUTSModule,
-  isAppVue,
 } from '@dcloudio/uni-cli-shared'
 import { virtualComponentPath, virtualPagePath } from './entry'
-import { CustomPluginOptions, ResolvedId } from 'rollup'
+import type { CustomPluginOptions, ResolvedId } from 'rollup'
 
 export function uniUsingComponentsPlugin(
   options: {

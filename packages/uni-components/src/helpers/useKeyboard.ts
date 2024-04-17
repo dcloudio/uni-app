@@ -1,5 +1,5 @@
-import { Ref, watch, computed } from 'vue'
-import { CustomEventTrigger } from './useEvent'
+import { type Ref, computed, watch } from 'vue'
+import type { CustomEventTrigger } from './useEvent'
 import { plusReady } from '@dcloudio/uni-shared'
 
 let resetTimer: ReturnType<typeof setTimeout>

@@ -1,7 +1,7 @@
 import type { Plugin } from 'vite'
 import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
 
-import { VitePluginUniResolvedOptions } from '../..'
+import type { VitePluginUniResolvedOptions } from '../..'
 import { createDefine } from '../../config/define'
 import { createResolve } from '../../config/resolve'
 import { createCss } from '../../config/css'
@@ -30,7 +30,8 @@ export function uniUVuePlugin(options: VitePluginUniResolvedOptions): Plugin {
         resolve: createResolve(options, config),
         logLevel: config.logLevel || 'warn', // 默认使用 warn 等级，因为 info 等级vite:report 会输出文件列表等信息
         optimizeDeps: {
-          disabled: true,
+          noDiscovery: true,
+          include: [],
         },
         css: createCss(options, config),
       }

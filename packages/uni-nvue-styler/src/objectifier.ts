@@ -1,4 +1,4 @@
-import { Container, Root, Document } from 'postcss'
+import type { Container, Document, Root } from 'postcss'
 import { extend, hasOwn } from '@vue/shared'
 import { COMBINATORS_RE } from './utils'
 

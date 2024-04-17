@@ -1,12 +1,12 @@
 import {
   API_REDIRECT_TO,
-  API_TYPE_REDIRECT_TO,
-  defineAsyncApi,
+  type API_TYPE_REDIRECT_TO,
   RedirectToOptions,
   RedirectToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { removePage, normalizeRouteKey } from '../../../framework/setup/page'
+import { normalizeRouteKey, removePage } from '../../../framework/setup/page'
 import { navigate } from './utils'
 
 function removeLastPage() {
@@ -20,7 +20,7 @@ function removeLastPage() {
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return (
       // TODO exists 属性未实现

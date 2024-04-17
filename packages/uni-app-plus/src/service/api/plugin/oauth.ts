@@ -1,30 +1,30 @@
 import {
-  API_LOGIN,
-  API_TYPE_LOGIN,
-  LoginProtocol,
+  API_CLOSE_AUTH_VIEW,
+  API_GET_CHECK_BOX_STATE,
+  API_GET_UNIVERIFY_MANAGER,
   API_GET_USER_INFO,
-  API_TYPE_GET_USER_INFO,
-  GetUserInfoProtocol,
   API_GET_USER_PROFILE,
-  API_TYPE_GET_USER_PROFILE,
-  GgetUserProfileProtocol,
+  API_LOGIN,
   API_PRE_LOGIN,
-  API_TYPE_PRE_LOGIN,
+  type API_TYPE_CLOSE_AUTH_VIEW,
+  type API_TYPE_GET_CHECK_BOX_STATE,
+  type API_TYPE_GET_UNIVERIFY_MANAGER,
+  type API_TYPE_GET_USER_INFO,
+  type API_TYPE_GET_USER_PROFILE,
+  type API_TYPE_LOGIN,
+  type API_TYPE_PRE_LOGIN,
+  GetUserInfoProtocol,
+  GgetUserProfileProtocol,
+  LoginProtocol,
   PreLoginOptions,
   PreLoginProtocol,
-  API_CLOSE_AUTH_VIEW,
-  API_TYPE_CLOSE_AUTH_VIEW,
-  API_GET_CHECK_BOX_STATE,
-  API_TYPE_GET_CHECK_BOX_STATE,
-  API_GET_UNIVERIFY_MANAGER,
-  API_TYPE_GET_UNIVERIFY_MANAGER,
   defineAsyncApi,
   defineSyncApi,
 } from '@dcloudio/uni-api'
-import { isPlainObject, toTypeString, extend } from '@vue/shared'
+import { extend, isPlainObject, toTypeString } from '@vue/shared'
 import {
-  warpPlusSuccessCallback,
   warpPlusErrorCallback,
+  warpPlusSuccessCallback,
 } from '../../../helpers/plus'
 
 type Provider = PlusOauthAuthService
@@ -155,7 +155,7 @@ const baseGetUserInfo = (
           }
         }
         let result: Data = {}
-        // @ts-ignore
+        // @ts-expect-error
         if (params.data && params.data.api_name === 'webapi_getuserinfo') {
           result.data = {
             data: JSON.stringify(userInfo),

@@ -1,7 +1,7 @@
 import { getBaseSystemInfo } from '@dcloudio/uni-platform'
 import { defineSyncApi } from '../../helpers/api'
 import {
-  API_TYPE_UPX2PX,
+  type API_TYPE_UPX2PX,
   API_UPX2PX,
   Upx2pxProtocol,
 } from '../../protocols/base/upx2px'

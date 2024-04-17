@@ -6,7 +6,7 @@ import {
   toDisplayString,
 } from '@vue/shared'
 import { vOn } from './vOn'
-import { vFor, VForItem } from './vFor'
+import { type VForItem, vFor } from './vFor'
 import { renderSlot } from './renderSlot'
 import { withScopedSlot } from './withScopedSlot'
 import { stringifyStyle } from './style'

@@ -1,7 +1,7 @@
 import {
-  defineAsyncApi,
   API_GET_SAVED_LIST,
-  API_TYPE_GET_SAVED_LIST,
+  type API_TYPE_GET_SAVED_LIST,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 

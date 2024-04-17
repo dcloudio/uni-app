@@ -1,14 +1,14 @@
 import { initPageVm, invokeHook } from '@dcloudio/uni-core'
 import {
   EventChannel,
-  formatLog,
   ON_READY,
   ON_UNLOAD,
+  formatLog,
 } from '@dcloudio/uni-shared'
 import {
-  nextTick,
-  ComponentPublicInstance,
+  type ComponentPublicInstance,
   getCurrentInstance,
+  nextTick,
   onBeforeUnmount,
   onMounted,
 } from 'vue'

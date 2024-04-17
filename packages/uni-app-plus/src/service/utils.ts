@@ -1,5 +1,5 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 export function getCurrentWebview() {
   const page = getCurrentPage()

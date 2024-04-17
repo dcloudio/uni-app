@@ -2,10 +2,10 @@ import type { Plugin, ResolvedConfig } from 'vite'
 
 import {
   defineUniManifestJsonPlugin,
-  normalizeNetworkTimeout,
-  parseJson,
   initI18nOptions,
+  normalizeNetworkTimeout,
   normalizeThemeConfigOnce,
+  parseJson,
 } from '@dcloudio/uni-cli-shared'
 
 const defaultRouter = {

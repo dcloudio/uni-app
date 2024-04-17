@@ -1,19 +1,19 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
+  UniProgressActiveendEvent,
   UniProgressElement,
   progressProps,
-  UniProgressActiveendEvent,
 } from './model'
 import { _style } from './style'
 import {
+  camelize,
   computed,
-  reactive,
+  getCurrentInstance,
   onMounted,
   onUnmounted,
+  reactive,
   watch,
-  getCurrentInstance,
-  camelize,
 } from 'vue'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -25,7 +25,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   emit: ['activeend'],
   props: progressProps,
-  setup(props, { emit, slots }) {
+  setup(props, { emit }) {
     // data
     const data = reactive({
       $uniProgressElement: null as null | UniProgressElement,
@@ -119,7 +119,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ? props[keyString]?.toString() ?? null
             : null
         }
-        //  this._animate()
+        _animate()
       })
     })
     onUnmounted(() => {

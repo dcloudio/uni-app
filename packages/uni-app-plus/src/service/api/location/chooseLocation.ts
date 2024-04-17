@@ -1,8 +1,8 @@
 import {
   API_CHOOSE_LOCATION,
-  API_TYPE_CHOOSE_LOCATION,
-  defineAsyncApi,
+  type API_TYPE_CHOOSE_LOCATION,
   ChooseLocationProtocol,
+  defineAsyncApi,
   getLocale,
 } from '@dcloudio/uni-api'
 import { showPage } from '@dcloudio/uni-core'

@@ -1,4 +1,4 @@
-import { IUniPageNode, NODE_TYPE_ELEMENT, UniBaseNode } from './Node'
+import { type IUniPageNode, NODE_TYPE_ELEMENT, UniBaseNode } from './Node'
 
 export class UniElement extends UniBaseNode {
   tagName: string

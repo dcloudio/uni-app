@@ -1,12 +1,12 @@
 import {
-  defineAsyncApi,
-  API_TYPE_PAGE_SCROLL_TO,
   API_PAGE_SCROLL_TO,
-  PageScrollToProtocol,
+  type API_TYPE_PAGE_SCROLL_TO,
   PageScrollToOptions,
+  PageScrollToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 function queryElementTop(
   component: ComponentPublicInstance,

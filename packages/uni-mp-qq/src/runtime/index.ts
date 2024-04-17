@@ -1,8 +1,8 @@
 import { EventChannel } from '@dcloudio/uni-shared'
 import {
   createApp,
-  createPage,
   createComponent,
+  createPage,
   createSubpackageApp,
 } from '@dcloudio/uni-mp-weixin/src/runtime'
 

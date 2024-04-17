@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, PRIMARY_COLOR, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -539,7 +539,7 @@ function getGlobal() {
   if (typeof window !== "undefined") {
     return window;
   }
-  throw new Error("unable to locate window object");
+  throw new Error("unable to locate global object");
 }
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
@@ -1216,7 +1216,7 @@ function touchstart(evt) {
     const customEvent = new CustomEvent("longpress", {
       bubbles: true,
       cancelable: true,
-      // @ts-ignore
+      // @ts-expect-error
       target: evt.target,
       currentTarget: evt.currentTarget
     });
@@ -1529,7 +1529,6 @@ function removeStyle(id2) {
   let style = sheetsMap.get(id2);
   if (style) {
     if (style instanceof CSSStyleSheet) {
-      document.adoptedStyleSheets.indexOf(style);
       document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
         (s) => s !== style
       );
@@ -4941,7 +4940,7 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
           return function() {
             this.actions.push({
               method: method2 + "Path",
-              // @ts-ignore
+              // @ts-expect-error
               data: [...this.path]
             });
           };
@@ -6759,7 +6758,8 @@ const ShowModalOptions = {
         params.confirmText = t2("uni.showModal.confirm");
       }
     },
-    confirmColor: PRIMARY_COLOR
+    //@ts-expect-error
+    confirmColor: "#576b95"
   }
 };
 const API_SHOW_TOAST = "showToast";
@@ -12027,7 +12027,6 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -17814,7 +17813,7 @@ const actionSheet = /* @__PURE__ */ defineComponent({
     emit: emit2
   }) {
     initI18nShowActionSheetMsgsOnce();
-    const HEIGHT = ref(260);
+    const HEIGHT = ref(336);
     const contentHeight = ref(0);
     const titleHeight = ref(0);
     const deltaY = ref(0);
@@ -18151,7 +18150,7 @@ const props$f = {
   },
   confirmColor: {
     type: String,
-    default: "#007aff"
+    default: "#576b95"
   },
   visible: {
     type: Boolean
@@ -21638,7 +21637,6 @@ const MIMEType = {
     wvx: "x-ms-wvx"
   }
 };
-const MIMEType$1 = MIMEType;
 const ALL = "all";
 addInteractListener();
 function isWXEnv() {
@@ -21666,7 +21664,7 @@ function _createInput({
   inputEl.accept = extension.map((item) => {
     if (type !== ALL) {
       const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType$1[type][MIMEKey] || MIMEKey}`;
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
     } else {
       if (isWXEnv()) {
         return ".";
@@ -23466,7 +23464,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
 }
 const navigateTo = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, events, isAutomatedTesting }, { resolve, reject }) => navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject),
   NavigateToProtocol,
   NavigateToOptions
@@ -23481,7 +23479,7 @@ function removeLastPage() {
 }
 const redirectTo = /* @__PURE__ */ defineAsyncApi(
   API_REDIRECT_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return (
       // TODO exists 属性未实现
@@ -23499,7 +23497,7 @@ function removeAllPages() {
 }
 const reLaunch = /* @__PURE__ */ defineAsyncApi(
   API_RE_LAUNCH,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
@@ -23541,7 +23539,7 @@ function getTabBarPageId(url) {
 }
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
     return removeNonTabBarPages(), navigate(
       { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
@@ -26693,6 +26691,23 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
+function updateBackgroundColorContent(backgroundColorContent) {
+  if (backgroundColorContent) {
+    document.body.style.setProperty(
+      "--background-color-content",
+      backgroundColorContent
+    );
+  } else {
+    document.body.style.removeProperty("--background-color-content");
+  }
+}
+function useBackgroundColorContent(pageMeta) {
+  function update() {
+    updateBackgroundColorContent(pageMeta.backgroundColorContent || "");
+  }
+  watchEffect(update);
+  onActivated(update);
+}
 function usePageHeadTransparentBackgroundColor(backgroundColor) {
   const { r, g: g2, b } = hexToRgba(backgroundColor);
   return `rgba(${r},${g2},${b},0)`;
@@ -27427,10 +27442,10 @@ const index = defineSystemComponent({
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
-    if (pageMeta.backgroundColorContent) {
-      pageStyle.backgroundColor = pageMeta.backgroundColorContent;
-    }
     useDocumentTitle(pageMeta);
+    {
+      useBackgroundColorContent(pageMeta);
+    }
     return () => createVNode(
       "uni-page",
       {

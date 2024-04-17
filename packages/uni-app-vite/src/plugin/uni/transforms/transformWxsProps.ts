@@ -5,9 +5,9 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { ATTR_CHANGE_PREFIX } from '@dcloudio/uni-shared'
 import {
+  type NodeTransform,
   createCompoundExpression,
   findProp,
-  NodeTransform,
 } from '@vue/compiler-core'
 import { WXS_PROP } from './runtimeHelpers'
 

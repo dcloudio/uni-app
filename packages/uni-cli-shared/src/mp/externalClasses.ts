@@ -1,10 +1,10 @@
 import {
+  type Node,
+  type Program,
   isArrayExpression,
   isIdentifier,
   isObjectProperty,
   isStringLiteral,
-  Node,
-  Program,
 } from '@babel/types'
 import { walk } from 'estree-walker'
 

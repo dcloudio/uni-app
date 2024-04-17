@@ -2,6 +2,8 @@ import path from 'path'
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
+import replace from '@rollup/plugin-replace'
+
 import { isAppNVueNativeTag } from '@dcloudio/uni-shared'
 
 function resolve(file: string) {
@@ -13,7 +15,6 @@ export default defineConfig({
   define: {
     global: 'window',
     __PLATFORM__: "'app'",
-    __DEV__: `(process.env.NODE_ENV !== 'production')`,
     __NODE_JS__: false,
     __APP_VIEW__: false,
     __VUE_OPTIONS_API__: true,
@@ -57,6 +58,12 @@ export default defineConfig({
           return true
         }
         return isAppNVueNativeTag(tag)
+      },
+    }),
+    replace({
+      preventAssignment: true,
+      values: {
+        __DEV__: `(process.env.NODE_ENV !== 'production')`,
       },
     }),
   ],

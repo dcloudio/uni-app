@@ -1,7 +1,7 @@
-import { UserConfig } from 'vite'
+import type { UserConfig } from 'vite'
 import { extend } from '@vue/shared'
 import { initDefine } from '@dcloudio/uni-cli-shared'
-import { VitePluginUniResolvedOptions } from '..'
+import type { VitePluginUniResolvedOptions } from '..'
 
 export function createDefine(
   _: VitePluginUniResolvedOptions

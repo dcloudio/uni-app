@@ -1,55 +1,55 @@
 import {
+  type BlockCodegenNode,
+  ConstantTypes,
+  type DirectiveNode,
+  type ElementNode,
+  type ExpressionNode,
+  type ForCodegenNode,
+  type ForIteratorExpression,
+  type ForNode,
+  type ForRenderListExpression,
+  IS_MEMO_SAME,
   NodeTypes,
-  ExpressionNode,
-  createSimpleExpression,
-  SourceLocation,
-  SimpleExpressionNode,
+  type PlainElementNode,
+  type RenderSlotCall,
+  type SimpleExpressionNode,
+  type SlotOutletNode,
+  type SourceLocation,
+  type VNodeCall,
+  createBlockStatement,
   createCallExpression,
+  createCompoundExpression,
   createFunctionExpression,
   createObjectExpression,
   createObjectProperty,
-  ForCodegenNode,
-  RenderSlotCall,
-  SlotOutletNode,
-  ElementNode,
-  DirectiveNode,
-  ForNode,
-  PlainElementNode,
+  createSimpleExpression,
   createVNodeCall,
-  VNodeCall,
-  ForRenderListExpression,
-  BlockCodegenNode,
-  ForIteratorExpression,
-  ConstantTypes,
   findDir,
-  createBlockStatement,
-  createCompoundExpression,
-  IS_MEMO_SAME,
   // createBlockStatement,
   // createCompoundExpression
 } from '@vue/compiler-core'
-import { createCompilerError, ErrorCodes } from '../errors'
+import { ErrorCodes, createCompilerError } from '../errors'
 import {
   findProp,
-  isTemplateNode,
-  isSlotOutlet,
-  injectProp,
   getVNodeBlockHelper,
   getVNodeHelper,
+  injectProp,
+  isSlotOutlet,
+  isTemplateNode,
   // findDir
 } from '@vue/compiler-core'
 import { getInnerRange } from '@dcloudio/uni-cli-shared'
 import {
-  RENDER_LIST,
-  OPEN_BLOCK,
   FRAGMENT,
+  OPEN_BLOCK,
+  RENDER_LIST,
   // IS_MEMO_SAME
 } from '../runtimeHelpers'
 import { processExpression } from './transformExpression'
 // import { validateBrowserExpression } from '../validateExpression'
-import { PatchFlags, PatchFlagNames } from '@vue/shared'
+import { PatchFlagNames, PatchFlags } from '@vue/shared'
 import {
-  TransformContext,
+  type TransformContext,
   createStructuralDirectiveTransform,
 } from '../transform'
 

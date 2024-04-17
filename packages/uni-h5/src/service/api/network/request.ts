@@ -1,13 +1,13 @@
 import { hasOwn, isString } from '@vue/shared'
 import {
   API_REQUEST,
-  API_TYPE_REQUEST,
-  defineTaskApi,
+  type API_TYPE_REQUEST,
   RequestOptions,
   RequestProtocol,
+  defineTaskApi,
 } from '@dcloudio/uni-api'
 import { LINEFEED } from '@dcloudio/uni-shared'
-import { type RequestFail } from '@dcloudio/uni-app-x/types/uni'
+import type { RequestFail } from '@dcloudio/uni-app-x/types/uni'
 
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,

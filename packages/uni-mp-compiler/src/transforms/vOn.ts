@@ -1,27 +1,27 @@
 import { isDirectiveNode } from '@dcloudio/uni-cli-shared'
 import {
+  type DirectiveNode,
+  type DirectiveTransform,
+  type ElementNode,
+  ElementTypes,
+  ErrorCodes,
+  type ExpressionNode,
+  NodeTypes,
+  type SimpleExpressionNode,
+  TO_HANDLER_KEY,
   createCompilerError,
   createCompoundExpression,
   createObjectProperty,
   createSimpleExpression,
-  DirectiveNode,
-  ElementTypes,
-  ErrorCodes,
-  ExpressionNode,
+  findProp,
   hasScopeRef,
   isMemberExpression,
-  NodeTypes,
-  SimpleExpressionNode,
-  TO_HANDLER_KEY,
-  DirectiveTransform,
-  ElementNode,
-  findProp,
 } from '@vue/compiler-core'
 import { camelize, toHandlerKey } from '@vue/shared'
 import { genExpr } from '..'
 import { V_ON } from '../runtimeHelpers'
-import { TransformContext } from '../transform'
-import { DirectiveTransformResult } from './transformElement'
+import type { TransformContext } from '../transform'
+import type { DirectiveTransformResult } from './transformElement'
 import { isBuiltInIdentifier, processExpression } from './transformExpression'
 import { parseVForScope } from './vFor'
 

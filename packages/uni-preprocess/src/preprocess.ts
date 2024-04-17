@@ -1,4 +1,4 @@
-import MagicString, { SourceMapOptions } from 'magic-string'
+import MagicString, { type SourceMapOptions } from 'magic-string'
 import { matchRecursive } from 'xregexp'
 
 export type { SourceMapOptions } from 'magic-string'

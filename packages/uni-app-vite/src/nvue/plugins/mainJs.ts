@@ -1,7 +1,7 @@
 import {
-  defineUniMainJsPlugin,
   MANIFEST_JSON_JS,
   PAGES_JSON_JS,
+  defineUniMainJsPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { APP_CSS_JS } from './appCss'
 

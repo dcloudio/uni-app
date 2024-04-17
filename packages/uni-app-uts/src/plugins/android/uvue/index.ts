@@ -1,7 +1,7 @@
 import fs from 'fs-extra'
 
 import type { Plugin } from 'vite'
-import { type SFCBlock } from '@vue/compiler-sfc'
+import type { SFCBlock } from '@vue/compiler-sfc'
 
 import { isString } from '@vue/shared'
 import {

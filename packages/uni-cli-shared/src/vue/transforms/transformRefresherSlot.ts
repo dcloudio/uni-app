@@ -1,14 +1,14 @@
 import {
-  DirectiveNode,
-  RootNode,
-  TemplateChildNode,
-  locStub,
   ConstantTypes,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
   NodeTypes,
-  ElementNode,
+  type RootNode,
+  type TemplateChildNode,
+  locStub,
 } from '@vue/compiler-core'
-import { isElementNode, isAttributeNode } from '../../vite/utils/ast'
+import { isAttributeNode, isElementNode } from '../../vite/utils/ast'
 
 /**
  * 将scroll-view、list-view内的<view slot="refresher">转为vue支持的用法，此transform需要再较早时机执行，暂时放在transformTag前。此时node.tag还没有加上v-uni-前缀

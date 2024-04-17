@@ -4,16 +4,16 @@ import {
   normalizePath,
 } from '@dcloudio/uni-cli-shared'
 import {
-  AttributeNode,
-  createSimpleExpression,
-  DirectiveNode,
-  ElementNode,
+  type AttributeNode,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
-  locStub,
-  NodeTransform,
+  type NodeTransform,
   NodeTypes,
-  RootNode,
-  TemplateChildNode,
+  type RootNode,
+  type TemplateChildNode,
+  createSimpleExpression,
+  locStub,
 } from '@vue/compiler-core'
 import { addRenderWhole } from './transformRenderWhole'
 import { parseNVuePageOptions } from '../../plugins/pagesJson'

@@ -1,5 +1,5 @@
-import { computed, inject, nextTick, provide, Ref, ref } from 'vue'
-import { Router } from 'vue-router'
+import { type Ref, computed, inject, nextTick, provide, ref } from 'vue'
+import type { Router } from 'vue-router'
 import { hasOwn } from '@vue/shared'
 import { RESPONSIVE_MIN_WIDTH } from '@dcloudio/uni-shared'
 import { PolySymbol } from '@dcloudio/uni-core'

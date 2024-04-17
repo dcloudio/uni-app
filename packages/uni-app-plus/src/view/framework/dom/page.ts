@@ -1,15 +1,15 @@
 import {
+  type CreateScrollListenerOptions,
   createScrollListener,
-  CreateScrollListenerOptions,
   disableScrollListener,
   updateCssVar,
 } from '@dcloudio/uni-core'
 import {
-  formatLog,
   ON_PAGE_SCROLL,
   ON_REACH_BOTTOM,
-  PageCreateData,
-  UniNodeJSON,
+  type PageCreateData,
+  type UniNodeJSON,
+  formatLog,
   scrollTo,
 } from '@dcloudio/uni-shared'
 

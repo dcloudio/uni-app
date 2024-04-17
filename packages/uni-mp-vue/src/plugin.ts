@@ -1,4 +1,4 @@
-import { App } from 'vue'
+import type { App } from 'vue'
 
 import { initApp } from '@dcloudio/uni-vue'
 import { pruneComponentPropsCache } from './helpers/renderProps'
@@ -17,9 +17,9 @@ export default {
       if (createApp) {
         createApp(instance)
       } else {
-        // @ts-ignore 旧编译器
+        // @ts-expect-error 旧编译器
         if (typeof createMiniProgramApp !== 'undefined') {
-          // @ts-ignore
+          // @ts-expect-error
           createMiniProgramApp(instance)
         }
       }

@@ -1,10 +1,10 @@
-import { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
+import type { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
 import {
   createIsCustomElement,
   isMiniProgramNativeTag as isNativeTag,
 } from '@dcloudio/uni-shared'
 import { compile } from '../src/index'
-import { CompilerOptions } from '../src/options'
+import type { CompilerOptions } from '../src/options'
 
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {

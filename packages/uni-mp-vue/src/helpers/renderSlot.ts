@@ -1,7 +1,7 @@
 import type { ComponentInternalInstance } from 'vue'
 import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
 import type { ScopedSlotInvokers } from './withScopedSlot'
-import { onMounted, getCurrentInstance } from 'vue'
+import { getCurrentInstance, onMounted } from 'vue'
 
 export function renderSlot(name: string, props: Data = {}, key?: number) {
   const instance = getCurrentInstance() as ComponentInternalInstance & {

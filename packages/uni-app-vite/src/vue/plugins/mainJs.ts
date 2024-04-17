@@ -1,4 +1,4 @@
-import { defineUniMainJsPlugin, PAGES_JSON_JS } from '@dcloudio/uni-cli-shared'
+import { PAGES_JSON_JS, defineUniMainJsPlugin } from '@dcloudio/uni-cli-shared'
 
 export function uniMainJsPlugin() {
   return defineUniMainJsPlugin((opts) => {

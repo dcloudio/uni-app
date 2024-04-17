@@ -2,15 +2,15 @@ import { EventChannel, ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 import {
   API_NAVIGATE_TO,
-  API_TYPE_NAVIGATE_TO,
-  defineAsyncApi,
-  DefineAsyncApiFn,
+  type API_TYPE_NAVIGATE_TO,
+  type DefineAsyncApiFn,
   NavigateToOptions,
   NavigateToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
-import { RouteOptions } from '../../../service/api/route/utils'
+import type { RouteOptions } from '../../../service/api/route/utils'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page'
 import { getWebviewId } from '../../../service/framework/webview/utils'

@@ -1,4 +1,4 @@
-import { Fragment, VNode, isVNode } from 'vue'
+import { Fragment, type VNode, isVNode } from 'vue'
 import { isArray } from '@vue/shared'
 
 export function flatVNode(nodes: any): VNode[] {

@@ -1,8 +1,8 @@
-import { ComponentDescriptorVm } from '@dcloudio/uni-core'
+import type { ComponentDescriptorVm } from '@dcloudio/uni-core'
 import {
-  ComponentInternalInstance,
-  ComponentPublicInstance,
-  defineComponent,
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+  type defineComponent,
   h,
 } from 'vue'
 import { UniComment } from '../elements/UniComment'

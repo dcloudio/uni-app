@@ -5528,7 +5528,6 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -5671,7 +5670,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
       return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
     }
     const getPickerViewColumn = function(columnInstance) {
-      const ref = vue.computed({
+      const ref2 = vue.computed({
         get() {
           const index2 = getItemIndex(columnInstance.vnode);
           return state.value[index2] || 0;
@@ -5692,7 +5691,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
           }
         }
       });
-      return ref;
+      return ref2;
     };
     vue.provide("getPickerViewColumn", getPickerViewColumn);
     vue.provide("pickerViewProps", props2);
@@ -9265,23 +9264,9 @@ function useTheme(pageStyle, onThemeChangeCallback) {
   onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
   return reactivePageStyle;
 }
-let showActionSheetState;
-const hideActionSheet = () => {
-  if (showActionSheetState) {
-    showActionSheetState.visible = false;
-  }
-};
-let showModalState;
-const hideModal = () => {
-  if (showModalState) {
-    showModalState.visible = false;
-  }
-};
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
   router.beforeEach((to, from) => {
-    hideActionSheet();
-    hideModal();
     uni.hideToast();
     uni.hideLoading();
   });
@@ -13472,6 +13457,17 @@ function createRightWindowTsx(rightWindow, layoutState, windowState) {
     }, windowState), null, 16)])], 12, ["data-show"]), [[vue.vShow, layoutState.showRightWindow || layoutState.apiShowRightWindow]]);
   }
 }
+function updateBackgroundColorContent(backgroundColorContent) {
+  {
+    return;
+  }
+}
+function useBackgroundColorContent(pageMeta) {
+  function update() {
+    updateBackgroundColorContent(pageMeta.backgroundColorContent || "");
+  }
+  vue.watchEffect(update);
+}
 function usePageHeadTransparentBackgroundColor(backgroundColor) {
   const { r, g: g2, b } = hexToRgba(backgroundColor);
   return `rgba(${r},${g2},${b},0)`;
@@ -13930,10 +13926,10 @@ const index = defineSystemComponent({
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
-    if (pageMeta.backgroundColorContent) {
-      pageStyle.backgroundColor = pageMeta.backgroundColorContent;
-    }
     useDocumentTitle(pageMeta);
+    {
+      useBackgroundColorContent(pageMeta);
+    }
     return () => vue.createVNode(
       "uni-page",
       {

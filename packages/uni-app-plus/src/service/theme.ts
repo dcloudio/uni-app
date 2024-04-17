@@ -1,6 +1,6 @@
 import { weexGetSystemInfoSync } from './api/device/systemInfo'
 import { normalizeStyles } from '@dcloudio/uni-shared'
-import { parseWebviewStyle } from './framework/webview/style/index'
+import type { parseWebviewStyle } from './framework/webview/style/index'
 import { ON_THEME_CHANGE } from '@dcloudio/uni-shared'
 import { setStatusBarStyle } from './statusBar'
 import { getAllPages } from './framework/page/getCurrentPages'

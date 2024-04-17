@@ -168,7 +168,7 @@ describe('uvue-style', () => {
         `,
       { type: 'uvue', map: true, ts: true }
     )
-    console.log(messages)
+    expect(messages).toHaveLength(0)
     expect(code).toMatchSnapshot()
   })
 })

@@ -1,12 +1,12 @@
 import { isFunction, isString } from '@vue/shared'
 import {
-  ua,
-  isIOS,
   isAndroid,
-  isWindows,
-  isMac,
-  isLinux,
+  isIOS,
   isIPadOS,
+  isLinux,
+  isMac,
+  isWindows,
+  ua,
 } from '../base/getBaseSystemInfo'
 
 function IEVersion() {

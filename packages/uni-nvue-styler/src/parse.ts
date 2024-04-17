@@ -1,9 +1,9 @@
 import { isString } from '@vue/shared'
-import postcss, { Message } from 'postcss'
+import postcss, { type Message } from 'postcss'
 import { objectifier } from './objectifier'
 import { expand } from './expand'
 import { normalize } from './normalize'
-import { NormalizeOptions } from './utils'
+import type { NormalizeOptions } from './utils'
 
 interface ParseOptions extends NormalizeOptions {
   filename?: string

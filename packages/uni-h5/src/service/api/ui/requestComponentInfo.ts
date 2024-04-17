@@ -1,9 +1,12 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { isArray } from '@vue/shared'
 import { getCustomDataset } from '@dcloudio/uni-shared'
 import { getWindowOffset } from '@dcloudio/uni-core'
 import { getContextInfo } from '@dcloudio/uni-components'
-import { SelectorQueryNodeInfo, SelectorQueryRequest } from '@dcloudio/uni-api'
+import type {
+  SelectorQueryNodeInfo,
+  SelectorQueryRequest,
+} from '@dcloudio/uni-api'
 
 type NodeField = UniApp.NodeField
 

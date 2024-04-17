@@ -1,5 +1,5 @@
 import type { Node, Program } from '@babel/types'
-import MagicString from 'magic-string'
+import type MagicString from 'magic-string'
 import { walk } from 'estree-walker'
 
 export function hasConsole(content: string) {

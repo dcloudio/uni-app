@@ -1,10 +1,10 @@
 import { extend } from '@vue/shared'
 import {
+  type MPComponentInstance,
+  type MPComponentOptions,
   fixSetDataEnd,
   fixSetDataStart,
   handleEvent,
-  MPComponentInstance,
-  MPComponentOptions,
 } from '@dcloudio/uni-mp-core'
 import * as baseParseOptions from '@dcloudio/uni-mp-weixin/src/runtime/parseOptions'
 

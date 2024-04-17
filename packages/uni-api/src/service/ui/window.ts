@@ -1,10 +1,10 @@
 import {
-  API_ON_WINDOW_RESIZE,
-  API_TYPE_ON_WINDOW_RESIZE,
   API_OFF_WINDOW_RESIZE,
-  API_TYPE_OFF_WINDOW_RESIZE,
+  API_ON_WINDOW_RESIZE,
+  type API_TYPE_OFF_WINDOW_RESIZE,
+  type API_TYPE_ON_WINDOW_RESIZE,
 } from '../../protocols/ui/window'
-import { defineOnApi, defineOffApi } from '../../helpers/api'
+import { defineOffApi, defineOnApi } from '../../helpers/api'
 
 /**
  * 监听窗口大小变化

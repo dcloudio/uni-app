@@ -1,27 +1,27 @@
 import { hasOwn } from '@vue/shared'
 import {
   ATTR_CLASS,
-  ATTR_STYLE,
   ATTR_INNER_HTML,
+  ATTR_STYLE,
   ATTR_TEXT_CONTENT,
-  ATTR_V_SHOW,
   ATTR_V_OWNER_ID,
   ATTR_V_RENDERJS,
-  UniNodeJSON,
+  ATTR_V_SHOW,
+  type UniNodeJSON,
 } from '@dcloudio/uni-shared'
 import { reactive, watch } from 'vue'
 import { UniNode } from './UniNode'
 import { patchClass } from '../modules/class'
 import { patchStyle } from '../modules/style'
 import { patchEvent, patchWxsEvent } from '../modules/events'
-import { UniCustomElement } from '../components'
+import type { UniCustomElement } from '../components'
 import {
   JOB_PRIORITY_RENDERJS,
   JOB_PRIORITY_UPDATE,
   queuePostActionJob,
 } from '../scheduler'
 import { decodeAttr, isCssVar } from '../utils'
-import { patchVShow, VShowElement } from '../directives/vShow'
+import { type VShowElement, patchVShow } from '../directives/vShow'
 import { initRenderjs } from '../renderjs'
 import { normalizeStyleValue } from '../../../utils'
 

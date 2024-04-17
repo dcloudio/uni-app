@@ -7,15 +7,15 @@ import type { BuildOptions, InlineConfig, Logger } from 'vite'
 
 import {
   M,
-  isInHBuilderX,
-  initModulePaths,
-  parseScripts,
   getPlatformDir,
-  output,
+  initModulePaths,
   initPreContext,
+  isInHBuilderX,
+  output,
+  parseScripts,
 } from '@dcloudio/uni-cli-shared'
 
-import { CliOptions } from '.'
+import type { CliOptions } from '.'
 import { initNVueEnv } from './nvue'
 import { initUVueEnv } from './uvue'
 
@@ -350,9 +350,7 @@ export function printStartupDuration(
   logger: Logger,
   whitespace: boolean = true
 ) {
-  // @ts-ignore
   if (global.__vite_start_time) {
-    // @ts-ignore
     const startupDuration = performance.now() - global.__vite_start_time
     logger.info(
       `${whitespace ? `\n  ` : ''}${colors.cyan(

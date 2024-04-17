@@ -1,15 +1,16 @@
 import { extend, isString } from '@vue/shared'
-import { onMounted, Ref, watch } from 'vue'
-import QuillClass, {
-  QuillOptionsStatic,
+import { type Ref, onMounted, watch } from 'vue'
+import type {
   EventEmitter,
+  QuillOptionsStatic,
   RangeStatic,
   StringMap,
 } from 'quill'
+import type QuillClass from 'quill'
 import { LINEFEED } from '@dcloudio/uni-shared'
 import { useContextInfo, useSubscribe } from '@dcloudio/uni-components'
-import { getRealPath, getBaseSystemInfo } from '@dcloudio/uni-platform'
-import { CustomEventTrigger } from '../../../helpers/useEvent'
+import { getBaseSystemInfo, getRealPath } from '@dcloudio/uni-platform'
+import type { CustomEventTrigger } from '../../../helpers/useEvent'
 import HTMLParser from '../../../helpers/html-parser'
 import loadScript from './loadScript'
 import * as formats from './formats'

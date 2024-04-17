@@ -1,12 +1,14 @@
+import path from 'path'
 import fs from 'fs-extra'
 import {
   APP_SERVICE_FILENAME,
-  UniVitePlugin,
+  type UniVitePlugin,
+  buildUniExtApis,
   emptyDir,
   injectCssPlugin,
   injectCssPostPlugin,
+  normalizePath,
   resolveMainPathOnce,
-  rewriteCompileScriptSetupLangOnce,
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
@@ -14,7 +16,6 @@ import { uniAppCssPlugin } from './css'
 export function uniAppIOSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
-  rewriteCompileScriptSetupLangOnce()
   // 开始编译时，清空输出目录
   function emptyOutDir() {
     if (fs.existsSync(outputDir)) {
@@ -30,6 +31,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       return {
         base: '/', // 强制 base
         build: {
+          sourcemap: process.env.NODE_ENV === 'development' ? 'hidden' : false,
           emptyOutDir: false,
           assetsInlineLimit: 0,
           rollupOptions: {
@@ -44,6 +46,17 @@ export function uniAppIOSPlugin(): UniVitePlugin {
                 vue: 'Vue',
                 '@vue/shared': 'uni.VueShared',
               },
+              sourcemapPathTransform: (relativeSourcePath, sourcemapPath) => {
+                return normalizePath(
+                  path.relative(
+                    process.env.UNI_INPUT_DIR,
+                    path.resolve(
+                      path.dirname(sourcemapPath),
+                      relativeSourcePath
+                    )
+                  )
+                )
+              },
             },
           },
         },
@@ -53,6 +66,30 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       configResolved(config)
       injectCssPlugin(config)
       injectCssPostPlugin(config, uniAppCssPlugin(config))
+    },
+    generateBundle(_, bundle) {
+      const APP_SERVICE_FILENAME_MAP = APP_SERVICE_FILENAME + '.map'
+      const appServiceMap = bundle[APP_SERVICE_FILENAME_MAP]
+      if (appServiceMap && appServiceMap.type === 'asset') {
+        fs.outputFileSync(
+          process.env.UNI_APP_X_CACHE_DIR
+            ? path.resolve(
+                process.env.UNI_APP_X_CACHE_DIR,
+                APP_SERVICE_FILENAME_MAP
+              )
+            : path.resolve(
+                process.env.UNI_OUTPUT_DIR,
+                '../.sourcemap/app-ios',
+                APP_SERVICE_FILENAME_MAP
+              ),
+          appServiceMap.source
+        )
+        delete bundle[APP_SERVICE_FILENAME_MAP]
+      }
+    },
+    async writeBundle() {
+      // x 上暂时编译所有uni ext api，不管代码里是否调用了
+      await buildUniExtApis()
     },
   }
 }

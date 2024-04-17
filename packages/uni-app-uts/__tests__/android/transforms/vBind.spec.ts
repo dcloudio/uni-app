@@ -1,17 +1,17 @@
 import { extend } from '@vue/shared'
 import {
+  CAMELIZE,
+  type CallExpression,
+  type CompilerOptions,
+  type ElementNode,
+  ErrorCodes,
+  NORMALIZE_PROPS,
+  NodeTypes,
+  type ObjectExpression,
+  type VNodeCall,
+  helperNameMap,
   baseParse as parse,
   transform,
-  ElementNode,
-  ObjectExpression,
-  CompilerOptions,
-  ErrorCodes,
-  VNodeCall,
-  CallExpression,
-  NodeTypes,
-  CAMELIZE,
-  helperNameMap,
-  NORMALIZE_PROPS,
   transformElement,
 } from '@vue/compiler-core'
 import { transformBind } from '../../../src/plugins/android/uvue/compiler/transforms/vBind'

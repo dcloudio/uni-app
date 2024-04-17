@@ -1,4 +1,4 @@
-import { IApp } from '@dcloudio/uni-app-x/types/native'
+import type { IApp } from '@dcloudio/uni-app-x/types/native'
 import { backbuttonListener } from '../../../service/framework/app/utils'
 import { ON_BACK_BUTTON } from '../../constants'
 

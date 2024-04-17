@@ -1,24 +1,24 @@
-import { ComponentOptions } from 'vue'
+import type { ComponentOptions } from 'vue'
 
 import {
-  addLeadingSlash,
   ON_INIT,
   ON_LOAD,
   ON_READY,
+  addLeadingSlash,
   stringifyQuery,
 } from '@dcloudio/uni-shared'
 
 import {
-  ParseComponentOptions,
+  type CustomComponentInstanceProperty,
+  type ParseComponentOptions,
   parseComponent,
-  CustomComponentInstanceProperty,
 } from './component'
 import {
   PAGE_INIT_HOOKS,
   initHooks,
-  initUnknownHooks,
-  initRuntimeHooks,
   initMixinRuntimeHooks,
+  initRuntimeHooks,
+  initUnknownHooks,
 } from './componentHooks'
 import { initPageProps } from './componentProps'
 

@@ -1,4 +1,4 @@
-import { WritableComputedRef, ExtractPropTypes } from 'vue'
+import type { ExtractPropTypes, WritableComputedRef } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
 
 export const uniRadioGroupKey = PolySymbol(__DEV__ ? 'uniRadioGroup' : 'ucg')

@@ -1,10 +1,10 @@
-import { ComponentPublicInstance } from 'vue'
-import { MPComponentInstance } from '@dcloudio/uni-mp-core'
+import type { ComponentPublicInstance } from 'vue'
+import type { MPComponentInstance } from '@dcloudio/uni-mp-core'
 
 import {
-  instances,
-  initProvide,
   initInjections,
+  initProvide,
+  instances,
 } from '@dcloudio/uni-mp-toutiao'
 import { ON_READY } from '@dcloudio/uni-shared'
 

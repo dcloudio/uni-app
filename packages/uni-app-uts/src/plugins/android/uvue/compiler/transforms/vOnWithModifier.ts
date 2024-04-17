@@ -1,16 +1,16 @@
-import { makeMap, capitalize } from '@vue/shared'
+import { capitalize, makeMap } from '@vue/shared'
 import {
-  createObjectProperty,
+  type ExpressionNode,
+  type SourceLocation,
   createCallExpression,
-  createSimpleExpression,
   createCompoundExpression,
-  ExpressionNode,
+  createObjectProperty,
+  createSimpleExpression,
   isStaticExp,
-  SourceLocation,
 } from '@vue/compiler-core'
 import { transformOn as baseTransform } from './vOn'
 import { V_ON_WITH_MODIFIERS } from '../runtimeHelpers'
-import { DirectiveTransform, TransformContext } from '../transform'
+import type { DirectiveTransform, TransformContext } from '../transform'
 import { createCompilerError } from '../errors'
 
 const isEventOptionModifier = /*#__PURE__*/ makeMap(`passive,once,capture`)

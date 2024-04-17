@@ -4406,6 +4406,22 @@ const publicPropertiesMap = (
     $watch: (i) => instanceWatch.bind(i) 
   })
 );
+{
+  publicPropertiesMap.$callMethod = (i) => {
+    return (methodName, ...args) => {
+      const proxy = getExposeProxy(i) || i.proxy;
+      if (!proxy) {
+        return null;
+      }
+      const method = proxy[methodName];
+      if (method) {
+        return method(...args);
+      }
+      console.error(`method ${methodName} not found`);
+      return null;
+    };
+  };
+}
 const isReservedPrefix = (key) => key === "_" || key === "$";
 const hasSetupBinding = (state, key) => state !== shared.EMPTY_OBJ && !state.__isScriptSetup && shared.hasOwn(state, key);
 const PublicInstanceProxyHandlers = {

@@ -1,7 +1,7 @@
 import {
-  CompilerError,
+  type CompilerError,
+  type SourceLocation,
   createCompilerError,
-  SourceLocation,
 } from '@vue/compiler-core'
 
 export const enum MPErrorCodes {

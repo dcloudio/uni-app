@@ -1,26 +1,27 @@
-import { createApp, defineComponent, Ref } from 'vue'
+import { createApp, defineComponent, useCssVars } from 'vue'
 
 import type {
-  Plugin,
-  DefineComponent,
-  ComputedOptions,
-  MethodOptions,
-  ComponentOptionsMixin,
-  EmitsOptions,
-  ComponentInjectOptions,
-  ComponentOptionsWithoutProps,
-  ComponentPropsOptions,
-  ComponentOptionsWithArrayProps,
-  ComponentOptionsWithObjectProps,
-  ExtractDefaultPropTypes,
-  VNodeProps,
   AllowedComponentProps,
   ComponentCustomProps,
-  ExtractPropTypes,
-  ObjectEmitsOptions,
-  VNode,
+  ComponentInjectOptions,
   ComponentInternalInstance,
-  ComponentObjectPropsOptions
+  ComponentObjectPropsOptions,
+  ComponentOptionsMixin,
+  ComponentOptionsWithArrayProps,
+  ComponentOptionsWithObjectProps,
+  ComponentOptionsWithoutProps,
+  ComponentPropsOptions,
+  ComputedOptions,
+  DefineComponent,
+  EmitsOptions,
+  ExtractDefaultPropTypes,
+  ExtractPropTypes,
+  MethodOptions,
+  ObjectEmitsOptions,
+  Plugin,
+  Ref,
+  VNode,
+  VNodeProps
 } from 'vue'
 
 type Data = Record<string, unknown>;
@@ -65,7 +66,8 @@ declare module 'vue' {
 
   export {
     createApp as createVueApp,
-    defineComponent as defineApp
+    defineComponent as defineApp,
+    useCssVars
   }
 }
 

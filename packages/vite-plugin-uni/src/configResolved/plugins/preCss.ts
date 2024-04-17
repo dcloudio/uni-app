@@ -1,9 +1,9 @@
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import { preJs, preNVueJs, withSourcemap } from '@dcloudio/uni-cli-shared'
 
-import { UniPluginFilterOptions } from '.'
+import type { UniPluginFilterOptions } from '.'
 
 const debugPre = debug('uni:pre-css')
 // const debugPreTry = debug('uni:pre-css-try')

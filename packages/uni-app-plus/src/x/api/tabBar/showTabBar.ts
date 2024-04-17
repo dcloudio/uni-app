@@ -1,8 +1,8 @@
 import {
-  defineAsyncApi,
-  API_TYPE_SHOW_TAB_BAR,
   API_SHOW_TAB_BAR,
+  type API_TYPE_SHOW_TAB_BAR,
   ShowTabBarProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getTabBar } from '../../framework/app/tabBar'
 

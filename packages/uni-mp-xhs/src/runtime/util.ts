@@ -1,22 +1,22 @@
 import { hasOwn, isFunction, isString } from '@vue/shared'
 
 import {
-  ComponentPublicInstance,
-  ComponentOptions,
-  ComponentInternalInstance,
+  type ComponentInternalInstance,
+  type ComponentOptions,
+  type ComponentPublicInstance,
+  type Ref,
   isRef,
-  Ref,
 } from 'vue'
 
-// @ts-ignore EMPTY_OBJ 不能从 @vue/shared 中引入，从 vue 中导入，保持一致
+// @ts-expect-error EMPTY_OBJ 不能从 @vue/shared 中引入，从 vue 中导入，保持一致
 import { EMPTY_OBJ, setTemplateRef } from 'vue'
 
 import {
-  initMocks,
   $createComponent,
-  initComponentInstance,
-  CreateComponentOptions,
+  type CreateComponentOptions,
   findPropsData,
+  initComponentInstance,
+  initMocks,
   initRefs,
 } from '@dcloudio/uni-mp-core'
 

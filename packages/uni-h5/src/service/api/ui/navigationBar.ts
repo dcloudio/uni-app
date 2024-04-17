@@ -1,16 +1,16 @@
 import {
-  defineAsyncApi,
+  API_HIDE_NAVIGATION_BAR_LOADING,
   API_SET_NAVIGATION_BAR_COLOR,
   API_SET_NAVIGATION_BAR_TITLE,
   API_SHOW_NAVIGATION_BAR_LOADING,
-  API_HIDE_NAVIGATION_BAR_LOADING,
-  API_TYPE_SET_NAVIGATION_BAR_COLOR,
-  API_TYPE_SET_NAVIGATION_BAR_TITLE,
-  API_TYPE_SHOW_NAVIGATION_BAR_LOADING,
-  API_TYPE_HIDE_NAVIGATION_BAR_LOADING,
+  type API_TYPE_HIDE_NAVIGATION_BAR_LOADING,
+  type API_TYPE_SET_NAVIGATION_BAR_COLOR,
+  type API_TYPE_SET_NAVIGATION_BAR_TITLE,
+  type API_TYPE_SHOW_NAVIGATION_BAR_LOADING,
   SetNavigationBarColorOptions,
   SetNavigationBarColorProtocol,
   SetNavigationBarTitleProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPageMeta } from '@dcloudio/uni-core'
 import { updateDocumentTitle } from '../../../helpers/useDocumentTitle'

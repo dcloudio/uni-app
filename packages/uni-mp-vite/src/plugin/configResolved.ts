@@ -3,18 +3,18 @@ import { isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { EmittedAsset } from 'rollup'
 import {
+  cssPostPlugin,
   injectAssetPlugin,
   injectCssPlugin,
   injectCssPostPlugin,
-  normalizePath,
-  resolveMainPathOnce,
-  removeExt,
-  transformScopedCss,
   normalizeMiniProgramFilename,
+  normalizePath,
   relativeFile,
-  cssPostPlugin,
+  removeExt,
+  resolveMainPathOnce,
+  transformScopedCss,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '.'
+import type { UniMiniProgramPluginOptions } from '.'
 import { getNVueCssPaths } from '../plugins/pagesJson'
 import {
   isUniComponentUrl,

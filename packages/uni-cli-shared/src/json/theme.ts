@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { parseJson } from './json'
-import { once, normalizeStyles } from '@dcloudio/uni-shared'
+import { normalizeStyles, once } from '@dcloudio/uni-shared'
 
 export function hasThemeJson(themeLocation: string) {
   if (!fs.existsSync(themeLocation)) {

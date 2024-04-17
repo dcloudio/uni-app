@@ -3,7 +3,7 @@ import type {
   ComponentPublicInstance,
   RendererNode,
   VNode,
-} from '@vue/runtime-core'
+} from 'vue'
 import {
   camelize,
   hyphenate,

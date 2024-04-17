@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { closeWebview } from './webview'
 import { removeTabBarPage } from '../../framework/app/tabBar'

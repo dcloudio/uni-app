@@ -1,7 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 
-import { OutputAsset, OutputBundle } from 'rollup'
+import type { OutputAsset, OutputBundle } from 'rollup'
 
 let isFixed = false
 export function fix2648(bundle: OutputBundle) {

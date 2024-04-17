@@ -1,9 +1,9 @@
-import { parse, SFCParseOptions } from '@vue/compiler-sfc'
+import type { SFCParseOptions } from '@vue/compiler-sfc'
 import { parse as babelParse } from '@babel/parser'
 
 import {
+  type SFCScriptCompileOptions,
   compileScript,
-  SFCScriptCompileOptions,
 } from '../../../src/plugins/android/uvue/sfc/compiler/compileScript'
 import { genTemplateCode } from '../../../src/plugins/android/uvue/code/template'
 import { resolveGenTemplateCodeOptions } from '../../../src/plugins/android/uvue/sfc/template'
@@ -16,7 +16,7 @@ export function compileSFCScript(
   parseOptions?: SFCParseOptions
 ) {
   const className = 'GenAnonymous'
-  const { descriptor } = parse(src, parseOptions)
+  const { descriptor } = require('@vue/compiler-sfc').parse(src, parseOptions)
   const result = compileScript(descriptor, {
     ...options,
     id: mockId,

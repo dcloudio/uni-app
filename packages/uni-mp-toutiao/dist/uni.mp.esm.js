@@ -927,7 +927,7 @@ function initInjections(instance) {
     }
 }
 
-// @ts-ignore
+// @ts-expect-error
 // 基础库 2.0 以上 attached 顺序错乱，按照 created 顺序强制纠正
 const components = [];
 function initLifetimes$1({ mocks, isPage, initRelation, vueOptions, }) {

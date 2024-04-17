@@ -1,10 +1,14 @@
 import path from 'path'
 import fs from 'fs-extra'
-import { OutputBundle, PluginContext } from 'rollup'
+import type { OutputBundle, PluginContext } from 'rollup'
 import {
-  UniVitePlugin,
+  type UniVitePlugin,
+  buildUniExtApis,
+  camelize,
+  capitalize,
   emptyDir,
   getUTSEasyComAutoImports,
+  getUniExtApiProviderRegisters,
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
@@ -12,21 +16,17 @@ import {
   resolveMainPathOnce,
   resolveUTSCompiler,
   utsPlugins,
-  buildUniExtApiProviders,
-  getUniExtApiProviderRegisters,
-  capitalize,
-  camelize,
 } from '@dcloudio/uni-cli-shared'
 import {
   DEFAULT_APPID,
+  UVUE_CLASS_NAME_PREFIX,
+  createTryResolve,
+  getExtApiComponents,
+  getUniCloudObjectInfo,
+  getUniCloudSpaceList,
   parseImports,
   parseUTSRelativeFilename,
   uvueOutDir,
-  getUniCloudSpaceList,
-  getUniCloudObjectInfo,
-  getExtApiComponents,
-  UVUE_CLASS_NAME_PREFIX,
-  createTryResolve,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import {
@@ -150,14 +150,19 @@ export function uniAppPlugin(): UniVitePlugin {
           pageCount = parseInt(process.env.UNI_APP_X_PAGE_COUNT) || 0
         }
       }
-
-      await buildUniExtApiProviders()
-
+      // x 上暂时编译所有uni ext api，不管代码里是否调用了
+      await buildUniExtApis()
+      const uniCloudObjectInfo = getUniCloudObjectInfo(uniCloudSpaceList)
+      if (uniCloudObjectInfo.length > 0) {
+        process.env.UNI_APP_X_UNICLOUD_OBJECT = 'true'
+      } else {
+        process.env.UNI_APP_X_UNICLOUD_OBJECT = 'false'
+      }
       const res = await resolveUTSCompiler().compileApp(
         path.join(tempOutputDir, 'main.uts'),
         {
           pageCount,
-          uniCloudObjectInfo: getUniCloudObjectInfo(uniCloudSpaceList),
+          uniCloudObjectInfo,
           split: split !== false,
           disableSplitManifest: process.env.NODE_ENV !== 'development',
           inputDir: tempOutputDir,

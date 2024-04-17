@@ -1,16 +1,16 @@
-import { extend, PatchFlags } from '@vue/shared'
+import { PatchFlags, extend } from '@vue/shared'
 import {
+  type CompilerOptions,
+  ConstantTypes,
+  type ElementNode,
+  ErrorCodes,
+  type ForCodegenNode,
+  type ForNode,
+  type InterpolationNode,
+  NodeTypes,
+  type SimpleExpressionNode,
   baseParse as parse,
   transform,
-  ForNode,
-  ForCodegenNode,
-  CompilerOptions,
-  NodeTypes,
-  SimpleExpressionNode,
-  ErrorCodes,
-  ElementNode,
-  InterpolationNode,
-  ConstantTypes,
   transformElement,
 } from '@vue/compiler-core'
 import { transformIf } from '../../../src/plugins/android/uvue/compiler/transforms/vIf'

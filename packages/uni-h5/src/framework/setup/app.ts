@@ -1,11 +1,11 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import AsyncLoadingComponent from '../components/async-loading'
 import AsyncErrorComponent from '../components/async-error'
 import {
+  defineGlobalData,
   initAppVm,
   initService,
   initView,
-  defineGlobalData,
 } from '@dcloudio/uni-core'
 
 let appVm: ComponentPublicInstance

@@ -1,6 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { FSWatcher, watch, WatchOptions } from 'chokidar'
+import { type FSWatcher, type WatchOptions, watch } from 'chokidar'
 import { isArray } from '@vue/shared'
 import { pathToGlob } from './utils'
 type FileTransform = (source: Buffer, filename: string) => void | string

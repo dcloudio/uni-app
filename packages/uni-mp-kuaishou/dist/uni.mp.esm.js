@@ -878,7 +878,7 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-// @ts-ignore
+// @ts-expect-error
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {

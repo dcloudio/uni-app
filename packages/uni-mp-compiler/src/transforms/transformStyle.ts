@@ -1,41 +1,41 @@
 import {
-  Expression,
-  isObjectExpression,
-  isArrayExpression,
+  type ArrayExpression,
+  type Expression,
+  type ObjectExpression,
   arrayExpression,
-  stringLiteral,
-  ArrayExpression,
-  isStringLiteral,
-  isSpreadElement,
-  identifier,
-  ObjectExpression,
-  isObjectProperty,
   binaryExpression,
+  identifier,
+  isArrayExpression,
   isIdentifier,
+  isObjectExpression,
+  isObjectProperty,
   isPrivateName,
+  isSpreadElement,
+  isStringLiteral,
+  stringLiteral,
 } from '@babel/types'
 import {
-  DirectiveNode,
+  type AttributeNode,
+  type DirectiveNode,
+  type ExpressionNode,
   NodeTypes,
-  AttributeNode,
-  createSimpleExpression,
-  ExpressionNode,
+  type SourceLocation,
   createCompoundExpression,
-  SourceLocation,
+  createSimpleExpression,
 } from '@vue/compiler-core'
 import { hyphenate } from '@vue/shared'
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 import { HYPHENATE, STRINGIFY_STYLE } from '../runtimeHelpers'
 import { parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
-import { TransformContext } from '../transform'
+import type { TransformContext } from '../transform'
 import {
+  VIRTUAL_HOST_STYLE,
   isStaticLiteral,
   parseExprWithRewrite,
   rewirteWithHelper,
   rewriteExpression,
   rewriteSpreadElement,
-  VIRTUAL_HOST_STYLE,
 } from './utils'
 
 export function isStyleBinding({ arg, exp }: DirectiveNode) {

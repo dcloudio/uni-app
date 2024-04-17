@@ -675,7 +675,7 @@ function touchstart(evt) {
     const customEvent = new CustomEvent("longpress", {
       bubbles: true,
       cancelable: true,
-      // @ts-ignore
+      // @ts-expect-error
       target: evt.target,
       currentTarget: evt.currentTarget
     });
@@ -988,7 +988,6 @@ function removeStyle(id2) {
   let style = sheetsMap.get(id2);
   if (style) {
     if (style instanceof CSSStyleSheet) {
-      document.adoptedStyleSheets.indexOf(style);
       document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
         (s) => s !== style
       );
@@ -4302,7 +4301,7 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
           return function() {
             this.actions.push({
               method: method2 + "Path",
-              // @ts-ignore
+              // @ts-expect-error
               data: [...this.path]
             });
           };
@@ -7163,7 +7162,7 @@ function initHidpi() {
     setTransform: [4, 5]
   };
   const proto = CanvasRenderingContext2D.prototype;
-  proto.drawImageByCanvas = function(_super) {
+  proto.drawImageByCanvas = /* @__PURE__ */ function(_super) {
     return function(canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
       if (!this.__hidpi__) {
         return _super.apply(this, arguments);
@@ -7181,7 +7180,7 @@ function initHidpi() {
   }(proto.drawImage);
   if (pixelRatio !== 1) {
     forEach(ratioArgs, function(value, key) {
-      proto[key] = function(_super) {
+      proto[key] = /* @__PURE__ */ function(_super) {
         return function() {
           if (!this.__hidpi__) {
             return _super.apply(this, arguments);
@@ -7200,7 +7199,7 @@ function initHidpi() {
         };
       }(proto[key]);
     });
-    proto.stroke = function(_super) {
+    proto.stroke = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7210,7 +7209,7 @@ function initHidpi() {
         this.lineWidth /= pixelRatio;
       };
     }(proto.stroke);
-    proto.fillText = function(_super) {
+    proto.fillText = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7232,7 +7231,7 @@ function initHidpi() {
         this.font = font2;
       };
     }(proto.fillText);
-    proto.strokeText = function(_super) {
+    proto.strokeText = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7254,7 +7253,7 @@ function initHidpi() {
         this.font = font2;
       };
     }(proto.strokeText);
-    proto.drawImage = function(_super) {
+    proto.drawImage = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -11388,7 +11387,6 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -19314,7 +19312,6 @@ const MIMEType = {
     wvx: "x-ms-wvx"
   }
 };
-const MIMEType$1 = MIMEType;
 const ALL = "all";
 addInteractListener();
 function isWXEnv() {
@@ -19342,7 +19339,7 @@ function _createInput({
   inputEl.accept = extension.map((item) => {
     if (type !== ALL) {
       const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType$1[type][MIMEKey] || MIMEKey}`;
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
     } else {
       if (isWXEnv()) {
         return ".";
@@ -21227,7 +21224,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
 }
 const navigateTo = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, events, isAutomatedTesting }, { resolve, reject }) => navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject),
   NavigateToProtocol,
   NavigateToOptions
@@ -21242,7 +21239,7 @@ function removeLastPage() {
 }
 const redirectTo = /* @__PURE__ */ defineAsyncApi(
   API_REDIRECT_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return (
       // TODO exists 属性未实现
@@ -21260,7 +21257,7 @@ function removeAllPages() {
 }
 const reLaunch = /* @__PURE__ */ defineAsyncApi(
   API_RE_LAUNCH,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
@@ -21302,7 +21299,7 @@ function getTabBarPageId(url) {
 }
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
     return removeNonTabBarPages(), navigate(
       { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
@@ -21401,6 +21398,7 @@ const props$6 = {
   },
   confirmColor: {
     type: String,
+    // @ts-ignore
     default: "#007aff"
   },
   visible: {

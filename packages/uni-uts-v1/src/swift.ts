@@ -1,6 +1,7 @@
 import fs from 'fs-extra'
 import path, { join } from 'path'
 import {
+  type ToSwiftOptions,
   genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
@@ -13,10 +14,9 @@ import {
   resolvePackage,
   resolveUTSPlatformFile,
   resolveUTSSourceMapPath,
-  ToSwiftOptions,
 } from './utils'
 import { parseJson } from './shared'
-import {
+import type {
   UTSBundleOptions,
   UTSInputOptions,
   UTSOutputOptions,
@@ -283,7 +283,11 @@ export async function compile(
       package: namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'swift',
-      imports: ['DCloudUTSFoundation', ...(isX ? ['DCloudUniappRuntime'] : [])],
+      imports: [
+        ...(transform?.uniExtApiProviderName ? ['DCloudUTSExtAPI'] : []),
+        'DCloudUTSFoundation',
+        ...(isX ? ['DCloudUniappRuntime'] : []),
+      ],
       logFilename: true,
       noColor: !isColorSupported(),
       transform: {
@@ -341,7 +345,10 @@ export function checkIOSVersionTips(
   if (configJsonFile && fs.existsSync(configJsonFile)) {
     try {
       const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
-      if (configJson.deploymentTarget) {
+      if (
+        configJson.deploymentTarget &&
+        parseFloat(configJson.deploymentTarget) > 12
+      ) {
         return `uts插件[${pluginId}]需在 iOS ${configJson.deploymentTarget} 版本及以上方可正常使用`
       }
     } catch (e) {}

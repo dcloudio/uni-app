@@ -1,11 +1,11 @@
-import { isArray, isObject, isFunction } from '@vue/shared'
+import { isArray, isFunction, isObject } from '@vue/shared'
 
 import {
-  InjectionKey,
-  ComponentPublicInstance,
-  ComponentInternalInstance,
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+  type InjectionKey,
+  type Ref,
   isRef,
-  Ref,
 } from 'vue'
 
 function provide<T>(

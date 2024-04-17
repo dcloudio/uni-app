@@ -11,27 +11,27 @@ import {
   ACTION_TYPE_REMOVE_EVENT,
   ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
-  AddEventAction,
-  AddWxsEventAction,
-  CreateAction,
-  InsertAction,
-  PageAction,
-  PageCreateAction,
-  PageCreatedAction,
-  RemoveAction,
-  RemoveAttributeAction,
-  RemoveEventAction,
-  SetAttributeAction,
-  SetTextAction,
-  UniNodeJSON,
+  type AddEventAction,
+  type AddWxsEventAction,
+  type CreateAction,
+  type InsertAction,
+  type PageAction,
+  type PageCreateAction,
+  type PageCreatedAction,
+  type RemoveAction,
+  type RemoveAttributeAction,
+  type RemoveEventAction,
+  type SetAttributeAction,
+  type SetTextAction,
+  type UniNodeJSON,
 } from '@dcloudio/uni-shared'
-import { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
-import { UniCSSStyleDeclarationJSON } from 'packages/uni-shared/src/vdom/Style'
+import type { UniNodeJSONMinify } from 'packages/uni-shared/src/vdom/Node'
+import type { UniCSSStyleDeclarationJSON } from 'packages/uni-shared/src/vdom/Style'
 import {
   ACTION_TYPE_DICT,
-  DictAction,
-  Dictionary,
-  Value,
+  type DictAction,
+  type Dictionary,
+  type Value,
 } from '../../../constants'
 
 type GetDict = ReturnType<typeof createGetDict>

@@ -1,39 +1,39 @@
 import { hyphenate, isFunction, isPlainObject } from '@vue/shared'
 import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import {
+  type MiniProgramCompilerOptions,
   formatMiniProgramEvent,
   isAttributeNode,
   isElementNode,
   isUserComponent,
-  MiniProgramCompilerOptions,
 } from '@dcloudio/uni-cli-shared'
 import {
-  ComponentNode,
-  DirectiveNode,
-  ElementNode,
+  type ComponentNode,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
-  ExpressionNode,
+  type ExpressionNode,
+  NodeTypes,
+  type RootNode,
+  type SimpleExpressionNode,
+  type SlotOutletNode,
+  type TemplateChildNode,
+  type TemplateNode,
+  type TextNode,
   findProp,
   isSlotOutlet,
-  NodeTypes,
-  RootNode,
-  SimpleExpressionNode,
-  SlotOutletNode,
-  TemplateChildNode,
-  TemplateNode,
-  TextNode,
 } from '@vue/compiler-core'
 import type { TemplateCodegenOptions } from '../options'
 import type { NameScopedSlotDirectiveNode } from '../transforms/transformSlot'
 import { genExpr } from '../codegen'
-import { ForElementNode, isForElementNode } from '../transforms/vFor'
-import { IfElementNode, isIfElementNode } from '../transforms/vIf'
+import { type ForElementNode, isForElementNode } from '../transforms/vFor'
+import { type IfElementNode, isIfElementNode } from '../transforms/vIf'
 import { findSlotName } from '../transforms/vSlot'
-import { TransformContext } from '../transform'
+import type { TransformContext } from '../transform'
 import {
   ATTR_VUE_PROPS,
-  VIRTUAL_HOST_STYLE,
   VIRTUAL_HOST_CLASS,
+  VIRTUAL_HOST_STYLE,
 } from '../transforms/utils'
 
 export interface TemplateCodegenContext {
@@ -229,7 +229,7 @@ function genTemplate(node: TemplateNode, context: TemplateCodegenContext) {
     // <template/> => <block/>
     node.tag = 'block'
   }
-  // @ts-ignore
+  // @ts-expect-error
   node.tagType = ElementTypes.ELEMENT
 
   // 仅单个子节点的命名插槽(非作用域)，直接使用子节点作为插槽使用，避免多增加的 view 节点影响 flex 排版

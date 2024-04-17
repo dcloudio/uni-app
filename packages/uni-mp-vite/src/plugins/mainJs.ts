@@ -1,6 +1,6 @@
 import {
-  defineUniMainJsPlugin,
   PAGES_JSON_JS,
+  defineUniMainJsPlugin,
   parseProgram,
   transformDynamicImports,
   updateMiniProgramGlobalComponents,

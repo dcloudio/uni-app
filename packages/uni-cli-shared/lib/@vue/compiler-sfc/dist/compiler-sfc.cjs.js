@@ -2076,8 +2076,8 @@ function isEmpty(node) {
   }
   return true;
 }
-function hmrShouldReload(prevImports, next) {
-  if (!next.scriptSetup || next.scriptSetup.lang !== "ts" && next.scriptSetup.lang !== "tsx") {
+function hmrShouldReload(prevImports, next) { // fixed by xxxxxx
+  if (!next.scriptSetup || next.scriptSetup.lang !== "ts" && next.scriptSetup.lang !== "tsx" && next.scriptSetup.lang !== "uts") {
     return false;
   }
   for (const key in prevImports) {
@@ -15532,6 +15532,8 @@ class ScriptCompileContext {
     const scriptSetupLang = scriptSetup && scriptSetup.lang;
     this.isJS = scriptLang === "js" || scriptLang === "jsx" || scriptSetupLang === "js" || scriptSetupLang === "jsx";
     this.isTS = scriptLang === "ts" || scriptLang === "tsx" || scriptSetupLang === "ts" || scriptSetupLang === "tsx";
+    // fixed by xxxxxx
+    this.isUTS = scriptLang === "uts" || scriptSetupLang === "uts"
     const customElement = options.customElement;
     const filename = this.descriptor.filename;
     if (customElement) {
@@ -15540,14 +15542,18 @@ class ScriptCompileContext {
     const plugins = resolveParserPlugins(
       scriptLang || scriptSetupLang,
       options.babelParserPlugins
-    );
-    function parse(input, offset) {
+    );// fixed by xxxxxx
+    function parse(input, offset, startLine) {
       try {
         return parser$1.parse(input, {
           plugins,
-          sourceType: "module"
+          sourceType: "module",
         }).program;
       } catch (e) {
+		// fixed by xxxxxx
+		if (e.loc && startLine) {
+			e.loc.line = e.loc.line + (startLine - 1)
+		}
         e.message = `[vue/compiler-sfc] ${e.message}
 
 ${descriptor.filename}
@@ -15559,8 +15565,8 @@ ${shared.generateCodeFrame(
         throw e;
       }
     }
-    this.scriptAst = descriptor.script && parse(descriptor.script.content, descriptor.script.loc.start.offset);
-    this.scriptSetupAst = descriptor.scriptSetup && parse(descriptor.scriptSetup.content, this.startOffset);
+    this.scriptAst = descriptor.script && parse(descriptor.script.content, descriptor.script.loc.start.offset, descriptor.script.loc.start.line);// fixed by xxxxxx
+    this.scriptSetupAst = descriptor.scriptSetup && parse(descriptor.scriptSetup.content, this.startOffset, descriptor.scriptSetup.loc.start.line);// fixed by xxxxxx
   }
   helper(key) {
     this.helperImports.add(key);
@@ -15595,8 +15601,8 @@ function resolveParserPlugins(lang, userPlugins, dts = false) {
     plugins.push("jsx");
   } else if (userPlugins) {
     userPlugins = userPlugins.filter((p) => p !== "jsx");
-  }
-  if (lang === "ts" || lang === "tsx") {
+  } // fixed by xxxxxx
+  if (lang === "ts" || lang === "tsx" || lang === 'uts') {
     plugins.push(["typescript", { dts }], "explicitResourceManagement");
     if (!userPlugins || !userPlugins.includes("decorators")) {
       plugins.push("decorators-legacy");
@@ -15704,7 +15710,7 @@ const normalScriptDefaultVar = `__default__`;
 function processNormalScript(ctx, scopeId) {
   var _a;
   const script = ctx.descriptor.script;
-  if (script.lang && !ctx.isJS && !ctx.isTS) {
+  if (script.lang && !ctx.isJS && !ctx.isTS && !ctx.isUTS) {
     return script;
   }
   try {
@@ -15718,6 +15724,17 @@ function processNormalScript(ctx, scopeId) {
       const defaultVar = genDefaultAs || normalScriptDefaultVar;
       const s = new MagicString(content);
       rewriteDefaultAST(scriptAst.body, s, defaultVar);
+      // fixed by xxxxxx
+      if(ctx.isUTS) {
+        scriptAst.body.forEach((node) => {
+          if (node.type === "ExportDefaultDeclaration") {
+            if (node.declaration.type === "ObjectExpression") {
+              s.appendLeft(node.declaration.start, `defineComponent(`);
+              s.appendRight (node.declaration.end, `)`);
+            }
+          }
+        })
+      }
       content = s.toString();
       if (cssVars.length && !((_a = ctx.options.templateOptions) == null ? void 0 : _a.ssr)) {
         content += genNormalScriptCssVarsCode(
@@ -18397,7 +18414,10 @@ function importSourceToScope(ctx, node, scope, source) {
     } else if (source.startsWith(".")) {
       const filename = joinPaths(path$3.dirname(scope.filename), source);
       resolved = resolveExt(filename, fs);
-    } else {
+	  // fixed by xxxxxx
+    } else if(process.env.UNI_INPUT_DIR && source.startsWith("@/")) {
+	  resolved = resolveExt(joinPaths(process.env.UNI_INPUT_DIR, source.replace("@/", "")), fs);
+	} else {
       if (!ts) {
         if (loadTS)
           ts = loadTS();
@@ -18539,7 +18559,8 @@ function fileToScope(ctx, filename, asGlobal = false) {
 }
 function parseFile(filename, content, parserPlugins) {
   const ext = path$3.extname(filename);
-  if (ext === ".ts" || ext === ".tsx") {
+  // fixed by xxxxxx
+  if (ext === ".uts" || ext === ".ts" || ext === ".tsx") {
     return parser$1.parse(content, {
       plugins: resolveParserPlugins(
         ext.slice(1),
@@ -18548,7 +18569,8 @@ function parseFile(filename, content, parserPlugins) {
       ),
       sourceType: "module"
     }).program.body;
-  } else if (ext === ".vue") {
+	// fixed by xxxxxx
+  } else if (ext === ".vue" || ext === ".uvue" || ext === ".nvue") {
     const {
       descriptor: { script, scriptSetup }
     } = parse$2(content);
@@ -19181,8 +19203,8 @@ function genModelProps(ctx) {
       skipCheck && "skipCheck: true"
     ]);
     let decl;
-    if (runtimeType && options) {
-      decl = ctx.isTS ? `{ ${codegenOptions}, ...${options} }` : `Object.assign({ ${codegenOptions} }, ${options})`;
+    if (runtimeType && options) { // fixed by xxxxxx
+      decl = ctx.isTS || ctx.isUTS ? `{ ${codegenOptions}, ...${options} }` : `Object.assign({ ${codegenOptions} }, ${options})`;
     } else {
       decl = options || (runtimeType ? `{ ${codegenOptions} }` : "{}");
     }
@@ -19850,8 +19872,8 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
     throw new Error(
       `[@vue/compiler-sfc] <script> and <script setup> must have the same language type.`
     );
-  }
-  if (scriptSetupLang && !ctx.isJS && !ctx.isTS) {
+  } // fixed by xxxxxx
+  if (scriptSetupLang && !ctx.isJS && !ctx.isTS && !ctx.isUTS) {
     return scriptSetup;
   }
   const scriptBindings = /* @__PURE__ */ Object.create(null);
@@ -19879,8 +19901,8 @@ Upgrade your vite or vue-loader version for compatibility with the latest experi
     ctx.s.move(start, end, 0);
   }
   function registerUserImport(source2, local, imported, isType, isFromSetup, needTemplateUsageCheck) {
-    let isUsedInTemplate = needTemplateUsageCheck;
-    if (needTemplateUsageCheck && ctx.isTS && sfc.template && !sfc.template.src && !sfc.template.lang) {
+    let isUsedInTemplate = needTemplateUsageCheck; // fixed by xxxxxx
+    if (needTemplateUsageCheck && ( ctx.isTS || ctx.isUTS ) && sfc.template && !sfc.template.src && !sfc.template.lang) {
       isUsedInTemplate = isImportUsed(local, sfc);
     }
     ctx.userImports[local] = {
@@ -20169,7 +20191,7 @@ const ${normalScriptDefaultVar} = ${defaultSpecifier.local.name}
         node
       );
     }
-    if (ctx.isTS) {
+    if (ctx.isTS || ctx.isUTS) { // fixed by xxxxxx
       if (node.type.startsWith("TS") || node.type === "ExportNamedDeclaration" && node.exportKind === "type" || node.type === "VariableDeclaration" && node.declare) {
         if (node.type !== "TSEnumDeclaration") {
           hoistNode(node);
@@ -20263,7 +20285,7 @@ ${genCssVarsCode(
     }
   }
   if (hasAwait) {
-    const any = ctx.isTS ? `: any` : ``;
+    const any = (ctx.isTS || ctx.isUTS) ? `: any` : ``; // fixed by xxxxxx
     ctx.s.prependLeft(startOffset, `
 let __temp${any}, __restore${any}
 `);
@@ -20395,7 +20417,7 @@ return ${returned}
   }
   const exposeCall = ctx.hasDefineExposeCall || options.inlineTemplate ? `` : `  __expose();
 `;
-  if (ctx.isTS) {
+  if (ctx.isTS || ctx.isUTS) { // fixed by xxxxxx
     const def = (defaultExport ? `
   ...${normalScriptDefaultVar},` : ``) + (definedOptions ? `
   ...${definedOptions},` : "");

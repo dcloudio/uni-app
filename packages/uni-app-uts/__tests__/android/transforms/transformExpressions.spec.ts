@@ -2,9 +2,9 @@
 import {
   BindingTypes,
   ConstantTypes,
-  DirectiveNode,
-  ElementNode,
-  InterpolationNode,
+  type DirectiveNode,
+  type ElementNode,
+  type InterpolationNode,
   NodeTypes,
   baseParse as parse,
 } from '@vue/compiler-core'
@@ -13,7 +13,7 @@ import { transformIf } from '../../../src/plugins/android/uvue/compiler/transfor
 import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'
 
 import { compile as baseCompile } from '../../../src/plugins/android/uvue/compiler'
-import { TemplateCompilerOptions } from '../../../src/plugins/android/uvue/compiler/options'
+import type { TemplateCompilerOptions } from '../../../src/plugins/android/uvue/compiler/options'
 
 function parseWithExpressionTransform(
   template: string,

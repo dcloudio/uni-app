@@ -1,7 +1,11 @@
-import { DirectiveNode, NodeTypes, SourceLocation } from '@vue/compiler-core'
+import {
+  type DirectiveNode,
+  NodeTypes,
+  type SourceLocation,
+} from '@vue/compiler-core'
 import { parse } from '@dcloudio/uni-nvue-styler'
 import { createCompilerError } from '../errors'
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 import { parseStringStyle } from '@vue/shared'
 
 // Verify that the template style is in compliance with specifications

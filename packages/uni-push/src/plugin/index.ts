@@ -1,14 +1,14 @@
 import path from 'path'
 import {
   defineUniMainJsPlugin,
-  isSsr,
+  hasPushModule,
   isEnableUniPushV1,
   isEnableUniPushV2,
+  isSsr,
   isUniPushOffline,
   resolveBuiltIn,
-  hasPushModule,
 } from '@dcloudio/uni-cli-shared'
-import { ConfigEnv, UserConfig } from 'vite'
+import type { ConfigEnv, UserConfig } from 'vite'
 
 export default () => [
   defineUniMainJsPlugin((opts) => {

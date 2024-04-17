@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 import {
-  CompilerError,
+  type CompilerError,
   baseParse,
   trackSlotScopes,
   trackVForSlotScopes,
@@ -14,9 +14,13 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import './runtimeHelpers'
 
-import { CodegenResult, TemplateCompilerOptions } from './options'
+import type { CodegenResult, TemplateCompilerOptions } from './options'
 import { generate } from './codegen'
-import { DirectiveTransform, NodeTransform, transform } from './transform'
+import {
+  type DirectiveTransform,
+  type NodeTransform,
+  transform,
+} from './transform'
 import { transformIf } from './transforms/vIf'
 import { transformFor } from './transforms/vFor'
 import { transformModel } from './transforms/vModel'
@@ -35,7 +39,7 @@ import { transformVHtml } from './transforms/vHtml'
 import { transformMemo } from './transforms/vMemo'
 import { transformOnce } from './transforms/vOnce'
 import {
-  RawSourceMap,
+  type RawSourceMap,
   SourceMapConsumer,
   SourceMapGenerator,
 } from 'source-map-js'

@@ -1,5 +1,5 @@
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { parseUrl, addLeadingSlash } from '@dcloudio/uni-shared'
+import { addLeadingSlash, parseUrl } from '@dcloudio/uni-shared'
 
 export function hasLeadingSlash(str: string): boolean {
   return str.indexOf('/') == 0

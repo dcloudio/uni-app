@@ -1,6 +1,6 @@
 import { isAttributeNode, isElementNode } from '@dcloudio/uni-cli-shared'
 import { parseStringStyle, stringifyStyle } from '@vue/shared'
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 
 export const transformAttr: NodeTransform = (node, _) => {
   if (!isElementNode(node)) {

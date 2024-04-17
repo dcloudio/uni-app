@@ -1,7 +1,7 @@
 import '@dcloudio/uni-components/style/scroll-view.css'
 import { ScrollView } from '@dcloudio/uni-components'
-import { UniNodeJSON } from '@dcloudio/uni-shared'
-import { setHolderText, UniComponent } from './UniComponent'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniComponent, setHolderText } from './UniComponent'
 
 export class UniScrollView extends UniComponent {
   constructor(

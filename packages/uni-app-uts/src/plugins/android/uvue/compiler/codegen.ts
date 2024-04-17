@@ -1,29 +1,29 @@
 import { SourceMapGenerator } from 'source-map-js'
 import {
-  ArrayExpression,
+  type ArrayExpression,
   CREATE_COMMENT,
-  CacheExpression,
-  CallExpression,
-  CommentNode,
-  CompoundExpressionNode,
-  ConditionalExpression,
-  ExpressionNode,
-  FunctionExpression,
-  InterpolationNode,
-  JSChildNode,
-  Node,
+  type CacheExpression,
+  type CallExpression,
+  type CommentNode,
+  type CompoundExpressionNode,
+  type ConditionalExpression,
+  type ExpressionNode,
+  type FunctionExpression,
+  type InterpolationNode,
+  type JSChildNode,
+  type Node,
   NodeTypes,
   OPEN_BLOCK,
-  ObjectExpression,
-  Position,
-  RootNode,
+  type ObjectExpression,
+  type Position,
+  type RootNode,
   SET_BLOCK_TRACKING,
-  SSRCodegenNode,
-  SimpleExpressionNode,
+  type SSRCodegenNode,
+  type SimpleExpressionNode,
   TO_DISPLAY_STRING,
-  TemplateChildNode,
-  TextNode,
-  VNodeCall,
+  type TemplateChildNode,
+  type TextNode,
+  type VNodeCall,
   WITH_DIRECTIVES,
   advancePositionWithMutation,
   createSimpleExpression,
@@ -35,12 +35,12 @@ import {
   toValidAssetId,
 } from '@vue/compiler-core'
 import { NOOP, isArray, isString, isSymbol } from '@vue/shared'
-import { ParserPlugin, parseExpression } from '@babel/parser'
+import { type ParserPlugin, parseExpression } from '@babel/parser'
 import {
   isCompoundExpressionNode,
   isSimpleExpressionNode,
 } from '@dcloudio/uni-cli-shared'
-import { CodegenOptions, CodegenResult } from './options'
+import type { CodegenOptions, CodegenResult } from './options'
 import { addEasyComponentAutoImports, genRenderFunctionDecl } from './utils'
 import {
   IS_TRUE,
@@ -55,11 +55,11 @@ import {
 import { stringifyExpression } from './transforms/transformExpression'
 import { isBinaryExpression } from '@babel/types'
 import {
-  isDestructuringSlotProps,
   SLOT_PROPS_NAME,
   createDestructuringSlotProps,
+  isDestructuringSlotProps,
 } from './transforms/transformSlotPropsDestructuring'
-import { ImportItem } from './transform'
+import type { ImportItem } from './transform'
 
 type CodegenNode = TemplateChildNode | JSChildNode | SSRCodegenNode
 
@@ -278,7 +278,7 @@ export function generate(
     imports: ast.imports.map((item) => `import '${item.path}'`),
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
-    // @ts-ignore
+    // @ts-expect-error
     elements: ast.elements,
   }
 }

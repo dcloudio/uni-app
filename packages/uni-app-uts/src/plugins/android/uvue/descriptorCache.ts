@@ -1,5 +1,6 @@
 import fs from 'fs'
 import { createHash } from 'crypto'
+import { preUVueHtml, preUVueJs } from '@dcloudio/uni-cli-shared'
 import type * as _compiler from '@vue/compiler-sfc'
 import type { CompilerError, SFCDescriptor } from '@vue/compiler-sfc'
 import { parseUTSRelativeFilename } from '../utils'
@@ -73,7 +74,7 @@ export function getDescriptor(
   if (createIfNotFound) {
     const { descriptor, errors } = createDescriptor(
       filename,
-      fs.readFileSync(filename, 'utf-8'),
+      preUVueJs(preUVueHtml(fs.readFileSync(filename, 'utf-8'))),
       options
     )
     if (errors.length) {

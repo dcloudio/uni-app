@@ -1,7 +1,7 @@
 import { formatLog } from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
 
-import { CreateWebviewOptions } from '.'
+import type { CreateWebviewOptions } from '.'
 import { parseWebviewStyle } from './style'
 import { genWebviewId, initUniPageUrl } from './utils'
 import { parseTheme, useWebviewThemeChange } from '../../theme'

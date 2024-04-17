@@ -1,4 +1,4 @@
-import { App } from 'vue'
+import type { App } from 'vue'
 import { initApp } from '@dcloudio/uni-vue'
 import { initServicePlugin } from '@dcloudio/uni-core'
 import { registerApp } from '../app'

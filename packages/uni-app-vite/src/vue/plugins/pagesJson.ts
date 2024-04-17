@@ -1,15 +1,15 @@
 import path from 'path'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
 import {
+  APP_CONFIG_SERVICE,
+  MANIFEST_JSON_JS,
   defineUniPagesJsonPlugin,
-  normalizeAppPagesJson,
+  getLocaleFiles,
   normalizeAppConfigService,
+  normalizeAppPagesJson,
   normalizePagesJson,
   parseManifestJsonOnce,
-  getLocaleFiles,
-  MANIFEST_JSON_JS,
-  APP_CONFIG_SERVICE,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputAsset } from 'rollup'
 import { wrapperNVueAppStyles } from '../../nvue/plugins/esbuild'

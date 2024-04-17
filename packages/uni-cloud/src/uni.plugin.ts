@@ -3,14 +3,14 @@ import { sync } from 'fast-glob'
 import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
-  isSsr,
-  defineUniMainJsPlugin,
   COMMON_EXCLUDE,
-  isInHybridNVue,
-  uniViteInjectPlugin,
-  UniVitePlugin,
-  isInHBuilderX,
+  type UniVitePlugin,
+  defineUniMainJsPlugin,
   isEnableSecureNetwork,
+  isInHBuilderX,
+  isInHybridNVue,
+  isSsr,
+  uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniValidateFunctionPlugin } from './validateFunction'

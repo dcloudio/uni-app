@@ -7,14 +7,13 @@ import {
   ACTION_TYPE_REMOVE_EVENT,
   ACTION_TYPE_SET_ATTRIBUTE,
   ACTION_TYPE_SET_TEXT,
-  CreateAction,
-  SetAttributeAction,
-  UniEventListener,
+  type CreateAction,
   EventModifierFlags,
+  type SetAttributeAction,
+  type UniEventListener,
 } from '@dcloudio/uni-shared'
-import UniPageNode, {
-  createPageNode,
-} from '../../../src/service/framework/dom/Page'
+import type UniPageNode from '../../../src/service/framework/dom/Page'
+import { createPageNode } from '../../../src/service/framework/dom/Page'
 import {
   createElement,
   createTextNode,
@@ -22,7 +21,7 @@ import {
 } from '../../../../uni-app-vue/lib/service.runtime.esm'
 import {
   ACTION_TYPE_DICT,
-  DictAction,
+  type DictAction,
   setActionMinify,
 } from '../../../src/constants'
 import { decodeActions } from '../../../src/view/framework/dom/decodeActions'

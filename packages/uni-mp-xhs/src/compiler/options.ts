@@ -1,12 +1,12 @@
 import path from 'path'
 import type { CompilerOptions } from '@vue/compiler-core'
 import {
-  MiniProgramCompilerOptions,
+  type MiniProgramCompilerOptions,
   transformComponentLink,
   transformMatchMedia,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 
 import source from './project.config.json'
 import { transformOn } from './transforms/vOn'

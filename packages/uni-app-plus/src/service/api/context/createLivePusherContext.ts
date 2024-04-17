@@ -1,14 +1,14 @@
 import {
   API_CREATE_LIVE_PUSHER_CONTEXT,
-  API_TYPE_CREATE_LIVE_PUSHER_CONTEXT,
+  type API_TYPE_CREATE_LIVE_PUSHER_CONTEXT,
   CreateLivePusherContextProtocol,
   defineSyncApi,
 } from '@dcloudio/uni-api'
 import {
+  type CallBacks as cb,
   findElmById,
   invokeVmMethod,
   invokeVmMethodWithoutArgs,
-  CallBacks as cb,
 } from '../util'
 type CallBacks = Partial<cb>
 class LivePusherContext implements UniApp.LivePusherContext {

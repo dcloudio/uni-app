@@ -1,4 +1,4 @@
-import { onMounted, getCurrentInstance, reactive } from 'vue'
+import { getCurrentInstance, onMounted, reactive } from 'vue'
 
 interface State {
   attrs: Record<string, string>

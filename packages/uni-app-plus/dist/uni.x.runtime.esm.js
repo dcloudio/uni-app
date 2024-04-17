@@ -1,620 +1,6 @@
 import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
-var _wks = { exports: {} };
-var _shared = { exports: {} };
-var _core = { exports: {} };
-var core$2 = _core.exports = {
-  version: "2.6.12"
-};
-if (typeof __e == "number")
-  __e = core$2;
-var _coreExports = _core.exports;
-var _global = { exports: {} };
-var global$4 = _global.exports = typeof window != "undefined" && window.Math == Math ? window : typeof self != "undefined" && self.Math == Math ? self : Function("return this")();
-if (typeof __g == "number")
-  __g = global$4;
-var _globalExports = _global.exports;
-var core$1 = _coreExports;
-var global$3 = _globalExports;
-var SHARED = "__core-js_shared__";
-var store$1 = global$3[SHARED] || (global$3[SHARED] = {});
-(_shared.exports = function(key, value) {
-  return store$1[key] || (store$1[key] = value !== void 0 ? value : {});
-})("versions", []).push({
-  version: core$1.version,
-  mode: "global",
-  copyright: "© 2020 Denis Pushkarev (zloirock.ru)"
-});
-var _sharedExports = _shared.exports;
-var id$1 = 0;
-var px = Math.random();
-var _uid = function(key) {
-  return "Symbol(".concat(key === void 0 ? "" : key, ")_", (++id$1 + px).toString(36));
-};
-var store = _sharedExports("wks");
-var uid$1 = _uid;
-var Symbol$1 = _globalExports.Symbol;
-var USE_SYMBOL = typeof Symbol$1 == "function";
-var $exports = _wks.exports = function(name) {
-  return store[name] || (store[name] = USE_SYMBOL && Symbol$1[name] || (USE_SYMBOL ? Symbol$1 : uid$1)("Symbol." + name));
-};
-$exports.store = store;
-var _wksExports = _wks.exports;
-var _objectDp = {};
-var _isObject = function(it) {
-  return typeof it === "object" ? it !== null : typeof it === "function";
-};
-var isObject$1 = _isObject;
-var _anObject = function(it) {
-  if (!isObject$1(it))
-    throw TypeError(it + " is not an object!");
-  return it;
-};
-var _fails = function(exec) {
-  try {
-    return !!exec();
-  } catch (e) {
-    return true;
-  }
-};
-var _descriptors = !_fails(function() {
-  return Object.defineProperty({}, "a", {
-    get: function() {
-      return 7;
-    }
-  }).a != 7;
-});
-var _domCreate;
-var hasRequired_domCreate;
-function require_domCreate() {
-  if (hasRequired_domCreate)
-    return _domCreate;
-  hasRequired_domCreate = 1;
-  var isObject2 = _isObject;
-  var document = _globalExports.document;
-  var is = isObject2(document) && isObject2(document.createElement);
-  _domCreate = function(it) {
-    return is ? document.createElement(it) : {};
-  };
-  return _domCreate;
-}
-var _ie8DomDefine = !_descriptors && !_fails(function() {
-  return Object.defineProperty(require_domCreate()("div"), "a", {
-    get: function() {
-      return 7;
-    }
-  }).a != 7;
-});
-var isObject = _isObject;
-var _toPrimitive = function(it, S) {
-  if (!isObject(it))
-    return it;
-  var fn, val;
-  if (S && typeof (fn = it.toString) == "function" && !isObject(val = fn.call(it)))
-    return val;
-  if (typeof (fn = it.valueOf) == "function" && !isObject(val = fn.call(it)))
-    return val;
-  if (!S && typeof (fn = it.toString) == "function" && !isObject(val = fn.call(it)))
-    return val;
-  throw TypeError("Can't convert object to primitive value");
-};
-var anObject$2 = _anObject;
-var IE8_DOM_DEFINE = _ie8DomDefine;
-var toPrimitive = _toPrimitive;
-var dP$2 = Object.defineProperty;
-_objectDp.f = _descriptors ? Object.defineProperty : function defineProperty(O, P, Attributes) {
-  anObject$2(O);
-  P = toPrimitive(P, true);
-  anObject$2(Attributes);
-  if (IE8_DOM_DEFINE)
-    try {
-      return dP$2(O, P, Attributes);
-    } catch (e) {
-    }
-  if ("get" in Attributes || "set" in Attributes)
-    throw TypeError("Accessors not supported!");
-  if ("value" in Attributes)
-    O[P] = Attributes.value;
-  return O;
-};
-var _propertyDesc = function(bitmap, value) {
-  return {
-    enumerable: !(bitmap & 1),
-    configurable: !(bitmap & 2),
-    writable: !(bitmap & 4),
-    value
-  };
-};
-var dP$1 = _objectDp;
-var createDesc = _propertyDesc;
-var _hide = _descriptors ? function(object, key, value) {
-  return dP$1.f(object, key, createDesc(1, value));
-} : function(object, key, value) {
-  object[key] = value;
-  return object;
-};
-var UNSCOPABLES = _wksExports("unscopables");
-var ArrayProto = Array.prototype;
-if (ArrayProto[UNSCOPABLES] == void 0)
-  _hide(ArrayProto, UNSCOPABLES, {});
-var _addToUnscopables = function(key) {
-  ArrayProto[UNSCOPABLES][key] = true;
-};
-var _iterStep = function(done, value) {
-  return {
-    value,
-    done: !!done
-  };
-};
-var _iterators = {};
-var toString = {}.toString;
-var _cof = function(it) {
-  return toString.call(it).slice(8, -1);
-};
-var cof = _cof;
-var _iobject = Object("z").propertyIsEnumerable(0) ? Object : function(it) {
-  return cof(it) == "String" ? it.split("") : Object(it);
-};
-var _defined = function(it) {
-  if (it == void 0)
-    throw TypeError("Can't call method on  " + it);
-  return it;
-};
-var IObject = _iobject;
-var defined$1 = _defined;
-var _toIobject = function(it) {
-  return IObject(defined$1(it));
-};
-var _redefine = { exports: {} };
-var hasOwnProperty = {}.hasOwnProperty;
-var _has = function(it, key) {
-  return hasOwnProperty.call(it, key);
-};
-var _functionToString = _sharedExports("native-function-to-string", Function.toString);
-var global$2 = _globalExports;
-var hide$3 = _hide;
-var has$3 = _has;
-var SRC = _uid("src");
-var $toString = _functionToString;
-var TO_STRING = "toString";
-var TPL = ("" + $toString).split(TO_STRING);
-_coreExports.inspectSource = function(it) {
-  return $toString.call(it);
-};
-(_redefine.exports = function(O, key, val, safe) {
-  var isFunction2 = typeof val == "function";
-  if (isFunction2)
-    has$3(val, "name") || hide$3(val, "name", key);
-  if (O[key] === val)
-    return;
-  if (isFunction2)
-    has$3(val, SRC) || hide$3(val, SRC, O[key] ? "" + O[key] : TPL.join(String(key)));
-  if (O === global$2) {
-    O[key] = val;
-  } else if (!safe) {
-    delete O[key];
-    hide$3(O, key, val);
-  } else if (O[key]) {
-    O[key] = val;
-  } else {
-    hide$3(O, key, val);
-  }
-})(Function.prototype, TO_STRING, function toString2() {
-  return typeof this == "function" && this[SRC] || $toString.call(this);
-});
-var _redefineExports = _redefine.exports;
-var _aFunction = function(it) {
-  if (typeof it != "function")
-    throw TypeError(it + " is not a function!");
-  return it;
-};
-var aFunction = _aFunction;
-var _ctx = function(fn, that, length) {
-  aFunction(fn);
-  if (that === void 0)
-    return fn;
-  switch (length) {
-    case 1:
-      return function(a) {
-        return fn.call(that, a);
-      };
-    case 2:
-      return function(a, b) {
-        return fn.call(that, a, b);
-      };
-    case 3:
-      return function(a, b, c) {
-        return fn.call(that, a, b, c);
-      };
-  }
-  return function() {
-    return fn.apply(that, arguments);
-  };
-};
-var global$1 = _globalExports;
-var core = _coreExports;
-var hide$2 = _hide;
-var redefine$2 = _redefineExports;
-var ctx = _ctx;
-var PROTOTYPE$1 = "prototype";
-var $export$1 = function(type, name, source) {
-  var IS_FORCED = type & $export$1.F;
-  var IS_GLOBAL = type & $export$1.G;
-  var IS_STATIC = type & $export$1.S;
-  var IS_PROTO = type & $export$1.P;
-  var IS_BIND = type & $export$1.B;
-  var target = IS_GLOBAL ? global$1 : IS_STATIC ? global$1[name] || (global$1[name] = {}) : (global$1[name] || {})[PROTOTYPE$1];
-  var exports = IS_GLOBAL ? core : core[name] || (core[name] = {});
-  var expProto = exports[PROTOTYPE$1] || (exports[PROTOTYPE$1] = {});
-  var key, own, out, exp;
-  if (IS_GLOBAL)
-    source = name;
-  for (key in source) {
-    own = !IS_FORCED && target && target[key] !== void 0;
-    out = (own ? target : source)[key];
-    exp = IS_BIND && own ? ctx(out, global$1) : IS_PROTO && typeof out == "function" ? ctx(Function.call, out) : out;
-    if (target)
-      redefine$2(target, key, out, type & $export$1.U);
-    if (exports[key] != out)
-      hide$2(exports, key, exp);
-    if (IS_PROTO && expProto[key] != out)
-      expProto[key] = out;
-  }
-};
-global$1.core = core;
-$export$1.F = 1;
-$export$1.G = 2;
-$export$1.S = 4;
-$export$1.P = 8;
-$export$1.B = 16;
-$export$1.W = 32;
-$export$1.U = 64;
-$export$1.R = 128;
-var _export = $export$1;
-var ceil = Math.ceil;
-var floor = Math.floor;
-var _toInteger = function(it) {
-  return isNaN(it = +it) ? 0 : (it > 0 ? floor : ceil)(it);
-};
-var toInteger$1 = _toInteger;
-var min$1 = Math.min;
-var _toLength = function(it) {
-  return it > 0 ? min$1(toInteger$1(it), 9007199254740991) : 0;
-};
-var toInteger = _toInteger;
-var max = Math.max;
-var min = Math.min;
-var _toAbsoluteIndex = function(index2, length) {
-  index2 = toInteger(index2);
-  return index2 < 0 ? max(index2 + length, 0) : min(index2, length);
-};
-var toIObject$2 = _toIobject;
-var toLength = _toLength;
-var toAbsoluteIndex = _toAbsoluteIndex;
-var _arrayIncludes = function(IS_INCLUDES) {
-  return function($this, el, fromIndex) {
-    var O = toIObject$2($this);
-    var length = toLength(O.length);
-    var index2 = toAbsoluteIndex(fromIndex, length);
-    var value;
-    if (IS_INCLUDES && el != el)
-      while (length > index2) {
-        value = O[index2++];
-        if (value != value)
-          return true;
-      }
-    else
-      for (; length > index2; index2++) {
-        if (IS_INCLUDES || index2 in O) {
-          if (O[index2] === el)
-            return IS_INCLUDES || index2 || 0;
-        }
-      }
-    return !IS_INCLUDES && -1;
-  };
-};
-var shared = _sharedExports("keys");
-var uid = _uid;
-var _sharedKey = function(key) {
-  return shared[key] || (shared[key] = uid(key));
-};
-var has$2 = _has;
-var toIObject$1 = _toIobject;
-var arrayIndexOf = _arrayIncludes(false);
-var IE_PROTO$2 = _sharedKey("IE_PROTO");
-var _objectKeysInternal = function(object, names) {
-  var O = toIObject$1(object);
-  var i = 0;
-  var result = [];
-  var key;
-  for (key in O) {
-    if (key != IE_PROTO$2)
-      has$2(O, key) && result.push(key);
-  }
-  while (names.length > i) {
-    if (has$2(O, key = names[i++])) {
-      ~arrayIndexOf(result, key) || result.push(key);
-    }
-  }
-  return result;
-};
-var _enumBugKeys = "constructor,hasOwnProperty,isPrototypeOf,propertyIsEnumerable,toLocaleString,toString,valueOf".split(",");
-var $keys = _objectKeysInternal;
-var enumBugKeys$1 = _enumBugKeys;
-var _objectKeys = Object.keys || function keys(O) {
-  return $keys(O, enumBugKeys$1);
-};
-var dP = _objectDp;
-var anObject$1 = _anObject;
-var getKeys$1 = _objectKeys;
-var _objectDps = _descriptors ? Object.defineProperties : function defineProperties(O, Properties) {
-  anObject$1(O);
-  var keys2 = getKeys$1(Properties);
-  var length = keys2.length;
-  var i = 0;
-  var P;
-  while (length > i) {
-    dP.f(O, P = keys2[i++], Properties[P]);
-  }
-  return O;
-};
-var _html;
-var hasRequired_html;
-function require_html() {
-  if (hasRequired_html)
-    return _html;
-  hasRequired_html = 1;
-  var document = _globalExports.document;
-  _html = document && document.documentElement;
-  return _html;
-}
-var anObject = _anObject;
-var dPs = _objectDps;
-var enumBugKeys = _enumBugKeys;
-var IE_PROTO$1 = _sharedKey("IE_PROTO");
-var Empty = function() {
-};
-var PROTOTYPE = "prototype";
-var createDict = function() {
-  var iframe = require_domCreate()("iframe");
-  var i = enumBugKeys.length;
-  var lt = "<";
-  var gt = ">";
-  var iframeDocument;
-  iframe.style.display = "none";
-  require_html().appendChild(iframe);
-  iframe.src = "javascript:";
-  iframeDocument = iframe.contentWindow.document;
-  iframeDocument.open();
-  iframeDocument.write(lt + "script" + gt + "document.F=Object" + lt + "/script" + gt);
-  iframeDocument.close();
-  createDict = iframeDocument.F;
-  while (i--) {
-    delete createDict[PROTOTYPE][enumBugKeys[i]];
-  }
-  return createDict();
-};
-var _objectCreate = Object.create || function create(O, Properties) {
-  var result;
-  if (O !== null) {
-    Empty[PROTOTYPE] = anObject(O);
-    result = new Empty();
-    Empty[PROTOTYPE] = null;
-    result[IE_PROTO$1] = O;
-  } else
-    result = createDict();
-  return Properties === void 0 ? result : dPs(result, Properties);
-};
-var def = _objectDp.f;
-var has$1 = _has;
-var TAG = _wksExports("toStringTag");
-var _setToStringTag = function(it, tag, stat) {
-  if (it && !has$1(it = stat ? it : it.prototype, TAG))
-    def(it, TAG, {
-      configurable: true,
-      value: tag
-    });
-};
-var create2 = _objectCreate;
-var descriptor = _propertyDesc;
-var setToStringTag$1 = _setToStringTag;
-var IteratorPrototype = {};
-_hide(IteratorPrototype, _wksExports("iterator"), function() {
-  return this;
-});
-var _iterCreate = function(Constructor, NAME, next) {
-  Constructor.prototype = create2(IteratorPrototype, {
-    next: descriptor(1, next)
-  });
-  setToStringTag$1(Constructor, NAME + " Iterator");
-};
-var defined = _defined;
-var _toObject = function(it) {
-  return Object(defined(it));
-};
-var has = _has;
-var toObject = _toObject;
-var IE_PROTO = _sharedKey("IE_PROTO");
-var ObjectProto = Object.prototype;
-var _objectGpo = Object.getPrototypeOf || function(O) {
-  O = toObject(O);
-  if (has(O, IE_PROTO))
-    return O[IE_PROTO];
-  if (typeof O.constructor == "function" && O instanceof O.constructor) {
-    return O.constructor.prototype;
-  }
-  return O instanceof Object ? ObjectProto : null;
-};
-var $export = _export;
-var redefine$1 = _redefineExports;
-var hide$1 = _hide;
-var Iterators$2 = _iterators;
-var $iterCreate = _iterCreate;
-var setToStringTag = _setToStringTag;
-var getPrototypeOf = _objectGpo;
-var ITERATOR$1 = _wksExports("iterator");
-var BUGGY = !([].keys && "next" in [].keys());
-var FF_ITERATOR = "@@iterator";
-var KEYS = "keys";
-var VALUES = "values";
-var returnThis = function() {
-  return this;
-};
-var _iterDefine = function(Base, NAME, Constructor, next, DEFAULT, IS_SET, FORCED) {
-  $iterCreate(Constructor, NAME, next);
-  var getMethod = function(kind) {
-    if (!BUGGY && kind in proto)
-      return proto[kind];
-    switch (kind) {
-      case KEYS:
-        return function keys2() {
-          return new Constructor(this, kind);
-        };
-      case VALUES:
-        return function values() {
-          return new Constructor(this, kind);
-        };
-    }
-    return function entries() {
-      return new Constructor(this, kind);
-    };
-  };
-  var TAG2 = NAME + " Iterator";
-  var DEF_VALUES = DEFAULT == VALUES;
-  var VALUES_BUG = false;
-  var proto = Base.prototype;
-  var $native = proto[ITERATOR$1] || proto[FF_ITERATOR] || DEFAULT && proto[DEFAULT];
-  var $default = $native || getMethod(DEFAULT);
-  var $entries = DEFAULT ? !DEF_VALUES ? $default : getMethod("entries") : void 0;
-  var $anyNative = NAME == "Array" ? proto.entries || $native : $native;
-  var methods, key, IteratorPrototype2;
-  if ($anyNative) {
-    IteratorPrototype2 = getPrototypeOf($anyNative.call(new Base()));
-    if (IteratorPrototype2 !== Object.prototype && IteratorPrototype2.next) {
-      setToStringTag(IteratorPrototype2, TAG2, true);
-      if (typeof IteratorPrototype2[ITERATOR$1] != "function")
-        hide$1(IteratorPrototype2, ITERATOR$1, returnThis);
-    }
-  }
-  if (DEF_VALUES && $native && $native.name !== VALUES) {
-    VALUES_BUG = true;
-    $default = function values() {
-      return $native.call(this);
-    };
-  }
-  if (BUGGY || VALUES_BUG || !proto[ITERATOR$1]) {
-    hide$1(proto, ITERATOR$1, $default);
-  }
-  Iterators$2[NAME] = $default;
-  Iterators$2[TAG2] = returnThis;
-  if (DEFAULT) {
-    methods = {
-      values: DEF_VALUES ? $default : getMethod(VALUES),
-      keys: IS_SET ? $default : getMethod(KEYS),
-      entries: $entries
-    };
-    if (FORCED)
-      for (key in methods) {
-        if (!(key in proto))
-          redefine$1(proto, key, methods[key]);
-      }
-    else
-      $export($export.P + $export.F * (BUGGY || VALUES_BUG), NAME, methods);
-  }
-  return methods;
-};
-var addToUnscopables = _addToUnscopables;
-var step = _iterStep;
-var Iterators$1 = _iterators;
-var toIObject = _toIobject;
-var es6_array_iterator = _iterDefine(Array, "Array", function(iterated, kind) {
-  this._t = toIObject(iterated);
-  this._i = 0;
-  this._k = kind;
-}, function() {
-  var O = this._t;
-  var kind = this._k;
-  var index2 = this._i++;
-  if (!O || index2 >= O.length) {
-    this._t = void 0;
-    return step(1);
-  }
-  if (kind == "keys")
-    return step(0, index2);
-  if (kind == "values")
-    return step(0, O[index2]);
-  return step(0, [index2, O[index2]]);
-}, "values");
-Iterators$1.Arguments = Iterators$1.Array;
-addToUnscopables("keys");
-addToUnscopables("values");
-addToUnscopables("entries");
-var $iterators = es6_array_iterator;
-var getKeys = _objectKeys;
-var redefine = _redefineExports;
-var global = _globalExports;
-var hide = _hide;
-var Iterators = _iterators;
-var wks = _wksExports;
-var ITERATOR = wks("iterator");
-var TO_STRING_TAG = wks("toStringTag");
-var ArrayValues = Iterators.Array;
-var DOMIterables = {
-  CSSRuleList: true,
-  // TODO: Not spec compliant, should be false.
-  CSSStyleDeclaration: false,
-  CSSValueList: false,
-  ClientRectList: false,
-  DOMRectList: false,
-  DOMStringList: false,
-  DOMTokenList: true,
-  DataTransferItemList: false,
-  FileList: false,
-  HTMLAllCollection: false,
-  HTMLCollection: false,
-  HTMLFormElement: false,
-  HTMLSelectElement: false,
-  MediaList: true,
-  // TODO: Not spec compliant, should be false.
-  MimeTypeArray: false,
-  NamedNodeMap: false,
-  NodeList: true,
-  PaintRequestList: false,
-  Plugin: false,
-  PluginArray: false,
-  SVGLengthList: false,
-  SVGNumberList: false,
-  SVGPathSegList: false,
-  SVGPointList: false,
-  SVGStringList: false,
-  SVGTransformList: false,
-  SourceBufferList: false,
-  StyleSheetList: true,
-  // TODO: Not spec compliant, should be false.
-  TextTrackCueList: false,
-  TextTrackList: false,
-  TouchList: false
-};
-for (var collections = getKeys(DOMIterables), i = 0; i < collections.length; i++) {
-  var NAME = collections[i];
-  var explicit = DOMIterables[NAME];
-  var Collection = global[NAME];
-  var proto = Collection && Collection.prototype;
-  var key;
-  if (proto) {
-    if (!proto[ITERATOR])
-      hide(proto, ITERATOR, ArrayValues);
-    if (!proto[TO_STRING_TAG])
-      hide(proto, TO_STRING_TAG, NAME);
-    Iterators[NAME] = ArrayValues;
-    if (explicit)
-      for (key in $iterators) {
-        if (!proto[key])
-          redefine(proto, key, $iterators[key], true);
-      }
-  }
-}
 function getCurrentPage() {
   var pages2 = getCurrentPages();
   var len = pages2.length;
@@ -986,9 +372,9 @@ function formatApiArgs(args, options) {
     return;
   }
   var formatArgs = options.formatArgs;
-  var keys2 = Object.keys(formatArgs);
-  for (var i = 0; i < keys2.length; i++) {
-    var name = keys2[i];
+  var keys = Object.keys(formatArgs);
+  for (var i = 0; i < keys.length; i++) {
+    var name = keys[i];
     var formatterOrDefaultValue = formatArgs[name];
     if (isFunction$1(formatterOrDefaultValue)) {
       var errMsg = formatterOrDefaultValue(args[0][name], params);
@@ -1587,8 +973,7 @@ var SetTabBarBadgeOptions = {
 var ANI_SHOW = "pop-in";
 var ANI_DURATION = 300;
 var ANI_CLOSE = "pop-out";
-function showWebview(nPage, animationType, animationDuration, showCallback, delay) {
-  nPage.startRender();
+function showWebview(nPage, animationType, animationDuration, showCallback) {
   nPage.show(/* @__PURE__ */ new Map([["animationType", animationType], ["animationDuration", animationDuration]]), showCallback);
 }
 function closeWebview(nPage, animationType, animationDuration, callback) {
@@ -1618,7 +1003,7 @@ function initRouteOptions(path, openType) {
 function setupPage(component) {
   var oldSetup = component.setup;
   component.inheritAttrs = false;
-  component.setup = (_, ctx2) => {
+  component.setup = (_, ctx) => {
     var {
       attrs: {
         __pageId,
@@ -1626,13 +1011,13 @@ function setupPage(component) {
         __pageQuery,
         __pageInstance
       }
-    } = ctx2;
+    } = ctx;
     var instance = getCurrentInstance();
     var pageVm = instance.proxy;
     initPageVm(pageVm, __pageInstance);
     addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
     if (oldSetup) {
-      return oldSetup(__pageQuery, ctx2);
+      return oldSetup(__pageQuery, ctx);
     }
   };
   return component;
@@ -1766,6 +1151,7 @@ function registerPage(_ref, onCreated) {
     nativePage.addPageEventListener(ON_RESIZE, (_) => {
       invokeHook(page, ON_RESIZE);
     });
+    nativePage.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
@@ -2010,13 +1396,13 @@ function findTabPage(path) {
   return page;
 }
 function isTabPage(page) {
-  var has2 = false;
+  var has = false;
   tabs.forEach((value, key) => {
     if (value === page) {
-      has2 = true;
+      has = true;
     }
   });
-  return has2;
+  return has;
 }
 class TabPageInfo {
   constructor(page, isFirst) {
@@ -3206,7 +2592,7 @@ function initGlobalEvent(app) {
     return true;
   });
 }
-function loadFontFaceByStyles(styles2, global2) {
+function loadFontFaceByStyles(styles2, global) {
   styles2 = Array.isArray(styles2) ? styles2 : [styles2];
   var fontFaceStyle = [];
   styles2.forEach((style) => {
@@ -3224,7 +2610,7 @@ function loadFontFaceByStyles(styles2, global2) {
     var src = style["src"];
     if (fontFamily != null && src != null) {
       loadFontFace({
-        global: global2,
+        global,
         family: fontFamily,
         source: src,
         desc: {
@@ -3668,10 +3054,10 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       checkboxChecked.value = props.checked;
     });
     watch(() => checkboxChecked.value, (val) => {
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      if (!ctx2)
+      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      if (!ctx)
         return;
-      $dispatch(ctx2, "CheckboxGroup", "_changeHandler", {
+      $dispatch(ctx, "CheckboxGroup", "_changeHandler", {
         name: checkboxValue.value,
         checked: checkboxChecked.value,
         setCheckboxChecked
@@ -3718,8 +3104,8 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       };
     });
     onMounted(() => {
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx2, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
+      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
         setCheckboxChecked,
         name: checkboxValue.value,
         checked: checkboxChecked.value
@@ -3737,8 +3123,8 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       });
     });
     onUnload(() => {
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx2, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
+      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx, "CheckboxGroup", "_checkboxGroupUpdateHandler", {
         setCheckboxChecked,
         name: checkboxValue.value,
         checked: checkboxChecked.value
@@ -4065,11 +3451,11 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
       radioValue.value = props.value.toString();
     });
     watch(() => radioChecked.value, (val) => {
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      if (!ctx2)
+      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      if (!ctx)
         return;
       if (val) {
-        $dispatch(ctx2, "RadioGroup", "_changeHandler", {
+        $dispatch(ctx, "RadioGroup", "_changeHandler", {
           name: radioValue.value,
           checked: radioChecked.value,
           setRadioChecked
@@ -4090,16 +3476,16 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
           return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
         };
       });
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx2, "RadioGroup", "_radioGroupUpdateHandler", {
+      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx, "RadioGroup", "_radioGroupUpdateHandler", {
         name: radioValue.value,
         checked: radioChecked.value,
         setRadioChecked
       }, "add");
     });
     onUnmounted(() => {
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx2, "RadioGroup", "_radioGroupUpdateHandler", {
+      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx, "RadioGroup", "_radioGroupUpdateHandler", {
         name: radioValue.value,
         checked: radioChecked.value,
         setRadioChecked
@@ -4512,8 +3898,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
   props: progressProps,
   setup(props, _ref) {
     var {
-      emit,
-      slots
+      emit
     } = _ref;
     var data = reactive({
       $uniProgressElement: null,
@@ -4595,6 +3980,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
           var keyString = camelize(key);
           return props[keyString] !== null ? (_props$keyString$toSt = (_props$keyString = props[keyString]) === null || _props$keyString === void 0 ? void 0 : _props$keyString.toString()) !== null && _props$keyString$toSt !== void 0 ? _props$keyString$toSt : null : null;
         };
+        _animate();
       });
     });
     onUnmounted(() => {
@@ -4794,6 +4180,8 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
         }
       });
       data.valueSync = [...val];
+    }, {
+      immediate: true
     });
     var pickerViewElementRef = ref();
     var instance = getCurrentInstance();
@@ -4870,7 +4258,7 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   rootElement: {
     name: "uni-picker-view-column-element",
-    // @ts-ignore
+    // @ts-expect-error
     class: UniPickerViewColumnElement
   },
   setup(_props, _ref) {
@@ -4974,13 +4362,13 @@ const pickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
       });
     });
     onUnmounted(() => {
-      var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-      $dispatch(ctx2, "PickerView", "_pickerViewUpdateHandler", ctx2, "remove");
+      var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+      $dispatch(ctx, "PickerView", "_pickerViewUpdateHandler", ctx, "remove");
     });
     watch(() => data.current, (val, oldVal) => {
       if (data._isMounted && val != oldVal) {
-        var ctx2 = instance === null || instance === void 0 ? void 0 : instance.proxy;
-        $dispatch(ctx2, "PickerView", "setItemValue", ctx2, val);
+        var ctx = instance === null || instance === void 0 ? void 0 : instance.proxy;
+        $dispatch(ctx, "PickerView", "setItemValue", ctx, val);
       }
     });
     return () => {

@@ -2,15 +2,15 @@ import { isString } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 import {
-  defineAsyncApi,
+  API_SHARE_WITH_SYSTEM,
   API_SHREA,
-  API_TYPE_SHARE,
+  type API_TYPE_SHARE,
+  type API_TYPE_SHARE_WITH_SYSTEM,
   SahreOptions,
   ShareProtocols,
-  API_SHARE_WITH_SYSTEM,
-  API_TYPE_SHARE_WITH_SYSTEM,
   ShareWithSystemOptions,
   ShareWithSystemProtocols,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 // 0:图文，1:纯文字，2:纯图片，3:音乐，4:视频，5:小程序

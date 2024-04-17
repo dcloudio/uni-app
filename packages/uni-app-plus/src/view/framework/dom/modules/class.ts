@@ -1,4 +1,4 @@
-import { UniCustomElement } from '../components'
+import type { UniCustomElement } from '../components'
 
 export function patchClass(el: UniCustomElement, clazz: string) {
   // wxs

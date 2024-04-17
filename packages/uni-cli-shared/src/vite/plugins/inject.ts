@@ -2,26 +2,26 @@ import { sep } from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
 
-import type { BaseNode, Program, Identifier } from 'estree'
+import type { BaseNode, Identifier, Program, Property } from 'estree'
 
 import {
+  type FilterPattern,
   attachScopes,
   createFilter,
-  FilterPattern,
   makeLegalIdentifier,
 } from '@rollup/pluginutils'
-import { AcornNode } from 'rollup'
+import type { AstNodeLocation } from 'rollup'
 
 import { walk } from 'estree-walker'
 import { extend, isArray, isString } from '@vue/shared'
 import MagicString from 'magic-string'
 
 import {
+  isAssignmentExpression,
+  isJsFile,
+  isMemberExpression,
   isProperty,
   isReference,
-  isMemberExpression,
-  isJsFile,
-  isAssignmentExpression,
 } from '../utils'
 
 interface Scope {
@@ -171,8 +171,8 @@ export function uniViteInjectPlugin(
 
           if (name !== keypath) {
             magicString.overwrite(
-              (node as AcornNode).start,
-              (node as AcornNode).end,
+              (node as unknown as AstNodeLocation).start,
+              (node as unknown as AstNodeLocation).end,
               importLocalName,
               {
                 storeName: true,
@@ -187,16 +187,16 @@ export function uniViteInjectPlugin(
       walk(ast, {
         enter(node, parent) {
           if (sourceMap) {
-            magicString.addSourcemapLocation((node as AcornNode).start)
-            magicString.addSourcemapLocation((node as AcornNode).end)
+            magicString.addSourcemapLocation((node as AstNodeLocation).start)
+            magicString.addSourcemapLocation((node as AstNodeLocation).end)
           }
 
           if ((node as any).scope) {
             scope = (node as any).scope
           }
 
-          if (isProperty(node) && node.shorthand) {
-            const { name } = node.key as Identifier
+          if (isProperty(node) && (node as Property).shorthand) {
+            const { name } = (node as Property).key as Identifier
             handleReference(node, name, name)
             this.skip()
             return

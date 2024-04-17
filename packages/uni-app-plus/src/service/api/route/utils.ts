@@ -1,6 +1,6 @@
 import { getRouteMeta } from '@dcloudio/uni-core'
 import { formatLog } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { removePage } from '../../framework/page/getCurrentPages'
 import {
   createPreloadWebview,

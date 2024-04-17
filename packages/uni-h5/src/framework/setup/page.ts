@@ -1,19 +1,19 @@
 import {
-  VNode,
-  nextTick,
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+  type ConcreteComponent,
+  type VNode,
   computed,
-  ConcreteComponent,
-  ComponentPublicInstance,
-  ComponentInternalInstance,
+  nextTick,
 } from 'vue'
-import { useRoute, RouteLocationNormalizedLoaded } from 'vue-router'
+import { type RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import {
-  invokeHook,
-  disableScrollListener,
+  type CreateScrollListenerOptions,
   createScrollListener,
-  CreateScrollListenerOptions,
+  disableScrollListener,
   initPageInternalInstance,
   initPageVm,
+  invokeHook,
 } from '@dcloudio/uni-core'
 import {
   ON_PAGE_SCROLL,
@@ -22,7 +22,7 @@ import {
   ON_UNLOAD,
 } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
-import { NavigateType } from '../../service/api/route/utils'
+import type { NavigateType } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 

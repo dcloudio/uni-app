@@ -1,10 +1,10 @@
 import {
-  ParserOptions,
-  ElementNode,
+  type ElementNode,
   Namespaces,
   NodeTypes,
+  type ParserOptions,
 } from '@vue/compiler-core'
-import { isVoidTag, isHTMLTag, isSVGTag } from '@vue/shared'
+import { isHTMLTag, isSVGTag, isVoidTag } from '@vue/shared'
 // import { decodeHtml } from './decodeHtml'
 
 export const enum DOMNamespaces {

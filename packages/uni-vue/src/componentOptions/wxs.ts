@@ -1,5 +1,5 @@
 import { WXS_MODULES } from '@dcloudio/uni-shared'
-import { ComponentInternalInstance, ComponentOptions } from 'vue'
+import type { ComponentInternalInstance, ComponentOptions } from 'vue'
 import { initModules } from './renderjs'
 
 export function initWxs(

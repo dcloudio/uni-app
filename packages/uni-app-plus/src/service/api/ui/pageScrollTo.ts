@@ -1,11 +1,11 @@
 import {
   API_PAGE_SCROLL_TO,
-  API_TYPE_PAGE_SCROLL_TO,
-  defineAsyncApi,
+  type API_TYPE_PAGE_SCROLL_TO,
   PageScrollToOptions,
   PageScrollToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
+import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 
 export const pageScrollTo = defineAsyncApi<API_TYPE_PAGE_SCROLL_TO>(
   API_PAGE_SCROLL_TO,

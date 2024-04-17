@@ -1,5 +1,5 @@
 import {
-  Normalize,
+  type Normalize,
   hyphenateStyleProperty,
   supportedPropertyReason,
 } from '../utils'

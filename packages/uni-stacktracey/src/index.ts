@@ -1,10 +1,10 @@
 import fs from 'fs'
 import StackTracey from './stacktracey'
 import {
+  type BasicSourceMapConsumer,
+  type IndexedSourceMapConsumer,
+  type Position,
   SourceMapConsumer,
-  BasicSourceMapConsumer,
-  IndexedSourceMapConsumer,
-  Position,
 } from '../lib/source-map/source-map'
 import path from 'path'
 
@@ -17,11 +17,11 @@ export {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,
 } from './utils'
-// @ts-ignore
+// @ts-expect-error
 if (__PLATFORM_WEB__) {
-  // @ts-ignore
+  // @ts-expect-error
   if (SourceMapConsumer.initialize) {
-    // @ts-ignore
+    // @ts-expect-error
     SourceMapConsumer.initialize({
       'lib/mappings.wasm':
         'https://unpkg.com/source-map@0.7.3/lib/mappings.wasm',
@@ -177,7 +177,6 @@ export function stacktracey(
     }
     parseStack = parseStack.then(() => {
       // TODO cancel
-      // @ts-ignore
       if (cancel) return Promise.resolve()
       return new Promise((resolve, reject) => {
         setTimeout(() => {
@@ -223,7 +222,7 @@ function getConsumer(
           resolve(consumer)
         })
       } else {
-        // @ts-ignore
+        // @ts-expect-error
         const consumer = SourceMapConsumer(content)
         resolve(consumer)
       }

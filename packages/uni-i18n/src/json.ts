@@ -1,5 +1,5 @@
-import { isObject, default as BaseFormatter } from './format'
-import { Formatter } from './I18n'
+import { default as BaseFormatter, isObject } from './format'
+import type { Formatter } from './I18n'
 
 export const isString = (val: unknown): val is string => typeof val === 'string'
 

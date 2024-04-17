@@ -4,7 +4,7 @@ import { getRealPath } from '../../../platform/getRealPath'
 
 import {
   API_ON_TAB_BAR_MID_BUTTON_TAP,
-  OnTabBarMidButtonTap,
+  type OnTabBarMidButtonTap,
 } from '@dcloudio/uni-api'
 
 import { useTabBarThemeChange } from '../../theme'

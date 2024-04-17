@@ -1,20 +1,23 @@
 import path from 'path'
 import {
   ConstantTypes,
+  type ExpressionNode,
+  type NodeTransform,
+  NodeTypes,
+  type SimpleExpressionNode,
   createCompoundExpression,
   createSimpleExpression,
-  ExpressionNode,
-  NodeTransform,
-  NodeTypes,
-  SimpleExpressionNode,
 } from '@vue/compiler-core'
 import {
+  isDataUrl,
+  isExternalUrl,
   isRelativeUrl,
   parseUrl,
-  isExternalUrl,
-  isDataUrl,
 } from './templateUtils'
-import { AssetURLOptions, defaultAssetUrlOptions } from './transformAssetUrl'
+import {
+  type AssetURLOptions,
+  defaultAssetUrlOptions,
+} from './transformAssetUrl'
 
 const srcsetTags = ['img', 'source']
 

@@ -1,4 +1,8 @@
-import { ComponentInternalInstance, getCurrentInstance, Ref } from 'vue'
+import {
+  type ComponentInternalInstance,
+  type Ref,
+  getCurrentInstance,
+} from 'vue'
 
 type VNodeRef =
   | string

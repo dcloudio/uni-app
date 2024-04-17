@@ -1410,8 +1410,13 @@ const PAGE_HOOKS = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
-const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
 function isRootImmediateHook(name) {
+    const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
+    return PAGE_SYNC_HOOKS.indexOf(name) > -1;
+}
+// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
+function isRootImmediateHookX(name) {
+    const PAGE_SYNC_HOOKS = [ON_LOAD];
     return PAGE_SYNC_HOOKS.indexOf(name) > -1;
 }
 function isRootHook(name) {
@@ -1749,6 +1754,7 @@ exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
+exports.isRootImmediateHookX = isRootImmediateHookX;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
 exports.normalizeClass = normalizeClass;

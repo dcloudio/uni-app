@@ -1,11 +1,11 @@
 import path from 'path'
 import {
-  isVueSfcFile,
-  uniCssScopedPlugin,
   UNI_EASYCOM_EXCLUDE,
-  resolveUTSCompiler,
-  uniUTSUVueJavaScriptPlugin,
   isAppVue,
+  isVueSfcFile,
+  resolveUTSCompiler,
+  uniCssScopedPlugin,
+  uniUTSUVueJavaScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
 import { uniCssPlugin } from './plugins/css'
@@ -33,7 +33,7 @@ export default [
           cacheRoot: path.resolve(
             process.env.UNI_APP_X_CACHE_DIR ||
               path.resolve(process.env.UNI_OUTPUT_DIR, '../.web'),
-            '.uts/cache'
+            '.uts2js/cache'
           ),
           modules: {
             vueCompilerDom,

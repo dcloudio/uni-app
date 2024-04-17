@@ -1,4 +1,4 @@
-import { hyphenate, isString, NormalizedStyle } from '@vue/shared'
+import { type NormalizedStyle, hyphenate, isString } from '@vue/shared'
 import { normalizeStyle } from '@vue/shared'
 export function stringifyStyle(value: unknown) {
   if (isString(value)) {

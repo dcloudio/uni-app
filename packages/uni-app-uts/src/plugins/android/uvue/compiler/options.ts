@@ -1,6 +1,11 @@
-import { BindingMetadata, CompilerError, RootNode } from '@vue/compiler-core'
+import type {
+  BindingMetadata,
+  CompilerError,
+  RootNode,
+} from '@vue/compiler-core'
+import type { TransformPluginContext } from 'rollup'
 import type { RawSourceMap } from 'source-map-js'
-import { DirectiveTransform, NodeTransform } from './transform'
+import type { DirectiveTransform, NodeTransform } from './transform'
 
 interface SharedTransformCodegenOptions {
   /**
@@ -137,6 +142,7 @@ export type TemplateCompilerOptions = {
 
   preprocessLang?: string
   preprocessOptions?: any
+  pluginContext?: TransformPluginContext
 } & TransformOptions &
   CodegenOptions
 

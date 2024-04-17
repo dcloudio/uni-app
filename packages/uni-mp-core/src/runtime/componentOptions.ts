@@ -1,20 +1,24 @@
 import { isArray } from '@vue/shared'
-import { ComponentInternalInstance, ComponentOptions, toRaw } from 'vue'
+import {
+  type ComponentInternalInstance,
+  type ComponentOptions,
+  toRaw,
+} from 'vue'
 
 import {
-  // @ts-ignore
+  // @ts-expect-error
   findComponentPropsData,
-  // @ts-ignore
+  // @ts-expect-error
   hasQueueJob,
-  // @ts-ignore
+  // @ts-expect-error
   invalidateJob,
-  // @ts-ignore
+  // @ts-expect-error
   updateProps,
 } from 'vue'
 
-import { MPComponentInstance } from '..'
+import type { MPComponentInstance } from '..'
 
-import { MPComponentOptions } from './component'
+import type { MPComponentOptions } from './component'
 
 export function initData(_: ComponentOptions) {
   return {}

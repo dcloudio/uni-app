@@ -1,18 +1,14 @@
 import {
   API_GET_CLIPBOARD_DATA,
   API_SET_CLIPBOARD_DATA,
-  API_TYPE_GET_CLIPBOARD_DATA,
-  API_TYPE_SET_CLIPBOARD_DATA,
+  type API_TYPE_GET_CLIPBOARD_DATA,
+  type API_TYPE_SET_CLIPBOARD_DATA,
   SetClipboardDataOptions,
   SetClipboardDataProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 // import { showModal } from '../../api/ui/popup/showModal'
-import {
-  useI18n,
-  // initI18nSetClipboardDataMsgsOnce,
-  initI18nGetClipboardDataMsgsOnce,
-} from '@dcloudio/uni-core'
+import { initI18nGetClipboardDataMsgsOnce, useI18n } from '@dcloudio/uni-core'
 
 export const getClipboardData = defineAsyncApi<API_TYPE_GET_CLIPBOARD_DATA>(
   API_GET_CLIPBOARD_DATA,

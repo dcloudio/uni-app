@@ -1,8 +1,8 @@
 /// <reference types="@dcloudio/types" />
 
-import type { ComponentInternalInstance } from '@vue/runtime-core'
-// @ts-ignore
-import { isInSSRComponentSetup, injectHook, getCurrentInstance } from 'vue'
+import type { ComponentInternalInstance } from 'vue'
+
+import { getCurrentInstance, injectHook, isInSSRComponentSetup } from 'vue'
 
 import {
   ON_ADD_TO_FAVORITES,
@@ -32,7 +32,7 @@ import {
   ON_THEME_CHANGE,
   ON_UNHANDLE_REJECTION,
   ON_UNLOAD,
-  UniLifecycleHooks,
+  type UniLifecycleHooks,
 } from '@dcloudio/uni-shared'
 
 interface SaveExitState {

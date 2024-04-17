@@ -1,7 +1,7 @@
 import { NAVBAR_HEIGHT } from '@dcloudio/uni-shared'
 import { updatePageCssVar } from '@dcloudio/uni-core'
 import { useTabBar } from '../framework/setup/state'
-import { cssEnv, cssConstant } from '../service/api/base/canIUse'
+import { cssConstant, cssEnv } from '../service/api/base/canIUse'
 
 const envMethod = /*#__PURE__*/ (() =>
   cssEnv ? 'env' : cssConstant ? 'constant' : '')()

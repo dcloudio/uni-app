@@ -1,23 +1,23 @@
 import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
-// @ts-ignore
+// @ts-expect-error
 import { pruneComponentPropsCache } from 'vue'
 import {
-  RelationOptions,
-  MPComponentInstance,
-  CreateComponentOptions,
-  CreateLifetimesOptions,
-  initSetRef,
+  type CreateComponentOptions,
+  type CreateLifetimesOptions,
+  type MPComponentInstance,
+  type RelationOptions,
   findPropsData,
   initFormField,
+  initSetRef,
 } from '@dcloudio/uni-mp-core'
 
 import {
-  initRefs,
-  initMocks,
-  initVueIds,
   $createComponent,
   $destroyComponent,
   initComponentInstance,
+  initMocks,
+  initRefs,
+  initVueIds,
 } from '@dcloudio/uni-mp-core'
 
 import { initInjections, initProvide } from './apiInject'

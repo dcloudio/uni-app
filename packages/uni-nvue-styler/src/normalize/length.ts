@@ -1,9 +1,9 @@
 import {
-  Normalize,
   LENGTH_REGEXP,
+  type Normalize,
   SUPPORT_CSS_UNIT,
-  supportedUnitWithAutofixedReason,
   supportedEnumReason,
+  supportedUnitWithAutofixedReason,
 } from '../utils'
 
 interface NormalizeLengthOptions {

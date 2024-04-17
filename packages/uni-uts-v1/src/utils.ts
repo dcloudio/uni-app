@@ -1,11 +1,11 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type {
-  parse,
-  bundle,
-  UTSTarget,
   UTSOutputOptions,
   UTSResult,
+  UTSTarget,
+  bundle,
+  parse,
 } from '@dcloudio/uts'
 import {
   camelize,
@@ -16,7 +16,7 @@ import {
   isString,
 } from '@vue/shared'
 import glob from 'fast-glob'
-import { Module, ModuleItem } from '../types/types'
+import type { Module, ModuleItem } from '../types/types'
 import {
   installHBuilderXPlugin,
   isInHBuilderX,
@@ -572,6 +572,15 @@ export function isUniCloudSupported() {
   }
 }
 
+// 是否应自动引入uniCloud模块
+export function shouldAutoImportUniCloud() {
+  return (
+    isUniCloudSupported() ||
+    process.env.UNI_APP_X_UNICLOUD_OBJECT === 'true' ||
+    process.env.NODE_ENV !== 'production'
+  )
+}
+
 export function parseExtApiDefaultParameters() {
   return normalizeExtApiDefaultParameters(
     require('../lib/ext-api/default-parameters.json')
@@ -723,9 +732,8 @@ export function resolveConfigProvider(
       service: transform.uniExtApiProviderService,
       class:
         (platform === 'app-android'
-          ? parseKotlinPackageWithPluginId(plugin, true)
+          ? parseKotlinPackageWithPluginId(plugin, true) + '.'
           : parseSwiftPackageWithPluginId(plugin, true)) +
-        '.' +
         formatExtApiProviderName(
           transform.uniExtApiProviderService,
           transform.uniExtApiProviderName

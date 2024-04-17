@@ -1,4 +1,4 @@
-import {
+import type {
   AddMediaQueryObserverArgs,
   RemoveMediaQueryObserverArgs,
 } from '@dcloudio/uni-api'

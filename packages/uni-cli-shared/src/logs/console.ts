@@ -1,4 +1,5 @@
 import MagicString from 'magic-string'
+import type { TransformResult } from 'vite'
 import { normalizePath } from '../utils'
 
 export function rewriteConsoleExpr(
@@ -7,7 +8,7 @@ export function rewriteConsoleExpr(
   filename: string,
   code: string,
   sourceMap: boolean = false
-) {
+): TransformResult {
   filename = normalizePath(filename)
   const re = /(console\.(log|info|debug|warn|error))\(([^)]+)\)/g
   const locate = getLocator(code)
@@ -21,10 +22,13 @@ export function rewriteConsoleExpr(
       method + `('${type}','at ${filename}:${locate(match.index).line + 1}',`
     )
   }
-  return {
-    code: s.toString(),
-    map: sourceMap ? s.generateMap({ source: id, hires: true }) : null,
+  if (s.hasChanged()) {
+    return {
+      code: s.toString(),
+      map: sourceMap ? s.generateMap({ hires: true }) : { mappings: '' },
+    }
   }
+  return { code, map: { mappings: '' } }
 }
 
 function getLocator(source: string) {

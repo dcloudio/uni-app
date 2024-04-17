@@ -206,8 +206,6 @@ function parseItem(e, maxColumnWidths, isMP) {
         return new StackTracey(this.items[method].apply(this.items, arguments));
     };
 });
-/*  ------------------------------------------------------------------------ */
-var StackTracey$1 = StackTracey;
 
 var util$1 = {};
 
@@ -2737,7 +2735,7 @@ function getConsumer(content) {
                 });
             }
             else {
-                // @ts-ignore
+                // @ts-expect-error
                 const consumer = SourceMapConsumer(content);
                 resolve(consumer);
             }
@@ -2854,7 +2852,7 @@ function uniStracktraceyPreset(opts) {
             return Promise.resolve(getSourceMapContent(sourcemapUrl));
         },
         parseStacktrace(stacktrace) {
-            stack = new StackTracey$1(stacktrace, uniPlatform);
+            stack = new StackTracey(stacktrace, uniPlatform);
             return stack;
         },
         asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {

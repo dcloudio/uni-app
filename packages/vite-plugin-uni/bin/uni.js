@@ -1,4 +1,8 @@
 #!/usr/bin/env node
+
+// 暂时忽略 cjs 警告
+process.env.VITE_CJS_IGNORE_WARNING = true
+
 const { performance } = require('perf_hooks')
 global.__vite_start_time = performance.now()
 const debugIndex = process.argv.findIndex((arg) => /^(?:-d|--debug)$/.test(arg))

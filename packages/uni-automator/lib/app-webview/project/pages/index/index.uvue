@@ -46,7 +46,8 @@ export default {
     },
     message(msg : UniWebViewMessageEvent) {
       // #ifdef APP-ANDROID
-      const data = msg.detail.data!
+      // data 由 对象变更成数组
+      const data = msg.detail.data[0];
       const id = data.get("id") as number
       const type = data.get("type") as string
       const dataObj = data.get("data") as UTSJSONObject
@@ -54,7 +55,7 @@ export default {
       const args = dataObj.get("args")
       // #endif
       // #ifndef APP-ANDROID
-      const data = msg.detail.data!
+      const data = msg.detail.data.length ? msg.detail.data[0] : msg.detail.data
       const id = data["id"] as number
       const type = data["type"] as string
       const dataObj = data["data"]

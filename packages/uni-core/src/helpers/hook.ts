@@ -1,5 +1,5 @@
-import { ComponentPublicInstance } from 'vue'
-import { isString, isArray, remove } from '@vue/shared'
+import type { ComponentPublicInstance } from 'vue'
+import { isArray, isString, remove } from '@vue/shared'
 import { invokeArrayFns } from '@dcloudio/uni-shared'
 import { getCurrentPageVm } from './page'
 

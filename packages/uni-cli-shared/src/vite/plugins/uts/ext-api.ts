@@ -3,7 +3,7 @@ import { isArray } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import AutoImport from 'unplugin-auto-import/vite'
 
-import { Injects, parseUniExtApis } from '../../../uni_modules'
+import { type Injects, parseUniExtApis } from '../../../uni_modules'
 import { isJsFile } from '../../utils/url'
 
 const escape = (str: string) => str.replace(/[-[\]/{}()*+?.\\^$|]/g, '\\$&')

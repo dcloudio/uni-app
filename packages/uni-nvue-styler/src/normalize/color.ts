@@ -1,4 +1,4 @@
-import { Normalize, autofixedReason, validReason } from '../utils'
+import { type Normalize, autofixedReason, validReason } from '../utils'
 
 export const normalizeColor: Normalize = (v) => {
   v = (v || '').toString()

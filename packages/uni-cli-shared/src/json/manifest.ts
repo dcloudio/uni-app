@@ -2,9 +2,9 @@ import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn } from '@vue/shared'
 import {
-  once,
-  defaultRpx2Unit,
   defaultMiniProgramRpx2Unit,
+  defaultRpx2Unit,
+  once,
 } from '@dcloudio/uni-shared'
 
 import { parseJson } from './json'

@@ -1,4 +1,4 @@
-import { BuildOptions, ServerOptions, createLogger } from 'vite'
+import { type BuildOptions, type ServerOptions, createLogger } from 'vite'
 import { extend, hasOwn } from '@vue/shared'
 import {
   M,
@@ -8,9 +8,9 @@ import {
   resetOutput,
   resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
-import { RollupWatcher } from 'rollup'
+import type { RollupWatcher } from 'rollup'
 
-import { CliOptions } from '.'
+import type { CliOptions } from '.'
 import { buildByVite, initBuildOptions } from './build'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import { initEasycom } from '../utils/easycom'

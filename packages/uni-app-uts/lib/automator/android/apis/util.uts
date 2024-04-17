@@ -40,6 +40,9 @@ export function pageGetData(
   // @ts-ignore
 ): UTSJSONObject {
   // TODO: path 目前无法处理类型问题，暂由服务端处理
+  if (vm.$.exposed.size > 0) {
+    return map2Object(vm.$.exposed)
+  }
   return map2Object(vm.$data)
 }
 // @ts-ignore

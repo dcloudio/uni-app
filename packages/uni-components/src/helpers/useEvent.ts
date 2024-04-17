@@ -1,4 +1,4 @@
-import { Ref, SetupContext, EmitsOptions } from 'vue'
+import type { EmitsOptions, Ref, SetupContext } from 'vue'
 import { normalizeTarget } from '@dcloudio/uni-shared'
 import { createNativeEvent } from '@dcloudio/uni-core'
 

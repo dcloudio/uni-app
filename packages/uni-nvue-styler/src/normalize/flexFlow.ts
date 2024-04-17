@@ -1,4 +1,4 @@
-import { Normalize, supportedValueWithTipsReason } from '../utils'
+import { type Normalize, supportedValueWithTipsReason } from '../utils'
 
 export const normalizeFlexFlow: Normalize = (v) => {
   v = (v || '').toString()

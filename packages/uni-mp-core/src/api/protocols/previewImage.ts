@@ -1,5 +1,5 @@
 import { isArray } from '@vue/shared'
-import { MPProtocol } from './types'
+import type { MPProtocol } from './types'
 
 export const previewImage: MPProtocol = {
   args(

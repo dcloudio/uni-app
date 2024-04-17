@@ -1,6 +1,10 @@
 import path from 'path'
-import { PluginContext } from 'rollup'
-import { init, parse as parseImports, ImportSpecifier } from 'es-module-lexer'
+import type { PluginContext } from 'rollup'
+import {
+  type ImportSpecifier,
+  init,
+  parse as parseImports,
+} from 'es-module-lexer'
 import { extend } from '@vue/shared'
 import { isImportDeclaration, isImportDefaultSpecifier } from '@babel/types'
 import { parse } from '@babel/parser'

@@ -1,4 +1,4 @@
-import { formatLog, UniNodeJSON } from '@dcloudio/uni-shared'
+import { type UniNodeJSON, formatLog } from '@dcloudio/uni-shared'
 import { UniAnimationElement } from './UniAnimationElement'
 
 interface HoverProps {

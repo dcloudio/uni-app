@@ -1,9 +1,9 @@
 import {
-  DirectiveNode,
+  type DirectiveNode,
   NodeTypes,
-  SimpleExpressionNode,
+  type SimpleExpressionNode,
 } from '@vue/compiler-core'
-import { ForElementNode } from './vFor'
+import type { ForElementNode } from './vFor'
 
 export function isSelfKey(
   { arg, exp }: DirectiveNode,

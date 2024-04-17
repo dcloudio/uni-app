@@ -1,13 +1,13 @@
 import {
-  defineAsyncApi,
   API_LOAD_FONT_FACE,
   LoadFontFaceProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
-import {
+import type {
   LoadFontFaceErrCode,
   LoadFontFaceOptions,
 } from '@dcloudio/uni-app-x/types/uni'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { getNativeApp } from '../../framework/app/app'
 

@@ -1,4 +1,4 @@
-import { createDecl, TransformDecl } from '../utils'
+import { type TransformDecl, createDecl } from '../utils'
 
 const backgroundColor = __NODE_JS__ ? 'background-color' : 'backgroundColor'
 const backgroundImage = __NODE_JS__ ? 'background-image' : 'backgroundImage'

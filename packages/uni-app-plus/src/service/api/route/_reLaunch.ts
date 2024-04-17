@@ -1,4 +1,4 @@
-import {
+import type {
   API_TYPE_RE_LAUNCH,
   DefineAsyncApiFn,
   ReLaunchOptions,
@@ -8,7 +8,7 @@ import tabBar from '../../framework/app/tabBar'
 import { registerPage } from '../../framework/page/register'
 import { getAllPages } from '../../framework/page/getCurrentPages'
 import { setStatusBarStyle } from '../../statusBar'
-import { closePage, navigate, RouteOptions } from './utils'
+import { type RouteOptions, closePage, navigate } from './utils'
 import { showWebview } from './webview'
 
 interface ReLaunchOptions extends RouteOptions {}

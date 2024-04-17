@@ -1,4 +1,4 @@
-import { onMounted, Ref } from 'vue'
+import { type Ref, onMounted } from 'vue'
 import { invokeHook } from '@dcloudio/uni-core'
 import {
   API_START_PULL_DOWN_REFRESH,

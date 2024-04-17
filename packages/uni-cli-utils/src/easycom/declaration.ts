@@ -3,7 +3,7 @@ import { existsSync } from 'node:fs'
 import { mkdir, readFile, writeFile as writeFile_ } from 'node:fs/promises'
 import type { EasyComContext } from './context'
 import { notNullish, slash } from '../utils'
-import { ComponentInfo } from './types'
+import type { ComponentInfo } from './types'
 
 const multilineCommentsRE = /\/\*.*?\*\//gms
 const singlelineCommentsRE = /\/\/.*$/gm

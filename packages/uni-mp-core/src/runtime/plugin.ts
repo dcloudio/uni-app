@@ -1,5 +1,5 @@
-import { ComponentPublicInstance } from 'vue'
-import { initAppLifecycle, parseApp, ParseAppOptions } from './app'
+import type { ComponentPublicInstance } from 'vue'
+import { type ParseAppOptions, initAppLifecycle, parseApp } from './app'
 
 export function initCreatePluginApp(parseAppOptions?: ParseAppOptions) {
   return function createApp(vm: ComponentPublicInstance) {

@@ -1,11 +1,11 @@
 import {
-  API_PREVIEW_IMAGE,
-  API_TYPE_PREVIEW_IMAGE,
-  defineAsyncApi,
-  PreviewImageProtocol,
-  PreviewImageOptions,
   API_CLOSE_PREVIEW_IMAGE,
-  API_TYPE_CLOSE_PREVIEW_IMAGE,
+  API_PREVIEW_IMAGE,
+  type API_TYPE_CLOSE_PREVIEW_IMAGE,
+  type API_TYPE_PREVIEW_IMAGE,
+  PreviewImageOptions,
+  PreviewImageProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 import { isFunction, isPlainObject } from '@vue/shared'

@@ -1,5 +1,5 @@
-import { watchEffect, onActivated, ssrContextKey } from 'vue'
-import { UNI_SSR_TITLE, ON_NAVIGATION_BAR_CHANGE } from '@dcloudio/uni-shared'
+import { onActivated, ssrContextKey, watchEffect } from 'vue'
+import { ON_NAVIGATION_BAR_CHANGE, UNI_SSR_TITLE } from '@dcloudio/uni-shared'
 import { getApp } from '../framework/setup/app'
 
 export function updateDocumentTitle(title: string) {

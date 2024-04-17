@@ -1,12 +1,12 @@
 import path from 'path'
 // import debug from 'debug'
 import { extend, isString } from '@vue/shared'
-import { Plugin, ResolvedConfig } from 'vite'
-import { FilterPattern } from '@rollup/pluginutils'
+import type { Plugin, ResolvedConfig } from 'vite'
+import type { FilterPattern } from '@rollup/pluginutils'
 
 import { COMMON_EXCLUDE, isInHBuilderX } from '@dcloudio/uni-cli-shared'
 
-import { VitePluginUniResolvedOptions } from '../..'
+import type { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
 import { uniJsonPlugin } from './json'
 import { uniPreCssPlugin } from './preCss'

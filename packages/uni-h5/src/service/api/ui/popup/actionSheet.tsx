@@ -92,7 +92,14 @@ export default /*#__PURE__*/ defineComponent({
   emits: ['close'],
   setup(props, { emit }) {
     initI18nShowActionSheetMsgsOnce()
+    //#if !_X_
+    //@ts-ignore
     const HEIGHT = ref(260)
+    //#endif
+    //#if _X_
+    //@ts-ignore
+    const HEIGHT = ref(336)
+    //#endif
     const contentHeight = ref(0)
     const titleHeight = ref(0)
     const deltaY = ref(0)

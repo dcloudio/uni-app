@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 import { parseQuery } from '@dcloudio/uni-shared'
-import { createLaunchOptions, LaunchOptions } from '@dcloudio/uni-core'
+import { type LaunchOptions, createLaunchOptions } from '@dcloudio/uni-core'
 
 export const EVENT_BACKBUTTON = 'backbutton'
 

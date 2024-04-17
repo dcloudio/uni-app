@@ -1,8 +1,8 @@
-import { LINEFEED, UniNodeJSON } from '@dcloudio/uni-shared'
+import { LINEFEED, type UniNodeJSON } from '@dcloudio/uni-shared'
 import { parseText } from '@dcloudio/uni-components'
 import { UniNode } from './UniNode'
-import { UniElement } from './UniElement'
-import { TextProps } from './UniTextElement'
+import type { UniElement } from './UniElement'
+import type { TextProps } from './UniTextElement'
 
 export class UniTextNode extends UniNode {
   private _text: string = ''

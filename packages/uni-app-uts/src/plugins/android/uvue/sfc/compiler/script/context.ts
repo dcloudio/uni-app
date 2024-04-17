@@ -1,19 +1,19 @@
-import {
+import type {
   CallExpression,
   Node,
   ObjectPattern,
   Program,
   TSInterfaceDeclaration,
 } from '@babel/types'
-import { SFCDescriptor } from '@vue/compiler-sfc'
+import type { SFCDescriptor } from '@vue/compiler-sfc'
 import { generateCodeFrame } from '@vue/shared'
-import { parse as babelParse, ParserPlugin } from '@babel/parser'
-import { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
-import { PropsDestructureBindings } from './defineProps'
-import { ModelDecl } from './defineModel'
+import { type ParserPlugin, parse as babelParse } from '@babel/parser'
+import type { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
+import type { PropsDestructureBindings } from './defineProps'
+import type { ModelDecl } from './defineModel'
 import type { BindingMetadata } from '@vue/compiler-core'
 import MagicString from 'magic-string'
-import { TypeScope } from './resolveType'
+import type { TypeScope } from './resolveType'
 export class ScriptCompileContext {
   scriptAst: Program | null
   scriptSetupAst: Program | null
@@ -88,13 +88,16 @@ export class ScriptCompileContext {
       options.babelParserPlugins
     )
 
-    function parse(input: string, offset: number): Program {
+    function parse(input: string, offset: number, startLine: number): Program {
       try {
         return babelParse(input, {
           plugins,
           sourceType: 'module',
         }).program
       } catch (e: any) {
+        if (e.loc && startLine) {
+          e.loc.line = e.loc.line + (startLine - 1)
+        }
         e.message = `[vue/compiler-sfc] ${e.message}\n\n${
           descriptor.filename
         }\n${generateCodeFrame(
@@ -108,11 +111,19 @@ export class ScriptCompileContext {
 
     this.scriptAst =
       descriptor.script &&
-      parse(descriptor.script.content, descriptor.script.loc.start.offset)
+      parse(
+        descriptor.script.content,
+        descriptor.script.loc.start.offset,
+        descriptor.script.loc.start.line
+      )
 
     this.scriptSetupAst =
       descriptor.scriptSetup &&
-      parse(descriptor.scriptSetup!.content, this.startOffset!)
+      parse(
+        descriptor.scriptSetup!.content,
+        this.startOffset!,
+        descriptor.scriptSetup.loc.start.line
+      )
   }
 
   getString(node: Node, scriptSetup = true): string {

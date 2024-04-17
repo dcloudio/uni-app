@@ -1,10 +1,10 @@
 import {
   API_STOP_PULL_DOWN_REFRESH,
-  API_TYPE_STOP_PULL_DOWN_REFRESH,
+  type API_TYPE_STOP_PULL_DOWN_REFRESH,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 export const stopPullDownRefresh =
   defineAsyncApi<API_TYPE_STOP_PULL_DOWN_REFRESH>(

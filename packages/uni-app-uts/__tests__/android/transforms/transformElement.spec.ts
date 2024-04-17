@@ -1,29 +1,29 @@
 import { PatchFlags } from '@vue/shared'
 import {
-  RESOLVE_COMPONENT,
+  BASE_TRANSITION,
+  BindingTypes,
   CREATE_VNODE,
+  GUARD_REACTIVE_PROPS,
+  KEEP_ALIVE,
   MERGE_PROPS,
+  NORMALIZE_CLASS,
+  NORMALIZE_PROPS,
+  NORMALIZE_STYLE,
+  RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
-  TO_HANDLERS,
-  helperNameMap,
-  TELEPORT,
   RESOLVE_DYNAMIC_COMPONENT,
   SUSPENSE,
-  KEEP_ALIVE,
-  BASE_TRANSITION,
-  NORMALIZE_CLASS,
-  NORMALIZE_STYLE,
-  NORMALIZE_PROPS,
-  GUARD_REACTIVE_PROPS,
+  TELEPORT,
+  TO_HANDLERS,
+  helperNameMap,
   baseParse as parse,
-  BindingTypes,
 } from '@vue/compiler-core'
 import {
+  type DirectiveNode,
   NodeTypes,
+  type RootNode,
+  type VNodeCall,
   createObjectProperty,
-  DirectiveNode,
-  RootNode,
-  VNodeCall,
 } from '@vue/compiler-core'
 import { transformElement as baseTransformElement } from '@vue/compiler-core'
 import { compile as baseCompile } from '../../../src/plugins/android/uvue/compiler'
@@ -33,9 +33,9 @@ import { transformBind } from '../../../src/plugins/android/uvue/compiler/transf
 
 import { createObjectMatcher, genFlagText } from '../testUtils'
 import { transformText } from '../../../src/plugins/android/uvue/compiler/transforms/transformText'
-import { TemplateCompilerOptions } from '../../../src/plugins/android/uvue/compiler/options'
+import type { TemplateCompilerOptions } from '../../../src/plugins/android/uvue/compiler/options'
 import {
-  NodeTransform,
+  type NodeTransform,
   transform,
 } from '../../../src/plugins/android/uvue/compiler/transform'
 import { transformExpression } from '../../../src/plugins/android/uvue/compiler/transforms/transformExpression'

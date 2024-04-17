@@ -1,7 +1,7 @@
-import { formatLog, RENDERJS_MODULES, WXS_PROTOCOL } from '@dcloudio/uni-shared'
+import { RENDERJS_MODULES, WXS_PROTOCOL, formatLog } from '@dcloudio/uni-shared'
 import { isArray } from '@vue/shared'
 
-import { ComponentInternalInstance, ComponentOptions } from 'vue'
+import type { ComponentInternalInstance, ComponentOptions } from 'vue'
 
 export function initRenderjs(
   options: ComponentOptions,

@@ -1,7 +1,7 @@
 import { getCurrentPageId } from '@dcloudio/uni-core'
 import {
   API_GET_SELECTED_TEXT_RANGE,
-  API_TYPE_GET_SELECTED_TEXT_RANGE,
+  type API_TYPE_GET_SELECTED_TEXT_RANGE,
 } from '../../protocols/keyboard/getSelectedTextRange'
 import { defineAsyncApi } from '../../helpers/api'
 

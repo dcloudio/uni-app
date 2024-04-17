@@ -1,17 +1,17 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import {
   API_NAVIGATE_BACK,
-  API_TYPE_NAVIGATE_BACK,
-  defineAsyncApi,
+  type API_TYPE_NAVIGATE_BACK,
   NavigateBackOptions,
   NavigateBackProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
 import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
 import { ANI_CLOSE, ANI_DURATION } from '../../../service/constants'
 import { removePage } from '../../../service/framework/page/getCurrentPages'
 import { closeWebview } from './webview'
-import { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import { getNativeApp } from '../../framework/app/app'
 import { setStatusBarStyle } from '../../statusBar'
 import { isDirectPage, reLaunchEntryPage } from './direct'

@@ -3,28 +3,28 @@ import { hasOwn } from '@vue/shared'
 import { upx2px } from '@dcloudio/uni-api/src/service/base/upx2px'
 import {
   addInterceptor,
-  removeInterceptor,
   interceptors,
+  removeInterceptor,
 } from '@dcloudio/uni-api/src/service/base/interceptor'
 import {
-  $on,
-  $off,
-  $once,
   $emit,
+  $off,
+  $on,
+  $once,
 } from '@dcloudio/uni-api/src/service/base/eventBus'
 import {
   getPushClientId,
-  onPushMessage,
-  offPushMessage,
   invokePushCallback,
+  offPushMessage,
+  onPushMessage,
 } from '@dcloudio/uni-api/src/service/plugin/push'
 import { invokeCreateVueAppHook, onCreateVueApp } from '@dcloudio/uni-shared'
 
 import { promisify } from './promise'
 import { initWrapper } from './wrapper'
 
-import { MPProtocols, getEventChannel } from './protocols'
-import { getLocale, setLocale, onLocaleChange } from './locale'
+import { type MPProtocols, getEventChannel } from './protocols'
+import { getLocale, onLocaleChange, setLocale } from './locale'
 
 const baseApis = {
   $on,

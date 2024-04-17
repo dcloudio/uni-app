@@ -75,7 +75,6 @@ function getSsrGlobalData() {
  * uni 对象是跨实例的，而此处列的 API 均是需要跟当前实例关联的，比如 requireNativePlugin 获取 dom 时，依赖当前 weex 实例
  */
 function getCurrentSubNVue() {
-    // @ts-ignore
     return uni.getSubNVueById(plus.webview.currentWebview().id);
 }
 function requireNativePlugin(name) {
@@ -83,9 +82,9 @@ function requireNativePlugin(name) {
 }
 
 function formatAppLog(type, filename, ...args) {
-    // @ts-ignore
+    // @ts-expect-error
     if (uni.__log__) {
-        // @ts-ignore
+        // @ts-expect-error
         uni.__log__(type, filename, ...args);
     }
     else {
@@ -101,7 +100,6 @@ function resolveEasycom(component, easycom) {
 }
 
 /// <reference types="@dcloudio/types" />
-// @ts-ignore
 const createHook = (lifecycle) => (hook, target = vue.getCurrentInstance()) => {
     // post-create lifecycle registrations are noops during SSR
     !vue.isInSSRComponentSetup && vue.injectHook(lifecycle, hook, target);
@@ -160,19 +158,19 @@ function renderComponentSlot(slots, name, props = null) {
     return null;
 }
 
-Object.defineProperty(exports, 'capitalize', {
+Object.defineProperty(exports, "capitalize", {
   enumerable: true,
   get: function () { return shared.capitalize; }
 });
-Object.defineProperty(exports, 'extend', {
+Object.defineProperty(exports, "extend", {
   enumerable: true,
   get: function () { return shared.extend; }
 });
-Object.defineProperty(exports, 'hasOwn', {
+Object.defineProperty(exports, "hasOwn", {
   enumerable: true,
   get: function () { return shared.hasOwn; }
 });
-Object.defineProperty(exports, 'isPlainObject', {
+Object.defineProperty(exports, "isPlainObject", {
   enumerable: true,
   get: function () { return shared.isPlainObject; }
 });

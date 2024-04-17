@@ -7,37 +7,39 @@
 // - This transform is only applied in non-browser builds because it relies on
 //   an additional JavaScript parser. In the browser, there is no source-map
 //   support and the code is wrapped in `with (this) { ... }`.
-import { NodeTransform, TransformContext } from '../transform'
+import type { NodeTransform, TransformContext } from '../transform'
 
-import { makeMap, hasOwn, isString, isArray } from '@vue/shared'
-import {
-  Node,
-  Identifier,
-  UpdateExpression,
+import { hasOwn, isArray, isString, makeMap } from '@vue/shared'
+
+import type {
   AssignmentExpression,
+  Identifier,
+  Node,
+  UpdateExpression,
 } from '@babel/types'
 
 import { parse } from '@babel/parser'
 import {
-  advancePositionWithClone,
   BindingTypes,
-  CompoundExpressionNode,
+  type CompoundExpressionNode,
   ConstantTypes,
+  type ExpressionNode,
+  IS_REF,
+  NodeTypes,
+  type SimpleExpressionNode,
+  UNREF,
+  advancePositionWithClone,
   createCompoundExpression,
   createSimpleExpression,
-  ExpressionNode,
-  IS_REF,
   isInDestructureAssignment,
   isSimpleIdentifier,
   isStaticProperty,
   isStaticPropertyKey,
-  NodeTypes,
-  SimpleExpressionNode,
-  UNREF,
   walkIdentifiers,
 } from '@vue/compiler-core'
 
-import { createCompilerError, ErrorCodes } from '../errors'
+import { ErrorCodes, createCompilerError } from '../errors'
+import { TRY_SET_REF_VALUE, TRY_UPDATE_REF_NUMBER } from '../runtimeHelpers'
 
 const GLOBALS_WHITE_LISTED =
   `Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI` +
@@ -161,22 +163,31 @@ export function processExpression(
               knownIds
             )
           )
+          const value =
+            operator === '='
+              ? rExpString
+              : `${context.helperString(
+                  UNREF
+                )}(${raw}.also((_)=>{ ${raw} ${operator} ${rExpString} }))`
+
           return `${context.helperString(
             IS_REF
-          )}(${raw}) ? ${raw}.value ${operator} ${rExpString} : ${raw}`
+          )}(${raw}) ? ${context.helperString(
+            TRY_SET_REF_VALUE
+          )}(${raw}, ${value}) : ${raw}`
         } else if (isUpdateArg) {
           // make id replace parent in the code range so the raw update operator
           // is removed
           id!.start = parent!.start
           id!.end = parent!.end
-          const { prefix: isPrefix, operator } = parent as UpdateExpression
-          const prefix = isPrefix ? operator : ``
-          const postfix = isPrefix ? `` : operator
+          const { prefix, operator } = parent as UpdateExpression
           // let binding.
           // x++ --> isRef(a) ? a.value++ : a++
-          return `${context.helperString(
-            IS_REF
-          )}(${raw}) ? ${prefix}${raw}.value${postfix} : ${prefix}${raw}${postfix}`
+          return `${
+            type === BindingTypes.SETUP_LET ? `${raw} = ` : ''
+          }${context.helperString(TRY_UPDATE_REF_NUMBER)}(${raw}, ${
+            operator === '--' ? '-1' : '1'
+          }, ${prefix})`
         } else if (isDestructureAssignment) {
           // TODO
           // let binding in a destructure assignment - it's very tricky to

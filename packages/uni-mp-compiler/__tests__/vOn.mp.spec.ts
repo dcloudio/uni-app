@@ -1,7 +1,7 @@
-import { ElementNode } from '@vue/compiler-core'
+import type { ElementNode } from '@vue/compiler-core'
 import { compile } from '../src'
 import { MPErrorCodes } from '../src/errors'
-import { CompilerOptions } from '../src/options'
+import type { CompilerOptions } from '../src/options'
 
 function parseWithVOn(template: string, options: CompilerOptions = {}) {
   const { ast } = compile(template, {

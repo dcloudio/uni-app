@@ -1,8 +1,8 @@
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 
 import { cleanUrl } from '@dcloudio/uni-cli-shared'
-import { UniPluginFilterOptions } from '.'
+import type { UniPluginFilterOptions } from '.'
 import { createPublicFileFilter } from '../../utils'
 
 const debugStatic = debug('uni:static')

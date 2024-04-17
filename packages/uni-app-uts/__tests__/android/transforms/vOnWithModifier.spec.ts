@@ -1,11 +1,11 @@
 import {
-  baseParse as parse,
-  CompilerOptions,
-  ElementNode,
+  type CompilerOptions,
+  type ElementNode,
   NodeTypes,
-  ObjectExpression,
+  type ObjectExpression,
+  type VNodeCall,
+  baseParse as parse,
   transform,
-  VNodeCall,
   transformElement,
 } from '@vue/compiler-core'
 import { transformOn } from '../../../src/plugins/android/uvue/compiler/transforms/vOnWithModifier'

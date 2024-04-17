@@ -1,5 +1,5 @@
 import { isArray } from '@vue/shared'
-import { formatLog, ON_NAVIGATION_BAR_BUTTON_TAP } from '@dcloudio/uni-shared'
+import { ON_NAVIGATION_BAR_BUTTON_TAP, formatLog } from '@dcloudio/uni-shared'
 import { initNavigationBarI18n, invokeHook } from '@dcloudio/uni-core'
 export function initTitleNView(
   webviewStyle: PlusWebviewWebviewStyles,

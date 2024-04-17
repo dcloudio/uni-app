@@ -1,13 +1,14 @@
 import {
-  withCtx,
+  type SetupContext,
+  createBlock,
+  createVNode,
   openBlock,
   renderSlot,
-  createVNode,
-  createBlock,
-  SetupContext,
+  withCtx,
 } from 'vue'
 import { defineSystemComponent } from '@dcloudio/uni-components'
 import { useDocumentTitle } from '../../../helpers/useDocumentTitle'
+import { useBackgroundColorContent } from '../../../helpers/useBackgroundColorContent'
 
 import PageHead from './pageHead'
 import PageBody from './pageBody'
@@ -20,10 +21,10 @@ export default defineSystemComponent({
     const pageMeta = providePageMeta(getStateId())
     const navigationBar = pageMeta.navigationBar
     const pageStyle = {} as Record<string, any>
-    if (__X__ && pageMeta.backgroundColorContent) {
-      pageStyle.backgroundColor = pageMeta.backgroundColorContent
-    }
     useDocumentTitle(pageMeta)
+    if (__X__) {
+      useBackgroundColorContent(pageMeta)
+    }
     return () =>
       createVNode(
         'uni-page',

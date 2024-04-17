@@ -1,5 +1,5 @@
 import { defineSyncApi } from '@dcloudio/uni-api'
-import { GetElementById } from '@dcloudio/uni-app-x/types/uni'
+import type { GetElementById } from '@dcloudio/uni-app-x/types/uni'
 import { getCurrentPage } from '@dcloudio/uni-core'
 
 export const getElementById = defineSyncApi<GetElementById>(

@@ -1606,7 +1606,7 @@
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "x"
               }
             },
             "web": {
@@ -3422,97 +3422,12 @@
       "name": "border",
       "restrictions": [
         "length",
-        "enum",
+        "line-width",
+        "line-style",
         "color"
       ],
       "description": "CSS 的 border 是设置元素边框属性的简写形式，用于设置一个或多个以下属性的值：border-width、border-style、border-color。",
       "syntax": "<line-width> || <line-style> || <color>",
-      "values": [
-        {
-          "name": "none",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
-                "unixVer": "4.11"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "solid",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
-                "unixVer": "4.11"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "dashed",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
-                "unixVer": "4.11"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        },
-        {
-          "name": "dotted",
-          "uniPlatform": {
-            "app": {
-              "android": {
-                "osVer": "5.0",
-                "uniVer": "√",
-                "unixVer": "3.9+"
-              },
-              "ios": {
-                "osVer": "12.0",
-                "uniVer": "√",
-                "unixVer": "4.11"
-              }
-            },
-            "web": {
-              "uniVer": "√",
-              "unixVer": "4.0"
-            }
-          }
-        }
-      ],
       "uniPlatform": {
         "app": {
           "android": {
@@ -4804,7 +4719,8 @@
       "name": "border-top",
       "restrictions": [
         "length",
-        "enum",
+        "line-width",
+        "line-style",
         "color"
       ],
       "syntax": "<line-width> || <line-style> || <color>",
@@ -4832,7 +4748,8 @@
       "name": "border-bottom",
       "restrictions": [
         "length",
-        "enum",
+        "line-width",
+        "line-style",
         "color"
       ],
       "syntax": "<line-width> || <line-style> || <color>",
@@ -4860,7 +4777,8 @@
       "name": "border-left",
       "restrictions": [
         "length",
-        "enum",
+        "line-width",
+        "line-style",
         "color"
       ],
       "syntax": "<line-width> || <line-style> || <color>",
@@ -4888,7 +4806,8 @@
       "name": "border-right",
       "restrictions": [
         "length",
-        "enum",
+        "line-width",
+        "line-style",
         "color"
       ],
       "syntax": "<line-width> || <line-style> || <color>",
@@ -5170,7 +5089,9 @@
       },
       "unixTags": [
         "text",
-        "button"
+        "button",
+        "input",
+        "textarea"
       ],
       "defaultValue": "normal"
     },
@@ -5192,7 +5113,7 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
-            "unixVer": "4.11"
+            "unixVer": "x"
           }
         },
         "web": {

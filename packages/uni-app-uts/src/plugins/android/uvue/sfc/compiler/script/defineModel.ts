@@ -1,5 +1,5 @@
-import { LVal, Node, ObjectProperty, TSType } from '@babel/types'
-import { ScriptCompileContext } from './context'
+import type { LVal, Node, ObjectProperty, TSType } from '@babel/types'
+import type { ScriptCompileContext } from './context'
 import { inferRuntimeType } from './resolveType'
 import {
   UNKNOWN_TYPE,

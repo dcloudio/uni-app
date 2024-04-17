@@ -1,16 +1,16 @@
 import {
+  customRef,
+  getCurrentInstance,
   ref,
   shallowRef,
-  customRef,
   useSSRContext,
-  getCurrentInstance,
 } from 'vue'
 import { hasOwn, isObject } from '@vue/shared'
 import {
-  sanitise,
   UNI_SSR,
   UNI_SSR_DATA,
   UNI_SSR_GLOBAL_DATA,
+  sanitise,
 } from '@dcloudio/uni-shared'
 
 type SSRRef = (

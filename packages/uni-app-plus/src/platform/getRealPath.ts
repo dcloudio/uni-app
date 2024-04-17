@@ -2,8 +2,8 @@ import { getCurrentPage, getRealRoute } from '@dcloudio/uni-core'
 import {
   DATA_RE,
   SCHEME_RE,
-  cacheStringFunction,
   addLeadingSlash,
+  cacheStringFunction,
 } from '@dcloudio/uni-shared'
 export function getRealPath(filepath: string) {
   // 无协议的情况补全 https

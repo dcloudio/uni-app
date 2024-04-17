@@ -1,4 +1,4 @@
-import GtPush from '../lib/gtpush-min'
+import type GtPush from '../lib/gtpush-min'
 
 let channel: BroadcastChannel
 export function postPushMessage(data: unknown) {

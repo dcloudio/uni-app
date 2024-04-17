@@ -1,4 +1,4 @@
-import { UniNodeJSON } from '@dcloudio/uni-shared'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
 import '../../../../../style/webview.css'
 import WebView from '../../../components/web-view'
 

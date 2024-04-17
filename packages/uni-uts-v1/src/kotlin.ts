@@ -13,30 +13,33 @@ import type {
 import { get } from 'android-versions'
 import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
-  CompilerServer,
-  genUTSPlatformResource,
-  getUTSCompiler,
-  getCompilerServer,
-  moveRootIndexSourceMap,
-  resolveAndroidDir,
-  resolvePackage,
-  resolveUTSPlatformFile,
-  resolveUTSSourceMapPath,
-  ToKotlinOptions,
+  type CompilerServer,
+  type ToKotlinOptions,
   genComponentsCode,
-  parseKotlinPackageWithPluginId,
+  genUTSPlatformResource,
+  getCompilerServer,
+  getUTSCompiler,
   isColorSupported,
-  resolveSourceMapFile,
-  isUniCloudSupported,
+  moveRootIndexSourceMap,
   parseExtApiDefaultParameters,
   parseInjectModules,
+  parseKotlinPackageWithPluginId,
+  resolveAndroidDir,
   resolveConfigProvider,
+  resolvePackage,
+  resolveSourceMapFile,
+  resolveUTSPlatformFile,
+  resolveUTSSourceMapPath,
+  shouldAutoImportUniCloud,
 } from './utils'
-import { Module } from '../types/types'
+import type { Module } from '../types/types'
 import { parseUTSKotlinStacktrace, parseUTSSyntaxError } from './stacktrace'
-import { APP_PLATFORM } from './manifest/utils'
+import type { APP_PLATFORM } from './manifest/utils'
 import { restoreDex } from './manifest'
-import { MessageSourceLocation, hbuilderFormatter } from './stacktrace/kotlin'
+import {
+  type MessageSourceLocation,
+  hbuilderFormatter,
+} from './stacktrace/kotlin'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -139,6 +142,17 @@ export async function runKotlinProd(
   }
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
+  }
+
+  const autoImportUniCloud = shouldAutoImportUniCloud()
+  const useUniCloudApi =
+    result.inject_apis &&
+    result.inject_apis.find((api) => api.startsWith('uniCloud.'))
+  if (!autoImportUniCloud && useUniCloudApi) {
+    throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
+  } else if (autoImportUniCloud && !useUniCloudApi) {
+    result.inject_apis = result.inject_apis || []
+    result.inject_apis.push('uniCloud.importObject')
   }
 
   if (result.inject_apis && result.inject_apis.length) {
@@ -534,7 +548,7 @@ export async function compile(
   if (rClass) {
     imports.push(rClass)
   }
-  if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
+  if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
   }
   // 本地 provider
@@ -720,7 +734,11 @@ export function checkAndroidVersionTips(
   if (configJsonFile && fs.existsSync(configJsonFile)) {
     try {
       const configJson = parseJson(fs.readFileSync(configJsonFile, 'utf8'))
-      if (configJson.minSdkVersion && parseInt(configJson.minSdkVersion) > 19) {
+      const minSdkVersion = process.env.UNI_APP_X === 'true' ? 21 : 19
+      if (
+        configJson.minSdkVersion &&
+        parseInt(configJson.minSdkVersion) > minSdkVersion
+      ) {
         const androidVersion = get(configJson.minSdkVersion)
         if (androidVersion) {
           return `uts插件[${pluginId}]需在 Android ${androidVersion.semver} 版本及以上方可正常使用`

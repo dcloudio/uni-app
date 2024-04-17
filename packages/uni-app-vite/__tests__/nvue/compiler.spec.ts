@@ -1,9 +1,9 @@
 import { NVUE_U_BUILT_IN_TAGS } from '@dcloudio/uni-shared'
 import {
-  ElementNode,
+  type ElementNode,
   ElementTypes,
+  type SimpleExpressionNode,
   findDir,
-  SimpleExpressionNode,
 } from '@vue/compiler-core'
 import { compileTemplate } from '@vue/compiler-sfc'
 import { uniOptions } from '../../src/plugin/uni/index'

@@ -1,4 +1,4 @@
-import { UniCustomElement } from '../components'
+import type { UniCustomElement } from '../components'
 
 export interface VShowElement extends UniCustomElement {
   // _vod = vue original display

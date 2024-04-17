@@ -1,4 +1,4 @@
-import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import {
   isFunction,
   isPlainObject,

@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { UniViteCopyPluginTarget } from '../vite/plugins/copy'
+import type { UniViteCopyPluginTarget } from '../vite/plugins/copy'
 import { parseJson } from '../json/json'
 import { getPlatformManifestJsonOnce } from '../json/manifest'
 

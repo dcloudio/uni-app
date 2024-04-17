@@ -1,9 +1,9 @@
 import {
-  defineSyncApi,
   API_CREATE_REWARDED_VIDEO_AD,
-  API_TYPE_CREATE_REWARDED_VIDEO_AD,
+  type API_TYPE_CREATE_REWARDED_VIDEO_AD,
   CreateRewardedVideoAdOptions,
   CreateRewardedVideoAdProtocol,
+  defineSyncApi,
 } from '@dcloudio/uni-api'
 
 import { AdBase } from './adBase'

@@ -1,6 +1,5 @@
 export class UniNavigatorElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
-    // @ts-ignore
     super(data, pageNode)
   }
 

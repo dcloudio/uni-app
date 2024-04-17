@@ -5,12 +5,12 @@ import {
   M,
   defineUniMainJsPlugin,
   getUniStatistics,
+  isSsr,
   parseManifestJsonOnce,
   parsePagesJson,
-  isSsr,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
-import { ConfigEnv, UserConfig } from 'vite'
+import type { ConfigEnv, UserConfig } from 'vite'
 const uniStatLog = once((text: string) => {
   console.log()
   console.warn(text)

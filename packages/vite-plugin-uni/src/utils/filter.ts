@@ -1,6 +1,6 @@
 import path from 'path'
 import { createFilter } from '@rollup/pluginutils'
-import { normalizePath, PUBLIC_DIR } from '@dcloudio/uni-cli-shared'
+import { PUBLIC_DIR, normalizePath } from '@dcloudio/uni-cli-shared'
 
 export function createPublicFileFilter(base: string = '/') {
   const publicDir = normalizePath(path.join(base, PUBLIC_DIR + '/**/*'))

@@ -1,23 +1,23 @@
 import path from 'path'
 import fs from 'fs'
-import { extend, isArray, isString, NormalizedStyle } from '@vue/shared'
+import { type NormalizedStyle, extend, isArray, isString } from '@vue/shared'
 import {
-  once,
-  isH5NativeTag,
+  type Rpx2UnitOptions,
   createRpx2Unit,
-  Rpx2UnitOptions,
+  isH5NativeTag,
+  once,
 } from '@dcloudio/uni-shared'
 import {
+  getBuiltInPaths,
+  normalizePath,
   parseRpx2UnitOnce,
   resolveBuiltIn,
-  getBuiltInPaths,
-  transformMatchMedia,
-  normalizePath,
   transformH5BuiltInComponents,
+  transformMatchMedia,
 } from '@dcloudio/uni-cli-shared'
 import type { ConfigEnv, ResolvedConfig, UserConfig } from 'vite'
-import resolve from 'resolve'
-import { resolveComponentType } from '@vue/compiler-dom'
+import type resolve from 'resolve'
+import type { resolveComponentType } from '@vue/compiler-dom'
 import { transformPageHead } from '../plugin/transforms/transformPageHead'
 
 // Temporal handling for 2.7 breaking change
@@ -177,7 +177,6 @@ export function rewriteSsrResolve() {
 }
 
 export function rewriteSsrNativeTag() {
-  // @ts-ignore
   const compilerDom = require(resolveBuiltIn('@vue/compiler-dom'))
   // TODO compiler-ssr时，传入的 isNativeTag 会被 @vue/compiler-dom 的 isNativeTag 覆盖
   // https://github.com/vuejs/vue-next/blob/master/packages/compiler-ssr/src/index.ts#L36

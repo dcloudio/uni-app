@@ -1,10 +1,10 @@
 import {
   ElementTypes,
   NodeTypes,
-  RootNode,
-  TemplateChildNode,
+  type RootNode,
+  type TemplateChildNode,
 } from '@vue/compiler-core'
-import { TransformContext } from '../transform'
+import type { TransformContext } from '../transform'
 
 export function transformElements(
   node: RootNode | TemplateChildNode,

@@ -1,4 +1,4 @@
-import { createDecl, TransformDecl } from '../utils'
+import { type TransformDecl, createDecl } from '../utils'
 
 const borderTopLeftRadius = __NODE_JS__
   ? 'border-top-left-radius'

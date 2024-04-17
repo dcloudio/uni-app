@@ -1,4 +1,4 @@
-import { onMounted, onBeforeUnmount, reactive } from 'vue'
+import { onBeforeUnmount, onMounted, reactive } from 'vue'
 
 import { passive } from '@dcloudio/uni-shared'
 

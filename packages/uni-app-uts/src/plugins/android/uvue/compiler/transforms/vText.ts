@@ -1,9 +1,9 @@
 import {
-  DirectiveTransform,
-  createObjectProperty,
-  createSimpleExpression,
+  type DirectiveTransform,
   TO_DISPLAY_STRING,
   createCallExpression,
+  createObjectProperty,
+  createSimpleExpression,
   getConstantType,
 } from '@vue/compiler-core'
 // import { createDOMCompilerError, DOMErrorCodes } from '../errors'

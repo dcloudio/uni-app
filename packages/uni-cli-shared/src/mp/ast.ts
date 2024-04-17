@@ -1,5 +1,5 @@
 import type { Program } from '@babel/types'
-import { parse, ParserPlugin } from '@babel/parser'
+import { type ParserPlugin, parse } from '@babel/parser'
 import { normalizeParsePlugins } from '../utils'
 
 export function parseProgram(

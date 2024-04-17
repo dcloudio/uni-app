@@ -1,15 +1,15 @@
 import {
+  NOOP,
   extend,
+  hasOwn,
   isArray,
   isPlainObject,
-  hasOwn,
-  NOOP,
-  isString,
   isPromise,
+  isString,
 } from '@vue/shared'
 import {
+  type ComponentInternalInstance,
   callWithAsyncErrorHandling,
-  ComponentInternalInstance,
   getCurrentInstance,
 } from 'vue'
 

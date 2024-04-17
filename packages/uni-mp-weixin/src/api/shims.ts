@@ -1,4 +1,7 @@
-import { initGetProvider, MPComponentInstance } from '@dcloudio/uni-mp-core'
+import {
+  type MPComponentInstance,
+  initGetProvider,
+} from '@dcloudio/uni-mp-core'
 import { mocks } from '../runtime/parseOptions'
 import { initWx } from './wx'
 

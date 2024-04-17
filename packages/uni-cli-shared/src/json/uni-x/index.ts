@@ -1,8 +1,13 @@
 import fs from 'fs'
 import path from 'path'
 import { extend, isArray, isString } from '@vue/shared'
-import { CompilerError } from '@vue/compiler-core'
-import { ParseError, parseTree, printParseErrorCode, Node } from 'jsonc-parser'
+import type { CompilerError } from '@vue/compiler-core'
+import {
+  type Node,
+  type ParseError,
+  parseTree,
+  printParseErrorCode,
+} from 'jsonc-parser'
 import { parseJson } from '../json'
 import {
   filterPlatformPages,

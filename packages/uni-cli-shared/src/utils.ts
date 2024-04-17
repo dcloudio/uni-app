@@ -13,12 +13,12 @@ import {
 } from './constants'
 
 import {
+  type ElementNode,
   NodeTypes,
-  ElementNode,
-  RootNode,
-  TemplateChildNode,
+  type RootNode,
+  type TemplateChildNode,
 } from '@vue/compiler-core'
-import { ParserPlugin } from '@babel/parser'
+import type { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
 import { isInHBuilderX } from './hbx'
 

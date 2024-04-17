@@ -1434,8 +1434,9 @@ function normalizeProps(props) {
   return props;
 }
 var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
-var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
-function isRootImmediateHook(name) {
+// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
+function isRootImmediateHookX(name) {
+  var PAGE_SYNC_HOOKS = [ON_LOAD];
   return PAGE_SYNC_HOOKS.indexOf(name) > -1;
 }
 function isRootHook(name) {
@@ -3999,7 +4000,7 @@ function injectHook(type, hook) {
   if (target) {
     if (isRootHook(type) && target !== target.root) {
       target = target.root;
-      if (isRootImmediateHook(type)) {
+      if (isRootImmediateHookX(type)) {
         var proxy = target.proxy;
         callWithAsyncErrorHandling(hook.bind(proxy), target, type, ON_LOAD === type ? [proxy.$page.options] : []);
       }
@@ -4188,6 +4189,23 @@ extend$1( /* @__PURE__ */Object.create(null), {
   $nextTick: i => i.n || (i.n = fn => nextTick.bind(i.proxy)(fn, i)),
   $watch: i => instanceWatch.bind(i)
 });
+publicPropertiesMap.$callMethod = i => {
+  return function (methodName) {
+    var proxy = getExposeProxy(i) || i.proxy;
+    if (!proxy) {
+      return null;
+    }
+    var method = proxy[methodName];
+    if (method) {
+      for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key9 = 1; _key9 < _len8; _key9++) {
+        args[_key9 - 1] = arguments[_key9];
+      }
+      return method(...args);
+    }
+    console.error("method ".concat(methodName, " not found"));
+    return null;
+  };
+};
 var isReservedPrefix = key => key === "_" || key === "$";
 var hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 var PublicInstanceProxyHandlers = {
@@ -4594,11 +4612,11 @@ function applyOptions(instance) {
     resolveInjections(injectOptions, ctx, checkDuplicateProperties);
   }
   if (methods) {
-    for (var _key9 in methods) {
-      var methodHandler = methods[_key9];
+    for (var _key10 in methods) {
+      var methodHandler = methods[_key10];
       if (isFunction(methodHandler)) {
         {
-          Object.defineProperty(ctx, _key9, {
+          Object.defineProperty(ctx, _key10, {
             value: methodHandler.bind(publicThis),
             configurable: true,
             enumerable: true,
@@ -4606,10 +4624,10 @@ function applyOptions(instance) {
           });
         }
         {
-          checkDuplicateProperties("Methods" /* METHODS */, _key9);
+          checkDuplicateProperties("Methods" /* METHODS */, _key10);
         }
       } else {
-        warn$1("Method \"".concat(_key9, "\" has type \"").concat(typeof methodHandler, "\" in the component definition. Did you reference the function correctly?"));
+        warn$1("Method \"".concat(_key10, "\" has type \"").concat(typeof methodHandler, "\" in the component definition. Did you reference the function correctly?"));
       }
     }
   }
@@ -4627,19 +4645,19 @@ function applyOptions(instance) {
       } else {
         instance.data = reactive(data);
         {
-          var _loop3 = function (_key10) {
-            checkDuplicateProperties("Data" /* DATA */, _key10);
-            if (!isReservedPrefix(_key10[0])) {
-              Object.defineProperty(ctx, _key10, {
+          var _loop3 = function (_key11) {
+            checkDuplicateProperties("Data" /* DATA */, _key11);
+            if (!isReservedPrefix(_key11[0])) {
+              Object.defineProperty(ctx, _key11, {
                 configurable: true,
                 enumerable: true,
-                get: () => data[_key10],
+                get: () => data[_key11],
                 set: NOOP
               });
             }
           };
-          for (var _key10 in data) {
-            _loop3(_key10);
+          for (var _key11 in data) {
+            _loop3(_key11);
           }
         }
       }
@@ -4647,36 +4665,36 @@ function applyOptions(instance) {
   }
   shouldCacheAccess = true;
   if (computedOptions) {
-    var _loop4 = function (_key11) {
-      var opt = computedOptions[_key11];
+    var _loop4 = function (_key12) {
+      var opt = computedOptions[_key12];
       var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
       if (get === NOOP) {
-        warn$1("Computed property \"".concat(_key11, "\" has no getter."));
+        warn$1("Computed property \"".concat(_key12, "\" has no getter."));
       }
       var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : () => {
-        warn$1("Write operation failed: computed property \"".concat(_key11, "\" is readonly."));
+        warn$1("Write operation failed: computed property \"".concat(_key12, "\" is readonly."));
       };
       var c = computed({
         get,
         set
       });
-      Object.defineProperty(ctx, _key11, {
+      Object.defineProperty(ctx, _key12, {
         enumerable: true,
         configurable: true,
         get: () => c.value,
         set: v => c.value = v
       });
       {
-        checkDuplicateProperties("Computed" /* COMPUTED */, _key11);
+        checkDuplicateProperties("Computed" /* COMPUTED */, _key12);
       }
     };
-    for (var _key11 in computedOptions) {
-      _loop4(_key11);
+    for (var _key12 in computedOptions) {
+      _loop4(_key12);
     }
   }
   if (watchOptions) {
-    for (var _key12 in watchOptions) {
-      createWatcher(watchOptions[_key12], ctx, publicThis, _key12);
+    for (var _key13 in watchOptions) {
+      createWatcher(watchOptions[_key13], ctx, publicThis, _key13);
     }
   }
   if (provideOptions) {
@@ -4984,8 +5002,8 @@ function createAppAPI(render, hydrate) {
         }
       },
       use(plugin) {
-        for (var _len8 = arguments.length, options = new Array(_len8 > 1 ? _len8 - 1 : 0), _key13 = 1; _key13 < _len8; _key13++) {
-          options[_key13 - 1] = arguments[_key13];
+        for (var _len9 = arguments.length, options = new Array(_len9 > 1 ? _len9 - 1 : 0), _key14 = 1; _key14 < _len9; _key14++) {
+          options[_key14 - 1] = arguments[_key14];
         }
         if (installedPlugins.has(plugin)) {
           warn$1("Plugin has already been applied to target app.");
@@ -5218,30 +5236,30 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
       hasAttrsChanged = true;
     }
     var kebabKey;
-    for (var _key14 in rawCurrentProps) {
+    for (var _key15 in rawCurrentProps) {
       if (!rawProps ||
       // for camelCase
-      !hasOwn(rawProps, _key14) && (
+      !hasOwn(rawProps, _key15) && (
       // it's possible the original props was passed in as kebab-case
       // and converted to camelCase (#955)
-      (kebabKey = hyphenate(_key14)) === _key14 || !hasOwn(rawProps, kebabKey))) {
+      (kebabKey = hyphenate(_key15)) === _key15 || !hasOwn(rawProps, kebabKey))) {
         if (options) {
           if (rawPrevProps && (
           // for camelCase
-          rawPrevProps[_key14] !== void 0 ||
+          rawPrevProps[_key15] !== void 0 ||
           // for kebab-case
           rawPrevProps[kebabKey] !== void 0)) {
-            props[_key14] = resolvePropValue(options, rawCurrentProps, _key14, void 0, instance, true);
+            props[_key15] = resolvePropValue(options, rawCurrentProps, _key15, void 0, instance, true);
           }
         } else {
-          delete props[_key14];
+          delete props[_key15];
         }
       }
     }
     if (attrs !== rawCurrentProps) {
-      for (var _key15 in attrs) {
-        if (!rawProps || !hasOwn(rawProps, _key15) && true) {
-          delete attrs[_key15];
+      for (var _key16 in attrs) {
+        if (!rawProps || !hasOwn(rawProps, _key16) && true) {
+          delete attrs[_key16];
           hasAttrsChanged = true;
         }
       }
@@ -5283,8 +5301,8 @@ function setFullProps(instance, rawProps, props, attrs) {
     var rawCurrentProps = toRaw(props);
     var castValues = rawCastValues || EMPTY_OBJ;
     for (var i = 0; i < needCastKeys.length; i++) {
-      var _key16 = needCastKeys[i];
-      props[_key16] = resolvePropValue(options, rawCurrentProps, _key16, castValues[_key16], instance, !hasOwn(castValues, _key16));
+      var _key17 = needCastKeys[i];
+      props[_key17] = resolvePropValue(options, rawCurrentProps, _key17, castValues[_key17], instance, !hasOwn(castValues, _key17));
     }
   }
   return hasAttrsChanged;
@@ -5524,8 +5542,8 @@ function isExplicable(type) {
   return explicitTypes.some(elem => type.toLowerCase() === elem);
 }
 function isBoolean() {
-  for (var _len9 = arguments.length, args = new Array(_len9), _key17 = 0; _key17 < _len9; _key17++) {
-    args[_key17] = arguments[_key17];
+  for (var _len10 = arguments.length, args = new Array(_len10), _key18 = 0; _key18 < _len10; _key18++) {
+    args[_key18] = arguments[_key18];
   }
   return args.some(elem => elem.toLowerCase() === "boolean");
 }
@@ -6567,12 +6585,12 @@ function baseCreateRenderer(options, createHydrationFns) {
           }
         }
       }
-      for (var _key18 in newProps) {
-        if (isReservedProp(_key18)) continue;
-        var next = newProps[_key18];
-        var prev = oldProps[_key18];
-        if (next !== prev && _key18 !== "value" || hostForcePatchProp && hostForcePatchProp(el, _key18)) {
-          hostPatchProp(el, _key18, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren,
+      for (var _key19 in newProps) {
+        if (isReservedProp(_key19)) continue;
+        var next = newProps[_key19];
+        var prev = oldProps[_key19];
+        if (next !== prev && _key19 !== "value" || hostForcePatchProp && hostForcePatchProp(el, _key19)) {
+          hostPatchProp(el, _key19, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren,
           // fixed by xxxxxx
           vnode.hostInstance);
         }
@@ -7687,8 +7705,8 @@ function transformVNodeArgs(transformer) {
   vnodeArgsTransformer = transformer;
 }
 var createVNodeWithArgsTransform = function () {
-  for (var _len10 = arguments.length, args = new Array(_len10), _key19 = 0; _key19 < _len10; _key19++) {
-    args[_key19] = arguments[_key19];
+  for (var _len11 = arguments.length, args = new Array(_len11), _key20 = 0; _key20 < _len11; _key20++) {
+    args[_key20] = arguments[_key20];
   }
   return _createVNode(...(vnodeArgsTransformer ? vnodeArgsTransformer(args, currentRenderingInstance) : args));
 };
@@ -8372,8 +8390,8 @@ function createSetupContext(instance) {
       },
       get emit() {
         return function (event) {
-          for (var _len11 = arguments.length, args = new Array(_len11 > 1 ? _len11 - 1 : 0), _key20 = 1; _key20 < _len11; _key20++) {
-            args[_key20 - 1] = arguments[_key20];
+          for (var _len12 = arguments.length, args = new Array(_len12 > 1 ? _len12 - 1 : 0), _key21 = 1; _key21 < _len12; _key21++) {
+            args[_key21 - 1] = arguments[_key21];
           }
           return instance.emit(event, ...args);
         };
@@ -9357,10 +9375,10 @@ function patchStyle(el, prev, next) {
           });
         }
       }
-      for (var _key21 in next) {
-        var _value2 = next[_key21];
+      for (var _key22 in next) {
+        var _value2 = next[_key22];
         {
-          parseStyleDecl(camelize(_key21), _value2).forEach((value2, key2) => {
+          parseStyleDecl(camelize(_key22), _value2).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style == null ? void 0 : style.set(key2, value2);
           });
@@ -9476,6 +9494,7 @@ var vModelText = {
     el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
   }
 };
+var vModelDynamic = vModelText;
 var systemModifiers = ["ctrl", "shift", "alt", "meta"];
 var modifierGuards = {
   stop: e => e.stopPropagation(),
@@ -9496,8 +9515,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len12 = arguments.length, args = new Array(_len12 > 1 ? _len12 - 1 : 0), _key22 = 1; _key22 < _len12; _key22++) {
-      args[_key22 - 1] = arguments[_key22];
+    for (var _len13 = arguments.length, args = new Array(_len13 > 1 ? _len13 - 1 : 0), _key23 = 1; _key23 < _len13; _key23++) {
+      args[_key23 - 1] = arguments[_key23];
     }
     return fn(event, ...args);
   };
@@ -9593,4 +9612,4 @@ var createApp = function () {
   };
   return app;
 };
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

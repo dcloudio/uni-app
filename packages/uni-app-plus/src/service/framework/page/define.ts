@@ -1,6 +1,6 @@
 import { isFunction, isPromise } from '@vue/shared'
-import { once, PageNodeOptions } from '@dcloudio/uni-shared'
-import { DefineComponent } from 'vue'
+import { type PageNodeOptions, once } from '@dcloudio/uni-shared'
+import type { DefineComponent } from 'vue'
 import { createPageNode } from '../dom/Page'
 import { setupPage } from './setup'
 import { getVueApp } from '../app/vueApp'

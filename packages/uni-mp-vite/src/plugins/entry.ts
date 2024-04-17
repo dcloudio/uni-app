@@ -1,18 +1,18 @@
 import path from 'path'
 import fs from 'fs'
 import {
+  type ComponentJson,
   addMiniProgramComponentJson,
-  ComponentJson,
+  decodeBase64Url,
+  encodeBase64Url,
   normalizeMiniProgramFilename,
   normalizePath,
-  removeExt,
-  encodeBase64Url,
-  decodeBase64Url,
   parseManifestJsonOnce,
+  removeExt,
 } from '@dcloudio/uni-cli-shared'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
-import { UniMiniProgramPluginOptions } from '../plugin'
+import type { UniMiniProgramPluginOptions } from '../plugin'
 
 const uniPagePrefix = 'uniPage://'
 const uniComponentPrefix = 'uniComponent://'

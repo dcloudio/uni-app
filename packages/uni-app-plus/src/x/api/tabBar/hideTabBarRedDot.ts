@@ -1,9 +1,9 @@
 import {
-  defineAsyncApi,
-  API_TYPE_HIDE_TAB_BAR_RED_DOT,
   API_HIDE_TAB_BAR_RED_DOT,
-  HideTabBarRedDotProtocol,
+  type API_TYPE_HIDE_TAB_BAR_RED_DOT,
   HideTabBarRedDotOptions,
+  HideTabBarRedDotProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getTabBar } from '../../framework/app/tabBar'
 

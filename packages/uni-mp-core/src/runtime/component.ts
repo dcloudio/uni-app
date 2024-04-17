@@ -1,9 +1,9 @@
 import { extend, isArray, isObject } from '@vue/shared'
 
 import {
-  ComponentOptions,
-  ComponentPublicInstance,
-  // @ts-ignore
+  type ComponentOptions,
+  type ComponentPublicInstance,
+  // @ts-expect-error
   devtoolsComponentAdded,
 } from 'vue'
 // @ts-expect-error
@@ -17,7 +17,7 @@ import {
 
 import { initProps } from './componentProps'
 import { applyOptions, initPropsObserver } from './componentOptions'
-import { CreateComponentOptions } from './componentInstance'
+import type { CreateComponentOptions } from './componentInstance'
 
 import Component = WechatMiniprogram.Component
 

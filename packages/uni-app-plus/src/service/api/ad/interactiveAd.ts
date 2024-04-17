@@ -1,9 +1,9 @@
 import {
-  defineSyncApi,
   API_CREATE_INTERACTIVE_AD,
-  API_TYPE_CREATE_INTERACTIVE_AD,
+  type API_TYPE_CREATE_INTERACTIVE_AD,
   CreateInteractiveAdOptions,
   CreateInteractiveAdProtocol,
+  defineSyncApi,
 } from '@dcloudio/uni-api'
 
 import { requireNativePlugin } from '../plugin/requireNativePlugin'

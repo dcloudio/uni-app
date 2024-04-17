@@ -39,6 +39,12 @@ export const ShowModalOptions: ApiOptions<API_TYPE_SHOW_MODAL> = {
         params.confirmText = t('uni.showModal.confirm')
       }
     },
+    //#if !_X_
     confirmColor: PRIMARY_COLOR,
+    //#endif
+    //#if _X_
+    //@ts-expect-error
+    confirmColor: '#576b95',
+    //#endif
   },
 }

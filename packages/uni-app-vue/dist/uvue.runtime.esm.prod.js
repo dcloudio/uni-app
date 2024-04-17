@@ -1325,8 +1325,9 @@ function normalizeProps(props) {
   return props;
 }
 var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
-var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
-function isRootImmediateHook(name) {
+// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
+function isRootImmediateHookX(name) {
+  var PAGE_SYNC_HOOKS = [ON_LOAD];
   return PAGE_SYNC_HOOKS.indexOf(name) > -1;
 }
 function isRootHook(name) {
@@ -3472,7 +3473,7 @@ function injectHook(type, hook) {
   if (target) {
     if (isRootHook(type) && target !== target.root) {
       target = target.root;
-      if (isRootImmediateHook(type)) {
+      if (isRootImmediateHookX(type)) {
         var proxy = target.proxy;
         callWithAsyncErrorHandling(hook.bind(proxy), target, type, ON_LOAD === type ? [proxy.$page.options] : []);
       }
@@ -3647,6 +3648,23 @@ extend$1( /* @__PURE__ */Object.create(null), {
   $nextTick: i => i.n || (i.n = fn => nextTick.bind(i.proxy)(fn, i)),
   $watch: i => instanceWatch.bind(i)
 });
+publicPropertiesMap.$callMethod = i => {
+  return function (methodName) {
+    var proxy = getExposeProxy(i) || i.proxy;
+    if (!proxy) {
+      return null;
+    }
+    var method = proxy[methodName];
+    if (method) {
+      for (var _len6 = arguments.length, args = new Array(_len6 > 1 ? _len6 - 1 : 0), _key7 = 1; _key7 < _len6; _key7++) {
+        args[_key7 - 1] = arguments[_key7];
+      }
+      return method(...args);
+    }
+    console.error("method ".concat(methodName, " not found"));
+    return null;
+  };
+};
 var hasSetupBinding = (state, key) => state !== EMPTY_OBJ && !state.__isScriptSetup && hasOwn(state, key);
 var PublicInstanceProxyHandlers = {
   get(_ref10, key) {
@@ -3928,28 +3946,28 @@ function applyOptions(instance) {
   }
   shouldCacheAccess = true;
   if (computedOptions) {
-    var _loop3 = function (_key7) {
-      var opt = computedOptions[_key7];
+    var _loop3 = function (_key8) {
+      var opt = computedOptions[_key8];
       var get = isFunction(opt) ? opt.bind(publicThis, publicThis) : isFunction(opt.get) ? opt.get.bind(publicThis, publicThis) : NOOP;
       var set = !isFunction(opt) && isFunction(opt.set) ? opt.set.bind(publicThis) : NOOP;
       var c = computed({
         get,
         set
       });
-      Object.defineProperty(ctx, _key7, {
+      Object.defineProperty(ctx, _key8, {
         enumerable: true,
         configurable: true,
         get: () => c.value,
         set: v => c.value = v
       });
     };
-    for (var _key7 in computedOptions) {
-      _loop3(_key7);
+    for (var _key8 in computedOptions) {
+      _loop3(_key8);
     }
   }
   if (watchOptions) {
-    for (var _key8 in watchOptions) {
-      createWatcher(watchOptions[_key8], ctx, publicThis, _key8);
+    for (var _key9 in watchOptions) {
+      createWatcher(watchOptions[_key9], ctx, publicThis, _key9);
     }
   }
   if (provideOptions) {
@@ -4241,8 +4259,8 @@ function createAppAPI(render, hydrate) {
       },
       set config(v) {},
       use(plugin) {
-        for (var _len6 = arguments.length, options = new Array(_len6 > 1 ? _len6 - 1 : 0), _key9 = 1; _key9 < _len6; _key9++) {
-          options[_key9 - 1] = arguments[_key9];
+        for (var _len7 = arguments.length, options = new Array(_len7 > 1 ? _len7 - 1 : 0), _key10 = 1; _key10 < _len7; _key10++) {
+          options[_key10 - 1] = arguments[_key10];
         }
         if (installedPlugins.has(plugin)) ;else if (plugin && isFunction(plugin.install)) {
           installedPlugins.add(plugin);
@@ -4418,30 +4436,30 @@ function updateProps(instance, rawProps, rawPrevProps, optimized) {
       hasAttrsChanged = true;
     }
     var kebabKey;
-    for (var _key10 in rawCurrentProps) {
+    for (var _key11 in rawCurrentProps) {
       if (!rawProps ||
       // for camelCase
-      !hasOwn(rawProps, _key10) && (
+      !hasOwn(rawProps, _key11) && (
       // it's possible the original props was passed in as kebab-case
       // and converted to camelCase (#955)
-      (kebabKey = hyphenate(_key10)) === _key10 || !hasOwn(rawProps, kebabKey))) {
+      (kebabKey = hyphenate(_key11)) === _key11 || !hasOwn(rawProps, kebabKey))) {
         if (options) {
           if (rawPrevProps && (
           // for camelCase
-          rawPrevProps[_key10] !== void 0 ||
+          rawPrevProps[_key11] !== void 0 ||
           // for kebab-case
           rawPrevProps[kebabKey] !== void 0)) {
-            props[_key10] = resolvePropValue(options, rawCurrentProps, _key10, void 0, instance, true);
+            props[_key11] = resolvePropValue(options, rawCurrentProps, _key11, void 0, instance, true);
           }
         } else {
-          delete props[_key10];
+          delete props[_key11];
         }
       }
     }
     if (attrs !== rawCurrentProps) {
-      for (var _key11 in attrs) {
-        if (!rawProps || !hasOwn(rawProps, _key11) && true) {
-          delete attrs[_key11];
+      for (var _key12 in attrs) {
+        if (!rawProps || !hasOwn(rawProps, _key12) && true) {
+          delete attrs[_key12];
           hasAttrsChanged = true;
         }
       }
@@ -4480,8 +4498,8 @@ function setFullProps(instance, rawProps, props, attrs) {
     var rawCurrentProps = toRaw(props);
     var castValues = rawCastValues || EMPTY_OBJ;
     for (var i = 0; i < needCastKeys.length; i++) {
-      var _key12 = needCastKeys[i];
-      props[_key12] = resolvePropValue(options, rawCurrentProps, _key12, castValues[_key12], instance, !hasOwn(castValues, _key12));
+      var _key13 = needCastKeys[i];
+      props[_key13] = resolvePropValue(options, rawCurrentProps, _key13, castValues[_key13], instance, !hasOwn(castValues, _key13));
     }
   }
   return hasAttrsChanged;
@@ -5411,12 +5429,12 @@ function baseCreateRenderer(options, createHydrationFns) {
           }
         }
       }
-      for (var _key13 in newProps) {
-        if (isReservedProp(_key13)) continue;
-        var next = newProps[_key13];
-        var prev = oldProps[_key13];
-        if (next !== prev && _key13 !== "value" || hostForcePatchProp && hostForcePatchProp(el, _key13)) {
-          hostPatchProp(el, _key13, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren,
+      for (var _key14 in newProps) {
+        if (isReservedProp(_key14)) continue;
+        var next = newProps[_key14];
+        var prev = oldProps[_key14];
+        if (next !== prev && _key14 !== "value" || hostForcePatchProp && hostForcePatchProp(el, _key14)) {
+          hostPatchProp(el, _key14, prev, next, namespace, vnode.children, parentComponent, parentSuspense, unmountChildren,
           // fixed by xxxxxx
           vnode.hostInstance);
         }
@@ -7808,10 +7826,10 @@ function patchStyle(el, prev, next) {
           });
         }
       }
-      for (var _key14 in next) {
-        var _value2 = next[_key14];
+      for (var _key15 in next) {
+        var _value2 = next[_key15];
         {
-          parseStyleDecl(camelize(_key14), _value2).forEach((value2, key2) => {
+          parseStyleDecl(camelize(_key15), _value2).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style == null ? void 0 : style.set(key2, value2);
           });
@@ -7923,6 +7941,7 @@ var vModelText = {
     el.setAnyAttribute("value", (_a = _binding.value) != null ? _a : "");
   }
 };
+var vModelDynamic = vModelText;
 var systemModifiers = ["ctrl", "shift", "alt", "meta"];
 var modifierGuards = {
   stop: e => e.stopPropagation(),
@@ -7943,8 +7962,8 @@ var withModifiers = (fn, modifiers) => {
       var guard = modifierGuards[modifiers[i]];
       if (guard && guard(event, modifiers)) return;
     }
-    for (var _len7 = arguments.length, args = new Array(_len7 > 1 ? _len7 - 1 : 0), _key15 = 1; _key15 < _len7; _key15++) {
-      args[_key15 - 1] = arguments[_key15];
+    for (var _len8 = arguments.length, args = new Array(_len8 > 1 ? _len8 - 1 : 0), _key16 = 1; _key16 < _len8; _key16++) {
+      args[_key16 - 1] = arguments[_key16];
     }
     return fn(event, ...args);
   };
@@ -8040,4 +8059,4 @@ var createApp = function () {
   };
   return app;
 };
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

@@ -1,17 +1,17 @@
 import {
   ElementTypes,
-  FunctionExpression,
-  MemoExpression,
+  type FunctionExpression,
+  type MemoExpression,
   NodeTypes,
-  PlainElementNode,
-  SourceLocation,
+  type PlainElementNode,
+  type SourceLocation,
   WITH_MEMO,
   convertToBlock,
   createCallExpression,
   findDir,
   locStub,
 } from '@vue/compiler-core'
-import { NodeTransform } from '../transform'
+import type { NodeTransform } from '../transform'
 
 const seen = new WeakSet()
 

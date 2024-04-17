@@ -1,4 +1,4 @@
-import { createApp, ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance, createApp } from 'vue'
 
 export function parseNVueDataset(attr?: Record<string, unknown>) {
   const dataset: Record<string, unknown> = {}

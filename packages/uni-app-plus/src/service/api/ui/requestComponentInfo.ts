@@ -1,7 +1,10 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { isArray } from '@vue/shared'
-import { SelectorQueryRequest, SelectorQueryNodeInfo } from '@dcloudio/uni-api'
-import { NVueElement, parseNVueDataset } from '@dcloudio/uni-shared'
+import type {
+  SelectorQueryNodeInfo,
+  SelectorQueryRequest,
+} from '@dcloudio/uni-api'
+import { type NVueElement, parseNVueDataset } from '@dcloudio/uni-shared'
 
 export function requestComponentInfo(
   pageVm: ComponentPublicInstance,

@@ -1,7 +1,7 @@
 import '@dcloudio/uni-components/style/input.css'
 import { Input } from '@dcloudio/uni-components'
-import { UniNodeJSON } from '@dcloudio/uni-shared'
-import { initVModel, UniComponent } from './UniComponent'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
+import { UniComponent, initVModel } from './UniComponent'
 
 export class UniInput extends UniComponent {
   constructor(

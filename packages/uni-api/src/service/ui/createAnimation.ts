@@ -2,9 +2,9 @@ import { extend } from '@vue/shared'
 import { once } from '@dcloudio/uni-shared'
 import {
   API_CREATE_ANIMATION,
-  API_TYPE_CREATE_ANIMATION,
-  CreateAnimationProtocol,
+  type API_TYPE_CREATE_ANIMATION,
   CreateAnimationOptions,
+  CreateAnimationProtocol,
 } from '../../protocols/ui/createAnimation'
 import { defineSyncApi } from '../../helpers/api'
 

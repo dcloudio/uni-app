@@ -1,8 +1,5 @@
 import type { ResolvedConfig } from 'vite'
-import {
-  UniVitePlugin,
-  rewriteCompileScriptSetupLangOnce,
-} from '@dcloudio/uni-cli-shared'
+import type { UniVitePlugin } from '@dcloudio/uni-cli-shared'
 import { createHandleHotUpdate } from './handleHotUpdate'
 import { createTransformIndexHtml } from './transformIndexHtml'
 import { createConfigureServer } from './configureServer'
@@ -15,9 +12,6 @@ export function uniH5Plugin(): UniVitePlugin {
     resolvedConfig: ResolvedConfig | null
   } = {
     resolvedConfig: null,
-  }
-  if (process.env.UNI_APP_X === 'true') {
-    rewriteCompileScriptSetupLangOnce()
   }
   return {
     name: 'uni:h5',

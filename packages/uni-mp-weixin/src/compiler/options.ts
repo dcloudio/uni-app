@@ -2,13 +2,13 @@ import path from 'path'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'
 import {
   COMPONENT_CUSTOM_HIDDEN,
+  type MiniProgramCompilerOptions,
   copyMiniProgramPluginJson,
   copyMiniProgramThemeJson,
-  MiniProgramCompilerOptions,
   transformComponentLink,
   transformRef,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
 import { transformAd } from './transforms/transformAd'
 
 import source from './project.config.json'
@@ -34,8 +34,18 @@ export const customElements = [
   'vertical-drag-gesture-handler',
   'horizontal-drag-gesture-handler',
   'long-press-gesture-handler',
+  //其他
+  'draggable-sheet',
+  'grid-builder',
   'grid-view',
+  'list-builder',
   'list-view',
+  'nested-scroll-body',
+  'nested-scroll-header',
+  'open-container',
+  'share-element',
+  'snapshot',
+  'span',
   'sticky-header',
   'sticky-section',
 ]

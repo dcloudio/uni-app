@@ -1,4 +1,4 @@
-import { MPProtocol } from './types'
+import type { MPProtocol } from './types'
 
 export const getAppAuthorizeSetting: MPProtocol = {
   returnValue: function (fromRes, toRes) {

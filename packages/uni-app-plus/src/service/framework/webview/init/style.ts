@@ -1,6 +1,6 @@
 import { formatLog } from '@dcloudio/uni-shared'
 import { parseWebviewStyle } from '../style'
-import { initUniPageUrl, initDebugRefresh } from '../utils'
+import { initDebugRefresh, initUniPageUrl } from '../utils'
 import { parseTheme, useWebviewThemeChange } from '../../../theme'
 
 export function initWebviewStyle(

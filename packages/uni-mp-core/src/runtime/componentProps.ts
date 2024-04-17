@@ -1,10 +1,10 @@
-import {
+import type {
   ComponentPropsOptions,
   ComponentPublicInstance,
 } from '@vue/runtime-core'
 import { extend, isArray, isFunction, isPlainObject } from '@vue/shared'
-import type { MPComponentOptions, MPComponentInstance } from './component'
-// @ts-ignore
+import type { MPComponentInstance, MPComponentOptions } from './component'
+// @ts-expect-error
 import { findComponentPropsData } from 'vue'
 
 import Component = WechatMiniprogram.Component

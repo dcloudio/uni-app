@@ -1,13 +1,13 @@
 import {
+  type EventChannel,
   addLeadingSlash,
-  EventChannel,
-  resolveComponentInstance,
   normalizeStyles,
+  resolveComponentInstance,
 } from '@dcloudio/uni-shared'
 import { extend } from '@vue/shared'
 import {
-  ComponentInternalInstance,
-  ComponentPublicInstance,
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
   getCurrentInstance,
 } from 'vue'
 import { rpx2px } from './util'

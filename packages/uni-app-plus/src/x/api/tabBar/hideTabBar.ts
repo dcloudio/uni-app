@@ -1,11 +1,11 @@
 import {
-  defineAsyncApi,
-  API_TYPE_HIDE_TAB_BAR,
   API_HIDE_TAB_BAR,
+  type API_TYPE_HIDE_TAB_BAR,
   HideTabBarProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getTabBar } from '../../framework/app/tabBar'
-import { HideTabBarOptions } from '@dcloudio/uni-app-x/types/uni'
+import type { HideTabBarOptions } from '@dcloudio/uni-app-x/types/uni'
 
 export const hideTabBar = defineAsyncApi<API_TYPE_HIDE_TAB_BAR>(
   API_HIDE_TAB_BAR,

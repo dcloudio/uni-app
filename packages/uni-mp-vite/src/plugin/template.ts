@@ -1,18 +1,18 @@
 import path from 'path'
 import debug from 'debug'
-import { EmittedFile, GetModuleInfo } from 'rollup'
-import { ResolvedConfig } from 'vite'
+import type { EmittedFile, GetModuleInfo } from 'rollup'
+import type { ResolvedConfig } from 'vite'
 import {
+  type MiniProgramFilterOptions,
   addMiniProgramTemplateFile,
-  removeExt,
-  normalizeMiniProgramFilename,
-  MiniProgramFilterOptions,
-  findMiniProgramTemplateFiles,
   addMiniProgramTemplateFilter,
   clearMiniProgramTemplateFiles,
+  findMiniProgramTemplateFiles,
+  normalizeMiniProgramFilename,
+  removeExt,
 } from '@dcloudio/uni-cli-shared'
 import { getFiltersCache } from '../plugins/renderjs'
-import { UniMiniProgramPluginOptions } from '.'
+import type { UniMiniProgramPluginOptions } from '.'
 
 const debugTemplate = debug('uni:mp-template')
 

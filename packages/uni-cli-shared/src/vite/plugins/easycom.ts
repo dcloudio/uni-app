@@ -1,7 +1,7 @@
 import path from 'path'
-import { Plugin } from 'vite'
-import { capitalize, camelize } from '@vue/shared'
-import { createFilter, FilterPattern } from '@rollup/pluginutils'
+import type { Plugin } from 'vite'
+import { camelize, capitalize } from '@vue/shared'
+import { type FilterPattern, createFilter } from '@rollup/pluginutils'
 import { parseVueRequest } from '../utils/url'
 import { EXTNAME_VUE_TEMPLATE } from '../../constants'
 import {

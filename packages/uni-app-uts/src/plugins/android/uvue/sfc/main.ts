@@ -4,7 +4,7 @@ import type {
   SourceMapInput,
   TransformPluginContext,
 } from 'rollup'
-import { SourceMapConsumer, type RawSourceMap } from 'source-map-js'
+import { type RawSourceMap, SourceMapConsumer } from 'source-map-js'
 import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
 import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-mapping'

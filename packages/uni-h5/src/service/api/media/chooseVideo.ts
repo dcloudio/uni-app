@@ -9,7 +9,7 @@ import {
 import { fileToUrl, revokeObjectURL } from '../../../helpers/file'
 import _createInput from './createInput'
 import { getInteractStatus } from '@dcloudio/uni-components'
-import { useI18n, initI18nChooseFileMsgsOnce } from '@dcloudio/uni-core'
+import { initI18nChooseFileMsgsOnce, useI18n } from '@dcloudio/uni-core'
 //#endregion
 
 //#region types

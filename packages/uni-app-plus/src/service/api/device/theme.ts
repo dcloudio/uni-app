@@ -1,5 +1,5 @@
-import { ON_THEME_CHANGE, OFF_THEME_CHANGE } from '@dcloudio/uni-shared'
-import { defineOnApi, defineOffApi } from '@dcloudio/uni-api'
+import { OFF_THEME_CHANGE, ON_THEME_CHANGE } from '@dcloudio/uni-shared'
+import { defineOffApi, defineOnApi } from '@dcloudio/uni-api'
 
 const themeChangeCallBack = (res: UniApp.OnThemeChangeCallbackResult) => {
   UniServiceJSBridge.invokeOnCallback(ON_THEME_CHANGE, res)

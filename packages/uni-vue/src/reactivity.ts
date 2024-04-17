@@ -1,4 +1,4 @@
-import { isObject, isArray, isMap, isSet, isPlainObject } from '@vue/shared'
+import { isArray, isMap, isObject, isPlainObject, isSet } from '@vue/shared'
 import { isRef } from 'vue'
 
 export function traverse(value: unknown, seen: Set<unknown> = new Set()) {

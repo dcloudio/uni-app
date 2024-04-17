@@ -1,4 +1,4 @@
-import { UniEvent, ON_KEYBOARD_HEIGHT_CHANGE } from '@dcloudio/uni-shared'
+import { ON_KEYBOARD_HEIGHT_CHANGE, type UniEvent } from '@dcloudio/uni-shared'
 
 let focusTimeout = 0
 let keyboardHeight = 0

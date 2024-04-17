@@ -1,12 +1,12 @@
 import {
-  hasOwn,
-  makeMap,
-  isArray,
-  isString,
-  isObject,
-  toRawType,
   capitalize,
+  hasOwn,
+  isArray,
+  isObject,
   isPlainObject,
+  isString,
+  makeMap,
+  toRawType,
 } from '@vue/shared'
 
 export const CHOOSE_SIZE_TYPES = ['original', 'compressed']

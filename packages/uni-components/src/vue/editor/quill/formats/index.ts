@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import QuillClass from 'quill'
+import type QuillClass from 'quill'
 
 import divider from './divider'
 import ins from './ins'

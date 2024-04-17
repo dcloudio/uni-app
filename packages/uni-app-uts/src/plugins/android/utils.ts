@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { ImportSpecifier, init, parse } from 'es-module-lexer'
+import { type ImportSpecifier, init, parse } from 'es-module-lexer'
 import {
   // AutoImportOptions,
   createResolveErrorMsg,
@@ -16,7 +16,7 @@ import { isArray, isPlainObject, isString } from '@vue/shared'
 // import AutoImport from 'unplugin-auto-import/vite'
 // import { once } from '@dcloudio/uni-shared'
 import type { /*SourceMapInput, */ PluginContext } from 'rollup'
-import { Position, SourceLocation } from '@vue/compiler-core'
+import type { Position, SourceLocation } from '@vue/compiler-core'
 
 import { createCompilerError } from './uvue/compiler/errors'
 

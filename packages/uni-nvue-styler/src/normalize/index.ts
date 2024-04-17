@@ -1,12 +1,12 @@
 import { camelize, hasOwn, isFunction, isString } from '@vue/shared'
-import type { Plugin, Declaration, Helpers, Rule } from 'postcss'
+import type { Declaration, Helpers, Plugin, Rule } from 'postcss'
 import {
+  COMBINATORS_RE,
   LENGTH_REGEXP,
+  type NormalizeOptions,
   SUPPORT_CSS_UNIT,
   hyphenateStyleProperty,
   isNumber,
-  COMBINATORS_RE,
-  NormalizeOptions,
 } from '../utils'
 import { getNormalizeMap } from './map'
 

@@ -1,8 +1,8 @@
 import {
-  Normalize,
-  supportedEnumReason,
-  defaultValueReason,
+  type Normalize,
   compatibilityReason,
+  defaultValueReason,
+  supportedEnumReason,
 } from '../utils'
 
 export const normalizeFlexWrap: Normalize = (v) => {

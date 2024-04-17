@@ -1,19 +1,19 @@
 import {
-  defineAsyncApi,
-  API_TYPE_SWITCH_TAB,
   API_SWITCH_TAB,
-  DefineAsyncApiFn,
-  SwitchTabProtocol,
+  type API_TYPE_SWITCH_TAB,
+  type DefineAsyncApiFn,
   SwitchTabOptions,
+  SwitchTabProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
-import { RouteOptions } from '../../../service/api/route/utils'
+import type { RouteOptions } from '../../../service/api/route/utils'
 import {
   getTabIndex,
   isTabPage,
   switchSelect,
 } from '../../framework/app/tabBar'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { closePage } from './utils'
 
 export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (
