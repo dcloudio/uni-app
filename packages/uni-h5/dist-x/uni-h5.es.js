@@ -18198,11 +18198,11 @@ const modal = /* @__PURE__ */ defineComponent({
           "onTouchmove": onEventPrevent
         }, [VNODE_MASK, createVNode("div", {
           "class": "uni-modal"
-        }, [title && createVNode("div", {
+        }, [title || createVNode("div", {
           "class": "uni-modal__hd"
         }, [createVNode("strong", {
           "class": "uni-modal__title",
-          "textContent": title
+          "textContent": title || ""
         }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
           "class": "uni-modal__textarea",
           "rows": "1",

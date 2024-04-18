@@ -1029,6 +1029,16 @@ function initScope(pageId, vm, pageInstance) {
         return vm.$nativePage.viewToTempFilePath.bind(vm.$nativePage);
       }
     });
+    Object.defineProperty(vm, "$getPageStyle", {
+      get() {
+        return vm.$nativePage.getPageStyle.bind(vm.$nativePage);
+      }
+    });
+    Object.defineProperty(vm, "$setPageStyle", {
+      get() {
+        return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
+      }
+    });
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {
@@ -1857,9 +1867,9 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   return bodyNode.querySelector("#".concat(id2));
 });
 function isVueComponent(comp) {
-  var has$option = typeof comp.$ === "object";
+  var has$instance = typeof comp.$ === "object";
   var has$el = typeof comp.$el === "object";
-  return has$option && has$el;
+  return has$instance && has$el;
 }
 var isFunction = (val) => typeof val === "function";
 class NodesRefImpl {
