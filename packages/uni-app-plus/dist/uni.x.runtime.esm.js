@@ -1858,9 +1858,8 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
 });
 function isVueComponent(comp) {
   var has$option = typeof comp.$ === "object";
-  var has$nativePage = typeof comp.$nativePage === "object";
-  var has$mpType = typeof comp.$mpType === "string";
-  return has$option && has$nativePage && has$mpType;
+  var has$el = typeof comp.$el === "object";
+  return has$option && has$el;
 }
 var isFunction = (val) => typeof val === "function";
 class NodesRefImpl {

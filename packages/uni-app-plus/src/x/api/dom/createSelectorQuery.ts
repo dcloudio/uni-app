@@ -11,11 +11,10 @@ import { getCurrentPage } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance } from 'vue'
 
 function isVueComponent(comp: any) {
-  const has$option = typeof comp.$ === 'object'
-  const has$nativePage = typeof comp.$nativePage === 'object'
-  const has$mpType = typeof comp.$mpType === 'string'
+  const has$instance = typeof comp.$ === 'object'
+  const has$el = typeof comp.$el === 'object'
 
-  return has$option && has$nativePage && has$mpType
+  return has$instance && has$el
 }
 
 const isFunction = (val: any): val is Function => typeof val === 'function'
