@@ -9,8 +9,11 @@ import {
   splitRE,
 } from './utils'
 
-interface GenerateJavaScriptRuntimeCodeFrameOptions
-  extends GenerateRuntimeCodeFrameOptions {}
+export interface GenerateJavaScriptRuntimeCodeFrameOptions
+  extends GenerateRuntimeCodeFrameOptions {
+  language: 'javascript'
+}
+
 const JS_ERROR_RE = /\(\d+:\d+\)\s(.*)\s@([^\s]+\.js)\:(\d+)\:(\d+)/
 const VUE_ERROR_RE = /@([^\s]+\.js)\:(\d+)\:(\d+)/
 

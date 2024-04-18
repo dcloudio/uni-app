@@ -75,6 +75,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
           process.env.UNI_APP_X_CACHE_DIR
             ? path.resolve(
                 process.env.UNI_APP_X_CACHE_DIR,
+                'sourcemap',
                 APP_SERVICE_FILENAME_MAP
               )
             : path.resolve(

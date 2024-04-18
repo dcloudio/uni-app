@@ -183,9 +183,10 @@ function parseFilenameByClassName(className: string) {
   return kotlinManifest.manifest[className.split('$')[0]] || 'index.kt'
 }
 
-interface GenerateKotlinRuntimeCodeFrameOptions
+export interface GenerateKotlinRuntimeCodeFrameOptions
   extends GenerateRuntimeCodeFrameOptions {
   appid: string
+  language: 'kotlin'
 }
 
 export function parseUTSKotlinRuntimeStacktrace(
