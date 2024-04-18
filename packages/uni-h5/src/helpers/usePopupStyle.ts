@@ -14,6 +14,7 @@ export type popupStyleType = {
     left: string
     top: string
     bottom: string
+    width?: string
   }
   triangle: {
     'border-width': string
@@ -24,7 +25,7 @@ export type popupStyleType = {
   }
 }
 
-export function usePopupStyle(props: Data) {
+export function usePopupStyle(props: Data, dynamicWidth = false) {
   const popupWidth = ref(0)
   const popupHeight = ref(0)
 
@@ -62,15 +63,22 @@ export function usePopupStyle(props: Data) {
         'border-style': 'solid',
       })
       const popoverLeft = getNumber(popover.left)
-      const popoverWidth = getNumber(popover.width)
+      const defaultWidth = 300
+      const popoverWidth = getNumber(
+        popover.width ? popover.width : defaultWidth
+      )
       const popoverTop = getNumber(popover.top)
       const popoverHeight = getNumber(popover.height)
+      const layerWidth = dynamicWidth ? popoverWidth : defaultWidth
       const center = popoverLeft + popoverWidth / 2
       contentStyle.transform = 'none !important'
-      const contentLeft = Math.max(0, center - 300 / 2)
+      const contentLeft = Math.max(0, center - layerWidth / 2)
       contentStyle.left = `${contentLeft}px`
+      if (dynamicWidth) {
+        contentStyle.width = `${layerWidth}px`
+      }
       let triangleLeft = Math.max(12, center - contentLeft)
-      triangleLeft = Math.min(300 - 12, triangleLeft)
+      triangleLeft = Math.min(layerWidth - 12, triangleLeft)
       triangleStyle.left = `${triangleLeft}px`
       const vcl = popupHeight.value / 2
       if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {

@@ -109,7 +109,7 @@ export default /*#__PURE__*/ defineComponent({
     const main: Ref<HTMLElement | null> = ref(null)
     const { t } = useI18n()
     const { _close } = useActionSheetLoader(props, emit as SetupContext['emit'])
-    const { popupStyle } = usePopupStyle(props)
+    const { popupStyle } = usePopupStyle(props, true)
 
     let scroller: Scroller
 
