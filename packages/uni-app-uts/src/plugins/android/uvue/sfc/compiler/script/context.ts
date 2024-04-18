@@ -93,6 +93,9 @@ export class ScriptCompileContext {
         return babelParse(input, {
           plugins,
           sourceType: 'module',
+          // 阻止语法解析报错，不影响后续的语法解析，比如
+          // This member cannot have an 'override' modifier because its containing class does not extend another class.
+          errorRecovery: true,
         }).program
       } catch (e: any) {
         if (e.loc && startLine) {
