@@ -1685,8 +1685,8 @@ function logError(err, type, contextVNode) {
     if (contextVNode) {
       popWarningContext();
     }
-    if (throwInDev) {
-      throw err;
+    if (err instanceof Error) {
+      console.error("---BEGIN:EXCEPTION---".concat(err.message, "\n").concat(err.stack || "", "---END:EXCEPTION---"));
     } else {
       console.error(err);
     }
@@ -8715,6 +8715,7 @@ var resolveFilter = null;
 var compatUtils = null;
 var DeprecationTypes = null;
 var NODE_EXT_STYLES = "styles";
+var NODE_EXT_PARENT_STYLES = "parentStyles";
 var NODE_EXT_CLASS_STYLE = "classStyle";
 var NODE_EXT_STYLE = "style";
 var NODE_EXT_IS_TEXT_NODE = "isTextNode";
@@ -8732,6 +8733,12 @@ function getExtraStyles(el) {
 }
 function setExtraStyles(el, styles) {
   setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
+function getExtraParentStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
+}
+function setExtraParentStyles(el, styles) {
+  setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
 }
 function getExtraClassStyle(el) {
   return getNodeExtraData(el, NODE_EXT_CLASS_STYLE);
@@ -8871,27 +8878,43 @@ function parseClassName(_ref23, parentStyles, el) {
     });
   });
 }
-function parseClassListWithStyleSheet(classList, stylesheet) {
-  var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  var context = {
-    styles: /* @__PURE__ */new Map(),
-    weights: {}
-  };
+class ParseStyleContext {
+  constructor() {
+    this.styles = /* @__PURE__ */new Map();
+    this.weights = {};
+  }
+}
+function parseClassListWithStyleSheet(classList, stylesheet, parentStylesheet) {
+  var el = arguments.length > 3 && arguments[3] !== undefined ? arguments[3] : null;
+  var context = new ParseStyleContext();
   classList.forEach(className => {
     var parentStyles = stylesheet && stylesheet[className];
     if (parentStyles) {
       parseClassName(context, parentStyles, el);
     }
   });
+  if (parentStylesheet != null) {
+    classList.forEach(className => {
+      var _a;
+      var parentStyles = (_a = (parentStylesheet != null ? parentStylesheet : []).find(style => style[className] !== null)) == null ? void 0 : _a[className];
+      if (parentStyles != null) {
+        parseClassName(context, parentStyles, el);
+      }
+    });
+  }
   return context;
 }
 function parseClassStyles(el) {
   var styles = getExtraStyles(el);
-  return parseClassListWithStyleSheet(el.classList, styles, el);
+  var parentStyles = getExtraParentStyles(el);
+  if (styles == null && parentStyles == null || el.classList.length == 0) {
+    return new ParseStyleContext();
+  }
+  return parseClassListWithStyleSheet(el.classList, styles, parentStyles, el);
 }
 function parseClassList(classList, instance) {
   var el = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : null;
-  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), el).styles;
+  return parseClassListWithStyleSheet(classList, parseStyleSheet(instance), null, el).styles;
 }
 function parseStyleSheet(_ref24) {
   var {
@@ -8947,6 +8970,9 @@ function patchClass(el, pre, next) {
   var classList = next ? next.split(" ") : [];
   el.classList = classList;
   setExtraStyles(el, parseStyleSheet(instance));
+  if (instance.parent != null && instance !== instance.root) {
+    setExtraParentStyles(el, instance.parent.type.styles);
+  }
   updateClassStyles(el);
 }
 function updateClassStyles(el) {
