@@ -136,6 +136,7 @@ const vuePreset = {
     'provide',
     'useCssModule',
     'createApp',
+    'hasInjectionContext',
 
     // effect scope
     'effectScope',
