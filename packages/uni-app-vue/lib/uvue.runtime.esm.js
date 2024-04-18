@@ -8332,11 +8332,11 @@ function getNodeExtraData(el, name) {
 function getExtraStyles(el) {
   return getNodeExtraData(el, NODE_EXT_STYLES);
 }
-function getExtraParentStyles(el) {
-  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
-}
 function setExtraStyles(el, styles) {
   setNodeExtraData(el, NODE_EXT_STYLES, styles);
+}
+function getExtraParentStyles(el) {
+  return getNodeExtraData(el, NODE_EXT_PARENT_STYLES);
 }
 function setExtraParentStyles(el, styles) {
   setNodeExtraData(el, NODE_EXT_PARENT_STYLES, styles);
@@ -8573,7 +8573,10 @@ function patchClass(el, pre, next, instance = null) {
   el.classList = classList;
   setExtraStyles(el, parseStyleSheet(instance));
   if (instance.parent != null && instance !== instance.root) {
-    setExtraParentStyles(el, instance.parent.type.styles);
+    setExtraParentStyles(
+      el,
+      instance.parent.type.styles
+    );
   }
   updateClassStyles(el);
 }
