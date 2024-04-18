@@ -62,7 +62,11 @@ export { parseInjectModules, parseExtApiProviders } from './utils'
 
 export * from './sourceMap'
 
-export { parseUTSKotlinRuntimeStacktrace } from './stacktrace'
+export {
+  parseUTSRuntimeStacktrace,
+  parseUTSKotlinRuntimeStacktrace,
+  parseUTSJavaScriptRuntimeStacktrace,
+} from './stacktrace'
 
 export { compile as toKotlin } from './kotlin'
 export { compile as toSwift } from './swift'
