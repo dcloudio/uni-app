@@ -21398,7 +21398,7 @@ const props$6 = {
   },
   confirmColor: {
     type: String,
-    // @ts-ignore
+    // @ts-expect-error
     default: "#007aff"
   },
   visible: {
@@ -21447,12 +21447,7 @@ const modal = /* @__PURE__ */ defineComponent({
           "onTouchmove": onEventPrevent
         }, [VNODE_MASK, createVNode("div", {
           "class": "uni-modal"
-        }, [title && createVNode("div", {
-          "class": "uni-modal__hd"
-        }, [createVNode("strong", {
-          "class": "uni-modal__title",
-          "textContent": title
-        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
+        }, [title || false, editable ? createVNode("textarea", {
           "class": "uni-modal__textarea",
           "rows": "1",
           "placeholder": placeholderText,
