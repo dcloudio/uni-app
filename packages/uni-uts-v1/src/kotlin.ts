@@ -345,7 +345,8 @@ export async function runKotlinDev(
       .concat(uniModuleDeps)
 
     const depJars = uniModules.length
-      ? getUniModulesEncryptCacheJars(cacheDir, uniModules) // 加密插件jar
+      ? // 加密插件已经迁移到普通插件目录了，理论上不需要了
+        getUniModulesEncryptCacheJars(cacheDir, uniModules) // 加密插件jar
           .concat(getUniModulesCacheJars(cacheDir, uniModules)) // 普通插件jar
           .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候）
       : []

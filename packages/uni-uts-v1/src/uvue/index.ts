@@ -353,6 +353,7 @@ async function runKotlinDev(
           getKotlincHome(),
           [kotlinClassOutDir].concat(
             getDefaultJar(2)
+              // 加密插件已经迁移到普通插件目录了，理论上不需要了
               .concat(getUniModulesEncryptCacheJars(cacheDir)) // 加密插件jar
               .concat(getUniModulesCacheJars(cacheDir)) // 普通插件jar
               .concat(getUniModulesJars(outputDir)) // cli版本插件jar（没有指定cache的时候）
