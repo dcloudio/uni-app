@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-harmony",
-  "version": "3.0.0-alpha-4010320240419002",
+  "version": "3.0.0-alpha-4010320240419003",
   "description": "@dcloudio/uni-app-harmony",
   "files": [
     "dist",
@@ -27,11 +27,11 @@
     "postcss-selector-parser": "^6.0.6"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4010320240419002",
-    "@dcloudio/uni-app-plus": "3.0.0-alpha-4010320240419002",
-    "@dcloudio/uni-components": "3.0.0-alpha-4010320240419002",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-4010320240419002",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4010320240419002",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4010320240419003",
+    "@dcloudio/uni-app-plus": "3.0.0-alpha-4010320240419003",
+    "@dcloudio/uni-components": "3.0.0-alpha-4010320240419003",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4010320240419003",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4010320240419003",
     "@types/pako": "1.0.2",
     "@vue/compiler-sfc": "3.4.21",
     "autoprefixer": "^10.4.18",
