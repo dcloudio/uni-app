@@ -1,11 +1,18 @@
-import { Ref, ref, computed, watch, onMounted, HTMLAttributes } from 'vue'
+import {
+  type HTMLAttributes,
+  type Ref,
+  computed,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 import { extend } from '@vue/shared'
 import { LINEFEED } from '@dcloudio/uni-shared'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import {
-  props as fieldProps,
   emit as fieldEmit,
+  props as fieldProps,
   useField,
 } from '../../helpers/useField'
 import ResizeSensor from '../resize-sensor/index'
@@ -87,6 +94,23 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         }
       }
     )
+
+    //#if _X_
+    watch(
+      () => props.autoHeight,
+      (autoHeight) => {
+        const el = rootRef.value as HTMLElement
+        const wrapper = wrapperRef.value as HTMLElement
+        if (autoHeight) {
+          el.style.height = 'auto'
+          wrapper.style.height = heightRef.value + 'px'
+        } else {
+          el.style.height = ''
+          wrapper.style.height = ''
+        }
+      }
+    )
+    //#endif
 
     function onResize({ height }: { height: number }) {
       heightRef.value = height
@@ -178,7 +202,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             value={state.value}
             disabled={!!props.disabled}
             maxlength={state.maxlength}
-            // @ts-ignore
             enterkeyhint={props.confirmType}
             inputmode={props.inputmode as HTMLAttributes['inputmode']}
             class={{
@@ -212,7 +235,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               {valueCompute.value.map((item) => (
                 <div>{item.trim() ? item : '.'}</div>
               ))}
-              {/* @ts-ignore */}
+              {}
               <ResizeSensor initial onResize={onResize} />
             </div>
             {props.confirmType === 'search' ? (
