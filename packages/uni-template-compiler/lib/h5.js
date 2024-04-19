@@ -1,4 +1,4 @@
-const getCompilerOptions = require('./mp.js');
+const getCompilerOptions = require('./mp.js')
 const TAGS = {
   br: 'view',
   hr: 'view',
