@@ -8532,7 +8532,8 @@ function parseStyleSheet({
     }
     const styles = [];
     if (appContext && __globalStyles) {
-      styles.push(__globalStyles);
+      const globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
+      styles.push(...globalStyles);
     }
     const page = root.type;
     if (component !== page && isArray(page.styles)) {
