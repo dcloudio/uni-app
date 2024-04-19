@@ -1,6 +1,8 @@
+import fs from 'fs-extra'
 import path from 'path'
 
-import { defineConfig } from 'vite'
+import { type Plugin, defineConfig } from 'vite'
+import { sync } from 'fast-glob'
 import jscc from 'rollup-plugin-jscc'
 import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
@@ -39,6 +41,7 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
       _X_: isX ? 1 : 0,
+      _NEW_X_: isX && process.env.UNI_APP_EXT_API_DIR ? 1 : 0,
     },
   }),
 ]
@@ -105,6 +108,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    ...(isX && process.env.UNI_APP_EXT_API_DIR ? [uts2ts()] : []),
     vue({
       template: {
         compilerOptions: {
@@ -168,3 +172,84 @@ export default defineConfig({
     },
   },
 })
+
+// if (!process.env.UNI_APP_EXT_API_DIR) {
+//   console.error(`UNI_APP_EXT_API_DIR is not defined`)
+//   process.exit(0)
+// }
+
+const extApiDirTemp = path.resolve(__dirname, 'temp', 'uni-ext-api')
+
+function checkExtApiDir(name: string) {
+  if (fs.existsSync(path.resolve(extApiDirTemp, name))) {
+    return
+  }
+  const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
+
+  // 拷贝到临时目录
+  fs.copySync(path.resolve(extApiDir, name), path.resolve(extApiDirTemp, name))
+  // 重命名后缀
+  sync('**/*.uts', {
+    absolute: true,
+    cwd: path.resolve(extApiDirTemp, name),
+  }).forEach((file) => {
+    fs.renameSync(file, file + '.ts')
+  })
+}
+
+function resolveExtApi(name: string) {
+  checkExtApiDir(name)
+  const filename = path.resolve(
+    extApiDirTemp,
+    name,
+    'utssdk',
+    'app-android',
+    'index.uts.ts'
+  )
+  return fs.existsSync(filename)
+    ? filename
+    : path.resolve(extApiDirTemp, name, 'utssdk', 'index.uts.ts')
+}
+
+function uts2ts(): Plugin {
+  return {
+    name: 'uts2ts',
+    config() {
+      return {
+        resolve: {
+          extensions: [
+            '.mjs',
+            '.js',
+            '.mts',
+            '.ts',
+            '.jsx',
+            '.tsx',
+            '.json',
+            '.uts.ts',
+          ],
+          alias: [
+            {
+              find: '@dcloudio/uni-runtime',
+              replacement: resolve('../uni-runtime/src/index.ts'),
+            },
+            {
+              find: /^@dcloudio\/uni-ext-api\/(.*)/,
+              replacement: '$1',
+              customResolver(source) {
+                return resolveExtApi(source)
+              },
+            },
+          ],
+        },
+      }
+    },
+    buildStart() {
+      // 清理临时目录
+      fs.emptyDirSync(extApiDirTemp)
+    },
+    buildEnd() {
+      // 清理临时目录
+      fs.emptyDirSync(extApiDirTemp)
+    },
+  }
+}

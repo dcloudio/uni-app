@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   '@babel/plugin-transform-block-scoping': 7.19.4
 
@@ -55,6 +59,9 @@ importers:
       '@rollup/plugin-terser':
         specifier: ^0.2.1
         version: 0.2.1(rollup@4.14.2)
+      '@types/fs-extra':
+        specifier: ^9.0.13
+        version: 9.0.13
       '@types/jest':
         specifier: ^29.2.3
         version: 29.5.12
@@ -100,6 +107,9 @@ importers:
       cypress:
         specifier: ^10.7.0
         version: 10.11.0
+      dotenv:
+        specifier: ^16.4.5
+        version: 16.4.5
       enquirer:
         specifier: ^2.3.6
         version: 2.4.1
@@ -950,6 +960,12 @@ importers:
       estree-walker:
         specifier: ^2.0.2
         version: 2.0.2
+      fast-glob:
+        specifier: ^3.2.11
+        version: 3.3.2
+      fs-extra:
+        specifier: ^10.0.0
+        version: 10.1.0
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.3.2)
@@ -6386,6 +6402,11 @@ packages:
       webidl-conversions: 5.0.0
     dev: false
 
+  /dotenv@16.4.5:
+    resolution: {integrity: sha512-ZmdL2rui+eB2YwhsWzjInR8LldtZHGDoQ1ugH85ppHKwpUHL7j7rN0Ti9NCnGiQbhaZ11FpR+7ao1dNsmduNUg==}
+    engines: {node: '>=12'}
+    dev: true
+
   /ecc-jsbn@0.1.2:
     resolution: {integrity: sha512-eh9O+hwRHNbG4BLTjEl3nw044CkGm5X6LoaCf7LPp7UU8Qrt47JYNi6nPX8xjW97TKGKm1ouctg0QSpZe9qrnw==}
     dependencies:
@@ -11487,7 +11508,3 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false

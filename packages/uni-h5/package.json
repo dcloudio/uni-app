@@ -52,6 +52,8 @@
     "acorn-loose": "^8.2.1",
     "acorn-walk": "^8.2.0",
     "estree-walker": "^2.0.2",
+    "fast-glob": "^3.2.11",
+    "fs-extra": "^10.0.0",
     "vue": "3.4.21"
   }
 }
