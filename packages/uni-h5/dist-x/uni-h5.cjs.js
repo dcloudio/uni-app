@@ -9103,6 +9103,55 @@ function initPage(vm) {
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
+  {
+    const pageMeta = page.meta;
+    vm.$setPageStyle = (style) => {
+      for (const key in style) {
+        switch (key) {
+          case "navigationBarBackgroundColor":
+            pageMeta.navigationBar.backgroundColor = style[key];
+            break;
+          case "navigationBarTextStyle":
+            const textStyle = style[key];
+            if (textStyle == null) {
+              continue;
+            }
+            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+              textStyle
+            ) ? uniShared.normalizeTitleColor(textStyle || "") : textStyle;
+            break;
+          case "navigationBarTitleText":
+            pageMeta.navigationBar.titleText = style[key];
+            break;
+          case "titleImage":
+            pageMeta.navigationBar.titleImage = style[key];
+            break;
+          case "navigationStyle":
+            pageMeta.navigationBar.style = style[key];
+            break;
+          case "disableScroll":
+            pageMeta.disableScroll = style[key];
+            break;
+          case "enablePullDownRefresh":
+            pageMeta.enablePullDownRefresh = style[key];
+            break;
+          case "onReachBottomDistance":
+            pageMeta.onReachBottomDistance = style[key];
+            break;
+        }
+      }
+    };
+    vm.$getPageStyle = () => ({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage,
+      navigationStyle: pageMeta.navigationBar.style,
+      disableScroll: pageMeta.disableScroll,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh,
+      onReachBottomDistance: pageMeta.onReachBottomDistance
+    });
+  }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
 }
 function normalizeRouteKey(path, id2) {

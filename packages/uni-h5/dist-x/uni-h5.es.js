@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vModelDynamic, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, PRIMARY_COLOR, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, PRIMARY_COLOR, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -17303,6 +17303,55 @@ function initPage(vm) {
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
+  {
+    const pageMeta = page.meta;
+    vm.$setPageStyle = (style) => {
+      for (const key in style) {
+        switch (key) {
+          case "navigationBarBackgroundColor":
+            pageMeta.navigationBar.backgroundColor = style[key];
+            break;
+          case "navigationBarTextStyle":
+            const textStyle = style[key];
+            if (textStyle == null) {
+              continue;
+            }
+            pageMeta.navigationBar.titleColor = ["black", "white"].includes(
+              textStyle
+            ) ? normalizeTitleColor(textStyle || "") : textStyle;
+            break;
+          case "navigationBarTitleText":
+            pageMeta.navigationBar.titleText = style[key];
+            break;
+          case "titleImage":
+            pageMeta.navigationBar.titleImage = style[key];
+            break;
+          case "navigationStyle":
+            pageMeta.navigationBar.style = style[key];
+            break;
+          case "disableScroll":
+            pageMeta.disableScroll = style[key];
+            break;
+          case "enablePullDownRefresh":
+            pageMeta.enablePullDownRefresh = style[key];
+            break;
+          case "onReachBottomDistance":
+            pageMeta.onReachBottomDistance = style[key];
+            break;
+        }
+      }
+    };
+    vm.$getPageStyle = () => ({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage,
+      navigationStyle: pageMeta.navigationBar.style,
+      disableScroll: pageMeta.disableScroll,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh,
+      onReachBottomDistance: pageMeta.onReachBottomDistance
+    });
+  }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
 }
 function normalizeRouteKey(path, id2) {
@@ -17427,6 +17476,29 @@ function initPageScrollListener(instance2, pageMeta) {
   requestAnimationFrame(
     () => document.addEventListener("scroll", curScrollListener)
   );
+  {
+    watch(
+      () => pageMeta.onReachBottomDistance,
+      (onReachBottomDistance) => {
+        if (!onReachBottom) {
+          return;
+        }
+        opts.onReachBottomDistance = onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
+        document.removeEventListener("scroll", curScrollListener);
+        curScrollListener = createScrollListener(opts);
+        document.addEventListener("scroll", curScrollListener);
+      }
+    );
+    watch(
+      () => pageMeta.disableScroll,
+      (disableScroll) => {
+        document.removeEventListener("touchmove", disableScrollListener);
+        if (disableScroll) {
+          return document.addEventListener("touchmove", disableScrollListener);
+        }
+      }
+    );
+  }
 }
 function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
   return (scrollTop) => {
@@ -27219,7 +27291,8 @@ const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
 function usePageRefresh(refreshRef) {
-  const { id: id2, pullToRefresh } = usePageMeta();
+  const pageMeta = usePageMeta();
+  const { id: id2, pullToRefresh } = pageMeta;
   const { range, height } = pullToRefresh;
   let refreshContainerElem;
   let refreshControllerElem;
@@ -27299,6 +27372,9 @@ function usePageRefresh(refreshRef) {
     refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
   }
   const onTouchstartPassive = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     const touch = ev.changedTouches[0];
     touchId = touch.identifier;
     startY = touch.pageY;
@@ -27309,6 +27385,9 @@ function usePageRefresh(refreshRef) {
     }
   });
   const onTouchmove = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     if (!canRefresh) {
       return;
     }
@@ -27344,6 +27423,9 @@ function usePageRefresh(refreshRef) {
     pulling(deltaY);
   });
   const onTouchend = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     if (!processDeltaY(ev, touchId, startY)) {
       return;
     }

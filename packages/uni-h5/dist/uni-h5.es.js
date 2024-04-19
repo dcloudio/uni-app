@@ -25494,7 +25494,8 @@ const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
 function usePageRefresh(refreshRef) {
-  const { id: id2, pullToRefresh } = usePageMeta();
+  const pageMeta = usePageMeta();
+  const { id: id2, pullToRefresh } = pageMeta;
   const { range, height } = pullToRefresh;
   let refreshContainerElem;
   let refreshControllerElem;
@@ -25574,6 +25575,9 @@ function usePageRefresh(refreshRef) {
     refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
   }
   const onTouchstartPassive = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     const touch = ev.changedTouches[0];
     touchId = touch.identifier;
     startY = touch.pageY;
@@ -25584,6 +25588,9 @@ function usePageRefresh(refreshRef) {
     }
   });
   const onTouchmove = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     if (!canRefresh) {
       return;
     }
@@ -25619,6 +25626,9 @@ function usePageRefresh(refreshRef) {
     pulling(deltaY);
   });
   const onTouchend = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     if (!processDeltaY(ev, touchId, startY)) {
       return;
     }
