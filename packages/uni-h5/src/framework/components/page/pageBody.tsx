@@ -1,4 +1,4 @@
-import { ref, renderSlot, Ref } from 'vue'
+import { type Ref, ref, renderSlot } from 'vue'
 
 import { defineSystemComponent } from '@dcloudio/uni-components'
 

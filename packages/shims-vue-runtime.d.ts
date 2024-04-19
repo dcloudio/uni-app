@@ -1,6 +1,6 @@
-import { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
+import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
-import { UniPage } from '@dcloudio/uni-app-x/types/native'
+import type { UniPage } from '@dcloudio/uni-app-x/types/native'
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
     rootElement?:
@@ -31,6 +31,10 @@ declare module '@vue/runtime-core' {
     $page: Page.PageInstance['$page']
     $mpType?: 'app' | 'page'
     $locale?: string
+    // X web start
+    $setPageStyle: (style: Record<string, any>) => void
+    $getPageStyle: () => Record<string, any>
+    // X web end
   }
 
   type LifecycleHook = Function[] | null

@@ -1,14 +1,14 @@
 import { computed, onBeforeMount, ref } from 'vue'
 import { extend, isArray } from '@vue/shared'
-import { defineSystemComponent, Input } from '@dcloudio/uni-components'
+import { Input, defineSystemComponent } from '@dcloudio/uni-components'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
-  invokeHook,
-  updateStyle,
-  createSvgIconVNode,
-  ICON_PATH_SEARCH,
   ICON_PATH_BACK,
   ICON_PATH_CLOSE,
+  ICON_PATH_SEARCH,
+  createSvgIconVNode,
+  invokeHook,
+  updateStyle,
 } from '@dcloudio/uni-core'
 import {
   ON_NAVIGATION_BAR_BUTTON_TAP,
@@ -22,7 +22,7 @@ import {
   usePageHeadTransparent,
   usePageHeadTransparentBackgroundColor,
 } from './transparent'
-import { useTheme, parseTheme } from '../../../helpers/theme'
+import { parseTheme, useTheme } from '../../../helpers/theme'
 
 const ICON_PATHS = {
   none: '',

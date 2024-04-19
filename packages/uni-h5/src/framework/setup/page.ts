@@ -5,6 +5,7 @@ import {
   type VNode,
   computed,
   nextTick,
+  watch,
 } from 'vue'
 import { type RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import {
@@ -20,6 +21,7 @@ import {
   ON_REACH_BOTTOM,
   ON_REACH_BOTTOM_DISTANCE,
   ON_UNLOAD,
+  normalizeTitleColor,
 } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
 import type { NavigateType } from '../../service/api/route/utils'
@@ -95,10 +97,76 @@ function initPublicPage(route: RouteLocationNormalizedLoaded) {
   return initPageInternalInstance('navigateTo', fullPath, {}, meta)
 }
 
+type PageStyle = {
+  navigationBarBackgroundColor?: string
+  navigationBarTextStyle?: string
+  navigationBarTitleText?: string
+  titleImage?: string
+  navigationStyle?: 'default' | 'custom'
+  disableScroll?: boolean
+  enablePullDownRefresh?: boolean
+  onReachBottomDistance?: number
+}
+
 export function initPage(vm: ComponentPublicInstance) {
   const route = vm.$route
   const page = initPublicPage(route)
   initPageVm(vm, page)
+  if (__X__) {
+    const pageMeta = page.meta
+    vm.$setPageStyle = (style: PageStyle) => {
+      // TODO uni-cli-shared内处理样式的逻辑移至uni-shared内并复用
+      for (const key in style) {
+        switch (key) {
+          case 'navigationBarBackgroundColor':
+            pageMeta.navigationBar.backgroundColor = style[key]
+            break
+          case 'navigationBarTextStyle':
+            const textStyle = style[key]
+            if (textStyle == null) {
+              continue
+            }
+            // TODO titleColor属性类型定义问题
+            pageMeta.navigationBar.titleColor = ['black', 'white'].includes(
+              textStyle
+            )
+              ? normalizeTitleColor(textStyle || '')
+              : (textStyle as any)
+            break
+          case 'navigationBarTitleText':
+            pageMeta.navigationBar.titleText = style[key]
+            break
+          case 'titleImage':
+            pageMeta.navigationBar.titleImage = style[key]
+            break
+          case 'navigationStyle':
+            pageMeta.navigationBar.style = style[key]
+            break
+          case 'disableScroll':
+            pageMeta.disableScroll = style[key]
+            break
+          case 'enablePullDownRefresh':
+            pageMeta.enablePullDownRefresh = style[key]
+            break
+          case 'onReachBottomDistance':
+            pageMeta.onReachBottomDistance = style[key]
+            break
+          default:
+            break
+        }
+      }
+    }
+    vm.$getPageStyle = () => ({
+      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+      navigationBarTitleText: pageMeta.navigationBar.titleText,
+      titleImage: pageMeta.navigationBar.titleImage,
+      navigationStyle: pageMeta.navigationBar.style,
+      disableScroll: pageMeta.disableScroll,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh,
+      onReachBottomDistance: pageMeta.onReachBottomDistance,
+    })
+  }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
 }
 
@@ -270,6 +338,31 @@ function initPageScrollListener(
   requestAnimationFrame(() =>
     document.addEventListener('scroll', curScrollListener)
   )
+
+  if (__X__) {
+    watch(
+      () => pageMeta.onReachBottomDistance,
+      (onReachBottomDistance) => {
+        if (!onReachBottom) {
+          return
+        }
+        opts.onReachBottomDistance =
+          onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE
+        document.removeEventListener('scroll', curScrollListener)
+        curScrollListener = createScrollListener(opts)
+        document.addEventListener('scroll', curScrollListener)
+      }
+    )
+    watch(
+      () => pageMeta.disableScroll,
+      (disableScroll) => {
+        document.removeEventListener('touchmove', disableScrollListener)
+        if (disableScroll) {
+          return document.addEventListener('touchmove', disableScrollListener)
+        }
+      }
+    )
+  }
 }
 
 function createOnPageScroll(
