@@ -70,6 +70,10 @@ export function createConfig(options: {
     }
 
     return {
+      legacy: {
+        // 目前先使用旧模式
+        proxySsrExternalModules: true,
+      },
       css: {
         postcss: {
           plugins: initPostcssPlugin({
