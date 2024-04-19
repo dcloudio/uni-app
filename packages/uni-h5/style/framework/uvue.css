@@ -197,6 +197,11 @@ uni-app uni-sticky-header {
   flex-direction: column;
 }
 
+uni-app uni-textarea textarea:disabled,
+uni-app uni-input input:disabled {
+  cursor: inherit;
+}
+
 /* 与开发者元素接触的非滚动容器 */
 uni-app uni-view,
 uni-app uni-label,
