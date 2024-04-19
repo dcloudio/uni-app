@@ -1,4 +1,4 @@
-import path, { basename, join, relative } from 'path'
+import path, { join, relative } from 'path'
 import fs from 'fs-extra'
 import { makeLegalIdentifier } from '@rollup/pluginutils'
 import type { APP_PLATFORM } from './manifest/utils'
@@ -93,9 +93,6 @@ export function resolveJsCodeCacheFilename(
   return join(cacheDir, platform, 'uts', pluginRelativeDir, 'index.js')
 }
 
-export function resolveJarCacheFilename(
-  cacheDir: string,
-  pluginRelativeDir: string
-) {
-  return join(cacheDir, pluginRelativeDir, basename(pluginRelativeDir) + '.jar')
+function resolveJarCacheFilename(cacheDir: string, pluginRelativeDir: string) {
+  return join(cacheDir, 'app-android', 'uts', pluginRelativeDir, 'index.jar')
 }
