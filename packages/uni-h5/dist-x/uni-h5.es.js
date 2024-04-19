@@ -15934,6 +15934,17 @@ const index$k = /* @__PURE__ */ defineBuiltInComponent({
         wrapper2.style.height = height + "px";
       }
     });
+    watch(() => props2.autoHeight, (autoHeight) => {
+      const el = rootRef.value;
+      const wrapper2 = wrapperRef.value;
+      if (autoHeight) {
+        el.style.height = "auto";
+        wrapper2.style.height = heightRef.value + "px";
+      } else {
+        el.style.height = "";
+        wrapper2.style.height = "";
+      }
+    });
     function onResize2({
       height
     }) {
