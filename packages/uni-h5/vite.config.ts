@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
+import execa from 'execa'
 
 import { type Plugin, defineConfig } from 'vite'
 import { sync } from 'fast-glob'
@@ -9,10 +10,10 @@ import replace from '@rollup/plugin-replace'
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-
+import AutoImport from 'unplugin-auto-import/vite'
 import type { OutputChunk } from 'rollup'
 
-import { stripOptions } from '@dcloudio/uni-cli-shared'
+import { normalizePath, stripOptions } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 
@@ -21,7 +22,10 @@ function resolve(file: string) {
 }
 
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
+
 const isX = process.env.UNI_APP_X === 'true'
+const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR
+
 const rollupPlugins = [
   replace({
     values: {
@@ -41,7 +45,7 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
       _X_: isX ? 1 : 0,
-      _NEW_X_: isX && process.env.UNI_APP_EXT_API_DIR ? 1 : 0,
+      _NEW_X_: isNewX ? 1 : 0,
     },
   }),
 ]
@@ -59,7 +63,9 @@ if (FORMAT === 'es') {
           '__IMPORT_META_ENV_BASE_URL__',
           'import.meta.env.BASE_URL'
         )
-        genApiJson(esBundle.code)
+        if (!isNewX) {
+          genApiJson(esBundle.code)
+        }
       }
     },
   })
@@ -108,7 +114,7 @@ export default defineConfig({
     ],
   },
   plugins: [
-    ...(isX && process.env.UNI_APP_EXT_API_DIR ? [uts2ts()] : []),
+    ...(isNewX ? [uniExtApi(), uts2ts()] : []),
     vue({
       template: {
         compilerOptions: {
@@ -180,7 +186,7 @@ export default defineConfig({
 
 const extApiDirTemp = path.resolve(__dirname, 'temp', 'uni-ext-api')
 
-function checkExtApiDir(name: string) {
+async function checkExtApiDir(name: string) {
   if (fs.existsSync(path.resolve(extApiDirTemp, name))) {
     return
   }
@@ -195,10 +201,12 @@ function checkExtApiDir(name: string) {
   }).forEach((file) => {
     fs.renameSync(file, file + '.ts')
   })
+
+  await checkExtApiTypes()
 }
 
-function resolveExtApi(name: string) {
-  checkExtApiDir(name)
+async function resolveExtApi(name: string) {
+  await checkExtApiDir(name)
   const filename = path.resolve(
     extApiDirTemp,
     name,
@@ -209,6 +217,24 @@ function resolveExtApi(name: string) {
   return fs.existsSync(filename)
     ? filename
     : path.resolve(extApiDirTemp, name, 'utssdk', 'index.uts.ts')
+}
+
+function uniExtApi() {
+  const uniApi = normalizePath(path.resolve(__dirname, '../uni-api'))
+  return AutoImport({
+    include: ['**/*.uts.ts'],
+    imports: [
+      {
+        [uniApi]: [
+          'defineOnApi',
+          'defineOffApi',
+          'defineTaskApi',
+          'defineSyncApi',
+          'defineAsyncApi',
+        ],
+      },
+    ],
+  })
 }
 
 function uts2ts(): Plugin {
@@ -247,9 +273,17 @@ function uts2ts(): Plugin {
       // 清理临时目录
       fs.emptyDirSync(extApiDirTemp)
     },
-    buildEnd() {
-      // 清理临时目录
-      fs.emptyDirSync(extApiDirTemp)
+    buildEnd(error) {
+      if (!error) {
+        // 清理临时目录
+        fs.emptyDirSync(extApiDirTemp)
+      }
     },
   }
+}
+
+async function checkExtApiTypes() {
+  await execa('tsc', ['-p', './tsconfig.api.json'], {
+    stdio: 'inherit',
+  })
 }

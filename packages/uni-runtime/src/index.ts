@@ -1,2 +1,2 @@
 export { isFunction, isString } from '@vue/shared'
-export const __uniConfig = global.__uniConfig
+export const __uniConfig = globalThis.__uniConfig
