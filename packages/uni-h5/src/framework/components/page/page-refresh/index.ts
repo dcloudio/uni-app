@@ -33,7 +33,8 @@ const REFRESHING = 'refreshing'
 const RESTORING = 'restoring'
 
 export function usePageRefresh(refreshRef: Ref) {
-  const { id, pullToRefresh } = usePageMeta()
+  const pageMeta = usePageMeta()
+  const { id, pullToRefresh } = pageMeta
   const { range, height } = pullToRefresh!
   let refreshContainerElem: HTMLDivElement
   let refreshControllerElem: HTMLDivElement
@@ -130,6 +131,9 @@ export function usePageRefresh(refreshRef: Ref) {
   }
 
   const onTouchstartPassive = withWebEvent((ev: TouchEvent) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return
+    }
     const touch = ev.changedTouches[0]
     touchId = touch.identifier
     startY = touch.pageY
@@ -141,6 +145,9 @@ export function usePageRefresh(refreshRef: Ref) {
   })
 
   const onTouchmove = withWebEvent((ev: TouchEvent) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return
+    }
     if (!canRefresh) {
       return
     }
@@ -186,6 +193,9 @@ export function usePageRefresh(refreshRef: Ref) {
   })
 
   const onTouchend = withWebEvent((ev: TouchEvent) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return
+    }
     if (!processDeltaY(ev, touchId, startY)) {
       return
     }
