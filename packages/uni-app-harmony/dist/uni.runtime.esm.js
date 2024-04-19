@@ -39,118 +39,6 @@ const capitalize = cacheStringFunction((str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 });
 
-const LINEFEED = '\n';
-const ON_READY = 'onReady';
-const ON_UNLOAD = 'onUnload';
-
-let lastLogTime = 0;
-function formatLog(module, ...args) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args
-        .map((arg) => JSON.stringify(arg))
-        .join(' ')}`;
-}
-
-const invokeArrayFns = (fns, arg) => {
-    let ret;
-    for (let i = 0; i < fns.length; i++) {
-        ret = fns[i](arg);
-    }
-    return ret;
-};
-function once(fn, ctx = null) {
-    let res;
-    return ((...args) => {
-        if (fn) {
-            res = fn.apply(ctx, args);
-            fn = null;
-        }
-        return res;
-    });
-}
-
-class EventChannel {
-    id;
-    listener;
-    emitCache;
-    constructor(id, events) {
-        this.id = id;
-        this.listener = {};
-        this.emitCache = [];
-        if (events) {
-            Object.keys(events).forEach((name) => {
-                this.on(name, events[name]);
-            });
-        }
-    }
-    emit(eventName, ...args) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return this.emitCache.push({
-                eventName,
-                args,
-            });
-        }
-        fns.forEach((opt) => {
-            opt.fn.apply(opt.fn, args);
-        });
-        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
-    }
-    on(eventName, fn) {
-        this._addListener(eventName, 'on', fn);
-        this._clearCache(eventName);
-    }
-    once(eventName, fn) {
-        this._addListener(eventName, 'once', fn);
-        this._clearCache(eventName);
-    }
-    off(eventName, fn) {
-        const fns = this.listener[eventName];
-        if (!fns) {
-            return;
-        }
-        if (fn) {
-            for (let i = 0; i < fns.length;) {
-                if (fns[i].fn === fn) {
-                    fns.splice(i, 1);
-                    i--;
-                }
-                i++;
-            }
-        }
-        else {
-            delete this.listener[eventName];
-        }
-    }
-    _clearCache(eventName) {
-        for (let index = 0; index < this.emitCache.length; index++) {
-            const cache = this.emitCache[index];
-            const _name = eventName
-                ? cache.eventName === eventName
-                    ? eventName
-                    : null
-                : cache.eventName;
-            if (!_name)
-                continue;
-            const location = this.emit.apply(this, [_name, ...cache.args]);
-            if (typeof location === 'number') {
-                this.emitCache.pop();
-                continue;
-            }
-            this.emitCache.splice(index, 1);
-            index--;
-        }
-    }
-    _addListener(eventName, type, fn) {
-        (this.listener[eventName] || (this.listener[eventName] = [])).push({
-            fn,
-            type,
-        });
-    }
-}
-
 const CHOOSE_SIZE_TYPES = ['original', 'compressed'];
 const CHOOSE_SOURCE_TYPES = ['album', 'camera'];
 function elemsInArray(strArr, optionalVal) {
@@ -562,7 +450,7 @@ function normalizeErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + LINEFEED + errMsg.stack);
+        console.error(errMsg.message + '\n' + errMsg.stack);
         return errMsg.message;
     }
     return errMsg;
@@ -597,6 +485,117 @@ function getBaseSystemInfo() {
         pixelRatio: vp2px(1),
         windowWidth: lpx2px(720), // TODO designWidth可配置
     };
+}
+
+const ON_READY = 'onReady';
+const ON_UNLOAD = 'onUnload';
+
+let lastLogTime = 0;
+function formatLog(module, ...args) {
+    const now = Date.now();
+    const diff = lastLogTime ? now - lastLogTime : 0;
+    lastLogTime = now;
+    return `[${now}][${diff}ms][${module}]：${args
+        .map((arg) => JSON.stringify(arg))
+        .join(' ')}`;
+}
+
+const invokeArrayFns = (fns, arg) => {
+    let ret;
+    for (let i = 0; i < fns.length; i++) {
+        ret = fns[i](arg);
+    }
+    return ret;
+};
+function once(fn, ctx = null) {
+    let res;
+    return ((...args) => {
+        if (fn) {
+            res = fn.apply(ctx, args);
+            fn = null;
+        }
+        return res;
+    });
+}
+
+class EventChannel {
+    id;
+    listener;
+    emitCache;
+    constructor(id, events) {
+        this.id = id;
+        this.listener = {};
+        this.emitCache = [];
+        if (events) {
+            Object.keys(events).forEach((name) => {
+                this.on(name, events[name]);
+            });
+        }
+    }
+    emit(eventName, ...args) {
+        const fns = this.listener[eventName];
+        if (!fns) {
+            return this.emitCache.push({
+                eventName,
+                args,
+            });
+        }
+        fns.forEach((opt) => {
+            opt.fn.apply(opt.fn, args);
+        });
+        this.listener[eventName] = fns.filter((opt) => opt.type !== 'once');
+    }
+    on(eventName, fn) {
+        this._addListener(eventName, 'on', fn);
+        this._clearCache(eventName);
+    }
+    once(eventName, fn) {
+        this._addListener(eventName, 'once', fn);
+        this._clearCache(eventName);
+    }
+    off(eventName, fn) {
+        const fns = this.listener[eventName];
+        if (!fns) {
+            return;
+        }
+        if (fn) {
+            for (let i = 0; i < fns.length;) {
+                if (fns[i].fn === fn) {
+                    fns.splice(i, 1);
+                    i--;
+                }
+                i++;
+            }
+        }
+        else {
+            delete this.listener[eventName];
+        }
+    }
+    _clearCache(eventName) {
+        for (let index = 0; index < this.emitCache.length; index++) {
+            const cache = this.emitCache[index];
+            const _name = eventName
+                ? cache.eventName === eventName
+                    ? eventName
+                    : null
+                : cache.eventName;
+            if (!_name)
+                continue;
+            const location = this.emit.apply(this, [_name, ...cache.args]);
+            if (typeof location === 'number') {
+                this.emitCache.pop();
+                continue;
+            }
+            this.emitCache.splice(index, 1);
+            index--;
+        }
+    }
+    _addListener(eventName, type, fn) {
+        (this.listener[eventName] || (this.listener[eventName] = [])).push({
+            fn,
+            type,
+        });
+    }
 }
 
 const isObject = (val) => val !== null && typeof val === 'object';
