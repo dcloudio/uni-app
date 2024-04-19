@@ -146,6 +146,17 @@ export function normalizeManifestJson(userManifestJson: Record<string, any>) {
   const app = userManifestJson.app || {}
   const x = userManifestJson['uni-app-x'] || {}
   x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
+  const pageOrientation = getGlobalPageOrientation()
+
+  if (pageOrientation) {
+    if (!app.distribute) {
+      app.distribute = {}
+    }
+    app.distribute['_uni-app-x_'] = {
+      pageOrientation,
+    }
+  }
+
   return {
     id: userManifestJson.appid || '',
     name: userManifestJson.name || '',
@@ -179,4 +190,14 @@ export function updateManifestModules(
     })
   }
   return manifest
+}
+
+let pageOrientation = ''
+
+export function setGlobalPageOrientation(value: string) {
+  pageOrientation = value
+}
+
+export function getGlobalPageOrientation() {
+  return pageOrientation
 }
