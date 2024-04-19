@@ -13,7 +13,7 @@ import {
   runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
-import { isPages } from '../utils'
+import { isPages, setGlobalPageOrientation } from '../utils'
 import { isVue } from '../android/utils'
 
 export function uniAppPagesPlugin(): Plugin {
@@ -63,6 +63,8 @@ export function uniAppPagesPlugin(): Plugin {
       if (isPages(id)) {
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
         const pagesJson = normalizeUniAppXAppPagesJson(code)
+
+        setGlobalPageOrientation(pagesJson.globalStyle?.pageOrientation || '')
 
         allPagePaths = pagesJson.pages.map((p) => p.path)
 
