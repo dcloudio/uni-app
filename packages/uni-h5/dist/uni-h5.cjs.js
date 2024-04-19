@@ -1481,7 +1481,7 @@ function normalizeErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + uniShared.LINEFEED + errMsg.stack);
+    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
