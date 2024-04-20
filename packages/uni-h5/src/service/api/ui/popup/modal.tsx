@@ -108,15 +108,14 @@ export default /*#__PURE__*/ defineComponent({
           <uni-modal v-show={visible.value} onTouchmove={onEventPrevent}>
             {VNODE_MASK}
             <div class="uni-modal">
-              {title ||
-                (__X__ && (
-                  <div class="uni-modal__hd">
-                    <strong
-                      class="uni-modal__title"
-                      v-text={title || ''}
-                    ></strong>
-                  </div>
-                ))}
+              {title || __X__ ? (
+                <div class="uni-modal__hd">
+                  <strong
+                    class="uni-modal__title"
+                    v-text={title || ''}
+                  ></strong>
+                </div>
+              ) : null}
               {editable ? (
                 <textarea
                   class="uni-modal__textarea"
