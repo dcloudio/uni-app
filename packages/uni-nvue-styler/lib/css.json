@@ -2857,7 +2857,7 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
-            "unixVer": "x"
+            "unixVer": "4.11"
           }
         },
         "web": {
@@ -5968,12 +5968,12 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               }
             },
             "web": {
@@ -5989,12 +5989,12 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "3.9+"
+                "unixVer": "4.13"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               }
             },
             "web": {
@@ -6037,12 +6037,12 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               }
             },
             "web": {
@@ -6058,12 +6058,12 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "3.9+"
+                "unixVer": "4.13"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               }
             },
             "web": {
