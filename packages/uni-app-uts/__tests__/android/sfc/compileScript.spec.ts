@@ -1426,6 +1426,24 @@ describe('SFC analyze <script> bindings', () => {
       assertCode(content)
     })
   })
+  describe('defineSlots', () => {
+    test('basic', () => {
+      const { content } = compile(
+        `<script setup>
+defineSlots<{
+ 	default(props:{ times: number; name: string }):any
+}>()
+        </script>`,
+        undefined,
+        {
+          filename: 'FooBar.vue',
+        }
+      )
+      // expect(content).not.toMatch(`name: 'FooBar'`)
+      // expect(content).toMatch(`name: 'Baz'`)
+      assertCode(content)
+    })
+  })
 })
 
 // describe('SFC genDefaultAs', () => {

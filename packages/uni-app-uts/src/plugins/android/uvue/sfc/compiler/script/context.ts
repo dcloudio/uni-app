@@ -4,6 +4,7 @@ import type {
   ObjectPattern,
   Program,
   TSInterfaceDeclaration,
+  TSTypeLiteral,
 } from '@babel/types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import { generateCodeFrame } from '@vue/shared'
@@ -60,6 +61,9 @@ export class ScriptCompileContext {
 
   // defineOptions
   optionsRuntimeDecl: Node | undefined
+
+  // defineSlots
+  slotsRuntimeDecl: TSTypeLiteral | undefined
 
   // codegen
   bindingMetadata: BindingMetadata = {}

@@ -50,6 +50,23 @@ return "INLINE_RENDER"
 }"
 `;
 
+exports[`SFC analyze <script> bindings defineSlots basic 1`] = `
+"export default {
+  __name: 'FooBar',
+  slots: Object as SlotsType<{default: { times: number; name: string }}>,
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+
+        
+return "INLINE_RENDER"
+}
+
+}"
+`;
+
 exports[`SFC compile <script setup> binding analysis for destructure 1`] = `
 "export default {
   setup(__props: GenAnonymous) {
