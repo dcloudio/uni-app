@@ -197,11 +197,6 @@ uni-app uni-sticky-header {
   flex-direction: column;
 }
 
-uni-app uni-textarea textarea:disabled,
-uni-app uni-input input:disabled {
-  cursor: inherit;
-}
-
 /* 与开发者元素接触的非滚动容器 */
 uni-app uni-view,
 uni-app uni-label,
@@ -256,6 +251,11 @@ uni-app uni-swiper-item {
 uni-app .uni-input-input,
 uni-app .uni-textarea-textarea {
   caret-color: #3393e2;
+}
+
+uni-app .uni-input-input:disabled,
+uni-app .uni-textarea-textarea:disabled {
+  cursor: inherit;
 }
 
 /* 覆盖 video 的 poster 背景 */
