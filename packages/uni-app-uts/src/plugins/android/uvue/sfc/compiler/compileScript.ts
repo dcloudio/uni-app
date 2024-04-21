@@ -34,7 +34,7 @@ import {
 } from './script/defineEmits'
 import { DEFINE_EXPOSE, processDefineExpose } from './script/defineExpose'
 import { DEFINE_OPTIONS, processDefineOptions } from './script/defineOptions'
-import { processDefineSlots } from './script/defineSlots'
+import { genRuntimeSlots, processDefineSlots } from './script/defineSlots'
 import { DEFINE_MODEL, processDefineModel } from './script/defineModel'
 import {
   getImportedName,
@@ -957,6 +957,9 @@ __ins.emit(event, ...do_not_transform_spread)
       `,`
   }
 
+  const slotsDecl = genRuntimeSlots(ctx)
+  if (slotsDecl) runtimeOptions += `\n  slots: ${slotsDecl},`
+
   const propsDecl = genRuntimeProps(ctx)
   if (propsDecl) {
     if (ctx.propsInterfaceDecl) {
@@ -964,6 +967,7 @@ __ins.emit(event, ...do_not_transform_spread)
     }
     runtimeOptions += `\n  props: ${propsDecl},`
   }
+
   const emitsDecl = genRuntimeEmits(ctx)
   if (emitsDecl) runtimeOptions += `\n  emits: ${emitsDecl},`
 

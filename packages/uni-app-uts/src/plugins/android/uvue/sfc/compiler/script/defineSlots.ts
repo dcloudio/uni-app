@@ -1,4 +1,10 @@
-import type { LVal, Node } from '@babel/types'
+import {
+  type LVal,
+  type Node,
+  isIdentifier,
+  isTSMethodSignature,
+  isTSTypeLiteral,
+} from '@babel/types'
 import { isCallOf } from './utils'
 import type { ScriptCompileContext } from './context'
 
@@ -21,6 +27,14 @@ export function processDefineSlots(
     ctx.error(`${DEFINE_SLOTS}() cannot accept arguments`, node)
   }
 
+  if (
+    node.typeParameters &&
+    node.typeParameters.params.length === 1 &&
+    isTSTypeLiteral(node.typeParameters.params[0])
+  ) {
+    ctx.slotsRuntimeDecl = node.typeParameters.params[0]
+  }
+
   if (declId) {
     ctx.s.overwrite(
       ctx.startOffset! + node.start!,
@@ -30,4 +44,36 @@ export function processDefineSlots(
   }
 
   return true
+}
+
+export function genRuntimeSlots(ctx: ScriptCompileContext): string | undefined {
+  if (!ctx.slotsRuntimeDecl) {
+    return
+  }
+  debugger
+  const slots: string[] = []
+  ctx.slotsRuntimeDecl.members.forEach((member) => {
+    if (
+      isTSMethodSignature(member) &&
+      member.parameters.length === 1 &&
+      isIdentifier(member.key)
+    ) {
+      const param = member.parameters[0]
+      if (isIdentifier(param) && param.typeAnnotation) {
+        const typeAnn = param.typeAnnotation
+        slots.push(
+          member.key.name +
+            ': ' +
+            ctx.source.slice(
+              ctx.startOffset! + typeAnn.start! + 1,
+              ctx.startOffset! + typeAnn.end!
+            )
+        )
+      }
+    }
+  })
+  if (!slots.length) {
+    return
+  }
+  return `Object as SlotsType<{${slots.join(';')}}>`
 }
