@@ -356,17 +356,6 @@ export function getUniCloudObjectInfo(
   }
 }
 
-const extApiComponents: Set<string> = new Set()
-export function addExtApiComponents(components: string[]) {
-  components.forEach((component) => {
-    extApiComponents.add(component)
-  })
-}
-
-export function getExtApiComponents() {
-  return extApiComponents
-}
-
 // export const initAutoImportOnce = once(initAutoImport)
 
 // function initAutoImport(autoImportOptions?: AutoImportOptions) {

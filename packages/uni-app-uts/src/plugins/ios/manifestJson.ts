@@ -7,6 +7,7 @@ import {
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
 import {
+  getExtApiComponents,
   isManifest,
   normalizeManifestJson,
   updateManifestModules,
@@ -79,7 +80,7 @@ export function uniAppManifestPlugin(): Plugin {
           const modules = resolveUTSCompiler().parseInjectModules(
             [...uniExtApis],
             {},
-            []
+            [...getExtApiComponents()]
           )
           // 执行了摇树逻辑，就需要设置 modules 节点
           updateManifestModules(manifest, modules)

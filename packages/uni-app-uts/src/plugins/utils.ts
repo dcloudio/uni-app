@@ -10,11 +10,13 @@ import {
   matchUTSComponent,
   normalizeNodeModules,
   normalizePath,
+  parseUTSComponent,
   transformTapToClick,
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import type { Plugin, ResolvedConfig } from 'vite'
+import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
 export function createUniOptions(
   platform: 'android' | 'ios'
@@ -67,6 +69,17 @@ export function createUniOptions(
                         return JSON.parse(`"${match}"`)
                       }
                     )
+                  }
+                }
+              },
+              (node) => {
+                // 收集可能的 extApiComponents
+                if (
+                  node.type === NodeTypes.ELEMENT &&
+                  node.tagType === ElementTypes.ELEMENT
+                ) {
+                  if (!parseUTSComponent(node.tag, 'swift')) {
+                    addExtApiComponents([node.tag])
                   }
                 }
               },
@@ -200,4 +213,15 @@ export function setGlobalPageOrientation(value: string) {
 
 export function getGlobalPageOrientation() {
   return pageOrientation
+}
+
+const extApiComponents: Set<string> = new Set()
+export function addExtApiComponents(components: string[]) {
+  components.forEach((component) => {
+    extApiComponents.add(component)
+  })
+}
+
+export function getExtApiComponents() {
+  return extApiComponents
 }

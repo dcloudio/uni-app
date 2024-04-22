@@ -24,14 +24,10 @@ import type { ImportSpecifier } from 'es-module-lexer'
 import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
 import { resolveScript } from './script'
 import type { ResolvedOptions } from './index'
-import {
-  addExtApiComponents,
-  createResolveError,
-  parseImports,
-  wrapResolve,
-} from '../../utils'
+import { createResolveError, parseImports, wrapResolve } from '../../utils'
 import { genTemplateCode } from '../code/template'
 import { resolveGenTemplateCodeOptions } from './template'
+import { addExtApiComponents } from '../../../utils'
 
 export async function transformMain(
   code: string,

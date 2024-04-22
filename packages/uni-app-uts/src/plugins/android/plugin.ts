@@ -21,7 +21,6 @@ import {
   DEFAULT_APPID,
   UVUE_CLASS_NAME_PREFIX,
   createTryResolve,
-  getExtApiComponents,
   getUniCloudObjectInfo,
   getUniCloudSpaceList,
   parseImports,
@@ -32,6 +31,7 @@ import { getOutputManifestJson } from './manifestJson'
 import {
   configResolved,
   createUniOptions,
+  getExtApiComponents,
   updateManifestModules,
 } from '../utils'
 import { genClassName } from '../..'
