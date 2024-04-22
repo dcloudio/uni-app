@@ -7381,7 +7381,8 @@ function parseStyleSheet(_ref23) {
     }
     var styles = [];
     if (appContext && __globalStyles) {
-      styles.push(__globalStyles);
+      var globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
+      styles.push(...globalStyles);
     }
     var page = root.type;
     if (component !== page && isArray(page.styles)) {

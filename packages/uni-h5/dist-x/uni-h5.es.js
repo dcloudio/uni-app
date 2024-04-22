@@ -317,17 +317,42 @@ const UTS = {
 let UniError$1 = class UniError2 extends Error {
   constructor(errSubject, errCode, errMsg) {
     let options = {};
-    if (errMsg == null) {
-      errMsg = errSubject;
-      options = errCode;
-      errCode = options.errCode || 0;
-      errSubject = options.errSubject || "";
+    const argsLength = Array.from(arguments).length;
+    switch (argsLength) {
+      case 0:
+        errSubject = "";
+        errMsg = "";
+        errCode = 0;
+        break;
+      case 1:
+        errMsg = errSubject;
+        errSubject = "";
+        errCode = 0;
+        break;
+      case 2:
+        errMsg = errSubject;
+        options = errCode;
+        errCode = options.errCode || 0;
+        errSubject = options.errSubject || "";
+        break;
     }
     super(errMsg);
     this.name = "UniError";
     this.errSubject = errSubject;
     this.errCode = errCode;
     this.errMsg = errMsg;
+    if (options.data) {
+      this.data = options.data;
+    }
+    if (options.cause) {
+      this.cause = options.cause;
+    }
+  }
+  set errMsg(msg) {
+    this.message = msg;
+  }
+  get errMsg() {
+    return this.message;
   }
   toString() {
     return this.errMsg;
