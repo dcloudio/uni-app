@@ -117,15 +117,29 @@ export default /*#__PURE__*/ defineComponent({
                 </div>
               ) : null}
               {editable ? (
-                <textarea
-                  class="uni-modal__textarea"
-                  rows="1"
-                  placeholder={placeholderText}
-                  value={content}
-                  onInput={(e: Event) =>
-                    (editContent.value = (e.target! as any).value)
-                  }
-                />
+                __X__ ? (
+                  <div class="uni-modal__bd">
+                    <textarea
+                      class="uni-modal__textarea"
+                      rows="1"
+                      placeholder={placeholderText}
+                      value={content}
+                      onInput={(e: Event) =>
+                        (editContent.value = (e.target! as any).value)
+                      }
+                    />
+                  </div>
+                ) : (
+                  <textarea
+                    class="uni-modal__textarea"
+                    rows="1"
+                    placeholder={placeholderText}
+                    value={content}
+                    onInput={(e: Event) =>
+                      (editContent.value = (e.target! as any).value)
+                    }
+                  />
+                )
               ) : (
                 <div
                   class="uni-modal__bd"
