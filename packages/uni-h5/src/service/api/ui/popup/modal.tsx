@@ -118,10 +118,10 @@ export default /*#__PURE__*/ defineComponent({
               ) : null}
               {editable ? (
                 __X__ ? (
-                  <div class="uni-modal__bd">
+                  <div class="uni-modal__bd" key="uni-modal-bd-editable">
                     <textarea
                       class="uni-modal__textarea"
-                      rows="1"
+                      rows="2"
                       placeholder={placeholderText}
                       value={content}
                       onInput={(e: Event) =>
