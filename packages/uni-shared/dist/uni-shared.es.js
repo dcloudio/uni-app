@@ -1,4 +1,4 @@
-import { isHTMLTag, isSVGTag, hyphenate, camelize, normalizeStyle as normalizeStyle$1, isArray, isString, parseStringStyle, normalizeClass as normalizeClass$1, isFunction, isPlainObject, extend, capitalize } from '@vue/shared';
+import { isHTMLTag, isSVGTag, hyphenate, camelize, normalizeStyle as normalizeStyle$1, isString, parseStringStyle, isArray, normalizeClass as normalizeClass$1, isFunction, isPlainObject, extend, capitalize } from '@vue/shared';
 
 const BUILT_IN_TAG_NAMES = [
     'ad',
@@ -393,6 +393,9 @@ function normalizeStyle(value) {
             styleObject[key] = value;
         });
         return normalizeStyle$1(styleObject);
+    }
+    else if (isString(value)) {
+        return parseStringStyle(value);
     }
     else if (isArray(value)) {
         const res = {};

@@ -396,6 +396,9 @@ function normalizeStyle(value) {
         });
         return shared.normalizeStyle(styleObject);
     }
+    else if (shared.isString(value)) {
+        return shared.parseStringStyle(value);
+    }
     else if (shared.isArray(value)) {
         const res = {};
         for (let i = 0; i < value.length; i++) {
