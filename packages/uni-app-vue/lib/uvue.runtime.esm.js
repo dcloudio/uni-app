@@ -277,22 +277,29 @@ let flushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
-const resolvedPromise = /* @__PURE__ */ Promise.resolve();
+const iOSPromise = {
+  then(callback) {
+    setTimeout(() => callback(), 0);
+  }
+};
+const resolvedPromise = iOSPromise;
 let currentFlushPromise = null;
 const RECURSION_LIMIT = 100;
 function nextTick(fn, instance = getCurrentInstance()) {
   const promise = currentFlushPromise || resolvedPromise;
-  const current = currentFlushPromise === null || instance === null ? promise : promise.then(() => {
-    return new Promise((resolve) => {
-      if (instance === null) {
-        resolve();
-      } else {
-        instance.$waitNativeRender(() => {
+  const current = currentFlushPromise === null || instance === null ? promise : {
+    then(resolve) {
+      promise.then(() => {
+        if (instance === null) {
           resolve();
-        });
-      }
-    });
-  });
+        } else {
+          instance.$waitNativeRender(() => {
+            resolve();
+          });
+        }
+      });
+    }
+  };
   return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
 function findInsertionIndex(id) {

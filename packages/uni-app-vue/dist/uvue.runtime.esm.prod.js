@@ -1274,6 +1274,8 @@ function normalizeStyle(value) {
       styleObject[key] = value;
     });
     return normalizeStyle$1(styleObject);
+  } else if (isString(value)) {
+    return parseStringStyle(value);
   } else if (isArray(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
@@ -1566,22 +1568,29 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var resolvedPromise = /* @__PURE__ */Promise.resolve();
+var iOSPromise = {
+  then(callback) {
+    setTimeout(() => callback(), 0);
+  }
+};
+var resolvedPromise = iOSPromise;
 var currentFlushPromise = null;
 function nextTick(fn) {
   var instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentInstance();
   var promise = currentFlushPromise || resolvedPromise;
-  var current = currentFlushPromise === null || instance === null ? promise : promise.then(() => {
-    return new Promise(resolve => {
-      if (instance === null) {
-        resolve();
-      } else {
-        instance.$waitNativeRender(() => {
+  var current = currentFlushPromise === null || instance === null ? promise : {
+    then(resolve) {
+      promise.then(() => {
+        if (instance === null) {
           resolve();
-        });
-      }
-    });
-  });
+        } else {
+          instance.$waitNativeRender(() => {
+            resolve();
+          });
+        }
+      });
+    }
+  };
   return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
 function findInsertionIndex(id) {
