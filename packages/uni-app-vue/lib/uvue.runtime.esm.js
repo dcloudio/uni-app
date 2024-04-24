@@ -9043,6 +9043,9 @@ function parseStyleDecl(prop, value) {
   return expandStyle(prop, value);
 }
 
+function isSame(a, b) {
+  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
+}
 function patchStyle(el, prev, next) {
   if (!next) {
     return;
@@ -9057,9 +9060,9 @@ function patchStyle(el, prev, next) {
     const style = getExtraStyle(el);
     for (const key in prev) {
       const _key = camelize(key);
-      if (next[_key] == null) {
+      if (next[key] == null) {
         const value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-        parseStyleDecl(key, value).forEach((value2, key2) => {
+        parseStyleDecl(_key, value).forEach((value2, key2) => {
           batchedStyles.set(key2, value2);
           style == null ? void 0 : style.delete(key2);
         });
@@ -9067,7 +9070,8 @@ function patchStyle(el, prev, next) {
     }
     for (const key in next) {
       const value = next[key];
-      {
+      const prevValue = prev[key];
+      if (!isSame(prevValue, value)) {
         parseStyleDecl(camelize(key), value).forEach(
           (value2, key2) => {
             batchedStyles.set(key2, value2);
