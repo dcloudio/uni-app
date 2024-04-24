@@ -2,24 +2,20 @@ import { addMiniProgramPageJson } from '@dcloudio/uni-cli-shared'
 import { customElements } from '../src/compiler/options'
 import { assert } from './testUtils'
 
-describe('mp-alipay: transform component', () => {
-  test(`built-in component`, () => {
-    const code = customElements.map((tag) => `<${tag}/>`).join('')
-    assert(
-      code,
-      code,
-      `(_ctx, _cache) => {
+const blankScript = `(_ctx, _cache) => {
   return {}
 }`
-    )
+describe('mp-alipay: transform component', () => {
+  test(`built-in component`, () => {
+    // 这里已经包含了自定义组件
+    const code = customElements.map((tag) => `<${tag}/>`).join('')
+    assert(code, code, blankScript)
   })
   test(`match-media`, () => {
     assert(
       `<match-media/>`,
       `<uni-match-media u-i="2a9ec0b0-0" onVI="__l"/>`,
-      `(_ctx, _cache) => {
-  return {}
-}`
+      blankScript
     )
   })
   test(`mini program component`, () => {
@@ -32,12 +28,50 @@ describe('mp-alipay: transform component', () => {
     assert(
       `<van-button/>`,
       `<van-button u-t="m" u-i="dc555fe4-0" onVI="__l"/>`,
-      `(_ctx, _cache) => {
-  return {}
-}`,
+      blankScript,
       {
         filename,
       }
+    )
+  })
+
+  test('alipay open component - webview', () => {
+    assert(
+      `<web-view
+    src="https://https://uniapp.dcloud.io/"
+    @message="onmessage"
+  ></web-view>`,
+      `<web-view src=\"https://https://uniapp.dcloud.io/\" onMessage=\"{{a}}\"></web-view>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.onmessage) }
+}`
+    )
+  })
+  test('alipay open component - join-group-chat', () => {
+    assert(
+      `<join-group-chat template-id="your_template_id" />`,
+      `<join-group-chat template-id="your_template_id"/>`,
+      blankScript
+    )
+    assert(
+      `<join-group-chat template-id="your_template_id"></join-group-chat>`,
+      `<join-group-chat template-id="your_template_id"></join-group-chat>`,
+      blankScript
+    )
+  })
+  test('alipay open component - subscribe-message', () => {
+    // <subscribe-message template-id='xxxxx' onComplete="completeHandler" />
+    assert(
+      `<subscribe-message template-id='xxxxx' onComplete="completeHandler" />`,
+      `<subscribe-message template-id="xxxxx" onComplete="completeHandler"/>`,
+      blankScript
+    )
+    assert(
+      `<subscribe-message template-id='xxxxx' @complete="completeHandler" />`,
+      `<subscribe-message template-id="xxxxx" onComplete="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.completeHandler) }
+}`
     )
   })
 })
