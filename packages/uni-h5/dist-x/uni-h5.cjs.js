@@ -301,7 +301,7 @@ function weakMapGet(map, key) {
   }
   return map.get(key);
 }
-const UTS = {
+const UTS$1 = {
   arrayAt,
   arrayFind,
   arrayFindLast,
@@ -570,7 +570,7 @@ function getGlobal() {
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError$1;
-realGlobal.UTS = UTS;
+realGlobal.UTS = UTS$1;
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -12522,7 +12522,7 @@ const request = /* @__PURE__ */ defineTaskApi(
       let res = responseType === "text" ? xhr.responseText : xhr.response;
       if (responseType === "text" && dataType2 === "json") {
         try {
-          res = new UTSJSONObject(JSON.parse(res));
+          res = UTS.JSON.parse(res);
         } catch (error) {
         }
       }

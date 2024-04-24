@@ -300,7 +300,7 @@ function weakMapGet(map, key) {
   }
   return map.get(key);
 }
-const UTS = {
+const UTS$1 = {
   arrayAt,
   arrayFind,
   arrayFindLast,
@@ -569,7 +569,7 @@ function getGlobal() {
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError$1;
-realGlobal.UTS = UTS;
+realGlobal.UTS = UTS$1;
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -18311,13 +18311,16 @@ const modal = /* @__PURE__ */ defineComponent({
         }, [createVNode("strong", {
           "class": "uni-modal__title",
           "textContent": title || ""
-        }, null, 8, ["textContent"])]) : null, editable ? createVNode("textarea", {
+        }, null, 8, ["textContent"])]) : null, editable ? createVNode("div", {
+          "class": "uni-modal__bd",
+          "key": "uni-modal-bd-editable"
+        }, [createVNode("textarea", {
           "class": "uni-modal__textarea",
-          "rows": "1",
+          "rows": "2",
           "placeholder": placeholderText,
           "value": content,
           "onInput": (e2) => editContent.value = e2.target.value
-        }, null, 40, ["placeholder", "value", "onInput"]) : createVNode("div", {
+        }, null, 40, ["placeholder", "value", "onInput"])]) : createVNode("div", {
           "class": "uni-modal__bd",
           "onTouchmovePassive": onEventStop,
           "textContent": content
@@ -22298,7 +22301,7 @@ const request = /* @__PURE__ */ defineTaskApi(
       let res = responseType === "text" ? xhr.responseText : xhr.response;
       if (responseType === "text" && dataType2 === "json") {
         try {
-          res = new UTSJSONObject(JSON.parse(res));
+          res = UTS.JSON.parse(res);
         } catch (error) {
         }
       }
