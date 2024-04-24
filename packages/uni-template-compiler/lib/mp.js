@@ -129,7 +129,9 @@ const tags = {
     'mkt',
     'page-container',
     'page-meta',
-    'lottie'
+    'lottie',
+    'join-group-chat',
+    'subscribe-message'
   ],
   // 抖音小程序平台独有组件
   'mp-toutiao': [
