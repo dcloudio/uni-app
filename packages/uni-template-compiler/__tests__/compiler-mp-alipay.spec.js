@@ -354,4 +354,18 @@ describe('mp:compiler-mp-alipay', () => {
       '<label class="_span"></label>'
     )
   })
+  // join-group-chat
+  it('component: join-group-chat', () => {
+    assertCodegen(
+      '<join-group-chat template-id="your_template_id" />',
+      '<join-group-chat template-id="your_template_id"></join-group-chat>'
+    )
+  })
+  // subscribe-message
+  it('component: subscribe-message', () => {
+    assertCodegen(
+      '<subscribe-message template-id=\'xxxxx\' @complete="completeHandler" />',
+      "<subscribe-message template-id=\"xxxxx\" data-event-opts=\"{{[['complete',[['completeHandler',['$event']]]]]}}\" onComplete=\"__e\"></subscribe-message>"
+    )
+  })
 })
