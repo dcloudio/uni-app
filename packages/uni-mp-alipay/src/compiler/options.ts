@@ -73,6 +73,8 @@ export const customElements = [
   'page-container',
   'page-meta',
   'lottie',
+  'join-group-chat',
+  'subscribe-message',
 ]
 
 export const options: UniMiniProgramPluginOptions = {
