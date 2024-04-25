@@ -11416,7 +11416,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: extend({}, navigatorProps, {
+  props: /* @__PURE__ */ extend({}, navigatorProps, {
     renderLink: {
       type: Boolean,
       default: true
@@ -15145,7 +15145,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
 });
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
-  props: extend({}, hoverProps),
+  props: /* @__PURE__ */ extend({}, hoverProps),
   setup(props2, {
     slots
   }) {
@@ -25508,6 +25508,9 @@ function usePageRefresh(refreshRef) {
   let refreshInnerElemStyle;
   useSubscribe(
     () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
       if (!state2) {
         state2 = REFRESHING;
         addClass();
@@ -25522,6 +25525,9 @@ function usePageRefresh(refreshRef) {
   );
   useSubscribe(
     () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
       if (state2 === REFRESHING) {
         removeClass();
         state2 = RESTORING;
@@ -25536,13 +25542,16 @@ function usePageRefresh(refreshRef) {
     false,
     id2
   );
-  onMounted(() => {
+  function initElement() {
     refreshContainerElem = refreshRef.value.$el;
     refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
     refreshControllerElemStyle = refreshControllerElem.style;
     refreshInnerElemStyle = refreshControllerElem.querySelector(
       ".uni-page-refresh-inner"
     ).style;
+  }
+  onMounted(() => {
+    initElement();
   });
   let touchId;
   let startY;
@@ -25717,15 +25726,23 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const PageBody = defineSystemComponent({
+const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
-    const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageRefresh(refreshRef) : null;
+    const pageRefresh = ref(null);
+    watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
     };
   }
 });
@@ -25737,7 +25754,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-const index = defineSystemComponent({
+const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());

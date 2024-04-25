@@ -5584,7 +5584,7 @@ const index$s = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: shared.extend({}, navigatorProps, {
+  props: /* @__PURE__ */ shared.extend({}, navigatorProps, {
     renderLink: {
       type: Boolean,
       default: true
@@ -8245,7 +8245,7 @@ class UniViewElement extends UniElement {
 }
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
-  props: shared.extend({}, hoverProps),
+  props: /* @__PURE__ */ shared.extend({}, hoverProps),
   setup(props2, {
     slots
   }) {
@@ -9041,7 +9041,7 @@ function initPageMeta(id) {
 function normalizePageMeta(pageMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta;
-    if (enablePullDownRefresh) {
+    {
       const pullToRefresh = normalizePullToRefreshRpx(
         shared.extend(
           {
@@ -9170,11 +9170,11 @@ function initPage(vm) {
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
       navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage,
-      navigationStyle: pageMeta.navigationBar.style,
-      disableScroll: pageMeta.disableScroll,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh,
-      onReachBottomDistance: pageMeta.onReachBottomDistance
+      titleImage: pageMeta.navigationBar.titleImage || "",
+      navigationStyle: pageMeta.navigationBar.style || "default",
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE
     });
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
@@ -13985,27 +13985,32 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-const PageBody = defineSystemComponent({
+const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && vue.ref(null);
-    const pageRefresh = null;
+    const _pageRefresh = null;
+    const pageRefresh = vue.ref(null);
+    vue.watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
     return () => {
-      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
+      const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef);
+      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh.value, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
     };
   }
 });
 function createPageRefreshTsx(refreshRef, pageMeta) {
-  if (!__UNI_FEATURE_PULL_DOWN_REFRESH__ || !pageMeta.enablePullDownRefresh) {
-    return null;
-  }
   return vue.createVNode(PageRefresh, {
     "ref": refreshRef
   }, null, 512);
 }
-const index = defineSystemComponent({
+const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());
