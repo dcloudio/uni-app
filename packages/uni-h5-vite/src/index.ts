@@ -5,6 +5,7 @@ import {
   isVueSfcFile,
   resolveUTSCompiler,
   uniCssScopedPlugin,
+  uniEncryptEasyComUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
@@ -47,15 +48,18 @@ export default [
     filter: (id) => isVueSfcFile(id) && !isAppVue(id),
   }),
   uniResolveIdPlugin(),
-  uniMainJsPlugin(),
-  uniManifestJsonPlugin(),
-  uniPagesJsonPlugin(),
+  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules-encrypt'
+    ? []
+    : [uniMainJsPlugin(), uniManifestJsonPlugin(), uniPagesJsonPlugin()]),
   uniInjectPlugin(),
   uniCssPlugin(),
   uniSSRPlugin(),
   uniSetupPlugin(),
   uniRenderjsPlugin(),
   uniH5Plugin(),
+  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules-encrypt'
+    ? [uniEncryptEasyComUniModulesPlugin()]
+    : []),
   uniPostVuePlugin(),
   uniPostSourceMapPlugin(),
 ]

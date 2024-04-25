@@ -4,6 +4,7 @@ import {
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
   uniEasycomPlugin,
+  uniEncryptEasyComUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniUTSUVueJavaScriptPlugin,
   uniUTSUniModulesPlugin,
@@ -29,9 +30,9 @@ export function init() {
     }),
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniAppIOSPlugin(),
-    uniAppIOSMainPlugin(),
-    uniAppManifestPlugin(),
-    uniAppPagesPlugin(),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules-encrypt'
+      ? [uniEncryptEasyComUniModulesPlugin()]
+      : [uniAppIOSMainPlugin(), uniAppManifestPlugin(), uniAppPagesPlugin()]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({
       inputDir: process.env.UNI_INPUT_DIR,

@@ -46,6 +46,13 @@ export function createResolve(
   _config: UserConfig
 ): UserConfig['resolve'] {
   const alias: Alias[] = []
+  if (process.env.UNI_COMPILE_TARGET !== 'uni_modules-encrypt') {
+    // 加密组件内部使用的 vue export helper，需要重新映射回来
+    alias.push({
+      find: 'plugin-vue:export-helper',
+      replacement: '\0plugin-vue:export-helper',
+    })
+  }
   return {
     // 必须使用alias解析，插件定制的resolveId，不会被应用到css等预处理器中
     alias: [

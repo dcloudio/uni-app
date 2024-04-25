@@ -49,6 +49,7 @@
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
     "hash-sum": "^2.0.0",
+    "isbinaryfile": "^5.0.2",
     "jsonc-parser": "^3.2.0",
     "lines-and-columns": "^2.0.4",
     "magic-string": "^0.30.7",

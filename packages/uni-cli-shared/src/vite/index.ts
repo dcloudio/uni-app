@@ -46,6 +46,8 @@ export * from './plugins'
 export * from './features'
 export * from './autoImport'
 
+export * from './cloud'
+
 // https://github.com/vitejs/vite/blob/aac2ef77521f66ddd908f9d97020b8df532148cf/packages/vite/src/node/server/searchRoot.ts#L38
 // vite 在初始化阶段会执行 initTSConfck，此时会 searchForWorkspaceRoot，如果找到了 pnpm-workspace.yaml 文件，会将其作为 root
 // HBuilderX 项目，root 一定是 UNI_INPUT_DIR，所以需要重写 fs.existsSync，不重写的话，可能会找错，

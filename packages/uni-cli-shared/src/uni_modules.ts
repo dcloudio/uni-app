@@ -358,3 +358,96 @@ export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
     return fs.existsSync(path.resolve(modulesDir, dep, 'utssdk'))
   })
 }
+
+export function genEncryptEasyComModuleIndex(components: string[]) {
+  const imports: string[] = []
+  const ids: string[] = []
+  components.forEach((component) => {
+    const id = capitalize(camelize(component))
+    imports.push(
+      `import ${id} from './components/${component}/${component}.vue'`
+    )
+    ids.push(id)
+  })
+  return `
+${imports.join('\n')}
+export { ${ids.join(',')} }
+`
+}
+
+/**
+ * 解析加密的 easyCom 插件列表
+ * @param inputDir
+ * @returns
+ */
+export function parseEncryptEasyComModules(
+  inputDir: string,
+  detectBinary: boolean = true
+) {
+  const modulesDir = path.resolve(inputDir, 'uni_modules')
+  const uniModules: Record<string, string[]> = {}
+  if (fs.existsSync(modulesDir)) {
+    fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
+      // 判断是否是加密easyCom插件
+      if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'encrypt'))) {
+        const components = parseEncryptEasyComComponents(
+          uniModuleDir,
+          inputDir,
+          detectBinary
+        )
+        if (components.length) {
+          uniModules[uniModuleDir] = components
+        }
+      }
+    })
+  }
+  return uniModules
+}
+
+/**
+ * 解析加密的 easyCom 组件列表
+ * @param pluginId
+ * @param inputDir
+ * @returns
+ */
+export function parseEncryptEasyComComponents(
+  pluginId: string,
+  inputDir: string,
+  detectBinary = true
+) {
+  const componentsDir = path.resolve(
+    inputDir,
+    'uni_modules',
+    pluginId,
+    'components'
+  )
+  const components: string[] = []
+  if (fs.existsSync(componentsDir)) {
+    fs.readdirSync(componentsDir).forEach((componentDir) => {
+      const componentFile = path.resolve(
+        componentsDir,
+        componentDir,
+        componentDir
+      )
+      if (
+        ['.vue', '.uvue'].some((extname) => {
+          const filename = componentFile + extname
+          // 探测 filename 是否是二进制文件
+          if (fs.existsSync(filename)) {
+            if (detectBinary) {
+              // 延迟require，这个是新增的依赖，无法及时同步到内部测试版本HBuilderX中，导致报错，所以延迟require吧
+              if (require('isbinaryfile').isBinaryFileSync(filename)) {
+                return true
+              }
+            } else {
+              return true
+            }
+          }
+        })
+      ) {
+        components.push(componentDir)
+      }
+    })
+  }
+  return components
+}
