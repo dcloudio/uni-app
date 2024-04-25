@@ -41,7 +41,7 @@ module.exports = {
               define[name] = false
             }
           })
-          Object.assign(scriptOptions.define, define)
+          scriptOptions.define = Object.assign({}, define, scriptOptions.define)
         }
       })
     }
