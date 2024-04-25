@@ -1,7 +1,7 @@
 import picker from '@ohos.file.picker';
 import fs from '@ohos.file.fs';
 import promptAction from '@ohos.promptAction';
-import { getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { injectHook, createVNode, render, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /**
 * @vue/shared v3.4.21
@@ -35,6 +35,10 @@ const cacheStringFunction = (fn) => {
     return hit || (cache[str] = fn(str));
   };
 };
+const hyphenateRE = /\B([A-Z])/g;
+const hyphenate = cacheStringFunction(
+  (str) => str.replace(hyphenateRE, "-$1").toLowerCase()
+);
 const capitalize = cacheStringFunction((str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 });
@@ -468,8 +472,20 @@ function wrapperTaskApi(name, fn, protocol, options) {
         });
     };
 }
+function wrapperSyncApi(name, fn, protocol, options) {
+    return (...args) => {
+        const errMsg = beforeInvokeApi(name, args, protocol, options);
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        return fn.apply(null, args);
+    };
+}
 function wrapperAsyncApi(name, fn, protocol, options) {
     return wrapperTaskApi(name, fn, protocol, options);
+}
+function defineSyncApi(name, fn, protocol, options) {
+    return wrapperSyncApi(name, fn, ('production' !== 'production') ? protocol : undefined, options);
 }
 function defineAsyncApi(name, fn, protocol, options) {
     return promisify(name, wrapperAsyncApi(name, fn, ('production' !== 'production') ? protocol : undefined, options));
@@ -487,8 +503,24 @@ function getBaseSystemInfo() {
     };
 }
 
+const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
+// lifecycle
+// App and Page
+const ON_SHOW = 'onShow';
+const ON_HIDE = 'onHide';
+//App
+const ON_LAUNCH = 'onLaunch';
+const ON_ERROR = 'onError';
+const ON_PAGE_NOT_FOUND = 'onPageNotFound';
+const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 const ON_READY = 'onReady';
 const ON_UNLOAD = 'onUnload';
+const ON_RESIZE = 'onResize';
+const ON_PAGE_SCROLL = 'onPageScroll';
+const ON_REACH_BOTTOM = 'onReachBottom';
+// framework
+const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
+const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 
 let lastLogTime = 0;
 function formatLog(module, ...args) {
@@ -500,6 +532,12 @@ function formatLog(module, ...args) {
         .join(' ')}`;
 }
 
+function hasLeadingSlash(str) {
+    return str.indexOf('/') === 0;
+}
+function addLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str : '/' + str;
+}
 const invokeArrayFns = (fns, arg) => {
     let ret;
     for (let i = 0; i < fns.length; i++) {
@@ -517,6 +555,110 @@ function once(fn, ctx = null) {
         return res;
     });
 }
+
+/**
+ * Decode text using `decodeURIComponent`. Returns the original text if it
+ * fails.
+ *
+ * @param text - string to decode
+ * @returns decoded string
+ */
+function decode(text) {
+    try {
+        return decodeURIComponent('' + text);
+    }
+    catch (err) { }
+    return '' + text;
+}
+const PLUS_RE = /\+/g; // %2B
+/**
+ * https://github.com/vuejs/vue-router-next/blob/master/src/query.ts
+ * @internal
+ *
+ * @param search - search string to parse
+ * @returns a query object
+ */
+function parseQuery(search) {
+    const query = {};
+    // avoid creating an object with an empty key and empty value
+    // because of split('&')
+    if (search === '' || search === '?')
+        return query;
+    const hasLeadingIM = search[0] === '?';
+    const searchParams = (hasLeadingIM ? search.slice(1) : search).split('&');
+    for (let i = 0; i < searchParams.length; ++i) {
+        // pre decode the + into space
+        const searchParam = searchParams[i].replace(PLUS_RE, ' ');
+        // allow the = character
+        let eqPos = searchParam.indexOf('=');
+        let key = decode(eqPos < 0 ? searchParam : searchParam.slice(0, eqPos));
+        let value = eqPos < 0 ? null : decode(searchParam.slice(eqPos + 1));
+        if (key in query) {
+            // an extra variable for ts types
+            let currentValue = query[key];
+            if (!isArray(currentValue)) {
+                currentValue = query[key] = [currentValue];
+            }
+            currentValue.push(value);
+        }
+        else {
+            query[key] = value;
+        }
+    }
+    return query;
+}
+
+class UniEvent {
+    type;
+    bubbles;
+    cancelable;
+    defaultPrevented = false;
+    detail;
+    timeStamp = Date.now();
+    _stop = false;
+    _end = false;
+    constructor(type, opts) {
+        this.type = type;
+        this.bubbles = !!opts.bubbles;
+        this.cancelable = !!opts.cancelable;
+    }
+    preventDefault() {
+        this.defaultPrevented = true;
+    }
+    stopImmediatePropagation() {
+        this._end = this._stop = true;
+    }
+    stopPropagation() {
+        this._stop = true;
+    }
+}
+function createUniEvent(evt) {
+    if (evt instanceof UniEvent) {
+        return evt;
+    }
+    const [type] = parseEventName(evt.type);
+    const uniEvent = new UniEvent(type, {
+        bubbles: false,
+        cancelable: false,
+    });
+    extend(uniEvent, evt);
+    return uniEvent;
+}
+const optionsModifierRE = /(?:Once|Passive|Capture)$/;
+function parseEventName(name) {
+    let options;
+    if (optionsModifierRE.test(name)) {
+        options = {};
+        let m;
+        while ((m = name.match(optionsModifierRE))) {
+            name = name.slice(0, name.length - m[0].length);
+            options[m[0].toLowerCase()] = true;
+        }
+    }
+    return [hyphenate(name.slice(2)), options];
+}
+
+const ACTION_TYPE_EVENT = 20;
 
 class EventChannel {
     id;
@@ -597,6 +739,59 @@ class EventChannel {
         });
     }
 }
+
+const E = function () {
+    // Keep this empty so it's easier to inherit from
+    // (via https://github.com/lipsmack from https://github.com/scottcorgan/tiny-emitter/issues/3)
+};
+E.prototype = {
+    on: function (name, callback, ctx) {
+        var e = this.e || (this.e = {});
+        (e[name] || (e[name] = [])).push({
+            fn: callback,
+            ctx: ctx,
+        });
+        return this;
+    },
+    once: function (name, callback, ctx) {
+        var self = this;
+        function listener() {
+            self.off(name, listener);
+            callback.apply(ctx, arguments);
+        }
+        listener._ = callback;
+        return this.on(name, listener, ctx);
+    },
+    emit: function (name) {
+        var data = [].slice.call(arguments, 1);
+        var evtArr = ((this.e || (this.e = {}))[name] || []).slice();
+        var i = 0;
+        var len = evtArr.length;
+        for (i; i < len; i++) {
+            evtArr[i].fn.apply(evtArr[i].ctx, data);
+        }
+        return this;
+    },
+    off: function (name, callback) {
+        var e = this.e || (this.e = {});
+        var evts = e[name];
+        var liveEvents = [];
+        if (evts && callback) {
+            for (var i = evts.length - 1; i >= 0; i--) {
+                if (evts[i].fn === callback || evts[i].fn._ === callback) {
+                    evts.splice(i, 1);
+                    break;
+                }
+            }
+            liveEvents = evts;
+        }
+        // Remove event from queue to prevent memory leak
+        // Suggested by https://github.com/lazd
+        // Ref: https://github.com/scottcorgan/tiny-emitter/commit/c6ebfaa9bc973b33d110a84a307742b7cf94c953#commitcomment-5024910
+        liveEvents.length ? (e[name] = liveEvents) : delete e[name];
+        return this;
+    },
+};
 
 const isObject = (val) => val !== null && typeof val === 'object';
 const defaultDelimiters = ['{', '}'];
@@ -977,12 +1172,55 @@ const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
     }
 });
 
+function initBridge(subscribeNamespace) {
+    const emitter = new E();
+    return {
+        on(event, callback) {
+            return emitter.on(event, callback);
+        },
+        once(event, callback) {
+            return emitter.once(event, callback);
+        },
+        off(event, callback) {
+            return emitter.off(event, callback);
+        },
+        emit(event, ...args) {
+            return emitter.emit(event, ...args);
+        },
+        subscribe(event, callback, once = false) {
+            emitter[once ? 'once' : 'on'](`${subscribeNamespace}.${event}`, callback);
+        },
+        unsubscribe(event, callback) {
+            emitter.off(`${subscribeNamespace}.${event}`, callback);
+        },
+        subscribeHandler(event, args, pageId) {
+            emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
+        },
+    };
+}
+
+const INVOKE_VIEW_API = 'invokeViewApi';
+const INVOKE_SERVICE_API = 'invokeServiceApi';
+
 function getCurrentPage() {
     const pages = getCurrentPages();
     const len = pages.length;
     if (len) {
         return pages[len - 1];
     }
+}
+function getCurrentPageMeta() {
+    const page = getCurrentPage();
+    if (page) {
+        return page.$page.meta;
+    }
+}
+function getCurrentPageId() {
+    const meta = getCurrentPageMeta();
+    if (meta) {
+        return meta.id;
+    }
+    return -1;
 }
 function getCurrentPageVm() {
     const page = getCurrentPage();
@@ -1013,6 +1251,102 @@ function invokeHook(vm, name, args) {
     return hooks && invokeArrayFns(hooks, args);
 }
 
+function getRouteOptions(path, alias = false) {
+    if (alias) {
+        return __uniRoutes.find((route) => route.path === path || route.alias === path);
+    }
+    return __uniRoutes.find((route) => route.path === path);
+}
+
+const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
+
+let invokeViewMethodId = 1;
+function publishViewMethodName(pageId) {
+    return (pageId || getCurrentPageId()) + '.' + INVOKE_VIEW_API;
+}
+const invokeViewMethod = (name, args, pageId, callback) => {
+    const { subscribe, publishHandler } = UniServiceJSBridge;
+    const id = callback ? invokeViewMethodId++ : 0;
+    callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
+    publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
+};
+const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
+    const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
+    const id = invokeViewMethodId++;
+    const subscribeName = INVOKE_VIEW_API + '.' + id;
+    subscribe(subscribeName, callback);
+    publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
+    return () => {
+        unsubscribe(subscribeName);
+    };
+};
+
+const serviceMethods = Object.create(null);
+function subscribeServiceMethod() {
+    UniServiceJSBridge.subscribe(INVOKE_SERVICE_API, onInvokeServiceMethod);
+}
+function registerServiceMethod(name, fn) {
+    if (!serviceMethods[name]) {
+        serviceMethods[name] = fn;
+    }
+}
+function onInvokeServiceMethod({ id, name, args, }, pageId) {
+    const publish = (res) => {
+        id &&
+            UniServiceJSBridge.publishHandler(INVOKE_SERVICE_API + '.' + id, res, pageId);
+    };
+    const handler = serviceMethods[name];
+    if (handler) {
+        handler(args, publish);
+    }
+    else {
+        publish({});
+    }
+}
+
+const ServiceJSBridge = /*#__PURE__*/ extend(
+/*#__PURE__*/ initBridge('view' /* view 指的是 service 层订阅的是 view 层事件 */), {
+    invokeOnCallback,
+    invokeViewMethod,
+    invokeViewMethodKeepAlive,
+});
+
+function initOn() {
+    const { on } = UniServiceJSBridge;
+    on(ON_RESIZE, onResize);
+    on(ON_APP_ENTER_FOREGROUND, onAppEnterForeground);
+    on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
+}
+function onResize(res) {
+    invokeHook(getCurrentPage(), ON_RESIZE, res);
+    UniServiceJSBridge.invokeOnCallback('onWindowResize', res); // API
+}
+function onAppEnterForeground(enterOptions) {
+    const page = getCurrentPage();
+    invokeHook(getApp(), ON_SHOW, enterOptions);
+    invokeHook(page, ON_SHOW);
+}
+function onAppEnterBackground() {
+    invokeHook(getApp(), ON_HIDE);
+    invokeHook(getCurrentPage(), ON_HIDE);
+}
+
+const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
+function initSubscribe() {
+    SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name) => UniServiceJSBridge.subscribe(name, createPageEvent(name)));
+}
+function createPageEvent(name) {
+    return (args, pageId) => {
+        invokeHook(parseInt(pageId), name, args);
+    };
+}
+
+function initService() {
+    {
+        initOn();
+        initSubscribe();
+    }
+}
 function initPageVm(pageVm, page) {
     pageVm.route = page.route;
     pageVm.$vm = pageVm;
@@ -1025,6 +1359,64 @@ function initPageVm(pageVm, page) {
         pageVm.$.__isActive = true;
     }
 }
+
+function createLaunchOptions() {
+    return {
+        path: '',
+        query: {},
+        scene: 1001,
+        referrerInfo: {
+            appId: '',
+            extraData: {},
+        },
+    };
+}
+function defineGlobalData(app, defaultGlobalData) {
+    const options = app.$options || {};
+    options.globalData = extend(options.globalData || {}, defaultGlobalData);
+    Object.defineProperty(app, 'globalData', {
+        get() {
+            return options.globalData;
+        },
+        set(newGlobalData) {
+            options.globalData = newGlobalData;
+        },
+    });
+}
+
+const enterOptions$1 = /*#__PURE__*/ createLaunchOptions();
+const launchOptions$1 = /*#__PURE__*/ createLaunchOptions();
+function getLaunchOptions() {
+    // TODO: Implement
+    return extend({}, launchOptions$1);
+}
+function getEnterOptions() {
+    // TODO: Implement
+    return extend({}, enterOptions$1);
+}
+
+const appHooks = {
+    [ON_UNHANDLE_REJECTION]: [],
+    [ON_PAGE_NOT_FOUND]: [],
+    [ON_ERROR]: [],
+    [ON_SHOW]: [],
+    [ON_HIDE]: [],
+};
+function injectAppHooks(appInstance) {
+    Object.keys(appHooks).forEach((type) => {
+        appHooks[type].forEach((hook) => {
+            injectHook(type, hook, appInstance);
+        });
+    });
+}
+const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
+defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+    return getEnterOptions();
+});
+const API_GET_LAUNCH_OPTIONS_SYNC = 'getLaunchOptionsSync';
+defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
+    return getLaunchOptions();
+});
 
 const API_CHOOSE_IMAGE = 'chooseImage';
 const ChooseImageOptions = {
@@ -1179,6 +1571,28 @@ var uni$1 = {
   getSystemInfoSync: getSystemInfoSync
 };
 
+const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
+    publishHandler,
+});
+function publishHandler(event, args, pageIds) {
+    args = JSON.stringify(args);
+    if (('production' !== 'production')) {
+        console.log(formatLog('publishHandler', event, args, pageIds));
+    }
+    if (!isArray(pageIds)) {
+        pageIds = [pageIds];
+    }
+    const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
+    if (('production' !== 'production')) {
+        console.log(formatLog('publishHandler', 'size', evalJSCode.length));
+    }
+    pageIds.forEach((id) => {
+        const idStr = String(id);
+        const code = evalJSCode.replace('__PAGE_ID__', idStr);
+        console.log('TODO eval:', idStr, code);
+    });
+}
+
 const pages = [];
 function addCurrentPage(page) {
     const $page = page.$page;
@@ -1193,6 +1607,286 @@ function addCurrentPage(page) {
     else {
         pages.push(page);
     }
+}
+function getPageById(id) {
+    return pages.find((page) => page.$page.id === id);
+}
+function getAllPages() {
+    return pages;
+}
+function getCurrentPages$1() {
+    const curPages = [];
+    pages.forEach((page) => {
+        if (page.$.__isTabBar) {
+            if (page.$.__isActive) {
+                curPages.push(page);
+            }
+        }
+        else {
+            curPages.push(page);
+        }
+    });
+    return curPages;
+}
+
+function initVueApp(appVm) {
+    const internalInstance = appVm.$;
+    // 定制 App 的 $children 为 devtools 服务 false
+    Object.defineProperty(internalInstance.ctx, '$children', {
+        get() {
+            return getAllPages().map((page) => page.$vm);
+        },
+    });
+    const appContext = internalInstance.appContext;
+    extend(appContext.app, {
+        mountPage(pageComponent, pageProps, pageContainer) {
+            const vnode = createVNode(pageComponent, pageProps);
+            // store app context on the root VNode.
+            // this will be set on the root instance on initial mount.
+            vnode.appContext = appContext;
+            vnode.__page_container__ = pageContainer;
+            render(vnode, pageContainer);
+            const publicThis = vnode.component.proxy;
+            publicThis.__page_container__ = pageContainer;
+            return publicThis;
+        },
+        unmountPage: (pageInstance) => {
+            const { __page_container__ } = pageInstance;
+            if (__page_container__) {
+                __page_container__.isUnmounted = true;
+                render(null, __page_container__);
+            }
+        },
+    });
+}
+
+const VD_SYNC = 'vdSync';
+const ON_WEBVIEW_READY = 'onWebviewReady';
+const WEBVIEW_INSERTED = 'webviewInserted';
+const WEBVIEW_REMOVED = 'webviewRemoved';
+
+let focusTimeout = 0;
+let keyboardHeight = 0;
+let focusTimer = null;
+function hookKeyboardEvent(event, callback) {
+    if (focusTimer) {
+        clearTimeout(focusTimer);
+        focusTimer = null;
+    }
+    if (event.type === 'onFocus') {
+        {
+            focusTimer = setTimeout(function () {
+                event.detail.height = keyboardHeight;
+                callback(event);
+            }, focusTimeout);
+            return;
+        }
+    }
+    callback(event);
+}
+
+function onNodeEvent(nodeId, evt, pageNode) {
+    const type = evt.type;
+    if (type === 'onFocus' || type === 'onBlur') {
+        hookKeyboardEvent(evt, (evt) => {
+            pageNode.fireEvent(nodeId, evt);
+        });
+    }
+    else {
+        pageNode.fireEvent(nodeId, evt);
+    }
+}
+
+function onVdSync(actions, pageId) {
+    // 从所有pages中获取
+    const page = getPageById(parseInt(pageId));
+    if (!page) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
+        }
+        return;
+    }
+    const pageNode = page.__page_container__;
+    actions.forEach((action) => {
+        switch (action[0]) {
+            case ACTION_TYPE_EVENT:
+                onNodeEvent(action[1], action[2], pageNode);
+                break;
+        }
+    });
+}
+
+const enterOptions = /*#__PURE__*/ createLaunchOptions();
+const launchOptions = /*#__PURE__*/ createLaunchOptions();
+function initLaunchOptions({ path, query, referrerInfo, }) {
+    extend(launchOptions, {
+        path,
+        query: query ? parseQuery(query) : {},
+        referrerInfo: referrerInfo || {},
+        // TODO uni-app x
+        channel: plus.runtime.channel,
+        launcher: plus.runtime.launcher,
+    });
+    extend(enterOptions, launchOptions);
+    return extend({}, launchOptions);
+}
+
+function onPlusMessage(type, callback, once = false) {
+    UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
+}
+// function initEnterReLaunch(info: RedirectInfo) {
+//   __uniConfig.realEntryPagePath =
+//     __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
+//   __uniConfig.entryPagePath = info.path
+//   __uniConfig.entryPageQuery = info.query
+//   $reLaunch(
+//     { url: addLeadingSlash(info.path) + info.query },
+//     { resolve() {}, reject() {} }
+//   )
+// }
+
+const API_ROUTE = [
+    'switchTab',
+    'reLaunch',
+    'redirectTo',
+    'navigateTo',
+    'navigateBack',
+];
+function subscribeNavigator() {
+    API_ROUTE.forEach((name) => {
+        registerServiceMethod(name, (args) => {
+            uni[name](extend(args, {
+                fail(res) {
+                    console.error(res.errMsg);
+                },
+            }));
+        });
+    });
+}
+
+function subscribeWebviewReady(_data, pageId) {
+    // TODO
+}
+
+function onWebviewInserted(_, pageId) {
+    const page = getPageById(parseInt(pageId));
+    page && (page.__uniapp_webview = true);
+}
+function onWebviewRemoved(_, pageId) {
+    const page = getPageById(parseInt(pageId));
+    page && delete page.__uniapp_webview;
+}
+
+function getPageNode(pageId) {
+    const page = getPageById(pageId);
+    if (!page)
+        return null;
+    return page.__page_container__;
+}
+function findNode(name, value, uniNode) {
+    if (typeof uniNode === 'number') {
+        uniNode = getPageNode(uniNode);
+    }
+    if (uniNode[name] === value) {
+        return uniNode;
+    }
+    const { childNodes } = uniNode;
+    for (let i = 0; i < childNodes.length; i++) {
+        const uniNode = findNode(name, value, childNodes[i]);
+        if (uniNode) {
+            return uniNode;
+        }
+    }
+    return null;
+}
+function findNodeByTagName(tagName, uniNode) {
+    return findNode('nodeName', tagName.toUpperCase(), uniNode);
+}
+
+const onWebInvokeAppService = ({ name, arg }, pageIds) => {
+    if (name === 'postMessage') {
+        onMessage(pageIds[0], arg);
+    }
+    else {
+        uni[name](extend(arg, {
+            fail(res) {
+                console.error(res.errMsg);
+            },
+        }));
+    }
+};
+function onMessage(pageId, arg) {
+    const uniNode = findNodeByTagName('web-view', parseInt(pageId));
+    uniNode &&
+        uniNode.dispatchEvent(createUniEvent({
+            type: 'onMessage',
+            target: Object.create(null),
+            currentTarget: Object.create(null),
+            detail: {
+                data: [arg],
+            },
+        }));
+}
+
+function initSubscribeHandlers() {
+    const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
+    onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
+        subscribeHandler(type, data, pageId);
+    });
+    onPlusMessage(WEB_INVOKE_APPSERVICE, ({ data, webviewIds }) => {
+        onWebInvokeAppService(data, webviewIds);
+    });
+    subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
+    subscribe(VD_SYNC, onVdSync);
+    subscribeServiceMethod();
+    // TODO subscribeAd
+    subscribeNavigator();
+    subscribe(WEBVIEW_INSERTED, onWebviewInserted);
+    subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
+    // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
+    const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
+    if (routeOptions) {
+        // 防止首页 webview 初始化过早， service 还未开始监听
+        publishHandler(ON_WEBVIEW_READY, {}, 1);
+    }
+}
+
+function initAppLaunch(appVm) {
+    injectAppHooks(appVm.$);
+    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
+    const args = initLaunchOptions({
+        path: entryPagePath,
+        query: entryPageQuery,
+        referrerInfo: referrerInfo,
+    });
+    invokeHook(appVm, ON_LAUNCH, args);
+    invokeHook(appVm, ON_SHOW, args);
+}
+
+let appCtx;
+const defaultApp = {
+    globalData: {},
+};
+function initAppVm(appVm) {
+    appVm.$vm = appVm;
+    appVm.$mpType = 'app';
+    // TODO useI18n
+}
+function registerApp(appVm) {
+    if (('production' !== 'production')) {
+        console.log(formatLog('registerApp'));
+    }
+    // TODO 定制 useStore
+    initVueApp(appVm);
+    appCtx = appVm;
+    initAppVm(appCtx);
+    extend(appCtx, defaultApp); // 拷贝默认实现
+    defineGlobalData(appCtx, defaultApp.globalData);
+    initService();
+    initSubscribeHandlers();
+    initAppLaunch(appVm);
+    // TODO clearTempFile
+    __uniConfig.ready = true;
 }
 
 function setupPage(component) {
@@ -1262,7 +1956,10 @@ function createFactory(component) {
 
 var index = {
     uni: uni$1,
+    getCurrentPages: getCurrentPages$1,
     __definePage: definePage,
+    __registerApp: registerApp,
+    UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
 export { index as default };
