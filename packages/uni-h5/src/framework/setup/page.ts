@@ -160,11 +160,12 @@ export function initPage(vm: ComponentPublicInstance) {
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
       navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage,
-      navigationStyle: pageMeta.navigationBar.style,
-      disableScroll: pageMeta.disableScroll,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh,
-      onReachBottomDistance: pageMeta.onReachBottomDistance,
+      titleImage: pageMeta.navigationBar.titleImage || '',
+      navigationStyle: pageMeta.navigationBar.style || 'default',
+      disableScroll: pageMeta.disableScroll || false,
+      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+      onReachBottomDistance:
+        pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
     })
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
