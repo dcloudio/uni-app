@@ -156,8 +156,8 @@ export async function runBuild(options: CliOptions & BuildOptions) {
       showRunPrompt(options.platform as PLATFORM)
     }
   } catch (e: any) {
-    console.error(`Build failed with errors.`)
     console.error(e)
+    console.error(`Build failed with errors.`)
     process.exit(1)
   }
 }
