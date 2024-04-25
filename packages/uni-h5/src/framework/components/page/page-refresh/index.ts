@@ -1,4 +1,4 @@
-import { type Ref, onMounted } from 'vue'
+import { type Ref, nextTick, onMounted, watch } from 'vue'
 import { invokeHook } from '@dcloudio/uni-core'
 import {
   API_START_PULL_DOWN_REFRESH,
@@ -71,7 +71,7 @@ export function usePageRefresh(refreshRef: Ref) {
     false,
     id
   )
-  onMounted(() => {
+  function initElement() {
     refreshContainerElem = refreshRef.value.$el
     refreshControllerElem =
       refreshContainerElem.querySelector('.uni-page-refresh')!
@@ -81,7 +81,23 @@ export function usePageRefresh(refreshRef: Ref) {
         '.uni-page-refresh-inner'
       ) as HTMLDivElement
     ).style
+  }
+  onMounted(() => {
+    initElement()
   })
+
+  if (__X__) {
+    watch(
+      () => pageMeta.enablePullDownRefresh,
+      (enablePullDownRefresh) => {
+        if (enablePullDownRefresh) {
+          nextTick(() => {
+            initElement()
+          })
+        }
+      }
+    )
+  }
   let touchId: number | null
   let startY: number
   let canRefresh: boolean
