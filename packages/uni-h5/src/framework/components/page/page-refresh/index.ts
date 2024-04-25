@@ -42,6 +42,9 @@ export function usePageRefresh(refreshRef: Ref) {
   let refreshInnerElemStyle: CSSStyleDeclaration
   useSubscribe(
     () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return
+      }
       if (!state) {
         state = REFRESHING
         addClass()
@@ -56,6 +59,9 @@ export function usePageRefresh(refreshRef: Ref) {
   )
   useSubscribe(
     () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return
+      }
       if (state === REFRESHING) {
         removeClass()
         state = RESTORING

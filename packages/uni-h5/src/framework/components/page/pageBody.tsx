@@ -1,4 +1,4 @@
-import { type Ref, ref, renderSlot } from 'vue'
+import { type Ref, ref, renderSlot, watch } from 'vue'
 
 import { defineSystemComponent } from '@dcloudio/uni-components'
 
@@ -17,12 +17,22 @@ export default defineSystemComponent({
     const refreshRef = (__UNI_FEATURE_PULL_DOWN_REFRESH__ &&
       ref(null)) as Ref<null>
 
-    const pageRefresh =
-      !__NODE_JS__ &&
-      __UNI_FEATURE_PULL_DOWN_REFRESH__ &&
-      pageMeta.enablePullDownRefresh
+    const _pageRefresh =
+      !__NODE_JS__ && __UNI_FEATURE_PULL_DOWN_REFRESH__
         ? usePageRefresh(refreshRef)
         : null
+    const pageRefresh: Ref<typeof _pageRefresh> = ref(null)
+    watch(
+      () => {
+        return pageMeta.enablePullDownRefresh
+      },
+      () => {
+        pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null
+      },
+      {
+        immediate: true,
+      }
+    )
 
     return () => {
       const pageRefreshTsx =
@@ -31,7 +41,7 @@ export default defineSystemComponent({
       return (
         <>
           {pageRefreshTsx}
-          <uni-page-wrapper {...pageRefresh}>
+          <uni-page-wrapper {...pageRefresh.value}>
             <uni-page-body>{renderSlot(ctx.slots, 'default')}</uni-page-body>
           </uni-page-wrapper>
         </>
@@ -41,7 +51,10 @@ export default defineSystemComponent({
 })
 
 function createPageRefreshTsx(refreshRef: Ref, pageMeta: UniApp.PageRouteMeta) {
-  if (!__UNI_FEATURE_PULL_DOWN_REFRESH__ || !pageMeta.enablePullDownRefresh) {
+  if (
+    !__X__ &&
+    (!__UNI_FEATURE_PULL_DOWN_REFRESH__ || !pageMeta.enablePullDownRefresh)
+  ) {
     return null
   }
   return <PageRefresh ref={refreshRef} />
