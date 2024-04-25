@@ -104,6 +104,7 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
     console.log(M['build.done'])
   } catch (e: any) {
     console.error(`Build failed with errors.`)
+    console.error(e)
     process.exit(1)
   }
 }
