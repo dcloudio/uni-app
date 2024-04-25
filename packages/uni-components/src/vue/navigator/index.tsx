@@ -1,4 +1,4 @@
-import { ref, getCurrentInstance, onMounted } from 'vue'
+import { getCurrentInstance, onMounted, ref } from 'vue'
 import { extend } from '@vue/shared'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { onEventPrevent } from '@dcloudio/uni-core'
@@ -17,7 +17,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   compatConfig: {
     MODE: 3,
   },
-  props: extend({}, navigatorProps, {
+  props: /*#__PURE__*/ extend({}, navigatorProps, {
     renderLink: {
       type: Boolean,
       default: true,

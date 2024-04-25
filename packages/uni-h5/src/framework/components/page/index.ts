@@ -15,7 +15,7 @@ import PageBody from './pageBody'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
 
-export default defineSystemComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'Page',
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId())
