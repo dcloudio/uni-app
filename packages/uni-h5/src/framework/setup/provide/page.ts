@@ -74,7 +74,7 @@ function initPageMeta(id: number) {
 function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta
-    if (enablePullDownRefresh) {
+    if (__X__ || enablePullDownRefresh) {
       const pullToRefresh = normalizePullToRefreshRpx(
         extend(
           {
