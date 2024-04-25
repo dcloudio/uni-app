@@ -949,6 +949,16 @@ function resolveIdentifierType(
   return ''
 }
 
+// function request<T>(options : RequestOptions<T>, _t : T.Type) : RequestTask
+function isTDotType(pat: BindingIdentifier) {
+  const typeAnn = pat.typeAnnotation?.typeAnnotation
+  return (
+    typeAnn?.type === 'TsTypeReference' &&
+    typeAnn.typeName.type === 'TsQualifiedName' &&
+    typeAnn.typeName.right.value === 'Type'
+  )
+}
+
 function resolveFunctionParams(
   types: Types,
   params: Param[],
@@ -957,22 +967,25 @@ function resolveFunctionParams(
   const result: Parameter[] = []
   params.forEach(({ pat }) => {
     if (pat.type === 'Identifier') {
-      const param: Parameter = {
-        name: pat.value,
-        type: resolveIdentifierType(
-          types,
-          pat as BindingIdentifier,
-          resolveTypeReferenceName
-        ),
+      if (!isTDotType(pat)) {
+        // ignore T.Type
+        const param: Parameter = {
+          name: pat.value,
+          type: resolveIdentifierType(
+            types,
+            pat as BindingIdentifier,
+            resolveTypeReferenceName
+          ),
+        }
+        // A | null
+        if (
+          (pat as BindingIdentifier).typeAnnotation?.typeAnnotation.type ===
+          'TsUnionType'
+        ) {
+          param.default = 'UTSNull'
+        }
+        result.push(param)
       }
-      // A | null
-      if (
-        (pat as BindingIdentifier).typeAnnotation?.typeAnnotation.type ===
-        'TsUnionType'
-      ) {
-        param.default = 'UTSNull'
-      }
-      result.push(param)
     } else if (pat.type === 'AssignmentPattern') {
       if (pat.left.type === 'Identifier') {
         const param: Parameter = {
