@@ -8,6 +8,7 @@ import {
   APP_CONFIG_SERVICE,
   APP_SERVICE_FILENAME,
   M,
+  isInHBuilderX,
   output,
 } from '@dcloudio/uni-cli-shared'
 import type { CliOptions } from '.'
@@ -154,6 +155,10 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     console.log(M['build.done'])
     if (options.platform !== 'h5') {
       showRunPrompt(options.platform as PLATFORM)
+    }
+    // 开发者可能用了三方插件，三方插件有可能阻止退出，导致HBuilderX打包状态识别不正确
+    if (isInHBuilderX()) {
+      process.exit(0)
     }
   } catch (e: any) {
     console.error(e)
