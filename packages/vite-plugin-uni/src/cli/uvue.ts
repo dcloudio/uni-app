@@ -3,6 +3,7 @@ import { extend, hasOwn } from '@vue/shared'
 import {
   M,
   initEasycomsOnce,
+  isInHBuilderX,
   output,
   parseManifestJsonOnce,
   resetOutput,
@@ -102,6 +103,10 @@ export async function runUVueAndroidBuild(options: CliOptions & BuildOptions) {
       createLogger(options.logLevel).info(message)
     )
     console.log(M['build.done'])
+    // 开发者可能用了三方插件，三方插件有可能阻止退出，导致HBuilderX打包状态识别不正确
+    if (isInHBuilderX()) {
+      process.exit(0)
+    }
   } catch (e: any) {
     console.error(e)
     console.error(`Build failed with errors.`)
