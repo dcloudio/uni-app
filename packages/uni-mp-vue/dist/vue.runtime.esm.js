@@ -4752,6 +4752,9 @@ function inject(key, defaultValue, treatDefaultAsFactory = false) {
     warn$1(`inject() can only be used inside setup() or functional components.`);
   }
 }
+function hasInjectionContext() {
+  return !!(currentInstance || currentRenderingInstance || currentApp);
+}
 
 /*! #__NO_SIDE_EFFECTS__ */
 // @__NO_SIDE_EFFECTS__
@@ -6514,7 +6517,10 @@ function setupStatefulComponent(instance, isSSR) {
       setup,
       instance,
       0,
-      [!!(process.env.NODE_ENV !== "production") ? shallowReadonly(instance.props) : instance.props, setupContext]
+      [
+        !!(process.env.NODE_ENV !== "production") ? shallowReadonly(instance.props) : instance.props,
+        setupContext
+      ]
     );
     resetTracking();
     reset();
@@ -6578,7 +6584,6 @@ function finishComponentSetup(instance, isSSR, skipOptions) {
     if (Component.template) {
       warn$1(
         `Component provided template option but runtime compilation is not supported in this build of Vue.` + (` Configure your bundler to alias "vue" to "vue/dist/vue.esm-bundler.js".` )
-        /* should not happen */
       );
     } else {
       warn$1(`Component is missing template or render function.`);
@@ -8000,4 +8005,4 @@ function createApp(rootComponent, rootProps = null) {
 }
 const createSSRApp = createApp;
 
-export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, j, logError, m, markRaw, mergeDefaults, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, c, callWithAsyncErrorHandling, callWithErrorHandling, computed, createApp, createSSRApp, createVNode, createVueApp, customRef, d, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, e, effect, effectScope, f, findComponentPropsData, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, h, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, j, logError, m, markRaw, mergeDefaults, mergeProps, n, nextTick$1 as nextTick, o, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, p, patch, provide, proxyRefs, pruneComponentPropsCache, queuePostFlushCb, r, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, s, setCurrentRenderingInstance, setTemplateRef, setupDevtoolsPlugin, shallowReactive, shallowReadonly, shallowRef, sr, stop, t, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssModule, useCssVars, useSSRContext, useSlots, version, w, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
