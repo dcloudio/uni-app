@@ -9,6 +9,7 @@ import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, Reac
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
 import { isRootHook, isRootImmediateHookX, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
+import PromisePolyfill from 'promise-polyfill';
 
 const stack = [];
 function pushWarningContext(vnode) {
@@ -277,29 +278,22 @@ let flushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
-const iOSPromise = {
-  then(callback) {
-    setTimeout(() => callback(), 0);
-  }
-};
-const resolvedPromise = iOSPromise;
+const resolvedPromise = /* @__PURE__ */ PromisePolyfill.resolve();
 let currentFlushPromise = null;
 const RECURSION_LIMIT = 100;
 function nextTick(fn, instance = getCurrentInstance()) {
   const promise = currentFlushPromise || resolvedPromise;
-  const current = currentFlushPromise === null || instance === null ? promise : {
-    then(resolve) {
-      promise.then(() => {
-        if (instance === null) {
+  const current = currentFlushPromise === null || instance === null ? promise : promise.then(() => {
+    return new Promise((resolve) => {
+      if (instance === null) {
+        resolve();
+      } else {
+        instance.$waitNativeRender(() => {
           resolve();
-        } else {
-          instance.$waitNativeRender(() => {
-            resolve();
-          });
-        }
-      });
-    }
-  };
+        });
+      }
+    });
+  });
   return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
 function findInsertionIndex(id) {
