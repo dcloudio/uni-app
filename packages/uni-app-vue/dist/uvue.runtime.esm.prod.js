@@ -1274,6 +1274,8 @@ function normalizeStyle(value) {
       styleObject[key] = value;
     });
     return normalizeStyle$1(styleObject);
+  } else if (isString(value)) {
+    return parseStringStyle(value);
   } else if (isArray(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
@@ -1566,22 +1568,29 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var resolvedPromise = /* @__PURE__ */Promise.resolve();
+var iOSPromise = {
+  then(callback) {
+    setTimeout(() => callback(), 0);
+  }
+};
+var resolvedPromise = iOSPromise;
 var currentFlushPromise = null;
 function nextTick(fn) {
   var instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentInstance();
   var promise = currentFlushPromise || resolvedPromise;
-  var current = currentFlushPromise === null || instance === null ? promise : promise.then(() => {
-    return new Promise(resolve => {
-      if (instance === null) {
-        resolve();
-      } else {
-        instance.$waitNativeRender(() => {
+  var current = currentFlushPromise === null || instance === null ? promise : {
+    then(resolve) {
+      promise.then(() => {
+        if (instance === null) {
           resolve();
-        });
-      }
-    });
-  });
+        } else {
+          instance.$waitNativeRender(() => {
+            resolve();
+          });
+        }
+      });
+    }
+  };
   return fn ? current.then(this ? fn.bind(this) : fn) : current;
 }
 function findInsertionIndex(id) {
@@ -7381,7 +7390,8 @@ function parseStyleSheet(_ref23) {
     }
     var styles = [];
     if (appContext && __globalStyles) {
-      styles.push(__globalStyles);
+      var globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
+      styles.push(...globalStyles);
     }
     var page = root.type;
     if (component !== page && isArray(page.styles)) {
@@ -7829,6 +7839,9 @@ function expandStyle(prop, value) {
 function parseStyleDecl(prop, value) {
   return expandStyle(prop, value);
 }
+function isSame(a, b) {
+  return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
+}
 function patchStyle(el, prev, next) {
   if (!next) {
     return;
@@ -7844,9 +7857,9 @@ function patchStyle(el, prev, next) {
       var style = getExtraStyle(el);
       for (var key in prev) {
         var _key = camelize(key);
-        if (next[_key] == null) {
+        if (next[key] == null) {
           var value = classStyle != null && classStyle.has(_key) ? classStyle.get(_key) : "";
-          parseStyleDecl(key, value).forEach((value2, key2) => {
+          parseStyleDecl(_key, value).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style == null ? void 0 : style.delete(key2);
           });
@@ -7854,7 +7867,8 @@ function patchStyle(el, prev, next) {
       }
       for (var _key15 in next) {
         var _value2 = next[_key15];
-        {
+        var prevValue = prev[_key15];
+        if (!isSame(prevValue, _value2)) {
           parseStyleDecl(camelize(_key15), _value2).forEach((value2, key2) => {
             batchedStyles.set(key2, value2);
             style == null ? void 0 : style.set(key2, value2);

@@ -181,6 +181,8 @@ const customElements = [
     'page-container',
     'page-meta',
     'lottie',
+    'join-group-chat',
+    'subscribe-message',
 ];
 const options = {
     cdn: 2,
