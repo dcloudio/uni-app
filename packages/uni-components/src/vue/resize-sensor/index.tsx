@@ -1,13 +1,5 @@
-import {
-  ref,
-  Ref,
-  watch,
-  reactive,
-  nextTick,
-  onMounted,
-  onActivated,
-  SetupContext,
-} from 'vue'
+import { nextTick, onActivated, onMounted, reactive, ref, watch } from 'vue'
+import type { Ref, SetupContext } from 'vue'
 import { extend } from '@vue/shared'
 import { defineBuiltInComponent } from '../../helpers/component'
 
@@ -49,7 +41,8 @@ function useResizeSensorUpdate(
     (value: typeof size) => emit('resize', value)
   )
   return () => {
-    const rootEl = rootRef.value!
+    const rootEl = rootRef.value
+    if (!rootEl) return
     size.width = rootEl.offsetWidth
     size.height = rootEl.offsetHeight
     reset()
