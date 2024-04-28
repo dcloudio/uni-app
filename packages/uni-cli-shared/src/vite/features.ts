@@ -248,8 +248,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     initPagesFeature(options),
     initProjectFeature(options)
   )
-  // uni-app-x运行时可调用$setPageStyle，需启用相关特性方可支持
-  const isUniX = process.env.UNI_APP_X === 'true'
+  // uni-app-x运行时可调用$setPageStyle，需启用相关特性方可支持。否则$setPageStyle无效果
   const features = {
     // vue
     __VUE_OPTIONS_API__: vueOptionsApi, // enable/disable Options API support, default: true
@@ -278,8 +277,8 @@ export function initFeatures(options: InitFeaturesOptions) {
     __UNI_FEATURE_LEFTWINDOW__: leftWindow, // 是否包含leftWindow
     __UNI_FEATURE_RIGHTWINDOW__: rightWindow, // 是否包含rightWindow
     __UNI_FEATURE_RESPONSIVE__: topWindow || leftWindow || rightWindow, // 是否启用响应式
-    __UNI_FEATURE_NAVIGATIONBAR__: isUniX || navigationBar, // 是否启用标题栏
-    __UNI_FEATURE_PULL_DOWN_REFRESH__: isUniX || pullDownRefresh, // 是否启用下拉刷新
+    __UNI_FEATURE_NAVIGATIONBAR__: navigationBar, // 是否启用标题栏
+    __UNI_FEATURE_PULL_DOWN_REFRESH__: pullDownRefresh, // 是否启用下拉刷新
     __UNI_FEATURE_NAVIGATIONBAR_BUTTONS__: navigationBarButtons, // 是否启用标题栏按钮
     __UNI_FEATURE_NAVIGATIONBAR_SEARCHINPUT__: navigationBarSearchInput, // 是否启用标题栏搜索框
     __UNI_FEATURE_NAVIGATIONBAR_TRANSPARENT__: navigationBarTransparent, // 是否启用透明标题栏
