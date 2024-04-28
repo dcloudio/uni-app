@@ -55,7 +55,13 @@ export function uniConfusionPlugin(): Plugin {
 }
 
 function replaceRequireVueCode(code: string) {
-  return code.replace(/require\(['"]vue['"]\)/gi, `$cjs_require$('vue')`)
+  // 目前会生成require("@vue/shared"); 理论上摇树之后，是不应该有的，后续排查为什么
+  return code
+    .replace(/require\(['"]vue['"]\)/gi, `$cjs_require$('vue')`)
+    .replace(
+      /require\(['"]@vue\/shared['"]\)/gi,
+      `$cjs_require$('@vue/shared')`
+    )
 }
 function replaceRequireAppConfusionCode(code: string) {
   return code.replace(
