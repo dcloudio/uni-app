@@ -7,6 +7,7 @@ import {
   getPlatformManifestJsonOnce,
   initPostcssPlugin,
   isUniPageSfcFile,
+  isVueSfcFile,
   normalizePath,
   parsePagesJsonOnce,
   parseRpx2UnitOnce,
@@ -15,12 +16,12 @@ import {
   resolveBuiltIn,
   resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
+import { restoreGlobalCode } from '@dcloudio/uni-cli-shared/dist/json/app/pages/code'
 import type { OutputBundle } from 'rollup'
 import { APP_RENDERJS_JS, APP_WXS_JS } from '../plugins/renderjs'
 
 import { createConfigResolved } from '../../plugin/configResolved'
 import { templateDir } from '../../utils'
-import { restoreGlobalCode } from '@dcloudio/uni-cli-shared/dist/json/app/pages/code'
 
 export function uniAppVuePlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -70,6 +71,11 @@ export function uniAppVuePlugin(): UniVitePlugin {
               return 'app.css'
             } else if (isUniPageSfcFile(id, inputDir)) {
               return normalizeCssChunkFilename(id)
+            } else if (
+              process.env.UNI_COMPILE_TARGET === 'uni_modules' &&
+              isVueSfcFile(id)
+            ) {
+              return normalizeCssChunkFilename(id)
             }
           },
           chunkCssCode(filename, cssCode) {
@@ -88,11 +94,13 @@ export function uniAppVuePlugin(): UniVitePlugin {
       },
     }),
     generateBundle(_, bundle) {
-      this.emitFile({
-        fileName: '__uniappview.html',
-        source: genViewHtml(bundle),
-        type: 'asset',
-      })
+      if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+        this.emitFile({
+          fileName: '__uniappview.html',
+          source: genViewHtml(bundle),
+          type: 'asset',
+        })
+      }
     },
   }
 }

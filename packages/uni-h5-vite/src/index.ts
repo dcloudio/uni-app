@@ -48,7 +48,7 @@ export default [
     filter: (id) => isVueSfcFile(id) && !isAppVue(id),
   }),
   uniResolveIdPlugin(),
-  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules-encrypt'
+  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
     ? []
     : [uniMainJsPlugin(), uniManifestJsonPlugin(), uniPagesJsonPlugin()]),
   uniInjectPlugin(),
@@ -57,7 +57,7 @@ export default [
   uniSetupPlugin(),
   uniRenderjsPlugin(),
   uniH5Plugin(),
-  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules-encrypt'
+  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
     ? [uniEncryptEasyComUniModulesPlugin()]
     : []),
   uniPostVuePlugin(),

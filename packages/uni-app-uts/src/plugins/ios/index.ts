@@ -30,7 +30,7 @@ export function init() {
     }),
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniAppIOSPlugin(),
-    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules-encrypt'
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
       ? [uniEncryptEasyComUniModulesPlugin()]
       : [uniAppIOSMainPlugin(), uniAppManifestPlugin(), uniAppPagesPlugin()]),
     uniUTSUVueJavaScriptPlugin(),

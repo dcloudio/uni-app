@@ -2,6 +2,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
   initAppProvide,
   uniEasycomPlugin,
+  uniEncryptEasyComUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -21,17 +22,29 @@ export { initNVueNodeTransforms } from './plugin'
 export function initNVuePlugins() {
   const renderer = process.env.UNI_RENDERER
   const appService = process.env.UNI_RENDERER_NATIVE === 'appService'
-  return [
-    uniAppCssPlugin(),
-    uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
-    uniHBuilderXConsolePlugin(),
-    uniMainJsPlugin({ renderer, appService }),
-    uniManifestJsonPlugin(),
-    uniPagesJsonPlugin({ renderer, appService }),
-    uniViteInjectPlugin('uni:app-inject', initAppProvide()),
-    uniRenderjsPlugin(),
-    uniAppNVuePlugin({ appService }),
-    uniEsbuildPlugin({ renderer, appService }),
-    ...(appService ? [uniStatsPlugin(), uniTemplatePlugin({ renderer })] : []),
-  ]
+
+  return process.env.UNI_COMPILE_TARGET === 'uni_modules'
+    ? [
+        uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
+        uniHBuilderXConsolePlugin(),
+        uniViteInjectPlugin('uni:app-inject', initAppProvide()),
+        uniRenderjsPlugin(),
+        uniAppNVuePlugin({ appService }),
+        uniEncryptEasyComUniModulesPlugin(),
+      ]
+    : [
+        uniAppCssPlugin(),
+        uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
+        uniHBuilderXConsolePlugin(),
+        uniMainJsPlugin({ renderer, appService }),
+        uniManifestJsonPlugin(),
+        uniPagesJsonPlugin({ renderer, appService }),
+        uniViteInjectPlugin('uni:app-inject', initAppProvide()),
+        uniRenderjsPlugin(),
+        uniAppNVuePlugin({ appService }),
+        uniEsbuildPlugin({ renderer, appService }),
+        ...(appService
+          ? [uniStatsPlugin(), uniTemplatePlugin({ renderer })]
+          : []),
+      ]
 }
