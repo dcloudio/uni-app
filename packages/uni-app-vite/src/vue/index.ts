@@ -8,7 +8,7 @@ import {
   parseManifestJsonOnce,
   uniCssScopedPlugin,
   uniEasycomPlugin,
-  uniEncryptEasyComUniModulesPlugin,
+  uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -48,7 +48,7 @@ export function initVuePlugins() {
       uniViteInjectPlugin('uni:app-inject', initAppProvide()),
       uniRenderjsPlugin(),
       uniAppVuePlugin(),
-      uniEncryptEasyComUniModulesPlugin()
+      uniEncryptUniModulesPlugin()
     )
   } else {
     plugins.push(

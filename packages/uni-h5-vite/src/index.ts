@@ -5,7 +5,7 @@ import {
   isVueSfcFile,
   resolveUTSCompiler,
   uniCssScopedPlugin,
-  uniEncryptEasyComUniModulesPlugin,
+  uniEncryptUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
@@ -58,7 +58,7 @@ export default [
   uniRenderjsPlugin(),
   uniH5Plugin(),
   ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
-    ? [uniEncryptEasyComUniModulesPlugin()]
+    ? [uniEncryptUniModulesPlugin()]
     : []),
   uniPostVuePlugin(),
   uniPostSourceMapPlugin(),

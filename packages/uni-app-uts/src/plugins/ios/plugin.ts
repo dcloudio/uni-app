@@ -4,6 +4,7 @@ import {
   APP_SERVICE_FILENAME,
   type UniVitePlugin,
   buildUniExtApis,
+  createEncryptCssUrlReplacer,
   emptyDir,
   injectCssPlugin,
   injectCssPostPlugin,
@@ -64,7 +65,14 @@ export function uniAppIOSPlugin(): UniVitePlugin {
     },
     configResolved(config) {
       configResolved(config)
-      injectCssPlugin(config)
+      injectCssPlugin(
+        config,
+        process.env.UNI_COMPILE_TARGET === 'uni_modules'
+          ? {
+              createUrlReplacer: createEncryptCssUrlReplacer,
+            }
+          : {}
+      )
       injectCssPostPlugin(config, uniAppCssPlugin(config))
     },
     generateBundle(_, bundle) {

@@ -187,6 +187,7 @@ export function cssPlugin(
   options: {
     isAndroidX: boolean
     getDescriptor?(filename: string): SFCDescriptor | undefined
+    createUrlReplacer?: (resolve: ResolveFn) => CssUrlReplacer
   } = { isAndroidX: false }
 ): Plugin {
   let server: ViteDevServer
@@ -217,42 +218,44 @@ export function cssPlugin(
         return
       }
 
-      const urlReplacer: CssUrlReplacer = async (url, importer, source) => {
-        if (url.startsWith('/') && !url.startsWith('//')) {
-          // /static/logo.png => @/static/logo.png
-          url = '@' + url
-        }
-        const resolved = await wrapResolve(
-          resolveUrl,
-          source?.input.css || raw,
-          source,
-          options.getDescriptor
-        )(url, importer)
-        if (resolved) {
-          return fileToUrl(
-            resolved,
-            config,
-            options?.isAndroidX
-              ? ({
-                  emitFile(emittedFile: EmittedAsset) {
-                    const fileName = path.resolve(
-                      process.env.UNI_OUTPUT_DIR,
-                      emittedFile.fileName!
-                    )
-                    // 忽略static（可能有只读文件，写入覆盖只读会报错权限）
-                    if (normalizePath(fileName).includes('/static/')) {
-                      return
-                    }
-                    // 直接写入目标目录
-                    fs.outputFileSync(fileName, emittedFile.source!)
-                  },
-                } as PluginContext)
-              : this,
-            true
-          )
-        }
-        return url
-      }
+      const urlReplacer: CssUrlReplacer =
+        (options.createUrlReplacer && options.createUrlReplacer(resolveUrl)) ||
+        (async (url, importer, source) => {
+          if (url.startsWith('/') && !url.startsWith('//')) {
+            // /static/logo.png => @/static/logo.png
+            url = '@' + url
+          }
+          const resolved = await wrapResolve(
+            resolveUrl,
+            source?.input.css || raw,
+            source,
+            options.getDescriptor
+          )(url, importer)
+          if (resolved) {
+            return fileToUrl(
+              resolved,
+              config,
+              options?.isAndroidX
+                ? ({
+                    emitFile(emittedFile: EmittedAsset) {
+                      const fileName = path.resolve(
+                        process.env.UNI_OUTPUT_DIR,
+                        emittedFile.fileName!
+                      )
+                      // 忽略static（可能有只读文件，写入覆盖只读会报错权限）
+                      if (normalizePath(fileName).includes('/static/')) {
+                        return
+                      }
+                      // 直接写入目标目录
+                      fs.outputFileSync(fileName, emittedFile.source!)
+                    },
+                  } as PluginContext)
+                : this,
+              true
+            )
+          }
+          return url
+        })
 
       const {
         code: css,
@@ -335,12 +338,14 @@ export function cssPostPlugin(
   {
     platform,
     isJsCode,
+    preserveModules,
     chunkCssFilename,
     chunkCssCode,
     includeComponentCss,
   }: {
     platform: UniApp.PLATFORM
     isJsCode?: boolean
+    preserveModules?: boolean
     chunkCssFilename: (id: string) => string | void
     chunkCssCode: (
       filename: string,
@@ -406,7 +411,7 @@ export function cssPostPlugin(
     },
     async generateBundle() {
       // app 平台页面并未 chunk，所以 renderChunk 并不会处理页面的 css，需要这里再补充查找
-      if (platform === 'app') {
+      if (platform === 'app' || preserveModules) {
         const moduleIds = Array.from(this.getModuleIds())
         moduleIds.forEach((id) => {
           const filename = chunkCssFilename(id)
@@ -898,7 +903,7 @@ async function resolvePostcssConfig(
   return result
 }
 
-type CssUrlReplacer = (
+export type CssUrlReplacer = (
   url: string,
   importer?: string,
   source?: PostCSS.Source

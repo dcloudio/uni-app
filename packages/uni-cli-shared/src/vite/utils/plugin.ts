@@ -1,7 +1,7 @@
-import type { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolveFn, ResolvedConfig } from 'vite'
 import { extend, isArray } from '@vue/shared'
 import { assetPlugin } from '../plugins/vitejs/plugins/asset'
-import { cssPlugin } from '../plugins/vitejs/plugins/css'
+import { type CssUrlReplacer, cssPlugin } from '../plugins/vitejs/plugins/css'
 
 export type CreateUniViteFilterPlugin = (
   opts: UniViteFilterPluginOptions
@@ -18,8 +18,19 @@ export function injectAssetPlugin(
   replacePlugins([assetPlugin(config, options)], config)
 }
 
-export function injectCssPlugin(config: ResolvedConfig) {
-  replacePlugins([cssPlugin(config)], config)
+export function injectCssPlugin(
+  config: ResolvedConfig,
+  options?: { createUrlReplacer?: (resolve: ResolveFn) => CssUrlReplacer }
+) {
+  replacePlugins(
+    [
+      cssPlugin(config, {
+        isAndroidX: false,
+        ...options,
+      }),
+    ],
+    config
+  )
 }
 
 export function injectCssPostPlugin(

@@ -2,7 +2,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
   initAppProvide,
   uniEasycomPlugin,
-  uniEncryptEasyComUniModulesPlugin,
+  uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -30,7 +30,7 @@ export function initNVuePlugins() {
         uniViteInjectPlugin('uni:app-inject', initAppProvide()),
         uniRenderjsPlugin(),
         uniAppNVuePlugin({ appService }),
-        uniEncryptEasyComUniModulesPlugin(),
+        uniEncryptUniModulesPlugin(),
       ]
     : [
         uniAppCssPlugin(),

@@ -146,6 +146,10 @@ export async function buildApp(
       initBuildOptions(options, cleanOptions(options) as BuildOptions)
     )
   )
+  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    // 不需要 nvue 编译器
+    return vueBuilder as RollupWatcher
+  }
   if (appWatcher) {
     appWatcher.setFirstWatcher(vueBuilder as RollupWatcher)
   }

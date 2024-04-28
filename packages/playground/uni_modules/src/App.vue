@@ -1,0 +1,4 @@
+<script>
+export default {
+}
+</script>

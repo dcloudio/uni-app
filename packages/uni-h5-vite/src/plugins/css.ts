@@ -4,9 +4,16 @@ import { type Plugin, type ResolvedConfig, normalizePath } from 'vite'
 
 import {
   buildInCssSet,
+  createEncryptCssUrlReplacer,
+  cssPostPlugin,
   getAssetHash,
+  injectAssetPlugin,
+  injectCssPlugin,
+  injectCssPostPlugin,
   isExternalUrl,
+  isVueSfcFile,
   minifyCSS,
+  removeExt,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputOptions } from 'rollup'
@@ -27,6 +34,33 @@ export function uniCssPlugin(): Plugin {
     configResolved(config) {
       resolvedConfig = config
       file = path.join(process.env.UNI_INPUT_DIR, 'uni.css')
+
+      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        injectCssPlugin(config, {
+          createUrlReplacer: createEncryptCssUrlReplacer,
+        })
+
+        injectCssPostPlugin(
+          config,
+          cssPostPlugin(config, {
+            platform: process.env.UNI_PLATFORM,
+            preserveModules: true,
+            chunkCssFilename(id: string) {
+              if (isVueSfcFile(id)) {
+                return (
+                  removeExt(
+                    normalizePath(path.relative(process.env.UNI_INPUT_DIR, id))
+                  ) + '.css'
+                )
+              }
+            },
+            chunkCssCode(_filename, cssCode) {
+              return cssCode
+            },
+          })
+        )
+        injectAssetPlugin(config)
+      }
     },
     async generateBundle() {
       if (!isCombineBuiltInCss(resolvedConfig) || !buildInCssSet.size) {

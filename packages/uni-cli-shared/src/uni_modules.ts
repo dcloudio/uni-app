@@ -375,12 +375,7 @@ export { ${ids.join(',')} }
 `
 }
 
-/**
- * 解析加密的 easyCom 插件列表
- * @param inputDir
- * @returns
- */
-export function parseEncryptEasyComModules(
+export function parseEncryptUniModules(
   inputDir: string,
   detectBinary: boolean = true
 ) {
@@ -388,15 +383,25 @@ export function parseEncryptEasyComModules(
   const uniModules: Record<string, string[]> = {}
   if (fs.existsSync(modulesDir)) {
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
-      // 判断是否是加密easyCom插件
+      // 判断是否是加密插件
       if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'encrypt'))) {
-        const components = parseEncryptEasyComComponents(
-          uniModuleDir,
-          inputDir,
-          detectBinary
-        )
-        if (components.length) {
-          uniModules[uniModuleDir] = components
+        if (
+          // 手动指定了加密入口
+          fs.existsSync(
+            path.resolve(modulesDir, uniModuleDir, 'index.encrypt.js')
+          )
+        ) {
+          uniModules[uniModuleDir] = []
+        } else {
+          // 解析加密的 easyCom 插件列表
+          const components = parseEncryptEasyComComponents(
+            uniModuleDir,
+            inputDir,
+            detectBinary
+          )
+          if (components.length) {
+            uniModules[uniModuleDir] = components
+          }
         }
       }
     })
