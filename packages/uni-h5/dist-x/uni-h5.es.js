@@ -9825,7 +9825,7 @@ function throttle(fn, wait) {
 const passiveOptions$1 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
-let inited;
+let inited = false;
 const setUserAction = (userAction) => states.forEach((vm) => vm.userAction = userAction);
 function addInteractListener(vm = { userAction: false }) {
   if (!inited) {
@@ -21749,7 +21749,6 @@ const MIMEType = {
   }
 };
 const ALL = "all";
-addInteractListener();
 function isWXEnv() {
   const ua2 = window.navigator.userAgent.toLowerCase();
   const matchUA = ua2.match(/MicroMessenger/i);
@@ -21761,6 +21760,7 @@ function _createInput({
   type,
   extension
 }) {
+  addInteractListener();
   const inputEl = document.createElement("input");
   inputEl.type = "file";
   updateElementStyle(inputEl, {
