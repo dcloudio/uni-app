@@ -1,5 +1,3 @@
-import PromisePolyfill from 'promise-polyfill';
-
 /**
 * @vue/shared v3.4.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
@@ -26,7 +24,7 @@ var remove = (arr, el) => {
 };
 var hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 var hasOwn = (val, key) => hasOwnProperty$1.call(val, key);
-var isArray = Array.isArray;
+var isArray$1 = Array.isArray;
 var isMap = val => toTypeString(val) === "[object Map]";
 var isSet = val => toTypeString(val) === "[object Set]";
 var isRegExp = val => toTypeString(val) === "[object RegExp]";
@@ -96,7 +94,7 @@ var getGlobalThis = () => {
 var GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error";
 var isGloballyAllowed = /* @__PURE__ */makeMap(GLOBALS_ALLOWED);
 function normalizeStyle$1(value) {
-  if (isArray(value)) {
+  if (isArray$1(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
       var item = value[i];
@@ -143,7 +141,7 @@ function normalizeClass$1(value) {
   var res = "";
   if (isString(value)) {
     res = value;
-  } else if (isArray(value)) {
+  } else if (isArray$1(value)) {
     for (var i = 0; i < value.length; i++) {
       var normalized = normalizeClass$1(value[i]);
       if (normalized) {
@@ -174,7 +172,7 @@ function isRenderableAttrValue(value) {
   return type === "string" || type === "number" || type === "boolean";
 }
 var toDisplayString = val => {
-  return isString(val) ? val : val == null ? "" : isArray(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
+  return isString(val) ? val : val == null ? "" : isArray$1(val) || isObject(val) && (val.toString === objectToString || !isFunction(val.toString)) ? JSON.stringify(val, replacer, 2) : String(val);
 };
 var replacer = (_key, val) => {
   if (val && val.__v_isRef) {
@@ -193,7 +191,7 @@ var replacer = (_key, val) => {
     };
   } else if (isSymbol(val)) {
     return stringifySymbol(val);
-  } else if (isObject(val) && !isArray(val) && !isPlainObject(val)) {
+  } else if (isObject(val) && !isArray$1(val) && !isPlainObject(val)) {
     return String(val);
   }
   return val;
@@ -544,7 +542,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
   var deps = [];
   if (type === "clear") {
     deps = [...depsMap.values()];
-  } else if (key === "length" && isArray(target)) {
+  } else if (key === "length" && isArray$1(target)) {
     var newLength = Number(newValue);
     depsMap.forEach((dep, key2) => {
       if (key2 === "length" || !isSymbol(key2) && key2 >= newLength) {
@@ -557,7 +555,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
     }
     switch (type) {
       case "add":
-        if (!isArray(target)) {
+        if (!isArray$1(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
           if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
@@ -567,7 +565,7 @@ function trigger(target, type, key, newValue, oldValue, oldTarget) {
         }
         break;
       case "delete":
-        if (!isArray(target)) {
+        if (!isArray$1(target)) {
           deps.push(depsMap.get(ITERATE_KEY));
           if (isMap(target)) {
             deps.push(depsMap.get(MAP_KEY_ITERATE_KEY));
@@ -667,7 +665,7 @@ class BaseReactiveHandler {
       }
       return;
     }
-    var targetIsArray = isArray(target);
+    var targetIsArray = isArray$1(target);
     if (!isReadonly2) {
       if (targetIsArray && hasOwn(arrayInstrumentations, key)) {
         return Reflect.get(arrayInstrumentations, key, receiver);
@@ -708,7 +706,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         oldValue = toRaw(oldValue);
         value = toRaw(value);
       }
-      if (!isArray(target) && isRef(oldValue) && !isRef(value)) {
+      if (!isArray$1(target) && isRef(oldValue) && !isRef(value)) {
         if (isOldValueReadonly) {
           return false;
         } else {
@@ -717,7 +715,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
         }
       }
     }
-    var hadKey = isArray(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
+    var hadKey = isArray$1(target) && isIntegerKey(key) ? Number(key) < target.length : hasOwn(target, key);
     var result = Reflect.set(target, key, value, receiver);
     if (target === toRaw(receiver)) {
       if (!hadKey) {
@@ -745,7 +743,7 @@ class MutableReactiveHandler extends BaseReactiveHandler {
     return result;
   }
   ownKeys(target) {
-    track(target, "iterate", isArray(target) ? "length" : ITERATE_KEY);
+    track(target, "iterate", isArray$1(target) ? "length" : ITERATE_KEY);
     return Reflect.ownKeys(target);
   }
 }
@@ -1292,7 +1290,7 @@ function toRefs(object) {
   if (!isProxy(object)) {
     warn$2("toRefs() expects a reactive object but received a plain one.");
   }
-  var ret = isArray(object) ? new Array(object.length) : {};
+  var ret = isArray$1(object) ? new Array(object.length) : {};
   for (var key in object) {
     ret[key] = propertyToRef(object, key);
   }
@@ -1387,7 +1385,7 @@ function normalizeStyle(value) {
     return normalizeStyle$1(styleObject);
   } else if (isString(value)) {
     return parseStringStyle(value);
-  } else if (isArray(value)) {
+  } else if (isArray$1(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
       var item = value[i];
@@ -1411,7 +1409,7 @@ function normalizeClass(value) {
         res += key + ' ';
       }
     });
-  } else if (isArray(value)) {
+  } else if (isArray$1(value)) {
     for (var i = 0; i < value.length; i++) {
       var normalized = normalizeClass(value[i]);
       if (normalized) {
@@ -1446,6 +1444,317 @@ function isRootImmediateHookX(name) {
 function isRootHook(name) {
   return PAGE_HOOKS.indexOf(name) > -1;
 }
+function getDefaultExportFromCjs(x) {
+  return x && x.__esModule && Object.prototype.hasOwnProperty.call(x, 'default') ? x['default'] : x;
+}
+
+/**
+ * @this {Promise}
+ */
+function finallyConstructor(callback) {
+  var constructor = this.constructor;
+  return this.then(function (value) {
+    // @ts-ignore
+    return constructor.resolve(callback()).then(function () {
+      return value;
+    });
+  }, function (reason) {
+    // @ts-ignore
+    return constructor.resolve(callback()).then(function () {
+      // @ts-ignore
+      return constructor.reject(reason);
+    });
+  });
+}
+function allSettled(arr) {
+  var P = this;
+  return new P(function (resolve, reject) {
+    if (!(arr && typeof arr.length !== 'undefined')) {
+      return reject(new TypeError(typeof arr + ' ' + arr + ' is not iterable(cannot read property Symbol(Symbol.iterator))'));
+    }
+    var args = Array.prototype.slice.call(arr);
+    if (args.length === 0) return resolve([]);
+    var remaining = args.length;
+    function res(i, val) {
+      if (val && (typeof val === 'object' || typeof val === 'function')) {
+        var then = val.then;
+        if (typeof then === 'function') {
+          then.call(val, function (val) {
+            res(i, val);
+          }, function (e) {
+            args[i] = {
+              status: 'rejected',
+              reason: e
+            };
+            if (--remaining === 0) {
+              resolve(args);
+            }
+          });
+          return;
+        }
+      }
+      args[i] = {
+        status: 'fulfilled',
+        value: val
+      };
+      if (--remaining === 0) {
+        resolve(args);
+      }
+    }
+    for (var i = 0; i < args.length; i++) {
+      res(i, args[i]);
+    }
+  });
+}
+
+/**
+ * @constructor
+ */
+function AggregateError(errors, message) {
+  this.name = 'AggregateError', this.errors = errors;
+  this.message = message || '';
+}
+AggregateError.prototype = Error.prototype;
+function any(arr) {
+  var P = this;
+  return new P(function (resolve, reject) {
+    if (!(arr && typeof arr.length !== 'undefined')) {
+      return reject(new TypeError('Promise.any accepts an array'));
+    }
+    var args = Array.prototype.slice.call(arr);
+    if (args.length === 0) return reject();
+    var rejectionReasons = [];
+    for (var i = 0; i < args.length; i++) {
+      try {
+        P.resolve(args[i]).then(resolve).catch(function (error) {
+          rejectionReasons.push(error);
+          if (rejectionReasons.length === args.length) {
+            reject(new AggregateError(rejectionReasons, 'All promises were rejected'));
+          }
+        });
+      } catch (ex) {
+        reject(ex);
+      }
+    }
+  });
+}
+
+// Store setTimeout reference so promise-polyfill will be unaffected by
+// other code modifying setTimeout (like sinon.useFakeTimers())
+var setTimeoutFunc = setTimeout;
+function isArray(x) {
+  return Boolean(x && typeof x.length !== 'undefined');
+}
+function noop() {}
+
+// Polyfill for Function.prototype.bind
+function bind(fn, thisArg) {
+  return function () {
+    fn.apply(thisArg, arguments);
+  };
+}
+
+/**
+ * @constructor
+ * @param {Function} fn
+ */
+function Promise$1(fn) {
+  if (!(this instanceof Promise$1)) throw new TypeError('Promises must be constructed via new');
+  if (typeof fn !== 'function') throw new TypeError('not a function');
+  /** @type {!number} */
+  this._state = 0;
+  /** @type {!boolean} */
+  this._handled = false;
+  /** @type {Promise|undefined} */
+  this._value = undefined;
+  /** @type {!Array<!Function>} */
+  this._deferreds = [];
+  doResolve(fn, this);
+}
+function handle(self, deferred) {
+  while (self._state === 3) {
+    self = self._value;
+  }
+  if (self._state === 0) {
+    self._deferreds.push(deferred);
+    return;
+  }
+  self._handled = true;
+  Promise$1._immediateFn(function () {
+    var cb = self._state === 1 ? deferred.onFulfilled : deferred.onRejected;
+    if (cb === null) {
+      (self._state === 1 ? resolve$1 : reject)(deferred.promise, self._value);
+      return;
+    }
+    var ret;
+    try {
+      ret = cb(self._value);
+    } catch (e) {
+      reject(deferred.promise, e);
+      return;
+    }
+    resolve$1(deferred.promise, ret);
+  });
+}
+function resolve$1(self, newValue) {
+  try {
+    // Promise Resolution Procedure: https://github.com/promises-aplus/promises-spec#the-promise-resolution-procedure
+    if (newValue === self) throw new TypeError('A promise cannot be resolved with itself.');
+    if (newValue && (typeof newValue === 'object' || typeof newValue === 'function')) {
+      var then = newValue.then;
+      if (newValue instanceof Promise$1) {
+        self._state = 3;
+        self._value = newValue;
+        finale(self);
+        return;
+      } else if (typeof then === 'function') {
+        doResolve(bind(then, newValue), self);
+        return;
+      }
+    }
+    self._state = 1;
+    self._value = newValue;
+    finale(self);
+  } catch (e) {
+    reject(self, e);
+  }
+}
+function reject(self, newValue) {
+  self._state = 2;
+  self._value = newValue;
+  finale(self);
+}
+function finale(self) {
+  if (self._state === 2 && self._deferreds.length === 0) {
+    Promise$1._immediateFn(function () {
+      if (!self._handled) {
+        Promise$1._unhandledRejectionFn(self._value);
+      }
+    });
+  }
+  for (var i = 0, len = self._deferreds.length; i < len; i++) {
+    handle(self, self._deferreds[i]);
+  }
+  self._deferreds = null;
+}
+
+/**
+ * @constructor
+ */
+function Handler(onFulfilled, onRejected, promise) {
+  this.onFulfilled = typeof onFulfilled === 'function' ? onFulfilled : null;
+  this.onRejected = typeof onRejected === 'function' ? onRejected : null;
+  this.promise = promise;
+}
+
+/**
+ * Take a potentially misbehaving resolver function and make sure
+ * onFulfilled and onRejected are only called once.
+ *
+ * Makes no guarantees about asynchrony.
+ */
+function doResolve(fn, self) {
+  var done = false;
+  try {
+    fn(function (value) {
+      if (done) return;
+      done = true;
+      resolve$1(self, value);
+    }, function (reason) {
+      if (done) return;
+      done = true;
+      reject(self, reason);
+    });
+  } catch (ex) {
+    if (done) return;
+    done = true;
+    reject(self, ex);
+  }
+}
+Promise$1.prototype['catch'] = function (onRejected) {
+  return this.then(null, onRejected);
+};
+Promise$1.prototype.then = function (onFulfilled, onRejected) {
+  // @ts-ignore
+  var prom = new this.constructor(noop);
+  handle(this, new Handler(onFulfilled, onRejected, prom));
+  return prom;
+};
+Promise$1.prototype['finally'] = finallyConstructor;
+Promise$1.all = function (arr) {
+  return new Promise$1(function (resolve, reject) {
+    if (!isArray(arr)) {
+      return reject(new TypeError('Promise.all accepts an array'));
+    }
+    var args = Array.prototype.slice.call(arr);
+    if (args.length === 0) return resolve([]);
+    var remaining = args.length;
+    function res(i, val) {
+      try {
+        if (val && (typeof val === 'object' || typeof val === 'function')) {
+          var then = val.then;
+          if (typeof then === 'function') {
+            then.call(val, function (val) {
+              res(i, val);
+            }, reject);
+            return;
+          }
+        }
+        args[i] = val;
+        if (--remaining === 0) {
+          resolve(args);
+        }
+      } catch (ex) {
+        reject(ex);
+      }
+    }
+    for (var i = 0; i < args.length; i++) {
+      res(i, args[i]);
+    }
+  });
+};
+Promise$1.any = any;
+Promise$1.allSettled = allSettled;
+Promise$1.resolve = function (value) {
+  if (value && typeof value === 'object' && value.constructor === Promise$1) {
+    return value;
+  }
+  return new Promise$1(function (resolve) {
+    resolve(value);
+  });
+};
+Promise$1.reject = function (value) {
+  return new Promise$1(function (resolve, reject) {
+    reject(value);
+  });
+};
+Promise$1.race = function (arr) {
+  return new Promise$1(function (resolve, reject) {
+    if (!isArray(arr)) {
+      return reject(new TypeError('Promise.race accepts an array'));
+    }
+    for (var i = 0, len = arr.length; i < len; i++) {
+      Promise$1.resolve(arr[i]).then(resolve, reject);
+    }
+  });
+};
+
+// Use polyfill for setImmediate for performance gains
+Promise$1._immediateFn =
+// @ts-ignore
+typeof setImmediate === 'function' && function (fn) {
+  // @ts-ignore
+  setImmediate(fn);
+} || function (fn) {
+  setTimeoutFunc(fn, 0);
+};
+Promise$1._unhandledRejectionFn = function _unhandledRejectionFn(err) {
+  if (typeof console !== 'undefined' && console) {
+    console.warn('Possible Unhandled Promise Rejection:', err); // eslint-disable-line no-console
+  }
+};
+var lib = Promise$1;
+var PromisePolyfill = /*@__PURE__*/getDefaultExportFromCjs(lib);
 
 /**
 * @dcloudio/uni-app-nvue v3.4.21
@@ -1760,7 +2069,7 @@ function invalidateJob(job) {
   }
 }
 function queuePostFlushCb(cb) {
-  if (!isArray(cb)) {
+  if (!isArray$1(cb)) {
     if (!activePostFlushCbs || !activePostFlushCbs.includes(cb, cb.allowRecurse ? postFlushIndex + 1 : postFlushIndex)) {
       pendingPostFlushCbs.push(cb);
     }
@@ -2172,7 +2481,7 @@ function normalizeEmitsOptions(comp, appContext) {
     }
     return null;
   }
-  if (isArray(raw)) {
+  if (isArray$1(raw)) {
     raw.forEach(key => normalized[key] = null);
   } else {
     extend$1(normalized, raw);
@@ -2960,7 +3269,7 @@ function normalizeSuspenseSlot(s) {
       closeBlock();
     }
   }
-  if (isArray(s)) {
+  if (isArray$1(s)) {
     var singleChild = filterSingleRoot(s);
     if (!singleChild && s.filter(child => child !== NULL_DYNAMIC_COMPONENT).length > 0) {
       warn$1("<Suspense> slots expect a single root node.");
@@ -2975,7 +3284,7 @@ function normalizeSuspenseSlot(s) {
 }
 function queueEffectWithSuspense(fn, suspense) {
   if (suspense && suspense.pendingBranch) {
-    if (isArray(fn)) {
+    if (isArray$1(fn)) {
       suspense.effects.push(...fn);
     } else {
       suspense.effects.push(fn);
@@ -3081,7 +3390,7 @@ function doWatch(source, cb) {
   } else if (isReactive(source)) {
     getter = () => reactiveGetter(source);
     forceTrigger = true;
-  } else if (isArray(source)) {
+  } else if (isArray$1(source)) {
     isMultiSource = true;
     forceTrigger = source.some(s => isReactive(s) || isShallow(s));
     getter = () => source.map(s => {
@@ -3237,7 +3546,7 @@ function traverse(value, depth) {
   seen.add(value);
   if (isRef(value)) {
     traverse(value.value, depth, currentDepth, seen);
-  } else if (isArray(value)) {
+  } else if (isArray$1(value)) {
     for (var i = 0; i < value.length; i++) {
       traverse(value[i], depth, currentDepth, seen);
     }
@@ -3456,7 +3765,7 @@ function resolveTransitionHooks(vnode, props, state, instance) {
   var callAsyncHook = (hook, args) => {
     var done = args[1];
     callHook(hook, args);
-    if (isArray(hook)) {
+    if (isArray$1(hook)) {
       if (hook.every(hook2 => hook2.length <= 1)) done();
     } else if (hook.length <= 1) {
       done();
@@ -3946,7 +4255,7 @@ var KeepAliveImpl = {
 };
 var KeepAlive = KeepAliveImpl;
 function matches(pattern, name) {
-  if (isArray(pattern)) {
+  if (isArray$1(pattern)) {
     return pattern.some(p => matches(p, name));
   } else if (isString(pattern)) {
     return pattern.split(",").includes(name);
@@ -4060,7 +4369,7 @@ function onErrorCaptured(hook) {
 function renderList(source, renderItem, cache, index) {
   var ret;
   var cached = cache && cache[index];
-  if (isArray(source) || isString(source)) {
+  if (isArray$1(source) || isString(source)) {
     ret = new Array(source.length);
     for (var i = 0, l = source.length; i < l; i++) {
       ret[i] = renderItem(source[i], i, void 0, cached && cached[i]);
@@ -4095,7 +4404,7 @@ function renderList(source, renderItem, cache, index) {
 function createSlots(slots, dynamicSlots) {
   var _loop = function (i) {
     var slot = dynamicSlots[i];
-    if (isArray(slot)) {
+    if (isArray$1(slot)) {
       for (var j = 0; j < slot.length; j++) {
         slots[slot[j].name] = slot[j].fn;
       }
@@ -4487,7 +4796,7 @@ function getContext() {
   return i.setupContext || (i.setupContext = createSetupContext(i));
 }
 function normalizePropsOrEmits(props) {
-  return isArray(props) ? props.reduce((normalized, p) => (normalized[p] = null, normalized), {}) : props;
+  return isArray$1(props) ? props.reduce((normalized, p) => (normalized[p] = null, normalized), {}) : props;
 }
 function mergeDefaults(raw, defaults) {
   var props = normalizePropsOrEmits(raw);
@@ -4495,7 +4804,7 @@ function mergeDefaults(raw, defaults) {
     if (key.startsWith("__skip")) continue;
     var opt = props[key];
     if (opt) {
-      if (isArray(opt) || isFunction(opt)) {
+      if (isArray$1(opt) || isFunction(opt)) {
         opt = props[key] = {
           type: opt,
           default: defaults[key]
@@ -4518,7 +4827,7 @@ function mergeDefaults(raw, defaults) {
 }
 function mergeModels(a, b) {
   if (!a || !b) return a || b;
-  if (isArray(a) && isArray(b)) return a.concat(b);
+  if (isArray$1(a) && isArray$1(b)) return a.concat(b);
   return extend$1({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
 }
 function createPropsRestProxy(props, excludedKeys) {
@@ -4711,7 +5020,7 @@ function applyOptions(instance) {
     callHook(created, instance, "c");
   }
   function registerLifecycleHook(register, hook) {
-    if (isArray(hook)) {
+    if (isArray$1(hook)) {
       hook.forEach(_hook => register(_hook.bind(publicThis)));
     } else if (hook) {
       register(hook.bind(publicThis));
@@ -4729,7 +5038,7 @@ function applyOptions(instance) {
   registerLifecycleHook(onBeforeUnmount, beforeUnmount);
   registerLifecycleHook(onUnmounted, unmounted);
   registerLifecycleHook(onServerPrefetch, serverPrefetch);
-  if (isArray(expose)) {
+  if (isArray$1(expose)) {
     if (expose.length) {
       var exposed = instance.exposed || (instance.exposed = {});
       expose.forEach(key => {
@@ -4757,7 +5066,7 @@ function applyOptions(instance) {
 }
 function resolveInjections(injectOptions, ctx) {
   var checkDuplicateProperties = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : NOOP;
-  if (isArray(injectOptions)) {
+  if (isArray$1(injectOptions)) {
     injectOptions = normalizeInject(injectOptions);
   }
   var _loop5 = function (key) {
@@ -4791,7 +5100,7 @@ function resolveInjections(injectOptions, ctx) {
   }
 }
 function callHook(hook, instance, type) {
-  callWithAsyncErrorHandling(isArray(hook) ? hook.map(h => h.bind(instance.proxy)) : hook.bind(instance.proxy), instance, type);
+  callWithAsyncErrorHandling(isArray$1(hook) ? hook.map(h => h.bind(instance.proxy)) : hook.bind(instance.proxy), instance, type);
 }
 function createWatcher(raw, ctx, publicThis, key) {
   var getter = key.includes(".") ? createPathGetter(publicThis, key) : () => publicThis[key];
@@ -4805,7 +5114,7 @@ function createWatcher(raw, ctx, publicThis, key) {
   } else if (isFunction(raw)) {
     watch(getter, raw.bind(publicThis));
   } else if (isObject(raw)) {
-    if (isArray(raw)) {
+    if (isArray$1(raw)) {
       raw.forEach(r => createWatcher(r, ctx, publicThis, key));
     } else {
       var _handler = isFunction(raw.handler) ? raw.handler.bind(publicThis) : ctx[raw.handler];
@@ -4920,7 +5229,7 @@ function mergeInject(to, from) {
   return mergeObjectOptions(normalizeInject(to), normalizeInject(from));
 }
 function normalizeInject(raw) {
-  if (isArray(raw)) {
+  if (isArray$1(raw)) {
     var res = {};
     for (var i = 0; i < raw.length; i++) {
       res[raw[i]] = raw[i];
@@ -4937,7 +5246,7 @@ function mergeObjectOptions(to, from) {
 }
 function mergeEmitsOrPropsOptions(to, from) {
   if (to) {
-    if (isArray(to) && isArray(from)) {
+    if (isArray$1(to) && isArray$1(from)) {
       return [... /* @__PURE__ */new Set([...to, ...from])];
     }
     return extend$1( /* @__PURE__ */Object.create(null), normalizePropsOrEmits(to), normalizePropsOrEmits(from != null ? from : {}));
@@ -5376,7 +5685,7 @@ function normalizePropsOptions(comp, appContext) {
     }
     return EMPTY_ARR;
   }
-  if (isArray(raw)) {
+  if (isArray$1(raw)) {
     for (var i = 0; i < raw.length; i++) {
       if (!isString(raw[i])) {
         warn$1("props must be strings when using array syntax.", raw[i]);
@@ -5394,7 +5703,7 @@ function normalizePropsOptions(comp, appContext) {
       var _normalizedKey = camelize(key);
       if (validatePropName(_normalizedKey)) {
         var opt = raw[key];
-        var prop = normalized[_normalizedKey] = isArray(opt) || isFunction(opt) ? {
+        var prop = normalized[_normalizedKey] = isArray$1(opt) || isFunction(opt) ? {
           type: opt
         } : extend$1({}, opt);
         if (prop) {
@@ -5439,7 +5748,7 @@ function isSameType(a, b) {
   return getType(a) === getType(b);
 }
 function getTypeIndex(type, expectedTypes) {
-  if (isArray(expectedTypes)) {
+  if (isArray$1(expectedTypes)) {
     return expectedTypes.findIndex(t => isSameType(t, type));
   } else if (isFunction(expectedTypes)) {
     return isSameType(expectedTypes, type) ? 0 : -1;
@@ -5471,7 +5780,7 @@ function validateProp(name, value, prop, props, isAbsent) {
   }
   if (type != null && type !== true && !skipCheck) {
     var isValid = false;
-    var types = isArray(type) ? type : [type];
+    var types = isArray$1(type) ? type : [type];
     var expectedTypes = [];
     for (var i = 0; i < types.length && !isValid; i++) {
       var {
@@ -5503,7 +5812,7 @@ function assertType(value, type) {
   } else if (expectedType === "Object") {
     valid = isObject(value);
   } else if (expectedType === "Array") {
-    valid = isArray(value);
+    valid = isArray$1(value);
   } else if (expectedType === "null") {
     valid = value === null;
   } else {
@@ -5552,7 +5861,7 @@ function isBoolean() {
   return args.some(elem => elem.toLowerCase() === "boolean");
 }
 var isInternalKey = key => key[0] === "_" || key === "$stable";
-var normalizeSlotValue = value => isArray(value) ? value.map(normalizeVNode) : [normalizeVNode(value)];
+var normalizeSlotValue = value => isArray$1(value) ? value.map(normalizeVNode) : [normalizeVNode(value)];
 var normalizeSlot = (key, rawSlot, ctx) => {
   if (rawSlot._n) {
     return rawSlot;
@@ -5650,8 +5959,8 @@ var updateSlots = (instance, children, optimized) => {
 };
 function setRef(rawRef, oldRawRef, parentSuspense, vnode) {
   var isUnmount = arguments.length > 4 && arguments[4] !== undefined ? arguments[4] : false;
-  if (isArray(rawRef)) {
-    rawRef.forEach((r, i) => setRef(r, oldRawRef && (isArray(oldRawRef) ? oldRawRef[i] : oldRawRef), parentSuspense, vnode, isUnmount));
+  if (isArray$1(rawRef)) {
+    rawRef.forEach((r, i) => setRef(r, oldRawRef && (isArray$1(oldRawRef) ? oldRawRef[i] : oldRawRef), parentSuspense, vnode, isUnmount));
     return;
   }
   if (isAsyncWrapper(vnode) && !isUnmount) {
@@ -5690,9 +5999,9 @@ function setRef(rawRef, oldRawRef, parentSuspense, vnode) {
         if (rawRef.f) {
           var existing = _isString ? hasOwn(setupState, ref) ? setupState[ref] : refs[ref] : ref.value;
           if (isUnmount) {
-            isArray(existing) && remove(existing, refValue);
+            isArray$1(existing) && remove(existing, refValue);
           } else {
-            if (!isArray(existing)) {
+            if (!isArray$1(existing)) {
               if (_isString) {
                 refs[ref] = [refValue];
                 if (hasOwn(setupState, ref)) {
@@ -7361,7 +7670,7 @@ function traverseStaticChildren(n1, n2) {
   var shallow = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
   var ch1 = n1.children;
   var ch2 = n2.children;
-  if (isArray(ch1) && isArray(ch2)) {
+  if (isArray$1(ch1) && isArray$1(ch2)) {
     for (var i = 0; i < ch1.length; i++) {
       var c1 = ch1[i];
       var c2 = ch2[i];
@@ -7851,7 +8160,7 @@ function _createVNode(type) {
       props.class = normalizeClass(klass);
     }
     if (isObject(style)) {
-      if (isProxy(style) && !isArray(style)) {
+      if (isProxy(style) && !isArray$1(style)) {
         style = extend$1({}, style);
       }
       props.style = normalizeStyle(style);
@@ -7887,10 +8196,10 @@ function cloneVNode(vnode, extraProps) {
     // #2078 in the case of <component :is="vnode" ref="extra"/>
     // if the vnode itself already has a ref, cloneVNode will need to merge
     // the refs so the single vnode can be set on multiple refs
-    mergeRef && ref ? isArray(ref) ? ref.concat(normalizeRef(extraProps)) : [ref, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref,
+    mergeRef && ref ? isArray$1(ref) ? ref.concat(normalizeRef(extraProps)) : [ref, normalizeRef(extraProps)] : normalizeRef(extraProps) : ref,
     scopeId: vnode.scopeId,
     slotScopeIds: vnode.slotScopeIds,
-    children: patchFlag === -1 && isArray(children) ? children.map(deepCloneVNode) : children,
+    children: patchFlag === -1 && isArray$1(children) ? children.map(deepCloneVNode) : children,
     target: vnode.target,
     targetAnchor: vnode.targetAnchor,
     staticCount: vnode.staticCount,
@@ -7924,7 +8233,7 @@ function cloneVNode(vnode, extraProps) {
 }
 function deepCloneVNode(vnode) {
   var cloned = cloneVNode(vnode);
-  if (isArray(vnode.children)) {
+  if (isArray$1(vnode.children)) {
     cloned.children = vnode.children.map(deepCloneVNode);
   }
   return cloned;
@@ -7947,7 +8256,7 @@ function createCommentVNode() {
 function normalizeVNode(child) {
   if (child == null || typeof child === "boolean") {
     return createVNode(Comment);
-  } else if (isArray(child)) {
+  } else if (isArray$1(child)) {
     return createVNode(Fragment, null,
     // #3666, avoid reference pollution when reusing vnode
     child.slice());
@@ -7967,7 +8276,7 @@ function normalizeChildren(vnode, children) {
   } = vnode;
   if (children == null) {
     children = null;
-  } else if (isArray(children)) {
+  } else if (isArray$1(children)) {
     type = 16;
   } else if (typeof children === "object") {
     if (shapeFlag & (1 | 64)) {
@@ -8024,7 +8333,7 @@ function mergeProps() {
       } else if (isOn(key)) {
         var existing = ret[key];
         var incoming = toMerge[key];
-        if (incoming && existing !== incoming && !(isArray(existing) && existing.includes(incoming))) {
+        if (incoming && existing !== incoming && !(isArray$1(existing) && existing.includes(incoming))) {
           ret[key] = existing ? [].concat(existing, incoming) : incoming;
         }
       } else if (key !== "") {
@@ -8371,7 +8680,7 @@ function createSetupContext(instance) {
       if (exposed != null) {
         var exposedType = typeof exposed;
         if (exposedType === "object") {
-          if (isArray(exposed)) {
+          if (isArray$1(exposed)) {
             exposedType = "array";
           } else if (isRef(exposed)) {
             exposedType = "ref";
@@ -8522,7 +8831,7 @@ function useModel(props, name) {
 function h(type, propsOrChildren, children) {
   var l = arguments.length;
   if (l === 2) {
-    if (isObject(propsOrChildren) && !isArray(propsOrChildren)) {
+    if (isObject(propsOrChildren) && !isArray$1(propsOrChildren)) {
       if (isVNode(propsOrChildren)) {
         return createVNode(type, null, [propsOrChildren]);
       }
@@ -8652,7 +8961,7 @@ function initCustomFormatter() {
   }
   function isKeyOfType(Comp, key, type) {
     var opts = Comp[type];
-    if (isArray(opts) && opts.includes(key) || isObject(opts) && key in opts) {
+    if (isArray$1(opts) && opts.includes(key) || isObject(opts) && key in opts) {
       return true;
     }
     if (Comp.extends && isKeyOfType(Comp.extends, key, type)) {
@@ -8791,7 +9100,7 @@ function each(obj) {
 }
 function useCssStyles(componentStyles) {
   var normalized = {};
-  if (!isArray(componentStyles)) {
+  if (!isArray$1(componentStyles)) {
     return normalized;
   }
   componentStyles.forEach(componentStyle => {
@@ -8929,19 +9238,19 @@ function parseStyleSheet(_ref24) {
   var component = type;
   if (!component.__styles) {
     var __globalStyles = appContext.provides.__globalStyles;
-    if (appContext && isArray(__globalStyles)) {
+    if (appContext && isArray$1(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
     }
     var styles = [];
     if (appContext && __globalStyles) {
-      var globalStyles = isArray(__globalStyles) ? __globalStyles : [__globalStyles];
+      var globalStyles = isArray$1(__globalStyles) ? __globalStyles : [__globalStyles];
       styles.push(...globalStyles);
     }
     var page = root.type;
-    if (component !== page && isArray(page.styles)) {
+    if (component !== page && isArray$1(page.styles)) {
       styles.push(...page.styles);
     }
-    if (isArray(component.styles)) {
+    if (isArray$1(component.styles)) {
       styles.push(...component.styles);
     }
     component.__styles = useCssStyles(styles);
@@ -9214,7 +9523,7 @@ function createInvoker(initialValue, instance) {
   };
   invoker.value = initialValue;
   var modifiers = /* @__PURE__ */new Set();
-  if (isArray(invoker.value)) {
+  if (isArray$1(invoker.value)) {
     invoker.value.forEach(v => {
       if (v.modifiers) {
         v.modifiers.forEach(m => {
@@ -9511,7 +9820,7 @@ function setVarsOnVNode(vnode, vars) {
 }
 var getModelAssigner = vnode => {
   var fn = vnode.props["onUpdate:modelValue"];
-  return isArray(fn) ? value => invokeArrayFns(fn, value) : fn;
+  return isArray$1(fn) ? value => invokeArrayFns(fn, value) : fn;
 };
 var vModelText = {
   created(el, _binding, _vnode, _prevVNode) {
