@@ -3,7 +3,7 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
+import { isString, isFunction, isPromise, getGlobalThis, isArray, NOOP, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, customRef, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
@@ -278,7 +278,8 @@ let flushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
-const resolvedPromise = /* @__PURE__ */ PromisePolyfill.resolve();
+const isIOS = "nativeApp" in getGlobalThis();
+const resolvedPromise = /* @__PURE__ */ (isIOS ? PromisePolyfill : Promise).resolve();
 let currentFlushPromise = null;
 const RECURSION_LIMIT = 100;
 function nextTick(fn, instance = getCurrentInstance()) {
@@ -4379,8 +4380,8 @@ function validateProps(rawProps, props, instance) {
   }
 }
 function validateProp(name, value, prop, props, isAbsent) {
-  const { type, required, validator, skipCheck } = prop;
-  if (required && isAbsent) {
+  const { type, required, validator, skipCheck, default: defaultValue } = prop;
+  if (defaultValue == null && required && isAbsent) {
     warn$1('Missing required prop: "' + name + '"');
     return;
   }
@@ -5897,8 +5898,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   const processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
-    const fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateComment("", container);
-    const fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateComment("", container);
+    const fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("", container, true);
+    const fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("", container, true);
     let { patchFlag, dynamicChildren, slotScopeIds: fragmentSlotScopeIds } = n2;
     if (!!(process.env.NODE_ENV !== "production") && // #5523 dev root fragment may inherit directives
     (isHmrUpdating || patchFlag & 2048)) {
@@ -8663,7 +8664,10 @@ const nodeOps = {
   createElement: (tag, container) => {
     return getDocument().createElement(tag);
   },
-  createText: (text, container) => {
+  createText: (text, container, isAnchor) => {
+    if (isAnchor) {
+      return getDocument().createComment(text);
+    }
     const textNode = getDocument().createElement("text");
     textNode.setAttribute("value", text);
     setExtraIsTextNode(textNode, true);
