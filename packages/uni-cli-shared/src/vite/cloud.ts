@@ -56,6 +56,18 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         return `\0${id}`
       }
     },
+    generateBundle(_, bundle) {
+      Object.keys(bundle).forEach((fileName) => {
+        if (fileName.endsWith('.encrypt.js')) {
+          const newFileName =
+            'uni_modules/' +
+            fileName.replace('.encrypt.js', '/index.encrypt.js')
+          bundle[newFileName] = bundle[fileName]
+          bundle[newFileName].fileName = newFileName
+          delete bundle[fileName]
+        }
+      })
+    },
   }
 }
 
@@ -120,7 +132,8 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
         genEncryptEasyComModuleIndex(modules[module])
       )
     }
-    input['uni_modules/' + module + '/index.encrypt'] = indexEncryptFile
+    // 输出 xxx.encrypt ，确保相对路径的准确性，因为真正引用的时候，是从 @/uni_modules/xxx 引入的
+    input[module + '.encrypt'] = indexEncryptFile
   })
   return {
     lib: false, // 不使用 lib 模式，lib模式会直接内联资源

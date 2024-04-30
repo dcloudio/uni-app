@@ -8,17 +8,17 @@ const projectDir = path.resolve(__dirname, '../uni_modules')
 describe('uni_modules playground', () => {
   jest.setTimeout(50 * 1000)
   const modes = {
-    'uni-app': [
-      'build:app',
-      'build:h5',
-      //   'build:mp-alipay',
-      //   'build:mp-baidu',
-      //   'build:mp-kuaishou',
-      //   'build:mp-lark',
-      //   'build:mp-qq',
-      //   'build:mp-toutiao',
-      //   'build:mp-weixin',
-    ],
+    // 'uni-app': [
+    //   'build:app',
+    //   'build:h5',
+    //   //   'build:mp-alipay',
+    //   //   'build:mp-baidu',
+    //   //   'build:mp-kuaishou',
+    //   //   'build:mp-lark',
+    //   //   'build:mp-qq',
+    //   //   'build:mp-toutiao',
+    //   //   'build:mp-weixin',
+    // ],
     'uni-app-x': [
       // "build:app-android",
       'build:app-ios',

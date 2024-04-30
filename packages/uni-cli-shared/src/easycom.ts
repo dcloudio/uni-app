@@ -240,7 +240,12 @@ function initAutoScanEasycom(
       const ext = extensions[i]
       if (files.includes(name + ext)) {
         easycoms[`^${name}$`] = is_encrypt_uni_modules
-          ? `@/uni_modules/${uni_modules_plugin_id}?uni_helpers`
+          ? normalizePath(
+              path.join(
+                rootDir,
+                `uni_modules/${uni_modules_plugin_id}?uni_helpers`
+              )
+            )
           : `${importDir}/${name}${ext}`
         break
       }

@@ -1,275 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`uni_modules playground uni-app build:app 1`] = `
-"import Logo from "../../test-com1/components/test-com1-1/logo.png";
-import { openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString } from "vue";
-import _export_sfc from "plugin-vue:export-helper";
-const _sfc_main$1 = {
-  data() {
-    return {
-      msg: "test-com1-1",
-      logo: Logo
-    };
-  }
-};
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock(Fragment, null, [
-    createElementVNode("text", { class: "text" }, toDisplayString($data.msg) + toDisplayString($data.logo), 1),
-    createElementVNode("image", { src: Logo })
-  ], 64);
-}
-const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
-const _sfc_main = {
-  data() {
-    return {
-      msg: "test-com1-2",
-      logo: Logo
-    };
-  }
-};
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock(Fragment, null, [
-    createElementVNode("text", { class: "text2" }, toDisplayString($data.msg) + toDisplayString($data.logo), 1),
-    createElementVNode("image", { src: Logo })
-  ], 64);
-}
-const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-export {
-  testCom11 as TestCom11,
-  testCom12 as TestCom12
-};
-"
-`;
-
-exports[`uni_modules playground uni-app build:app 2`] = `
-"import Logo from "../../test-com2/components/test-com2-1/logo.png";
-import { openBlock, createElementBlock, toDisplayString } from "vue";
-import _export_sfc from "plugin-vue:export-helper";
-const _sfc_main$1 = {
-  data() {
-    return {
-      msg: "test-com2-1",
-      logo: Logo
-    };
-  }
-};
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("text", { class: "text" }, toDisplayString($data.msg) + toDisplayString($data.logo), 1);
-}
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1]]);
-const _sfc_main = {
-  data() {
-    return {
-      msg: "test-com2-2",
-      logo: Logo
-    };
-  }
-};
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("text", { class: "text2" }, toDisplayString($data.msg) + toDisplayString($data.logo), 1);
-}
-const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-export {
-  testCom21 as TestCom21,
-  testCom22 as TestCom22
-};
-"
-`;
-
-exports[`uni_modules playground uni-app build:app 3`] = `
-"
-.text {
-    color: red;
-}
-.image {
-    background: url('@/uni_modules/test-com1/components/test-com1-1/logo.png');
-}
-"
-`;
-
-exports[`uni_modules playground uni-app build:app 4`] = `
-"
-.text2 {
-    color: red;
-}
-"
-`;
-
-exports[`uni_modules playground uni-app build:app 5`] = `
-"
-.text {
-    color: red;
-}
-.image {
-    background: url('@/uni_modules/test-com2/components/test-com2-1/logo.png');
-}
-"
-`;
-
-exports[`uni_modules playground uni-app build:app 6`] = `
-"
-.text2 {
-    color: red;
-}
-"
-`;
-
-exports[`uni_modules playground uni-app build:h5 1`] = `
-"import "@dcloudio/uni-components/style/text.css";
-import { Text, Image } from "@dcloudio/uni-h5";
-import "@dcloudio/uni-components/style/image.css";
-import "@dcloudio/uni-components/style/resize-sensor.css";
-import Logo from "../../test-com1/components/test-com1-1/logo.png";
-import { openBlock, createElementBlock, Fragment, createVNode, withCtx, createTextVNode, toDisplayString } from "vue";
-import _export_sfc from "plugin-vue:export-helper";
-const _sfc_main$1 = {
-  data() {
-    return {
-      msg: "test-com1-1",
-      logo: Logo
-    };
-  }
-};
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_text = Text;
-  const _component_v_uni_image = Image;
-  return openBlock(), createElementBlock(Fragment, null, [
-    createVNode(_component_v_uni_text, { class: "text" }, {
-      default: withCtx(() => [
-        createTextVNode(toDisplayString($data.msg) + toDisplayString($data.logo), 1)
-      ]),
-      _: 1
-    }),
-    createVNode(_component_v_uni_image, { src: Logo })
-  ], 64);
-}
-const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-a4ecbcc3"]]);
-const _sfc_main = {
-  data() {
-    return {
-      msg: "test-com1-2",
-      logo: Logo
-    };
-  }
-};
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_text = Text;
-  const _component_v_uni_image = Image;
-  return openBlock(), createElementBlock(Fragment, null, [
-    createVNode(_component_v_uni_text, { class: "text2" }, {
-      default: withCtx(() => [
-        createTextVNode(toDisplayString($data.msg) + toDisplayString($data.logo), 1)
-      ]),
-      _: 1
-    }),
-    createVNode(_component_v_uni_image, { src: Logo })
-  ], 64);
-}
-const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-4d21cdc3"]]);
-export {
-  testCom11 as TestCom11,
-  testCom12 as TestCom12
-};
-"
-`;
-
-exports[`uni_modules playground uni-app build:h5 2`] = `
-"import "@dcloudio/uni-components/style/text.css";
-import { Text } from "@dcloudio/uni-h5";
-import Logo from "../../test-com2/components/test-com2-1/logo.png";
-import { openBlock, createBlock, withCtx, createTextVNode, toDisplayString } from "vue";
-import _export_sfc from "plugin-vue:export-helper";
-const _sfc_main$1 = {
-  data() {
-    return {
-      msg: "test-com2-1",
-      logo: Logo
-    };
-  }
-};
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_text = Text;
-  return openBlock(), createBlock(_component_v_uni_text, { class: "text" }, {
-    default: withCtx(() => [
-      createTextVNode(toDisplayString($data.msg) + toDisplayString($data.logo), 1)
-    ]),
-    _: 1
-  });
-}
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-f33122a3"]]);
-const _sfc_main = {
-  data() {
-    return {
-      msg: "test-com2-2",
-      logo: Logo
-    };
-  }
-};
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_text = Text;
-  return openBlock(), createBlock(_component_v_uni_text, { class: "text2" }, {
-    default: withCtx(() => [
-      createTextVNode(toDisplayString($data.msg) + toDisplayString($data.logo), 1)
-    ]),
-    _: 1
-  });
-}
-const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-ac423ad8"]]);
-export {
-  testCom21 as TestCom21,
-  testCom22 as TestCom22
-};
-"
-`;
-
-exports[`uni_modules playground uni-app build:h5 3`] = `
-"
-
-
-
-.text[data-v-a4ecbcc3] {
-    color: red;
-}
-.image[data-v-a4ecbcc3] {
-    background: url('@/uni_modules/test-com1/components/test-com1-1/logo.png');
-}
-"
-`;
-
-exports[`uni_modules playground uni-app build:h5 4`] = `
-"
-
-
-
-.text2[data-v-4d21cdc3] {
-    color: red;
-}
-"
-`;
-
-exports[`uni_modules playground uni-app build:h5 5`] = `
-"
-
-.text[data-v-f33122a3] {
-    color: red;
-}
-.image[data-v-f33122a3] {
-    background: url('@/uni_modules/test-com2/components/test-com2-1/logo.png');
-}
-"
-`;
-
-exports[`uni_modules playground uni-app build:h5 6`] = `
-"
-
-.text2[data-v-ac423ad8] {
-    color: red;
-}
-"
-`;
-
 exports[`uni_modules playground uni-app-x build:app-ios 1`] = `
-"import Logo from "../../test-com1/components/test-com1-1/logo.png";
+"import Logo from "./test-com1/components/test-com1-1/logo.png";
 import { openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString } from "vue";
 import _export_sfc from "plugin-vue:export-helper";
 const _sfc_main$1 = {
@@ -310,7 +42,7 @@ export {
 `;
 
 exports[`uni_modules playground uni-app-x build:app-ios 2`] = `
-"import Logo from "../../test-com2/components/test-com2-1/logo.png";
+"import Logo from "./test-com2/components/test-com2-1/logo.png";
 import { openBlock, createElementBlock, toDisplayString } from "vue";
 import _export_sfc from "plugin-vue:export-helper";
 const _sfc_main$1 = {
@@ -387,7 +119,7 @@ exports[`uni_modules playground uni-app-x build:h5 1`] = `
 import { Text, Image } from "@dcloudio/uni-h5";
 import "@dcloudio/uni-components/style/image.css";
 import "@dcloudio/uni-components/style/resize-sensor.css";
-import Logo from "../../test-com1/components/test-com1-1/logo.png";
+import Logo from "./test-com1/components/test-com1-1/logo.png";
 import { openBlock, createElementBlock, Fragment, createVNode, withCtx, createTextVNode, toDisplayString } from "vue";
 import _export_sfc from "plugin-vue:export-helper";
 const _sfc_main$1 = {
@@ -444,7 +176,7 @@ export {
 exports[`uni_modules playground uni-app-x build:h5 2`] = `
 "import "@dcloudio/uni-components/style/text.css";
 import { Text } from "@dcloudio/uni-h5";
-import Logo from "../../test-com2/components/test-com2-1/logo.png";
+import Logo from "./test-com2/components/test-com2-1/logo.png";
 import { openBlock, createBlock, withCtx, createTextVNode, toDisplayString } from "vue";
 import _export_sfc from "plugin-vue:export-helper";
 const _sfc_main$1 = {

@@ -48,6 +48,8 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                   source,
                   source.includes('uts-proxy')
                     ? capitalize(camelize(name)) + 'Component'
+                    : source.includes('uni_helpers')
+                    ? capitalize(camelize(name))
                     : ''
                 )
               )
