@@ -99,8 +99,18 @@ const tags = {
     'vertical-drag-gesture-handler',
     'horizontal-drag-gesture-handler',
     'long-press-gesture-handler',
+    // 其他
+    'draggable-sheet',
+    'grid-builder',
     'grid-view',
     'list-view',
+    'list-builder',
+    'nested-scroll-body',
+    'nested-scroll-header',
+    'open-container',
+    'share-element',
+    'snapshot',
+    'span',
     'sticky-header',
     'sticky-section'
   ],
@@ -119,7 +129,9 @@ const tags = {
     'mkt',
     'page-container',
     'page-meta',
-    'lottie'
+    'lottie',
+    'join-group-chat',
+    'subscribe-message'
   ],
   // 抖音小程序平台独有组件
   'mp-toutiao': [
@@ -146,7 +158,10 @@ const baseCompiler = {
    * 目前 template 在前，script 在后，要做的话，就需要把 wxml 的生成机制放到 plugin 中才可以拿到真实的组件列表
    */
   isComponent (tagName) {
-    return !tags.base.concat(tags[this.name] || []).includes(tagName)
+    return !this.isNativeTag(tagName)
+  },
+  isNativeTag (tagName) {
+    return tags.base.concat(tags[this.name] || []).includes(tagName)
   },
   createFilterTag (filterTag, {
     content,

@@ -1,3 +1,4 @@
+const getCompilerOptions = require('./mp.js')
 const TAGS = {
   br: 'view',
   hr: 'view',
@@ -121,7 +122,17 @@ const TAGS = {
   param: 'view'
 }
 module.exports = {
-  getTagName (tagName) {
+  /**
+   * getTagName
+   * @param {string} tagName
+   * @param {string} [platform]
+   * @returns {boolean}
+   */
+  getTagName (tagName, platform) {
+    // 排除各平台内置组件
+    if (platform && getCompilerOptions(platform).isNativeTag(tagName)) {
+      return tagName
+    }
     return TAGS[tagName] || tagName
   }
 }

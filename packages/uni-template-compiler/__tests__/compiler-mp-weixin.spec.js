@@ -365,14 +365,14 @@ describe('mp:compiler-mp-weixin', () => {
     )
     assertCodegen( // TODO vue-id
       '<span><slot v-bind:user="user">{{ user.lastName }}</slot></span>',
-      '<label class="_span"><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default user="{{user}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else>{{user.lastName}}</block></label>',
+      '<span><block wx:if="{{$slots.default}}"><slot></slot><scoped-slots-default user="{{user}}" class="scoped-ref" bind:__l="__l"></scoped-slots-default></block><block wx:else>{{user.lastName}}</block></span>',
       function (res) {
         expect(res.componentGenerics['scoped-slots-default']).toBe(true)
       }
     )
     assertCodegen(
       '<span><slot name="header" v-bind:user="user">{{ user.lastName }}</slot></span>',
-      '<label class="_span"><block wx:if="{{$slots.header}}"><slot name="header"></slot><scoped-slots-header user="{{user}}" class="scoped-ref" bind:__l="__l"></scoped-slots-header></block><block wx:else>{{user.lastName}}</block></label>',
+      '<span><block wx:if="{{$slots.header}}"><slot name="header"></slot><scoped-slots-header user="{{user}}" class="scoped-ref" bind:__l="__l"></scoped-slots-header></block><block wx:else>{{user.lastName}}</block></span>',
       function (res) {
         expect(res.componentGenerics['scoped-slots-header']).toBe(true)
       }
@@ -515,6 +515,13 @@ describe('mp:compiler-mp-weixin', () => {
     assertCodegen(
       '<vertical-drag-gesture-handler onGestureEvent="handlePan" native-view="scroll-view" shouldResponseOnMove="shouldResponse" shouldAcceptGesture="shouldAccept"/>',
       '<vertical-drag-gesture-handler onGestureEvent="handlePan" native-view="scroll-view" shouldResponseOnMove="shouldResponse" shouldAcceptGesture="shouldAccept"></vertical-drag-gesture-handler>'
+    )
+  })
+
+  it('span', () => {
+    assertCodegen(
+      '<span></span>',
+      '<span></span>'
     )
   })
 })

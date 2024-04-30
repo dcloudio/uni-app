@@ -7,7 +7,9 @@ const {
   done
 } = require('@vue/cli-shared-utils')
 
-const { showRunPrompt } = require('@dcloudio/uni-cli-shared')
+const {
+  showRunPrompt
+} = require('@dcloudio/uni-cli-shared')
 
 let nvueCompiled = true
 let serviceCompiled = true
@@ -101,6 +103,9 @@ class WebpackAppPlusPlugin {
               isFirst = false
             } else {
               done('Build complete. ')
+              setTimeout(() => {
+                process.exit(0)
+              }, 500)
               showRunPrompt()
             }
             nvueChangedFiles.length = 0
@@ -127,6 +132,9 @@ class WebpackAppPlusPlugin {
               done('Build complete. Watching for changes...')
             } else {
               done('Build complete. ')
+              setTimeout(() => {
+                process.exit(0)
+              }, 500)
             }
             showRunPrompt()
             resolve()

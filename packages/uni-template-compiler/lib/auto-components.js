@@ -111,7 +111,7 @@ const compilerModule = {
     if (process.env.UNI_PLATFORM === 'quickapp-native') {
       // 排查所有标签
       (options.isUnaryTag.autoComponents || (options.isUnaryTag.autoComponents = new Set())).add(el.tag)
-    } else if (isComponent(el.tag) && el.tag !== 'App') { // App.vue
+    } else if (isComponent(el.tag, options.mp && options.mp.platform) && el.tag !== 'App') { // App.vue
       // 挂在 isUnaryTag 上边,可以保证外部访问到
       (options.isUnaryTag.autoComponents || (options.isUnaryTag.autoComponents = new Set())).add(el.tag)
     }

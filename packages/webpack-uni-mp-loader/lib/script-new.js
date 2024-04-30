@@ -101,7 +101,7 @@ module.exports = function (content, map) {
       return
     }
     // 防止组件从有到无，App.vue 中不支持使用组件
-    updateUsingComponents(resourcePath, Object.create(null), type)
+    updateUsingComponents(resourcePath, Object.create(null), type, content)
     callback(null, content, map)
     return
   }
@@ -148,7 +148,7 @@ module.exports = function (content, map) {
       }
       addDynamicImport(babelLoader, resourcePath, dynamicImports)
 
-      updateUsingComponents(resourcePath, usingComponents, type)
+      updateUsingComponents(resourcePath, usingComponents, type, content)
       callback(null, content, map)
     }
   }, err => {

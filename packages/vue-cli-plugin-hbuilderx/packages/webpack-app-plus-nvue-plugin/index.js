@@ -1,7 +1,9 @@
 const {
   done
 } = require('@vue/cli-shared-utils')
-const { showRunPrompt } = require('@dcloudio/uni-cli-shared')
+const {
+  showRunPrompt
+} = require('@dcloudio/uni-cli-shared')
 
 class WebpackAppPlusNVuePlugin {
   apply (compiler) {
@@ -43,6 +45,9 @@ class WebpackAppPlusNVuePlugin {
             }
           } else {
             done('Build complete. ')
+            setTimeout(() => {
+              process.exit(0)
+            }, 500)
             showRunPrompt()
           }
         }

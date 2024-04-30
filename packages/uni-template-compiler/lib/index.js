@@ -67,7 +67,7 @@ module.exports = {
       options.optimize = false // 启用 staticRenderFns
       // domProps => attrs
       options.mustUseProp = () => false
-      options.isReservedTag = (tagName) => !isComponent(tagName) // 非组件均为内置
+      options.isReservedTag = (tagName) => !isComponent(tagName, options.mp && options.mp.platform) // 非组件均为内置
       options.getTagNamespace = () => false
 
       try {
