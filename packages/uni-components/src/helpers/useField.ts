@@ -235,7 +235,7 @@ function useBase(
   let value = ''
   if (__X__) {
     value =
-      getValueString(props.modelValue, props.type, maxlength.value) ||
+      getValueString(props.modelValue, props.type, maxlength.value) ??
       getValueString(props.value, props.type, maxlength.value)
   } else {
     value =
