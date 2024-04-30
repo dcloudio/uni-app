@@ -48,9 +48,13 @@ export function checkElementNodeTag(
  * @returns
  */
 export function normalizeIdentifier(str: string) {
-  let _str = str.replace(/[^a-zA-Z0-9]/g, '-')
+  let _str = str.replace(/[^a-zA-Z0-9]+/g, '-')
   _str = capitalize(camelize(_str))
   _str = _str.replace(/-/g, '_')
+  // 不允许数字开头，补充 _
+  if (/^\d/.test(_str)) {
+    _str = '_' + _str
+  }
   return _str
 }
 
