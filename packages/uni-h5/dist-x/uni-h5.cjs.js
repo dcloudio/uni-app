@@ -6555,7 +6555,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     },
     refresherBackground: {
       type: String,
-      default: "#fff"
+      default: "transparent"
     }
   },
   setup(props2, {
@@ -6697,7 +6697,7 @@ const props$g = {
   },
   refresherBackground: {
     type: String,
-    default: "#fff"
+    default: "transparent"
   },
   refresherTriggered: {
     type: [Boolean, String],
@@ -8359,7 +8359,7 @@ const props$a = {
   },
   refresherBackground: {
     type: String,
-    default: "#fff"
+    default: "transparent"
   },
   refresherTriggered: {
     type: [Boolean, String],

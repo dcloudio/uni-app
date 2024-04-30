@@ -13976,7 +13976,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     },
     refresherBackground: {
       type: String,
-      default: "#fff"
+      default: "transparent"
     }
   },
   setup(props2, {
@@ -14119,7 +14119,7 @@ const props$n = {
   },
   refresherBackground: {
     type: String,
-    default: "#fff"
+    default: "transparent"
   },
   refresherTriggered: {
     type: [Boolean, String],
@@ -16212,7 +16212,7 @@ const props$h = {
   },
   refresherBackground: {
     type: String,
-    default: "#fff"
+    default: "transparent"
   },
   refresherTriggered: {
     type: [Boolean, String],
@@ -27569,7 +27569,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
-    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageRefresh(refreshRef) : null;
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || true) ? usePageRefresh(refreshRef) : null;
     const pageRefresh = ref(null);
     watch(() => {
       return pageMeta.enablePullDownRefresh;

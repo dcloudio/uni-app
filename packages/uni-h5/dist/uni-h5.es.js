@@ -25737,7 +25737,7 @@ const PageBody = /* @__PURE__ */ defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
-    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageRefresh(refreshRef) : null;
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && (pageMeta.enablePullDownRefresh || false) ? usePageRefresh(refreshRef) : null;
     const pageRefresh = ref(null);
     watch(() => {
       return pageMeta.enablePullDownRefresh;
