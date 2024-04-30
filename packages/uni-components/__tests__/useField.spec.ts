@@ -1,7 +1,7 @@
 global.__PLATFORM__ = 'h5'
 global.__APP_VIEW__ = false
 global.__X__ = true
-import { useField } from './useField'
+import { useField } from '../src/helpers/useField'
 
 import { ref } from 'vue'
 
@@ -11,6 +11,7 @@ jest.mock('vue', () => {
     ...jest.requireActual('vue'),
     onMounted: jest.fn(),
     onBeforeUnmount: jest.fn(),
+    onBeforeMount: jest.fn(),
   }
 })
 
