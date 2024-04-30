@@ -1,23 +1,23 @@
 import {
-  Ref,
-  ref,
-  ExtractPropTypes,
+  type ExtractPropTypes,
+  type Ref,
+  type SetupContext,
   computed,
-  reactive,
-  onMounted,
-  onBeforeUnmount,
-  onActivated,
-  watch,
-  SetupContext,
   nextTick,
+  onActivated,
+  onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
 import { passive } from '@dcloudio/uni-shared'
-import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
+import { disableScrollBounce, initScrollBounce } from '../../helpers/scroll'
 import { UniElement } from '../../helpers/UniElement'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  CustomEventTrigger,
-  EmitEvent,
 } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import Refresher from '../refresher'
@@ -95,7 +95,7 @@ const props = {
   },
   refresherBackground: {
     type: String,
-    default: '#fff',
+    default: __X__ ? 'transparent' : '#fff',
   },
   refresherTriggered: {
     type: [Boolean, String],

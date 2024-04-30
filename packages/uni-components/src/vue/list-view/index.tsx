@@ -1,29 +1,29 @@
 import {
-  ref,
+  computed,
+  nextTick,
   onBeforeUnmount,
   onMounted,
-  nextTick,
-  computed,
   provide,
-  watch,
   reactive,
+  ref,
+  watch,
 } from 'vue'
 import type {
   ComputedRef,
-  Ref,
-  VNode,
   ExtractPropTypes,
+  Ref,
   SetupContext,
+  VNode,
 } from 'vue'
 import { UniElement } from '../../helpers/UniElement'
 import {
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
-  CustomEventTrigger,
 } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import ResizeSensor from '../resize-sensor/index'
-import {
+import type {
   ListItemStatus,
   StickyHeaderStatus,
   StickySectionStatus,
@@ -135,7 +135,7 @@ const props = {
   },
   refresherBackground: {
     type: String,
-    default: '#fff',
+    default: __X__ ? 'transparent' : '#fff',
   },
   refresherTriggered: {
     type: [Boolean, String],
