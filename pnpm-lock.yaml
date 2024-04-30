@@ -314,6 +314,9 @@ importers:
       '@dcloudio/uni-cli-shared':
         specifier: ../../uni-cli-shared
         version: link:../../uni-cli-shared
+      '@dcloudio/uni-uts-v1':
+        specifier: ../../uni-uts-v1
+        version: link:../../uni-uts-v1
       '@dcloudio/vite-plugin-uni':
         specifier: ../../vite-plugin-uni
         version: link:../../vite-plugin-uni

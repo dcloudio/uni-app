@@ -57,6 +57,7 @@
   },
   "devDependencies": {
     "@dcloudio/uni-cli-shared": "../../uni-cli-shared",
+    "@dcloudio/uni-uts-v1": "../../uni-uts-v1",
     "@dcloudio/vite-plugin-uni": "../../vite-plugin-uni",
     "vite": "^5.2.8"
   },
