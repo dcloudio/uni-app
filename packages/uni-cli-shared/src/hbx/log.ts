@@ -139,11 +139,20 @@ function buildErrorMessage(
   includeStack = true
 ): string {
   if (err.plugin) {
+    const otherMsgs: string[] = []
+    if (err.message.includes(': [plugin ')) {
+      const messages = err.message.split(': [plugin ')
+      err.message = messages[0]
+      messages.slice(1).forEach((msg) => {
+        otherMsgs.push(`[plugin:${msg}`)
+      })
+    }
     args.push(
       `${colors.magenta('[plugin:' + err.plugin + ']')} ${colors.red(
         err.message
       )}`
     )
+    args.push(...otherMsgs)
     if (
       err.loc &&
       err.hook === 'transform' &&

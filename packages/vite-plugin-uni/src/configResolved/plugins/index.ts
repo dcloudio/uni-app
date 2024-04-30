@@ -76,7 +76,15 @@ export function initPlugins(
         process.env.UNI_HBUILDERX_PLUGINS,
         'uni_helpers'
       ))
-      addPlugin(plugins, V({ dir: process.env.UNI_INPUT_DIR }), 0, 'pre')
+      addPlugin(
+        plugins,
+        V({
+          dir: process.env.UNI_INPUT_DIR,
+          cloudDir: process.env.UNI_COMPILE_CLOUD_DIR,
+        }),
+        0,
+        'pre'
+      )
     } catch (e) {}
   }
 

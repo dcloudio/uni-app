@@ -222,6 +222,12 @@ function initAutoScanEasycom(
   if (!fs.existsSync(dir)) {
     return easycoms
   }
+  const is_uni_modules =
+    path.basename(path.resolve(dir, '../..')) === 'uni_modules'
+  const is_encrypt_uni_modules =
+    is_uni_modules && fs.existsSync(path.resolve(dir, '../encrypt'))
+  const uni_modules_plugin_id =
+    is_encrypt_uni_modules && path.basename(path.resolve(dir, '..'))
   fs.readdirSync(dir).forEach((name) => {
     const folder = path.resolve(dir, name)
     if (!isDir(folder)) {
@@ -233,7 +239,9 @@ function initAutoScanEasycom(
     for (let i = 0; i < extensions.length; i++) {
       const ext = extensions[i]
       if (files.includes(name + ext)) {
-        easycoms[`^${name}$`] = `${importDir}/${name}${ext}`
+        easycoms[`^${name}$`] = is_encrypt_uni_modules
+          ? `@/uni_modules/${uni_modules_plugin_id}?uni_helpers`
+          : `${importDir}/${name}${ext}`
         break
       }
     }
