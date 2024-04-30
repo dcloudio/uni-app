@@ -10093,7 +10093,10 @@ function useBase(props2, rootRef, emit2) {
       return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
     }
   });
-  const value = getValueString(props2.modelValue, props2.type, maxlength.value) || getValueString(props2.value, props2.type, maxlength.value);
+  let value = "";
+  {
+    value = getValueString(props2.modelValue, props2.type, maxlength.value) || getValueString(props2.value, props2.type, maxlength.value);
+  }
   const state2 = reactive({
     value,
     valueOrigin: value,
@@ -10122,9 +10125,12 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state2, emit2, trigger) {
-  const valueChangeFn = throttle((val) => {
-    state2.value = getValueString(val, props2.type, state2.maxlength);
-  }, 100);
+  let valueChangeFn = null;
+  {
+    valueChangeFn = throttle((val) => {
+      state2.value = getValueString(val, props2.type, state2.maxlength);
+    }, 100);
+  }
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {

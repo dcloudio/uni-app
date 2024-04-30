@@ -3299,7 +3299,10 @@ function useBase(props2, rootRef, emit2) {
       return isNaN(maxlength2) ? 140 : maxlength2;
     }
   });
-  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  let value = "";
+  {
+    value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  }
   const state = vue.reactive({
     value,
     valueOrigin: value,
@@ -3328,13 +3331,16 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state, emit2, trigger) {
-  const valueChangeFn = uniShared.debounce(
-    (val) => {
-      state.value = getValueString(val, props2.type);
-    },
-    100,
-    { setTimeout, clearTimeout }
-  );
+  let valueChangeFn = null;
+  {
+    valueChangeFn = uniShared.debounce(
+      (val) => {
+        state.value = getValueString(val, props2.type);
+      },
+      100,
+      { setTimeout, clearTimeout }
+    );
+  }
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
