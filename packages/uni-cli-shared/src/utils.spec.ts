@@ -11,17 +11,20 @@ describe('test: packages/uni-cli-shared/src/utils.ts', () => {
       'PagesIndex10Index'
     )
     expect(normalizeIdentifier('pages/index2-0///index')).toBe(
-      'PagesIndex20__Index'
+      'PagesIndex20Index'
     )
     expect(normalizeIdentifier('pages/index3--0/index')).toBe(
-      'PagesIndex3_0Index'
+      'PagesIndex30Index'
     )
     expect(normalizeIdentifier('pages/index4---0/index')).toBe(
-      'PagesIndex4__0Index'
+      'PagesIndex40Index'
     )
 
     expect(normalizeIdentifier('pages/index5 0/index')).toBe(
       'PagesIndex50Index'
+    )
+    expect(normalizeIdentifier('2pages/index6/index')).toBe(
+      '_2pagesIndex6Index'
     )
   })
 })
