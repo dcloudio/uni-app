@@ -18,7 +18,9 @@ export default defineSystemComponent({
       ref(null)) as Ref<null>
 
     const _pageRefresh =
-      !__NODE_JS__ && __UNI_FEATURE_PULL_DOWN_REFRESH__
+      !__NODE_JS__ &&
+      __UNI_FEATURE_PULL_DOWN_REFRESH__ &&
+      (pageMeta.enablePullDownRefresh || __X__)
         ? usePageRefresh(refreshRef)
         : null
     const pageRefresh: Ref<typeof _pageRefresh> = ref(null)
