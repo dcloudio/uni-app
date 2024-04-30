@@ -1,5 +1,5 @@
 import {
-  ComponentInternalInstance,
+  type ComponentInternalInstance,
   getCurrentInstance,
   guardReactiveProps,
 } from 'vue'

@@ -46,7 +46,6 @@ function getSsrGlobalData() {
  * uni 对象是跨实例的，而此处列的 API 均是需要跟当前实例关联的，比如 requireNativePlugin 获取 dom 时，依赖当前 weex 实例
  */
 function getCurrentSubNVue() {
-    // @ts-ignore
     return uni.getSubNVueById(plus.webview.currentWebview().id);
 }
 function requireNativePlugin(name) {
@@ -54,9 +53,9 @@ function requireNativePlugin(name) {
 }
 
 function formatAppLog(type, filename, ...args) {
-    // @ts-ignore
+    // @ts-expect-error
     if (uni.__log__) {
-        // @ts-ignore
+        // @ts-expect-error
         uni.__log__(type, filename, ...args);
     }
     else {

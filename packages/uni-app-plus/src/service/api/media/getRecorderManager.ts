@@ -1,7 +1,7 @@
 import { extend, isFunction } from '@vue/shared'
 import {
   API_GET_RECORDER_MANAGER,
-  API_TYPE_GET_RECORDER_MANAGER,
+  type API_TYPE_GET_RECORDER_MANAGER,
   defineSyncApi,
 } from '@dcloudio/uni-api'
 import { TEMP_PATH } from '../constants'

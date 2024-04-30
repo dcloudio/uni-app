@@ -1,5 +1,28 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`uts:stacktrace:runtime parseUTSJavaScriptRuntimeStacktrace 1`] = `
+"error: ReferenceError:Can't find variable: a
+at pages/index/index.uvue:3:8
+1  |  <script lang="uts">
+2  |      setTimeout(() => {
+3  |          uni.__log__('log','at pages/index/index.uvue:3',a)
+   |          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+4  |      }, 1000)
+5  |      export default {"
+`;
+
+exports[`uts:stacktrace:runtime parseUTSJavaScriptRuntimeStacktrace 2`] = `
+"error: at <Index __pageId=1 __pagePath="pages/index/index" __pageQuery=  ... >
+Can't find variable: a
+at pages/index/index.uvue:7:12
+5  |      export default {
+6  |          onLoad() {
+7  |              uni.__log__('log','at pages/index/index.uvue:7',a)
+   |              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+8  |          }
+9  |      }"
+`;
+
 exports[`uts:stacktrace:runtime parseUTSKotlinRuntimeStacktrace 1`] = `
 "error: java.lang.IndexOutOfBoundsException: Index: 1, Size: 1
 at pages/index/index.uvue:13:12

@@ -1,3 +1,4 @@
+import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type {
   SFCStyleCompileOptions,
@@ -6,16 +7,17 @@ import type {
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import {
   EXTNAME_VUE_RE,
-  UniVitePlugin,
-  uniPostcssScopedPlugin,
+  type UniVitePlugin,
   createUniVueTransformAssetUrls,
   getBaseNodeTransforms,
   isExternalUrl,
   normalizePath,
+  uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import type { ViteLegacyOptions, VitePluginUniResolvedOptions } from '..'
 import { createNVueCompiler } from '../utils'
+import { resolveUniTypeScript } from '@dcloudio/uni-cli-shared'
 
 const pluginVuePath = require.resolve('@vitejs/plugin-vue')
 const normalizedPluginVuePath = normalizePath(pluginVuePath)
@@ -73,6 +75,7 @@ export function initPluginVueOptions(
       isCustomElement,
       nodeTransforms,
       directiveTransforms,
+      whitespace,
     },
   } = uniPluginOptions
 
@@ -98,6 +101,10 @@ export function initPluginVueOptions(
       }
       return false
     }
+  }
+
+  if (whitespace) {
+    compilerOptions.whitespace = whitespace
   }
 
   if (isCustomElement) {
@@ -160,6 +167,39 @@ export function initPluginVueOptions(
       vueOptions.compiler = createNVueCompiler()
     }
   }
+  if (!vueOptions.script) {
+    vueOptions.script = {}
+  }
+
+  // TODO 目前暂不支持通过@/开头引入文件，因为需要tsconfig.json配置，建议使用相对路径
+  // https://github.com/vuejs/core/blob/main/packages/compiler-sfc/src/script/resolveType.ts#L911
+  require('@vue/compiler-sfc').registerTS(() => {
+    if (isX) {
+      return resolveUniTypeScript()
+    }
+    return require('typescript')
+  })
+
+  if (!vueOptions.script.fs) {
+    function resolveFile(file: string) {
+      if (file.startsWith('@/')) {
+        file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
+      }
+      return file
+    }
+    vueOptions.script.fs = {
+      fileExists(file) {
+        return fsExtra.existsSync(resolveFile(file))
+      },
+      readFile(file) {
+        return fsExtra.readFileSync(resolveFile(file), 'utf-8')
+      },
+      realpath(file) {
+        return resolveFile(file)
+      },
+    }
+  }
+
   if (isX) {
     if (!vueOptions.script) {
       vueOptions.script = {

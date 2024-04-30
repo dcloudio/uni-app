@@ -1,6 +1,6 @@
 import { extend, hasOwn } from '@vue/shared'
 import { removePlatformStyle } from '../pages'
-import { AppWindowOptions, PageWindowOptions, TabBar } from './types'
+import type { AppWindowOptions, PageWindowOptions, TabBar } from './types'
 
 function trimJson(json: Record<string, any>) {
   delete json.maxWidth

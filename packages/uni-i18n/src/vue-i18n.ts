@@ -1,9 +1,9 @@
 import {
+  type BuiltInLocale,
   I18n,
-  BuiltInLocale,
-  LocaleMessages,
   LOCALE_EN,
-  LocaleWatcher,
+  type LocaleMessages,
+  type LocaleWatcher,
 } from './I18n'
 
 type Interpolate = (

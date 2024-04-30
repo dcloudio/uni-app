@@ -1,37 +1,37 @@
 import { isString } from '@vue/shared'
-import { ParseResult, parseExpression } from '@babel/parser'
+import { type ParseResult, parseExpression } from '@babel/parser'
 import {
-  identifier,
-  objectProperty,
-  objectExpression,
-  spreadElement,
-  ObjectProperty,
-  ObjectExpression,
-  Expression,
-  SpreadElement,
-  ConditionalExpression,
-  Identifier,
+  type ArrowFunctionExpression,
+  type ConditionalExpression,
+  type Expression,
+  type Identifier,
+  type Literal,
+  type NumericLiteral,
+  type ObjectExpression,
+  type ObjectProperty,
+  type SpreadElement,
+  type StringLiteral,
   conditionalExpression,
-  NumericLiteral,
-  isNumericLiteral,
-  ArrowFunctionExpression,
-  stringLiteral,
-  StringLiteral,
-  isIdentifier,
-  isStringLiteral,
-  isBooleanLiteral,
+  identifier,
   isBigIntLiteral,
+  isBooleanLiteral,
   isDecimalLiteral,
-  Literal,
+  isIdentifier,
   isNullLiteral,
+  isNumericLiteral,
+  isStringLiteral,
+  objectExpression,
+  objectProperty,
+  spreadElement,
+  stringLiteral,
 } from '@babel/types'
 import {
-  createCompilerError,
   ErrorCodes,
-  ExpressionNode,
+  type ExpressionNode,
+  createCompilerError,
 } from '@vue/compiler-core'
-import { CodegenScope, CodegenVIfScope } from './options'
-import { TransformContext } from './transform'
+import type { CodegenScope, CodegenVIfScope } from './options'
+import type { TransformContext } from './transform'
 import { genExpr } from './codegen'
 
 export function createIdentifier(name: string) {

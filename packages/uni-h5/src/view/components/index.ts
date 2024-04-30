@@ -1,9 +1,9 @@
 import Video, { UniVideoElement } from './video/index'
 //#if _X_
-// @ts-ignore
+// @ts-expect-error
 import WebView, { UniWebViewElement } from './web-view/index-x'
 //#else
-// @ts-ignore
+// @ts-expect-error
 import WebView from './web-view/index'
 //#endif
 import Map, { UniMapElement } from './map/index'

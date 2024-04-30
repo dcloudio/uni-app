@@ -1,17 +1,20 @@
 import {
   API_REDIRECT_TO,
-  API_TYPE_REDIRECT_TO,
-  defineAsyncApi,
+  type API_TYPE_REDIRECT_TO,
   RedirectToOptions,
   RedirectToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { parseUrl } from '@dcloudio/uni-shared'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { removePage } from '../../../service/framework/page/getCurrentPages'
+import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import { registerPage } from '../../framework/page'
-import { RouteOptions } from '../../../service/api/route/utils'
+import type { RouteOptions } from '../../../service/api/route/utils'
 import { showWebview } from './webview'
-import { getNativeApp } from '../../framework/app'
+import type { ComponentPublicInstance } from 'vue'
+import { setStatusBarStyle } from '../../statusBar'
+import { isTabPage } from '../../framework/app/tabBar'
+import { closePage } from './utils'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -36,8 +39,8 @@ function _redirectTo({
   path,
   query,
 }: RedirectToOptions): Promise<undefined> {
-  const lastPage = getCurrentPage()
-  lastPage && removePage(lastPage)
+  const lastPage = getCurrentPage() as ComponentPublicInstance
+  // 与 uni-app x 安卓一致，后移除页面
 
   return new Promise((resolve) => {
     showWebview(
@@ -45,21 +48,31 @@ function _redirectTo({
         url,
         path,
         query,
-        openType: 'redirectTo',
+        openType:
+          isTabPage(lastPage) || getAllPages().length === 1
+            ? 'reLaunch'
+            : 'redirectTo',
       }),
       'none',
       0,
       () => {
         if (lastPage) {
-          const nPage = getNativeApp().pageManager.findPageById(
-            lastPage.$page.id + ''
-          )!
-          // TODO preload removePreloadWebview
-          nPage.close(new Map<string, any>([['animationType', 'none']]))
+          removePages(lastPage)
         }
         resolve(undefined)
+        setStatusBarStyle()
       }
     )
-    // TODO setStatusBarStyle()
   })
+}
+
+function removePages(currentPage: ComponentPublicInstance) {
+  if (isTabPage(currentPage)) {
+    const pages = getAllPages().slice(0, -1)
+    pages.forEach((page) => {
+      closePage(page, 'none')
+    })
+  } else {
+    closePage(currentPage, 'none')
+  }
 }

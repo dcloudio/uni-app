@@ -1,5 +1,5 @@
 import { parse } from '@babel/parser'
-import { SourceDescription, TransformPluginContext } from 'rollup'
+import type { SourceDescription, TransformPluginContext } from 'rollup'
 import { uniViteInjectPlugin } from '../src/vite/plugins/inject'
 const injectOptions = {
   sourceMap: false,

@@ -1,12 +1,12 @@
 import {
-  hasOwn,
-  makeMap,
-  isArray,
-  isString,
-  isObject,
-  toRawType,
   capitalize,
+  hasOwn,
+  isArray,
+  isObject,
   isPlainObject,
+  isString,
+  makeMap,
+  toRawType,
 } from '@vue/shared'
 
 export const CHOOSE_SIZE_TYPES = ['original', 'compressed']
@@ -122,7 +122,7 @@ function validateProp(
   if (type != null) {
     let isValid = false
     const types = isArray(type) ? type : [type]
-    const expectedTypes = []
+    const expectedTypes: string[] = []
     // value is valid as long as one of the specified types match
     for (let i = 0; i < types.length && !isValid; i++) {
       const { valid, expectedType } = assertType(value, types[i])

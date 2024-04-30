@@ -1,9 +1,9 @@
 import {
-  useDeviceId,
   addSafeAreaInsets,
   populateParameters,
+  useDeviceId,
 } from './enhanceSystemInfo'
-import { MPProtocol } from './types'
+import type { MPProtocol } from './types'
 
 export const getSystemInfo: MPProtocol = {
   returnValue: (fromRes, toRes) => {

@@ -1,23 +1,23 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import {
-  preJs,
-  preHtml,
   EXTNAME_JS,
   EXTNAME_VUE,
-  parseVueRequest,
-  withSourcemap,
-  preNVueJs,
-  preNVueHtml,
   X_EXTNAME_VUE,
+  parseVueRequest,
+  preHtml,
+  preJs,
+  preNVueHtml,
+  preNVueJs,
+  withSourcemap,
 } from '@dcloudio/uni-cli-shared'
-import { UniPluginFilterOptions } from '.'
+import type { UniPluginFilterOptions } from '.'
 
 const debugPreJs = debug('uni:pre-js')
 const debugPreHtml = debug('uni:pre-html')
-const debugPreJsTry = debug('uni:pre-js-try')
+// const debugPreJsTry = debug('uni:pre-js-try')
 
 export function uniPrePlugin(
   config: ResolvedConfig,
@@ -46,7 +46,7 @@ export function uniPrePlugin(
       const isJs = PRE_JS_EXTNAME.includes(extname)
       const isPre = isHtml || isJs
       if (isPre) {
-        debugPreJsTry(id)
+        // debugPreJsTry(id)
       }
       const hasEndif = isPre && code.includes('#endif')
       if (!hasEndif) {

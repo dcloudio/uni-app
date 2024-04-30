@@ -1,7 +1,7 @@
 import {
-  normalizeArg,
-  initUTSProxyFunction,
   initUTSProxyClass,
+  initUTSProxyFunction,
+  normalizeArg,
 } from '../src/service/api/plugin/uts'
 
 describe('uts-module', () => {

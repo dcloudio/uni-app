@@ -1,10 +1,10 @@
 import { isArray, isString } from '@vue/shared'
 import {
-  getEnvLocale,
   I18N_JSON_DELIMITERS,
   UNI_STORAGE_LOCALE,
+  getEnvLocale,
 } from '@dcloudio/uni-shared'
-import { BuiltInLocale, initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
+import { type BuiltInLocale, initVueI18n, isI18nStr } from '@dcloudio/uni-i18n'
 import { isEnableLocale } from './utils'
 
 let i18n: ReturnType<typeof initVueI18n>
@@ -37,7 +37,7 @@ function resolveJsonObj(
       const _isI18nStr = (value: any) =>
         isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS)
       const _name = names[0]
-      let filterJsonObj = []
+      let filterJsonObj: Array<Record<string, any>> = []
       if (
         isArray(jsonObj) &&
         (filterJsonObj = jsonObj.filter((item) => _isI18nStr(item[_name])))

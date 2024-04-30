@@ -1,8 +1,6 @@
-import { cac } from 'cac'
-
 import type { LogLevel } from 'vite'
+import { cac } from 'cac'
 import { fixBinaryPath } from '@dcloudio/uni-cli-shared'
-
 import { PLATFORMS } from './utils'
 import { runBuild, runDev } from './action'
 

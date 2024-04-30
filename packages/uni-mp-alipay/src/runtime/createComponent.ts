@@ -1,26 +1,26 @@
-import { ComponentOptions, ComponentPublicInstance } from 'vue'
-// @ts-ignore
+import type { ComponentOptions, ComponentPublicInstance } from 'vue'
+// @ts-expect-error
 import { pruneComponentPropsCache } from 'vue'
 import {
-  initProps,
+  $destroyComponent,
   initBehaviors,
   initData,
-  $destroyComponent,
+  initProps,
   initVueIds,
   initWxsCallMethods,
 } from '@dcloudio/uni-mp-core'
 import {
-  handleRef,
-  handleLink,
-  triggerEvent,
-  isComponent2,
-  initSpecialMethods,
-  MPComponentInstance,
-  initRelation,
-  initChildVues,
+  type MPComponentInstance,
+  type RelationOptions,
   createVueComponent,
-  RelationOptions,
+  handleLink,
+  handleRef,
+  initChildVues,
   initPropsObserver,
+  initRelation,
+  initSpecialMethods,
+  isComponent2,
+  triggerEvent,
 } from './util'
 
 declare function Component<

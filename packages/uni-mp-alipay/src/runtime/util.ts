@@ -1,29 +1,29 @@
 import { hasOwn, isFunction, isString } from '@vue/shared'
 
 import {
-  ComponentPublicInstance,
-  ComponentOptions,
-  ComponentInternalInstance,
+  type ComponentInternalInstance,
+  type ComponentOptions,
+  type ComponentPublicInstance,
+  type Ref,
   isRef,
-  Ref,
 } from 'vue'
 
-// @ts-ignore EMPTY_OBJ 不能从 @vue/shared 中引入，从 vue 中导入，保持一致
+// @ts-expect-error EMPTY_OBJ 不能从 @vue/shared 中引入，从 vue 中导入，保持一致
 import { EMPTY_OBJ, setTemplateRef } from 'vue'
 
 import {
-  initMocks,
   $createComponent,
-  initComponentInstance,
-  CreateComponentOptions,
-  updateComponentProps,
+  type CreateComponentOptions,
   findPropsData,
+  initComponentInstance,
+  initMocks,
+  updateComponentProps,
   updateMiniProgramComponentProperties,
 } from '@dcloudio/uni-mp-core'
 
 import { handleLink as handleBaseLink } from '@dcloudio/uni-mp-weixin'
 
-import { customizeEvent, ON_READY } from '@dcloudio/uni-shared'
+import { ON_READY, customizeEvent } from '@dcloudio/uni-shared'
 
 type MPPageInstance = tinyapp.IPageInstance<Record<string, any>>
 export type MPComponentInstance = tinyapp.IComponentInstance<

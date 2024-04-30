@@ -1,23 +1,27 @@
 import {
-  AttributeNode,
+  type AttributeNode,
+  type DirectiveNode,
+  ErrorCodes,
+  type ExpressionNode,
+  NodeTypes,
+  type SimpleExpressionNode,
+  type SlotOutletNode,
   createCompilerError,
   createCompoundExpression,
   createSimpleExpression,
-  DirectiveNode,
-  ErrorCodes,
-  ExpressionNode,
   findProp,
   isStaticArgOf,
   isStaticExp,
-  NodeTypes,
-  SimpleExpressionNode,
-  SlotOutletNode,
 } from '@vue/compiler-core'
 import { camelize } from '@vue/shared'
-import { dynamicSlotName, SLOT_DEFAULT_NAME } from '@dcloudio/uni-shared'
+import { SLOT_DEFAULT_NAME, dynamicSlotName } from '@dcloudio/uni-shared'
 import { RENDER_SLOT } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
-import { isScopedSlotVFor, isVForScope, TransformContext } from '../transform'
+import {
+  type TransformContext,
+  isScopedSlotVFor,
+  isVForScope,
+} from '../transform'
 import { processProps } from './transformElement'
 import { isReferencedByIds, removeAttribute, rewriteExpression } from './utils'
 import {

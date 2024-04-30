@@ -1,5 +1,5 @@
 import type { EventChannel } from '@dcloudio/uni-shared'
-import { MPProtocol } from './types'
+import type { MPProtocol } from './types'
 
 const eventChannels: Record<string, EventChannel> = {}
 

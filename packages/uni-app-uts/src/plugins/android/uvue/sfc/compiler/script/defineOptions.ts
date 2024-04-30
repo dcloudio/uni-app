@@ -1,5 +1,5 @@
-import { Node } from '@babel/types'
-import { ScriptCompileContext } from './context'
+import type { Node, ObjectMethod, ObjectProperty } from '@babel/types'
+import type { ScriptCompileContext } from './context'
 import { isCallOf, unwrapTSNode } from './utils'
 import { DEFINE_PROPS } from './defineProps'
 import { DEFINE_EMITS } from './defineEmits'
@@ -26,10 +26,10 @@ export function processDefineOptions(
   ctx.hasDefineOptionsCall = true
   ctx.optionsRuntimeDecl = unwrapTSNode(node.arguments[0])
 
-  let propsOption = undefined
-  let emitsOption = undefined
-  let exposeOption = undefined
-  let slotsOption = undefined
+  let propsOption: ObjectMethod | ObjectProperty | undefined = undefined
+  let emitsOption: ObjectMethod | ObjectProperty | undefined = undefined
+  let exposeOption: ObjectMethod | ObjectProperty | undefined = undefined
+  let slotsOption: ObjectMethod | ObjectProperty | undefined = undefined
   if (ctx.optionsRuntimeDecl.type === 'ObjectExpression') {
     for (const prop of ctx.optionsRuntimeDecl.properties) {
       if (

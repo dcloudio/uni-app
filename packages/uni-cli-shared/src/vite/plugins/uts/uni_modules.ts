@@ -6,7 +6,7 @@ import { once } from '@dcloudio/uni-shared'
 
 import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
 import { parseVueRequest } from '../../utils'
-import { getUniExtApiProviders } from '../../../uni_modules'
+import { getUniExtApiPlugins, parseUTSModuleDeps } from '../../../uni_modules'
 
 const UTSProxyRE = /\?uts-proxy$/
 function isUTSProxy(id: string) {
@@ -38,7 +38,7 @@ export function uniUTSUniModulesPlugin(
 ): Plugin {
   process.env.UNI_UTS_USING_ROLLUP = 'true'
 
-  const compilePlugin = (pluginDir: string) => {
+  const compilePlugin = async (pluginDir: string) => {
     utsPlugins.add(path.basename(pluginDir))
 
     const pkgJson = require(path.join(pluginDir, 'package.json'))
@@ -59,12 +59,27 @@ export function uniUTSUniModulesPlugin(
         uniExtApiProviderServicePlugin = extApiProvider.servicePlugin
       }
     }
-    return resolveUTSCompiler().compile(pluginDir, {
+    const compiler = resolveUTSCompiler()
+    // 处理依赖的 uts 插件
+    const deps = parseUTSModuleDeps(
+      pkgJson.uni_modules?.dependencies || [],
+      process.env.UNI_INPUT_DIR
+    )
+    if (deps.length) {
+      for (const dep of deps) {
+        await compilePlugin(
+          path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', dep)
+        )
+      }
+    }
+
+    return compiler.compile(pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,
       extApis: options.extApis,
       sourceMap: process.env.NODE_ENV === 'development',
+      uni_modules: deps,
       transform: {
         uniExtApiProviderName: extApiProvider?.name,
         uniExtApiProviderService: extApiProvider?.service,
@@ -74,8 +89,8 @@ export function uniUTSUniModulesPlugin(
   }
 
   uniExtApiCompiler = async () => {
-    // 获取 provider 扩展
-    const plugins = getUniExtApiProviders().filter(
+    // 获取 provider 扩展(编译所有uni)
+    const plugins = getUniExtApiPlugins().filter(
       (provider) => !utsPlugins.has(provider.plugin)
     )
     for (const plugin of plugins) {
@@ -105,6 +120,10 @@ export function uniUTSUniModulesPlugin(
         options.x !== true
       )
       if (module) {
+        // app-js 会直接返回 index.uts 路径，不需要 uts-proxy
+        if (module.endsWith('.uts')) {
+          return module
+        }
         // prefix the polyfill id with \0 to tell other plugins not to try to load or transform it
         return module + '?uts-proxy'
       }
@@ -163,7 +182,7 @@ export function uniUTSUniModulesPlugin(
   }
 }
 
-export async function buildUniExtApiProviders() {
+export async function buildUniExtApis() {
   await uniExtApiCompiler()
 }
 

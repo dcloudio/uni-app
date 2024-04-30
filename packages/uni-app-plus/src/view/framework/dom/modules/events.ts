@@ -1,14 +1,14 @@
 import { withModifiers } from 'vue'
 import { normalizeNativeEvent } from '@dcloudio/uni-core'
 import {
-  parseEventName,
-  formatLog,
-  EventModifierFlags,
-  normalizeEventType,
   ACTION_TYPE_EVENT,
+  EventModifierFlags,
+  formatLog,
+  normalizeEventType,
+  parseEventName,
 } from '@dcloudio/uni-shared'
 import { VD_SYNC } from '../../../../constants'
-import { UniCustomElement } from '../components'
+import type { UniCustomElement } from '../components'
 import { invokeWxsEvent } from '../wxs'
 import type { UniComponent } from '../components/UniComponent'
 import { isUniComponent } from '../utils'

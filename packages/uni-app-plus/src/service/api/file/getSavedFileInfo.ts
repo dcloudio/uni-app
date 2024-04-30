@@ -1,9 +1,9 @@
 import {
-  defineAsyncApi,
   API_GET_SAVED_FILE_INFO,
-  API_TYPE_GET_SAVED_FILE_INFO,
-  GetSavedFileInfoProtocol,
+  type API_TYPE_GET_SAVED_FILE_INFO,
   GetSavedFileInfoOptions,
+  GetSavedFileInfoProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 

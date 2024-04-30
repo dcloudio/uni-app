@@ -1,9 +1,9 @@
 import { extend, hasOwn, isFunction } from '@vue/shared'
-import { ComponentPublicInstance, ComponentOptions, ref } from 'vue'
+import { type ComponentOptions, type ComponentPublicInstance, ref } from 'vue'
 
 import { initBaseInstance } from './componentInstance'
 import { initHooks, initUnknownHooks } from './componentHooks'
-import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n'
+import { LOCALE_EN, normalizeLocale } from '@dcloudio/uni-i18n'
 
 import App = WechatMiniprogram.App
 import {

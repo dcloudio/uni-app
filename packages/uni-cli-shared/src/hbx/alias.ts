@@ -4,7 +4,7 @@ import { isInHBuilderX } from './env'
 import type { Formatter } from '../logs/format'
 
 const hbxPlugins = {
-  // typescript: 'compile-typescript/node_modules/typescript',
+  typescript: 'compile-typescript/node_modules/typescript',
   less: 'compile-less/node_modules/less',
   sass: 'compile-dart-sass/node_modules/sass',
   stylus: 'compile-stylus/node_modules/stylus',
@@ -12,7 +12,7 @@ const hbxPlugins = {
 } as const
 
 export function initModuleAlias() {
-  const compilerSfcPath = require.resolve('@vue/compiler-sfc')
+  const compilerSfcPath = path.resolve(__dirname, '../../lib/@vue/compiler-sfc')
   const serverRendererPath = require.resolve('@vue/server-renderer')
   moduleAlias.addAliases({
     '@vue/shared': require.resolve('@vue/shared'),
@@ -33,13 +33,26 @@ export function initModuleAlias() {
   }
   if (isInHBuilderX()) {
     // 又是为了复用 HBuilderX 的插件逻辑，硬编码映射
-    Object.keys(hbxPlugins).forEach((name) => {
+    Object.keys(hbxPlugins).forEach((lang) => {
+      const realPath = path.resolve(
+        process.env.UNI_HBUILDERX_PLUGINS,
+        hbxPlugins[lang as keyof typeof hbxPlugins]
+      )
       moduleAlias.addAlias(
-        name,
-        path.resolve(
-          process.env.UNI_HBUILDERX_PLUGINS,
-          hbxPlugins[name as keyof typeof hbxPlugins]
-        )
+        lang,
+        // @ts-expect-error
+        () => {
+          try {
+            require.resolve(realPath)
+          } catch (e) {
+            const msg = moduleAliasFormatter.format(
+              `Preprocessor dependency "${lang}" not found. Did you install it?`
+            )
+            console.error(msg)
+            process.exit(0)
+          }
+          return realPath
+        }
       )
     })
     // web 平台用了 vite 内置 css 插件，该插件会加载预编译器如scss、less等，需要转向到 HBuilderX 的对应编译器插件
@@ -109,7 +122,10 @@ export const moduleAliasFormatter: Formatter = {
   format(msg) {
     let lang = ''
     let preprocessor = ''
-    if (msg.includes(`"sass"`)) {
+    if (msg.includes(`"pug"`)) {
+      lang = 'pug'
+      preprocessor = 'compile-pug-cli'
+    } else if (msg.includes(`"sass"`)) {
       lang = 'sass'
       preprocessor = 'compile-dart-sass'
     } else if (msg.includes(`"less"`)) {
@@ -118,6 +134,9 @@ export const moduleAliasFormatter: Formatter = {
     } else if (msg.includes('"stylus"')) {
       lang = 'stylus'
       preprocessor = 'compile-stylus'
+    } else if (msg.includes('"typescript"')) {
+      lang = 'typescript'
+      preprocessor = 'compile-typescript'
     }
     if (lang) {
       // 仅提醒一次

@@ -1,14 +1,14 @@
 import { initPageVm, invokeHook } from '@dcloudio/uni-core'
 import {
   EventChannel,
-  formatLog,
   ON_READY,
   ON_UNLOAD,
+  formatLog,
 } from '@dcloudio/uni-shared'
 import {
-  nextTick,
-  ComponentPublicInstance,
+  type ComponentPublicInstance,
   getCurrentInstance,
+  nextTick,
   onBeforeUnmount,
   onMounted,
 } from 'vue'
@@ -67,6 +67,24 @@ export function initScope(
     ;(vm.$ as any).ctx!.$scope = {
       $getAppWebview,
     }
+  } else {
+    Object.defineProperty(vm, '$viewToTempFilePath', {
+      get() {
+        return vm.$nativePage!.viewToTempFilePath.bind(vm.$nativePage!)
+      },
+    })
+    Object.defineProperty(vm, '$getPageStyle', {
+      get() {
+        // @ts-expect-error TODO fix types by hdx
+        return vm.$nativePage!.getPageStyle.bind(vm.$nativePage!)
+      },
+    })
+    Object.defineProperty(vm, '$setPageStyle', {
+      get() {
+        // @ts-expect-error TODO fix types by hdx
+        return vm.$nativePage!.setPageStyle.bind(vm.$nativePage!)
+      },
+    })
   }
   vm.getOpenerEventChannel = () => {
     if (!pageInstance.eventChannel) {

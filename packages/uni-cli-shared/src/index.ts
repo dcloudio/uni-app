@@ -21,6 +21,7 @@ export * from './esbuild'
 export * from './resolve'
 export * from './scripts'
 export * from './platform'
+export * from './utsUtils'
 
 export {
   parseUniExtApis,
@@ -28,10 +29,10 @@ export {
   Define,
   DefineOptions,
   Defines,
+  getUniExtApiProviderRegisters,
 } from './uni_modules'
 
 export { M } from './messages'
 
 export * from './exports'
-// @ts-ignore
 export { checkUpdate } from './checkUpdate'

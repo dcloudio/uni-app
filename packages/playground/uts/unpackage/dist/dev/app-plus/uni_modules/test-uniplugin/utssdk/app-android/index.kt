@@ -1,14 +1,14 @@
 @file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.modules.modules.testUniPlugin;
+import android.util.Log;
+import android.view.View;
+import android.widget.FrameLayout;
 import io.dcloud.uts.*;
 import io.dcloud.uts.Map;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-import android.widget.FrameLayout;
-import android.util.Log;
-import android.view.View;
 import io.dcloud.uts.extapi.showModel as uni_showModel;
 import io.dcloud.uts.extapi.showToast as uni_showToast;
 fun test() {

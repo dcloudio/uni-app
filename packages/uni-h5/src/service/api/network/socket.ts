@@ -1,23 +1,23 @@
-import { extend, capitalize, isFunction, isString } from '@vue/shared'
+import { capitalize, extend, isFunction, isString } from '@vue/shared'
 import {
-  defineTaskApi,
+  API_CLOSE_SOCKET,
+  API_CONNECT_SOCKET,
+  API_SEND_SOCKET_MESSAGE,
+  type API_TYPE_CLOSE_SOCKET,
+  type API_TYPE_CONNECT_SOCKET,
+  type API_TYPE_SEND_SOCKET_MESSAGE,
+  CloseSocketProtocol,
+  ConnectSocketOptions,
+  ConnectSocketProtocol,
+  SendSocketMessageProtocol,
   defineAsyncApi,
   defineOnApi,
-  API_CONNECT_SOCKET,
-  API_TYPE_CONNECT_SOCKET,
-  ConnectSocketProtocol,
-  ConnectSocketOptions,
-  API_SEND_SOCKET_MESSAGE,
-  API_TYPE_SEND_SOCKET_MESSAGE,
-  SendSocketMessageProtocol,
-  API_CLOSE_SOCKET,
-  API_TYPE_CLOSE_SOCKET,
-  CloseSocketProtocol,
+  defineTaskApi,
 } from '@dcloudio/uni-api'
 import { callOptions } from '@dcloudio/uni-shared'
-import {
-  type ConnectSocketFail,
-  type SendSocketMessageErrorCode,
+import type {
+  ConnectSocketFail,
+  SendSocketMessageErrorCode,
 } from '@dcloudio/uni-app-x/types/uni'
 
 type eventName = keyof WebSocketEventMap
@@ -206,8 +206,8 @@ function callSocketTask(
   reject: Function
 ) {
   const fn = socketTask[method] as
-    | typeof socketTask['send']
-    | typeof socketTask['close']
+    | (typeof socketTask)['send']
+    | (typeof socketTask)['close']
   if (isFunction(fn)) {
     fn.call(
       socketTask,

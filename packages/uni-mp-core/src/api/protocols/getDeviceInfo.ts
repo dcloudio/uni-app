@@ -1,7 +1,7 @@
-import { MPProtocol } from './types'
+import type { MPProtocol } from './types'
 import {
-  getGetDeviceType,
   getDeviceBrand,
+  getGetDeviceType,
   useDeviceId,
 } from './enhanceSystemInfo'
 import { extend } from '@vue/shared'

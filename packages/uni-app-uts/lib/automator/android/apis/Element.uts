@@ -1,0 +1,600 @@
+// @ts-ignore
+import type { Callback } from '../index.uts'
+import {
+  getElementById,
+  getElementByNodeIdOrElementId,
+  getComponentVmBySelector,
+  getValidNodes,
+  getComponentVmByNodeId,
+  componentGetData,
+  componentSetData,
+  getElementByIdOrNodeId,
+  removeUniPrefix
+  // @ts-ignore
+} from './util.uts'
+// @ts-ignore
+import { getChildrenText, toCamelCase } from './util.uts'
+
+export type GetElementParams = {
+  pageId: string
+  nodeId?: number | null
+  elementId?: string | null
+  selector: string
+}
+
+export const getElement = (
+  params: GetElementParams,
+  callback: Callback
+): void => {
+  // TODO: support get component by class or id selector
+  const element = getElementByNodeIdOrElementId(
+    params.pageId,
+    params.nodeId,
+    params.elementId,
+    callback
+  )
+  if (element != null) {
+    if (params.selector.startsWith('uni-')) {
+      const selector = removeUniPrefix(params.selector)
+      const component = getComponentVmBySelector(
+        params.pageId,
+        selector,
+        callback
+      )
+      const result = {
+        nodeId: component != null ? component.$.uid : null,
+        tagName: component != null ? selector : null,
+        elementId: component != null ? `${Date.now()}` : null,
+      }
+      callback(result, null)
+      return
+    }
+    // @ts-ignore
+    const list: UTSJSONObject[] = []
+    getValidNodes(element, params.selector, list)
+    if (list.length > 0) {
+      callback(list[0], null)
+    } else {
+      callback(null, { errMsg: `Element[${params.selector}] not exists` })
+    }
+  }
+}
+
+export const getElements = (
+  params: GetElementParams,
+  callback: Callback
+): void => {
+  const element = getElementByNodeIdOrElementId(
+    params.pageId,
+    params.nodeId,
+    params.elementId,
+    callback
+  )
+  if (element != null) {
+    // @ts-ignore
+    const list: UTSJSONObject[] = []
+    getValidNodes(element, removeUniPrefix(params.selector), list, true)
+    callback({ elements: list }, null)
+  }
+}
+
+export type GetDOMPropertiesParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+  names: string[]
+}
+
+export const getDOMProperties = (
+  params: GetDOMPropertiesParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const properties = params.names.map((name: string): any | null => {
+      if (name == 'innerText') {
+        // @ts-expect-error
+        if (isTextElement(dom)) {
+          return dom.getAttribute('value')
+        } else {
+          return getChildrenText(dom)
+        }
+      }
+      if (name == 'value') {
+        return dom.getAttribute('value')
+      }
+      if (name == 'offsetWidth') {
+        return dom.offsetWidth
+      }
+      if (name == 'offsetHeight') {
+        return dom.offsetHeight
+      }
+      return `Element.getDOMProperties not support ${name}`
+    })
+    callback({ properties }, null)
+  }
+}
+
+export type GetPropertiesParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+  names: string[]
+}
+
+export const getProperties = (
+  params: GetPropertiesParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  // @ts-ignore
+  let component: ComponentPublicInstance | null = null
+  if (params.nodeId != null) {
+    component = getComponentVmByNodeId(params.pageId, params.nodeId!, callback)
+  }
+  const properties = params.names.map((name: string): any | null => {
+    if (component != null && component.$props[toCamelCase(name)] != null) {
+      return component.$props[toCamelCase(name)]
+    }
+    if (dom != null) {
+      return dom.getAttribute(name)
+    }
+    return null
+  })
+  callback({ properties }, null)
+}
+
+export type GetAttributesParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+  names: string[]
+}
+
+export const getAttributes = (
+  params: GetAttributesParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const attributes = params.names.map((name: string): any | null => {
+      if (name == 'class') {
+        return dom.classList.join(' ')
+      }
+      return dom.getAttribute(name)
+    })
+    callback({ attributes }, null)
+  }
+}
+
+export type CallFunctionParams = {
+  pageId: string
+  elementId: string
+  functionName: string
+  args: any[]
+}
+type Coordinate = {
+  x: number
+  y: number
+}
+export const callFunction = (
+  params: CallFunctionParams,
+  callback: Callback
+): void => {
+  const element = getElementById(params.pageId, params.elementId, callback)
+  if (element != null) {
+    const functionName = params.functionName
+    switch (functionName) {
+      case 'input.input':
+        element.dispatchEvent(
+          'input',
+          // @ts-ignore
+          new InputEvent(
+            'input',
+            // @ts-ignore
+            InputEventDetail(params.args[0] as string, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+      case 'textarea.input':
+        element.dispatchEvent(
+          'input',
+          // @ts-ignore
+          new InputEvent(
+            'input',
+            // @ts-ignore
+            InputEventDetail(params.args[0] as string, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+      case 'scroll-view.scrollTo':
+        if (element.tagName == 'SCROLL-VIEW') {
+          const x: number = params.args[0] as number
+          const y: number = params.args[1] as number
+          element.scrollLeft = x
+          element.scrollTop = y
+          callback({ result: `${functionName} success` }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+        }
+        break
+      case 'swiper.swipeTo':
+        if (element.tagName == 'SWIPER') {
+          callback(null, { errMsg: `${functionName} not support` })
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not swiper`,
+          })
+          return
+        }
+        break
+      case 'scroll-view.scrollWidth':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollWidth }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+          return
+        }
+        break
+      case 'scroll-view.scrollHeight':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollHeight }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+          return
+        }
+        break
+      case 'scroll-view.scrollTop':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollTop }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+          return
+        }
+        break
+      case 'scroll-view.scrollLeft':
+        if (element.tagName == 'SCROLL-VIEW') {
+          callback({ result: element.scrollLeft }, null)
+        } else {
+          callback(null, {
+            errMsg: `${functionName} fail, element is not scroll-view`,
+          })
+          return
+        }
+        break
+      default:
+        callback(null, { errMsg: `${functionName} not support` })
+        break
+    }
+  } else {
+    callback(null, { errMsg: `Element not exists` })
+  }
+}
+
+export type TapParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+}
+
+export const tap = (params: TapParams, callback: Callback): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const num = 0
+    // @ts-ignore
+    const _float = num.toFloat()
+    dom.dispatchEvent(
+      'click',
+      new MouseEvent(
+        'click',
+        _float,
+        // @ts-ignore
+        _float,
+        _float,
+        _float,
+        _float,
+        _float,
+        _float,
+        _float
+      )
+    )
+    callback({ result: `Element.tap success` }, null)
+  }
+}
+
+export type CallMethodParams = {
+  pageId: string
+  nodeId: number
+  method: string
+  args: any[]
+}
+
+export const callMethod = (
+  params: CallMethodParams,
+  callback: Callback
+): void => {
+  const component = getComponentVmByNodeId(
+    params.pageId,
+    params.nodeId,
+    callback
+  )
+  if (component != null) {
+    const result =
+      params.args.length > 0
+        ? component.$callMethod(params.method, params.args[0])
+        : component.$callMethod(params.method)
+    // @ts-ignore
+    if (result instanceof Promise<unknown>) {
+      (result as Promise<any>).then((res: any) => {
+        callback({ result: res }, null)
+      }).catch((err) => {
+        const errMsg = err instanceof Error ? err.message : err
+        callback({ result: errMsg }, null)
+      })
+    } else {
+      callback({ result }, null)
+    }
+  }
+}
+
+export type GetDataParams = {
+  pageId: string
+  nodeId: number
+  path?: string | null
+}
+export const getData = (params: GetDataParams, callback: Callback): void => {
+  const component = getComponentVmByNodeId(
+    params.pageId,
+    params.nodeId,
+    callback
+  )
+  if (component != null) {
+    const data = componentGetData(
+      component,
+    )
+    callback({ data }, null)
+  }
+}
+
+export type SetDataParams = {
+  pageId: string
+  nodeId: number
+  data: Map<string, any | null>
+}
+export const setData = (params: SetDataParams, callback: Callback): void => {
+  const component = getComponentVmByNodeId(
+    params.pageId,
+    params.nodeId,
+    callback
+  )
+  if (component != null) {
+    componentSetData(component, params.data)
+    callback({ result: { errMsg: 'Page.setData: ok.' } }, null)
+  }
+}
+
+export type GetOffsetParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+}
+
+export const getOffset = (
+  params: GetOffsetParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    callback({ left: dom.offsetLeft, top: dom.offsetTop }, null)
+  }
+}
+
+export type LongpressParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+}
+
+export const longpress = (
+  params: LongpressParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const x: number = 0
+    const y: number = 0
+    dom.dispatchEvent(
+      'longpress',
+      // @ts-ignore
+      new TouchEvent(null, 'longpress', getTouches([]), getTouches([]))
+    )
+    callback({ result: `Element.longpress success` }, null)
+  }
+}
+
+export type HandleTouchEventParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+  touches: any[]
+  changedTouches: any[]
+}
+
+export const handleTouchEvent = (
+  params: HandleTouchEventParams,
+  eventName: string,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const touches = getTouches(params.touches)
+    const changedTouches = getTouches(params.changedTouches)
+    dom.dispatchEvent(
+      eventName,
+      // @ts-ignore
+      new TouchEvent(null, eventName, touches, changedTouches)
+    )
+    callback({ result: `Element.${eventName} success` }, null)
+  }
+}
+
+type TypeTouch = {
+  identifier: number
+  pageX: number
+  pageY: number,
+  screenX?: number | null,
+  screenY?: number | null,
+  clientX?: number | null,
+  clientY?: number | null,
+}
+
+function getTouches(touches: any[]): Touch[] {
+  return touches.map((touch): Touch => {
+    // @ts-ignore
+    const touchObj = JSON.parse<TypeTouch>(JSON.stringify(touch))!
+    // @ts-ignore
+    const result = Touch()
+    result.identifier = touchObj.identifier.toFloat()
+    result.pageX = touchObj.pageX.toFloat()
+    result.pageY = touchObj.pageY.toFloat()
+    if (touchObj.screenX !== null) {
+      result.screenX = touchObj.screenX!.toFloat()
+    }
+    if (touchObj.screenY !== null) {
+      result.screenY = touchObj.screenY!.toFloat()
+    }
+    if (touchObj.clientX !== null) {
+      result.clientX = touchObj.clientX!.toFloat()
+    }
+    if (touchObj.clientY !== null) {
+      result.clientY = touchObj.clientY!.toFloat()
+    }
+    return result
+  })
+}
+
+export type GetStylesParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+  names: string[]
+}
+
+export const getStyles = (
+  params: GetStylesParams,
+  callback: Callback
+): void => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const styles = params.names.map((name: string): any | null => {
+      return dom.style.getPropertyValue(name)
+    })
+    callback({ styles }, null)
+  }
+}
+
+type CustomEventDetail = {
+  value?: string
+}
+
+export type TriggerEventParams = {
+  pageId: string
+  elementId?: string | null
+  nodeId?: number | null
+  type: string;
+  detail: CustomEventDetail;
+}
+
+export const triggerEvent = (params: TriggerEventParams, callback: Callback) => {
+  const dom = getElementByIdOrNodeId(
+    params.pageId,
+    params.elementId,
+    params.nodeId,
+    callback
+  )
+  if (dom != null) {
+    const tagName = dom.tagName.toLocaleLowerCase();
+    const type = params.type;
+    const detail = params.detail;
+    const functionName = `${tagName}.${type}`
+    switch (functionName) {
+      case 'input.input':
+        dom.dispatchEvent(
+          type,
+          // @ts-ignore
+          new UniInputEvent(
+            type,
+            // @ts-expect-error
+            UniInputEventDetail(detail.value!, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+      case 'textarea.input':
+        dom.dispatchEvent(
+          type,
+          // @ts-ignore
+          new UniInputEvent(
+            type,
+            // @ts-ignore
+            UniInputEventDetail(detail.value!, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+    }
+    callback(null, {
+      errMsg: `${functionName} not exists`,
+    })
+  }
+}

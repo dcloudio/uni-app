@@ -675,7 +675,7 @@ function touchstart(evt) {
     const customEvent = new CustomEvent("longpress", {
       bubbles: true,
       cancelable: true,
-      // @ts-ignore
+      // @ts-expect-error
       target: evt.target,
       currentTarget: evt.currentTarget
     });
@@ -988,7 +988,6 @@ function removeStyle(id2) {
   let style = sheetsMap.get(id2);
   if (style) {
     if (style instanceof CSSStyleSheet) {
-      document.adoptedStyleSheets.indexOf(style);
       document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
         (s) => s !== style
       );
@@ -1750,6 +1749,7 @@ function initPageVm(pageVm, page) {
   pageVm.$vm = pageVm;
   pageVm.$page = page;
   pageVm.$mpType = "page";
+  pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true;
     pageVm.$.__isActive = true;
@@ -3073,10 +3073,8 @@ function invokeSuccess(id2, name, res) {
 function invokeFail(id2, name, errMsg, errRes = {}) {
   const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
   delete errRes.errCode;
-  return invokeCallback(
-    id2,
-    typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : extend({ errMsg: apiErrMsg }, errRes)
-  );
+  let res = extend({ errMsg: apiErrMsg }, errRes);
+  return invokeCallback(id2, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -3910,7 +3908,7 @@ const predefinedColor = {
 };
 function checkColor(e2) {
   e2 = e2 || "#000000";
-  var t2 = null;
+  let t2 = null;
   if ((t2 = /^#([0-9|A-F|a-f]{6})$/.exec(e2)) != null) {
     const n = parseInt(t2[1].slice(0, 2), 16);
     const o2 = parseInt(t2[1].slice(2, 4), 16);
@@ -4303,7 +4301,7 @@ const initCanvasContextProperty = /* @__PURE__ */ once(() => {
           return function() {
             this.actions.push({
               method: method2 + "Path",
-              // @ts-ignore
+              // @ts-expect-error
               data: [...this.path]
             });
           };
@@ -7164,7 +7162,7 @@ function initHidpi() {
     setTransform: [4, 5]
   };
   const proto = CanvasRenderingContext2D.prototype;
-  proto.drawImageByCanvas = function(_super) {
+  proto.drawImageByCanvas = /* @__PURE__ */ function(_super) {
     return function(canvas, srcx, srcy, srcw, srch, desx, desy, desw, desh, isScale) {
       if (!this.__hidpi__) {
         return _super.apply(this, arguments);
@@ -7182,7 +7180,7 @@ function initHidpi() {
   }(proto.drawImage);
   if (pixelRatio !== 1) {
     forEach(ratioArgs, function(value, key) {
-      proto[key] = function(_super) {
+      proto[key] = /* @__PURE__ */ function(_super) {
         return function() {
           if (!this.__hidpi__) {
             return _super.apply(this, arguments);
@@ -7201,7 +7199,7 @@ function initHidpi() {
         };
       }(proto[key]);
     });
-    proto.stroke = function(_super) {
+    proto.stroke = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7211,7 +7209,7 @@ function initHidpi() {
         this.lineWidth /= pixelRatio;
       };
     }(proto.stroke);
-    proto.fillText = function(_super) {
+    proto.fillText = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7233,7 +7231,7 @@ function initHidpi() {
         this.font = font2;
       };
     }(proto.fillText);
-    proto.strokeText = function(_super) {
+    proto.strokeText = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -7255,7 +7253,7 @@ function initHidpi() {
         this.font = font2;
       };
     }(proto.strokeText);
-    proto.drawImage = function(_super) {
+    proto.drawImage = /* @__PURE__ */ function(_super) {
       return function() {
         if (!this.__hidpi__) {
           return _super.apply(this, arguments);
@@ -9321,11 +9319,15 @@ const UniViewJSBridgeSubscribe = function() {
     getSelectedTextRange
   );
 };
-function getValueString(value, type) {
+function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  return value === null ? "" : String(value);
+  const valueStr = value === null ? "" : String(value);
+  if (maxlength == void 0) {
+    return valueStr;
+  }
+  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",
@@ -9460,7 +9462,9 @@ function useBase(props2, rootRef, emit2) {
   });
   const maxlength = computed(() => {
     var maxlength2 = Number(props2.maxlength);
-    return isNaN(maxlength2) ? 140 : maxlength2;
+    {
+      return isNaN(maxlength2) ? 140 : maxlength2;
+    }
   });
   const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
   const state2 = reactive({
@@ -9479,7 +9483,10 @@ function useBase(props2, rootRef, emit2) {
   );
   watch(
     () => state2.maxlength,
-    (val) => state2.value = state2.value.slice(0, val)
+    (val) => state2.value = state2.value.slice(0, val),
+    {
+      immediate: false
+    }
   );
   return {
     fieldRef,
@@ -11380,7 +11387,6 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -12574,9 +12580,15 @@ function useProgressState(props2) {
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = computed(() => {
+    if (typeof props2.percent === "string" && !/^-?\d*\.?\d*$/.test(props2.percent)) {
+      return 0;
+    }
     let realValue = parseFloat(props2.percent);
-    realValue < 0 && (realValue = 0);
-    realValue > 100 && (realValue = 100);
+    if (Number.isNaN(realValue) || realValue < 0) {
+      realValue = 0;
+    } else if (realValue > 100) {
+      realValue = 100;
+    }
     return realValue;
   });
   const state2 = reactive({
@@ -12984,12 +12996,13 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
   if (!nodeList || isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
+    var _a;
     if (!isPlainObject(node)) {
       return;
     }
     if (!hasOwn(node, "type") || node.type === "node") {
       let nodeProps = { [scopeId]: "" };
-      const tagName = node.name.toLowerCase();
+      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
       if (!hasOwn(TAGS, tagName)) {
         return;
       }
@@ -13091,10 +13104,12 @@ function parseHtml(html) {
         text: text2
       };
       const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
       }
-      parent.children.push(node);
     }
   });
   return results.children;
@@ -13138,6 +13153,110 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     return () => h("uni-rich-text", {
       ref: rootRef
     }, h("div", {}, _vnode.value));
+  }
+});
+const Refresher = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Refresher",
+  props: {
+    refreshState: {
+      type: String,
+      default: ""
+    },
+    refresherHeight: {
+      type: Number,
+      default: 0
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: "black"
+    },
+    refresherBackground: {
+      type: String,
+      default: "#fff"
+    }
+  },
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = ref(null);
+    const rootStyle = computed(() => {
+      const style = {
+        backgroundColor: props2.refresherBackground
+      };
+      switch (props2.refreshState) {
+        case "pulling":
+          style.height = props2.refresherHeight + "px";
+          break;
+        case "refreshing":
+          style.height = props2.refresherThreshold + "px";
+          style.transition = "height 0.3s";
+          break;
+        case "":
+        case "refresherabort":
+        case "restore":
+          style.height = "0px";
+          style.transition = "height 0.3s";
+          break;
+      }
+      return style;
+    });
+    const refreshRotate = computed(() => {
+      const route = props2.refresherHeight / props2.refresherThreshold;
+      return (route > 1 ? 1 : route) * 360;
+    });
+    return () => {
+      const {
+        refreshState,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      return createVNode("div", {
+        "ref": rootRef,
+        "style": rootStyle.value,
+        "class": "uni-scroll-view-refresher"
+      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresh"
+      }, [createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [refreshState == "pulling" ? createVNode("svg", {
+        "key": "refresh__icon",
+        "style": {
+          transform: "rotate(" + refreshRotate.value + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
+        "key": "refresh__spinner",
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? createVNode("div", {
+        "class": "uni-scroll-view-refresher-container",
+        "style": {
+          height: `${refresherThreshold}px`
+        }
+      }, [slots.default && slots.default()]) : null], 4);
+    };
   }
 });
 const passiveOptions = /* @__PURE__ */ passive(true);
@@ -13196,7 +13315,7 @@ const props$m = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: "back"
+    default: "black"
   },
   refresherBackground: {
     type: String,
@@ -13216,13 +13335,13 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
-    slots
+    slots,
+    expose
   }) {
     const rootRef = ref(null);
     const main = ref(null);
     const wrap = ref(null);
     const content = ref(null);
-    const refresherinner = ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     const {
       state: state2,
@@ -13246,16 +13365,22 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
       }
       return className;
     });
+    expose({
+      // 自动化测试需要暴露main从而获取scrollLeft
+      $getMain() {
+        return main.value;
+      }
+    });
     return () => {
       const {
         refresherEnabled,
         refresherBackground,
-        refresherDefaultStyle
+        refresherDefaultStyle,
+        refresherThreshold
       } = props2;
       const {
         refresherHeight,
-        refreshState,
-        refreshRotate
+        refreshState
       } = state2;
       return createVNode("uni-scroll-view", {
         "ref": rootRef
@@ -13266,49 +13391,18 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
         "ref": main,
         "style": mainStyle.value,
         "class": scrollBarClassName.value
-      }, [createVNode("div", {
+      }, [refresherEnabled ? createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
         "ref": content,
         "class": "uni-scroll-view-content"
-      }, [refresherEnabled ? createVNode("div", {
-        "ref": refresherinner,
-        "style": {
-          backgroundColor: refresherBackground,
-          height: refresherHeight + "px"
-        },
-        "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? createVNode("div", {
-        "class": "uni-scroll-view-refresh"
-      }, [createVNode("div", {
-        "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? createVNode("svg", {
-        "key": "refresh__icon",
-        "style": {
-          transform: "rotate(" + refreshRotate + "deg)"
-        },
-        "fill": "#2BD009",
-        "class": "uni-scroll-view-refresh__icon",
-        "width": "24",
-        "height": "24",
-        "viewBox": "0 0 24 24"
-      }, [createVNode("path", {
-        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-      }, null), createVNode("path", {
-        "d": "M0 0h24v24H0z",
-        "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
-        "key": "refresh__spinner",
-        "class": "uni-scroll-view-refresh__spinner",
-        "width": "24",
-        "height": "24",
-        "viewBox": "25 25 50 50"
-      }, [createVNode("circle", {
-        "cx": "50",
-        "cy": "50",
-        "r": "20",
-        "fill": "none",
-        "style": "color: #2bd009",
-        "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -13325,7 +13419,6 @@ function useScrollViewState(props2) {
     lastScrollToUpperTime: 0,
     lastScrollToLowerTime: 0,
     refresherHeight: 0,
-    refreshRotate: 0,
     refreshState: ""
   });
   return {
@@ -13503,7 +13596,9 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
-          trigger("refresherrefresh", {}, {});
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -13513,16 +13608,28 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.refresherHeight = toUpperNumber = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {});
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {});
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         break;
     }
     state2.refreshState = _state;
   }
+  let touchStart = {
+    x: 0,
+    y: 0
+  };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
   onMounted(() => {
     nextTick(() => {
       _scrollTopChanged(scrollTopNumber.value);
@@ -13533,10 +13640,6 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       event.preventDefault();
       event.stopPropagation();
       _handleScroll(event);
-    };
-    let touchStart = {
-      x: 0,
-      y: 0
     };
     let needStop = null;
     let __handleTouchMove = function(event) {
@@ -13590,15 +13693,14 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
           if (state2.refresherHeight > 0) {
             triggerAbort = true;
             trigger("refresherpulling", event, {
-              deltaY: dy
+              deltaY: dy,
+              dy
             });
           }
         } else {
           state2.refresherHeight = dy + props2.refresherThreshold;
           triggerAbort = false;
         }
-        const route = state2.refresherHeight / props2.refresherThreshold;
-        state2.refreshRotate = (route > 1 ? 1 : route) * 360;
       }
     };
     let __handleTouchStart = function(event) {
@@ -13610,12 +13712,23 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
       }
     };
     let __handleTouchEnd = function(event) {
-      touchStart = null;
+      touchEnd = {
+        x: event.changedTouches[0].pageX,
+        y: event.changedTouches[0].pageY
+      };
       if (state2.refresherHeight >= props2.refresherThreshold) {
         _setRefreshState("refreshing");
       } else {
         _setRefreshState("refresherabort");
       }
+      touchStart = {
+        x: 0,
+        y: 0
+      };
+      touchEnd = {
+        x: 0,
+        y: props2.refresherThreshold
+      };
     };
     main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
     main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
@@ -15151,10 +15264,15 @@ function initHooks(options, instance2, publicThis) {
   if (mpType === "page") {
     instance2.__isVisible = true;
     try {
-      invokeHook(publicThis, ON_LOAD, instance2.attrs.__pageQuery);
+      const query = instance2.attrs.__pageQuery;
+      if (false)
+        ;
+      invokeHook(publicThis, ON_LOAD, query);
       delete instance2.attrs.__pageQuery;
-      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
-        invokeHook(publicThis, ON_SHOW);
+      if (true) {
+        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+          invokeHook(publicThis, ON_SHOW);
+        }
       }
     } catch (e2) {
       console.error(e2.message + LINEFEED + e2.stack);
@@ -19194,7 +19312,6 @@ const MIMEType = {
     wvx: "x-ms-wvx"
   }
 };
-const MIMEType$1 = MIMEType;
 const ALL = "all";
 addInteractListener();
 function isWXEnv() {
@@ -19222,7 +19339,7 @@ function _createInput({
   inputEl.accept = extension.map((item) => {
     if (type !== ALL) {
       const MIMEKey = item.replace(".", "");
-      return `${type}/${MIMEType$1[type][MIMEKey] || MIMEKey}`;
+      return `${type}/${MIMEType[type][MIMEKey] || MIMEKey}`;
     } else {
       if (isWXEnv()) {
         return ".";
@@ -21107,7 +21224,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
 }
 const navigateTo = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, events, isAutomatedTesting }, { resolve, reject }) => navigate({ type: API_NAVIGATE_TO, url, events, isAutomatedTesting }).then(resolve).catch(reject),
   NavigateToProtocol,
   NavigateToOptions
@@ -21122,7 +21239,7 @@ function removeLastPage() {
 }
 const redirectTo = /* @__PURE__ */ defineAsyncApi(
   API_REDIRECT_TO,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return (
       // TODO exists 属性未实现
@@ -21140,7 +21257,7 @@ function removeAllPages() {
 }
 const reLaunch = /* @__PURE__ */ defineAsyncApi(
   API_RE_LAUNCH,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
     return removeAllPages(), navigate({ type: API_RE_LAUNCH, url, isAutomatedTesting }).then(resolve).catch(reject);
   },
@@ -21182,7 +21299,7 @@ function getTabBarPageId(url) {
 }
 const switchTab = /* @__PURE__ */ defineAsyncApi(
   API_SWITCH_TAB,
-  // @ts-ignore
+  // @ts-expect-error
   ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
     return removeNonTabBarPages(), navigate(
       { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
@@ -21281,6 +21398,7 @@ const props$6 = {
   },
   confirmColor: {
     type: String,
+    // @ts-expect-error
     default: "#007aff"
   },
   visible: {
@@ -21329,12 +21447,12 @@ const modal = /* @__PURE__ */ defineComponent({
           "onTouchmove": onEventPrevent
         }, [VNODE_MASK, createVNode("div", {
           "class": "uni-modal"
-        }, [title && createVNode("div", {
+        }, [title || false ? createVNode("div", {
           "class": "uni-modal__hd"
         }, [createVNode("strong", {
           "class": "uni-modal__title",
-          "textContent": title
-        }, null, 8, ["textContent"])]), editable ? createVNode("textarea", {
+          "textContent": title || ""
+        }, null, 8, ["textContent"])]) : null, editable ? createVNode("textarea", {
           "class": "uni-modal__textarea",
           "rows": "1",
           "placeholder": placeholderText,
@@ -23322,6 +23440,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   removeStorageSync,
   removeTabBarBadge,
   request,
+  rpx2px: upx2px,
   saveFile,
   saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum,
@@ -25380,7 +25499,8 @@ const ABORTING = "aborting";
 const REFRESHING = "refreshing";
 const RESTORING = "restoring";
 function usePageRefresh(refreshRef) {
-  const { id: id2, pullToRefresh } = usePageMeta();
+  const pageMeta = usePageMeta();
+  const { id: id2, pullToRefresh } = pageMeta;
   const { range, height } = pullToRefresh;
   let refreshContainerElem;
   let refreshControllerElem;
@@ -25388,6 +25508,9 @@ function usePageRefresh(refreshRef) {
   let refreshInnerElemStyle;
   useSubscribe(
     () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
       if (!state2) {
         state2 = REFRESHING;
         addClass();
@@ -25402,6 +25525,9 @@ function usePageRefresh(refreshRef) {
   );
   useSubscribe(
     () => {
+      if (!pageMeta.enablePullDownRefresh) {
+        return;
+      }
       if (state2 === REFRESHING) {
         removeClass();
         state2 = RESTORING;
@@ -25416,13 +25542,16 @@ function usePageRefresh(refreshRef) {
     false,
     id2
   );
-  onMounted(() => {
+  function initElement() {
     refreshContainerElem = refreshRef.value.$el;
     refreshControllerElem = refreshContainerElem.querySelector(".uni-page-refresh");
     refreshControllerElemStyle = refreshControllerElem.style;
     refreshInnerElemStyle = refreshControllerElem.querySelector(
       ".uni-page-refresh-inner"
     ).style;
+  }
+  onMounted(() => {
+    initElement();
   });
   let touchId;
   let startY;
@@ -25460,6 +25589,9 @@ function usePageRefresh(refreshRef) {
     refreshControllerElemStyle.transform = "translate3d(-50%, " + y + "px, 0)";
   }
   const onTouchstartPassive = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     const touch = ev.changedTouches[0];
     touchId = touch.identifier;
     startY = touch.pageY;
@@ -25470,6 +25602,9 @@ function usePageRefresh(refreshRef) {
     }
   });
   const onTouchmove = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     if (!canRefresh) {
       return;
     }
@@ -25505,6 +25640,9 @@ function usePageRefresh(refreshRef) {
     pulling(deltaY);
   });
   const onTouchend = withWebEvent((ev) => {
+    if (!pageMeta.enablePullDownRefresh) {
+      return;
+    }
     if (!processDeltaY(ev, touchId, startY)) {
       return;
     }
@@ -25593,10 +25731,18 @@ const PageBody = defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && ref(null);
-    const pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ && pageMeta.enablePullDownRefresh ? usePageRefresh(refreshRef) : null;
+    const _pageRefresh = __UNI_FEATURE_PULL_DOWN_REFRESH__ ? usePageRefresh(refreshRef) : null;
+    const pageRefresh = ref(null);
+    watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
+      return createVNode(Fragment, null, [pageRefreshTsx, createVNode("uni-page-wrapper", pageRefresh.value, [createVNode("uni-page-body", null, [renderSlot(ctx.slots, "default")])], 16)]);
     };
   }
 });
@@ -25613,10 +25759,14 @@ const index = defineSystemComponent({
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
+    const pageStyle = {};
     useDocumentTitle(pageMeta);
     return () => createVNode(
       "uni-page",
-      { "data-page": pageMeta.route },
+      {
+        "data-page": pageMeta.route,
+        style: pageStyle
+      },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
     );
   }
@@ -25814,6 +25964,7 @@ export {
   removeStorageSync,
   removeTabBarBadge,
   request,
+  upx2px as rpx2px,
   saveFile,
   saveImageToPhotosAlbum,
   saveVideoToPhotosAlbum,

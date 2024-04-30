@@ -1,5 +1,5 @@
 import {
-  ComponentCustomOptions,
+  type ComponentCustomOptions,
   createElementBlock,
   defineComponent,
   openBlock,

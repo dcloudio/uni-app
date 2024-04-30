@@ -1,8 +1,8 @@
 import {
   API_GET_CLIPBOARD_DATA,
   API_SET_CLIPBOARD_DATA,
-  API_TYPE_GET_CLIPBOARD_DATA,
-  API_TYPE_SET_CLIPBOARD_DATA,
+  type API_TYPE_GET_CLIPBOARD_DATA,
+  type API_TYPE_SET_CLIPBOARD_DATA,
   SetClipboardDataOptions,
   SetClipboardDataProtocol,
   defineAsyncApi,

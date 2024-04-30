@@ -1,8 +1,8 @@
-import fs, { Stats } from 'fs'
+import fs, { type Stats } from 'fs'
 import url from 'url'
 
 import mime from 'mime/lite'
-import { IncomingMessage, OutgoingHttpHeaders, ServerResponse } from 'http'
+import type { IncomingMessage, OutgoingHttpHeaders, ServerResponse } from 'http'
 
 function normalizeFile(filename: string, isEtag: boolean) {
   const stats = fs.statSync(filename)

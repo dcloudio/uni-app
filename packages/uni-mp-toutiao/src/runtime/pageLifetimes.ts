@@ -1,8 +1,8 @@
 import { extend } from '@vue/shared'
 import { ON_READY } from '@dcloudio/uni-shared'
 import {
-  MPComponentInstance,
-  CreateLifetimesOptions,
+  type CreateLifetimesOptions,
+  type MPComponentInstance,
   nextSetDataTick,
 } from '@dcloudio/uni-mp-core'
 

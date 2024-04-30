@@ -1,4 +1,4 @@
-import { toTypeString, toRawType } from '@vue/shared'
+import { toRawType, toTypeString } from '@vue/shared'
 
 export function __log__(
   type: 'log' | 'info' | 'debug' | 'warn' | 'error',

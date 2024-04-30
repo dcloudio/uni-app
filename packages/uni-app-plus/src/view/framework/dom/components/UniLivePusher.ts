@@ -1,4 +1,4 @@
-import { UniNodeJSON } from '@dcloudio/uni-shared'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
 import '../../../../../style/live-pusher.css'
 import LivePusher from '../../../components/live-pusher'
 

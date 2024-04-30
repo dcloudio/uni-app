@@ -1,7 +1,7 @@
-import { extend, isPlainObject, isFunction } from '@vue/shared'
+import { extend, isFunction, isPlainObject } from '@vue/shared'
 import { invokeApi, wrapperReturnValue } from '../interceptor'
 
-import { API_SUCCESS, API_FAIL, API_COMPLETE } from './callback'
+import { API_COMPLETE, API_FAIL, API_SUCCESS } from './callback'
 
 function hasCallback(args: unknown) {
   if (

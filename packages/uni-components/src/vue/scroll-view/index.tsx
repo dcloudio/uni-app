@@ -20,10 +20,10 @@ import {
   EmitEvent,
 } from '../../helpers/useEvent'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-
+import Refresher from '../refresher'
+import type { RefreshState } from '../refresher/types'
 type HTMLRef = Ref<HTMLElement | null>
 type Props = ExtractPropTypes<typeof props>
-type RefreshState = 'refreshing' | 'restore' | 'pulling' | 'refresherabort' | ''
 type Direction = 'x' | 'y'
 interface State {
   lastScrollTop: number
@@ -31,7 +31,6 @@ interface State {
   lastScrollToUpperTime: number
   lastScrollToLowerTime: number
   refresherHeight: number
-  refreshRotate: number
   refreshState: RefreshState
 }
 
@@ -92,7 +91,7 @@ const props = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: 'back',
+    default: 'black',
   },
   refresherBackground: {
     type: String,
@@ -127,12 +126,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     class: UniScrollViewElement,
   },
   //#endif
-  setup(props, { emit, slots }) {
+  setup(props, { emit, slots, expose }) {
     const rootRef: HTMLRef = ref(null)
     const main: HTMLRef = ref(null)
     const wrap: HTMLRef = ref(null)
     const content: HTMLRef = ref(null)
-    const refresherinner: HTMLRef = ref(null)
 
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
 
@@ -209,10 +207,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
     //#endif
 
+    expose({
+      // 自动化测试需要暴露main从而获取scrollLeft
+      $getMain() {
+        return main.value
+      },
+    })
+
     return () => {
-      const { refresherEnabled, refresherBackground, refresherDefaultStyle } =
-        props
-      const { refresherHeight, refreshState, refreshRotate } = state
+      const {
+        refresherEnabled,
+        refresherBackground,
+        refresherDefaultStyle,
+        refresherThreshold,
+      } = props
+      const { refresherHeight, refreshState } = state
 
       return (
         <uni-scroll-view ref={rootRef}>
@@ -222,61 +231,20 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               style={mainStyle.value}
               class={scrollBarClassName.value}
             >
+              {refresherEnabled ? (
+                <Refresher
+                  refreshState={refreshState}
+                  refresherHeight={refresherHeight}
+                  refresherThreshold={refresherThreshold}
+                  refresherDefaultStyle={refresherDefaultStyle}
+                  refresherBackground={refresherBackground}
+                >
+                  {refresherDefaultStyle == 'none'
+                    ? slots.refresher && slots.refresher()
+                    : null}
+                </Refresher>
+              ) : null}
               <div ref={content} class="uni-scroll-view-content">
-                {refresherEnabled ? (
-                  <div
-                    ref={refresherinner}
-                    style={{
-                      backgroundColor: refresherBackground,
-                      height: refresherHeight + 'px',
-                    }}
-                    class="uni-scroll-view-refresher"
-                  >
-                    {refresherDefaultStyle !== 'none' ? (
-                      <div class="uni-scroll-view-refresh">
-                        <div class="uni-scroll-view-refresh-inner">
-                          {refreshState == 'pulling' ? (
-                            <svg
-                              key="refresh__icon"
-                              style={{
-                                transform: 'rotate(' + refreshRotate + 'deg)',
-                              }}
-                              fill="#2BD009"
-                              class="uni-scroll-view-refresh__icon"
-                              width="24"
-                              height="24"
-                              viewBox="0 0 24 24"
-                            >
-                              <path d="M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z" />
-                              <path d="M0 0h24v24H0z" fill="none" />
-                            </svg>
-                          ) : null}
-                          {refreshState == 'refreshing' ? (
-                            <svg
-                              key="refresh__spinner"
-                              class="uni-scroll-view-refresh__spinner"
-                              width="24"
-                              height="24"
-                              viewBox="25 25 50 50"
-                            >
-                              <circle
-                                cx="50"
-                                cy="50"
-                                r="20"
-                                fill="none"
-                                style="color: #2bd009"
-                                stroke-width="3"
-                              />
-                            </svg>
-                          ) : null}
-                        </div>
-                      </div>
-                    ) : null}
-                    {refresherDefaultStyle == 'none'
-                      ? slots.refresher && slots.refresher()
-                      : null}
-                  </div>
-                ) : null}
                 {slots.default && slots.default()}
               </div>
             </div>
@@ -301,7 +269,6 @@ function useScrollViewState(props: Props) {
     lastScrollToUpperTime: 0,
     lastScrollToLowerTime: 0,
     refresherHeight: 0,
-    refreshRotate: 0,
     refreshState: '',
   })
 
@@ -550,7 +517,9 @@ function useScrollViewLoader(
         // 之前是刷新状态则不再触发刷新
         if (!beforeRefreshing) {
           beforeRefreshing = true
-          trigger('refresherrefresh', {} as Event, {})
+          trigger('refresherrefresh', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
           emit('update:refresherTriggered', true)
         }
         break
@@ -560,15 +529,31 @@ function useScrollViewLoader(
         state.refresherHeight = toUpperNumber = 0
         if (_state === 'restore') {
           triggerAbort = false
-          trigger('refresherrestore', {} as Event, {})
+          trigger('refresherrestore', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
         }
         if (_state === 'refresherabort' && triggerAbort) {
           triggerAbort = false
-          trigger('refresherabort', {} as Event, {})
+          trigger('refresherabort', {} as Event, {
+            dy: touchEnd.y - touchStart.y,
+          })
         }
         break
     }
     state.refreshState = _state
+  }
+  type touchPoint = {
+    x: number
+    y: number
+  }
+  let touchStart: touchPoint = {
+    x: 0,
+    y: 0,
+  }
+  let touchEnd: touchPoint = {
+    x: 0,
+    y: props.refresherThreshold,
   }
 
   onMounted(() => {
@@ -581,13 +566,6 @@ function useScrollViewLoader(
       event.preventDefault()
       event.stopPropagation()
       _handleScroll(event as MouseEvent)
-    }
-    let touchStart: {
-      x: number
-      y: number
-    } | null = {
-      x: 0,
-      y: 0,
     }
     let needStop: boolean | null = null
 
@@ -660,6 +638,7 @@ function useScrollViewLoader(
             triggerAbort = true
             trigger('refresherpulling', event, {
               deltaY: dy,
+              dy,
             })
           }
         } else {
@@ -667,9 +646,6 @@ function useScrollViewLoader(
           // 如果之前在刷新状态，则不触发刷新中断
           triggerAbort = false
         }
-
-        const route = state.refresherHeight / props.refresherThreshold
-        state.refreshRotate = (route > 1 ? 1 : route) * 360
       }
     }
     let __handleTouchStart = function (event: TouchEvent) {
@@ -684,7 +660,10 @@ function useScrollViewLoader(
       }
     }
     let __handleTouchEnd = function (event: TouchEvent) {
-      touchStart = null
+      touchEnd = {
+        x: event.changedTouches[0].pageX,
+        y: event.changedTouches[0].pageY,
+      }
       disableScrollBounce({
         disable: false,
       })
@@ -692,6 +671,14 @@ function useScrollViewLoader(
         _setRefreshState('refreshing')
       } else {
         _setRefreshState('refresherabort')
+      }
+      touchStart = {
+        x: 0,
+        y: 0,
+      }
+      touchEnd = {
+        x: 0,
+        y: props.refresherThreshold,
       }
     }
     main.value!.addEventListener(

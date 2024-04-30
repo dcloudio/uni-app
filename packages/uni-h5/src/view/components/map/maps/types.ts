@@ -1,19 +1,19 @@
-import {
-  Map as GMap,
-  LatLng as GLatLng,
-  Polyline as GPolyline,
-  PolylineOptions as GPolylineOptions,
+import type {
   Circle as GCircle,
   CircleOptions as GCircleOptions,
+  LatLng as GLatLng,
+  Map as GMap,
+  Polyline as GPolyline,
+  PolylineOptions as GPolylineOptions,
 } from './google/types'
-import {
-  Map as QMap,
-  LatLng as QLatLng,
-  Polyline as QPolyline,
-  PolylineOptions as QPolylineOptions,
+import type {
   Circle as QCircle,
   CircleOptions as QCircleOptions,
+  LatLng as QLatLng,
+  Map as QMap,
   Point as QPoint,
+  Polyline as QPolyline,
+  PolylineOptions as QPolylineOptions,
 } from './qq/types'
 
 export type GoogleMap = GMap

@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { createLaunchOptions, LaunchOptions } from '@dcloudio/uni-core'
+import { type LaunchOptions, createLaunchOptions } from '@dcloudio/uni-core'
 
 const launchOptions: LaunchOptions = /*#__PURE__*/ createLaunchOptions()
 

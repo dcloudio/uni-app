@@ -2,7 +2,7 @@ import fs from 'fs'
 import path from 'path'
 import { JSON_JS_MAP } from '../../constants'
 import { normalizePath } from '../../utils'
-import {
+import type {
   CreateUniViteFilterPlugin,
   UniViteFilterPluginOptions,
 } from '../utils/plugin'

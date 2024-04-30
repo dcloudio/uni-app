@@ -1,10 +1,10 @@
 import {
-  ElementNode,
+  type AttributeNode,
+  type ElementNode,
   NodeTypes,
-  RootNode,
-  ParentNode,
-  TemplateChildNode,
-  AttributeNode,
+  type ParentNode,
+  type RootNode,
+  type TemplateChildNode,
 } from '@vue/compiler-core'
 import MagicString from 'magic-string'
 import { isElementNode, parseVue } from '../vite/utils/ast'

@@ -1,5 +1,5 @@
-import { customizeEvent, ON_LOAD } from '@dcloudio/uni-shared'
-import { MPComponentInstance } from './component'
+import { ON_LOAD, customizeEvent } from '@dcloudio/uni-shared'
+import type { MPComponentInstance } from './component'
 import { initPropsObserver } from './componentOptions'
 import { initProps } from './componentProps'
 

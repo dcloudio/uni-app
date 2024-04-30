@@ -1,15 +1,15 @@
 import {
-  ElementNode,
-  DirectiveNode,
-  findProp,
+  type DirectiveNode,
+  type ElementNode,
   NodeTypes,
+  findProp,
 } from '@vue/compiler-core'
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
-import { NodeTransform, TransformContext } from '../transform'
+import type { NodeTransform, TransformContext } from '../transform'
 import { parseExpr } from '../ast'
 import {
+  type Expression,
   arrayExpression,
-  Expression,
   identifier,
   isArrayExpression,
 } from '@babel/types'

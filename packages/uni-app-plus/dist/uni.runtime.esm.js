@@ -10,6 +10,7 @@ import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInsta
  * Licensed under the MIT license.
  */
 
+
 var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
 
 // Use a lookup table to find the index.
@@ -515,11 +516,8 @@ function invokeSuccess(id, name, res) {
 function invokeFail(id, name, errMsg, errRes = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
     delete errRes.errCode;
-    return invokeCallback(id, typeof UniError !== 'undefined'
-        ? typeof errRes.errCode !== 'undefined'
-            ? new UniError(name, errRes.errCode, apiErrMsg)
-            : new UniError(apiErrMsg, errRes)
-        : extend({ errMsg: apiErrMsg }, errRes));
+    let res = extend({ errMsg: apiErrMsg }, errRes);
+    return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
     if ((process.env.NODE_ENV !== 'production')) {
@@ -642,7 +640,6 @@ const ArrayBufferToBase64Protocol = [
     },
 ];
 
-// @ts-ignore
 const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
     return decode(base64);
 }, Base64ToArrayBufferProtocol);
@@ -1177,6 +1174,7 @@ function useI18n() {
 }
 
 // This file is created by scripts/i18n.js
+// Do not modify this file!!!!!!!!!
 function normalizeMessages(module, keys, values) {
     return keys.reduce((res, name, index) => {
         res[module + name] = values[index];
@@ -1731,7 +1729,7 @@ function addEventListener(pageId, callback) {
         }
     }
     else {
-        // @ts-ignore
+        // @ts-expect-error
         window.__plusMessage = onPlusMessage$1;
     }
     callbacks$3[pageId] = callback;
@@ -1922,6 +1920,7 @@ function initPageVm(pageVm, page) {
     pageVm.$vm = pageVm;
     pageVm.$page = page;
     pageVm.$mpType = 'page';
+    pageVm.$fontFamilySet = new Set();
     if (page.meta.isTabBar) {
         pageVm.$.__isTabBar = true;
         // TODO preload? 初始化时，状态肯定是激活
@@ -2539,7 +2538,7 @@ var common = {};
 	  }
 	};
 
-	exports.setTyped(TYPED_OK);
+	exports.setTyped(TYPED_OK); 
 } (common));
 
 var deflate$4 = {};
@@ -9856,7 +9855,7 @@ const predefinedColor = {
 function checkColor(e) {
     // 其他开发者适配的echarts会传入一个undefined到这里
     e = e || '#000000';
-    var t = null;
+    let t = null;
     if ((t = /^#([0-9|A-F|a-f]{6})$/.exec(e)) != null) {
         const n = parseInt(t[1].slice(0, 2), 16);
         const o = parseInt(t[1].slice(2, 4), 16);
@@ -10261,16 +10260,16 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 case 'fill':
                 case 'stroke':
                     return function () {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method: method + 'Path',
-                            // @ts-ignore
+                            // @ts-expect-error
                             data: [...this.path],
                         });
                     };
                 case 'fillRect':
                     return function (x, y, width, height) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method: 'fillPath',
                             data: [
@@ -10283,7 +10282,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                     };
                 case 'strokeRect':
                     return function (x, y, width, height) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method: 'strokePath',
                             data: [
@@ -10301,7 +10300,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                         if (typeof maxWidth === 'number') {
                             data.push(maxWidth);
                         }
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data,
@@ -10342,7 +10341,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                                 : isNumber(sWidth) && isNumber(sHeight)
                                     ? [imageResource, sx, sy, sWidth, sHeight]
                                     : [imageResource, sx, sy];
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data,
@@ -10350,7 +10349,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                     };
                 default:
                     return function (...data) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data,
@@ -10367,14 +10366,14 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 case 'setStrokeStyle':
                     return function (color) {
                         if (typeof color !== 'object') {
-                            // @ts-ignore
+                            // @ts-expect-error
                             this.actions.push({
                                 method,
                                 data: ['normal', checkColor(color)],
                             });
                         }
                         else {
-                            // @ts-ignore
+                            // @ts-expect-error
                             this.actions.push({
                                 method,
                                 data: [color.type, color.data, color.colorStop],
@@ -10384,7 +10383,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 case 'setGlobalAlpha':
                     return function (alpha) {
                         alpha = Math.floor(255 * parseFloat(alpha));
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data: [alpha],
@@ -10393,39 +10392,39 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 case 'setShadow':
                     return function (offsetX, offsetY, blur, color) {
                         color = checkColor(color);
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data: [offsetX, offsetY, blur, color],
                         });
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.shadowBlur = blur;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.shadowColor = color;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.shadowOffsetX = offsetX;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.shadowOffsetY = offsetY;
                     };
                 case 'setLineDash':
                     return function (pattern, offset) {
                         pattern = pattern || [0, 0];
                         offset = offset || 0;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data: [pattern, offset],
                         });
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.lineDash = pattern;
                     };
                 case 'setFontSize':
                     return function (fontSize) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.font = this.state.font.replace(/\d+\.?\d*px/, fontSize + 'px');
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.state.fontSize = fontSize;
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data: [fontSize],
@@ -10433,7 +10432,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                     };
                 default:
                     return function (...data) {
-                        // @ts-ignore
+                        // @ts-expect-error
                         this.actions.push({
                             method,
                             data,
@@ -12239,6 +12238,10 @@ const NavigateBackOptions = {
         },
     },
 };
+const PreloadPageOptions = 
+/*#__PURE__*/ createRouteOptions(API_PRELOAD_PAGE);
+const UnPreloadPageOptions = 
+/*#__PURE__*/ createRouteOptions(API_UN_PRELOAD_PAGE);
 function createAnimationProtocol(animationTypes) {
     return {
         animationType: {
@@ -14365,7 +14368,7 @@ const getAppAuthorizeSetting = defineSyncApi(API_GET_APP_AUTHORIZE_SETTING, () =
     for (const key in appAuthorizeSetting) {
         if (hasOwn$1(appAuthorizeSetting, key)) {
             const value = appAuthorizeSetting[key];
-            // @ts-ignore
+            // @ts-expect-error
             if (value === 'undefined')
                 appAuthorizeSetting[key] = undefined;
         }
@@ -14678,7 +14681,7 @@ const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, ({ count, sizeType, sourceT
         });
     }
     function openAlbum() {
-        // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
+        // @ts-expect-error 5+此API分单选和多选，多选返回files:string[]
         plus.gallery.pick(({ files }) => successCallback(files), errorCallback, {
             maximum: count,
             multiple: true,
@@ -14749,7 +14752,7 @@ const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, ({ sourceType, compressed, 
     }
     function openAlbum() {
         plus.gallery.pick(
-        // @ts-ignore 5+此API分单选和多选，多选返回files:string[]
+        // @ts-expect-error 5+此API分单选和多选，多选返回files:string[]
         ({ files }) => successCallback(files[0]), errorCallback, {
             filter: 'video',
             system: false,
@@ -14957,7 +14960,7 @@ class RequestTask {
 }
 const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
     let { header, method, data, timeout, url, responseType, sslVerify, firstIpv4, 
-    // @ts-ignore tls 缺少 types 类型
+    // @ts-expect-error tls 缺少 types 类型
     tls, } = args;
     let contentType;
     for (const name in header) {
@@ -15469,7 +15472,6 @@ function setAudioState({ audioId, src, startTime, autoplay = false, loop = false
             audio.setSessionCategory(sessionCategory);
         }
         if (playbackRate && audio.playbackRate) {
-            // @ts-ignore
             audio.playbackRate(playbackRate);
         }
         initStateChage(audioId);
@@ -16763,18 +16765,18 @@ function restoreGlobal(newVue, newWeex, newPlus, newSetTimeout, newClearTimeout,
         // __VUE__ 在 uni-jsframework-next 编译时会被替换为 vue
         Vue = __VUE__ = newVue;
         weex = newWeex;
-        // @ts-ignore
+        // @ts-expect-error
         plus = newPlus;
         restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle);
         plus.navigator.setStatusBarStyle = newSetStatusBarStyle;
         /* eslint-disable no-global-assign */
-        // @ts-ignore
+        // @ts-expect-error
         setTimeout = newSetTimeout;
-        // @ts-ignore
+        // @ts-expect-error
         clearTimeout = newClearTimeout;
-        // @ts-ignore
+        // @ts-expect-error
         setInterval = newSetInterval;
-        // @ts-ignore
+        // @ts-expect-error
         clearInterval = newClearInterval;
     }
     __uniConfig.serviceReady = true;
@@ -16979,7 +16981,7 @@ const baseGetUserInfo = (params, { resolve, reject }) => {
                 }
             }
             let result = {};
-            // @ts-ignore
+            // @ts-expect-error
             if (params.data && params.data.api_name === 'webapi_getuserinfo') {
                 result.data = {
                     data: JSON.stringify(userInfo),
@@ -17170,7 +17172,7 @@ const sendShareMsg = function (service, params, resolve, reject, method = 'share
         ? 'openCustomerServiceChat'
         : 'send';
     try {
-        // @ts-expect-error openCustomerServiceChat
+        // openCustomerServiceChat
         service[serviceMethod](params, () => {
             resolve();
         }, errorCallback);
@@ -17307,10 +17309,19 @@ function normalizeLog(type, filename, args) {
     return msgs.join('---COMMA---') + ' ' + filename;
 }
 
+// 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 let callbackId = 1;
 let proxy;
 const callbacks = {};
+function isComponentPublicInstance(instance) {
+    return instance && instance.$ && instance.$.proxy === instance;
+}
+function toRaw(observed) {
+    const raw = observed && observed.__v_raw;
+    return raw ? toRaw(raw) : observed;
+}
 function normalizeArg(arg) {
+    arg = toRaw(arg);
     if (typeof arg === 'function') {
         // 查找该函数是否已缓存
         const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg);
@@ -17319,9 +17330,23 @@ function normalizeArg(arg) {
         return id;
     }
     else if (isPlainObject(arg)) {
-        Object.keys(arg).forEach((name) => {
-            arg[name] = normalizeArg(arg[name]);
-        });
+        if (isComponentPublicInstance(arg)) {
+            let nodeId = '';
+            let pageId = '';
+            // @ts-expect-error
+            const el = arg.$el;
+            // 非 x 可能不存在 getNodeId 方法？
+            if (el && el.getNodeId) {
+                pageId = el.pageId;
+                nodeId = el.getNodeId();
+            }
+            return { pageId, nodeId };
+        }
+        else {
+            Object.keys(arg).forEach((name) => {
+                arg[name] = normalizeArg(arg[name]);
+            });
+        }
     }
     return arg;
 }
@@ -17461,7 +17486,7 @@ function initUTSStaticMethod(async, opts) {
 }
 const initUTSProxyFunction = initUTSStaticMethod;
 function parseClassMethodName(name, methods) {
-    if (hasOwn$1(methods, name + 'ByJs')) {
+    if (typeof name === 'string' && hasOwn$1(methods, name + 'ByJs')) {
         return name + 'ByJs';
     }
     return name;
@@ -19687,22 +19712,24 @@ function _switchTab({ url, path, query, }) {
     });
 }
 
-const unPreloadPage = defineSyncApi(API_UN_PRELOAD_PAGE, ({ url }) => {
+const unPreloadPage = defineAsyncApi(API_UN_PRELOAD_PAGE, ({ url }, { resolve, reject }) => {
     const webview = closePreloadWebview({
         url,
     });
     if (webview) {
-        return {
+        resolve({
+            // @ts-expect-error
             id: webview.id,
+            // @ts-expect-error
             url,
+            // @ts-expect-error
             errMsg: 'unPreloadPage:ok',
-        };
+        });
+        return;
     }
-    return {
-        url,
-        errMsg: 'unPreloadPage:fail not found',
-    };
-}, UnPreloadPageProtocol);
+    reject('not found');
+    return;
+}, UnPreloadPageProtocol, UnPreloadPageOptions);
 const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve }) => {
     // 防止热更等情况重复 preloadPage
     if (preloadWebviews[url]) {
@@ -19727,7 +19754,7 @@ const preloadPage = defineAsyncApi(API_PRELOAD_PAGE, ({ url }, { resolve }) => {
         url,
         errMsg: 'preloadPage:ok',
     });
-}, PreloadPageProtocol);
+}, PreloadPageProtocol, PreloadPageOptions);
 
 var uni$1 = {
   __proto__: null,

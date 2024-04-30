@@ -42,6 +42,7 @@ export type UTSOutputOptions = {
   extname: string
   logFilename?: boolean
   noColor?: boolean
+  public?: boolean // only for swift
   isX?: boolean
   isApp?: boolean
   isSingleThread?: boolean
@@ -49,6 +50,7 @@ export type UTSOutputOptions = {
   split?: boolean
   disableSplitManifest?: boolean
   removeImports?: boolean
+  dropImports?: string[]
   uniAppX?: {
     uvueOutDir: string
   }
@@ -61,6 +63,7 @@ export type UTSOutputOptions = {
     uniExtApiProviderName?: string
     uniExtApiProviderService?: string
     uniExtApiProviderServicePlugin?: string
+    uniExtApiProviders?: [string, string, string][]
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
     disableReactiveObject?: boolean

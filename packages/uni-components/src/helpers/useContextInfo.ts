@@ -1,4 +1,4 @@
-import { onMounted, getCurrentInstance } from 'vue'
+import { getCurrentInstance, onMounted } from 'vue'
 import { useCurrentPageId } from '@dcloudio/uni-core'
 
 type ContextType = 'canvas' | 'map' | 'video' | 'editor'

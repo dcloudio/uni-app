@@ -2,9 +2,9 @@ import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 import path from 'path'
 import {
+  addUTSEasyComAutoImports,
   normalizePath,
   resolveComponentsLibPath,
-  addUTSEasyComAutoImports,
 } from '@dcloudio/uni-cli-shared'
 import { ENTRY_FILENAME, getUniCloudSpaceList } from './utils'
 

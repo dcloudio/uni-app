@@ -1,8 +1,9 @@
+// 生成的 uts.js 需要同步到 vue2 src/platforms/app-plus/service/api/plugin
 import {
-  isPlainObject,
-  hasOwn,
-  extend,
   capitalize,
+  extend,
+  hasOwn,
+  isPlainObject,
   isString,
 } from '@vue/shared'
 declare const uni: any
@@ -11,7 +12,17 @@ let callbackId = 1
 let proxy: any
 const callbacks: Record<string, Function> = {}
 
+function isComponentPublicInstance(instance: any) {
+  return instance && instance.$ && instance.$.proxy === instance
+}
+
+function toRaw(observed?: unknown): unknown {
+  const raw = observed && (observed as any).__v_raw
+  return raw ? toRaw(raw) : observed
+}
+
 export function normalizeArg(arg: unknown) {
+  arg = toRaw(arg)
   if (typeof arg === 'function') {
     // 查找该函数是否已缓存
     const oldId = Object.keys(callbacks).find((id) => callbacks[id] === arg)
@@ -19,9 +30,22 @@ export function normalizeArg(arg: unknown) {
     callbacks[id] = arg
     return id
   } else if (isPlainObject(arg)) {
-    Object.keys(arg).forEach((name) => {
-      ;(arg as any)[name] = normalizeArg((arg as any)[name])
-    })
+    if (isComponentPublicInstance(arg)) {
+      let nodeId = ''
+      let pageId = ''
+      // @ts-expect-error
+      const el = arg.$el
+      // 非 x 可能不存在 getNodeId 方法？
+      if (el && el.getNodeId) {
+        pageId = el.pageId
+        nodeId = el.getNodeId()
+      }
+      return { pageId, nodeId }
+    } else {
+      Object.keys(arg).forEach((name) => {
+        ;(arg as any)[name] = normalizeArg((arg as any)[name])
+      })
+    }
   }
   return arg
 }
@@ -395,8 +419,11 @@ function initUTSStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
 
 export const initUTSProxyFunction = initUTSStaticMethod
 
-function parseClassMethodName(name: string, methods: Record<string, unknown>) {
-  if (hasOwn(methods, name + 'ByJs')) {
+function parseClassMethodName(
+  name: string | symbol,
+  methods: Record<string, unknown>
+) {
+  if (typeof name === 'string' && hasOwn(methods, name + 'ByJs')) {
     return name + 'ByJs'
   }
   return name
@@ -491,7 +518,7 @@ export function initUTSProxyClass(
           }
           if (!target[name as string]) {
             //实例方法
-            name = parseClassMethodName(name as string, methods)
+            name = parseClassMethodName(name, methods)
             if (hasOwn(methods, name)) {
               const { async, params, return: returnOptions } = methods[name]
               target[name] = initUTSInstanceMethod(
@@ -527,7 +554,7 @@ export function initUTSProxyClass(
   const staticMethodCache: Record<string, Function> = {}
   return new Proxy(ProxyClass, {
     get(target, name, receiver) {
-      name = parseClassMethodName(name as string, staticMethods)
+      name = parseClassMethodName(name, staticMethods)
       if (hasOwn(staticMethods, name)) {
         if (!staticMethodCache[name as string]) {
           const { async, params, return: returnOptions } = staticMethods[name]

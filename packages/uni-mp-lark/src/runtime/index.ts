@@ -1,8 +1,8 @@
 import { EventChannel } from '@dcloudio/uni-shared'
 import {
   initCreateApp,
-  initCreatePage,
   initCreateComponent,
+  initCreatePage,
   initCreateSubpackageApp,
 } from '@dcloudio/uni-mp-core'
 

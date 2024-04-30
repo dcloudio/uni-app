@@ -1,4 +1,4 @@
-import { debounce, ON_RESIZE } from '@dcloudio/uni-shared'
+import { ON_RESIZE, debounce } from '@dcloudio/uni-shared'
 
 export function onWebviewResize(webview: PlusWebviewWebviewObject) {
   const { emit } = UniServiceJSBridge

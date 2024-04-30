@@ -1,0 +1,17 @@
+{
+  "SysCaps": [
+    "SystemCapability.ArkUI.ArkUI.Lite",
+    "SystemCapability.Base",
+    "SystemCapability.Location.Location.Lite",
+    "SystemCapability.PowerManager.BatteryManager.Lite",
+    "SystemCapability.FileManagement.File.FileIO.Lite",
+    "SystemCapability.Startup.SystemInfo.Lite",
+    "SystemCapability.PowerManager.DisplayPowerManager.Lite",
+    "SystemCapability.Communication.NFC.CardEmulation",
+    "SystemCapability.Security.Huks.Core",
+    "SystemCapability.DistributedDataManager.Preferences.Core.Lite",
+    "SystemCapability.Sensors.Sensor.Lite",
+    "SystemCapability.Sensors.MiscDevice.Lite",
+    "SystemCapability.Communication.NetStack"
+  ]
+}

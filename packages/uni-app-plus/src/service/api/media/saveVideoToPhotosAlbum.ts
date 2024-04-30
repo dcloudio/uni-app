@@ -1,13 +1,13 @@
 import {
   API_SAVE_VIDEO_TO_PHOTOS_ALBUM,
-  API_TYPE_SAVE_VIDEO_TO_PHOTOS_ALBUM,
-  defineAsyncApi,
+  type API_TYPE_SAVE_VIDEO_TO_PHOTOS_ALBUM,
   SaveVideoToPhotosAlbumOptions,
   SaveVideoToPhotosAlbumProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import {
-  warpPlusSuccessCallback,
   warpPlusErrorCallback,
+  warpPlusSuccessCallback,
 } from '../../../helpers/plus'
 
 export const saveVideoToPhotosAlbum =

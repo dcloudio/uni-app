@@ -1,5 +1,5 @@
 import { invokeHook } from '@dcloudio/uni-core'
-import { addLeadingSlash, ON_TAB_ITEM_TAP } from '@dcloudio/uni-shared'
+import { ON_TAB_ITEM_TAP, addLeadingSlash } from '@dcloudio/uni-shared'
 import tabBarInstance from './tabBar'
 
 export function initTabBar() {

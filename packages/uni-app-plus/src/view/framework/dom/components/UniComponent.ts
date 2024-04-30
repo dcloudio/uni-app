@@ -1,25 +1,25 @@
 import { hasOwn, isPlainObject } from '@vue/shared'
 import {
-  App,
-  Component,
-  ComponentInternalInstance,
+  type App,
+  type Component,
+  type ComponentInternalInstance,
   createApp,
-  reactive,
   // @ts-expect-error
   flushPostFlushCbs,
+  reactive,
 } from 'vue'
 import {
   ATTR_STYLE,
   ATTR_V_OWNER_ID,
   ATTR_V_RENDERJS,
   ATTR_V_SHOW,
+  type UniNodeJSON,
   formatLog,
   parseEventName,
-  UniNodeJSON,
 } from '@dcloudio/uni-shared'
 import { UniNode } from '../elements/UniNode'
 import { createInvoker, createWxsEventInvoker } from '../modules/events'
-import { createWrapper, UniCustomElement } from '.'
+import { type UniCustomElement, createWrapper } from '.'
 import { $, removeElement } from '../page'
 import {
   JOB_PRIORITY_REBUILD,
@@ -27,7 +27,7 @@ import {
   queuePostActionJob,
 } from '../scheduler'
 import { decodeAttr, isCssVar } from '../utils'
-import { patchVShow, VShowElement } from '../directives/vShow'
+import { type VShowElement, patchVShow } from '../directives/vShow'
 import { initRenderjs } from '../renderjs'
 import { normalizeStyleValue } from '../../../utils'
 

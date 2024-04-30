@@ -1,18 +1,18 @@
 import fs from 'fs-extra'
 import path from 'path'
 import {
-  isAppNativeTag,
   isAppNVueNativeTag as baseIsAppNVueNativeTag,
+  isAppNativeTag,
 } from '@dcloudio/uni-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
 import {
-  UniVitePlugin,
+  type UniViteCopyPluginOptions,
+  type UniVitePlugin,
   initI18nOptions,
-  transformPageHead,
-  transformMatchMedia,
-  transformTapToClick,
-  UniViteCopyPluginOptions,
   matchUTSComponent,
+  transformMatchMedia,
+  transformPageHead,
+  transformTapToClick,
 } from '@dcloudio/uni-cli-shared'
 
 import { initNVueNodeTransforms } from '../../nvue'

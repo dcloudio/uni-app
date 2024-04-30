@@ -1,9 +1,9 @@
 import {
-  defineSyncApi,
   API_CREATE_INTERSTITIAL_AD,
-  API_TYPE_CREATE_INTERSTITIAL_AD,
+  type API_TYPE_CREATE_INTERSTITIAL_AD,
   CreateInterstitialAdOptions,
   CreateInterstitialAdProtocol,
+  defineSyncApi,
 } from '@dcloudio/uni-api'
 
 import { AdBase } from './adBase'

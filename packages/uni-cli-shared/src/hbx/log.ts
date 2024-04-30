@@ -6,7 +6,7 @@ import type { LogErrorOptions } from 'vite'
 import { NodeTypes } from '@vue/compiler-core'
 import { isString } from '@vue/shared'
 import { normalizePath } from '../utils'
-import { Formatter } from '../logs/format'
+import type { Formatter } from '../logs/format'
 
 import { EXTNAME_VUE_RE } from '../constants'
 import { parseVue } from '../vite/utils/ast'
@@ -33,7 +33,7 @@ type ConsoleMethod = 'warn' | 'error'
 function overridedConsole(
   name: ConsoleMethod,
   oldFn: (...args: any[]) => any,
-  char: typeof ZERO_WIDTH_CHAR[ZERO_WIDTH_CHAR_KEY]
+  char: (typeof ZERO_WIDTH_CHAR)[ZERO_WIDTH_CHAR_KEY]
 ) {
   console[name] = function (...args) {
     oldFn.apply(

@@ -1,4 +1,4 @@
-import { AppConfig } from 'vue'
+import type { AppConfig } from 'vue'
 import { extend } from '@vue/shared'
 
 import * as instance from './componentInstance'

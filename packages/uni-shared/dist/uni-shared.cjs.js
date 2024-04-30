@@ -125,6 +125,8 @@ const UVUE_BUILT_IN_TAGS = [
     'uni-slider',
     // 原生实现
     'button',
+    'nested-scroll-header',
+    'nested-scroll-body',
 ];
 const UVUE_WEB_BUILT_IN_TAGS = [
     'list-view',
@@ -137,15 +139,8 @@ const UVUE_IOS_BUILT_IN_TAGS = [
     'scroll-view',
     'web-view',
     'slider',
-    'swiper',
-    'swiper-item',
-    'rich-text',
-    'button',
-    'list-view',
-    'list-item',
+    'form',
     'switch',
-    'sticky-header',
-    'sticky-section',
 ];
 const NVUE_U_BUILT_IN_TAGS = [
     'u-text',
@@ -227,6 +222,22 @@ function isAppUVueNativeTag(tag) {
     }
     // u-text,u-video...
     if (NVUE_U_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    return false;
+}
+function isAppIOSUVueNativeTag(tag) {
+    // 前端实现的内置组件都会注册一个根组件
+    if (tag.startsWith('uni-') && tag.endsWith('-element')) {
+        return true;
+    }
+    if (NVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_BUILT_IN_TAGS.includes(tag)) {
+        return true;
+    }
+    if (UVUE_IOS_BUILT_IN_TAGS.includes(tag)) {
         return true;
     }
     return false;
@@ -384,6 +395,9 @@ function normalizeStyle(value) {
             styleObject[key] = value;
         });
         return shared.normalizeStyle(styleObject);
+    }
+    else if (shared.isString(value)) {
+        return shared.parseStringStyle(value);
     }
     else if (shared.isArray(value)) {
         const res = {};
@@ -1399,8 +1413,13 @@ const PAGE_HOOKS = [
     ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED,
     ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED,
 ];
-const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
 function isRootImmediateHook(name) {
+    const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
+    return PAGE_SYNC_HOOKS.indexOf(name) > -1;
+}
+// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
+function isRootImmediateHookX(name) {
+    const PAGE_SYNC_HOOKS = [ON_LOAD];
     return PAGE_SYNC_HOOKS.indexOf(name) > -1;
 }
 function isRootHook(name) {
@@ -1726,6 +1745,7 @@ exports.initCustomDatasetOnce = initCustomDatasetOnce;
 exports.invokeArrayFns = invokeArrayFns;
 exports.invokeCreateErrorHandler = invokeCreateErrorHandler;
 exports.invokeCreateVueAppHook = invokeCreateVueAppHook;
+exports.isAppIOSUVueNativeTag = isAppIOSUVueNativeTag;
 exports.isAppNVueNativeTag = isAppNVueNativeTag;
 exports.isAppNativeTag = isAppNativeTag;
 exports.isAppUVueNativeTag = isAppUVueNativeTag;
@@ -1737,6 +1757,7 @@ exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
+exports.isRootImmediateHookX = isRootImmediateHookX;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
 exports.normalizeClass = normalizeClass;

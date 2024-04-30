@@ -1,13 +1,13 @@
 import { hasOwn, isString } from '@vue/shared'
 import {
   API_REQUEST,
-  API_TYPE_REQUEST,
-  defineTaskApi,
+  type API_TYPE_REQUEST,
   RequestOptions,
   RequestProtocol,
+  defineTaskApi,
 } from '@dcloudio/uni-api'
 import { LINEFEED } from '@dcloudio/uni-shared'
-import { type RequestFail } from '@dcloudio/uni-app-x/types/uni'
+import type { RequestFail } from '@dcloudio/uni-app-x/types/uni'
 
 export const request = defineTaskApi<API_TYPE_REQUEST>(
   API_REQUEST,
@@ -27,7 +27,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
     if (__X__) {
       timeout = timeout == null ? __uniConfig.networkTimeout.request : timeout
     }
-    let body = null
+    let body: string | ArrayBuffer | null = null
     // 根据请求类型处理数据
     const contentType = normalizeContentType(header)
     if (method !== 'GET') {
@@ -41,7 +41,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
             body = data!.toString()
           }
         } else if (contentType === 'urlencoded') {
-          const bodyArray = []
+          const bodyArray: string[] = []
           for (const key in data) {
             if (hasOwn(data, key)) {
               bodyArray.push(
@@ -77,7 +77,8 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       if (responseType === 'text' && dataType === 'json') {
         try {
           //#if _X_
-          res = new (globalThis as any).UTSJSONObject(JSON.parse(res))
+          // @ts-expect-error
+          res = UTS.JSON.parse(res)
           //#else
           res = JSON.parse(res)
           //#endif

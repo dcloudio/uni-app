@@ -71,10 +71,15 @@ function initHooks(options, instance, publicThis) {
         instance.__isVisible = true;
         // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
         try {
-            invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery);
+            const query = instance.attrs.__pageQuery;
+            if ('app' === 'app' && false) ;
+            invokeHook(publicThis, ON_LOAD, query);
             delete instance.attrs.__pageQuery;
-            if (((_a = publicThis.$page) === null || _a === void 0 ? void 0 : _a.openType) !== 'preloadPage') {
-                invokeHook(publicThis, ON_SHOW);
+            // iOS-X 与安卓一致使用页面 onShow 时机
+            if ('app' !== 'app' || !false) {
+                if (((_a = publicThis.$page) === null || _a === void 0 ? void 0 : _a.openType) !== 'preloadPage') {
+                    invokeHook(publicThis, ON_SHOW);
+                }
             }
         }
         catch (e) {

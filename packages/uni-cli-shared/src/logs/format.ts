@@ -4,12 +4,12 @@ import { isString } from '@vue/shared'
 import { isInHBuilderX, runByHBuilderX } from '../hbx/env'
 import { moduleAliasFormatter } from '../hbx/alias'
 import {
+  errorFormatter,
   h5ServeFormatter,
   removeInfoFormatter,
   removeWarnFormatter,
-  errorFormatter,
 } from '../hbx/log'
-import { LogErrorOptions, LogOptions } from 'vite'
+import type { LogErrorOptions, LogOptions } from 'vite'
 
 export interface Formatter<T extends LogOptions = LogOptions> {
   test: (msg: string, options?: T) => boolean

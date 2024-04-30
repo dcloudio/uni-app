@@ -1,5 +1,5 @@
 import { runByHBuilderX } from '../hbx/env'
-import { parseManifestJsonOnce, getPlatformManifestJsonOnce } from '../json'
+import { getPlatformManifestJsonOnce, parseManifestJsonOnce } from '../json'
 
 export function initDefine(stringifyBoolean: boolean = false) {
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)

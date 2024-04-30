@@ -1,6 +1,6 @@
 import {
   API_GET_SYSTEM_SETTING,
-  API_TYPE_GET_SYSTEM_SETTING,
+  type API_TYPE_GET_SYSTEM_SETTING,
   defineSyncApi,
 } from '@dcloudio/uni-api'
 

@@ -1,8 +1,8 @@
 import { extend } from '@vue/shared'
 import {
+  type CompilerOptions,
   baseParse as parse,
   transform,
-  CompilerOptions,
   transformElement,
 } from '@vue/compiler-core'
 import { ErrorCodes } from '../../../src/plugins/android/uvue/compiler/errors'

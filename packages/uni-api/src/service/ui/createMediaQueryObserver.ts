@@ -1,4 +1,4 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { isFunction } from '@vue/shared'
 import { resolveComponentInstance } from '@dcloudio/uni-shared'
 import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'

@@ -1,9 +1,9 @@
-import {
-  ComponentOptions,
+import type {
   ComponentInternalInstance,
+  ComponentOptions,
   ComponentPublicInstance,
 } from 'vue'
-// @ts-ignore
+// @ts-expect-error
 import { injectHook } from 'vue'
 import { initHooks } from './hooks'
 import { initRenderjs } from './renderjs'

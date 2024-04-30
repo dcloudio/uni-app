@@ -1,0 +1,23 @@
+{
+  "private": true,
+  "name": "@dcloudio/uni-runtime",
+  "version": "3.0.0-alpha-4010420240429001",
+  "description": "@dcloudio/uni-runtime",
+  "sideEffects": false,
+  "module": "src/index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dcloudio/uni-app.git",
+    "directory": "packages/uni-runtime"
+  },
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/dcloudio/uni-app/issues"
+  },
+  "dependencies": {
+    "@vue/shared": "3.4.21"
+  },
+  "devDependencies": {
+    "@dcloudio/uni-shared": "3.0.0-alpha-4010420240429001"
+  }
+}

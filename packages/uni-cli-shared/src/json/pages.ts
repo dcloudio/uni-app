@@ -2,12 +2,12 @@ import fs from 'fs'
 import path from 'path'
 import { extend, hasOwn, isArray, isPlainObject } from '@vue/shared'
 import {
-  addLeadingSlash,
-  once,
   TABBAR_HEIGHT,
+  addLeadingSlash,
   normalizeTitleColor,
+  once,
 } from '@dcloudio/uni-shared'
-import { removeExt, normalizePath } from '../utils'
+import { normalizePath, removeExt } from '../utils'
 import { parseJson } from './json'
 import { isVueSfcFile } from '../vue/utils'
 import { parseVueRequest } from '../vite'

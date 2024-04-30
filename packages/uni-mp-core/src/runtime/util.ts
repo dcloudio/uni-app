@@ -1,12 +1,12 @@
-import { hasOwn, isArray, hyphenate } from '@vue/shared'
+import { hasOwn, hyphenate, isArray } from '@vue/shared'
 import {
-  ComponentOptions,
-  ComponentInternalInstance,
-  ComponentPublicInstance,
+  type ComponentInternalInstance,
+  type ComponentOptions,
+  type ComponentPublicInstance,
   nextTick,
 } from 'vue'
 
-import { MPComponentInstance, MPComponentOptions } from './component'
+import type { MPComponentInstance, MPComponentOptions } from './component'
 
 export function initVueIds(
   vueIds: string | undefined,

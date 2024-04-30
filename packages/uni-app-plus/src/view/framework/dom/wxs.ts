@@ -1,16 +1,16 @@
 import { isArray, isFunction } from '@vue/shared'
 import {
+  WXS_MODULES,
+  WXS_PROTOCOL,
   formatLog,
   getValueByDataPath,
-  WXS_PROTOCOL,
-  WXS_MODULES,
 } from '@dcloudio/uni-shared'
 import {
   createComponentDescriptorVm,
   getComponentDescriptor,
 } from '@dcloudio/uni-core'
-import { UniCustomElement } from './components'
-import { UniNode } from './elements/UniNode'
+import type { UniCustomElement } from './components'
+import type { UniNode } from './elements/UniNode'
 
 declare global {
   interface Window {

@@ -11,15 +11,15 @@ type uts2js = (options: UTS2JavaScriptOptions) => import('rollup').Plugin[]
 
 export const uts2js: uts2js = (options) => {
   const inputDir = options.inputDir
-  // TODO 目前开发阶段禁用缓存，禁用check
+  const isWeb = process.env.UNI_UTS_PLATFORM === 'web'
   extend(options, {
     cwd: inputDir,
-    clean: true,
-    check: process.env.UNI_UTS_PLATFORM === 'web',
+    check: isWeb,
+    noCache: process.env.NODE_ENV === 'production' || isWeb,
     tsconfigOverride: {
       compilerOptions: {
         rootDir: inputDir,
-        sourceMap: process.env.UNI_UTS_PLATFORM === 'web',
+        sourceMap: isWeb,
         ignoreDeprecations: '5.0',
         preserveValueImports: true,
         importsNotUsedAsValues: 'preserve',
@@ -34,7 +34,7 @@ export const uts2js: uts2js = (options) => {
     options.tsconfigOverride.compilerOptions = {}
   }
   options.tsconfigOverride.compilerOptions.sourceMap =
-    process.env.UNI_UTS_PLATFORM === 'web'
+    process.env.NODE_ENV === 'development'
   if (!options.tsconfig) {
     if (isInHBuilderX()) {
       options.tsconfig = path.resolve(
@@ -81,9 +81,7 @@ export const uts2js: uts2js = (options) => {
       typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
     })
   }
-  // @ts-expect-error
   if (isFunction(globalThis.uts2js)) {
-    // @ts-expect-error
     return globalThis.uts2js(options)
   }
   return require('../../../lib/javascript').uts2js(options)

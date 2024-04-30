@@ -60,7 +60,7 @@ function addEventListener(pageId: string, callback: CallBack) {
       globalEvent.addEventListener('plusMessage', onPlusMessage)
     }
   } else {
-    // @ts-ignore
+    // @ts-expect-error
     window.__plusMessage = onPlusMessage
   }
   callbacks[pageId] = callback

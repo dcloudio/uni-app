@@ -1,10 +1,10 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import {
   API_NAVIGATE_BACK,
-  API_TYPE_NAVIGATE_BACK,
-  defineAsyncApi,
+  type API_TYPE_NAVIGATE_BACK,
   NavigateBackOptions,
   NavigateBackProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import {
   getCurrentPage,

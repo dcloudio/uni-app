@@ -2,21 +2,21 @@ import { extend, isArray } from '@vue/shared'
 import { join, relative } from 'path'
 
 import {
-  runKotlinProd,
-  runKotlinDev,
-  resolveAndroidDepFiles,
   checkAndroidVersionTips,
+  resolveAndroidDepFiles,
+  runKotlinDev,
+  runKotlinProd,
 } from './kotlin'
 import {
-  runSwiftProd,
-  runSwiftDev,
-  resolveIOSDepFiles,
   checkIOSVersionTips,
+  resolveIOSDepFiles,
+  runSwiftDev,
+  runSwiftProd,
 } from './swift'
 
 import {
   FORMATS,
-  GenProxyCodeOptions,
+  type GenProxyCodeOptions,
   genProxyCode,
   resolvePlatformIndex,
   resolvePlatformIndexFilename,
@@ -47,7 +47,7 @@ import {
 } from './manifest'
 import { cacheTips } from './manifest/utils'
 import { compileEncrypt, isEncrypt } from './encrypt'
-import { UTSOutputOptions } from '@dcloudio/uts'
+import type { UTSOutputOptions } from '@dcloudio/uts'
 
 export * from './tsc'
 
@@ -58,11 +58,15 @@ export const sourcemap = {
 
 export { compileApp, CompileAppOptions } from './uvue/index'
 
-export { parseInjectModules } from './utils'
+export { parseInjectModules, parseExtApiProviders } from './utils'
 
 export * from './sourceMap'
 
-export { parseUTSKotlinRuntimeStacktrace } from './stacktrace'
+export {
+  parseUTSRuntimeStacktrace,
+  parseUTSKotlinRuntimeStacktrace,
+  parseUTSJavaScriptRuntimeStacktrace,
+} from './stacktrace'
 
 export { compile as toKotlin } from './kotlin'
 export { compile as toSwift } from './swift'
@@ -111,6 +115,7 @@ interface CompilerOptions {
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
   sourceMap?: boolean
+  uni_modules?: string[]
 }
 
 // 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
@@ -124,6 +129,7 @@ export async function compile(
     transform,
     sourceMap,
     isSingleThread,
+    uni_modules,
   }: CompilerOptions = {
     isX: false,
     isPlugin: true,
@@ -182,10 +188,7 @@ export async function compile(
   let errMsg = ''
   if (process.env.NODE_ENV !== 'development') {
     // uts 插件 wgt 模式，本地资源模式不需要编译
-    if (
-      process.env.UNI_APP_PRODUCTION_TYPE === 'WGT' ||
-      process.env.UNI_APP_PRODUCTION_TYPE === 'LOCAL_PACKAGING'
-    ) {
+    if (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT') {
       return createResult(outputPluginDir, errMsg, code, deps, meta)
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
@@ -210,6 +213,7 @@ export async function compile(
           transform,
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.androidHookClass || '',
+          uniModules: uni_modules || [],
         })
         if (cacheDir) {
           // 存储 sourcemap
@@ -246,11 +250,12 @@ export async function compile(
           pluginId: pkg.id,
           isX,
           isSingleThread,
-          isPlugin,
+          isPlugin: true, // iOS 目前仅有 plugin 模式
           extApis,
           transform,
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.iOSHookClass || '',
+          uniModules: uni_modules || [],
         })
         if (cacheDir) {
           storeSourceMap(
@@ -402,6 +407,7 @@ export async function compile(
           extApis,
           transform,
           sourceMap: !!sourceMap,
+          uniModules: uni_modules || [],
         })
         if (res) {
           if (isArray(res.deps) && res.deps.length) {

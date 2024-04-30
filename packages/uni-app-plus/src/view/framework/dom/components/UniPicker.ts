@@ -1,4 +1,4 @@
-import { UniNodeJSON } from '@dcloudio/uni-shared'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
 import Picker from '../../../components/picker'
 import { UniComponent } from './UniComponent'
 

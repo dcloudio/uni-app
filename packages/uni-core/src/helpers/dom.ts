@@ -85,9 +85,6 @@ export function removeStyle(id: string) {
   let style = sheetsMap.get(id)
   if (style) {
     if (style instanceof CSSStyleSheet) {
-      // @ts-ignore
-      const index = document.adoptedStyleSheets.indexOf(style)
-      // @ts-ignore
       document.adoptedStyleSheets = document.adoptedStyleSheets.filter(
         (s: CSSStyleSheet) => s !== style
       )

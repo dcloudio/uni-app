@@ -1,5 +1,5 @@
 import { EventChannel } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
 export function getOpenerEventChannel(
   this: ComponentPublicInstance

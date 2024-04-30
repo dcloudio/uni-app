@@ -1,25 +1,25 @@
 import {
   API_SWITCH_TAB,
-  API_TYPE_SWITCH_TAB,
-  defineAsyncApi,
-  DefineAsyncApiFn,
+  type API_TYPE_SWITCH_TAB,
+  type DefineAsyncApiFn,
   SwitchTabOptions,
   SwitchTabProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { invokeHook } from '@dcloudio/uni-core'
 import {
-  addLeadingSlash,
   ON_HIDE,
   ON_SHOW,
+  addLeadingSlash,
   parseUrl,
 } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { ANI_CLOSE, ANI_DURATION } from '../../constants'
 import tabBar from '../../framework/app/tabBar'
 import { registerPage } from '../../framework/page'
 import { getAllPages, removePage } from '../../framework/page/getCurrentPages'
 import { setStatusBarStyle } from '../../statusBar'
-import { closePage, navigate, RouteOptions } from './utils'
+import { type RouteOptions, closePage, navigate } from './utils'
 import { closeWebview, showWebview } from './webview'
 
 export const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (

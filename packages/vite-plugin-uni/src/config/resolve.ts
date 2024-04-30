@@ -1,19 +1,23 @@
 import path from 'path'
-import { UserConfig, ResolverFunction, Alias } from 'vite'
+import type { Alias, ResolverFunction, UserConfig } from 'vite'
 import {
-  isWindows,
   extensions,
-  uni_app_x_extensions,
+  isWindows,
   normalizePath,
   requireResolve,
-  resolveUTSModule,
   resolveUTSAppModule,
+  resolveUTSModule,
+  uni_app_x_extensions,
 } from '@dcloudio/uni-cli-shared'
-import { VitePluginUniResolvedOptions } from '..'
+import type { VitePluginUniResolvedOptions } from '..'
 
 function resolveUTSModuleProxyFile(id: string, importer: string) {
   const file = resolveUTSAppModule(id, importer)
   if (file) {
+    // app-js 会返回完整路径，不需要 uts-proxy
+    if (file.endsWith('.uts')) {
+      return file
+    }
     return file + '?uts-proxy'
   }
 }
@@ -41,19 +45,11 @@ export function createResolve(
   options: VitePluginUniResolvedOptions,
   _config: UserConfig
 ): UserConfig['resolve'] {
-  const alias: Alias[] =
-    process.env.UNI_APP_X === 'true'
-      ? [
-          {
-            find: 'tslib',
-            replacement: '\0tslib.js',
-          },
-        ]
-      : []
+  const alias: Alias[] = []
   return {
     // 必须使用alias解析，插件定制的resolveId，不会被应用到css等预处理器中
     alias: [
-      // @ts-ignore because @rollup/plugin-alias' type doesn't allow function
+      // because @rollup/plugin-alias' type doesn't allow function
       // replacement, but its implementation does work with function values.
       {
         find: /^(~@|@)\/(.*)/,

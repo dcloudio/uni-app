@@ -1,5 +1,5 @@
 import { hasOwn, isPlainObject, toRawType } from '@vue/shared'
-import { elemInArray, HTTP_METHODS } from '../../helpers/protocol'
+import { HTTP_METHODS, elemInArray } from '../../helpers/protocol'
 
 export const API_REQUEST = 'request'
 export type API_TYPE_REQUEST = typeof uni.request

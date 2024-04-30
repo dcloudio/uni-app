@@ -2,7 +2,10 @@ import { extend } from '@vue/shared'
 import type { SFCScriptCompileOptions } from '@vue/compiler-sfc'
 import { uniViteInjectPlugin } from '@dcloudio/uni-cli-shared'
 
-import { uniMiniProgramPlugin, UniMiniProgramPluginOptions } from './plugin'
+import {
+  type UniMiniProgramPluginOptions,
+  uniMiniProgramPlugin,
+} from './plugin'
 import { uniUsingComponentsPlugin } from './plugins/usingComponents'
 import { uniMainJsPlugin } from './plugins/mainJs'
 import { uniManifestJsonPlugin } from './plugins/manifestJson'

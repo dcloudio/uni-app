@@ -1,11 +1,11 @@
 import { TEMP_PATH } from '../constants'
 import { hasOwn, isFunction } from '@vue/shared'
 import {
-  defineTaskApi,
   API_DOWNLOAD_FILE,
-  API_TYPE_DOWNLOAD_FILE,
-  DownloadFileProtocol,
+  type API_TYPE_DOWNLOAD_FILE,
   DownloadFileOptions,
+  DownloadFileProtocol,
+  defineTaskApi,
 } from '@dcloudio/uni-api'
 
 type Downloader = ReturnType<typeof plus.downloader.createDownload>

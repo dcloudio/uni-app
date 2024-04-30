@@ -1,14 +1,14 @@
 import path from 'path'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 
 import {
-  clearMiniProgramTemplateFilter,
   EXTNAME_VUE,
   X_EXTNAME_VUE,
+  clearMiniProgramTemplateFilter,
   normalizeMiniProgramFilename,
+  parseVueCode,
   parseVueRequest,
   removeExt,
-  parseVueCode,
 } from '@dcloudio/uni-cli-shared'
 
 export function uniPreVuePlugin(): Plugin {

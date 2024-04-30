@@ -1,9 +1,14 @@
 import { isPromise } from '@vue/shared'
-import { ComponentPublicInstance } from 'vue'
-import { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { ComponentPublicInstance } from 'vue'
+import type { IPage } from '@dcloudio/uni-app-x/types/native'
+import type { EventChannel, UniNode } from '@dcloudio/uni-shared'
 import {
-  EventChannel,
+  ON_PAGE_SCROLL,
+  ON_PULL_DOWN_REFRESH,
+  ON_REACH_BOTTOM,
   ON_READY,
+  ON_RESIZE,
+  ON_SHOW,
   ON_UNLOAD,
   formatLog,
 } from '@dcloudio/uni-shared'
@@ -17,8 +22,8 @@ import { genWebviewId } from '../../../service/framework/webview/utils'
 import { initRouteOptions } from '../../../service/framework/page/routeOptions'
 import { pagesMap } from '../../../service/framework/page/define'
 import { getVueApp } from '../../../service/framework/app/vueApp'
-import { VuePageComponent } from '../../../service/framework/page/define'
-import { getNativeApp } from '../app'
+import type { VuePageComponent } from '../../../service/framework/page/define'
+import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 
 type PageNodeOptions = {}
@@ -34,46 +39,75 @@ export interface RegisterPageOptions {
 }
 
 function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
-  const keys = [
+  const style = new Map<string, any | null>()
+  const routeMeta = route.meta
+  const routeKeys = [
+    'id',
+    'route',
+    'i18n',
+    'isQuit',
+    'isEntry',
+    'isTabBar',
+    'tabBarIndex',
+    'tabBarText',
+    'windowTop',
+    'topWindow',
+    'leftWindow',
+    'rightWindow',
+    'eventChannel',
+  ]
+  // navigationBar 与安卓不同需要特殊处理
+  const navKeys = [
     'navigationBarTitleText',
     'navigationBarBackgroundColor',
     'navigationBarTextStyle',
     'navigationStyle',
   ]
-  const style = new Map<string, any | null>()
-  const routeMeta = route.meta
-  keys.forEach((key) => {
-    if (key in routeMeta) {
+  Object.keys(routeMeta).forEach((key) => {
+    // 使用黑名单机制兼容后续新增的属性
+    if (!routeKeys.includes(key) && !navKeys.includes(key)) {
       style.set(key, (routeMeta as Record<string, any>)[key])
     }
   })
-  if (
-    style.size &&
-    style.get('navigationBarTextStyle') !== 'custom' &&
-    !routeMeta.isQuit
-  ) {
-    style.set('navigationBarAutoBackButton', true)
+  const navigationBar: Record<string, unknown> = {}
+  navKeys.forEach((key) => {
+    if (key in routeMeta) {
+      navigationBar[key] = (routeMeta as Record<string, any>)[key]
+    }
+  })
+  if (Object.keys(navigationBar).length) {
+    style.set('navigationBar', navigationBar)
+    if (
+      navigationBar.navigationBarTextStyle !== 'custom' &&
+      !routeMeta.isQuit &&
+      routeMeta.route !== __uniConfig.realEntryPagePath
+    ) {
+      navigationBar['navigationBarAutoBackButton'] = true
+    }
   }
   return style
 }
 
-export function registerPage({
-  url,
-  path,
-  query,
-  openType,
-  webview,
-  nvuePageVm,
-  eventChannel,
-}: RegisterPageOptions) {
+export function registerPage(
+  {
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    nvuePageVm,
+    eventChannel,
+  }: RegisterPageOptions,
+  onCreated?: (page: IPage) => void,
+  delay = 0
+) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
   const pageStyle = parsePageStyle(routeOptions)
-  const nativePage = getNativeApp().pageManager.createPage(
-    url,
-    id.toString(),
-    pageStyle
-  )
+  const nativePage = getPageManager().createPage(url, id.toString(), pageStyle)
+  if (onCreated) {
+    onCreated(nativePage)
+  }
   routeOptions.meta.id = parseInt(nativePage.pageId)
   if (__DEV__) {
     console.log(formatLog('registerPage', path, nativePage.pageId))
@@ -91,30 +125,58 @@ export function registerPage({
     // TODO ThemeMode
     'light'
   )
-  const page = createVuePage(
-    id,
-    route,
-    query,
-    pageInstance,
-    {},
-    nativePage
-  ) as ComponentPublicInstance
-  nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
-    uni.navigateBack({
-      from: 'popGesture',
-      fail(e) {
-        if (e.errMsg.endsWith('cancel')) {
-          nativePage.show()
-        }
-      },
-    } as UniApp.NavigateBackOptions)
-  })
-  nativePage.addPageEventListener(ON_UNLOAD, (_) => {
-    invokeHook(page, ON_UNLOAD)
-  })
-  nativePage.addPageEventListener(ON_READY, (_) => {
-    invokeHook(page, ON_READY)
-  })
+  function fn() {
+    const page = createVuePage(
+      id,
+      route,
+      query,
+      pageInstance,
+      {},
+      nativePage
+    ) as ComponentPublicInstance
+
+    nativePage.addPageEventListener(ON_SHOW, (_) => {
+      invokeHook(page, ON_SHOW)
+    })
+    nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+      uni.navigateBack({
+        from: 'popGesture',
+        fail(e) {
+          if (e.errMsg.endsWith('cancel')) {
+            nativePage.show()
+          }
+        },
+      } as UniApp.NavigateBackOptions)
+    })
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD)
+    })
+    nativePage.addPageEventListener(ON_READY, (_) => {
+      invokeHook(page, ON_READY)
+    })
+
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, arg)
+    })
+
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH)
+    })
+
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM)
+    })
+
+    nativePage.addPageEventListener(ON_RESIZE, (_) => {
+      invokeHook(page, ON_RESIZE)
+    })
+    nativePage.startRender()
+  }
+  if (delay) {
+    setTimeout(fn, delay)
+  } else {
+    fn()
+  }
   return nativePage
 }
 
@@ -138,8 +200,7 @@ function createVuePage(
         __pageQuery,
         __pageInstance,
       },
-      // @ts-ignore
-      pageNode
+      pageNode as unknown as UniNode
     )
   if (isPromise(component)) {
     return component.then((component) => mountPage(component))

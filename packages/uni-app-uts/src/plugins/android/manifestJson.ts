@@ -9,7 +9,7 @@ import {
   parseUniXSplashScreen,
 } from '@dcloudio/uni-cli-shared'
 import { ENTRY_FILENAME, stringifyMap } from './utils'
-import { isManifest } from '../utils'
+import { isManifest, normalizeManifestJson } from '../utils'
 
 let outputManifestJson: Record<string, any> | undefined = undefined
 
@@ -89,18 +89,7 @@ export class UniAppConfig extends AppConfig {
       }
     },
     writeBundle() {
-      const app = manifestJson.app || {}
-      outputManifestJson = {
-        id: manifestJson.appid || '',
-        name: manifestJson.name || '',
-        description: manifestJson.description || '',
-        version: {
-          name: manifestJson.versionName || '',
-          code: manifestJson.versionCode || '',
-        },
-        'uni-app-x': manifestJson['uni-app-x'] || {},
-        app,
-      }
+      outputManifestJson = normalizeManifestJson(manifestJson)
       if (process.env.NODE_ENV !== 'production') {
         // 发行模式下，需要等解析ext-api模块
         fs.outputFileSync(

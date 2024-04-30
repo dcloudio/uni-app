@@ -1,6 +1,6 @@
-import { extend, capitalize, camelize, hyphenate } from '@vue/shared'
+import { camelize, capitalize, extend, hyphenate } from '@vue/shared'
 import { formatLog } from '../log'
-import { UniNode } from './Node'
+import type { UniNode } from './Node'
 
 export function normalizeEventType(
   type: string,

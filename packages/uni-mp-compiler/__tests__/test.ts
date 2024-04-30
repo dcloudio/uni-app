@@ -5,7 +5,7 @@ import {
   transformComponentLink,
 } from '@dcloudio/uni-cli-shared'
 import { compile } from '../src/index'
-import { CompilerOptions } from '../src/options'
+import type { CompilerOptions } from '../src/options'
 import { miniProgram } from './testUtils'
 
 function assert(

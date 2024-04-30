@@ -31,8 +31,8 @@ import type {
   VariableDeclarationKind,
 } from '../types/types'
 import {
-  createResolveTypeReferenceName,
   ERR_MSG_PLACEHOLDER,
+  createResolveTypeReferenceName,
   isColorSupported,
   parseKotlinPackageWithPluginId,
   relative,

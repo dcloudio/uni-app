@@ -1,6 +1,6 @@
 import { isElementNode } from '@dcloudio/uni-cli-shared'
-import { ElementTypes, findDir, NodeTypes } from '@vue/compiler-core'
-import { NodeTransform } from '../transform'
+import { ElementTypes, NodeTypes, findDir } from '@vue/compiler-core'
+import type { NodeTransform } from '../transform'
 
 export const transformText: NodeTransform = (node, _) => {
   if (!isElementNode(node)) {

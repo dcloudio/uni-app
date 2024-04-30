@@ -1,4 +1,4 @@
-import postcss, { ProcessOptions } from 'postcss'
+import postcss, { type ProcessOptions } from 'postcss'
 
 import scopedPlugin from '../src/postcss/plugins/stylePluginScoped'
 

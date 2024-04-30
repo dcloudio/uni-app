@@ -1,4 +1,4 @@
-import fs, { PathLike } from 'fs'
+import fs, { type PathLike } from 'fs'
 import path from 'path'
 import {
   EXTNAME_VUE,
@@ -7,14 +7,13 @@ import {
   normalizePath,
   resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
-import { SFCParseOptions } from '@vue/compiler-sfc'
-import { Plugin } from 'vite'
+import type { SFCParseOptions } from '@vue/compiler-sfc'
+import type { Plugin } from 'vite'
 import { isString } from '@vue/shared'
 /**
  * TODO 临时重写，解决 @vitejs/plugin-vue 的 Bug
  */
 export function rewriteCompilerSfcParse() {
-  // @ts-ignore
   const compilerSfc = require(resolveBuiltIn('@vue/compiler-sfc'))
   const { parse } = compilerSfc
   let extname_vue =

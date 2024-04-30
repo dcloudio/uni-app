@@ -1,22 +1,22 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { onMounted, getCurrentInstance, computed } from 'vue'
+import {
+  onMounted,
+  getCurrentInstance,
+  computed,
+  ComponentInternalInstance,
+} from 'vue'
 import {
   $dispatch,
   BUTTON_COMPONENT_NAME,
   buttonProps,
   hoverStyles,
-  styleList,
+  // styleList,
   UNI_BUTTON_ELEMENT_NAME,
   UniButtonElement,
 } from './model'
+import { styleList } from './style'
 const FORM_TYPES = ['submit', 'reset']
-
-// todo
-// 1 clearTimeout 不存在
-// 2  动态设置 updataStyle 不生效，hover-class 能读取，赋值不生效
-// 3 touchmove 的 event 没有 touches 属性
-// 4 后续表格设定 reset/submit 时候验证是否生效
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: BUTTON_COMPONENT_NAME,
@@ -27,10 +27,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   },
   // styles: buttonStyle,
   props: buttonProps,
-  emits: ['click'],
+  // emits: ['click'],
   setup(props, { emit, slots }) {
     // data
-    let $buttonEl = null as UniElement | null
+    let $buttonEl = null as UniButtonElement | null
     let $originHoverStyle = new Map<string, any | null>()
     let $hoverStyle = new Map<string, any | null>()
     let $hoverClassStyle = new Map<string, any | null>()
@@ -39,9 +39,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     let $hoverTouch = false
     let $hovering = false
 
-    console.log($hoverStartTimer, $hoverStayTimer)
+    let instance: ComponentInternalInstance | null
 
-    const btnCls = computed((): string => {
+    const btnCls = computed(() => {
       let cl = 'ub-' + props.type
       if (props.disabled) {
         cl += '-disabled'
@@ -52,7 +52,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (props.size == 'mini') {
         cl += ' ub-mini'
       }
-      return cl
+      return cl as keyof typeof styleList
     })
 
     // 解析传入的hoverClass
@@ -61,28 +61,35 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       if (cl == 'button-hover' || cl.length == 0) {
         return
       }
-      const styles = ($buttonEl as any)!.ext.get('styles') as {
+      const styles = $buttonEl!.ext.get('styles') as {
         [key: string]: any
       }
       if (styles != null) {
         // 和 android 不同，这里是一个普通对象
-        let style = styles[cl]
+        // 用户填写一个不存在的 class name 兜底 {}
+        let style = styles[cl] ?? {}
+        // 先转成 Map 和 Android 一致
+        style = new Map(Object.entries(style))
+
         if (style != null) {
-          Object.keys(style).forEach((key) => {
-            $hoverClassStyle.set(key, style[key])
+          style.forEach((val: Map<string, any | null>) => {
+            // $hoverClassStyle.set(key, style[key])
+            val = new Map(Object.entries(val))
+            $hoverClassStyle = val
           })
         }
       }
     }
 
     onMounted(() => {
-      const instance = getCurrentInstance()
-      if (instance) {
-        instance.$waitNativeRender(() => {
-          $buttonEl = instance.proxy?.$el as UniElement
-          parseHoverClass()
-        })
-      }
+      instance = getCurrentInstance()
+
+      instance?.$waitNativeRender(() => {
+        if (!instance) return
+        // $buttonEl = instance.proxy?.$el as UniElement
+        $buttonEl = instance.proxy?.$el as UniButtonElement
+        parseHoverClass()
+      })
     })
 
     function setHoverStyle() {
@@ -99,6 +106,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const currentStyle = $buttonEl!.style
       $hoverStyle = new Map<string, any | null>()
       $originHoverStyle = new Map<string, any | null>()
+
       hoverStyle.forEach((val, key) => {
         $hoverStyle.set(key, val)
         // 记录hover前对应的默认样式
@@ -149,7 +157,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     function touchend() {
       $hoverTouch = false
       if ($hovering) {
-        // clearTimeout($hoverStayTimer as NodeJS.Timeout)
+        clearTimeout($hoverStayTimer as NodeJS.Timeout)
         $hoverStayTimer = setTimeout(() => {
           $hovering = false
           clearHoverStyle()
@@ -162,48 +170,46 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       $hovering = false
       clearHoverStyle()
       updateStyle()
-      // clearTimeout($hoverStartTimer as NodeJS.Timeout)
+      clearTimeout($hoverStartTimer as NodeJS.Timeout)
     }
     function touchmove(event: TouchEvent) {
       if (props.disabled || props.hoverClass == 'none') {
         return
       }
       // 这里有问题
-      // const { clientX, clientY } = event.touches[0]
-      // changedTouches
-      // const { height, width, left, top } = $buttonEl!.getBoundingClientRect()
-      // const isMovedOutside =
-      //   clientX < left ||
-      //   clientX > left + width ||
-      //   clientY < top ||
-      //   clientY > top + height
-      // if (isMovedOutside) {
-      //   touchcancel()
-      // }
+      const { clientX, clientY } = event.touches[0]
+      const { height, width, left, top } = $buttonEl!.getBoundingClientRect()
+      const isMovedOutside =
+        clientX < left ||
+        clientX > left + width ||
+        clientY < top ||
+        clientY > top + height
+      if (isMovedOutside) {
+        touchcancel()
+      }
     }
 
     function _onClick($event: PointerEvent) {
       if (props.disabled) {
         return
       }
-      emit('click', $event)
+      // emit('click', $event)
 
       if (FORM_TYPES.indexOf(props.formType) > -1) {
-        const instance = getCurrentInstance()
-        const ctx = instance?.parent?.proxy
+        const ctx = instance?.proxy
         $dispatch(ctx, 'Form', props.formType)
       }
     }
 
     // ios 先使用 style 来完成样式
     const styleText = computed(() => {
-      const classList = btnCls.value.split(' ')
+      const classList = btnCls.value.split(' ') as Array<keyof typeof styleList>
 
       // .ub basic class style
-      const basicStyle = Object.assign({}, styleList.ub)
+      const basicStyle = Object.assign({}, styleList['ub'][''])
 
       classList.forEach((cl) => {
-        const style = (styleList as any)[cl]
+        const style = styleList[cl]?.[''] ?? {}
         if (style) {
           Object.assign(basicStyle, style)
         }

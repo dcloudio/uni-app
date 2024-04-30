@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-mp-compiler",
-  "version": "3.0.0-4000820240401001",
+  "version": "3.0.0-alpha-4010420240429001",
   "description": "uni-mp-compiler",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -19,18 +19,18 @@
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "dependencies": {
     "@babel/generator": "^7.20.5",
-    "@babel/parser": "^7.23.5",
+    "@babel/parser": "^7.23.9",
     "@babel/types": "^7.20.7",
-    "@dcloudio/uni-cli-shared": "3.0.0-4000820240401001",
-    "@dcloudio/uni-shared": "3.0.0-4000820240401001",
-    "@vue/compiler-core": "3.3.11",
-    "@vue/compiler-dom": "3.3.11",
-    "@vue/shared": "3.3.11",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4010420240429001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4010420240429001",
+    "@vue/compiler-core": "3.4.21",
+    "@vue/compiler-dom": "3.4.21",
+    "@vue/shared": "3.4.21",
     "estree-walker": "^2.0.2"
   },
   "devDependencies": {
     "@types/babel__generator": "^7.6.4",
-    "@vue/compiler-sfc": "3.3.11",
+    "@vue/compiler-sfc": "3.4.21",
     "source-map-js": "^1.0.2"
   }
 }

@@ -1,5 +1,5 @@
 import { useI18n } from '@dcloudio/uni-core'
-import { ON_WEBVIEW_READY, API_SET_LOCALE, VD_SYNC } from '../../../constants'
+import { API_SET_LOCALE, ON_WEBVIEW_READY, VD_SYNC } from '../../../constants'
 import { onVdSync } from '../dom'
 
 export function initSubscribeHandlers() {

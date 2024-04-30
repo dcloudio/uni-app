@@ -1,6 +1,6 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin, ResolvedConfig, UserConfig } from 'vite'
+import type { Plugin, ResolvedConfig, UserConfig } from 'vite'
 
 import { RENDERJS_MODULES, WXS_MODULES } from '@dcloudio/uni-shared'
 

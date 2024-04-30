@@ -1,48 +1,48 @@
 import {
-  Expression,
-  isObjectExpression,
-  isArrayExpression,
+  type ArrayExpression,
+  type Expression,
+  type Identifier,
+  type LogicalExpression,
+  type ObjectExpression,
+  type StringLiteral,
   arrayExpression,
-  stringLiteral,
-  ArrayExpression,
-  isStringLiteral,
-  identifier,
-  isSpreadElement,
-  ObjectExpression,
-  objectProperty,
-  booleanLiteral,
-  isObjectProperty,
-  Identifier,
-  isLiteral,
-  isIdentifier,
-  LogicalExpression,
-  logicalExpression,
-  StringLiteral,
-  parenthesizedExpression,
   binaryExpression,
+  booleanLiteral,
+  identifier,
+  isArrayExpression,
+  isIdentifier,
+  isLiteral,
+  isObjectExpression,
+  isObjectProperty,
   isPrivateName,
+  isSpreadElement,
+  isStringLiteral,
+  logicalExpression,
+  objectProperty,
+  parenthesizedExpression,
+  stringLiteral,
 } from '@babel/types'
 import {
-  DirectiveNode,
+  type AttributeNode,
+  type DirectiveNode,
+  type ExpressionNode,
   NodeTypes,
-  AttributeNode,
-  createSimpleExpression,
-  ExpressionNode,
+  type SourceLocation,
   createCompoundExpression,
-  SourceLocation,
+  createSimpleExpression,
 } from '@vue/compiler-core'
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
-import { parseExpr, isTrueExpr, isUndefined, parseStringLiteral } from '../ast'
+import { isTrueExpr, isUndefined, parseExpr, parseStringLiteral } from '../ast'
 import { genBabelExpr } from '../codegen'
 import { NORMALIZE_CLASS } from '../runtimeHelpers'
-import { TransformContext } from '../transform'
+import type { TransformContext } from '../transform'
 import {
+  VIRTUAL_HOST_CLASS,
   isStaticLiteral,
   parseExprWithRewrite,
   parseExprWithRewriteClass,
   rewriteExpression,
   rewriteSpreadElement,
-  VIRTUAL_HOST_CLASS,
 } from './utils'
 
 export function isClassBinding({ arg }: DirectiveNode) {

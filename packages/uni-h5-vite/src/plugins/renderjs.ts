@@ -1,6 +1,5 @@
 import debug from 'debug'
 import type { Plugin } from 'vite'
-import { rewriteDefault } from '@vue/compiler-sfc'
 
 import { missingModuleName, parseRenderjs } from '@dcloudio/uni-cli-shared'
 
@@ -18,7 +17,7 @@ export function uniRenderjsPlugin(): Plugin {
       if (!name) {
         this.error(missingModuleName(type, code))
       }
-      return `${rewriteDefault(
+      return `${require('@vue/compiler-sfc').rewriteDefault(
         code.replace(/module\.exports\s*=/, 'export default '),
         '_sfc_' + type
       )}

@@ -1450,9 +1450,8 @@ class Stat extends Report {
     this.request(options);
   }
 }
-var Stat$1 = Stat;
 
-const stat = Stat$1.getInstance();
+const stat = Stat.getInstance();
 
 // 用于判断是隐藏页面还是卸载页面
 let isHide = false;

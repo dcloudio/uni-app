@@ -6,6 +6,8 @@ import {
   definePlugin as definePluginOrigin,
   defineComponent as defineComponentOrigin,
   defineMixin as defineMixinOrigin,
+  defineModel as defineModelOrigin,
+  defineOptions as defineOptionsOrigin,
   createApp as createAppOrigin,
   createSSRApp as createSSRAppOrigin,
   withDirectives as withDirectivesOrigin,
@@ -121,6 +123,8 @@ declare global {
   const definePlugin: typeof definePluginOrigin
   const defineMixin: typeof defineMixinOrigin
   const defineComponent: typeof defineComponentOrigin
+  const defineModel: typeof defineModelOrigin
+  const defineOptions: typeof defineOptionsOrigin
   const createApp: typeof createAppOrigin
   const createSSRApp: typeof createSSRAppOrigin
   const withDirectives: typeof withDirectivesOrigin

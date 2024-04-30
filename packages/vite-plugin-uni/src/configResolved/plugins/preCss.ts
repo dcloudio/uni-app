@@ -1,12 +1,12 @@
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import { preJs, preNVueJs, withSourcemap } from '@dcloudio/uni-cli-shared'
 
-import { UniPluginFilterOptions } from '.'
+import type { UniPluginFilterOptions } from '.'
 
 const debugPre = debug('uni:pre-css')
-const debugPreTry = debug('uni:pre-css-try')
+// const debugPreTry = debug('uni:pre-css-try')
 const cssLangs = `\\.(css|less|sass|scss|styl|stylus|postcss)($|\\?)`
 const cssLangRE = new RegExp(cssLangs)
 /**
@@ -29,7 +29,7 @@ export function uniPreCssPlugin(
       if (!filter(id)) {
         return
       }
-      debugPreTry(id)
+      // debugPreTry(id)
       if (!code.includes('#endif')) {
         return
       }

@@ -1,38 +1,38 @@
 import {
-  isString,
-  hasOwn,
-  makeMap,
-  isGloballyWhitelisted,
   genPropsAccessExp,
+  hasOwn,
+  isGloballyWhitelisted,
+  isString,
+  makeMap,
 } from '@vue/shared'
-import {
-  Node,
-  Identifier,
+import type {
   AssignmentExpression,
+  Identifier,
+  Node,
   UpdateExpression,
 } from '@babel/types'
 import {
-  advancePositionWithClone,
   BindingTypes,
-  CompoundExpressionNode,
+  type CompoundExpressionNode,
   ConstantTypes,
+  ErrorCodes,
+  type ExpressionNode,
+  IS_REF,
+  NodeTypes,
+  type SimpleExpressionNode,
+  UNREF,
+  advancePositionWithClone,
   createCompilerError,
   createCompoundExpression,
   createSimpleExpression,
-  ErrorCodes,
-  ExpressionNode,
   isInDestructureAssignment,
   isSimpleIdentifier,
   isStaticProperty,
   isStaticPropertyKey,
-  IS_REF,
-  NodeTypes,
-  SimpleExpressionNode,
-  UNREF,
   walkIdentifiers,
 } from '@vue/compiler-core'
 import { parse } from '@babel/parser'
-import { NodeTransform, TransformContext } from '../transform'
+import type { NodeTransform, TransformContext } from '../transform'
 
 const isLiteralWhitelisted = /*#__PURE__*/ makeMap('true,false,null,this')
 

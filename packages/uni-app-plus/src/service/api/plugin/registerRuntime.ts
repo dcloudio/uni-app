@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 import { defineSyncApi } from '@dcloudio/uni-api'
-import { ComponentInternalInstance } from 'vue'
+import type { ComponentInternalInstance } from 'vue'
 
 interface JsRuntime {
   injectHook: (

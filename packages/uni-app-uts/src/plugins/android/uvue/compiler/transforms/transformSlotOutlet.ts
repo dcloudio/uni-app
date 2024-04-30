@@ -1,17 +1,19 @@
-import { NodeTransform, TransformContext } from '../transform'
+import type { NodeTransform, TransformContext } from '../transform'
 import {
-  NodeTypes,
-  CallExpression,
-  createCallExpression,
-  createFunctionExpression,
-  ExpressionNode,
-  SlotOutletNode,
-  buildProps,
-  createCompilerError,
+  type AttributeNode,
+  type CallExpression,
+  type DirectiveNode,
   ErrorCodes,
+  type ExpressionNode,
+  NodeTypes,
+  type SlotOutletNode,
+  buildProps,
+  createCallExpression,
+  createCompilerError,
+  createFunctionExpression,
 } from '@vue/compiler-core'
 import { isSlotOutlet, isStaticArgOf, isStaticExp } from '@vue/compiler-core'
-import { PropsExpression } from '@vue/compiler-core'
+import type { PropsExpression } from '@vue/compiler-core'
 import { RENDER_SLOT } from '../runtimeHelpers'
 import { camelize } from '@vue/shared'
 
@@ -66,7 +68,7 @@ export function processSlotOutlet(
   let slotName: string | ExpressionNode = `"default"`
   let slotProps: PropsExpression | undefined = undefined
 
-  const nonNameProps = []
+  const nonNameProps: Array<AttributeNode | DirectiveNode> = []
   for (let i = 0; i < node.props.length; i++) {
     const p = node.props[i]
     if (p.type === NodeTypes.ATTRIBUTE) {

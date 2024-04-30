@@ -3,7 +3,7 @@ import type {
   ComponentPublicInstance,
   RendererNode,
   VNode,
-} from '@vue/runtime-core'
+} from 'vue'
 import {
   camelize,
   hyphenate,
@@ -99,6 +99,8 @@ export function normalizeStyle(
       styleObject[key] = value
     })
     return vueNormalizeStyle(styleObject)
+  } else if (isString(value)) {
+    return parseStringStyle(value as string)
   } else if (isArray(value)) {
     const res: NormalizedStyle = {}
     for (let i = 0; i < value.length; i++) {

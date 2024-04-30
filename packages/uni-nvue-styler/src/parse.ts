@@ -1,9 +1,9 @@
 import { isString } from '@vue/shared'
-import postcss, { Message } from 'postcss'
+import postcss, { type Message } from 'postcss'
 import { objectifier } from './objectifier'
 import { expand } from './expand'
 import { normalize } from './normalize'
-import { NormalizeOptions } from './utils'
+import type { NormalizeOptions } from './utils'
 
 interface ParseOptions extends NormalizeOptions {
   filename?: string
@@ -50,7 +50,14 @@ export async function parse(input: string, options: ParseOptions = {}) {
       messages,
     }
   }
-  return { code: JSON.stringify(obj), messages }
+  let code = JSON.stringify(obj)
+  if (options.type === 'uvue') {
+    // TODO 暂时仅简易转换 CSS 变量
+    code = code.replace(/\:\s*"(.+?)"/g, function (str, p1) {
+      return isExpr(p1) ? `:${p1}` : str
+    })
+  }
+  return { code, messages }
 }
 
 function mapToInitStringChunk(
@@ -87,7 +94,7 @@ function mapToInitString(
   isRoot: boolean = false,
   mapOf = ''
 ): string {
-  const entries = []
+  const entries: string[] = []
   for (let [key, value] of map) {
     if (value instanceof Map) {
       // trim

@@ -1,6 +1,6 @@
 import { hyphenate, isArray, isString } from '@vue/shared'
 import { normalizeStyleName, normalizeStyleValue } from '../../../utils'
-import { UniCustomElement } from '../components'
+import type { UniCustomElement } from '../components'
 
 export function patchStyle(
   el: UniCustomElement,

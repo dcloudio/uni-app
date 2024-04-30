@@ -1,21 +1,21 @@
 import path from 'path'
 import type { Plugin } from 'vite'
-import { createFilter, FilterPattern } from '@rollup/pluginutils'
+import { type FilterPattern, createFilter } from '@rollup/pluginutils'
 import { camelize, capitalize } from '@vue/shared'
 
 import { COMPONENT_PREFIX, isBuiltInComponent } from '@dcloudio/uni-shared'
 import {
-  H5_COMPONENTS_STYLE_PATH,
   BASE_COMPONENTS_STYLE_PATH,
-  X_BASE_COMPONENTS_STYLE_PATH,
   COMPONENT_DEPS_CSS,
-  parseVueRequest,
+  EXTNAME_VUE_TEMPLATE,
+  H5_COMPONENTS_STYLE_PATH,
+  X_BASE_COMPONENTS_STYLE_PATH,
+  addImportDeclaration,
   buildInCssSet,
+  genResolveEasycomCode,
   isCombineBuiltInCss,
   matchEasycom,
-  addImportDeclaration,
-  genResolveEasycomCode,
-  EXTNAME_VUE_TEMPLATE,
+  parseVueRequest,
 } from '@dcloudio/uni-cli-shared'
 
 const H5_COMPONENTS_PATH = '@dcloudio/uni-h5'
@@ -42,6 +42,7 @@ const baseComponents = [
   'radio',
   'radio-group',
   'resize-sensor',
+  'refresher',
   'rich-text',
   'scroll-view',
   'slider',

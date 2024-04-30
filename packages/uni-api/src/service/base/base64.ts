@@ -1,15 +1,14 @@
-// @ts-ignore
-import { encode, decode } from '../../helpers/base64-arraybuffer'
+import { decode, encode } from '../../helpers/base64-arraybuffer'
 
 import { defineSyncApi } from '../../helpers/api'
 
 import {
-  Base64ToArrayBufferProtocol,
-  ArrayBufferToBase64Protocol,
-  API_BASE64_TO_ARRAY_BUFFER,
   API_ARRAY_BUFFER_TO_BASE64,
-  API_TYPE_BASE64_TO_ARRAY_BUFFER,
-  API_TYPE_ARRAY_BUFFER_TO_BASE64,
+  API_BASE64_TO_ARRAY_BUFFER,
+  type API_TYPE_ARRAY_BUFFER_TO_BASE64,
+  type API_TYPE_BASE64_TO_ARRAY_BUFFER,
+  ArrayBufferToBase64Protocol,
+  Base64ToArrayBufferProtocol,
 } from '../../protocols/base/base64'
 
 export const base64ToArrayBuffer =

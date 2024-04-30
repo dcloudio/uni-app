@@ -1,9 +1,9 @@
 import {
-  defineTaskApi,
+  type API_TYPE_UPLOAD_FILE,
   API_UPLOAD_FILE,
-  API_TYPE_UPLOAD_FILE,
-  UploadFileProtocol,
   UploadFileOptions,
+  UploadFileProtocol,
+  defineTaskApi,
 } from '@dcloudio/uni-api'
 import { hasOwn, isFunction } from '@vue/shared'
 import { getRealPath } from '@dcloudio/uni-platform'

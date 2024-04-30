@@ -1,32 +1,32 @@
 import {
-  ArrayExpression,
+  type ArrayExpression,
   BindingTypes,
-  CallExpression,
+  type CallExpression,
   CompilerDeprecationTypes,
-  ComponentNode,
+  type ComponentNode,
   ConstantTypes,
-  DirectiveArguments,
-  DirectiveNode,
-  ElementNode,
+  type DirectiveArguments,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
   ErrorCodes,
-  ExpressionNode,
+  type ExpressionNode,
   GUARD_REACTIVE_PROPS,
-  JSChildNode,
+  type JSChildNode,
   KEEP_ALIVE,
   MERGE_PROPS,
   NORMALIZE_CLASS,
   NORMALIZE_PROPS,
   NORMALIZE_STYLE,
   NodeTypes,
-  ObjectExpression,
-  Property,
+  type ObjectExpression,
+  type Property,
   RESOLVE_DYNAMIC_COMPONENT,
   SUSPENSE,
   TELEPORT,
-  TemplateTextChildNode,
+  type TemplateTextChildNode,
   UNREF,
-  VNodeCall,
+  type VNodeCall,
   buildSlots,
   checkCompatEnabled,
   createArrayExpression,
@@ -35,33 +35,32 @@ import {
   createObjectProperty,
   createSimpleExpression,
   createVNodeCall,
-  findDir,
   findProp,
   getConstantType,
-  getInnerRange,
   isCoreComponent,
   isStaticArgOf,
   isStaticExp,
   toValidAssetId,
 } from '@vue/compiler-core'
+import { getInnerRange } from '@dcloudio/uni-cli-shared'
 
-import { NodeTransform, TransformContext } from '../transform'
+import type { NodeTransform, TransformContext } from '../transform'
 
 import {
-  PatchFlags,
   PatchFlagNames,
-  isSymbol,
-  isOn,
-  isObject,
-  isReservedProp,
-  capitalize,
+  PatchFlags,
   camelize,
+  capitalize,
   isBuiltInDirective,
+  isObject,
+  isOn,
+  isReservedProp,
+  isSymbol,
 } from '@vue/shared'
 import { createCompilerError } from '../errors'
 import {
-  RESOLVE_DIRECTIVE,
   RESOLVE_COMPONENT,
+  RESOLVE_DIRECTIVE,
   TO_HANDLERS,
 } from '../runtimeHelpers'
 import { __BROWSER__, __COMPAT__, __DEV__ } from '../utils'
@@ -279,17 +278,17 @@ export function resolveComponentType(
   }
 
   // 1.5 v-is (TODO: remove in 3.4)
-  const isDir = !isExplicitDynamic && findDir(node, 'is')
-  if (isDir && isDir.exp) {
-    if (__DEV__) {
-      context.onWarn(
-        createCompilerError(ErrorCodes.DEPRECATION_V_IS, isDir.loc)
-      )
-    }
-    return createCallExpression(context.helper(RESOLVE_DYNAMIC_COMPONENT), [
-      isDir.exp,
-    ])
-  }
+  // const isDir = !isExplicitDynamic && findDir(node, 'is')
+  // if (isDir && isDir.exp) {
+  //   if (__DEV__) {
+  //     context.onWarn(
+  //       createCompilerError(ErrorCodes.DEPRECATION_V_IS, isDir.loc)
+  //     )
+  //   }
+  //   return createCallExpression(context.helper(RESOLVE_DYNAMIC_COMPONENT), [
+  //     isDir.exp,
+  //   ])
+  // }
 
   // 2. built-in components (Teleport, Transition, KeepAlive, Suspense...)
   const builtIn = isCoreComponent(tag) || context.isBuiltInComponent(tag)

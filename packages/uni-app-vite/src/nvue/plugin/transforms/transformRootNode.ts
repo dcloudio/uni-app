@@ -1,20 +1,22 @@
 import {
   createAttributeNode,
   createBindDirectiveNode,
+  normalizePath,
 } from '@dcloudio/uni-cli-shared'
 import {
-  AttributeNode,
-  createSimpleExpression,
-  DirectiveNode,
-  ElementNode,
+  type AttributeNode,
+  type DirectiveNode,
+  type ElementNode,
   ElementTypes,
-  locStub,
-  NodeTransform,
+  type NodeTransform,
   NodeTypes,
-  RootNode,
-  TemplateChildNode,
+  type RootNode,
+  type TemplateChildNode,
+  createSimpleExpression,
+  locStub,
 } from '@vue/compiler-core'
 import { addRenderWhole } from './transformRenderWhole'
+import { parseNVuePageOptions } from '../../plugins/pagesJson'
 const SCROLLER_COMPONENTS = [
   'list',
   'scroller',
@@ -27,17 +29,13 @@ export const transformRootNode: NodeTransform = (node, context) => {
   if (node.type !== NodeTypes.ROOT) {
     return
   }
-  const isPage = !!context.bindingMetadata.__pageOptions
-  if (!isPage) {
+  const pageOptions = parseNVuePageOptions(normalizePath(context.filename))
+  if (!pageOptions) {
     // 非页面组件，自动为根节点补充 render-whole
     return addRenderWhole(node)
   }
 
-  const { disableScroll, scrollIndicator } = context.bindingMetadata
-    .__pageOptions as unknown as {
-    disableScroll?: boolean
-    scrollIndicator?: 'none'
-  }
+  const { disableScroll, scrollIndicator } = pageOptions
   // 禁用滚动，或已包含滚动元素
   if (disableScroll || hasScrollerElement(node)) {
     return wrapperByView(node)

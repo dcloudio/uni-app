@@ -1,19 +1,19 @@
-import { DirectiveTransform, DirectiveTransformResult } from '../transform'
+import type { DirectiveTransform, DirectiveTransformResult } from '../transform'
 import {
+  type DirectiveNode,
+  ElementTypes,
+  type ExpressionNode,
+  NodeTypes,
+  type SimpleExpressionNode,
+  TO_HANDLER_KEY,
   createCompoundExpression,
   createObjectProperty,
   createSimpleExpression,
-  DirectiveNode,
-  ElementTypes,
-  ExpressionNode,
-  NodeTypes,
-  SimpleExpressionNode,
   hasScopeRef,
   isMemberExpression,
-  TO_HANDLER_KEY,
 } from '@vue/compiler-core'
 import { camelize, toHandlerKey } from '@vue/shared'
-import { createCompilerError, ErrorCodes } from '../errors'
+import { ErrorCodes, createCompilerError } from '../errors'
 import { processExpression } from './transformExpression'
 
 const fnExpRE =
@@ -81,10 +81,10 @@ export const transformOn: DirectiveTransform = (
   if (exp && !exp.content.trim()) {
     exp = undefined
   }
-  // @ts-ignore
+
   let shouldCache: boolean = context.cacheHandlers && !exp && !context.inVOnce
   if (exp) {
-    // @ts-ignore
+    // @ts-expect-error
     const isMemberExp = isMemberExpression(exp.content, context)
     const isInlineStatement = !(isMemberExp || fnExpRE.test(exp.content))
     const hasMultipleStatements = exp.content.includes(`;`)
@@ -102,7 +102,6 @@ export const transformOn: DirectiveTransform = (
       // with scope analysis, the function is hoistable if it has no reference
       // to scope variables.
       shouldCache =
-        // @ts-ignore
         context.cacheHandlers &&
         // unnecessary to cache inside v-once
         !context.inVOnce &&

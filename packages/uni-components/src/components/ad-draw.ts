@@ -15,7 +15,7 @@ export function getAdData(
   }
 
   // TODO 缺少语法提示 getDrawAds
-  // @ts-ignore
+  // @ts-expect-error
   plus.ad.getDrawAds(
     {
       adpid: String(adpid),

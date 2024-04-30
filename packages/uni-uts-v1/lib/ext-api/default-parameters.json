@@ -1,16 +1,23 @@
 {
-  "uni-route": {
-    "navigateBack": [
-      "null"
-    ]
-  },
-  "uni-ui": {
+  "uni-tabBar": {
     "hideTabBar": [
       "null"
     ],
     "showTabBar": [
       "null"
-    ],
+    ]
+  },
+  "uni-storage": {
+    "clearStorage": [
+      "null"
+    ]
+  },
+  "uni-route": {
+    "navigateBack": [
+      "null"
+    ]
+  },
+  "uni-pullDownRefresh": {
     "startPullDownRefresh": [
       "null"
     ]
@@ -19,10 +26,9 @@
     "removeInterceptor": [
       null,
       "null"
-    ]
-  },
-  "uni-storage": {
-    "clearStorage": [
+    ],
+    "$off": [
+      null,
       "null"
     ]
   },

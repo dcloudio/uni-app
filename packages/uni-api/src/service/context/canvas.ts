@@ -16,22 +16,22 @@ import {
   CanvasToTempFilePathProtocol,
 } from '../../protocols/context/canvas'
 
-import { defineSyncApi, defineAsyncApi } from '../../helpers/api'
+import { defineAsyncApi, defineSyncApi } from '../../helpers/api'
 
 import type {
-  API_TYPE_CREATE_CANVAS_CONTEXT,
   API_TYPE_CANVAS_GET_IMAGE_DATA,
   API_TYPE_CANVAS_PUT_IMAGE_DATA,
   API_TYPE_CANVAS_TO_TEMP_FILE_PATH,
+  API_TYPE_CREATE_CANVAS_CONTEXT,
 } from '@dcloudio/uni-api'
 
 import { hasOwn } from '@vue/shared'
 
-import { once, ON_ERROR } from '@dcloudio/uni-shared'
+import { ON_ERROR, once } from '@dcloudio/uni-shared'
 
-import { getPageIdByVm, getCurrentPageVm } from '@dcloudio/uni-core'
+import { getCurrentPageVm, getPageIdByVm } from '@dcloudio/uni-core'
 
-import { TEMP_PATH, inflateRaw, deflateRaw } from '@dcloudio/uni-platform'
+import { TEMP_PATH, deflateRaw, inflateRaw } from '@dcloudio/uni-platform'
 
 //#endregion
 
@@ -254,7 +254,7 @@ const predefinedColor = {
 function checkColor(e: string | undefined) {
   // 其他开发者适配的echarts会传入一个undefined到这里
   e = e || '#000000'
-  var t = null
+  let t: RegExpExecArray | null = null
   if ((t = /^#([0-9|A-F|a-f]{6})$/.exec(e)) != null) {
     const n = parseInt(t[1].slice(0, 2), 16)
     const o = parseInt(t[1].slice(2, 4), 16)
@@ -803,10 +803,10 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
         case 'fill':
         case 'stroke':
           return function () {
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method: method + 'Path',
-              // @ts-ignore
+              // @ts-expect-error
               data: [...this.path],
             })
           }
@@ -817,7 +817,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
             width: number,
             height: number
           ) {
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method: 'fillPath',
               data: [
@@ -835,7 +835,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
             width: number,
             height: number
           ) {
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method: 'strokePath',
               data: [
@@ -858,7 +858,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
             if (typeof maxWidth === 'number') {
               data.push(maxWidth)
             }
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method,
               data,
@@ -910,7 +910,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
                 : isNumber(sWidth) && isNumber(sHeight)
                 ? [imageResource, sx, sy, sWidth, sHeight]
                 : [imageResource, sx, sy]
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method,
               data,
@@ -918,7 +918,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
           }
         default:
           return function (...data: any) {
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method,
               data,
@@ -935,13 +935,13 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
         case 'setStrokeStyle':
           return function (color: string | Data) {
             if (typeof color !== 'object') {
-              // @ts-ignore
+              // @ts-expect-error
               this.actions.push({
                 method,
                 data: ['normal', checkColor(color)],
               })
             } else {
-              // @ts-ignore
+              // @ts-expect-error
               this.actions.push({
                 method,
                 data: [color.type, color.data, color.colorStop],
@@ -951,7 +951,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
         case 'setGlobalAlpha':
           return function (alpha: number) {
             alpha = Math.floor(255 * parseFloat(alpha as unknown as string))
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method,
               data: [alpha],
@@ -965,42 +965,42 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
             color: string
           ) {
             color = checkColor(color) as any
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method,
               data: [offsetX, offsetY, blur, color],
             })
-            // @ts-ignore
+            // @ts-expect-error
             this.state.shadowBlur = blur
-            // @ts-ignore
+            // @ts-expect-error
             this.state.shadowColor = color
-            // @ts-ignore
+            // @ts-expect-error
             this.state.shadowOffsetX = offsetX
-            // @ts-ignore
+            // @ts-expect-error
             this.state.shadowOffsetY = offsetY
           }
         case 'setLineDash':
           return function (pattern: Array<number> | undefined, offset: number) {
             pattern = pattern || [0, 0]
             offset = offset || 0
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method,
               data: [pattern, offset],
             })
-            // @ts-ignore
+            // @ts-expect-error
             this.state.lineDash = pattern
           }
         case 'setFontSize':
           return function (fontSize: number) {
-            // @ts-ignore
+            // @ts-expect-error
             this.state.font = this.state.font.replace(
               /\d+\.?\d*px/,
               fontSize + 'px'
             )
-            // @ts-ignore
+            // @ts-expect-error
             this.state.fontSize = fontSize
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method,
               data: [fontSize],
@@ -1008,7 +1008,7 @@ const initCanvasContextProperty = /*#__PURE__*/ once(() => {
           }
         default:
           return function (...data: any) {
-            // @ts-ignore
+            // @ts-expect-error
             this.actions.push({
               method,
               data,

@@ -1,25 +1,25 @@
 import { isString } from '@vue/shared'
 
 import {
-  defineSyncApi,
-  defineAsyncApi,
-  API_SET_STORAGE_SYNC,
-  API_TYPE_SET_STORAGE_SYNC,
+  API_GET_STORAGE,
+  API_GET_STORAGE_SYNC,
+  API_REMOVE_STORAGE,
   API_SET_STORAGE,
-  API_TYPE_SET_STORAGE,
+  API_SET_STORAGE_SYNC,
+  type API_TYPE_GET_STORAGE,
+  type API_TYPE_GET_STORAGE_SYNC,
+  type API_TYPE_REMOVE_STORAGE,
+  type API_TYPE_REMOVE_STORAGE_SYNC,
+  type API_TYPE_SET_STORAGE,
+  type API_TYPE_SET_STORAGE_SYNC,
+  GetStorageProtocol,
+  GetStorageSyncProtocol,
+  RemoveStorageProtocol,
+  RemoveStorageSyncProtocol,
   SetStorageProtocol,
   SetStorageSyncProtocol,
-  API_GET_STORAGE_SYNC,
-  GetStorageSyncProtocol,
-  API_TYPE_GET_STORAGE_SYNC,
-  API_GET_STORAGE,
-  GetStorageProtocol,
-  API_TYPE_GET_STORAGE,
-  API_TYPE_REMOVE_STORAGE_SYNC,
-  API_REMOVE_STORAGE,
-  API_TYPE_REMOVE_STORAGE,
-  RemoveStorageSyncProtocol,
-  RemoveStorageProtocol,
+  defineAsyncApi,
+  defineSyncApi,
 } from '@dcloudio/uni-api'
 
 const STORAGE_KEYS = 'uni-storage-keys'
@@ -36,7 +36,7 @@ function parseValue(value: any) {
         if (typeof object.data === type) {
           //#if _X_
           if (type === 'object' && !Array.isArray(object.data)) {
-            return new (globalThis as any).UTSJSONObject(object.data)
+            return new UTSJSONObject(object.data)
           }
           return object.data
           //#else
@@ -170,7 +170,7 @@ export const getStorageInfoSync = defineSyncApi<typeof uni.getStorageInfoSync>(
   'getStorageInfoSync',
   () => {
     const length = (localStorage && localStorage.length) || 0
-    const keys = []
+    const keys: string[] = []
     let currentSize = 0
     for (let index = 0; index < length; index++) {
       const key = <string>localStorage.key(index)

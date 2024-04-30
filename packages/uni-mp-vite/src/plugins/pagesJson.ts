@@ -1,22 +1,22 @@
 import path from 'path'
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 import {
-  AppJson,
+  type AppJson,
+  MANIFEST_JSON_JS,
+  addMiniProgramAppJson,
+  addMiniProgramPageJson,
   defineUniPagesJsonPlugin,
+  findChangedJsonFiles,
   getLocaleFiles,
+  initI18nOptionsOnce,
+  mergeMiniProgramAppJson,
   normalizePagePath,
   parseManifestJsonOnce,
   parseMiniProgramPagesJson,
-  addMiniProgramPageJson,
-  addMiniProgramAppJson,
-  findChangedJsonFiles,
-  mergeMiniProgramAppJson,
-  MANIFEST_JSON_JS,
-  initI18nOptionsOnce,
 } from '@dcloudio/uni-cli-shared'
 import { virtualPagePath } from './entry'
-import { UniMiniProgramPluginOptions } from '../plugin'
+import type { UniMiniProgramPluginOptions } from '../plugin'
 import { parseI18nJson } from '@dcloudio/uni-i18n'
 
 const debugPagesJson = debug('uni:pages-json')

@@ -1,6 +1,6 @@
 import { isFunction } from '@vue/shared'
-import { Friction } from './Friction'
-import { Spring } from './Spring'
+import type { Friction } from './Friction'
+import type { Spring } from './Spring'
 import { Scroll } from './Scroll'
 
 interface Animation {

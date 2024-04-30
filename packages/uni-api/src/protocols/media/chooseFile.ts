@@ -1,7 +1,7 @@
 import {
   CHOOSE_SOURCE_TYPES,
-  elemsInArray,
   elemInArray,
+  elemsInArray,
 } from '../../helpers/protocol'
 export const API_CHOOSE_FILE = 'chooseFile'
 export type API_TYPE_CHOOSE_FILE = typeof uni.chooseFile

@@ -1,7 +1,7 @@
 import path from 'path'
 import type { Plugin, ResolvedConfig } from 'vite'
 
-import { OutputChunk } from 'rollup'
+import type { OutputChunk } from 'rollup'
 
 import {
   isSsr,
@@ -10,13 +10,13 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 import {
-  initSsrAliasOnce,
-  initSsrDefine,
-  rewriteSsrVue,
-  rewriteSsrNativeTag,
-  rewriteSsrRenderStyle,
   generateSsrDefineCode,
   generateSsrEntryServerCode,
+  initSsrAliasOnce,
+  initSsrDefine,
+  rewriteSsrNativeTag,
+  rewriteSsrRenderStyle,
+  rewriteSsrVue,
 } from '../utils'
 
 const ENTRY_SERVER_JS = 'entry-server.js'

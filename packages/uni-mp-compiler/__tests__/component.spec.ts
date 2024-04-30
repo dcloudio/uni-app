@@ -1,6 +1,6 @@
 import {
-  addMiniProgramPageJson,
   COMPONENT_BIND_LINK,
+  addMiniProgramPageJson,
   createTransformComponentLink,
 } from '@dcloudio/uni-cli-shared'
 import { MPErrorCodes } from '../src/errors'

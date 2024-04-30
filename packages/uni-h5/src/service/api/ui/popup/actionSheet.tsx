@@ -1,32 +1,32 @@
 import {
+  type ExtractPropTypes,
+  type Ref,
+  type SetupContext,
+  Transition,
   defineComponent,
-  ExtractPropTypes,
+  nextTick,
   onMounted,
-  Ref,
+  reactive,
   ref,
-  SetupContext,
   watch,
   watchEffect,
-  nextTick,
-  Transition,
-  reactive,
 } from 'vue'
 import { usePopupStyle } from '../../../../helpers/usePopupStyle'
 import { useKeyboard } from '../../../../helpers/useKeyboard'
 import {
-  onThemeChange,
-  offThemeChange,
   getTheme,
+  offThemeChange,
+  onThemeChange,
 } from '../../../../helpers/theme'
 import { initI18nShowActionSheetMsgsOnce, useI18n } from '@dcloudio/uni-core'
 import { useTouchtrack } from '@dcloudio/uni-components'
 import {
-  useScroller,
   Friction,
+  type Scroller,
   Spring,
-  Scroller,
-  initScrollBounce,
   disableScrollBounce,
+  initScrollBounce,
+  useScroller,
 } from '@dcloudio/uni-components'
 import { onEventPrevent } from '@dcloudio/uni-core'
 
@@ -92,7 +92,14 @@ export default /*#__PURE__*/ defineComponent({
   emits: ['close'],
   setup(props, { emit }) {
     initI18nShowActionSheetMsgsOnce()
+    //#if !_X_
+    //@ts-expect-error
     const HEIGHT = ref(260)
+    //#endif
+    //#if _X_
+    //@ts-expect-error
+    const HEIGHT = ref(336)
+    //#endif
     const contentHeight = ref(0)
     const titleHeight = ref(0)
     const deltaY = ref(0)
@@ -209,7 +216,7 @@ export default /*#__PURE__*/ defineComponent({
           </Transition>
           <div
             class="uni-actionsheet"
-            // @ts-ignore
+            // @ts-expect-error
             class={{ 'uni-actionsheet_toggle': props.visible }}
             style={popupStyle.value.content}
           >

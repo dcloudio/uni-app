@@ -1,20 +1,22 @@
 import path from 'node:path'
-import { isAppNVueNativeTag } from '@dcloudio/uni-shared'
+import { isAppIOSUVueNativeTag } from '@dcloudio/uni-shared'
 import {
   MANIFEST_JSON_UTS,
   PAGES_JSON_UTS,
-  UniViteCopyPluginOptions,
-  UniVitePlugin,
+  type UniViteCopyPluginOptions,
+  type UniVitePlugin,
   initI18nOptions,
   injectAssetPlugin,
   matchUTSComponent,
   normalizeNodeModules,
   normalizePath,
+  parseUTSComponent,
   transformTapToClick,
   transformUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 import { compileI18nJsonStr } from '@dcloudio/uni-i18n'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
+import { ElementTypes, NodeTypes } from '@vue/compiler-core'
 
 export function createUniOptions(
   platform: 'android' | 'ios'
@@ -50,9 +52,38 @@ export function createUniOptions(
       platform === 'ios'
         ? {
             isNativeTag(tag) {
-              return matchUTSComponent(tag) || isAppNVueNativeTag(tag)
+              return matchUTSComponent(tag) || isAppIOSUVueNativeTag(tag)
             },
-            nodeTransforms: [transformTapToClick, transformUTSComponent],
+            nodeTransforms: [
+              transformTapToClick,
+              transformUTSComponent,
+              // TODO 合并复用安卓插件逻辑
+              function (node, context) {
+                if (node.type === 2) {
+                  const parent = context.parent
+                  if (parent && parent.type === 1 && parent.tag === 'text') {
+                    // 解析文本节点转义，暂时仅处理换行
+                    node.content = node.content.replace(
+                      /[\\]+n/g,
+                      function (match) {
+                        return JSON.parse(`"${match}"`)
+                      }
+                    )
+                  }
+                }
+              },
+              (node) => {
+                // 收集可能的 extApiComponents
+                if (
+                  node.type === NodeTypes.ELEMENT &&
+                  node.tagType === ElementTypes.ELEMENT
+                ) {
+                  if (!parseUTSComponent(node.tag, 'swift')) {
+                    addExtApiComponents([node.tag])
+                  }
+                }
+              },
+            ],
           }
         : {},
   }
@@ -77,7 +108,7 @@ const REMOVED_PLUGINS = [
   // 'vite:json',
   // 'vite:asset', // replace
   'vite:wasm-fallback',
-  'vite:define',
+  // 'vite:define',
   // 'vite:css-post', // iOS replace
   'vite:build-html',
   'vite:html-inline-proxy',
@@ -122,4 +153,75 @@ export function relativeInputDir(filename: string) {
     return normalizePath(path.relative(inputDir, filename))
   }
   return filename
+}
+
+export function normalizeManifestJson(userManifestJson: Record<string, any>) {
+  const app = userManifestJson.app || {}
+  const x = userManifestJson['uni-app-x'] || {}
+  x.compilerVersion = process.env.UNI_COMPILER_VERSION || ''
+  const pageOrientation = getGlobalPageOrientation()
+
+  if (pageOrientation) {
+    if (!app.distribute) {
+      app.distribute = {}
+    }
+    app.distribute['_uni-app-x_'] = {
+      pageOrientation,
+    }
+  }
+
+  return {
+    id: userManifestJson.appid || '',
+    name: userManifestJson.name || '',
+    description: userManifestJson.description || '',
+    version: {
+      name: userManifestJson.versionName || '',
+      code: userManifestJson.versionCode || '',
+    },
+    'uni-app-x': x,
+    app,
+  }
+}
+
+export function updateManifestModules(
+  manifest: Record<string, any>,
+  modules: string[]
+) {
+  // 执行了摇树逻辑，就需要设置 modules 节点
+  const app = manifest.app
+  if (!app.distribute) {
+    app.distribute = {}
+  }
+  if (!app.distribute.modules) {
+    app.distribute.modules = {}
+  }
+  if (modules) {
+    modules.forEach((name) => {
+      const value = app.distribute.modules[name]
+      app.distribute.modules[name] =
+        typeof value === 'object' && value !== null ? value : {}
+    })
+  }
+  return manifest
+}
+
+let pageOrientation = ''
+
+export function setGlobalPageOrientation(value: string) {
+  pageOrientation = value
+}
+
+export function getGlobalPageOrientation() {
+  return pageOrientation
+}
+
+const extApiComponents: Set<string> = new Set()
+export function addExtApiComponents(components: string[]) {
+  components.forEach((component) => {
+    extApiComponents.add(component)
+  })
+}
+
+export function getExtApiComponents() {
+  return extApiComponents
 }

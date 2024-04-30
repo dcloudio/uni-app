@@ -1,6 +1,6 @@
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type { PluginContext, TransformPluginContext } from 'rollup'
-import { ResolvedOptions, setSrcDescriptor } from '../descriptorCache'
+import { type ResolvedOptions, setSrcDescriptor } from '../descriptorCache'
 
 export function genStyle(
   _: SFCDescriptor,

@@ -1,3 +1,7 @@
+//#if _X_
+import '@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js'
+//#endif
+
 export {
   Button,
   Canvas,

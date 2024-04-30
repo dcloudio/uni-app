@@ -1,25 +1,26 @@
-import {
-  Node,
-  LVal,
-  ObjectProperty,
-  ObjectMethod,
-  ObjectExpression,
+import { isArray } from '@vue/shared'
+import type {
   Expression,
-  TSPropertySignature,
+  LVal,
+  Node,
+  ObjectExpression,
+  ObjectMethod,
+  ObjectProperty,
   TSMethodSignature,
+  TSPropertySignature,
 } from '@babel/types'
 import { BindingTypes, isFunctionType } from '@vue/compiler-dom'
-import { ScriptCompileContext } from './context'
+import type { ScriptCompileContext } from './context'
 import { inferRuntimeType, resolveTypeElements } from './resolveType'
 import {
-  resolveObjectKey,
   UNKNOWN_TYPE,
   concatStrings,
-  isLiteralNode,
-  isCallOf,
-  unwrapTSNode,
-  toRuntimeTypeString,
   getEscapedPropName,
+  isCallOf,
+  isLiteralNode,
+  resolveObjectKey,
+  toRuntimeTypeString,
+  unwrapTSNode,
 } from './utils'
 import { genModelProps } from './defineModel'
 import { getObjectOrArrayExpressionKeys } from './analyzeScriptBindings'
@@ -262,25 +263,37 @@ function resolveRuntimePropsFromType(
   for (const key in elements.props) {
     const e = elements.props[key]
     let type = parsePropType(ctx, e)
+
     let skipCheck = false
     if (type.length) {
       skipCheck = true
     } else {
-      type = inferRuntimeType(ctx, e)
+      type = inferRuntimeType(ctx, e, 'defineProps')
       // skip check for result containing unknown types
       if (type.includes(UNKNOWN_TYPE)) {
         if (type.includes('Boolean') || type.includes('Function')) {
           type = type.filter((t) => t !== UNKNOWN_TYPE)
           skipCheck = true
         } else {
-          type = ['null']
+          type = ['Object']
         }
       }
     }
+
+    let hasNull = false
+    type = type || []
+
+    if (isArray(type)) {
+      if (type.find((t) => t === 'null')) {
+        hasNull = true
+        type = type.filter((t) => t !== 'null')
+      }
+    }
+
     props.push({
       key,
-      required: !e.optional,
-      type: type || [`null`],
+      required: !e.optional && !hasNull,
+      type,
       skipCheck,
     })
   }

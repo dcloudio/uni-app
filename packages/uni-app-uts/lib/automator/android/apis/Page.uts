@@ -1,0 +1,127 @@
+// @ts-ignore
+import type { Callback } from '../index.uts'
+// @ts-ignore
+import { pageGetData, pageSetData, getPageVm, getValidComponentsOrNodes, removeUniPrefix } from './util.uts'
+
+export type GetDataParams = {
+  pageId: string
+  path?: string | null
+}
+export const getData = (params: GetDataParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: 'Page.getData:fail, Page not found.' })
+    return
+  }
+  const data = pageGetData(page)
+  callback({ data }, null)
+}
+
+export type SetDataParams = {
+  pageId: string
+  data: Map<string, any | null>
+}
+export const setData = (params: SetDataParams, callback: Callback): void => {
+  const pageId = params.pageId
+  const page = getPageVm(pageId)
+  if (page != null) {
+    pageSetData(page, params.data)
+    callback({ result: { errMsg: 'Page.setData: ok.' } }, null)
+  } else {
+    callback(null, { errMsg: `Page.setData:fail, Page:${pageId} is not found.` })
+  }
+}
+export type CallMethodParams = {
+  pageId: string
+  method: string
+  args: any[]
+}
+
+export const callMethod = (params: CallMethodParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${params.pageId}] not exists` })
+    // @ts-ignore
+  } else if (findVueMethod(page.$.type.type, params.method, page) == null) {
+    callback(null, { errMsg: `Page.${params.method} not exists` })
+  } else {
+    const result = params.args.length > 0 ? page.$callMethod(params.method, params.args[0]) : page.$callMethod(params.method)
+    // @ts-ignore
+    if (result instanceof Promise<unknown>) {
+      (result as Promise<any>).then((res: any) => {
+        callback({ result: res }, null)
+      }).catch((err) => {
+        const errMsg = err instanceof Error ? err.message : err
+        callback({ result: errMsg }, null)
+      })
+    } else {
+      callback({ result }, null)
+    }
+  }
+}
+
+export type GetElementParams = {
+  pageId: string
+  selector: string
+}
+
+export const getElement = (params: GetElementParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${params.pageId}] not exists` })
+  } else {
+    // @ts-ignore
+    const list: UTSJSONObject[] = []
+    getValidComponentsOrNodes(page.$.subTree, removeUniPrefix(params.selector), list)
+    if (list.length > 0) {
+      callback(list[0], null)
+    } else {
+      callback(null, { errMsg: `Element[${params.selector}] not exists` })
+    }
+  }
+}
+
+export const getElements = (params: GetElementParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${params.pageId}] not exists` })
+  } else {
+    const elements = page.$querySelectorAll(removeUniPrefix(params.selector))
+    // @ts-ignore
+    const result = [] as UTSJSONObject[]
+    elements?.forEach(element => {
+      result.push({
+        elementId: element.getNodeId(),
+        tagName: element.tagName
+      })
+    })
+    callback({ elements: result }, null)
+  }
+}
+
+export type GetWindowPropertiesParams = {
+  pageId: string,
+  names: string[]
+}
+export const getWindowProperties = (params: GetWindowPropertiesParams, callback: Callback): void => {
+  const page = getPageVm(params.pageId)
+  if (page == null) {
+    callback(null, { errMsg: 'Page.getWindowProperties:fail, Page not found.' })
+    return
+  }
+  const document = page.$nativePage!.document
+  const rootNode = document.childNodes[0]
+  const properties = params.names.map((name): any | null => {
+    switch (name) {
+      case 'document.documentElement.scrollWidth':
+        return rootNode.scrollWidth
+      case 'document.documentElement.scrollHeight':
+        return rootNode.scrollHeight
+      case 'document.documentElement.scrollTop':
+        return rootNode.scrollTop
+    }
+    return null
+  })
+
+  callback({ properties }, null)
+}

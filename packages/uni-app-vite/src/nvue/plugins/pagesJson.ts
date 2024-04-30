@@ -1,16 +1,14 @@
 import path from 'path'
 import type { Plugin, ResolvedConfig } from 'vite'
-import type { CompilerOptions } from '@vue/compiler-sfc'
 import {
-  defineUniPagesJsonPlugin,
-  normalizeAppConfigService,
-  normalizePagesJson,
-  parseManifestJsonOnce,
-  getLocaleFiles,
-  normalizeAppNVuePagesJson,
   APP_CONFIG_SERVICE,
-  resolveBuiltIn,
+  defineUniPagesJsonPlugin,
+  getLocaleFiles,
+  normalizeAppConfigService,
+  normalizeAppNVuePagesJson,
+  normalizePagesJson,
   normalizePath,
+  parseManifestJsonOnce,
 } from '@dcloudio/uni-cli-shared'
 
 interface NVuePages {
@@ -23,7 +21,10 @@ interface NVuePages {
 export const nvuePagesCache = new Map<ResolvedConfig, NVuePages>()
 // 在 @vue/compiler-sfc@3.2.47 执行前重写 @vue/compiler-dom compile 方法
 const nvuePages: NVuePages = {}
-rewriteBindingMetadata(nvuePages)
+
+export function parseNVuePageOptions(filename: string) {
+  return nvuePages[filename]
+}
 
 export function uniPagesJsonPlugin({
   renderer,
@@ -87,22 +88,4 @@ export function uniPagesJsonPlugin({
       },
     }
   })
-}
-
-/**
- * 在 BindingMetadata 中补充页面标记
- */
-function rewriteBindingMetadata(nvuePages: NVuePages) {
-  const compilerDom = require(resolveBuiltIn('@vue/compiler-dom'))
-  const { compile } = compilerDom
-  compilerDom.compile = (template: string, options: CompilerOptions = {}) => {
-    if (options.filename) {
-      if (nvuePages[options.filename]) {
-        ;(
-          options.bindingMetadata || ((options.bindingMetadata = {}) as any)
-        ).__pageOptions = nvuePages[options.filename]
-      }
-    }
-    return compile(template, options)
-  }
 }

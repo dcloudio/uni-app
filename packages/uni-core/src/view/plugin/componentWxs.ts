@@ -1,4 +1,4 @@
-import { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import {
   isFunction,
   isPlainObject,
@@ -67,12 +67,12 @@ export class ComponentDescriptor {
     if (!this.$el || !selector) {
       return []
     }
-    const descriptors = []
+    const descriptors: ComponentDescriptor[] = []
     const els = this.$el.querySelectorAll(selector)
     for (let i = 0; i < els.length; i++) {
       const wxsVm = getWxsVm(els[i] as WxsElement)
       if (wxsVm) {
-        descriptors.push(createComponentDescriptor(wxsVm, false))
+        descriptors.push(createComponentDescriptor(wxsVm, false)!)
       }
     }
     return descriptors

@@ -1,17 +1,17 @@
 import {
-  defineOnApi,
-  defineAsyncApi,
-  API_ON_BEACON_UPDATE,
-  API_TYPE_ON_BEACON_UPDATE,
-  API_ON_BEACON_SERVICE_CHANGE,
-  API_TYPE_ON_BEACON_SERVICE_CHANGE,
   API_GET_BEACONS,
-  API_TYPE_GET_BEACONS,
+  API_ON_BEACON_SERVICE_CHANGE,
+  API_ON_BEACON_UPDATE,
   API_START_BEACON_DISCOVERY,
-  API_TYPE_START_BEACON_DISCOVERY,
-  StartBeaconDiscoveryProtocol,
   API_STOP_BEACON_DISCOVERY,
-  API_TYPE_STOP_BEACON_DISCOVERY,
+  type API_TYPE_GET_BEACONS,
+  type API_TYPE_ON_BEACON_SERVICE_CHANGE,
+  type API_TYPE_ON_BEACON_UPDATE,
+  type API_TYPE_START_BEACON_DISCOVERY,
+  type API_TYPE_STOP_BEACON_DISCOVERY,
+  StartBeaconDiscoveryProtocol,
+  defineAsyncApi,
+  defineOnApi,
 } from '@dcloudio/uni-api'
 import { warpPlusEvent, warpPlusMethod } from '../../../helpers/plus'
 

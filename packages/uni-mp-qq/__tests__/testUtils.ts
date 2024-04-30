@@ -1,5 +1,5 @@
 import { isMiniProgramNativeTag as isNativeTag } from '@dcloudio/uni-shared'
-import { compile, CompilerOptions } from '@dcloudio/uni-mp-compiler'
+import { type CompilerOptions, compile } from '@dcloudio/uni-mp-compiler'
 
 import { compilerOptions, miniProgram } from '../src/compiler/options'
 

@@ -1,6 +1,6 @@
 import '@dcloudio/uni-components/style/text.css'
-import { LINEFEED, UniNodeJSON } from '@dcloudio/uni-shared'
-import { DecodeOptions, parseText } from '@dcloudio/uni-components'
+import { LINEFEED, type UniNodeJSON } from '@dcloudio/uni-shared'
+import { type DecodeOptions, parseText } from '@dcloudio/uni-components'
 import { UniAnimationElement } from './UniAnimationElement'
 
 export interface TextProps {

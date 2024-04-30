@@ -1,5 +1,5 @@
 import { isString } from '@vue/shared'
-import { elemInArray, HTTP_METHODS } from '../../helpers/protocol'
+import { HTTP_METHODS, elemInArray } from '../../helpers/protocol'
 export const API_CONNECT_SOCKET = 'connectSocket'
 export type API_TYPE_CONNECT_SOCKET = typeof uni.connectSocket
 export const ConnectSocketOptions: ApiOptions<API_TYPE_CONNECT_SOCKET> = {

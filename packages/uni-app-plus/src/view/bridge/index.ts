@@ -1,6 +1,6 @@
 import { extend } from '@vue/shared'
 
-import { getCurrentPageId, ViewJSBridge } from '@dcloudio/uni-core'
+import { ViewJSBridge, getCurrentPageId } from '@dcloudio/uni-core'
 
 import { APP_SERVICE_ID } from '../../constants'
 

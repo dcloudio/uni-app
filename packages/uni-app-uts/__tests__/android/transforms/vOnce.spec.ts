@@ -1,7 +1,7 @@
 import { NodeTypes, SET_BLOCK_TRACKING, baseParse } from '@vue/compiler-core'
 import { getBaseTransformPreset } from '../../../src/plugins/android/uvue/compiler/index'
 import { transform } from '../../../src/plugins/android/uvue/compiler/transform'
-import { TemplateCompilerOptions } from '../../../src/plugins/android/uvue/compiler/options'
+import type { TemplateCompilerOptions } from '../../../src/plugins/android/uvue/compiler/options'
 import { generate } from '../../../src/plugins/android/uvue/compiler/codegen'
 import { RENDER_SLOT } from '../../../src/plugins/android/uvue/compiler/runtimeHelpers'
 

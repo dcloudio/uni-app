@@ -4,8 +4,8 @@ var initMiniProgramPlugin = require('@dcloudio/uni-mp-vite');
 var shared = require('@vue/shared');
 var path = require('path');
 var fs = require('fs');
-var uniCliShared = require('@dcloudio/uni-cli-shared');
 var compilerCore = require('@vue/compiler-core');
+var uniCliShared = require('@dcloudio/uni-cli-shared');
 
 function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 
@@ -40,7 +40,7 @@ function addVueRef(node, context) {
         (context.inVFor
             ? uniCliShared.VUE_REF_IN_FOR
             : uniCliShared.VUE_REF);
-    if (refProp.type === 6 /* NodeTypes.ATTRIBUTE */) {
+    if (refProp.type === compilerCore.NodeTypes.ATTRIBUTE) {
         refProp.name = dataRef;
     }
     else {
@@ -100,14 +100,14 @@ const eventMap = {
 
 function transformOpenType(node) {
     var _a;
-    if (node.type !== 1 /* NodeTypes.ELEMENT */ || node.tag !== 'button') {
+    if (node.type !== compilerCore.NodeTypes.ELEMENT || node.tag !== 'button') {
         return;
     }
     const openTypeProp = compilerCore.findProp(node, 'open-type');
     if (!openTypeProp) {
         return;
     }
-    if (openTypeProp.type !== 6 /* NodeTypes.ATTRIBUTE */ ||
+    if (openTypeProp.type !== compilerCore.NodeTypes.ATTRIBUTE ||
         ((_a = openTypeProp.value) === null || _a === void 0 ? void 0 : _a.content) !== 'getPhoneNumber') {
         return;
     }
@@ -116,10 +116,10 @@ function transformOpenType(node) {
     props.splice(props.indexOf(openTypeProp) + 1, 0, uniCliShared.createAttributeNode('scope', 'phoneNumber'));
     let getPhoneNumberMethodName = '';
     const getPhoneNumberPropIndex = props.findIndex((prop) => {
-        if (prop.type === 7 /* NodeTypes.DIRECTIVE */ && prop.name === 'on') {
+        if (prop.type === compilerCore.NodeTypes.DIRECTIVE && prop.name === 'on') {
             const { arg, exp } = prop;
-            if ((arg === null || arg === void 0 ? void 0 : arg.type) === 4 /* NodeTypes.SIMPLE_EXPRESSION */ &&
-                (exp === null || exp === void 0 ? void 0 : exp.type) === 4 /* NodeTypes.SIMPLE_EXPRESSION */ &&
+            if ((arg === null || arg === void 0 ? void 0 : arg.type) === compilerCore.NodeTypes.SIMPLE_EXPRESSION &&
+                (exp === null || exp === void 0 ? void 0 : exp.type) === compilerCore.NodeTypes.SIMPLE_EXPRESSION &&
                 arg.isStatic &&
                 arg.content === 'getphonenumber') {
                 getPhoneNumberMethodName = exp.content;
@@ -161,7 +161,7 @@ const nodeTransforms = [
     transformRef,
     transformOpenType,
     uniCliShared.transformMatchMedia,
-    uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, 6 /* NodeTypes.ATTRIBUTE */),
+    uniCliShared.createTransformComponentLink(uniCliShared.COMPONENT_ON_LINK, compilerCore.NodeTypes.ATTRIBUTE),
 ];
 const compilerOptions = {
     nodeTransforms,
@@ -181,6 +181,8 @@ const customElements = [
     'page-container',
     'page-meta',
     'lottie',
+    'join-group-chat',
+    'subscribe-message',
 ];
 const options = {
     cdn: 2,

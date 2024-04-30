@@ -1,15 +1,15 @@
 import {
-  defineAsyncApi,
-  API_ON_COMPASS,
-  API_TYPE_ON_COMPASS_CHANGE,
   API_OFF_COMPASS,
-  API_TYPE_OFF_COMPASS_CHANGE,
+  API_ON_COMPASS,
   API_START_COMPASS,
-  API_TYPE_START_COMPASS,
   API_STOP_COMPASS,
-  API_TYPE_STOP_COMPASS,
-  defineOnApi,
+  type API_TYPE_OFF_COMPASS_CHANGE,
+  type API_TYPE_ON_COMPASS_CHANGE,
+  type API_TYPE_START_COMPASS,
+  type API_TYPE_STOP_COMPASS,
+  defineAsyncApi,
   defineOffApi,
+  defineOnApi,
 } from '@dcloudio/uni-api'
 
 let listener: ((event: DeviceOrientationEvent) => void) | null = null

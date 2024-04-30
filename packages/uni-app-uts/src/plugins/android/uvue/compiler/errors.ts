@@ -1,4 +1,4 @@
-import { SourceLocation } from '@vue/compiler-core'
+import type { SourceLocation } from '@vue/compiler-core'
 
 export interface CompilerError extends SyntaxError {
   code: number | string

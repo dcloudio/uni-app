@@ -1,9 +1,9 @@
 import {
   API_RE_LAUNCH,
-  API_TYPE_RE_LAUNCH,
-  defineAsyncApi,
+  type API_TYPE_RE_LAUNCH,
   ReLaunchOptions,
   ReLaunchProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { $reLaunch } from './_reLaunch'
 

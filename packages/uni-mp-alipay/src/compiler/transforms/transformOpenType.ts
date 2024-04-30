@@ -1,9 +1,9 @@
 import {
+  NodeTypes,
+  type RootNode,
+  type TemplateChildNode,
   findProp,
   isSimpleIdentifier,
-  NodeTypes,
-  RootNode,
-  TemplateChildNode,
 } from '@vue/compiler-core'
 import {
   createAttributeNode,

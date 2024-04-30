@@ -1,4 +1,4 @@
-import { MPProtocol } from '@dcloudio/uni-mp-core'
+import type { MPProtocol } from '@dcloudio/uni-mp-core'
 
 export {
   redirectTo,

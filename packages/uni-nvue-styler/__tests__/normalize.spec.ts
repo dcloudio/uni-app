@@ -1,5 +1,6 @@
 import { parse } from '../src'
 
+// for nvue
 async function objectifierRule(input: string) {
   const { code, messages } = await parse(input, { logLevel: 'NOTE' })
   return {
@@ -278,6 +279,18 @@ zIndex: 4;
 }
 .baz {
   transition-property: abc
+}
+.demo_all {
+  transition-property: all
+}
+.demo_none {
+  transition-property: none
+}
+.demo_all_width {
+  transition-property: all,width
+}
+.demo_mix {
+  transition-property: all,width,none,height
 }
 `)
     expect(json).toEqual({

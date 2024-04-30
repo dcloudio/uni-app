@@ -1,17 +1,17 @@
 import { extend } from '@vue/shared'
-import { reactive, provide, inject } from 'vue'
+import { inject, provide, reactive } from 'vue'
 import { useRoute } from 'vue-router'
 
 import {
-  addLeadingSlash,
   NAVBAR_HEIGHT,
+  addLeadingSlash,
   parseQuery,
 } from '@dcloudio/uni-shared'
 import {
+  PolySymbol,
   initNavigationBarI18n,
   initRouteMeta,
   normalizePullToRefreshRpx,
-  PolySymbol,
 } from '@dcloudio/uni-core'
 
 import safeAreaInsets from 'safe-area-insets'
@@ -74,7 +74,7 @@ function initPageMeta(id: number) {
 function normalizePageMeta(pageMeta: UniApp.PageRouteMeta) {
   if (__UNI_FEATURE_PULL_DOWN_REFRESH__) {
     const { enablePullDownRefresh, navigationBar } = pageMeta
-    if (enablePullDownRefresh) {
+    if (__X__ || enablePullDownRefresh) {
       const pullToRefresh = normalizePullToRefreshRpx(
         extend(
           {

@@ -1,6 +1,6 @@
 // import { writeFileSync } from 'node:fs'
 // import { resolve } from 'node:path'
-import { preprocess, SourceMapOptions } from '../src/index'
+import { type SourceMapOptions, preprocess } from '../src/index'
 
 describe('preprocess', () => {
   const sourceMap: SourceMapOptions = {

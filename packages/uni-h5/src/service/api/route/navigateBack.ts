@@ -1,10 +1,10 @@
 import { invokeHook } from '@dcloudio/uni-core'
 import {
   API_NAVIGATE_BACK,
-  API_TYPE_NAVIGATE_BACK,
-  defineAsyncApi,
+  type API_TYPE_NAVIGATE_BACK,
   NavigateBackOptions,
   NavigateBackProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { ON_BACK_PRESS } from '@dcloudio/uni-shared'
 

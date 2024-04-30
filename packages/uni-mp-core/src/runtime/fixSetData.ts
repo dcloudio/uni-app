@@ -1,4 +1,4 @@
-import { MPComponentInstance } from './component'
+import type { MPComponentInstance } from './component'
 
 /**
  * 用于延迟调用 setData

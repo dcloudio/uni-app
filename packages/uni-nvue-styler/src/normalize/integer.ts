@@ -1,4 +1,4 @@
-import { Normalize, supportedEnumReason } from '../utils'
+import { type Normalize, supportedEnumReason } from '../utils'
 
 export const normalizeInteger: Normalize = (v) => {
   v = (v || '').toString()

@@ -1,7 +1,7 @@
 import { invokeHook } from '@dcloudio/uni-core'
 import { injectAppHooks } from '@dcloudio/uni-api'
-import { ON_LAUNCH, ON_SHOW, ON_HIDE } from '@dcloudio/uni-shared'
-import { ComponentPublicInstance } from 'vue'
+import { ON_HIDE, ON_LAUNCH, ON_SHOW } from '@dcloudio/uni-shared'
+import type { ComponentPublicInstance } from 'vue'
 import { initLaunchOptions } from './utils'
 
 export function initAppLaunch(appVm: ComponentPublicInstance) {

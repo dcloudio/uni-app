@@ -1,9 +1,9 @@
 import {
+  UNI_EASYCOM_EXCLUDE,
   initAppProvide,
+  uniEasycomPlugin,
   uniHBuilderXConsolePlugin,
   uniViteInjectPlugin,
-  UNI_EASYCOM_EXCLUDE,
-  uniEasycomPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniManifestJsonPlugin } from '../plugins/manifestJson'

@@ -1,10 +1,10 @@
 import { createBindDirectiveNode } from '@dcloudio/uni-cli-shared'
 import { genExpr } from '@dcloudio/uni-mp-compiler'
 import {
-  findProp,
   NodeTypes,
-  RootNode,
-  TemplateChildNode,
+  type RootNode,
+  type TemplateChildNode,
+  findProp,
 } from '@vue/compiler-core'
 
 export function transformSwiper(node: RootNode | TemplateChildNode) {

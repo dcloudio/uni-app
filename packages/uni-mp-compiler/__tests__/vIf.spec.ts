@@ -1,6 +1,6 @@
-import { ErrorCodes, IfNode, NodeTypes } from '@vue/compiler-core'
+import { ErrorCodes, type IfNode, NodeTypes } from '@vue/compiler-core'
 import { compile } from '../src'
-import { CompilerOptions } from '../src/options'
+import type { CompilerOptions } from '../src/options'
 import { assert } from './testUtils'
 
 function compileWithIfTransform(

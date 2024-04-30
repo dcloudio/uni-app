@@ -35,8 +35,38 @@ const extApiProviders: {
   servicePlugin?: string
 }[] = []
 
+const extApiPlugins = new Set<string>()
+
 export function getUniExtApiProviders() {
   return extApiProviders
+}
+
+export function getUniExtApiPlugins() {
+  return [...extApiPlugins].map((plugin) => {
+    return { plugin }
+  })
+}
+
+export function getUniExtApiProviderRegisters() {
+  const result: { name: string; service: string; class: string }[] = []
+  extApiProviders.forEach((provider) => {
+    if (provider.name && provider.service) {
+      result.push({
+        name: provider.name,
+        service: provider.service,
+        class: `uts.sdk.modules.${camelize(provider.plugin)}.${capitalize(
+          camelize(
+            'uni-ext-api-' +
+              provider.service +
+              '-' +
+              provider.name +
+              '-provider'
+          )
+        )}`,
+      })
+    }
+  })
+  return result
 }
 
 export function parseUniExtApis(
@@ -54,6 +84,7 @@ export function parseUniExtApis(
 
   const injects: Injects = {}
   extApiProviders.length = 0
+  extApiPlugins.clear()
   fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
     // 必须以 uni- 开头
     if (!uniModuleDir.startsWith('uni-')) {
@@ -76,6 +107,7 @@ export function parseUniExtApis(
           provider.plugin = uniModuleDir
           extApiProviders.push(provider)
         }
+        extApiPlugins.add(uniModuleDir)
         const curInjects = parseInjects(
           vite,
           platform,
@@ -172,6 +204,14 @@ export function parseInjects(
       } else if (fs.existsSync(rootIndexFileName)) {
         source = `${source}/utssdk/index.uts`
       }
+    } else if (process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js') {
+      if (
+        fs.existsSync(
+          path.resolve(uniModuleRootDir, 'utssdk', 'app-js', 'index.uts')
+        )
+      ) {
+        source = `${source}/utssdk/app-js/index.uts`
+      }
     }
 
     for (const key in rootDefines) {
@@ -237,17 +277,23 @@ function parseInject(
             if (p === 'app') {
               const appOptions = defineOptions.app
               if (isPlainObject(appOptions)) {
-                if (language === 'javascript') {
-                  if (appOptions.js === false) {
-                    return
-                  }
-                } else if (language === 'kotlin') {
-                  if (appOptions.kotlin === false) {
-                    return
-                  }
-                } else if (language === 'swift') {
-                  if (appOptions.swift === false) {
-                    return
+                // js engine 下且存在 app-js，不检查
+                const skipCheck =
+                  process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' &&
+                  source.includes('app-js')
+                if (!skipCheck) {
+                  if (language === 'javascript') {
+                    if (appOptions.js === false) {
+                      return
+                    }
+                  } else if (language === 'kotlin') {
+                    if (appOptions.kotlin === false) {
+                      return
+                    }
+                  } else if (language === 'swift') {
+                    if (appOptions.swift === false) {
+                      return
+                    }
                   }
                 }
               }
@@ -275,4 +321,40 @@ const toTypeString = (value: unknown): string => objectToString.call(value)
 
 function isPlainObject(val: unknown): val is object {
   return toTypeString(val) === '[object Object]'
+}
+
+const cacheStringFunction = <T extends (str: string) => string>(fn: T): T => {
+  const cache: Record<string, string> = Object.create(null)
+  return ((str: string) => {
+    const hit = cache[str]
+    return hit || (cache[str] = fn(str))
+  }) as T
+}
+
+const camelizeRE = /-(\w)/g
+/**
+ * @private
+ */
+export const camelize = cacheStringFunction((str: string): string => {
+  return str.replace(camelizeRE, (_, c) => (c ? c.toUpperCase() : ''))
+})
+
+/**
+ * @private
+ */
+export const capitalize = cacheStringFunction(
+  (str: string) => str.charAt(0).toUpperCase() + str.slice(1)
+)
+
+/**
+ * 解析 UTS 类型的模块依赖列表
+ * @param deps
+ * @param inputDir
+ * @returns
+ */
+export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
+  const modulesDir = path.resolve(inputDir, 'uni_modules')
+  return deps.filter((dep) => {
+    return fs.existsSync(path.resolve(modulesDir, dep, 'utssdk'))
+  })
 }

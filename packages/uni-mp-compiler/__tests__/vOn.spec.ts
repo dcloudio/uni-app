@@ -1,6 +1,6 @@
-import { ElementNode, ErrorCodes } from '@vue/compiler-core'
+import { type ElementNode, ErrorCodes } from '@vue/compiler-core'
 import { compile } from '../src'
-import { CompilerOptions } from '../src/options'
+import type { CompilerOptions } from '../src/options'
 import { assert } from './testUtils'
 
 function parseWithVOn(template: string, options: CompilerOptions = {}) {

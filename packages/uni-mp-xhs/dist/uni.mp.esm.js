@@ -184,7 +184,7 @@ function parseApp(instance, parseAppOptions) {
     }
     const appOptions = {
         globalData: (instance.$options && instance.$options.globalData) || {},
-        $vm: instance,
+        $vm: instance, // mp-alipay 组件 data 初始化比 onLaunch 早，提前挂载
         onLaunch(options) {
             this.$vm = instance; // 飞书小程序可能会把 AppOptions 序列化，导致 $vm 对象部分属性丢失
             const ctx = internalInstance.ctx;
@@ -455,7 +455,7 @@ function initDefaultProps(options, isBehavior = false) {
     }
     if (options.behaviors) {
         // wx://form-field
-        if (options.behaviors.includes('xhs://form-field')) {
+        if (options.behaviors.includes('__GLOBAL__://form-field')) {
             if (!options.properties || !options.properties.name) {
                 properties.name = {
                     type: null,
@@ -557,7 +557,11 @@ function updateComponentProps(up, instance) {
             invalidateJob(instance.update);
         }
         {
-            instance.update();
+            // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
+            // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
+            if (!hasQueueJob(instance.update)) {
+                instance.update();
+            }
         }
     }
 }
@@ -583,7 +587,7 @@ function initBehaviors(vueOptions) {
     const behaviors = [];
     if (isArray(vueBehaviors)) {
         vueBehaviors.forEach((behavior) => {
-            behaviors.push(behavior.replace('uni://', 'xhs://'));
+            behaviors.push(behavior.replace('uni://', '__GLOBAL__://'));
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
@@ -734,7 +738,7 @@ Component = function (options) {
     return MPComponent(options);
 };
 
-// @ts-ignore
+// @ts-expect-error
 function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
     return {
         attached() {
@@ -759,7 +763,7 @@ function initLifetimes({ mocks, isPage, initRelation, vueOptions, }) {
             }, {
                 mpType: isMiniProgramPage ? 'page' : 'component',
                 mpInstance,
-                slots: properties.uS || {},
+                slots: properties.uS || {}, // vueSlots
                 parentComponent: relationOptions.parent && relationOptions.parent.$,
                 onBeforeSetup(instance, options) {
                     initRefs(instance, mpInstance);
@@ -843,7 +847,7 @@ function createVueComponent(mpType, mpInstance, vueOptions, parent) {
     }, {
         mpType,
         mpInstance,
-        slots: mpInstance.props.uS || {},
+        slots: mpInstance.props.uS || {}, // vueSlots
         parentComponent: parent && parent.$,
         onBeforeSetup(instance, options) {
             initRefs(instance, mpInstance);
@@ -864,23 +868,22 @@ function initCreatePage() {
                 };
                 // 初始化 vue 实例
                 this.props = query;
+                this.$vm = createVueComponent('page', this, vueOptions);
+                initSpecialMethods(this);
+                this.$vm.$callHook(ON_LOAD, this.options);
             },
             onShow() {
+                this.$vm.$callHook(ON_SHOW);
                 if (__VUE_PROD_DEVTOOLS__) {
                     devtoolsComponentAdded(this.$vm.$);
                 }
-                this.$vm = createVueComponent('page', this, vueOptions);
-                this.$vm.$callHook('mounted');
-                this.$vm.$callHook(ON_LOAD, this.options);
-                initSpecialMethods(this);
-                if (this.$vm) {
-                    this.$vm.$callHook(ON_SHOW);
-                }
             },
             onReady() {
+                // 确保页面自定义组件都被收集到
                 setTimeout(() => {
+                    this.$vm.$callHook('mounted');
                     this.$vm.$callHook(ON_READY);
-                }, 50);
+                }, 100);
             },
             onUnload() {
                 if (this.$vm) {

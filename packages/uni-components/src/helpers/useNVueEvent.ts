@@ -1,5 +1,5 @@
 import { cacheStringFunction } from '@dcloudio/uni-shared'
-import { Ref, SetupContext, EmitsOptions } from 'vue'
+import type { EmitsOptions, Ref, SetupContext } from 'vue'
 
 type EventDetail = Record<string, any>
 type WeexTarget = WechatMiniprogram.BaseEvent['target']

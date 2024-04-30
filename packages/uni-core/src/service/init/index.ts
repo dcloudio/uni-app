@@ -1,4 +1,4 @@
-import { ComponentPublicInstance, ref } from 'vue'
+import { type ComponentPublicInstance, ref } from 'vue'
 import { useI18n } from '../../i18n'
 import { initOn } from './on'
 import { initSubscribe } from './subscribe'
@@ -32,6 +32,8 @@ export function initPageVm(
   pageVm.$vm = pageVm
   pageVm.$page = page
   pageVm.$mpType = 'page'
+  pageVm.$fontFamilySet = new Set()
+
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true
     // TODO preload? 初始化时，状态肯定是激活

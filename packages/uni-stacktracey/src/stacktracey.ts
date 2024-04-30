@@ -21,6 +21,7 @@ const O = Object,
     window.window === window &&
     /* eslint-disable */
     window.navigator,
+  // @ts-ignore
   nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
   lastOf = (x: Array<any>) => x[x.length - 1],
   nixSlashes = (x: string) => x.replace(/\\/g, '/'),

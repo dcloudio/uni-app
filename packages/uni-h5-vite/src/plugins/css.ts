@@ -1,15 +1,15 @@
 import fs from 'fs'
 import path from 'path'
-import { normalizePath, Plugin, ResolvedConfig } from 'vite'
+import { type Plugin, type ResolvedConfig, normalizePath } from 'vite'
 
 import {
   buildInCssSet,
-  minifyCSS,
   getAssetHash,
-  resolveBuiltIn,
   isExternalUrl,
+  minifyCSS,
+  resolveBuiltIn,
 } from '@dcloudio/uni-cli-shared'
-import { OutputOptions } from 'rollup'
+import type { OutputOptions } from 'rollup'
 import { isFunction, isString } from '@vue/shared'
 
 function isCombineBuiltInCss(config: ResolvedConfig) {
@@ -37,7 +37,7 @@ export function uniCssPlugin(): Plugin {
         generateBuiltInCssCode([...buildInCssSet].sort()),
         resolvedConfig
       )
-      // @ts-ignore 'Buffer' only refers to a type, but is being used as a value here
+      // 'Buffer' only refers to a type, but is being used as a value here
       const contentHash = getAssetHash(Buffer.from(content, 'utf-8'))
       const assetFileNames = path.posix.join(
         resolvedConfig.build.assetsDir,
@@ -58,8 +58,8 @@ export function uniCssPlugin(): Plugin {
       })
     },
     transformIndexHtml: {
-      enforce: 'post',
-      transform() {
+      order: 'post',
+      handler() {
         if (!fileName) {
           return
         }

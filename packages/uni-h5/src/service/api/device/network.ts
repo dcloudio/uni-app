@@ -1,4 +1,4 @@
-import { defineOnApi, defineOffApi, defineAsyncApi } from '@dcloudio/uni-api'
+import { defineAsyncApi, defineOffApi, defineOnApi } from '@dcloudio/uni-api'
 
 type OnNetworkStatusChange = typeof uni.onNetworkStatusChange
 

@@ -1,79 +1,115 @@
 <template>
-	<web-view ref="webview" id="webview" style="flex:1" :webview-styles='webviewStyles' :src="src" @message="message"
-		@error="error" />
+  <view style="flex: 1;">
+    <!-- #ifdef APP-ANDROID -->
+    <view :style="{ height: `${statusBarHeight}px` }"></view>
+    <!-- #endif -->
+    <web-view
+      ref="webview"
+      id="webview"
+      style="flex: 1;"
+      :webview-styles="webviewStyles"
+      :src="src"
+      @message="message"
+      @error="error"
+    />
+  </view>
 </template>
 
-<script>
+<script lang='uts'>
 export default {
-	data() {
-		return {
-			src: process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC,
-			webviewElement: null as UniWebViewElement | null,
-			webviewContext: null as WebviewContext | null,
-			webviewStyles: {
-				progress: false
-			},
-		}
-	},
-	onReady() {
-		this.webviewElement = this.$refs['webview'] as UniWebViewElement
-		this.webviewContext = uni.createWebviewContext('webview', this)
+  data() {
+    return {
+      src: process.env.UNI_AUTOMATOR_APP_WEBVIEW_SRC,
+      webviewElement: null as UniWebViewElement | null,
+      webviewContext: null as WebviewContext | null,
+      webviewStyles: {
+        progress: false
+      },
+      statusBarHeight: 0,
+      safeAreaTop: 0
+    }
+  },
+  onReady() {
+    const windowInfo = uni.getWindowInfo()
+    this.statusBarHeight = windowInfo.statusBarHeight
+    this.safeAreaTop = windowInfo.safeAreaInsets.top
+    this.webviewElement = this.$refs['webview'] as UniWebViewElement
+    this.webviewContext = uni.createWebviewContext('webview', this)
+  },
+  methods: {
+    initAutomator() {
+      const options = {
+        wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
+      }
+      this.webviewContext!.evalJS(`initRuntimeAutomator(${JSON.stringify(options)})`)
+      console.log('initRuntimeAutomator...')
+    },
+    message(msg: UniWebViewMessageEvent) {
+      // #ifdef APP-ANDROID
+      // data 由 对象变更成数组
+      const data = msg.detail.data[0];
+      const id = data.get("id") as number
+      const type = data.get("type") as string
+      const dataObj = data.get("data") as UTSJSONObject
+      const action = dataObj.getString("action")!
+      const args = dataObj.get("args")
+      // #endif
+      // #ifndef APP-ANDROID
+      const data = msg.detail.data.length ? msg.detail.data[0].data : msg.detail.data
+      const id = data["id"] as number
+      const type = data["type"] as string
+      const dataObj = data["data"]
+      const action = dataObj["action"]!
+      const args = dataObj["args"]
+      // #endif
+      if (type != 'automator') {
+        return;
+      }
+      if (action == 'ready') {
+        this.initAutomator()
+      } else {
+        console.log(id, action, args)
+        if (action == 'captureScreenshot') {
+          // 调用截图
+          this.$viewToTempFilePath({
+            id: 'webview',
+            // #ifdef APP-ANDROID
+            offsetY: `44`,
+            // #endif
+            // #ifndef APP-ANDROID
+            offsetY: `${this.safeAreaTop + 44}`,
+            // #endif
+            overwrite: true,
+            wholeContent: true,
+            success: (res) => {
+              const fileManager = uni.getFileSystemManager()
+              fileManager.readFile({
+                encoding: 'base64',
+                filePath: res.tempFilePath,
+                success: (readFileRes) => {
+                  this.callback(id, { data: readFileRes.data }, '')
+                },
+                fail: (error) => {
+                  this.callback(id, '', error.message)
+                },
+              } as ReadFileOptions)
 
-	},
-	methods: {
-		initAutomator() {
-			const options = {
-				wsEndpoint: process.env.UNI_AUTOMATOR_WS_ENDPOINT
-			}
-			this.webviewContext!.evalJS(`initRuntimeAutomator(${JSON.stringify(options)})`)
-			console.log('initRuntimeAutomator...')
-		},
-		message(msg: UniWebViewMessageEvent) {
-			const data = msg.detail.data!
-			const id = data.get("id") as number
-			const type = data.get("type") as string
-			const dataObj = data.get("data") as UTSJSONObject
-			const action = dataObj.getString("action")!
-			const args = dataObj.get("args")
-			if (type != 'automator') {
-				return;
-			}
-			if (action == 'ready') {
-				this.initAutomator()
-			} else {
-				console.log(id, action, args)
-				if (action == 'captureScreenshot') {
-					// 调用截图
-					this.webviewElement!.takeSnapshot({
-						success: (res) => {
-							const fileManager = uni.getFileSystemManager()
-							fileManager.readFile({
-								encoding: 'base64',
-								filePath: res.tempFilePath,
-								success: (readFileRes) => {
-									this.callback(id, { data: readFileRes.data }, '')
-								},
-								fail: (error) => {
-									this.callback(id, '', error.message)
-								},
-							} as ReadFileOptions)
+            },
+            fail: (res) => {
+              this.callback(id, '', res.errMsg)
+            }
+          })
 
-						},
-						fail: (res) => {
-							this.callback(id, '', res.errMsg)
-						}
-					})
+        }
 
-				}
-
-			}
-		},
-		error(event: WebViewErrorEvent) {
-			console.log('webview load error', JSON.stringify(event.detail));
-		},
-		callback(id: number, res: any | null, error: string) {
-			this.webviewContext!.evalJS(`onPostMessageFromUniXWebView(${id},${JSON.stringify(res)},${JSON.stringify(error)})`)
-		}
-	}
+      }
+    },
+    error(event : WebViewErrorEvent) {
+      console.log('webview load error', JSON.stringify(event.detail));
+    },
+    callback(id : number, res : any | null, error : string) {
+      this.webviewContext!.evalJS(`onPostMessageFromUniXWebView(${id},${JSON.stringify(res)},${JSON.stringify(error)})`)
+    }
+  }
 }
 </script>

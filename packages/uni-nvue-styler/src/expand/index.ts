@@ -1,7 +1,7 @@
 import type { Plugin } from 'postcss'
 import {
-  NormalizeOptions,
-  TransformDecl,
+  type NormalizeOptions,
+  type TransformDecl,
   hyphenateStyleProperty,
 } from '../utils'
 import { transformBackground } from './background'

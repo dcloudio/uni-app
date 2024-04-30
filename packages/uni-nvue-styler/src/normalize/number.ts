@@ -1,4 +1,4 @@
-import { Normalize, LENGTH_REGEXP, supportedEnumReason } from '../utils'
+import { LENGTH_REGEXP, type Normalize, supportedEnumReason } from '../utils'
 
 export const normalizeNumber: Normalize = (v) => {
   v = (v || '').toString()

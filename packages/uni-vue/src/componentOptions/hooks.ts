@@ -1,18 +1,18 @@
 import { invokeHook } from '@dcloudio/uni-core'
 import {
-  isUniLifecycleHook,
   LINEFEED,
   ON_LOAD,
   ON_SHOW,
+  isUniLifecycleHook,
 } from '@dcloudio/uni-shared'
 import { isArray, isFunction } from '@vue/shared'
 
-import {
-  ComponentOptions,
+import type {
   ComponentInternalInstance,
+  ComponentOptions,
   ComponentPublicInstance,
 } from 'vue'
-// @ts-ignore
+
 import { injectHook } from 'vue'
 
 function injectLifecycleHook(
@@ -53,10 +53,18 @@ export function initHooks(
     instance.__isVisible = true
     // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
     try {
-      invokeHook(publicThis, ON_LOAD, instance.attrs.__pageQuery)
+      const query = instance.attrs.__pageQuery
+      if (__PLATFORM__ === 'app' && __X__) {
+        // TODO 统一处理 Web
+        publicThis.options = query || {}
+      }
+      invokeHook(publicThis, ON_LOAD, query)
       delete instance.attrs.__pageQuery
-      if (publicThis.$page?.openType !== 'preloadPage') {
-        invokeHook(publicThis, ON_SHOW)
+      // iOS-X 与安卓一致使用页面 onShow 时机
+      if (__PLATFORM__ !== 'app' || !__X__) {
+        if (publicThis.$page?.openType !== 'preloadPage') {
+          invokeHook(publicThis, ON_SHOW)
+        }
       }
     } catch (e: any) {
       console.error(e.message + LINEFEED + e.stack)

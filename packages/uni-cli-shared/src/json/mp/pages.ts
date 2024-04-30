@@ -3,12 +3,12 @@ import path from 'path'
 import { extend, hasOwn } from '@vue/shared'
 import { parseJson } from '../json'
 import { filterPlatformPages, validatePages } from '../pages'
-import { AppJson, NetworkTimeout, PageWindowOptions } from './types'
+import type { AppJson, NetworkTimeout, PageWindowOptions } from './types'
 import { parseTabBar, parseWindowOptions } from './utils'
 import { normalizePath } from '../../utils'
 import { isMiniProgramProjectJsonKey } from './project'
 import { getPlatformManifestJsonOnce } from '../manifest'
-import { initTheme, hasThemeJson } from '../theme'
+import { hasThemeJson, initTheme } from '../theme'
 
 interface ParsePagesJsonOptions {
   debug?: boolean

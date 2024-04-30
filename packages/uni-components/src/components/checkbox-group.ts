@@ -1,4 +1,4 @@
-import { ComputedRef, ExtractPropTypes } from 'vue'
+import type { ComputedRef, ExtractPropTypes } from 'vue'
 import { PolySymbol } from '@dcloudio/uni-core'
 
 export const uniCheckGroupKey = PolySymbol(__DEV__ ? 'uniCheckGroup' : 'ucg')

@@ -1,35 +1,35 @@
 import { camelize, isString, isSymbol } from '@vue/shared'
 import {
-  Property,
-  transformModel as baseTransform,
+  type AttributeNode,
+  ConstantTypes,
+  type DirectiveNode,
+  type DirectiveTransform,
+  type ElementNode,
   ElementTypes,
-  findProp,
+  type ExpressionNode,
   NodeTypes,
-  DirectiveNode,
-  ElementNode,
-  ExpressionNode,
-  AttributeNode,
+  type Property,
+  type TransformContext as VueTransformContext,
+  transformModel as baseTransform,
   createCompoundExpression,
-  DirectiveTransform,
-  TransformContext as VueTransformContext,
-  isSimpleIdentifier,
-  isStaticExp,
   createObjectProperty,
   createSimpleExpression,
-  ConstantTypes,
+  findProp,
+  isSimpleIdentifier,
+  isStaticExp,
 } from '@vue/compiler-core'
 import { DOMErrorCodes, createDOMCompilerError } from '@vue/compiler-dom'
 
 import {
+  ATTR_DATASET_EVENT_OPTS,
   createBindDirectiveNode,
   createOnDirectiveNode,
-  ATTR_DATASET_EVENT_OPTS,
   isSimpleExpressionNode,
 } from '@dcloudio/uni-cli-shared'
 import { V_ON, WITH_MODEL_MODIFIERS } from '../runtimeHelpers'
 import { genExpr } from '../codegen'
-import { TransformContext } from '../transform'
-import { DirectiveTransformResult } from './transformElement'
+import type { TransformContext } from '../transform'
+import type { DirectiveTransformResult } from './transformElement'
 import { wrapperVOn } from './vOn'
 
 export const transformModel: DirectiveTransform = (

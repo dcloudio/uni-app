@@ -35,6 +35,7 @@ interface ManifestFeatures {
   routerMode: '"hash"' | '"history"'
   vueOptionsApi: boolean
   vueProdDevTools: boolean
+  vueProdHydrationMismatchDetails: boolean
 }
 
 function initProjectFeature({ inputDir }: InitFeaturesOptions) {
@@ -182,6 +183,7 @@ function initManifestFeature({
     routerMode: '"hash"',
     vueOptionsApi: true,
     vueProdDevTools: false,
+    vueProdHydrationMismatchDetails: false,
   }
 
   if (command === 'build') {
@@ -226,6 +228,7 @@ export function initFeatures(options: InitFeaturesOptions) {
     i18nLocale,
     vueOptionsApi,
     vueProdDevTools,
+    vueProdHydrationMismatchDetails,
     pages,
     tabBar,
     tabBarMidButton,
@@ -245,10 +248,12 @@ export function initFeatures(options: InitFeaturesOptions) {
     initPagesFeature(options),
     initProjectFeature(options)
   )
+  // uni-app-x运行时可调用$setPageStyle，需启用相关特性方可支持。否则$setPageStyle无效果
   const features = {
     // vue
     __VUE_OPTIONS_API__: vueOptionsApi, // enable/disable Options API support, default: true
     __VUE_PROD_DEVTOOLS__: vueProdDevTools, // enable/disable devtools support in production, default: false
+    __VUE_PROD_HYDRATION_MISMATCH_DETAILS__: vueProdHydrationMismatchDetails,
     // uni
     __UNI_FEATURE_WX__: wx, // 是否启用小程序的组件实例 API，如：selectComponent 等（uni-core/src/service/plugin/appConfig）
     __UNI_FEATURE_WXS__: wxs, // 是否启用 wxs 支持，如：getComponentDescriptor 等（uni-core/src/view/plugin/appConfig）

@@ -1,5 +1,5 @@
 import plugin from './plugin'
-// @ts-ignore
+// @ts-expect-error
 import { createVueApp } from 'vue'
 export function createApp(rootComponent: unknown, rootProps = null) {
   rootComponent && ((rootComponent as any).mpType = 'app')
@@ -7,5 +7,5 @@ export function createApp(rootComponent: unknown, rootProps = null) {
 }
 export const createSSRApp = createApp
 export * from './helpers'
-// @ts-ignore
+// @ts-expect-error
 export * from 'vue'

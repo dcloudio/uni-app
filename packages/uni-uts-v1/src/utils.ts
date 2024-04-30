@@ -1,11 +1,11 @@
 import path, { basename, resolve } from 'path'
 import fs from 'fs-extra'
 import type {
-  parse,
-  bundle,
-  UTSTarget,
   UTSOutputOptions,
   UTSResult,
+  UTSTarget,
+  bundle,
+  parse,
 } from '@dcloudio/uts'
 import {
   camelize,
@@ -16,7 +16,7 @@ import {
   isString,
 } from '@vue/shared'
 import glob from 'fast-glob'
-import { Module, ModuleItem } from '../types/types'
+import type { Module, ModuleItem } from '../types/types'
 import {
   installHBuilderXPlugin,
   isInHBuilderX,
@@ -37,6 +37,7 @@ interface ToOptions {
   isPlugin: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
+  uniModules: string[]
 }
 export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions
@@ -78,6 +79,7 @@ export function resolvePackage(filename: string) {
 
 export interface UTSPlatformResourceOptions {
   isX: boolean
+  pluginId: string
   inputDir: string
   outputDir: string
   platform: typeof process.env.UNI_UTS_PLATFORM
@@ -87,6 +89,7 @@ export interface UTSPlatformResourceOptions {
   hookClass: string
   result: UTSResult
   provider?: { name: string; service: string; class: string }
+  uniModules: string[]
 }
 export function genUTSPlatformResource(
   filename: string,
@@ -107,6 +110,26 @@ export function genUTSPlatformResource(
         return !['.uts', '.vue'].includes(path.extname(src))
       },
     })
+  }
+
+  if (options.uniModules && options.uniModules.length) {
+    const pkgJsonFile = path.resolve(
+      options.inputDir,
+      'uni_modules',
+      options.pluginId,
+      'package.json'
+    )
+    if (fs.existsSync(pkgJsonFile)) {
+      fs.copyFileSync(
+        pkgJsonFile,
+        path.resolve(
+          options.outputDir,
+          'uni_modules',
+          options.pluginId,
+          'package.json'
+        )
+      )
+    }
   }
 
   copyConfigJson(
@@ -148,7 +171,11 @@ export function genUTSPlatformResource(
 
 export function moveRootIndexSourceMap(
   filename: string,
-  { inputDir, platform, extname }: Omit<UTSPlatformResourceOptions, 'hookClass'>
+  {
+    inputDir,
+    platform,
+    extname,
+  }: Omit<UTSPlatformResourceOptions, 'hookClass' | 'pluginId' | 'uniModules'>
 ) {
   if (isRootIndex(filename, platform)) {
     const sourceMapFilename = path
@@ -200,7 +227,7 @@ export function resolveUTSPlatformFile(
     outputDir,
     platform,
     extname,
-  }: Omit<UTSPlatformResourceOptions, 'hookClass'>
+  }: Omit<UTSPlatformResourceOptions, 'hookClass' | 'pluginId' | 'uniModules'>
 ) {
   let platformFile = path
     .resolve(outputDir, path.relative(inputDir, filename))
@@ -452,12 +479,12 @@ function genComponentsConfigJson(
   const res: { name: string; class: string; delegateClass?: string }[] = []
   Object.keys(components).forEach((name) => {
     const normalized = capitalize(camelize(name))
-    const options: typeof res[0] = {
+    const options: (typeof res)[0] = {
       name,
       class: namespace + normalized + 'Component',
     }
     if (isX && platform === 'app-ios') {
-      options['delegateClass'] = normalized + 'ElementImpl'
+      options['delegateClass'] = normalized + 'ComponentRegister'
     }
     res.push(options)
   })
@@ -545,6 +572,15 @@ export function isUniCloudSupported() {
   }
 }
 
+// 是否应自动引入uniCloud模块
+export function shouldAutoImportUniCloud() {
+  return (
+    isUniCloudSupported() ||
+    process.env.UNI_APP_X_UNICLOUD_OBJECT === 'true' ||
+    process.env.NODE_ENV !== 'production'
+  )
+}
+
 export function parseExtApiDefaultParameters() {
   return normalizeExtApiDefaultParameters(
     require('../lib/ext-api/default-parameters.json')
@@ -599,6 +635,43 @@ export function parseInjectModules(
 
 export function parseExtApiModules() {
   return normalizeExtApiModules(require('../lib/ext-api/modules.json'))
+}
+
+export function parseExtApiProviders() {
+  const modules = require('../lib/ext-api/modules.json')
+  const providers: {
+    [name: string]: {
+      service: string
+      providers: string[]
+    }
+  } = {}
+  const moduleNames = Object.keys(modules)
+  // 第一遍，先遍历出来所有的service
+  moduleNames.forEach((name) => {
+    const module = modules[name]
+    const providerOptions = module.provider
+    if (providerOptions?.service && !providerOptions?.name) {
+      providers[name] = {
+        service: providerOptions.service,
+        providers: [],
+      }
+    }
+  })
+  // 第二遍，遍历所有provider
+  moduleNames.forEach((name) => {
+    const module = modules[name]
+    const providerOptions = module.provider
+    if (providerOptions?.name && providerOptions?.service) {
+      const moduleName = Object.keys(providers).find(
+        (moduleName) =>
+          providers[moduleName].service === providerOptions.service
+      )
+      if (moduleName) {
+        providers[moduleName].providers.push(providerOptions.name)
+      }
+    }
+  })
+  return providers
 }
 
 export type DefineOptions = {
@@ -659,9 +732,8 @@ export function resolveConfigProvider(
       service: transform.uniExtApiProviderService,
       class:
         (platform === 'app-android'
-          ? parseKotlinPackageWithPluginId(plugin, true)
+          ? parseKotlinPackageWithPluginId(plugin, true) + '.'
           : parseSwiftPackageWithPluginId(plugin, true)) +
-        '.' +
         formatExtApiProviderName(
           transform.uniExtApiProviderService,
           transform.uniExtApiProviderName

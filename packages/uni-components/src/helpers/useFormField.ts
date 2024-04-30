@@ -1,6 +1,6 @@
 import { getCurrentInstance, inject, onBeforeUnmount } from 'vue'
 import { isString } from '@vue/shared'
-import { UniFormCtx, uniFormKey } from '../vue/form'
+import { type UniFormCtx, uniFormKey } from '../vue/form'
 
 interface ValueState {
   value: string

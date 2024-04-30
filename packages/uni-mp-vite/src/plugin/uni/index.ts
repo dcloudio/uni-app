@@ -1,15 +1,15 @@
 import { extend } from '@vue/shared'
 import {
-  isMiniProgramNativeTag as isNativeTag,
   createIsCustomElement,
+  isMiniProgramNativeTag as isNativeTag,
 } from '@dcloudio/uni-shared'
 
 import {
-  CopyOptions,
-  UniVitePlugin,
-  MiniProgramCompilerOptions,
-  transformPageHead,
+  type CopyOptions,
+  type MiniProgramCompilerOptions,
+  type UniVitePlugin,
   parseManifestJsonOnce,
+  transformPageHead,
 } from '@dcloudio/uni-cli-shared'
 import type { TemplateCompiler } from '@vue/compiler-sfc'
 import type { CompilerOptions } from '@dcloudio/uni-mp-compiler'

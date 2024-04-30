@@ -1,9 +1,9 @@
 import {
   API_OPEN_LOCATION,
-  API_TYPE_OPEN_LOCATION,
-  defineAsyncApi,
-  OpenLocationProtocol,
+  type API_TYPE_OPEN_LOCATION,
   OpenLocationOptions,
+  OpenLocationProtocol,
+  defineAsyncApi,
   getLocale,
 } from '@dcloudio/uni-api'
 import { showPage } from '@dcloudio/uni-core'

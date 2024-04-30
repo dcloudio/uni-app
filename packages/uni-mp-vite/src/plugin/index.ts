@@ -1,15 +1,15 @@
-import { AliasOptions, ResolvedConfig } from 'vite'
+import type { AliasOptions, ResolvedConfig } from 'vite'
 import {
-  CopyOptions,
-  resolveBuiltIn,
-  UniVitePlugin,
+  type AppJson,
+  type CopyOptions,
+  type MiniProgramCompilerOptions,
+  type UniVitePlugin,
+  type findMiniProgramTemplateFiles,
   genNVueCssCode,
-  parseManifestJsonOnce,
-  findMiniProgramTemplateFiles,
-  MiniProgramCompilerOptions,
   initPostcssPlugin,
+  parseManifestJsonOnce,
   parseRpx2UnitOnce,
-  AppJson,
+  resolveBuiltIn,
   resolveVueI18nRuntime,
 } from '@dcloudio/uni-cli-shared'
 
@@ -22,8 +22,8 @@ import { emitFile, getFilterFiles, getTemplateFiles } from './template'
 
 import { getNVueCssPaths } from '../plugins/pagesJson'
 import {
-  rewriteCompilerSfcParseOnce,
   rewriteCompileScriptOnce,
+  rewriteCompilerSfcParseOnce,
 } from './polyfill'
 
 export interface UniMiniProgramPluginOptions {
@@ -150,7 +150,8 @@ export function uniMiniProgramPlugin(
           },
         },
         optimizeDeps: {
-          disabled: true,
+          noDiscovery: true,
+          include: [],
         },
         build: buildOptions(),
       }

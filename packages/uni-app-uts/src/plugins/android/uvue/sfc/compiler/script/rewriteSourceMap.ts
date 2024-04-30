@@ -1,5 +1,5 @@
 import type { Node, Program } from '@babel/types'
-import MagicString from 'magic-string'
+import type MagicString from 'magic-string'
 import { walk } from 'estree-walker'
 
 export function rewriteSourceMap(
@@ -125,11 +125,11 @@ export function rewriteSourceMap(
           )
         }
 
-        const start = node.id.loc!.start
+        const start = node.id!.loc!.start
         s.appendRight(
           startOffset + node.body.start! + 1,
           ` override __$getOriginalPosition(): UTSSourceMapPosition { return new UTSSourceMapPosition("${
-            node.id.name
+            node.id!.name
           }", "${fileName}", ${startLine + start.line}, ${start.column + 1});} `
         )
       }

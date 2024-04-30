@@ -1,8 +1,8 @@
 import {
   API_LOAD_FONT_FACE,
-  API_TYPE_LOAD_FONT_FACE,
-  defineAsyncApi,
+  type API_TYPE_LOAD_FONT_FACE,
   LoadFontFaceProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { addFont } from '@dcloudio/uni-shared'

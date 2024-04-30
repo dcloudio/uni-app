@@ -1,7 +1,5 @@
 import {
-  isUniLifecycleHook,
   MINI_PROGRAM_PAGE_RUNTIME_HOOKS,
-  once,
   ON_ADD_TO_FAVORITES,
   ON_HIDE,
   ON_LOAD,
@@ -12,14 +10,16 @@ import {
   ON_SHOW,
   ON_TAB_ITEM_TAP,
   ON_UNLOAD,
+  isUniLifecycleHook,
+  once,
 } from '@dcloudio/uni-shared'
 import { hasOwn, isArray, isFunction } from '@vue/shared'
 
-import { ComponentOptions } from 'vue'
+import type { ComponentOptions } from 'vue'
 
-import { MiniProgramAppOptions } from '../index'
-import { CustomAppInstanceProperty } from './app'
-import { CustomComponentInstanceProperty } from './component'
+import type { MiniProgramAppOptions } from '../index'
+import type { CustomAppInstanceProperty } from './app'
+import type { CustomComponentInstanceProperty } from './component'
 
 export const PAGE_INIT_HOOKS = [
   ON_LOAD,

@@ -1,15 +1,19 @@
+import fs from 'fs'
+import path from 'path'
+import colors from 'picocolors'
 import { extend } from '@vue/shared'
-import { RollupWatcher } from 'rollup'
-import type { BuildOptions, ServerOptions } from 'vite'
+import type { RollupWatcher } from 'rollup'
+import { type BuildOptions, type ServerOptions, createLogger } from 'vite'
 import {
   APP_CONFIG_SERVICE,
   APP_SERVICE_FILENAME,
   M,
+  isInHBuilderX,
   output,
 } from '@dcloudio/uni-cli-shared'
-import { CliOptions } from '.'
+import type { CliOptions } from '.'
 import { build, buildSSR } from './build'
-import { createServer, createSSRServer } from './server'
+import { createSSRServer, createServer } from './server'
 import {
   type PLATFORM,
   initEnv,
@@ -18,6 +22,7 @@ import {
 } from './utils'
 import { initEasycom } from '../utils/easycom'
 import { runUVueAndroidBuild, runUVueAndroidDev } from './uvue'
+import type { FSWatcher } from 'chokidar'
 
 export async function runDev(options: CliOptions & ServerOptions) {
   extend(options, {
@@ -41,13 +46,13 @@ export async function runDev(options: CliOptions & ServerOptions) {
       const server = await (options.ssr
         ? createSSRServer(options)
         : createServer(options))
-      initEasycom(server.watcher)
+      initEasycom(server.watcher as FSWatcher)
     } else {
       const watcher = (await build(options)) as RollupWatcher
       initEasycom()
       let isFirstStart = true
       let isFirstEnd = true
-      watcher.on('event', (event) => {
+      watcher.on('event', async (event) => {
         if (event.code === 'BUNDLE_START') {
           if (isFirstStart) {
             isFirstStart = false
@@ -73,6 +78,9 @@ export async function runDev(options: CliOptions & ServerOptions) {
             if (process.env.UNI_UTS_TIPS) {
               console.warn(process.env.UNI_UTS_TIPS)
             }
+            await stopProfiler((message) =>
+              createLogger(options.logLevel).info(message)
+            )
             return
           }
           if (options.platform === 'app') {
@@ -111,8 +119,10 @@ export async function runDev(options: CliOptions & ServerOptions) {
           return output('log', M['dev.watching.end'])
         } else if (event.code === 'END') {
           if (process.env.UNI_AUTOMATOR_WS_ENDPOINT) {
-            output('log', M['build.failed'])
-            process.exit(0)
+            setTimeout(() => {
+              output('log', M['build.failed'])
+              process.exit(0)
+            }, 2000)
           }
         }
       })
@@ -139,12 +149,51 @@ export async function runBuild(options: CliOptions & BuildOptions) {
     await (options.ssr && options.platform === 'h5'
       ? buildSSR(options)
       : build(options))
+    await stopProfiler((message) =>
+      createLogger(options.logLevel).info(message)
+    )
     console.log(M['build.done'])
     if (options.platform !== 'h5') {
       showRunPrompt(options.platform as PLATFORM)
     }
+    // 开发者可能用了三方插件，三方插件有可能阻止退出，导致HBuilderX打包状态识别不正确
+    if (isInHBuilderX()) {
+      process.exit(0)
+    }
   } catch (e: any) {
+    console.error(e)
     console.error(`Build failed with errors.`)
     process.exit(1)
   }
+}
+
+let profileSession = global.__vite_profile_session
+
+let profileCount = 0
+
+export const stopProfiler = (
+  log: (message: string) => void
+): void | Promise<void> => {
+  if (!profileSession) return
+  return new Promise((res, rej) => {
+    profileSession!.post('Profiler.stop', (err: any, result: any) => {
+      // Write profile to disk, upload, etc.
+      if (!err) {
+        const outPath = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          `./profile-${profileCount++}.cpuprofile`
+        )
+        fs.writeFileSync(outPath, JSON.stringify(result.profile))
+        log(
+          colors.yellow(
+            `CPU profile written to ${colors.white(colors.dim(outPath))}`
+          )
+        )
+        profileSession = undefined
+        res()
+      } else {
+        rej(err)
+      }
+    })
+  })
 }

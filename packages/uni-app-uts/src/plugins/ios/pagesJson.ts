@@ -4,12 +4,17 @@ import {
   APP_CONFIG,
   PAGES_JSON_UTS,
   normalizeAppPagesJson,
+  normalizePath,
   normalizeUniAppXAppConfig,
   normalizeUniAppXAppPagesJson,
   parseManifestJsonOnce,
+  parseVueRequest,
+  removeExt,
+  runByHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 import type { Plugin } from 'vite'
-import { isPages } from '../utils'
+import { isPages, setGlobalPageOrientation } from '../utils'
+import { isVue } from '../android/utils'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
@@ -18,6 +23,8 @@ export function uniAppPagesPlugin(): Plugin {
     PAGES_JSON_UTS
   )
 
+  let allPagePaths: string[] = []
+  let isFirst = true
   return {
     name: 'uni:app-pages',
     apply: 'build',
@@ -32,9 +39,35 @@ export function uniAppPagesPlugin(): Plugin {
       }
     },
     transform(code, id) {
+      if (isFirst && allPagePaths.length) {
+        const { filename } = parseVueRequest(id)
+        if (isVue(filename)) {
+          const vueFilename = removeExt(
+            normalizePath(path.relative(process.env.UNI_INPUT_DIR, filename))
+          )
+          // 项目内的
+          if (!vueFilename.startsWith('.')) {
+            // const index = allPagePaths.indexOf(pagePath)
+            // if (index > -1) {
+            if (runByHBuilderX()) {
+              console.log(
+                `当前工程${
+                  allPagePaths.length
+                }个页面，正在编译${vueFilename}...${'\u200b'}`
+              )
+            }
+            // }
+          }
+        }
+      }
       if (isPages(id)) {
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
         const pagesJson = normalizeUniAppXAppPagesJson(code)
+
+        setGlobalPageOrientation(pagesJson.globalStyle?.pageOrientation || '')
+
+        allPagePaths = pagesJson.pages.map((p) => p.path)
+
         this.emitFile({
           fileName: APP_CONFIG,
           type: 'asset',
@@ -45,9 +78,12 @@ export function uniAppPagesPlugin(): Plugin {
         })
         return {
           code: normalizeAppPagesJson(pagesJson),
-          map: null,
+          map: { mappings: '' },
         }
       }
+    },
+    buildEnd() {
+      isFirst = false
     },
   }
 }

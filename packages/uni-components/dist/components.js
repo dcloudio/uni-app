@@ -98,7 +98,6 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -4443,10 +4442,12 @@ function parseHtml(html) {
         text
       };
       const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
       }
-      parent.children.push(node);
     }
   });
   return results.children;

@@ -9,26 +9,29 @@ import type {
 
 import {
   D8_DEFAULT_ARGS,
-  KotlinCompilerServer,
-  RunKotlinDevResult,
-  getUniModulesCacheJars,
-  getUniModulesJars,
-  resolveKotlincArgs,
+  type KotlinCompilerServer,
+  type RunKotlinBuildResult,
+  type RunKotlinDevResult,
   createStderrListener,
-  getUniModulesEncryptCacheJars,
-  RunKotlinBuildResult,
   getInjectApis,
+  getUniModulesCacheJars,
+  getUniModulesEncryptCacheJars,
+  getUniModulesJars,
+  kotlinDir,
+  parseUTSModuleConfigJsonJars,
+  parseUTSModuleLibsJars,
+  resolveKotlincArgs,
 } from '../kotlin'
 import { parseUTSSyntaxError } from '../stacktrace'
 import {
   getCompilerServer,
   getUTSCompiler,
-  resolveUniAppXSourceMapPath,
-  isUniCloudSupported,
   parseExtApiDefaultParameters,
   parseInjectModules,
+  resolveUniAppXSourceMapPath,
+  shouldAutoImportUniCloud,
 } from '../utils'
-import { KotlinManifestCache } from '../stacktrace/kotlin'
+import type { KotlinManifestCache } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [
@@ -67,6 +70,8 @@ export interface CompileAppOptions {
   extApiComponents: string[]
   uvueClassNamePrefix?: string
   autoImports?: Record<string, [[string, string]]>
+  // service、name、class
+  extApiProviders?: [string, string, string][]
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -84,7 +89,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     autoImports,
   } = options
 
-  if (isUniCloudSupported() || process.env.NODE_ENV !== 'production') {
+  if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
   }
 
@@ -140,6 +145,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
         uniExtApiNamespaces: extApis,
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
+        uniExtApiProviders: options.extApiProviders,
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
@@ -173,14 +179,16 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   if (result.error) {
     throw parseUTSSyntaxError(result.error, inputDir)
   }
-
   if (isProd) {
-    if (
-      !isUniCloudSupported() &&
+    const autoImportUniCloud = shouldAutoImportUniCloud()
+    const useUniCloudApi =
       result.inject_apis &&
       result.inject_apis.find((api) => api.startsWith('uniCloud.'))
-    ) {
+    if (!autoImportUniCloud && useUniCloudApi) {
       throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
+    } else if (autoImportUniCloud && !useUniCloudApi) {
+      result.inject_apis = result.inject_apis || []
+      result.inject_apis.push('uniCloud.importObject')
     }
     return runKotlinBuild(options, result)
   }
@@ -190,12 +198,6 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 
 export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
-}
-
-function kotlinDir(outputDir: string) {
-  return (
-    process.env.UNI_APP_X_CACHE_DIR || path.resolve(outputDir, '../.kotlin')
-  )
 }
 
 function kotlinSrcDir(kotlinDir: string) {
@@ -264,13 +266,14 @@ function syncDexList(
 }
 
 let isFirst = true
+let checkConfigJsonDeps = true
 async function runKotlinDev(
   options: CompileAppOptions,
   result: RunKotlinDevResult,
   hasCache: boolean
 ) {
   result.type = 'kotlin'
-  const { inputDir, outputDir, pageCount } = options
+  const { inputDir, outputDir, pageCount, uni_modules } = options
   const kotlinRootOutDir = kotlinDir(outputDir)
   const kotlinDexOutDir = kotlinDexDir(kotlinRootOutDir)
   const kotlinSrcOutDir = kotlinSrcDir(kotlinRootOutDir)
@@ -316,7 +319,27 @@ async function runKotlinDev(
         getDefaultJar,
         getKotlincHome,
         compile: compileDex,
+        checkDependencies,
       } = compilerServer
+
+      const libsJars = parseUTSModuleLibsJars(uni_modules)
+
+      let hasError = false
+      const configJsonJars = await parseUTSModuleConfigJsonJars(
+        2,
+        uni_modules,
+        checkDependencies!,
+        checkConfigJsonDeps,
+        () => {
+          hasError = true
+        }
+      )
+      // 发生错误需要重新check
+      checkConfigJsonDeps = hasError
+
+      // console.log('uni_modules', uni_modules)
+      // console.log('libsJars', libsJars)
+      // console.log('configJsonJars', configJsonJars)
 
       const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
       const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
@@ -330,9 +353,12 @@ async function runKotlinDev(
           getKotlincHome(),
           [kotlinClassOutDir].concat(
             getDefaultJar(2)
-              .concat(getUniModulesEncryptCacheJars(cacheDir))
-              .concat(getUniModulesCacheJars(cacheDir))
-              .concat(getUniModulesJars(outputDir))
+              // 加密插件已经迁移到普通插件目录了，理论上不需要了
+              .concat(getUniModulesEncryptCacheJars(cacheDir)) // 加密插件jar
+              .concat(getUniModulesCacheJars(cacheDir)) // 普通插件jar
+              .concat(getUniModulesJars(outputDir)) // cli版本插件jar（没有指定cache的时候）
+              .concat(configJsonJars) // 插件config.json依赖
+              .concat(libsJars) // 插件本地libs
           )
         ).concat(['-module-name', `main-${+Date.now()}`]),
         d8: D8_DEFAULT_ARGS,

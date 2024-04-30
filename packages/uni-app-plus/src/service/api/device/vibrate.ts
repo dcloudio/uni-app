@@ -1,9 +1,9 @@
 import {
-  API_VIBRATE_SHORT,
+  type API_TYPE_VIBRATE_LONG,
+  type API_TYPE_VIBRATE_SHORT,
   API_VIBRATE_LONG,
+  API_VIBRATE_SHORT,
   defineAsyncApi,
-  API_TYPE_VIBRATE_SHORT,
-  API_TYPE_VIBRATE_LONG,
 } from '@dcloudio/uni-api'
 
 export const vibrateShort = defineAsyncApi<API_TYPE_VIBRATE_SHORT>(

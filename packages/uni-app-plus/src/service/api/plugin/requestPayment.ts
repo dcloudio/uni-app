@@ -1,9 +1,9 @@
 import { warpPlusErrorCallback } from '../../../helpers/plus'
 import {
-  defineAsyncApi,
   API_REQUEST_PAYMENT,
-  API_TYPE_REQUEST_PAYMENT,
+  type API_TYPE_REQUEST_PAYMENT,
   RequestPaymentProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 export const requestPayment = defineAsyncApi<API_TYPE_REQUEST_PAYMENT>(

@@ -1,7 +1,7 @@
 import { isMiniProgramNativeTag as isNativeTag } from '@dcloudio/uni-shared'
-import { compile, CompilerOptions } from '@dcloudio/uni-mp-compiler'
+import { type CompilerOptions, compile } from '@dcloudio/uni-mp-compiler'
 
-import { miniProgram, compilerOptions } from '../src/compiler/options'
+import { compilerOptions, miniProgram } from '../src/compiler/options'
 
 export function assert(
   template: string,

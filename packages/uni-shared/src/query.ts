@@ -1,4 +1,4 @@
-import { isPlainObject, isArray } from '@vue/shared'
+import { isArray, isPlainObject } from '@vue/shared'
 
 const encode = encodeURIComponent
 export function stringifyQuery(obj?: Record<string, any>, encodeStr = encode) {

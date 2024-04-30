@@ -1,4 +1,5 @@
-import {
+import fsExtra from 'fs-extra'
+import type {
   Expression,
   Identifier,
   Node,
@@ -28,16 +29,16 @@ import {
   UNKNOWN_TYPE,
   getId,
   getImportedName,
-  normalizePath,
   joinPaths,
+  normalizePath,
 } from './utils'
-import { ScriptCompileContext, resolveParserPlugins } from './context'
-import { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
+import { type ScriptCompileContext, resolveParserPlugins } from './context'
+import type { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
 import { capitalize, hasOwn } from '@vue/shared'
 import { parse as babelParse } from '@babel/parser'
 // import { parse } from '../parse'
 // import { createCache } from '../cache'
-import { extname, dirname, join } from 'path'
+import { dirname, extname, join } from 'path'
 import * as process from 'process'
 
 /**
@@ -202,6 +203,9 @@ function innerResolveTypeElements(
             typeParams[p.name] = param
           })
         }
+        if (resolved.type === 'TSInterfaceDeclaration') {
+          ;(ctx as ScriptCompileContext).propsInterfaceDecl = resolved
+        }
         return resolveTypeElements(
           ctx,
           resolved,
@@ -219,7 +223,7 @@ function innerResolveTypeElements(
             )
           }
           if (
-            // @ts-ignore
+            // @ts-expect-error
             SupportedBuiltinsSet.has(typeName)
           ) {
             return resolveBuiltin(
@@ -336,7 +340,7 @@ function mergeElements(
           baseProps[key].key,
           {
             type,
-            // @ts-ignore
+            // @ts-expect-error
             types: [baseProps[key], props[key]],
           },
           baseProps[key]._ownerScope,
@@ -781,20 +785,25 @@ function resolveFS(ctx: TypeResolveContext): FS | undefined {
     return ctx.fs
   }
 
-  const fs = ctx.options.fs
+  const fs = ctx.options.fs || {
+    fileExists: fsExtra.existsSync,
+    readFile(file: string) {
+      return fsExtra.readFileSync(file, 'utf-8')
+    },
+  }
   if (!fs) {
     return
   }
   return (ctx.fs = {
     fileExists(file) {
-      if (file.endsWith('.vue.ts')) {
-        file = file.replace(/\.ts$/, '')
+      if (file.startsWith('@/')) {
+        file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
       }
       return fs.fileExists(file)
     },
     readFile(file) {
-      if (file.endsWith('.vue.ts')) {
-        file = file.replace(/\.ts$/, '')
+      if (file.startsWith('@/')) {
+        file = file.replace('@/', normalizePath(process.env.UNI_INPUT_DIR))
       }
       return fs.readFile(file)
     },
@@ -843,6 +852,12 @@ function importSourceToScope(
     } else if (source.startsWith('.')) {
       // relative import - fast path
       const filename = joinPaths(dirname(scope.filename), source)
+      resolved = resolveExt(filename, fs)
+    } else if (source.startsWith('@/')) {
+      const filename = joinPaths(
+        process.env.UNI_INPUT_DIR,
+        source.replace('@/', '')
+      )
       resolved = resolveExt(filename, fs)
     } else {
       // module or aliased import - use full TS resolution, only supported in Node
@@ -1235,10 +1250,13 @@ function recordImport(node: Node, imports: TypeScope['imports']) {
 export function inferRuntimeType(
   ctx: TypeResolveContext,
   node: Node & MaybeWithScope,
+  from: 'defineProps' | 'defineModel',
   scope = node._ownerScope || ctxToScope(ctx)
 ): string[] {
   try {
     switch (node.type) {
+      case 'TSAnyKeyword':
+        return ['Object']
       case 'TSStringKeyword':
         return ['String']
       case 'TSNumberKeyword':
@@ -1260,9 +1278,31 @@ export function inferRuntimeType(
             m.type === 'TSCallSignatureDeclaration' ||
             m.type === 'TSConstructSignatureDeclaration'
           ) {
-            types.add('Function')
+            if (from === 'defineProps') {
+              types.add(
+                'Function as PropType<' +
+                  scope.source.slice(
+                    m.start! + scope.offset,
+                    m.end! + scope.offset
+                  ) +
+                  '>'
+              )
+            } else {
+              types.add('Function')
+            }
           } else {
-            types.add('Object')
+            if (from === 'defineProps') {
+              types.add(
+                'Object as PropType<' +
+                  scope.source.slice(
+                    m.start! + scope.offset,
+                    m.end! + scope.offset
+                  ) +
+                  '>'
+              )
+            } else {
+              types.add('Object')
+            }
           }
         }
         return types.size ? Array.from(types) : ['Object']
@@ -1272,17 +1312,36 @@ export function inferRuntimeType(
           return inferRuntimeType(
             ctx,
             node.typeAnnotation.typeAnnotation,
+            from,
             scope
           )
         }
         break
       case 'TSMethodSignature':
-      case 'TSFunctionType':
         return ['Function']
+      case 'TSFunctionType':
+        let type = 'Function'
+        if (from === 'defineProps') {
+          const fnType = scope.source.slice(
+            node.start! + scope.offset,
+            node.end! + scope.offset
+          )
+          type = 'Function as PropType<' + fnType + '>'
+        }
+        return [type]
       case 'TSArrayType':
       case 'TSTupleType':
         // TODO (nice to have) generate runtime element type/length checks
-        return ['Array']
+        return [
+          from === 'defineProps'
+            ? 'Array as PropType<' +
+              scope.source.slice(
+                node.start! + scope.offset,
+                node.end! + scope.offset
+              ) +
+              '>'
+            : 'Array',
+        ]
 
       case 'TSLiteralType':
         switch (node.literal.type) {
@@ -1300,84 +1359,93 @@ export function inferRuntimeType(
       case 'TSTypeReference': {
         const resolved = resolveTypeReference(ctx, node, scope)
         if (resolved) {
-          return inferRuntimeType(ctx, resolved, resolved._ownerScope)
+          return inferRuntimeType(ctx, resolved, from, resolved._ownerScope)
         }
         if (node.typeName.type === 'Identifier') {
-          switch (node.typeName.name) {
-            case 'Array':
-            case 'Function':
-            case 'Object':
-            case 'Set':
-            case 'Map':
-            case 'WeakSet':
-            case 'WeakMap':
-            case 'Date':
-            case 'Promise':
-            case 'Error':
-              return [node.typeName.name]
+          return [
+            scope.source.slice(
+              node.start! + scope.offset,
+              node.end! + scope.offset
+            ),
+          ]
+          // switch (node.typeName.name) {
+          //   case 'Array':
+          //   case 'Function':
+          //   case 'Object':
+          //   case 'Set':
+          //   case 'Map':
+          //   case 'WeakSet':
+          //   case 'WeakMap':
+          //   case 'Date':
+          //   case 'Promise':
+          //   case 'Error':
+          //     return [node.typeName.name]
 
-            // TS built-in utility types
-            // https://www.typescriptlang.org/docs/handbook/utility-types.html
-            case 'Partial':
-            case 'Required':
-            case 'Readonly':
-            case 'Record':
-            case 'Pick':
-            case 'Omit':
-            case 'InstanceType':
-              return ['Object']
+          //   // TS built-in utility types
+          //   // https://www.typescriptlang.org/docs/handbook/utility-types.html
+          //   case 'Partial':
+          //   case 'Required':
+          //   case 'Readonly':
+          //   case 'Record':
+          //   case 'Pick':
+          //   case 'Omit':
+          //   case 'InstanceType':
+          //     return ['Object']
 
-            case 'Uppercase':
-            case 'Lowercase':
-            case 'Capitalize':
-            case 'Uncapitalize':
-              return ['String']
+          //   case 'Uppercase':
+          //   case 'Lowercase':
+          //   case 'Capitalize':
+          //   case 'Uncapitalize':
+          //     return ['String']
 
-            case 'Parameters':
-            case 'ConstructorParameters':
-              return ['Array']
+          //   case 'Parameters':
+          //   case 'ConstructorParameters':
+          //     return ['Array']
 
-            case 'NonNullable':
-              if (node.typeParameters && node.typeParameters.params[0]) {
-                return inferRuntimeType(
-                  ctx,
-                  node.typeParameters.params[0],
-                  scope
-                ).filter((t) => t !== 'null')
-              }
-              break
-            case 'Extract':
-              if (node.typeParameters && node.typeParameters.params[1]) {
-                return inferRuntimeType(
-                  ctx,
-                  node.typeParameters.params[1],
-                  scope
-                )
-              }
-              break
-            case 'Exclude':
-            case 'OmitThisParameter':
-              if (node.typeParameters && node.typeParameters.params[0]) {
-                return inferRuntimeType(
-                  ctx,
-                  node.typeParameters.params[0],
-                  scope
-                )
-              }
-              break
-          }
+          //   case 'NonNullable':
+          //     if (node.typeParameters && node.typeParameters.params[0]) {
+          //       return inferRuntimeType(
+          //         ctx,
+          //         node.typeParameters.params[0],
+          //         scope
+          //       ).filter((t) => t !== 'null')
+          //     }
+          //     break
+          //   case 'Extract':
+          //     if (node.typeParameters && node.typeParameters.params[1]) {
+          //       return inferRuntimeType(
+          //         ctx,
+          //         node.typeParameters.params[1],
+          //         scope
+          //       )
+          //     }
+          //     break
+          //   case 'Exclude':
+          //   case 'OmitThisParameter':
+          //     if (node.typeParameters && node.typeParameters.params[0]) {
+          //       return inferRuntimeType(
+          //         ctx,
+          //         node.typeParameters.params[0],
+          //         scope
+          //       )
+          //     }
+          //     break
+          //   default:
+          //     // fixed by xxxxxx 未知的类型也返回，比如UTSJSONObject
+          //     return [node.typeName.name]
+          // }
         }
         // cannot infer, fallback to UNKNOWN: ThisParameterType
         break
       }
 
       case 'TSParenthesizedType':
-        return inferRuntimeType(ctx, node.typeAnnotation, scope)
+        return inferRuntimeType(ctx, node.typeAnnotation, from, scope)
 
       case 'TSUnionType':
-        return flattenTypes(ctx, node.types, scope)
+        return flattenTypes(ctx, node.types, from, scope)
       case 'TSIntersectionType': {
-        return flattenTypes(ctx, node.types, scope).filter(
+        return flattenTypes(ctx, node.types, from, scope).filter(
           (t) => t !== UNKNOWN_TYPE
         )
       }
@@ -1390,7 +1458,7 @@ export function inferRuntimeType(
 
       case 'TSIndexedAccessType': {
         const types = resolveIndexType(ctx, node, scope)
-        return flattenTypes(ctx, types, scope)
+        return flattenTypes(ctx, types, from, scope)
       }
 
       case 'ClassDeclaration':
@@ -1405,7 +1473,7 @@ export function inferRuntimeType(
         )
         const resolved = resolveTypeReference(ctx, node, sourceScope)
         if (resolved) {
-          return inferRuntimeType(ctx, resolved, resolved._ownerScope)
+          return inferRuntimeType(ctx, resolved, from, resolved._ownerScope)
         }
         break
       }
@@ -1416,7 +1484,7 @@ export function inferRuntimeType(
           // typeof only support identifier in local scope
           const matched = scope.declares[id.name]
           if (matched) {
-            return inferRuntimeType(ctx, matched, matched._ownerScope)
+            return inferRuntimeType(ctx, matched, from, matched._ownerScope)
           }
         }
         break
@@ -1431,15 +1499,16 @@ export function inferRuntimeType(
 function flattenTypes(
   ctx: TypeResolveContext,
   types: TSType[],
+  from: 'defineProps' | 'defineModel',
   scope: TypeScope
 ): string[] {
   if (types.length === 1) {
-    return inferRuntimeType(ctx, types[0], scope)
+    return inferRuntimeType(ctx, types[0], from, scope)
   }
   return [
     ...new Set(
       ([] as string[]).concat(
-        ...types.map((t) => inferRuntimeType(ctx, t, scope))
+        ...types.map((t) => inferRuntimeType(ctx, t, from, scope))
       )
     ),
   ]

@@ -1,19 +1,19 @@
 import {
   extend,
   hasOwn,
-  isString,
   isFunction,
   isPlainObject,
+  isString,
 } from '@vue/shared'
 import { LINEFEED } from '@dcloudio/uni-shared'
 import { validateProtocols } from '../protocol'
 import {
-  invokeCallback,
   createAsyncApiCallback,
-  onKeepAliveApiCallback,
-  offKeepAliveApiCallback,
-  findInvokeCallbackByName,
   createKeepAliveApiCallback,
+  findInvokeCallbackByName,
+  invokeCallback,
+  offKeepAliveApiCallback,
+  onKeepAliveApiCallback,
   removeKeepAliveApiCallback,
 } from './callback'
 import type { CALLBACK_TYPES } from './callback'
@@ -73,14 +73,18 @@ function invokeFail(
   delete errRes.errCode
   //#endif
 
-  return invokeCallback(
-    id,
-    typeof UniError !== 'undefined'
-      ? typeof errRes.errCode !== 'undefined'
+  let res = extend({ errMsg: apiErrMsg }, errRes)
+
+  //#if _X_
+  if (typeof UniError !== 'undefined') {
+    res =
+      typeof errRes.errCode !== 'undefined'
         ? new UniError(name, errRes.errCode, apiErrMsg)
         : new UniError(apiErrMsg, errRes)
-      : extend({ errMsg: apiErrMsg }, errRes)
-  )
+  }
+  //#endif
+
+  return invokeCallback(id, res)
 }
 
 function beforeInvokeApi<T extends ApiLike>(

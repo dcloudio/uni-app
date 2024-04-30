@@ -1,7 +1,10 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { isArray } from '@vue/shared'
-import { SelectorQueryRequest, SelectorQueryNodeInfo } from '@dcloudio/uni-api'
-import { NVueElement, parseNVueDataset } from '@dcloudio/uni-shared'
+import type {
+  SelectorQueryNodeInfo,
+  SelectorQueryRequest,
+} from '@dcloudio/uni-api'
+import { type NVueElement, parseNVueDataset } from '@dcloudio/uni-shared'
 
 export function requestComponentInfo(
   pageVm: ComponentPublicInstance,
@@ -67,7 +70,7 @@ interface NVueDomModule {
 }
 
 function findNVueElementIds(reqs: Array<SelectorQueryRequest>) {
-  const ids = []
+  const ids: string[] = []
   for (let i = 0; i < reqs.length; i++) {
     const selector = reqs[i].selector
     if (selector.indexOf('#') === 0) {

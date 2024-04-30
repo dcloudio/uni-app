@@ -1,26 +1,26 @@
 import {
+  type Expression,
+  type ObjectProperty,
   arrowFunctionExpression,
-  Expression,
   identifier,
+  numericLiteral,
   objectExpression,
   objectProperty,
-  ObjectProperty,
-  numericLiteral,
   stringLiteral,
 } from '@babel/types'
 import {
-  AttributeNode,
-  DirectiveNode,
-  ElementNode,
+  type AttributeNode,
+  type DirectiveNode,
+  type ElementNode,
   findProp,
 } from '@vue/compiler-core'
 import {
-  createBindDirectiveNode,
-  isDirectiveNode,
   VUE_REF,
   VUE_REF_IN_FOR,
+  createBindDirectiveNode,
+  isDirectiveNode,
 } from '@dcloudio/uni-cli-shared'
-import { TransformContext } from '../transform'
+import type { TransformContext } from '../transform'
 import { ATTR_VUE_ID, parseExprWithRewrite } from './utils'
 
 import { SET_REF } from '../runtimeHelpers'

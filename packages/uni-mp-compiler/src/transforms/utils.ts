@@ -1,33 +1,34 @@
 import {
+  type Expression,
+  type Identifier,
+  type MemberExpression,
+  type Node,
+  type SpreadElement,
   conditionalExpression,
-  Expression,
-  Identifier,
   identifier,
   isIdentifier,
   isLiteral,
   isReferenced,
   isTemplateLiteral,
-  MemberExpression,
   numericLiteral,
   objectProperty,
-  SpreadElement,
   stringLiteral,
 } from '@babel/types'
 import { VUE_REF, VUE_REF_IN_FOR } from '@dcloudio/uni-cli-shared'
 import {
-  createSimpleExpression,
-  ElementNode,
-  ExpressionNode,
+  type ElementNode,
+  type ExpressionNode,
   NodeTypes,
-  SimpleExpressionNode,
-  SourceLocation,
-  TransformContext as VueTransformContext,
+  type SimpleExpressionNode,
+  type SourceLocation,
+  type TransformContext as VueTransformContext,
+  createSimpleExpression,
 } from '@vue/compiler-core'
 import { walk } from 'estree-walker'
 import { isUndefined, parseExpr } from '../ast'
 import { genBabelExpr, genExpr } from '../codegen'
-import { CodegenScope } from '../options'
-import { isVForScope, isVIfScope, TransformContext } from '../transform'
+import type { CodegenScope } from '../options'
+import { type TransformContext, isVForScope, isVIfScope } from '../transform'
 // v-i,v-s 不能在 quickapp-webview 中使用，估计是内部处理成了指令之类的
 export const ATTR_VUE_ID = 'u-i'
 export const ATTR_VUE_SLOTS = 'u-s'
@@ -208,7 +209,7 @@ export function isReferencedByIds(node: Expression, knownIds: string[]) {
   return referenced
 }
 
-export function isStaticLiteral(value: object | null | undefined) {
+export function isStaticLiteral(value: Node | null | undefined) {
   return isLiteral(value) && !isTemplateLiteral(value)
 }
 

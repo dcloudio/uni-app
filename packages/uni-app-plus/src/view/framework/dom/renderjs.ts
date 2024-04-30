@@ -1,12 +1,16 @@
-import { createApp, ComponentOptions, ComponentPublicInstance } from 'vue'
-import { formatLog, RENDERJS_MODULES } from '@dcloudio/uni-shared'
+import {
+  type ComponentOptions,
+  type ComponentPublicInstance,
+  createApp,
+} from 'vue'
+import { RENDERJS_MODULES, formatLog } from '@dcloudio/uni-shared'
 import {
   createComponentDescriptorVm,
   getComponentDescriptor,
 } from '@dcloudio/uni-core'
 
-import { UniNode } from './elements/UniNode'
-import { UniCustomElement } from './components'
+import type { UniNode } from './elements/UniNode'
+import type { UniCustomElement } from './components'
 
 export function initRenderjs(node: UniNode, moduleIds: Record<string, string>) {
   Object.keys(moduleIds).forEach((name) => {

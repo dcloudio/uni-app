@@ -1,12 +1,12 @@
 import debug from 'debug'
-import { Plugin, ResolvedConfig } from 'vite'
+import type { Plugin, ResolvedConfig } from 'vite'
 
 import {
+  type MiniProgramFilterOptions,
   cleanUrl,
-  MiniProgramFilterOptions,
+  genWxsCallMethodsCode,
   missingModuleName,
   parseRenderjs,
-  genWxsCallMethodsCode,
 } from '@dcloudio/uni-cli-shared'
 
 const debugRenderjs = debug('uni:mp-renderjs')

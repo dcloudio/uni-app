@@ -1,0 +1,230 @@
+import {
+  callUniMethod,
+  CallUniMethodParams,
+  captureScreenshot,
+  CaptureScreenshotParams,
+  getPageStack,
+  getCurrentPage,
+  GetCurrentPageParams
+  // @ts-ignore
+} from './apis/App/index.uts'
+import {
+  GetDataParams as PageGetDataParams,
+  getData as pageGetData,
+  SetDataParams as PageSetDataParams,
+  setData as pageSetData,
+  CallMethodParams,
+  callMethod as pageCallMethod,
+  GetElementParams as PageGetElementParams,
+  getElement as pageGetElement,
+  getElements as pageGetElements,
+  GetWindowPropertiesParams,
+  getWindowProperties,
+  // @ts-ignore
+} from './apis/Page.uts'
+// @ts-ignore
+import { socketEmitter, SocketEmitterParams } from './apis/App/Socket.uts'
+import {
+  GetElementParams as ElementGetElementParams,
+  getElement as elementGetElement,
+  getElements as elementGetElements,
+  GetDOMPropertiesParams,
+  getDOMProperties,
+  GetPropertiesParams,
+  getProperties,
+  CallFunctionParams as ElementCallFunctionParams,
+  callFunction as elementCallFunction,
+  TapParams,
+  tap,
+  CallMethodParams as ElementCallMethodParams,
+  callMethod as elementCallMethod,
+  GetDataParams as ElementGetDataParams,
+  getData as elementGetData,
+  SetDataParams as ElementSetDataParams,
+  setData as elementSetData,
+  GetOffsetParams,
+  getOffset,
+  LongpressParams,
+  longpress,
+  HandleTouchEventParams,
+  handleTouchEvent,
+  GetAttributesParams,
+  getAttributes,
+  GetStylesParams,
+  getStyles,
+  TriggerEventParams,
+  triggerEvent
+  // @ts-ignore
+} from './apis/Element.uts'
+
+// @ts-ignore
+let socketTask: SocketTask | null = null
+const wsEndpoint = process.env.UNI_AUTOMATOR_WS_ENDPOINT
+
+export function send(data: any) {
+  // @ts-ignore
+  socketTask?.send({ data: JSON.stringify(data) } as SendSocketMessageOptions)
+}
+
+export type Callback = (result: any | null, error: any | null) => void
+
+type Msg = {
+  id: string,
+  method: string,
+  params: any
+}
+
+export function onMessage(msg: string) {
+  // @ts-ignore
+  const json = JSON.parse<Msg>(msg)!
+  const method = json.method
+  if ((method == 'ping')) {
+    send('pong')
+    return
+  }
+  const params = JSON.stringify(json.params)
+  const res = { id: json.id }
+  try {
+    const callback = (result?: any | null, error?: any | null) => {
+      res['result'] = result
+      res['error'] = error
+      send(res)
+    }
+    if (method.startsWith('App.')) {
+      switch (method) {
+        case 'App.callUniMethod':
+          // @ts-ignore
+          callUniMethod(JSON.parse<CallUniMethodParams>(params)!, callback)
+          break
+        case 'App.captureScreenshot':
+          // @ts-ignore
+          captureScreenshot(JSON.parse<CaptureScreenshotParams>(params)!, callback)
+          break
+        case 'App.getPageStack':
+          getPageStack(callback)
+          break
+        case 'App.getCurrentPage':
+          getCurrentPage({ callback } as GetCurrentPageParams)
+          break
+        case 'App.socketEmitter':
+          // @ts-ignore
+          socketEmitter(JSON.parse<SocketEmitterParams>(params)!, callback)
+          break
+      }
+    } else if (method.startsWith('Page.')) {
+      switch (method) {
+        case 'Page.getData':
+          // @ts-ignore
+          pageGetData(JSON.parse<PageGetDataParams>(params)!, callback)
+          break
+        case 'Page.setData':
+          // @ts-ignore
+          pageSetData(JSON.parse<PageSetDataParams>(params)!, callback)
+          break
+        case 'Page.callMethod':
+          // @ts-ignore
+          pageCallMethod(JSON.parse<CallMethodParams>(params)!, callback)
+          break
+        case 'Page.getElement':
+          // @ts-ignore
+          pageGetElement(JSON.parse<PageGetElementParams>(params)!, callback)
+          break
+        case 'Page.getElements':
+          // @ts-ignore
+          pageGetElements(JSON.parse<PageGetElementParams>(params)!, callback)
+          break
+        case 'Page.getWindowProperties':
+          // @ts-ignore
+          getWindowProperties(JSON.parse<GetWindowPropertiesParams>(params)!, callback)
+          break
+      }
+    } else if (method.startsWith('Element.')) {
+      switch (method) {
+        case 'Element.getElement':
+          // @ts-ignore
+          elementGetElement(JSON.parse<ElementGetElementParams>(params)!, callback)
+          break
+        case 'Element.getElements':
+          // @ts-ignore
+          elementGetElements(JSON.parse<ElementGetElementParams>(params)!, callback)
+          break
+        case 'Element.getDOMProperties':
+          // @ts-ignore
+          getDOMProperties(JSON.parse<GetDOMPropertiesParams>(params)!, callback)
+          break
+        case 'Element.getProperties':
+          // @ts-ignore
+          getProperties(JSON.parse<GetPropertiesParams>(params)!, callback)
+          break
+        case 'Element.callFunction':
+          // @ts-ignore
+          elementCallFunction(JSON.parse<ElementCallFunctionParams>(params)!, callback)
+          break
+        case 'Element.tap':
+          // @ts-ignore
+          tap(JSON.parse<TapParams>(params)!, callback)
+          break
+        case 'Element.callMethod':
+          // @ts-ignore
+          elementCallMethod(JSON.parse<ElementCallMethodParams>(params)!, callback)
+          break
+        case 'Element.getData':
+          // @ts-ignore
+          elementGetData(JSON.parse<ElementGetDataParams>(params)!, callback)
+          break
+        case 'Element.setData':
+          // @ts-ignore
+          elementSetData(JSON.parse<ElementSetDataParams>(params)!, callback)
+          break
+        case 'Element.getOffset':
+          // @ts-ignore
+          getOffset(JSON.parse<GetOffsetParams>(params)!, callback)
+          break
+        case 'Element.longpress':
+          // @ts-ignore
+          longpress(JSON.parse<LongpressParams>(params)!, callback)
+          break
+        case 'Element.touchstart':
+        case 'Element.touchmove':
+        case 'Element.touchend':
+          // @ts-ignore
+          handleTouchEvent(JSON.parse<HandleTouchEventParams>(params)!, method.split('.')[1], callback)
+          break
+        case 'Element.getAttributes':
+          // @ts-ignore
+          getAttributes(JSON.parse<GetAttributesParams>(params)!, callback)
+          break
+        case 'Element.getStyles':
+          // @ts-ignore
+          getStyles(JSON.parse<GetStylesParams>(params)!, callback)
+          break
+        case 'Element.triggerEvent':
+          // @ts-ignore
+          triggerEvent(JSON.parse<TriggerEventParams>(params)!, callback)
+          break
+      }
+    }
+  } catch (error) {
+    res['error'] = { message: error.stackTraceToString() }
+    send(res)
+  }
+}
+
+export function initAutomator() {
+  // @ts-ignore
+  socketTask = uni.connectSocket({
+    url: wsEndpoint
+  });
+  socketTask!.onMessage((res) => {
+    onMessage(res.data as string)
+  })
+  socketTask!.onOpen((_) => {
+    console.warn("automator.onOpen")
+  })
+  socketTask!.onError((err) => {
+    console.warn(`automator.onError: ${JSON.stringify(err)}`);
+  })
+  socketTask!.onClose((_) => {
+    console.warn("automator.onClose");
+  })
+}

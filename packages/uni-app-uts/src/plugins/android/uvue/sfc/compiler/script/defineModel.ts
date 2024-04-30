@@ -1,5 +1,5 @@
-import { LVal, Node, ObjectProperty, TSType } from '@babel/types'
-import { ScriptCompileContext } from './context'
+import type { LVal, Node, ObjectProperty, TSType } from '@babel/types'
+import type { ScriptCompileContext } from './context'
 import { inferRuntimeType } from './resolveType'
 import {
   UNKNOWN_TYPE,
@@ -83,7 +83,7 @@ export function processDefineModel(
   // register binding type
   ctx.bindingMetadata[modelName] = BindingTypes.PROPS
 
-  const runtimeTypes = type && inferRuntimeType(ctx, type)
+  const runtimeTypes = type && inferRuntimeType(ctx, type, 'defineModel')
   let runtimeType =
     runtimeTypes && runtimeTypes.length === 1 ? runtimeTypes[0] : undefined
 
@@ -146,7 +146,7 @@ export function genModelProps(ctx: ScriptCompileContext) {
   for (const [name, { type, options }] of Object.entries(ctx.modelDecls)) {
     let skipCheck = false
 
-    let runtimeTypes = type && inferRuntimeType(ctx, type)
+    let runtimeTypes = type && inferRuntimeType(ctx, type, 'defineModel')
     if (runtimeTypes) {
       const hasUnknownType = runtimeTypes.includes(UNKNOWN_TYPE)
 

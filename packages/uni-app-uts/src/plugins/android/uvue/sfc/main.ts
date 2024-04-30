@@ -4,7 +4,7 @@ import type {
   SourceMapInput,
   TransformPluginContext,
 } from 'rollup'
-import { SourceMapConsumer, type RawSourceMap } from 'source-map-js'
+import { type RawSourceMap, SourceMapConsumer } from 'source-map-js'
 import type { EncodedSourceMap as TraceEncodedSourceMap } from '@jridgewell/trace-mapping'
 import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-mapping'
@@ -24,14 +24,10 @@ import type { ImportSpecifier } from 'es-module-lexer'
 import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
 import { resolveScript } from './script'
 import type { ResolvedOptions } from './index'
-import {
-  addExtApiComponents,
-  createResolveError,
-  parseImports,
-  wrapResolve,
-} from '../../utils'
+import { createResolveError, parseImports, wrapResolve } from '../../utils'
 import { genTemplateCode } from '../code/template'
 import { resolveGenTemplateCodeOptions } from './template'
+import { addExtApiComponents } from '../../../utils'
 
 export async function transformMain(
   code: string,
@@ -71,7 +67,7 @@ export async function transformMain(
 
   let templatePreambleCode: string | undefined = undefined
   let templateCode = ''
-  let templateMap = undefined
+  let templateMap: RawSourceMap | undefined = undefined
   let templateImportsCode = ''
   let templateImportEasyComponentsCode = ''
   let templateImportUTSComponentsCode = ''

@@ -109,7 +109,6 @@ export function createNavigatorOnClick(
       case 'redirect':
         uni.redirectTo({
           url: props.url,
-          // @ts-ignore
           exists: props.exists,
         })
         break

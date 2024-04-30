@@ -3,10 +3,10 @@ import { getFileName } from '../../../helpers/file'
 import { TEMP_PATH } from '../constants'
 import {
   API_COMPRESS_VIDEO,
-  API_TYPE_COMPRESS_VIDEO,
-  defineAsyncApi,
+  type API_TYPE_COMPRESS_VIDEO,
   CompressVideoOptions,
   CompressVideoProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 export const compressVideo = defineAsyncApi<API_TYPE_COMPRESS_VIDEO>(

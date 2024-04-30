@@ -6,7 +6,7 @@ import {
   ON_SHOW,
   ON_UNHANDLE_REJECTION,
 } from '@dcloudio/uni-shared'
-import { ComponentInternalInstance, injectHook } from 'vue'
+import { type ComponentInternalInstance, injectHook } from 'vue'
 import { removeHook } from '@dcloudio/uni-core'
 import { remove } from '@vue/shared'
 

@@ -1,7 +1,7 @@
 import { copySync, existsSync } from 'fs-extra'
 import { join } from 'path'
 import { resolveSourceMapPath } from '../shared'
-import { APP_PLATFORM } from './utils'
+import type { APP_PLATFORM } from './utils'
 
 function getSourceMapFilename(platform: APP_PLATFORM) {
   return `index${platform === 'app-android' ? '.kt' : '.swift'}.map`

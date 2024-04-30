@@ -1,20 +1,24 @@
 import { isArray } from '@vue/shared'
-import { ComponentInternalInstance, ComponentOptions, toRaw } from 'vue'
+import {
+  type ComponentInternalInstance,
+  type ComponentOptions,
+  toRaw,
+} from 'vue'
 
 import {
-  // @ts-ignore
+  // @ts-expect-error
   findComponentPropsData,
-  // @ts-ignore
+  // @ts-expect-error
   hasQueueJob,
-  // @ts-ignore
+  // @ts-expect-error
   invalidateJob,
-  // @ts-ignore
+  // @ts-expect-error
   updateProps,
 } from 'vue'
 
-import { MPComponentInstance } from '..'
+import type { MPComponentInstance } from '..'
 
-import { MPComponentOptions } from './component'
+import type { MPComponentOptions } from './component'
 
 export function initData(_: ComponentOptions) {
   return {}
@@ -68,7 +72,11 @@ export function updateComponentProps(
     if (hasQueueJob(instance.update)) {
       invalidateJob(instance.update)
     }
-    if (__PLATFORM__ === 'mp-toutiao' || __PLATFORM__ === 'mp-baidu') {
+    if (
+      __PLATFORM__ === 'mp-toutiao' ||
+      __PLATFORM__ === 'mp-baidu' ||
+      __PLATFORM__ === 'mp-xhs'
+    ) {
       // 字节跳动小程序 https://github.com/dcloudio/uni-app/issues/3340
       // 百度小程序 https://github.com/dcloudio/uni-app/issues/3612
       if (!hasQueueJob(instance.update)) {

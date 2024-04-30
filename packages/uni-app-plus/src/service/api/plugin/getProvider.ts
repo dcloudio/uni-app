@@ -1,8 +1,8 @@
 import {
-  defineAsyncApi,
   API_GET_PROVIDER,
-  API_TYPE_GET_PROVIDER,
+  type API_TYPE_GET_PROVIDER,
   GetProviderProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 type Service =

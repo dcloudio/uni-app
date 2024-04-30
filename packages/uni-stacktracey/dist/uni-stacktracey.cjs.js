@@ -17,7 +17,9 @@ typeof window !== 'undefined' &&
     /* eslint-disable */
     window.window === window &&
     /* eslint-disable */
-    window.navigator, nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
+    window.navigator, 
+// @ts-ignore
+nodeRequire = isBrowser ? null : module.require, // to prevent bundlers from expanding the require call
 lastOf = (x) => x[x.length - 1], nixSlashes$1 = (x) => x.replace(/\\/g, '/'), pathRoot = isBrowser ? window.location.href : nixSlashes$1(process.cwd()) + '/';
 /*  ------------------------------------------------------------------------ */
 class StackTracey {
@@ -94,7 +96,7 @@ class StackTracey {
         result = externalDomainMatch ? externalDomainMatch[3] : result;
         // if (!isBrowser) result = nodeRequire!('path').relative(pathRoot, result)
         return [
-            nixSlashes$1(result).replace(/^.*\:\/\/?\/?/, ''),
+            nixSlashes$1(result).replace(/^.*\:\/\/?\/?/, ''), // cut webpack:/// and webpack:/ things
             externalDomain,
         ];
     }
@@ -204,8 +206,6 @@ function parseItem(e, maxColumnWidths, isMP) {
         return new StackTracey(this.items[method].apply(this.items, arguments));
     };
 });
-/*  ------------------------------------------------------------------------ */
-var StackTracey$1 = StackTracey;
 
 var util$1 = {};
 
@@ -765,7 +765,7 @@ var util$1 = {};
 
 	  return normalize(sourceURL)
 	}
-	exports.computeSourceURL = computeSourceURL;
+	exports.computeSourceURL = computeSourceURL; 
 } (util$1));
 
 var arraySet = {};
@@ -990,14 +990,10 @@ var binarySearch$1 = {};
 	  }
 
 	  return index
-	};
+	}; 
 } (binarySearch$1));
 
-var readWasmExports = {};
-var readWasm$2 = {
-  get exports(){ return readWasmExports; },
-  set exports(v){ readWasmExports = v; },
-};
+var readWasm$2 = {exports: {}};
 
 /* Determine browser vs node environment by testing the default top level context. Solution courtesy of: https://stackoverflow.com/questions/17575790/environment-detection-node-js-or-browser */
 {
@@ -1023,12 +1019,14 @@ var readWasm$2 = {
     })
   };
 
-  readWasmExports.initialize = (_) => {
+  readWasm$2.exports.initialize = (_) => {
     console.debug(
       'SourceMapConsumer.initialize is a no-op when running in node.js'
     );
   };
 }
+
+var readWasmExports = readWasm$2.exports;
 
 const readWasm$1 = readWasmExports;
 
@@ -2737,7 +2735,7 @@ function getConsumer(content) {
                 });
             }
             else {
-                // @ts-ignore
+                // @ts-expect-error
                 const consumer = SourceMapConsumer(content);
                 resolve(consumer);
             }
@@ -2854,7 +2852,7 @@ function uniStracktraceyPreset(opts) {
             return Promise.resolve(getSourceMapContent(sourcemapUrl));
         },
         parseStacktrace(stacktrace) {
-            stack = new StackTracey$1(stacktrace, uniPlatform);
+            stack = new StackTracey(stacktrace, uniPlatform);
             return stack;
         },
         asTableStacktrace({ maxColumnWidths, stacktrace, stack }) {

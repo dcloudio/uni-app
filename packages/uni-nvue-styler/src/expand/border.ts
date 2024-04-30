@@ -1,4 +1,4 @@
-import { createDecl, NormalizeOptions, TransformDecl } from '../utils'
+import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
 
 const borderWidth = __NODE_JS__ ? '-width' : 'Width'
 const borderStyle = __NODE_JS__ ? '-style' : 'Style'

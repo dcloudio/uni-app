@@ -1,6 +1,11 @@
 import {
-  IfStatement,
-  ImportDeclaration,
+  type IfStatement,
+  type ImportDeclaration,
+  type Node,
+  type ObjectProperty,
+  type Program,
+  type Statement,
+  type StringLiteral,
   isBlockStatement,
   isCallExpression,
   isIdentifier,
@@ -12,11 +17,6 @@ import {
   isStringLiteral,
   isUnaryExpression,
   isVariableDeclaration,
-  Node,
-  ObjectProperty,
-  Program,
-  Statement,
-  StringLiteral,
 } from '@babel/types'
 import { walk } from 'estree-walker'
 import MagicString from 'magic-string'

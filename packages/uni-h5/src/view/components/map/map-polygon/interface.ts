@@ -1,12 +1,12 @@
-import { QQMap, GoogleMap } from '../maps'
-import {
+import type { GoogleMap, QQMap } from '../maps'
+import type {
+  QQMaps,
   Polygon as QQPolygon,
   PolygonOptions as QQPolygonOptions,
-  QQMaps,
 } from '../maps/qq/types'
-import { GoogleMaps, Polygon as GPolygon } from '../maps/google/types'
-import { useCustomEvent } from '@dcloudio/uni-components'
-import props from './props'
+import type { Polygon as GPolygon, GoogleMaps } from '../maps/google/types'
+import type { useCustomEvent } from '@dcloudio/uni-components'
+import type props from './props'
 
 export interface Point {
   latitude: number

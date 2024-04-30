@@ -1,17 +1,17 @@
 import { onEventPrevent, onEventStop } from '@dcloudio/uni-core'
 import {
+  type ExtractPropTypes,
+  type Ref,
   Transition,
   defineComponent,
-  ExtractPropTypes,
   ref,
-  Ref,
   watchEffect,
 } from 'vue'
-import { usePopup, VNODE_MASK } from './utils'
+import { VNODE_MASK, usePopup } from './utils'
 import {
-  onThemeChange,
-  offThemeChange,
   getTheme,
+  offThemeChange,
+  onThemeChange,
 } from '../../../../helpers/theme'
 
 type ModalTheme = Record<UniApp.ThemeMode, { cancelColor: string }>
@@ -53,7 +53,13 @@ const props = {
   },
   confirmColor: {
     type: String,
+    //#if _X_
+    default: '#576b95',
+    //#endif
+    //#if !_X_
+    // @ts-expect-error
     default: '#007aff',
+    //#endif
   },
   visible: {
     type: Boolean,
@@ -102,25 +108,41 @@ export default /*#__PURE__*/ defineComponent({
           <uni-modal v-show={visible.value} onTouchmove={onEventPrevent}>
             {VNODE_MASK}
             <div class="uni-modal">
-              {title && (
+              {title || __X__ ? (
                 <div class="uni-modal__hd">
-                  <strong class="uni-modal__title" v-text={title}></strong>
+                  <strong
+                    class="uni-modal__title"
+                    v-text={title || ''}
+                  ></strong>
                 </div>
-              )}
+              ) : null}
               {editable ? (
-                <textarea
-                  class="uni-modal__textarea"
-                  rows="1"
-                  placeholder={placeholderText}
-                  value={content}
-                  onInput={(e: Event) =>
-                    (editContent.value = (e.target! as any).value)
-                  }
-                />
+                __X__ ? (
+                  <div class="uni-modal__bd" key="uni-modal-bd-editable">
+                    <textarea
+                      class="uni-modal__textarea"
+                      rows="2"
+                      placeholder={placeholderText}
+                      value={content}
+                      onInput={(e: Event) =>
+                        (editContent.value = (e.target! as any).value)
+                      }
+                    />
+                  </div>
+                ) : (
+                  <textarea
+                    class="uni-modal__textarea"
+                    rows="1"
+                    placeholder={placeholderText}
+                    value={content}
+                    onInput={(e: Event) =>
+                      (editContent.value = (e.target! as any).value)
+                    }
+                  />
+                )
               ) : (
                 <div
                   class="uni-modal__bd"
-                  // @ts-ignore
                   onTouchmovePassive={onEventStop}
                   v-text={content}
                 ></div>

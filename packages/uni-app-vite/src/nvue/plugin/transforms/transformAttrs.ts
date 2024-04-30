@@ -4,7 +4,7 @@ import {
   isSimpleExpressionNode,
 } from '@dcloudio/uni-cli-shared'
 import { isAppNVueNativeTag } from '@dcloudio/uni-shared'
-import { NodeTransform } from '@vue/compiler-core'
+import type { NodeTransform } from '@vue/compiler-core'
 import { camelize } from '@vue/shared'
 /**
  * 将内置组件属性调整为驼峰

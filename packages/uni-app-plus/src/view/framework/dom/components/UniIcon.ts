@@ -1,6 +1,6 @@
 import '@dcloudio/uni-components/style/icon.css'
 import { Icon } from '@dcloudio/uni-components'
-import { UniNodeJSON } from '@dcloudio/uni-shared'
+import type { UniNodeJSON } from '@dcloudio/uni-shared'
 
 import { UniComponent } from './UniComponent'
 

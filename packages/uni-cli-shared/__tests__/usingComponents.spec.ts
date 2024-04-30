@@ -1,5 +1,5 @@
 import path from 'path'
-import { ResolvedId } from 'rollup'
+import type { ResolvedId } from 'rollup'
 import { normalizePath } from '../src/utils'
 import { findUsingComponents } from '../src/json/mp/jsonFile'
 import { parseProgram } from '../src/mp/ast'

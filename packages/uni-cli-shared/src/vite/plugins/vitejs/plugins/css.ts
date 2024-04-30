@@ -5,31 +5,31 @@ import glob from 'fast-glob'
 import colors from 'picocolors'
 import postcssrc from 'postcss-load-config'
 import { dataToEsm } from '@rollup/pluginutils'
-import {
+import type { SFCDescriptor } from '@vue/compiler-sfc'
+import type {
   EmittedAsset,
   ExistingRawSourceMap,
   PluginContext,
   RollupError,
   SourceMapInput,
 } from 'rollup'
-import { RawSourceMap } from '@ampproject/remapping'
+import type { RawSourceMap } from '@ampproject/remapping'
 import type * as PostCSS from 'postcss'
 import {
-  // createDebugger,
-  isExternalUrl,
   asyncReplace,
   cleanUrl,
+  combineSourcemaps,
   generateCodeFrame,
   isDataUrl,
+  isExternalUrl,
   isObject,
   normalizePath,
   processSrcSet,
-  combineSourcemaps,
 } from '../utils'
-import { Plugin } from '../plugin'
-import { ResolvedConfig } from '../config'
-import { ResolveFn, ViteDevServer } from '../'
-import { fileToUrl, assetUrlRE, getAssetFilename } from './asset'
+import type { Plugin } from '../plugin'
+import type { ResolvedConfig } from '../config'
+import type { ResolveFn, ViteDevServer } from '../'
+import { assetUrlRE, fileToUrl, getAssetFilename } from './asset'
 import MagicString from 'magic-string'
 import * as Postcss from 'postcss'
 import type Sass from 'sass'
@@ -47,7 +47,7 @@ import { PAGES_JSON_JS, PAGES_JSON_UTS } from '../../../../constants'
 import { createRollupError } from '../../../utils/utils'
 import { createCompilerError } from '@vue/compiler-core'
 import { createResolveErrorMsg } from '../../../../utils'
-import { SFCDescriptor } from '@vue/compiler-sfc'
+
 import { parseVueRequest } from '../../../utils'
 // const debug = createDebugger('vite:css')
 
@@ -235,14 +235,16 @@ export function cssPlugin(
             options?.isAndroidX
               ? ({
                   emitFile(emittedFile: EmittedAsset) {
-                    // 直接写入目标目录
-                    fs.outputFileSync(
-                      path.resolve(
-                        process.env.UNI_OUTPUT_DIR,
-                        emittedFile.fileName!
-                      ),
-                      emittedFile.source!
+                    const fileName = path.resolve(
+                      process.env.UNI_OUTPUT_DIR,
+                      emittedFile.fileName!
                     )
+                    // 忽略static（可能有只读文件，写入覆盖只读会报错权限）
+                    if (normalizePath(fileName).includes('/static/')) {
+                      return
+                    }
+                    // 直接写入目标目录
+                    fs.outputFileSync(fileName, emittedFile.source!)
                   },
                 } as PluginContext)
               : this,
@@ -875,7 +877,6 @@ async function resolvePostcssConfig(
   } else {
     const searchPath = isString(inlineOptions) ? inlineOptions : config.root
     try {
-      // @ts-ignore
       result = await postcssrc({}, searchPath)
     } catch (e: any) {
       if (!/No PostCSS Config found/.test(e.message)) {
@@ -1634,5 +1635,9 @@ export function rewriteScssReadFileSync() {
       return preCss(content)
     }
     return content
-  }) as typeof nodeFs['readFileSync']
+  }) as (typeof nodeFs)['readFileSync']
+  // TODO 在 web 端，目前使用的是 vite 内置的 css 预处理
+  // 最新的 vite less 使用的是 readFile，https://github.com/vitejs/vite/blob/main/packages/vite/src/node/plugins/css.ts#L2336
+  // 拦截 readFile 的话，要考虑的细节较多，暂不实现了
+  // 稍后 web 端，也直接内部定制 css 的预处理
 }

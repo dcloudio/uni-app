@@ -1,10 +1,10 @@
-import { isPlainObject, isArray, hasOwn } from '@vue/shared'
+import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 
 import {
-  addSafeAreaInsets,
-  useDeviceId,
-  populateParameters,
   navigateTo as _navigateTo,
+  addSafeAreaInsets,
+  populateParameters,
+  useDeviceId,
 } from '@dcloudio/uni-mp-core'
 
 import { getStorageSync } from './shims'

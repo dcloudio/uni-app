@@ -1,44 +1,44 @@
-import { NOOP, EMPTY_OBJ, extend, isString, isArray, hasOwn } from '@vue/shared'
+import { EMPTY_OBJ, NOOP, extend, hasOwn, isArray, isString } from '@vue/shared'
 
 import {
-  ConditionalExpression,
-  isObjectExpression,
-  isConditionalExpression,
-  identifier,
+  type ArrowFunctionExpression,
+  type BlockStatement,
+  type ConditionalExpression,
+  type Identifier,
+  type ObjectExpression,
+  type ObjectProperty,
+  type ReturnStatement,
+  type SpreadElement,
   callExpression,
-  ObjectExpression,
-  objectExpression,
-  ObjectProperty,
-  SpreadElement,
-  isObjectProperty,
-  BlockStatement,
-  ArrowFunctionExpression,
-  ReturnStatement,
+  identifier,
   isCallExpression,
+  isConditionalExpression,
   isIdentifier,
+  isObjectExpression,
+  isObjectProperty,
   isSpreadElement,
-  Identifier,
+  objectExpression,
   spreadElement,
 } from '@babel/types'
 import {
-  DirectiveNode,
-  ElementNode,
+  type CacheExpression,
+  type CompilerError,
+  type DirectiveNode,
+  type ElementNode,
+  type ExpressionNode,
+  type JSChildNode,
   NodeTypes,
-  Property,
-  RootNode,
-  ParentNode,
-  TemplateChildNode,
+  type ParentNode,
+  type Property,
+  type RootNode,
   TO_DISPLAY_STRING,
-  CompilerError,
+  type TemplateChildNode,
   helperNameMap,
-  ExpressionNode,
-  JSChildNode,
-  CacheExpression,
   locStub,
 } from '@vue/compiler-core'
 import { findMiniProgramUsingComponents } from '@dcloudio/uni-cli-shared'
 import IdentifierGenerator from './identifier'
-import {
+import type {
   CodegenRootNode,
   CodegenRootScope,
   CodegenScope,
@@ -184,7 +184,7 @@ export function traverseNode(
   context.currentNode = node
   // apply transform plugins
   const { nodeTransforms } = context
-  const exitFns = []
+  const exitFns: Array<() => void> = []
   for (let i = 0; i < nodeTransforms.length; i++) {
     const onExit = nodeTransforms[i](node, context as any)
     if (onExit) {
@@ -543,7 +543,7 @@ export function createStructuralDirectiveTransform(
       // if (node.tagType === ElementTypes.TEMPLATE && props.some(isVSlot)) {
       //   return
       // }
-      const exitFns = []
+      const exitFns: Array<() => void> = []
       for (let i = 0; i < props.length; i++) {
         const prop = props[i]
         if (prop.type === NodeTypes.DIRECTIVE && matches(prop.name)) {

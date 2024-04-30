@@ -1,6 +1,6 @@
 import MagicString from 'magic-string'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
-import { ScriptCompileContext } from './context'
+import type { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
 import { hasDebugError, rewriteDebugError } from './rewriteDebugError'
 import { rewriteSourceMap } from './rewriteSourceMap'

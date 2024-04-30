@@ -1,4 +1,4 @@
-import { extend, camelize } from '@vue/shared'
+import { camelize, extend } from '@vue/shared'
 import { once } from '../utils'
 interface HTMLElementWithDataset extends HTMLElement {
   __uniDataset?: Record<string, any>

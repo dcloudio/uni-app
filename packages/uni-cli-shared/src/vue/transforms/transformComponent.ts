@@ -1,13 +1,13 @@
 import {
+  NodeTypes,
+  type RootNode,
+  type TemplateChildNode,
+  type TransformContext,
   createSimpleExpression,
   locStub,
-  NodeTypes,
-  RootNode,
-  TemplateChildNode,
-  TransformContext,
 } from '@vue/compiler-core'
-import { COMPONENT_BIND_LINK, COMPONENT_ON_LINK } from '../../mp/constants'
-import { isUserComponent, createAttributeNode } from '../utils'
+import type { COMPONENT_BIND_LINK, COMPONENT_ON_LINK } from '../../mp/constants'
+import { createAttributeNode, isUserComponent } from '../utils'
 
 export function createTransformComponentLink(
   name: typeof COMPONENT_BIND_LINK | typeof COMPONENT_ON_LINK,
@@ -18,6 +18,10 @@ export function createTransformComponentLink(
     context: TransformContext
   ) {
     if (!isUserComponent(node, context)) {
+      return
+    }
+    // 新版本的 vue，识别 template 有差异，可能认为是自定义组件
+    if (node.tag === 'template') {
       return
     }
     if (type === NodeTypes.DIRECTIVE) {

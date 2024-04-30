@@ -1,14 +1,14 @@
 import path from 'path'
 import type { Plugin } from 'vite'
-import { extend, isArray, isString, isFunction } from '@vue/shared'
+import { extend, isArray, isFunction, isString } from '@vue/shared'
 import {
-  CopyOptions,
+  type CopyOptions,
+  type UniViteCopyPluginTarget,
+  type UniVitePlugin,
   registerPlatform,
-  UniViteCopyPluginTarget,
-  UniVitePlugin,
 } from '@dcloudio/uni-cli-shared'
 import type { TemplateCompiler } from '@vue/compiler-sfc'
-import { VitePluginUniResolvedOptions } from '..'
+import type { VitePluginUniResolvedOptions } from '..'
 
 interface PluginConfig {
   id: string

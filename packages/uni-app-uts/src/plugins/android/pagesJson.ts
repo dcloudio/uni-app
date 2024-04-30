@@ -11,7 +11,7 @@ import type { OutputAsset } from 'rollup'
 import type { Plugin } from 'vite'
 
 import { ENTRY_FILENAME, stringifyMap } from './utils'
-import { isPages } from '../utils'
+import { isPages, setGlobalPageOrientation } from '../utils'
 
 export function uniAppPagesPlugin(): Plugin {
   const pagesJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'pages.json')
@@ -70,6 +70,8 @@ export function uniAppPagesPlugin(): Plugin {
         routes = []
 
         process.env.UNI_APP_X_PAGE_COUNT = pagesJson.pages.length + ''
+
+        setGlobalPageOrientation(pagesJson.globalStyle?.pageOrientation || '')
 
         pagesJson.pages.forEach((page, index) => {
           const className = genUTSClassName(page.path)

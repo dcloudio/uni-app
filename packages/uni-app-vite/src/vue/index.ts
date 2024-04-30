@@ -1,15 +1,15 @@
 import {
-  initAppProvide,
-  uniViteInjectPlugin,
-  uniCssScopedPlugin,
-  getAppStyleIsolation,
-  parseManifestJsonOnce,
-  uniHBuilderXConsolePlugin,
   UNI_EASYCOM_EXCLUDE,
-  isVueSfcFile,
-  isUniPageFile,
+  getAppStyleIsolation,
+  initAppProvide,
   isAppVue,
+  isUniPageFile,
+  isVueSfcFile,
+  parseManifestJsonOnce,
+  uniCssScopedPlugin,
   uniEasycomPlugin,
+  uniHBuilderXConsolePlugin,
+  uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniTemplatePlugin } from '../plugins/template'
 import { uniManifestJsonPlugin } from '../plugins/manifestJson'

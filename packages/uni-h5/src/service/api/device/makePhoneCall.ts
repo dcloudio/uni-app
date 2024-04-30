@@ -1,8 +1,8 @@
 import {
   API_MAKE_PHONE_CALL,
-  API_TYPE_MAKE_PHONE_CALL,
-  defineAsyncApi,
+  type API_TYPE_MAKE_PHONE_CALL,
   MakePhoneCallProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 export const makePhoneCall = defineAsyncApi<API_TYPE_MAKE_PHONE_CALL>(

@@ -1,4 +1,4 @@
-import { createDecl, TransformDecl } from '../utils'
+import { type TransformDecl, createDecl } from '../utils'
 
 const flexDirection = __NODE_JS__ ? 'flex-direction' : 'flexDirection'
 const flexWrap = __NODE_JS__ ? 'flex-wrap' : 'flexWrap'

@@ -2,22 +2,19 @@ import { EventChannel, ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
 import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 import {
   API_NAVIGATE_TO,
-  API_TYPE_NAVIGATE_TO,
-  defineAsyncApi,
-  DefineAsyncApiFn,
+  type API_TYPE_NAVIGATE_TO,
+  type DefineAsyncApiFn,
   NavigateToOptions,
   NavigateToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
-import {
-  // navigate,
-  RouteOptions,
-} from '../../../service/api/route/utils'
+import type { RouteOptions } from '../../../service/api/route/utils'
 import { showWebview } from './webview'
 import { registerPage } from '../../framework/page'
 import { getWebviewId } from '../../../service/framework/webview/utils'
-// import { setStatusBarStyle } from '../../statusBar'
+import { setStatusBarStyle } from '../../statusBar'
 
 export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   args,
@@ -67,16 +64,23 @@ function _navigateTo({
   invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
-    showWebview(
-      registerPage({ url, path, query, openType: 'navigateTo', eventChannel }),
-      aniType,
-      aniDuration,
-      () => {
+    const noAnimation = aniType === 'none' || aniDuration === 0
+    function callback(page: IPage) {
+      showWebview(page, aniType, aniDuration, () => {
         resolve({ eventChannel })
-      }
+        setStatusBarStyle()
+      })
+    }
+    // 有动画时先执行 show
+    const page = registerPage(
+      { url, path, query, openType: 'navigateTo', eventChannel },
+      noAnimation ? undefined : callback,
+      // 有动画时延迟创建 vm
+      noAnimation ? 0 : 1
     )
-    // TODO uni-app x
-    // setStatusBarStyle()
+    if (noAnimation) {
+      callback(page)
+    }
   })
 }
 

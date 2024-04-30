@@ -7,15 +7,14 @@ import {
   API_SET_TAB_BAR_STYLE,
   API_SHOW_TAB_BAR,
   API_SHOW_TAB_BAR_RED_DOT,
-  API_TYPE_HIDE_TAB_BAR,
-  API_TYPE_HIDE_TAB_BAR_RED_DOT,
-  API_TYPE_REMOVE_TAB_BAR_BADGE,
-  API_TYPE_SET_TAB_BAR_BADGE,
-  API_TYPE_SET_TAB_BAR_ITEM,
-  API_TYPE_SET_TAB_BAR_STYLE,
-  API_TYPE_SHOW_TAB_BAR,
-  API_TYPE_SHOW_TAB_BAR_RED_DOT,
-  defineAsyncApi,
+  type API_TYPE_HIDE_TAB_BAR,
+  type API_TYPE_HIDE_TAB_BAR_RED_DOT,
+  type API_TYPE_REMOVE_TAB_BAR_BADGE,
+  type API_TYPE_SET_TAB_BAR_BADGE,
+  type API_TYPE_SET_TAB_BAR_ITEM,
+  type API_TYPE_SET_TAB_BAR_STYLE,
+  type API_TYPE_SHOW_TAB_BAR,
+  type API_TYPE_SHOW_TAB_BAR_RED_DOT,
   HideTabBarProtocol,
   HideTabBarRedDotOptions,
   HideTabBarRedDotProtocol,
@@ -30,9 +29,10 @@ import {
   ShowTabBarProtocol,
   ShowTabBarRedDotOptions,
   ShowTabBarRedDotProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import tabBar from '../../framework/app/tabBar'
-import { removeLeadingSlash, normalizeTabBarStyles } from '@dcloudio/uni-shared'
+import { normalizeTabBarStyles, removeLeadingSlash } from '@dcloudio/uni-shared'
 import { normalizeTabBarRoute } from '@dcloudio/uni-core'
 import { isTabBarPage } from '../../../helpers/plus'
 

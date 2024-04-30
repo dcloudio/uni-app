@@ -1,11 +1,11 @@
 import safeAreaInsets from 'safe-area-insets'
 import { getWindowOffset } from '@dcloudio/uni-core'
 import {
-  isLandscape,
   getScreenFix,
+  getScreenHeight,
   getScreenWidth,
   getWindowWidth,
-  getScreenHeight,
+  isLandscape,
 } from '../base/getBaseSystemInfo'
 import { defineSyncApi } from '@dcloudio/uni-api'
 

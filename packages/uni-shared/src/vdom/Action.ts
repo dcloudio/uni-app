@@ -1,4 +1,4 @@
-import { UniNodeJSON, UniNodeJSONMinify } from './Node'
+import type { UniNodeJSON, UniNodeJSONMinify } from './Node'
 
 export const ACTION_TYPE_PAGE_CREATE = 1
 export const ACTION_TYPE_PAGE_CREATED = 2

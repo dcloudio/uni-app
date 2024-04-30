@@ -1,5 +1,5 @@
 import { checkElementNodeTag } from '@dcloudio/uni-cli-shared'
-import { ElementNode, NodeTransform } from '@vue/compiler-core'
+import type { ElementNode, NodeTransform } from '@vue/compiler-core'
 
 export const transformPageHead: NodeTransform = (node, context) => {
   if (checkElementNodeTag(node, 'page-meta')) {

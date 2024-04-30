@@ -1,4 +1,4 @@
-import { BuiltInLocale } from '../src/index'
+import type { BuiltInLocale } from '../src/index'
 import { I18n } from '../src/index'
 
 const messages = {

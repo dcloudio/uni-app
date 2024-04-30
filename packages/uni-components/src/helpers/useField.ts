@@ -1,25 +1,25 @@
 import {
-  Ref,
-  ref,
-  SetupContext,
-  watch,
-  onMounted,
-  onBeforeMount,
+  type ExtractPropTypes,
+  type HTMLAttributes,
+  type Ref,
+  type SetupContext,
   computed,
-  reactive,
   nextTick,
-  HTMLAttributes,
-  ExtractPropTypes,
+  onBeforeMount,
+  onMounted,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
 import { extend, isFunction } from '@vue/shared'
 import { debounce } from '@dcloudio/uni-shared'
 import { getCurrentPageId, registerViewMethod } from '@dcloudio/uni-core'
 import { throttle } from './throttle'
-import { useCustomEvent, CustomEventTrigger } from './useEvent'
+import { type CustomEventTrigger, useCustomEvent } from './useEvent'
 import { useUserAction } from './useUserAction'
 import {
-  props as keyboardProps,
   emit as keyboardEmit,
+  props as keyboardProps,
   useKeyboard,
 } from './useKeyboard'
 import { useScopedAttrs } from './useScopedAttrs'
@@ -54,11 +54,15 @@ const UniViewJSBridgeSubscribe = function () {
 const FOCUS_DELAY = 200
 let startTime: number
 
-function getValueString(value: any, type: string) {
+function getValueString(value: any, type: string, maxlength?: number) {
   if (type === 'number' && isNaN(Number(value))) {
     value = ''
   }
-  return value === null ? '' : String(value)
+  const valueStr = value === null ? '' : String(value)
+  if (maxlength == void 0) {
+    return valueStr
+  }
+  return valueStr.slice(0, maxlength)
 }
 
 interface InputEventDetail {
@@ -143,7 +147,7 @@ export const props = /*#__PURE__*/ extend(
     },
     maxlength: {
       type: [Number, String],
-      default: 140,
+      default: __X__ ? Infinity : 140,
     },
     confirmType: {
       type: String,
@@ -220,11 +224,26 @@ function useBase(
   })
   const maxlength = computed(() => {
     var maxlength = Number(props.maxlength)
-    return isNaN(maxlength) ? 140 : maxlength
+    if (__X__) {
+      return isNaN(maxlength) || maxlength < 0
+        ? Infinity
+        : Math.floor(maxlength)
+    } else {
+      return isNaN(maxlength) ? 140 : maxlength
+    }
   })
+  // #if _X_
+  // @ts-expect-error
+  const value =
+    getValueString(props.modelValue, props.type, maxlength.value) ||
+    getValueString(props.value, props.type, maxlength.value)
+  // #endif
+  // #if !_X_
+  // @ts-expect-error
   const value =
     getValueString(props.modelValue, props.type) ||
     getValueString(props.value, props.type)
+  // #endif
   const state: State = reactive({
     value,
     valueOrigin: value,
@@ -241,7 +260,10 @@ function useBase(
   )
   watch(
     () => state.maxlength,
-    (val) => (state.value = state.value.slice(0, val))
+    (val) => (state.value = state.value.slice(0, val)),
+    {
+      immediate: __X__ ? true : false,
+    }
   )
   return {
     fieldRef,
@@ -252,10 +274,18 @@ function useBase(
 
 function useValueSync(
   props: Props,
-  state: { value: string },
+  state: { value: string; maxlength: number },
   emit: SetupContext['emit'],
   trigger: CustomEventTrigger
 ) {
+  // #if _X_
+  //@ts-expect-error
+  const valueChangeFn = throttle((val: any) => {
+    state.value = getValueString(val, props.type, state.maxlength)
+  }, 100)
+  // #endif
+  // #if !_X_
+  //@ts-expect-error
   const valueChangeFn = debounce(
     (val: any) => {
       state.value = getValueString(val, props.type)
@@ -263,6 +293,7 @@ function useValueSync(
     100,
     { setTimeout, clearTimeout }
   )
+  // #endif
   watch(() => props.modelValue, valueChangeFn)
   watch(() => props.value, valueChangeFn)
   const triggerInputFn = throttle((event: Event, detail: InputEventDetail) => {

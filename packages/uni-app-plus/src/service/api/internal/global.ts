@@ -25,18 +25,18 @@ export function restoreGlobal(
     // __VUE__ 在 uni-jsframework-next 编译时会被替换为 vue
     Vue = __VUE__ = newVue
     weex = newWeex
-    // @ts-ignore
+    // @ts-expect-error
     plus = newPlus
     restoreOldSetStatusBarStyle(plus.navigator.setStatusBarStyle)
     plus.navigator.setStatusBarStyle = newSetStatusBarStyle
     /* eslint-disable no-global-assign */
-    // @ts-ignore
+    // @ts-expect-error
     setTimeout = newSetTimeout
-    // @ts-ignore
+    // @ts-expect-error
     clearTimeout = newClearTimeout
-    // @ts-ignore
+    // @ts-expect-error
     setInterval = newSetInterval
-    // @ts-ignore
+    // @ts-expect-error
     clearInterval = newClearInterval
   }
   __uniConfig.serviceReady = true

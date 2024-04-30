@@ -13,24 +13,22 @@ import {
 } from './constants'
 
 import {
+  type ElementNode,
   NodeTypes,
-  ElementNode,
-  RootNode,
-  TemplateChildNode,
+  type RootNode,
+  type TemplateChildNode,
 } from '@vue/compiler-core'
-import { ParserPlugin } from '@babel/parser'
+import type { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
 import { isInHBuilderX } from './hbx'
-
-export const version = require('../package.json').version
 
 // 专为 uts.ts 服务
 export { camelize, capitalize, isArray } from '@vue/shared'
 
-export let isRunningWithYarnPnp: boolean
-try {
-  isRunningWithYarnPnp = Boolean(require('pnpapi'))
-} catch {}
+// export let isRunningWithYarnPnp: boolean
+// try {
+//   isRunningWithYarnPnp = Boolean(require('pnpapi'))
+// } catch {}
 
 export const isWindows = os.platform() === 'win32'
 export function normalizePath(id: string): string {

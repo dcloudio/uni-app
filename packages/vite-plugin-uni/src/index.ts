@@ -1,5 +1,5 @@
 import fs from 'fs'
-import debug from 'debug'
+// import debug from 'debug'
 import type { Plugin, ResolvedConfig, ViteDevServer } from 'vite'
 import type { Options as VueOptions } from '@vitejs/plugin-vue'
 import type ViteLegacyPlugin from '@vitejs/plugin-legacy'
@@ -9,18 +9,19 @@ import vueJsxPlugin from '@vitejs/plugin-vue-jsx'
 import legacyPlugin from '@vitejs/plugin-legacy'
 
 import {
-  CopyOptions,
-  InjectOptions,
+  type AutoImportOptions,
+  type CopyOptions,
+  type InjectOptions,
   emptyDir,
   initAutoImportOptions,
   initModuleAlias,
-  parseUniExtApis,
+  isInHBuilderX,
+  parseUniExtApisOnce,
   resolveSourceMapPath,
-  rewriteScssReadFileSync,
   rewriteExistsSyncHasRootFile,
+  rewriteScssReadFileSync,
   uniUTSExtApiReplace,
   uniViteInjectPlugin,
-  isInHBuilderX,
 } from '@dcloudio/uni-cli-shared'
 
 import { createConfig } from './config'
@@ -41,11 +42,10 @@ import {
 } from './vue'
 import { initEnv } from './cli/utils'
 import { uniUVuePlugin } from './uvue/plugins'
-import { AutoImportOptions } from '@dcloudio/uni-cli-shared'
 
 export type ViteLegacyOptions = Parameters<typeof ViteLegacyPlugin>[0]
 
-const debugUni = debug('uni:plugin')
+// const debugUni = debug('uni:plugin')
 
 initModuleAlias()
 
@@ -124,13 +124,17 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   const plugins: Plugin[] = []
 
   // uni x 需要插入到指定位置，此插件执行太早，又会引发 vue 文件的不支持，该插件是解析ast的，所以必须是合法的js或ts代码
-  if (process.env.UNI_APP_X === 'true') {
+  if (
+    process.env.UNI_APP_X === 'true' &&
+    // iOS 暂不使用该机制
+    process.env.UNI_UTS_PLATFORM !== 'app-ios'
+  ) {
     plugins.push(uniUTSExtApiReplace())
   } else {
-    const injects = parseUniExtApis(
+    const injects = parseUniExtApisOnce(
       true,
       process.env.UNI_UTS_PLATFORM,
-      'javascript'
+      process.env.UNI_UTS_TARGET_LANGUAGE
     )
     if (Object.keys(injects).length) {
       plugins.push(
@@ -153,7 +157,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
     (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5',
     options
   )
-  debugUni(uniPlugins)
+  // debugUni(uniPlugins)
 
   const uniPluginOptions = initPluginUniOptions(uniPlugins)
 
@@ -259,7 +263,7 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
     (process.env.UNI_PLATFORM as UniApp.PLATFORM) || 'h5',
     options
   )
-  debugUni(uniPlugins)
+  // debugUni(uniPlugins)
 
   const uniPluginOptions = initPluginUniOptions(uniPlugins)
 

@@ -1,6 +1,6 @@
 import type { WatchOptions } from 'chokidar'
 import type { Plugin, ResolvedConfig } from 'vite'
-import { FileWatcher, FileWatcherOptions } from '../../watcher'
+import { FileWatcher, type FileWatcherOptions } from '../../watcher'
 import { M } from '../../messages'
 import { output, resetOutput } from '../../logs'
 import { debounce } from '@dcloudio/uni-shared'

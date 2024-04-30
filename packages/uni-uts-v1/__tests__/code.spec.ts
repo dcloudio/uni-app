@@ -1,5 +1,5 @@
 import { resolve } from 'path'
-import { FORMATS, GenProxyCodeOptions, genProxyCode } from '../src/code'
+import { FORMATS, type GenProxyCodeOptions, genProxyCode } from '../src/code'
 import { ERR_MSG_PLACEHOLDER } from '../src/utils'
 
 const inputDir = resolve(__dirname, 'examples/uts')

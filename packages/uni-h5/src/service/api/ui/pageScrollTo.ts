@@ -1,9 +1,9 @@
 import {
   API_PAGE_SCROLL_TO,
-  API_TYPE_PAGE_SCROLL_TO,
-  defineAsyncApi,
+  type API_TYPE_PAGE_SCROLL_TO,
   PageScrollToOptions,
   PageScrollToProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { scrollTo } from '@dcloudio/uni-shared'
 

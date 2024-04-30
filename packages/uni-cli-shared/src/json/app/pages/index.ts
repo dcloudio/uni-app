@@ -1,5 +1,5 @@
 import { globalCode } from './code'
-import { definePageCode, defineNVuePageCode } from './definePage'
+import { defineNVuePageCode, definePageCode } from './definePage'
 import { normalizeAppUniConfig } from './uniConfig'
 import { normalizeAppUniRoutes } from './uniRoutes'
 

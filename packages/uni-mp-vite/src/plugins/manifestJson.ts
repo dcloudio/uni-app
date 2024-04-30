@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { Plugin } from 'vite'
+import type { Plugin } from 'vite'
 import { hasOwn } from '@vue/shared'
 import {
   defineUniManifestJsonPlugin,
@@ -9,7 +9,7 @@ import {
   parseMiniProgramProjectJson,
   parsePagesJsonOnce,
 } from '@dcloudio/uni-cli-shared'
-import { UniMiniProgramPluginOptions } from '../plugin'
+import type { UniMiniProgramPluginOptions } from '../plugin'
 
 function findUserProjectConfigFile(inputDir: string, config: string[]) {
   for (let i = 0; i < config.length; i++) {

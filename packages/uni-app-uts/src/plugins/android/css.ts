@@ -8,19 +8,19 @@ import {
   cssPlugin,
   cssPostPlugin,
   formatAtFilename,
+  genUTSClassName,
   generateCodeFrame,
   insertBeforePlugin,
-  parseVueRequest,
-  resolveMainPathOnce,
-  parseAssets,
-  preUVueCss,
   normalizeNodeModules,
-  genUTSClassName,
+  parseAssets,
+  parseVueRequest,
+  preUVueCss,
+  resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
 import {
-  ResolvedOptions,
+  type ResolvedOptions,
   getDescriptor,
   getResolvedOptions,
 } from './uvue/descriptorCache'

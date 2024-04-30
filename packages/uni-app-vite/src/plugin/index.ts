@@ -1,4 +1,7 @@
-import { resolveVueI18nRuntime, UniVitePlugin } from '@dcloudio/uni-cli-shared'
+import {
+  type UniVitePlugin,
+  resolveVueI18nRuntime,
+} from '@dcloudio/uni-cli-shared'
 
 import { uniOptions } from './uni'
 import { buildOptions } from './build'
@@ -22,7 +25,8 @@ export function uniAppPlugin(
         base: '/', // app 平台强制 base
         build: buildOptions({ renderer, appService }, config, env),
         optimizeDeps: {
-          disabled: true,
+          noDiscovery: true,
+          include: [],
         },
         resolve: {
           alias: {

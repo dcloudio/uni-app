@@ -4,10 +4,10 @@ import debug from 'debug'
 import type { Connect, ViteDevServer } from 'vite'
 import { createFilter } from '@rollup/pluginutils'
 import {
+  PUBLIC_DIR,
   isImportRequest,
   isInternalRequest,
   normalizePath,
-  PUBLIC_DIR,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniStaticMiddleware } from './middlewares/static'

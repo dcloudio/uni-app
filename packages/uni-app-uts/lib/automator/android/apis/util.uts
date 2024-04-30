@@ -1,0 +1,333 @@
+/// <reference types="@dcloudio/uni-app-x/types/native-global" />
+// @ts-expect-error
+import { IUniNativeDocument } from 'io.dcloud.uniapp.dom'
+
+
+// @ts-ignore
+function getPageId(page: Page): string {
+  return page.$nativePage!.pageId
+}
+// @ts-ignore
+function getPagePath(page: Page): string {
+  return page.route
+}
+// @ts-ignore
+function getPageQuery(page: Page): UTSJSONObject {
+  return map2Object(page.options as Map<string, any | null>)
+}
+// @ts-ignore
+function getPageById(id: string): Page | null {
+  // @ts-ignore
+  const pages = getCurrentPages()
+  // @ts-ignore
+  let result: Page | null = null
+  // @ts-ignore
+  pages.forEach((page: Page) => {
+    if (getPageId(page) == id) {
+      result = page
+    }
+  })
+  return result
+}
+// @ts-ignore
+export function getPageVm(id: string): Page | null {
+  return getPageById(id)
+}
+
+export function pageGetData(
+  // @ts-ignore
+  vm: Page,
+  // @ts-ignore
+): UTSJSONObject {
+  // TODO: path 目前无法处理类型问题，暂由服务端处理
+  if (vm.$.exposed.size > 0) {
+    return map2Object(vm.$.exposed)
+  }
+  return map2Object(vm.$data)
+}
+// @ts-ignore
+export function pageSetData(vm: Page, data: Map<string, any | null>): void {
+  data.forEach((value: any | null, key: string) => {
+    vm.$data.set(key, value)
+  })
+}
+// @ts-ignore
+export function parsePage(page: Page): UTSJSONObject {
+  return {
+    id: getPageId(page),
+    path: getPagePath(page),
+    query: getPageQuery(page),
+    // @ts-ignore
+  } as UTSJSONObject
+}
+export function getComponentVmBySelector(
+  pageId: string,
+  selector: string,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): ComponentPublicInstance | null {
+  const page = getPageVm(pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
+    return null
+  }
+  const component = page.$children.find(
+    // @ts-ignore
+    (child: ComponentPublicInstance): boolean => child.$options.name == selector
+  )
+  if (component == null) {
+    callback(null, { errMsg: `component[${selector}] not exists` })
+    return null
+  }
+  return component
+}
+export function getComponentVmByNodeId(
+  pageId: string,
+  nodeId: number,
+  callback: (result: any | null, error: any | null) => void
+  // @ts-ignore
+): ComponentPublicInstance | null {
+  const page = getPageVm(pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
+    return null
+  }
+  // @ts-ignore
+  let component: ComponentPublicInstance | null = null
+  // @ts-ignore
+  function getComponentChild(parent: ComponentPublicInstance) {
+    // @ts-ignore
+    if (parent.$.uid.toInt() == nodeId.toInt()) {
+      component = parent
+      return
+    }
+    // @ts-ignore
+    parent.$children.forEach((child: ComponentPublicInstance) => {
+      getComponentChild(child)
+    })
+  }
+  getComponentChild(page)
+  if (component == null) {
+    callback(null, { errMsg: `component[${nodeId}] not exists` })
+    return null
+  }
+  return component
+}
+export function getElementByIdOrNodeId(
+  pageId: string,
+  elementId: string | null,
+  nodeId: number | null,
+  callback: (result: any | null, error: any | null) => void
+): UniElement | null {
+  if (nodeId != null) {
+    return getComponentDomByNodeId(pageId, nodeId, callback)
+  } else if (elementId != null) {
+    return getElementById(pageId, elementId, callback)
+  }
+  return null
+}
+export function getComponentDomByNodeId(
+  pageId: string,
+  nodeId: number,
+  callback: (result: any | null, error: any | null) => void
+): UniElement | null {
+  const component = getComponentVmByNodeId(pageId, nodeId, callback)
+  if (component == null) {
+    return null
+  }
+  return component.$el
+}
+export function getElementByNodeIdOrElementId(
+  pageId: string,
+  nodeId: number | null,
+  elementId: string | null,
+  callback: (result: any | null, error: any | null) => void
+): UniElement | null {
+  const page = getPageVm(pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
+    return null
+  }
+  if (nodeId != null) {
+    return getComponentDomByNodeId(pageId, nodeId, callback)
+  } else if (elementId != null) {
+    return getElementById(pageId, elementId, callback)
+  }
+  return null
+}
+export function getElementById(
+  pageId: string,
+  elementId: string,
+  callback: (result: any | null, error: any | null) => void
+): UniElement | null {
+  const page = getPageVm(pageId)
+  if (page == null) {
+    callback(null, { errMsg: `Page[${pageId}] not exists` })
+    return null
+  }
+  const document = page.$nativePage!.document
+  const element = (document as IUniNativeDocument).getNativeElementById(elementId)
+  if (element == null) {
+    callback(null, { errMsg: `element[${elementId}] not exists` })
+    return null
+  }
+  return element
+}
+
+export function getValidComponentsOrNodes(
+  // @ts-ignore
+  vnode: VNode | null,
+  selector: string,
+  // @ts-ignore
+  list: UTSJSONObject[],
+  getAll = false
+): void {
+  if (vnode == null || (!getAll && list.length > 0)) {
+    return
+  }
+  if (isValidComponentOrNode(vnode, selector)) {
+    if (vnode.component != null) {
+      list.push({
+        // @ts-ignore
+        nodeId: (vnode.component as ComponentInternalInstance).uid,
+        // @ts-ignore
+        tagName: (vnode.component as ComponentInternalInstance).options.name,
+        elementId: `${Date.now()}`,
+      })
+    } else {
+      list.push({
+        // @ts-expect-error
+        elementId: (vnode.el as UniElementImpl).id,
+        tagName: vnode.el!.tagName,
+      })
+    }
+    if (!getAll) {
+      return
+    }
+  }
+  // @ts-ignore
+  if (vnode.children !== null && isArray(vnode.children)) {
+    ; (vnode.children as any[]).forEach((child) => {
+      // @ts-ignore
+      if (child instanceof VNode) {
+        getValidComponentsOrNodes(child, selector, list, getAll)
+      }
+    })
+  }
+  if (vnode.component != null) {
+    const component = vnode.component
+    getValidComponentsOrNodes(component!.subTree, selector, list, getAll)
+  }
+}
+// @ts-ignore
+function isValidComponentOrNode(vnode: VNode, selector: string): boolean {
+  if (
+    vnode.component != null &&
+    // @ts-ignore
+    (vnode.component as ComponentInternalInstance).options.name == selector
+  ) {
+    return true
+  }
+  if (vnode.el != null) {
+    const node = vnode.el!
+    if (selector.startsWith('.')) {
+      return node.classList.includes(selector.substring(1))
+    } else if (selector.startsWith('#')) {
+      return node.getAttribute('id') == selector.substring(1)
+    }
+    return node.tagName.toUpperCase() == selector.toUpperCase()
+  }
+  return false
+}
+
+export function getValidNodes(
+  node: UniElement | null,
+  selector: string,
+  // @ts-ignore
+  list: UTSJSONObject[],
+  getAll = false
+): void {
+  if (node == null) {
+    return
+  }
+  if (isValidNode(node, selector)) {
+    list.push({
+      elementId: node.getNodeId(),
+      tagName: node.tagName,
+    })
+    if (!getAll) {
+      return
+    }
+  }
+  // @ts-ignore
+  node.childNodes.forEach((child: UniElement) => {
+    getValidNodes(child, selector, list, getAll)
+  })
+}
+function isValidNode(node: UniElement, selector: string): boolean {
+  if (selector.startsWith('.')) {
+    // @ts-ignore
+    return node.classList.includes(selector.substring(1))
+  } else if (selector.startsWith('#')) {
+    return node.getAttribute('id') == selector.substring(1)
+  }
+  return node.tagName.toUpperCase() == selector.toUpperCase()
+}
+
+export function componentGetData(
+  // @ts-ignore
+  vm: ComponentPublicInstance,
+  // @ts-ignore
+): UTSJSONObject {
+  // TODO: path 目前无法处理类型问题，暂由服务端处理
+  return map2Object(vm.$data)
+}
+export function componentSetData(
+  // @ts-ignore
+  vm: ComponentPublicInstance,
+  data: Map<string, any | null>
+): void {
+  data.forEach((value: any | null, key: string) => {
+    // @ts-ignore
+    vm.$data.set(key, value)
+  })
+}
+export function getChildrenText(node: UniElement): string {
+  let result = ''
+  // @ts-ignore
+  node.childNodes.forEach((child: UniElement) => {
+    // @ts-expect-error
+    if (isTextElement(child)) {
+      result += child.getAttribute('value')
+    } else {
+      result += getChildrenText(child)
+    }
+  })
+  return result
+}
+
+export function toCamelCase(str: string): string {
+  const wordList = str.split('-')
+  for (let i = 1; i < wordList.length; i++) {
+    const word = wordList[i]
+    wordList[i] = word.at(0)!.toUpperCase() + word.substring(1)
+  }
+  return wordList.join('')
+}
+
+// 不处理用户自定义数据的类型，因为可能存在指定类型，无法处理
+// @ts-ignore
+function map2Object(data: Map<string, any | null>): UTSJSONObject {
+  const result = {}
+  data.forEach((value: any | null, key: string) => {
+    result[key] = value
+  })
+  return result
+}
+
+export function removeUniPrefix(selector: string): string {
+  if (selector.startsWith("uni-")) {
+    return selector.replace("uni-", "");
+  }
+  return selector;
+}

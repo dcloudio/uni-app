@@ -1,7 +1,12 @@
 import { extend } from '@vue/shared'
-import { UniNode } from '@dcloudio/uni-shared'
-import { App, createVNode, render, ComponentPublicInstance } from 'vue'
-import { VuePageComponent } from '../page/define'
+import type { UniNode } from '@dcloudio/uni-shared'
+import {
+  type App,
+  type ComponentPublicInstance,
+  createVNode,
+  render,
+} from 'vue'
+import type { VuePageComponent } from '../page/define'
 import { getAllPages } from '../page/getCurrentPages'
 
 interface VueApp extends App {

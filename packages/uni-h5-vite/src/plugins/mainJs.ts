@@ -1,7 +1,7 @@
 import {
+  PAGES_JSON_JS,
   defineUniMainJsPlugin,
   isSsr,
-  PAGES_JSON_JS,
 } from '@dcloudio/uni-cli-shared'
 import { isSSR, isSsrManifest } from '../utils'
 

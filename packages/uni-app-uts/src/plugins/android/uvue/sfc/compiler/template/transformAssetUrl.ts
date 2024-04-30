@@ -1,19 +1,19 @@
 import path from 'path'
 import {
   ConstantTypes,
-  createSimpleExpression,
-  ExpressionNode,
-  NodeTransform,
+  type ExpressionNode,
+  type NodeTransform,
   NodeTypes,
-  SimpleExpressionNode,
-  SourceLocation,
-  TransformContext,
+  type SimpleExpressionNode,
+  type SourceLocation,
+  type TransformContext,
+  createSimpleExpression,
 } from '@vue/compiler-core'
 import {
+  isDataUrl,
+  isExternalUrl,
   isRelativeUrl,
   parseUrl,
-  isExternalUrl,
-  isDataUrl,
 } from './templateUtils'
 import { isArray } from '@vue/shared'
 

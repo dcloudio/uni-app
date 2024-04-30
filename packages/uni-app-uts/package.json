@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-uts",
-  "version": "3.0.0-4000820240401001",
+  "version": "3.0.0-alpha-4010420240429001",
   "description": "uni-app-uts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -18,30 +18,32 @@
   },
   "license": "Apache-2.0",
   "dependencies": {
-    "@babel/parser": "^7.23.5",
+    "@babel/parser": "^7.23.9",
     "@babel/types": "^7.20.7",
-    "@dcloudio/uni-cli-shared": "3.0.0-4000820240401001",
-    "@dcloudio/uni-i18n": "3.0.0-4000820240401001",
-    "@dcloudio/uni-nvue-styler": "3.0.0-4000820240401001",
-    "@dcloudio/uni-shared": "3.0.0-4000820240401001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4010420240429001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4010420240429001",
+    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-4010420240429001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4010420240429001",
     "@jridgewell/gen-mapping": "^0.3.3",
     "@jridgewell/trace-mapping": "^0.3.19",
-    "@rollup/pluginutils": "^4.2.0",
-    "@vue/compiler-core": "3.3.11",
-    "@vue/compiler-dom": "3.3.11",
-    "@vue/compiler-sfc": "3.3.11",
-    "@vue/shared": "3.3.11",
+    "@rollup/pluginutils": "^5.0.5",
+    "@vue/compiler-core": "3.4.21",
+    "@vue/compiler-dom": "3.4.21",
+    "@vue/compiler-sfc": "3.4.21",
+    "@vue/consolidate": "^1.0.0",
+    "@vue/shared": "3.4.21",
     "debug": "^4.3.3",
     "es-module-lexer": "^1.2.1",
     "estree-walker": "^2.0.2",
     "fs-extra": "^10.0.0",
-    "magic-string": "^0.30.0",
+    "magic-string": "^0.30.7",
     "picocolors": "^1.0.0",
     "source-map-js": "^1.0.2",
     "unplugin-auto-import": "^0.16.7"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",
-    "@types/fs-extra": "^9.0.13"
+    "@types/fs-extra": "^9.0.13",
+    "pug": "^3.0.2"
   }
 }

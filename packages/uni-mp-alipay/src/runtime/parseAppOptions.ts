@@ -1,6 +1,6 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 
-import { MiniProgramAppOptions } from '@dcloudio/uni-mp-core'
+import type { MiniProgramAppOptions } from '@dcloudio/uni-mp-core'
 
 function onAliAuthError(
   this: ComponentPublicInstance,

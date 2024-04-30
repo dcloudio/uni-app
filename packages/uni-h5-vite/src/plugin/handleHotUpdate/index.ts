@@ -3,11 +3,11 @@ import debug from 'debug'
 import type { ModuleGraph, Plugin } from 'vite'
 import { extend } from '@vue/shared'
 import {
+  MANIFEST_JSON_JS,
+  PAGES_JSON_JS,
   initEasycomsOnce,
   initFeatures,
-  MANIFEST_JSON_JS,
   normalizePath,
-  PAGES_JSON_JS,
   parseManifestJson,
   parsePagesJson,
   resolveBuiltIn,

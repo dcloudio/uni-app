@@ -1,4 +1,4 @@
-import { NodeTransform } from '@vue/compiler-core'
+import type { NodeTransform } from '@vue/compiler-core'
 import { isElementNode } from '../../vite/utils/ast'
 
 export function createTransformTag(

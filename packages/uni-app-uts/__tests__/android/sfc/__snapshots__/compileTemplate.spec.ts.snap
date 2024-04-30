@@ -1,0 +1,37 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`SFC compile template template with html 1`] = `
+"const msg = ''
+export default {
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+return 
+function GenAnonymousRender(): any | null {
+
+  return createElementVNode("view", utsMapOf({ class: "test" }))
+}
+}
+
+}"
+`;
+
+exports[`SFC compile template template with pug 1`] = `
+"const msg = ''
+export default {
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+return 
+function GenAnonymousRender(): any | null {
+
+  return createElementVNode("view", utsMapOf({ class: "test" }))
+}
+}
+
+}"
+`;

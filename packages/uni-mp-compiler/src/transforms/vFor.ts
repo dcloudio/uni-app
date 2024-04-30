@@ -1,44 +1,43 @@
 import { extend, isString } from '@vue/shared'
-import { isElementNode } from '@dcloudio/uni-cli-shared'
+import { getInnerRange, isElementNode } from '@dcloudio/uni-cli-shared'
 import {
+  type ComponentNode,
+  type ElementNode,
+  ElementTypes,
+  ErrorCodes,
+  type ExpressionNode,
+  NodeTypes,
+  type SimpleExpressionNode,
+  type SourceLocation,
+  type TemplateChildNode,
   createCompilerError,
   createSimpleExpression,
-  ErrorCodes,
-  ExpressionNode,
-  getInnerRange,
-  SimpleExpressionNode,
-  SourceLocation,
-  ElementTypes,
-  ElementNode,
-  NodeTypes,
-  isTemplateNode,
-  findProp,
-  ComponentNode,
   findDir,
-  TemplateChildNode,
+  findProp,
+  isTemplateNode,
 } from '@vue/compiler-core'
 import { parseExpr, parseParam } from '../ast'
 import {
+  type NodeTransform,
+  type TransformContext,
   createStructuralDirectiveTransform,
   isScopedSlotVFor,
   isVForScope,
-  NodeTransform,
-  TransformContext,
 } from '../transform'
 import { processExpression } from './transformExpression'
 import { genExpr } from '../codegen'
 import {
+  type Expression,
+  type Identifier,
+  type Pattern,
+  type RestElement,
   arrowFunctionExpression,
   blockStatement,
   callExpression,
   cloneNode,
-  Expression,
   identifier,
-  Identifier,
   isIdentifier,
   objectExpression,
-  Pattern,
-  RestElement,
   returnStatement,
 } from '@babel/types'
 import {
@@ -46,7 +45,7 @@ import {
   isReferencedByIds,
   rewriteExpression,
 } from './utils'
-import { CodegenScope, CodegenVForScope } from '../options'
+import type { CodegenScope, CodegenVForScope } from '../options'
 import { V_FOR } from '../runtimeHelpers'
 import { createVSlotCallExpression } from './vSlot'
 

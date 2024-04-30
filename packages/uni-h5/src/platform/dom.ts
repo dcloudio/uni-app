@@ -1,6 +1,6 @@
-import { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance } from 'vue'
 import { getRealRoute } from '@dcloudio/uni-core'
-import { addLeadingSlash, DATA_RE, SCHEME_RE } from '@dcloudio/uni-shared'
+import { DATA_RE, SCHEME_RE, addLeadingSlash } from '@dcloudio/uni-shared'
 declare global {
   interface ImportMeta {
     env: {

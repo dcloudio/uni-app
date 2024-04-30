@@ -562,6 +562,7 @@ function initPageVm(pageVm, page) {
   pageVm.$vm = pageVm;
   pageVm.$page = page;
   pageVm.$mpType = "page";
+  pageVm.$fontFamilySet = /* @__PURE__ */ new Set();
   if (page.meta.isTabBar) {
     pageVm.$.__isTabBar = true;
     pageVm.$.__isActive = true;
@@ -1457,10 +1458,8 @@ function invokeSuccess(id, name, res) {
 function invokeFail(id, name, errMsg, errRes = {}) {
   const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
   delete errRes.errCode;
-  return invokeCallback(
-    id,
-    typeof UniError !== "undefined" ? typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes) : shared.extend({ errMsg: apiErrMsg }, errRes)
-  );
+  let res = shared.extend({ errMsg: apiErrMsg }, errRes);
+  return invokeCallback(id, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -3153,11 +3152,15 @@ const UniViewJSBridgeSubscribe = function() {
     getSelectedTextRange
   );
 };
-function getValueString(value, type) {
+function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  return value === null ? "" : String(value);
+  const valueStr = value === null ? "" : String(value);
+  if (maxlength == void 0) {
+    return valueStr;
+  }
+  return valueStr.slice(0, maxlength);
 }
 const INPUT_MODES = [
   "none",
@@ -3292,7 +3295,9 @@ function useBase(props2, rootRef, emit2) {
   });
   const maxlength = vue.computed(() => {
     var maxlength2 = Number(props2.maxlength);
-    return isNaN(maxlength2) ? 140 : maxlength2;
+    {
+      return isNaN(maxlength2) ? 140 : maxlength2;
+    }
   });
   const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
   const state = vue.reactive({
@@ -3311,7 +3316,10 @@ function useBase(props2, rootRef, emit2) {
   );
   vue.watch(
     () => state.maxlength,
-    (val) => state.value = state.value.slice(0, val)
+    (val) => state.value = state.value.slice(0, val),
+    {
+      immediate: false
+    }
   );
   return {
     fieldRef,
@@ -4901,7 +4909,6 @@ function createNavigatorOnClick(props2) {
       case "redirect":
         uni.redirectTo({
           url: props2.url,
-          // @ts-ignore
           exists: props2.exists
         });
         break;
@@ -5040,7 +5047,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
       return index2 !== -1 ? index2 : ColumnsPreRef.value.indexOf(vnode);
     }
     const getPickerViewColumn = function(columnInstance) {
-      const ref = vue.computed({
+      const ref2 = vue.computed({
         get() {
           const index2 = getItemIndex(columnInstance.vnode);
           return state.value[index2] || 0;
@@ -5061,7 +5068,7 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
           }
         }
       });
-      return ref;
+      return ref2;
     };
     vue.provide("getPickerViewColumn", getPickerViewColumn);
     vue.provide("pickerViewProps", props2);
@@ -5305,9 +5312,15 @@ function useProgressState(props2) {
     return `width: ${currentPercent.value}%;background-color: ${backgroundColor}`;
   });
   const realPercent = vue.computed(() => {
+    if (typeof props2.percent === "string" && !/^-?\d*\.?\d*$/.test(props2.percent)) {
+      return 0;
+    }
     let realValue = parseFloat(props2.percent);
-    realValue < 0 && (realValue = 0);
-    realValue > 100 && (realValue = 100);
+    if (Number.isNaN(realValue) || realValue < 0) {
+      realValue = 0;
+    } else if (realValue > 100) {
+      realValue = 100;
+    }
     return realValue;
   });
   const state = vue.reactive({
@@ -5699,12 +5712,13 @@ const nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
   if (!nodeList || shared.isArray(nodeList) && !nodeList.length)
     return [];
   return nodeList.map((node) => {
+    var _a;
     if (!shared.isPlainObject(node)) {
       return;
     }
     if (!shared.hasOwn(node, "type") || node.type === "node") {
       let nodeProps = { [scopeId]: "" };
-      const tagName = node.name.toLowerCase();
+      const tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
       if (!shared.hasOwn(TAGS, tagName)) {
         return;
       }
@@ -5806,10 +5820,12 @@ function parseHtml(html) {
         text
       };
       const parent = stacks[0];
-      if (!parent.children) {
-        parent.children = [];
+      if (parent) {
+        if (!parent.children) {
+          parent.children = [];
+        }
+        parent.children.push(node);
       }
-      parent.children.push(node);
     }
   });
   return results.children;
@@ -5853,6 +5869,110 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
     return () => vue.h("uni-rich-text", {
       ref: rootRef
     }, vue.h("div", {}, _vnode.value));
+  }
+});
+const Refresher = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Refresher",
+  props: {
+    refreshState: {
+      type: String,
+      default: ""
+    },
+    refresherHeight: {
+      type: Number,
+      default: 0
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: "black"
+    },
+    refresherBackground: {
+      type: String,
+      default: "#fff"
+    }
+  },
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = vue.ref(null);
+    const rootStyle = vue.computed(() => {
+      const style = {
+        backgroundColor: props2.refresherBackground
+      };
+      switch (props2.refreshState) {
+        case "pulling":
+          style.height = props2.refresherHeight + "px";
+          break;
+        case "refreshing":
+          style.height = props2.refresherThreshold + "px";
+          style.transition = "height 0.3s";
+          break;
+        case "":
+        case "refresherabort":
+        case "restore":
+          style.height = "0px";
+          style.transition = "height 0.3s";
+          break;
+      }
+      return style;
+    });
+    const refreshRotate = vue.computed(() => {
+      const route = props2.refresherHeight / props2.refresherThreshold;
+      return (route > 1 ? 1 : route) * 360;
+    });
+    return () => {
+      const {
+        refreshState,
+        refresherDefaultStyle,
+        refresherThreshold
+      } = props2;
+      return vue.createVNode("div", {
+        "ref": rootRef,
+        "style": rootStyle.value,
+        "class": "uni-scroll-view-refresher"
+      }, [refresherDefaultStyle !== "none" ? vue.createVNode("div", {
+        "class": "uni-scroll-view-refresh"
+      }, [vue.createVNode("div", {
+        "class": "uni-scroll-view-refresh-inner"
+      }, [refreshState == "pulling" ? vue.createVNode("svg", {
+        "key": "refresh__icon",
+        "style": {
+          transform: "rotate(" + refreshRotate.value + "deg)"
+        },
+        "fill": "#2BD009",
+        "class": "uni-scroll-view-refresh__icon",
+        "width": "24",
+        "height": "24",
+        "viewBox": "0 0 24 24"
+      }, [vue.createVNode("path", {
+        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+      }, null), vue.createVNode("path", {
+        "d": "M0 0h24v24H0z",
+        "fill": "none"
+      }, null)], 4) : null, refreshState == "refreshing" ? vue.createVNode("svg", {
+        "key": "refresh__spinner",
+        "class": "uni-scroll-view-refresh__spinner",
+        "width": "24",
+        "height": "24",
+        "viewBox": "25 25 50 50"
+      }, [vue.createVNode("circle", {
+        "cx": "50",
+        "cy": "50",
+        "r": "20",
+        "fill": "none",
+        "style": "color: #2bd009",
+        "stroke-width": "3"
+      }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? vue.createVNode("div", {
+        "class": "uni-scroll-view-refresher-container",
+        "style": {
+          height: `${refresherThreshold}px`
+        }
+      }, [slots.default && slots.default()]) : null], 4);
+    };
   }
 });
 const props$f = {
@@ -5910,7 +6030,7 @@ const props$f = {
   },
   refresherDefaultStyle: {
     type: String,
-    default: "back"
+    default: "black"
   },
   refresherBackground: {
     type: String,
@@ -5930,13 +6050,13 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
   emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
   setup(props2, {
     emit: emit2,
-    slots
+    slots,
+    expose
   }) {
     const rootRef = vue.ref(null);
     const main = vue.ref(null);
     const wrap = vue.ref(null);
     const content = vue.ref(null);
-    const refresherinner = vue.ref(null);
     const trigger = useCustomEvent(rootRef, emit2);
     const {
       state,
@@ -5960,16 +6080,22 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       }
       return className;
     });
+    expose({
+      // 自动化测试需要暴露main从而获取scrollLeft
+      $getMain() {
+        return main.value;
+      }
+    });
     return () => {
       const {
         refresherEnabled,
         refresherBackground,
-        refresherDefaultStyle
+        refresherDefaultStyle,
+        refresherThreshold
       } = props2;
       const {
         refresherHeight,
-        refreshState,
-        refreshRotate
+        refreshState
       } = state;
       return vue.createVNode("uni-scroll-view", {
         "ref": rootRef
@@ -5980,49 +6106,18 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
         "ref": main,
         "style": mainStyle.value,
         "class": scrollBarClassName.value
-      }, [vue.createVNode("div", {
+      }, [refresherEnabled ? vue.createVNode(Refresher, {
+        "refreshState": refreshState,
+        "refresherHeight": refresherHeight,
+        "refresherThreshold": refresherThreshold,
+        "refresherDefaultStyle": refresherDefaultStyle,
+        "refresherBackground": refresherBackground
+      }, {
+        default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+      }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, vue.createVNode("div", {
         "ref": content,
         "class": "uni-scroll-view-content"
-      }, [refresherEnabled ? vue.createVNode("div", {
-        "ref": refresherinner,
-        "style": {
-          backgroundColor: refresherBackground,
-          height: refresherHeight + "px"
-        },
-        "class": "uni-scroll-view-refresher"
-      }, [refresherDefaultStyle !== "none" ? vue.createVNode("div", {
-        "class": "uni-scroll-view-refresh"
-      }, [vue.createVNode("div", {
-        "class": "uni-scroll-view-refresh-inner"
-      }, [refreshState == "pulling" ? vue.createVNode("svg", {
-        "key": "refresh__icon",
-        "style": {
-          transform: "rotate(" + refreshRotate + "deg)"
-        },
-        "fill": "#2BD009",
-        "class": "uni-scroll-view-refresh__icon",
-        "width": "24",
-        "height": "24",
-        "viewBox": "0 0 24 24"
-      }, [vue.createVNode("path", {
-        "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
-      }, null), vue.createVNode("path", {
-        "d": "M0 0h24v24H0z",
-        "fill": "none"
-      }, null)], 4) : null, refreshState == "refreshing" ? vue.createVNode("svg", {
-        "key": "refresh__spinner",
-        "class": "uni-scroll-view-refresh__spinner",
-        "width": "24",
-        "height": "24",
-        "viewBox": "25 25 50 50"
-      }, [vue.createVNode("circle", {
-        "cx": "50",
-        "cy": "50",
-        "r": "20",
-        "fill": "none",
-        "style": "color: #2bd009",
-        "stroke-width": "3"
-      }, null)]) : null])]) : null, refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null], 4) : null, slots.default && slots.default()], 512)], 6)], 512)], 512);
+      }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
     };
   }
 });
@@ -6039,7 +6134,6 @@ function useScrollViewState(props2) {
     lastScrollToUpperTime: 0,
     lastScrollToLowerTime: 0,
     refresherHeight: 0,
-    refreshRotate: 0,
     refreshState: ""
   });
   return {
@@ -6175,7 +6269,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         state.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
-          trigger("refresherrefresh", {}, {});
+          trigger("refresherrefresh", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
           emit2("update:refresherTriggered", true);
         }
         break;
@@ -6185,16 +6281,28 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         state.refresherHeight = 0;
         if (_state === "restore") {
           triggerAbort = false;
-          trigger("refresherrestore", {}, {});
+          trigger("refresherrestore", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         if (_state === "refresherabort" && triggerAbort) {
           triggerAbort = false;
-          trigger("refresherabort", {}, {});
+          trigger("refresherabort", {}, {
+            dy: touchEnd.y - touchStart.y
+          });
         }
         break;
     }
     state.refreshState = _state;
   }
+  let touchStart = {
+    x: 0,
+    y: 0
+  };
+  let touchEnd = {
+    x: 0,
+    y: props2.refresherThreshold
+  };
   vue.watch(scrollTopNumber, (val) => {
     _scrollTopChanged(val);
   });
@@ -7496,10 +7604,15 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      invokeHook(publicThis, uniShared.ON_LOAD, instance.attrs.__pageQuery);
+      const query = instance.attrs.__pageQuery;
+      if (false)
+        ;
+      invokeHook(publicThis, uniShared.ON_LOAD, query);
       delete instance.attrs.__pageQuery;
-      if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
-        invokeHook(publicThis, uniShared.ON_SHOW);
+      if (true) {
+        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+          invokeHook(publicThis, uniShared.ON_SHOW);
+        }
       }
     } catch (e2) {
       console.error(e2.message + uniShared.LINEFEED + e2.stack);
@@ -12563,10 +12676,18 @@ const PageBody = defineSystemComponent({
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
     const refreshRef = __UNI_FEATURE_PULL_DOWN_REFRESH__ && vue.ref(null);
-    const pageRefresh = null;
+    const _pageRefresh = null;
+    const pageRefresh = vue.ref(null);
+    vue.watch(() => {
+      return pageMeta.enablePullDownRefresh;
+    }, () => {
+      pageRefresh.value = pageMeta.enablePullDownRefresh ? _pageRefresh : null;
+    }, {
+      immediate: true
+    });
     return () => {
       const pageRefreshTsx = __UNI_FEATURE_PULL_DOWN_REFRESH__ && createPageRefreshTsx(refreshRef, pageMeta);
-      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
+      return vue.createVNode(vue.Fragment, null, [pageRefreshTsx, vue.createVNode("uni-page-wrapper", pageRefresh.value, [vue.createVNode("uni-page-body", null, [vue.renderSlot(ctx.slots, "default")])], 16)]);
     };
   }
 });
@@ -12583,10 +12704,14 @@ const index = defineSystemComponent({
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());
     const navigationBar = pageMeta.navigationBar;
+    const pageStyle = {};
     useDocumentTitle(pageMeta);
     return () => vue.createVNode(
       "uni-page",
-      { "data-page": pageMeta.route },
+      {
+        "data-page": pageMeta.route,
+        style: pageStyle
+      },
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
     );
   }

@@ -1,9 +1,9 @@
 import {
-  defineAsyncApi,
   API_GET_LOCATION,
-  API_TYPE_GET_LOCATION,
-  GetLocationProtocol,
+  type API_TYPE_GET_LOCATION,
   GetLocationOptions,
+  GetLocationProtocol,
+  defineAsyncApi,
 } from '@dcloudio/uni-api'
 
 import { gcj02towgs84, wgs84togcj02 } from '../../../helpers/location'

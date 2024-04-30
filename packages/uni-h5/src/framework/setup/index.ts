@@ -1,39 +1,39 @@
-import { extend, invokeArrayFns, isPlainObject, isFunction } from '@vue/shared'
+import { extend, invokeArrayFns, isFunction, isPlainObject } from '@vue/shared'
 import {
-  ComponentInternalInstance,
-  ComponentPublicInstance,
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+  type DefineComponent,
   createBlock,
-  DefineComponent,
   getCurrentInstance,
-  onMounted,
-  openBlock,
+  nextTick,
   onBeforeActivate,
   onBeforeDeactivate,
   onBeforeMount,
   onBeforeUnmount,
-  nextTick,
+  onMounted,
+  openBlock,
 } from 'vue'
 import {
-  debounce,
-  decodedQuery,
   ON_APP_ENTER_BACKGROUND,
   ON_APP_ENTER_FOREGROUND,
   ON_RESIZE,
+  ON_THEME_CHANGE,
   ON_WEB_INVOKE_APP_SERVICE,
   WEB_INVOKE_APPSERVICE,
-  ON_THEME_CHANGE,
+  debounce,
+  decodedQuery,
 } from '@dcloudio/uni-shared'
 import { injectAppHooks } from '@dcloudio/uni-api'
 import {
+  invokeHook,
   subscribeViewMethod,
   unsubscribeViewMethod,
-  invokeHook,
 } from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
-import { initPage, onPageShow, onPageReady } from './page'
+import { initPage, onPageReady, onPageShow } from './page'
 import { usePageMeta, usePageRoute } from './provide'
-import { initLaunchOptions, getEnterOptions } from './utils'
+import { getEnterOptions, initLaunchOptions } from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
 

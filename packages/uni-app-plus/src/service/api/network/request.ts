@@ -1,19 +1,24 @@
 import { hasOwn, isArray, isPlainObject, isString } from '@vue/shared'
 import {
-  API_REQUEST,
-  API_TYPE_REQUEST,
-  defineTaskApi,
-  RequestOptions,
-  RequestProtocol,
   API_CONFIG_MTLS,
-  API_TYPE_CONFIG_MTLS,
-  defineAsyncApi,
+  API_REQUEST,
+  type API_TYPE_CONFIG_MTLS,
+  type API_TYPE_REQUEST,
   ConfigMTLSOptions,
   ConfigMTLSProtocol,
+  RequestOptions,
+  RequestProtocol,
+  defineAsyncApi,
+  defineTaskApi,
 } from '@dcloudio/uni-api'
-import { base64ToArrayBuffer, arrayBufferToBase64 } from '@dcloudio/uni-api'
+import { arrayBufferToBase64, base64ToArrayBuffer } from '@dcloudio/uni-api'
 import { requireNativePlugin } from '../plugin/requireNativePlugin'
-import { Stream, FetchOptions, FetchCallback, FetchHeaders } from './stream'
+import type {
+  FetchCallback,
+  FetchHeaders,
+  FetchOptions,
+  Stream,
+} from './stream'
 
 interface RequestTasks {
   abort: Function
@@ -29,7 +34,7 @@ type RequestTaskState = {
 
 const cookiesParse = (header: Record<string, string>) => {
   let cookiesStr = header['Set-Cookie'] || header['set-cookie']
-  let cookiesArr = []
+  let cookiesArr: string[] = []
   if (!cookiesStr) {
     return []
   }
@@ -111,7 +116,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
       responseType,
       sslVerify,
       firstIpv4,
-      // @ts-ignore tls 缺少 types 类型
+      // @ts-expect-error tls 缺少 types 类型
       tls,
     } = args
 
@@ -149,7 +154,7 @@ export const request = defineTaskApi<API_TYPE_REQUEST>(
           !isString(data) &&
           !(data instanceof ArrayBuffer)
         ) {
-          const bodyArray = []
+          const bodyArray: string[] = []
           for (const key in data) {
             if (hasOwn(data, key)) {
               bodyArray.push(

@@ -1,5 +1,5 @@
 import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
-import { SFCParseOptions, SFCParseResult } from '@vue/compiler-sfc'
+import type { SFCParseOptions, SFCParseResult } from '@vue/compiler-sfc'
 import { extend } from '@vue/shared'
 
 /**
