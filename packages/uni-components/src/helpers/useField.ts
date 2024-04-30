@@ -232,18 +232,16 @@ function useBase(
       return isNaN(maxlength) ? 140 : maxlength
     }
   })
-  // #if _X_
-  // @ts-expect-error
-  const value =
-    getValueString(props.modelValue, props.type, maxlength.value) ||
-    getValueString(props.value, props.type, maxlength.value)
-  // #endif
-  // #if !_X_
-  // @ts-expect-error
-  const value =
-    getValueString(props.modelValue, props.type) ||
-    getValueString(props.value, props.type)
-  // #endif
+  let value = ''
+  if (__X__) {
+    value =
+      getValueString(props.modelValue, props.type, maxlength.value) ||
+      getValueString(props.value, props.type, maxlength.value)
+  } else {
+    value =
+      getValueString(props.modelValue, props.type) ||
+      getValueString(props.value, props.type)
+  }
   const state: State = reactive({
     value,
     valueOrigin: value,
@@ -278,26 +276,27 @@ function useValueSync(
   emit: SetupContext['emit'],
   trigger: CustomEventTrigger
 ) {
-  // #if _X_
-  //@ts-expect-error
-  const valueChangeFn = throttle((val: any) => {
-    state.value = getValueString(val, props.type, state.maxlength)
-  }, 100)
-  // #endif
-  // #if !_X_
-  //@ts-expect-error
-  const valueChangeFn = debounce(
-    (val: any) => {
-      state.value = getValueString(val, props.type)
-    },
-    100,
-    { setTimeout, clearTimeout }
-  )
-  // #endif
-  watch(() => props.modelValue, valueChangeFn)
-  watch(() => props.value, valueChangeFn)
+  let valueChangeFn:
+    | ReturnType<typeof throttle>
+    | ReturnType<typeof debounce>
+    | null = null
+  if (__X__) {
+    valueChangeFn = throttle((val: any) => {
+      state.value = getValueString(val, props.type, state.maxlength)
+    }, 100)
+  } else {
+    valueChangeFn = debounce(
+      (val: any) => {
+        state.value = getValueString(val, props.type)
+      },
+      100,
+      { setTimeout, clearTimeout }
+    )
+  }
+  watch(() => props.modelValue, valueChangeFn!)
+  watch(() => props.value, valueChangeFn!)
   const triggerInputFn = throttle((event: Event, detail: InputEventDetail) => {
-    valueChangeFn.cancel()
+    valueChangeFn!.cancel()
     emit('update:modelValue', detail.value)
     emit('update:value', detail.value)
     trigger('input', event, detail)
@@ -307,14 +306,14 @@ function useValueSync(
     detail: InputEventDetail,
     force: boolean
   ) => {
-    valueChangeFn.cancel()
+    valueChangeFn!.cancel()
     triggerInputFn(event, detail)
     if (force) {
       triggerInputFn.flush()
     }
   }
   onBeforeMount(() => {
-    valueChangeFn.cancel()
+    valueChangeFn!.cancel()
     triggerInputFn.cancel()
   })
   return {
