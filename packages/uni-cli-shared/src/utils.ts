@@ -42,8 +42,16 @@ export function checkElementNodeTag(
   return !!node && node.type === NodeTypes.ELEMENT && node.tag === tag
 }
 
+/**
+ * 根据 path 返回合法 js 变量
+ * @param str pages.json.page.path
+ * @returns
+ */
 export function normalizeIdentifier(str: string) {
-  return capitalize(camelize(str.replace(/\//g, '-')))
+  let _str = str.replace(/[^a-zA-Z0-9]/g, '-')
+  _str = capitalize(camelize(_str))
+  _str = _str.replace(/-/g, '_')
+  return _str
 }
 
 export function normalizePagePath(pagePath: string, platform: UniApp.PLATFORM) {
