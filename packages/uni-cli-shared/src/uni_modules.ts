@@ -385,24 +385,17 @@ export function parseEncryptUniModules(
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
       // 判断是否是加密插件
       if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'encrypt'))) {
-        if (
-          // 手动指定了加密入口
-          fs.existsSync(
-            path.resolve(modulesDir, uniModuleDir, 'index.encrypt.js')
-          )
-        ) {
-          uniModules[uniModuleDir] = []
-        } else {
-          // 解析加密的 easyCom 插件列表
-          const components = parseEncryptEasyComComponents(
-            uniModuleDir,
-            inputDir,
-            detectBinary
-          )
-          if (components.length) {
-            uniModules[uniModuleDir] = components
-          }
+        // 非utssdk插件
+        if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'utssdk'))) {
+          return
         }
+        // 解析加密的 easyCom 插件列表
+        const components = parseEncryptEasyComComponents(
+          uniModuleDir,
+          inputDir,
+          detectBinary
+        )
+        uniModules[uniModuleDir] = components
       }
     })
   }

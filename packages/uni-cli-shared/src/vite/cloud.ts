@@ -110,6 +110,11 @@ function initEncryptUniModulesAlias(): AliasOptions {
   ]
 }
 
+const indexFiles = ['index.uts', 'index.ts', 'index.js']
+function hasIndexFile(uniModuleDir: string) {
+  return fs.readdirSync(uniModuleDir).some((file) => indexFiles.includes(file))
+}
+
 function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
   const modules = parseEncryptUniModules(inputDir, false)
   const moduleNames = Object.keys(modules)
@@ -125,15 +130,19 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
       module,
       'index.encrypt.js'
     )
-    // 生成 index.encrypt.js，如果 length 为 0，说明是手动指定了 index.encrypt.js
-    if (modules[module].length) {
-      fs.writeFileSync(
-        indexEncryptFile,
-        genEncryptEasyComModuleIndex(modules[module])
-      )
+    const codes: string[] = []
+    if (hasIndexFile(path.resolve(inputDir, 'uni_modules', module))) {
+      codes.push(`export * from './index'`)
     }
-    // 输出 xxx.encrypt ，确保相对路径的准确性，因为真正引用的时候，是从 @/uni_modules/xxx 引入的
-    input[module + '.encrypt'] = indexEncryptFile
+    // easyCom
+    if (modules[module].length) {
+      codes.push(genEncryptEasyComModuleIndex(modules[module]))
+    }
+    if (codes.length) {
+      fs.writeFileSync(indexEncryptFile, codes.join(`\n`))
+      // 输出 xxx.encrypt ，确保相对路径的准确性，因为真正引用的时候，是从 @/uni_modules/xxx 引入的
+      input[module + '.encrypt'] = indexEncryptFile
+    }
   })
   return {
     lib: false, // 不使用 lib 模式，lib模式会直接内联资源

@@ -52,6 +52,8 @@ exports[`uni_modules playground uni-app-x build:app-ios 2`] = `
 import Logo from './test-com2/components/test-com2-1/logo.png';
 import _export_sfc from 'plugin-vue:export-helper';
 
+function test() { }
+
 const _sfc_main$1 = defineComponent({
     data() {
         return {
@@ -84,7 +86,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 }
 const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 
-export { testCom21 as TestCom21, testCom22 as TestCom22 };
+export { testCom21 as TestCom21, testCom22 as TestCom22, test };
 "
 `;
 
@@ -153,6 +155,8 @@ import { Text } from "@dcloudio/uni-h5";
 import { defineComponent, openBlock, createBlock, withCtx, createTextVNode, toDisplayString } from "vue";
 import Logo from "./test-com2/components/test-com2-1/logo.png";
 import _export_sfc from "plugin-vue:export-helper";
+function test() {
+}
 const _sfc_main$1 = defineComponent({
   data() {
     return {
@@ -191,7 +195,8 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
 const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-6088c0cc"]]);
 export {
   testCom21 as TestCom21,
-  testCom22 as TestCom22
+  testCom22 as TestCom22,
+  test
 };
 "
 `;
