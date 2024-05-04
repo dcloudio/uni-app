@@ -138,10 +138,16 @@ export function uniAppPlugin(): UniVitePlugin {
       return code
     },
     generateBundle(_, bundle) {
+      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        return
+      }
       // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
       checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
     async writeBundle() {
+      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        return
+      }
       let pageCount = 0
       if (isFirst) {
         isFirst = false

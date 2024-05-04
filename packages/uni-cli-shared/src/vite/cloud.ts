@@ -59,11 +59,14 @@ export function uniEncryptUniModulesPlugin(): Plugin {
     generateBundle(_, bundle) {
       Object.keys(bundle).forEach((fileName) => {
         if (fileName.endsWith('.encrypt.js')) {
-          const newFileName =
-            'uni_modules/' +
-            fileName.replace('.encrypt.js', '/index.encrypt.js')
-          bundle[newFileName] = bundle[fileName]
-          bundle[newFileName].fileName = newFileName
+          // app-android 不需要 js
+          if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+            const newFileName =
+              'uni_modules/' +
+              fileName.replace('.encrypt.js', '/index.encrypt.js')
+            bundle[newFileName] = bundle[fileName]
+            bundle[newFileName].fileName = newFileName
+          }
           delete bundle[fileName]
         }
       })
@@ -128,7 +131,7 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
       inputDir,
       'uni_modules',
       module,
-      'index.encrypt.js'
+      'index.encrypt.uts'
     )
     const codes: string[] = []
     if (hasIndexFile(path.resolve(inputDir, 'uni_modules', module))) {
@@ -147,7 +150,7 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
   return {
     lib: false, // 不使用 lib 模式，lib模式会直接内联资源
     cssCodeSplit: false,
-    outDir: process.env.UNI_OUTPUT_DIR,
+    // outDir: process.env.UNI_OUTPUT_DIR,
     rollupOptions: {
       preserveEntrySignatures: 'strict',
       input,

@@ -2,6 +2,7 @@ import path from 'path'
 import {
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
+  uniEncryptUniModulesPlugin,
   uniUTSUniModulesPlugin,
   uniViteSfcSrcImportPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -18,19 +19,28 @@ import { parseImports, parseUTSRelativeFilename } from './utils'
 export function init() {
   return [
     uniPrePlugin(),
-    uniUTSUniModulesPlugin({
-      x: true,
-      isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
-      extApis: parseUniExtApiNamespacesOnce(
-        process.env.UNI_UTS_PLATFORM,
-        process.env.UNI_UTS_TARGET_LANGUAGE
-      ),
-    }),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? []
+      : [
+          uniUTSUniModulesPlugin({
+            x: true,
+            isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
+            extApis: parseUniExtApiNamespacesOnce(
+              process.env.UNI_UTS_PLATFORM,
+              process.env.UNI_UTS_TARGET_LANGUAGE
+            ),
+          }),
+        ]),
     uniAppPlugin(),
-    // 需要放到 uniAppPlugin 之后(TSC模式无需)，让 uniAppPlugin 先 emit 出真实的 main.uts，然后 MainPlugin 再返回仅包含 import 的 js code
-    uniAppMainPlugin(),
-    uniAppManifestPlugin(),
-    uniAppPagesPlugin(),
+    ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ? [uniEncryptUniModulesPlugin()]
+      : [
+          // 需要放到 uniAppPlugin 之后(TSC模式无需)，让 uniAppPlugin 先 emit 出真实的 main.uts，然后 MainPlugin 再返回仅包含 import 的 js code
+          uniAppMainPlugin(),
+          uniAppManifestPlugin(),
+          uniAppPagesPlugin(),
+        ]),
+
     uniAppCssPlugin(),
     // 解决所有的src引入
     uniViteSfcSrcImportPlugin({ onlyVue: false }),
