@@ -8,6 +8,7 @@
     }
   ],
   "globalStyle": {
-    "navigationStyle": "custom"
+    "navigationStyle": "custom",
+    "pageOrientation": "auto"
   }
 }
