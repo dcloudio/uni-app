@@ -1471,9 +1471,11 @@ const index$D = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = vue.ref(null);
     provideForm(useCustomEvent(rootRef, emit2));
-    return () => vue.createVNode("uni-form", {
-      "ref": rootRef
-    }, [vue.createVNode("span", null, [slots.default && slots.default()])], 512);
+    {
+      return () => vue.createVNode("uni-form", {
+        "ref": rootRef
+      }, [slots.default && slots.default()], 512);
+    }
   }
 });
 function provideForm(trigger) {
