@@ -9,10 +9,11 @@ import type {
 } from 'vite'
 import {
   genEncryptEasyComModuleIndex,
-  parseEncryptUniModules,
+  parseUniModulesWithoutUTSModules,
 } from '../uni_modules'
 import { cleanUrl, normalizePath } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
+import { resolveUTSCompiler } from '../uts'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -71,12 +72,79 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         }
       })
     },
+    async writeBundle() {
+      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+        return
+      }
+      // 编译所有 uni_modules 插件
+      const inputDir = process.env.UNI_INPUT_DIR
+      const tempOutputDir = uvueOutDir()
+      const tempUniModulesDir = path.join(tempOutputDir, 'uni_modules')
+      // 非 uts 插件
+      const tempUniModules: string[] = []
+      if (fs.existsSync(tempUniModulesDir)) {
+        fs.readdirSync(tempUniModulesDir).forEach((uniModuleDir) => {
+          if (
+            fs.existsSync(
+              path.join(tempUniModulesDir, uniModuleDir, 'index.encrypt.uts')
+            )
+          ) {
+            tempUniModules.push(uniModuleDir)
+          }
+        })
+      }
+      const uniModulesDir = path.join(inputDir, 'uni_modules')
+      // uts 插件
+      const utsModules: string[] = []
+      if (fs.existsSync(uniModulesDir)) {
+        fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
+          // 已经在临时目录
+          if (tempUniModules.includes(uniModuleDir)) {
+            return
+          }
+          if (
+            fs.existsSync(path.resolve(uniModulesDir, uniModuleDir, 'utssdk'))
+          ) {
+            utsModules.push(uniModuleDir)
+          }
+        })
+      }
+      const compiler = resolveUTSCompiler()
+      for (const uniModule of tempUniModules) {
+        const pluginDir = path.resolve(tempUniModulesDir, uniModule)
+        await compiler.compile(pluginDir, {
+          isX: process.env.UNI_APP_X === 'true',
+          isSingleThread: true,
+          isPlugin: false,
+          sourceMap: false,
+          uni_modules: [],
+        })
+      }
+      for (const uniModule of utsModules) {
+        const pluginDir = path.resolve(uniModulesDir, uniModule)
+        await compiler.compile(pluginDir, {
+          isX: process.env.UNI_APP_X === 'true',
+          isSingleThread: true,
+          isPlugin: true,
+          sourceMap: false,
+          uni_modules: [],
+        })
+      }
+    },
   }
+}
+
+function uvueOutDir() {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
 }
 
 function createExternal(config: ResolvedConfig) {
   return function external(source) {
-    if (config.assetsInclude(cleanUrl(source))) {
+    if (
+      // android 平台需要编译 assets 资源
+      process.env.UNI_UTS_PLATFORM !== 'app-android' &&
+      config.assetsInclude(cleanUrl(source))
+    ) {
       return true
     }
     if (
@@ -119,7 +187,7 @@ function hasIndexFile(uniModuleDir: string) {
 }
 
 function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
-  const modules = parseEncryptUniModules(inputDir, false)
+  const modules = parseUniModulesWithoutUTSModules(inputDir)
   const moduleNames = Object.keys(modules)
   if (!moduleNames.length) {
     throw new Error('No encrypt uni_modules found')

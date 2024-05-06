@@ -166,6 +166,10 @@ export async function compile(
     typeParams: [],
     components: [],
   }
+  let moduleName = pkg.id
+  try {
+    moduleName = require(join(pluginDir, 'package.json')).displayName
+  } catch (e) {}
   const proxyCodeOptions: GenProxyCodeOptions = extend(
     {
       androidComponents,
@@ -173,8 +177,7 @@ export async function compile(
       format:
         process.env.UNI_UTS_JS_CODE_FORMAT === 'cjs' ? FORMATS.CJS : FORMATS.ES,
       pluginRelativeDir,
-      moduleName:
-        require(join(pluginDir, 'package.json')).displayName || pkg.id,
+      moduleName,
       moduleType: process.env.UNI_UTS_MODULE_TYPE || '',
       meta,
       inputDir,

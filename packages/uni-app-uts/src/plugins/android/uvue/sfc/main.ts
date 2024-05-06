@@ -82,7 +82,9 @@ export async function transformMain(
         inline: isInline,
         className,
         rootDir: options.root,
-        sourceMap: process.env.NODE_ENV === 'development',
+        sourceMap:
+          process.env.NODE_ENV === 'development' &&
+          process.env.UNI_COMPILE_TARGET !== 'uni_modules',
         bindingMetadata,
       })
     )

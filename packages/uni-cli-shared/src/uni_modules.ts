@@ -375,6 +375,58 @@ export { ${ids.join(',')} }
 `
 }
 
+export function parseEncryptUniModulesWithDeps(inputDir: string) {
+  const modulesDir = path.resolve(inputDir, 'uni_modules')
+  const uniModules: Record<string, { type: 'uts' | 'other'; deps: string[] }> =
+    {}
+  if (fs.existsSync(modulesDir)) {
+    fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
+      const uniModuleRootDir = path.resolve(modulesDir, uniModuleDir)
+      // 判断是否是utssdk加密插件
+      if (fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
+        const pkgPath = path.resolve(uniModuleRootDir, 'package.json')
+        if (!fs.existsSync(pkgPath)) {
+          return
+        }
+        try {
+          const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+          uniModules[uniModuleDir] = {
+            type: fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))
+              ? 'uts'
+              : 'other',
+            deps: Array.isArray(pkg.uni_modules.dependencies)
+              ? pkg.uni_modules.dependencies
+              : [],
+          }
+        } catch (e) {}
+      }
+    })
+  }
+  return uniModules
+}
+
+export function parseUniModulesWithoutUTSModules(inputDir: string) {
+  const modulesDir = path.resolve(inputDir, 'uni_modules')
+  const uniModules: Record<string, string[]> = {}
+  if (fs.existsSync(modulesDir)) {
+    fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
+      if (
+        !fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'package.json'))
+      ) {
+        return
+      }
+      // 非utssdk插件
+      if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'utssdk'))) {
+        return
+      }
+      // 解析加密的 easyCom 插件列表
+      const components = parseEasyComComponents(uniModuleDir, inputDir, false)
+      uniModules[uniModuleDir] = components
+    })
+  }
+  return uniModules
+}
+
 export function parseEncryptUniModules(
   inputDir: string,
   detectBinary: boolean = true
@@ -390,7 +442,7 @@ export function parseEncryptUniModules(
           return
         }
         // 解析加密的 easyCom 插件列表
-        const components = parseEncryptEasyComComponents(
+        const components = parseEasyComComponents(
           uniModuleDir,
           inputDir,
           detectBinary
@@ -403,12 +455,12 @@ export function parseEncryptUniModules(
 }
 
 /**
- * 解析加密的 easyCom 组件列表
+ * 解析 easyCom 组件列表
  * @param pluginId
  * @param inputDir
  * @returns
  */
-export function parseEncryptEasyComComponents(
+export function parseEasyComComponents(
   pluginId: string,
   inputDir: string,
   detectBinary = true

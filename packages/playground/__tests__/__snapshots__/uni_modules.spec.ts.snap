@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`uni_modules playground uni-app-x build:app-android 1`] = `"logo.46719607.png"`;
+
 exports[`uni_modules playground uni-app-x build:app-ios 1`] = `
 "import { defineComponent, openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString } from 'vue';
 import Logo from './test-com1/components/test-com1-1/logo.png';

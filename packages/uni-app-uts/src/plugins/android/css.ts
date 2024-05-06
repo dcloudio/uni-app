@@ -25,7 +25,6 @@ import {
   getResolvedOptions,
 } from './uvue/descriptorCache'
 import { isVue } from './utils'
-import { createEncryptCssUrlReplacer } from '@dcloudio/uni-cli-shared'
 
 export function uniAppCssPlugin(): Plugin {
   const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
@@ -89,10 +88,11 @@ export function uniAppCssPlugin(): Plugin {
       insertBeforePlugin(
         cssPlugin(config, {
           isAndroidX: true,
-          createUrlReplacer:
-            process.env.UNI_COMPILE_TARGET === 'uni_modules'
-              ? createEncryptCssUrlReplacer
-              : undefined,
+          // android 不处理 css url
+          // createUrlReplacer:
+          //   process.env.UNI_COMPILE_TARGET === 'uni_modules'
+          //     ? createEncryptCssUrlReplacer
+          //     : undefined,
           getDescriptor: (filename) => {
             return getDescriptor(filename, descriptorOptions, false)
           },

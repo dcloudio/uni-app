@@ -20,7 +20,7 @@ describe('uni_modules playground', () => {
     //   //   'build:mp-weixin',
     // ],
     'uni-app-x': [
-      // "build:app-android",
+      'build:app-android',
       'build:app-ios',
       'build:h5',
       //   'build:mp-alipay',
@@ -56,7 +56,11 @@ describe('uni_modules playground', () => {
           },
         })
         sync('**/*', { cwd: outDir, absolute: true }).forEach((file) => {
-          expect(fs.readFileSync(file, 'utf-8')).toMatchSnapshot()
+          if (file.endsWith('.png')) {
+            expect(path.basename(file)).toMatchSnapshot()
+          } else {
+            expect(fs.readFileSync(file, 'utf-8')).toMatchSnapshot()
+          }
         })
       })
     })
