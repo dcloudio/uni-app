@@ -45,7 +45,7 @@ export const customElements = [
   'open-container',
   'share-element',
   'snapshot',
-  'span',
+  // 'span', //  todo: 临时移除 span 的支持，后续判断 skyline 环境进行区分 ask 190418
   'sticky-header',
   'sticky-section',
 ]
