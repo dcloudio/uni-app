@@ -10187,7 +10187,11 @@ function patchStopImmediatePropagation(e, value) {
       originalStop.call(e);
       e._stopped = true;
     };
-    return value.map((fn) => (e2) => !e2._stopped && fn && fn(e2));
+    return value.map((fn) => {
+      const patchedFn = (e2) => !e2._stopped && fn && fn(e2);
+      patchedFn.__wwe = fn.__wwe;
+      return patchedFn;
+    });
   } else {
     return value;
   }
