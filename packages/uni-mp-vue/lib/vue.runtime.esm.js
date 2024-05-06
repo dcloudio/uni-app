@@ -1119,6 +1119,9 @@ function triggerRef(ref2) {
 function unref(ref2) {
   return isRef(ref2) ? ref2.value : ref2;
 }
+function toValue(source) {
+  return isFunction(source) ? source() : unref(source);
+}
 const shallowUnwrapHandlers = {
   get: (target, key, receiver) => unref(Reflect.get(target, key, receiver)),
   set: (target, key, value, receiver) => {
@@ -2807,6 +2810,25 @@ function mergeDefaults(raw, defaults) {
   }
   return props;
 }
+function mergeModels(a, b) {
+  if (!a || !b)
+    return a || b;
+  if (isArray(a) && isArray(b))
+    return a.concat(b);
+  return extend({}, normalizePropsOrEmits(a), normalizePropsOrEmits(b));
+}
+function createPropsRestProxy(props, excludedKeys) {
+  const ret = {};
+  for (const key in props) {
+    if (!excludedKeys.includes(key)) {
+      Object.defineProperty(ret, key, {
+        enumerable: true,
+        get: () => props[key]
+      });
+    }
+  }
+  return ret;
+}
 function withAsyncContext(getAwaitable) {
   const ctx = getCurrentInstance();
   if (!!(process.env.NODE_ENV !== "production") && !ctx) {
@@ -4365,6 +4387,59 @@ const computed = (getterOrOptions, debugOptions) => {
   return c;
 };
 
+function useModel(props, name, options = EMPTY_OBJ) {
+  const i = getCurrentInstance();
+  if (!!(process.env.NODE_ENV !== "production") && !i) {
+    warn$1(`useModel() called without active instance.`);
+    return ref();
+  }
+  if (!!(process.env.NODE_ENV !== "production") && !i.propsOptions[0][name]) {
+    warn$1(`useModel() called with prop "${name}" which is not declared.`);
+    return ref();
+  }
+  const camelizedName = camelize(name);
+  const hyphenatedName = hyphenate(name);
+  const res = customRef((track, trigger) => {
+    let localValue;
+    watchSyncEffect(() => {
+      const propValue = props[name];
+      if (hasChanged(localValue, propValue)) {
+        localValue = propValue;
+        trigger();
+      }
+    });
+    return {
+      get() {
+        track();
+        return options.get ? options.get(localValue) : localValue;
+      },
+      set(value) {
+        const rawProps = i.vnode.props;
+        if (!(rawProps && // check if parent has passed v-model
+        (name in rawProps || camelizedName in rawProps || hyphenatedName in rawProps) && (`onUpdate:${name}` in rawProps || `onUpdate:${camelizedName}` in rawProps || `onUpdate:${hyphenatedName}` in rawProps)) && hasChanged(value, localValue)) {
+          localValue = value;
+          trigger();
+        }
+        i.emit(`update:${name}`, options.set ? options.set(value) : value);
+      }
+    };
+  });
+  const modifierKey = name === "modelValue" ? "modelModifiers" : `${name}Modifiers`;
+  res[Symbol.iterator] = () => {
+    let i2 = 0;
+    return {
+      next() {
+        if (i2 < 2) {
+          return { value: i2++ ? props[modifierKey] || {} : res, done: false };
+        } else {
+          return { done: true };
+        }
+      }
+    };
+  };
+  return res;
+}
+
 const version = "3.4.21";
 const warn = !!(process.env.NODE_ENV !== "production") ? warn$1 : NOOP;
 const resolveFilter = null;
@@ -5110,4 +5185,4 @@ function withModifiers() {
 function createVNode() {
 }
 
-export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, logError, markRaw, mergeDefaults, mergeProps, nextTick$1 as nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, triggerRef, unref, updateProps, useAttrs, useCssVars, useSSRContext, useSlots, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
+export { EffectScope, Fragment, ReactiveEffect, Text, callWithAsyncErrorHandling, callWithErrorHandling, computed, createPropsRestProxy, createVNode, createVueApp, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineProps, devtoolsComponentAdded, devtoolsComponentRemoved, devtoolsComponentUpdated, diff, effect, effectScope, getCurrentInstance, getCurrentScope, getExposeProxy, guardReactiveProps, hasInjectionContext, hasQueueJob, inject, injectHook, invalidateJob, isInSSRComponentSetup, isProxy, isReactive, isReadonly, isRef, isShallow, logError, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick$1 as nextTick, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, patch, provide, proxyRefs, queuePostFlushCb, reactive, readonly, ref, resolveComponent, resolveDirective, resolveFilter, setCurrentRenderingInstance, setTemplateRef, shallowReactive, shallowReadonly, shallowRef, stop, toHandlers, toRaw, toRef, toRefs, toValue, triggerRef, unref, updateProps, useAttrs, useCssVars, useModel, useSSRContext, useSlots, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withModifiers, withScopeId };
