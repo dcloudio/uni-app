@@ -1,7 +1,7 @@
-import { onMounted, provide, ref } from 'vue'
+import { provide, ref, onMounted } from 'vue'
 import {
-  type CustomEventTrigger,
-  type EmitEvent,
+  CustomEventTrigger,
+  EmitEvent,
   useCustomEvent,
 } from '@dcloudio/uni-components'
 import { PolySymbol } from '@dcloudio/uni-core'
@@ -35,17 +35,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup(_props, { slots, emit }) {
     const rootRef = ref<HTMLElement | null>(null)
     provideForm(useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit))
-    if (__X__ && !__NODE_JS__) {
-      onMounted(() => {
-        const rootElement = rootRef.value as UniFormElement
-        rootElement.attachVmProps(_props)
-      })
-    }
-    if (__X__) {
-      return () => (
-        <uni-form ref={rootRef}>{slots.default && slots.default()}</uni-form>
-      )
-    }
+    //#if _X_ && !_NODE_JS_
+    onMounted(() => {
+      const rootElement = rootRef.value as UniFormElement
+      rootElement.attachVmProps(_props)
+    })
+    //#endif
     return () => (
       <uni-form ref={rootRef}>
         <span>{slots.default && slots.default()}</span>
