@@ -30,11 +30,13 @@ import type { ClassMeta } from './code'
 interface ToOptions {
   inputDir: string
   outputDir: string
+  outFilename?: string
   sourceMap: boolean
   components: Record<string, string>
   isX: boolean
   isSingleThread: boolean
   isPlugin: boolean
+  isModule?: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
   uniModules: string[]
@@ -43,6 +45,30 @@ export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions
 
 export const ERR_MSG_PLACEHOLDER = `___ERR_MSG___`
+
+export interface RunOptions {
+  components: Record<string, string>
+  extApis?: Record<string, [string, string]>
+  isPlugin: boolean
+  isSingleThread: boolean
+  isX: boolean
+  sourceMap: boolean
+  transform?: UTSOutputOptions['transform']
+  uniModules: string[]
+}
+
+export interface RunProdOptions extends RunOptions {
+  isModule?: boolean
+  hookClass: string
+  pluginId: string
+  outFilename?: string
+}
+
+export interface RunDevOptions extends RunOptions {
+  cacheDir: string
+  pluginRelativeDir: string
+  is_uni_modules: boolean
+}
 
 export function resolveUTSSourceMapPath() {
   return resolveSourceMapPath()

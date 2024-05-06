@@ -59,12 +59,12 @@ export function uniEncryptUniModulesPlugin(): Plugin {
     },
     generateBundle(_, bundle) {
       Object.keys(bundle).forEach((fileName) => {
-        if (fileName.endsWith('.encrypt.js')) {
+        if (fileName.endsWith('.module.js')) {
           // app-android 不需要 js
           if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
             const newFileName =
               'uni_modules/' +
-              fileName.replace('.encrypt.js', '/index.encrypt.js')
+              fileName.replace('.module.js', '/index.module.js')
             bundle[newFileName] = bundle[fileName]
             bundle[newFileName].fileName = newFileName
           }
@@ -86,7 +86,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         fs.readdirSync(tempUniModulesDir).forEach((uniModuleDir) => {
           if (
             fs.existsSync(
-              path.join(tempUniModulesDir, uniModuleDir, 'index.encrypt.uts')
+              path.join(tempUniModulesDir, uniModuleDir, 'index.module.uts')
             )
           ) {
             tempUniModules.push(uniModuleDir)
@@ -199,7 +199,7 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
       inputDir,
       'uni_modules',
       module,
-      'index.encrypt.uts'
+      'index.module.uts'
     )
     const codes: string[] = []
     if (hasIndexFile(path.resolve(inputDir, 'uni_modules', module))) {
@@ -211,8 +211,8 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
     }
     if (codes.length) {
       fs.writeFileSync(indexEncryptFile, codes.join(`\n`))
-      // 输出 xxx.encrypt ，确保相对路径的准确性，因为真正引用的时候，是从 @/uni_modules/xxx 引入的
-      input[module + '.encrypt'] = indexEncryptFile
+      // 输出 xxx.module ，确保相对路径的准确性，因为真正引用的时候，是从 @/uni_modules/xxx 引入的
+      input[module + '.module'] = indexEncryptFile
     }
   })
   return {

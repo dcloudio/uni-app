@@ -1,18 +1,8 @@
 import { extend, isArray } from '@vue/shared'
 import { join, relative } from 'path'
 
-import {
-  checkAndroidVersionTips,
-  resolveAndroidDepFiles,
-  runKotlinDev,
-  runKotlinProd,
-} from './kotlin'
-import {
-  checkIOSVersionTips,
-  resolveIOSDepFiles,
-  runSwiftDev,
-  runSwiftProd,
-} from './swift'
+import { resolveAndroidDepFiles } from './kotlin'
+import { resolveIOSDepFiles } from './swift'
 
 import {
   FORMATS,
@@ -48,6 +38,9 @@ import {
 import { cacheTips } from './manifest/utils'
 import { compileEncrypt, isEncrypt } from './encrypt'
 import type { UTSOutputOptions } from '@dcloudio/uts'
+import { isModule } from './module'
+import { getCompiler } from './compiler'
+import { uvueOutDir } from './uvue/index'
 
 export * from './tsc'
 
@@ -136,6 +129,7 @@ export async function compile(
     isSingleThread: true,
   }
 ): Promise<CompileResult | void> {
+  const isCompileUniModules = process.env.UNI_COMPILE_TARGET === 'uni_modules'
   const pkg = resolvePackage(pluginDir)
   if (!pkg) {
     return
@@ -149,13 +143,26 @@ export async function compile(
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM
 
-  const pluginRelativeDir = relative(inputDir, pluginDir)
-  const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
-  const androidComponents = resolveAndroidComponents(
-    pluginDir,
-    pkg.is_uni_modules
+  const pluginRelativeDir = relative(
+    isCompileUniModules ? uvueOutDir() : inputDir,
+    pluginDir
   )
-  const iosComponents = resolveIOSComponents(pluginDir, pkg.is_uni_modules)
+  const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
+
+  const indexModuleFilename = isModule(pluginDir)
+    ? normalizePath(join(pluginDir, 'index.module.uts'))
+    : ''
+
+  if (indexModuleFilename) {
+    isPlugin = false
+  }
+
+  const androidComponents = indexModuleFilename
+    ? {}
+    : resolveAndroidComponents(pluginDir, pkg.is_uni_modules)
+  const iosComponents = indexModuleFilename
+    ? {}
+    : resolveIOSComponents(pluginDir, pkg.is_uni_modules)
 
   const env = initCheckOptionsEnv()
   const deps: string[] = []
@@ -186,10 +193,12 @@ export async function compile(
     pkg
   )
 
-  const code = await genProxyCode(pluginDir, proxyCodeOptions)
+  const code = isCompileUniModules
+    ? ''
+    : await genProxyCode(pluginDir, proxyCodeOptions)
 
   let errMsg = ''
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
     // uts 插件 wgt 模式，本地资源模式不需要编译
     if (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT') {
       return createResult(outputPluginDir, errMsg, code, deps, meta)
@@ -201,24 +210,38 @@ export async function compile(
       utsPlatform === 'app-plus'
     ) {
       let filename =
+        indexModuleFilename ||
         resolvePlatformIndex('app-android', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
       if (!filename && Object.keys(androidComponents).length) {
         filename = resolvePlatformIndexFilename('app-android', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('kotlin').runProd(filename, androidComponents, {
-          pluginId: pkg.id,
+        await getCompiler('kotlin').runProd(filename, {
+          components: androidComponents,
+          pluginId: isPlugin ? pkg.id : '',
           isX,
           isSingleThread,
           isPlugin,
+          isModule: !!indexModuleFilename,
           extApis,
           transform,
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.androidHookClass || '',
           uniModules: uni_modules || [],
+          outFilename: indexModuleFilename
+            ? normalizePath(
+                join(
+                  pluginRelativeDir,
+                  'utssdk',
+                  'app-android',
+                  'src',
+                  'index.kt'
+                )
+              )
+            : '',
         })
-        if (cacheDir) {
+        if (!isCompileUniModules && cacheDir) {
           // 存储 sourcemap
           storeSourceMap(
             'app-android',
@@ -243,13 +266,15 @@ export async function compile(
       utsPlatform === 'app-plus'
     ) {
       let filename =
+        indexModuleFilename ||
         resolvePlatformIndex('app-ios', pluginDir, pkg) ||
         resolveRootIndex(pluginDir, pkg)
       if (!filename && Object.keys(androidComponents).length) {
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('swift').runProd(filename, iosComponents, {
+        await getCompiler('swift').runProd(filename, {
+          components: iosComponents,
           pluginId: pkg.id,
           isX,
           isSingleThread,
@@ -260,7 +285,7 @@ export async function compile(
           hookClass: proxyCodeOptions.iOSHookClass || '',
           uniModules: uni_modules || [],
         })
-        if (cacheDir) {
+        if (!isCompileUniModules && cacheDir) {
           storeSourceMap(
             'app-ios',
             pluginRelativeDir,
@@ -496,19 +521,4 @@ export async function compile(
     }
   }
   return createResult(outputPluginDir, errMsg, code, deps, meta)
-}
-
-function getCompiler(type: 'kotlin' | 'swift') {
-  if (type === 'swift') {
-    return {
-      runProd: runSwiftProd,
-      runDev: runSwiftDev,
-      checkVersionTips: checkIOSVersionTips,
-    }
-  }
-  return {
-    runProd: runKotlinProd,
-    runDev: runKotlinDev,
-    checkVersionTips: checkAndroidVersionTips,
-  }
 }
