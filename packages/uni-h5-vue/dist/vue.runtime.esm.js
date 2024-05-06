@@ -5681,8 +5681,8 @@ function validateProps(rawProps, props, instance) {
   }
 }
 function validateProp(name, value, prop, props, isAbsent) {
-  const { type, required, validator, skipCheck } = prop;
-  if (required && isAbsent) {
+  const { type, required, validator, skipCheck, default: defaultValue } = prop;
+  if (defaultValue == null && required && isAbsent) {
     warn$1('Missing required prop: "' + name + '"');
     return;
   }
