@@ -7,6 +7,7 @@ import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import type { ComponentPublicInstance } from 'vue'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { registerPage } from '../page'
+import { showWebview } from '../../api/route/webview'
 
 type Page = ComponentPublicInstance
 
@@ -167,8 +168,12 @@ function createTab(
   query: Record<string, string>,
   callback?: () => void
 ): Page {
-  registerPage({ url: path, path, query, openType: 'switchTab' })
-  callback?.()
+  showWebview(
+    registerPage({ url: path, path, query, openType: 'switchTab' }),
+    'none',
+    0,
+    callback
+  )
   const page = getCurrentPage() as Page
   tabBar0!.appendItem(page!.$page.id.toString())
   return page
