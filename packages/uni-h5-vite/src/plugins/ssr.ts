@@ -42,6 +42,10 @@ export function uniSSRPlugin(): Plugin {
                   resolveBuiltIn('@vue/server-renderer')
                 ),
               },
+              {
+                find: 'vuex',
+                replacement: path.dirname(resolveBuiltIn('vuex/package.json')),
+              },
             ],
           },
         }
