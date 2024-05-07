@@ -35,6 +35,8 @@ module.exports = {
         path.resolve(process.env.UNI_INPUT_DIR, 'unpackage'),
         path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-aliyun'),
         path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-tcb'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-alipay'),
+        path.resolve(process.env.UNI_INPUT_DIR, 'uniCloud-dcloud'),
         path.resolve(process.env.UNI_INPUT_DIR, 'cloudfunctions-aliyun'),
         path.resolve(process.env.UNI_INPUT_DIR, 'cloudfunctions-tcb')
       ]
