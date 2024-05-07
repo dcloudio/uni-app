@@ -6249,7 +6249,9 @@ Server rendered element contains more child nodes than client vdom.`
       if (props) {
         if (!!(process.env.NODE_ENV !== "production") || forcePatch || !optimized || patchFlag & (16 | 32)) {
           for (const key in props) {
-            if (!!(process.env.NODE_ENV !== "production") && propHasMismatch(el, key, props[key], vnode, parentComponent)) {
+            if (!!(process.env.NODE_ENV !== "production") && // fixed by xxxxxx 暂时不对比style，因为服务器style会rpx2unit，而客户端是在setStyle的时候处理的，此时还没有格式化
+            // 后续考虑调整客户端rpx2unit的时机，提前到vnode处
+            key !== "style" && propHasMismatch(el, key, props[key], vnode, parentComponent)) {
               hasMismatch = true;
             }
             if (forcePatch && (key.endsWith("value") || key === "indeterminate") || isOn(key) && !isReservedProp(key) || // force hydrate v-bind with .prop modifiers

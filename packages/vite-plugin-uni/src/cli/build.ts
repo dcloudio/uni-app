@@ -46,6 +46,12 @@ export async function buildSSR(options: CliOptions) {
     process.env.UNI_INPUT_DIR,
     'entry-server.js'
   )
+  // 强制 cjs 输出
+  ssrBuildServerOptions.rollupOptions = {
+    output: {
+      format: 'cjs',
+    },
+  }
   ssrBuildServerOptions.outDir = process.env.UNI_OUTPUT_DIR
   process.env.UNI_SSR_CLIENT = ''
   process.env.UNI_SSR_SERVER = 'true'
