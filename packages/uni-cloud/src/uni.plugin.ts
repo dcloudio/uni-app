@@ -94,14 +94,17 @@ const initUniCloudWarningOnce = once(() => {
 })
 
 function checkProjectUniCloudDir() {
-  return !!sync(['uniCloud-aliyun', 'uniCloud-tcb', 'uniCloud-alipay'], {
-    cwd: isInHBuilderX()
-      ? process.env.UNI_INPUT_DIR
-      : process.env.UNI_CLI_CONTEXT,
-    onlyDirectories: true,
-    onlyFiles: false,
-    ignore: ['node_modules'],
-  }).length
+  return !!sync(
+    ['uniCloud-aliyun', 'uniCloud-tcb', 'uniCloud-alipay', 'uniCloud-dcloud'],
+    {
+      cwd: isInHBuilderX()
+        ? process.env.UNI_INPUT_DIR
+        : process.env.UNI_CLI_CONTEXT,
+      onlyDirectories: true,
+      onlyFiles: false,
+      ignore: ['node_modules'],
+    }
+  ).length
 }
 
 function resolveUniCloudModules() {
@@ -158,6 +161,7 @@ function initUniCloudEnv() {
         }
         switch (space.provider) {
           case 'aliyun':
+          case 'dcloud':
             return {
               provider: space.provider || 'aliyun',
               spaceName: space.name,
