@@ -2742,17 +2742,13 @@ const index$A = /* @__PURE__ */ defineBuiltInComponent({
   }) {
     const rootRef = ref(null);
     provideForm(useCustomEvent(rootRef, emit2));
-    {
-      onMounted(() => {
-        const rootElement = rootRef.value;
-        rootElement.attachVmProps(_props);
-      });
-    }
-    {
-      return () => createVNode("uni-form", {
-        "ref": rootRef
-      }, [slots.default && slots.default()], 512);
-    }
+    onMounted(() => {
+      const rootElement = rootRef.value;
+      rootElement.attachVmProps(_props);
+    });
+    return () => createVNode("uni-form", {
+      "ref": rootRef
+    }, [createVNode("span", null, [slots.default && slots.default()])], 512);
   }
 });
 function provideForm(trigger) {
