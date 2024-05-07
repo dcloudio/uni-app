@@ -1381,13 +1381,12 @@ function findPageRoute(path) {
   return __uniRoutes.find((route) => route.path === path);
 }
 function createTab(path, query, callback) {
-  registerPage({
+  showWebview(registerPage({
     url: path,
     path,
     query,
     openType: "switchTab"
-  });
-  callback === null || callback === void 0 || callback();
+  }), "none", 0, callback);
   var page = getCurrentPage();
   tabBar0.appendItem(page.$page.id.toString());
   return page;
