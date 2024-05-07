@@ -38,15 +38,13 @@ export function uniSSRPlugin(): Plugin {
             alias: [
               {
                 find: 'vue/server-renderer',
-                replacement: resolveBuiltIn('@vue/server-renderer'),
+                replacement: path.dirname(
+                  resolveBuiltIn('@vue/server-renderer')
+                ),
               },
               {
-                find: 'vue',
-                replacement: resolveBuiltIn(
-                  '@dcloudio/uni-h5-vue/' +
-                    (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
-                    '/vue.runtime.esm.js'
-                ),
+                find: 'vuex',
+                replacement: path.dirname(resolveBuiltIn('vuex/package.json')),
               },
             ],
           },

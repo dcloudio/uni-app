@@ -3,7 +3,7 @@ import debug from 'debug'
 import type { Plugin } from 'vite'
 
 import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
-import { ownerModuleName } from '../utils'
+import { isSSR, ownerModuleName } from '../utils'
 
 const debugResolve = debug('uni:resolve')
 
@@ -12,7 +12,7 @@ export function uniResolveIdPlugin(): Plugin {
   return {
     name: 'uni:h5-resolve-id',
     enforce: 'pre',
-    config() {
+    configResolved(config) {
       resolveCache[ownerModuleName] = resolveBuiltIn(
         path.join(
           ownerModuleName,
@@ -28,9 +28,20 @@ export function uniResolveIdPlugin(): Plugin {
         )
       )
     },
-    resolveId(id) {
+    resolveId(id, _, options) {
       if (id === 'vue') {
         id = '@dcloudio/uni-h5-vue'
+      }
+      if (isSSR(options)) {
+        if (id === '@dcloudio/uni-h5-vue') {
+          return resolveBuiltIn(
+            path.join(
+              '@dcloudio/uni-h5-vue',
+              (process.env.UNI_APP_X === 'true' ? 'dist-x' : 'dist') +
+                `/vue.runtime.cjs.js`
+            )
+          )
+        }
       }
       const cache = resolveCache[id]
       if (cache) {

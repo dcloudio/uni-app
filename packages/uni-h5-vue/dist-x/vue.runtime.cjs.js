@@ -6285,7 +6285,9 @@ Server rendered element contains more child nodes than client vdom.`
       if (props) {
         {
           for (const key in props) {
-            if (propHasMismatch(el, key, props[key], vnode, parentComponent)) {
+            if (// fixed by xxxxxx 暂时不对比style，因为服务器style会rpx2unit，而客户端是在setStyle的时候处理的，此时还没有格式化
+            // 后续考虑调整客户端rpx2unit的时机，提前到vnode处
+            key !== "style" && propHasMismatch(el, key, props[key], vnode, parentComponent)) {
               hasMismatch = true;
             }
             if (forcePatch && (key.endsWith("value") || key === "indeterminate") || shared.isOn(key) && !shared.isReservedProp(key) || // force hydrate v-bind with .prop modifiers
@@ -10187,7 +10189,11 @@ function patchStopImmediatePropagation(e, value) {
       originalStop.call(e);
       e._stopped = true;
     };
-    return value.map((fn) => (e2) => !e2._stopped && fn && fn(e2));
+    return value.map((fn) => {
+      const patchedFn = (e2) => !e2._stopped && fn && fn(e2);
+      patchedFn.__wwe = fn.__wwe;
+      return patchedFn;
+    });
   } else {
     return value;
   }

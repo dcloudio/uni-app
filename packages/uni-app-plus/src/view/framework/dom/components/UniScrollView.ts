@@ -1,4 +1,5 @@
 import '@dcloudio/uni-components/style/scroll-view.css'
+import '@dcloudio/uni-components/style/refresher.css'
 import { ScrollView } from '@dcloudio/uni-components'
 import type { UniNodeJSON } from '@dcloudio/uni-shared'
 import { UniComponent, setHolderText } from './UniComponent'
