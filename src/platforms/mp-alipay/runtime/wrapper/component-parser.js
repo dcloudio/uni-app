@@ -144,7 +144,9 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
       __l: handleLink,
       __w: handleWrap,
       triggerEvent
-    }
+    },
+    // add
+    options: vueOptions.options || {}
   }
 
   if (isComponent2) {
