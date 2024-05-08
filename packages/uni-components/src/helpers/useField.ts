@@ -189,7 +189,7 @@ export const emit = [
 
 type Props = ExtractPropTypes<typeof props>
 
-interface State {
+export interface State {
   value: string
   maxlength: number
   focus: boolean | string
