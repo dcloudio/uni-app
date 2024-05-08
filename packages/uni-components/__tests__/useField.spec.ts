@@ -15,7 +15,7 @@ jest.mock('vue', () => {
   }
 })
 
-jest.mock('./useFormField', () => {
+jest.mock('../src/helpers/useFormField', () => {
   return {
     useFormField: jest.fn(() => {}),
   }
