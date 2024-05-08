@@ -481,16 +481,32 @@ export function parseUniModulesForCloudCompiler(
   const uniModules = new Set<string>()
   if (fs.existsSync(modulesDir)) {
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
-      if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'encrypt'))) {
+      const uniModuleRootDir = path.resolve(modulesDir, uniModuleDir)
+      if (fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
         return
       }
       if (platform === 'app-android') {
-        // 需要添加依赖
         uniModules.add(uniModuleDir)
-        // const pkg = path.resolve(modulesDir, uniModuleDir, 'package.json')
+        // 需要添加依赖
+        const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
+        if (pkg.uni_modules && Array.isArray(pkg.uni_modules.dependencies)) {
+          pkg.uni_modules.dependencies.forEach((dep) => {
+            uniModules.add(dep)
+          })
+        }
       } else {
+        // 仅扫描普通加密插件，无需依赖
+        if (!fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
+          uniModules.add(uniModuleDir)
+        }
       }
     })
   }
   return [...uniModules]
 }
+
+export function parseUniModuleFiles(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  id: string,
+  inputDir: string
+) {}
