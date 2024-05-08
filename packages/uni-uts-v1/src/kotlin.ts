@@ -606,7 +606,7 @@ export async function compile(
       imports,
       logFilename: isModule ? false : true,
       noColor: !isColorSupported(),
-      split: isModule, // 仅 module 模式拆分
+      split: true,
       disableSplitManifest: true,
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
