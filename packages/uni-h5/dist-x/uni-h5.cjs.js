@@ -3917,6 +3917,7 @@ const emit = [
   ...emit$1
 ];
 function useBase(props2, rootRef, emit2) {
+  var _a;
   const fieldRef = vue.ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
   const selectionStart = vue.computed(() => {
@@ -3939,7 +3940,7 @@ function useBase(props2, rootRef, emit2) {
   });
   let value = "";
   {
-    value = getValueString(props2.modelValue, props2.type, maxlength.value) || getValueString(props2.value, props2.type, maxlength.value);
+    value = (_a = getValueString(props2.modelValue, props2.type, maxlength.value)) != null ? _a : getValueString(props2.value, props2.type, maxlength.value);
   }
   const state = vue.reactive({
     value,
