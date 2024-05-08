@@ -6,6 +6,7 @@ import {
   props as fieldProps,
   emit as fieldEmit,
   useField,
+  type State,
 } from '../../helpers/useField'
 
 const props = /*#__PURE__*/ extend({}, fieldProps, {
@@ -18,6 +19,30 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
     default: '',
   },
 })
+
+function resolveDigitDecimalPoint(
+  event: InputEvent,
+  cache: Ref<string>,
+  state: State,
+  input: HTMLInputElement
+) {
+  if ((event as InputEvent).data === '.') {
+    // 解决可重复输入小数点的问题
+    if (__PLATFORM__ === 'app') {
+      if (cache.value.slice(-1) === '.') {
+        state.value = input.value = cache.value = cache.value.slice(0, -1)
+        return false
+      } else if (cache.value.includes('.')) {
+        state.value = input.value = cache.value
+        return false
+      }
+    }
+    if (cache.value) {
+      cache.value += '.'
+      return false
+    }
+  }
+}
 
 export class UniInputElement extends UniElement {
   focus(options?: FocusOptions | undefined): void {
@@ -72,7 +97,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           : 0
       return AUTOCOMPLETES[index]
     })
-    let pointCount = 0
     let cache = ref('')
     let resetCache: (() => void) | null
     const rootRef: Ref<HTMLElement | null> = ref(null)
@@ -85,32 +109,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           if (resetCache) {
             input.removeEventListener('blur', resetCache)
             resetCache = null
-          }
-          if (__PLATFORM__ === 'app') {
-            //ios 16之后number类型连续输入3个小数点后会自动删除数字
-            if (
-              plus.os.version &&
-              plus.os.name === 'iOS' &&
-              parseFloat(plus.os.version) >= 16.0
-            ) {
-              if (cache.value && !state.value && !input.value) {
-                pointCount = pointCount >= 2 ? pointCount : pointCount + 1
-                if (cache.value.includes('.')) {
-                  input.value = cache.value
-                  return true
-                }
-                return false
-              }
-              if (
-                cache.value.includes('.') &&
-                state.value == cache.value.slice(0, -1) &&
-                pointCount >= 2
-              ) {
-                state.value = input.value = cache.value
-                return true
-              }
-            }
-            pointCount = 0
           }
           if (input.validity && !input.validity.valid) {
             if (
@@ -128,10 +126,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               return false
             }
             // 处理小数点
-            if (cache.value && (event as InputEvent).data === '.') {
-              cache.value += '.'
-              return false
-            }
+            const res = resolveDigitDecimalPoint(
+              event as InputEvent,
+              cache,
+              state,
+              input
+            )
+            if (typeof res === 'boolean') return res
             cache.value =
               state.value =
               input.value =
@@ -139,11 +140,28 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             // 输入非法字符不触发 input 事件
             return false
           } else {
-            // 处理在 chrome 中输入 . 不上屏的问题
-            if (cache.value && (event as InputEvent).data === '.') {
-              cache.value += '.'
-              return false
+            // 处理小数点
+            const res = resolveDigitDecimalPoint(
+              event as InputEvent,
+              cache,
+              state,
+              input
+            )
+            if (typeof res === 'boolean') return res
+
+            if (cache.value === input.value) return false
+
+            if (__PLATFORM__ === 'app') {
+              // iOS 会带着 . 传递给 input
+              if (
+                (event as InputEvent).inputType === 'deleteContentBackward' &&
+                plus.os.name === 'iOS'
+              ) {
+                input.value.slice(-1) === '.' &&
+                  (input.value = input.value.slice(0, -1))
+              }
             }
+
             cache.value = input.value
           }
 
@@ -227,7 +245,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <input
             key="input"
             ref={fieldRef}
-            v-model={state.value}
+            value={state.value}
+            onInput={(event: Event) => {
+              state.value = (event.target as HTMLInputElement).value.toString()
+            }}
+            // v-model={($event) => {state.value = $event.toString()}}
             disabled={!!props.disabled}
             type={type.value}
             maxlength={state.maxlength}
