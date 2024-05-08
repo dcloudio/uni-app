@@ -4141,6 +4141,14 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
+function resolveDigitDecimalPoint(event, cache, state, input) {
+  if (event.data === ".") {
+    if (cache.value) {
+      cache.value += ".";
+      return false;
+    }
+  }
+}
 class UniInputElement extends UniElement {
   focus(options) {
     var _a;
@@ -4209,25 +4217,17 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
             input.addEventListener("blur", resetCache);
             return false;
           }
-          if (cache.value) {
-            if (cache.value.indexOf(".") !== -1) {
-              if (event.data !== "." && event.inputType === "deleteContentBackward") {
-                const dotIndex = cache.value.indexOf(".");
-                cache.value = input.value = state2.value = cache.value.slice(0, dotIndex);
-                return true;
-              }
-            } else if (event.data === ".") {
-              cache.value += ".";
-              resetCache = () => {
-                cache.value = input.value = cache.value.slice(0, -1);
-              };
-              input.addEventListener("blur", resetCache);
-              return false;
-            }
-          }
+          const res = resolveDigitDecimalPoint(event, cache);
+          if (typeof res === "boolean")
+            return res;
           cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
+          const res = resolveDigitDecimalPoint(event, cache);
+          if (typeof res === "boolean")
+            return res;
+          if (cache.value === input.value)
+            return false;
           cache.value = input.value;
         }
         const maxlength = state2.maxlength;
@@ -4240,7 +4240,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     });
     vue.watch(() => state.value, (value) => {
       if (props2.type === "number" && !(cache.value === "-" && value === "")) {
-        cache.value = value;
+        cache.value = value.toString();
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
@@ -4278,10 +4278,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           caretColor: props2.cursorColor
         } : {},
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.withDirectives(vue.createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
-        "onUpdate:modelValue": ($event) => state.value = $event,
+        "value": state.value,
+        "onInput": (event) => {
+          state.value = event.target.value.toString();
+        },
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state.maxlength,
@@ -4295,7 +4298,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": props2.inputmode
-      }, null, 44, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vue.vModelDynamic, state.value]]);
+      }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -4303,7 +4306,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
         "class": ["uni-input-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || cache.value === "-")]]), props2.confirmType === "search" ? vue.createVNode("form", {
+      }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
         "onSubmit": (event) => event.preventDefault(),
         "class": "uni-input-form"
