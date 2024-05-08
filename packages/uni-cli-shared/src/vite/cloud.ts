@@ -9,7 +9,7 @@ import type {
 } from 'vite'
 import {
   genEncryptEasyComModuleIndex,
-  parseUniModulesWithoutUTSModules,
+  parseUniModulesWithComponents,
 } from '../uni_modules'
 import { cleanUrl, normalizePath } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
@@ -187,7 +187,7 @@ function hasIndexFile(uniModuleDir: string) {
 }
 
 function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
-  const modules = parseUniModulesWithoutUTSModules(inputDir)
+  const modules = parseUniModulesWithComponents(inputDir)
   const moduleNames = Object.keys(modules)
   if (!moduleNames.length) {
     throw new Error('No encrypt uni_modules found')

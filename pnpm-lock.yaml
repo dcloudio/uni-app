@@ -747,6 +747,9 @@ importers:
       '@vue/shared':
         specifier: 3.4.21
         version: 3.4.21
+      adm-zip:
+        specifier: ^0.5.12
+        version: 0.5.12
       autoprefixer:
         specifier: ^10.4.19
         version: 10.4.19(postcss@8.4.38)
@@ -838,6 +841,9 @@ importers:
       '@dcloudio/uni-uts-v1':
         specifier: 3.0.0-alpha-4010320240417001
         version: link:../uni-uts-v1
+      '@types/adm-zip':
+        specifier: ^0.5.5
+        version: 0.5.5
       '@types/babel__code-frame':
         specifier: ^7.0.6
         version: 7.0.6
@@ -1572,7 +1578,7 @@ importers:
         specifier: 3.4.21
         version: 3.4.21
       adm-zip:
-        specifier: ^0.5.9
+        specifier: ^0.5.12
         version: 0.5.12
       android-versions:
         specifier: ^1.8.1
@@ -1618,7 +1624,7 @@ importers:
         version: 1.2.0
     devDependencies:
       '@types/adm-zip':
-        specifier: ^0.5.0
+        specifier: ^0.5.5
         version: 0.5.5
       '@types/android-versions':
         specifier: ^1.8.0

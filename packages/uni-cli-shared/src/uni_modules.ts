@@ -405,7 +405,8 @@ export function parseEncryptUniModulesWithDeps(inputDir: string) {
   return uniModules
 }
 
-export function parseUniModulesWithoutUTSModules(inputDir: string) {
+// 目前该函数仅在云端使用（目前仅限iOS/web），云端编译时，提交上来的uni_modules是过滤好的
+export function parseUniModulesWithComponents(inputDir: string) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
   const uniModules: Record<string, string[]> = {}
   if (fs.existsSync(modulesDir)) {
@@ -415,40 +416,9 @@ export function parseUniModulesWithoutUTSModules(inputDir: string) {
       ) {
         return
       }
-      // 非utssdk插件
-      if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'utssdk'))) {
-        return
-      }
       // 解析加密的 easyCom 插件列表
       const components = parseEasyComComponents(uniModuleDir, inputDir, false)
       uniModules[uniModuleDir] = components
-    })
-  }
-  return uniModules
-}
-
-export function parseEncryptUniModules(
-  inputDir: string,
-  detectBinary: boolean = true
-) {
-  const modulesDir = path.resolve(inputDir, 'uni_modules')
-  const uniModules: Record<string, string[]> = {}
-  if (fs.existsSync(modulesDir)) {
-    fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
-      // 判断是否是加密插件
-      if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'encrypt'))) {
-        // 非utssdk插件
-        if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'utssdk'))) {
-          return
-        }
-        // 解析加密的 easyCom 插件列表
-        const components = parseEasyComComponents(
-          uniModuleDir,
-          inputDir,
-          detectBinary
-        )
-        uniModules[uniModuleDir] = components
-      }
     })
   }
   return uniModules
@@ -500,4 +470,27 @@ export function parseEasyComComponents(
     })
   }
   return components
+}
+
+// 根据平台解析uni_modules列表，后续会生成zip，提交云编译
+export function parseUniModulesForCloudCompiler(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string
+) {
+  const modulesDir = path.resolve(inputDir, 'uni_modules')
+  const uniModules = new Set<string>()
+  if (fs.existsSync(modulesDir)) {
+    fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
+      if (fs.existsSync(path.resolve(modulesDir, uniModuleDir, 'encrypt'))) {
+        return
+      }
+      if (platform === 'app-android') {
+        // 需要添加依赖
+        uniModules.add(uniModuleDir)
+        // const pkg = path.resolve(modulesDir, uniModuleDir, 'package.json')
+      } else {
+      }
+    })
+  }
+  return [...uniModules]
 }
