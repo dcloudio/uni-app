@@ -594,7 +594,7 @@ export async function compile(
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input,
     output: {
-      outFilename,
+      outFilename: outFilename ? outFilename : undefined,
       isX,
       isSingleThread,
       isPlugin,
@@ -606,7 +606,7 @@ export async function compile(
       imports,
       logFilename: isModule ? false : true,
       noColor: !isColorSupported(),
-      split: true,
+      split: isModule, // 仅 module 模式拆分
       disableSplitManifest: true,
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
