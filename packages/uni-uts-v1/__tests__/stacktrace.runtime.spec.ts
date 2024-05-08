@@ -81,6 +81,22 @@ at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
         }
       )
     ).toMatchSnapshot()
+
+    expect(
+      parseUTSKotlinRuntimeStacktrace(
+        `java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean
+at uni.UNIXXXXXXX.GenComponentsTestBooleanTestBoolean.getDisabled1(test-boolean.kt:68)
+at uni.UNIXXXXXXX.GenComponentsTestBooleanTestBoolean$1.invoke(test-boolean.kt:21)
+at java.lang.reflect.Method.invoke(Native Method)
+at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:708)`,
+        {
+          language: 'kotlin',
+          appid: '__UNI__XXXXXXX',
+          cacheDir,
+          logType: 'error',
+        }
+      )
+    ).toMatchSnapshot()
   })
   test('parseUTSJavaScriptRuntimeStacktrace', async () => {
     const cacheDir = path.resolve(
