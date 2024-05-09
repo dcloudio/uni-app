@@ -234,6 +234,17 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
         format: 'es',
         banner: ``,
         entryFileNames: '[name].js',
+        assetFileNames(asset) {
+          if (asset.name && path.isAbsolute(asset.name)) {
+            const uniModuleId = parseUniModuleId(
+              path.relative(inputDir, asset.name)
+            )
+            if (uniModuleId) {
+              return `uni_modules/${uniModuleId}/assets/[name]-[hash][extname]`
+            }
+          }
+          return 'assets/[name]-[hash][extname]'
+        },
       },
     },
   }
@@ -261,15 +272,21 @@ function genUniModulesPackageJson(
   )
 }
 
+function parseUniModuleId(relativeFilename: string) {
+  const parts = normalizePath(relativeFilename).split('/', 2)
+  if (parts[0] === 'uni_modules') {
+    return parts[1]
+  }
+}
+
 const uniModulesExtApiComponents: Map<string, Set<string>> = new Map()
 
 export function addUniModulesExtApiComponents(
   relativeFilename: string,
   components: string[]
 ) {
-  const parts = normalizePath(relativeFilename).split('/')
-  if (parts[0] === 'uni_modules') {
-    const uniModuleId = parts[1]
+  const uniModuleId = parseUniModuleId(relativeFilename)
+  if (uniModuleId) {
     let extApiComponents = uniModulesExtApiComponents.get(uniModuleId)
     if (!extApiComponents) {
       extApiComponents = new Set()
@@ -279,6 +296,6 @@ export function addUniModulesExtApiComponents(
   }
 }
 
-export function getUniModulesExtApiComponents(uniModuleId: string) {
+function getUniModulesExtApiComponents(uniModuleId: string) {
   return [...(uniModulesExtApiComponents.get(uniModuleId) || [])]
 }

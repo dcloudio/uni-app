@@ -1,8 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`uni_modules playground uni-app-x build:app-android 1`] = `"logo.46719607.png"`;
-
-exports[`uni_modules playground uni-app-x build:app-android 2`] = `
+exports[`uni_modules playground uni-app-x build:app-android 1`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -23,7 +21,7 @@ exports[`uni_modules playground uni-app-x build:app-android 2`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 3`] = `
+exports[`uni_modules playground uni-app-x build:app-android 2`] = `
 "{
   "id": "test-com2",
   "version": "1.0.0",
@@ -42,6 +40,8 @@ exports[`uni_modules playground uni-app-x build:app-android 3`] = `
 }"
 `;
 
+exports[`uni_modules playground uni-app-x build:app-android 3`] = `"logo-46719607.png"`;
+
 exports[`uni_modules playground uni-app-x build:app-android 4`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
@@ -59,7 +59,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/assets/logo.46719607.png";
+val \`default\` = "/uni_modules/test-com2/assets/logo-46719607.png";
 val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
     return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
 }
@@ -94,7 +94,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/assets/logo.46719607.png";
+val \`default\` = "/uni_modules/test-com2/assets/logo-46719607.png";
 val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
     return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
 }
@@ -485,7 +485,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode(_component_v_uni_image, { src: Logo })
   ], 64);
 }
-const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-2ddbc896"]]);
+const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-dcf698f8"]]);
 const _sfc_main = defineComponent({
   data() {
     return {
@@ -559,7 +559,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     createVNode(_component_v_uni_video)
   ], 64);
 }
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-aa170056"]]);
+const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-55dd6fe4"]]);
 const _sfc_main = defineComponent({
   data() {
     return {
@@ -605,10 +605,10 @@ exports[`uni_modules playground uni-app-x build:h5 5`] = `
 
 
 
-.text[data-v-2ddbc896] {
+.text[data-v-dcf698f8] {
     color: red;
 }
-.image[data-v-2ddbc896] {
+.image[data-v-dcf698f8] {
     background: url('@/uni_modules/test-com1/components/test-com1-1/logo.png');
 }
 "
@@ -629,10 +629,10 @@ exports[`uni_modules playground uni-app-x build:h5 7`] = `
 "
 
 
-.text[data-v-aa170056] {
+.text[data-v-55dd6fe4] {
     color: red;
 }
-.image[data-v-aa170056] {
+.image[data-v-55dd6fe4] {
     background: url('@/uni_modules/test-com2/components/test-com2-1/logo.png');
 }
 "
