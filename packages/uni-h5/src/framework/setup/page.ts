@@ -142,16 +142,8 @@ export function initPage(vm: ComponentPublicInstance) {
           case 'navigationStyle':
             pageMeta.navigationBar.style = style[key]
             break
-          case 'disableScroll':
-            pageMeta.disableScroll = style[key]
-            break
-          case 'enablePullDownRefresh':
-            pageMeta.enablePullDownRefresh = style[key]
-            break
-          case 'onReachBottomDistance':
-            pageMeta.onReachBottomDistance = style[key]
-            break
           default:
+            pageMeta[key] = style[key]
             break
         }
       }
@@ -166,6 +158,7 @@ export function initPage(vm: ComponentPublicInstance) {
       enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
       onReachBottomDistance:
         pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent,
     })
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
