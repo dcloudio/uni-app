@@ -22,6 +22,7 @@ import {
   type WatchEffect as WatchEffectOrigin,
   type WatchOptions as WatchOptionsOrigin,
   type WritableComputedOptions as WritableComputedOptionsOrigin,
+  type cloneVNode as cloneVNodeOrigin,
   type computed as computedOrigin,
   type createAppContext as createAppContextOrigin,
   type createApp as createAppOrigin,
@@ -53,7 +54,9 @@ import {
   type isReadonly as isReadonlyOrigin,
   type isRef as isRefOrigin,
   type isVNode as isVNodeOrigin,
+  type isVNode as isVNodeOrigin,
   type markRaw as markRawOrigin,
+  type mergeProps as mergePropsOrigin,
   type nextTick as nextTickOrigin,
   type normalizeCssStyles as normalizeCssStylesOrigin,
   type normalizePropsOptions as normalizePropsOptionsOrigin,
@@ -82,6 +85,8 @@ import {
   type renderSlot as renderSlotOrigin,
   type resolveCache as resolveCacheOrigin,
   type resolveComponent as resolveComponentOrigin,
+  type resolveComponent as resolveComponentOrigin,
+  type resolveDirective as resolveDirectiveOrigin,
   type resolveDynamicComponent as resolveDynamicComponentOrigin,
   type resolveEasyComponent as resolveEasyComponentOrigin,
   type shallowReactive as shallowReactiveOrigin,
@@ -108,8 +113,10 @@ import {
   type withCtx as withCtxOrigin,
   type withDefaults as withDefaultsOrigin,
   type withDirectives as withDirectivesOrigin,
+  type withDirectives as withDirectivesOrigin,
   type withMemo as withMemoOrigin,
-  type withModifiers as withModifiersOrigin
+  type withModifiers as withModifiersOrigin,
+  type withModifiers as withModifiersOrigin,
 } from '@vue/runtime-core'
 
 declare global {
@@ -235,4 +242,11 @@ declare global {
   const useAttrs: typeof useAttrsOrigin
   const useModel: typeof useModelOrigin
   const hasInjectionContext: typeof hasInjectionContextOrigin
+  const mergeProps: typeof mergePropsOrigin
+  const cloneVNode: typeof cloneVNodeOrigin
+  const isVNode: typeof isVNodeOrigin
+  const resolveComponent: typeof resolveComponentOrigin
+  const resolveDirective: typeof resolveDirectiveOrigin
+  const withModifiers: typeof withModifiersOrigin
+  const withDirectives: typeof withDirectivesOrigin
 }
