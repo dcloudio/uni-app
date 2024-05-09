@@ -1,3 +1,12 @@
+//#if !_NODE_JS_ && _X_
+declare global {
+  interface Window {
+    UniResizeObserver: typeof ResizeObserver
+  }
+}
+window.UniResizeObserver = window.ResizeObserver
+//#endif
+
 //#if _NODE_JS_
 // 目前这几个接口主要是 uniCloud 使用了
 // 目前采用 polyfill 解决 xhr 和 storage
