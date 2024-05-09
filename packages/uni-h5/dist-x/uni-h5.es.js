@@ -25072,6 +25072,7 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
   API_GET_PROVIDER,
   createUnsupportedAsyncApi(API_GET_PROVIDER)
 );
+window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   $emit,
