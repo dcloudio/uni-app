@@ -10,6 +10,13 @@ export default {
             msg: 'test-com1-1',
             logo: Logo
         }
+    },
+    onLoad() {
+        uni.getSystemInfo({
+            success: function (res) {
+                console.log(res)
+            }
+        });
     }
 }
 </script>

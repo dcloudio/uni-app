@@ -60,6 +60,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
     generateBundle(_, bundle) {
       Object.keys(bundle).forEach((fileName) => {
         if (fileName.endsWith('.module.js')) {
+          const uniModuleId = path.basename(fileName).replace('.module.js', '')
           // app-android 不需要 js
           if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
             const newFileName =
@@ -69,6 +70,20 @@ export function uniEncryptUniModulesPlugin(): Plugin {
             bundle[newFileName].fileName = newFileName
           }
           delete bundle[fileName]
+          const pkg = `uni_modules/${uniModuleId}/package.json`
+          bundle[pkg] = {
+            type: 'asset',
+            fileName: pkg,
+            name: pkg,
+            needsCodeReference: false,
+            source: genUniModulesPackageJson(
+              uniModuleId,
+              process.env.UNI_INPUT_DIR,
+              {
+                env: initCheckEnv(),
+              }
+            ),
+          }
         }
       })
     },
@@ -77,10 +92,8 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         return
       }
       // 编译所有 uni_modules 插件
-      const inputDir = process.env.UNI_INPUT_DIR
       const tempOutputDir = uvueOutDir()
       const tempUniModulesDir = path.join(tempOutputDir, 'uni_modules')
-      // 非 uts 插件
       const tempUniModules: string[] = []
       if (fs.existsSync(tempUniModulesDir)) {
         fs.readdirSync(tempUniModulesDir).forEach((uniModuleDir) => {
@@ -93,44 +106,39 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           }
         })
       }
-      const uniModulesDir = path.join(inputDir, 'uni_modules')
-      // uts 插件
-      const utsModules: string[] = []
-      if (fs.existsSync(uniModulesDir)) {
-        fs.readdirSync(uniModulesDir).forEach((uniModuleDir) => {
-          // 已经在临时目录
-          if (tempUniModules.includes(uniModuleDir)) {
-            return
-          }
-          if (
-            fs.existsSync(path.resolve(uniModulesDir, uniModuleDir, 'utssdk'))
-          ) {
-            utsModules.push(uniModuleDir)
-          }
-        })
-      }
       const compiler = resolveUTSCompiler()
       for (const uniModule of tempUniModules) {
         const pluginDir = path.resolve(tempUniModulesDir, uniModule)
-        await compiler.compile(pluginDir, {
+        const result = await compiler.compile(pluginDir, {
           isX: process.env.UNI_APP_X === 'true',
           isSingleThread: true,
           isPlugin: false,
           sourceMap: false,
           uni_modules: [],
         })
-      }
-      for (const uniModule of utsModules) {
-        const pluginDir = path.resolve(uniModulesDir, uniModule)
-        await compiler.compile(pluginDir, {
-          isX: process.env.UNI_APP_X === 'true',
-          isSingleThread: true,
-          isPlugin: true,
-          sourceMap: false,
-          uni_modules: [],
-        })
+        if (result) {
+          fs.writeFileSync(
+            path.resolve(
+              process.env.UNI_OUTPUT_DIR,
+              'uni_modules',
+              uniModule,
+              'package.json'
+            ),
+            genUniModulesPackageJson(uniModule, tempOutputDir, {
+              env: initCheckEnv(),
+              apis: result.inject_apis,
+              components: getUniModulesExtApiComponents(uniModule),
+            })
+          )
+        }
       }
     },
+  }
+}
+
+export function initCheckEnv(): Record<string, string> {
+  return {
+    compilerVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
   }
 }
 
@@ -229,4 +237,48 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
       },
     },
   }
+}
+
+function genUniModulesPackageJson(
+  uniModuleId: string,
+  inputDir: string,
+  artifacts: Record<string, any>
+) {
+  const pkg = require(path.resolve(
+    inputDir,
+    path.join('uni_modules', uniModuleId, 'package.json')
+  ))
+  return JSON.stringify(
+    {
+      id: pkg.id,
+      version: pkg.version,
+      uni_modules: {
+        artifacts,
+      },
+    },
+    null,
+    2
+  )
+}
+
+const uniModulesExtApiComponents: Map<string, Set<string>> = new Map()
+
+export function addUniModulesExtApiComponents(
+  relativeFilename: string,
+  components: string[]
+) {
+  const parts = normalizePath(relativeFilename).split('/')
+  if (parts[0] === 'uni_modules') {
+    const uniModuleId = parts[1]
+    let extApiComponents = uniModulesExtApiComponents.get(uniModuleId)
+    if (!extApiComponents) {
+      extApiComponents = new Set()
+      uniModulesExtApiComponents.set(uniModuleId, extApiComponents)
+    }
+    components.forEach((component) => extApiComponents!.add(component))
+  }
+}
+
+export function getUniModulesExtApiComponents(uniModuleId: string) {
+  return [...(uniModulesExtApiComponents.get(uniModuleId) || [])]
 }

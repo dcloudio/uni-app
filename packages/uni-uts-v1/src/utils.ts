@@ -60,7 +60,7 @@ export interface RunOptions {
 export interface RunProdOptions extends RunOptions {
   isModule?: boolean
   hookClass: string
-  pluginId: string
+  uniModuleId: string
   outFilename?: string
 }
 
@@ -88,8 +88,8 @@ export function resolvePackage(filename: string) {
 
   const isUniModules = parts.includes('uni_modules')
   const index = isUniModules
-    ? parts.findIndex((part) => part === 'uni_modules')
-    : parts.findIndex((part) => part === 'utssdk')
+    ? parts.findLastIndex((part) => part === 'uni_modules')
+    : parts.findLastIndex((part) => part === 'utssdk')
   if (index > -1) {
     const id = parts[index + 1]
     const name = camelize(prefix(id))

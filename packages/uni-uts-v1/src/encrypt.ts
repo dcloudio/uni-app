@@ -50,6 +50,7 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
       code,
       deps: [] as string[],
       encrypt: true,
+      inject_apis: [],
       meta: { commonjs: { isCommonJS: true } },
     }
   }
@@ -81,6 +82,7 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
     code,
     deps: [] as string[],
     encrypt: true,
+    inject_apis: [],
     meta: { commonjs: { isCommonJS: true } },
   }
 }

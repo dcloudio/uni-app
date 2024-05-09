@@ -1,5 +1,6 @@
 <template>
     <text class="text">{{ msg }}{{ logo }}</text>
+    <video />
 </template>
 <script>
 import Logo from './logo.png'

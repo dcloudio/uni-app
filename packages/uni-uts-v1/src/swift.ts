@@ -44,7 +44,7 @@ export async function runSwiftProd(
   filename: string,
   {
     components,
-    pluginId,
+    uniModuleId,
     isPlugin,
     isX,
     isSingleThread,
@@ -81,7 +81,7 @@ export async function runSwiftProd(
   }
   genUTSPlatformResource(filename, {
     isX,
-    pluginId,
+    pluginId: uniModuleId,
     inputDir,
     outputDir,
     platform: 'app-ios',
@@ -90,7 +90,7 @@ export async function runSwiftProd(
     package: parseSwiftPackage(filename).namespace,
     hookClass,
     result,
-    provider: resolveConfigProvider('app-ios', pluginId, transform),
+    provider: resolveConfigProvider('app-ios', uniModuleId, transform),
     uniModules,
   })
 }

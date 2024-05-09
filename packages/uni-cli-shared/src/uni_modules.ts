@@ -1,6 +1,7 @@
 // 重要：此文件编译后的js，需同步至 vue2 编译器中 uni-cli-shared/lib/uts/uni_modules.js
 import path from 'path'
 import fs from 'fs-extra'
+import { sync } from 'fast-glob'
 import type { UTSTargetLanguage } from './uts'
 
 export type DefineOptions = {
@@ -474,7 +475,7 @@ export function parseEasyComComponents(
 
 // 根据平台解析uni_modules列表，后续会生成zip，提交云编译
 export function parseUniModulesForCloudCompiler(
-  platform: typeof process.env.UNI_UTS_PLATFORM,
+  _platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string
 ) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
@@ -485,28 +486,67 @@ export function parseUniModulesForCloudCompiler(
       if (fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
         return
       }
-      if (platform === 'app-android') {
+      // 仅扫描普通加密插件，无需依赖
+      if (!fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
         uniModules.add(uniModuleDir)
-        // 需要添加依赖
-        const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
-        if (pkg.uni_modules && Array.isArray(pkg.uni_modules.dependencies)) {
-          pkg.uni_modules.dependencies.forEach((dep) => {
-            uniModules.add(dep)
-          })
-        }
-      } else {
-        // 仅扫描普通加密插件，无需依赖
-        if (!fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
-          uniModules.add(uniModuleDir)
-        }
       }
     })
   }
   return [...uniModules]
 }
 
+export const KNOWN_ASSET_TYPES = [
+  // images
+  'png',
+  'jpe?g',
+  'gif',
+  'svg',
+  'ico',
+  'webp',
+  'avif',
+
+  // media
+  'mp4',
+  'webm',
+  'ogg',
+  'mp3',
+  'wav',
+  'flac',
+  'aac',
+
+  // fonts
+  'woff2?',
+  'eot',
+  'ttf',
+  'otf',
+
+  // other
+  'pdf',
+  'txt',
+]
+
 export function parseUniModuleFiles(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   id: string,
   inputDir: string
-) {}
+) {
+  return sync(`uni_modules/${id}/**/*`, {
+    cwd: inputDir,
+    ignore:
+      platform !== 'app-android' // 非 android平台不需要扫描 assets
+        ? [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]
+        : [],
+  })
+}
+
+export function packUniModules(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string
+) {
+  const uniModules = parseUniModulesForCloudCompiler(platform, inputDir)
+  const files: string[] = []
+  uniModules.forEach((id) => {
+    files.push(...parseUniModuleFiles(platform, id, inputDir))
+  })
+  return files
+}

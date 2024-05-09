@@ -11,6 +11,7 @@ import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-ma
 import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
 import {
   addUTSEasyComAutoImports,
+  addUniModulesExtApiComponents,
   createResolveErrorMsg,
   createRollupError,
   genUTSClassName,
@@ -109,15 +110,18 @@ export async function transformMain(
     })
 
     if (process.env.NODE_ENV === 'production') {
-      addExtApiComponents(
-        elements.filter((element) => {
-          // 如果是UTS原生组件，则无需记录摇树
-          if (parseUTSComponent(element, 'kotlin')) {
-            return false
-          }
-          return true
-        })
-      )
+      const components = elements.filter((element) => {
+        // 如果是UTS原生组件，则无需记录摇树
+        if (parseUTSComponent(element, 'kotlin')) {
+          return false
+        }
+        return true
+      })
+      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        addUniModulesExtApiComponents(relativeFilename, components)
+      } else {
+        addExtApiComponents(components)
+      }
     }
   }
 

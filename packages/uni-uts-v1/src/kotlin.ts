@@ -102,7 +102,7 @@ export async function runKotlinProd(
   {
     outFilename,
     components,
-    pluginId,
+    uniModuleId,
     isPlugin,
     isModule,
     isX,
@@ -153,17 +153,19 @@ export async function runKotlinProd(
   }
 
   if (result.inject_apis && result.inject_apis.length) {
-    if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
+    if (isModule) {
+      // noop
+    } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
       updateManifestModules(inputDir, result.inject_apis)
     } else {
       addInjectApis(result.inject_apis)
     }
   }
-  // 指定了 outFilename，是单个module编译，非utssdk插件
-  if (!outFilename) {
+  // module 模式，不需要处理资源
+  if (!isModule) {
     genUTSPlatformResource(filename, {
       isX,
-      pluginId,
+      pluginId: uniModuleId,
       inputDir,
       outputDir,
       platform: 'app-android',
@@ -172,7 +174,7 @@ export async function runKotlinProd(
       package: parseKotlinPackage(filename).package + '.',
       hookClass,
       result,
-      provider: resolveConfigProvider('app-android', pluginId, transform),
+      provider: resolveConfigProvider('app-android', uniModuleId, transform),
       uniModules,
     })
   }

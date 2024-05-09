@@ -82,6 +82,7 @@ export interface CompileResult {
   encrypt: boolean
   meta?: any
   dir: string
+  inject_apis: string[]
 }
 
 function createResult(
@@ -89,6 +90,7 @@ function createResult(
   errMsg: string,
   code: string,
   deps: string[],
+  inject_apis: string[],
   meta: unknown
 ): CompileResult {
   return {
@@ -96,6 +98,7 @@ function createResult(
     code: parseErrMsg(code, errMsg),
     deps,
     encrypt: false,
+    inject_apis,
     meta,
   }
 }
@@ -166,6 +169,7 @@ export async function compile(
 
   const env = initCheckOptionsEnv()
   const deps: string[] = []
+  const inject_apis: string[] = []
 
   const meta = {
     exports: {},
@@ -201,7 +205,7 @@ export async function compile(
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
     // uts 插件 wgt 模式，本地资源模式不需要编译
     if (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT') {
-      return createResult(outputPluginDir, errMsg, code, deps, meta)
+      return createResult(outputPluginDir, errMsg, code, deps, [], meta)
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
     if (
@@ -217,9 +221,9 @@ export async function compile(
         filename = resolvePlatformIndexFilename('app-android', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('kotlin').runProd(filename, {
+        const result = await getCompiler('kotlin').runProd(filename, {
           components: androidComponents,
-          pluginId: isPlugin ? pkg.id : '',
+          uniModuleId: pkg.id,
           isX,
           isSingleThread,
           isPlugin,
@@ -241,6 +245,11 @@ export async function compile(
               )
             : '',
         })
+        if (result) {
+          if (result.inject_apis) {
+            inject_apis.push(...result.inject_apis)
+          }
+        }
         if (!isCompileUniModules && cacheDir) {
           // 存储 sourcemap
           storeSourceMap(
@@ -273,9 +282,9 @@ export async function compile(
         filename = resolvePlatformIndexFilename('app-ios', pluginDir, pkg)
       }
       if (filename) {
-        await getCompiler('swift').runProd(filename, {
+        const result = await getCompiler('swift').runProd(filename, {
           components: iosComponents,
-          pluginId: pkg.id,
+          uniModuleId: pkg.id,
           isX,
           isSingleThread,
           isPlugin: true, // iOS 目前仅有 plugin 模式
@@ -285,6 +294,11 @@ export async function compile(
           hookClass: proxyCodeOptions.iOSHookClass || '',
           uniModules: uni_modules || [],
         })
+        if (result) {
+          if (result.inject_apis) {
+            inject_apis.push(...result.inject_apis)
+          }
+        }
         if (!isCompileUniModules && cacheDir) {
           storeSourceMap(
             'app-ios',
@@ -314,7 +328,7 @@ export async function compile(
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_ERRORS = `iOS手机在windows上使用标准基座真机运行无法使用uts插件，如需使用uts插件请提交云端打包自定义基座`
-        return createResult(outputPluginDir, errMsg, code, deps, meta)
+        return createResult(outputPluginDir, errMsg, code, deps, [], meta)
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
@@ -391,6 +405,7 @@ export async function compile(
             errMsg,
             code,
             res.files.map((name) => join(pluginDir, name)),
+            [],
             meta
           )
         }
@@ -520,5 +535,5 @@ export async function compile(
       }
     }
   }
-  return createResult(outputPluginDir, errMsg, code, deps, meta)
+  return createResult(outputPluginDir, errMsg, code, deps, inject_apis, meta)
 }
