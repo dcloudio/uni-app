@@ -12,11 +12,26 @@ const transitionTimingFunction = __NODE_JS__
   : 'transitionTimingFunction'
 const transitionDelay = __NODE_JS__ ? 'transition-delay' : 'transitionDelay'
 export const transformTransition: TransformDecl = (decl) => {
-  const CHUNK_REGEXP =
-    /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/
   const { value, important, raws, source } = decl
+
   const result: Declaration[] = []
-  const match = value.match(CHUNK_REGEXP)
+
+  let match
+
+  // 针对 cubic-bezier 特殊处理
+  // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
+  if (decl.value.includes('cubic-bezier')) {
+    const CHUNK_REGEXP =
+      /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/
+
+    match = value.match(CHUNK_REGEXP)
+  } else {
+    const CHUNK_REGEXP =
+      /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/
+
+    match = value.match(CHUNK_REGEXP)
+  }
+
   if (!match) {
     return result
   }
