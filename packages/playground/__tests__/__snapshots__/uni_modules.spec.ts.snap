@@ -59,7 +59,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com2/assets/logo-46719607.png";
+val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
 val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
     return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
 }
@@ -94,7 +94,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com2/assets/logo-46719607.png";
+val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
 val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
     return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
 }

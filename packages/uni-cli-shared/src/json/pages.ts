@@ -55,7 +55,16 @@ export const parsePagesJson = (
   platform: UniApp.PLATFORM,
   normalize: boolean = true
 ) => {
-  const jsonStr = fs.readFileSync(path.join(inputDir, 'pages.json'), 'utf8')
+  const pagesFilename = path.join(inputDir, 'pages.json')
+  if (!fs.existsSync(pagesFilename)) {
+    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      return {
+        pages: [],
+        globalStyle: { navigationBar: {} },
+      } as UniApp.PagesJson
+    }
+  }
+  const jsonStr = fs.readFileSync(pagesFilename, 'utf8')
   if (normalize) {
     return normalizePagesJson(jsonStr, platform)
   }

@@ -7,6 +7,9 @@ import {
 } from '@dcloudio/uni-cli-shared'
 
 export function initNVueEnv() {
+  if (process.env.UNI_APP_X === 'true') {
+    return
+  }
   const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
   if (getAppRenderer(manifestJson) === 'native') {
     process.env.UNI_RENDERER = 'native'
