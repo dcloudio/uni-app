@@ -20,14 +20,7 @@ export const setNavigationBarTitle =
       const appPage = page.$nativePage
 
       appPage!.updateStyle(
-        new Map<string, any | null>([
-          [
-            'navigationBar',
-            new Map<string, any | null>([
-              ['navigationBarTitleText', options.title],
-            ]),
-          ],
-        ])
+        new Map<string, any | null>([['navigationBarTitleText', options.title]])
       )
       resolve()
     },

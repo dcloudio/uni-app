@@ -38,6 +38,7 @@ export interface RegisterPageOptions {
   eventChannel?: EventChannel
 }
 
+// parsePageStyle
 function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
   const style = new Map<string, any | null>()
   const routeMeta = route.meta
@@ -55,36 +56,43 @@ function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
     'leftWindow',
     'rightWindow',
     'eventChannel',
+    // 忽略 initRouteMeta产生的 navigationBar 对象
+    'navigationBar',
   ]
-  // navigationBar 与安卓不同需要特殊处理
   const navKeys = [
     'navigationBarTitleText',
     'navigationBarBackgroundColor',
     'navigationBarTextStyle',
     'navigationStyle',
   ]
+
   Object.keys(routeMeta).forEach((key) => {
     // 使用黑名单机制兼容后续新增的属性
     if (!routeKeys.includes(key) && !navKeys.includes(key)) {
       style.set(key, (routeMeta as Record<string, any>)[key])
     }
   })
+
   const navigationBar: Record<string, unknown> = {}
   navKeys.forEach((key) => {
     if (key in routeMeta) {
       navigationBar[key] = (routeMeta as Record<string, any>)[key]
     }
   })
-  if (Object.keys(navigationBar).length) {
-    style.set('navigationBar', navigationBar)
+
+  if (Object.keys(navigationBar).length > 0) {
     if (
       navigationBar.navigationBarTextStyle !== 'custom' &&
       !routeMeta.isQuit &&
       routeMeta.route !== __uniConfig.realEntryPagePath
     ) {
-      navigationBar['navigationBarAutoBackButton'] = true
+      style.set('navigationBarAutoBackButton', true)
     }
+    Object.keys(navigationBar).forEach((key) => {
+      style.set(key, navigationBar[key])
+    })
   }
+
   return style
 }
 
