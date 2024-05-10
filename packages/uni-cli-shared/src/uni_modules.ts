@@ -376,36 +376,6 @@ export { ${ids.join(',')} }
 `
 }
 
-export function parseEncryptUniModulesWithDeps(inputDir: string) {
-  const modulesDir = path.resolve(inputDir, 'uni_modules')
-  const uniModules: Record<string, { type: 'uts' | 'other'; deps: string[] }> =
-    {}
-  if (fs.existsSync(modulesDir)) {
-    fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
-      const uniModuleRootDir = path.resolve(modulesDir, uniModuleDir)
-      // 判断是否是utssdk加密插件
-      if (fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
-        const pkgPath = path.resolve(uniModuleRootDir, 'package.json')
-        if (!fs.existsSync(pkgPath)) {
-          return
-        }
-        try {
-          const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
-          uniModules[uniModuleDir] = {
-            type: fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))
-              ? 'uts'
-              : 'other',
-            deps: Array.isArray(pkg.uni_modules.dependencies)
-              ? pkg.uni_modules.dependencies
-              : [],
-          }
-        } catch (e) {}
-      }
-    })
-  }
-  return uniModules
-}
-
 // 目前该函数仅在云端使用（目前仅限iOS/web），云端编译时，提交上来的uni_modules是过滤好的
 export function parseUniModulesWithComponents(inputDir: string) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
@@ -473,29 +443,121 @@ export function parseEasyComComponents(
   return components
 }
 
-// 根据平台解析uni_modules列表，后续会生成zip，提交云编译
-export function parseUniModulesForCloudCompiler(
-  _platform: typeof process.env.UNI_UTS_PLATFORM,
-  inputDir: string
-) {
+// 查找所有普通加密插件 uni_modules
+export function findEncryptUniModules(inputDir: string, cacheDir: string = '') {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
-  const uniModules = new Set<string>()
+  const uniModules: Record<string, EncryptPackageJson | undefined> = {}
   if (fs.existsSync(modulesDir)) {
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
       const uniModuleRootDir = path.resolve(modulesDir, uniModuleDir)
-      if (fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
+      if (!fs.existsSync(path.resolve(uniModuleRootDir, 'encrypt'))) {
         return
       }
       // 仅扫描普通加密插件，无需依赖
-      if (!fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
-        uniModules.add(uniModuleDir)
+      if (fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk'))) {
+        return
       }
+      const pkg = require(path.resolve(uniModuleRootDir, 'package.json'))
+      uniModules[uniModuleDir] = findEncryptUniModuleCache(
+        uniModuleDir,
+        cacheDir,
+        { version: pkg.version, env: initCheckEnv() }
+      )
     })
   }
-  return [...uniModules]
+  return uniModules
 }
 
-export const KNOWN_ASSET_TYPES = [
+export function findUploadEncryptUniModulesFiles(
+  uniModules: Record<string, EncryptPackageJson | undefined>,
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string
+) {
+  const files: string[] = []
+  Object.keys(uniModules).forEach((uniModuleId) => {
+    if (!uniModules[uniModuleId]) {
+      files.push(...findUniModuleFiles(platform, uniModuleId, inputDir))
+    }
+  })
+  return files
+}
+
+export function packUploadEncryptUniModules(
+  uniModules: Record<string, EncryptPackageJson | undefined>,
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string,
+  zipFile: string
+) {
+  const files = findUploadEncryptUniModulesFiles(uniModules, platform, inputDir)
+  if (files.length) {
+    // 延迟 require，避免 vue2 编译器需要安装此依赖，目前该方法仅在 vite 编译器中使用
+    const AdmZip = require('adm-zip')
+    const zip = new AdmZip()
+    files.forEach((file) => {
+      zip.addLocalFile(file)
+    })
+    zip.writeZip(zipFile)
+    return true
+  }
+  return false
+}
+
+function isEnvExpired(
+  value: Record<string, unknown>,
+  other: Record<string, unknown>
+) {
+  const valueKeys = Object.keys(value)
+  const otherKeys = Object.keys(other)
+  if (valueKeys.length !== otherKeys.length) {
+    return true
+  }
+  if (valueKeys.find((name) => value[name] !== other[name])) {
+    return true
+  }
+  return false
+}
+
+interface EncryptPackageJson {
+  id: string
+  version: string
+  uni_modules: {
+    artifacts: {
+      env: {
+        compilerVersion: string
+      } & Record<string, any>
+      apis: string[]
+      components: string[]
+    }
+  }
+}
+
+function findEncryptUniModuleCache(
+  uniModuleId: string,
+  cacheDir: string,
+  options: {
+    version: string
+    env: Record<string, string>
+  }
+): EncryptPackageJson | undefined {
+  if (!cacheDir) {
+    return
+  }
+  const uniModuleCacheDir = path.resolve(cacheDir, 'uni_modules', uniModuleId)
+  if (fs.existsSync(uniModuleCacheDir)) {
+    const pkg = require(path.resolve(uniModuleCacheDir, 'package.json'))
+    // 插件版本以及各种环境一致
+    if (
+      pkg.version === options.version &&
+      !isEnvExpired(pkg.env, options.env)
+    ) {
+      return pkg
+    }
+    // 已过期的插件，删除缓存
+    fs.rmSync(uniModuleCacheDir, { recursive: true })
+  }
+}
+
+const KNOWN_ASSET_TYPES = [
   // images
   'png',
   'jpe?g',
@@ -525,28 +587,25 @@ export const KNOWN_ASSET_TYPES = [
   'txt',
 ]
 
-export function parseUniModuleFiles(
+function findUniModuleFiles(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   id: string,
   inputDir: string
 ) {
   return sync(`uni_modules/${id}/**/*`, {
     cwd: inputDir,
-    ignore:
-      platform !== 'app-android' // 非 android 平台不需要扫描 assets
+    ignore: [
+      '**/*.md',
+      ...(platform !== 'app-android' // 非 android 平台不需要扫描 assets
         ? [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]
-        : [],
+        : []),
+    ],
   })
 }
 
-export function packUniModules(
-  platform: typeof process.env.UNI_UTS_PLATFORM,
-  inputDir: string
-) {
-  const uniModules = parseUniModulesForCloudCompiler(platform, inputDir)
-  const files: string[] = []
-  uniModules.forEach((id) => {
-    files.push(...parseUniModuleFiles(platform, id, inputDir))
-  })
-  return files
+export function initCheckEnv(): Record<string, string> {
+  return {
+    // 云端编译的版本号不带日期及小版本
+    compilerVersion: process.env.UNI_COMPILER_VERSION,
+  }
 }

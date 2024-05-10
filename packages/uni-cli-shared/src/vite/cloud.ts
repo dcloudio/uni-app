@@ -9,6 +9,7 @@ import type {
 } from 'vite'
 import {
   genEncryptEasyComModuleIndex,
+  initCheckEnv,
   parseUniModulesWithComponents,
 } from '../uni_modules'
 import { cleanUrl, normalizePath } from './plugins/vitejs/utils'
@@ -133,12 +134,6 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         }
       }
     },
-  }
-}
-
-export function initCheckEnv(): Record<string, string> {
-  return {
-    compilerVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
   }
 }
 
