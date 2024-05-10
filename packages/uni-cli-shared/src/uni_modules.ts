@@ -533,7 +533,7 @@ export function parseUniModuleFiles(
   return sync(`uni_modules/${id}/**/*`, {
     cwd: inputDir,
     ignore:
-      platform !== 'app-android' // 非 android平台不需要扫描 assets
+      platform !== 'app-android' // 非 android 平台不需要扫描 assets
         ? [`**/*.{${KNOWN_ASSET_TYPES.join(',')}}`]
         : [],
   })
