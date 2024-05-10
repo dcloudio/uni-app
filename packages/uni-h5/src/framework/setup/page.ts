@@ -148,18 +148,19 @@ export function initPage(vm: ComponentPublicInstance) {
         }
       }
     }
-    vm.$getPageStyle = () => ({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || '',
-      navigationStyle: pageMeta.navigationBar.style || 'default',
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance:
-        pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-      backgroundColorContent: pageMeta.backgroundColorContent,
-    })
+    vm.$getPageStyle = () =>
+      new UTSJSONObject({
+        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+        navigationBarTitleText: pageMeta.navigationBar.titleText,
+        titleImage: pageMeta.navigationBar.titleImage || '',
+        navigationStyle: pageMeta.navigationBar.style || 'default',
+        disableScroll: pageMeta.disableScroll || false,
+        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+        onReachBottomDistance:
+          pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+        backgroundColorContent: pageMeta.backgroundColorContent,
+      })
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
 }
