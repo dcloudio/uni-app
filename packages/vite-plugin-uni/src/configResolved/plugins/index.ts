@@ -4,7 +4,7 @@ import { extend, isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { FilterPattern } from '@rollup/pluginutils'
 
-import { COMMON_EXCLUDE, isInHBuilderX } from '@dcloudio/uni-cli-shared'
+import { COMMON_EXCLUDE } from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
@@ -66,7 +66,7 @@ export function initPlugins(
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
 
-  if (isInHBuilderX()) {
+  if (process.env.UNI_HBUILDERX_PLUGINS) {
     try {
       require(path.resolve(
         process.env.UNI_HBUILDERX_PLUGINS,

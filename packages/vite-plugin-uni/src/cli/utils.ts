@@ -168,6 +168,13 @@ export function initEnv(
     process.env.UNI_APP_X_CACHE_DIR ||
     path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/' + baseOutDir)
 
+  process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = path.resolve(
+    process.env.UNI_APP_X_CACHE_DIR,
+    '.encrypt',
+    process.env.NODE_ENV === 'development' ? 'dev' : 'build',
+    process.env.UNI_UTS_PLATFORM
+  )
+
   process.env.UNI_COMPILE_CLOUD_DIR = path.resolve(
     process.env.UNI_APP_X_CACHE_DIR,
     '.cloud',

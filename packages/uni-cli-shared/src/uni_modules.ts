@@ -482,11 +482,11 @@ export function findUploadEncryptUniModulesFiles(
   return files
 }
 
-export function packUploadEncryptUniModules(
+function packUploadEncryptUniModules(
   uniModules: Record<string, EncryptPackageJson | undefined>,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string,
-  zipFile: string
+  cacheDir: string
 ) {
   const files = findUploadEncryptUniModulesFiles(uniModules, platform, inputDir)
   if (files.length) {
@@ -496,10 +496,10 @@ export function packUploadEncryptUniModules(
     files.forEach((file) => {
       zip.addLocalFile(file)
     })
+    const zipFile = path.resolve(cacheDir, 'uni_modules.upload.zip')
     zip.writeZip(zipFile)
-    return true
+    return zipFile
   }
-  return false
 }
 
 function isEnvExpired(
@@ -608,4 +608,93 @@ export function initCheckEnv(): Record<string, string> {
     // 云端编译的版本号不带日期及小版本
     compilerVersion: process.env.UNI_COMPILER_VERSION,
   }
+}
+
+function findLastIndex<T>(
+  array: Array<T>,
+  predicate: (value: T, index: number, array: T[]) => unknown
+) {
+  for (let i = array.length - 1; i >= 0; i--) {
+    if (predicate(array[i], i, array)) {
+      return i
+    }
+  }
+  return -1
+}
+
+let encryptUniModules: ReturnType<typeof findEncryptUniModules> = {}
+
+export function resolveEncryptUniModule(id: string) {
+  const parts = id.split('/')
+  const index = findLastIndex(parts, (part) => part === 'uni_modules')
+  if (index !== -1) {
+    const uniModuleId = parts[index + 1]
+    if (uniModuleId in encryptUniModules) {
+      return `@/uni_modules/${uniModuleId}?uni_helpers`
+    }
+  }
+}
+
+export async function checkEncryptUniModules(
+  inputDir: string,
+  params: {
+    mode: 'development' | 'production'
+    compilerVersion: string // hxVersion
+    appid: string
+    appname: string
+    platform: typeof process.env.UNI_UTS_PLATFORM // app-android | app-ios | web
+    'uni-app-x': boolean
+  }
+) {
+  // 扫描加密插件云编译
+  encryptUniModules = findEncryptUniModules(
+    inputDir,
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+  )
+  if (!Object.keys(encryptUniModules).length) {
+    return {}
+  }
+  if (!process.env.UNI_HBUILDERX_PLUGINS) {
+    return {}
+  }
+
+  const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!
+  const zipFile = packUploadEncryptUniModules(
+    encryptUniModules,
+    process.env.UNI_UTS_PLATFORM,
+    inputDir,
+    cacheDir
+  )
+  if (zipFile) {
+    const downloadFile = path.resolve(cacheDir, 'uni_modules.download.zip')
+    const { U, D } = require(path.join(
+      process.env.UNI_HBUILDERX_PLUGINS,
+      'uni_helpers'
+    ))
+    try {
+      console.log(
+        await U({
+          ...params,
+        })
+      )
+      const downloadUrl = ''
+
+      await D(downloadUrl, downloadFile)
+      // unzip
+      const AdmZip = require('adm-zip')
+      const zip = new AdmZip(downloadFile)
+      zip.extractAllTo(cacheDir, true)
+      fs.unlinkSync(zipFile)
+      fs.unlinkSync(downloadFile)
+    } catch (e) {
+      fs.existsSync(zipFile) && fs.unlinkSync(zipFile)
+      fs.existsSync(downloadFile) && fs.unlinkSync(downloadFile)
+      console.error(e)
+      process.exit(0)
+    }
+  }
+  encryptUniModules = findEncryptUniModules(
+    inputDir,
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
+  )
 }
