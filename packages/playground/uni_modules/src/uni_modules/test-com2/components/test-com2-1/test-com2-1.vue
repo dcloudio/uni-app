@@ -1,14 +1,14 @@
 <template>
-    <text class="text">{{ msg }}{{ logo }}</text>
+    <text class="text">{{ msg }}{{ api }}</text>
     <video />
 </template>
 <script>
-import Logo from './logo.png'
+import Api from './api.png'
 export default {
     data() {
         return {
             msg: 'test-com2-1',
-            logo: Logo
+            api: Api
         }
     }
 }
@@ -19,6 +19,6 @@ export default {
 }
 
 .image {
-    background: url('./logo.png');
+    background: url('./api.png');
 }
 </style>

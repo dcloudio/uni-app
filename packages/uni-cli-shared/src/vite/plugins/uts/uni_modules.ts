@@ -7,6 +7,7 @@ import { once } from '@dcloudio/uni-shared'
 import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
 import { parseVueRequest } from '../../utils'
 import { getUniExtApiPlugins, parseUTSModuleDeps } from '../../../uni_modules'
+import { enableSourceMap } from '../../../utils'
 
 const UTSProxyRE = /\?uts-proxy$/
 function isUTSProxy(id: string) {
@@ -78,7 +79,7 @@ export function uniUTSUniModulesPlugin(
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,
       extApis: options.extApis,
-      sourceMap: process.env.NODE_ENV === 'development',
+      sourceMap: enableSourceMap(),
       uni_modules: deps,
       transform: {
         uniExtApiProviderName: extApiProvider?.name,

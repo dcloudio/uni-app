@@ -6,6 +6,9 @@ import { codeFrameColumns } from '@babel/code-frame'
 import { offsetToStartAndEnd } from '../plugins/vitejs/utils'
 
 export function withSourcemap(config: ResolvedConfig) {
+  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    return false
+  }
   if (config.command === 'serve') {
     return true
   }

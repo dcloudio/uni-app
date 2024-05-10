@@ -204,3 +204,10 @@ export function parseImporter(importer: string) {
 export function createResolveErrorMsg(source: string, importer: string) {
   return `Could not resolve "${source}" from "${parseImporter(importer)}"`
 }
+
+export function enableSourceMap() {
+  return (
+    process.env.NODE_ENV === 'development' &&
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+  )
+}

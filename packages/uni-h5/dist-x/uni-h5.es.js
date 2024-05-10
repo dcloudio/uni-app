@@ -17364,14 +17364,8 @@ function initPage(vm) {
           case "navigationStyle":
             pageMeta.navigationBar.style = style[key];
             break;
-          case "disableScroll":
-            pageMeta.disableScroll = style[key];
-            break;
-          case "enablePullDownRefresh":
-            pageMeta.enablePullDownRefresh = style[key];
-            break;
-          case "onReachBottomDistance":
-            pageMeta.onReachBottomDistance = style[key];
+          default:
+            pageMeta[key] = style[key];
             break;
         }
       }
@@ -17384,7 +17378,8 @@ function initPage(vm) {
       navigationStyle: pageMeta.navigationBar.style || "default",
       disableScroll: pageMeta.disableScroll || false,
       enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE
+      onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
     });
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
@@ -25079,6 +25074,7 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
   API_GET_PROVIDER,
   createUnsupportedAsyncApi(API_GET_PROVIDER)
 );
+window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   $emit,

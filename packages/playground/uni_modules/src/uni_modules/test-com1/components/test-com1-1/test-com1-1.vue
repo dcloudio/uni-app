@@ -17,6 +17,13 @@ export default {
                 console.log(res)
             }
         });
+        if (process.env.NODE_ENV === 'development') {
+            console.log('development')
+        }
+        if (process.env.NODE_ENV === 'production') {
+            console.log('production')
+        }
+
     }
 }
 </script>

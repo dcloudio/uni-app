@@ -1,13 +1,13 @@
 <template>
-    <text class="text2">{{ msg }}{{ logo }}</text>
+    <text class="text2">{{ msg }}{{ api }}</text>
 </template>
 <script>
-import Logo from '../test-com2-1/logo.png'
+import Api from '../test-com2-1/api.png'
 export default {
     data() {
         return {
             msg: 'test-com2-2',
-            logo: Logo
+            api: Api
         }
     }
 }

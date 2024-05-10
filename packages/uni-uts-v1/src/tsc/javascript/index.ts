@@ -15,7 +15,11 @@ export const uts2js: uts2js = (options) => {
   extend(options, {
     cwd: inputDir,
     check: isWeb,
-    noCache: process.env.NODE_ENV === 'production' || isWeb,
+    noCache:
+      // modules 模式不使用缓存
+      process.env.UNI_COMPILE_TARGET === 'uni_modules' ||
+      process.env.NODE_ENV === 'production' ||
+      isWeb,
     tsconfigOverride: {
       compilerOptions: {
         rootDir: inputDir,

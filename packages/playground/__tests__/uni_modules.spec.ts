@@ -7,7 +7,7 @@ const projectDir = path.resolve(__dirname, '../uni_modules')
 
 describe('uni_modules playground', () => {
   jest.setTimeout(50 * 1000)
-  const modes = {
+  const types = {
     // 'uni-app': [
     //   'build:app',
     //   'build:h5',
@@ -20,6 +20,9 @@ describe('uni_modules playground', () => {
     //   //   'build:mp-weixin',
     // ],
     'uni-app-x': [
+      'dev:app-android',
+      'dev:app-ios',
+      'dev:h5',
       'build:app-android',
       'build:app-ios',
       'build:h5',
@@ -36,23 +39,22 @@ describe('uni_modules playground', () => {
   if (fs.existsSync(distDir)) {
     fs.emptyDirSync(distDir)
   }
-  Object.keys(modes).forEach((mode) => {
-    const scripts = modes[mode]
+  Object.keys(types).forEach((type) => {
+    const scripts = types[type]
     scripts.forEach((script) => {
-      test(`${mode} ${script}`, async () => {
-        const outDir = path.resolve(
-          distDir,
-          'build',
-          mode,
-          script.replace('build:', '')
-        )
-        await execa('npm', ['run', script], {
+      const mode = script.split(':')[0]
+      const platform = script.split(':')[1]
+      test(`${type} ${script}`, async () => {
+        const outDir = path.resolve(distDir, mode, type, platform)
+        // dev: 统一调整为 build:
+        await execa('npm', ['run', script.replace('dev:', 'build:')], {
           cwd: projectDir,
           env: {
             ...process.env,
+            NODE_ENV: mode === 'dev' ? 'development' : 'production',
             UNI_OUTPUT_DIR: outDir,
             UNI_COMPILE_TARGET: 'uni_modules',
-            UNI_APP_X: mode === 'uni-app-x' ? 'true' : 'false',
+            UNI_APP_X: type === 'uni-app-x' ? 'true' : 'false',
           },
         })
         sync('**/*', { cwd: outDir, absolute: true }).forEach((file) => {

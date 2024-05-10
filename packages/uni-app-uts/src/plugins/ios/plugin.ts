@@ -13,6 +13,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
+import { enableSourceMap } from '@dcloudio/uni-cli-shared'
 
 export function uniAppIOSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -32,7 +33,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       return {
         base: '/', // 强制 base
         build: {
-          sourcemap: process.env.NODE_ENV === 'development' ? 'hidden' : false,
+          sourcemap: enableSourceMap() ? 'hidden' : false,
           emptyOutDir: false,
           assetsInlineLimit: 0,
           rollupOptions: {

@@ -92,7 +92,13 @@ export function initEnv(
     if ((options as BuildOptions).watch) {
       process.env.NODE_ENV = 'development'
     } else {
-      process.env.NODE_ENV = 'production'
+      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        if (!process.env.NODE_ENV) {
+          process.env.NODE_ENV = 'production'
+        }
+      } else {
+        process.env.NODE_ENV = 'production'
+      }
     }
   }
   if (!options.mode) {

@@ -15,6 +15,7 @@ import { uniAppPagesPlugin } from './pagesJson'
 import { uniAppUVuePlugin } from './uvue'
 import { uniCloudPlugin } from './unicloud'
 import { parseImports, parseUTSRelativeFilename } from './utils'
+import { enableSourceMap } from '@dcloudio/uni-cli-shared'
 
 export function init() {
   return [
@@ -56,7 +57,7 @@ export function init() {
               '.uts/cache'
             ),
             inputDir: process.env.UNI_INPUT_DIR,
-            sourcemap: process.env.NODE_ENV === 'development',
+            sourcemap: enableSourceMap(),
             fileName(fileName) {
               const name = parseUTSRelativeFilename(fileName)
               return name === 'main.uts' ? 'index.uts' : name
