@@ -83,13 +83,25 @@ export function getUTSCompiler(): {
   return require('@dcloudio/uts')
 }
 
+function findLastIndex<T>(
+  array: Array<T>,
+  predicate: (value: T, index: number, array: T[]) => unknown
+) {
+  for (let i = array.length - 1; i >= 0; i--) {
+    if (predicate(array[i], i, array)) {
+      return i
+    }
+  }
+  return -1
+}
+
 export function resolvePackage(filename: string) {
   const parts = normalizePath(filename).split('/')
 
   const isUniModules = parts.includes('uni_modules')
   const index = isUniModules
-    ? parts.findLastIndex((part) => part === 'uni_modules')
-    : parts.findLastIndex((part) => part === 'utssdk')
+    ? findLastIndex(parts, (part) => part === 'uni_modules')
+    : findLastIndex(parts, (part) => part === 'utssdk')
   if (index > -1) {
     const id = parts[index + 1]
     const name = camelize(prefix(id))
