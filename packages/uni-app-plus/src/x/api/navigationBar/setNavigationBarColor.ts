@@ -31,15 +31,10 @@ export const setNavigationBarColor =
       appPage!.updateStyle(
         new Map<string, any | null>([
           [
-            'navigationBar',
-            new Map<string, any | null>([
-              [
-                'navigationBarTextStyle',
-                frontColor == '#000000' ? 'black' : 'white',
-              ],
-              ['navigationBarBackgroundColor', backgroundColor],
-            ]),
+            'navigationBarTextStyle',
+            frontColor == '#000000' ? 'black' : 'white',
           ],
+          ['navigationBarBackgroundColor', backgroundColor],
         ])
       )
       resolve()
