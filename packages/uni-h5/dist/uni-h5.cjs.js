@@ -3586,8 +3586,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           const res = resolveDigitDecimalPoint(event, cache);
           if (typeof res === "boolean")
             return res;
-          if (cache.value === input.value)
-            return false;
           cache.value = input.value;
         }
         const maxlength = state2.maxlength;

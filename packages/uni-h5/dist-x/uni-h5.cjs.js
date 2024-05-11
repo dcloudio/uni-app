@@ -4226,8 +4226,6 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           const res = resolveDigitDecimalPoint(event, cache);
           if (typeof res === "boolean")
             return res;
-          if (cache.value === input.value)
-            return false;
           cache.value = input.value;
         }
         const maxlength = state2.maxlength;
@@ -9157,14 +9155,8 @@ function initPage(vm) {
           case "navigationStyle":
             pageMeta.navigationBar.style = style[key];
             break;
-          case "disableScroll":
-            pageMeta.disableScroll = style[key];
-            break;
-          case "enablePullDownRefresh":
-            pageMeta.enablePullDownRefresh = style[key];
-            break;
-          case "onReachBottomDistance":
-            pageMeta.onReachBottomDistance = style[key];
+          default:
+            pageMeta[key] = style[key];
             break;
         }
       }
@@ -9177,7 +9169,8 @@ function initPage(vm) {
       navigationStyle: pageMeta.navigationBar.style || "default",
       disableScroll: pageMeta.disableScroll || false,
       enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE
+      onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
+      backgroundColorContent: pageMeta.backgroundColorContent
     });
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
