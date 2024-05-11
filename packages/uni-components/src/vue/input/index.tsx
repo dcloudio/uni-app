@@ -149,19 +149,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             )
             if (typeof res === 'boolean') return res
 
-            if (cache.value === input.value) return false
-
-            if (__PLATFORM__ === 'app') {
-              // iOS 会带着 . 传递给 input
-              if (
-                (event as InputEvent).inputType === 'deleteContentBackward' &&
-                plus.os.name === 'iOS'
-              ) {
-                input.value.slice(-1) === '.' &&
-                  (input.value = input.value.slice(0, -1))
-              }
-            }
-
             cache.value = input.value
           }
 
