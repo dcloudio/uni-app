@@ -82,6 +82,9 @@ export class UniAppConfig extends AppConfig {
     override uniCompileVersion: string = "${
       process.env.UNI_COMPILER_VERSION || ''
     }"
+    override darkmode: boolean = ${
+      manifestJson['app-plus']?.darkmode || manifestJson.darkmode || false
+    }
     ${codes}
     constructor() {}
 }
