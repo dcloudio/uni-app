@@ -302,8 +302,12 @@ function parseUniExtApiProviders(
               providers.push([
                 systemProvider.service,
                 providerName,
-                `UniExtApi${capitalize(
-                  camelize(systemProvider.service)
+                `Uni${capitalize(
+                  camelize(
+                    systemProvider.service === 'oauth'
+                      ? 'OAuth'
+                      : systemProvider.service
+                  )
                 )}${capitalize(camelize(providerName))}Provider`,
               ])
             }

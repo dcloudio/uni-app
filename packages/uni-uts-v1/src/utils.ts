@@ -781,7 +781,10 @@ export function resolveConfigProvider(
 }
 
 function formatExtApiProviderName(service: string, name: string) {
-  return `UniExtApi${capitalize(camelize(service))}${capitalize(
+  if (service === 'oauth') {
+    service = 'OAuth'
+  }
+  return `Uni${capitalize(camelize(service))}${capitalize(
     camelize(name)
   )}Provider`
 }
