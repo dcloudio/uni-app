@@ -86,7 +86,7 @@ export function initCreateComponent() {
   return function createComponent(vueOptions: ComponentOptions) {
     vueOptions = vueOptions.default || vueOptions
     const mpComponentOptions: tinyapp.ComponentOptions & {
-      options: any
+      options?: any
     } = {
       props: initComponentProps(vueOptions.props),
       didMount() {
@@ -117,7 +117,11 @@ export function initCreateComponent() {
         __l: handleLink,
         triggerEvent,
       },
-      options: vueOptions.options || {},
+    }
+
+    // vueOptions.options
+    if (vueOptions.options) {
+      mpComponentOptions.options = vueOptions.options
     }
     if (__VUE_OPTIONS_API__) {
       mpComponentOptions.data = initData(vueOptions)
