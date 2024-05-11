@@ -1,5 +1,5 @@
-import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
 import { isArray, isFunction, hasOwn, extend, isPlainObject } from '@vue/shared';
+import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -891,6 +891,14 @@ var parseOptions = extend({}, baseParseOptions, {
 
 const createComponent = initCreateComponent(parseOptions);
 const createPage = initCreatePage(parseOptions);
+// 重写 Object.getPrototypeOf 方法。JD 小程序使用该方法获取值
+const OriginalGetPrototypeOf = Object.getPrototypeOf;
+Object.getPrototypeOf = function (obj) {
+    if (hasOwn(obj, '$vm')) {
+        return obj;
+    }
+    return OriginalGetPrototypeOf.call(this, obj);
+};
 jd.EventChannel = EventChannel;
 jd.createApp = global.createApp = createApp;
 jd.createPage = createPage;
