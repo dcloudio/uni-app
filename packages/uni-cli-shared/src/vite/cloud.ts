@@ -118,6 +118,13 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           uni_modules: [],
         })
         if (result) {
+          const apis = result.inject_apis
+          const components = getUniModulesExtApiComponents(uniModule)
+          const modules = resolveUTSCompiler().parseInjectModules(
+            apis,
+            {},
+            components
+          )
           fs.writeFileSync(
             path.resolve(
               process.env.UNI_OUTPUT_DIR,
@@ -127,8 +134,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
             ),
             genUniModulesPackageJson(uniModule, tempOutputDir, {
               env: initCheckEnv(),
-              apis: result.inject_apis,
-              components: getUniModulesExtApiComponents(uniModule),
+              apis,
+              components,
+              modules,
             })
           )
         }

@@ -15,6 +15,9 @@ exports[`uni_modules playground uni-app-x build:app-android 1`] = `
       "components": [
         "text",
         "image"
+      ],
+      "modules": [
+        "uni-getSystemInfo"
       ]
     }
   }
@@ -34,6 +37,9 @@ exports[`uni_modules playground uni-app-x build:app-android 2`] = `
       "components": [
         "text",
         "video"
+      ],
+      "modules": [
+        "uni-video"
       ]
     }
   }
@@ -674,7 +680,11 @@ exports[`uni_modules playground uni-app-x dev:app-android 1`] = `
         "uni.getSystemInfo",
         "uniCloud.importObject"
       ],
-      "components": []
+      "components": [],
+      "modules": [
+        "uni-getSystemInfo",
+        "uni-cloud-client"
+      ]
     }
   }
 }"
@@ -692,7 +702,10 @@ exports[`uni_modules playground uni-app-x dev:app-android 2`] = `
       "apis": [
         "uniCloud.importObject"
       ],
-      "components": []
+      "components": [],
+      "modules": [
+        "uni-cloud-client"
+      ]
     }
   }
 }"

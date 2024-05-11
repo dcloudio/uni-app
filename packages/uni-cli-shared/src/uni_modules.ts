@@ -624,13 +624,20 @@ function findLastIndex<T>(
 
 let encryptUniModules: ReturnType<typeof findEncryptUniModules> = {}
 
-export function resolveEncryptUniModule(id: string) {
+export function resolveEncryptUniModule(
+  id: string,
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  isX: boolean = true
+) {
   const parts = id.split('/')
   const index = findLastIndex(parts, (part) => part === 'uni_modules')
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
     if (uniModuleId in encryptUniModules) {
-      return `@/uni_modules/${uniModuleId}?uni_helpers`
+      // 原生平台走旧的uts-proxy
+      return `@/uni_modules/${uniModuleId}?${
+        isX && platform === 'app-android' ? 'uts-proxy' : 'uni_helpers'
+      }`
     }
   }
 }

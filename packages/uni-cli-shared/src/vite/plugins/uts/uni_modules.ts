@@ -114,28 +114,38 @@ export function uniUTSUniModulesPlugin(
     }
   }
 
+  const isX = process.env.UNI_APP_X === 'true'
+
   return {
     name: 'uni:uts-uni_modules',
     apply: 'build',
     enforce: 'pre',
     async configResolved() {
-      const manifest = parseManifestJsonOnce(inputDir)
-      await checkEncryptUniModules(inputDir, {
-        mode:
-          process.env.NODE_ENV !== 'development' ? 'production' : 'development',
-        compilerVersion: process.env.UNI_COMPILER_VERSION,
-        appid: manifest.appid,
-        appname: manifest.name,
-        platform: process.env.UNI_UTS_PLATFORM,
-        'uni-app-x': process.env.UNI_APP_X === 'true',
-      })
+      if (isX) {
+        const manifest = parseManifestJsonOnce(inputDir)
+        await checkEncryptUniModules(inputDir, {
+          mode:
+            process.env.NODE_ENV !== 'development'
+              ? 'production'
+              : 'development',
+          compilerVersion: process.env.UNI_COMPILER_VERSION,
+          appid: manifest.appid,
+          appname: manifest.name,
+          platform: process.env.UNI_UTS_PLATFORM,
+          'uni-app-x': isX,
+        })
+      }
     },
     resolveId(id, importer) {
       if (isUTSProxy(id) || isUniHelpers(id)) {
         return id
       }
-      if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
-        const resolvedId = resolveEncryptUniModule(id)
+      if (isX && process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+        const resolvedId = resolveEncryptUniModule(
+          id,
+          process.env.UNI_UTS_PLATFORM,
+          process.env.UNI_APP_X === 'true'
+        )
         if (resolvedId) {
           return resolvedId
         }

@@ -3,9 +3,14 @@ import fs from 'fs-extra'
 import { makeLegalIdentifier } from '@rollup/pluginutils'
 import type { APP_PLATFORM } from './manifest/utils'
 import { normalizePath } from './shared'
+import { addInjectApis, addInjectComponents } from './kotlin'
 
 export function isEncrypt(pluginDir: string) {
   return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
+}
+
+export function isUTSModules(pluginDir: string) {
+  return fs.existsSync(path.resolve(pluginDir, 'utssdk'))
 }
 
 function createRollupCommonjsCode(
@@ -27,6 +32,9 @@ module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
 }
 
 export async function compileEncrypt(pluginDir: string, isX = false) {
+  if (isX && !fs.existsSync(path.resolve(pluginDir, 'utssdk'))) {
+    return compileEncryptByUniHelpers(pluginDir)
+  }
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM as APP_PLATFORM
@@ -97,4 +105,50 @@ export function resolveJsCodeCacheFilename(
 
 function resolveJarCacheFilename(cacheDir: string, pluginRelativeDir: string) {
   return join(cacheDir, 'app-android', 'uts', pluginRelativeDir, 'index.jar')
+}
+
+function compileEncryptByUniHelpers(pluginDir: string) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const outputDir = process.env.UNI_OUTPUT_DIR
+  const pluginRelativeDir = relative(inputDir, pluginDir)
+  const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
+  const jarPath = resolveJarCacheFilename(
+    process.env.HX_DEPENDENCIES_DIR!,
+    pluginRelativeDir
+  )
+  if (!fs.existsSync(jarPath)) {
+    console.error(`uts插件[${path.basename(pluginDir)}]不存在，请重新运行`)
+  }
+  // 读取缓存文件
+  const cachePluginDir = path.resolve(
+    process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!,
+    pluginRelativeDir
+  )
+  const pkg = require(path.resolve(cachePluginDir, 'package.json'))
+  if (process.env.NODE_ENV !== 'development') {
+    // 生成wgt，无需复制加密插件目录
+    const needCopy = !(process.env.UNI_APP_PRODUCTION_TYPE === 'WGT')
+    if (needCopy) {
+      // 复制插件目录
+      fs.copySync(cachePluginDir, join(outputDir, pluginRelativeDir))
+    }
+    const inject_apis = pkg.uni_modules?.artifacts?.apis || []
+    addInjectApis(inject_apis)
+    addInjectComponents(pkg.uni_modules?.artifacts?.components || [])
+    return {
+      dir: outputPluginDir,
+      code: '',
+      deps: [] as string[],
+      encrypt: true,
+      inject_apis,
+    }
+  }
+  // development
+  return {
+    dir: outputPluginDir,
+    code: '',
+    deps: [] as string[],
+    encrypt: true,
+    inject_apis: [],
+  }
 }

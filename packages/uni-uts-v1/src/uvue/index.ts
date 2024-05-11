@@ -12,8 +12,10 @@ import {
   type KotlinCompilerServer,
   type RunKotlinBuildResult,
   type RunKotlinDevResult,
+  addInjectComponents,
   createStderrListener,
   getInjectApis,
+  getInjectComponents,
   getUniModulesCacheJars,
   getUniModulesEncryptCacheJars,
   getUniModulesJars,
@@ -406,10 +408,11 @@ async function runKotlinDev(
 
 async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
   ;(result as RunKotlinBuildResult).type = 'kotlin'
+  addInjectComponents(options.extApiComponents)
   ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
     (result.inject_apis || []).concat(getInjectApis()),
     options.extApis || {},
-    options.extApiComponents
+    getInjectComponents()
   )
   ;(result as RunKotlinBuildResult).kotlinc = false
   return result as RunKotlinBuildResult

@@ -87,7 +87,7 @@ function parseKotlinPackage(filename: string) {
 
 const pluginInjectApis = new Set<string>()
 
-function addInjectApis(apis: string[]) {
+export function addInjectApis(apis: string[]) {
   apis.forEach((api) => {
     pluginInjectApis.add(api)
   })
@@ -95,6 +95,18 @@ function addInjectApis(apis: string[]) {
 
 export function getInjectApis() {
   return [...pluginInjectApis]
+}
+
+const pluginInjectComponents = new Set<string>()
+
+export function addInjectComponents(components: string[]) {
+  components.forEach((component) => {
+    pluginInjectComponents.add(component)
+  })
+}
+
+export function getInjectComponents() {
+  return [...pluginInjectComponents]
 }
 
 export async function runKotlinProd(
