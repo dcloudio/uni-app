@@ -21,7 +21,7 @@ describe('uni_modules:uni-ext-api', () => {
           findEncryptUniModules(inputDir),
           platform,
           inputDir
-        )
+        ).map((item) => item.replace(inputDir, '').slice(1))
       ).toMatchSnapshot()
     })
   })

@@ -699,6 +699,7 @@ interface ProxyInterface {
   options: {
     methods: Record<string, any>
     props: string[]
+    setters: Record<string, Parameter>
   }
 }
 
@@ -724,6 +725,8 @@ interface ProxyClass {
     staticMethods: Record<string, any>
     props: string[]
     staticProps: string[]
+    setters: Record<string, Parameter>
+    staticSetters: Record<string, Parameter>
   }
   isDefault: boolean
   isVar: boolean
@@ -857,6 +860,8 @@ function genProxyClass(
     staticMethods: Record<string, any>
     props: string[]
     staticProps: string[]
+    setters: Record<string, Parameter>
+    staticSetters: Record<string, Parameter>
   },
   isDefault = false,
   isVar = false,
@@ -1060,6 +1065,7 @@ function genInterfaceDeclaration(
   const cls = decl.id.value
   const methods: ProxyClass['options']['methods'] = {}
   const props: string[] = []
+  const setters: Record<string, Parameter> = {}
   decl.body.body.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
       if (item.key.type === 'Identifier') {
@@ -1092,6 +1098,18 @@ function genInterfaceDeclaration(
     } else if (item.type === 'TsPropertySignature') {
       if (item.key.type === 'Identifier') {
         props.push(item.key.value)
+        if (item.typeAnnotation) {
+          const params = resolveFunctionParams(
+            types,
+            tsParamsToParams([
+              createBindingIdentifier(item.key.value, item.typeAnnotation),
+            ]),
+            resolveTypeReferenceName
+          )
+          if (params.length) {
+            setters[item.key.value] = params[0]
+          }
+        }
       }
     }
   })
@@ -1101,6 +1119,7 @@ function genInterfaceDeclaration(
     options: {
       methods,
       props,
+      setters,
     },
   }
 }
@@ -1131,6 +1150,8 @@ function genClassDeclaration(
   const staticMethods: ProxyClass['options']['staticMethods'] = {}
   const props: string[] = []
   const staticProps: string[] = []
+  const setters: Record<string, Parameter> = {}
+  const staticSetters: Record<string, Parameter> = {}
   const isHook = decl.implements.some(
     (implement) =>
       implement.expression.type === 'Identifier' &&
@@ -1145,35 +1166,53 @@ function genClassDeclaration(
       )
     } else if (item.type === 'ClassMethod') {
       if (item.key.type === 'Identifier') {
-        let returnOptions = {}
-        if (item.function.returnType) {
-          let returnInterface = parseReturnInterface(
-            types,
-            item.function.returnType.typeAnnotation
-          )
-          if (returnInterface) {
-            returnOptions = {
-              type: 'interface',
-              options: returnInterface,
+        if (item.kind === 'getter' || item.kind === 'setter') {
+          const curProps = item.isStatic ? staticProps : props
+          if (!curProps.includes(item.key.value)) {
+            curProps.push(item.key.value)
+          }
+          if (item.kind === 'setter') {
+            const params = resolveFunctionParams(
+              types,
+              item.function.params,
+              resolveTypeReferenceName
+            )
+            if (params.length) {
+              ;(item.isStatic ? staticSetters : setters)[item.key.value] =
+                params[0]
             }
           }
-        }
-
-        const name = item.key.value
-        const value = {
-          async:
-            item.function.async || isReturnPromise(item.function.returnType),
-          params: resolveFunctionParams(
-            types,
-            item.function.params,
-            resolveTypeReferenceName
-          ),
-          returnOptions,
-        }
-        if (item.isStatic) {
-          staticMethods[name + 'ByJs'] = value
         } else {
-          methods[name + 'ByJs'] = value
+          let returnOptions = {}
+          if (item.function.returnType) {
+            let returnInterface = parseReturnInterface(
+              types,
+              item.function.returnType.typeAnnotation
+            )
+            if (returnInterface) {
+              returnOptions = {
+                type: 'interface',
+                options: returnInterface,
+              }
+            }
+          }
+
+          const name = item.key.value
+          const value = {
+            async:
+              item.function.async || isReturnPromise(item.function.returnType),
+            params: resolveFunctionParams(
+              types,
+              item.function.params,
+              resolveTypeReferenceName
+            ),
+            returnOptions,
+          }
+          if (item.isStatic) {
+            staticMethods[name + 'ByJs'] = value
+          } else {
+            methods[name + 'ByJs'] = value
+          }
         }
       }
     } else if (item.type === 'ClassProperty') {
@@ -1183,12 +1222,33 @@ function genClassDeclaration(
         } else {
           props.push(item.key.value)
         }
+        if (item.typeAnnotation) {
+          const params = resolveFunctionParams(
+            types,
+            tsParamsToParams([
+              createBindingIdentifier(item.key.value, item.typeAnnotation),
+            ]),
+            resolveTypeReferenceName
+          )
+          if (params.length) {
+            ;(item.isStatic ? staticSetters : setters)[item.key.value] =
+              params[0]
+          }
+        }
       }
     }
   })
   return genProxyClass(
     cls,
-    { constructor, methods, staticMethods, props, staticProps },
+    {
+      constructor,
+      methods,
+      staticMethods,
+      props,
+      staticProps,
+      setters,
+      staticSetters,
+    },
     isDefault,
     false,
     isHook
@@ -1264,15 +1324,18 @@ function genVariableDeclaration(
   }
 }
 
-// function createBindingIdentifier(name: string, typeAnnotation?: TsTypeAnnotation): BindingIdentifier {
-//   return {
-//     type: 'Identifier',
-//     value: name,
-//     optional: false,
-//     span: {} as Span,
-//     typeAnnotation
-//   }
-// }
+function createBindingIdentifier(
+  name: string,
+  typeAnnotation?: TsTypeAnnotation
+): BindingIdentifier {
+  return {
+    type: 'Identifier',
+    value: name,
+    optional: false,
+    span: {} as Span,
+    typeAnnotation,
+  }
+}
 
 function createIdentifier(name: string): Identifier {
   return {

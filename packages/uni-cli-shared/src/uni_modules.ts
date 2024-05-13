@@ -482,7 +482,7 @@ export function findUploadEncryptUniModulesFiles(
   return files
 }
 
-function packUploadEncryptUniModules(
+export function packUploadEncryptUniModules(
   uniModules: Record<string, EncryptPackageJson | undefined>,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string,
@@ -494,7 +494,7 @@ function packUploadEncryptUniModules(
     const AdmZip = require('adm-zip')
     const zip = new AdmZip()
     files.forEach((file) => {
-      zip.addLocalFile(file)
+      zip.addLocalFile(file, path.dirname(path.relative(inputDir, file)))
     })
     const zipFile = path.resolve(cacheDir, 'uni_modules.upload.zip')
     zip.writeZip(zipFile)
@@ -594,6 +594,7 @@ function findUniModuleFiles(
 ) {
   return sync(`uni_modules/${id}/**/*`, {
     cwd: inputDir,
+    absolute: true,
     ignore: [
       '**/*.md',
       ...(platform !== 'app-android' // 非 android 平台不需要扫描 assets
