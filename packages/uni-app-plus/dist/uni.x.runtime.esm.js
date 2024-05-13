@@ -1078,7 +1078,23 @@ var ON_POP_GESTURE = "onPopGesture";
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
-  var routeKeys = ["id", "route", "i18n", "isQuit", "isEntry", "isTabBar", "tabBarIndex", "tabBarText", "windowTop", "topWindow", "leftWindow", "rightWindow", "eventChannel"];
+  var routeKeys = [
+    "id",
+    "route",
+    "i18n",
+    "isQuit",
+    "isEntry",
+    "isTabBar",
+    "tabBarIndex",
+    "tabBarText",
+    "windowTop",
+    "topWindow",
+    "leftWindow",
+    "rightWindow",
+    "eventChannel",
+    // 忽略 initRouteMeta产生的 navigationBar 对象
+    "navigationBar"
+  ];
   var navKeys = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
   Object.keys(routeMeta).forEach((key) => {
     if (!routeKeys.includes(key) && !navKeys.includes(key)) {
@@ -1091,11 +1107,13 @@ function parsePageStyle(route) {
       navigationBar[key] = routeMeta[key];
     }
   });
-  if (Object.keys(navigationBar).length) {
-    style.set("navigationBar", navigationBar);
+  if (Object.keys(navigationBar).length > 0) {
     if (navigationBar.navigationBarTextStyle !== "custom" && !routeMeta.isQuit && routeMeta.route !== __uniConfig.realEntryPagePath) {
-      navigationBar["navigationBarAutoBackButton"] = true;
+      style.set("navigationBarAutoBackButton", true);
     }
+    Object.keys(navigationBar).forEach((key) => {
+      style.set(key, navigationBar[key]);
+    });
   }
   return style;
 }
@@ -1837,7 +1855,7 @@ var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
     return reject("getCurrentPages is empty");
   }
   var appPage = page.$nativePage;
-  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBar", /* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]])]]));
+  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]]));
   resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
@@ -1851,7 +1869,7 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
     return;
   }
   var appPage = page.$nativePage;
-  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBar", /* @__PURE__ */ new Map([["navigationBarTitleText", options.title]])]]));
+  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTitleText", options.title]]));
   resolve();
 });
 var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
@@ -2193,7 +2211,7 @@ function normalizeArg(arg) {
   return arg;
 }
 function initUTSInstanceMethod(async, opts, instanceId, proxy2) {
-  return initProxyFunction(async, opts, instanceId, proxy2);
+  return initProxyFunction("method", async, opts, instanceId, proxy2);
 }
 function getProxy() {
   if (!proxy) {
@@ -2250,13 +2268,13 @@ function invokePropGetter(args) {
   return resolveSyncResult(args, getProxy().invokeSync(args, () => {
   }));
 }
-function initProxyFunction(async, _ref, instanceId, proxy2) {
+function initProxyFunction(type, async, _ref, instanceId, proxy2) {
   var {
     moduleName,
     moduleType,
     package: pkg,
     class: cls,
-    name: propOrMethod,
+    name: methodName,
     method,
     companion,
     params: methodParams,
@@ -2277,21 +2295,23 @@ function initProxyFunction(async, _ref, instanceId, proxy2) {
         delete callbacks[id2];
       }
     } else {
-      console.error("".concat(pkg).concat(cls, ".").concat(propOrMethod, " ").concat(name, " is not found"));
+      console.error("".concat(pkg).concat(cls, ".").concat(methodName, " ").concat(name, " is not found"));
     }
   };
   var baseArgs = instanceId ? {
     moduleName,
     moduleType,
     id: instanceId,
-    name: propOrMethod,
+    type,
+    name: methodName,
     method: methodParams
   } : {
     moduleName,
     moduleType,
     package: pkg,
     class: cls,
-    name: method || propOrMethod,
+    name: method || methodName,
+    type,
     companion,
     method: methodParams
   };
@@ -2329,7 +2349,7 @@ function initUTSStaticMethod(async, opts) {
       opts.method = "s_" + opts.name;
     }
   }
-  return initProxyFunction(async, opts, 0);
+  return initProxyFunction("method", async, opts, 0);
 }
 var initUTSProxyFunction = initUTSStaticMethod;
 function parseClassMethodName(name, methods) {
@@ -2344,6 +2364,9 @@ function isUndefined(value) {
 function isProxyInterfaceOptions(options) {
   return !isUndefined(options.instanceId);
 }
+function parseClassPropertySetter(name) {
+  return "__$set" + capitalize(name);
+}
 function initUTSProxyClass(options) {
   var {
     moduleName,
@@ -2352,6 +2375,7 @@ function initUTSProxyClass(options) {
     class: cls,
     methods,
     props,
+    setters,
     errMsg
   } = options;
   var baseOptions = {
@@ -2365,6 +2389,7 @@ function initUTSProxyClass(options) {
   var constructorParams = [];
   var staticMethods = {};
   var staticProps = [];
+  var staticSetters = {};
   var isProxyInterface = false;
   if (isProxyInterfaceOptions(options)) {
     isProxyInterface = true;
@@ -2373,6 +2398,7 @@ function initUTSProxyClass(options) {
     constructorParams = options.constructor.params;
     staticMethods = options.staticMethods;
     staticProps = options.staticProps;
+    staticSetters = options.staticSetters;
   }
   if (isUTSiOS()) {
     if (constructorParams.find((p) => p.type === "UTSCallback" || p.type.indexOf("JSONObject") > 0)) {
@@ -2393,7 +2419,7 @@ function initUTSProxyClass(options) {
         for (var _len2 = arguments.length, params = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
           params[_key2] = arguments[_key2];
         }
-        this.__instanceId = initProxyFunction(false, extend({
+        this.__instanceId = initProxyFunction("method", false, extend({
           name: "constructor",
           params: constructorParams
         }, baseOptions), 0).apply(null, params);
@@ -2427,17 +2453,36 @@ function initUTSProxyClass(options) {
                 moduleName,
                 moduleType,
                 id: instance.__instanceId,
+                type: "property",
                 name,
                 errMsg
               });
             }
           }
           return target[name];
+        },
+        set(_, name, newValue) {
+          if (props.includes(name)) {
+            var setter = parseClassPropertySetter(name);
+            if (!target[setter]) {
+              var param = setters[name];
+              if (param) {
+                target[setter] = initProxyFunction("property", false, extend({
+                  name,
+                  params: [param]
+                }, baseOptions), instance.__instanceId, proxy2);
+              }
+            }
+            target[parseClassPropertySetter(name)](newValue);
+            return true;
+          }
+          return false;
         }
       });
       return proxy2;
     }
   };
+  var staticPropSetterCache = {};
   var staticMethodCache = {};
   return new Proxy(ProxyClass, {
     get(target, name, receiver) {
@@ -2461,10 +2506,28 @@ function initUTSProxyClass(options) {
       if (staticProps.includes(name)) {
         return invokePropGetter(extend({
           name,
-          companion: true
+          companion: true,
+          type: "property"
         }, baseOptions));
       }
       return Reflect.get(target, name, receiver);
+    },
+    set(_, name, newValue) {
+      if (staticProps.includes(name)) {
+        var setter = parseClassPropertySetter(name);
+        if (!staticPropSetterCache[setter]) {
+          var param = staticSetters[name];
+          if (param) {
+            staticPropSetterCache[setter] = initProxyFunction("property", false, extend({
+              name,
+              params: [param]
+            }, baseOptions), 0);
+          }
+        }
+        staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+        return true;
+      }
+      return false;
     }
   });
 }
