@@ -21,6 +21,7 @@ export default function getRealPath (filePath) {
   // 相对路径模式对静态资源路径特殊处理
   if (__uniConfig.router.base === './') {
     filePath = filePath.replace(/^\.\/static\//, '/static/')
+    filePath = filePath.replace(/^\.\/assets\//, '/assets/')
   }
   if (filePath.indexOf('/') === 0) {
     if (filePath.indexOf('//') === 0) {
