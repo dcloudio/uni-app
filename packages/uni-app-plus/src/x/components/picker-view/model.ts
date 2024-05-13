@@ -23,7 +23,7 @@ class UniPickerViewChangeEventDetail {
   }
 }
 
-export class UniPickerViewChangeEvent extends CustomEvent<UniPickerViewChangeEventDetail> {
+export class UniPickerViewChangeEvent extends UniCustomEvent<UniPickerViewChangeEventDetail> {
   constructor(value: number[]) {
     super('change', {
       detail: new UniPickerViewChangeEventDetail(value),
