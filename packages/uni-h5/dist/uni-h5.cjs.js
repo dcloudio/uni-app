@@ -1048,7 +1048,7 @@ function addBase(filePath) {
 function getRealPath(filePath) {
   const { base, assets } = __uniConfig.router;
   if (base === "./") {
-    if (filePath.indexOf("./static/") === 0 || assets && filePath.indexOf("./" + assets + "/") === 0) {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
       filePath = filePath.slice(1);
     }
   }

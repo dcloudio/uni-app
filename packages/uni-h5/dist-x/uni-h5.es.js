@@ -133,6 +133,9 @@ function isAnyType(type) {
 function isUTSType(type) {
   return type && type.prototype && type.prototype instanceof UTSType;
 }
+function normalizeGenericValue(value, genericType, isJSONParse = false) {
+  return value == null ? null : isBaseType(genericType) || isUnknownType(genericType) || isAnyType(genericType) ? value : genericType === Array ? new Array(...value) : new genericType(value, void 0, isJSONParse);
+}
 class UTSType {
   static get$UTSMetadata$(...args) {
     return {
@@ -160,8 +163,22 @@ class UTSType {
           }
           super();
           return options.map((item) => {
-            return item == null ? null : isBaseType(generics[0]) || isUnknownType(generics[0]) || isAnyType(generics[0]) ? item : generics[0] === Array ? new Array(...item) : new generics[0](item, void 0, isJSONParse2);
+            return normalizeGenericValue(item, generics[0], isJSONParse2);
           });
+        }
+      };
+    } else if (parent === Map || parent === WeakMap) {
+      return class UTSMap extends UTSType {
+        constructor(options, isJSONParse2 = false) {
+          if (options == null || typeof options !== "object") {
+            throw new UTSError(`Failed to contruct type, ${options} is not an object`);
+          }
+          super();
+          const obj = new parent();
+          for (const key in options) {
+            obj.set(normalizeGenericValue(key, generics[0], isJSONParse2), normalizeGenericValue(options[key], generics[1], isJSONParse2));
+          }
+          return obj;
         }
       };
     } else if (isUTSType(parent)) {
@@ -3021,7 +3038,7 @@ function addBase(filePath) {
 function getRealPath(filePath) {
   const { base, assets } = __uniConfig.router;
   if (base === "./") {
-    if (filePath.indexOf("./static/") === 0 || assets && filePath.indexOf("./" + assets + "/") === 0) {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
       filePath = filePath.slice(1);
     }
   }
