@@ -66,7 +66,10 @@ export function uniAppManifestPlugin(): Plugin {
                 splashScreen
               )}`
             : ''
-        const darkMode = manifestJson.app?.darkmode || manifestJson.darkmode
+        const darkMode =
+          typeof manifestJson.app?.darkmode === 'boolean'
+            ? manifestJson.app?.darkmode
+            : manifestJson.darkmode
         const darkModeCode = darkMode
           ? `override darkmode: boolean = ${darkMode}`
           : ''
