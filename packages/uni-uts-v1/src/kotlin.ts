@@ -311,13 +311,7 @@ export async function runKotlinDev(
     if (!compilerServer) {
       throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
     }
-    const {
-      getDefaultJar,
-      getKotlincHome,
-      compile: compileDex,
-      checkDependencies,
-      checkRResources,
-    } = compilerServer
+    const { checkDependencies, checkRResources } = compilerServer
     let deps: string[] = []
     if (checkDependencies) {
       deps = await checkDeps(filename, checkDependencies)
@@ -359,31 +353,19 @@ export async function runKotlinDev(
       ? // 加密插件已经迁移到普通插件目录了，理论上不需要了
         getUniModulesEncryptCacheJars(cacheDir, uniModules) // 加密插件jar
           .concat(getUniModulesCacheJars(cacheDir, uniModules)) // 普通插件jar
-          .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候）
+          .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候,也不应该需要了，默认cache目录即可）
       : []
 
-    const options = {
-      pageCount: 0,
-      kotlinc: resolveKotlincArgs(
-        kotlinFiles,
-        jarFile,
-        getKotlincHome(),
-        (isX ? getDefaultJar(2) : getDefaultJar())
-          .concat(extraJars)
-          .concat(depJars)
-      ),
-      d8: resolveD8Args(jarFile),
-      sourceRoot: inputDir,
-      sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
-      stderrListener: createStderrListener(
-        outputDir,
-        resolveSourceMapPath(),
-        waiting
-      ),
-    }
-    // console.log('dex compile options: ', options)
-    const { code, msg } = await compileDex(options, inputDir)
-    // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
+    const { code, msg } = await compileAndroidDex(
+      isX,
+      compilerServer,
+      kotlinFiles,
+      jarFile,
+      resolveSourceMapFile(outputDir, kotlinFile),
+      extraJars.concat(depJars),
+      createStderrListener(outputDir, resolveSourceMapPath(), waiting)
+    )
+
     // 等待 stderrListener 执行完毕
     if (waiting.done) {
       await waiting.done
@@ -416,6 +398,36 @@ export async function runKotlinDev(
     //   )} 编译失败`
     // }
   }
+  return result
+}
+
+export async function compileAndroidDex(
+  isX: boolean,
+  compilerServer: KotlinCompilerServer,
+  kotlinFiles: string[],
+  jarFile: string,
+  sourceMapPath: string,
+  depJars: string[],
+  stderrListener: (data: string) => void
+) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const { getDefaultJar, getKotlincHome, compile: compileDex } = compilerServer
+  const options = {
+    pageCount: 0,
+    kotlinc: resolveKotlincArgs(
+      kotlinFiles,
+      jarFile,
+      getKotlincHome(),
+      (isX ? getDefaultJar(2) : getDefaultJar()).concat(depJars)
+    ),
+    d8: resolveD8Args(jarFile),
+    sourceRoot: inputDir,
+    sourceMapPath,
+    stderrListener,
+  }
+  // console.log('dex compile options: ', options)
+  const result = await compileDex(options, inputDir)
+  // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
   return result
 }
 
