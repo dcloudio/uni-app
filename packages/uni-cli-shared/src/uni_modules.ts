@@ -492,7 +492,7 @@ export function packUploadEncryptUniModules(
     files.forEach((file) => {
       zip.addLocalFile(file, path.dirname(path.relative(inputDir, file)))
     })
-    const zipFile = path.resolve(cacheDir, 'uni_modules.upload.zip')
+    const zipFile = path.resolve(cacheDir, 'cloud-compile-plugins.zip')
     zip.writeZip(zipFile)
     return zipFile
   }

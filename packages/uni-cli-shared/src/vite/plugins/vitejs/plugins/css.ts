@@ -49,6 +49,7 @@ import { createCompilerError } from '@vue/compiler-core'
 import { createResolveErrorMsg } from '../../../../utils'
 
 import { parseVueRequest } from '../../../utils'
+import { getIsStaticFile } from './static'
 // const debug = createDebugger('vite:css')
 
 export interface CSSOptions {
@@ -243,7 +244,9 @@ export function cssPlugin(
                         emittedFile.fileName!
                       )
                       // 忽略static（可能有只读文件，写入覆盖只读会报错权限）
-                      if (normalizePath(fileName).includes('/static/')) {
+                      if (
+                        getIsStaticFile()(normalizePath(emittedFile.fileName!))
+                      ) {
                         return
                       }
                       // 直接写入目标目录
@@ -251,7 +254,8 @@ export function cssPlugin(
                     },
                   } as PluginContext)
                 : this,
-              true
+              true,
+              getIsStaticFile()
             )
           }
           return url

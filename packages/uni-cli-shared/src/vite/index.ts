@@ -9,6 +9,7 @@ import type {
   TemplateCompiler,
 } from '@vue/compiler-sfc'
 import type { UniViteCopyPluginOptions } from './plugins/copy'
+export { getIsStaticFile } from './plugins/vitejs/plugins/static'
 
 export const cssTarget = 'chrome53'
 export interface CopyOptions {
