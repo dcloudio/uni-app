@@ -57,11 +57,7 @@ export function getUniExtApiProviderRegisters() {
         service: provider.service,
         class: `uts.sdk.modules.${camelize(provider.plugin)}.${capitalize(
           camelize(
-            'uni-ext-api-' +
-              provider.service +
-              '-' +
-              provider.name +
-              '-provider'
+            'uni-' + provider.service + '-' + provider.name + '-provider'
           )
         )}`,
       })
