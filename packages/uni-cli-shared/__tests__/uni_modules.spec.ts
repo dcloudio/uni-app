@@ -16,12 +16,18 @@ describe('uni_modules:uni-ext-api', () => {
 
   platforms.forEach((platform) => {
     test(`findUploadEncryptUniModulesFiles(${platform})`, () => {
+      const modules = findUploadEncryptUniModulesFiles(
+        findEncryptUniModules(inputDir),
+        platform,
+        inputDir
+      )
       expect(
-        findUploadEncryptUniModulesFiles(
-          findEncryptUniModules(inputDir),
-          platform,
-          inputDir
-        ).map((item) => item.replace(inputDir, '').slice(1))
+        Object.keys(modules).reduce((res: string[], id: string) => {
+          res.push(
+            ...modules[id].map((item) => item.replace(inputDir, '').slice(1))
+          )
+          return res
+        }, [])
       ).toMatchSnapshot()
     })
   })

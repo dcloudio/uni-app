@@ -2,6 +2,7 @@ import path from 'path'
 import {
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
+  uniDecryptUniModulesPlugin,
   uniEncryptUniModulesPlugin,
   uniUTSUniModulesPlugin,
   uniViteSfcSrcImportPlugin,
@@ -19,6 +20,7 @@ import { enableSourceMap } from '@dcloudio/uni-cli-shared'
 
 export function init() {
   return [
+    uniDecryptUniModulesPlugin(),
     uniPrePlugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
       ? []

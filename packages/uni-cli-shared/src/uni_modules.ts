@@ -468,14 +468,14 @@ export function findUploadEncryptUniModulesFiles(
   uniModules: Record<string, EncryptPackageJson | undefined>,
   platform: typeof process.env.UNI_UTS_PLATFORM,
   inputDir: string
-) {
-  const files: string[] = []
+): Record<string, string[]> {
+  const modules: Record<string, string[]> = {}
   Object.keys(uniModules).forEach((uniModuleId) => {
     if (!uniModules[uniModuleId]) {
-      files.push(...findUniModuleFiles(platform, uniModuleId, inputDir))
+      modules[uniModuleId] = findUniModuleFiles(platform, uniModuleId, inputDir)
     }
   })
-  return files
+  return modules
 }
 
 export function packUploadEncryptUniModules(
@@ -484,17 +484,31 @@ export function packUploadEncryptUniModules(
   inputDir: string,
   cacheDir: string
 ) {
-  const files = findUploadEncryptUniModulesFiles(uniModules, platform, inputDir)
-  if (files.length) {
+  const modules = findUploadEncryptUniModulesFiles(
+    uniModules,
+    platform,
+    inputDir
+  )
+  const uploadModuleIds = Object.keys(modules)
+  if (uploadModuleIds.length) {
     // 延迟 require，避免 vue2 编译器需要安装此依赖，目前该方法仅在 vite 编译器中使用
     const AdmZip = require('adm-zip')
     const zip = new AdmZip()
-    files.forEach((file) => {
-      zip.addLocalFile(file, path.dirname(path.relative(inputDir, file)))
+    uploadModuleIds.forEach((moduleId) => {
+      modules[moduleId].forEach((file) => {
+        zip.addLocalFile(file, path.dirname(path.relative(inputDir, file)))
+      })
     })
     const zipFile = path.resolve(cacheDir, 'cloud-compile-plugins.zip')
     zip.writeZip(zipFile)
-    return zipFile
+    return {
+      zipFile,
+      modules: uploadModuleIds,
+    }
+  }
+  return {
+    zipFile: '',
+    modules: [],
   }
 }
 
@@ -544,7 +558,7 @@ function findEncryptUniModuleCache(
     // 插件版本以及各种环境一致
     if (
       pkg.version === options.version &&
-      !isEnvExpired(pkg.env, options.env)
+      !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env)
     ) {
       return pkg
     }
@@ -663,7 +677,7 @@ export async function checkEncryptUniModules(
   }
 
   const cacheDir = process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!
-  const zipFile = packUploadEncryptUniModules(
+  const { zipFile, modules } = packUploadEncryptUniModules(
     encryptUniModules,
     process.env.UNI_UTS_PLATFORM,
     inputDir,
@@ -676,13 +690,11 @@ export async function checkEncryptUniModules(
       'uni_helpers'
     ))
     try {
-      console.log(
-        await U({
-          ...params,
-        })
-      )
-      const downloadUrl = ''
-
+      console.log(`正在云编译插件：${modules.join(',')}...`)
+      const downloadUrl = await U({
+        params,
+        attachment: zipFile,
+      })
       await D(downloadUrl, downloadFile)
       // unzip
       const AdmZip = require('adm-zip')
@@ -690,6 +702,7 @@ export async function checkEncryptUniModules(
       zip.extractAllTo(cacheDir, true)
       fs.unlinkSync(zipFile)
       fs.unlinkSync(downloadFile)
+      console.log(`云编译完成`)
     } catch (e) {
       fs.existsSync(zipFile) && fs.unlinkSync(zipFile)
       fs.existsSync(downloadFile) && fs.unlinkSync(downloadFile)

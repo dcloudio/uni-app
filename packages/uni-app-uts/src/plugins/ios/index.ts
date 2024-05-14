@@ -3,6 +3,7 @@ import {
   UNI_EASYCOM_EXCLUDE,
   parseUniExtApiNamespacesOnce,
   resolveUTSCompiler,
+  uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
@@ -19,6 +20,7 @@ import * as uniCliShared from '@dcloudio/uni-cli-shared'
 
 export function init() {
   return [
+    uniDecryptUniModulesPlugin(),
     uniHBuilderXConsolePlugin('uni.__log__'),
     uniUTSUniModulesPlugin({
       x: true,

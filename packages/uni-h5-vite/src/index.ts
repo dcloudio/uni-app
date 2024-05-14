@@ -5,6 +5,7 @@ import {
   isVueSfcFile,
   resolveUTSCompiler,
   uniCssScopedPlugin,
+  uniDecryptUniModulesPlugin,
   uniEncryptUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -27,6 +28,7 @@ import * as uniCliShared from '@dcloudio/uni-cli-shared'
 export default [
   ...(process.env.UNI_APP_X === 'true'
     ? [
+        uniDecryptUniModulesPlugin(),
         uniUTSUVueJavaScriptPlugin(),
         resolveUTSCompiler().uts2js({
           inputDir: process.env.UNI_INPUT_DIR,
