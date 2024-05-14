@@ -1,0 +1,17 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index"
+    }
+  ],
+  "subPackages": [
+    {
+      "root": "pages/sub",
+      "pages": [
+        {
+          "path": "test/test"
+        }
+      ]
+    }
+  ]
+}

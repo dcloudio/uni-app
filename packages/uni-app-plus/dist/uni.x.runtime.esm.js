@@ -3002,6 +3002,11 @@ function $dispatchParent(context, componentName, eventName) {
     }
   }
 }
+function initUniCustomEvent(element, e) {
+  e.target = element;
+  e.currentTarget = element;
+  return e;
+}
 var CHECKBOX_NAME = "Checkbox";
 var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
 class UniCheckboxElement extends UniElementImpl {
@@ -3274,7 +3279,7 @@ class UniCheckboxGroupChangeEventDetail {
     this.value = value;
   }
 }
-class UniCheckboxGroupChangeEvent extends CustomEvent {
+class UniCheckboxGroupChangeEvent extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniCheckboxGroupChangeEventDetail(value)
@@ -3315,7 +3320,7 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
           i.checked = info.checked;
         }
       });
-      emit("change", new UniCheckboxGroupChangeEvent(_getValue()));
+      emit("change", initUniCustomEvent(uniCheckboxGroupElementRef.value, new UniCheckboxGroupChangeEvent(_getValue())));
     };
     var _getValue = () => {
       var valueArray = [];
@@ -3635,7 +3640,7 @@ class UniRadioGroupChangeEventDetail {
     this.value = value;
   }
 }
-class UniRadioGroupChangeEvent extends CustomEvent {
+class UniRadioGroupChangeEvent extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniRadioGroupChangeEventDetail(value)
@@ -3672,7 +3677,7 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
     };
     var _changeHandler = (data) => {
       _setValue(data.name);
-      emit("change", new UniRadioGroupChangeEvent(data.name));
+      emit("change", initUniCustomEvent(uniRadioGroupElementRef.value, new UniRadioGroupChangeEvent(data.name)));
     };
     var _getValue = () => {
       var value = "";
@@ -4185,7 +4190,7 @@ class UniPickerViewChangeEventDetail {
     this.value = value;
   }
 }
-class UniPickerViewChangeEvent extends CustomEvent {
+class UniPickerViewChangeEvent extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniPickerViewChangeEventDetail(value)
@@ -4287,7 +4292,7 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
         if (data.valueSync.length > index2) {
           data.valueSync[index2] = val;
         }
-        emit("change", new UniPickerViewChangeEvent([...data.valueSync]));
+        emit("change", initUniCustomEvent(pickerViewElementRef.value, new UniPickerViewChangeEvent([...data.valueSync])));
       }
     };
     expose({
