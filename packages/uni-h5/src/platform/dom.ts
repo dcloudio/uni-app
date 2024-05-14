@@ -31,9 +31,11 @@ export function getRealPath(filePath: string) {
   // 相对路径模式对静态资源路径特殊处理
   const { base, assets } = __uniConfig.router!
   if (base === './') {
+    // 如果包含static目录（根目录的static|分包的static|uni_modules的static）或者 assets 目录开头
     if (
-      filePath.indexOf('./static/') === 0 ||
-      (assets && filePath.indexOf('./' + assets + '/') === 0)
+      filePath.indexOf('./') === 0 &&
+      (filePath.includes('/static/') ||
+        filePath.indexOf('./' + (assets || 'assets') + '/') === 0)
     ) {
       filePath = filePath.slice(1)
     }

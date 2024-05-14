@@ -2,8 +2,19 @@ import path, { join, relative } from 'path'
 import fs from 'fs-extra'
 import { makeLegalIdentifier } from '@rollup/pluginutils'
 import type { APP_PLATFORM } from './manifest/utils'
-import { normalizePath } from './shared'
-import { addInjectApis, addInjectComponents } from './kotlin'
+import { normalizePath, resolveSourceMapPath } from './shared'
+import {
+  type KotlinCompilerServer,
+  addInjectApis,
+  addInjectComponents,
+  compileAndroidDex,
+  createStderrListener,
+  resolveDexFile,
+  resolveJarPath,
+} from './kotlin'
+import { getCompilerServer } from './utils'
+import { restoreDex } from './manifest'
+import { sync } from 'fast-glob'
 
 export function isEncrypt(pluginDir: string) {
   return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
@@ -107,7 +118,9 @@ function resolveJarCacheFilename(cacheDir: string, pluginRelativeDir: string) {
   return join(cacheDir, 'app-android', 'uts', pluginRelativeDir, 'index.jar')
 }
 
-function compileEncryptByUniHelpers(pluginDir: string) {
+async function compileEncryptByUniHelpers(pluginDir: string) {
+  // 目前仅Android会进来
+  const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const pluginRelativeDir = relative(inputDir, pluginDir)
@@ -129,8 +142,20 @@ function compileEncryptByUniHelpers(pluginDir: string) {
     // 生成wgt，无需复制加密插件目录
     const needCopy = !(process.env.UNI_APP_PRODUCTION_TYPE === 'WGT')
     if (needCopy) {
-      // 复制插件目录
-      fs.copySync(cachePluginDir, join(outputDir, pluginRelativeDir))
+      // 复制encrypt
+      fs.copySync(
+        path.resolve(pluginDir, 'encrypt'),
+        join(outputDir, pluginRelativeDir, 'encrypt')
+      )
+      // 复制加密kt文件
+      fs.copySync(cachePluginDir, join(outputDir, pluginRelativeDir), {
+        filter: (src) => src.endsWith('.kt'),
+      })
+      // 复制资源文件
+      fs.copySync(
+        path.resolve(cachePluginDir, 'assets'),
+        join(outputDir, 'assets')
+      )
     }
     const inject_apis = pkg.uni_modules?.artifacts?.apis || []
     addInjectApis(inject_apis)
@@ -144,6 +169,70 @@ function compileEncryptByUniHelpers(pluginDir: string) {
     }
   }
   // development
+  if (process.env.UNI_HBUILDERX_PLUGINS) {
+    const { DUM } = require(path.join(
+      process.env.UNI_HBUILDERX_PLUGINS,
+      'uni_helpers'
+    ))
+
+    const errMsg = await DUM(
+      path.basename(pluginRelativeDir),
+      sync('**/*.kt', {
+        absolute: true,
+        cwd: cachePluginDir,
+      })
+    )
+    if (errMsg) {
+      console.error(errMsg)
+      process.exit(0)
+    }
+
+    const jarFile = resolveJarPath(
+      'app-android',
+      cacheDir,
+      pluginRelativeDir,
+      'index.kt'
+    )
+    const waiting = { done: undefined }
+    const kotlinFiles = []
+    const depJars =
+      require(path.resolve(pluginDir, 'package.json')).uni_modules
+        ?.dependencies || []
+
+    const compilerServer = getCompilerServer<KotlinCompilerServer>(
+      'uniapp-runextension'
+    )
+    if (!compilerServer) {
+      throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
+    }
+    const { code, msg } = await compileAndroidDex(
+      true,
+      compilerServer,
+      kotlinFiles,
+      jarFile,
+      '',
+      depJars,
+      createStderrListener(outputDir, resolveSourceMapPath(), waiting)
+    )
+    // 等待 stderrListener 执行完毕
+    if (waiting.done) {
+      await waiting.done
+    }
+    try {
+      kotlinFiles.forEach((file) => {
+        fs.removeSync(file)
+      })
+    } catch (e) {}
+    if (!code) {
+      const dexFile = resolveDexFile(jarFile)
+      if (fs.existsSync(dexFile)) {
+        restoreDex(pluginRelativeDir, cacheDir, outputDir, true)
+      }
+    } else if (msg) {
+      console.error(msg)
+    }
+  }
+
   return {
     dir: outputPluginDir,
     code: '',
