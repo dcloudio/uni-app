@@ -1,5 +1,6 @@
 <template>
     <text class="text2">{{ msg }}{{ api }}</text>
+    <image :src="api" />
 </template>
 <script>
 import Api from '../test-com2-1/api.png'

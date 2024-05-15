@@ -1,5 +1,6 @@
 <template>
     <text class="text">{{ msg }}{{ api }}</text>
+    <image :src="api" />
     <video />
 </template>
 <script>

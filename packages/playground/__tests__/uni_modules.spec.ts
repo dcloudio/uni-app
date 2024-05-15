@@ -57,13 +57,15 @@ describe('uni_modules playground', () => {
             UNI_APP_X: type === 'uni-app-x' ? 'true' : 'false',
           },
         })
-        sync('**/*', { cwd: outDir, absolute: true }).forEach((file) => {
-          if (file.endsWith('.png')) {
-            expect(path.basename(file)).toMatchSnapshot()
-          } else {
-            expect(fs.readFileSync(file, 'utf-8')).toMatchSnapshot()
-          }
-        })
+        sync('**/*', { cwd: outDir, absolute: true })
+          .sort()
+          .forEach((file) => {
+            if (file.endsWith('.png')) {
+              expect(path.basename(file)).toMatchSnapshot()
+            } else {
+              expect(fs.readFileSync(file, 'utf-8')).toMatchSnapshot()
+            }
+          })
       })
     })
   })

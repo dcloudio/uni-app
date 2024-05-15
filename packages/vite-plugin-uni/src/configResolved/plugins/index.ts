@@ -80,7 +80,7 @@ export function initPlugins(
         plugins,
         V({
           dir: process.env.UNI_INPUT_DIR,
-          cloudDir: process.env.UNI_COMPILE_CLOUD_DIR,
+          cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
         }),
         0,
         'pre'

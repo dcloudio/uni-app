@@ -18,9 +18,7 @@ export function createIsStaticFile() {
         return normalizePath(path.join(subPackage.root, 'static')) + '/'
       })
   }
-  console.log('subPackageStatics', subPackageStatics)
   return function isStaticFile(relativeFile: string): boolean {
-    console.log('relativeFile', relativeFile)
     if (path.isAbsolute(relativeFile)) {
       relativeFile = normalizePath(
         path.relative(process.env.UNI_INPUT_DIR, relativeFile)

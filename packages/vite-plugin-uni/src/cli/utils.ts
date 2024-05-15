@@ -175,12 +175,6 @@ export function initEnv(
     process.env.UNI_UTS_PLATFORM
   )
 
-  process.env.UNI_COMPILE_CLOUD_DIR = path.resolve(
-    process.env.UNI_APP_X_CACHE_DIR,
-    '.cloud',
-    process.env.NODE_ENV === 'production' ? 'build' : 'dev'
-  )
-
   initAutomator(options)
 
   initDevtools(options)

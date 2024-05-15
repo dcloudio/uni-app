@@ -113,10 +113,10 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
             }
             const source = matchEasycom(name)
             if (source) {
-              const isHelpers = source.includes('uni_helpers')
+              const isHelpers = source.includes('?uni_helpers')
               if (isHelpers) {
                 const cssFilename = path.join(
-                  process.env.UNI_COMPILE_CLOUD_DIR!,
+                  process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!,
                   path.relative(
                     process.env.UNI_INPUT_DIR,
                     source.replace(

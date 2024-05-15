@@ -28,47 +28,47 @@ exports[`assets playground uni-app build:app 13`] = `"app-service.js"`;
 
 exports[`assets playground uni-app build:app 14`] = `"app.css"`;
 
-exports[`assets playground uni-app build:app 15`] = `"manifest.json"`;
+exports[`assets playground uni-app build:app 15`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app build:app 16`] = `"uni-app-view.umd.js"`;
+exports[`assets playground uni-app build:app 16`] = `"manifest.json"`;
 
-exports[`assets playground uni-app build:app 17`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app build:app 17`] = `"index.css"`;
 
-exports[`assets playground uni-app build:app 18`] = `"logo.png"`;
+exports[`assets playground uni-app build:app 18`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:app 19`] = `"index.css"`;
+exports[`assets playground uni-app build:app 19`] = `"test.css"`;
 
-exports[`assets playground uni-app build:app 20`] = `"2.jpg"`;
+exports[`assets playground uni-app build:app 20`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:app 21`] = `"test.css"`;
+exports[`assets playground uni-app build:app 21`] = `"uni-app-view.umd.js"`;
 
 exports[`assets playground uni-app build:app 22`] = `"logo.png"`;
 
 exports[`assets playground uni-app build:app 23`] = `"shuijiao.jpg"`;
 
-exports[`assets playground uni-app build:h5 1`] = `"index.html"`;
+exports[`assets playground uni-app build:h5 1`] = `"2-DQMwIfWk.jpg"`;
 
-exports[`assets playground uni-app build:h5 2`] = `"2-DQMwIfWk.jpg"`;
+exports[`assets playground uni-app build:h5 2`] = `"_plugin-vue_export-helper.1tPrXgE0.js"`;
 
-exports[`assets playground uni-app build:h5 3`] = `"_plugin-vue_export-helper.1tPrXgE0.js"`;
+exports[`assets playground uni-app build:h5 3`] = `"index-BbLB0crq.css"`;
 
-exports[`assets playground uni-app build:h5 4`] = `"index-BbLB0crq.css"`;
+exports[`assets playground uni-app build:h5 4`] = `"index-CdDEPgsR.js"`;
 
-exports[`assets playground uni-app build:h5 5`] = `"index-CdDEPgsR.js"`;
+exports[`assets playground uni-app build:h5 5`] = `"invalid-static-CONWi2JP.jpg"`;
 
-exports[`assets playground uni-app build:h5 6`] = `"invalid-static-CONWi2JP.jpg"`;
+exports[`assets playground uni-app build:h5 6`] = `"pages-index-index.D16VNwbn.js"`;
 
-exports[`assets playground uni-app build:h5 7`] = `"pages-index-index.D16VNwbn.js"`;
+exports[`assets playground uni-app build:h5 7`] = `"pages-sub-test-test.BkRZHDcG.js"`;
 
-exports[`assets playground uni-app build:h5 8`] = `"pages-sub-test-test.BkRZHDcG.js"`;
+exports[`assets playground uni-app build:h5 8`] = `"shuijiao-B0f5FEMg.jpg"`;
 
-exports[`assets playground uni-app build:h5 9`] = `"shuijiao-B0f5FEMg.jpg"`;
+exports[`assets playground uni-app build:h5 9`] = `"uni.dd1d2fea.css"`;
 
-exports[`assets playground uni-app build:h5 10`] = `"uni.dd1d2fea.css"`;
+exports[`assets playground uni-app build:h5 10`] = `"index.html"`;
 
-exports[`assets playground uni-app build:h5 11`] = `"logo.png"`;
+exports[`assets playground uni-app build:h5 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:h5 12`] = `"2.jpg"`;
+exports[`assets playground uni-app build:h5 12`] = `"logo.png"`;
 
 exports[`assets playground uni-app build:h5 13`] = `"logo.png"`;
 
@@ -80,45 +80,45 @@ exports[`assets playground uni-app build:mp-alipay 2`] = `"app.js"`;
 
 exports[`assets playground uni-app build:mp-alipay 3`] = `"app.json"`;
 
-exports[`assets playground uni-app build:mp-alipay 4`] = `"mini.project.json"`;
+exports[`assets playground uni-app build:mp-alipay 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app build:mp-alipay 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app build:mp-alipay 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app build:mp-alipay 6`] = `"assets.js"`;
+exports[`assets playground uni-app build:mp-alipay 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app build:mp-alipay 7`] = `"vendor.js"`;
+exports[`assets playground uni-app build:mp-alipay 7`] = `"mini.project.json"`;
 
-exports[`assets playground uni-app build:mp-alipay 8`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-alipay 8`] = `"index.acss"`;
 
-exports[`assets playground uni-app build:mp-alipay 9`] = `"index.acss"`;
+exports[`assets playground uni-app build:mp-alipay 9`] = `"index.axml"`;
 
-exports[`assets playground uni-app build:mp-alipay 10`] = `"index.axml"`;
+exports[`assets playground uni-app build:mp-alipay 10`] = `"index.js"`;
 
-exports[`assets playground uni-app build:mp-alipay 11`] = `"index.js"`;
+exports[`assets playground uni-app build:mp-alipay 11`] = `"index.json"`;
 
-exports[`assets playground uni-app build:mp-alipay 12`] = `"index.json"`;
+exports[`assets playground uni-app build:mp-alipay 12`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:mp-alipay 13`] = `"2.jpg"`;
+exports[`assets playground uni-app build:mp-alipay 13`] = `"test.acss"`;
 
-exports[`assets playground uni-app build:mp-alipay 14`] = `"test.acss"`;
+exports[`assets playground uni-app build:mp-alipay 14`] = `"test.axml"`;
 
-exports[`assets playground uni-app build:mp-alipay 15`] = `"test.axml"`;
+exports[`assets playground uni-app build:mp-alipay 15`] = `"test.js"`;
 
-exports[`assets playground uni-app build:mp-alipay 16`] = `"test.js"`;
+exports[`assets playground uni-app build:mp-alipay 16`] = `"test.json"`;
 
-exports[`assets playground uni-app build:mp-alipay 17`] = `"test.json"`;
+exports[`assets playground uni-app build:mp-alipay 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-alipay 18`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-alipay 18`] = `"test-com.acss"`;
 
-exports[`assets playground uni-app build:mp-alipay 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app build:mp-alipay 19`] = `"test-com.axml"`;
 
-exports[`assets playground uni-app build:mp-alipay 20`] = `"test-com.acss"`;
+exports[`assets playground uni-app build:mp-alipay 20`] = `"test-com.js"`;
 
-exports[`assets playground uni-app build:mp-alipay 21`] = `"test-com.axml"`;
+exports[`assets playground uni-app build:mp-alipay 21`] = `"test-com.json"`;
 
-exports[`assets playground uni-app build:mp-alipay 22`] = `"test-com.js"`;
+exports[`assets playground uni-app build:mp-alipay 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-alipay 23`] = `"test-com.json"`;
+exports[`assets playground uni-app build:mp-alipay 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app build:mp-baidu 1`] = `"app.css"`;
 
@@ -126,45 +126,45 @@ exports[`assets playground uni-app build:mp-baidu 2`] = `"app.js"`;
 
 exports[`assets playground uni-app build:mp-baidu 3`] = `"app.json"`;
 
-exports[`assets playground uni-app build:mp-baidu 4`] = `"project.swan.json"`;
+exports[`assets playground uni-app build:mp-baidu 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app build:mp-baidu 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app build:mp-baidu 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app build:mp-baidu 6`] = `"assets.js"`;
+exports[`assets playground uni-app build:mp-baidu 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app build:mp-baidu 7`] = `"vendor.js"`;
+exports[`assets playground uni-app build:mp-baidu 7`] = `"index.css"`;
 
-exports[`assets playground uni-app build:mp-baidu 8`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-baidu 8`] = `"index.js"`;
 
-exports[`assets playground uni-app build:mp-baidu 9`] = `"index.css"`;
+exports[`assets playground uni-app build:mp-baidu 9`] = `"index.json"`;
 
-exports[`assets playground uni-app build:mp-baidu 10`] = `"index.js"`;
+exports[`assets playground uni-app build:mp-baidu 10`] = `"index.swan"`;
 
-exports[`assets playground uni-app build:mp-baidu 11`] = `"index.json"`;
+exports[`assets playground uni-app build:mp-baidu 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:mp-baidu 12`] = `"index.swan"`;
+exports[`assets playground uni-app build:mp-baidu 12`] = `"test.css"`;
 
-exports[`assets playground uni-app build:mp-baidu 13`] = `"2.jpg"`;
+exports[`assets playground uni-app build:mp-baidu 13`] = `"test.js"`;
 
-exports[`assets playground uni-app build:mp-baidu 14`] = `"test.css"`;
+exports[`assets playground uni-app build:mp-baidu 14`] = `"test.json"`;
 
-exports[`assets playground uni-app build:mp-baidu 15`] = `"test.js"`;
+exports[`assets playground uni-app build:mp-baidu 15`] = `"test.swan"`;
 
-exports[`assets playground uni-app build:mp-baidu 16`] = `"test.json"`;
+exports[`assets playground uni-app build:mp-baidu 16`] = `"project.swan.json"`;
 
-exports[`assets playground uni-app build:mp-baidu 17`] = `"test.swan"`;
+exports[`assets playground uni-app build:mp-baidu 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-baidu 18`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-baidu 18`] = `"test-com.css"`;
 
-exports[`assets playground uni-app build:mp-baidu 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app build:mp-baidu 19`] = `"test-com.js"`;
 
-exports[`assets playground uni-app build:mp-baidu 20`] = `"test-com.css"`;
+exports[`assets playground uni-app build:mp-baidu 20`] = `"test-com.json"`;
 
-exports[`assets playground uni-app build:mp-baidu 21`] = `"test-com.js"`;
+exports[`assets playground uni-app build:mp-baidu 21`] = `"test-com.swan"`;
 
-exports[`assets playground uni-app build:mp-baidu 22`] = `"test-com.json"`;
+exports[`assets playground uni-app build:mp-baidu 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-baidu 23`] = `"test-com.swan"`;
+exports[`assets playground uni-app build:mp-baidu 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app build:mp-kuaishou 1`] = `"app.css"`;
 
@@ -172,45 +172,45 @@ exports[`assets playground uni-app build:mp-kuaishou 2`] = `"app.js"`;
 
 exports[`assets playground uni-app build:mp-kuaishou 3`] = `"app.json"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 4`] = `"project.config.json"`;
+exports[`assets playground uni-app build:mp-kuaishou 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app build:mp-kuaishou 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 6`] = `"assets.js"`;
+exports[`assets playground uni-app build:mp-kuaishou 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 7`] = `"vendor.js"`;
+exports[`assets playground uni-app build:mp-kuaishou 7`] = `"index.css"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 8`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-kuaishou 8`] = `"index.js"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 9`] = `"index.css"`;
+exports[`assets playground uni-app build:mp-kuaishou 9`] = `"index.json"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 10`] = `"index.js"`;
+exports[`assets playground uni-app build:mp-kuaishou 10`] = `"index.ksml"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 11`] = `"index.json"`;
+exports[`assets playground uni-app build:mp-kuaishou 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 12`] = `"index.ksml"`;
+exports[`assets playground uni-app build:mp-kuaishou 12`] = `"test.css"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 13`] = `"2.jpg"`;
+exports[`assets playground uni-app build:mp-kuaishou 13`] = `"test.js"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 14`] = `"test.css"`;
+exports[`assets playground uni-app build:mp-kuaishou 14`] = `"test.json"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 15`] = `"test.js"`;
+exports[`assets playground uni-app build:mp-kuaishou 15`] = `"test.ksml"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 16`] = `"test.json"`;
+exports[`assets playground uni-app build:mp-kuaishou 16`] = `"project.config.json"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 17`] = `"test.ksml"`;
+exports[`assets playground uni-app build:mp-kuaishou 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 18`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-kuaishou 18`] = `"test-com.css"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app build:mp-kuaishou 19`] = `"test-com.js"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 20`] = `"test-com.css"`;
+exports[`assets playground uni-app build:mp-kuaishou 20`] = `"test-com.json"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 21`] = `"test-com.js"`;
+exports[`assets playground uni-app build:mp-kuaishou 21`] = `"test-com.ksml"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 22`] = `"test-com.json"`;
+exports[`assets playground uni-app build:mp-kuaishou 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-kuaishou 23`] = `"test-com.ksml"`;
+exports[`assets playground uni-app build:mp-kuaishou 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app build:mp-lark 1`] = `"app.js"`;
 
@@ -218,45 +218,45 @@ exports[`assets playground uni-app build:mp-lark 2`] = `"app.json"`;
 
 exports[`assets playground uni-app build:mp-lark 3`] = `"app.ttss"`;
 
-exports[`assets playground uni-app build:mp-lark 4`] = `"project.config.json"`;
+exports[`assets playground uni-app build:mp-lark 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app build:mp-lark 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app build:mp-lark 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app build:mp-lark 6`] = `"assets.js"`;
+exports[`assets playground uni-app build:mp-lark 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app build:mp-lark 7`] = `"vendor.js"`;
+exports[`assets playground uni-app build:mp-lark 7`] = `"index.js"`;
 
-exports[`assets playground uni-app build:mp-lark 8`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-lark 8`] = `"index.json"`;
 
-exports[`assets playground uni-app build:mp-lark 9`] = `"index.js"`;
+exports[`assets playground uni-app build:mp-lark 9`] = `"index.ttml"`;
 
-exports[`assets playground uni-app build:mp-lark 10`] = `"index.json"`;
+exports[`assets playground uni-app build:mp-lark 10`] = `"index.ttss"`;
 
-exports[`assets playground uni-app build:mp-lark 11`] = `"index.ttml"`;
+exports[`assets playground uni-app build:mp-lark 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:mp-lark 12`] = `"index.ttss"`;
+exports[`assets playground uni-app build:mp-lark 12`] = `"test.js"`;
 
-exports[`assets playground uni-app build:mp-lark 13`] = `"2.jpg"`;
+exports[`assets playground uni-app build:mp-lark 13`] = `"test.json"`;
 
-exports[`assets playground uni-app build:mp-lark 14`] = `"test.js"`;
+exports[`assets playground uni-app build:mp-lark 14`] = `"test.ttml"`;
 
-exports[`assets playground uni-app build:mp-lark 15`] = `"test.json"`;
+exports[`assets playground uni-app build:mp-lark 15`] = `"test.ttss"`;
 
-exports[`assets playground uni-app build:mp-lark 16`] = `"test.ttml"`;
+exports[`assets playground uni-app build:mp-lark 16`] = `"project.config.json"`;
 
-exports[`assets playground uni-app build:mp-lark 17`] = `"test.ttss"`;
+exports[`assets playground uni-app build:mp-lark 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-lark 18`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-lark 18`] = `"test-com.js"`;
 
-exports[`assets playground uni-app build:mp-lark 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app build:mp-lark 19`] = `"test-com.json"`;
 
-exports[`assets playground uni-app build:mp-lark 20`] = `"test-com.js"`;
+exports[`assets playground uni-app build:mp-lark 20`] = `"test-com.ttml"`;
 
-exports[`assets playground uni-app build:mp-lark 21`] = `"test-com.json"`;
+exports[`assets playground uni-app build:mp-lark 21`] = `"test-com.ttss"`;
 
-exports[`assets playground uni-app build:mp-lark 22`] = `"test-com.ttml"`;
+exports[`assets playground uni-app build:mp-lark 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-lark 23`] = `"test-com.ttss"`;
+exports[`assets playground uni-app build:mp-lark 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app build:mp-qq 1`] = `"app.js"`;
 
@@ -264,51 +264,51 @@ exports[`assets playground uni-app build:mp-qq 2`] = `"app.json"`;
 
 exports[`assets playground uni-app build:mp-qq 3`] = `"app.qss"`;
 
-exports[`assets playground uni-app build:mp-qq 4`] = `"fix-2648.js"`;
+exports[`assets playground uni-app build:mp-qq 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app build:mp-qq 5`] = `"fix-2648.json"`;
+exports[`assets playground uni-app build:mp-qq 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app build:mp-qq 6`] = `"fix-2648.qml"`;
+exports[`assets playground uni-app build:mp-qq 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app build:mp-qq 7`] = `"project.config.json"`;
+exports[`assets playground uni-app build:mp-qq 7`] = `"fix-2648.js"`;
 
-exports[`assets playground uni-app build:mp-qq 8`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app build:mp-qq 8`] = `"fix-2648.json"`;
 
-exports[`assets playground uni-app build:mp-qq 9`] = `"assets.js"`;
+exports[`assets playground uni-app build:mp-qq 9`] = `"fix-2648.qml"`;
 
-exports[`assets playground uni-app build:mp-qq 10`] = `"vendor.js"`;
+exports[`assets playground uni-app build:mp-qq 10`] = `"index.js"`;
 
-exports[`assets playground uni-app build:mp-qq 11`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-qq 11`] = `"index.json"`;
 
-exports[`assets playground uni-app build:mp-qq 12`] = `"index.js"`;
+exports[`assets playground uni-app build:mp-qq 12`] = `"index.qml"`;
 
-exports[`assets playground uni-app build:mp-qq 13`] = `"index.json"`;
+exports[`assets playground uni-app build:mp-qq 13`] = `"index.qss"`;
 
-exports[`assets playground uni-app build:mp-qq 14`] = `"index.qml"`;
+exports[`assets playground uni-app build:mp-qq 14`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:mp-qq 15`] = `"index.qss"`;
+exports[`assets playground uni-app build:mp-qq 15`] = `"test.js"`;
 
-exports[`assets playground uni-app build:mp-qq 16`] = `"2.jpg"`;
+exports[`assets playground uni-app build:mp-qq 16`] = `"test.json"`;
 
-exports[`assets playground uni-app build:mp-qq 17`] = `"test.js"`;
+exports[`assets playground uni-app build:mp-qq 17`] = `"test.qml"`;
 
-exports[`assets playground uni-app build:mp-qq 18`] = `"test.json"`;
+exports[`assets playground uni-app build:mp-qq 18`] = `"test.qss"`;
 
-exports[`assets playground uni-app build:mp-qq 19`] = `"test.qml"`;
+exports[`assets playground uni-app build:mp-qq 19`] = `"project.config.json"`;
 
-exports[`assets playground uni-app build:mp-qq 20`] = `"test.qss"`;
+exports[`assets playground uni-app build:mp-qq 20`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-qq 21`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-qq 21`] = `"test-com.js"`;
 
-exports[`assets playground uni-app build:mp-qq 22`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app build:mp-qq 22`] = `"test-com.json"`;
 
-exports[`assets playground uni-app build:mp-qq 23`] = `"test-com.js"`;
+exports[`assets playground uni-app build:mp-qq 23`] = `"test-com.qml"`;
 
-exports[`assets playground uni-app build:mp-qq 24`] = `"test-com.json"`;
+exports[`assets playground uni-app build:mp-qq 24`] = `"test-com.qss"`;
 
-exports[`assets playground uni-app build:mp-qq 25`] = `"test-com.qml"`;
+exports[`assets playground uni-app build:mp-qq 25`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-qq 26`] = `"test-com.qss"`;
+exports[`assets playground uni-app build:mp-qq 26`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app build:mp-toutiao 1`] = `"app.js"`;
 
@@ -316,45 +316,45 @@ exports[`assets playground uni-app build:mp-toutiao 2`] = `"app.json"`;
 
 exports[`assets playground uni-app build:mp-toutiao 3`] = `"app.ttss"`;
 
-exports[`assets playground uni-app build:mp-toutiao 4`] = `"project.config.json"`;
+exports[`assets playground uni-app build:mp-toutiao 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app build:mp-toutiao 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app build:mp-toutiao 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app build:mp-toutiao 6`] = `"assets.js"`;
+exports[`assets playground uni-app build:mp-toutiao 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app build:mp-toutiao 7`] = `"vendor.js"`;
+exports[`assets playground uni-app build:mp-toutiao 7`] = `"index.js"`;
 
-exports[`assets playground uni-app build:mp-toutiao 8`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-toutiao 8`] = `"index.json"`;
 
-exports[`assets playground uni-app build:mp-toutiao 9`] = `"index.js"`;
+exports[`assets playground uni-app build:mp-toutiao 9`] = `"index.ttml"`;
 
-exports[`assets playground uni-app build:mp-toutiao 10`] = `"index.json"`;
+exports[`assets playground uni-app build:mp-toutiao 10`] = `"index.ttss"`;
 
-exports[`assets playground uni-app build:mp-toutiao 11`] = `"index.ttml"`;
+exports[`assets playground uni-app build:mp-toutiao 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:mp-toutiao 12`] = `"index.ttss"`;
+exports[`assets playground uni-app build:mp-toutiao 12`] = `"test.js"`;
 
-exports[`assets playground uni-app build:mp-toutiao 13`] = `"2.jpg"`;
+exports[`assets playground uni-app build:mp-toutiao 13`] = `"test.json"`;
 
-exports[`assets playground uni-app build:mp-toutiao 14`] = `"test.js"`;
+exports[`assets playground uni-app build:mp-toutiao 14`] = `"test.ttml"`;
 
-exports[`assets playground uni-app build:mp-toutiao 15`] = `"test.json"`;
+exports[`assets playground uni-app build:mp-toutiao 15`] = `"test.ttss"`;
 
-exports[`assets playground uni-app build:mp-toutiao 16`] = `"test.ttml"`;
+exports[`assets playground uni-app build:mp-toutiao 16`] = `"project.config.json"`;
 
-exports[`assets playground uni-app build:mp-toutiao 17`] = `"test.ttss"`;
+exports[`assets playground uni-app build:mp-toutiao 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-toutiao 18`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-toutiao 18`] = `"test-com.js"`;
 
-exports[`assets playground uni-app build:mp-toutiao 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app build:mp-toutiao 19`] = `"test-com.json"`;
 
-exports[`assets playground uni-app build:mp-toutiao 20`] = `"test-com.js"`;
+exports[`assets playground uni-app build:mp-toutiao 20`] = `"test-com.ttml"`;
 
-exports[`assets playground uni-app build:mp-toutiao 21`] = `"test-com.json"`;
+exports[`assets playground uni-app build:mp-toutiao 21`] = `"test-com.ttss"`;
 
-exports[`assets playground uni-app build:mp-toutiao 22`] = `"test-com.ttml"`;
+exports[`assets playground uni-app build:mp-toutiao 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-toutiao 23`] = `"test-com.ttss"`;
+exports[`assets playground uni-app build:mp-toutiao 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app build:mp-weixin 1`] = `"app.js"`;
 
@@ -362,45 +362,45 @@ exports[`assets playground uni-app build:mp-weixin 2`] = `"app.json"`;
 
 exports[`assets playground uni-app build:mp-weixin 3`] = `"app.wxss"`;
 
-exports[`assets playground uni-app build:mp-weixin 4`] = `"project.config.json"`;
+exports[`assets playground uni-app build:mp-weixin 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app build:mp-weixin 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app build:mp-weixin 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app build:mp-weixin 6`] = `"assets.js"`;
+exports[`assets playground uni-app build:mp-weixin 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app build:mp-weixin 7`] = `"vendor.js"`;
+exports[`assets playground uni-app build:mp-weixin 7`] = `"index.js"`;
 
-exports[`assets playground uni-app build:mp-weixin 8`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-weixin 8`] = `"index.json"`;
 
-exports[`assets playground uni-app build:mp-weixin 9`] = `"index.js"`;
+exports[`assets playground uni-app build:mp-weixin 9`] = `"index.wxml"`;
 
-exports[`assets playground uni-app build:mp-weixin 10`] = `"index.json"`;
+exports[`assets playground uni-app build:mp-weixin 10`] = `"index.wxss"`;
 
-exports[`assets playground uni-app build:mp-weixin 11`] = `"index.wxml"`;
+exports[`assets playground uni-app build:mp-weixin 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app build:mp-weixin 12`] = `"index.wxss"`;
+exports[`assets playground uni-app build:mp-weixin 12`] = `"test.js"`;
 
-exports[`assets playground uni-app build:mp-weixin 13`] = `"2.jpg"`;
+exports[`assets playground uni-app build:mp-weixin 13`] = `"test.json"`;
 
-exports[`assets playground uni-app build:mp-weixin 14`] = `"test.js"`;
+exports[`assets playground uni-app build:mp-weixin 14`] = `"test.wxml"`;
 
-exports[`assets playground uni-app build:mp-weixin 15`] = `"test.json"`;
+exports[`assets playground uni-app build:mp-weixin 15`] = `"test.wxss"`;
 
-exports[`assets playground uni-app build:mp-weixin 16`] = `"test.wxml"`;
+exports[`assets playground uni-app build:mp-weixin 16`] = `"project.config.json"`;
 
-exports[`assets playground uni-app build:mp-weixin 17`] = `"test.wxss"`;
+exports[`assets playground uni-app build:mp-weixin 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-weixin 18`] = `"logo.png"`;
+exports[`assets playground uni-app build:mp-weixin 18`] = `"test-com.js"`;
 
-exports[`assets playground uni-app build:mp-weixin 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app build:mp-weixin 19`] = `"test-com.json"`;
 
-exports[`assets playground uni-app build:mp-weixin 20`] = `"test-com.js"`;
+exports[`assets playground uni-app build:mp-weixin 20`] = `"test-com.wxml"`;
 
-exports[`assets playground uni-app build:mp-weixin 21`] = `"test-com.json"`;
+exports[`assets playground uni-app build:mp-weixin 21`] = `"test-com.wxss"`;
 
-exports[`assets playground uni-app build:mp-weixin 22`] = `"test-com.wxml"`;
+exports[`assets playground uni-app build:mp-weixin 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app build:mp-weixin 23`] = `"test-com.wxss"`;
+exports[`assets playground uni-app build:mp-weixin 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app dev:app 1`] = `"__uniappautomator.js"`;
 
@@ -430,19 +430,19 @@ exports[`assets playground uni-app dev:app 13`] = `"app-service.js"`;
 
 exports[`assets playground uni-app dev:app 14`] = `"app.css"`;
 
-exports[`assets playground uni-app dev:app 15`] = `"manifest.json"`;
+exports[`assets playground uni-app dev:app 15`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app dev:app 16`] = `"uni-app-view.umd.js"`;
+exports[`assets playground uni-app dev:app 16`] = `"manifest.json"`;
 
-exports[`assets playground uni-app dev:app 17`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app dev:app 17`] = `"index.css"`;
 
-exports[`assets playground uni-app dev:app 18`] = `"logo.png"`;
+exports[`assets playground uni-app dev:app 18`] = `"2.jpg"`;
 
-exports[`assets playground uni-app dev:app 19`] = `"index.css"`;
+exports[`assets playground uni-app dev:app 19`] = `"test.css"`;
 
-exports[`assets playground uni-app dev:app 20`] = `"2.jpg"`;
+exports[`assets playground uni-app dev:app 20`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:app 21`] = `"test.css"`;
+exports[`assets playground uni-app dev:app 21`] = `"uni-app-view.umd.js"`;
 
 exports[`assets playground uni-app dev:app 22`] = `"logo.png"`;
 
@@ -454,45 +454,45 @@ exports[`assets playground uni-app dev:mp-alipay 2`] = `"app.js"`;
 
 exports[`assets playground uni-app dev:mp-alipay 3`] = `"app.json"`;
 
-exports[`assets playground uni-app dev:mp-alipay 4`] = `"mini.project.json"`;
+exports[`assets playground uni-app dev:mp-alipay 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app dev:mp-alipay 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app dev:mp-alipay 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app dev:mp-alipay 6`] = `"assets.js"`;
+exports[`assets playground uni-app dev:mp-alipay 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app dev:mp-alipay 7`] = `"vendor.js"`;
+exports[`assets playground uni-app dev:mp-alipay 7`] = `"mini.project.json"`;
 
-exports[`assets playground uni-app dev:mp-alipay 8`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-alipay 8`] = `"index.acss"`;
 
-exports[`assets playground uni-app dev:mp-alipay 9`] = `"index.acss"`;
+exports[`assets playground uni-app dev:mp-alipay 9`] = `"index.axml"`;
 
-exports[`assets playground uni-app dev:mp-alipay 10`] = `"index.axml"`;
+exports[`assets playground uni-app dev:mp-alipay 10`] = `"index.js"`;
 
-exports[`assets playground uni-app dev:mp-alipay 11`] = `"index.js"`;
+exports[`assets playground uni-app dev:mp-alipay 11`] = `"index.json"`;
 
-exports[`assets playground uni-app dev:mp-alipay 12`] = `"index.json"`;
+exports[`assets playground uni-app dev:mp-alipay 12`] = `"2.jpg"`;
 
-exports[`assets playground uni-app dev:mp-alipay 13`] = `"2.jpg"`;
+exports[`assets playground uni-app dev:mp-alipay 13`] = `"test.acss"`;
 
-exports[`assets playground uni-app dev:mp-alipay 14`] = `"test.acss"`;
+exports[`assets playground uni-app dev:mp-alipay 14`] = `"test.axml"`;
 
-exports[`assets playground uni-app dev:mp-alipay 15`] = `"test.axml"`;
+exports[`assets playground uni-app dev:mp-alipay 15`] = `"test.js"`;
 
-exports[`assets playground uni-app dev:mp-alipay 16`] = `"test.js"`;
+exports[`assets playground uni-app dev:mp-alipay 16`] = `"test.json"`;
 
-exports[`assets playground uni-app dev:mp-alipay 17`] = `"test.json"`;
+exports[`assets playground uni-app dev:mp-alipay 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-alipay 18`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-alipay 18`] = `"test-com.acss"`;
 
-exports[`assets playground uni-app dev:mp-alipay 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app dev:mp-alipay 19`] = `"test-com.axml"`;
 
-exports[`assets playground uni-app dev:mp-alipay 20`] = `"test-com.acss"`;
+exports[`assets playground uni-app dev:mp-alipay 20`] = `"test-com.js"`;
 
-exports[`assets playground uni-app dev:mp-alipay 21`] = `"test-com.axml"`;
+exports[`assets playground uni-app dev:mp-alipay 21`] = `"test-com.json"`;
 
-exports[`assets playground uni-app dev:mp-alipay 22`] = `"test-com.js"`;
+exports[`assets playground uni-app dev:mp-alipay 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-alipay 23`] = `"test-com.json"`;
+exports[`assets playground uni-app dev:mp-alipay 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app dev:mp-baidu 1`] = `"app.css"`;
 
@@ -500,45 +500,45 @@ exports[`assets playground uni-app dev:mp-baidu 2`] = `"app.js"`;
 
 exports[`assets playground uni-app dev:mp-baidu 3`] = `"app.json"`;
 
-exports[`assets playground uni-app dev:mp-baidu 4`] = `"project.swan.json"`;
+exports[`assets playground uni-app dev:mp-baidu 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app dev:mp-baidu 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app dev:mp-baidu 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app dev:mp-baidu 6`] = `"assets.js"`;
+exports[`assets playground uni-app dev:mp-baidu 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app dev:mp-baidu 7`] = `"vendor.js"`;
+exports[`assets playground uni-app dev:mp-baidu 7`] = `"index.css"`;
 
-exports[`assets playground uni-app dev:mp-baidu 8`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-baidu 8`] = `"index.js"`;
 
-exports[`assets playground uni-app dev:mp-baidu 9`] = `"index.css"`;
+exports[`assets playground uni-app dev:mp-baidu 9`] = `"index.json"`;
 
-exports[`assets playground uni-app dev:mp-baidu 10`] = `"index.js"`;
+exports[`assets playground uni-app dev:mp-baidu 10`] = `"index.swan"`;
 
-exports[`assets playground uni-app dev:mp-baidu 11`] = `"index.json"`;
+exports[`assets playground uni-app dev:mp-baidu 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app dev:mp-baidu 12`] = `"index.swan"`;
+exports[`assets playground uni-app dev:mp-baidu 12`] = `"test.css"`;
 
-exports[`assets playground uni-app dev:mp-baidu 13`] = `"2.jpg"`;
+exports[`assets playground uni-app dev:mp-baidu 13`] = `"test.js"`;
 
-exports[`assets playground uni-app dev:mp-baidu 14`] = `"test.css"`;
+exports[`assets playground uni-app dev:mp-baidu 14`] = `"test.json"`;
 
-exports[`assets playground uni-app dev:mp-baidu 15`] = `"test.js"`;
+exports[`assets playground uni-app dev:mp-baidu 15`] = `"test.swan"`;
 
-exports[`assets playground uni-app dev:mp-baidu 16`] = `"test.json"`;
+exports[`assets playground uni-app dev:mp-baidu 16`] = `"project.swan.json"`;
 
-exports[`assets playground uni-app dev:mp-baidu 17`] = `"test.swan"`;
+exports[`assets playground uni-app dev:mp-baidu 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-baidu 18`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-baidu 18`] = `"test-com.css"`;
 
-exports[`assets playground uni-app dev:mp-baidu 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app dev:mp-baidu 19`] = `"test-com.js"`;
 
-exports[`assets playground uni-app dev:mp-baidu 20`] = `"test-com.css"`;
+exports[`assets playground uni-app dev:mp-baidu 20`] = `"test-com.json"`;
 
-exports[`assets playground uni-app dev:mp-baidu 21`] = `"test-com.js"`;
+exports[`assets playground uni-app dev:mp-baidu 21`] = `"test-com.swan"`;
 
-exports[`assets playground uni-app dev:mp-baidu 22`] = `"test-com.json"`;
+exports[`assets playground uni-app dev:mp-baidu 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-baidu 23`] = `"test-com.swan"`;
+exports[`assets playground uni-app dev:mp-baidu 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app dev:mp-kuaishou 1`] = `"app.css"`;
 
@@ -546,45 +546,45 @@ exports[`assets playground uni-app dev:mp-kuaishou 2`] = `"app.js"`;
 
 exports[`assets playground uni-app dev:mp-kuaishou 3`] = `"app.json"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 4`] = `"project.config.json"`;
+exports[`assets playground uni-app dev:mp-kuaishou 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app dev:mp-kuaishou 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 6`] = `"assets.js"`;
+exports[`assets playground uni-app dev:mp-kuaishou 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 7`] = `"vendor.js"`;
+exports[`assets playground uni-app dev:mp-kuaishou 7`] = `"index.css"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 8`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-kuaishou 8`] = `"index.js"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 9`] = `"index.css"`;
+exports[`assets playground uni-app dev:mp-kuaishou 9`] = `"index.json"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 10`] = `"index.js"`;
+exports[`assets playground uni-app dev:mp-kuaishou 10`] = `"index.ksml"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 11`] = `"index.json"`;
+exports[`assets playground uni-app dev:mp-kuaishou 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 12`] = `"index.ksml"`;
+exports[`assets playground uni-app dev:mp-kuaishou 12`] = `"test.css"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 13`] = `"2.jpg"`;
+exports[`assets playground uni-app dev:mp-kuaishou 13`] = `"test.js"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 14`] = `"test.css"`;
+exports[`assets playground uni-app dev:mp-kuaishou 14`] = `"test.json"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 15`] = `"test.js"`;
+exports[`assets playground uni-app dev:mp-kuaishou 15`] = `"test.ksml"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 16`] = `"test.json"`;
+exports[`assets playground uni-app dev:mp-kuaishou 16`] = `"project.config.json"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 17`] = `"test.ksml"`;
+exports[`assets playground uni-app dev:mp-kuaishou 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 18`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-kuaishou 18`] = `"test-com.css"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app dev:mp-kuaishou 19`] = `"test-com.js"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 20`] = `"test-com.css"`;
+exports[`assets playground uni-app dev:mp-kuaishou 20`] = `"test-com.json"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 21`] = `"test-com.js"`;
+exports[`assets playground uni-app dev:mp-kuaishou 21`] = `"test-com.ksml"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 22`] = `"test-com.json"`;
+exports[`assets playground uni-app dev:mp-kuaishou 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-kuaishou 23`] = `"test-com.ksml"`;
+exports[`assets playground uni-app dev:mp-kuaishou 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app dev:mp-lark 1`] = `"app.js"`;
 
@@ -592,45 +592,45 @@ exports[`assets playground uni-app dev:mp-lark 2`] = `"app.json"`;
 
 exports[`assets playground uni-app dev:mp-lark 3`] = `"app.ttss"`;
 
-exports[`assets playground uni-app dev:mp-lark 4`] = `"project.config.json"`;
+exports[`assets playground uni-app dev:mp-lark 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app dev:mp-lark 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app dev:mp-lark 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app dev:mp-lark 6`] = `"assets.js"`;
+exports[`assets playground uni-app dev:mp-lark 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app dev:mp-lark 7`] = `"vendor.js"`;
+exports[`assets playground uni-app dev:mp-lark 7`] = `"index.js"`;
 
-exports[`assets playground uni-app dev:mp-lark 8`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-lark 8`] = `"index.json"`;
 
-exports[`assets playground uni-app dev:mp-lark 9`] = `"index.js"`;
+exports[`assets playground uni-app dev:mp-lark 9`] = `"index.ttml"`;
 
-exports[`assets playground uni-app dev:mp-lark 10`] = `"index.json"`;
+exports[`assets playground uni-app dev:mp-lark 10`] = `"index.ttss"`;
 
-exports[`assets playground uni-app dev:mp-lark 11`] = `"index.ttml"`;
+exports[`assets playground uni-app dev:mp-lark 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app dev:mp-lark 12`] = `"index.ttss"`;
+exports[`assets playground uni-app dev:mp-lark 12`] = `"test.js"`;
 
-exports[`assets playground uni-app dev:mp-lark 13`] = `"2.jpg"`;
+exports[`assets playground uni-app dev:mp-lark 13`] = `"test.json"`;
 
-exports[`assets playground uni-app dev:mp-lark 14`] = `"test.js"`;
+exports[`assets playground uni-app dev:mp-lark 14`] = `"test.ttml"`;
 
-exports[`assets playground uni-app dev:mp-lark 15`] = `"test.json"`;
+exports[`assets playground uni-app dev:mp-lark 15`] = `"test.ttss"`;
 
-exports[`assets playground uni-app dev:mp-lark 16`] = `"test.ttml"`;
+exports[`assets playground uni-app dev:mp-lark 16`] = `"project.config.json"`;
 
-exports[`assets playground uni-app dev:mp-lark 17`] = `"test.ttss"`;
+exports[`assets playground uni-app dev:mp-lark 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-lark 18`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-lark 18`] = `"test-com.js"`;
 
-exports[`assets playground uni-app dev:mp-lark 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app dev:mp-lark 19`] = `"test-com.json"`;
 
-exports[`assets playground uni-app dev:mp-lark 20`] = `"test-com.js"`;
+exports[`assets playground uni-app dev:mp-lark 20`] = `"test-com.ttml"`;
 
-exports[`assets playground uni-app dev:mp-lark 21`] = `"test-com.json"`;
+exports[`assets playground uni-app dev:mp-lark 21`] = `"test-com.ttss"`;
 
-exports[`assets playground uni-app dev:mp-lark 22`] = `"test-com.ttml"`;
+exports[`assets playground uni-app dev:mp-lark 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-lark 23`] = `"test-com.ttss"`;
+exports[`assets playground uni-app dev:mp-lark 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app dev:mp-qq 1`] = `"app.js"`;
 
@@ -638,51 +638,51 @@ exports[`assets playground uni-app dev:mp-qq 2`] = `"app.json"`;
 
 exports[`assets playground uni-app dev:mp-qq 3`] = `"app.qss"`;
 
-exports[`assets playground uni-app dev:mp-qq 4`] = `"fix-2648.js"`;
+exports[`assets playground uni-app dev:mp-qq 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app dev:mp-qq 5`] = `"fix-2648.json"`;
+exports[`assets playground uni-app dev:mp-qq 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app dev:mp-qq 6`] = `"fix-2648.qml"`;
+exports[`assets playground uni-app dev:mp-qq 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app dev:mp-qq 7`] = `"project.config.json"`;
+exports[`assets playground uni-app dev:mp-qq 7`] = `"fix-2648.js"`;
 
-exports[`assets playground uni-app dev:mp-qq 8`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app dev:mp-qq 8`] = `"fix-2648.json"`;
 
-exports[`assets playground uni-app dev:mp-qq 9`] = `"assets.js"`;
+exports[`assets playground uni-app dev:mp-qq 9`] = `"fix-2648.qml"`;
 
-exports[`assets playground uni-app dev:mp-qq 10`] = `"vendor.js"`;
+exports[`assets playground uni-app dev:mp-qq 10`] = `"index.js"`;
 
-exports[`assets playground uni-app dev:mp-qq 11`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-qq 11`] = `"index.json"`;
 
-exports[`assets playground uni-app dev:mp-qq 12`] = `"index.js"`;
+exports[`assets playground uni-app dev:mp-qq 12`] = `"index.qml"`;
 
-exports[`assets playground uni-app dev:mp-qq 13`] = `"index.json"`;
+exports[`assets playground uni-app dev:mp-qq 13`] = `"index.qss"`;
 
-exports[`assets playground uni-app dev:mp-qq 14`] = `"index.qml"`;
+exports[`assets playground uni-app dev:mp-qq 14`] = `"2.jpg"`;
 
-exports[`assets playground uni-app dev:mp-qq 15`] = `"index.qss"`;
+exports[`assets playground uni-app dev:mp-qq 15`] = `"test.js"`;
 
-exports[`assets playground uni-app dev:mp-qq 16`] = `"2.jpg"`;
+exports[`assets playground uni-app dev:mp-qq 16`] = `"test.json"`;
 
-exports[`assets playground uni-app dev:mp-qq 17`] = `"test.js"`;
+exports[`assets playground uni-app dev:mp-qq 17`] = `"test.qml"`;
 
-exports[`assets playground uni-app dev:mp-qq 18`] = `"test.json"`;
+exports[`assets playground uni-app dev:mp-qq 18`] = `"test.qss"`;
 
-exports[`assets playground uni-app dev:mp-qq 19`] = `"test.qml"`;
+exports[`assets playground uni-app dev:mp-qq 19`] = `"project.config.json"`;
 
-exports[`assets playground uni-app dev:mp-qq 20`] = `"test.qss"`;
+exports[`assets playground uni-app dev:mp-qq 20`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-qq 21`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-qq 21`] = `"test-com.js"`;
 
-exports[`assets playground uni-app dev:mp-qq 22`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app dev:mp-qq 22`] = `"test-com.json"`;
 
-exports[`assets playground uni-app dev:mp-qq 23`] = `"test-com.js"`;
+exports[`assets playground uni-app dev:mp-qq 23`] = `"test-com.qml"`;
 
-exports[`assets playground uni-app dev:mp-qq 24`] = `"test-com.json"`;
+exports[`assets playground uni-app dev:mp-qq 24`] = `"test-com.qss"`;
 
-exports[`assets playground uni-app dev:mp-qq 25`] = `"test-com.qml"`;
+exports[`assets playground uni-app dev:mp-qq 25`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-qq 26`] = `"test-com.qss"`;
+exports[`assets playground uni-app dev:mp-qq 26`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app dev:mp-toutiao 1`] = `"app.js"`;
 
@@ -690,45 +690,45 @@ exports[`assets playground uni-app dev:mp-toutiao 2`] = `"app.json"`;
 
 exports[`assets playground uni-app dev:mp-toutiao 3`] = `"app.ttss"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 4`] = `"project.config.json"`;
+exports[`assets playground uni-app dev:mp-toutiao 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app dev:mp-toutiao 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 6`] = `"assets.js"`;
+exports[`assets playground uni-app dev:mp-toutiao 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 7`] = `"vendor.js"`;
+exports[`assets playground uni-app dev:mp-toutiao 7`] = `"index.js"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 8`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-toutiao 8`] = `"index.json"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 9`] = `"index.js"`;
+exports[`assets playground uni-app dev:mp-toutiao 9`] = `"index.ttml"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 10`] = `"index.json"`;
+exports[`assets playground uni-app dev:mp-toutiao 10`] = `"index.ttss"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 11`] = `"index.ttml"`;
+exports[`assets playground uni-app dev:mp-toutiao 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 12`] = `"index.ttss"`;
+exports[`assets playground uni-app dev:mp-toutiao 12`] = `"test.js"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 13`] = `"2.jpg"`;
+exports[`assets playground uni-app dev:mp-toutiao 13`] = `"test.json"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 14`] = `"test.js"`;
+exports[`assets playground uni-app dev:mp-toutiao 14`] = `"test.ttml"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 15`] = `"test.json"`;
+exports[`assets playground uni-app dev:mp-toutiao 15`] = `"test.ttss"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 16`] = `"test.ttml"`;
+exports[`assets playground uni-app dev:mp-toutiao 16`] = `"project.config.json"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 17`] = `"test.ttss"`;
+exports[`assets playground uni-app dev:mp-toutiao 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 18`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-toutiao 18`] = `"test-com.js"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app dev:mp-toutiao 19`] = `"test-com.json"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 20`] = `"test-com.js"`;
+exports[`assets playground uni-app dev:mp-toutiao 20`] = `"test-com.ttml"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 21`] = `"test-com.json"`;
+exports[`assets playground uni-app dev:mp-toutiao 21`] = `"test-com.ttss"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 22`] = `"test-com.ttml"`;
+exports[`assets playground uni-app dev:mp-toutiao 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-toutiao 23`] = `"test-com.ttss"`;
+exports[`assets playground uni-app dev:mp-toutiao 23`] = `"shuijiao.jpg"`;
 
 exports[`assets playground uni-app dev:mp-weixin 1`] = `"app.js"`;
 
@@ -736,53 +736,53 @@ exports[`assets playground uni-app dev:mp-weixin 2`] = `"app.json"`;
 
 exports[`assets playground uni-app dev:mp-weixin 3`] = `"app.wxss"`;
 
-exports[`assets playground uni-app dev:mp-weixin 4`] = `"project.config.json"`;
+exports[`assets playground uni-app dev:mp-weixin 4`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app dev:mp-weixin 5`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app dev:mp-weixin 5`] = `"assets.js"`;
 
-exports[`assets playground uni-app dev:mp-weixin 6`] = `"assets.js"`;
+exports[`assets playground uni-app dev:mp-weixin 6`] = `"vendor.js"`;
 
-exports[`assets playground uni-app dev:mp-weixin 7`] = `"vendor.js"`;
+exports[`assets playground uni-app dev:mp-weixin 7`] = `"index.js"`;
 
-exports[`assets playground uni-app dev:mp-weixin 8`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-weixin 8`] = `"index.json"`;
 
-exports[`assets playground uni-app dev:mp-weixin 9`] = `"index.js"`;
+exports[`assets playground uni-app dev:mp-weixin 9`] = `"index.wxml"`;
 
-exports[`assets playground uni-app dev:mp-weixin 10`] = `"index.json"`;
+exports[`assets playground uni-app dev:mp-weixin 10`] = `"index.wxss"`;
 
-exports[`assets playground uni-app dev:mp-weixin 11`] = `"index.wxml"`;
+exports[`assets playground uni-app dev:mp-weixin 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app dev:mp-weixin 12`] = `"index.wxss"`;
+exports[`assets playground uni-app dev:mp-weixin 12`] = `"test.js"`;
 
-exports[`assets playground uni-app dev:mp-weixin 13`] = `"2.jpg"`;
+exports[`assets playground uni-app dev:mp-weixin 13`] = `"test.json"`;
 
-exports[`assets playground uni-app dev:mp-weixin 14`] = `"test.js"`;
+exports[`assets playground uni-app dev:mp-weixin 14`] = `"test.wxml"`;
 
-exports[`assets playground uni-app dev:mp-weixin 15`] = `"test.json"`;
+exports[`assets playground uni-app dev:mp-weixin 15`] = `"test.wxss"`;
 
-exports[`assets playground uni-app dev:mp-weixin 16`] = `"test.wxml"`;
+exports[`assets playground uni-app dev:mp-weixin 16`] = `"project.config.json"`;
 
-exports[`assets playground uni-app dev:mp-weixin 17`] = `"test.wxss"`;
+exports[`assets playground uni-app dev:mp-weixin 17`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-weixin 18`] = `"logo.png"`;
+exports[`assets playground uni-app dev:mp-weixin 18`] = `"test-com.js"`;
 
-exports[`assets playground uni-app dev:mp-weixin 19`] = `"shuijiao.jpg"`;
+exports[`assets playground uni-app dev:mp-weixin 19`] = `"test-com.json"`;
 
-exports[`assets playground uni-app dev:mp-weixin 20`] = `"test-com.js"`;
+exports[`assets playground uni-app dev:mp-weixin 20`] = `"test-com.wxml"`;
 
-exports[`assets playground uni-app dev:mp-weixin 21`] = `"test-com.json"`;
+exports[`assets playground uni-app dev:mp-weixin 21`] = `"test-com.wxss"`;
 
-exports[`assets playground uni-app dev:mp-weixin 22`] = `"test-com.wxml"`;
+exports[`assets playground uni-app dev:mp-weixin 22`] = `"logo.png"`;
 
-exports[`assets playground uni-app dev:mp-weixin 23`] = `"test-com.wxss"`;
+exports[`assets playground uni-app dev:mp-weixin 23`] = `"shuijiao.jpg"`;
 
-exports[`assets playground uni-app-x build:app-android 1`] = `"manifest.json"`;
+exports[`assets playground uni-app-x build:app-android 1`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app-x build:app-android 2`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app-x build:app-android 2`] = `"manifest.json"`;
 
-exports[`assets playground uni-app-x build:app-android 3`] = `"logo.png"`;
+exports[`assets playground uni-app-x build:app-android 3`] = `"2.jpg"`;
 
-exports[`assets playground uni-app-x build:app-android 4`] = `"2.jpg"`;
+exports[`assets playground uni-app-x build:app-android 4`] = `"logo.png"`;
 
 exports[`assets playground uni-app-x build:app-android 5`] = `"logo.png"`;
 
@@ -792,53 +792,53 @@ exports[`assets playground uni-app-x build:app-ios 1`] = `"app-config.js"`;
 
 exports[`assets playground uni-app-x build:app-ios 2`] = `"app-service.js"`;
 
-exports[`assets playground uni-app-x build:app-ios 3`] = `"manifest.json"`;
+exports[`assets playground uni-app-x build:app-ios 3`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app-x build:app-ios 4`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app-x build:app-ios 4`] = `"manifest.json"`;
 
-exports[`assets playground uni-app-x build:app-ios 5`] = `"logo.png"`;
+exports[`assets playground uni-app-x build:app-ios 5`] = `"2.jpg"`;
 
-exports[`assets playground uni-app-x build:app-ios 6`] = `"2.jpg"`;
+exports[`assets playground uni-app-x build:app-ios 6`] = `"logo.png"`;
 
 exports[`assets playground uni-app-x build:app-ios 7`] = `"logo.png"`;
 
 exports[`assets playground uni-app-x build:app-ios 8`] = `"shuijiao.jpg"`;
 
-exports[`assets playground uni-app-x build:h5 1`] = `"index.html"`;
+exports[`assets playground uni-app-x build:h5 1`] = `"2-DQMwIfWk.jpg"`;
 
-exports[`assets playground uni-app-x build:h5 2`] = `"2-DQMwIfWk.jpg"`;
+exports[`assets playground uni-app-x build:h5 2`] = `"_plugin-vue_export-helper.1tPrXgE0.js"`;
 
-exports[`assets playground uni-app-x build:h5 3`] = `"_plugin-vue_export-helper.1tPrXgE0.js"`;
+exports[`assets playground uni-app-x build:h5 3`] = `"index-DXtCsl1I.css"`;
 
-exports[`assets playground uni-app-x build:h5 4`] = `"index-BM_ZVQd7.css"`;
+exports[`assets playground uni-app-x build:h5 4`] = `"index-lIJ3AiCj.js"`;
 
-exports[`assets playground uni-app-x build:h5 5`] = `"index-BNOjrBVQ.js"`;
+exports[`assets playground uni-app-x build:h5 5`] = `"invalid-static-CONWi2JP.jpg"`;
 
-exports[`assets playground uni-app-x build:h5 6`] = `"invalid-static-CONWi2JP.jpg"`;
+exports[`assets playground uni-app-x build:h5 6`] = `"pages-index-index.aqypsglu.js"`;
 
-exports[`assets playground uni-app-x build:h5 7`] = `"pages-index-index.--1DMf5F.js"`;
+exports[`assets playground uni-app-x build:h5 7`] = `"pages-sub-test-test.DvHTBMRt.js"`;
 
-exports[`assets playground uni-app-x build:h5 8`] = `"pages-sub-test-test.CMLZpXyW.js"`;
+exports[`assets playground uni-app-x build:h5 8`] = `"shuijiao-B0f5FEMg.jpg"`;
 
-exports[`assets playground uni-app-x build:h5 9`] = `"shuijiao-B0f5FEMg.jpg"`;
+exports[`assets playground uni-app-x build:h5 9`] = `"uni.dd1d2fea.css"`;
 
-exports[`assets playground uni-app-x build:h5 10`] = `"uni.dd1d2fea.css"`;
+exports[`assets playground uni-app-x build:h5 10`] = `"index.html"`;
 
-exports[`assets playground uni-app-x build:h5 11`] = `"logo.png"`;
+exports[`assets playground uni-app-x build:h5 11`] = `"2.jpg"`;
 
-exports[`assets playground uni-app-x build:h5 12`] = `"2.jpg"`;
+exports[`assets playground uni-app-x build:h5 12`] = `"logo.png"`;
 
 exports[`assets playground uni-app-x build:h5 13`] = `"logo.png"`;
 
 exports[`assets playground uni-app-x build:h5 14`] = `"shuijiao.jpg"`;
 
-exports[`assets playground uni-app-x dev:app-android 1`] = `"manifest.json"`;
+exports[`assets playground uni-app-x dev:app-android 1`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app-x dev:app-android 2`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app-x dev:app-android 2`] = `"manifest.json"`;
 
-exports[`assets playground uni-app-x dev:app-android 3`] = `"logo.png"`;
+exports[`assets playground uni-app-x dev:app-android 3`] = `"2.jpg"`;
 
-exports[`assets playground uni-app-x dev:app-android 4`] = `"2.jpg"`;
+exports[`assets playground uni-app-x dev:app-android 4`] = `"logo.png"`;
 
 exports[`assets playground uni-app-x dev:app-android 5`] = `"logo.png"`;
 
@@ -848,13 +848,13 @@ exports[`assets playground uni-app-x dev:app-ios 1`] = `"app-config.js"`;
 
 exports[`assets playground uni-app-x dev:app-ios 2`] = `"app-service.js"`;
 
-exports[`assets playground uni-app-x dev:app-ios 3`] = `"manifest.json"`;
+exports[`assets playground uni-app-x dev:app-ios 3`] = `"invalid-static.34ae5d3b.jpg"`;
 
-exports[`assets playground uni-app-x dev:app-ios 4`] = `"invalid-static.34ae5d3b.jpg"`;
+exports[`assets playground uni-app-x dev:app-ios 4`] = `"manifest.json"`;
 
-exports[`assets playground uni-app-x dev:app-ios 5`] = `"logo.png"`;
+exports[`assets playground uni-app-x dev:app-ios 5`] = `"2.jpg"`;
 
-exports[`assets playground uni-app-x dev:app-ios 6`] = `"2.jpg"`;
+exports[`assets playground uni-app-x dev:app-ios 6`] = `"logo.png"`;
 
 exports[`assets playground uni-app-x dev:app-ios 7`] = `"logo.png"`;
 

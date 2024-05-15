@@ -3,6 +3,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
 import type { UTSTargetLanguage } from './uts'
+import { normalizePath } from './utils'
 
 export type DefineOptions = {
   name?: string
@@ -646,9 +647,14 @@ export function resolveEncryptUniModule(
     const uniModuleId = parts[index + 1]
     if (uniModuleId in encryptUniModules) {
       // 原生平台走旧的uts-proxy
-      return `@/uni_modules/${uniModuleId}?${
-        isX && platform === 'app-android' ? 'uts-proxy' : 'uni_helpers'
-      }`
+      return normalizePath(
+        path.join(
+          process.env.UNI_INPUT_DIR,
+          `uni_modules/${uniModuleId}?${
+            isX && platform === 'app-android' ? 'uts-proxy' : 'uni_helpers'
+          }`
+        )
+      )
     }
   }
 }
@@ -685,7 +691,7 @@ export async function checkEncryptUniModules(
   )
   if (zipFile) {
     const downloadFile = path.resolve(cacheDir, 'uni_modules.download.zip')
-    const { U, D } = require(path.join(
+    const { U, D, R } = require(path.join(
       process.env.UNI_HBUILDERX_PLUGINS,
       'uni_helpers'
     ))
@@ -702,6 +708,10 @@ export async function checkEncryptUniModules(
       zip.extractAllTo(cacheDir, true)
       fs.unlinkSync(zipFile)
       fs.unlinkSync(downloadFile)
+      R({
+        dir: process.env.UNI_INPUT_DIR,
+        cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+      })
       console.log(`云编译完成`)
     } catch (e) {
       fs.existsSync(zipFile) && fs.unlinkSync(zipFile)

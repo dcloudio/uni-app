@@ -63,9 +63,11 @@ describe('assets playground', () => {
           },
         })
         console.log(`npm run ${script} end`)
-        sync('**/*', { cwd: outDir, absolute: true }).forEach((file) => {
-          expect(path.basename(file)).toMatchSnapshot()
-        })
+        sync('**/*', { cwd: outDir, absolute: true })
+          .sort()
+          .forEach((file) => {
+            expect(path.basename(file)).toMatchSnapshot()
+          })
       })
     })
   })

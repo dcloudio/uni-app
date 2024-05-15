@@ -1,6 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`uni_modules playground uni-app-x build:app-android 1`] = `
+exports[`uni_modules playground uni-app-x build:app-android 1`] = `"logo-46719607.png"`;
+
+exports[`uni_modules playground uni-app-x build:app-android 2`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -24,33 +26,7 @@ exports[`uni_modules playground uni-app-x build:app-android 1`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 2`] = `
-"{
-  "id": "test-com2",
-  "version": "1.0.0",
-  "uni_modules": {
-    "artifacts": {
-      "env": {
-        "compilerVersion": "4.13"
-      },
-      "apis": [],
-      "components": [
-        "text",
-        "video"
-      ],
-      "modules": [
-        "uni-video"
-      ]
-    }
-  }
-}"
-`;
-
-exports[`uni_modules playground uni-app-x build:app-android 3`] = `"logo-46719607.png"`;
-
-exports[`uni_modules playground uni-app-x build:app-android 4`] = `"api-ce31e859.png"`;
-
-exports[`uni_modules playground uni-app-x build:app-android 5`] = `
+exports[`uni_modules playground uni-app-x build:app-android 3`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -85,43 +61,7 @@ val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(Uni
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 6`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom2;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
-val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
-    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
-}
-);
-val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
-    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
-}
-);
-fun test() {}
-"
-`;
-
-exports[`uni_modules playground uni-app-x build:app-android 7`] = `
+exports[`uni_modules playground uni-app-x build:app-android 4`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -186,7 +126,7 @@ open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 8`] = `
+exports[`uni_modules playground uni-app-x build:app-android 5`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -236,6 +176,67 @@ open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
 "
 `;
 
+exports[`uni_modules playground uni-app-x build:app-android 6`] = `"api-ce31e859.png"`;
+
+exports[`uni_modules playground uni-app-x build:app-android 7`] = `
+"{
+  "id": "test-com2",
+  "version": "1.0.0",
+  "uni_modules": {
+    "artifacts": {
+      "env": {
+        "compilerVersion": "4.13"
+      },
+      "apis": [],
+      "components": [
+        "text",
+        "image",
+        "video"
+      ],
+      "modules": [
+        "uni-video"
+      ]
+    }
+  }
+}"
+`;
+
+exports[`uni_modules playground uni-app-x build:app-android 8`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom2;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
+val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
+}
+, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
+    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
+}
+);
+val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
+}
+, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
+    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
+}
+);
+fun test() {}
+"
+`;
+
 exports[`uni_modules playground uni-app-x build:app-android 9`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
@@ -261,6 +262,9 @@ open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
         val _cache = this.\`$\`.renderCache;
         return createElementVNode(Fragment, null, utsArrayOf(
             createElementVNode("text", utsMapOf("class" to "text"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1),
+            createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
+                "src"
+            )),
             createElementVNode("video")
         ), 64);
     }
@@ -309,7 +313,12 @@ open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
     override fun \`$render\`(): Any? {
         val _ctx = this;
         val _cache = this.\`$\`.renderCache;
-        return createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1);
+        return createElementVNode(Fragment, null, utsArrayOf(
+            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1),
+            createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
+                "src"
+            ))
+        ), 64);
     }
     open var msg: String by \`$data\`;
     open var api: Any? by \`$data\`;
@@ -426,6 +435,7 @@ const _style_0$1 = {"text":{"":{"color":"#FF0000"}}};
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock(Fragment, null, [
     createElementVNode("text", { class: "text" }, toDisplayString($data.msg) + toDisplayString($data.api), 1),
+    createElementVNode("image", { src: $data.api }, null, 8, ["src"]),
     createElementVNode("video")
   ], 64);
 }
@@ -443,7 +453,10 @@ const _sfc_main = defineComponent({
 const _style_0 = {"text2":{"":{"color":"#FF0000"}}};
 
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  return openBlock(), createElementBlock("text", { class: "text2" }, toDisplayString($data.msg) + toDisplayString($data.api), 1);
+  return openBlock(), createElementBlock(Fragment, null, [
+    createElementVNode("text", { class: "text2" }, toDisplayString($data.msg) + toDisplayString($data.api), 1),
+    createElementVNode("image", { src: $data.api }, null, 8, ["src"])
+  ], 64);
 }
 const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]]]);
 
@@ -466,6 +479,31 @@ exports[`uni_modules playground uni-app-x build:app-ios 4`] = `
 `;
 
 exports[`uni_modules playground uni-app-x build:h5 1`] = `
+"
+
+
+
+.text[data-v-9a3b2cd8] {
+    color: red;
+}
+.image[data-v-9a3b2cd8] {
+    background: url('@/uni_modules/test-com1/components/test-com1-1/logo.png');
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x build:h5 2`] = `
+"
+
+
+
+.text2[data-v-3c9048c8] {
+    color: red;
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x build:h5 3`] = `
 "import "@dcloudio/uni-components/style/text.css";
 import { getSystemInfo, Text, Image } from "@dcloudio/uni-h5";
 import "@dcloudio/uni-components/style/image.css";
@@ -535,80 +573,9 @@ export {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:h5 2`] = `
-"{
-  "id": "test-com1",
-  "version": "1.0.0",
-  "uni_modules": {
-    "artifacts": {
-      "env": {
-        "compilerVersion": "4.13"
-      }
-    }
-  }
-}"
-`;
-
-exports[`uni_modules playground uni-app-x build:h5 3`] = `
-"import "@dcloudio/uni-components/style/text.css";
-import { Text, Video } from "@dcloudio/uni-h5";
-import "@dcloudio/uni-h5/style/video.css";
-import { defineComponent, openBlock, createElementBlock, Fragment, createVNode, withCtx, createTextVNode, toDisplayString, createBlock } from "vue";
-import Api from "./test-com2/components/test-com2-1/api.png";
-import _export_sfc from "plugin-vue:export-helper";
-function test() {
-}
-const _sfc_main$1 = defineComponent({
-  data() {
-    return {
-      msg: "test-com2-1",
-      api: Api
-    };
-  }
-});
-function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_text = Text;
-  const _component_v_uni_video = Video;
-  return openBlock(), createElementBlock(Fragment, null, [
-    createVNode(_component_v_uni_text, { class: "text" }, {
-      default: withCtx(() => [
-        createTextVNode(toDisplayString($data.msg) + toDisplayString($data.api), 1)
-      ]),
-      _: 1
-    }),
-    createVNode(_component_v_uni_video)
-  ], 64);
-}
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-1121cb53"]]);
-const _sfc_main = defineComponent({
-  data() {
-    return {
-      msg: "test-com2-2",
-      api: Api
-    };
-  }
-});
-function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
-  const _component_v_uni_text = Text;
-  return openBlock(), createBlock(_component_v_uni_text, { class: "text2" }, {
-    default: withCtx(() => [
-      createTextVNode(toDisplayString($data.msg) + toDisplayString($data.api), 1)
-    ]),
-    _: 1
-  });
-}
-const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9f458ea6"]]);
-export {
-  testCom21 as TestCom21,
-  testCom22 as TestCom22,
-  test
-};
-"
-`;
-
 exports[`uni_modules playground uni-app-x build:h5 4`] = `
 "{
-  "id": "test-com2",
+  "id": "test-com1",
   "version": "1.0.0",
   "uni_modules": {
     "artifacts": {
@@ -625,11 +592,12 @@ exports[`uni_modules playground uni-app-x build:h5 5`] = `
 
 
 
-.text[data-v-9a3b2cd8] {
+
+.text[data-v-d600df3c] {
     color: red;
 }
-.image[data-v-9a3b2cd8] {
-    background: url('@/uni_modules/test-com1/components/test-com1-1/logo.png');
+.image[data-v-d600df3c] {
+    background: url('@/uni_modules/test-com2/components/test-com2-1/api.png');
 }
 "
 `;
@@ -639,35 +607,94 @@ exports[`uni_modules playground uni-app-x build:h5 6`] = `
 
 
 
-.text2[data-v-3c9048c8] {
+.text2[data-v-09835a0e] {
     color: red;
 }
 "
 `;
 
 exports[`uni_modules playground uni-app-x build:h5 7`] = `
-"
-
-
-.text[data-v-1121cb53] {
-    color: red;
+"import "@dcloudio/uni-components/style/text.css";
+import { Text, Image, Video } from "@dcloudio/uni-h5";
+import "@dcloudio/uni-components/style/image.css";
+import "@dcloudio/uni-components/style/resize-sensor.css";
+import "@dcloudio/uni-h5/style/video.css";
+import { defineComponent, openBlock, createElementBlock, Fragment, createVNode, withCtx, createTextVNode, toDisplayString } from "vue";
+import Api from "./test-com2/components/test-com2-1/api.png";
+import _export_sfc from "plugin-vue:export-helper";
+function test() {
 }
-.image[data-v-1121cb53] {
-    background: url('@/uni_modules/test-com2/components/test-com2-1/api.png');
+const _sfc_main$1 = defineComponent({
+  data() {
+    return {
+      msg: "test-com2-1",
+      api: Api
+    };
+  }
+});
+function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_v_uni_text = Text;
+  const _component_v_uni_image = Image;
+  const _component_v_uni_video = Video;
+  return openBlock(), createElementBlock(Fragment, null, [
+    createVNode(_component_v_uni_text, { class: "text" }, {
+      default: withCtx(() => [
+        createTextVNode(toDisplayString($data.msg) + toDisplayString($data.api), 1)
+      ]),
+      _: 1
+    }),
+    createVNode(_component_v_uni_image, { src: $data.api }, null, 8, ["src"]),
+    createVNode(_component_v_uni_video)
+  ], 64);
 }
+const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-d600df3c"]]);
+const _sfc_main = defineComponent({
+  data() {
+    return {
+      msg: "test-com2-2",
+      api: Api
+    };
+  }
+});
+function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+  const _component_v_uni_text = Text;
+  const _component_v_uni_image = Image;
+  return openBlock(), createElementBlock(Fragment, null, [
+    createVNode(_component_v_uni_text, { class: "text2" }, {
+      default: withCtx(() => [
+        createTextVNode(toDisplayString($data.msg) + toDisplayString($data.api), 1)
+      ]),
+      _: 1
+    }),
+    createVNode(_component_v_uni_image, { src: $data.api }, null, 8, ["src"])
+  ], 64);
+}
+const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-09835a0e"]]);
+export {
+  testCom21 as TestCom21,
+  testCom22 as TestCom22,
+  test
+};
 "
 `;
 
 exports[`uni_modules playground uni-app-x build:h5 8`] = `
-"
-
-.text2[data-v-9f458ea6] {
-    color: red;
-}
-"
+"{
+  "id": "test-com2",
+  "version": "1.0.0",
+  "uni_modules": {
+    "artifacts": {
+      "env": {
+        "compilerVersion": "4.13"
+      }
+    }
+  }
+}"
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 1`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 1`] = `"logo-46719607.png"`;
+
+exports[`uni_modules playground uni-app-x dev:app-android 2`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -690,32 +717,7 @@ exports[`uni_modules playground uni-app-x dev:app-android 1`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 2`] = `
-"{
-  "id": "test-com2",
-  "version": "1.0.0",
-  "uni_modules": {
-    "artifacts": {
-      "env": {
-        "compilerVersion": "4.13"
-      },
-      "apis": [
-        "uniCloud.importObject"
-      ],
-      "components": [],
-      "modules": [
-        "uni-cloud-client"
-      ]
-    }
-  }
-}"
-`;
-
-exports[`uni_modules playground uni-app-x dev:app-android 3`] = `"logo-46719607.png"`;
-
-exports[`uni_modules playground uni-app-x dev:app-android 4`] = `"api-ce31e859.png"`;
-
-exports[`uni_modules playground uni-app-x dev:app-android 5`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 3`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -751,44 +753,7 @@ val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(Uni
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 6`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom2;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.unicloud.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
-val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
-    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
-}
-);
-val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
-    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
-}
-);
-fun test() {}
-"
-`;
-
-exports[`uni_modules playground uni-app-x dev:app-android 7`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 4`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -854,7 +819,7 @@ open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 8`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 5`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -905,6 +870,66 @@ open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
 "
 `;
 
+exports[`uni_modules playground uni-app-x dev:app-android 6`] = `"api-ce31e859.png"`;
+
+exports[`uni_modules playground uni-app-x dev:app-android 7`] = `
+"{
+  "id": "test-com2",
+  "version": "1.0.0",
+  "uni_modules": {
+    "artifacts": {
+      "env": {
+        "compilerVersion": "4.13"
+      },
+      "apis": [
+        "uniCloud.importObject"
+      ],
+      "components": [],
+      "modules": [
+        "uni-cloud-client"
+      ]
+    }
+  }
+}"
+`;
+
+exports[`uni_modules playground uni-app-x dev:app-android 8`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom2;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.unicloud.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
+val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
+}
+, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
+    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
+}
+);
+val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
+}
+, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
+    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
+}
+);
+fun test() {}
+"
+`;
+
 exports[`uni_modules playground uni-app-x dev:app-android 9`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
@@ -931,6 +956,9 @@ open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
         val _cache = this.\`$\`.renderCache;
         return createElementVNode(Fragment, null, utsArrayOf(
             createElementVNode("text", utsMapOf("class" to "text"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1),
+            createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
+                "src"
+            )),
             createElementVNode("video")
         ), 64);
     }
@@ -980,7 +1008,12 @@ open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
     override fun \`$render\`(): Any? {
         val _ctx = this;
         val _cache = this.\`$\`.renderCache;
-        return createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1);
+        return createElementVNode(Fragment, null, utsArrayOf(
+            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1),
+            createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
+                "src"
+            ))
+        ), 64);
     }
     open var msg: String by \`$data\`;
     open var api: Any? by \`$data\`;
@@ -1130,6 +1163,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
         1
         /* TEXT */
       ),
+      createElementVNode("image", { src: $data.api }, null, 8, ["src"]),
       createElementVNode("video")
     ],
     64
@@ -1151,11 +1185,20 @@ const _style_0 = {"text2":{"":{"color":"#FF0000"}}};
 
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock(
-    "text",
-    { class: "text2" },
-    toDisplayString($data.msg) + toDisplayString($data.api),
-    1
-    /* TEXT */
+    Fragment,
+    null,
+    [
+      createElementVNode(
+        "text",
+        { class: "text2" },
+        toDisplayString($data.msg) + toDisplayString($data.api),
+        1
+        /* TEXT */
+      ),
+      createElementVNode("image", { src: $data.api }, null, 8, ["src"])
+    ],
+    64
+    /* STABLE_FRAGMENT */
   );
 }
 const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
@@ -1179,6 +1222,31 @@ exports[`uni_modules playground uni-app-x dev:app-ios 4`] = `
 `;
 
 exports[`uni_modules playground uni-app-x dev:h5 1`] = `
+"
+
+
+
+.text[data-v-07a142fd] {
+    color: red;
+}
+.image[data-v-07a142fd] {
+    background: url('@/uni_modules/test-com1/components/test-com1-1/logo.png');
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x dev:h5 2`] = `
+"
+
+
+
+.text2[data-v-e9ed06e5] {
+    color: red;
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x dev:h5 3`] = `
 "import "@dcloudio/uni-components/style/text.css";
 import { getSystemInfo, Text, Image } from "@dcloudio/uni-h5";
 import "@dcloudio/uni-components/style/image.css";
@@ -1270,7 +1338,7 @@ export {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 2`] = `
+exports[`uni_modules playground uni-app-x dev:h5 4`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -1284,11 +1352,39 @@ exports[`uni_modules playground uni-app-x dev:h5 2`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 3`] = `
+exports[`uni_modules playground uni-app-x dev:h5 5`] = `
+"
+
+
+
+
+.text[data-v-86d335ce] {
+    color: red;
+}
+.image[data-v-86d335ce] {
+    background: url('@/uni_modules/test-com2/components/test-com2-1/api.png');
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x dev:h5 6`] = `
+"
+
+
+
+.text2[data-v-9332ef4d] {
+    color: red;
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x dev:h5 7`] = `
 "import "@dcloudio/uni-components/style/text.css";
-import { Text, Video } from "@dcloudio/uni-h5";
+import { Text, Image, Video } from "@dcloudio/uni-h5";
+import "@dcloudio/uni-components/style/image.css";
+import "@dcloudio/uni-components/style/resize-sensor.css";
 import "@dcloudio/uni-h5/style/video.css";
-import { defineComponent, openBlock, createElementBlock, Fragment, createVNode, withCtx, createTextVNode, toDisplayString, createBlock } from "vue";
+import { defineComponent, openBlock, createElementBlock, Fragment, createVNode, withCtx, createTextVNode, toDisplayString } from "vue";
 import Api from "./test-com2/components/test-com2-1/api.png";
 import _export_sfc from "plugin-vue:export-helper";
 function test() {
@@ -1303,6 +1399,7 @@ const _sfc_main$1 = defineComponent({
 });
 function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_text = Text;
+  const _component_v_uni_image = Image;
   const _component_v_uni_video = Video;
   return openBlock(), createElementBlock(
     Fragment,
@@ -1319,6 +1416,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
         _: 1
         /* STABLE */
       }),
+      createVNode(_component_v_uni_image, { src: $data.api }, null, 8, ["src"]),
       createVNode(_component_v_uni_video)
     ],
     64
@@ -1336,17 +1434,27 @@ const _sfc_main = defineComponent({
 });
 function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   const _component_v_uni_text = Text;
-  return openBlock(), createBlock(_component_v_uni_text, { class: "text2" }, {
-    default: withCtx(() => [
-      createTextVNode(
-        toDisplayString($data.msg) + toDisplayString($data.api),
-        1
-        /* TEXT */
-      )
-    ]),
-    _: 1
-    /* STABLE */
-  });
+  const _component_v_uni_image = Image;
+  return openBlock(), createElementBlock(
+    Fragment,
+    null,
+    [
+      createVNode(_component_v_uni_text, { class: "text2" }, {
+        default: withCtx(() => [
+          createTextVNode(
+            toDisplayString($data.msg) + toDisplayString($data.api),
+            1
+            /* TEXT */
+          )
+        ]),
+        _: 1
+        /* STABLE */
+      }),
+      createVNode(_component_v_uni_image, { src: $data.api }, null, 8, ["src"])
+    ],
+    64
+    /* STABLE_FRAGMENT */
+  );
 }
 const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9332ef4d"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
 export {
@@ -1357,7 +1465,7 @@ export {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 4`] = `
+exports[`uni_modules playground uni-app-x dev:h5 8`] = `
 "{
   "id": "test-com2",
   "version": "1.0.0",
@@ -1369,51 +1477,4 @@ exports[`uni_modules playground uni-app-x dev:h5 4`] = `
     }
   }
 }"
-`;
-
-exports[`uni_modules playground uni-app-x dev:h5 5`] = `
-"
-
-
-
-.text[data-v-07a142fd] {
-    color: red;
-}
-.image[data-v-07a142fd] {
-    background: url('@/uni_modules/test-com1/components/test-com1-1/logo.png');
-}
-"
-`;
-
-exports[`uni_modules playground uni-app-x dev:h5 6`] = `
-"
-
-
-
-.text2[data-v-e9ed06e5] {
-    color: red;
-}
-"
-`;
-
-exports[`uni_modules playground uni-app-x dev:h5 7`] = `
-"
-
-
-.text[data-v-86d335ce] {
-    color: red;
-}
-.image[data-v-86d335ce] {
-    background: url('@/uni_modules/test-com2/components/test-com2-1/api.png');
-}
-"
-`;
-
-exports[`uni_modules playground uni-app-x dev:h5 8`] = `
-"
-
-.text2[data-v-9332ef4d] {
-    color: red;
-}
-"
 `;
