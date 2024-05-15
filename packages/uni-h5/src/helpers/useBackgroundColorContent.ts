@@ -1,4 +1,5 @@
 import { onActivated, watchEffect } from 'vue'
+import { onThemeChange, parseTheme } from './theme'
 
 export function updateBackgroundColorContent(backgroundColorContent: string) {
   if (__NODE_JS__) {
@@ -16,8 +17,15 @@ export function updateBackgroundColorContent(backgroundColorContent: string) {
 
 export function useBackgroundColorContent(pageMeta: UniApp.PageRouteMeta) {
   function update() {
-    updateBackgroundColorContent(pageMeta.backgroundColorContent || '')
+    if (pageMeta.backgroundColorContent) {
+      updateBackgroundColorContent(
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent })
+          .backgroundColorContent
+      )
+    }
   }
+
+  onThemeChange(update)
   watchEffect(update)
   onActivated(update)
 }
