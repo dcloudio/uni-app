@@ -235,13 +235,7 @@ export async function compile(
           uniModules: uni_modules || [],
           outFilename: indexModuleFilename
             ? normalizePath(
-                join(
-                  pluginRelativeDir,
-                  'utssdk',
-                  'app-android',
-                  'src',
-                  'index.kt'
-                )
+                join(pluginRelativeDir, 'utssdk', 'app-android', 'index.kt')
               )
             : '',
         })

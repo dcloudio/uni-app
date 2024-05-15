@@ -43,43 +43,8 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
-val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
-}
-, fun(instance): UniModulesTestCom1ComponentsTestCom11TestCom11 {
-    return UniModulesTestCom1ComponentsTestCom11TestCom11(instance);
-}
-);
-val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = UniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = UniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = UniModulesTestCom1ComponentsTestCom12TestCom12.styles);
-}
-, fun(instance): UniModulesTestCom1ComponentsTestCom12TestCom12 {
-    return UniModulesTestCom1ComponentsTestCom12TestCom12(instance);
-}
-);
-"
-`;
-
-exports[`uni_modules playground uni-app-x build:app-android 4`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom1;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
 import io.dcloud.uniapp.extapi.getSystemInfo as uni_getSystemInfo;
-open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
+open class ComponentsTestCom11TestCom11 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {
         onLoad(fun(_: OnLoadOptions) {
             uni_getSystemInfo(GetSystemInfoOptions(success = fun(res) {
@@ -113,7 +78,57 @@ open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom1ComponentsTestCom11TestCom11Styles);
+                return normalizeCssStyles(ComponentsTestCom11TestCom11Styles);
+            }
+        var inheritAttrs = true;
+        var inject: Map<String, Map<String, Any?>> = utsMapOf();
+        var emits: Map<String, Any?> = utsMapOf();
+        var props = normalizePropsOptions(utsMapOf());
+        var propsNeedCastKeys: UTSArray<String> = utsArrayOf();
+        var components: Map<String, CreateVueComponent> = utsMapOf();
+    }
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x build:app-android 4`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom1;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+open class ComponentsTestCom12TestCom12 : VueComponent {
+    constructor(instance: ComponentInternalInstance) : super(instance) {}
+    @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
+    override fun \`$render\`(): Any? {
+        val _ctx = this;
+        val _cache = this.\`$\`.renderCache;
+        return createElementVNode(Fragment, null, utsArrayOf(
+            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.logo), 1),
+            createElementVNode("image", utsMapOf("src" to \`default\`))
+        ), 64);
+    }
+    open var msg: String by \`$data\`;
+    open var logo: Any? by \`$data\`;
+    @Suppress("USELESS_CAST")
+    override fun data(): Map<String, Any?> {
+        return utsMapOf("msg" to "test-com1-2", "logo" to \`default\`);
+    }
+    companion object {
+        val styles: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return normalizeCssStyles(ComponentsTestCom12TestCom12Styles);
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -143,36 +158,21 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
-    constructor(instance: ComponentInternalInstance) : super(instance) {}
-    @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
-    override fun \`$render\`(): Any? {
-        val _ctx = this;
-        val _cache = this.\`$\`.renderCache;
-        return createElementVNode(Fragment, null, utsArrayOf(
-            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.logo), 1),
-            createElementVNode("image", utsMapOf("src" to \`default\`))
-        ), 64);
-    }
-    open var msg: String by \`$data\`;
-    open var logo: Any? by \`$data\`;
-    @Suppress("USELESS_CAST")
-    override fun data(): Map<String, Any?> {
-        return utsMapOf("msg" to "test-com1-2", "logo" to \`default\`);
-    }
-    companion object {
-        val styles: Map<String, Map<String, Map<String, Any>>>
-            get() {
-                return normalizeCssStyles(UniModulesTestCom1ComponentsTestCom12TestCom12Styles);
-            }
-        var inheritAttrs = true;
-        var inject: Map<String, Map<String, Any?>> = utsMapOf();
-        var emits: Map<String, Any?> = utsMapOf();
-        var props = normalizePropsOptions(utsMapOf());
-        var propsNeedCastKeys: UTSArray<String> = utsArrayOf();
-        var components: Map<String, CreateVueComponent> = utsMapOf();
-    }
+val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
+val ComponentsTestCom11TestCom11Class = CreateVueComponent(ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = ComponentsTestCom11TestCom11.inheritAttrs, inject = ComponentsTestCom11TestCom11.inject, props = ComponentsTestCom11TestCom11.props, propsNeedCastKeys = ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = ComponentsTestCom11TestCom11.emits, components = ComponentsTestCom11TestCom11.components, styles = ComponentsTestCom11TestCom11.styles);
 }
+, fun(instance): ComponentsTestCom11TestCom11 {
+    return ComponentsTestCom11TestCom11(instance);
+}
+);
+val ComponentsTestCom12TestCom12Class = CreateVueComponent(ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = ComponentsTestCom12TestCom12.inheritAttrs, inject = ComponentsTestCom12TestCom12.inject, props = ComponentsTestCom12TestCom12.props, propsNeedCastKeys = ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = ComponentsTestCom12TestCom12.emits, components = ComponentsTestCom12TestCom12.components, styles = ComponentsTestCom12TestCom12.styles);
+}
+, fun(instance): ComponentsTestCom12TestCom12 {
+    return ComponentsTestCom12TestCom12(instance);
+}
+);
 "
 `;
 
@@ -218,43 +218,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
-val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
-    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
-}
-);
-val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
-    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
-}
-);
-fun test() {}
-"
-`;
-
-exports[`uni_modules playground uni-app-x build:app-android 9`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom2;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
-open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
+open class ComponentsTestCom21TestCom21 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
     override fun \`$render\`(): Any? {
@@ -277,7 +241,59 @@ open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom2ComponentsTestCom21TestCom21Styles);
+                return normalizeCssStyles(ComponentsTestCom21TestCom21Styles);
+            }
+        var inheritAttrs = true;
+        var inject: Map<String, Map<String, Any?>> = utsMapOf();
+        var emits: Map<String, Any?> = utsMapOf();
+        var props = normalizePropsOptions(utsMapOf());
+        var propsNeedCastKeys: UTSArray<String> = utsArrayOf();
+        var components: Map<String, CreateVueComponent> = utsMapOf();
+    }
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x build:app-android 9`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom2;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+open class ComponentsTestCom22TestCom22 : VueComponent {
+    constructor(instance: ComponentInternalInstance) : super(instance) {}
+    @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
+    override fun \`$render\`(): Any? {
+        val _ctx = this;
+        val _cache = this.\`$\`.renderCache;
+        return createElementVNode(Fragment, null, utsArrayOf(
+            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1),
+            createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
+                "src"
+            ))
+        ), 64);
+    }
+    open var msg: String by \`$data\`;
+    open var api: Any? by \`$data\`;
+    @Suppress("USELESS_CAST")
+    override fun data(): Map<String, Any?> {
+        return utsMapOf("msg" to "test-com2-2", "api" to \`default\`);
+    }
+    companion object {
+        val styles: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return normalizeCssStyles(ComponentsTestCom22TestCom22Styles);
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -307,38 +323,22 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
-    constructor(instance: ComponentInternalInstance) : super(instance) {}
-    @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
-    override fun \`$render\`(): Any? {
-        val _ctx = this;
-        val _cache = this.\`$\`.renderCache;
-        return createElementVNode(Fragment, null, utsArrayOf(
-            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1),
-            createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
-                "src"
-            ))
-        ), 64);
-    }
-    open var msg: String by \`$data\`;
-    open var api: Any? by \`$data\`;
-    @Suppress("USELESS_CAST")
-    override fun data(): Map<String, Any?> {
-        return utsMapOf("msg" to "test-com2-2", "api" to \`default\`);
-    }
-    companion object {
-        val styles: Map<String, Map<String, Map<String, Any>>>
-            get() {
-                return normalizeCssStyles(UniModulesTestCom2ComponentsTestCom22TestCom22Styles);
-            }
-        var inheritAttrs = true;
-        var inject: Map<String, Map<String, Any?>> = utsMapOf();
-        var emits: Map<String, Any?> = utsMapOf();
-        var props = normalizePropsOptions(utsMapOf());
-        var propsNeedCastKeys: UTSArray<String> = utsArrayOf();
-        var components: Map<String, CreateVueComponent> = utsMapOf();
-    }
+val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
+val ComponentsTestCom21TestCom21Class = CreateVueComponent(ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = ComponentsTestCom21TestCom21.inheritAttrs, inject = ComponentsTestCom21TestCom21.inject, props = ComponentsTestCom21TestCom21.props, propsNeedCastKeys = ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = ComponentsTestCom21TestCom21.emits, components = ComponentsTestCom21TestCom21.components, styles = ComponentsTestCom21TestCom21.styles);
 }
+, fun(instance): ComponentsTestCom21TestCom21 {
+    return ComponentsTestCom21TestCom21(instance);
+}
+);
+val ComponentsTestCom22TestCom22Class = CreateVueComponent(ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = ComponentsTestCom22TestCom22.inheritAttrs, inject = ComponentsTestCom22TestCom22.inject, props = ComponentsTestCom22TestCom22.props, propsNeedCastKeys = ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = ComponentsTestCom22TestCom22.emits, components = ComponentsTestCom22TestCom22.components, styles = ComponentsTestCom22TestCom22.styles);
+}
+, fun(instance): ComponentsTestCom22TestCom22 {
+    return ComponentsTestCom22TestCom22(instance);
+}
+);
+fun test() {}
 "
 `;
 
@@ -735,44 +735,8 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
-val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
-}
-, fun(instance): UniModulesTestCom1ComponentsTestCom11TestCom11 {
-    return UniModulesTestCom1ComponentsTestCom11TestCom11(instance);
-}
-);
-val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = UniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = UniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = UniModulesTestCom1ComponentsTestCom12TestCom12.styles);
-}
-, fun(instance): UniModulesTestCom1ComponentsTestCom12TestCom12 {
-    return UniModulesTestCom1ComponentsTestCom12TestCom12(instance);
-}
-);
-"
-`;
-
-exports[`uni_modules playground uni-app-x dev:app-android 4`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom1;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.unicloud.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
 import io.dcloud.uniapp.extapi.getSystemInfo as uni_getSystemInfo;
-open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
+open class ComponentsTestCom11TestCom11 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {
         onLoad(fun(_: OnLoadOptions) {
             uni_getSystemInfo(GetSystemInfoOptions(success = fun(res) {
@@ -806,7 +770,58 @@ open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom1ComponentsTestCom11TestCom11Styles);
+                return normalizeCssStyles(ComponentsTestCom11TestCom11Styles);
+            }
+        var inheritAttrs = true;
+        var inject: Map<String, Map<String, Any?>> = utsMapOf();
+        var emits: Map<String, Any?> = utsMapOf();
+        var props = normalizePropsOptions(utsMapOf());
+        var propsNeedCastKeys: UTSArray<String> = utsArrayOf();
+        var components: Map<String, CreateVueComponent> = utsMapOf();
+    }
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x dev:app-android 4`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom1;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.unicloud.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+open class ComponentsTestCom12TestCom12 : VueComponent {
+    constructor(instance: ComponentInternalInstance) : super(instance) {}
+    @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
+    override fun \`$render\`(): Any? {
+        val _ctx = this;
+        val _cache = this.\`$\`.renderCache;
+        return createElementVNode(Fragment, null, utsArrayOf(
+            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.logo), 1),
+            createElementVNode("image", utsMapOf("src" to \`default\`))
+        ), 64);
+    }
+    open var msg: String by \`$data\`;
+    open var logo: Any? by \`$data\`;
+    @Suppress("USELESS_CAST")
+    override fun data(): Map<String, Any?> {
+        return utsMapOf("msg" to "test-com1-2", "logo" to \`default\`);
+    }
+    companion object {
+        val styles: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return normalizeCssStyles(ComponentsTestCom12TestCom12Styles);
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -837,36 +852,21 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
-    constructor(instance: ComponentInternalInstance) : super(instance) {}
-    @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
-    override fun \`$render\`(): Any? {
-        val _ctx = this;
-        val _cache = this.\`$\`.renderCache;
-        return createElementVNode(Fragment, null, utsArrayOf(
-            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.logo), 1),
-            createElementVNode("image", utsMapOf("src" to \`default\`))
-        ), 64);
-    }
-    open var msg: String by \`$data\`;
-    open var logo: Any? by \`$data\`;
-    @Suppress("USELESS_CAST")
-    override fun data(): Map<String, Any?> {
-        return utsMapOf("msg" to "test-com1-2", "logo" to \`default\`);
-    }
-    companion object {
-        val styles: Map<String, Map<String, Map<String, Any>>>
-            get() {
-                return normalizeCssStyles(UniModulesTestCom1ComponentsTestCom12TestCom12Styles);
-            }
-        var inheritAttrs = true;
-        var inject: Map<String, Map<String, Any?>> = utsMapOf();
-        var emits: Map<String, Any?> = utsMapOf();
-        var props = normalizePropsOptions(utsMapOf());
-        var propsNeedCastKeys: UTSArray<String> = utsArrayOf();
-        var components: Map<String, CreateVueComponent> = utsMapOf();
-    }
+val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
+val ComponentsTestCom11TestCom11Class = CreateVueComponent(ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = ComponentsTestCom11TestCom11.inheritAttrs, inject = ComponentsTestCom11TestCom11.inject, props = ComponentsTestCom11TestCom11.props, propsNeedCastKeys = ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = ComponentsTestCom11TestCom11.emits, components = ComponentsTestCom11TestCom11.components, styles = ComponentsTestCom11TestCom11.styles);
 }
+, fun(instance): ComponentsTestCom11TestCom11 {
+    return ComponentsTestCom11TestCom11(instance);
+}
+);
+val ComponentsTestCom12TestCom12Class = CreateVueComponent(ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = ComponentsTestCom12TestCom12.inheritAttrs, inject = ComponentsTestCom12TestCom12.inject, props = ComponentsTestCom12TestCom12.props, propsNeedCastKeys = ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = ComponentsTestCom12TestCom12.emits, components = ComponentsTestCom12TestCom12.components, styles = ComponentsTestCom12TestCom12.styles);
+}
+, fun(instance): ComponentsTestCom12TestCom12 {
+    return ComponentsTestCom12TestCom12(instance);
+}
+);
 "
 `;
 
@@ -911,44 +911,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
-val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
-    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
-}
-);
-val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
-    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
-}
-);
-fun test() {}
-"
-`;
-
-exports[`uni_modules playground uni-app-x dev:app-android 9`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom2;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.unicloud.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
-open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
+open class ComponentsTestCom21TestCom21 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
     override fun \`$render\`(): Any? {
@@ -971,7 +934,60 @@ open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom2ComponentsTestCom21TestCom21Styles);
+                return normalizeCssStyles(ComponentsTestCom21TestCom21Styles);
+            }
+        var inheritAttrs = true;
+        var inject: Map<String, Map<String, Any?>> = utsMapOf();
+        var emits: Map<String, Any?> = utsMapOf();
+        var props = normalizePropsOptions(utsMapOf());
+        var propsNeedCastKeys: UTSArray<String> = utsArrayOf();
+        var components: Map<String, CreateVueComponent> = utsMapOf();
+    }
+}
+"
+`;
+
+exports[`uni_modules playground uni-app-x dev:app-android 9`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom2;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.unicloud.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+open class ComponentsTestCom22TestCom22 : VueComponent {
+    constructor(instance: ComponentInternalInstance) : super(instance) {}
+    @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
+    override fun \`$render\`(): Any? {
+        val _ctx = this;
+        val _cache = this.\`$\`.renderCache;
+        return createElementVNode(Fragment, null, utsArrayOf(
+            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1),
+            createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
+                "src"
+            ))
+        ), 64);
+    }
+    open var msg: String by \`$data\`;
+    open var api: Any? by \`$data\`;
+    @Suppress("USELESS_CAST")
+    override fun data(): Map<String, Any?> {
+        return utsMapOf("msg" to "test-com2-2", "api" to \`default\`);
+    }
+    companion object {
+        val styles: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return normalizeCssStyles(ComponentsTestCom22TestCom22Styles);
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -1002,38 +1018,22 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
-    constructor(instance: ComponentInternalInstance) : super(instance) {}
-    @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
-    override fun \`$render\`(): Any? {
-        val _ctx = this;
-        val _cache = this.\`$\`.renderCache;
-        return createElementVNode(Fragment, null, utsArrayOf(
-            createElementVNode("text", utsMapOf("class" to "text2"), toDisplayString(_ctx.msg) + toDisplayString(_ctx.api), 1),
-            createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
-                "src"
-            ))
-        ), 64);
-    }
-    open var msg: String by \`$data\`;
-    open var api: Any? by \`$data\`;
-    @Suppress("USELESS_CAST")
-    override fun data(): Map<String, Any?> {
-        return utsMapOf("msg" to "test-com2-2", "api" to \`default\`);
-    }
-    companion object {
-        val styles: Map<String, Map<String, Map<String, Any>>>
-            get() {
-                return normalizeCssStyles(UniModulesTestCom2ComponentsTestCom22TestCom22Styles);
-            }
-        var inheritAttrs = true;
-        var inject: Map<String, Map<String, Any?>> = utsMapOf();
-        var emits: Map<String, Any?> = utsMapOf();
-        var props = normalizePropsOptions(utsMapOf());
-        var propsNeedCastKeys: UTSArray<String> = utsArrayOf();
-        var components: Map<String, CreateVueComponent> = utsMapOf();
-    }
+val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
+val ComponentsTestCom21TestCom21Class = CreateVueComponent(ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = ComponentsTestCom21TestCom21.inheritAttrs, inject = ComponentsTestCom21TestCom21.inject, props = ComponentsTestCom21TestCom21.props, propsNeedCastKeys = ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = ComponentsTestCom21TestCom21.emits, components = ComponentsTestCom21TestCom21.components, styles = ComponentsTestCom21TestCom21.styles);
 }
+, fun(instance): ComponentsTestCom21TestCom21 {
+    return ComponentsTestCom21TestCom21(instance);
+}
+);
+val ComponentsTestCom22TestCom22Class = CreateVueComponent(ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = ComponentsTestCom22TestCom22.inheritAttrs, inject = ComponentsTestCom22TestCom22.inject, props = ComponentsTestCom22TestCom22.props, propsNeedCastKeys = ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = ComponentsTestCom22TestCom22.emits, components = ComponentsTestCom22TestCom22.components, styles = ComponentsTestCom22TestCom22.styles);
+}
+, fun(instance): ComponentsTestCom22TestCom22 {
+    return ComponentsTestCom22TestCom22(instance);
+}
+);
+fun test() {}
 "
 `;
 
