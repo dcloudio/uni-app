@@ -719,6 +719,18 @@ export async function checkEncryptUniModules(
       console.error(e)
       process.exit(0)
     }
+  } else {
+    // android 平台需要在这里初始化
+    if (params.platform === 'app-android') {
+      const { R } = require(path.join(
+        process.env.UNI_HBUILDERX_PLUGINS,
+        'uni_helpers'
+      ))
+      R({
+        dir: process.env.UNI_INPUT_DIR,
+        cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+      })
+    }
   }
   encryptUniModules = findEncryptUniModules(
     inputDir,

@@ -243,7 +243,13 @@ function initAutoScanEasycom(
           ? normalizePath(
               path.join(
                 rootDir,
-                `uni_modules/${uni_modules_plugin_id}?uni_helpers`
+                `uni_modules/${uni_modules_plugin_id}?${
+                  // android 走 proxy
+                  process.env.UNI_APP_X === 'true' &&
+                  process.env.UNI_UTS_PLATFORM === 'app-android'
+                    ? 'uts-proxy'
+                    : 'uni_helpers'
+                }`
               )
             )
           : `${importDir}/${name}${ext}`

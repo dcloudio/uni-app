@@ -43,41 +43,6 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
-val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
-}
-, fun(instance): UniModulesTestCom1ComponentsTestCom11TestCom11 {
-    return UniModulesTestCom1ComponentsTestCom11TestCom11(instance);
-}
-);
-val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = UniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = UniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = UniModulesTestCom1ComponentsTestCom12TestCom12.styles);
-}
-, fun(instance): UniModulesTestCom1ComponentsTestCom12TestCom12 {
-    return UniModulesTestCom1ComponentsTestCom12TestCom12(instance);
-}
-);
-"
-`;
-
-exports[`uni_modules playground uni-app-x build:app-android 4`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom1;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
 import io.dcloud.uniapp.extapi.getSystemInfo as uni_getSystemInfo;
 open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {
@@ -126,7 +91,7 @@ open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 5`] = `
+exports[`uni_modules playground uni-app-x build:app-android 4`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -176,6 +141,41 @@ open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
 "
 `;
 
+exports[`uni_modules playground uni-app-x build:app-android 5`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom1;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
+val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
+}
+, fun(instance): UniModulesTestCom1ComponentsTestCom11TestCom11 {
+    return UniModulesTestCom1ComponentsTestCom11TestCom11(instance);
+}
+);
+val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = UniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = UniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = UniModulesTestCom1ComponentsTestCom12TestCom12.styles);
+}
+, fun(instance): UniModulesTestCom1ComponentsTestCom12TestCom12 {
+    return UniModulesTestCom1ComponentsTestCom12TestCom12(instance);
+}
+);
+"
+`;
+
 exports[`uni_modules playground uni-app-x build:app-android 6`] = `"api-ce31e859.png"`;
 
 exports[`uni_modules playground uni-app-x build:app-android 7`] = `
@@ -202,42 +202,6 @@ exports[`uni_modules playground uni-app-x build:app-android 7`] = `
 `;
 
 exports[`uni_modules playground uni-app-x build:app-android 8`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom2;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
-val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
-    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
-}
-);
-val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
-    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
-}
-);
-fun test() {}
-"
-`;
-
-exports[`uni_modules playground uni-app-x build:app-android 9`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -290,7 +254,7 @@ open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 10`] = `
+exports[`uni_modules playground uni-app-x build:app-android 9`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -339,6 +303,42 @@ open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
         var components: Map<String, CreateVueComponent> = utsMapOf();
     }
 }
+"
+`;
+
+exports[`uni_modules playground uni-app-x build:app-android 10`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom2;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
+val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
+}
+, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
+    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
+}
+);
+val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
+}
+, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
+    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
+}
+);
+fun test() {}
 "
 `;
 
@@ -735,42 +735,6 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
-val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
-}
-, fun(instance): UniModulesTestCom1ComponentsTestCom11TestCom11 {
-    return UniModulesTestCom1ComponentsTestCom11TestCom11(instance);
-}
-);
-val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = UniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = UniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = UniModulesTestCom1ComponentsTestCom12TestCom12.styles);
-}
-, fun(instance): UniModulesTestCom1ComponentsTestCom12TestCom12 {
-    return UniModulesTestCom1ComponentsTestCom12TestCom12(instance);
-}
-);
-"
-`;
-
-exports[`uni_modules playground uni-app-x dev:app-android 4`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom1;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.unicloud.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
 import io.dcloud.uniapp.extapi.getSystemInfo as uni_getSystemInfo;
 open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {
@@ -819,7 +783,7 @@ open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 5`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 4`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -870,6 +834,42 @@ open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
 "
 `;
 
+exports[`uni_modules playground uni-app-x dev:app-android 5`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom1;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.unicloud.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
+val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
+}
+, fun(instance): UniModulesTestCom1ComponentsTestCom11TestCom11 {
+    return UniModulesTestCom1ComponentsTestCom11TestCom11(instance);
+}
+);
+val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = UniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = UniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = UniModulesTestCom1ComponentsTestCom12TestCom12.styles);
+}
+, fun(instance): UniModulesTestCom1ComponentsTestCom12TestCom12 {
+    return UniModulesTestCom1ComponentsTestCom12TestCom12(instance);
+}
+);
+"
+`;
+
 exports[`uni_modules playground uni-app-x dev:app-android 6`] = `"api-ce31e859.png"`;
 
 exports[`uni_modules playground uni-app-x dev:app-android 7`] = `
@@ -894,43 +894,6 @@ exports[`uni_modules playground uni-app-x dev:app-android 7`] = `
 `;
 
 exports[`uni_modules playground uni-app-x dev:app-android 8`] = `
-"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
-package uts.sdk.modules.testCom2;
-import io.dcloud.uniapp.*;
-import io.dcloud.uniapp.extapi.*;
-import io.dcloud.uniapp.framework.*;
-import io.dcloud.uniapp.runtime.*;
-import io.dcloud.uniapp.vue.*;
-import io.dcloud.uniapp.vue.shared.*;
-import io.dcloud.unicloud.*;
-import io.dcloud.uts.*;
-import io.dcloud.uts.Map;
-import io.dcloud.uts.Set;
-import io.dcloud.uts.UTSAndroid;
-import kotlinx.coroutines.CoroutineScope;
-import kotlinx.coroutines.Deferred;
-import kotlinx.coroutines.Dispatchers;
-import kotlinx.coroutines.async;
-val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
-val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
-    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
-}
-);
-val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
-}
-, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
-    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
-}
-);
-fun test() {}
-"
-`;
-
-exports[`uni_modules playground uni-app-x dev:app-android 9`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -984,7 +947,7 @@ open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 10`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 9`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -1034,6 +997,43 @@ open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
         var components: Map<String, CreateVueComponent> = utsMapOf();
     }
 }
+"
+`;
+
+exports[`uni_modules playground uni-app-x dev:app-android 10`] = `
+"@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+package uts.sdk.modules.testCom2;
+import io.dcloud.uniapp.*;
+import io.dcloud.uniapp.extapi.*;
+import io.dcloud.uniapp.framework.*;
+import io.dcloud.uniapp.runtime.*;
+import io.dcloud.uniapp.vue.*;
+import io.dcloud.uniapp.vue.shared.*;
+import io.dcloud.unicloud.*;
+import io.dcloud.uts.*;
+import io.dcloud.uts.Map;
+import io.dcloud.uts.Set;
+import io.dcloud.uts.UTSAndroid;
+import kotlinx.coroutines.CoroutineScope;
+import kotlinx.coroutines.Deferred;
+import kotlinx.coroutines.Dispatchers;
+import kotlinx.coroutines.async;
+val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
+val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
+}
+, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
+    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
+}
+);
+val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
+}
+, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
+    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
+}
+);
+fun test() {}
 "
 `;
 

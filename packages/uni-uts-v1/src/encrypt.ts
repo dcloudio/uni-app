@@ -125,13 +125,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
   const outputDir = process.env.UNI_OUTPUT_DIR
   const pluginRelativeDir = relative(inputDir, pluginDir)
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
-  const jarPath = resolveJarCacheFilename(
-    process.env.HX_DEPENDENCIES_DIR!,
-    pluginRelativeDir
-  )
-  if (!fs.existsSync(jarPath)) {
-    console.error(`uts插件[${path.basename(pluginDir)}]不存在，请重新运行`)
-  }
+
   // 读取缓存文件
   const cachePluginDir = path.resolve(
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!,
@@ -175,13 +169,18 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       'uni_helpers'
     ))
 
-    const errMsg = await DUM(
-      path.basename(pluginRelativeDir),
-      sync('**/*.kt', {
-        absolute: true,
-        cwd: cachePluginDir,
-      })
-    )
+    const ktFiles: Record<string, string> = sync('**/*.kt', {
+      absolute: false,
+      cwd: cachePluginDir,
+    }).reduce((files, file) => {
+      files[path.resolve(cachePluginDir, file)] = path.resolve(
+        process.env.UNI_OUTPUT_DIR,
+        pluginRelativeDir,
+        file
+      )
+      return files
+    }, {})
+    const errMsg = await DUM(path.basename(pluginRelativeDir), ktFiles)
     if (errMsg) {
       console.error(errMsg)
       process.exit(0)
@@ -194,7 +193,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       'index.kt'
     )
     const waiting = { done: undefined }
-    const kotlinFiles = []
+    const kotlinFiles = Object.values(ktFiles)
     const depJars =
       require(path.resolve(pluginDir, 'package.json')).uni_modules
         ?.dependencies || []
