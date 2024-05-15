@@ -897,14 +897,13 @@ uni-picker[disabled] {
   .uni-picker-container .uni-picker-content {
     background-color: var(--UI-BG-2);
   }
+  .uni-picker-container .uni-picker-item,
+  .uni-selector-select .uni-picker-item,
   .uni-picker-container .uni-picker-action.uni-picker-action-cancel {
     color: var(--UI-FG-0);
   }
   .uni-picker-container .uni-picker-custom {
     background-color: var(--UI-BG-2);
-  }
-  .uni-selector-select .uni-picker-item {
-    color: var(--UI-FG-0);
   }
   .uni-picker-container .uni-picker-header:after {
     border-bottom-color: var(--UI-FG-3);
