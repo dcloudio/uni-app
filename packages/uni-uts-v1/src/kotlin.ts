@@ -885,10 +885,8 @@ export function createStderrListener(
   }
 }
 
-export function kotlinDir(outputDir: string) {
-  return (
-    process.env.UNI_APP_X_CACHE_DIR || path.resolve(outputDir, '../.kotlin')
-  )
+export function kotlinDir(_outputDir: string) {
+  return process.env.UNI_APP_X_CACHE_DIR
 }
 
 function kotlinAARDir(kotlinDir: string) {

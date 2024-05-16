@@ -29,7 +29,10 @@ function resolveDexCacheFilename(pluginRelativeDir: string, cacheDir: string) {
   return join(cacheDir, 'app-android', 'uts', pluginRelativeDir, dexName())
 }
 
-function resolveDexCacheFile(pluginRelativeDir: string, cacheDir: string) {
+export function resolveDexCacheFile(
+  pluginRelativeDir: string,
+  cacheDir: string
+) {
   if (cacheDir) {
     const file = resolveDexCacheFilename(pluginRelativeDir, cacheDir)
     return (existsSync(file) && file) || ''

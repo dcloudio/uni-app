@@ -54,8 +54,7 @@ export function init() {
           // 必须在 uvue 处理之后
           resolveUTSCompiler().uts2kotlin({
             cacheRoot: path.resolve(
-              process.env.UNI_APP_X_CACHE_DIR ||
-                path.resolve(process.env.UNI_OUTPUT_DIR, '../.kotlin'),
+              process.env.UNI_APP_X_CACHE_DIR,
               '.uts/cache'
             ),
             inputDir: process.env.UNI_INPUT_DIR,

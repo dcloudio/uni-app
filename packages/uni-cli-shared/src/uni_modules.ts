@@ -712,7 +712,8 @@ export async function checkEncryptUniModules(
         dir: process.env.UNI_INPUT_DIR,
         cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
       })
-      console.log(`云编译完成，继续本地编译中...`)
+      console.log(`云编译已完成`)
+      console.log(`继续编译中...`)
     } catch (e) {
       fs.existsSync(zipFile) && fs.unlinkSync(zipFile)
       fs.existsSync(downloadFile) && fs.unlinkSync(downloadFile)

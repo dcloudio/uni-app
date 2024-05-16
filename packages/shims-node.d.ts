@@ -53,7 +53,7 @@ declare namespace NodeJS {
     __VUE_DEVTOOLS_PORT__: string
 
     UNI_APP_X?: 'true' | 'false'
-    UNI_APP_X_CACHE_DIR?: string
+    UNI_APP_X_CACHE_DIR: string
 
     HX_Version: string
 

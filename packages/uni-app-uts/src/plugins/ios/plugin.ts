@@ -81,17 +81,11 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       const appServiceMap = bundle[APP_SERVICE_FILENAME_MAP]
       if (appServiceMap && appServiceMap.type === 'asset') {
         fs.outputFileSync(
-          process.env.UNI_APP_X_CACHE_DIR
-            ? path.resolve(
-                process.env.UNI_APP_X_CACHE_DIR,
-                'sourcemap',
-                APP_SERVICE_FILENAME_MAP
-              )
-            : path.resolve(
-                process.env.UNI_OUTPUT_DIR,
-                '../.sourcemap/app-ios',
-                APP_SERVICE_FILENAME_MAP
-              ),
+          path.resolve(
+            process.env.UNI_APP_X_CACHE_DIR,
+            'sourcemap',
+            APP_SERVICE_FILENAME_MAP
+          ),
           appServiceMap.source
         )
         delete bundle[APP_SERVICE_FILENAME_MAP]

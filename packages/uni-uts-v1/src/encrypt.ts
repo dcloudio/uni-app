@@ -15,6 +15,7 @@ import {
 import { getCompilerServer } from './utils'
 import { restoreDex } from './manifest'
 import { sync } from 'fast-glob'
+import { resolveDexCacheFile } from './manifest/dex'
 
 export function isEncrypt(pluginDir: string) {
   return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
@@ -125,12 +126,29 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
   const outputDir = process.env.UNI_OUTPUT_DIR
   const pluginRelativeDir = relative(inputDir, pluginDir)
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
-
   // 读取缓存文件
   const cachePluginDir = path.resolve(
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!,
     pluginRelativeDir
   )
+
+  const cacheFile = resolveDexCacheFile(pluginRelativeDir, cacheDir)
+  if (cacheFile) {
+    // 已有缓存
+    restoreDex(pluginRelativeDir, cacheDir, outputDir, true)
+    const assets = path.resolve(cachePluginDir, 'assets')
+    if (fs.existsSync(assets)) {
+      fs.copySync(assets, path.resolve(outputDir, pluginRelativeDir, 'assets'))
+    }
+    return {
+      dir: outputPluginDir,
+      code: 'export default {}',
+      deps: [] as string[],
+      encrypt: true,
+      inject_apis: [],
+    }
+  }
+
   const pkg = require(path.resolve(cachePluginDir, 'package.json'))
   if (process.env.NODE_ENV !== 'development') {
     // 生成wgt，无需复制加密插件目录
