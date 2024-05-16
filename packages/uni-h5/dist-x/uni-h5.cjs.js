@@ -12940,6 +12940,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       tabBar2.color = tabBarStyle.color;
       tabBar2.selectedColor = tabBarStyle.selectedColor;
       tabBar2.blurEffect = tabBarStyle.blurEffect;
+      tabBar2.midButton = tabBarStyle.midButton;
       if (tabBarStyle.list && tabBarStyle.list.length) {
         tabBarStyle.list.forEach((item, index2) => {
           tabBar2.list[index2].iconPath = item.iconPath;
@@ -13569,8 +13570,13 @@ function updateBackgroundColorContent(backgroundColorContent) {
 }
 function useBackgroundColorContent(pageMeta) {
   function update() {
-    updateBackgroundColorContent(pageMeta.backgroundColorContent || "");
+    if (pageMeta.backgroundColorContent) {
+      updateBackgroundColorContent(
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
+      );
+    }
   }
+  onThemeChange(update);
   vue.watchEffect(update);
 }
 function usePageHeadTransparentBackgroundColor(backgroundColor) {

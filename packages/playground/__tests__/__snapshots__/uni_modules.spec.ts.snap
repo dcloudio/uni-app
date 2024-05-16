@@ -241,7 +241,7 @@ open class GenUniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
             createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
                 "src"
             )),
-            createElementVNode("video")
+            createElementVNode("video", utsMapOf("src" to "https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4"))
         ), 64);
     }
     open var msg: String by \`$data\`;
@@ -460,7 +460,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
   return openBlock(), createElementBlock(Fragment, null, [
     createElementVNode("text", { class: "text" }, toDisplayString($data.msg) + toDisplayString($data.api), 1),
     createElementVNode("image", { src: $data.api }, null, 8, ["src"]),
-    createElementVNode("video")
+    createElementVNode("video", { src: "https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4" })
   ], 64);
 }
 const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]]]);
@@ -617,10 +617,10 @@ exports[`uni_modules playground uni-app-x build:h5 5`] = `
 
 
 
-.text[data-v-d600df3c] {
+.text[data-v-e2332c62] {
     color: red;
 }
-.image[data-v-d600df3c] {
+.image[data-v-e2332c62] {
     background: url('@/uni_modules/test-com2/components/test-com2-1/api.png');
 }
 "
@@ -668,10 +668,10 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
       _: 1
     }),
     createVNode(_component_v_uni_image, { src: $data.api }, null, 8, ["src"]),
-    createVNode(_component_v_uni_video)
+    createVNode(_component_v_uni_video, { src: "https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4" })
   ], 64);
 }
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-d600df3c"]]);
+const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-e2332c62"]]);
 const _sfc_main = defineComponent({
   data() {
     return {
@@ -958,7 +958,7 @@ open class GenUniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
             createElementVNode("image", utsMapOf("src" to _ctx.api), null, 8, utsArrayOf(
                 "src"
             )),
-            createElementVNode("video")
+            createElementVNode("video", utsMapOf("src" to "https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4"))
         ), 64);
     }
     open var msg: String by \`$data\`;
@@ -1212,7 +1212,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
         /* TEXT */
       ),
       createElementVNode("image", { src: $data.api }, null, 8, ["src"]),
-      createElementVNode("video")
+      createElementVNode("video", { src: "https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4" })
     ],
     64
     /* STABLE_FRAGMENT */
@@ -1465,7 +1465,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
         /* STABLE */
       }),
       createVNode(_component_v_uni_image, { src: $data.api }, null, 8, ["src"]),
-      createVNode(_component_v_uni_video)
+      createVNode(_component_v_uni_video, { src: "https://qiniu-web-assets.dcloud.net.cn/video/sample/2minute-demo.mp4" })
     ],
     64
     /* STABLE_FRAGMENT */

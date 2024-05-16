@@ -156,7 +156,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     addInjectComponents(pkg.uni_modules?.artifacts?.components || [])
     return {
       dir: outputPluginDir,
-      code: '',
+      code: 'export default {}',
       deps: [] as string[],
       encrypt: true,
       inject_apis,
@@ -230,11 +230,16 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     } else if (msg) {
       console.error(msg)
     }
+
+    const assets = path.resolve(cachePluginDir, 'assets')
+    if (fs.existsSync(assets)) {
+      fs.copySync(assets, path.resolve(outputDir, pluginRelativeDir, 'assets'))
+    }
   }
 
   return {
     dir: outputPluginDir,
-    code: '',
+    code: 'export default {}',
     deps: [] as string[],
     encrypt: true,
     inject_apis: [],

@@ -13262,15 +13262,15 @@ function parseTheme(pageStyle) {
 function useTabBarThemeChange(tabBar, options) {
     if (__uniConfig.darkmode) {
         const fn = () => {
-            const { list = [], color, selectedColor, backgroundColor, borderStyle, } = parseTheme(options);
-            tabBar &&
+            const { list = [], color, selectedColor, backgroundColor, borderStyle, midButton, } = parseTheme(options);
+            if (tabBar) {
                 tabBar.setTabBarStyle({
                     color,
                     selectedColor,
                     backgroundColor,
                     borderStyle,
+                    midButton,
                 });
-            tabBar &&
                 tabBar.setTabBarItems({
                     list: list.map((item) => ({
                         iconPath: item.iconPath,
@@ -13278,6 +13278,7 @@ function useTabBarThemeChange(tabBar, options) {
                         visible: item.visible,
                     })),
                 });
+            }
         };
         // 由于应用首次启动获取不到手机 theme 应用首次启动设置下 tabBar
         fn();
