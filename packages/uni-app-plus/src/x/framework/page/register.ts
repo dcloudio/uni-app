@@ -8,7 +8,6 @@ import {
   ON_REACH_BOTTOM,
   ON_READY,
   ON_RESIZE,
-  ON_SHOW,
   ON_UNLOAD,
   formatLog,
 } from '@dcloudio/uni-shared'
@@ -143,9 +142,10 @@ export function registerPage(
       nativePage
     ) as ComponentPublicInstance
 
-    nativePage.addPageEventListener(ON_SHOW, (_) => {
-      invokeHook(page, ON_SHOW)
-    })
+    // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
+    // nativePage.addPageEventListener(ON_SHOW, (_) => {
+    //   invokeHook(page, ON_SHOW)
+    // })
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
       uni.navigateBack({
         from: 'popGesture',

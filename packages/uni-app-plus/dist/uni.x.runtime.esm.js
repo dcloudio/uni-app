@@ -1148,9 +1148,6 @@ function registerPage(_ref, onCreated) {
   );
   function fn() {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-    nativePage.addPageEventListener(ON_SHOW, (_) => {
-      invokeHook(page, ON_SHOW);
-    });
     nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
