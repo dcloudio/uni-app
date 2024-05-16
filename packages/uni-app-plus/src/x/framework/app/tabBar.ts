@@ -8,6 +8,9 @@ import type { ComponentPublicInstance } from 'vue'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { registerPage } from '../page'
 
+// 存储 callback
+export let onTabBarMidButtonTapCallback: Function[] = []
+
 type Page = ComponentPublicInstance
 
 let tabBar0: ITabsNode | null = null
@@ -96,10 +99,13 @@ function init() {
       }
     }
   })
-  // TODO tabBarMidButtonTap
-  // tabBar0!.addEventListener('tabBarMidButtonTap', function (event: Event) {
-  //   invokeOnCallback('onTabBarMidButtonTap', [])
-  // })
+  tabBar0!.addEventListener('tabBarMidButtonTap', function (event: Event) {
+    onTabBarMidButtonTapCallback.forEach((callback) => {
+      if (typeof callback === 'function') {
+        callback()
+      }
+    })
+  })
 
   page.startRender()
   page.show(null)
