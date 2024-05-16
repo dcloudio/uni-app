@@ -44,7 +44,7 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
 import io.dcloud.uniapp.extapi.getSystemInfo as uni_getSystemInfo;
-open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
+open class GenUniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {
         onLoad(fun(_: OnLoadOptions) {
             uni_getSystemInfo(GetSystemInfoOptions(success = fun(res) {
@@ -78,7 +78,13 @@ open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom1ComponentsTestCom11TestCom11Styles);
+                return normalizeCssStyles(utsArrayOf(
+                    styles0
+                ));
+            }
+        val styles0: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return utsMapOf("text" to padStyleMapOf(utsMapOf("color" to "#FF0000")));
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -108,7 +114,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
+open class GenUniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
     override fun \`$render\`(): Any? {
@@ -128,7 +134,13 @@ open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom1ComponentsTestCom12TestCom12Styles);
+                return normalizeCssStyles(utsArrayOf(
+                    styles0
+                ));
+            }
+        val styles0: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return utsMapOf("text2" to padStyleMapOf(utsMapOf("color" to "#FF0000")));
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -159,18 +171,18 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
 val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
-val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
+val GenUniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(GenUniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = GenUniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = GenUniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = GenUniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = GenUniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = GenUniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = GenUniModulesTestCom1ComponentsTestCom11TestCom11.styles);
 }
-, fun(instance): UniModulesTestCom1ComponentsTestCom11TestCom11 {
-    return UniModulesTestCom1ComponentsTestCom11TestCom11(instance);
+, fun(instance): GenUniModulesTestCom1ComponentsTestCom11TestCom11 {
+    return GenUniModulesTestCom1ComponentsTestCom11TestCom11(instance);
 }
 );
-val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = UniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = UniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = UniModulesTestCom1ComponentsTestCom12TestCom12.styles);
+val GenUniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(GenUniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = GenUniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = GenUniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = GenUniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = GenUniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = GenUniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = GenUniModulesTestCom1ComponentsTestCom12TestCom12.styles);
 }
-, fun(instance): UniModulesTestCom1ComponentsTestCom12TestCom12 {
-    return UniModulesTestCom1ComponentsTestCom12TestCom12(instance);
+, fun(instance): GenUniModulesTestCom1ComponentsTestCom12TestCom12 {
+    return GenUniModulesTestCom1ComponentsTestCom12TestCom12(instance);
 }
 );
 "
@@ -218,7 +230,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
+open class GenUniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
     override fun \`$render\`(): Any? {
@@ -241,7 +253,13 @@ open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom2ComponentsTestCom21TestCom21Styles);
+                return normalizeCssStyles(utsArrayOf(
+                    styles0
+                ));
+            }
+        val styles0: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return utsMapOf("text" to padStyleMapOf(utsMapOf("color" to "#FF0000")));
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -271,7 +289,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
+open class GenUniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
     override fun \`$render\`(): Any? {
@@ -293,7 +311,13 @@ open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom2ComponentsTestCom22TestCom22Styles);
+                return normalizeCssStyles(utsArrayOf(
+                    styles0
+                ));
+            }
+        val styles0: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return utsMapOf("text2" to padStyleMapOf(utsMapOf("color" to "#FF0000")));
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -324,18 +348,18 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
 val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
-val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
+val GenUniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(GenUniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = GenUniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = GenUniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = GenUniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = GenUniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = GenUniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = GenUniModulesTestCom2ComponentsTestCom21TestCom21.styles);
 }
-, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
-    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
+, fun(instance): GenUniModulesTestCom2ComponentsTestCom21TestCom21 {
+    return GenUniModulesTestCom2ComponentsTestCom21TestCom21(instance);
 }
 );
-val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
+val GenUniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(GenUniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = GenUniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = GenUniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = GenUniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = GenUniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = GenUniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = GenUniModulesTestCom2ComponentsTestCom22TestCom22.styles);
 }
-, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
-    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
+, fun(instance): GenUniModulesTestCom2ComponentsTestCom22TestCom22 {
+    return GenUniModulesTestCom2ComponentsTestCom22TestCom22(instance);
 }
 );
 fun test() {}
@@ -736,7 +760,7 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
 import io.dcloud.uniapp.extapi.getSystemInfo as uni_getSystemInfo;
-open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
+open class GenUniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {
         onLoad(fun(_: OnLoadOptions) {
             uni_getSystemInfo(GetSystemInfoOptions(success = fun(res) {
@@ -770,7 +794,13 @@ open class UniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom1ComponentsTestCom11TestCom11Styles);
+                return normalizeCssStyles(utsArrayOf(
+                    styles0
+                ));
+            }
+        val styles0: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return utsMapOf("text" to padStyleMapOf(utsMapOf("color" to "#FF0000")));
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -801,7 +831,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
+open class GenUniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
     override fun \`$render\`(): Any? {
@@ -821,7 +851,13 @@ open class UniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom1ComponentsTestCom12TestCom12Styles);
+                return normalizeCssStyles(utsArrayOf(
+                    styles0
+                ));
+            }
+        val styles0: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return utsMapOf("text2" to padStyleMapOf(utsMapOf("color" to "#FF0000")));
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -853,18 +889,18 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
 val \`default\` = "/uni_modules/test-com1/assets/logo-46719607.png";
-val UniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = UniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = UniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = UniModulesTestCom1ComponentsTestCom11TestCom11.styles);
+val GenUniModulesTestCom1ComponentsTestCom11TestCom11Class = CreateVueComponent(GenUniModulesTestCom1ComponentsTestCom11TestCom11::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTestCom1ComponentsTestCom11TestCom11.inheritAttrs, inject = GenUniModulesTestCom1ComponentsTestCom11TestCom11.inject, props = GenUniModulesTestCom1ComponentsTestCom11TestCom11.props, propsNeedCastKeys = GenUniModulesTestCom1ComponentsTestCom11TestCom11.propsNeedCastKeys, emits = GenUniModulesTestCom1ComponentsTestCom11TestCom11.emits, components = GenUniModulesTestCom1ComponentsTestCom11TestCom11.components, styles = GenUniModulesTestCom1ComponentsTestCom11TestCom11.styles);
 }
-, fun(instance): UniModulesTestCom1ComponentsTestCom11TestCom11 {
-    return UniModulesTestCom1ComponentsTestCom11TestCom11(instance);
+, fun(instance): GenUniModulesTestCom1ComponentsTestCom11TestCom11 {
+    return GenUniModulesTestCom1ComponentsTestCom11TestCom11(instance);
 }
 );
-val UniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(UniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = UniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = UniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = UniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = UniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = UniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = UniModulesTestCom1ComponentsTestCom12TestCom12.styles);
+val GenUniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(GenUniModulesTestCom1ComponentsTestCom12TestCom12::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTestCom1ComponentsTestCom12TestCom12.inheritAttrs, inject = GenUniModulesTestCom1ComponentsTestCom12TestCom12.inject, props = GenUniModulesTestCom1ComponentsTestCom12TestCom12.props, propsNeedCastKeys = GenUniModulesTestCom1ComponentsTestCom12TestCom12.propsNeedCastKeys, emits = GenUniModulesTestCom1ComponentsTestCom12TestCom12.emits, components = GenUniModulesTestCom1ComponentsTestCom12TestCom12.components, styles = GenUniModulesTestCom1ComponentsTestCom12TestCom12.styles);
 }
-, fun(instance): UniModulesTestCom1ComponentsTestCom12TestCom12 {
-    return UniModulesTestCom1ComponentsTestCom12TestCom12(instance);
+, fun(instance): GenUniModulesTestCom1ComponentsTestCom12TestCom12 {
+    return GenUniModulesTestCom1ComponentsTestCom12TestCom12(instance);
 }
 );
 "
@@ -911,7 +947,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
+open class GenUniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
     override fun \`$render\`(): Any? {
@@ -934,7 +970,13 @@ open class UniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom2ComponentsTestCom21TestCom21Styles);
+                return normalizeCssStyles(utsArrayOf(
+                    styles0
+                ));
+            }
+        val styles0: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return utsMapOf("text" to padStyleMapOf(utsMapOf("color" to "#FF0000")));
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -965,7 +1007,7 @@ import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
-open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
+open class GenUniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
     constructor(instance: ComponentInternalInstance) : super(instance) {}
     @Suppress("UNUSED_PARAMETER", "UNUSED_VARIABLE")
     override fun \`$render\`(): Any? {
@@ -987,7 +1029,13 @@ open class UniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
     companion object {
         val styles: Map<String, Map<String, Map<String, Any>>>
             get() {
-                return normalizeCssStyles(UniModulesTestCom2ComponentsTestCom22TestCom22Styles);
+                return normalizeCssStyles(utsArrayOf(
+                    styles0
+                ));
+            }
+        val styles0: Map<String, Map<String, Map<String, Any>>>
+            get() {
+                return utsMapOf("text2" to padStyleMapOf(utsMapOf("color" to "#FF0000")));
             }
         var inheritAttrs = true;
         var inject: Map<String, Map<String, Any?>> = utsMapOf();
@@ -1019,18 +1067,18 @@ import kotlinx.coroutines.Deferred;
 import kotlinx.coroutines.Dispatchers;
 import kotlinx.coroutines.async;
 val \`default\` = "/uni_modules/test-com2/assets/api-ce31e859.png";
-val UniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = UniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = UniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = UniModulesTestCom2ComponentsTestCom21TestCom21.styles);
+val GenUniModulesTestCom2ComponentsTestCom21TestCom21Class = CreateVueComponent(GenUniModulesTestCom2ComponentsTestCom21TestCom21::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTestCom2ComponentsTestCom21TestCom21.inheritAttrs, inject = GenUniModulesTestCom2ComponentsTestCom21TestCom21.inject, props = GenUniModulesTestCom2ComponentsTestCom21TestCom21.props, propsNeedCastKeys = GenUniModulesTestCom2ComponentsTestCom21TestCom21.propsNeedCastKeys, emits = GenUniModulesTestCom2ComponentsTestCom21TestCom21.emits, components = GenUniModulesTestCom2ComponentsTestCom21TestCom21.components, styles = GenUniModulesTestCom2ComponentsTestCom21TestCom21.styles);
 }
-, fun(instance): UniModulesTestCom2ComponentsTestCom21TestCom21 {
-    return UniModulesTestCom2ComponentsTestCom21TestCom21(instance);
+, fun(instance): GenUniModulesTestCom2ComponentsTestCom21TestCom21 {
+    return GenUniModulesTestCom2ComponentsTestCom21TestCom21(instance);
 }
 );
-val UniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(UniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
-    return VueComponentOptions(type = "component", name = "", inheritAttrs = UniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = UniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = UniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = UniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = UniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = UniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = UniModulesTestCom2ComponentsTestCom22TestCom22.styles);
+val GenUniModulesTestCom2ComponentsTestCom22TestCom22Class = CreateVueComponent(GenUniModulesTestCom2ComponentsTestCom22TestCom22::class.java, fun(): VueComponentOptions {
+    return VueComponentOptions(type = "component", name = "", inheritAttrs = GenUniModulesTestCom2ComponentsTestCom22TestCom22.inheritAttrs, inject = GenUniModulesTestCom2ComponentsTestCom22TestCom22.inject, props = GenUniModulesTestCom2ComponentsTestCom22TestCom22.props, propsNeedCastKeys = GenUniModulesTestCom2ComponentsTestCom22TestCom22.propsNeedCastKeys, emits = GenUniModulesTestCom2ComponentsTestCom22TestCom22.emits, components = GenUniModulesTestCom2ComponentsTestCom22TestCom22.components, styles = GenUniModulesTestCom2ComponentsTestCom22TestCom22.styles);
 }
-, fun(instance): UniModulesTestCom2ComponentsTestCom22TestCom22 {
-    return UniModulesTestCom2ComponentsTestCom22TestCom22(instance);
+, fun(instance): GenUniModulesTestCom2ComponentsTestCom22TestCom22 {
+    return GenUniModulesTestCom2ComponentsTestCom22TestCom22(instance);
 }
 );
 fun test() {}

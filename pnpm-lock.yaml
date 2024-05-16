@@ -128,6 +128,9 @@ importers:
       fs-extra:
         specifier: ^10.0.0
         version: 10.1.0
+      isbinaryfile:
+        specifier: ^5.0.2
+        version: 5.0.2
       jest:
         specifier: ^29.3.1
         version: 29.7.0(@types/node@18.19.31)
@@ -7812,7 +7815,6 @@ packages:
   /isbinaryfile@5.0.2:
     resolution: {integrity: sha512-GvcjojwonMjWbTkfMpnVHVqXW/wKMYDfEpY94/8zy8HFMOqb/VL6oeONq9v87q4ttVlaTLnGXnJD4B5B1OTGIg==}
     engines: {node: '>= 18.0.0'}
-    dev: false
 
   /isbuffer@0.0.0:
     resolution: {integrity: sha512-xU+NoHp+YtKQkaM2HsQchYn0sltxMxew0HavMfHbjnucBoTSGbw745tL+Z7QBANleWM1eEQMenEpi174mIeS4g==}

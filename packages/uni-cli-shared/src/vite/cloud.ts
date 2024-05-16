@@ -116,6 +116,9 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           isPlugin: false,
           sourceMap: false,
           uni_modules: [],
+          transform: {
+            uvueClassNamePrefix: 'Gen',
+          },
         })
         if (result) {
           const apis = result.inject_apis

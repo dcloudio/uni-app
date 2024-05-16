@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import execa from 'execa'
 import { sync } from 'fast-glob'
+import { isBinaryFileSync } from 'isbinaryfile'
 
 const projectDir = path.resolve(__dirname, '../assets')
 
@@ -9,14 +10,15 @@ describe('assets playground', () => {
   jest.setTimeout(50 * 1000)
   const types = {
     'uni-app': [
-      'dev:app',
-      'dev:mp-alipay',
-      'dev:mp-baidu',
-      'dev:mp-kuaishou',
-      'dev:mp-lark',
-      'dev:mp-qq',
-      'dev:mp-toutiao',
-      'dev:mp-weixin',
+      // dev 目前面临需要exit的问题
+      // 'dev:app',
+      // 'dev:mp-alipay',
+      // 'dev:mp-baidu',
+      // 'dev:mp-kuaishou',
+      // 'dev:mp-lark',
+      // 'dev:mp-qq',
+      // 'dev:mp-toutiao',
+      // 'dev:mp-weixin',
       'build:app',
       'build:h5',
       'build:mp-alipay',
@@ -66,7 +68,19 @@ describe('assets playground', () => {
         sync('**/*', { cwd: outDir, absolute: true })
           .sort()
           .forEach((file) => {
-            expect(path.basename(file)).toMatchSnapshot()
+            const basename = path.basename(file)
+            if (
+              basename.startsWith('__uniapp') ||
+              basename.startsWith('uni-app-view.umd.js') ||
+              basename.endsWith('.css')
+            ) {
+              return
+            }
+            if (isBinaryFileSync(file)) {
+              expect(path.basename(file)).toMatchSnapshot(basename)
+            } else {
+              expect(fs.readFileSync(file, 'utf8')).toMatchSnapshot(basename)
+            }
           })
       })
     })
