@@ -1307,6 +1307,7 @@ function getRealPath(path) {
   }
   return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
 }
+var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
 var selected0 = -1;
 var tabs = /* @__PURE__ */ new Map();
@@ -1361,6 +1362,13 @@ function init() {
         console.error("switchTab: pagePath not found");
       }
     }
+  });
+  tabBar0.addEventListener("tabBarMidButtonTap", function(event) {
+    onTabBarMidButtonTapCallback.forEach((callback) => {
+      if (typeof callback === "function") {
+        callback();
+      }
+    });
   });
   page.startRender();
   page.show(null);
@@ -1838,6 +1846,9 @@ var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, 
   tabBar.hideTabBarRedDot(/* @__PURE__ */ new Map([["index", index2]]));
   resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
+var onTabBarMidButtonTap = (cb) => {
+  onTabBarMidButtonTapCallback.push(cb);
+};
 var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
   var {
     frontColor,
@@ -2637,6 +2648,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   loadFontFace,
   navigateBack,
   navigateTo,
+  onTabBarMidButtonTap,
   pageScrollTo,
   reLaunch,
   redirectTo,

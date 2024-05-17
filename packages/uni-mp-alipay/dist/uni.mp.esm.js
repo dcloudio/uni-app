@@ -932,6 +932,10 @@ function initCreateComponent() {
                 triggerEvent,
             },
         };
+        // vueOptions.options
+        if (vueOptions.options) {
+            mpComponentOptions.options = vueOptions.options;
+        }
         if (__VUE_OPTIONS_API__) {
             mpComponentOptions.data = initData();
             mpComponentOptions.mixins = initBehaviors(vueOptions);
