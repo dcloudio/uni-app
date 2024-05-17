@@ -691,12 +691,17 @@ export async function checkEncryptUniModules(
   )
   if (zipFile) {
     const downloadFile = path.resolve(cacheDir, 'uni_modules.download.zip')
-    const { U, D, R } = require(path.join(
+    const { C, D, R, U } = require(path.join(
       process.env.UNI_HBUILDERX_PLUGINS,
       'uni_helpers'
     ))
     try {
-      console.log(`正在云编译插件：${modules.join(',')}...`)
+      const isLogin = await C()
+      console.log(
+        `正在云编译插件${isLogin ? '' : '（请先登录）'}：${modules.join(
+          ','
+        )}...`
+      )
       const downloadUrl = await U({
         params,
         attachment: zipFile,
@@ -713,7 +718,7 @@ export async function checkEncryptUniModules(
         cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
       })
       console.log(`云编译已完成`)
-      console.log(`继续编译中...`)
+      console.log(`正在编译中...`)
     } catch (e) {
       fs.existsSync(zipFile) && fs.unlinkSync(zipFile)
       fs.existsSync(downloadFile) && fs.unlinkSync(downloadFile)
