@@ -53,7 +53,7 @@ declare namespace NodeJS {
     __VUE_DEVTOOLS_PORT__: string
 
     UNI_APP_X?: 'true' | 'false'
-    UNI_APP_X_CACHE_DIR?: string
+    UNI_APP_X_CACHE_DIR: string
 
     HX_Version: string
 
@@ -62,6 +62,10 @@ declare namespace NodeJS {
     UNI_APP_X_SINGLE_THREAD?: string
     UNI_APP_X_SETUP?: string
     UNI_APP_X_UVUE_SCRIPT_ENGINE?: 'native' | 'js'
+
+    UNI_COMPILE_TARGET?: 'uni_modules'
+    UNI_COMPILE_CLOUD_DIR?: string
+    UNI_MODULES_ENCRYPT_CACHE_DIR?: string
   }
 }
 

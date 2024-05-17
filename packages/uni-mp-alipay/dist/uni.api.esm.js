@@ -1,5 +1,5 @@
 import { isArray, hasOwn, isString, isPlainObject, isObject, capitalize, toRawType, makeMap, isFunction, isPromise, extend, remove } from '@vue/shared';
-import { LINEFEED, Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { Emitter, onCreateVueApp, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
 function getBaseSystemInfo() {
@@ -407,7 +407,7 @@ function normalizeErrMsg(errMsg) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + LINEFEED + errMsg.stack);
+        console.error(errMsg.message + '\n' + errMsg.stack);
         return errMsg.message;
     }
     return errMsg;

@@ -80,3 +80,7 @@ export function installHBuilderXPlugin(plugin: string) {
     `%HXRunUniAPPPluginName%${plugin}%HXRunUniAPPPluginName%`
   )
 }
+
+export function isUTSCloudCompiler() {
+  return process.env.UNI_UTS_COMPILER_TYPE === 'cloud'
+}

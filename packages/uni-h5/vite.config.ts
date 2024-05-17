@@ -1,16 +1,19 @@
+import fs from 'fs-extra'
 import path from 'path'
+import execa from 'execa'
 
-import { defineConfig } from 'vite'
+import { type Plugin, defineConfig } from 'vite'
+import { sync } from 'fast-glob'
 import jscc from 'rollup-plugin-jscc'
 import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-
+import AutoImport from 'unplugin-auto-import/vite'
 import type { OutputChunk } from 'rollup'
 
-import { stripOptions } from '@dcloudio/uni-cli-shared'
+import { normalizePath, stripOptions } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
 
@@ -19,7 +22,10 @@ function resolve(file: string) {
 }
 
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
+
 const isX = process.env.UNI_APP_X === 'true'
+const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR
+
 const rollupPlugins = [
   replace({
     values: {
@@ -39,6 +45,7 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
       _X_: isX ? 1 : 0,
+      _NEW_X_: isNewX ? 1 : 0,
     },
   }),
 ]
@@ -56,7 +63,9 @@ if (FORMAT === 'es') {
           '__IMPORT_META_ENV_BASE_URL__',
           'import.meta.env.BASE_URL'
         )
-        genApiJson(esBundle.code)
+        if (!isNewX) {
+          genApiJson(esBundle.code)
+        }
       }
     },
   })
@@ -105,6 +114,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    ...(isNewX ? [uniExtApi(), uts2ts()] : []),
     vue({
       template: {
         compilerOptions: {
@@ -168,3 +178,112 @@ export default defineConfig({
     },
   },
 })
+
+// if (!process.env.UNI_APP_EXT_API_DIR) {
+//   console.error(`UNI_APP_EXT_API_DIR is not defined`)
+//   process.exit(0)
+// }
+
+const extApiDirTemp = path.resolve(__dirname, 'temp', 'uni-ext-api')
+
+async function checkExtApiDir(name: string) {
+  if (fs.existsSync(path.resolve(extApiDirTemp, name))) {
+    return
+  }
+  const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
+
+  // 拷贝到临时目录
+  fs.copySync(path.resolve(extApiDir, name), path.resolve(extApiDirTemp, name))
+  // 重命名后缀
+  sync('**/*.uts', {
+    absolute: true,
+    cwd: path.resolve(extApiDirTemp, name),
+  }).forEach((file) => {
+    fs.renameSync(file, file + '.ts')
+  })
+
+  await checkExtApiTypes()
+}
+
+async function resolveExtApi(name: string) {
+  await checkExtApiDir(name)
+  const filename = path.resolve(
+    extApiDirTemp,
+    name,
+    'utssdk',
+    'app-android',
+    'index.uts.ts'
+  )
+  return fs.existsSync(filename)
+    ? filename
+    : path.resolve(extApiDirTemp, name, 'utssdk', 'index.uts.ts')
+}
+
+function uniExtApi() {
+  const uniApi = normalizePath(path.resolve(__dirname, '../uni-api'))
+  return AutoImport({
+    include: ['**/*.uts.ts'],
+    imports: [
+      {
+        [uniApi]: [
+          'defineOnApi',
+          'defineOffApi',
+          'defineTaskApi',
+          'defineSyncApi',
+          'defineAsyncApi',
+        ],
+      },
+    ],
+  })
+}
+
+function uts2ts(): Plugin {
+  return {
+    name: 'uts2ts',
+    config() {
+      return {
+        resolve: {
+          extensions: [
+            '.mjs',
+            '.js',
+            '.mts',
+            '.ts',
+            '.jsx',
+            '.tsx',
+            '.json',
+            '.uts.ts',
+          ],
+          alias: [
+            {
+              find: '@dcloudio/uni-runtime',
+              replacement: resolve('../uni-runtime/src/index.ts'),
+            },
+            {
+              find: /^@dcloudio\/uni-ext-api\/(.*)/,
+              replacement: '$1',
+              customResolver(source) {
+                return resolveExtApi(source)
+              },
+            },
+          ],
+        },
+      }
+    },
+    buildStart() {
+      // 清理临时目录
+      fs.emptyDirSync(extApiDirTemp)
+    },
+    buildEnd(error) {
+      if (!error) {
+        // 清理临时目录
+        fs.emptyDirSync(extApiDirTemp)
+      }
+    },
+  }
+}
+
+async function checkExtApiTypes() {
+  await execa('tsc', ['-p', './tsconfig.api.json'], {
+    stdio: 'inherit',
+  })
+}

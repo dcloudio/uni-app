@@ -1048,7 +1048,7 @@ function addBase(filePath) {
 function getRealPath(filePath) {
   const { base, assets } = __uniConfig.router;
   if (base === "./") {
-    if (filePath.indexOf("./static/") === 0 || assets && filePath.indexOf("./" + assets + "/") === 0) {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
       filePath = filePath.slice(1);
     }
   }
@@ -1481,7 +1481,7 @@ function normalizeErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + uniShared.LINEFEED + errMsg.stack);
+    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -1792,6 +1792,8 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
   return () => {
     const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
     size.width = rootEl.offsetWidth;
     size.height = rootEl.offsetHeight;
     reset();
@@ -3299,7 +3301,10 @@ function useBase(props2, rootRef, emit2) {
       return isNaN(maxlength2) ? 140 : maxlength2;
     }
   });
-  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  let value = "";
+  {
+    value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  }
   const state = vue.reactive({
     value,
     valueOrigin: value,
@@ -3328,13 +3333,16 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state, emit2, trigger) {
-  const valueChangeFn = uniShared.debounce(
-    (val) => {
-      state.value = getValueString(val, props2.type);
-    },
-    100,
-    { setTimeout, clearTimeout }
-  );
+  let valueChangeFn = null;
+  {
+    valueChangeFn = uniShared.debounce(
+      (val) => {
+        state.value = getValueString(val, props2.type);
+      },
+      100,
+      { setTimeout, clearTimeout }
+    );
+  }
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -4939,7 +4947,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: shared.extend({}, navigatorProps, {
+  props: /* @__PURE__ */ shared.extend({}, navigatorProps, {
     renderLink: {
       type: Boolean,
       default: true
@@ -5097,17 +5105,6 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let scopedIndex = 0;
-function useScopedClass(indicatorHeightRef) {
-  const className = `uni-picker-view-content-${scopedIndex++}`;
-  function updateStyle() {
-    const style = document.createElement("style");
-    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`;
-    document.head.appendChild(style);
-  }
-  vue.watch(() => indicatorHeightRef.value, updateStyle);
-  return className;
-}
 const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   setup(props2, {
@@ -5127,7 +5124,6 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const {
       state: scopedAttrsState
     } = useScopedAttrs();
-    const className = useScopedClass(indicatorHeight);
     let scroller;
     const state = vue.reactive({
       current: currentRef.value,
@@ -5197,11 +5193,12 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         }) => indicatorHeight.value = height
       }, null, 8, ["onResize"])], 16), vue.createVNode("div", {
         "ref": contentRef,
-        "class": ["uni-picker-view-content", className],
+        "class": ["uni-picker-view-content"],
         "style": {
-          padding
+          padding,
+          "--picker-view-column-indicator-height": `${indicatorHeight.value}px`
         }
-      }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
+      }, [defaultSlots], 4)], 40, ["onWheel", "onClick"])], 512);
     };
   }
 });
@@ -7543,7 +7540,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
 });
 const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
-  props: shared.extend({}, hoverProps),
+  props: /* @__PURE__ */ shared.extend({}, hoverProps),
   setup(props2, {
     slots
   }) {
@@ -7585,7 +7582,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
   }
 }
 function initHooks(options, instance, publicThis) {
-  var _a;
+  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -7611,7 +7608,7 @@ function initHooks(options, instance, publicThis) {
       invokeHook(publicThis, uniShared.ON_LOAD, query);
       delete instance.attrs.__pageQuery;
       if (true) {
-        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
           invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }
@@ -11451,25 +11448,28 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
   () => {
     initBrowserInfo();
     const { theme, language, browserName, browserVersion } = browserInfo;
-    return {
-      appId: __uniConfig.appId,
-      appName: __uniConfig.appName,
-      appVersion: __uniConfig.appVersion,
-      appVersionCode: __uniConfig.appVersionCode,
-      appLanguage: getLocale ? getLocale() : language,
-      enableDebug: false,
-      hostSDKVersion: void 0,
-      hostPackageName: void 0,
-      hostFontSizeSetting: void 0,
-      hostName: browserName,
-      hostVersion: browserVersion,
-      hostTheme: theme,
-      hostLanguage: language,
-      language,
-      SDKVersion: "",
-      theme,
-      version: ""
-    };
+    return shared.extend(
+      {
+        appId: __uniConfig.appId,
+        appName: __uniConfig.appName,
+        appVersion: __uniConfig.appVersion,
+        appVersionCode: __uniConfig.appVersionCode,
+        appLanguage: getLocale ? getLocale() : language,
+        enableDebug: false,
+        hostSDKVersion: void 0,
+        hostPackageName: void 0,
+        hostFontSizeSetting: void 0,
+        hostName: browserName,
+        hostVersion: browserVersion,
+        hostTheme: theme,
+        hostLanguage: language,
+        language,
+        SDKVersion: "",
+        theme,
+        version: ""
+      },
+      {}
+    );
   }
 );
 const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
@@ -11618,6 +11618,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       tabBar2.color = tabBarStyle.color;
       tabBar2.selectedColor = tabBarStyle.selectedColor;
       tabBar2.blurEffect = tabBarStyle.blurEffect;
+      tabBar2.midButton = tabBarStyle.midButton;
       if (tabBarStyle.list && tabBarStyle.list.length) {
         tabBarStyle.list.forEach((item, index2) => {
           tabBar2.list[index2].iconPath = item.iconPath;
@@ -12672,7 +12673,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-const PageBody = defineSystemComponent({
+const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -12700,7 +12701,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-const index = defineSystemComponent({
+const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());

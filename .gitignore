@@ -13,7 +13,7 @@ packages/uni-app-uts/dist
 packages/uni-cli-utils/dist
 packages/uni-preprocess/dist
 
-
+.env
 .DS_Store
 node_modules
 coverage

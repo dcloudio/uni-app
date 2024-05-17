@@ -16,6 +16,7 @@ import type { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
 import { withSourcemap } from '../../../../vite/utils/utils'
 import { normalizeNodeModules } from '../../../../utils'
+import { getIsStaticFile } from './static'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
 
@@ -38,7 +39,7 @@ const emittedHashMap = new WeakMap<ResolvedConfig, Set<string>>()
  */
 export function assetPlugin(
   config: ResolvedConfig,
-  options?: { isAndroidX: boolean }
+  options?: { isAndroidX?: boolean }
 ): Plugin {
   // assetHashToFilenameMap initialization in buildStart causes getAssetFilename to return undefined
   assetHashToFilenameMap.set(config, new Map())
@@ -99,7 +100,9 @@ export function assetPlugin(
                 )
               },
             } as PluginContext)
-          : this
+          : this,
+        false,
+        getIsStaticFile()
       )
       if (options?.isAndroidX) {
         this.emitFile({
@@ -195,9 +198,10 @@ export function fileToUrl(
   id: string,
   config: ResolvedConfig,
   ctx: PluginContext,
-  canInline: boolean = false
+  canInline: boolean = false,
+  isStaticFile: (file: string) => boolean
 ): string {
-  return fileToBuiltUrl(id, config, ctx, false, canInline)
+  return fileToBuiltUrl(id, config, ctx, false, canInline, isStaticFile)
 }
 
 export function getAssetFilename(
@@ -309,7 +313,8 @@ function fileToBuiltUrl(
   config: ResolvedConfig,
   pluginContext: PluginContext,
   skipPublicCheck = false,
-  canInline = false
+  canInline = false,
+  isStaticFile: (file: string) => boolean
 ): string {
   if (!skipPublicCheck && checkPublicFile(id, config)) {
     return config.base + id.slice(1)
@@ -352,8 +357,9 @@ function fileToBuiltUrl(
     }
 
     const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+    const isStatic = isStaticFile(file)
     let fileName =
-      file.startsWith(inputDir) && file.includes('/static/')
+      file.startsWith(inputDir) && isStatic
         ? // 需要处理 HBuilderX 项目中的 node_modules 目录
           normalizeNodeModules(path.posix.relative(inputDir, file))
         : assetFileNamesToFileName(assetFileNames, file, contentHash, content)
@@ -362,7 +368,7 @@ function fileToBuiltUrl(
       map.set(contentHash, fileName)
     }
 
-    if (!fileName.includes('/static/')) {
+    if (!isStatic) {
       const emittedSet = emittedHashMap.get(config)!
       if (!emittedSet.has(contentHash)) {
         pluginContext.emitFile({
@@ -389,7 +395,8 @@ export function urlToBuiltUrl(
   url: string,
   importer: string,
   config: ResolvedConfig,
-  pluginContext: PluginContext
+  pluginContext: PluginContext,
+  isStaticFile: (file: string) => boolean
 ): string {
   if (checkPublicFile(url, config)) {
     return config.base + url.slice(1)
@@ -402,6 +409,8 @@ export function urlToBuiltUrl(
     config,
     pluginContext,
     // skip public check since we just did it above
-    true
+    true,
+    false,
+    isStaticFile
   )
 }

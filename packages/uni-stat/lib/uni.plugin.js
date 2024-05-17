@@ -35,6 +35,10 @@ var index = () => [
             name: 'uni:stat',
             enforce: 'pre',
             config(config, env) {
+                if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+                    // 不需要统计
+                    return;
+                }
                 const inputDir = process.env.UNI_INPUT_DIR;
                 const platform = process.env.UNI_PLATFORM;
                 const titlesJson = Object.create(null);

@@ -7,13 +7,15 @@ import { hasOwn, isArray } from '@vue/shared'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
-  UTSOutputOptions,
   UTSResult,
 } from '@dcloudio/uts'
 import { get } from 'android-versions'
 import { normalizePath, parseJson, resolveSourceMapPath } from './shared'
 import {
   type CompilerServer,
+  type RunDevOptions,
+  type RunOptions,
+  type RunProdOptions,
   type ToKotlinOptions,
   genComponentsCode,
   genUTSPlatformResource,
@@ -40,6 +42,7 @@ import {
   type MessageSourceLocation,
   hbuilderFormatter,
 } from './stacktrace/kotlin'
+import { uvueOutDir } from './uvue'
 
 export interface KotlinCompilerServer extends CompilerServer {
   getKotlincHome(): string
@@ -84,7 +87,7 @@ function parseKotlinPackage(filename: string) {
 
 const pluginInjectApis = new Set<string>()
 
-function addInjectApis(apis: string[]) {
+export function addInjectApis(apis: string[]) {
   apis.forEach((api) => {
     pluginInjectApis.add(api)
   })
@@ -94,12 +97,26 @@ export function getInjectApis() {
   return [...pluginInjectApis]
 }
 
+const pluginInjectComponents = new Set<string>()
+
+export function addInjectComponents(components: string[]) {
+  components.forEach((component) => {
+    pluginInjectComponents.add(component)
+  })
+}
+
+export function getInjectComponents() {
+  return [...pluginInjectComponents]
+}
+
 export async function runKotlinProd(
   filename: string,
-  components: Record<string, string>,
   {
-    pluginId,
+    outFilename,
+    components,
+    uniModuleId,
     isPlugin,
+    isModule,
     isX,
     isSingleThread,
     hookClass,
@@ -107,17 +124,7 @@ export async function runKotlinProd(
     transform,
     sourceMap,
     uniModules,
-  }: {
-    pluginId: string
-    isPlugin: boolean
-    isX: boolean
-    isSingleThread: boolean
-    hookClass: string
-    extApis?: Record<string, [string, string]>
-    transform?: UTSOutputOptions['transform']
-    sourceMap?: boolean
-    uniModules: string[]
-  }
+  }: RunProdOptions
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -126,16 +133,18 @@ export async function runKotlinProd(
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const result = await compile(filename, {
-    inputDir,
+    inputDir: isModule ? uvueOutDir() : inputDir,
     outputDir,
     sourceMap: !!sourceMap,
     components,
     isX,
     isSingleThread,
     isPlugin,
+    isModule,
     extApis,
     transform,
     uniModules,
+    outFilename,
   })
   if (!result) {
     return
@@ -156,27 +165,31 @@ export async function runKotlinProd(
   }
 
   if (result.inject_apis && result.inject_apis.length) {
-    if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
+    if (isModule) {
+      // noop
+    } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
       updateManifestModules(inputDir, result.inject_apis)
     } else {
       addInjectApis(result.inject_apis)
     }
   }
-
-  genUTSPlatformResource(filename, {
-    isX,
-    pluginId,
-    inputDir,
-    outputDir,
-    platform: 'app-android',
-    extname: '.kt',
-    components,
-    package: parseKotlinPackage(filename).package + '.',
-    hookClass,
-    result,
-    provider: resolveConfigProvider('app-android', pluginId, transform),
-    uniModules,
-  })
+  // module 模式，不需要处理资源
+  if (!isModule) {
+    genUTSPlatformResource(filename, {
+      isX,
+      pluginId: uniModuleId,
+      inputDir,
+      outputDir,
+      platform: 'app-android',
+      extname: '.kt',
+      components,
+      package: parseKotlinPackage(filename).package + '.',
+      hookClass,
+      result,
+      provider: resolveConfigProvider('app-android', uniModuleId, transform),
+      uniModules,
+    })
+  }
 
   return result
 }
@@ -225,18 +238,16 @@ export type RunKotlinBuildResult = UTSResult & {
   kotlinc: false
 }
 
-interface RunKotlinDevOptions {
+export interface RunKotlinProdOptions extends RunOptions {
+  hookClass: string
+  pluginId: string
+}
+
+export interface RunKotlinDevOptions extends RunOptions {
   components: Record<string, string>
-  isX: boolean
-  isSingleThread: boolean
-  isPlugin: boolean
-  sourceMap: boolean
   cacheDir: string
   pluginRelativeDir: string
   is_uni_modules: boolean
-  extApis?: Record<string, [string, string]>
-  transform?: UTSOutputOptions['transform']
-  uniModules: string[]
 }
 
 export async function runKotlinDev(
@@ -253,7 +264,7 @@ export async function runKotlinDev(
     transform,
     sourceMap,
     uniModules,
-  }: RunKotlinDevOptions
+  }: RunDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
   if (filename.includes('app-ios')) {
@@ -300,13 +311,7 @@ export async function runKotlinDev(
     if (!compilerServer) {
       throw new Error(`项目使用了uts插件，正在安装 uts Android 运行扩展...`)
     }
-    const {
-      getDefaultJar,
-      getKotlincHome,
-      compile: compileDex,
-      checkDependencies,
-      checkRResources,
-    } = compilerServer
+    const { checkDependencies, checkRResources } = compilerServer
     let deps: string[] = []
     if (checkDependencies) {
       deps = await checkDeps(filename, checkDependencies)
@@ -348,31 +353,19 @@ export async function runKotlinDev(
       ? // 加密插件已经迁移到普通插件目录了，理论上不需要了
         getUniModulesEncryptCacheJars(cacheDir, uniModules) // 加密插件jar
           .concat(getUniModulesCacheJars(cacheDir, uniModules)) // 普通插件jar
-          .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候）
+          .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候,也不应该需要了，默认cache目录即可）
       : []
 
-    const options = {
-      pageCount: 0,
-      kotlinc: resolveKotlincArgs(
-        kotlinFiles,
-        jarFile,
-        getKotlincHome(),
-        (isX ? getDefaultJar(2) : getDefaultJar())
-          .concat(extraJars)
-          .concat(depJars)
-      ),
-      d8: resolveD8Args(jarFile),
-      sourceRoot: inputDir,
-      sourceMapPath: resolveSourceMapFile(outputDir, kotlinFile),
-      stderrListener: createStderrListener(
-        outputDir,
-        resolveSourceMapPath(),
-        waiting
-      ),
-    }
-    // console.log('dex compile options: ', options)
-    const { code, msg } = await compileDex(options, inputDir)
-    // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
+    const { code, msg } = await compileAndroidDex(
+      isX,
+      compilerServer,
+      kotlinFiles,
+      jarFile,
+      resolveSourceMapFile(outputDir, kotlinFile),
+      extraJars.concat(depJars),
+      createStderrListener(outputDir, resolveSourceMapPath(), waiting)
+    )
+
     // 等待 stderrListener 执行完毕
     if (waiting.done) {
       await waiting.done
@@ -405,6 +398,36 @@ export async function runKotlinDev(
     //   )} 编译失败`
     // }
   }
+  return result
+}
+
+export async function compileAndroidDex(
+  isX: boolean,
+  compilerServer: KotlinCompilerServer,
+  kotlinFiles: string[],
+  jarFile: string,
+  sourceMapPath: string,
+  depJars: string[],
+  stderrListener: (data: string) => void
+) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const { getDefaultJar, getKotlincHome, compile: compileDex } = compilerServer
+  const options = {
+    pageCount: 0,
+    kotlinc: resolveKotlincArgs(
+      kotlinFiles,
+      jarFile,
+      getKotlincHome(),
+      (isX ? getDefaultJar(2) : getDefaultJar()).concat(depJars)
+    ),
+    d8: resolveD8Args(jarFile),
+    sourceRoot: inputDir,
+    sourceMapPath,
+    stderrListener,
+  }
+  // console.log('dex compile options: ', options)
+  const result = await compileDex(options, inputDir)
+  // console.log('dex compile time: ' + (Date.now() - time) + 'ms')
   return result
 }
 
@@ -534,9 +557,11 @@ export async function compile(
     isX,
     isSingleThread,
     isPlugin,
+    isModule,
     extApis,
     transform,
     uniModules,
+    outFilename,
   }: ToKotlinOptions
 ) {
   const { bundle, UTSTarget } = getUTSCompiler()
@@ -569,7 +594,7 @@ export async function compile(
   const input: UTSInputOptions = {
     root: inputDir,
     filename,
-    pluginId,
+    pluginId: isPlugin ? pluginId : '',
     paths: {
       vue: 'io.dcloud.uniapp.vue',
       '@dcloudio/uni-app': 'io.dcloud.uniapp.framework',
@@ -595,15 +620,17 @@ export async function compile(
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input,
     output: {
+      outFilename: outFilename ? outFilename : undefined,
       isX,
       isSingleThread,
       isPlugin,
+      isModule,
       outDir: outputDir,
       package: pluginPackage,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
       extname: 'kt',
       imports,
-      logFilename: true,
+      logFilename: isModule ? false : true,
       noColor: !isColorSupported(),
       split: true,
       disableSplitManifest: true,
@@ -858,10 +885,8 @@ export function createStderrListener(
   }
 }
 
-export function kotlinDir(outputDir: string) {
-  return (
-    process.env.UNI_APP_X_CACHE_DIR || path.resolve(outputDir, '../.kotlin')
-  )
+export function kotlinDir(_outputDir: string) {
+  return process.env.UNI_APP_X_CACHE_DIR
 }
 
 function kotlinAARDir(kotlinDir: string) {

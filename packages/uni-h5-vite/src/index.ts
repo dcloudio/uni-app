@@ -5,6 +5,8 @@ import {
   isVueSfcFile,
   resolveUTSCompiler,
   uniCssScopedPlugin,
+  uniDecryptUniModulesPlugin,
+  uniEncryptUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniH5Plugin } from './plugin'
@@ -26,13 +28,13 @@ import * as uniCliShared from '@dcloudio/uni-cli-shared'
 export default [
   ...(process.env.UNI_APP_X === 'true'
     ? [
+        uniDecryptUniModulesPlugin(),
         uniUTSUVueJavaScriptPlugin(),
         resolveUTSCompiler().uts2js({
           inputDir: process.env.UNI_INPUT_DIR,
           version: process.env.UNI_COMPILER_VERSION,
           cacheRoot: path.resolve(
-            process.env.UNI_APP_X_CACHE_DIR ||
-              path.resolve(process.env.UNI_OUTPUT_DIR, '../.web'),
+            process.env.UNI_APP_X_CACHE_DIR,
             '.uts2js/cache'
           ),
           modules: {
@@ -47,15 +49,18 @@ export default [
     filter: (id) => isVueSfcFile(id) && !isAppVue(id),
   }),
   uniResolveIdPlugin(),
-  uniMainJsPlugin(),
-  uniManifestJsonPlugin(),
-  uniPagesJsonPlugin(),
+  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+    ? []
+    : [uniMainJsPlugin(), uniManifestJsonPlugin(), uniPagesJsonPlugin()]),
   uniInjectPlugin(),
   uniCssPlugin(),
   uniSSRPlugin(),
   uniSetupPlugin(),
   uniRenderjsPlugin(),
   uniH5Plugin(),
+  ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
+    ? [uniEncryptUniModulesPlugin()]
+    : []),
   uniPostVuePlugin(),
   uniPostSourceMapPlugin(),
 ]

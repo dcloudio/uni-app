@@ -256,7 +256,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "saveVideoToPhotosAlbum": {
@@ -264,7 +264,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getVideoInfo": {

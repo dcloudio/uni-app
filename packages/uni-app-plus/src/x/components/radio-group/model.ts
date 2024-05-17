@@ -60,7 +60,7 @@ class UniRadioGroupChangeEventDetail {
   }
 }
 
-export class UniRadioGroupChangeEvent extends CustomEvent<UniRadioGroupChangeEventDetail> {
+export class UniRadioGroupChangeEvent extends UniCustomEvent<UniRadioGroupChangeEventDetail> {
   constructor(value: string) {
     super('change', {
       detail: new UniRadioGroupChangeEventDetail(value),

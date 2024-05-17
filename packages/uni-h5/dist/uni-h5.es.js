@@ -1,6 +1,6 @@
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, onMounted, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, onDeactivated, createApp, isReactive, Transition, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, LINEFEED, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -2367,7 +2367,7 @@ function addBase(filePath) {
 function getRealPath(filePath) {
   const { base, assets } = __uniConfig.router;
   if (base === "./") {
-    if (filePath.indexOf("./static/") === 0 || assets && filePath.indexOf("./" + assets + "/") === 0) {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
       filePath = filePath.slice(1);
     }
   }
@@ -3134,7 +3134,7 @@ function normalizeErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + LINEFEED + errMsg.stack);
+    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -7081,6 +7081,8 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   watch(() => extend({}, size), (value) => emit2("resize", value));
   return () => {
     const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
     size.width = rootEl.offsetWidth;
     size.height = rootEl.offsetHeight;
     reset();
@@ -9199,7 +9201,7 @@ function throttle(fn, wait) {
 const passiveOptions$1 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
-let inited;
+let inited = false;
 const setUserAction = (userAction) => states.forEach((vm) => vm.userAction = userAction);
 function addInteractListener(vm = { userAction: false }) {
   if (!inited) {
@@ -9466,7 +9468,10 @@ function useBase(props2, rootRef, emit2) {
       return isNaN(maxlength2) ? 140 : maxlength2;
     }
   });
-  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  let value = "";
+  {
+    value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  }
   const state2 = reactive({
     value,
     valueOrigin: value,
@@ -9495,13 +9500,16 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state2, emit2, trigger) {
-  const valueChangeFn = debounce(
-    (val) => {
-      state2.value = getValueString(val, props2.type);
-    },
-    100,
-    { setTimeout, clearTimeout }
-  );
+  let valueChangeFn = null;
+  {
+    valueChangeFn = debounce(
+      (val) => {
+        state2.value = getValueString(val, props2.type);
+      },
+      100,
+      { setTimeout, clearTimeout }
+    );
+  }
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -11417,7 +11425,7 @@ const index$p = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: extend({}, navigatorProps, {
+  props: /* @__PURE__ */ extend({}, navigatorProps, {
     renderLink: {
       type: Boolean,
       default: true
@@ -12278,17 +12286,6 @@ function useScroller(element, options) {
     handleTouchEnd
   };
 }
-let scopedIndex = 0;
-function useScopedClass(indicatorHeightRef) {
-  const className = `uni-picker-view-content-${scopedIndex++}`;
-  function updateStyle2() {
-    const style = document.createElement("style");
-    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`;
-    document.head.appendChild(style);
-  }
-  watch(() => indicatorHeightRef.value, updateStyle2);
-  return className;
-}
 function useCustomClick(dom) {
   const MAX_MOVE = 20;
   let x = 0;
@@ -12342,7 +12339,6 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const {
       state: scopedAttrsState
     } = useScopedAttrs();
-    const className = useScopedClass(indicatorHeight);
     let scroller;
     const state2 = reactive({
       current: currentRef.value,
@@ -12465,11 +12461,12 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         }) => indicatorHeight.value = height
       }, null, 8, ["onResize"])], 16), createVNode("div", {
         "ref": contentRef,
-        "class": ["uni-picker-view-content", className],
+        "class": ["uni-picker-view-content"],
         "style": {
-          padding
+          padding,
+          "--picker-view-column-indicator-height": `${indicatorHeight.value}px`
         }
-      }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
+      }, [defaultSlots], 4)], 40, ["onWheel", "onClick"])], 512);
     };
   }
 });
@@ -15146,7 +15143,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
 });
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
-  props: extend({}, hoverProps),
+  props: /* @__PURE__ */ extend({}, hoverProps),
   setup(props2, {
     slots
   }) {
@@ -15245,7 +15242,7 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
   }
 }
 function initHooks(options, instance2, publicThis) {
-  var _a;
+  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -15271,7 +15268,7 @@ function initHooks(options, instance2, publicThis) {
       invokeHook(publicThis, ON_LOAD, query);
       delete instance2.attrs.__pageQuery;
       if (true) {
-        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
           invokeHook(publicThis, ON_SHOW);
         }
       }
@@ -18673,25 +18670,28 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
   () => {
     initBrowserInfo();
     const { theme, language, browserName, browserVersion } = browserInfo;
-    return {
-      appId: __uniConfig.appId,
-      appName: __uniConfig.appName,
-      appVersion: __uniConfig.appVersion,
-      appVersionCode: __uniConfig.appVersionCode,
-      appLanguage: getLocale ? getLocale() : language,
-      enableDebug: false,
-      hostSDKVersion: void 0,
-      hostPackageName: void 0,
-      hostFontSizeSetting: void 0,
-      hostName: browserName,
-      hostVersion: browserVersion,
-      hostTheme: theme,
-      hostLanguage: language,
-      language,
-      SDKVersion: "",
-      theme,
-      version: ""
-    };
+    return extend(
+      {
+        appId: __uniConfig.appId,
+        appName: __uniConfig.appName,
+        appVersion: __uniConfig.appVersion,
+        appVersionCode: __uniConfig.appVersionCode,
+        appLanguage: getLocale ? getLocale() : language,
+        enableDebug: false,
+        hostSDKVersion: void 0,
+        hostPackageName: void 0,
+        hostFontSizeSetting: void 0,
+        hostName: browserName,
+        hostVersion: browserVersion,
+        hostTheme: theme,
+        hostLanguage: language,
+        language,
+        SDKVersion: "",
+        theme,
+        version: ""
+      },
+      {}
+    );
   }
 );
 const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
@@ -19314,7 +19314,6 @@ const MIMEType = {
   }
 };
 const ALL = "all";
-addInteractListener();
 function isWXEnv() {
   const ua2 = window.navigator.userAgent.toLowerCase();
   const matchUA = ua2.match(/MicroMessenger/i);
@@ -19326,6 +19325,7 @@ function _createInput({
   type,
   extension
 }) {
+  addInteractListener();
   const inputEl = document.createElement("input");
   inputEl.type = "file";
   updateElementStyle(inputEl, {
@@ -22418,6 +22418,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       tabBar2.color = tabBarStyle.color;
       tabBar2.selectedColor = tabBarStyle.selectedColor;
       tabBar2.blurEffect = tabBarStyle.blurEffect;
+      tabBar2.midButton = tabBarStyle.midButton;
       if (tabBarStyle.list && tabBarStyle.list.length) {
         tabBarStyle.list.forEach((item, index2) => {
           tabBar2.list[index2].iconPath = item.iconPath;
@@ -25727,7 +25728,7 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const PageBody = defineSystemComponent({
+const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -25755,7 +25756,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-const index = defineSystemComponent({
+const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());

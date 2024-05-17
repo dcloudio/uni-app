@@ -8,6 +8,7 @@ import {
   parseManifestJsonOnce,
   uniCssScopedPlugin,
   uniEasycomPlugin,
+  uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniViteInjectPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -41,19 +42,31 @@ export function initVuePlugins() {
   const plugins = [
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniHBuilderXConsolePlugin(),
-    uniMainJsPlugin(),
-    uniManifestJsonPlugin(),
-    uniPagesJsonPlugin(),
-    uniViteInjectPlugin('uni:app-inject', initAppProvide()),
-    uniRenderjsPlugin(),
-    uniTemplatePlugin(),
-    uniStatsPlugin(),
-    uniAppVuePlugin(),
-    uniConfusionPlugin(),
   ]
-  const filter = initUniCssScopedPluginFilter(process.env.UNI_INPUT_DIR)
-  if (filter) {
-    plugins.unshift(uniCssScopedPlugin({ filter }))
+  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    plugins.push(
+      uniViteInjectPlugin('uni:app-inject', initAppProvide()),
+      uniRenderjsPlugin(),
+      uniAppVuePlugin(),
+      uniEncryptUniModulesPlugin()
+    )
+  } else {
+    plugins.push(
+      uniMainJsPlugin(),
+      uniManifestJsonPlugin(),
+      uniPagesJsonPlugin(),
+      uniViteInjectPlugin('uni:app-inject', initAppProvide()),
+      uniRenderjsPlugin(),
+      uniTemplatePlugin(),
+      uniStatsPlugin(),
+      uniAppVuePlugin(),
+      uniConfusionPlugin()
+    )
+    const filter = initUniCssScopedPluginFilter(process.env.UNI_INPUT_DIR)
+    if (filter) {
+      plugins.unshift(uniCssScopedPlugin({ filter }))
+    }
   }
+
   return plugins
 }

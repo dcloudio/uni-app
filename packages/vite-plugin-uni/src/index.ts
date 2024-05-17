@@ -178,7 +178,6 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   plugins.push({
     name: 'uni',
     config: createConfig(options, uniPlugins),
-    // resolveId: createResolveId(options),
     configResolved: createConfigResolved(options),
   })
   plugins.push(...uniPlugins)
@@ -217,6 +216,9 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
       // app-ios
       addCopyPlugin = true
     }
+  }
+  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    addCopyPlugin = false
   }
   if (addCopyPlugin) {
     plugins.push(
@@ -286,12 +288,14 @@ function createUVueAndroidPlugins(options: VitePluginUniResolvedOptions) {
     process.env.NODE_ENV = process.env.UNI_NODE_ENV
   }
 
-  plugins.push(
-    uniCopyPlugin({
-      outputDir: process.env.UNI_OUTPUT_DIR,
-      copyOptions: options.copyOptions,
-    })
-  )
+  if (process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+    plugins.push(
+      uniCopyPlugin({
+        outputDir: process.env.UNI_OUTPUT_DIR,
+        copyOptions: options.copyOptions,
+      })
+    )
+  }
 
   return plugins
 }

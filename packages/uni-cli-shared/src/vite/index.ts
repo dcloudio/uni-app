@@ -9,6 +9,7 @@ import type {
   TemplateCompiler,
 } from '@vue/compiler-sfc'
 import type { UniViteCopyPluginOptions } from './plugins/copy'
+export { getIsStaticFile } from './plugins/vitejs/plugins/static'
 
 export const cssTarget = 'chrome53'
 export interface CopyOptions {
@@ -45,6 +46,8 @@ export * from './utils'
 export * from './plugins'
 export * from './features'
 export * from './autoImport'
+
+export * from './cloud'
 
 // https://github.com/vitejs/vite/blob/aac2ef77521f66ddd908f9d97020b8df532148cf/packages/vite/src/node/server/searchRoot.ts#L38
 // vite 在初始化阶段会执行 initTSConfck，此时会 searchForWorkspaceRoot，如果找到了 pnpm-workspace.yaml 文件，会将其作为 root

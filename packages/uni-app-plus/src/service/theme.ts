@@ -71,15 +71,17 @@ export function useTabBarThemeChange(
         selectedColor,
         backgroundColor,
         borderStyle,
+        midButton,
       } = parseTheme(options)
-      tabBar &&
+      if (tabBar) {
         tabBar.setTabBarStyle({
           color,
           selectedColor,
           backgroundColor,
           borderStyle,
+          midButton,
         })
-      tabBar &&
+
         tabBar.setTabBarItems({
           list: list.map((item) => ({
             iconPath: item.iconPath,
@@ -87,6 +89,7 @@ export function useTabBarThemeChange(
             visible: item.visible,
           })),
         })
+      }
     }
 
     // 由于应用首次启动获取不到手机 theme 应用首次启动设置下 tabBar

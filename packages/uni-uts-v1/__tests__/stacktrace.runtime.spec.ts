@@ -18,6 +18,7 @@ at java.lang.reflect.Method.invoke(Native Method)
 at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:627)
 at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
         {
+          language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
         }
@@ -32,6 +33,7 @@ at java.lang.reflect.Method.invoke(Native Method)
 at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:627)
 at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
         {
+          language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
         }
@@ -47,6 +49,7 @@ at java.lang.reflect.Method.invoke(Native Method)
 at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:627)
 at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
         {
+          language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
         }
@@ -58,6 +61,7 @@ at io.dcloud.uniapp.vue.shared.IndexKt.callFunction(index.kt:638)`,
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
         {
+          language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
           logType: 'warn',
@@ -70,6 +74,23 @@ at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
 at java.util.ArrayList.get(ArrayList.java:437)
 at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
         {
+          language: 'kotlin',
+          appid: '__UNI__XXXXXXX',
+          cacheDir,
+          logType: 'error',
+        }
+      )
+    ).toMatchSnapshot()
+
+    expect(
+      parseUTSKotlinRuntimeStacktrace(
+        `java.lang.ClassCastException: java.lang.String cannot be cast to java.lang.Boolean
+at uni.UNIXXXXXXX.GenComponentsTestBooleanTestBoolean.getDisabled1(test-boolean.kt:68)
+at uni.UNIXXXXXXX.GenComponentsTestBooleanTestBoolean$1.invoke(test-boolean.kt:21)
+at java.lang.reflect.Method.invoke(Native Method)
+at io.dcloud.uniapp.vue.shared.IndexKt$callFunction$invoke$1.invoke(index.kt:708)`,
+        {
+          language: 'kotlin',
           appid: '__UNI__XXXXXXX',
           cacheDir,
           logType: 'error',
@@ -86,6 +107,7 @@ at uni.UNIXXXXXXX.IndexKt.test(index.kt:40)`,
       parseUTSJavaScriptRuntimeStacktrace(
         `app-service.js(5:60) ReferenceError:Can't find variable: a @app-service.js:5:60`,
         {
+          language: 'javascript',
           cacheDir,
         }
       )
@@ -99,6 +121,7 @@ callWithErrorHandling@uni-app-x-framework.js:2279:23
 callWithAsyncErrorHandling@uni-app-x-framework.js:2286:38
 @uni-app-x-framework.js:4763:45`,
         {
+          language: 'javascript',
           cacheDir,
         }
       )

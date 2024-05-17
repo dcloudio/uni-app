@@ -60,8 +60,10 @@ export function initHooks(
       }
       invokeHook(publicThis, ON_LOAD, query)
       delete instance.attrs.__pageQuery
-      // iOS-X 与安卓一致使用页面 onShow 时机
-      if (__PLATFORM__ !== 'app' || !__X__) {
+      // iOS-X 的非 Tab 页面与 uni-app 一致固定触发 onShow
+      if (
+        !(__PLATFORM__ === 'app' && __X__ && publicThis.$page?.meta.isTabBar)
+      ) {
         if (publicThis.$page?.openType !== 'preloadPage') {
           invokeHook(publicThis, ON_SHOW)
         }

@@ -130,13 +130,22 @@ const vuePreset = {
     'defineComponent',
     'defineAsyncComponent',
     'getCurrentInstance',
-    'h',
     'inject',
     'nextTick',
     'provide',
     'useCssModule',
     'createApp',
     'hasInjectionContext',
+
+    // render
+    'h',
+    'mergeProps',
+    'cloneVNode',
+    'isVNode',
+    'resolveComponent',
+    'resolveDirective',
+    'withDirectives',
+    'withModifiers',
 
     // effect scope
     'effectScope',

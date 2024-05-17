@@ -1,4 +1,4 @@
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, LINEFEED, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles, addLeadingSlash, invokeArrayFns, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
 function getCurrentPage() {
@@ -420,7 +420,7 @@ function normalizeErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + LINEFEED + errMsg.stack);
+    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -1078,7 +1078,23 @@ var ON_POP_GESTURE = "onPopGesture";
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
-  var routeKeys = ["id", "route", "i18n", "isQuit", "isEntry", "isTabBar", "tabBarIndex", "tabBarText", "windowTop", "topWindow", "leftWindow", "rightWindow", "eventChannel"];
+  var routeKeys = [
+    "id",
+    "route",
+    "i18n",
+    "isQuit",
+    "isEntry",
+    "isTabBar",
+    "tabBarIndex",
+    "tabBarText",
+    "windowTop",
+    "topWindow",
+    "leftWindow",
+    "rightWindow",
+    "eventChannel",
+    // 忽略 initRouteMeta产生的 navigationBar 对象
+    "navigationBar"
+  ];
   var navKeys = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
   Object.keys(routeMeta).forEach((key) => {
     if (!routeKeys.includes(key) && !navKeys.includes(key)) {
@@ -1091,11 +1107,13 @@ function parsePageStyle(route) {
       navigationBar[key] = routeMeta[key];
     }
   });
-  if (Object.keys(navigationBar).length) {
-    style.set("navigationBar", navigationBar);
+  if (Object.keys(navigationBar).length > 0) {
     if (navigationBar.navigationBarTextStyle !== "custom" && !routeMeta.isQuit && routeMeta.route !== __uniConfig.realEntryPagePath) {
-      navigationBar["navigationBarAutoBackButton"] = true;
+      style.set("navigationBarAutoBackButton", true);
     }
+    Object.keys(navigationBar).forEach((key) => {
+      style.set(key, navigationBar[key]);
+    });
   }
   return style;
 }
@@ -1130,9 +1148,6 @@ function registerPage(_ref, onCreated) {
   );
   function fn() {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-    nativePage.addPageEventListener(ON_SHOW, (_) => {
-      invokeHook(page, ON_SHOW);
-    });
     nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
@@ -1292,6 +1307,7 @@ function getRealPath(path) {
   }
   return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
 }
+var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
 var selected0 = -1;
 var tabs = /* @__PURE__ */ new Map();
@@ -1346,6 +1362,13 @@ function init() {
         console.error("switchTab: pagePath not found");
       }
     }
+  });
+  tabBar0.addEventListener("tabBarMidButtonTap", function(event) {
+    onTabBarMidButtonTapCallback.forEach((callback) => {
+      if (typeof callback === "function") {
+        callback();
+      }
+    });
   });
   page.startRender();
   page.show(null);
@@ -1823,6 +1846,9 @@ var hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, 
   tabBar.hideTabBarRedDot(/* @__PURE__ */ new Map([["index", index2]]));
   resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
+var onTabBarMidButtonTap = (cb) => {
+  onTabBarMidButtonTapCallback.push(cb);
+};
 var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, (_ref, _ref2) => {
   var {
     frontColor,
@@ -1837,7 +1863,7 @@ var setNavigationBarColor = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
     return reject("getCurrentPages is empty");
   }
   var appPage = page.$nativePage;
-  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBar", /* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]])]]));
+  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTextStyle", frontColor == "#000000" ? "black" : "white"], ["navigationBarBackgroundColor", backgroundColor]]));
   resolve();
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, (options, _ref) => {
@@ -1851,7 +1877,7 @@ var setNavigationBarTitle = /* @__PURE__ */ defineAsyncApi(API_SET_NAVIGATION_BA
     return;
   }
   var appPage = page.$nativePage;
-  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBar", /* @__PURE__ */ new Map([["navigationBarTitleText", options.title]])]]));
+  appPage.updateStyle(/* @__PURE__ */ new Map([["navigationBarTitleText", options.title]]));
   resolve();
 });
 var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
@@ -2193,7 +2219,7 @@ function normalizeArg(arg) {
   return arg;
 }
 function initUTSInstanceMethod(async, opts, instanceId, proxy2) {
-  return initProxyFunction(async, opts, instanceId, proxy2);
+  return initProxyFunction("method", async, opts, instanceId, proxy2);
 }
 function getProxy() {
   if (!proxy) {
@@ -2250,13 +2276,13 @@ function invokePropGetter(args) {
   return resolveSyncResult(args, getProxy().invokeSync(args, () => {
   }));
 }
-function initProxyFunction(async, _ref, instanceId, proxy2) {
+function initProxyFunction(type, async, _ref, instanceId, proxy2) {
   var {
     moduleName,
     moduleType,
     package: pkg,
     class: cls,
-    name: propOrMethod,
+    name: methodName,
     method,
     companion,
     params: methodParams,
@@ -2277,21 +2303,23 @@ function initProxyFunction(async, _ref, instanceId, proxy2) {
         delete callbacks[id2];
       }
     } else {
-      console.error("".concat(pkg).concat(cls, ".").concat(propOrMethod, " ").concat(name, " is not found"));
+      console.error("".concat(pkg).concat(cls, ".").concat(methodName, " ").concat(name, " is not found"));
     }
   };
   var baseArgs = instanceId ? {
     moduleName,
     moduleType,
     id: instanceId,
-    name: propOrMethod,
+    type,
+    name: methodName,
     method: methodParams
   } : {
     moduleName,
     moduleType,
     package: pkg,
     class: cls,
-    name: method || propOrMethod,
+    name: method || methodName,
+    type,
     companion,
     method: methodParams
   };
@@ -2329,7 +2357,7 @@ function initUTSStaticMethod(async, opts) {
       opts.method = "s_" + opts.name;
     }
   }
-  return initProxyFunction(async, opts, 0);
+  return initProxyFunction("method", async, opts, 0);
 }
 var initUTSProxyFunction = initUTSStaticMethod;
 function parseClassMethodName(name, methods) {
@@ -2344,6 +2372,9 @@ function isUndefined(value) {
 function isProxyInterfaceOptions(options) {
   return !isUndefined(options.instanceId);
 }
+function parseClassPropertySetter(name) {
+  return "__$set" + capitalize(name);
+}
 function initUTSProxyClass(options) {
   var {
     moduleName,
@@ -2352,6 +2383,7 @@ function initUTSProxyClass(options) {
     class: cls,
     methods,
     props,
+    setters,
     errMsg
   } = options;
   var baseOptions = {
@@ -2365,6 +2397,7 @@ function initUTSProxyClass(options) {
   var constructorParams = [];
   var staticMethods = {};
   var staticProps = [];
+  var staticSetters = {};
   var isProxyInterface = false;
   if (isProxyInterfaceOptions(options)) {
     isProxyInterface = true;
@@ -2373,6 +2406,7 @@ function initUTSProxyClass(options) {
     constructorParams = options.constructor.params;
     staticMethods = options.staticMethods;
     staticProps = options.staticProps;
+    staticSetters = options.staticSetters;
   }
   if (isUTSiOS()) {
     if (constructorParams.find((p) => p.type === "UTSCallback" || p.type.indexOf("JSONObject") > 0)) {
@@ -2393,7 +2427,7 @@ function initUTSProxyClass(options) {
         for (var _len2 = arguments.length, params = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
           params[_key2] = arguments[_key2];
         }
-        this.__instanceId = initProxyFunction(false, extend({
+        this.__instanceId = initProxyFunction("method", false, extend({
           name: "constructor",
           params: constructorParams
         }, baseOptions), 0).apply(null, params);
@@ -2427,17 +2461,36 @@ function initUTSProxyClass(options) {
                 moduleName,
                 moduleType,
                 id: instance.__instanceId,
+                type: "property",
                 name,
                 errMsg
               });
             }
           }
           return target[name];
+        },
+        set(_, name, newValue) {
+          if (props.includes(name)) {
+            var setter = parseClassPropertySetter(name);
+            if (!target[setter]) {
+              var param = setters[name];
+              if (param) {
+                target[setter] = initProxyFunction("property", false, extend({
+                  name,
+                  params: [param]
+                }, baseOptions), instance.__instanceId, proxy2);
+              }
+            }
+            target[parseClassPropertySetter(name)](newValue);
+            return true;
+          }
+          return false;
         }
       });
       return proxy2;
     }
   };
+  var staticPropSetterCache = {};
   var staticMethodCache = {};
   return new Proxy(ProxyClass, {
     get(target, name, receiver) {
@@ -2461,10 +2514,28 @@ function initUTSProxyClass(options) {
       if (staticProps.includes(name)) {
         return invokePropGetter(extend({
           name,
-          companion: true
+          companion: true,
+          type: "property"
         }, baseOptions));
       }
       return Reflect.get(target, name, receiver);
+    },
+    set(_, name, newValue) {
+      if (staticProps.includes(name)) {
+        var setter = parseClassPropertySetter(name);
+        if (!staticPropSetterCache[setter]) {
+          var param = staticSetters[name];
+          if (param) {
+            staticPropSetterCache[setter] = initProxyFunction("property", false, extend({
+              name,
+              params: [param]
+            }, baseOptions), 0);
+          }
+        }
+        staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+        return true;
+      }
+      return false;
     }
   });
 }
@@ -2577,6 +2648,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   loadFontFace,
   navigateBack,
   navigateTo,
+  onTabBarMidButtonTap,
   pageScrollTo,
   reLaunch,
   redirectTo,
@@ -2939,6 +3011,11 @@ function $dispatchParent(context, componentName, eventName) {
     }
   }
 }
+function initUniCustomEvent(element, e) {
+  e.target = element;
+  e.currentTarget = element;
+  return e;
+}
 var CHECKBOX_NAME = "Checkbox";
 var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
 class UniCheckboxElement extends UniElementImpl {
@@ -3211,7 +3288,7 @@ class UniCheckboxGroupChangeEventDetail {
     this.value = value;
   }
 }
-class UniCheckboxGroupChangeEvent extends CustomEvent {
+class UniCheckboxGroupChangeEvent extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniCheckboxGroupChangeEventDetail(value)
@@ -3252,7 +3329,7 @@ const checkboxGroup = /* @__PURE__ */ defineBuiltInComponent({
           i.checked = info.checked;
         }
       });
-      emit("change", new UniCheckboxGroupChangeEvent(_getValue()));
+      emit("change", initUniCustomEvent(uniCheckboxGroupElementRef.value, new UniCheckboxGroupChangeEvent(_getValue())));
     };
     var _getValue = () => {
       var valueArray = [];
@@ -3572,7 +3649,7 @@ class UniRadioGroupChangeEventDetail {
     this.value = value;
   }
 }
-class UniRadioGroupChangeEvent extends CustomEvent {
+class UniRadioGroupChangeEvent extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniRadioGroupChangeEventDetail(value)
@@ -3609,7 +3686,7 @@ const radioGroup = /* @__PURE__ */ defineBuiltInComponent({
     };
     var _changeHandler = (data) => {
       _setValue(data.name);
-      emit("change", new UniRadioGroupChangeEvent(data.name));
+      emit("change", initUniCustomEvent(uniRadioGroupElementRef.value, new UniRadioGroupChangeEvent(data.name)));
     };
     var _getValue = () => {
       var value = "";
@@ -4122,7 +4199,7 @@ class UniPickerViewChangeEventDetail {
     this.value = value;
   }
 }
-class UniPickerViewChangeEvent extends CustomEvent {
+class UniPickerViewChangeEvent extends UniCustomEvent {
   constructor(value) {
     super("change", {
       detail: new UniPickerViewChangeEventDetail(value)
@@ -4224,7 +4301,7 @@ const pickerView = /* @__PURE__ */ defineBuiltInComponent({
         if (data.valueSync.length > index2) {
           data.valueSync[index2] = val;
         }
-        emit("change", new UniPickerViewChangeEvent([...data.valueSync]));
+        emit("change", initUniCustomEvent(pickerViewElementRef.value, new UniPickerViewChangeEvent([...data.valueSync])));
       }
     };
     expose({

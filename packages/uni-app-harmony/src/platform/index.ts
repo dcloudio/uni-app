@@ -1,3 +1,5 @@
 export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
 export { inflateRaw, deflateRaw } from 'pako'
+export { saveImage } from './saveImage'
+export { getSameOriginUrl } from '../helpers/file'
 export * from './todo'

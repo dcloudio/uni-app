@@ -1,5 +1,5 @@
 import { extend } from '@vue/shared'
-import { ref, onMounted } from 'vue'
+import { onMounted, ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import { hoverProps, useHover } from '../../helpers/useHover'
@@ -7,7 +7,7 @@ import { hoverProps, useHover } from '../../helpers/useHover'
 export class UniViewElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'View',
-  props: extend({}, hoverProps),
+  props: /*#__PURE__*/ extend({}, hoverProps),
   //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-view',

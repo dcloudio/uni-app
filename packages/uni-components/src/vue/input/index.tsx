@@ -1,12 +1,19 @@
 import { extend, hyphenate } from '@vue/shared'
-import { Ref, ref, computed, watch, onMounted, HTMLAttributes } from 'vue'
+import {
+  type HTMLAttributes,
+  type Ref,
+  computed,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import {
-  props as fieldProps,
-  emit as fieldEmit,
-  useField,
   type State,
+  emit as fieldEmit,
+  props as fieldProps,
+  useField,
 } from '../../helpers/useField'
 
 const props = /*#__PURE__*/ extend({}, fieldProps, {
@@ -232,16 +239,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <input
             key="input"
             ref={fieldRef}
+            // v-model 会导致 type 为 number 或 digit 时赋值为 number 类型
             value={state.value}
             onInput={(event: Event) => {
               state.value = (event.target as HTMLInputElement).value.toString()
             }}
-            // v-model={($event) => {state.value = $event.toString()}}
             disabled={!!props.disabled}
             type={type.value}
             maxlength={state.maxlength}
             step={step.value}
-            // @ts-ignore
             enterkeyhint={props.confirmType}
             pattern={props.type === 'number' ? '[0-9]*' : undefined}
             class="uni-input-input"

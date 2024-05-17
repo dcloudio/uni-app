@@ -6,11 +6,24 @@ import { once } from '@dcloudio/uni-shared'
 
 import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
 import { parseVueRequest } from '../../utils'
-import { getUniExtApiPlugins, parseUTSModuleDeps } from '../../../uni_modules'
+import {
+  checkEncryptUniModules,
+  getUniExtApiPlugins,
+  parseUTSModuleDeps,
+  resolveEncryptUniModule,
+} from '../../../uni_modules'
+import { enableSourceMap } from '../../../utils'
+import { parseManifestJsonOnce } from '../../../json'
 
 const UTSProxyRE = /\?uts-proxy$/
+const UniHelpersRE = /\?uni_helpers$/
+
 function isUTSProxy(id: string) {
   return UTSProxyRE.test(id)
+}
+
+function isUniHelpers(id: string) {
+  return UniHelpersRE.test(id)
 }
 
 const utsModuleCaches = new Map<
@@ -36,6 +49,7 @@ let uniExtApiCompiler = async () => {}
 export function uniUTSUniModulesPlugin(
   options: UniUTSPluginOptions = {}
 ): Plugin {
+  const inputDir = process.env.UNI_INPUT_DIR
   process.env.UNI_UTS_USING_ROLLUP = 'true'
 
   const compilePlugin = async (pluginDir: string) => {
@@ -49,11 +63,7 @@ export function uniUTSUniModulesPlugin(
     if (extApiProvider?.servicePlugin) {
       if (
         fs.existsSync(
-          path.resolve(
-            process.env.UNI_INPUT_DIR,
-            'uni_modules',
-            extApiProvider.servicePlugin
-          )
+          path.resolve(inputDir, 'uni_modules', extApiProvider.servicePlugin)
         )
       ) {
         uniExtApiProviderServicePlugin = extApiProvider.servicePlugin
@@ -63,13 +73,11 @@ export function uniUTSUniModulesPlugin(
     // 处理依赖的 uts 插件
     const deps = parseUTSModuleDeps(
       pkgJson.uni_modules?.dependencies || [],
-      process.env.UNI_INPUT_DIR
+      inputDir
     )
     if (deps.length) {
       for (const dep of deps) {
-        await compilePlugin(
-          path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', dep)
-        )
+        await compilePlugin(path.resolve(inputDir, 'uni_modules', dep))
       }
     }
 
@@ -78,7 +86,7 @@ export function uniUTSUniModulesPlugin(
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,
       extApis: options.extApis,
-      sourceMap: process.env.NODE_ENV === 'development',
+      sourceMap: enableSourceMap(),
       uni_modules: deps,
       transform: {
         uniExtApiProviderName: extApiProvider?.name,
@@ -95,7 +103,7 @@ export function uniUTSUniModulesPlugin(
     )
     for (const plugin of plugins) {
       const result = await compilePlugin(
-        path.resolve(process.env.UNI_INPUT_DIR, 'uni_modules', plugin.plugin)
+        path.resolve(inputDir, 'uni_modules', plugin.plugin)
       )
       if (result) {
         // 时机不对，不能addWatch
@@ -111,12 +119,12 @@ export function uniUTSUniModulesPlugin(
     apply: 'build',
     enforce: 'pre',
     resolveId(id, importer) {
-      if (isUTSProxy(id)) {
+      if (isUTSProxy(id) || isUniHelpers(id)) {
         return id
       }
       const module = resolveUTSAppModule(
         id,
-        importer ? path.dirname(importer) : process.env.UNI_INPUT_DIR,
+        importer ? path.dirname(importer) : inputDir,
         options.x !== true
       )
       if (module) {
@@ -200,5 +208,45 @@ export function resolveExtApiProvider(pkg: Record<string, any>) {
       provider.servicePlugin = 'uni-' + provider.service
     }
     return provider
+  }
+}
+
+export function uniDecryptUniModulesPlugin(): Plugin {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const isX = process.env.UNI_APP_X === 'true'
+  return {
+    name: 'uni:uni_modules-d',
+    enforce: 'pre',
+    async configResolved() {
+      if (isX) {
+        const manifest = parseManifestJsonOnce(inputDir)
+        await checkEncryptUniModules(inputDir, {
+          mode:
+            process.env.NODE_ENV !== 'development'
+              ? 'production'
+              : 'development',
+          compilerVersion: process.env.UNI_COMPILER_VERSION,
+          appid: manifest.appid,
+          appname: manifest.name,
+          platform: process.env.UNI_UTS_PLATFORM,
+          'uni-app-x': isX,
+        })
+      }
+    },
+    resolveId(id) {
+      if (isUTSProxy(id) || isUniHelpers(id)) {
+        return id
+      }
+      if (isX && process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+        const resolvedId = resolveEncryptUniModule(
+          id,
+          process.env.UNI_UTS_PLATFORM,
+          process.env.UNI_APP_X === 'true'
+        )
+        if (resolvedId) {
+          return resolvedId
+        }
+      }
+    },
   }
 }

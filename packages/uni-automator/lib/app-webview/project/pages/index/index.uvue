@@ -90,7 +90,7 @@ export default {
                   this.callback(id, { data: readFileRes.data }, '')
                 },
                 fail: (error) => {
-                  this.callback(id, '', error.message)
+                  this.callback(id, '', error.errMsg)
                 },
               } as ReadFileOptions)
 

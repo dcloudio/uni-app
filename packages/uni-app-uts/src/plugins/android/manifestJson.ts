@@ -66,8 +66,20 @@ export function uniAppManifestPlugin(): Plugin {
                 splashScreen
               )}`
             : ''
+        const darkMode =
+          typeof manifestJson.app?.darkmode === 'boolean'
+            ? manifestJson.app?.darkmode
+            : manifestJson.darkmode
+        const darkModeCode = darkMode
+          ? `override darkmode: boolean = ${darkMode}`
+          : ''
 
-        const codes = [singleThreadCode, flexDirCode, splashScreenCode]
+        const codes = [
+          singleThreadCode,
+          flexDirCode,
+          splashScreenCode,
+          darkModeCode,
+        ]
           .filter(Boolean)
           .join('\n')
         asset.source =

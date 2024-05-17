@@ -10,6 +10,12 @@ import {
 import { parseJson } from './json'
 
 export const parseManifestJson = (inputDir: string) => {
+  const manifestFilename = path.join(inputDir, 'manifest.json')
+  if (!fs.existsSync(manifestFilename)) {
+    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      return {}
+    }
+  }
   return parseJson(
     fs.readFileSync(path.join(inputDir, 'manifest.json'), 'utf8')
   )

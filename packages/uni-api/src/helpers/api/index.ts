@@ -5,7 +5,7 @@ import {
   isPlainObject,
   isString,
 } from '@vue/shared'
-import { LINEFEED } from '@dcloudio/uni-shared'
+
 import { validateProtocols } from '../protocol'
 import {
   createAsyncApiCallback,
@@ -163,7 +163,7 @@ function normalizeErrMsg(errMsg: string | Error) {
     return errMsg
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + LINEFEED + errMsg.stack)
+    console.error(errMsg.message + '\n' + errMsg.stack)
     return errMsg.message
   }
   return errMsg as unknown as string

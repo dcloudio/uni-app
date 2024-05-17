@@ -56,7 +56,7 @@ function initUTSInstanceMethod(
   instanceId: number,
   proxy: unknown
 ) {
-  return initProxyFunction(async, opts, instanceId, proxy)
+  return initProxyFunction('method', async, opts, instanceId, proxy)
 }
 
 interface Parameter {
@@ -117,6 +117,8 @@ interface ProxyInterfaceOptions extends ModuleOptions {
   package: string
   class: string
   props: string[]
+  setters: Record<string, Parameter>
+  staticSetters: Record<string, Parameter>
   methods: {
     [name: string]: {
       async?: boolean
@@ -138,6 +140,8 @@ interface ProxyClassOptions extends ModuleOptions {
   }
   props: string[]
   staticProps: string[]
+  setters: Record<string, Parameter>
+  staticSetters: Record<string, Parameter>
   methods: {
     [name: string]: {
       async?: boolean
@@ -160,8 +164,21 @@ interface ProxyClassOptions extends ModuleOptions {
 
 interface InvokeInstanceArgs extends ModuleOptions {
   id: number
+  /**
+   * 属性名或方法名
+   */
   name: string
+  /**
+   * 属性|方法
+   */
+  type: 'property' | 'method'
+  /**
+   * 执行方法时的真实参数列表
+   */
   params?: unknown[]
+  /**
+   * 方法定义的参数列表
+   */
   method?: Parameter[]
   /**
    * 运行时提示的错误信息
@@ -181,6 +198,10 @@ interface InvokeStaticArgs extends ModuleOptions {
    * 属性名或方法名
    */
   name: string
+  /**
+   * 属性|方法
+   */
+  type: 'property' | 'method'
   /**
    * 执行方法时的真实参数列表
    */
@@ -318,13 +339,14 @@ function invokePropGetter(args: InvokeArgs) {
 }
 
 function initProxyFunction(
+  type: 'method' | 'property',
   async: boolean,
   {
     moduleName,
     moduleType,
     package: pkg,
     class: cls,
-    name: propOrMethod,
+    name: methodName,
     method,
     companion,
     params: methodParams,
@@ -347,7 +369,7 @@ function initProxyFunction(
         delete callbacks[id]
       }
     } else {
-      console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`)
+      console.error(`${pkg}${cls}.${methodName} ${name} is not found`)
     }
   }
   const baseArgs: InvokeArgs = instanceId
@@ -355,7 +377,8 @@ function initProxyFunction(
         moduleName,
         moduleType,
         id: instanceId,
-        name: propOrMethod,
+        type,
+        name: methodName,
         method: methodParams,
       }
     : {
@@ -363,7 +386,8 @@ function initProxyFunction(
         moduleType,
         package: pkg,
         class: cls,
-        name: method || propOrMethod,
+        name: method || methodName,
+        type,
         companion,
         method: methodParams,
       }
@@ -414,7 +438,7 @@ function initUTSStaticMethod(async: boolean, opts: ProxyFunctionOptions) {
       opts.method = 's_' + opts.name
     }
   }
-  return initProxyFunction(async, opts, 0)
+  return initProxyFunction('method', async, opts, 0)
 }
 
 export const initUTSProxyFunction = initUTSStaticMethod
@@ -439,6 +463,10 @@ function isProxyInterfaceOptions(
   return !isUndefined((options as any).instanceId)
 }
 
+function parseClassPropertySetter(name: string) {
+  return '__$set' + capitalize(name)
+}
+
 export function initUTSProxyClass(
   options: ProxyClassOptions | ProxyInterfaceOptions
 ): any {
@@ -449,6 +477,7 @@ export function initUTSProxyClass(
     class: cls,
     methods,
     props,
+    setters,
     errMsg,
   } = options
 
@@ -464,6 +493,7 @@ export function initUTSProxyClass(
   let constructorParams: Parameter[] = []
   let staticMethods: ProxyClassOptions['staticMethods'] = {}
   let staticProps: ProxyClassOptions['staticProps'] = []
+  let staticSetters: ProxyClassOptions['staticSetters'] = {}
 
   let isProxyInterface = false
   if (isProxyInterfaceOptions(options)) {
@@ -473,6 +503,7 @@ export function initUTSProxyClass(
     constructorParams = options.constructor.params
     staticMethods = options.staticMethods
     staticProps = options.staticProps
+    staticSetters = options.staticSetters
   }
 
   // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
@@ -496,6 +527,7 @@ export function initUTSProxyClass(
       if (!isProxyInterface) {
         // 初始化未指定时，每次都要创建instanceId
         this.__instanceId = initProxyFunction(
+          'method',
           false,
           extend(
             { name: 'constructor', params: constructorParams },
@@ -540,6 +572,7 @@ export function initUTSProxyClass(
                 moduleName,
                 moduleType,
                 id: instance.__instanceId,
+                type: 'property',
                 name: name as string,
                 errMsg,
               })
@@ -547,10 +580,37 @@ export function initUTSProxyClass(
           }
           return target[name as string]
         },
+        set(_, name, newValue) {
+          if (props.includes(name as string)) {
+            const setter = parseClassPropertySetter(name as string)
+            if (!target[setter]) {
+              const param = setters[name as string]
+              if (param) {
+                target[setter] = initProxyFunction(
+                  'property',
+                  false,
+                  extend(
+                    {
+                      name: name as string,
+                      params: [param],
+                    },
+                    baseOptions
+                  ),
+                  instance.__instanceId,
+                  proxy
+                )
+              }
+            }
+            target[parseClassPropertySetter(name as string)](newValue)
+            return true
+          }
+          return false
+        },
       })
       return proxy
     }
   }
+  const staticPropSetterCache: Record<string, Function> = {}
   const staticMethodCache: Record<string, Function> = {}
   return new Proxy(ProxyClass, {
     get(target, name, receiver) {
@@ -562,7 +622,12 @@ export function initUTSProxyClass(
           staticMethodCache[name] = initUTSStaticMethod(
             !!async,
             extend(
-              { name, companion: true, params, return: returnOptions },
+              {
+                name,
+                companion: true,
+                params,
+                return: returnOptions,
+              },
               baseOptions
             )
           )
@@ -570,12 +635,46 @@ export function initUTSProxyClass(
         return staticMethodCache[name]
       }
       if (staticProps.includes(name as string)) {
-        // 静态属性
         return invokePropGetter(
-          extend({ name: name as string, companion: true }, baseOptions)
+          extend(
+            {
+              name: name as string,
+              companion: true,
+              type: 'property' as const,
+            },
+            baseOptions
+          )
         )
       }
       return Reflect.get(target, name, receiver)
+    },
+    set(_, name, newValue) {
+      if (staticProps.includes(name as string)) {
+        // 静态属性
+        const setter = parseClassPropertySetter(name as string)
+        if (!staticPropSetterCache[setter]) {
+          const param = staticSetters[name as string]
+          if (param) {
+            staticPropSetterCache[setter] = initProxyFunction(
+              'property',
+              false,
+              extend(
+                {
+                  name: name as string,
+                  params: [param],
+                },
+                baseOptions
+              ),
+              0
+            )
+          }
+        }
+        staticPropSetterCache[parseClassPropertySetter(name as string)](
+          newValue
+        )
+        return true
+      }
+      return false
     },
   })
 }

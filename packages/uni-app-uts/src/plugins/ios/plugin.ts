@@ -4,6 +4,7 @@ import {
   APP_SERVICE_FILENAME,
   type UniVitePlugin,
   buildUniExtApis,
+  createEncryptCssUrlReplacer,
   emptyDir,
   injectCssPlugin,
   injectCssPostPlugin,
@@ -12,6 +13,7 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
+import { enableSourceMap } from '@dcloudio/uni-cli-shared'
 
 export function uniAppIOSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -31,7 +33,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       return {
         base: '/', // 强制 base
         build: {
-          sourcemap: process.env.NODE_ENV === 'development' ? 'hidden' : false,
+          sourcemap: enableSourceMap() ? 'hidden' : false,
           emptyOutDir: false,
           assetsInlineLimit: 0,
           rollupOptions: {
@@ -64,7 +66,14 @@ export function uniAppIOSPlugin(): UniVitePlugin {
     },
     configResolved(config) {
       configResolved(config)
-      injectCssPlugin(config)
+      injectCssPlugin(
+        config,
+        process.env.UNI_COMPILE_TARGET === 'uni_modules'
+          ? {
+              createUrlReplacer: createEncryptCssUrlReplacer,
+            }
+          : {}
+      )
       injectCssPostPlugin(config, uniAppCssPlugin(config))
     },
     generateBundle(_, bundle) {
@@ -72,17 +81,11 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       const appServiceMap = bundle[APP_SERVICE_FILENAME_MAP]
       if (appServiceMap && appServiceMap.type === 'asset') {
         fs.outputFileSync(
-          process.env.UNI_APP_X_CACHE_DIR
-            ? path.resolve(
-                process.env.UNI_APP_X_CACHE_DIR,
-                'sourcemap',
-                APP_SERVICE_FILENAME_MAP
-              )
-            : path.resolve(
-                process.env.UNI_OUTPUT_DIR,
-                '../.sourcemap/app-ios',
-                APP_SERVICE_FILENAME_MAP
-              ),
+          path.resolve(
+            process.env.UNI_APP_X_CACHE_DIR,
+            'sourcemap',
+            APP_SERVICE_FILENAME_MAP
+          ),
           appServiceMap.source
         )
         delete bundle[APP_SERVICE_FILENAME_MAP]

@@ -11,12 +11,6 @@ body {
   height: 100%;
 }
 
-/* body,
-uni-page-body {
-  background-color: var(--UI-BG-0);
-  color: var(--UI-FG-0);
-} */
-
 body {
   overflow-x: hidden;
   font-size: 16px;
@@ -52,6 +46,7 @@ uni-page-wrapper {
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
 }
+
 /* toast,modal,actionSheet,picker */
 .uni-fade-enter-active,
 .uni-fade-leave-active {
@@ -59,6 +54,7 @@ uni-page-wrapper {
   transition-property: opacity;
   transition-timing-function: ease;
 }
+
 .uni-fade-enter-from,
 .uni-fade-leave-active {
   opacity: 0;
@@ -109,8 +105,8 @@ html {
 
 @media (prefers-color-scheme: dark) {
   html {
-    --UI-BG-CLOLOR-ACTIVE: #373737;
-    --UI-BORDER-CLOLOR-1: #373737;
+    --UI-BG-COLOR-ACTIVE: #373737;
+    --UI-BORDER-COLOR-1: #373737;
     /* UI */
     --UI-BG: #000;
     --UI-BG-0: #191919;
@@ -128,6 +124,12 @@ html {
   }
 
   .uni-mask {
-    background: rgba(0,0,0,.6);
+    background: rgba(0, 0, 0, .6);
+  }
+
+  body,
+  uni-page-body {
+    background-color: var(--UI-BG-0);
+    color: var(--UI-FG-0);
   }
 }

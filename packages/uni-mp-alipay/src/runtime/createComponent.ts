@@ -85,7 +85,9 @@ function initVm(
 export function initCreateComponent() {
   return function createComponent(vueOptions: ComponentOptions) {
     vueOptions = vueOptions.default || vueOptions
-    const mpComponentOptions: tinyapp.ComponentOptions = {
+    const mpComponentOptions: tinyapp.ComponentOptions & {
+      options?: any
+    } = {
       props: initComponentProps(vueOptions.props),
       didMount() {
         const createComponent = (parent?: ComponentPublicInstance) => {
@@ -115,6 +117,11 @@ export function initCreateComponent() {
         __l: handleLink,
         triggerEvent,
       },
+    }
+
+    // vueOptions.options
+    if (vueOptions.options) {
+      mpComponentOptions.options = vueOptions.options
     }
     if (__VUE_OPTIONS_API__) {
       mpComponentOptions.data = initData(vueOptions)

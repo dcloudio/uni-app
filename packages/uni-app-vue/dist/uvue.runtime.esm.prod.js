@@ -1879,7 +1879,8 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var resolvedPromise = /* @__PURE__ */PromisePolyfill.resolve();
+var isIOS = ("nativeApp" in getGlobalThis());
+var resolvedPromise = /* @__PURE__ */(isIOS ? PromisePolyfill : Promise).resolve();
 var currentFlushPromise = null;
 function nextTick(fn) {
   var instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentInstance();
@@ -5760,8 +5761,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
-    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateComment("", container);
-    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateComment("", container);
+    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("", container, true);
+    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("", container, true);
     var {
       patchFlag,
       dynamicChildren,
@@ -7820,7 +7821,10 @@ var nodeOps = {
   createElement: (tag, container) => {
     return getDocument().createElement(tag);
   },
-  createText: (text, container) => {
+  createText: (text, container, isAnchor) => {
+    if (isAnchor) {
+      return getDocument().createComment(text);
+    }
     var textNode = getDocument().createElement("text");
     textNode.setAttribute("value", text);
     setExtraIsTextNode(textNode, true);

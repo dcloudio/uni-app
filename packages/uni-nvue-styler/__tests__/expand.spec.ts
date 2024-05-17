@@ -51,6 +51,35 @@ describe('nvue-styler: expand', () => {
     ])
   })
 
+  test('transform transition cubic-bezier', () => {
+    const decl = parseDecl(`.test {
+  transition: all 1s cubic-bezier(0.42, 0, 1.0, 3)
+}`)
+    expect(transformTransition(decl)).toEqual([
+      {
+        type: 'decl',
+        prop: 'transition-property',
+        value: 'all',
+        raws: decl.raws,
+        source: decl.source,
+      },
+      {
+        type: 'decl',
+        prop: 'transition-duration',
+        value: '1s',
+        raws: decl.raws,
+        source: decl.source,
+      },
+      {
+        type: 'decl',
+        prop: 'transition-timing-function',
+        value: 'cubic-bezier(0.42, 0, 1.0, 3)',
+        raws: decl.raws,
+        source: decl.source,
+      },
+    ])
+  })
+
   test('transform transition all/none', () => {
     const propertyVal = ['all', 'none', 'width,height', 'all,width,height']
     propertyVal.forEach((property) => {

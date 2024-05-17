@@ -106,11 +106,13 @@ describe('uts-module', () => {
       },
       props: ['count'],
       staticProps: ['staticCount'],
+      setters: { count: { name: 'count', type: 'number' } },
+      staticSetters: { staticCount: { name: 'staticCount', type: 'number' } },
     })
     const wifi = new WifiManager()
     wifi.preparePermission(1, 2, 3, () => {})
-    wifi.count
-    WifiManager.staticCount
+    wifi.count = 1
+    WifiManager.staticCount = 2
     WifiManager.staticPreparePermission(1)
 
     const errMsg = 'xx插件编译失败，无法使用'

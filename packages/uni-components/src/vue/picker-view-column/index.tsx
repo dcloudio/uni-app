@@ -1,45 +1,33 @@
 import {
-  Ref,
+  type ComponentInternalInstance,
+  type ComponentPublicInstance,
+  type Ref,
+  computed,
+  getCurrentInstance,
+  inject,
+  nextTick,
+  onMounted,
+  reactive,
   ref,
   watch,
-  onMounted,
-  computed,
-  reactive,
-  inject,
-  getCurrentInstance,
-  ComponentInternalInstance,
-  nextTick,
-  ComponentPublicInstance,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import { useScroller } from '../../helpers/scroller'
 import { Friction } from '../../helpers/scroller/Friction'
 import { Spring } from '../../helpers/scroller/Spring'
-import { Scroller } from '../../helpers/scroller/Scroller'
-import { initScrollBounce, disableScrollBounce } from '../../helpers/scroll'
+import type { Scroller } from '../../helpers/scroller/Scroller'
+import { disableScrollBounce, initScrollBounce } from '../../helpers/scroll'
 import { useTouchtrack } from '../../helpers/useTouchtrack'
 import { useScopedAttrs } from '../../helpers/useScopedAttrs'
 import { flatVNode } from '../../helpers/flatVNode'
 import { useRebuild } from '../../helpers/useRebuild'
 import ResizeSensor from '../resize-sensor/index'
-import {
+import type {
   GetPickerViewColumn,
   Props as PickerViewProps,
   State as PickerViewState,
 } from '../picker-view'
-
-let scopedIndex = 0
-function useScopedClass(indicatorHeightRef: Ref<number>) {
-  const className = `uni-picker-view-content-${scopedIndex++}`
-  function updateStyle() {
-    const style = document.createElement('style')
-    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`
-    document.head.appendChild(style)
-  }
-  watch(() => indicatorHeightRef.value, updateStyle)
-  return className
-}
 
 function useCustomClick(dom: HTMLElement) {
   type CustomClickProps =
@@ -126,7 +114,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     )
 
     const { state: scopedAttrsState } = useScopedAttrs()
-    const className = useScopedClass(indicatorHeight)
 
     let scroller: Scroller
 
@@ -322,7 +309,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             >
               <ResizeSensor
                 ref={resizeSensorRef}
-                // @ts-ignore
                 onResize={({ height }: { height: number }) =>
                   (indicatorHeight.value = height)
                 }
@@ -330,8 +316,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             </div>
             <div
               ref={contentRef}
-              class={['uni-picker-view-content', className]}
-              style={{ padding: padding }}
+              class={['uni-picker-view-content']}
+              style={{
+                padding: padding,
+                '--picker-view-column-indicator-height': `${indicatorHeight.value}px`,
+              }}
             >
               {defaultSlots}
             </div>

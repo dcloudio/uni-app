@@ -9,7 +9,7 @@ export interface UserActionState {
 const passiveOptions = /*#__PURE__*/ passive(true)
 const states: UserActionState[] = []
 let userInteract: number = 0
-let inited: boolean
+let inited: boolean = false
 const setUserAction = (userAction: boolean) =>
   states.forEach((vm) => (vm.userAction = userAction))
 export function addInteractListener(

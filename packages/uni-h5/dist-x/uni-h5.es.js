@@ -6,7 +6,7 @@ var __publicField = (obj, key, value) => {
 };
 import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
-import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, LINEFEED, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, PRIMARY_COLOR, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
+import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, LINEFEED, PRIMARY_COLOR, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
 import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
@@ -133,6 +133,9 @@ function isAnyType(type) {
 function isUTSType(type) {
   return type && type.prototype && type.prototype instanceof UTSType;
 }
+function normalizeGenericValue(value, genericType, isJSONParse = false) {
+  return value == null ? null : isBaseType(genericType) || isUnknownType(genericType) || isAnyType(genericType) ? value : genericType === Array ? new Array(...value) : new genericType(value, void 0, isJSONParse);
+}
 class UTSType {
   static get$UTSMetadata$(...args) {
     return {
@@ -160,8 +163,22 @@ class UTSType {
           }
           super();
           return options.map((item) => {
-            return item == null ? null : isBaseType(generics[0]) || isUnknownType(generics[0]) || isAnyType(generics[0]) ? item : generics[0] === Array ? new Array(...item) : new generics[0](item, void 0, isJSONParse2);
+            return normalizeGenericValue(item, generics[0], isJSONParse2);
           });
+        }
+      };
+    } else if (parent === Map || parent === WeakMap) {
+      return class UTSMap extends UTSType {
+        constructor(options, isJSONParse2 = false) {
+          if (options == null || typeof options !== "object") {
+            throw new UTSError(`Failed to contruct type, ${options} is not an object`);
+          }
+          super();
+          const obj = new parent();
+          for (const key in options) {
+            obj.set(normalizeGenericValue(key, generics[0], isJSONParse2), normalizeGenericValue(options[key], generics[1], isJSONParse2));
+          }
+          return obj;
         }
       };
     } else if (isUTSType(parent)) {
@@ -3021,7 +3038,7 @@ function addBase(filePath) {
 function getRealPath(filePath) {
   const { base, assets } = __uniConfig.router;
   if (base === "./") {
-    if (filePath.indexOf("./static/") === 0 || assets && filePath.indexOf("./" + assets + "/") === 0) {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
       filePath = filePath.slice(1);
     }
   }
@@ -3798,7 +3815,7 @@ function normalizeErrMsg(errMsg) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + LINEFEED + errMsg.stack);
+    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -7746,6 +7763,8 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   watch(() => extend({}, size), (value) => emit2("resize", value));
   return () => {
     const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
     size.width = rootEl.offsetWidth;
     size.height = rootEl.offsetHeight;
     reset();
@@ -9825,7 +9844,7 @@ function throttle(fn, wait) {
 const passiveOptions$1 = /* @__PURE__ */ passive(true);
 const states = [];
 let userInteract = 0;
-let inited;
+let inited = false;
 const setUserAction = (userAction) => states.forEach((vm) => vm.userAction = userAction);
 function addInteractListener(vm = { userAction: false }) {
   if (!inited) {
@@ -10073,6 +10092,7 @@ const emit = [
   ...emit$1
 ];
 function useBase(props2, rootRef, emit2) {
+  var _a;
   const fieldRef = ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
   const selectionStart = computed(() => {
@@ -10093,7 +10113,10 @@ function useBase(props2, rootRef, emit2) {
       return isNaN(maxlength2) || maxlength2 < 0 ? Infinity : Math.floor(maxlength2);
     }
   });
-  const value = getValueString(props2.modelValue, props2.type, maxlength.value) || getValueString(props2.value, props2.type, maxlength.value);
+  let value = "";
+  {
+    value = (_a = getValueString(props2.modelValue, props2.type, maxlength.value)) != null ? _a : getValueString(props2.value, props2.type, maxlength.value);
+  }
   const state2 = reactive({
     value,
     valueOrigin: value,
@@ -10122,9 +10145,12 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state2, emit2, trigger) {
-  const valueChangeFn = throttle((val) => {
-    state2.value = getValueString(val, props2.type, state2.maxlength);
-  }, 100);
+  let valueChangeFn = null;
+  {
+    valueChangeFn = throttle((val) => {
+      state2.value = getValueString(val, props2.type, state2.maxlength);
+    }, 100);
+  }
   watch(() => props2.modelValue, valueChangeFn);
   watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -12084,7 +12110,7 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: extend({}, navigatorProps, {
+  props: /* @__PURE__ */ extend({}, navigatorProps, {
     renderLink: {
       type: Boolean,
       default: true
@@ -12975,17 +13001,6 @@ function useScroller(element, options) {
     handleTouchEnd
   };
 }
-let scopedIndex = 0;
-function useScopedClass(indicatorHeightRef) {
-  const className = `uni-picker-view-content-${scopedIndex++}`;
-  function updateStyle2() {
-    const style = document.createElement("style");
-    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`;
-    document.head.appendChild(style);
-  }
-  watch(() => indicatorHeightRef.value, updateStyle2);
-  return className;
-}
 function useCustomClick(dom) {
   const MAX_MOVE = 20;
   let x = 0;
@@ -13045,7 +13060,6 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const {
       state: scopedAttrsState
     } = useScopedAttrs();
-    const className = useScopedClass(indicatorHeight);
     let scroller;
     const state2 = reactive({
       current: currentRef.value,
@@ -13185,11 +13199,12 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         }) => indicatorHeight.value = height
       }, null, 8, ["onResize"])], 16), createVNode("div", {
         "ref": contentRef,
-        "class": ["uni-picker-view-content", className],
+        "class": ["uni-picker-view-content"],
         "style": {
-          padding
+          padding,
+          "--picker-view-column-indicator-height": `${indicatorHeight.value}px`
         }
-      }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
+      }, [defaultSlots], 4)], 40, ["onWheel", "onClick"])], 512);
     };
   }
 });
@@ -13971,7 +13986,7 @@ const Refresher = /* @__PURE__ */ defineBuiltInComponent({
     },
     refresherBackground: {
       type: String,
-      default: "#fff"
+      default: "transparent"
     }
   },
   setup(props2, {
@@ -14114,7 +14129,7 @@ const props$n = {
   },
   refresherBackground: {
     type: String,
-    default: "#fff"
+    default: "transparent"
   },
   refresherTriggered: {
     type: [Boolean, String],
@@ -16091,7 +16106,7 @@ class UniViewElement extends UniElement {
 }
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
-  props: extend({}, hoverProps),
+  props: /* @__PURE__ */ extend({}, hoverProps),
   rootElement: {
     name: "uni-view",
     class: UniViewElement
@@ -16207,7 +16222,7 @@ const props$h = {
   },
   refresherBackground: {
     type: String,
-    default: "#fff"
+    default: "transparent"
   },
   refresherTriggered: {
     type: [Boolean, String],
@@ -16940,7 +16955,7 @@ function injectLifecycleHook(name, hook, publicThis, instance2) {
   }
 }
 function initHooks(options, instance2, publicThis) {
-  var _a;
+  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -16966,7 +16981,7 @@ function initHooks(options, instance2, publicThis) {
       invokeHook(publicThis, ON_LOAD, query);
       delete instance2.attrs.__pageQuery;
       if (true) {
-        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
           invokeHook(publicThis, ON_SHOW);
         }
       }
@@ -17361,7 +17376,7 @@ function initPage(vm) {
         }
       }
     };
-    vm.$getPageStyle = () => ({
+    vm.$getPageStyle = () => new UTSJSONObject({
       navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
       navigationBarTextStyle: pageMeta.navigationBar.titleColor,
       navigationBarTitleText: pageMeta.navigationBar.titleText,
@@ -21101,25 +21116,34 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
   () => {
     initBrowserInfo();
     const { theme, language, browserName, browserVersion } = browserInfo;
-    return {
-      appId: __uniConfig.appId,
-      appName: __uniConfig.appName,
-      appVersion: __uniConfig.appVersion,
-      appVersionCode: __uniConfig.appVersionCode,
-      appLanguage: getLocale ? getLocale() : language,
-      enableDebug: false,
-      hostSDKVersion: void 0,
-      hostPackageName: void 0,
-      hostFontSizeSetting: void 0,
-      hostName: browserName,
-      hostVersion: browserVersion,
-      hostTheme: theme,
-      hostLanguage: language,
-      language,
-      SDKVersion: "",
-      theme,
-      version: ""
-    };
+    return extend(
+      {
+        appId: __uniConfig.appId,
+        appName: __uniConfig.appName,
+        appVersion: __uniConfig.appVersion,
+        appVersionCode: __uniConfig.appVersionCode,
+        appLanguage: getLocale ? getLocale() : language,
+        enableDebug: false,
+        hostSDKVersion: void 0,
+        hostPackageName: void 0,
+        hostFontSizeSetting: void 0,
+        hostName: browserName,
+        hostVersion: browserVersion,
+        hostTheme: theme,
+        hostLanguage: language,
+        language,
+        SDKVersion: "",
+        theme,
+        version: ""
+      },
+      {
+        uniCompilerVersion: __uniConfig.compilerVersion,
+        uniRuntimeVersion: __uniConfig.compilerVersion,
+        uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
+        uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
+        isUniAppX: true
+      }
+    );
   }
 );
 const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
@@ -21745,7 +21769,6 @@ const MIMEType = {
   }
 };
 const ALL = "all";
-addInteractListener();
 function isWXEnv() {
   const ua2 = window.navigator.userAgent.toLowerCase();
   const matchUA = ua2.match(/MicroMessenger/i);
@@ -21757,6 +21780,7 @@ function _createInput({
   type,
   extension
 }) {
+  addInteractListener();
   const inputEl = document.createElement("input");
   inputEl.type = "file";
   updateElementStyle(inputEl, {
@@ -24176,6 +24200,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       tabBar2.color = tabBarStyle.color;
       tabBar2.selectedColor = tabBarStyle.selectedColor;
       tabBar2.blurEffect = tabBarStyle.blurEffect;
+      tabBar2.midButton = tabBarStyle.midButton;
       if (tabBarStyle.list && tabBarStyle.list.length) {
         tabBarStyle.list.forEach((item, index2) => {
           tabBar2.list[index2].iconPath = item.iconPath;
@@ -26811,8 +26836,13 @@ function updateBackgroundColorContent(backgroundColorContent) {
 }
 function useBackgroundColorContent(pageMeta) {
   function update() {
-    updateBackgroundColorContent(pageMeta.backgroundColorContent || "");
+    if (pageMeta.backgroundColorContent) {
+      updateBackgroundColorContent(
+        parseTheme({ backgroundColorContent: pageMeta.backgroundColorContent }).backgroundColorContent
+      );
+    }
   }
+  onThemeChange$2(update);
   watchEffect(update);
   onActivated(update);
 }
@@ -27555,7 +27585,7 @@ function usePageRefresh(refreshRef) {
     onTouchcancel: onTouchend
   };
 }
-const PageBody = defineSystemComponent({
+const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -27580,7 +27610,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-const index = defineSystemComponent({
+const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());

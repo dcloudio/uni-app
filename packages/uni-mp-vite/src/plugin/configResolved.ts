@@ -3,6 +3,7 @@ import { isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { EmittedAsset } from 'rollup'
 import {
+  createEncryptCssUrlReplacer,
   cssPostPlugin,
   injectAssetPlugin,
   injectCssPlugin,
@@ -46,7 +47,14 @@ export function createConfigResolved({
   return (config) => {
     const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
     fixUnocss(config)
-    injectCssPlugin(config)
+    injectCssPlugin(
+      config,
+      process.env.UNI_COMPILE_TARGET === 'uni_modules'
+        ? {
+            createUrlReplacer: createEncryptCssUrlReplacer,
+          }
+        : {}
+    )
 
     let unocssGlobalBuildBundleIndex = config.plugins.findIndex(
       (p) => p.name === 'unocss:global:build:bundle'

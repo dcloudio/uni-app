@@ -2,8 +2,6 @@ import CoreLocation;
 import DCloudUTSFoundation;
 import UIKit;
 import DCloudUTSExtAPI;
-public var uni_showToast = DCloudUTSExtAPI.showToast;
-public var uni_showModel = DCloudUTSExtAPI.showModel;
 public typealias ShowToast = (_ msg: String) -> Void;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
@@ -101,9 +99,9 @@ public class Test : NSObject {
 }
 @available(iOS 13.0.0, *)
 public func testAsync() async -> UTSJSONObject {
-    uni_showToast();
-    uni_showToast();
-    uni_showModel();
+    DCloudUTSExtAPI.showToast();
+    DCloudUTSExtAPI.showToast();
+    DCloudUTSExtAPI.showModel();
     return UTSJSONObject([
         "a": 1 as NSNumber
     ]);

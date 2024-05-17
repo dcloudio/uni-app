@@ -61,7 +61,7 @@ class UniCheckboxGroupChangeEventDetail {
     this.value = value
   }
 }
-export class UniCheckboxGroupChangeEvent extends CustomEvent<UniCheckboxGroupChangeEventDetail> {
+export class UniCheckboxGroupChangeEvent extends UniCustomEvent<UniCheckboxGroupChangeEventDetail> {
   constructor(value: string[]) {
     super('change', {
       detail: new UniCheckboxGroupChangeEventDetail(value),

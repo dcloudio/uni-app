@@ -28,7 +28,13 @@ if (
   process.argv[2] === 'build' &&
   !process.argv.some((arg) => /^(?:-w|--watch)$/.test(arg))
 ) {
-  process.env.NODE_ENV = 'production'
+  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    if (!process.env.NODE_ENV) {
+      process.env.NODE_ENV = 'production'
+    }
+  } else {
+    process.env.NODE_ENV = 'production'
+  }
 }
 
 function initDebug() {

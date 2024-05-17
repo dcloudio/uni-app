@@ -4,6 +4,10 @@ const colors = require('picocolors')
 const execa = require('execa')
 const { spawn } = require('child_process')
 
+const { config } = require('dotenv')
+
+config()
+
 const { extract } = require('./apiExtractor')
 
 const { targets: allTargets, fuzzyMatchTarget, priority } = require('./utils')
@@ -20,7 +24,7 @@ const transpileOnly = args.transpileOnly
 
 run()
 
-async function run () {
+async function run() {
   if (!targets.length) {
     await buildAll(allTargets)
   } else {
@@ -28,7 +32,7 @@ async function run () {
   }
 }
 
-function buildWithChildProcess (target) {
+function buildWithChildProcess(target) {
   const args = [__filename, target]
   devOnly && args.push('-d')
   isRelease && args.push('--release')
@@ -48,7 +52,7 @@ function buildWithChildProcess (target) {
   })
 }
 
-function getTargetGroup (targets) {
+function getTargetGroup(targets) {
   const group = {}
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i]
@@ -62,7 +66,7 @@ function getTargetGroup (targets) {
   return group
 }
 
-async function buildAll (targets) {
+async function buildAll(targets) {
   if (!multiProcess) {
     for (const target of targets) {
       try {
@@ -92,7 +96,7 @@ async function buildAll (targets) {
   }
 }
 
-async function build (target) {
+async function build(target) {
   console.log(`\n${colors.bold(target)}:`)
   const pkgDir = path.resolve(`packages/${target}`)
   const pkg = require(`${pkgDir}/package.json`)
@@ -155,7 +159,11 @@ async function build (target) {
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'es', UNI_APP_X: 'true' }, process.env, env),
+          env: Object.assign(
+            { FORMAT: 'es', UNI_APP_X: 'true' },
+            process.env,
+            env
+          ),
           cwd: pkgDir,
         }
       )
@@ -164,7 +172,11 @@ async function build (target) {
         ['build', '--config', path.resolve(pkgDir, 'vite.config.ts')],
         {
           stdio: 'inherit',
-          env: Object.assign({ FORMAT: 'cjs', UNI_APP_X: 'true' }, process.env, env),
+          env: Object.assign(
+            { FORMAT: 'cjs', UNI_APP_X: 'true' },
+            process.env,
+            env
+          ),
           cwd: pkgDir,
         }
       )
@@ -200,7 +212,12 @@ async function build (target) {
       [
         '-c',
         '--environment',
-        [`NODE_ENV:${env}`, types ? `TYPES:true` : ``, `TARGET:${target}`, transpileOnly ? `TRANSPILE_ONLY:true` : ``]
+        [
+          `NODE_ENV:${env}`,
+          types ? `TYPES:true` : ``,
+          `TARGET:${target}`,
+          transpileOnly ? `TRANSPILE_ONLY:true` : ``,
+        ]
           .filter(Boolean)
           .join(','),
       ],
