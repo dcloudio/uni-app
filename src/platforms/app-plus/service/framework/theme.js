@@ -1,4 +1,4 @@
-import { normallizeStyles } from 'uni-shared'
+import { normalizeStyles } from 'uni-shared'
 import { weexGetSystemInfoSync } from '../api/device/system'
 import { setStatusBarStyle } from '../bridge'
 import { getCurrentPages } from './page'
@@ -41,7 +41,7 @@ export function parseTheme (pageStyle) {
       theme = systemInfo.hostTheme
     }
 
-    parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme)
+    parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme)
     return parsedStyle
   }
   return pageStyle
@@ -52,23 +52,24 @@ export function useTabBarThemeChange (tabBar, options) {
     const fn = () => {
       const {
         list = [], color, selectedColor,
-        backgroundColor, borderStyle
-      } = parseTheme(options, false)
-      const tabbarStyle = {
-        color,
-        selectedColor,
-        backgroundColor,
-        borderStyle
+        backgroundColor, borderStyle, midButton
+      } = parseTheme(options)
+      if (tabBar) {
+        tabBar.setTabBarStyle({
+          color,
+          selectedColor,
+          backgroundColor,
+          borderStyle,
+          midButton
+        })
+        tabBar.setTabBarItems({
+          list: list.map((item) => ({
+            iconPath: item.iconPath,
+            selectedIconPath: item.selectedIconPath,
+            visible: item.visible
+          }))
+        })
       }
-
-      tabBar && tabBar.setTabBarStyle(tabbarStyle)
-      tabBar && tabBar.setTabBarItems({
-        list: list.map((item) => ({
-          iconPath: item.iconPath,
-          selectedIconPath: item.selectedIconPath,
-          visible: item.visible
-        }))
-      })
       // TODO 暂未实现
       // tabBar && tabBar.setAnimationAlphaBGColor(parseTheme((__uniConfig.window || {}).backgroundColor, false))
     }

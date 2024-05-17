@@ -369,8 +369,12 @@ export default {
   @media (prefers-color-scheme: dark) {
     uni-actionsheet .uni-actionsheet__title {
       background-color: var(--UI-BG-1);
-      border-bottom-color: var(--UI-BORDER-CLOLOR-1);
+      border-bottom-color: var(--UI-BORDER-COLOR-1);
     }
+
+    uni-actionsheet .uni-actionsheet {
+    background-color: var(--UI-BG-1);
+  }
 
     uni-actionsheet .uni-actionsheet__action,
     uni-actionsheet .uni-actionsheet__menu {
@@ -378,12 +382,12 @@ export default {
     }
 
     uni-actionsheet .uni-actionsheet__cell:active {
-      background-color: var(--UI-BG-CLOLOR-ACTIVE);
+      background-color: var(--UI-BG-COLOR-ACTIVE);
     }
 
     uni-actionsheet .uni-actionsheet__cell:before {
-      border-top-color: var(--UI-BORDER-CLOLOR-1);
-      color: var(--UI-BORDER-CLOLOR-1);
+      border-top-color: var(--UI-BORDER-COLOR-1);
+      color: var(--UI-BORDER-COLOR-1);
     }
   }
 </style>

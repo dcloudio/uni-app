@@ -128,6 +128,7 @@ if (!process.env.UNI_CLOUD_PROVIDER && process.env.UNI_CLOUD_SPACES) {
         }
         switch (space.provider) {
           case 'aliyun':
+          case 'dcloud':
             return {
               provider: space.provider || 'aliyun',
               spaceName: space.name,

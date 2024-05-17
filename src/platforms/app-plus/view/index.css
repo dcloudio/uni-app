@@ -176,8 +176,8 @@ html {
 
 @media (prefers-color-scheme: dark) {
   html {
-    --UI-BG-CLOLOR-ACTIVE: #373737;
-    --UI-BORDER-CLOLOR-1: #373737;
+    --UI-BG-COLOR-ACTIVE: #373737;
+    --UI-BORDER-COLOR-1: #373737;
     /* UI */
     --UI-BG: #000;
     --UI-BG-0: #191919;
