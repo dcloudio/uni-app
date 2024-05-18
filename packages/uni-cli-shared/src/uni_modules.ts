@@ -563,6 +563,7 @@ function findEncryptUniModuleCache(
     ) {
       return pkg
     }
+    console.log(`插件${uniModuleId} 缓存已过期，需要重新云编译。`)
     // 已过期的插件，删除缓存
     fs.rmSync(uniModuleCacheDir, { recursive: true })
   }
@@ -702,10 +703,22 @@ export async function checkEncryptUniModules(
           ','
         )}...`
       )
-      const downloadUrl = await U({
-        params,
-        attachment: zipFile,
-      })
+      let downloadUrl = ''
+      try {
+        downloadUrl = await U({
+          params,
+          attachment: zipFile,
+        })
+      } catch (e: any) {
+        if (e.message && e.message === '{"error":"UserNotLogin"}') {
+          console.log(
+            '当前项目包含需要云编译的付费插件，需要您先登录HBuilderX账号。'
+          )
+        } else {
+          console.error(e)
+        }
+        process.exit(0)
+      }
       await D(downloadUrl, downloadFile)
       // unzip
       const AdmZip = require('adm-zip')
