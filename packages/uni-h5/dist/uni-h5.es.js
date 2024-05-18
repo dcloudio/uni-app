@@ -18649,20 +18649,25 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       platform,
       system,
       deviceOrientation,
-      deviceType
-    } = browserInfo;
-    return {
-      brand,
-      deviceBrand,
-      deviceModel,
-      devicePixelRatio: window.devicePixelRatio,
-      deviceId: deviceId$1(),
-      deviceOrientation,
       deviceType,
-      model,
-      platform,
-      system
-    };
+      osname,
+      osversion
+    } = browserInfo;
+    return extend(
+      {
+        brand,
+        deviceBrand,
+        deviceModel,
+        devicePixelRatio: window.devicePixelRatio,
+        deviceId: deviceId$1(),
+        deviceOrientation,
+        deviceType,
+        model,
+        platform,
+        system
+      },
+      {}
+    );
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(

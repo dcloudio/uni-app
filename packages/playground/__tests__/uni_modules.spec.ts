@@ -63,7 +63,18 @@ describe('uni_modules playground', () => {
             if (file.endsWith('.png')) {
               expect(path.basename(file)).toMatchSnapshot()
             } else {
-              expect(fs.readFileSync(file, 'utf-8')).toMatchSnapshot()
+              expect(
+                fs
+                  .readFileSync(file, 'utf-8')
+                  .replace(
+                    `"compilerVersion": "${
+                      require('../../vite-plugin-uni/package.json')['uni-app'][
+                        'compilerVersion'
+                      ]
+                    }"`,
+                    `"compilerVersion": "x.xx"`
+                  )
+              ).toMatchSnapshot()
             }
           })
       })

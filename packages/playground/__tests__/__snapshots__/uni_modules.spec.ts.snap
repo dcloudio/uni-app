@@ -9,7 +9,7 @@ exports[`uni_modules playground uni-app-x build:app-android 2`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       },
       "apis": [
         "uni.getSystemInfo"
@@ -197,7 +197,7 @@ exports[`uni_modules playground uni-app-x build:app-android 7`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       },
       "apis": [],
       "components": [
@@ -431,7 +431,7 @@ exports[`uni_modules playground uni-app-x build:app-ios 2`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       }
     }
   }
@@ -495,7 +495,7 @@ exports[`uni_modules playground uni-app-x build:app-ios 4`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       }
     }
   }
@@ -604,7 +604,7 @@ exports[`uni_modules playground uni-app-x build:h5 4`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       }
     }
   }
@@ -709,7 +709,7 @@ exports[`uni_modules playground uni-app-x build:h5 8`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       }
     }
   }
@@ -725,7 +725,7 @@ exports[`uni_modules playground uni-app-x dev:app-android 2`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       },
       "apis": [
         "uni.getSystemInfo",
@@ -915,7 +915,7 @@ exports[`uni_modules playground uni-app-x dev:app-android 7`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       },
       "apis": [
         "uniCloud.importObject"
@@ -1174,7 +1174,7 @@ exports[`uni_modules playground uni-app-x dev:app-ios 2`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       }
     }
   }
@@ -1262,7 +1262,7 @@ exports[`uni_modules playground uni-app-x dev:app-ios 4`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       }
     }
   }
@@ -1393,7 +1393,7 @@ exports[`uni_modules playground uni-app-x dev:h5 4`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       }
     }
   }
@@ -1520,7 +1520,7 @@ exports[`uni_modules playground uni-app-x dev:h5 8`] = `
   "uni_modules": {
     "artifacts": {
       "env": {
-        "compilerVersion": "4.13"
+        "compilerVersion": "x.xx"
       }
     }
   }

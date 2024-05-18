@@ -11427,20 +11427,25 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       platform,
       system,
       deviceOrientation,
-      deviceType
-    } = browserInfo;
-    return {
-      brand,
-      deviceBrand,
-      deviceModel,
-      devicePixelRatio: 1,
-      deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
-      deviceOrientation,
       deviceType,
-      model,
-      platform,
-      system
-    };
+      osname,
+      osversion
+    } = browserInfo;
+    return shared.extend(
+      {
+        brand,
+        deviceBrand,
+        deviceModel,
+        devicePixelRatio: 1,
+        deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
+        deviceOrientation,
+        deviceType,
+        model,
+        platform,
+        system
+      },
+      {}
+    );
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
