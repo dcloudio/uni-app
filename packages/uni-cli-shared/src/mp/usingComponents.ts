@@ -261,14 +261,16 @@ function createUsingComponents(
   })
 
   if (filename) {
-    const componentName = parseVueComponentName(filename)
+    const name = parseVueComponentName(filename)
 
     if (
-      Object.keys(bindingComponents).find(
-        (v) => bindingComponents[v].tag === componentName
-      ) &&
-      !usingComponents[componentName]
-    ) {
+      !Object.keys(bindingComponents).find(
+        (v) => bindingComponents[v].tag === name
+      )
+    )
+      return usingComponents
+    const componentName = normalizeComponentName(hyphenate(name))
+    if (!usingComponents[componentName]) {
       usingComponents[componentName] = addLeadingSlash(
         removeExt(normalizeMiniProgramFilename(filename, inputDir))
       )
