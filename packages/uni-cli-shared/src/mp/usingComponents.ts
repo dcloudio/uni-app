@@ -1,7 +1,9 @@
 import {
+  type ExportDefaultDeclaration,
   type IfStatement,
   type ImportDeclaration,
   type Node,
+  type ObjectExpression,
   type ObjectProperty,
   type Program,
   type Statement,
@@ -28,6 +30,7 @@ import { BINDING_COMPONENTS, EXTNAME_VUE_RE } from '../constants'
 import { isAppVue, normalizeMiniProgramFilename, removeExt } from '../utils'
 import { cleanUrl, parseVueRequest } from '../vite/utils'
 import { addMiniProgramUsingComponents } from '../json/mp/jsonFile'
+import path from 'path'
 
 type BindingComponents = Record<
   string,
@@ -190,11 +193,56 @@ export async function updateMiniProgramGlobalComponents(
   }
 }
 
+function parseVueComponentName(filename: string) {
+  let name = path.basename(removeExt(filename))
+
+  const ast = scriptDescriptors.get(filename)
+  if (!ast) return name
+
+  const exportDefaultDecliaration = scriptDescriptors
+    .get(filename)
+    ?.ast.body.find(
+      (v) => v.type === 'ExportDefaultDeclaration'
+    ) as ExportDefaultDeclaration | null
+
+  if (!exportDefaultDecliaration) return name
+
+  let defineComponentDeclaration: ObjectExpression | null = null
+
+  const { declaration } = exportDefaultDecliaration
+
+  if (declaration.type === 'ObjectExpression') {
+    defineComponentDeclaration = declaration
+  } else if (
+    declaration.type === 'CallExpression' &&
+    declaration.callee.type === 'Identifier' &&
+    declaration.callee.name === '_defineComponent'
+  ) {
+    defineComponentDeclaration =
+      (declaration.arguments[0] as ObjectExpression | undefined) || null
+  }
+
+  if (!defineComponentDeclaration) return name
+
+  for (const prop of defineComponentDeclaration.properties) {
+    if (
+      prop.type === 'ObjectProperty' &&
+      prop.key.type === 'Identifier' &&
+      prop.key.name === '__name' &&
+      prop.value.type === 'StringLiteral'
+    ) {
+      return prop.value.value
+    }
+  }
+  return name
+}
+
 function createUsingComponents(
   bindingComponents: BindingComponents,
   imports: ImportDeclaration[],
   inputDir: string,
-  normalizeComponentName: (name: string) => string
+  normalizeComponentName: (name: string) => string,
+  filename?: string
 ) {
   const usingComponents: Record<string, string> = {}
   imports.forEach(({ source: { value }, specifiers: [specifier] }) => {
@@ -211,6 +259,22 @@ function createUsingComponents(
       )
     }
   })
+
+  if (filename) {
+    const componentName = parseVueComponentName(filename)
+
+    if (
+      Object.keys(bindingComponents).find(
+        (v) => bindingComponents[v].tag === componentName
+      ) &&
+      !usingComponents[componentName]
+    ) {
+      usingComponents[componentName] = addLeadingSlash(
+        removeExt(normalizeMiniProgramFilename(filename, inputDir))
+      )
+    }
+  }
+
   return usingComponents
 }
 
@@ -250,7 +314,8 @@ export function updateMiniProgramComponentsByMainFilename(
       bindingComponents,
       imports,
       inputDir,
-      normalizeComponentName
+      normalizeComponentName,
+      mainFilename
     )
   )
 }
@@ -347,6 +412,7 @@ interface ParseDescriptor {
 }
 export interface ScriptDescriptor extends TemplateDescriptor {
   setupBindingComponents: BindingComponents
+  ast: Program
 }
 
 async function parseGlobalDescriptor(
@@ -396,6 +462,7 @@ export async function parseScriptDescriptor(
     bindingComponents: parseComponents(ast),
     setupBindingComponents: findBindingComponents(ast.body),
     imports,
+    ast,
   }
 
   scriptDescriptors.set(filename, descriptor)
