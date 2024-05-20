@@ -241,10 +241,8 @@ function useBase(
         : getValueString(props.value, props.type, maxlength.value)
   } else {
     value =
-      props.modelValue !== void 0
-        ? getValueString(props.modelValue, props.type, maxlength.value) ??
-          getValueString(props.value, props.type, maxlength.value)
-        : getValueString(props.value, props.type, maxlength.value)
+      getValueString(props.modelValue, props.type) ||
+      getValueString(props.value, props.type)
   }
   const state: State = reactive({
     value,
