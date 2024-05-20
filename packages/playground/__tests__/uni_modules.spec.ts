@@ -78,6 +78,7 @@ describe('uni_modules playground', () => {
                   }"`,
                   `"compilerVersion": "x.xx"`
                 )
+                .replaceAll(projectDir, '')
             ).toMatchSnapshot()
           }
         })

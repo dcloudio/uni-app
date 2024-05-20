@@ -1191,7 +1191,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com1/components/test-com1-1/test-com1-1.vue"]]);
+const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]], ["__file", "/src/uni_modules/test-com1/components/test-com1-1/test-com1-1.vue"]]);
 
 const _sfc_main = defineComponent({
     data() {
@@ -1222,7 +1222,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com1/components/test-com1-2/test-com1-2.vue"]]);
+const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/src/uni_modules/test-com1/components/test-com1-2/test-com1-2.vue"]]);
 
 export { testCom11 as TestCom11, testCom12 as TestCom12 };
 "
@@ -1279,7 +1279,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-1/test-com2-1.vue"]]);
+const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]], ["__file", "/src/uni_modules/test-com2/components/test-com2-1/test-com2-1.vue"]]);
 
 const _sfc_main = defineComponent({
     data() {
@@ -1310,7 +1310,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
+const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
 
 export { testCom21 as TestCom21, testCom22 as TestCom22, test };
 "
@@ -1419,7 +1419,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-07a142fd"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com1/components/test-com1-1/test-com1-1.vue"]]);
+const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-07a142fd"], ["__file", "/src/uni_modules/test-com1/components/test-com1-1/test-com1-1.vue"]]);
 const _sfc_main = defineComponent({
   data() {
     return {
@@ -1452,7 +1452,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e9ed06e5"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com1/components/test-com1-2/test-com1-2.vue"]]);
+const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e9ed06e5"], ["__file", "/src/uni_modules/test-com1/components/test-com1-2/test-com1-2.vue"]]);
 export {
   testCom11 as TestCom11,
   testCom12 as TestCom12
@@ -1545,7 +1545,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-86d335ce"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-1/test-com2-1.vue"]]);
+const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-86d335ce"], ["__file", "/src/uni_modules/test-com2/components/test-com2-1/test-com2-1.vue"]]);
 const _sfc_main = defineComponent({
   data() {
     return {
@@ -1578,7 +1578,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9332ef4d"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
+const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9332ef4d"], ["__file", "/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
 export {
   testCom21 as TestCom21,
   testCom22 as TestCom22,

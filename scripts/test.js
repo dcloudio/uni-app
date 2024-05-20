@@ -250,24 +250,6 @@ async function testArkTS() {
       )
     )
   })
-  await bundle(UTSTarget.SWIFT, {
-    input: {
-      root: projectDir,
-      filename: path.resolve(
-        projectDir,
-        'utssdk/test-uts/app-ios/index.uts'
-      ),
-    },
-    output: {
-      outDir,
-      package: 'UTSSDKModulesTestUts',
-      imports: ['DCloudUTSFoundation'],
-      sourceMap,
-      extname: 'swift',
-      logFilename: true,
-      isPlugin: true,
-    },
-  })
 }
 
 async function test() {
