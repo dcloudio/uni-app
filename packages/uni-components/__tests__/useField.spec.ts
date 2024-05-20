@@ -64,31 +64,32 @@ describe('test: helpers/useField.ts', () => {
     const mockRef = ref(null)
     const mockEmit = jest.fn()
 
-    // modelValue > value
+    // blank modelValue > value
     mockProps.modelValue = ''
     mockProps.value = '禁用'
     const { state } = useField(mockProps, mockRef, mockEmit)
     expect(state.value).toBe('')
 
-    // modelValue > value
+    // blank modelValue > value
+    mockProps.modelValue = '禁用1'
+    mockProps.value = ''
+    const { state: state0 } = useField(mockProps, mockRef, mockEmit)
+    expect(state0.value).toBe('禁用1')
+
+    // normal modelValue > value
     mockProps.modelValue = '禁用2'
     mockProps.value = '禁用'
     const { state: state1 } = useField(mockProps, mockRef, mockEmit)
     expect(state1.value).toBe('禁用2')
 
-    mockProps.modelValue = ''
-    mockProps.value = '123'
-    const { state: state2 } = useField(mockProps, mockRef, mockEmit)
-    expect(state2.value).toBe('')
-
-    // modelValue
+    // set modelValue not set value
     // @ts-expect-error
     mockProps.value = undefined
     mockProps.modelValue = '禁用3'
     const { state: state3 } = useField(mockProps, mockRef, mockEmit)
     expect(state3.value).toBe('禁用3')
 
-    // value
+    // not set modeValue,set value
     mockProps.value = '禁用4'
     // @ts-expect-error
     mockProps.modelValue = undefined
