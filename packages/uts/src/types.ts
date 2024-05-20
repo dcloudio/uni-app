@@ -1,6 +1,7 @@
 export enum UTSTarget {
   KOTLIN = 'kotlin',
   SWIFT = 'swift',
+  ARKTS = 'arkts',
 }
 export interface UTSParserConfig {
   /**
