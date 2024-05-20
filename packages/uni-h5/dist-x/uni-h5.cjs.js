@@ -3813,7 +3813,7 @@ function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  const valueStr = value === null ? "" : String(value);
+  const valueStr = value === null || value === void 0 ? "" : String(value);
   if (maxlength == void 0) {
     return valueStr;
   }
@@ -3837,12 +3837,10 @@ const props$l = /* @__PURE__ */ shared.extend(
       default: ""
     },
     modelValue: {
-      type: [String, Number],
-      default: ""
+      type: [String, Number]
     },
     value: {
-      type: [String, Number],
-      default: ""
+      type: [String, Number]
     },
     disabled: {
       type: [Boolean, String],
@@ -3959,7 +3957,7 @@ function useBase(props2, rootRef, emit2) {
   });
   let value = "";
   {
-    value = (_a = getValueString(props2.modelValue, props2.type, maxlength.value)) != null ? _a : getValueString(props2.value, props2.type, maxlength.value);
+    value = props2.modelValue !== void 0 ? (_a = getValueString(props2.modelValue, props2.type, maxlength.value)) != null ? _a : getValueString(props2.value, props2.type, maxlength.value) : getValueString(props2.value, props2.type, maxlength.value);
   }
   const state = vue.reactive({
     value,

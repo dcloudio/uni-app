@@ -9325,7 +9325,7 @@ function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  const valueStr = value === null ? "" : String(value);
+  const valueStr = value === null || value === void 0 ? "" : String(value);
   if (maxlength == void 0) {
     return valueStr;
   }
@@ -9349,12 +9349,10 @@ const props$r = /* @__PURE__ */ extend(
       default: ""
     },
     modelValue: {
-      type: [String, Number],
-      default: ""
+      type: [String, Number]
     },
     value: {
-      type: [String, Number],
-      default: ""
+      type: [String, Number]
     },
     disabled: {
       type: [Boolean, String],
