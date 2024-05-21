@@ -16,23 +16,8 @@ import {
 import { UniElement } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniElement'
 import { UniNode } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniNode'
 import { BuiltInComponents } from './components'
-
-const elements = new Map<number, UniNode>()
-
-export function $(id: number) {
-  return elements.get(id) as UniElement<any>
-}
-
-export function getElement(id: number) {
-  return elements.get(id)
-}
-
-export function removeElement(id: number) {
-  if (__DEV__) {
-    console.log(formatLog('Remove', id, elements.size - 1))
-  }
-  return elements.delete(id)
-}
+export { $ } from '@dcloudio/uni-app-plus/view/framework/dom/store'
+import { setElement } from '@dcloudio/uni-app-plus/view/framework/dom/page'
 
 export function createElement(
   id: number,
@@ -64,7 +49,7 @@ export function createElement(
       )
     }
   }
-  elements.set(id, element)
+  setElement(id, element)
   return element
 }
 
