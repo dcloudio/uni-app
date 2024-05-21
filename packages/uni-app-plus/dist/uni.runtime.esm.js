@@ -18389,7 +18389,7 @@ function createNVueWebview({ path, query, routeOptions, webviewExtras, }) {
 
 let preloadWebview$1;
 function setPreloadWebview(webview) {
-    preloadWebview$1 = webview;
+    return (preloadWebview$1 = webview);
 }
 function getPreloadWebview() {
     return preloadWebview$1;
@@ -19535,7 +19535,7 @@ function createNVuePage(pageId, webview, pageInstance) {
     }
 }
 
-const $navigateTo = (args, { resolve, reject }) => {
+const $navigateTo =  (args, { resolve, reject }) => {
     const { url, events, animationType, animationDuration } = args;
     const { path, query } = parseUrl(url);
     const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
@@ -19552,7 +19552,7 @@ const $navigateTo = (args, { resolve, reject }) => {
             .catch(reject);
     }, args.openType === 'appLaunch');
 };
-const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+const navigateTo = /*#__PURE__*/ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     // 当前页面触发 onHide
     invokeHook(ON_HIDE);
