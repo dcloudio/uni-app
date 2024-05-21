@@ -140,7 +140,8 @@ export default defineConfig({
   build: {
     target: 'es2015',
     cssTarget,
-    minify: 'terser',
+    // 暂不压缩
+    minify: false,
     cssCodeSplit: false,
     lib: {
       name: 'uni-app-view',
