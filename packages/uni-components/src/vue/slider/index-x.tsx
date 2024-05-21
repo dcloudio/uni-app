@@ -1,14 +1,11 @@
-import { computed, inject, onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import {
-  CustomEventTrigger,
-  useCustomEvent,
-  EmitEvent,
-  withWebEvent,
-} from '../../helpers/useEvent'
-import { UniFormCtx, uniFormKey } from '../form'
+import { useCustomEvent, withWebEvent } from '../../helpers/useEvent'
+import type { CustomEventTrigger, EmitEvent } from '../../helpers/useEvent'
+import { uniFormKey } from '../form'
+import type { UniFormCtx } from '../form'
 
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28
@@ -46,6 +43,11 @@ const props = {
     type: String,
     default: '#e9e9e9',
   },
+  // 优先级高于 activeColor
+  activeBackgroundColor: {
+    type: String,
+    default: '',
+  },
   activeColor: {
     type: String,
     default: '#007aff',
@@ -57,6 +59,15 @@ const props = {
   blockColor: {
     type: String,
     default: '#ffffff',
+  },
+  // 优先级高于blockColor
+  foregroundColor: {
+    type: String,
+    default: '',
+  },
+  valueColor: {
+    type: String,
+    default: '#888888',
   },
   blockSize: {
     type: [Number, String],
@@ -162,6 +173,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         setActiveColor,
         setThumbStyle,
         thumbTrackStyle,
+        setValueStyle,
       } = state
 
       return (
@@ -194,6 +206,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             <span
               v-show={props.showValue}
               ref={sliderValueRef}
+              style={setValueStyle.value}
               class="uni-slider-value"
             ></span>
           </div>
@@ -213,8 +226,9 @@ function useSliderState(props: SliderProps) {
       : '#007aff'
   }
   const _getActiveColor = () => {
-    return props.activeColor !== '#007aff'
-      ? props.activeColor
+    const activeColor = props.activeBackgroundColor || props.activeColor
+    return activeColor !== '#007aff'
+      ? activeColor
       : props.selectedColor !== '#e9e9e9'
       ? props.selectedColor
       : '#e9e9e9'
@@ -240,7 +254,10 @@ function useSliderState(props: SliderProps) {
     setThumbStyle: computed(() => ({
       width: _getBlockSizeString(),
       height: _getBlockSizeString(),
-      backgroundColor: props.blockColor,
+      backgroundColor: props.foregroundColor || props.blockColor,
+    })),
+    setValueStyle: computed(() => ({
+      color: props.valueColor,
     })),
   }
 
