@@ -1,5 +1,4 @@
 import {
-  type ExportDefaultDeclaration,
   type IfStatement,
   type ImportDeclaration,
   type Node,
@@ -8,11 +7,15 @@ import {
   type Program,
   type Statement,
   type StringLiteral,
+  assertExportDefaultDeclaration,
+  assertIdentifier,
   isBlockStatement,
   isCallExpression,
+  isExportDefaultDeclaration,
   isIdentifier,
   isIfStatement,
   isImportDeclaration,
+  isImportSpecifier,
   isMemberExpression,
   isObjectExpression,
   isObjectProperty,
@@ -196,40 +199,79 @@ export async function updateMiniProgramGlobalComponents(
 function parseVueComponentName(filename: string) {
   let name = path.basename(removeExt(filename))
 
-  const ast = scriptDescriptors.get(filename)
+  const ast = scriptDescriptors.get(filename)?.ast
   if (!ast) return name
 
-  const exportDefaultDecliaration = scriptDescriptors
-    .get(filename)
-    ?.ast.body.find(
-      (v) => v.type === 'ExportDefaultDeclaration'
-    ) as ExportDefaultDeclaration | null
+  // 获取默认导出定义
+  const exportDefaultDecliaration = ast.body.find((node) =>
+    isExportDefaultDeclaration(node)
+  )
+
+  assertExportDefaultDeclaration(exportDefaultDecliaration)
 
   if (!exportDefaultDecliaration) return name
 
+  // 获取vue的defineComponent导入变量名
+  let defineComponentLocalName: string | null = null
+
+  for (const node of ast.body) {
+    if (
+      isImportDeclaration(node) &&
+      isStringLiteral(node.source, { value: 'vue' })
+    ) {
+      const importSpecifer = node.specifiers.find(
+        (specifer) =>
+          isImportSpecifier(specifer) &&
+          isIdentifier(specifer.imported, { name: 'defineComponent' })
+      )
+      if (isImportSpecifier(importSpecifer)) {
+        defineComponentLocalName = importSpecifer.local.name
+      }
+    }
+  }
+
+  // 获取组件定义对象
   let defineComponentDeclaration: ObjectExpression | null = null
 
-  const { declaration } = exportDefaultDecliaration
+  let { declaration } = exportDefaultDecliaration
 
-  if (declaration.type === 'ObjectExpression') {
+  // 如果默认导出了变量则尝试查找该变量
+  if (isIdentifier(declaration)) {
+    const { name } = declaration
+    for (const node of ast.body) {
+      if (isVariableDeclaration(node)) {
+        assertIdentifier(declaration)
+        const declarator = node.declarations.find((declarator) =>
+          isIdentifier(declarator.id, { name })
+        )
+        if (declarator?.init) {
+          declaration = declarator.init
+        }
+      } else if (isExportDefaultDeclaration(node)) {
+        break
+      }
+    }
+  }
+
+  if (isObjectExpression(declaration)) {
     defineComponentDeclaration = declaration
   } else if (
-    declaration.type === 'CallExpression' &&
-    declaration.callee.type === 'Identifier' &&
-    /_*defineComponent/.test(declaration.callee.name)
+    defineComponentLocalName &&
+    isCallExpression(declaration) &&
+    isIdentifier(declaration.callee, { name: defineComponentLocalName }) &&
+    isObjectExpression(declaration.arguments[0])
   ) {
-    defineComponentDeclaration =
-      (declaration.arguments[0] as ObjectExpression | undefined) || null
+    defineComponentDeclaration = declaration.arguments[0]
   }
 
   if (!defineComponentDeclaration) return name
 
   for (const prop of defineComponentDeclaration.properties) {
     if (
-      prop.type === 'ObjectProperty' &&
-      prop.key.type === 'Identifier' &&
+      isObjectProperty(prop) &&
+      isIdentifier(prop.key) &&
       /(__)?name/.test(prop.key.name) &&
-      prop.value.type === 'StringLiteral'
+      isStringLiteral(prop.value)
     ) {
       return prop.value.value
     }

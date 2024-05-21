@@ -319,6 +319,7 @@ export function createApp() {
         },
         ``
       )
+
       await testLocal(
         `import { defineComponent as _defineComponent } from "vue";
       const __BINDING_COMPONENTS__ = '{"test":{"name":"test","type":"unknown"}}';
@@ -331,6 +332,28 @@ export function createApp() {
           };
         }
       });
+      import "${inputDir}/pages/index/index.vue?vue&type=style&index=0&lang.css";
+`,
+        {
+          test: '/pages/index/index',
+        },
+        ``
+      )
+
+      await testLocal(
+        `import { defineComponent as _defineComponent } from "vue";
+      const __BINDING_COMPONENTS__ = '{"test":{"name":"test","type":"unknown"}}';
+      const component = _defineComponent({
+        __name: "test",
+        setup(__props) {
+          return (_ctx, _cache) => {
+            return {};
+          };
+        }
+      });
+
+      export default component;
+
       import "${inputDir}/pages/index/index.vue?vue&type=style&index=0&lang.css";
 `,
         {
