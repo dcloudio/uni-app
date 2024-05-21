@@ -2,10 +2,13 @@ import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import { useCustomEvent, withWebEvent } from '../../helpers/useEvent'
-import type { CustomEventTrigger, EmitEvent } from '../../helpers/useEvent'
-import { uniFormKey } from '../form'
-import type { UniFormCtx } from '../form'
+import {
+  type CustomEventTrigger,
+  type EmitEvent,
+  useCustomEvent,
+  withWebEvent,
+} from '../../helpers/useEvent'
+import { type UniFormCtx, uniFormKey } from '../form'
 
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12
 const SLIDER_BLOCK_SIZE_MAX_VALUE = 28
@@ -139,10 +142,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Slider',
   props,
   emits: ['changing', 'change'],
+  //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-slider',
     class: UniSliderElement,
   },
+  //#endif
   setup(props, { emit }) {
     const sliderRef: HTMLRef = ref(null)
     const sliderValueRef: HTMLRef = ref(null)

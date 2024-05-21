@@ -1,15 +1,18 @@
-import { computed, inject, onMounted, onBeforeUnmount, ref, watch } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { ExtractPropTypes, Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
-import { useTouchtrack, TouchtrackEvent } from '../../helpers/useTouchtrack'
+import {
+  type TouchtrackEvent,
+  useTouchtrack,
+} from '../../helpers/useTouchtrack'
 import { UniElement } from '../../helpers/UniElement'
 import {
-  CustomEventTrigger,
+  type CustomEventTrigger,
+  type EmitEvent,
   useCustomEvent,
-  EmitEvent,
   withWebEvent,
 } from '../../helpers/useEvent'
-import { UniFormCtx, uniFormKey } from '../form'
+import { type UniFormCtx, uniFormKey } from '../form'
 
 const props = {
   name: {
@@ -74,7 +77,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Slider',
   props,
   emits: ['changing', 'change'],
-  //#if _X_ && !_NODE_JS_ /* 仅限X项目以及非SSR环境，使用条件编译，可以尽量减少其他平台生成多余的代码 */
+  //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-slider',
     class: UniSliderElement,
