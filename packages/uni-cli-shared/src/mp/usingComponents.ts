@@ -216,7 +216,7 @@ function parseVueComponentName(filename: string) {
   } else if (
     declaration.type === 'CallExpression' &&
     declaration.callee.type === 'Identifier' &&
-    declaration.callee.name === '_defineComponent'
+    /_*defineComponent/.test(declaration.callee.name)
   ) {
     defineComponentDeclaration =
       (declaration.arguments[0] as ObjectExpression | undefined) || null
@@ -228,7 +228,7 @@ function parseVueComponentName(filename: string) {
     if (
       prop.type === 'ObjectProperty' &&
       prop.key.type === 'Identifier' &&
-      prop.key.name === '__name' &&
+      /(__)?name/.test(prop.key.name) &&
       prop.value.type === 'StringLiteral'
     ) {
       return prop.value.value
@@ -261,15 +261,18 @@ function createUsingComponents(
   })
 
   if (filename) {
-    const name = parseVueComponentName(filename)
+    const componentName = normalizeComponentName(
+      hyphenate(parseVueComponentName(filename))
+    )
 
     if (
       !Object.keys(bindingComponents).find(
-        (v) => bindingComponents[v].tag === name
+        (v) =>
+          normalizeComponentName(hyphenate(bindingComponents[v].tag)) ===
+          componentName
       )
     )
       return usingComponents
-    const componentName = normalizeComponentName(hyphenate(name))
     if (!usingComponents[componentName]) {
       usingComponents[componentName] = addLeadingSlash(
         removeExt(normalizeMiniProgramFilename(filename, inputDir))
