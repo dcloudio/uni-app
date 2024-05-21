@@ -31,7 +31,7 @@ export {
   Camera,
   LivePlayer,
   LivePusher,
-  //#if _X_
+  //#if _X_ && !_NODE_JS_
   UniVideoElement,
   UniWebViewElement,
   UniMapElement,

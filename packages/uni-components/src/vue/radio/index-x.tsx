@@ -1,15 +1,18 @@
-import { onBeforeUnmount, onMounted, watch, inject, ref, computed } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniElement } from '../../helpers/UniElement'
-import { UniRadioGroupCtx, uniRadioGroupKey } from '../radio-group'
-import { UniFormCtx, uniFormKey } from '../form'
-import { uniLabelKey, UniLabelCtx } from '../label'
+import { uniRadioGroupKey } from '../radio-group'
+import type { UniRadioGroupCtx } from '../radio-group'
+import { uniFormKey } from '../form'
+import type { UniFormCtx } from '../form'
+import { uniLabelKey } from '../label'
+import type { UniLabelCtx } from '../label'
 import {
-  createSvgIconVNode,
   ICON_PATH_SUCCESS_NO_CIRCLE,
+  createSvgIconVNode,
 } from '@dcloudio/uni-core'
 
 const props = {
@@ -52,6 +55,11 @@ const props = {
   iconColor: {
     type: String,
     default: '#ffffff',
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foregroundColor: {
+    type: String,
+    default: '',
   },
 }
 
@@ -190,14 +198,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         >
           <div
             class="uni-radio-input"
-            // @ts-ignore
+            // @ts-expect-error
             class={{ 'uni-radio-input-disabled': props.disabled }}
             style={radioStyle.value}
           >
             {realCheckValue
               ? createSvgIconVNode(
                   ICON_PATH_SUCCESS_NO_CIRCLE,
-                  props.disabled ? '#ADADAD' : props.iconColor,
+                  props.disabled
+                    ? '#ADADAD'
+                    : props.foregroundColor || props.iconColor,
                   18
                 )
               : ''}

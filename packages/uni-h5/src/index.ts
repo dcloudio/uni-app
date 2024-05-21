@@ -36,6 +36,8 @@ export {
   ListItem,
   StickySection,
   StickyHeader,
+  //#endif
+  //#if _X_ && !_NODE_JS_
   UniElement,
   UniElement as UniElementImpl,
   UniButtonElement,

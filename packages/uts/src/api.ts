@@ -99,6 +99,29 @@ export function bundleSwift(options: UTSBundleOptions): Promise<UTSResult> {
     .then((res: string) => JSON.parse(res))
 }
 
+export function toArkTS(options: UTSOptions): Promise<UTSResult> {
+  const arkTSOptions = resolveOptions(options)
+  if (!arkTSOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .toSwift(toBuffer(arkTSOptions))
+    .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
+}
+
+export function bundleArkTS(options: UTSBundleOptions): Promise<UTSResult> {
+  const bundleOptions = resolveOptions(options)
+  if (!bundleOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .bundleArkTS(toBuffer(bundleOptions))
+    .then((res: string) => JSON.parse(res))
+}
+
 function toBuffer(t: any): Buffer {
   // 'Buffer' only refers to a type, but is being used as a value here
   return Buffer.from(JSON.stringify(t))

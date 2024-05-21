@@ -1,10 +1,4 @@
 "use strict";
-var __defProp = Object.defineProperty;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
-var __publicField = (obj, key, value) => {
-  __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
-  return value;
-};
 Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
@@ -1432,53 +1426,7 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
-    });
-  }
-  return value;
-}
-class UniElement extends HTMLElement {
-  constructor() {
-    super();
-    this._props = {};
-    this.__isUniElement = true;
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
-  }
-}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-class UniFormElement extends UniElement {
-}
 const index$D = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
@@ -1538,8 +1486,6 @@ function useProvideLabel() {
     }
   });
   return handlers;
-}
-class UniLabelElement extends UniElement {
 }
 const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
@@ -1617,8 +1563,6 @@ const buttonProps = {
     default: false
   }
 };
-class UniButtonElement extends UniElement {
-}
 const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
@@ -2501,8 +2445,6 @@ const props$r = {
     default: true
   }
 };
-class UniCanvasElement extends UniElement {
-}
 const index$A = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
@@ -2977,8 +2919,6 @@ const props$q = {
     default: ""
   }
 };
-class UniCheckboxGroupElement extends UniElement {
-}
 const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$q,
@@ -3075,8 +3015,6 @@ const props$p = {
     default: ""
   }
 };
-class UniCheckboxElement extends UniElement {
-}
 const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$p,
@@ -3415,8 +3353,6 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-class UniEditorElement extends UniElement {
-}
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$n,
@@ -3478,8 +3414,6 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-class UniIconElement extends UniElement {
-}
 const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
@@ -3547,8 +3481,6 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-class UniImageElement extends UniElement {
-}
 const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$m,
@@ -3813,7 +3745,7 @@ function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  const valueStr = value === null ? "" : String(value);
+  const valueStr = value === null || value === void 0 ? "" : String(value);
   if (maxlength == void 0) {
     return valueStr;
   }
@@ -3837,12 +3769,10 @@ const props$l = /* @__PURE__ */ shared.extend(
       default: ""
     },
     modelValue: {
-      type: [String, Number],
-      default: ""
+      type: [String, Number]
     },
     value: {
-      type: [String, Number],
-      default: ""
+      type: [String, Number]
     },
     disabled: {
       type: [Boolean, String],
@@ -3959,7 +3889,7 @@ function useBase(props2, rootRef, emit2) {
   });
   let value = "";
   {
-    value = (_a = getValueString(props2.modelValue, props2.type, maxlength.value)) != null ? _a : getValueString(props2.value, props2.type, maxlength.value);
+    value = props2.modelValue !== void 0 ? (_a = getValueString(props2.modelValue, props2.type, maxlength.value)) != null ? _a : getValueString(props2.value, props2.type, maxlength.value) : getValueString(props2.value, props2.type, maxlength.value);
   }
   const state = vue.reactive({
     value,
@@ -4173,12 +4103,6 @@ function resolveDigitDecimalPoint(event, cache, state, input) {
       cache.value += ".";
       return false;
     }
-  }
-}
-class UniInputElement extends UniElement {
-  focus(options) {
-    var _a;
-    (_a = this.querySelector("input")) == null ? void 0 : _a.focus(options);
   }
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -4401,8 +4325,6 @@ const movableAreaProps = {
     default: false
   }
 };
-class UniMovableAreaElement extends UniElement {
-}
 const index$u = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
@@ -4950,8 +4872,6 @@ const movableViewProps = {
 };
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
-}
-class UniMovableViewElement extends UniElement {
 }
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
@@ -5603,8 +5523,6 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-class UniNavigatorElement extends UniElement {
-}
 const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
@@ -5696,8 +5614,6 @@ function useState$2(props2) {
   });
   return state;
 }
-class UniPickerViewElement extends UniElement {
-}
 const PickerView = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerView",
   props: pickerViewProps,
@@ -5771,8 +5687,6 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniPickerViewColumnElement extends UniElement {
-}
 const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   setup(props2, {
@@ -5931,8 +5845,6 @@ const progressProps = {
     default: 0
   }
 };
-class UniProgressElement extends UniElement {
-}
 const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
@@ -6023,8 +5935,6 @@ const props$j = {
     default: ""
   }
 };
-class UniRadioGroupElement extends UniElement {
-}
 const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
@@ -6147,8 +6057,6 @@ const props$i = {
     default: "#ffffff"
   }
 };
-class UniRadioElement extends UniElement {
-}
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$i,
@@ -6509,8 +6417,6 @@ const props$h = {
     }
   }
 };
-class UniRichTextElement extends UniElement {
-}
 const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
@@ -6714,8 +6620,6 @@ const props$g = {
     default: false
   }
 };
-class UniScrollViewElement extends UniElement {
-}
 const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
@@ -7061,53 +6965,10 @@ const props$f = {
     default: false
   }
 };
-const getValuePercentage = (value, min, max) => {
-  return 100 * (value - min) / (max - min) + "%";
-};
-class UniSliderElement extends UniElement {
-  constructor() {
-    super(...arguments);
-    __publicField(this, "_initialValue", 0);
-  }
-  init() {
-    this.htmlSlider = this.querySelector(".uni-slider-browser-input-range");
-    this.trackValue = this.querySelector(".uni-slider-track-value");
-    this.thumbValue = this.querySelector(".uni-slider-thumb-value");
-    this.inputValue = this.querySelector(".uni-slider-value");
-    this.updateValue(this.value);
-  }
-  get value() {
-    return Number(this.htmlSlider.value);
-  }
-  set value(value) {
-    this.htmlSlider.value = value.toString();
-    this.updateValue(value);
-  }
-  reset() {
-    this.value = this._initialValue;
-  }
-  updateValue(value) {
-    const min = Number(this.htmlSlider.getAttribute("min"));
-    const max = Number(this.htmlSlider.getAttribute("max"));
-    if (value < min) {
-      value = min;
-    } else if (value > max) {
-      value = max;
-    }
-    const percentage = getValuePercentage(value, min, max);
-    this.trackValue.style.width = percentage;
-    this.thumbValue.style.left = percentage;
-    this.inputValue.innerText = value.toString();
-  }
-}
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$f,
   emits: ["changing", "change"],
-  rootElement: {
-    name: "uni-slider",
-    class: UniSliderElement
-  },
   setup(props2, {
     emit: emit2
   }) {
@@ -7630,8 +7491,6 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-class UniSwiperElement extends UniElement {
-}
 const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
@@ -7861,8 +7720,6 @@ const props$d = {
     default: ""
   }
 };
-class UniSwiperItemElement extends UniElement {
-}
 const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
@@ -7908,8 +7765,6 @@ const props$c = {
     default: ""
   }
 };
-class UniSwitchElement extends UniElement {
-}
 const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$c,
@@ -8023,8 +7878,6 @@ function normalizeText(text, { space, decode }) {
 function parseText(text, options) {
   return normalizeText(text, options).split(uniShared.LINEFEED);
 }
-class UniTextElement extends UniElement {
-}
 const index$k = /* @__PURE__ */ defineBuiltInComponent({
   name: "Text",
   props: {
@@ -8099,12 +7952,6 @@ const props$b = /* @__PURE__ */ shared.extend({}, props$l, {
 });
 let fixMargin = false;
 const ConfirmTypes = ["done", "go", "next", "search", "send"];
-class UniTextareaElement extends UniElement {
-  focus(options) {
-    var _a;
-    (_a = this.querySelector("textarea")) == null ? void 0 : _a.focus(options);
-  }
-}
 const index$j = /* @__PURE__ */ defineBuiltInComponent({
   name: "Textarea",
   props: props$b,
@@ -8257,8 +8104,6 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniViewElement extends UniElement {
-}
 const index$i = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
   props: /* @__PURE__ */ shared.extend({}, hoverProps),
@@ -8376,8 +8221,6 @@ const props$a = {
     default: false
   }
 };
-class UniListViewElement extends UniElement {
-}
 const index$h = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListView",
   props: props$a,
@@ -8683,8 +8526,6 @@ function getSize(isVertical, el) {
     return parseFloat(style.marginLeft) + el.getBoundingClientRect().width + parseFloat(style.marginRight);
   }
 }
-class UniListItemElement extends UniElement {
-}
 const index$g = /* @__PURE__ */ defineBuiltInComponent({
   name: "ListItem",
   props: {},
@@ -8727,8 +8568,6 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniStickySectionElement extends UniElement {
-}
 const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickySection",
   props: {
@@ -8774,8 +8613,6 @@ const index$f = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniStickyHeaderElement extends UniElement {
-}
 const index$e = /* @__PURE__ */ defineBuiltInComponent({
   name: "StickyHeader",
   props: {
@@ -9245,127 +9082,8 @@ function pruneRouteCache(key) {
     }
   });
 }
-function usePopupStyle(props2) {
-  const popupWidth = vue.ref(0);
-  const popupHeight = vue.ref(0);
-  const isDesktop = vue.computed(
-    () => popupWidth.value >= 500 && popupHeight.value >= 500
-  );
-  const popupStyle = vue.computed(() => {
-    const style = {
-      content: {
-        transform: "",
-        left: "",
-        top: "",
-        bottom: ""
-      },
-      triangle: {
-        left: "",
-        top: "",
-        bottom: "",
-        "border-width": "",
-        "border-color": ""
-      }
-    };
-    const contentStyle = style.content;
-    const triangleStyle = style.triangle;
-    const popover = props2.popover;
-    function getNumber(value) {
-      return Number(value) || 0;
-    }
-    if (isDesktop.value && popover) {
-      shared.extend(triangleStyle, {
-        position: "absolute",
-        width: "0",
-        height: "0",
-        "margin-left": "-6px",
-        "border-style": "solid"
-      });
-      const popoverLeft = getNumber(popover.left);
-      const popoverWidth = getNumber(popover.width);
-      const popoverTop = getNumber(popover.top);
-      const popoverHeight = getNumber(popover.height);
-      const center = popoverLeft + popoverWidth / 2;
-      contentStyle.transform = "none !important";
-      const contentLeft = Math.max(0, center - 300 / 2);
-      contentStyle.left = `${contentLeft}px`;
-      let triangleLeft = Math.max(12, center - contentLeft);
-      triangleLeft = Math.min(300 - 12, triangleLeft);
-      triangleStyle.left = `${triangleLeft}px`;
-      const vcl = popupHeight.value / 2;
-      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
-        contentStyle.top = "auto";
-        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
-        triangleStyle.bottom = "-6px";
-        triangleStyle["border-width"] = "6px 6px 0 6px";
-        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
-      } else {
-        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
-        triangleStyle.top = "-6px";
-        triangleStyle["border-width"] = "0 6px 6px 6px";
-        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
-      }
-    }
-    return style;
-  });
-  return {
-    isDesktop,
-    popupStyle
-  };
-}
-function useKeyboard() {
-  const key = vue.ref("");
-  const disable = vue.ref(false);
-  return {
-    key,
-    disable
-  };
-}
-function getTheme() {
-  if (__uniConfig.darkmode !== true)
-    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
-  try {
-    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
-  } catch (error) {
-    return "light";
-  }
-}
-function onThemeChange(callback) {
-  if (__uniConfig.darkmode) {
-    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
-  }
-}
-function parseTheme(pageStyle) {
-  let parsedStyle = {};
-  if (__uniConfig.darkmode) {
-    parsedStyle = uniShared.normalizeStyles(
-      pageStyle,
-      __uniConfig.themeConfig,
-      getTheme()
-    );
-  }
-  return __uniConfig.darkmode ? parsedStyle : pageStyle;
-}
-function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactived = vue.isReactive(pageStyle);
-  const reactivePageStyle = isReactived ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactived) {
-    vue.watch(pageStyle, (value) => {
-      const _pageStyle = parseTheme(value);
-      for (const key in _pageStyle) {
-        reactivePageStyle[key] = _pageStyle[key];
-      }
-    });
-  }
-  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
-  return reactivePageStyle;
-}
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
-  router.beforeEach((to, from) => {
-    uni.hideToast();
-    uni.hideLoading();
-  });
   app.router = router;
   app.use(router);
 }
@@ -10112,8 +9830,6 @@ const props$9 = {
     default: true
   }
 };
-class UniVideoElement extends UniElement {
-}
 const index$b = /* @__PURE__ */ defineBuiltInComponent({
   name: "Video",
   props: props$9,
@@ -10344,8 +10060,6 @@ const props$8 = {
     default: ""
   }
 };
-class UniWebViewElement extends UniElement {
-}
 const indexX = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "WebView",
@@ -11586,8 +11300,6 @@ function useMap(props2, rootRef, emit2) {
     trigger
   };
 }
-class UniMapElement extends UniElement {
-}
 const index$a = /* @__PURE__ */ defineBuiltInComponent({
   name: "Map",
   props: props$2,
@@ -11624,8 +11336,6 @@ const props$1 = {
     default: 0
   }
 };
-class UniCoverViewElement extends UniElement {
-}
 const index$9 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverView",
   compatConfig: {
@@ -11666,8 +11376,6 @@ const index$9 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-class UniCoverImageElement extends UniElement {
-}
 const index$8 = /* @__PURE__ */ defineBuiltInComponent({
   name: "CoverImage",
   compatConfig: {
@@ -11708,6 +11416,82 @@ const index$8 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+function usePopupStyle(props2) {
+  const popupWidth = vue.ref(0);
+  const popupHeight = vue.ref(0);
+  const isDesktop = vue.computed(
+    () => popupWidth.value >= 500 && popupHeight.value >= 500
+  );
+  const popupStyle = vue.computed(() => {
+    const style = {
+      content: {
+        transform: "",
+        left: "",
+        top: "",
+        bottom: ""
+      },
+      triangle: {
+        left: "",
+        top: "",
+        bottom: "",
+        "border-width": "",
+        "border-color": ""
+      }
+    };
+    const contentStyle = style.content;
+    const triangleStyle = style.triangle;
+    const popover = props2.popover;
+    function getNumber(value) {
+      return Number(value) || 0;
+    }
+    if (isDesktop.value && popover) {
+      shared.extend(triangleStyle, {
+        position: "absolute",
+        width: "0",
+        height: "0",
+        "margin-left": "-6px",
+        "border-style": "solid"
+      });
+      const popoverLeft = getNumber(popover.left);
+      const popoverWidth = getNumber(popover.width);
+      const popoverTop = getNumber(popover.top);
+      const popoverHeight = getNumber(popover.height);
+      const center = popoverLeft + popoverWidth / 2;
+      contentStyle.transform = "none !important";
+      const contentLeft = Math.max(0, center - 300 / 2);
+      contentStyle.left = `${contentLeft}px`;
+      let triangleLeft = Math.max(12, center - contentLeft);
+      triangleLeft = Math.min(300 - 12, triangleLeft);
+      triangleStyle.left = `${triangleLeft}px`;
+      const vcl = popupHeight.value / 2;
+      if (popoverTop + popoverHeight - vcl > vcl - popoverTop) {
+        contentStyle.top = "auto";
+        contentStyle.bottom = `${popupHeight.value - popoverTop + 6}px`;
+        triangleStyle.bottom = "-6px";
+        triangleStyle["border-width"] = "6px 6px 0 6px";
+        triangleStyle["border-color"] = "#fcfcfd transparent transparent transparent";
+      } else {
+        contentStyle.top = `${popoverTop + popoverHeight + 6}px`;
+        triangleStyle.top = "-6px";
+        triangleStyle["border-width"] = "0 6px 6px 6px";
+        triangleStyle["border-color"] = "transparent transparent #fcfcfd transparent";
+      }
+    }
+    return style;
+  });
+  return {
+    isDesktop,
+    popupStyle
+  };
+}
+function useKeyboard() {
+  const key = vue.ref("");
+  const disable = vue.ref(false);
+  return {
+    key,
+    disable
+  };
+}
 function _isSlot(s) {
   return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !vue.isVNode(s);
 }
@@ -11843,8 +11627,6 @@ const props = {
     default: ""
   }
 };
-class UniPickerElement extends UniElement {
-}
 const index$7 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Picker",
   compatConfig: {
@@ -12755,6 +12537,15 @@ const getStorageInfo = /* @__PURE__ */ defineAsyncApi(
     resolve(getStorageInfoSync());
   }
 );
+function getTheme() {
+  if (__uniConfig.darkmode !== true)
+    return shared.isString(__uniConfig.darkmode) ? __uniConfig.darkmode : "light";
+  try {
+    return window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark";
+  } catch (error) {
+    return "light";
+  }
+}
 let browserInfo;
 function initBrowserInfo() {
   {
@@ -12931,6 +12722,36 @@ const UniServiceJSBridge$1 = /* @__PURE__ */ shared.extend(ServiceJSBridge, {
     UniViewJSBridge.subscribeHandler(event, args, pageId);
   }
 });
+function onThemeChange(callback) {
+  if (__uniConfig.darkmode) {
+    UniServiceJSBridge.on(uniShared.ON_THEME_CHANGE, callback);
+  }
+}
+function parseTheme(pageStyle) {
+  let parsedStyle = {};
+  if (__uniConfig.darkmode) {
+    parsedStyle = uniShared.normalizeStyles(
+      pageStyle,
+      __uniConfig.themeConfig,
+      getTheme()
+    );
+  }
+  return __uniConfig.darkmode ? parsedStyle : pageStyle;
+}
+function useTheme(pageStyle, onThemeChangeCallback) {
+  const isReactived = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactived ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactived) {
+    vue.watch(pageStyle, (value) => {
+      const _pageStyle = parseTheme(value);
+      for (const key in _pageStyle) {
+        reactivePageStyle[key] = _pageStyle[key];
+      }
+    });
+  }
+  onThemeChangeCallback && onThemeChange(onThemeChangeCallback);
+  return reactivePageStyle;
+}
 const _middleButton = {
   width: "50px",
   height: "50px",
@@ -14119,47 +13940,8 @@ exports.SwiperItem = index$m;
 exports.Switch = index$l;
 exports.Text = index$k;
 exports.Textarea = index$j;
-exports.UniButtonElement = UniButtonElement;
-exports.UniCanvasElement = UniCanvasElement;
-exports.UniCheckboxElement = UniCheckboxElement;
-exports.UniCheckboxGroupElement = UniCheckboxGroupElement;
-exports.UniCoverImageElement = UniCoverImageElement;
-exports.UniCoverViewElement = UniCoverViewElement;
-exports.UniEditorElement = UniEditorElement;
-exports.UniElement = UniElement;
-exports.UniElementImpl = UniElement;
-exports.UniFormElement = UniFormElement;
-exports.UniIconElement = UniIconElement;
-exports.UniImageElement = UniImageElement;
-exports.UniInputElement = UniInputElement;
-exports.UniLabelElement = UniLabelElement;
-exports.UniListItemElement = UniListItemElement;
-exports.UniListViewElement = UniListViewElement;
-exports.UniMapElement = UniMapElement;
-exports.UniMovableAreaElement = UniMovableAreaElement;
-exports.UniMovableViewElement = UniMovableViewElement;
-exports.UniNavigatorElement = UniNavigatorElement;
-exports.UniPickerElement = UniPickerElement;
-exports.UniPickerViewColumnElement = UniPickerViewColumnElement;
-exports.UniPickerViewElement = UniPickerViewElement;
-exports.UniProgressElement = UniProgressElement;
-exports.UniRadioElement = UniRadioElement;
-exports.UniRadioGroupElement = UniRadioGroupElement;
-exports.UniRichTextElement = UniRichTextElement;
-exports.UniScrollViewElement = UniScrollViewElement;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;
-exports.UniSliderElement = UniSliderElement;
-exports.UniStickyHeaderElement = UniStickyHeaderElement;
-exports.UniStickySectionElement = UniStickySectionElement;
-exports.UniSwiperElement = UniSwiperElement;
-exports.UniSwiperItemElement = UniSwiperItemElement;
-exports.UniSwitchElement = UniSwitchElement;
-exports.UniTextElement = UniTextElement;
-exports.UniTextareaElement = UniTextareaElement;
-exports.UniVideoElement = UniVideoElement;
-exports.UniViewElement = UniViewElement;
 exports.UniViewJSBridge = UniViewJSBridge$1;
-exports.UniWebViewElement = UniWebViewElement;
 exports.Video = index$b;
 exports.View = index$i;
 exports.WebView = indexX;

@@ -110,7 +110,8 @@
     }
   //#endif
   //#ifdef WEB || APP-IOS
-  export class UniCloudDBElement extends UniElementImpl {
+  const RealUniElementImpl = typeof UniElementImpl === 'undefined' ? class {} : UniElementImpl
+  export class /*#__PURE__*/ UniCloudDBElement extends RealUniElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
       super(data, pageNode);
       const TagName = 'UNICLOUD-DB';
@@ -198,10 +199,12 @@
 
   export default {
     name: 'UniCloudDB',
+    //#if !_NODE_JS_
     rootElement: {
       name: 'uni-cloud-db-element',
       class: UniCloudDBElement
     },
+    //#endif
     slots: Object as SlotsType<{
       default : {
         data : Array<UTSJSONObject>,
@@ -303,7 +306,7 @@
         error: null as UniCloudError | null
       }
     },
-    //#ifdef WEB || APP-IOS
+    //#ifdef (WEB || APP-IOS) && !_NODE_JS_
     beforeCreate() {
       if (!registerFlag) {
         registerFlag = true

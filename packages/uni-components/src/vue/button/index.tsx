@@ -1,11 +1,11 @@
-import { inject, onBeforeUnmount, ref, onMounted } from 'vue'
-import { useI18n, initI18nButtonMsgsOnce } from '@dcloudio/uni-core'
+import { inject, onBeforeUnmount, onMounted, ref } from 'vue'
+import { initI18nButtonMsgsOnce, useI18n } from '@dcloudio/uni-core'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useHover } from '../../helpers/useHover'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { withWebEvent } from '../../helpers/useEvent'
-import { UniFormCtx, uniFormKey } from '../form'
-import { uniLabelKey, UniLabelCtx } from '../label'
+import { type UniFormCtx, uniFormKey } from '../form'
+import { type UniLabelCtx, uniLabelKey } from '../label'
 import { useListeners } from '../../helpers/useListeners'
 import { buttonProps } from '../../components/button'
 import { UniElement } from '../../helpers/UniElement'
@@ -102,7 +102,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
 function openFeedback(titleText: string, sendText: string) {
   const feedback = plus.webview.create(
-    // @ts-ignore
     'https://service.dcloud.net.cn/uniapp/feedback.html',
     'feedback',
     {

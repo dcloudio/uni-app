@@ -2,6 +2,7 @@ import fs from 'fs-extra'
 import path from 'path'
 import execa from 'execa'
 import { sync } from 'fast-glob'
+import { normalizePath } from '@dcloudio/uni-cli-shared'
 
 const projectDir = path.resolve(__dirname, '../uni_modules')
 
@@ -57,26 +58,30 @@ describe('uni_modules playground', () => {
             UNI_APP_X: type === 'uni-app-x' ? 'true' : 'false',
           },
         })
+        const files = sync('**/*', { cwd: outDir, absolute: true }).sort()
         sync('**/*', { cwd: outDir, absolute: true })
-          .sort()
-          .forEach((file) => {
-            if (file.endsWith('.png')) {
-              expect(path.basename(file)).toMatchSnapshot()
-            } else {
-              expect(
-                fs
-                  .readFileSync(file, 'utf-8')
-                  .replace(
-                    `"compilerVersion": "${
-                      require('../../vite-plugin-uni/package.json')['uni-app'][
-                        'compilerVersion'
-                      ]
-                    }"`,
-                    `"compilerVersion": "x.xx"`
-                  )
-              ).toMatchSnapshot()
-            }
-          })
+        expect(
+          files.map((file) => normalizePath(file).split('/uni-app-x/')[1])
+        ).toMatchSnapshot()
+        files.forEach((file) => {
+          if (file.endsWith('.png')) {
+            expect(path.basename(file)).toMatchSnapshot()
+          } else {
+            expect(
+              fs
+                .readFileSync(file, 'utf-8')
+                .replace(
+                  `"compilerVersion": "${
+                    require('../../vite-plugin-uni/package.json')['uni-app'][
+                      'compilerVersion'
+                    ]
+                  }"`,
+                  `"compilerVersion": "x.xx"`
+                )
+                .replaceAll(projectDir, '')
+            ).toMatchSnapshot()
+          }
+        })
       })
     })
   })

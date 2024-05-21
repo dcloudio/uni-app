@@ -2,12 +2,16 @@ declare var __WEEX_DEVTOOL__: any
 //#region import
 import {
   API_CREATE_CANVAS_CONTEXT,
+  type API_TYPE_CREATE_CANVAS_CONTEXT,
   CreateCanvasContextProtocol,
 } from '../../protocols/context/context'
 import {
   API_CANVAS_GET_IMAGE_DATA,
   API_CANVAS_PUT_IMAGE_DATA,
   API_CANVAS_TO_TEMP_FILE_PATH,
+  type API_TYPE_CANVAS_GET_IMAGE_DATA,
+  type API_TYPE_CANVAS_PUT_IMAGE_DATA,
+  type API_TYPE_CANVAS_TO_TEMP_FILE_PATH,
   CanvasGetImageDataOptions,
   CanvasGetImageDataProtocol,
   CanvasPutImageDataOptions,
@@ -17,13 +21,6 @@ import {
 } from '../../protocols/context/canvas'
 
 import { defineAsyncApi, defineSyncApi } from '../../helpers/api'
-
-import type {
-  API_TYPE_CANVAS_GET_IMAGE_DATA,
-  API_TYPE_CANVAS_PUT_IMAGE_DATA,
-  API_TYPE_CANVAS_TO_TEMP_FILE_PATH,
-  API_TYPE_CREATE_CANVAS_CONTEXT,
-} from '@dcloudio/uni-api'
 
 import { hasOwn } from '@vue/shared'
 

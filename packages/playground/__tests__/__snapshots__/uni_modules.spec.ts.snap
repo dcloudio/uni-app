@@ -1,8 +1,23 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`uni_modules playground uni-app-x build:app-android 1`] = `"logo-46719607.png"`;
+exports[`uni_modules playground uni-app-x build:app-android 1`] = `
+[
+  "app-android/uni_modules/test-com1/assets/logo-46719607.png",
+  "app-android/uni_modules/test-com1/package.json",
+  "app-android/uni_modules/test-com1/utssdk/app-android/components/test-com1-1/test-com1-1.kt",
+  "app-android/uni_modules/test-com1/utssdk/app-android/components/test-com1-2/test-com1-2.kt",
+  "app-android/uni_modules/test-com1/utssdk/app-android/index.kt",
+  "app-android/uni_modules/test-com2/assets/api-ce31e859.png",
+  "app-android/uni_modules/test-com2/package.json",
+  "app-android/uni_modules/test-com2/utssdk/app-android/components/test-com2-1/test-com2-1.kt",
+  "app-android/uni_modules/test-com2/utssdk/app-android/components/test-com2-2/test-com2-2.kt",
+  "app-android/uni_modules/test-com2/utssdk/app-android/index.kt",
+]
+`;
 
-exports[`uni_modules playground uni-app-x build:app-android 2`] = `
+exports[`uni_modules playground uni-app-x build:app-android 2`] = `"logo-46719607.png"`;
+
+exports[`uni_modules playground uni-app-x build:app-android 3`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -26,7 +41,7 @@ exports[`uni_modules playground uni-app-x build:app-android 2`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 3`] = `
+exports[`uni_modules playground uni-app-x build:app-android 4`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -97,7 +112,7 @@ open class GenUniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 4`] = `
+exports[`uni_modules playground uni-app-x build:app-android 5`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -153,7 +168,7 @@ open class GenUniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 5`] = `
+exports[`uni_modules playground uni-app-x build:app-android 6`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -188,9 +203,9 @@ val GenUniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 6`] = `"api-ce31e859.png"`;
+exports[`uni_modules playground uni-app-x build:app-android 7`] = `"api-ce31e859.png"`;
 
-exports[`uni_modules playground uni-app-x build:app-android 7`] = `
+exports[`uni_modules playground uni-app-x build:app-android 8`] = `
 "{
   "id": "test-com2",
   "version": "1.0.0",
@@ -213,7 +228,7 @@ exports[`uni_modules playground uni-app-x build:app-android 7`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 8`] = `
+exports[`uni_modules playground uni-app-x build:app-android 9`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -272,7 +287,7 @@ open class GenUniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 9`] = `
+exports[`uni_modules playground uni-app-x build:app-android 10`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -330,7 +345,7 @@ open class GenUniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-android 10`] = `
+exports[`uni_modules playground uni-app-x build:app-android 11`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -367,6 +382,15 @@ fun test() {}
 `;
 
 exports[`uni_modules playground uni-app-x build:app-ios 1`] = `
+[
+  "app-ios/uni_modules/test-com1/index.module.js",
+  "app-ios/uni_modules/test-com1/package.json",
+  "app-ios/uni_modules/test-com2/index.module.js",
+  "app-ios/uni_modules/test-com2/package.json",
+]
+`;
+
+exports[`uni_modules playground uni-app-x build:app-ios 2`] = `
 "import { defineComponent, openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString } from 'vue';
 import Logo from './test-com1/components/test-com1-1/logo.png';
 import '@dcloudio/uni-app';
@@ -424,7 +448,7 @@ export { testCom11 as TestCom11, testCom12 as TestCom12 };
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-ios 2`] = `
+exports[`uni_modules playground uni-app-x build:app-ios 3`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -438,7 +462,7 @@ exports[`uni_modules playground uni-app-x build:app-ios 2`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x build:app-ios 3`] = `
+exports[`uni_modules playground uni-app-x build:app-ios 4`] = `
 "import { defineComponent, openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString } from 'vue';
 import Api from './test-com2/components/test-com2-1/api.png';
 import _export_sfc from 'plugin-vue:export-helper';
@@ -488,7 +512,7 @@ export { testCom21 as TestCom21, testCom22 as TestCom22, test };
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:app-ios 4`] = `
+exports[`uni_modules playground uni-app-x build:app-ios 5`] = `
 "{
   "id": "test-com2",
   "version": "1.0.0",
@@ -503,6 +527,19 @@ exports[`uni_modules playground uni-app-x build:app-ios 4`] = `
 `;
 
 exports[`uni_modules playground uni-app-x build:h5 1`] = `
+[
+  "h5/uni_modules/test-com1/components/test-com1-1/test-com1-1.css",
+  "h5/uni_modules/test-com1/components/test-com1-2/test-com1-2.css",
+  "h5/uni_modules/test-com1/index.module.js",
+  "h5/uni_modules/test-com1/package.json",
+  "h5/uni_modules/test-com2/components/test-com2-1/test-com2-1.css",
+  "h5/uni_modules/test-com2/components/test-com2-2/test-com2-2.css",
+  "h5/uni_modules/test-com2/index.module.js",
+  "h5/uni_modules/test-com2/package.json",
+]
+`;
+
+exports[`uni_modules playground uni-app-x build:h5 2`] = `
 "
 
 
@@ -516,7 +553,7 @@ exports[`uni_modules playground uni-app-x build:h5 1`] = `
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:h5 2`] = `
+exports[`uni_modules playground uni-app-x build:h5 3`] = `
 "
 
 
@@ -527,7 +564,7 @@ exports[`uni_modules playground uni-app-x build:h5 2`] = `
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:h5 3`] = `
+exports[`uni_modules playground uni-app-x build:h5 4`] = `
 "import "@dcloudio/uni-components/style/text.css";
 import { getSystemInfo, Text, Image } from "@dcloudio/uni-h5";
 import "@dcloudio/uni-components/style/image.css";
@@ -597,7 +634,7 @@ export {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:h5 4`] = `
+exports[`uni_modules playground uni-app-x build:h5 5`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -611,7 +648,7 @@ exports[`uni_modules playground uni-app-x build:h5 4`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x build:h5 5`] = `
+exports[`uni_modules playground uni-app-x build:h5 6`] = `
 "
 
 
@@ -626,7 +663,7 @@ exports[`uni_modules playground uni-app-x build:h5 5`] = `
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:h5 6`] = `
+exports[`uni_modules playground uni-app-x build:h5 7`] = `
 "
 
 
@@ -637,7 +674,7 @@ exports[`uni_modules playground uni-app-x build:h5 6`] = `
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:h5 7`] = `
+exports[`uni_modules playground uni-app-x build:h5 8`] = `
 "import "@dcloudio/uni-components/style/text.css";
 import { Text, Image, Video } from "@dcloudio/uni-h5";
 import "@dcloudio/uni-components/style/image.css";
@@ -702,7 +739,7 @@ export {
 "
 `;
 
-exports[`uni_modules playground uni-app-x build:h5 8`] = `
+exports[`uni_modules playground uni-app-x build:h5 9`] = `
 "{
   "id": "test-com2",
   "version": "1.0.0",
@@ -716,9 +753,24 @@ exports[`uni_modules playground uni-app-x build:h5 8`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 1`] = `"logo-46719607.png"`;
+exports[`uni_modules playground uni-app-x dev:app-android 1`] = `
+[
+  "app-android/uni_modules/test-com1/assets/logo-46719607.png",
+  "app-android/uni_modules/test-com1/package.json",
+  "app-android/uni_modules/test-com1/utssdk/app-android/components/test-com1-1/test-com1-1.kt",
+  "app-android/uni_modules/test-com1/utssdk/app-android/components/test-com1-2/test-com1-2.kt",
+  "app-android/uni_modules/test-com1/utssdk/app-android/index.kt",
+  "app-android/uni_modules/test-com2/assets/api-ce31e859.png",
+  "app-android/uni_modules/test-com2/package.json",
+  "app-android/uni_modules/test-com2/utssdk/app-android/components/test-com2-1/test-com2-1.kt",
+  "app-android/uni_modules/test-com2/utssdk/app-android/components/test-com2-2/test-com2-2.kt",
+  "app-android/uni_modules/test-com2/utssdk/app-android/index.kt",
+]
+`;
 
-exports[`uni_modules playground uni-app-x dev:app-android 2`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 2`] = `"logo-46719607.png"`;
+
+exports[`uni_modules playground uni-app-x dev:app-android 3`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -741,7 +793,7 @@ exports[`uni_modules playground uni-app-x dev:app-android 2`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 3`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 4`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -813,7 +865,7 @@ open class GenUniModulesTestCom1ComponentsTestCom11TestCom11 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 4`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 5`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -870,7 +922,7 @@ open class GenUniModulesTestCom1ComponentsTestCom12TestCom12 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 5`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 6`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom1;
 import io.dcloud.uniapp.*;
@@ -906,9 +958,9 @@ val GenUniModulesTestCom1ComponentsTestCom12TestCom12Class = CreateVueComponent(
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 6`] = `"api-ce31e859.png"`;
+exports[`uni_modules playground uni-app-x dev:app-android 7`] = `"api-ce31e859.png"`;
 
-exports[`uni_modules playground uni-app-x dev:app-android 7`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 8`] = `
 "{
   "id": "test-com2",
   "version": "1.0.0",
@@ -929,7 +981,7 @@ exports[`uni_modules playground uni-app-x dev:app-android 7`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 8`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 9`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -989,7 +1041,7 @@ open class GenUniModulesTestCom2ComponentsTestCom21TestCom21 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 9`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 10`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -1048,7 +1100,7 @@ open class GenUniModulesTestCom2ComponentsTestCom22TestCom22 : VueComponent {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-android 10`] = `
+exports[`uni_modules playground uni-app-x dev:app-android 11`] = `
 "@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
 package uts.sdk.modules.testCom2;
 import io.dcloud.uniapp.*;
@@ -1086,6 +1138,15 @@ fun test() {}
 `;
 
 exports[`uni_modules playground uni-app-x dev:app-ios 1`] = `
+[
+  "app-ios/uni_modules/test-com1/index.module.js",
+  "app-ios/uni_modules/test-com1/package.json",
+  "app-ios/uni_modules/test-com2/index.module.js",
+  "app-ios/uni_modules/test-com2/package.json",
+]
+`;
+
+exports[`uni_modules playground uni-app-x dev:app-ios 2`] = `
 "import { defineComponent, openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString } from 'vue';
 import Logo from './test-com1/components/test-com1-1/logo.png';
 import '@dcloudio/uni-app';
@@ -1130,7 +1191,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com1/components/test-com1-1/test-com1-1.vue"]]);
+const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]], ["__file", "/src/uni_modules/test-com1/components/test-com1-1/test-com1-1.vue"]]);
 
 const _sfc_main = defineComponent({
     data() {
@@ -1161,13 +1222,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com1/components/test-com1-2/test-com1-2.vue"]]);
+const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/src/uni_modules/test-com1/components/test-com1-2/test-com1-2.vue"]]);
 
 export { testCom11 as TestCom11, testCom12 as TestCom12 };
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-ios 2`] = `
+exports[`uni_modules playground uni-app-x dev:app-ios 3`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -1181,7 +1242,7 @@ exports[`uni_modules playground uni-app-x dev:app-ios 2`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-ios 3`] = `
+exports[`uni_modules playground uni-app-x dev:app-ios 4`] = `
 "import { defineComponent, openBlock, createElementBlock, Fragment, createElementVNode, toDisplayString } from 'vue';
 import Api from './test-com2/components/test-com2-1/api.png';
 import _export_sfc from 'plugin-vue:export-helper';
@@ -1218,7 +1279,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-1/test-com2-1.vue"]]);
+const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["styles", [_style_0$1]], ["__file", "/src/uni_modules/test-com2/components/test-com2-1/test-com2-1.vue"]]);
 
 const _sfc_main = defineComponent({
     data() {
@@ -1249,13 +1310,13 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
+const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["styles", [_style_0]], ["__file", "/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
 
 export { testCom21 as TestCom21, testCom22 as TestCom22, test };
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:app-ios 4`] = `
+exports[`uni_modules playground uni-app-x dev:app-ios 5`] = `
 "{
   "id": "test-com2",
   "version": "1.0.0",
@@ -1270,6 +1331,19 @@ exports[`uni_modules playground uni-app-x dev:app-ios 4`] = `
 `;
 
 exports[`uni_modules playground uni-app-x dev:h5 1`] = `
+[
+  "h5/uni_modules/test-com1/components/test-com1-1/test-com1-1.css",
+  "h5/uni_modules/test-com1/components/test-com1-2/test-com1-2.css",
+  "h5/uni_modules/test-com1/index.module.js",
+  "h5/uni_modules/test-com1/package.json",
+  "h5/uni_modules/test-com2/components/test-com2-1/test-com2-1.css",
+  "h5/uni_modules/test-com2/components/test-com2-2/test-com2-2.css",
+  "h5/uni_modules/test-com2/index.module.js",
+  "h5/uni_modules/test-com2/package.json",
+]
+`;
+
+exports[`uni_modules playground uni-app-x dev:h5 2`] = `
 "
 
 
@@ -1283,7 +1357,7 @@ exports[`uni_modules playground uni-app-x dev:h5 1`] = `
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 2`] = `
+exports[`uni_modules playground uni-app-x dev:h5 3`] = `
 "
 
 
@@ -1294,7 +1368,7 @@ exports[`uni_modules playground uni-app-x dev:h5 2`] = `
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 3`] = `
+exports[`uni_modules playground uni-app-x dev:h5 4`] = `
 "import "@dcloudio/uni-components/style/text.css";
 import { getSystemInfo, Text, Image } from "@dcloudio/uni-h5";
 import "@dcloudio/uni-components/style/image.css";
@@ -1345,7 +1419,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-07a142fd"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com1/components/test-com1-1/test-com1-1.vue"]]);
+const testCom11 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-07a142fd"], ["__file", "/src/uni_modules/test-com1/components/test-com1-1/test-com1-1.vue"]]);
 const _sfc_main = defineComponent({
   data() {
     return {
@@ -1378,7 +1452,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e9ed06e5"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com1/components/test-com1-2/test-com1-2.vue"]]);
+const testCom12 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-e9ed06e5"], ["__file", "/src/uni_modules/test-com1/components/test-com1-2/test-com1-2.vue"]]);
 export {
   testCom11 as TestCom11,
   testCom12 as TestCom12
@@ -1386,7 +1460,7 @@ export {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 4`] = `
+exports[`uni_modules playground uni-app-x dev:h5 5`] = `
 "{
   "id": "test-com1",
   "version": "1.0.0",
@@ -1400,7 +1474,7 @@ exports[`uni_modules playground uni-app-x dev:h5 4`] = `
 }"
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 5`] = `
+exports[`uni_modules playground uni-app-x dev:h5 6`] = `
 "
 
 
@@ -1415,7 +1489,7 @@ exports[`uni_modules playground uni-app-x dev:h5 5`] = `
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 6`] = `
+exports[`uni_modules playground uni-app-x dev:h5 7`] = `
 "
 
 
@@ -1426,7 +1500,7 @@ exports[`uni_modules playground uni-app-x dev:h5 6`] = `
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 7`] = `
+exports[`uni_modules playground uni-app-x dev:h5 8`] = `
 "import "@dcloudio/uni-components/style/text.css";
 import { Text, Image, Video } from "@dcloudio/uni-h5";
 import "@dcloudio/uni-components/style/image.css";
@@ -1471,7 +1545,7 @@ function _sfc_render$1(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-86d335ce"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-1/test-com2-1.vue"]]);
+const testCom21 = /* @__PURE__ */ _export_sfc(_sfc_main$1, [["render", _sfc_render$1], ["__scopeId", "data-v-86d335ce"], ["__file", "/src/uni_modules/test-com2/components/test-com2-1/test-com2-1.vue"]]);
 const _sfc_main = defineComponent({
   data() {
     return {
@@ -1504,7 +1578,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
     /* STABLE_FRAGMENT */
   );
 }
-const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9332ef4d"], ["__file", "/Users/fxy/Projects/GitHub/uni-app/uni-app-next/packages/playground/uni_modules/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
+const testCom22 = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render], ["__scopeId", "data-v-9332ef4d"], ["__file", "/src/uni_modules/test-com2/components/test-com2-2/test-com2-2.vue"]]);
 export {
   testCom21 as TestCom21,
   testCom22 as TestCom22,
@@ -1513,7 +1587,7 @@ export {
 "
 `;
 
-exports[`uni_modules playground uni-app-x dev:h5 8`] = `
+exports[`uni_modules playground uni-app-x dev:h5 9`] = `
 "{
   "id": "test-com2",
   "version": "1.0.0",
