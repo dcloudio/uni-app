@@ -1,5 +1,6 @@
 import { checkElementNodeTag } from '@dcloudio/uni-cli-shared'
 import type { ElementNode, NodeTransform } from '@vue/compiler-core'
+import { ElementTypes } from '@vue/compiler-core'
 
 export const transformPageHead: NodeTransform = (node, context) => {
   if (checkElementNodeTag(node, 'page-meta')) {
@@ -8,6 +9,7 @@ export const transformPageHead: NodeTransform = (node, context) => {
     ) as ElementNode
     if (headNode) {
       headNode.tag = 'page-meta-head'
+      headNode.tagType = ElementTypes.COMPONENT
     }
     return
   }
@@ -16,5 +18,6 @@ export const transformPageHead: NodeTransform = (node, context) => {
     checkElementNodeTag(context.parent, 'page-meta')
   ) {
     ;(node as ElementNode).tag = 'page-meta-head'
+    ;(node as ElementNode).tagType = ElementTypes.COMPONENT
   }
 }
