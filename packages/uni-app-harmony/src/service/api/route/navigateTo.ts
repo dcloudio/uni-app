@@ -1,5 +1,5 @@
 import { EventChannel, ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
-import { getRouteMeta, invokeHook } from '@dcloudio/uni-core'
+import { invokeHook } from '@dcloudio/uni-core'
 import {
   API_NAVIGATE_TO,
   type API_TYPE_NAVIGATE_TO,
@@ -8,17 +8,16 @@ import {
   NavigateToProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-
-import { ANI_DURATION, ANI_SHOW } from '../../constants'
 import { type RouteOptions, navigate } from './utils'
-import { showWebview } from './webview'
+import { showWebview } from '@dcloudio/uni-app-plus/service/api/route/webview'
 import { registerPage } from '../../framework/page'
-import { getWebviewId } from '../../framework/webview/utils'
-import { setStatusBarStyle } from '../../statusBar'
+import { getWebviewId } from '@dcloudio/uni-app-plus/service/framework/webview/utils'
+import { initAnimation } from '@dcloudio/uni-app-plus/service/api/route/navigateTo'
 
-export const $navigateTo: DefineAsyncApiFn<
-  API_TYPE_NAVIGATE_TO
-> = /*#__PURE__*/ (args, { resolve, reject }) => {
+export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
+  args,
+  { resolve, reject }
+) => {
   const { url, events, animationType, animationDuration } = args
   const { path, query } = parseUrl(url)
   const [aniType, aniDuration] = initAnimation(
@@ -44,7 +43,7 @@ export const $navigateTo: DefineAsyncApiFn<
   )
 }
 
-export const navigateTo = /*#__PURE__*/ defineAsyncApi<API_TYPE_NAVIGATE_TO>(
+export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   API_NAVIGATE_TO,
   $navigateTo,
   NavigateToProtocol,
@@ -67,6 +66,7 @@ function _navigateTo({
 }: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
   // 当前页面触发 onHide
   invokeHook(ON_HIDE)
+  invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
     showWebview(
@@ -77,25 +77,6 @@ function _navigateTo({
         resolve({ eventChannel })
       }
     )
-    setStatusBarStyle()
+    // TODO setStatusBarStyle()
   })
-}
-
-export function initAnimation(
-  path: string,
-  animationType?: string,
-  animationDuration?: number
-) {
-  const { globalStyle } = __uniConfig
-  const meta = getRouteMeta(path)!
-  return [
-    animationType ||
-      meta.animationType ||
-      globalStyle.animationType ||
-      ANI_SHOW,
-    animationDuration ||
-      meta.animationDuration ||
-      globalStyle.animationDuration ||
-      ANI_DURATION,
-  ] as const
 }

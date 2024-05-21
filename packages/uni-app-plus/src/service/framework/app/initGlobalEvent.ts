@@ -82,7 +82,7 @@ export function initGlobalEvent() {
   plusGlobalEvent.addEventListener('WebviewPostMessage', subscribePlusMessage)
 }
 
-function subscribePlusMessage({
+export function subscribePlusMessage({
   data,
 }: {
   data: { type: string; args: Record<string, any> }
