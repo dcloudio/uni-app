@@ -266,6 +266,7 @@ function parseVueComponentName(filename: string) {
 
   if (!defineComponentDeclaration) return name
 
+  // 尝试从组件定义对象中获取组件名
   for (const prop of defineComponentDeclaration.properties) {
     if (
       isObjectProperty(prop) &&
