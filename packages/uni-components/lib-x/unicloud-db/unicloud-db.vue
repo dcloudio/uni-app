@@ -111,7 +111,7 @@
   //#endif
   //#ifdef WEB || APP-IOS
   const RealUniElementImpl = typeof UniElementImpl === 'undefined' ? class {} : UniElementImpl
-  export class /*#__PURE__*/ UniCloudDBElement extends RealUniElementImpl {
+  export class UniCloudDBElement extends RealUniElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
       super(data, pageNode);
       const TagName = 'UNICLOUD-DB';
@@ -380,7 +380,7 @@
         }
       )
 
-      if (!this.manual && this.loadtime == LOAD_MODE_AUTO && this.dataList.length === 0) {
+      if (!this.manual && this.loadtime == LOAD_MODE_AUTO && this.dataList.length == 0) {
         if (typeof this.collection == 'string') {
           const collectionString = this.collection as string
           if (collectionString.length == 0) {
@@ -483,7 +483,10 @@
         }).catch((err : any | null) => {
           this._requestFail(err, null)
           options?.fail?.(err)
-        }).finally(() => {
+        }).then(() => {
+          this.loading = false
+          options?.complete?.()
+        }, () => {
           this.loading = false
           options?.complete?.()
         })
@@ -496,7 +499,9 @@
           this._isShowToast(options.showToast ?? false, options.toastTitle ?? 'add success')
         }).catch((err) => {
           this._requestFail(err, options.fail)
-        }).finally(() => {
+        }).then(() => {
+          this._requestComplete(options.complete, options.needLoading)
+        }, () => {
           this._requestComplete(options.complete, options.needLoading)
         })
       },
@@ -541,7 +546,9 @@
           this._isShowToast(options.showToast ?? false, options.toastTitle ?? 'update success')
         }).catch((err : any | null) => {
           this._requestFail(err, options.fail)
-        }).finally(() => {
+        }).then(() => {
+          this._requestComplete(options.complete, options.needLoading)
+        }, () => {
           this._requestComplete(options.complete, options.needLoading)
         })
       },
@@ -560,7 +567,9 @@
           }
         }).catch((err : any | null) => {
           this._requestFail(err, options.fail)
-        }).finally(() => {
+        }).then(() => {
+          this._requestComplete(options.complete, options.needLoading)
+        }, () => {
           this._requestComplete(options.complete, options.needLoading)
         })
       },
