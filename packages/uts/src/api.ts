@@ -42,6 +42,9 @@ function resolveOptions(options: UTSOptions) {
   output.sourceMap = normalizePath(output.sourceMap)
   output.logFilename = !!output.logFilename
   output.noColor = !!output.noColor
+  if (output.extname && output.extname[0] === '.') {
+    output.extname = output.extname.slice(1)
+  }
 
   return options
 }

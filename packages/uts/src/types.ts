@@ -31,6 +31,9 @@ export type UTSInputOptions = UTSParseOptions & {
   globals?: {
     envs?: Record<string, string>
   }
+  parseOptions?: {
+    noEarlyErrors?: boolean
+  }
 }
 
 export type UTSOutputOptions = {
@@ -73,6 +76,10 @@ export type UTSOutputOptions = {
     reactiveAll?: boolean
     uniCloudObjectInfo?: { name: string; methodList: string[] }[]
     autoImports?: Record<string, [[string, string]]>
+  }
+  treeshake?: {
+    manualPureFunctions?: string[]
+    noSideEffects?: boolean
   }
 }
 export interface UTSOptions {
