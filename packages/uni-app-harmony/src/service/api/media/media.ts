@@ -85,7 +85,7 @@ export async function _getVideoInfo(uri: string): Promise<VideoInfo> {
 
 export interface ImageInfo {
   path: string
-  orientation?:
+  orientation:
     | 'up'
     | 'down'
     | 'left'
@@ -94,9 +94,8 @@ export interface ImageInfo {
     | 'down-mirrored'
     | 'left-mirrored'
     | 'right-mirrored'
-  type?: string
-  height?: number
-  width?: number
+  height: number
+  width: number
 }
 
 export async function _getImageInfo(uri: string): Promise<ImageInfo> {
