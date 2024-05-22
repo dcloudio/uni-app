@@ -1,6 +1,5 @@
 import type { App } from 'vue';
 import type { ComponentInternalInstance } from 'vue';
-import type { ComponentInternalInstance as ComponentInternalInstance_2 } from '@vue/runtime-core';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';
 import type { createApp } from 'vue';
@@ -790,7 +789,7 @@ export declare class UniNode extends UniEventTarget {
     childNodes: UniNode[];
     pageNode: IUniPageNode | null;
     parentNode: UniNode | null;
-    __vueParentComponent?: ComponentInternalInstance_2;
+    __vueParentComponent?: ComponentInternalInstance;
     protected _text: string | null;
     constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode);
     get firstChild(): UniNode | null;
