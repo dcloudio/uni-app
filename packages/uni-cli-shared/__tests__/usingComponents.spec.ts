@@ -301,9 +301,10 @@ export function createApp() {
         `const _easycom_test = ()=>import('${inputDir}/components/test/test.vue')`
       )
     })
-    test(`recursion`, async () => {
-      await testLocal(
-        `
+    describe(`recursion`, () => {
+      test('base', async () => {
+        await testLocal(
+          `
       const _sfc_main = {
       };
       const __BINDING_COMPONENTS__ = '{"index":{"name":"_component_index","type":"unknown"}}';
@@ -314,14 +315,16 @@ export function createApp() {
       import _export_sfc from "plugin-vue:export-helper";
       export default /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
   `,
-        {
-          index: '/pages/index/index',
-        },
-        ``
-      )
+          {
+            index: '/pages/index/index',
+          },
+          ``
+        )
+      })
 
-      await testLocal(
-        `import { defineComponent as _defineComponent } from "vue";
+      test('use defineComponent', async () => {
+        await testLocal(
+          `import { defineComponent as _defineComponent } from "vue";
       const __BINDING_COMPONENTS__ = '{"test":{"name":"test","type":"unknown"}}';
       
       export default /* @__PURE__ */ _defineComponent({
@@ -334,14 +337,16 @@ export function createApp() {
       });
       import "${inputDir}/pages/index/index.vue?vue&type=style&index=0&lang.css";
 `,
-        {
-          test: '/pages/index/index',
-        },
-        ``
-      )
+          {
+            test: '/pages/index/index',
+          },
+          ``
+        )
+      })
 
-      await testLocal(
-        `import { defineComponent as _defineComponent } from "vue";
+      test('export variable', async () => {
+        await testLocal(
+          `import { defineComponent as _defineComponent } from "vue";
       const __BINDING_COMPONENTS__ = '{"test":{"name":"test","type":"unknown"}}';
       const component = _defineComponent({
         __name: "test",
@@ -356,11 +361,32 @@ export function createApp() {
 
       import "${inputDir}/pages/index/index.vue?vue&type=style&index=0&lang.css";
 `,
-        {
-          test: '/pages/index/index',
-        },
-        ``
-      )
+          {
+            test: '/pages/index/index',
+          },
+          ``
+        )
+      })
+      test('use plugin-vue:export-helper', async () => {
+        await testLocal(
+          `
+      const _sfc_main = {
+        __name: 'Test'
+      };
+      const __BINDING_COMPONENTS__ = '{"test":{"name":"_component_test","type":"unknown"}}';
+      function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
+        return {};
+      }
+      import "${filename}?vue&type=style&index=0&lang.css";
+      import _export_sfc from "plugin-vue:export-helper";
+      export default /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
+  `,
+          {
+            test: '/pages/index/index',
+          },
+          ``
+        )
+      })
     })
   })
 })

@@ -8,13 +8,14 @@ import {
   type Statement,
   type StringLiteral,
   assertExportDefaultDeclaration,
-  assertIdentifier,
   isBlockStatement,
   isCallExpression,
   isExportDefaultDeclaration,
+  isExpression,
   isIdentifier,
   isIfStatement,
   isImportDeclaration,
+  isImportDefaultSpecifier,
   isImportSpecifier,
   isMemberExpression,
   isObjectExpression,
@@ -211,14 +212,13 @@ function parseVueComponentName(filename: string) {
 
   if (!exportDefaultDecliaration) return name
 
-  // 获取vue的defineComponent导入变量名
+  // 获取vue的defineComponent导入变量名和plugin-vue:export-helper默认导入的本地变量名
   let defineComponentLocalName: string | null = null
+  let exportHelperLocalName: string | null = null
 
   for (const node of ast.body) {
-    if (
-      isImportDeclaration(node) &&
-      isStringLiteral(node.source, { value: 'vue' })
-    ) {
+    if (!isImportDeclaration(node)) continue
+    if (isStringLiteral(node.source, { value: 'vue' })) {
       const importSpecifer = node.specifiers.find(
         (specifer) =>
           isImportSpecifier(specifer) &&
@@ -227,20 +227,37 @@ function parseVueComponentName(filename: string) {
       if (isImportSpecifier(importSpecifer)) {
         defineComponentLocalName = importSpecifer.local.name
       }
+    } else if (
+      isStringLiteral(node.source, { value: 'plugin-vue:export-helper' })
+    ) {
+      const importSpecifer = node.specifiers.find((specifer) =>
+        isImportDefaultSpecifier(specifer)
+      )
+      if (isImportDefaultSpecifier(importSpecifer)) {
+        exportHelperLocalName = importSpecifer.local.name
+      }
     }
+  }
+
+  let { declaration } = exportDefaultDecliaration
+  // 如果默认导出调用plugin-vue:export-helper默认导入的方法则取方法的第一个参数
+  if (
+    exportHelperLocalName &&
+    isCallExpression(declaration) &&
+    isIdentifier(declaration.callee, { name: exportHelperLocalName }) &&
+    isExpression(declaration.arguments[0])
+  ) {
+    declaration = declaration.arguments[0]
   }
 
   // 获取组件定义对象
   let defineComponentDeclaration: ObjectExpression | null = null
 
-  let { declaration } = exportDefaultDecliaration
-
-  // 如果默认导出了变量则尝试查找该变量
+  // 如果declaration是变量则尝试查找该变量
   if (isIdentifier(declaration)) {
     const { name } = declaration
     for (const node of ast.body) {
       if (isVariableDeclaration(node)) {
-        assertIdentifier(declaration)
         const declarator = node.declarations.find((declarator) =>
           isIdentifier(declarator.id, { name })
         )
@@ -274,7 +291,7 @@ function parseVueComponentName(filename: string) {
       /(__)?name/.test(prop.key.name) &&
       isStringLiteral(prop.value)
     ) {
-      return prop.value.value
+      return prop.value.value || name
     }
   }
   return name
