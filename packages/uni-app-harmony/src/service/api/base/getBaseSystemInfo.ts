@@ -4,7 +4,7 @@
  */
 export function getBaseSystemInfo() {
   return {
-    platform: 'harmonyos',
+    platform: 'harmony',
     pixelRatio: vp2px(1),
     windowWidth: lpx2px(720), // TODO designWidth可配置
   }

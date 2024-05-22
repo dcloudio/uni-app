@@ -9,7 +9,7 @@
     "replacements": {
       "process.env.NODE_ENV": "'production'",
       "__X__": "false",
-      "__PLATFORM__": "'harmonyos'",
+      "__PLATFORM__": "'harmony'",
       "__APP_VIEW__": "false",
       "__VUE_OPTIONS_API__": "true",
       "__VUE_PROD_DEVTOOLS__": "false",
