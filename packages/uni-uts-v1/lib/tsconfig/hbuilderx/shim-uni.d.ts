@@ -66,6 +66,7 @@ declare module 'vue' {
 
   export {
     createApp as createVueApp,
+    createApp as createSSRApp,
     defineComponent as defineApp,
     useCssVars
   }
