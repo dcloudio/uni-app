@@ -26,6 +26,7 @@ import {
   ON_RESIZE,
   ON_SAVE_EXIT_STATE,
   ON_SHARE_APP_MESSAGE,
+  ON_SHARE_CHAT,
   ON_SHARE_TIMELINE,
   ON_SHOW,
   ON_TAB_ITEM_TAP,
@@ -123,6 +124,51 @@ export const onAddToFavorites =
 export const onShareAppMessage =
   /*#__PURE__*/ createHook<Required<Page.PageInstance>['onShareAppMessage']>(
     ON_SHARE_APP_MESSAGE
+  )
+
+interface XhsPageInstance extends Page.PageInstance {
+  /**
+   * 小红书特有生命周期：监听右上角菜单“分享到微信群组”按钮的行为，并自定义分享内容。
+   * @see https://miniapp.xiaohongshu.com/docs?path=/docs/frame/Page#onShareChat
+   * @param options
+   * @returns
+   */
+  onShareChat: (options: {
+    /**
+     * 转发的路径
+     * @default 当前页面路径
+     */
+    path?: string
+    /**
+     * 自定义标题，即聊天群组内分享内容显示的标题
+     * @default 当前小程序名称
+     */
+    title?: string
+    /**
+     * 自定义页面路径中携带的参数，如 path?a=1&b=2 的 “?” 后面部分
+     * @default 当前页面路径携带的参数
+     */
+    query?: string
+    /**
+     * 自定义图片路径，可以是本地文件或者网络图片(IOS 客户端路径中如果含中文需要encode) 。支持 PNG 及 JPG，显示图片长宽比是 1:1
+     * @default 默认使用小程序 Logo
+     */
+    imageUrl?: string
+    /**
+     * 如果该参数存在，则以 resolve 结果为准，如果三秒内不 resolve，分享会使用上面传入的默认
+     */
+    promise?: Promise<any>
+    /**
+     * 好友分享的内容描述
+     * @default 默认取小程序描述
+     */
+    content?: string
+  }) => void
+}
+
+export const onShareChat =
+  /*#__PURE__*/ createHook<Required<XhsPageInstance>['onShareChat']>(
+    ON_SHARE_CHAT
   )
 
 export const onNavigationBarButtonTap = /*#__PURE__*/ createHook<

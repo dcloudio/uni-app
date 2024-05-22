@@ -141,6 +141,8 @@ const onAddToFavorites =
 /*#__PURE__*/ createHook(uniShared.ON_ADD_TO_FAVORITES);
 const onShareAppMessage = 
 /*#__PURE__*/ createHook(uniShared.ON_SHARE_APP_MESSAGE);
+const onShareChat = 
+/*#__PURE__*/ createHook(uniShared.ON_SHARE_CHAT);
 const onNavigationBarButtonTap = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_BUTTON_TAP);
 const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED);
 const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
@@ -201,6 +203,7 @@ exports.onReady = onReady;
 exports.onResize = onResize;
 exports.onSaveExitState = onSaveExitState;
 exports.onShareAppMessage = onShareAppMessage;
+exports.onShareChat = onShareChat;
 exports.onShareTimeline = onShareTimeline;
 exports.onShow = onShow;
 exports.onTabItemTap = onTabItemTap;

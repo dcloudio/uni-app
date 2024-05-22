@@ -56,6 +56,8 @@ export const ON_UNLOAD = 'onUnload'
 export const ON_INIT = 'onInit'
 // 微信特有
 export const ON_SAVE_EXIT_STATE = 'onSaveExitState'
+// 小红书特有
+export const ON_SHARE_CHAT = 'onShareChat'
 
 export const ON_RESIZE = 'onResize'
 export const ON_BACK_PRESS = 'onBackPress'

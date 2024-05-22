@@ -1,7 +1,7 @@
 import { shallowRef, ref, getCurrentInstance, isInSSRComponentSetup, injectHook } from 'vue';
 import { hasOwn } from '@vue/shared';
 export { capitalize, extend, hasOwn, isPlainObject } from '@vue/shared';
-import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_SHARE_TIMELINE, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
+import { sanitise, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR, ON_SHOW, ON_HIDE, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, ON_EXIT, ON_INIT, ON_LOAD, ON_READY, ON_UNLOAD, ON_RESIZE, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SAVE_EXIT_STATE, ON_SHARE_TIMELINE, ON_ADD_TO_FAVORITES, ON_SHARE_APP_MESSAGE, ON_SHARE_CHAT, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED } from '@dcloudio/uni-shared';
 
 function getSSRDataType() {
     return getCurrentInstance() ? UNI_SSR_DATA : UNI_SSR_GLOBAL_DATA;
@@ -112,6 +112,8 @@ const onAddToFavorites =
 /*#__PURE__*/ createHook(ON_ADD_TO_FAVORITES);
 const onShareAppMessage = 
 /*#__PURE__*/ createHook(ON_SHARE_APP_MESSAGE);
+const onShareChat = 
+/*#__PURE__*/ createHook(ON_SHARE_CHAT);
 const onNavigationBarButtonTap = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_BUTTON_TAP);
 const onNavigationBarSearchInputChanged = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED);
 const onNavigationBarSearchInputClicked = /*#__PURE__*/ createHook(ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
@@ -129,4 +131,4 @@ function renderComponentSlot(slots, name, props = null) {
     return null;
 }
 
-export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onError, onExit, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
+export { formatAppLog, formatH5Log, getCurrentSubNVue, getSsrGlobalData, onAddToFavorites, onBackPress, onError, onExit, onHide, onInit, onLaunch, onLoad, onNavigationBarButtonTap, onNavigationBarSearchInputChanged, onNavigationBarSearchInputClicked, onNavigationBarSearchInputConfirmed, onNavigationBarSearchInputFocusChanged, onPageHide, onPageNotFound, onPageScroll, onPageShow, onPullDownRefresh, onReachBottom, onReady, onResize, onSaveExitState, onShareAppMessage, onShareChat, onShareTimeline, onShow, onTabItemTap, onThemeChange, onUnhandledRejection, onUnload, renderComponentSlot, requireNativePlugin, resolveEasycom, shallowSsrRef, ssrRef };
