@@ -8,11 +8,7 @@ export const transformPageHead: NodeTransform = (node, context) => {
     checkElementNodeTag(node, 'head') &&
     checkElementNodeTag(context.parent, 'page-meta')
   ) {
-    if (process.env.UNI_APP_X === 'true') {
-      ;(node as ElementNode).tag = 'page-meta-head'
-      ;(node as ElementNode).tagType = ElementTypes.COMPONENT
-    } else {
-      context.removeNode(node)
-    }
+    ;(node as ElementNode).tag = 'page-meta-head'
+    ;(node as ElementNode).tagType = ElementTypes.COMPONENT
   }
 }
