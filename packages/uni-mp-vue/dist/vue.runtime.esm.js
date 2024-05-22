@@ -7106,7 +7106,7 @@ function setRef$1(instance, isUnmount = false) {
       (templateRef) => setTemplateRef(templateRef, null, setupState)
     );
   }
-  const check = $mpPlatform === "mp-baidu" || $mpPlatform === "mp-toutiao";
+  const check = $mpPlatform === "mp-baidu" || $mpPlatform === "mp-toutiao" || $mpPlatform === "mp-xhs";
   const doSetByRefs = (refs) => {
     const mpComponents = (
       // 字节小程序 selectAllComponents 可能返回 null
@@ -7774,13 +7774,19 @@ function vOn(value, key) {
     const instance = getCurrentInstance();
     const ctx = instance.ctx;
     // 微信小程序，QQ小程序，当 setData diff 的时候，若事件不主动同步过去，会导致事件绑定不更新，（question/137217）
-    const extraKey = typeof key !== 'undefined' &&
-        (ctx.$mpPlatform === 'mp-weixin' ||
-            ctx.$mpPlatform === 'mp-qq' ||
-            ctx.$mpPlatform === 'mp-xhs') &&
+    let extraKey = typeof key !== 'undefined' &&
+        (ctx.$mpPlatform === 'mp-weixin' || ctx.$mpPlatform === 'mp-qq') &&
         (isString(key) || typeof key === 'number')
         ? '_' + key
         : '';
+    // 解决小红书平台可能出现自定义组件事件错乱问题
+    // @ts-expect-error: ctx.$mpType
+    const needExtraKey = ctx.$mpPlatform === 'mp-xhs' && ctx.$mpType === 'component';
+    const eiCounter = instance.$ei++;
+    if (needExtraKey) {
+        // @ts-expect-error: ctx.componentId
+        extraKey = '_' + ctx.componentId + '_' + eiCounter;
+    }
     const name = 'e' + instance.$ei++ + extraKey;
     const mpInstance = ctx.$scope;
     if (!value) {

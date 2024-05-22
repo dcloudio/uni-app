@@ -27,14 +27,22 @@ export function vOn(value: EventValue | undefined, key?: number | string) {
   }
   const ctx = instance.ctx
   // 微信小程序，QQ小程序，当 setData diff 的时候，若事件不主动同步过去，会导致事件绑定不更新，（question/137217）
-  const extraKey =
+  let extraKey =
     typeof key !== 'undefined' &&
-    (ctx.$mpPlatform === 'mp-weixin' ||
-      ctx.$mpPlatform === 'mp-qq' ||
-      ctx.$mpPlatform === 'mp-xhs') &&
+    (ctx.$mpPlatform === 'mp-weixin' || ctx.$mpPlatform === 'mp-qq') &&
     (isString(key) || typeof key === 'number')
       ? '_' + key
       : ''
+
+  // 解决小红书平台可能出现自定义组件事件错乱问题
+  const needExtraKey =
+    // @ts-expect-error: ctx.$mpType
+    ctx.$mpPlatform === 'mp-xhs' && ctx.$mpType === 'component'
+  const eiCounter = instance.$ei++
+  if (needExtraKey) {
+    // @ts-expect-error: ctx.componentId
+    extraKey = '_' + ctx.componentId + '_' + eiCounter
+  }
 
   const name = 'e' + instance.$ei++ + extraKey
 

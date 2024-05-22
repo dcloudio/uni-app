@@ -4744,7 +4744,7 @@ function setRef(instance, isUnmount = false) {
       (templateRef) => setTemplateRef(templateRef, null, setupState)
     );
   }
-  const check = $mpPlatform === "mp-baidu" || $mpPlatform === "mp-toutiao";
+  const check = $mpPlatform === "mp-baidu" || $mpPlatform === "mp-toutiao" || $mpPlatform === "mp-xhs";
   const doSetByRefs = (refs) => {
     const mpComponents = (
       // 字节小程序 selectAllComponents 可能返回 null
