@@ -1,7 +1,162 @@
 import picker from '@ohos.file.picker';
 import fs from '@ohos.file.fs';
-import promptAction from '@ohos.promptAction';
+import media from '@ohos.multimedia.media';
+import image from '@ohos.multimedia.image';
 import { injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+
+async function _getVideoInfo(uri) {
+    const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+    const avMetadataExtractor = await media.createAVMetadataExtractor();
+    let metadata = null;
+    let size = 0;
+    try {
+        size = (await fs.stat(file.fd)).size;
+        avMetadataExtractor.dataSrc = {
+            fileSize: size,
+            callback: (buffer, length, pos) => {
+                return fs.readSync(file.fd, buffer, {
+                    offset: pos,
+                    length,
+                });
+            },
+        };
+        metadata = await avMetadataExtractor.fetchMetadata();
+    }
+    catch (error) {
+        throw error;
+    }
+    finally {
+        await avMetadataExtractor.release();
+        await fs.close(file);
+    }
+    const videoOrientationArr = [
+        'up',
+        'right',
+        'down',
+        'left',
+    ];
+    return {
+        size: size,
+        duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
+        width: metadata.videoWidth ? Number(metadata.videoWidth) : undefined,
+        height: metadata.videoHeight ? Number(metadata.videoHeight) : undefined,
+        type: metadata.mimeType,
+        orientation: metadata.videoOrientation
+            ? videoOrientationArr[Number(metadata.videoOrientation) / 90]
+            : undefined,
+    };
+}
+async function _getImageInfo(uri) {
+    const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+    const imageSource = image.createImageSource(file.fd);
+    const imageInfo = await imageSource.getImageInfo();
+    const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+    let orientationNum = 0;
+    if (typeof orientation === 'string') {
+        const matched = orientation.match(/^Unknown value (\d)$/);
+        if (matched && matched[1]) {
+            orientationNum = Number(matched[1]);
+        }
+        else if (/^\d$/.test(orientation)) {
+            orientationNum = Number(orientation);
+        }
+    }
+    else if (typeof orientation === 'number') {
+        orientationNum = orientation;
+    }
+    let orientationStr = 'up';
+    switch (orientationNum) {
+        case 2:
+            orientationStr = 'up-mirrored';
+            break;
+        case 3:
+            orientationStr = 'down';
+            break;
+        case 4:
+            orientationStr = 'down-mirrored';
+            break;
+        case 5:
+            orientationStr = 'left-mirrored';
+            break;
+        case 6:
+            orientationStr = 'right';
+            break;
+        case 7:
+            orientationStr = 'right-mirrored';
+            break;
+        case 8:
+            orientationStr = 'left';
+            break;
+        case 0:
+        case 1:
+        default:
+            orientationStr = 'up';
+            break;
+    }
+    return {
+        path: uri,
+        width: imageInfo.size.width,
+        height: imageInfo.size.height,
+        orientation: orientationStr,
+    };
+}
+/**
+ *
+ * 注意
+ * - 使用系统picker，无需申请权限
+ * - 仅支持选图片或视频，不能混选
+ *
+ * 差异项记录
+ * - 鸿蒙的PhotoViewPicker可以选择视频、图片。PhotoViewPicker不支持sizeType参数、maxDuration参数。
+ * - PhotoViewPicker进行媒体文件选择时相机按钮无法屏蔽，因此不支持sourceType参数。
+ *
+ * 关键文档参考：
+ * - [用户文件uri介绍](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/user-file-uri-intro-0000001821000049)
+ * - [系统能力使用说明](https://developer.huawei.com/consumer/cn/doc/harmonyos-references-V5/syscap-0000001774120846-V5)
+ * - [requestPermissions标签](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/module-configuration-file-0000001820879553-V5#ZH-CN_TOPIC_0000001881258481__requestpermissions%E6%A0%87%E7%AD%BE)
+ * - [向用户申请授权](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/request-user-authorization-0000001774279718-V5)
+ * - [应用/服务签名](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-signing-0000001587684945#section9786111152213)，ohos.permission.READ_IMAGEVIDEO权限需要自助签名方可使用
+ * - [AVMetadataExtractor](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-media-0000001821001557#ZH-CN_TOPIC_0000001811157018__avmetadataextractor11)
+ */
+async function _chooseMedia(options) {
+    const photoSelectOptions = new picker.PhotoSelectOptions();
+    const mimeType = options.mimeType;
+    photoSelectOptions.MIMEType = mimeType;
+    photoSelectOptions.maxSelectNumber = options.count || 9;
+    const photoPicker = new picker.PhotoViewPicker();
+    const photoSelectResult = await photoPicker.select(photoSelectOptions);
+    const uris = photoSelectResult.photoUris;
+    if (mimeType !== picker.PhotoViewMIMETypes.VIDEO_TYPE) {
+        return {
+            tempFiles: uris.map((uri) => {
+                const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
+                const stat = fs.statSync(file.fd);
+                fs.closeSync(file);
+                return {
+                    fileType: 'image',
+                    tempFilePath: uri,
+                    size: stat.size,
+                };
+            }),
+        };
+    }
+    const tempFiles = [];
+    for (let i = 0; i < uris.length; i++) {
+        const uri = uris[i];
+        const videoInfo = await _getVideoInfo(uri);
+        tempFiles.push({
+            fileType: 'video',
+            tempFilePath: uri,
+            size: videoInfo.size,
+            duration: videoInfo.duration,
+            width: videoInfo.width,
+            height: videoInfo.height,
+        });
+    }
+    return {
+        tempFiles,
+    };
+}
 
 /**
 * @vue/shared v3.4.21
@@ -13,14 +168,14 @@ function makeMap(str, expectsLowerCase) {
   return expectsLowerCase ? (val) => set.has(val.toLowerCase()) : (val) => set.has(val);
 }
 const extend = Object.assign;
-const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
-const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwn = (val, key) => hasOwnProperty.call(val, key);
 const isArray = Array.isArray;
 const isFunction = (val) => typeof val === "function";
 const isString = (val) => typeof val === "string";
-const isObject$1 = (val) => val !== null && typeof val === "object";
+const isObject = (val) => val !== null && typeof val === "object";
 const isPromise = (val) => {
-  return (isObject$1(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
+  return (isObject(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
 };
 const objectToString = Object.prototype.toString;
 const toTypeString = (value) => objectToString.call(value);
@@ -65,7 +220,7 @@ function validateProtocol(name, data, protocol, onFail) {
         onFail = validateProtocolFail;
     }
     for (const key in protocol) {
-        const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
+        const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
         if (isString(errMsg)) {
             onFail(name, errMsg);
         }
@@ -135,7 +290,7 @@ function assertType(value, type) {
         }
     }
     else if (expectedType === 'Object') {
-        valid = isObject$1(value);
+        valid = isObject(value);
     }
     else if (expectedType === 'Array') {
         valid = isArray(value);
@@ -420,7 +575,7 @@ function formatApiArgs(args, options) {
         }
         else {
             // defaultValue
-            if (!hasOwn$1(params, name)) {
+            if (!hasOwn(params, name)) {
                 params[name] = formatterOrDefaultValue;
             }
         }
@@ -501,7 +656,7 @@ function defineAsyncApi(name, fn, protocol, options) {
  */
 function getBaseSystemInfo() {
     return {
-        platform: 'harmonyos',
+        platform: 'harmony',
         pixelRatio: vp2px(1),
         windowWidth: lpx2px(720), // TODO designWidth可配置
     };
@@ -1059,385 +1214,6 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     return styles;
 }
 
-const isObject = (val) => val !== null && typeof val === 'object';
-const defaultDelimiters = ['{', '}'];
-class BaseFormatter {
-    _caches;
-    constructor() {
-        this._caches = Object.create(null);
-    }
-    interpolate(message, values, delimiters = defaultDelimiters) {
-        if (!values) {
-            return [message];
-        }
-        let tokens = this._caches[message];
-        if (!tokens) {
-            tokens = parse(message, delimiters);
-            this._caches[message] = tokens;
-        }
-        return compile(tokens, values);
-    }
-}
-const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
-const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
-function parse(format, [startDelimiter, endDelimiter]) {
-    const tokens = [];
-    let position = 0;
-    let text = '';
-    while (position < format.length) {
-        let char = format[position++];
-        if (char === startDelimiter) {
-            if (text) {
-                tokens.push({ type: 'text', value: text });
-            }
-            text = '';
-            let sub = '';
-            char = format[position++];
-            while (char !== undefined && char !== endDelimiter) {
-                sub += char;
-                char = format[position++];
-            }
-            const isClosed = char === endDelimiter;
-            const type = RE_TOKEN_LIST_VALUE.test(sub)
-                ? 'list'
-                : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
-                    ? 'named'
-                    : 'unknown';
-            tokens.push({ value: sub, type });
-        }
-        //  else if (char === '%') {
-        //   // when found rails i18n syntax, skip text capture
-        //   if (format[position] !== '{') {
-        //     text += char
-        //   }
-        // }
-        else {
-            text += char;
-        }
-    }
-    text && tokens.push({ type: 'text', value: text });
-    return tokens;
-}
-function compile(tokens, values) {
-    const compiled = [];
-    let index = 0;
-    const mode = Array.isArray(values)
-        ? 'list'
-        : isObject(values)
-            ? 'named'
-            : 'unknown';
-    if (mode === 'unknown') {
-        return compiled;
-    }
-    while (index < tokens.length) {
-        const token = tokens[index];
-        switch (token.type) {
-            case 'text':
-                compiled.push(token.value);
-                break;
-            case 'list':
-                compiled.push(values[parseInt(token.value, 10)]);
-                break;
-            case 'named':
-                if (mode === 'named') {
-                    compiled.push(values[token.value]);
-                }
-                break;
-        }
-        index++;
-    }
-    return compiled;
-}
-
-const LOCALE_ZH_HANS = 'zh-Hans';
-const LOCALE_ZH_HANT = 'zh-Hant';
-const LOCALE_EN = 'en';
-const LOCALE_FR = 'fr';
-const LOCALE_ES = 'es';
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
-const defaultFormatter = new BaseFormatter();
-function include(str, parts) {
-    return !!parts.find((part) => str.indexOf(part) !== -1);
-}
-function startsWith(str, parts) {
-    return parts.find((part) => str.indexOf(part) === 0);
-}
-function normalizeLocale(locale, messages) {
-    if (!locale) {
-        return;
-    }
-    locale = locale.trim().replace(/_/g, '-');
-    if (messages && messages[locale]) {
-        return locale;
-    }
-    locale = locale.toLowerCase();
-    if (locale === 'chinese') {
-        // 支付宝
-        return LOCALE_ZH_HANS;
-    }
-    if (locale.indexOf('zh') === 0) {
-        if (locale.indexOf('-hans') > -1) {
-            return LOCALE_ZH_HANS;
-        }
-        if (locale.indexOf('-hant') > -1) {
-            return LOCALE_ZH_HANT;
-        }
-        if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
-            return LOCALE_ZH_HANT;
-        }
-        return LOCALE_ZH_HANS;
-    }
-    let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
-    if (messages && Object.keys(messages).length > 0) {
-        locales = Object.keys(messages);
-    }
-    const lang = startsWith(locale, locales);
-    if (lang) {
-        return lang;
-    }
-}
-class I18n {
-    locale = LOCALE_EN;
-    fallbackLocale = LOCALE_EN;
-    message = {};
-    messages = {};
-    watchers = [];
-    formater;
-    constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
-        if (fallbackLocale) {
-            this.fallbackLocale = fallbackLocale;
-        }
-        this.formater = formater || defaultFormatter;
-        this.messages = messages || {};
-        this.setLocale(locale || LOCALE_EN);
-        if (watcher) {
-            this.watchLocale(watcher);
-        }
-    }
-    setLocale(locale) {
-        const oldLocale = this.locale;
-        this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
-        if (!this.messages[this.locale]) {
-            // 可能初始化时不存在
-            this.messages[this.locale] = {};
-        }
-        this.message = this.messages[this.locale];
-        // 仅发生变化时，通知
-        if (oldLocale !== this.locale) {
-            this.watchers.forEach((watcher) => {
-                watcher(this.locale, oldLocale);
-            });
-        }
-    }
-    getLocale() {
-        return this.locale;
-    }
-    watchLocale(fn) {
-        const index = this.watchers.push(fn) - 1;
-        return () => {
-            this.watchers.splice(index, 1);
-        };
-    }
-    add(locale, message, override = true) {
-        const curMessages = this.messages[locale];
-        if (curMessages) {
-            if (override) {
-                Object.assign(curMessages, message);
-            }
-            else {
-                Object.keys(message).forEach((key) => {
-                    if (!hasOwn(curMessages, key)) {
-                        curMessages[key] = message[key];
-                    }
-                });
-            }
-        }
-        else {
-            this.messages[locale] = message;
-        }
-    }
-    f(message, values, delimiters) {
-        return this.formater.interpolate(message, values, delimiters).join('');
-    }
-    t(key, locale, values) {
-        let message = this.message;
-        if (typeof locale === 'string') {
-            locale = normalizeLocale(locale, this.messages);
-            locale && (message = this.messages[locale]);
-        }
-        else {
-            values = locale;
-        }
-        if (!hasOwn(message, key)) {
-            console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
-            return key;
-        }
-        return this.formater.interpolate(message[key], values).join('');
-    }
-}
-
-function watchAppLocale(appVm, i18n) {
-    // 需要保证 watch 的触发在组件渲染之前
-    if (appVm.$watchLocale) {
-        // vue2
-        appVm.$watchLocale((newLocale) => {
-            i18n.setLocale(newLocale);
-        });
-    }
-    else {
-        appVm.$watch(() => appVm.$locale, (newLocale) => {
-            i18n.setLocale(newLocale);
-        });
-    }
-}
-function getDefaultLocale() {
-    if (typeof uni !== 'undefined' && uni.getLocale) {
-        return uni.getLocale();
-    }
-    // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
-    if (typeof global !== 'undefined' && global.getLocale) {
-        return global.getLocale();
-    }
-    return LOCALE_EN;
-}
-function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
-    // 兼容旧版本入参
-    if (typeof locale !== 'string') {
-        [locale, messages] = [
-            messages,
-            locale,
-        ];
-    }
-    if (typeof locale !== 'string') {
-        // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
-        locale = getDefaultLocale();
-    }
-    if (typeof fallbackLocale !== 'string') {
-        fallbackLocale =
-            (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
-                LOCALE_EN;
-    }
-    const i18n = new I18n({
-        locale,
-        fallbackLocale,
-        messages,
-        watcher,
-    });
-    let t = (key, values) => {
-        if (typeof getApp !== 'function') {
-            // app view
-            /* eslint-disable no-func-assign */
-            t = function (key, values) {
-                return i18n.t(key, values);
-            };
-        }
-        else {
-            let isWatchedAppLocale = false;
-            t = function (key, values) {
-                const appVm = getApp().$vm;
-                // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
-                // options: {
-                // 	type: Array,
-                // 	default () {
-                // 		return [{
-                // 			icon: 'shop',
-                // 			text: t("uni-goods-nav.options.shop"),
-                // 		}, {
-                // 			icon: 'cart',
-                // 			text: t("uni-goods-nav.options.cart")
-                // 		}]
-                // 	}
-                // },
-                if (appVm) {
-                    // 触发响应式
-                    appVm.$locale;
-                    if (!isWatchedAppLocale) {
-                        isWatchedAppLocale = true;
-                        watchAppLocale(appVm, i18n);
-                    }
-                }
-                return i18n.t(key, values);
-            };
-        }
-        return t(key, values);
-    };
-    return {
-        i18n,
-        f(message, values, delimiters) {
-            return i18n.f(message, values, delimiters);
-        },
-        t(key, values) {
-            return t(key, values);
-        },
-        add(locale, message, override = true) {
-            return i18n.add(locale, message, override);
-        },
-        watch(fn) {
-            return i18n.watchLocale(fn);
-        },
-        getLocale() {
-            return i18n.getLocale();
-        },
-        setLocale(newLocale) {
-            return i18n.setLocale(newLocale);
-        },
-    };
-}
-
-const isEnableLocale = /*#__PURE__*/ once(() => typeof __uniConfig !== 'undefined' &&
-    __uniConfig.locales &&
-    !!Object.keys(__uniConfig.locales).length);
-
-let i18n;
-function useI18n() {
-    if (!i18n) {
-        let locale;
-        {
-            locale = uni.getSystemInfoSync().language;
-        }
-        i18n = initVueI18n(locale);
-        // 自定义locales
-        if (isEnableLocale()) {
-            const localeKeys = Object.keys(__uniConfig.locales || {});
-            if (localeKeys.length) {
-                localeKeys.forEach((locale) => i18n.add(locale, __uniConfig.locales[locale]));
-            }
-            // initVueI18n 时 messages 还没有，导致用户自定义 locale 可能不生效，当设置完 messages 后，重新设置 locale
-            i18n.setLocale(locale);
-        }
-    }
-    return i18n;
-}
-
-// This file is created by scripts/i18n.js
-// Do not modify this file!!!!!!!!!
-function normalizeMessages(module, keys, values) {
-    return keys.reduce((res, name, index) => {
-        res[module + name] = values[index];
-        return res;
-    }, {});
-}
-const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
-    const name = 'uni.chooseImage.';
-    const keys = ['cancel', 'sourceType.album', 'sourceType.camera'];
-    {
-        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel', 'Album', 'Camera']), false);
-    }
-    {
-        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar', 'Álbum', 'Cámara']), false);
-    }
-    {
-        useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler', 'Album', 'Caméra']), false);
-    }
-    {
-        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消', '从相册选择', '拍摄']), false);
-    }
-    {
-        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '從相冊選擇', '拍攝']), false);
-    }
-});
-
 function initBridge(subscribeNamespace) {
     const emitter = new E();
     return {
@@ -1727,6 +1503,10 @@ function getEnterOptions() {
     // TODO: Implement
     return extend({}, enterOptions$1);
 }
+function getRealPath(filepath) {
+    // TODO: Implement
+    return filepath;
+}
 
 const appHooks = {
     [ON_UNHANDLE_REJECTION]: [],
@@ -1779,6 +1559,62 @@ const ChooseImageProtocol = {
     sizeType: [Array, String],
     sourceType: Array,
     extension: Array,
+};
+
+const API_CHOOSE_VIDEO = 'chooseVideo';
+const ChooseVideoOptions = {
+    formatArgs: {
+        sourceType(sourceType, params) {
+            params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+        },
+        compressed: true,
+        maxDuration: 60,
+        camera: 'back',
+        extension(extension, params) {
+            if (extension instanceof Array && extension.length === 0) {
+                return 'param extension should not be empty.';
+            }
+            if (!extension)
+                params.extension = ['*'];
+        },
+    },
+};
+const ChooseVideoProtocol = {
+    sourceType: Array,
+    compressed: Boolean,
+    maxDuration: Number,
+    camera: String,
+    extension: Array,
+};
+
+const API_GET_IMAGE_INFO = 'getImageInfo';
+const GetImageInfoOptions = {
+    formatArgs: {
+        src(src, params) {
+            params.src = getRealPath(src);
+        },
+    },
+};
+const GetImageInfoProtocol = {
+    src: {
+        type: String,
+        required: true,
+    },
+};
+
+const API_GET_VIDEO_INFO = 'getVideoInfo';
+const GetVideoInfoOptions = {
+    formatArgs: {
+        src(src, params) {
+            params.src = getRealPath(src);
+        },
+    },
+};
+const GetVideoInfoProtocol = {
+    src: {
+        type: String,
+        required: true,
+    },
 };
 
 function encodeQueryString(url) {
@@ -1925,112 +1761,62 @@ function createNormalizeUrl(type) {
     };
 }
 
-async function openAlbum(count = 9) {
-    return new Promise((resolve, reject) => {
-        try {
-            const photoSelectOptions = new picker.PhotoSelectOptions();
-            photoSelectOptions.MIMEType = picker.PhotoViewMIMETypes.IMAGE_TYPE;
-            photoSelectOptions.maxSelectNumber = count;
-            const photoPicker = new picker.PhotoViewPicker();
-            photoPicker
-                .select(photoSelectOptions)
-                .then((photoSelectResult) => {
-                resolve({
-                    tempFilePaths: photoSelectResult.photoUris,
-                    tempFiles: photoSelectResult.photoUris.map((uri) => {
-                        const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
-                        const stat = fs.statSync(file.fd);
-                        fs.closeSync(file);
-                        return {
-                            path: uri,
-                            size: stat.size,
-                        };
-                    }),
-                });
-                console.info('PhotoViewPicker.select successfully, PhotoSelectResult uri: ' +
-                    JSON.stringify(photoSelectResult));
-            })
-                .catch((error) => {
-                console.error('PhotoViewPicker.select failed with err: ' + JSON.stringify(error));
-                reject(error);
-            });
-        }
-        catch (error) {
-            reject(error);
-        }
-    });
-}
-async function openCamera() {
-    return {
-        tempFilePaths: [],
-        tempFiles: [],
-    };
-}
-async function chooseSourceType() {
-    initI18nChooseImageMsgsOnce();
-    const { t } = useI18n();
-    return new Promise((resolve, reject) => {
-        try {
-            promptAction.showActionMenu({
-                title: '',
-                buttons: [
-                    {
-                        text: t('uni.chooseImage.sourceType.camera'),
-                        color: '#000000',
-                    },
-                    {
-                        text: t('uni.chooseImage.sourceType.album'),
-                        color: '#000000',
-                    },
-                ],
-            }, (err, data) => {
-                if (err) {
-                    console.info(`showActionMenu fail callback, error code: ${err.code}, error message: ${err.message}`);
-                    reject(err);
-                }
-                console.info('showActionMenu success callback, click button: ' + data.index);
-                switch (data.index) {
-                    case 0:
-                        resolve('camera');
-                        return;
-                    case 1:
-                        resolve('album');
-                        return;
-                    default:
-                        break;
-                }
-            });
-        }
-        catch (error) {
-            reject(error);
-        }
-    });
-}
-const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, function ({ count, sourceType } = {}, { resolve, reject }) {
-    return Promise.resolve()
-        .then(async () => {
-        let realSourceType = '';
-        if (sourceType && sourceType.length === 1) {
-            if (sourceType.includes('album')) {
-                realSourceType = 'album';
-            }
-            else if (sourceType.includes('camera')) {
-                realSourceType = 'camera';
-            }
-        }
-        if (!realSourceType) {
-            realSourceType = await chooseSourceType();
-        }
-        switch (realSourceType) {
-            case 'album':
-                return openAlbum(count);
-            case 'camera':
-                return openCamera();
-        }
+const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, function ({ count } = {}, { resolve, reject }) {
+    _chooseMedia({
+        mimeType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
+        count,
     })
-        .then(resolve)
-        .catch(reject);
+        .then((res) => {
+        return {
+            tempFilePaths: res.tempFiles.map((file) => file.tempFilePath),
+            tempFiles: res.tempFiles.map((file) => {
+                return {
+                    path: file.tempFilePath,
+                    size: file.size,
+                };
+            }),
+        };
+    })
+        .then(resolve, reject);
 }, ChooseImageProtocol, ChooseImageOptions);
+
+const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, function ({} = {}, { resolve, reject }) {
+    _chooseMedia({
+        mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE,
+    })
+        .then((res) => {
+        const file = res.tempFiles[0];
+        return {
+            tempFilePath: file.tempFilePath,
+            duration: file.duration,
+            size: file.size,
+            width: file.width,
+            height: file.height,
+        };
+    })
+        // TODO 修正chooseVideo的类型
+        // @ts-expect-error tempFile、name 仅H5支持
+        .then(resolve, reject);
+}, ChooseVideoProtocol, ChooseVideoOptions);
+
+const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, function ({ src }, { resolve, reject }) {
+    _getImageInfo(src).then(resolve, reject);
+}, GetImageInfoProtocol, GetImageInfoOptions);
+
+const getVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, function ({ src }, { resolve, reject }) {
+    _getVideoInfo(src)
+        .then((res) => {
+        return {
+            size: res.size,
+            duration: res.duration,
+            width: res.width,
+            height: res.height,
+            type: res.type,
+            orientation: res.orientation,
+        };
+    })
+        .then(resolve, reject);
+}, GetVideoInfoProtocol, GetVideoInfoOptions);
 
 function getLocale() {
     return 'zh-CN';
@@ -2044,8 +1830,11 @@ function getSystemInfoSync() {
 var uni$1 = {
   __proto__: null,
   chooseImage: chooseImage,
+  chooseVideo: chooseVideo,
+  getImageInfo: getImageInfo,
   getLocale: getLocale,
-  getSystemInfoSync: getSystemInfoSync
+  getSystemInfoSync: getSystemInfoSync,
+  getVideoInfo: getVideoInfo
 };
 
 const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
@@ -2849,7 +2638,7 @@ function initPageOptions({ meta }) {
         disableScroll: meta.disableScroll === true,
         onPageScroll: false,
         onPageReachBottom: false,
-        onReachBottomDistance: hasOwn$1(meta, 'onReachBottomDistance')
+        onReachBottomDistance: hasOwn(meta, 'onReachBottomDistance')
             ? meta.onReachBottomDistance
             : ON_REACH_BOTTOM_DISTANCE,
         statusbarHeight,

@@ -3013,6 +3013,11 @@ const props$p = {
   iconColor: {
     type: String,
     default: ""
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foregroundColor: {
+    type: String,
+    default: ""
   }
 };
 const index$y = /* @__PURE__ */ defineBuiltInComponent({
@@ -3091,7 +3096,7 @@ const index$y = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -6055,6 +6060,11 @@ const props$i = {
   iconColor: {
     type: String,
     default: "#ffffff"
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foregroundColor: {
+    type: String,
+    default: ""
   }
 };
 const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
@@ -6128,7 +6138,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -6644,7 +6654,9 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
     } = useScrollViewState(props2);
     const {
       realScrollX,
-      realScrollY
+      realScrollY,
+      _scrollLeftChanged,
+      _scrollTopChanged
     } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = vue.computed(() => {
       let style = "";
@@ -6906,7 +6918,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   });
   return {
     realScrollX,
-    realScrollY
+    realScrollY,
+    _scrollTopChanged,
+    _scrollLeftChanged
   };
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
@@ -6944,6 +6958,11 @@ const props$f = {
     type: String,
     default: "#e9e9e9"
   },
+  // 优先级高于 activeColor
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
   activeColor: {
     type: String,
     default: "#007aff"
@@ -6955,6 +6974,15 @@ const props$f = {
   blockColor: {
     type: String,
     default: "#ffffff"
+  },
+  // 优先级高于blockColor
+  foregroundColor: {
+    type: String,
+    default: ""
+  },
+  valueColor: {
+    type: String,
+    default: "#888888"
   },
   blockSize: {
     type: [Number, String],
@@ -6989,7 +7017,8 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         setTrackBgColor,
         setActiveColor,
         setThumbStyle,
-        thumbTrackStyle
+        thumbTrackStyle,
+        setValueStyle
       } = state;
       return vue.createVNode("uni-slider", {
         "ref": sliderRef
@@ -7020,8 +7049,9 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         "onChange": withWebEvent(_onChange)
       }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), vue.withDirectives(vue.createVNode("span", {
         "ref": sliderValueRef,
+        "style": setValueStyle.value,
         "class": "uni-slider-value"
-      }, null, 512), [[vue.vShow, props2.showValue]])]), vue.createVNode("slot", null, null)], 512);
+      }, null, 4), [[vue.vShow, props2.showValue]])]), vue.createVNode("slot", null, null)], 512);
     };
   }
 });
@@ -7030,7 +7060,8 @@ function useSliderState(props2) {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
   };
   const _getActiveColor = () => {
-    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    const activeColor = props2.activeBackgroundColor || props2.activeColor;
+    return activeColor !== "#007aff" ? activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
   };
   const _getBlockSizeString = () => {
     const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
@@ -7049,7 +7080,10 @@ function useSliderState(props2) {
     setThumbStyle: vue.computed(() => ({
       width: _getBlockSizeString(),
       height: _getBlockSizeString(),
-      backgroundColor: props2.blockColor
+      backgroundColor: props2.foregroundColor || props2.blockColor
+    })),
+    setValueStyle: vue.computed(() => ({
+      color: props2.valueColor
     }))
   };
   return state;

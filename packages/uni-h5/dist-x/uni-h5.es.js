@@ -8453,6 +8453,11 @@ const props$w = {
   iconColor: {
     type: String,
     default: ""
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foregroundColor: {
+    type: String,
+    default: ""
   }
 };
 class UniCheckboxElement extends UniElement {
@@ -8566,7 +8571,7 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -13519,6 +13524,11 @@ const props$p = {
   iconColor: {
     type: String,
     default: "#ffffff"
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foregroundColor: {
+    type: String,
+    default: ""
   }
 };
 class UniRadioElement extends UniElement {
@@ -13627,7 +13637,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -14164,7 +14174,9 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
     } = useScrollViewState(props2);
     const {
       realScrollX,
-      realScrollY
+      realScrollY,
+      _scrollLeftChanged,
+      _scrollTopChanged
     } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = computed(() => {
       let style = "";
@@ -14197,7 +14209,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
             return main.value.scrollLeft;
           },
           set(val) {
-            main.value.scrollLeft = val;
+            _scrollLeftChanged(val);
           }
         },
         scrollTop: {
@@ -14205,7 +14217,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
             return main.value.scrollTop;
           },
           set(val) {
-            main.value.scrollTop = val;
+            _scrollTopChanged(val);
           }
         },
         scrollBy: {
@@ -14620,7 +14632,9 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
   });
   return {
     realScrollX,
-    realScrollY
+    realScrollY,
+    _scrollTopChanged,
+    _scrollLeftChanged
   };
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
@@ -14658,6 +14672,11 @@ const props$m = {
     type: String,
     default: "#e9e9e9"
   },
+  // 优先级高于 activeColor
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
   activeColor: {
     type: String,
     default: "#007aff"
@@ -14669,6 +14688,15 @@ const props$m = {
   blockColor: {
     type: String,
     default: "#ffffff"
+  },
+  // 优先级高于blockColor
+  foregroundColor: {
+    type: String,
+    default: ""
+  },
+  valueColor: {
+    type: String,
+    default: "#888888"
   },
   blockSize: {
     type: [Number, String],
@@ -14752,7 +14780,8 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         setTrackBgColor,
         setActiveColor,
         setThumbStyle,
-        thumbTrackStyle
+        thumbTrackStyle,
+        setValueStyle
       } = state2;
       return createVNode("uni-slider", {
         "ref": sliderRef
@@ -14783,8 +14812,9 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         "onChange": withWebEvent(_onChange)
       }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
+        "style": setValueStyle.value,
         "class": "uni-slider-value"
-      }, null, 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 512);
+      }, null, 4), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 512);
     };
   }
 });
@@ -14793,7 +14823,8 @@ function useSliderState(props2) {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
   };
   const _getActiveColor = () => {
-    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    const activeColor = props2.activeBackgroundColor || props2.activeColor;
+    return activeColor !== "#007aff" ? activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
   };
   const _getBlockSizeString = () => {
     const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
@@ -14812,7 +14843,10 @@ function useSliderState(props2) {
     setThumbStyle: computed(() => ({
       width: _getBlockSizeString(),
       height: _getBlockSizeString(),
-      backgroundColor: props2.blockColor
+      backgroundColor: props2.foregroundColor || props2.blockColor
+    })),
+    setValueStyle: computed(() => ({
+      color: props2.valueColor
     }))
   };
   return state2;
