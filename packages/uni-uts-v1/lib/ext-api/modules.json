@@ -544,6 +544,50 @@
       }
     }
   },
+  "uni-theme": {
+    "uni": {
+      "onOsThemeChange": {
+        "name": "onOsThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "offOsThemeChange": {
+        "name": "offOsThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "setAppTheme": {
+        "name": "setAppTheme",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "onAppThemeChange": {
+        "name": "onAppThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "offAppThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
   "uni-verify": {
     "uni": {
       "getUniverifyManager": {
