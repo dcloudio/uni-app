@@ -5,8 +5,6 @@
 </template>
 <script>
 export default {
-  name: 'PageMeta',
-  setup(props, { emit }) {
-  }
+  name: 'PageMeta'
 }
 </script>
