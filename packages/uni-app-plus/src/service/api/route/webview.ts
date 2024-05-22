@@ -65,7 +65,7 @@ export function backWebview(
 ) {
   const children = webview.children()
   if (!children || !children.length) {
-    // 有子 webview
+    // 无子 webview
     return callback()
   }
 
