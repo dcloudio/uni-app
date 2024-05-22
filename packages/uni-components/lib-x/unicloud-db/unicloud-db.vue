@@ -199,12 +199,10 @@
 
   export default {
     name: 'UniCloudDB',
-    //#if !_NODE_JS_
     rootElement: {
       name: 'uni-cloud-db-element',
       class: UniCloudDBElement
     },
-    //#endif
     slots: Object as SlotsType<{
       default : {
         data : Array<UTSJSONObject>,
