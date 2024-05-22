@@ -1,15 +1,22 @@
 import {
+  type ComponentInternalInstance,
   type ComponentOptions,
-  // @ts-expect-error
+  // @ts-expect-error: 模块“"vue"”没有导出的成员“devtoolsComponentAdded”
   devtoolsComponentAdded,
 } from 'vue'
 
 import {
+  $createComponent,
   $destroyComponent,
+  type CreateComponentOptions,
   PAGE_INIT_HOOKS,
+  findPropsData,
   handleEvent,
+  initComponentInstance,
   initData,
   initHooks,
+  initMocks,
+  initRefs,
   initRuntimeHooks,
   initUnknownHooks,
   initWxsCallMethods,
@@ -24,7 +31,7 @@ import {
   stringifyQuery,
 } from '@dcloudio/uni-shared'
 
-import { createVueComponent, handleLink, initSpecialMethods } from './util'
+import { handleLink, initSpecialMethods, mocks } from './util'
 
 import { extend, isPlainObject } from '@vue/shared'
 
@@ -41,18 +48,36 @@ export function initCreatePage() {
         }
         // 初始化 vue 实例
         this.props = query
-        this.$vm = createVueComponent('page', this, vueOptions)
+        const mpInstance = this
+        this.$vm = $createComponent(
+          {
+            type: vueOptions,
+            props: findPropsData(this.props, true),
+          },
+          {
+            mpType: 'page',
+            mpInstance: this,
+            slots: this.props.uS || {}, // vueSlots
+            onBeforeSetup(
+              instance: ComponentInternalInstance,
+              options: CreateComponentOptions
+            ) {
+              initRefs(instance, mpInstance as any)
+              initMocks(instance, mpInstance as any, mocks)
+              initComponentInstance(instance, options)
+            },
+          }
+        )
         initSpecialMethods(this)
-        this.$vm.$callHook(ON_LOAD, this.options)
+        this.$vm.$callHook(ON_LOAD, query)
       },
       onShow() {
-        this.$vm.$callHook(ON_SHOW)
         if (__VUE_PROD_DEVTOOLS__) {
           devtoolsComponentAdded(this.$vm.$)
         }
+        this.$vm.$callHook(ON_SHOW)
       },
       onReady() {
-        // 确保页面自定义组件都被收集到
         setTimeout(() => {
           this.$vm.$callHook('mounted')
           this.$vm.$callHook(ON_READY)
