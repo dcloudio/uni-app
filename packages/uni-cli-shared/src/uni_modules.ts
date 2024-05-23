@@ -664,6 +664,7 @@ export async function checkEncryptUniModules(
   inputDir: string,
   params: {
     mode: 'development' | 'production'
+    packType: 'debug' | 'release'
     compilerVersion: string // hxVersion
     appid: string
     appname: string

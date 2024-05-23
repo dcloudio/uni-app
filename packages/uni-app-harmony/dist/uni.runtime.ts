@@ -2719,12 +2719,12 @@ function back(delta: number, animationType?: string, animationDuration?: number)
 const mod = {
     navigateTo: navigateTo,
     navigateBack: navigateBack,
-    chooseImage,
     getSystemInfoSync,
-    chooseVideo,
-    getImageInfo,
+    getVideoInfo,
     getLocale,
-    getVideoInfo
+    chooseVideo,
+    chooseImage,
+    getImageInfo
 };
 const UniServiceJSBridge1 = extend(ServiceJSBridge, {
     publishHandler

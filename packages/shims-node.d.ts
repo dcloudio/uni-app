@@ -66,6 +66,8 @@ declare namespace NodeJS {
     UNI_COMPILE_TARGET?: 'uni_modules'
     UNI_COMPILE_CLOUD_DIR?: string
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string
+
+    UNI_APP_PACK_TYPE?: 'release' | 'debug'
   }
 }
 
