@@ -229,7 +229,7 @@ function parseVueComponentName(filename: string) {
       }
     } else if (
       // plugin-vue:export-helper前可能有\0
-      /\0?plugin-vue:export-helper/.test(node.source.value)
+      /^\0?plugin-vue:export-helper$/.test(node.source.value)
     ) {
       const importSpecifer = node.specifiers.find((specifer) =>
         isImportDefaultSpecifier(specifer)
@@ -289,7 +289,7 @@ function parseVueComponentName(filename: string) {
     if (
       isObjectProperty(prop) &&
       isIdentifier(prop.key) &&
-      /(__)?name/.test(prop.key.name) &&
+      /^(__)?name$/.test(prop.key.name) &&
       isStringLiteral(prop.value)
     ) {
       return prop.value.value || name
