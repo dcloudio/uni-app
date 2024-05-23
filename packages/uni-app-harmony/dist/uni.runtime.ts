@@ -170,16 +170,12 @@ const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
+const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
 const ON_REACH_BOTTOM = 'onReachBottom';
-let lastLogTime = 0;
-function formatLog(module: string, ...args: Object[]) {
-    const now = Date.now();
-    const diff = lastLogTime ? now - lastLogTime : 0;
-    lastLogTime = now;
-    return `[${now}][${diff}ms][${module}]：${args.map((arg)=>JSON.stringify(arg)).join(' ')}`;
-}
+const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
+const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 function hasLeadingSlash(str: string) {
     return str.indexOf('/') === 0;
 }
@@ -205,7 +201,7 @@ function once<T extends (...args: Object[]) => Object>(fn: T, ctx: unknown = nul
 }
 function decode(text: string | number): string {
     try {
-        return UTSiOS.consoleDebugError(decodeURIComponent('' + text));
+        return decodeURIComponent('' + text);
     } catch (err) {}
     return '' + text;
 }
@@ -354,7 +350,6 @@ class UniEventTarget {
     dispatchEvent(evt: UniEvent): boolean {
         const listeners = this.listeners[evt.type];
         if (!listeners) {
-            console.error(formatLog('dispatchEvent', (this as unknown as UniNode).nodeId), evt.type, 'not found');
             return false;
         }
         const event = createUniEvent(evt);
@@ -770,7 +765,6 @@ function initBridge(subscribeNamespace: string | string | string): Omit<UniApp.U
 const INVOKE_VIEW_API = 'invokeViewApi';
 const INVOKE_SERVICE_API = 'invokeServiceApi';
 function getCurrentPage() {
-    return (window as Object).__PAGE_INFO__ as Page.PageInstance;
     const pages = getCurrentPages();
     const len = pages.length;
     if (len) {
@@ -784,10 +778,6 @@ function getCurrentPageMeta() {
     }
 }
 function getCurrentPageId() {
-    if (!(window as Object).__id__) {
-        (window as Object).__id__ = plus.webview.currentWebview().id!;
-    }
-    return parseInt((window as Object).__id__);
     const meta = getCurrentPageMeta();
     if (meta) {
         return meta.id!;
@@ -805,7 +795,7 @@ const PAGE_META_KEYS = [
     'pullToRefresh'
 ] as const;
 function initGlobalStyle() {
-    return UTSiOS.consoleDebugError(JSON.parse(JSON.stringify(__uniConfig.globalStyle || {})));
+    return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
 function initRouteMeta(pageMeta: UniApp.PageRouteMeta, id?: number): UniApp.PageRouteMeta {
     const globalStyle = initGlobalStyle();
@@ -989,7 +979,41 @@ function defineGlobalData(app: ComponentPublicInstance, defaultGlobalData?: Reco
         }
     });
 }
-function initService() {}
+function initOn() {
+    const { on  } = UniServiceJSBridge;
+    on(ON_RESIZE, onResize);
+    on(ON_APP_ENTER_FOREGROUND, onAppEnterForeground);
+    on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
+}
+function onResize(res: UniApp.WindowResizeResult) {
+    invokeHook(getCurrentPage() as ComponentPublicInstance, ON_RESIZE, res);
+    UniServiceJSBridge.invokeOnCallback('onWindowResize', res);
+}
+function onAppEnterForeground(enterOptions: LaunchOptions) {
+    const page = getCurrentPage();
+    invokeHook(getApp() as ComponentPublicInstance, ON_SHOW, enterOptions);
+    invokeHook(page as ComponentPublicInstance, ON_SHOW);
+}
+function onAppEnterBackground() {
+    invokeHook(getApp() as ComponentPublicInstance, ON_HIDE);
+    invokeHook(getCurrentPage() as ComponentPublicInstance, ON_HIDE);
+}
+const SUBSCRIBE_LIFECYCLE_HOOKS = [
+    ON_PAGE_SCROLL,
+    ON_REACH_BOTTOM
+];
+function initSubscribe() {
+    SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name)=>UniServiceJSBridge.subscribe(name, createPageEvent(name)));
+}
+function createPageEvent(name: string) {
+    return (args: unknown, pageId: string)=>{
+        invokeHook(parseInt(pageId), name, args);
+    };
+}
+function initService() {
+    initOn();
+    initSubscribe();
+}
 function initPageVm(pageVm: ComponentPublicInstance, page: Page.PageInstance[string]) {
     pageVm.route = page.route;
     pageVm.$vm = pageVm;
@@ -1077,56 +1101,7 @@ function invokeFail(id: number, name: string, errMsg?: string, errRes: Object = 
     }
     return invokeCallback(id, res);
 }
-const CHOOSE_SIZE_TYPES = [
-    'original',
-    'compressed'
-];
-const CHOOSE_SOURCE_TYPES = [
-    'album',
-    'camera'
-];
-function elemsInArray(strArr: string[] | string | undefined, optionalVal: string[]) {
-    if (!isArray(strArr) || strArr.length === 0 || strArr.find((val)=>optionalVal.indexOf(val) === -1)) {
-        return optionalVal;
-    }
-    return strArr;
-}
-function validateProtocolFail(name: string, msg: string) {
-    console.warn(`${name}: ${msg}`);
-}
-function validateProtocol(name: string, data: Record<string, Object>, protocol?: ApiProtocol<Object>, onFail?: (name: string, msg: string) => void) {
-    if (!onFail) {
-        onFail = validateProtocolFail;
-    }
-    for(const key in protocol){
-        const errMsg = validateProp(key, data[key], protocol[key as keyof typeof protocol], !hasOwn(data, key));
-        if (isString(errMsg)) {
-            onFail(name, errMsg);
-        }
-    }
-}
-function validateProtocols(name: string, args: Object[], protocol?: ApiProtocols<Object>, onFail?: (name: string, msg: string) => void) {
-    if (!protocol) {
-        return;
-    }
-    if (!isArray(protocol)) {
-        return validateProtocol(name, args[0] || Object.create(null), protocol, onFail);
-    }
-    const len = protocol.length;
-    const argsLen = args.length;
-    for(let i = 0; i < len; i++){
-        const opts = protocol[i];
-        const data = Object.create(null);
-        if (argsLen > i) {
-            data[opts.name!] = args[i];
-        }
-        validateProtocol(name, data, {
-            [opts.name!]: opts
-        }, onFail);
-    }
-}
 function beforeInvokeApi<T extends ApiLike>(name: string, args: Object[], protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
-    validateProtocols(name!, args, protocol);
     if (options && options.beforeInvoke) {
         const errMsg = options.beforeInvoke(args);
         if (isString(errMsg)) {
@@ -1282,7 +1257,7 @@ type DefineAsyncApiFn<T extends AsyncApiLike, P extends AsyncMethodOptionLike = 
     reject: (errMsg?: string, errRes?: Object) => void;
 }) => void;
 function defineAsyncApi<T extends AsyncApiLike, P extends AsyncMethodOptionLike = AsyncApiOptions<T>>(name: string, fn: DefineAsyncApiFn<T>, protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
-    return promisify(name, wrapperAsyncApi(name, fn as Object, protocol, options)) as AsyncApi<P>;
+    return promisify(name, wrapperAsyncApi(name, fn as Object, undefined, options)) as AsyncApi<P>;
 }
 function getBaseSystemInfo() {
     return {
@@ -1291,197 +1266,20 @@ function getBaseSystemInfo() {
         windowWidth: lpx2px(720)
     };
 }
+const CHOOSE_SIZE_TYPES = [
+    'original',
+    'compressed'
+];
 function getRealPath(filepath: string) {
     return filepath;
 }
-const TAGS = {
-    a: '',
-    abbr: '',
-    address: '',
-    article: '',
-    aside: '',
-    b: '',
-    bdi: '',
-    bdo: [
-        'dir'
-    ],
-    big: '',
-    blockquote: '',
-    br: '',
-    caption: '',
-    center: '',
-    cite: '',
-    code: '',
-    col: [
-        'span',
-        'width'
-    ],
-    colgroup: [
-        'span',
-        'width'
-    ],
-    dd: '',
-    del: '',
-    div: '',
-    dl: '',
-    dt: '',
-    em: '',
-    fieldset: '',
-    font: '',
-    footer: '',
-    h1: '',
-    h2: '',
-    h3: '',
-    h4: '',
-    h5: '',
-    h6: '',
-    header: '',
-    hr: '',
-    i: '',
-    img: [
-        'alt',
-        'src',
-        'height',
-        'width'
-    ],
-    ins: '',
-    label: '',
-    legend: '',
-    li: '',
-    mark: '',
-    nav: '',
-    ol: [
-        'start',
-        'type'
-    ],
-    p: '',
-    pre: '',
-    q: '',
-    rt: '',
-    ruby: '',
-    s: '',
-    section: '',
-    small: '',
-    span: '',
-    strong: '',
-    sub: '',
-    sup: '',
-    table: [
-        'width'
-    ],
-    tbody: '',
-    td: [
-        'colspan',
-        'height',
-        'rowspan',
-        'width'
-    ],
-    tfoot: '',
-    th: [
-        'colspan',
-        'height',
-        'rowspan',
-        'width'
-    ],
-    thead: '',
-    tr: [
-        'colspan',
-        'height',
-        'rowspan',
-        'width'
-    ],
-    tt: '',
-    u: '',
-    ul: ''
-};
-const CHARS = {
-    amp: '&',
-    gt: '>',
-    lt: '<',
-    nbsp: ' ',
-    quot: '"',
-    apos: "'",
-    ldquo: '“',
-    rdquo: '”',
-    yen: '￥',
-    radic: '√',
-    lceil: '⌈',
-    rceil: '⌉',
-    lfloor: '⌊',
-    rfloor: '⌋',
-    hellip: '…'
-};
-function decodeEntities(htmlString: string) {
-    return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
-        if (hasOwn(CHARS, stage) && CHARS[stage]) {
-            return CHARS[stage];
-        }
-        if (/^#[0-9]{1,4}$/.test(stage)) {
-            return String.fromCharCode(stage.slice(1));
-        }
-        if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
-            return String.fromCharCode(0 + stage.slice(1));
-        }
-        return match;
-    });
-}
-interface Node {
-    type: string;
-    text?: string;
-    name: string;
-    attrs: Data;
-    children?: Node[];
-}
-function processClickEvent(node: Node, triggerItemClick: Function) {
-    if ([
-        'a',
-        'img'
-    ].includes(node.name) && triggerItemClick) {
-        return {
-            onClick: (e: Event)=>{
-                triggerItemClick(e, {
-                    node
-                });
-                e.stopPropagation();
-                e.preventDefault();
-                e.returnValue = false;
-            }
-        };
-    }
-}
-function normalizeAttrs(tagName: string, attrs: Data) {
-    if (!isPlainObject(attrs)) return;
-    for(const key in attrs){
-        if (hasOwn(attrs, key)) {
-            const value = attrs[key];
-            if (tagName === 'img' && key === 'src') attrs[key] = getRealPath(value as string);
-        }
-    }
-}
-const nodeList2VNode = (scopeId: string, triggerItemClick: Function, nodeList?: Node[]): Array<VNode | undefined> =>{
-    if (!nodeList || (isArray(nodeList) && !nodeList.length)) return [];
-    return nodeList.map((node)=>{
-        if (!isPlainObject(node)) {
-            return;
-        }
-        if (!hasOwn(node, 'type') || node.type === 'node') {
-            let nodeProps = {
-                [scopeId]: ''
-            };
-            const tagName = node.name?.toLowerCase();
-            if (!hasOwn(TAGS, tagName)) {
-                return;
-            }
-            normalizeAttrs(tagName, node.attrs);
-            nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
-            return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
-        }
-        if (node.type === 'text' && isString(node.text) && node.text !== '') return createTextVNode(decodeEntities(node.text || ''));
-    });
-};
 type AppShowHook = (options: UniApp.GetLaunchOptionsSyncOptions) => void;
 const API_GET_IMAGE_INFO = 'getImageInfo';
 const API_GET_VIDEO_INFO = 'getVideoInfo';
+const CHOOSE_SOURCE_TYPES = [
+    'album',
+    'camera'
+];
 const ANIMATION_OUT = [
     'slide-out-right',
     'slide-out-left',
@@ -1505,7 +1303,7 @@ const API_REDIRECT_TO = 'redirectTo';
 const API_SWITCH_TAB = 'switchTab';
 type API_TYPE_SWITCH_TAB = typeof uni.switchTab;
 const API_NAVIGATE_BACK = 'navigateBack';
-type API_TYPE_NAVIGATE_BACK = typeof uni.navigateBack;
+type API_TYPE_NAVIGATE_BACK = typeof uni.navigateBack1;
 const API_PRELOAD_PAGE = 'preloadPage';
 const API_UN_PRELOAD_PAGE = 'unPreloadPage';
 const NavigateToProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> = extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
@@ -1597,6 +1395,12 @@ function createNormalizeUrl(type: string) {
         }
     };
 }
+function elemsInArray(strArr: string[] | string | undefined, optionalVal: string[]) {
+    if (!isArray(strArr) || strArr.length === 0 || strArr.find((val)=>optionalVal.indexOf(val) === -1)) {
+        return optionalVal;
+    }
+    return strArr;
+}
 type API_TYPE_CHOOSE_VIDEO = typeof uni.chooseVideo;
 const ChooseVideoOptions: ApiOptions<API_TYPE_CHOOSE_VIDEO> = {
     formatArgs: {
@@ -1656,103 +1460,6 @@ const ChooseImageProtocol: ApiProtocol<API_TYPE_CHOOSE_IMAGE> = {
     sourceType: Array,
     extension: Array
 };
-function validateProp(name: string, value: unknown, prop: ProtocolOptions | ProtocolType<Object>, isAbsent: boolean) {
-    if (!isPlainObject(prop)) {
-        prop = {
-            type: prop
-        };
-    }
-    const { type , required , validator  } = prop as ProtocolOptions;
-    if (required && isAbsent) {
-        return 'Missing required args: "' + name + '"';
-    }
-    if (value == null && !required) {
-        return;
-    }
-    if (type != null) {
-        let isValid = false;
-        const types = isArray(type) ? type : [
-            type
-        ];
-        const expectedTypes: string[] = [];
-        for(let i = 0; i < types.length && !isValid; i++){
-            const { valid , expectedType  } = assertType(value, types[i]);
-            expectedTypes.push(expectedType || '');
-            isValid = valid;
-        }
-        if (!isValid) {
-            return getInvalidTypeMessage(name, value, expectedTypes);
-        }
-    }
-    if (validator) {
-        return validator(value);
-    }
-}
-const isSimpleType = makeMap('String,Number,Boolean,Function,Symbol');
-type AssertionResult = {
-    valid: boolean;
-    expectedType: string;
-};
-function assertType(value: unknown, type: ProtocolConstructor): AssertionResult {
-    let valid;
-    const expectedType = getType(type);
-    if (isSimpleType(expectedType)) {
-        const t = typeof value;
-        valid = t === expectedType.toLowerCase();
-        if (!valid && t === 'object') {
-            valid = value instanceof type;
-        }
-    } else if (expectedType === 'Object') {
-        valid = isObject(value);
-    } else if (expectedType === 'Array') {
-        valid = isArray(value);
-    } else {
-        valid = value instanceof type;
-    }
-    return {
-        valid,
-        expectedType
-    };
-}
-function getInvalidTypeMessage(name: string, value: unknown, expectedTypes: string[]): string {
-    let message = `Invalid args: type check failed for args "${name}".` + ` Expected ${expectedTypes.map(capitalize).join(', ')}`;
-    const expectedType = expectedTypes[0];
-    const receivedType = toRawType(value);
-    const expectedValue = styleValue(value, expectedType);
-    const receivedValue = styleValue(value, receivedType);
-    if (expectedTypes.length === 1 && isExplicable(expectedType) && !isBoolean(expectedType, receivedType)) {
-        message += ` with value ${expectedValue}`;
-    }
-    message += `, got ${receivedType} `;
-    if (isExplicable(receivedType)) {
-        message += `with value ${receivedValue}.`;
-    }
-    return message;
-}
-function getType(ctor: ProtocolConstructor): string {
-    const match = ctor && ctor.toString().match(/^\s*function (\w+)/);
-    return match ? match[1] : '';
-}
-function styleValue(value: unknown, type: string): string {
-    if (type === 'String') {
-        return `"${value}"`;
-    } else if (type === 'Number') {
-        return `${Number(value)}`;
-    } else {
-        return `${value}`;
-    }
-}
-function isExplicable(type: string): boolean {
-    const explicitTypes = [
-        'string',
-        'number',
-        'boolean'
-    ];
-    return explicitTypes.some((elem)=>type.toLowerCase() === elem);
-}
-function isBoolean(...args: string[]): boolean {
-    return args.some((elem)=>elem.toLowerCase() === 'boolean');
-}
 type ActionsItemType = string | number | boolean | undefined | Array<number>;
 type ActionsItemData = Array<ActionsItemType>;
 type ActionsItem = {
@@ -2008,7 +1715,6 @@ class UniPageNode extends UniNode implements IUniPageNode {
     }
     push(action: PageAction, extras?: unknown) {
         if (this.isUnmounted) {
-            console.log(formatLog('PageNode', 'push.prevent', action));
             return;
         }
         switch(action[0]){
@@ -2062,7 +1768,6 @@ class UniPageNode extends UniNode implements IUniPageNode {
     }
     update() {
         const { dicts , updateActions , _createActionMap  } = this;
-        console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
         if (!this._created) {
             this._created = true;
             updateActions.push(this.createdAction);
@@ -2091,8 +1796,6 @@ class UniPageNode extends UniNode implements IUniPageNode {
         const node = findNodeById(id, this);
         if (node) {
             node.dispatchEvent(evt);
-        } else {
-            console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
         }
     }
 }
@@ -2113,7 +1816,6 @@ function setupPage(component: VuePageComponent) {
     component.inheritAttrs = false;
     component.setup = (_, ctx)=>{
         const { attrs: { __pageId , __pagePath , __pageQuery , __pageInstance  }  } = ctx;
-        console.log(formatLog(__pagePath as string, 'setup'));
         const instance = getCurrentInstance()!;
         const pageVm = instance.proxy!;
         initPageVm(pageVm, __pageInstance as Page.PageInstance[string]);
@@ -2156,7 +1858,6 @@ function removePage(curPage: ComponentPublicInstance | Page.PageInstance) {
         getVueApp().unmountPage(curPage as ComponentPublicInstance);
     }
     pages.splice(index, 1);
-    console.log(formatLog('removePage', curPage.$page));
 }
 function initVueApp(appVm: ComponentPublicInstance) {
     const internalInstance = appVm.$;
@@ -2382,7 +2083,6 @@ function createPreloadWebview() {
         preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()), {
             contentAdjust: false
         });
-        console.log(formatLog('createPreloadWebview', preloadWebview.id));
     }
     return preloadWebview;
 }
@@ -2395,6 +2095,13 @@ function reLaunchEntryPage() {
     .reLaunch({
         url: addLeadingSlash(__uniConfig.entryPagePath!)
     } as ReLaunchOptions);
+}
+const EVENT_BACKBUTTON = 'backbutton';
+function backbuttonListener() {
+    .navigateBack({
+        from: 'backbutton',
+        success () {}
+    } as UniApp.NavigateBackOptions);
 }
 const enterOptions: LaunchOptions = createLaunchOptions();
 const launchOptions: LaunchOptions = createLaunchOptions();
@@ -2445,14 +2152,12 @@ function setPendingNavigator(path: string, callback: Function, msg: string) {
         nvue: getRouteMeta(path)!.isNVue,
         callback
     };
-    console.log(formatLog('setPendingNavigator', path, msg));
 }
 function pendingNavigate() {
     if (!pendingNavigator) {
         return;
     }
     const { callback  } = pendingNavigator;
-    console.log(formatLog('pendingNavigate', pendingNavigator.path));
     pendingNavigator = false;
     return callback();
 }
@@ -2467,7 +2172,6 @@ function navigateFinish() {
         return;
     }
     const preloadWebview = createPreloadWebview();
-    console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
     if (!pendingNavigator) {
         return;
     }
@@ -2480,10 +2184,8 @@ function showWebview(webview: PlusWebviewWebviewObject, animationType: string, a
     if (typeof delay === 'undefined') {
         delay = (webview as Object).nvue ? 0 : 100;
     }
-    console.log(formatLog('showWebview', 'delay', delay));
     const execShowCallback = function() {
         if (execShowCallback._called) {
-            console.log(formatLog('execShowCallback', 'prevent'));
             return;
         }
         execShowCallback._called = true;
@@ -2493,11 +2195,9 @@ function showWebview(webview: PlusWebviewWebviewObject, animationType: string, a
     execShowCallback._called = false;
     setTimeout(()=>{
         const timer = setTimeout(()=>{
-            console.log(formatLog('showWebview', 'callback', 'timer'));
             execShowCallback();
         }, animationDuration + 150);
         webview.show(animationType as Object, animationDuration, ()=>{
-            console.log(formatLog('showWebview', 'callback'));
             if (!execShowCallback._called) {
                 clearTimeout(timer);
             }
@@ -2537,7 +2237,7 @@ function navigate(path: string, callback: () => void, isAppLaunch: boolean) {
     }
 }
 function initRouteOptions(path: string, openType: UniApp.OpenType) {
-    const routeOptions = UTSiOS.consoleDebugError(JSON.parse(JSON.stringify(getRouteOptions(path)!))) as UniApp.UniRoute;
+    const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)!)) as UniApp.UniRoute;
     routeOptions.meta = initRouteMeta(routeOptions.meta);
     if (openType !== 'preloadPage' && !__uniConfig.realEntryPagePath && (openType === 'reLaunch' || getCurrentPages().length === 0)) {
         routeOptions.meta.isQuit = true;
@@ -2577,7 +2277,6 @@ function registerPage({ url , path , query , openType , webview , nvuePageVm , e
         (webview as Object).nvue = routeOptions.meta.isNVue;
     }
     routeOptions.meta.id = parseInt(webview.id!);
-    console.log(formatLog('registerPage', path, webview.id));
     const route = path.slice(1);
     (webview as Object).__uniapp_route = route;
     const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 'light');
@@ -2721,9 +2420,9 @@ const mod = {
     navigateBack: navigateBack,
     getSystemInfoSync,
     getVideoInfo,
-    getLocale,
-    chooseVideo,
     chooseImage,
+    chooseVideo,
+    getLocale,
     getImageInfo
 };
 const UniServiceJSBridge1 = extend(ServiceJSBridge, {
@@ -2731,14 +2430,12 @@ const UniServiceJSBridge1 = extend(ServiceJSBridge, {
 });
 function publishHandler(event: string, args: unknown, pageIds: number | number[]) {
     args = JSON.stringify(args);
-    console.log(formatLog('publishHandler', event, args, pageIds));
     if (!isArray(pageIds)) {
         pageIds = [
             pageIds
         ];
     }
     const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
-    console.log(formatLog('publishHandler', 'size', evalJSCode.length));
     pageIds.forEach((id)=>{
         const idStr = String(id);
         const webview = plus.webview.getWebviewById(idStr);
@@ -2790,7 +2487,6 @@ function onNodeEvent(nodeId: number, evt: UniEvent, pageNode: UniPageNode) {
 function onVdSync(actions: EventAction[], pageId: string) {
     const page = getPageById(parseInt(pageId));
     if (!page) {
-        console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
         return;
     }
     const pageNode = (page as Object).__page_container__ as UniPageNode;
@@ -2808,7 +2504,6 @@ function subscribePlusMessage({ data  }: {
         args: Record<string, Object>;
     };
 }) {
-    console.log(formatLog('plusMessage', data));
     if (data && data.type) {
         UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
     }
@@ -2843,7 +2538,6 @@ let isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data: unknown, pageId: string) {
     const isLaunchWebview = pageId === '1';
     if (isLaunchWebview && isLaunchWebviewReady) {
-        console.log('[uni-app] onLaunchWebviewReady.prevent');
         return;
     }
     let preloadWebview = getPreloadWebview();
@@ -2939,6 +2633,7 @@ function initSubscribeHandlers() {
 }
 function initGlobalEvent() {
     const plusGlobalEvent = (plus as Object).globalEvent;
+    plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }
 function initAppLaunch(appVm: ComponentPublicInstance) {
@@ -2961,7 +2656,6 @@ function initAppVm(appVm: ComponentPublicInstance) {
     appVm.$mpType = 'app';
 }
 function registerApp(appVm: ComponentPublicInstance) {
-    console.log(formatLog('registerApp'));
     initVueApp(appVm);
     appCtx = appVm;
     initAppVm(appCtx);
@@ -3087,7 +2781,7 @@ function encodeQueryString(url: string) {
         const parts = param.replace(/\+/g, ' ').split('=');
         const key = parts.shift();
         const val = parts.length > 0 ? parts.join('=') : '';
-        params.push(key + '=' + UTSiOS.consoleDebugError(encodeURIComponent(val)));
+        params.push(key + '=' + encodeURIComponent(val));
     });
     return params.length ? url + '?' + params.join('&') : url;
 }

@@ -1999,6 +1999,13 @@ function reLaunchEntryPage() {
     });
 }
 
+const EVENT_BACKBUTTON = 'backbutton';
+function backbuttonListener() {
+    uni.navigateBack({
+        from: 'backbutton',
+        success() { }, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    });
+}
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
 function initLaunchOptions({ path, query, referrerInfo, }) {
@@ -2956,6 +2963,7 @@ function initSubscribeHandlers() {
 
 function initGlobalEvent() {
     const plusGlobalEvent = plus.globalEvent;
+    plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
     // TODO KeyboardHeightChange
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }
