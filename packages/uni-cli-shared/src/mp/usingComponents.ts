@@ -218,7 +218,7 @@ function parseVueComponentName(filename: string) {
 
   for (const node of ast.body) {
     if (!isImportDeclaration(node)) continue
-    if (isStringLiteral(node.source, { value: 'vue' })) {
+    if (node.source.value === 'vue') {
       const importSpecifer = node.specifiers.find(
         (specifer) =>
           isImportSpecifier(specifer) &&
@@ -228,7 +228,8 @@ function parseVueComponentName(filename: string) {
         defineComponentLocalName = importSpecifer.local.name
       }
     } else if (
-      isStringLiteral(node.source, { value: 'plugin-vue:export-helper' })
+      // plugin-vue:export-helper前可能有\0
+      /\0?plugin-vue:export-helper/.test(node.source.value)
     ) {
       const importSpecifer = node.specifiers.find((specifer) =>
         isImportDefaultSpecifier(specifer)

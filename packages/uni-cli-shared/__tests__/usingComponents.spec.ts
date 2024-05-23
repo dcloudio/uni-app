@@ -378,7 +378,7 @@ export function createApp() {
         return {};
       }
       import "${filename}?vue&type=style&index=0&lang.css";
-      import _export_sfc from "plugin-vue:export-helper";
+      import _export_sfc from "\0plugin-vue:export-helper";
       export default /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
   `,
           {
