@@ -411,7 +411,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "onPushMessage": {
@@ -419,7 +419,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "offPushMessage": {
@@ -427,7 +427,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getChannelManager": {
@@ -443,7 +443,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
