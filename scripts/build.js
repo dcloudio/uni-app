@@ -12,6 +12,7 @@ const { extract } = require('./apiExtractor')
 
 const { targets: allTargets, fuzzyMatchTarget, priority } = require('./utils')
 
+const rootDir = path.resolve(__dirname, '..')
 const args = require('minimist')(process.argv.slice(2))
 const targets = args._
 // const formats = args.formats || args.f
@@ -21,6 +22,8 @@ const multiProcess = args.m
 // const buildTypes = args.t || args.types || isRelease
 const buildAllMatching = args.all || args.a
 const transpileOnly = args.transpileOnly
+
+const arkTSOnly = args.ets
 
 run()
 
@@ -107,7 +110,7 @@ async function build(target) {
   }
   const tsconfigJsonPath = path.resolve(pkgDir, 'tsconfig.json')
   let hasTscBundler = false
-  const hasViteBundler = fs.existsSync(path.resolve(pkgDir, 'vite.config.ts'))
+  const hasViteBundler = !arkTSOnly && fs.existsSync(path.resolve(pkgDir, 'vite.config.ts'))
   if (fs.existsSync(tsconfigJsonPath)) {
     const tsconfigJson = require(tsconfigJsonPath)
     if (
@@ -117,7 +120,9 @@ async function build(target) {
       hasTscBundler = true
     }
   }
-  const hasRollupBundler = fs.existsSync(path.resolve(pkgDir, 'build.json'))
+  const hasRollupBundler = !arkTSOnly && fs.existsSync(path.resolve(pkgDir, 'build.json'))
+
+  const hasArkTSBundler = fs.existsSync(path.resolve(pkgDir, 'build.ets.json'))
 
   const types = target.endsWith('-shared') || pkg.types
   // if building a specific format, do not remove dist.
@@ -225,6 +230,77 @@ async function build(target) {
     )
     if (types && target !== 'uni-uts-vite') {
       await extract(target)
+    }
+  }
+  if (hasArkTSBundler) {
+    await buildArkTS(target, require(path.resolve(pkgDir, 'build.ets.json')))
+  }
+}
+
+async function buildArkTS(target, buildJson) {
+  const projectDir = path.resolve(__dirname, '../packages', target)
+  const { bundleArkTS } = require('../packages/uts/dist')
+  const start = Date.now()
+  if (!Array.isArray(buildJson)) {
+    buildJson = [buildJson]
+  }
+  for (const options of buildJson) {
+    const inputs = Object.keys(options.input);
+    const alias = options.alias || {}
+    const replacements = options.replacements || {}
+    const vars = {}
+    const envs = {}
+    Object.keys(replacements).forEach(key => {
+      if (key.startsWith('process.env.')) {
+        envs[key.replace('process.env.', '')] = replacements[key]
+      } else {
+        vars[key] = replacements[key]
+      }
+    })
+    console.log(vars, envs)
+    for (const input of inputs) {
+      const buildOptions = {
+        input: {
+          root: projectDir,
+          filename: path.resolve(
+            projectDir,
+            input
+          ),
+          paths: Object.keys(alias).reduce((paths, key) => {
+            paths[key] = alias[key].replace('<rootDir>', rootDir)
+            return paths
+          }, {}),
+          parseOptions: {
+            tsx: true,
+            noEarlyErrors: true
+          },
+          globals: {
+            vars,
+            envs
+          }
+        },
+        output: {
+          outDir: path.resolve(projectDir, 'dist'),
+          outFilename: options.input[input],
+          package: '',
+          imports: [],
+          sourceMap: false,
+          extname: path.extname(options.input[input]) ?? '.ets',
+          logFilename: false,
+          isPlugin: true,
+          transform: {
+
+          },
+          treeshake: {
+            noSideEffects: true
+          }
+        },
+      }
+      console.log(buildOptions)
+      await bundleArkTS(buildOptions).then((res) => {
+        console.log('bundle: ' + (Date.now() - start) + 'ms')
+        console.log(JSON.stringify(res))
+      })
     }
   }
 }

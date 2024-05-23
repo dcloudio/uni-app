@@ -30,8 +30,10 @@ export type UTSInputOptions = UTSParseOptions & {
   uniModules?: string[]
   globals?: {
     envs?: Record<string, string>
+    vars?: Record<string, string>
   }
   parseOptions?: {
+    tsx?: boolean
     noEarlyErrors?: boolean
   }
 }
