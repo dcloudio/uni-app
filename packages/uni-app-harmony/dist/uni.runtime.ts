@@ -2384,7 +2384,18 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve , reject
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
-function quit() {}
+let firstBackTime = 0;
+function quit() {
+    if (!firstBackTime) {
+        firstBackTime = Date.now();
+        plus.nativeUI.toast('再按一次退出應用');
+        setTimeout(()=>{
+            firstBackTime = 0;
+        }, 2000);
+    } else if (Date.now() - firstBackTime < 2000) {
+        plus.runtime.quit();
+    }
+}
 function back(delta: number, animationType?: string, animationDuration?: number) {
     const pages = getCurrentPages();
     const len = pages.length;
@@ -2418,12 +2429,12 @@ function back(delta: number, animationType?: string, animationDuration?: number)
 const mod = {
     navigateTo: navigateTo,
     navigateBack: navigateBack,
-    getSystemInfoSync,
-    getVideoInfo,
     chooseImage,
-    chooseVideo,
     getLocale,
-    getImageInfo
+    chooseVideo,
+    getImageInfo,
+    getSystemInfoSync,
+    getVideoInfo
 };
 const UniServiceJSBridge1 = extend(ServiceJSBridge, {
     publishHandler

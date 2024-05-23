@@ -2677,7 +2677,9 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     if (uni.hideLoading) {
         uni.hideLoading();
     }
-    if (page.$page.meta.isQuit) ;
+    if (page.$page.meta.isQuit) {
+        quit();
+    }
     else if (isDirectPage(page)) {
         reLaunchEntryPage();
     }
@@ -2687,6 +2689,21 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
+let firstBackTime = 0;
+function quit() {
+    // TODO initI18nAppMsgsOnce()
+    if (!firstBackTime) {
+        firstBackTime = Date.now();
+        // TODO useI18n
+        plus.nativeUI.toast('再按一次退出應用');
+        setTimeout(() => {
+            firstBackTime = 0;
+        }, 2000);
+    }
+    else if (Date.now() - firstBackTime < 2000) {
+        plus.runtime.quit();
+    }
+}
 function back(delta, animationType, animationDuration) {
     const pages = getCurrentPages();
     const len = pages.length;

@@ -57,8 +57,20 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   NavigateBackOptions
 )
 
+let firstBackTime = 0
+
 function quit() {
-  // TODO
+  // TODO initI18nAppMsgsOnce()
+  if (!firstBackTime) {
+    firstBackTime = Date.now()
+    // TODO useI18n
+    plus.nativeUI.toast('再按一次退出應用')
+    setTimeout(() => {
+      firstBackTime = 0
+    }, 2000)
+  } else if (Date.now() - firstBackTime < 2000) {
+    plus.runtime.quit()
+  }
 }
 
 function back(
