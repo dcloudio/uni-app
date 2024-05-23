@@ -2746,7 +2746,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2816,7 +2816,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2959,7 +2959,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -5401,13 +5401,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$x = 0;
+let index$w = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$x++);
+    const callbackId = String(index$w++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -7864,7 +7864,7 @@ const props$y = {
 };
 class UniCanvasElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -8351,7 +8351,7 @@ const props$x = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$x,
   emits: ["change"],
@@ -8462,7 +8462,7 @@ const props$w = {
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$w,
   rootElement: {
@@ -9474,7 +9474,7 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$u,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -9546,7 +9546,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -9623,7 +9623,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$t,
   rootElement: {
@@ -12107,7 +12107,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -13274,7 +13274,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -13390,7 +13390,7 @@ const props$q = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$q,
   // emits: ['change'],
@@ -13533,7 +13533,7 @@ const props$p = {
 };
 class UniRadioElement extends UniElement {
 }
-const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$p,
   rootElement: {
@@ -13932,7 +13932,7 @@ const props$o = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -14746,7 +14746,7 @@ class UniSliderElement extends UniElement {
     this.inputValue.innerText = value.toString();
   }
 }
-const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$m,
   emits: ["changing", "change"],
@@ -15722,11 +15722,27 @@ const props$j = {
   color: {
     type: String,
     default: ""
+  },
+  backgroundColor: {
+    type: String,
+    default: "#e9e9ea"
+  },
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
+  foregroundColor: {
+    type: String,
+    default: ""
+  },
+  activeForegroundColor: {
+    type: String,
+    default: ""
   }
 };
 class UniSwitchElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$j,
   emits: ["change"],
@@ -15780,14 +15796,25 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       const {
+        activeBackgroundColor,
+        activeForegroundColor,
+        backgroundColor,
         color,
+        foregroundColor,
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       const switchInputStyle = {};
-      if (color && switchChecked.value) {
-        switchInputStyle["backgroundColor"] = color;
-        switchInputStyle["borderColor"] = color;
+      const fixColor = activeBackgroundColor || color;
+      const bgColor = switchChecked.value ? fixColor : backgroundColor;
+      if (bgColor) {
+        switchInputStyle["backgroundColor"] = bgColor;
+        switchInputStyle["borderColor"] = bgColor;
+      }
+      const thumbStyle = {};
+      const fgColor = switchChecked.value ? activeForegroundColor : foregroundColor;
+      if (fgColor) {
+        thumbStyle["backgroundColor"] = fgColor;
       }
       let realCheckValue;
       realCheckValue = checkedCache.value;
@@ -15801,7 +15828,10 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       }, [withDirectives(createVNode("div", {
         "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
         "style": switchInputStyle
-      }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
+      }, [createVNode("div", {
+        "class": ["uni-switch-thumb", [switchChecked.value ? "uni-switch-thumb-checked" : ""]],
+        "style": thumbStyle
+      }, null, 6)], 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
       }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
     };
@@ -27690,19 +27720,19 @@ export {
   index$4 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$y as Button,
+  index$x as Button,
   index$3 as Camera,
-  index$w as Canvas,
-  index$u as Checkbox,
-  index$v as CheckboxGroup,
+  index$v as Canvas,
+  index$t as Checkbox,
+  index$u as CheckboxGroup,
   index$8 as CoverImage,
   index$9 as CoverView,
-  index$t as Editor,
-  index$A as Form,
-  index$s as Icon,
-  index$r as Image,
+  index$s as Editor,
+  index$z as Form,
+  index$r as Icon,
+  index$q as Image,
   Input,
-  index$z as Label,
+  index$y as Label,
   LayoutComponent,
   index$h as ListItem,
   index$i as ListView,
@@ -27711,23 +27741,23 @@ export {
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$q as Navigator,
+  index$p as Navigator,
   index as PageComponent,
   index$7 as Picker,
   PickerView,
   PickerViewColumn,
-  index$p as Progress,
-  indexX$2 as Radio,
-  index$o as RadioGroup,
+  index$o as Progress,
+  indexX$3 as Radio,
+  index$n as RadioGroup,
   ResizeSensor,
-  index$n as RichText,
+  index$m as RichText,
   ScrollView,
-  indexX$1 as Slider,
+  indexX$2 as Slider,
   index$f as StickyHeader,
   index$g as StickySection,
   Swiper,
   SwiperItem,
-  index$m as Switch,
+  indexX$1 as Switch,
   index$l as Text,
   index$k as Textarea,
   UniButtonElement,

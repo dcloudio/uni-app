@@ -1426,8 +1426,52 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
+function transformRpx(value) {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
+      return `${uni.upx2px(parseFloat(num))}px`;
+    });
+  }
+  return value;
+}
+class UniElement extends HTMLElement {
+  constructor() {
+    super();
+    this._props = {};
+    this.__isUniElement = true;
+  }
+  attachVmProps(props2) {
+    this._props = props2;
+  }
+  getAttribute(qualifiedName) {
+    const name = shared.camelize(qualifiedName);
+    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
+  }
+  get style() {
+    const originalStyle = super.style;
+    if (originalStyle.__patchRpx__) {
+      return originalStyle;
+    }
+    originalStyle.__patchRpx__ = true;
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
+    super.style.setProperty = function(property, value, priority) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + "") : value,
+        priority || void 0
+      );
+    };
+    return super.style;
+  }
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, "");
+  }
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, "");
+  }
+}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$D = /* @__PURE__ */ defineBuiltInComponent({
+const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1487,7 +1531,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$C = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1563,7 +1607,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$B = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -2445,7 +2489,7 @@ const props$r = {
     default: true
   }
 };
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -2919,7 +2963,7 @@ const props$q = {
     default: ""
   }
 };
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$q,
   emits: ["change"],
@@ -3020,7 +3064,7 @@ const props$p = {
     default: ""
   }
 };
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$p,
   setup(props2, {
@@ -3358,7 +3402,7 @@ const props$n = /* @__PURE__ */ shared.extend({}, props$o, {
     default: false
   }
 });
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
+const index$w = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$n,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -3419,7 +3463,7 @@ const ICONS = {
     c: GREY_COLOR
   }
 };
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -3486,7 +3530,7 @@ const IMAGE_MODES = {
   "bottom left": ["left bottom"],
   "bottom right": ["right bottom"]
 };
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$m,
   setup(props2, {
@@ -4330,7 +4374,7 @@ const movableAreaProps = {
     default: false
   }
 };
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "MovableArea",
   props: movableAreaProps,
@@ -4878,7 +4922,7 @@ const movableViewProps = {
 function v(a, b) {
   return +((1e3 * a - 1e3 * b) / 1e3).toFixed(1);
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "MovableView",
   props: movableViewProps,
   emits: ["change", "scale"],
@@ -5528,7 +5572,7 @@ function createNavigatorOnClick(props2) {
     }
   };
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -5850,7 +5894,7 @@ const progressProps = {
     default: 0
   }
 };
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   setup(props2) {
@@ -5940,7 +5984,7 @@ const props$j = {
     default: ""
   }
 };
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$j,
   // emits: ['change'],
@@ -6067,7 +6111,7 @@ const props$i = {
     default: ""
   }
 };
-const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$i,
   setup(props2, {
@@ -6427,7 +6471,7 @@ const props$h = {
     }
   }
 };
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -6630,7 +6674,7 @@ const props$g = {
     default: false
   }
 };
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "ScrollView",
   compatConfig: {
     MODE: 3
@@ -6993,7 +7037,7 @@ const props$f = {
     default: false
   }
 };
-const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$f,
   emits: ["changing", "change"],
@@ -7525,7 +7569,7 @@ function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger)
     swiperEnabled
   };
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "Swiper",
   props: props$e,
   emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
@@ -7754,7 +7798,7 @@ const props$d = {
     default: ""
   }
 };
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const index$l = /* @__PURE__ */ defineBuiltInComponent({
   name: "SwiperItem",
   props: props$d,
   setup(props2, {
@@ -7797,18 +7841,40 @@ const props$c = {
   color: {
     type: String,
     default: ""
+  },
+  backgroundColor: {
+    type: String,
+    default: "#e9e9ea"
+  },
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
+  foregroundColor: {
+    type: String,
+    default: ""
+  },
+  activeForegroundColor: {
+    type: String,
+    default: ""
   }
 };
-const index$l = /* @__PURE__ */ defineBuiltInComponent({
+class UniSwitchElement extends UniElement {
+}
+const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$c,
   emits: ["change"],
+  rootElement: {
+    name: "uni-switch",
+    class: UniSwitchElement
+  },
   setup(props2, {
     emit: emit2
   }) {
     const rootRef = vue.ref(null);
     const switchChecked = vue.ref(props2.checked);
-    const uniLabel = useSwitchInject(props2, switchChecked);
+    const uniLabel = useSwitchInject(rootRef, props2, switchChecked);
     const trigger = useCustomEvent(rootRef, emit2);
     vue.watch(() => props2.checked, (val) => {
       switchChecked.value = val;
@@ -7825,19 +7891,34 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     if (!!uniLabel) {
       uniLabel.addHandler(_onClick);
     }
+    let checkedCache = vue.ref(switchChecked.value);
+    vue.watch(() => switchChecked.value, (val) => {
+      checkedCache.value = val;
+    });
     return () => {
       const {
+        activeBackgroundColor,
+        activeForegroundColor,
+        backgroundColor,
         color,
+        foregroundColor,
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       const switchInputStyle = {};
-      if (color && switchChecked.value) {
-        switchInputStyle["backgroundColor"] = color;
-        switchInputStyle["borderColor"] = color;
+      const fixColor = activeBackgroundColor || color;
+      const bgColor = switchChecked.value ? fixColor : backgroundColor;
+      if (bgColor) {
+        switchInputStyle["backgroundColor"] = bgColor;
+        switchInputStyle["borderColor"] = bgColor;
+      }
+      const thumbStyle = {};
+      const fgColor = switchChecked.value ? activeForegroundColor : foregroundColor;
+      if (fgColor) {
+        thumbStyle["backgroundColor"] = fgColor;
       }
       let realCheckValue;
-      realCheckValue = switchChecked.value;
+      realCheckValue = checkedCache.value;
       return vue.createVNode("uni-switch", vue.mergeProps({
         "id": props2.id,
         "ref": rootRef
@@ -7848,13 +7929,17 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.withDirectives(vue.createVNode("div", {
         "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
         "style": switchInputStyle
-      }, null, 6), [[vue.vShow, type === "switch"]]), vue.withDirectives(vue.createVNode("div", {
+      }, [vue.createVNode("div", {
+        "class": ["uni-switch-thumb", [switchChecked.value ? "uni-switch-thumb-checked" : ""]],
+        "style": thumbStyle
+      }, null, 6)], 6), [[vue.vShow, type === "switch"]]), vue.withDirectives(vue.createVNode("div", {
         "class": "uni-checkbox-input"
       }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vue.vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
     };
   }
 });
-function useSwitchInject(props2, switchChecked) {
+function useSwitchInject(rootRef, props2, switchChecked) {
+  const initialCheckedValue = props2.checked;
   const uniForm = vue.inject(uniFormKey, false);
   const uniLabel = vue.inject(uniLabelKey, false);
   const formField = {
@@ -7862,12 +7947,12 @@ function useSwitchInject(props2, switchChecked) {
       const data = ["", null];
       if (props2.name) {
         data[0] = props2.name;
-        data[1] = switchChecked.value;
+        data[1] = rootRef.value.checked;
       }
       return data;
     },
     reset: () => {
-      switchChecked.value = false;
+      switchChecked.value = initialCheckedValue;
     }
   };
   if (!!uniForm) {
@@ -13934,44 +14019,44 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$B;
+exports.Button = index$A;
 exports.Camera = index$3;
-exports.Canvas = index$A;
-exports.Checkbox = index$y;
-exports.CheckboxGroup = index$z;
+exports.Canvas = index$z;
+exports.Checkbox = index$x;
+exports.CheckboxGroup = index$y;
 exports.CoverImage = index$8;
 exports.CoverView = index$9;
-exports.Editor = index$x;
-exports.Form = index$D;
-exports.Icon = index$w;
-exports.Image = index$v;
+exports.Editor = index$w;
+exports.Form = index$C;
+exports.Icon = index$v;
+exports.Image = index$u;
 exports.Input = Input;
-exports.Label = index$C;
+exports.Label = index$B;
 exports.LayoutComponent = LayoutComponent;
 exports.ListItem = index$g;
 exports.ListView = index$h;
 exports.LivePlayer = index$2;
 exports.LivePusher = index$1;
 exports.Map = index$a;
-exports.MovableArea = index$u;
-exports.MovableView = index$t;
-exports.Navigator = index$s;
+exports.MovableArea = index$t;
+exports.MovableView = index$s;
+exports.Navigator = index$r;
 exports.PageComponent = index;
 exports.Picker = index$7;
 exports.PickerView = PickerView;
 exports.PickerViewColumn = PickerViewColumn;
-exports.Progress = index$r;
-exports.Radio = indexX$2;
-exports.RadioGroup = index$q;
+exports.Progress = index$q;
+exports.Radio = indexX$3;
+exports.RadioGroup = index$p;
 exports.ResizeSensor = ResizeSensor;
-exports.RichText = index$p;
-exports.ScrollView = index$o;
-exports.Slider = indexX$1;
+exports.RichText = index$o;
+exports.ScrollView = index$n;
+exports.Slider = indexX$2;
 exports.StickyHeader = index$e;
 exports.StickySection = index$f;
-exports.Swiper = index$n;
-exports.SwiperItem = index$m;
-exports.Switch = index$l;
+exports.Swiper = index$m;
+exports.SwiperItem = index$l;
+exports.Switch = indexX$1;
 exports.Text = index$k;
 exports.Textarea = index$j;
 exports.UniServiceJSBridge = UniServiceJSBridge$1;

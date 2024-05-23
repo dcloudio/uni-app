@@ -1,8 +1,8 @@
+import { injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import picker from '@ohos.file.picker';
 import fs from '@ohos.file.fs';
 import media from '@ohos.multimedia.media';
 import image from '@ohos.multimedia.image';
-import { injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 async function _getVideoInfo(uri) {
     const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
@@ -676,6 +676,7 @@ const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 const ON_READY = 'onReady';
 const ON_UNLOAD = 'onUnload';
 const ON_RESIZE = 'onResize';
+const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
 const ON_REACH_BOTTOM = 'onReachBottom';
 // framework
@@ -1654,6 +1655,17 @@ const ANIMATION_IN = [
     'pop-in',
     'none',
 ];
+const ANIMATION_OUT = [
+    'slide-out-right',
+    'slide-out-left',
+    'slide-out-top',
+    'slide-out-bottom',
+    'fade-out',
+    'zoom-in',
+    'zoom-fade-in',
+    'pop-out',
+    'none',
+];
 const BaseRouteProtocol = {
     url: {
         type: String,
@@ -1663,12 +1675,27 @@ const BaseRouteProtocol = {
 const API_NAVIGATE_TO = 'navigateTo';
 const API_REDIRECT_TO = 'redirectTo';
 const API_SWITCH_TAB = 'switchTab';
+const API_NAVIGATE_BACK = 'navigateBack';
 const API_PRELOAD_PAGE = 'preloadPage';
 const API_UN_PRELOAD_PAGE = 'unPreloadPage';
 const NavigateToProtocol = 
 /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateBackProtocol = 
+/*#__PURE__*/ extend({
+    delta: {
+        type: Number,
+    },
+}, createAnimationProtocol(ANIMATION_OUT));
 const NavigateToOptions = 
 /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+const NavigateBackOptions = {
+    formatArgs: {
+        delta(value, params) {
+            value = parseInt(value + '') || 1;
+            params.delta = Math.min(getCurrentPages().length - 1, value);
+        },
+    },
+};
 function createAnimationProtocol(animationTypes) {
     return {
         animationType: {
@@ -1827,36 +1854,38 @@ function getSystemInfoSync() {
     return getBaseSystemInfo();
 }
 
-var uni$1 = {
-  __proto__: null,
-  chooseImage: chooseImage,
-  chooseVideo: chooseVideo,
-  getImageInfo: getImageInfo,
-  getLocale: getLocale,
-  getSystemInfoSync: getSystemInfoSync,
-  getVideoInfo: getVideoInfo
-};
-
-const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
-    publishHandler,
-});
-function publishHandler(event, args, pageIds) {
-    args = JSON.stringify(args);
-    if (('production' !== 'production')) {
-        console.log(formatLog('publishHandler', event, args, pageIds));
-    }
-    if (!isArray(pageIds)) {
-        pageIds = [pageIds];
-    }
-    const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
-    if (('production' !== 'production')) {
-        console.log(formatLog('publishHandler', 'size', evalJSCode.length));
-    }
-    pageIds.forEach((id) => {
-        const idStr = String(id);
-        const webview = plus.webview.getWebviewById(idStr);
-        const code = evalJSCode.replace('__PAGE_ID__', idStr);
-        webview && webview.evalJS(code);
+let vueApp;
+function getVueApp() {
+    return vueApp;
+}
+function initVueApp(appVm) {
+    const internalInstance = appVm.$;
+    // 定制 App 的 $children 为 devtools 服务 false
+    Object.defineProperty(internalInstance.ctx, '$children', {
+        get() {
+            return getAllPages().map((page) => page.$vm);
+        },
+    });
+    const appContext = internalInstance.appContext;
+    vueApp = extend(appContext.app, {
+        mountPage(pageComponent, pageProps, pageContainer) {
+            const vnode = createVNode(pageComponent, pageProps);
+            // store app context on the root VNode.
+            // this will be set on the root instance on initial mount.
+            vnode.appContext = appContext;
+            vnode.__page_container__ = pageContainer;
+            render(vnode, pageContainer);
+            const publicThis = vnode.component.proxy;
+            publicThis.__page_container__ = pageContainer;
+            return publicThis;
+        },
+        unmountPage: (pageInstance) => {
+            const { __page_container__ } = pageInstance;
+            if (__page_container__) {
+                __page_container__.isUnmounted = true;
+                render(null, __page_container__);
+            }
+        },
     });
 }
 
@@ -1895,40 +1924,18 @@ function getCurrentPages$1() {
     });
     return curPages;
 }
-
-let vueApp;
-function getVueApp() {
-    return vueApp;
-}
-function initVueApp(appVm) {
-    const internalInstance = appVm.$;
-    // 定制 App 的 $children 为 devtools 服务 false
-    Object.defineProperty(internalInstance.ctx, '$children', {
-        get() {
-            return getAllPages().map((page) => page.$vm);
-        },
-    });
-    const appContext = internalInstance.appContext;
-    vueApp = extend(appContext.app, {
-        mountPage(pageComponent, pageProps, pageContainer) {
-            const vnode = createVNode(pageComponent, pageProps);
-            // store app context on the root VNode.
-            // this will be set on the root instance on initial mount.
-            vnode.appContext = appContext;
-            vnode.__page_container__ = pageContainer;
-            render(vnode, pageContainer);
-            const publicThis = vnode.component.proxy;
-            publicThis.__page_container__ = pageContainer;
-            return publicThis;
-        },
-        unmountPage: (pageInstance) => {
-            const { __page_container__ } = pageInstance;
-            if (__page_container__) {
-                __page_container__.isUnmounted = true;
-                render(null, __page_container__);
-            }
-        },
-    });
+function removePage(curPage) {
+    const index = pages.findIndex((page) => page === curPage);
+    if (index === -1) {
+        return;
+    }
+    if (!curPage.$page.meta.isNVue) {
+        getVueApp().unmountPage(curPage);
+    }
+    pages.splice(index, 1);
+    if (('production' !== 'production')) {
+        console.log(formatLog('removePage', curPage.$page));
+    }
 }
 
 const VD_SYNC = 'vdSync';
@@ -1937,117 +1944,6 @@ const ACTION_TYPE_DICT = 0;
 const WEBVIEW_INSERTED = 'webviewInserted';
 const WEBVIEW_REMOVED = 'webviewRemoved';
 
-let focusTimeout = 0;
-let keyboardHeight = 0;
-let focusTimer = null;
-function hookKeyboardEvent(event, callback) {
-    if (focusTimer) {
-        clearTimeout(focusTimer);
-        focusTimer = null;
-    }
-    if (event.type === 'onFocus') {
-        {
-            focusTimer = setTimeout(function () {
-                event.detail.height = keyboardHeight;
-                callback(event);
-            }, focusTimeout);
-            return;
-        }
-    }
-    callback(event);
-}
-
-function onNodeEvent(nodeId, evt, pageNode) {
-    const type = evt.type;
-    if (type === 'onFocus' || type === 'onBlur') {
-        hookKeyboardEvent(evt, (evt) => {
-            pageNode.fireEvent(nodeId, evt);
-        });
-    }
-    else {
-        pageNode.fireEvent(nodeId, evt);
-    }
-}
-
-function onVdSync(actions, pageId) {
-    // 从所有pages中获取
-    const page = getPageById(parseInt(pageId));
-    if (!page) {
-        if (('production' !== 'production')) {
-            console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
-        }
-        return;
-    }
-    const pageNode = page.__page_container__;
-    actions.forEach((action) => {
-        switch (action[0]) {
-            case ACTION_TYPE_EVENT:
-                onNodeEvent(action[1], action[2], pageNode);
-                break;
-        }
-    });
-}
-
-const ANI_SHOW = 'pop-in';
-const ANI_DURATION = 300;
-const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
-
-const enterOptions = /*#__PURE__*/ createLaunchOptions();
-const launchOptions = /*#__PURE__*/ createLaunchOptions();
-function initLaunchOptions({ path, query, referrerInfo, }) {
-    extend(launchOptions, {
-        path,
-        query: query ? parseQuery(query) : {},
-        referrerInfo: referrerInfo || {},
-        // TODO uni-app x
-        channel: plus.runtime.channel,
-        launcher: plus.runtime.launcher,
-    });
-    extend(enterOptions, launchOptions);
-    return extend({}, launchOptions);
-}
-
-function subscribePlusMessage({ data, }) {
-    if (('production' !== 'production')) {
-        console.log(formatLog('plusMessage', data));
-    }
-    if (data && data.type) {
-        UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
-    }
-}
-function onPlusMessage(type, callback, once = false) {
-    UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
-}
-// function initEnterReLaunch(info: RedirectInfo) {
-//   __uniConfig.realEntryPagePath =
-//     __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
-//   __uniConfig.entryPagePath = info.path
-//   __uniConfig.entryPageQuery = info.query
-//   $reLaunch(
-//     { url: addLeadingSlash(info.path) + info.query },
-//     { resolve() {}, reject() {} }
-//   )
-// }
-
-const API_ROUTE = [
-    'switchTab',
-    'reLaunch',
-    'redirectTo',
-    'navigateTo',
-    'navigateBack',
-];
-function subscribeNavigator() {
-    API_ROUTE.forEach((name) => {
-        registerServiceMethod(name, (args) => {
-            uni[name](extend(args, {
-                fail(res) {
-                    console.error(res.errMsg);
-                },
-            }));
-        });
-    });
-}
-
 let id = 2;
 function getWebviewId() {
     return id;
@@ -2055,6 +1951,13 @@ function getWebviewId() {
 function genWebviewId() {
     return id++;
 }
+
+const downgrade = 'Harmony' === 'Android' ;
+const ANI_SHOW = 'pop-in';
+const ANI_DURATION = 300;
+const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
+const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
+const WEBVIEW_ID_PREFIX = 'webviewId';
 
 let preloadWebview;
 function setPreloadWebview(webview) {
@@ -2076,10 +1979,48 @@ function createPreloadWebview() {
     return preloadWebview;
 }
 
+/**
+ * 是否处于直达页面
+ * @param page
+ * @returns
+ */
+function isDirectPage(page) {
+    return (__uniConfig.realEntryPagePath &&
+        page.$page.route === __uniConfig.entryPagePath);
+}
+/**
+ * 重新启动到首页
+ */
+function reLaunchEntryPage() {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+        url: addLeadingSlash(__uniConfig.entryPagePath),
+    });
+}
+
+const enterOptions = /*#__PURE__*/ createLaunchOptions();
+const launchOptions = /*#__PURE__*/ createLaunchOptions();
+function initLaunchOptions({ path, query, referrerInfo, }) {
+    extend(launchOptions, {
+        path,
+        query: query ? parseQuery(query) : {},
+        referrerInfo: referrerInfo || {},
+        // TODO uni-app x
+        channel: plus.runtime.channel,
+        launcher: plus.runtime.launcher,
+    });
+    extend(enterOptions, launchOptions);
+    return extend({}, launchOptions);
+}
+
 function onWebviewReady(pageId, callback) {
     UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
 }
 
+function closeWebview(webview, animationType, animationDuration) {
+    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
+}
 function showWebview(webview, animationType, animationDuration, showCallback, delay) {
     if (typeof delay === 'undefined') {
         delay = webview.nvue ? 0 : 100;
@@ -2116,6 +2057,24 @@ function showWebview(webview, animationType, animationDuration, showCallback, de
             execShowCallback();
         });
     }, delay);
+}
+function backWebview(webview, callback) {
+    const children = webview.children();
+    if (!children || !children.length) {
+        // 无子 webview
+        return callback();
+    }
+    // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
+    const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
+        children[0];
+    childWebview.canBack(({ canBack }) => {
+        if (canBack) {
+            childWebview.back(); // webview 返回
+        }
+        else {
+            callback();
+        }
+    });
 }
 
 let pendingNavigator = false;
@@ -2681,7 +2640,7 @@ const $navigateTo = (args, { resolve, reject }) => {
             .catch(reject);
     }, args.openType === 'appLaunch');
 };
-defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     // 当前页面触发 onHide
     invokeHook(ON_HIDE);
@@ -2692,6 +2651,201 @@ function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
             resolve({ eventChannel });
         });
         // TODO setStatusBarStyle()
+    });
+}
+
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
+    const page = getCurrentPage();
+    if (!page) {
+        return reject(`getCurrentPages is empty`);
+    }
+    if (invokeHook(page, ON_BACK_PRESS, {
+        from: args.from || 'navigateBack',
+    })) {
+        return resolve();
+    }
+    if (uni.hideToast) {
+        uni.hideToast();
+    }
+    if (uni.hideLoading) {
+        uni.hideLoading();
+    }
+    if (page.$page.meta.isQuit) ;
+    else if (isDirectPage(page)) {
+        reLaunchEntryPage();
+    }
+    else {
+        const { delta, animationType, animationDuration } = args;
+        back(delta, animationType, animationDuration);
+    }
+    return resolve();
+}, NavigateBackProtocol, NavigateBackOptions);
+function back(delta, animationType, animationDuration) {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    const currentPage = pages[len - 1];
+    if (delta > 1) {
+        // 中间页隐藏
+        pages
+            .slice(len - delta, len - 1)
+            .reverse()
+            .forEach((deltaPage) => {
+            closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
+        });
+    }
+    const backPage = function (webview) {
+        if (animationType) {
+            closeWebview(webview, animationType, animationDuration || ANI_DURATION);
+        }
+        else {
+            if (currentPage.$page.openType === 'redirectTo') {
+                // 如果是 redirectTo 跳转的，需要指定 back 动画
+                closeWebview(webview, ANI_CLOSE, ANI_DURATION);
+            }
+            else {
+                closeWebview(webview, 'auto');
+            }
+        }
+        pages
+            .slice(len - delta, len)
+            .forEach((page) => removePage(page));
+        // TODO setStatusBarStyle()
+        // 前一个页面触发 onShow
+        invokeHook(ON_SHOW);
+    };
+    const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
+    if (!currentPage.__uniapp_webview) {
+        return backPage(webview);
+    }
+    backWebview(webview, () => {
+        backPage(webview);
+    });
+}
+
+var uni$1 = {
+  __proto__: null,
+  chooseImage: chooseImage,
+  chooseVideo: chooseVideo,
+  getImageInfo: getImageInfo,
+  getLocale: getLocale,
+  getSystemInfoSync: getSystemInfoSync,
+  getVideoInfo: getVideoInfo,
+  navigateBack: navigateBack,
+  navigateTo: navigateTo
+};
+
+const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
+    publishHandler,
+});
+function publishHandler(event, args, pageIds) {
+    args = JSON.stringify(args);
+    if (('production' !== 'production')) {
+        console.log(formatLog('publishHandler', event, args, pageIds));
+    }
+    if (!isArray(pageIds)) {
+        pageIds = [pageIds];
+    }
+    const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
+    if (('production' !== 'production')) {
+        console.log(formatLog('publishHandler', 'size', evalJSCode.length));
+    }
+    pageIds.forEach((id) => {
+        const idStr = String(id);
+        const webview = plus.webview.getWebviewById(idStr);
+        const code = evalJSCode.replace('__PAGE_ID__', idStr);
+        webview && webview.evalJS(code);
+    });
+}
+
+let focusTimeout = 0;
+let keyboardHeight = 0;
+let focusTimer = null;
+function hookKeyboardEvent(event, callback) {
+    if (focusTimer) {
+        clearTimeout(focusTimer);
+        focusTimer = null;
+    }
+    if (event.type === 'onFocus') {
+        {
+            focusTimer = setTimeout(function () {
+                event.detail.height = keyboardHeight;
+                callback(event);
+            }, focusTimeout);
+            return;
+        }
+    }
+    callback(event);
+}
+
+function onNodeEvent(nodeId, evt, pageNode) {
+    const type = evt.type;
+    if (type === 'onFocus' || type === 'onBlur') {
+        hookKeyboardEvent(evt, (evt) => {
+            pageNode.fireEvent(nodeId, evt);
+        });
+    }
+    else {
+        pageNode.fireEvent(nodeId, evt);
+    }
+}
+
+function onVdSync(actions, pageId) {
+    // 从所有pages中获取
+    const page = getPageById(parseInt(pageId));
+    if (!page) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
+        }
+        return;
+    }
+    const pageNode = page.__page_container__;
+    actions.forEach((action) => {
+        switch (action[0]) {
+            case ACTION_TYPE_EVENT:
+                onNodeEvent(action[1], action[2], pageNode);
+                break;
+        }
+    });
+}
+
+function subscribePlusMessage({ data, }) {
+    if (('production' !== 'production')) {
+        console.log(formatLog('plusMessage', data));
+    }
+    if (data && data.type) {
+        UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
+    }
+}
+function onPlusMessage(type, callback, once = false) {
+    UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
+}
+// function initEnterReLaunch(info: RedirectInfo) {
+//   __uniConfig.realEntryPagePath =
+//     __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
+//   __uniConfig.entryPagePath = info.path
+//   __uniConfig.entryPageQuery = info.query
+//   $reLaunch(
+//     { url: addLeadingSlash(info.path) + info.query },
+//     { resolve() {}, reject() {} }
+//   )
+// }
+
+const API_ROUTE = [
+    'switchTab',
+    'reLaunch',
+    'redirectTo',
+    'navigateTo',
+    'navigateBack',
+];
+function subscribeNavigator() {
+    API_ROUTE.forEach((name) => {
+        registerServiceMethod(name, (args) => {
+            uni[name](extend(args, {
+                fail(res) {
+                    console.error(res.errMsg);
+                },
+            }));
+        });
     });
 }
 
