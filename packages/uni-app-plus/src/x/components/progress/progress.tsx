@@ -15,6 +15,7 @@ import {
   reactive,
   watch,
 } from 'vue'
+import { initUniCustomEvent } from '../../utils'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Progress',
@@ -96,7 +97,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         if (percent <= data.curPercent + 1) {
           clearTimer()
           data.curPercent = percent
-          emit('activeend', new UniProgressActiveendEvent(percent))
+          emit(
+            'activeend',
+            initUniCustomEvent(
+              data.$uniProgressElement!,
+              new UniProgressActiveendEvent(percent)
+            )
+          )
         } else {
           ++data.curPercent
         }
