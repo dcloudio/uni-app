@@ -68,6 +68,8 @@ function parsePage(
   return miniProgramPageOptions
 }
 
+declare let Component: WechatMiniprogram.Component.Constructor
+
 export function initCreatePage(parseOptions: ParseComponentOptions) {
   return function createPage(vuePageOptions: ComponentOptions) {
     return Component(parsePage(vuePageOptions, parseOptions))

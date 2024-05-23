@@ -7,6 +7,7 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 
+// TODO 网络图片
 export const getImageInfo: API_TYPE_GET_IMAGE_INFO =
   defineAsyncApi<API_TYPE_GET_IMAGE_INFO>(
     API_GET_IMAGE_INFO,

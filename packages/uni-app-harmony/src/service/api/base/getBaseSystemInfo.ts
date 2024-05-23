@@ -1,3 +1,6 @@
+declare function vp2px(value: number): number
+declare function lpx2px(value: number): number
+
 /**
  * 简易版systemInfo，主要为upx2px,i18n服务
  * @returns
