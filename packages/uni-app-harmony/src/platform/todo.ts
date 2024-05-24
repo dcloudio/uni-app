@@ -86,8 +86,3 @@ export function getEnterOptions() {
   // TODO: Implement
   return extend({}, enterOptions)
 }
-
-export function getRealPath(filepath: string) {
-  // TODO: Implement
-  return filepath
-}

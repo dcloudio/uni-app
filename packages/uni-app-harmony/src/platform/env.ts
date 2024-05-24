@@ -18,7 +18,7 @@ import type Context from 'packages/uni-app-harmony/types/ohos/api/application/Co
 /**
  * 内部使用不暴露给用户
  */
-export const env = {
+const env = {
   // RESOURCE_PATH: 'resource://',
   // 以下路径均不以`/`结尾
   USER_DATA_PATH: '',
