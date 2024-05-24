@@ -154,8 +154,25 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     // 生成wgt，无需复制加密插件目录
     const needCopy = !(process.env.UNI_APP_PRODUCTION_TYPE === 'WGT')
     if (needCopy) {
-      // 复制资源
-      fs.copySync(cachePluginDir, join(outputDir, pluginRelativeDir))
+      // 复制非kt资源
+      fs.copySync(cachePluginDir, join(outputDir, pluginRelativeDir), {
+        filter(src) {
+          return !src.endsWith('app-android')
+        },
+      })
+      // copy kt to src
+      fs.copySync(
+        path.resolve(cachePluginDir, 'utssdk', 'app-android'),
+        join(outputDir, pluginRelativeDir, 'utssdk', 'app-android', 'src'),
+        {
+          filter(src) {
+            if (fs.statSync(src).isDirectory()) return true
+            return src.endsWith('.kt')
+          },
+          overwrite: false,
+        }
+      )
+      // 需要把 kt 文件放到 app-android/src 下
     }
     const inject_apis = pkg.uni_modules?.artifacts?.apis || []
     addInjectApis(inject_apis)
