@@ -1,5 +1,5 @@
 import { once } from '@dcloudio/uni-shared'
-import type Context from 'packages/uni-app-harmony/types/ohos/api/application/Context'
+import type { Context } from '@ohos.abilityAccessCtrl'
 
 /**
  * 主要文件路径分为如下四种
