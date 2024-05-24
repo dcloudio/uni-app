@@ -48,7 +48,6 @@ export function normalizeStyles<T extends object>(
   const styles = {} as T
 
   if (typeof modeStyle === 'undefined') return pageStyle
-
   ;(Object.keys(pageStyle) as Array<keyof T>).forEach((key) => {
     const styleItem = pageStyle[key] // Object Array String
 
