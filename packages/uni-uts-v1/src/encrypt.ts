@@ -133,7 +133,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
   )
 
   const cacheFile = resolveDexCacheFile(pluginRelativeDir, cacheDir)
-  if (cacheFile) {
+  if (process.env.NODE_ENV === 'development' && cacheFile) {
     // 已有缓存
     restoreDex(pluginRelativeDir, cacheDir, outputDir, true)
     const assets = path.resolve(cachePluginDir, 'assets')
@@ -154,20 +154,8 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     // 生成wgt，无需复制加密插件目录
     const needCopy = !(process.env.UNI_APP_PRODUCTION_TYPE === 'WGT')
     if (needCopy) {
-      // 复制encrypt
-      fs.copySync(
-        path.resolve(pluginDir, 'encrypt'),
-        join(outputDir, pluginRelativeDir, 'encrypt')
-      )
-      // 复制加密kt文件
-      fs.copySync(cachePluginDir, join(outputDir, pluginRelativeDir), {
-        filter: (src) => src.endsWith('.kt'),
-      })
-      // 复制资源文件
-      fs.copySync(
-        path.resolve(cachePluginDir, 'assets'),
-        join(outputDir, 'assets')
-      )
+      // 复制资源
+      fs.copySync(cachePluginDir, join(outputDir, pluginRelativeDir))
     }
     const inject_apis = pkg.uni_modules?.artifacts?.apis || []
     addInjectApis(inject_apis)
