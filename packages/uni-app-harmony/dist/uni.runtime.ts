@@ -163,6 +163,10 @@ async function _chooseMedia(options: chooseMediaOptions): Promise<chooseMediaSuc
 }
 const extend = Object.assign;
 const isArray = Array.isArray;
+const I18N_JSON_DELIMITERS: [string, string] = [
+    '%',
+    '%'
+];
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 const ON_SHOW = 'onShow';
 const ON_HIDE = 'onHide';
@@ -174,6 +178,7 @@ const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
 const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
 const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 function hasLeadingSlash(str: string) {
@@ -198,6 +203,19 @@ function once<T extends (...args: Object[]) => Object>(fn: T, ctx: unknown = nul
         }
         return res;
     } as T;
+}
+const encode = encodeURIComponent;
+function stringifyQuery(obj?: Record<string, Object>, encodeStr = encode) {
+    const res = obj ? Object.keys(obj).map((key)=>{
+        let val = obj[key];
+        if (typeof val === undefined || val === null) {
+            val = '';
+        } else if (isPlainObject(val)) {
+            val = JSON.stringify(val);
+        }
+        return encodeStr(key) + '=' + encodeStr(val);
+    }).filter((x)=>x.length > 0).join('&') : null;
+    return res ? `?${res}` : '';
 }
 function decode(text: string | number): string {
     try {
@@ -702,39 +720,488 @@ function normalizeTabBarStyles(borderStyle?: string) {
 function normalizeTitleColor(titleColor: string) {
     return titleColor === 'black' ? '#000000' : '#ffffff';
 }
-function normalizeStyles<T extends Object>(pageStyle: T, themeConfig: UniApp.ThemeJson = {}, mode: UniApp.ThemeMode = 'light') {
+function resolveStringStyleItem(modeStyle: Record<string, string>, styleItem: string, key?: string) {
+    if (isString(styleItem) && styleItem.startsWith('@')) {
+        const _key = (styleItem as string).replace('@', '');
+        let _styleItem = modeStyle![_key] || styleItem;
+        switch(key){
+            case 'titleColor':
+                _styleItem = normalizeTitleColor(_styleItem);
+                break;
+            case 'borderStyle':
+                _styleItem = normalizeTabBarStyles(_styleItem)!;
+                break;
+            default:
+                break;
+        }
+        return _styleItem;
+    }
+    return styleItem;
+}
+function normalizeStyles<T extends object>(pageStyle: T, themeConfig: UniApp.ThemeJson = {}, mode: UniApp.ThemeMode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {} as T;
-    if (!modeStyle) {
-        return pageStyle;
-    }
-    Object.keys(pageStyle).forEach((key)=>{
-        type Key = keyof typeof pageStyle;
-        let styleItem = pageStyle[key as Key];
-        (styles as Object)[key] = (()=>{
-            if (isPlainObject(styleItem)) {
-                return normalizeStyles(styleItem as T, themeConfig, mode);
-            } else if (isArray(styleItem)) {
-                return (styleItem as Object[]).map((item)=>isPlainObject(item) ? normalizeStyles(item as T, themeConfig, mode) : item);
-            } else if (isString(styleItem) && (styleItem as string).startsWith('@')) {
-                const _key = (styleItem as string).replace('@', '');
-                let _styleItem = modeStyle[_key] || styleItem;
-                switch(key){
-                    case 'titleColor':
-                        _styleItem = normalizeTitleColor(_styleItem);
-                        break;
-                    case 'borderStyle':
-                        _styleItem = normalizeTabBarStyles(_styleItem)!;
-                        break;
-                    default:
-                        break;
-                }
-                return _styleItem;
-            }
-            return styleItem;
-        })();
+    if (typeof modeStyle === 'undefined') return pageStyle;
+    (Object.keys(pageStyle) as Array<keyof T>).forEach((key)=>{
+        const styleItem = pageStyle[key];
+        const parseStyleItem = ()=>{
+            if (isPlainObject(styleItem)) return normalizeStyles(styleItem, themeConfig, mode);
+            if (isArray(styleItem)) return styleItem.map((item: object | Array<T> | string)=>{
+                if (typeof item === 'object') return normalizeStyles(item, themeConfig, mode);
+                return resolveStringStyleItem(modeStyle, item);
+            });
+            return resolveStringStyleItem(modeStyle, styleItem as string, key as string);
+        };
+        styles[key] = parseStyleItem() as T[keyof T];
     });
     return styles;
+}
+const isObject = (val: unknown): val is Record<Object, Object> =>val !== null && typeof val === 'object';
+const defaultDelimiters: [string, string] = [
+    '{',
+    '}'
+];
+class BaseFormatter {
+    _caches: {
+        [key: string]: Array<Token>;
+    };
+    constructor(){
+        this._caches = Object.create(null);
+    }
+    interpolate(message: string, values?: Record<string, unknown> | Array<unknown>, delimiters: [string, string] = defaultDelimiters): Array<unknown> {
+        if (!values) {
+            return [
+                message
+            ];
+        }
+        let tokens: Array<Token> = this._caches[message];
+        if (!tokens) {
+            tokens = parse(message, delimiters);
+            this._caches[message] = tokens;
+        }
+        return compile(tokens, values);
+    }
+}
+type Token = {
+    type: string | string | string | string;
+    value: string;
+};
+const RE_TOKEN_LIST_VALUE: RegExp = /^(?:\d)+/;
+const RE_TOKEN_NAMED_VALUE: RegExp = /^(?:\w)+/;
+function parse(format: string, [startDelimiter, endDelimiter]: [string, string]): Array<Token> {
+    const tokens: Array<Token> = [];
+    let position: number = 0;
+    let text: string = '';
+    while(position < format.length){
+        let char: string = format[position++];
+        if (char === startDelimiter) {
+            if (text) {
+                tokens.push({
+                    type: 'text',
+                    value: text
+                });
+            }
+            text = '';
+            let sub: string = '';
+            char = format[position++];
+            while(char !== undefined && char !== endDelimiter){
+                sub += char;
+                char = format[position++];
+            }
+            const isClosed = char === endDelimiter;
+            const type = RE_TOKEN_LIST_VALUE.test(sub) ? 'list' : isClosed && RE_TOKEN_NAMED_VALUE.test(sub) ? 'named' : 'unknown';
+            tokens.push({
+                value: sub,
+                type
+            });
+        } else {
+            text += char;
+        }
+    }
+    text && tokens.push({
+        type: 'text',
+        value: text
+    });
+    return tokens;
+}
+function compile(tokens: Array<Token>, values: Record<string, unknown> | Array<unknown>): Array<unknown> {
+    const compiled: Array<unknown> = [];
+    let index: number = 0;
+    const mode: string = Array.isArray(values) ? 'list' : isObject(values) ? 'named' : 'unknown';
+    if (mode === 'unknown') {
+        return compiled;
+    }
+    while(index < tokens.length){
+        const token: Token = tokens[index];
+        switch(token.type){
+            case 'text':
+                compiled.push(token.value);
+                break;
+            case 'list':
+                compiled.push((values as Record<string, unknown>)[parseInt(token.value, 10)]);
+                break;
+            case 'named':
+                if (mode === 'named') {
+                    compiled.push((values as Record<string, unknown>)[token.value]);
+                } else {
+                    if (process.env.NODE_ENV !== 'production') {
+                        console.warn(`Type of token '${token.type}' and format of value '${mode}' don't match!`);
+                    }
+                }
+                break;
+            case 'unknown':
+                if (process.env.NODE_ENV !== 'production') {
+                    console.warn(`Detect 'unknown' type of token!`);
+                }
+                break;
+        }
+        index++;
+    }
+    return compiled;
+}
+const LOCALE_ZH_HANS = 'zh-Hans';
+const LOCALE_ZH_HANT = 'zh-Hant';
+const LOCALE_EN = 'en';
+const LOCALE_FR = 'fr';
+const LOCALE_ES = 'es';
+type BuiltInLocale = typeof LOCALE_ZH_HANS | typeof LOCALE_ZH_HANT | typeof LOCALE_EN | typeof LOCALE_FR | typeof LOCALE_ES;
+type LocaleMessages = Record<string, Record<string, string>>;
+interface Formatter {
+    interpolate: (message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]) => Array<unknown>;
+}
+type LocaleWatcher = (newLocale: string, oldLocale: string) => void;
+interface I18nOptions {
+    locale: string;
+    fallbackLocale?: string;
+    messages?: LocaleMessages;
+    formater?: Formatter;
+    watcher?: LocaleWatcher;
+}
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwn1 = (val: object, key: string | symbol): key is keyof typeof val =>hasOwnProperty.call(val, key);
+const defaultFormatter = new BaseFormatter();
+function include(str: string, parts: string[]) {
+    return !!parts.find((part)=>str.indexOf(part) !== -1);
+}
+function startsWith(str: string, parts: string[]) {
+    return parts.find((part)=>str.indexOf(part) === 0);
+}
+function normalizeLocale(locale: string, messages?: LocaleMessages): BuiltInLocale | undefined {
+    if (!locale) {
+        return;
+    }
+    locale = locale.trim().replace(/_/g, '-');
+    if (messages && messages[locale as BuiltInLocale]) {
+        return locale as BuiltInLocale;
+    }
+    locale = locale.toLowerCase();
+    if (locale === 'chinese') {
+        return LOCALE_ZH_HANS;
+    }
+    if (locale.indexOf('zh') === 0) {
+        if (locale.indexOf('-hans') > -1) {
+            return LOCALE_ZH_HANS;
+        }
+        if (locale.indexOf('-hant') > -1) {
+            return LOCALE_ZH_HANT;
+        }
+        if (include(locale, [
+            '-tw',
+            '-hk',
+            '-mo',
+            '-cht'
+        ])) {
+            return LOCALE_ZH_HANT;
+        }
+        return LOCALE_ZH_HANS;
+    }
+    let locales = [
+        LOCALE_EN,
+        LOCALE_FR,
+        LOCALE_ES
+    ];
+    if (messages && Object.keys(messages).length > 0) {
+        locales = Object.keys(messages);
+    }
+    const lang = startsWith(locale, locales);
+    if (lang) {
+        return lang as BuiltInLocale;
+    }
+}
+class I18n {
+    private locale: string = LOCALE_EN;
+    private fallbackLocale: string = LOCALE_EN;
+    private message: Record<string, string> = {};
+    private messages: LocaleMessages = {};
+    private watchers: LocaleWatcher[] = [];
+    private formater: Formatter;
+    constructor({ locale , fallbackLocale , messages , watcher , formater  }: I18nOptions){
+        if (fallbackLocale) {
+            this.fallbackLocale = fallbackLocale;
+        }
+        this.formater = formater || defaultFormatter;
+        this.messages = messages || {};
+        this.setLocale(locale || LOCALE_EN);
+        if (watcher) {
+            this.watchLocale(watcher);
+        }
+    }
+    setLocale(locale: string) {
+        const oldLocale = this.locale;
+        this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+        if (!this.messages[this.locale]) {
+            this.messages[this.locale] = {};
+        }
+        this.message = this.messages[this.locale]!;
+        if (oldLocale !== this.locale) {
+            this.watchers.forEach((watcher)=>{
+                watcher(this.locale, oldLocale);
+            });
+        }
+    }
+    getLocale() {
+        return this.locale;
+    }
+    watchLocale(fn: LocaleWatcher) {
+        const index = this.watchers.push(fn) - 1;
+        return ()=>{
+            this.watchers.splice(index, 1);
+        };
+    }
+    add(locale: BuiltInLocale, message: Record<string, string>, override: boolean = true) {
+        const curMessages = this.messages[locale];
+        if (curMessages) {
+            if (override) {
+                Object.assign(curMessages, message);
+            } else {
+                Object.keys(message).forEach((key)=>{
+                    if (!hasOwn1(curMessages, key)) {
+                        curMessages[key] = message[key];
+                    }
+                });
+            }
+        } else {
+            this.messages[locale] = message;
+        }
+    }
+    f(message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]) {
+        return this.formater.interpolate(message, values, delimiters).join('');
+    }
+    t(key: string, values?: Record<string, unknown> | Array<unknown> | BuiltInLocale): string {
+        return this.t(key as string, null, values as Record<string, unknown> | Array<unknown>) as string;
+    }
+    t(key: string, locale?: BuiltInLocale, values?: Record<string, unknown> | Array<unknown>): string {
+        return this.t(key as string, locale as BuiltInLocale, values as Record<string, unknown> | Array<unknown>) as string;
+    }
+    t(key: string, locale?: BuiltInLocale, values?: Record<string, unknown> | Array<unknown>) {
+        let message = this.message;
+        if (typeof locale === 'string') {
+            locale = normalizeLocale(locale, this.messages);
+            locale && (message = this.messages[locale]!);
+        } else {
+            values = locale;
+        }
+        if (!hasOwn1(message, key)) {
+            console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
+            return key;
+        }
+        return this.formater.interpolate(message[key], values).join('');
+    }
+}
+type Interpolate = (key: string, values?: Record<string, unknown> | Array<unknown>) => string;
+function watchAppLocale(appVm: Object, i18n: I18n) {
+    if (appVm.$watchLocale) {
+        appVm.$watchLocale((newLocale: string)=>{
+            i18n.setLocale(newLocale);
+        });
+    } else {
+        appVm.$watch(()=>appVm.$locale, (newLocale: string)=>{
+            i18n.setLocale(newLocale);
+        });
+    }
+}
+function getDefaultLocale(): string {
+    if (typeof uni !== 'undefined' && .getLocale) {
+        return .getLocale();
+    }
+    if (typeof global !== 'undefined' && (global as Object).getLocale) {
+        return (global as Object).getLocale();
+    }
+    return LOCALE_EN;
+}
+function initVueI18n(locale?: string, messages: LocaleMessages = {}, fallbackLocale?: string, watcher?: (locale: string) => void) {
+    if (typeof locale !== 'string') {
+        [locale, messages] = [
+            messages as unknown as string,
+            locale as unknown as LocaleMessages
+        ];
+    }
+    if (typeof locale !== 'string') {
+        locale = getDefaultLocale();
+    }
+    if (typeof fallbackLocale !== 'string') {
+        fallbackLocale = (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) || LOCALE_EN;
+    }
+    const i18n = new I18n({
+        locale,
+        fallbackLocale,
+        messages,
+        watcher
+    });
+    let t: Interpolate = (key, values)=>{
+        if (typeof getApp !== 'function') {
+            t = function(key, values) {
+                return i18n.t(key, values);
+            };
+        } else {
+            let isWatchedAppLocale = false;
+            t = function(key, values) {
+                const appVm = getApp().$vm;
+                if (appVm) {
+                    appVm.$locale;
+                    if (!isWatchedAppLocale) {
+                        isWatchedAppLocale = true;
+                        watchAppLocale(appVm, i18n);
+                    }
+                }
+                return i18n.t(key, values);
+            };
+        }
+        return t(key, values);
+    };
+    return {
+        i18n,
+        f (message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]) {
+            return i18n.f(message, values, delimiters);
+        },
+        t (key: string, values?: Record<string, unknown> | Array<unknown>) {
+            return t(key, values);
+        },
+        add (locale: BuiltInLocale, message: Record<string, string>, override: boolean = true) {
+            return i18n.add(locale, message, override);
+        },
+        watch (fn: LocaleWatcher) {
+            return i18n.watchLocale(fn);
+        },
+        getLocale () {
+            return i18n.getLocale();
+        },
+        setLocale (newLocale: string) {
+            return i18n.setLocale(newLocale);
+        }
+    };
+}
+function isI18nStr(value: string, delimiters: [string, string]) {
+    return value.indexOf(delimiters[0]) > -1;
+}
+const isEnableLocale = once(()=>typeof __uniConfig !== 'undefined' && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length);
+let i18n: ReturnType<typeof initVueI18n>;
+function getLocaleMessage() {
+    const locale = .getLocale();
+    const locales = __uniConfig.locales;
+    return (locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {});
+}
+function formatI18n(message: string) {
+    if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+        return useI18n().f(message, getLocaleMessage(), I18N_JSON_DELIMITERS);
+    }
+    return message;
+}
+function resolveJsonObj(jsonObj: Record<string, Object> | undefined, names: string[]): Record<string, Object> | Array<Record<string, Object>> | undefined {
+    if (names.length === 1) {
+        if (jsonObj) {
+            const _isI18nStr = (value: Object)=>isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS);
+            const _name = names[0];
+            let filterJsonObj: Array<Record<string, Object>> = [];
+            if (isArray(jsonObj) && (filterJsonObj = jsonObj.filter((item)=>_isI18nStr(item[_name]))).length) {
+                return filterJsonObj;
+            }
+            const value = (jsonObj as Record<string, Object>)[names[0]];
+            if (_isI18nStr(value)) {
+                return jsonObj;
+            }
+        }
+        return;
+    }
+    const name = names.shift()!;
+    return resolveJsonObj(jsonObj && jsonObj[name], names);
+}
+function defineI18nProperties(obj: Record<string, Object>, names: string[][]) {
+    return names.map((name)=>defineI18nProperty(obj, name));
+}
+function defineI18nProperty(obj: Record<string, Object>, names: string[]) {
+    const jsonObj = resolveJsonObj(obj, names);
+    if (!jsonObj) {
+        return false;
+    }
+    const prop = names[names.length - 1];
+    if (isArray(jsonObj)) {
+        jsonObj.forEach((item)=>defineI18nProperty(item, [
+                prop
+            ]));
+    } else {
+        let value = jsonObj[prop];
+        Object.defineProperty(jsonObj, prop, {
+            get () {
+                return formatI18n(value);
+            },
+            set (v) {
+                value = v;
+            }
+        });
+    }
+    return true;
+}
+function useI18n() {
+    if (!i18n) {
+        let locale: BuiltInLocale;
+        locale = .getSystemInfoSync().language as BuiltInLocale;
+        i18n = initVueI18n(locale);
+        if (isEnableLocale()) {
+            const localeKeys = Object.keys(__uniConfig.locales || {});
+            if (localeKeys.length) {
+                localeKeys.forEach((locale)=>i18n.add(locale as BuiltInLocale, __uniConfig.locales[locale]));
+            }
+            i18n.setLocale(locale);
+        }
+    }
+    return i18n;
+}
+function initNavigationBarI18n(navigationBar: UniApp.PageNavigationBar | PlusWebviewWebviewTitleNViewStyles) {
+    if (isEnableLocale()) {
+        return defineI18nProperties(navigationBar, [
+            [
+                'titleText'
+            ],
+            [
+                'searchInput',
+                'placeholder'
+            ],
+            [
+                'buttons',
+                'text'
+            ]
+        ]) as [boolean, boolean];
+    }
+}
+function initPullToRefreshI18n(pullToRefresh: UniApp.PageRefreshOptions | PlusWebviewWebviewPullToRefreshStyles) {
+    if (isEnableLocale()) {
+        const CAPTION = 'caption';
+        return defineI18nProperties(pullToRefresh, [
+            [
+                'contentdown',
+                CAPTION
+            ],
+            [
+                'contentover',
+                CAPTION
+            ],
+            [
+                'contentrefresh',
+                CAPTION
+            ]
+        ]) as [boolean, boolean, boolean];
+    }
 }
 function initBridge(subscribeNamespace: string | string | string): Omit<UniApp.UniServiceJSBridge, string | string | string | string> {
     const emitter = new E();
@@ -764,6 +1231,33 @@ function initBridge(subscribeNamespace: string | string | string): Omit<UniApp.U
 }
 const INVOKE_VIEW_API = 'invokeViewApi';
 const INVOKE_SERVICE_API = 'invokeServiceApi';
+function hasRpx(str: string) {
+    str = str + '';
+    return str.indexOf('rpx') !== -1 || str.indexOf('upx') !== -1;
+}
+function rpx2px(str: string | number): number;
+function rpx2px(str: string, replace: true): string;
+function rpx2px(str: string | number, replace = false) {
+    if (replace) {
+        return rpx2pxWithReplace(str as string);
+    }
+    if (isString(str)) {
+        const res = parseInt(str) || 0;
+        if (hasRpx(str)) {
+            return .upx2px(res);
+        }
+        return res;
+    }
+    return str;
+}
+function rpx2pxWithReplace(str: string) {
+    if (!hasRpx(str)) {
+        return str;
+    }
+    return str.replace(/(\d+(\.\d+)?)[ru]px/g, (_a, b)=>{
+        return .upx2px(parseFloat(b)) + 'px';
+    });
+}
 function getCurrentPage() {
     const pages = getCurrentPages();
     const len = pages.length;
@@ -808,6 +1302,18 @@ function initRouteMeta(pageMeta: UniApp.PageRouteMeta, id?: number): UniApp.Page
     const { navigationBar  } = res;
     navigationBar.titleText && navigationBar.titleImage && (navigationBar.titleText = '');
     return res;
+}
+function normalizePullToRefreshRpx(pullToRefresh: UniApp.PageRefreshOptions) {
+    if (pullToRefresh.offset) {
+        pullToRefresh.offset = rpx2px(pullToRefresh.offset);
+    }
+    if (pullToRefresh.height) {
+        pullToRefresh.height = rpx2px(pullToRefresh.height);
+    }
+    if (pullToRefresh.range) {
+        pullToRefresh.range = rpx2px(pullToRefresh.range);
+    }
+    return pullToRefresh;
 }
 function initPageInternalInstance(openType: UniApp.OpenType, url: string, pageQuery: Record<string, Object>, meta: UniApp.PageRouteMeta, eventChannel?: EventChannel, themeMode?: UniApp.ThemeMode): Page.PageInstance[string] {
     const { id , route  } = meta;
@@ -1046,6 +1552,8 @@ const ANIMATION_IN = [
     'pop-in',
     'none'
 ];
+const API_DOWNLOAD_FILE = 'downloadFile';
+const API_REQUEST = 'request';
 const API_CHOOSE_VIDEO = 'chooseVideo';
 const API_CHOOSE_IMAGE = 'chooseImage';
 const HOOK_SUCCESS = 'success';
@@ -1252,6 +1760,12 @@ function promisify(name: string, fn: Function) {
         })));
     };
 }
+function defineTaskApi<T extends TaskApiLike, P extends AsyncMethodOptionLike = AsyncApiOptions<T>>(name: string, fn: (args: Omit<P, CALLBACK_TYPES>, res: {
+    resolve: (res?: AsyncApiRes<P> | void) => void;
+    reject: <R extends object>(err?: string, errRes?: R & object) => void;
+}) => ReturnType<T>, protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
+    return promisify(name, wrapperTaskApi(name, fn, undefined, options)) as unknown as T;
+}
 type DefineAsyncApiFn<T extends AsyncApiLike, P extends AsyncMethodOptionLike = AsyncApiOptions<T>> = (args: P extends undefined ? undefined : Omit<P, CALLBACK_TYPES>, res: {
     resolve: (res: AsyncApiRes<P> | void) => void;
     reject: (errMsg?: string, errRes?: Object) => void;
@@ -1259,6 +1773,15 @@ type DefineAsyncApiFn<T extends AsyncApiLike, P extends AsyncMethodOptionLike = 
 function defineAsyncApi<T extends AsyncApiLike, P extends AsyncMethodOptionLike = AsyncApiOptions<T>>(name: string, fn: DefineAsyncApiFn<T>, protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
     return promisify(name, wrapperAsyncApi(name, fn as Object, undefined, options)) as AsyncApi<P>;
 }
+function getRealPath(filepath: string) {
+    return filepath;
+}
+declare function vp2px(value: number): number;
+const CHOOSE_SIZE_TYPES = [
+    'original',
+    'compressed'
+];
+declare function lpx2px(value: number): number;
 function getBaseSystemInfo() {
     return {
         platform: 'harmony',
@@ -1266,20 +1789,31 @@ function getBaseSystemInfo() {
         windowWidth: lpx2px(720)
     };
 }
-const CHOOSE_SIZE_TYPES = [
-    'original',
-    'compressed'
-];
-function getRealPath(filepath: string) {
-    return filepath;
-}
 type AppShowHook = (options: UniApp.GetLaunchOptionsSyncOptions) => void;
 const API_GET_IMAGE_INFO = 'getImageInfo';
 const API_GET_VIDEO_INFO = 'getVideoInfo';
+const API_UPLOAD_FILE = 'uploadFile';
 const CHOOSE_SOURCE_TYPES = [
     'album',
     'camera'
 ];
+const HTTP_METHODS = [
+    'GET',
+    'OPTIONS',
+    'HEAD',
+    'POST',
+    'PUT',
+    'DELETE',
+    'TRACE',
+    'CONNECT',
+    'PATCH'
+];
+function elemInArray<T = string>(str: T, arr: T[]) {
+    if (!str || arr.indexOf(str) === -1) {
+        return arr[0];
+    }
+    return str;
+}
 const ANIMATION_OUT = [
     'slide-out-right',
     'slide-out-left',
@@ -1395,6 +1929,107 @@ function createNormalizeUrl(type: string) {
         }
     };
 }
+type API_TYPE_DOWNLOAD_FILE = typeof uni.downloadFile;
+const DownloadFileOptions: ApiOptions<API_TYPE_DOWNLOAD_FILE> = {
+    formatArgs: {
+        header (value: Record<string, Object>, params: Record<string, Object>) {
+            params.header = value || {};
+        }
+    }
+};
+const DownloadFileProtocol: ApiProtocol<API_TYPE_DOWNLOAD_FILE> = {
+    url: {
+        type: String,
+        required: true
+    },
+    header: Object,
+    timeout: Number
+};
+type API_TYPE_REQUEST = typeof uni.request;
+const dataType = {
+    JSON: 'json'
+};
+const RESPONSE_TYPE = [
+    'text',
+    'arraybuffer'
+];
+const DEFAULT_RESPONSE_TYPE = 'text';
+const encode1 = encodeURIComponent;
+function stringifyQuery1(url: string, data: Record<string, Object>) {
+    let str = url.split('#');
+    const hash = str[1] || '';
+    str = str[0].split('?');
+    let query = str[1] || '';
+    url = str[0];
+    const search = query.split('&').filter((item)=>item);
+    const params: Record<string, string> = {};
+    search.forEach((item)=>{
+        const part = item.split('=');
+        params[part[0]] = part[1];
+    });
+    for(const key in data){
+        if (hasOwn(data, key)) {
+            let v = data[key];
+            if (typeof v === 'undefined' || v === null) {
+                v = '';
+            } else if (isPlainObject(v)) {
+                v = JSON.stringify(v);
+            }
+            params[encode1(key)] = encode1(v);
+        }
+    }
+    query = Object.keys(params).map((item)=>`${item}=${params[item]}`).join('&');
+    return url + (query ? '?' + query : '') + (hash ? '#' + hash : '');
+}
+const RequestProtocol: ApiProtocol<API_TYPE_REQUEST> = {
+    method: String as Object,
+    data: [
+        Object,
+        String,
+        Array,
+        ArrayBuffer
+    ],
+    url: {
+        type: String,
+        required: true
+    },
+    header: Object,
+    dataType: String,
+    responseType: String,
+    withCredentials: Boolean
+};
+const RequestOptions: ApiOptions<API_TYPE_REQUEST> = {
+    formatArgs: {
+        method (value, params) {
+            params.method = elemInArray((value || '').toUpperCase(), HTTP_METHODS) as Object;
+        },
+        data (value, params) {
+            params.data = value || '';
+        },
+        url (value, params) {
+            if (params.method === HTTP_METHODS[0] && isPlainObject(params.data) && Object.keys(params.data).length) {
+                params.url = stringifyQuery1(value, params.data);
+            }
+        },
+        header (value: Record<string, Object>, params: Record<string, Object>) {
+            const header = params.header = value || {};
+            if (params.method !== HTTP_METHODS[0]) {
+                if (!Object.keys(header).find((key)=>key.toLowerCase() === 'content-type')) {
+                    header['Content-Type'] = 'application/json';
+                }
+            }
+        },
+        dataType (value, params) {
+            params.dataType = (value || dataType.JSON).toLowerCase();
+        },
+        responseType (value, params) {
+            params.responseType = (value || '').toLowerCase();
+            if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+                params.responseType = DEFAULT_RESPONSE_TYPE;
+            }
+        }
+    }
+};
 function elemsInArray(strArr: string[] | string | undefined, optionalVal: string[]) {
     if (!isArray(strArr) || strArr.length === 0 || strArr.find((val)=>optionalVal.indexOf(val) === -1)) {
         return optionalVal;
@@ -1460,6 +2095,23 @@ const ChooseImageProtocol: ApiProtocol<API_TYPE_CHOOSE_IMAGE> = {
     sourceType: Array,
     extension: Array
 };
+const env = {
+    USER_DATA_PATH: '',
+    TEMP_PATH: '',
+    CACHE_PATH: ''
+};
+declare function getContext(): Context;
+function initEnv() {
+    const context = getContext();
+    env.USER_DATA_PATH = context.filesDir;
+    env.TEMP_PATH = context.tempDir;
+    env.CACHE_PATH = context.cacheDir;
+    return env;
+}
+const initEnvOnce = once(initEnv);
+function getEnv() {
+    return initEnvOnce();
+}
 type ActionsItemType = string | number | boolean | undefined | Array<number>;
 type ActionsItemData = Array<ActionsItemType>;
 type ActionsItem = {
@@ -1516,6 +2168,34 @@ const GetVideoInfoProtocol: ApiProtocol<API_TYPE_GET_VIDEO_INFO> = {
         required: true
     }
 };
+type API_TYPE_UPLOAD_FILE = typeof uni.uploadFile;
+const UploadFileOptions: ApiOptions<API_TYPE_UPLOAD_FILE> = {
+    formatArgs: {
+        filePath (filePath, params) {
+            if (filePath) {
+                params.filePath = getRealPath(filePath);
+            }
+        },
+        header (value: Record<string, Object>, params: Record<string, Object>) {
+            params.header = value || {};
+        },
+        formData (value: Record<string, Object>, params: Record<string, Object>) {
+            params.formData = value || {};
+        }
+    }
+};
+const UploadFileProtocol: ApiProtocol<API_TYPE_UPLOAD_FILE> = {
+    url: {
+        type: String,
+        required: true
+    },
+    files: Array,
+    filePath: String,
+    name: String,
+    header: Object,
+    formData: Object,
+    timeout: Number
+};
 import picker1 from '@ohos.file.picker';
 const chooseImage: API_TYPE_CHOOSE_IMAGE = defineAsyncApi(API_CHOOSE_IMAGE, function({ count  } = {}, { resolve , reject  }) {
     _chooseMedia({
@@ -1563,6 +2243,325 @@ const getVideoInfo: API_TYPE_GET_VIDEO_INFO = defineAsyncApi(API_GET_VIDEO_INFO,
         };
     }).then(resolve, reject);
 }, GetVideoInfoProtocol, GetVideoInfoOptions);
+import http from '@ohos.net.http';
+const cookiesParse = (header: Record<string, string>)=>{
+    let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
+    let cookiesArr: string[] = [];
+    if (!cookiesStr) {
+        return [];
+    }
+    if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
+        cookiesStr = cookiesStr.slice(1, -1);
+    }
+    const handleCookiesArr = cookiesStr.split(';');
+    for(let i = 0; i < handleCookiesArr.length; i++){
+        if (handleCookiesArr[i].indexOf('Expires=') !== -1 || handleCookiesArr[i].indexOf('expires=') !== -1) {
+            cookiesArr.push(handleCookiesArr[i].replace(',', ''));
+        } else {
+            cookiesArr.push(handleCookiesArr[i]);
+        }
+    }
+    cookiesArr = cookiesArr.join(';').split(',');
+    return cookiesArr;
+};
+interface IRequestTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+}
+class RequestTask implements UniApp.RequestTask {
+    private _requestTask: IRequestTask;
+    constructor(requestTask: IRequestTask){
+        this._requestTask = requestTask;
+    }
+    abort() {
+        this._requestTask.abort();
+    }
+    onHeadersReceived(callback: Function) {
+        this._requestTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback?: Function) {
+        this._requestTask.offHeadersReceived(callback);
+    }
+}
+const request = defineTaskApi(API_REQUEST, (args, { resolve , reject  })=>{
+    let { header , method , data , dataType , timeout , url , responseType  } = args;
+    let contentType;
+    const headers = {} as Record<string, Object>;
+    for(const name in header){
+        if (name.toLowerCase() === 'content-type') {
+            contentType = header[name];
+        }
+        headers[name.toLowerCase()] = header[name];
+    }
+    if (!contentType && method === 'POST') {
+        headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+    }
+    if (method === 'GET' && data && isPlainObject(data)) {
+        url += '?' + Object.keys(data).map((key)=>{
+            return (encodeURIComponent(key) + '=' + encodeURIComponent((data as Object)[key]));
+        }).join('&');
+        data = undefined;
+    } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && isPlainObject(data)) {
+        data = JSON.stringify(data);
+    } else if (method !== 'GET' && contentType && contentType.indexOf('application/x-www-form-urlencoded') === 0 && isPlainObject(data)) {
+        data = Object.keys(data).map((key)=>{
+            return (encodeURIComponent(key) + '=' + encodeURIComponent((data as Object)[key]));
+        }).join('&');
+    }
+    let expectDataType: http.HttpDataType = http.HttpDataType.STRING;
+    if (responseType === 'arraybuffer') {
+        expectDataType = http.HttpDataType.ARRAY_BUFFER;
+    } else if (dataType === 'json') {
+        expectDataType = http.HttpDataType.OBJECT;
+    } else {
+        expectDataType = http.HttpDataType.STRING;
+    }
+    const httpRequest = http.createHttp();
+    const emitter = new E();
+    const requestTask = {
+        abort () {
+            httpRequest.destroy();
+        },
+        onHeadersReceived (callback: Function) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived (callback?: Function) {
+            emitter.off('headersReceive', callback);
+        }
+    };
+    httpRequest.on('headersReceive', (header: Object)=>{});
+    httpRequest.request(url, {
+        header: headers,
+        method: (method || 'GET').toUpperCase() as http.RequestMethod,
+        extraData: data,
+        expectDataType,
+        connectTimeout: timeout,
+        readTimeout: timeout
+    }, (err, res)=>{
+        if (err) {
+            reject(err.message);
+        } else {
+            resolve({
+                data: res.result,
+                statusCode: res.responseCode,
+                header: res.header,
+                cookies: cookiesParse(res.header as Record<string, Object>)
+            });
+        }
+        requestTask.offHeadersReceived();
+        httpRequest.destroy();
+    });
+    return new RequestTask(requestTask);
+}, RequestProtocol, RequestOptions);
+import http1 from '@ohos.net.http';
+interface IUploadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+class UploadTask implements UniApp.UploadTask {
+    private _uploadTask: IUploadTask;
+    constructor(uploadTask: IUploadTask){
+        this._uploadTask = uploadTask;
+    }
+    abort() {
+        this._uploadTask.abort();
+    }
+    onProgressUpdate(callback: Function) {
+        this._uploadTask.onProgressUpdate(callback);
+    }
+    offProgressUpdate(callback?: Function) {
+        this._uploadTask.offProgressUpdate(callback);
+    }
+    onHeadersReceived(callback: Function) {
+        this._uploadTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback?: Function) {
+        this._uploadTask.offHeadersReceived(callback);
+    }
+}
+const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve , reject  })=>{
+    let { url , timeout , header , formData , files , filePath , name  } = args;
+    const headers = {} as Record<string, Object>;
+    for(const name in header){
+        headers[name.toLowerCase()] = header[name];
+    }
+    headers['Content-Type'] = 'multipart/form-data';
+    const multiFormDataList = [] as Array<http1.MultiFormData>;
+    for(const name in formData){
+        if (hasOwn(formData, name)) {
+            multiFormDataList.push({
+                name,
+                contentType: 'text/plain',
+                data: String(formData[name])
+            });
+        }
+    }
+    if (files && files.length) {
+        for(let i = 0; i < files.length; i++){
+            const { name , uri  } = files[i];
+            multiFormDataList.push({
+                name: name || 'file',
+                contentType: 'application/octet-stream',
+                filePath: getRealPath(uri!)
+            });
+        }
+    } else {
+        multiFormDataList.push({
+            name: name || 'file',
+            contentType: 'application/octet-stream',
+            filePath: getRealPath(filePath!)
+        });
+    }
+    const httpRequest = http1.createHttp();
+    const emitter = new E();
+    const uploadTask: IUploadTask = {
+        abort () {
+            httpRequest.destroy();
+        },
+        onHeadersReceived (callback: Function) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived (callback?: Function) {
+            emitter.off('headersReceive', callback);
+        },
+        onProgressUpdate (callback: Function) {
+            emitter.on('progress', callback);
+        },
+        offProgressUpdate (callback?: Function) {
+            emitter.off('progress', callback);
+        }
+    };
+    httpRequest.on('headersReceive', (header: Object)=>{});
+    httpRequest.on('dataSendProgress', ({ sendSize , totalSize  })=>{
+        emitter.emit('progress', {
+            progress: Math.floor((sendSize / totalSize) * 100),
+            totalBytesSent: sendSize,
+            totalBytesExpectedToSend: totalSize
+        });
+    });
+    httpRequest.request(url, {
+        header: headers,
+        method: http1.RequestMethod.POST,
+        connectTimeout: timeout,
+        readTimeout: timeout,
+        multiFormDataList,
+        expectDataType: http1.HttpDataType.STRING
+    }, (err, res)=>{
+        if (err) {
+            reject(err.message);
+        } else {
+            resolve({
+                data: res.result as string,
+                statusCode: res.responseCode
+            });
+        }
+        uploadTask.offHeadersReceived();
+        uploadTask.offProgressUpdate();
+        httpRequest.destroy();
+    });
+    return new UploadTask(uploadTask);
+}, UploadFileProtocol, UploadFileOptions);
+import http2 from '@ohos.net.http';
+import fs1 from '@ohos.file.fs';
+interface IDownloadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+class DownloadTask implements UniApp.DownloadTask {
+    private _downloadTask: IDownloadTask;
+    constructor(downloadTask: IDownloadTask){
+        this._downloadTask = downloadTask;
+    }
+    abort() {
+        this._downloadTask.abort();
+    }
+    onProgressUpdate(callback: Function) {
+        this._downloadTask.onProgressUpdate(callback);
+    }
+    offProgressUpdate(callback?: Function) {
+        this._downloadTask.offProgressUpdate(callback);
+    }
+    onHeadersReceived(callback: Function) {
+        this._downloadTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback?: Function) {
+        this._downloadTask.offHeadersReceived(callback);
+    }
+}
+const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve , reject  })=>{
+    let { url , timeout , header  } = args;
+    const httpRequest = http2.createHttp();
+    const emitter = new E();
+    const downloadTask: IDownloadTask = {
+        abort () {
+            httpRequest.destroy();
+        },
+        onHeadersReceived (callback: Function) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived (callback?: Function) {
+            emitter.off('headersReceive', callback);
+        },
+        onProgressUpdate (callback: Function) {
+            emitter.on('progress', callback);
+        },
+        offProgressUpdate (callback?: Function) {
+            emitter.off('progress', callback);
+        }
+    };
+    httpRequest.on('headersReceive', (header: Object)=>{});
+    httpRequest.on('dataReceiveProgress', ({ receiveSize , totalSize  })=>{
+        emitter.emit('progress', {
+            progress: Math.floor((receiveSize / totalSize) * 100),
+            totalBytesWritten: receiveSize,
+            totalBytesExpectedToWrite: totalSize
+        });
+    });
+    const { TEMP_PATH  } = getEnv();
+    const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp';
+    const stream = fs1.createStreamSync(tempFilePath, 'w+');
+    let writePromise = Promise.resolve(0);
+    async function queueWrite(data: ArrayBuffer): Promise<number> {
+        writePromise = writePromise.then(async (total)=>{
+            const length = await stream.write(data);
+            return total + length;
+        });
+        return writePromise;
+    }
+    httpRequest.on('dataReceive', (data)=>{
+        queueWrite(data);
+    });
+    httpRequest.requestInStream(url, {
+        header,
+        method: http2.RequestMethod.GET,
+        connectTimeout: timeout,
+        readTimeout: timeout
+    }, (err, statusCode)=>{
+        if (err) {
+            reject(err.message);
+        } else {
+            writePromise.then(()=>{
+                stream.flushSync();
+                stream.closeSync();
+                resolve({
+                    tempFilePath,
+                    statusCode
+                });
+            });
+        }
+        downloadTask.offHeadersReceived();
+        downloadTask.offProgressUpdate();
+        httpRequest.destroy();
+    });
+    return new DownloadTask(downloadTask);
+}, DownloadFileProtocol, DownloadFileOptions);
 function getLocale() {
     return 'zh-CN';
 }
@@ -2053,6 +3052,191 @@ function initScope(pageId: number, vm: ComponentPublicInstance, pageInstance: Pa
     };
     return vm;
 }
+function initNVue(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.PageRouteMeta, path: string) {
+    if (path && routeMeta.isNVue) {
+        (webviewStyle as Object).uniNView = {
+            path,
+            defaultFontSize: (__uniConfig as Object).defaultFontSize,
+            viewport: (__uniConfig as Object).viewport
+        };
+    }
+}
+const colorRE = /^#[a-z0-9]{6}$/i;
+function isColor(color?: string) {
+    return color && (colorRE.test(color) || color === 'transparent');
+}
+function initBackgroundColor(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.PageRouteMeta) {
+    let { backgroundColor  } = routeMeta;
+    if (!backgroundColor) {
+        return;
+    }
+    if (!isColor(backgroundColor)) {
+        return;
+    }
+    if (!webviewStyle.background) {
+        webviewStyle.background = backgroundColor;
+    } else {
+        backgroundColor = webviewStyle.background;
+    }
+    if (!webviewStyle.backgroundColorTop) {
+        webviewStyle.backgroundColorTop = backgroundColor;
+    }
+    if (!webviewStyle.backgroundColorBottom) {
+        webviewStyle.backgroundColorBottom = backgroundColor;
+    }
+    if (!webviewStyle.animationAlphaBGColor) {
+        webviewStyle.animationAlphaBGColor = backgroundColor;
+    }
+    if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+        webviewStyle.webviewBGTransparent = true;
+    }
+}
+function initPopGesture(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.PageRouteMeta) {
+    if (webviewStyle.popGesture === 'hide') {
+        delete webviewStyle.popGesture;
+    }
+    if (routeMeta.isQuit) {
+        webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none' as PlusWebviewWebviewStyles[string];
+    }
+}
+function initPullToRefresh(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.PageRouteMeta) {
+    if (!routeMeta.enablePullDownRefresh) {
+        return;
+    }
+    const pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android' ? defaultAndroidPullToRefresh : defaultPullToRefresh, routeMeta.pullToRefresh)) as unknown as PlusWebviewWebviewPullToRefreshStyles;
+    webviewStyle.pullToRefresh = initWebviewPullToRefreshI18n(pullToRefresh, routeMeta);
+}
+function initWebviewPullToRefreshI18n(pullToRefresh: PlusWebviewWebviewPullToRefreshStyles, routeMeta: UniApp.PageRouteMeta) {
+    const i18nResult = initPullToRefreshI18n(pullToRefresh);
+    if (!i18nResult) {
+        return pullToRefresh;
+    }
+    const [contentdownI18n, contentoverI18n, contentrefreshI18n] = i18nResult;
+    if (contentdownI18n || contentoverI18n || contentrefreshI18n) {
+        .onLocaleChange(()=>{
+            const webview = plus.webview.getWebviewById(routeMeta.id + '');
+            if (!webview) {
+                return;
+            }
+            const newPullToRefresh: PlusWebviewWebviewPullToRefreshStyles = {
+                support: true
+            };
+            if (contentdownI18n) {
+                newPullToRefresh.contentdown = {
+                    caption: pullToRefresh.contentdown!.caption
+                };
+            }
+            if (contentoverI18n) {
+                newPullToRefresh.contentover = {
+                    caption: pullToRefresh.contentover!.caption
+                };
+            }
+            if (contentrefreshI18n) {
+                newPullToRefresh.contentrefresh = {
+                    caption: pullToRefresh.contentrefresh!.caption
+                };
+            }
+            webview.setStyle({
+                pullToRefresh: newPullToRefresh
+            });
+        });
+    }
+    return pullToRefresh;
+}
+const defaultAndroidPullToRefresh = {
+    support: true,
+    style: 'circle'
+};
+const defaultPullToRefresh = {
+    support: true,
+    style: 'default',
+    height: '50px',
+    range: '200px',
+    contentdown: {
+        caption: ''
+    },
+    contentover: {
+        caption: ''
+    },
+    contentrefresh: {
+        caption: ''
+    }
+};
+function initTitleNView(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.PageRouteMeta) {
+    const { navigationBar  } = routeMeta;
+    if (navigationBar.style === 'custom') {
+        return false;
+    }
+    let autoBackButton = true;
+    if (routeMeta.isQuit) {
+        autoBackButton = false;
+    }
+    const titleNView: PlusWebviewWebviewTitleNViewStyles = {
+        autoBackButton
+    };
+    Object.keys(navigationBar).forEach((name)=>{
+        const value = navigationBar[name as keyof UniApp.PageNavigationBar];
+        if (name === 'titleImage' && value) {
+            titleNView.tags = createTitleImageTags(value as string);
+        } else if (name === 'buttons' && isArray(value)) {
+            titleNView.buttons = (value as UniApp.PageNavigationBar[string])!.map((button, index)=>{
+                (button as Object).onclick = createTitleNViewBtnClick(index);
+                return button;
+            });
+        } else {
+            titleNView[name as keyof PlusWebviewWebviewTitleNViewStyles] = value as Object;
+        }
+    });
+    webviewStyle.titleNView = initTitleNViewI18n(titleNView, routeMeta);
+}
+function initTitleNViewI18n(titleNView: PlusWebviewWebviewTitleNViewStyles, routeMeta: UniApp.PageRouteMeta) {
+    const i18nResult = initNavigationBarI18n(titleNView);
+    if (!i18nResult) {
+        return titleNView;
+    }
+    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+    if (titleTextI18n || searchInputPlaceholderI18n) {
+        .onLocaleChange(()=>{
+            const webview = plus.webview.getWebviewById(routeMeta.id + '');
+            if (!webview) {
+                return;
+            }
+            const newTitleNView: PlusWebviewWebviewTitleNViewStyles = {};
+            if (titleTextI18n) {
+                newTitleNView.titleText = titleNView.titleText;
+            }
+            if (searchInputPlaceholderI18n) {
+                newTitleNView.searchInput = {
+                    placeholder: titleNView.searchInput!.placeholder
+                };
+            }
+            webview.setStyle({
+                titleNView: newTitleNView
+            });
+        });
+    }
+    return titleNView;
+}
+function createTitleImageTags(titleImage: string) {
+    return [
+        {
+            tag: 'img' as string,
+            src: titleImage,
+            position: {
+                left: 'auto',
+                top: 'auto',
+                width: 'auto',
+                height: '26px'
+            }
+        }
+    ];
+}
+function createTitleNViewBtnClick(index: number) {
+    return function onClick(btn: UniApp.PageNavigationBarButton) {
+        (btn as Object).index = index;
+        invokeHook(ON_NAVIGATION_BAR_BUTTON_TAP, btn);
+    };
+}
 let id = 1;
 function getWebviewId() {
     return id;
@@ -2060,6 +3244,75 @@ function getWebviewId() {
 function genWebviewId() {
     return id++;
 }
+function encode2(val: Parameters<typeof encodeURIComponent>[number]) {
+    return val as string;
+}
+type InitUniPageUrl = ReturnType<typeof initUniPageUrl>;
+type DebugRefresh = ReturnType<typeof initDebugRefresh>;
+function initUniPageUrl(path: string, query: Record<string, Object>) {
+    const queryString = query ? stringifyQuery(query, encode2) : '';
+    return {
+        path: path.slice(1),
+        query: queryString ? queryString.slice(1) : queryString
+    };
+}
+function initDebugRefresh(isTab: boolean, path: string, query: Record<string, Object>) {
+    const queryString = query ? stringifyQuery(query, encode2) : '';
+    return {
+        isTab,
+        arguments: JSON.stringify({
+            path: path.slice(1),
+            query: queryString ? queryString.slice(1) : queryString
+        })
+    };
+}
+function parseWebviewStyle(path: string, routeMeta: UniApp.PageRouteMeta, webview: {
+    id: string;
+}): PlusWebviewWebviewStyles & {
+    uniPageUrl?: InitUniPageUrl;
+    debugRefresh?: DebugRefresh;
+    isTab?: boolean;
+    locale?: string;
+} {
+    const webviewStyle: PlusWebviewWebviewStyles = {
+        bounce: 'vertical'
+    };
+    Object.keys(routeMeta).forEach((name)=>{
+        if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+            webviewStyle[name as keyof PlusWebviewWebviewStyles] = routeMeta[name as keyof UniApp.PageRouteMeta];
+        }
+    });
+    if (webview.id !== '1') {
+        initNVue(webviewStyle, routeMeta, path);
+    }
+    initPopGesture(webviewStyle, routeMeta);
+    initBackgroundColor(webviewStyle, routeMeta);
+    initTitleNView(webviewStyle, routeMeta);
+    initPullToRefresh(webviewStyle, routeMeta);
+    return webviewStyle;
+}
+const WEBVIEW_STYLE_BLACKLIST = [
+    'id',
+    'route',
+    'isNVue',
+    'isQuit',
+    'isEntry',
+    'isTabBar',
+    'tabBarIndex',
+    'windowTop',
+    'topWindow',
+    'leftWindow',
+    'rightWindow',
+    'maxWidth',
+    'usingComponents',
+    'disableScroll',
+    'enablePullDownRefresh',
+    'navigationBar',
+    'pullToRefresh',
+    'onReachBottomDistance',
+    'pageOrientation',
+    'backgroundColor'
+];
 type SetStatusBarStyle = typeof plus.navigator.setStatusBarStyle;
 type StatusBarStyle = Parameters<SetStatusBarStyle>[number];
 let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
@@ -2255,6 +3508,17 @@ interface RegisterPageOptions {
     nvuePageVm?: ComponentPublicInstance;
     eventChannel?: EventChannel;
 }
+function initWebviewStyle(webview: PlusWebviewWebviewObject, path: string, query: Record<string, Object>, routeMeta: UniApp.PageRouteMeta) {
+    const getWebviewStyle = ()=>parseWebviewStyle(path, routeMeta, webview);
+    const webviewStyle = getWebviewStyle();
+    webviewStyle.uniPageUrl = initUniPageUrl(path, query);
+    const isTabBar = !!routeMeta.isTabBar;
+    webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
+    webview.setStyle(webviewStyle);
+}
+function initWebview(webview: PlusWebviewWebviewObject, path: string, query: Record<string, Object>, routeMeta: UniApp.PageRouteMeta) {
+    initWebviewStyle(webview, path, query, routeMeta);
+}
 function createWebview(options: CreateWebviewOptions) {
     if (getWebviewId() === 2) {
         return plus.webview.getLaunchWebview();
@@ -2277,6 +3541,7 @@ function registerPage({ url , path , query , openType , webview , nvuePageVm , e
         (webview as Object).nvue = routeOptions.meta.isNVue;
     }
     routeOptions.meta.id = parseInt(webview.id!);
+    initWebview(webview, path, query, routeOptions.meta);
     const route = path.slice(1);
     (webview as Object).__uniapp_route = route;
     const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 'light');
@@ -2430,11 +3695,14 @@ const mod = {
     navigateTo: navigateTo,
     navigateBack: navigateBack,
     chooseImage,
-    getLocale,
     chooseVideo,
     getImageInfo,
-    getSystemInfoSync,
-    getVideoInfo
+    getVideoInfo,
+    request,
+    uploadFile,
+    downloadFile,
+    getLocale,
+    getSystemInfoSync
 };
 const UniServiceJSBridge1 = extend(ServiceJSBridge, {
     publishHandler

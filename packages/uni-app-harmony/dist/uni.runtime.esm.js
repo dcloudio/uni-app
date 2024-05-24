@@ -1,8 +1,9 @@
-import { injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 import picker from '@ohos.file.picker';
 import fs from '@ohos.file.fs';
 import media from '@ohos.multimedia.media';
 import image from '@ohos.multimedia.image';
+import http from '@ohos.net.http';
+import { injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 async function _getVideoInfo(uri) {
     const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
@@ -168,14 +169,14 @@ function makeMap(str, expectsLowerCase) {
   return expectsLowerCase ? (val) => set.has(val.toLowerCase()) : (val) => set.has(val);
 }
 const extend = Object.assign;
-const hasOwnProperty = Object.prototype.hasOwnProperty;
-const hasOwn = (val, key) => hasOwnProperty.call(val, key);
+const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
+const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
 const isArray = Array.isArray;
 const isFunction = (val) => typeof val === "function";
 const isString = (val) => typeof val === "string";
-const isObject = (val) => val !== null && typeof val === "object";
+const isObject$1 = (val) => val !== null && typeof val === "object";
 const isPromise = (val) => {
-  return (isObject(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
+  return (isObject$1(val) || isFunction(val)) && isFunction(val.then) && isFunction(val.catch);
 };
 const objectToString = Object.prototype.toString;
 const toTypeString = (value) => objectToString.call(value);
@@ -204,6 +205,23 @@ const capitalize = cacheStringFunction((str) => {
 
 const CHOOSE_SIZE_TYPES = ['original', 'compressed'];
 const CHOOSE_SOURCE_TYPES = ['album', 'camera'];
+const HTTP_METHODS = [
+    'GET',
+    'OPTIONS',
+    'HEAD',
+    'POST',
+    'PUT',
+    'DELETE',
+    'TRACE',
+    'CONNECT',
+    'PATCH',
+];
+function elemInArray(str, arr) {
+    if (!str || arr.indexOf(str) === -1) {
+        return arr[0];
+    }
+    return str;
+}
 function elemsInArray(strArr, optionalVal) {
     if (!isArray(strArr) ||
         strArr.length === 0 ||
@@ -220,7 +238,7 @@ function validateProtocol(name, data, protocol, onFail) {
         onFail = validateProtocolFail;
     }
     for (const key in protocol) {
-        const errMsg = validateProp(key, data[key], protocol[key], !hasOwn(data, key));
+        const errMsg = validateProp(key, data[key], protocol[key], !hasOwn$1(data, key));
         if (isString(errMsg)) {
             onFail(name, errMsg);
         }
@@ -290,7 +308,7 @@ function assertType(value, type) {
         }
     }
     else if (expectedType === 'Object') {
-        valid = isObject(value);
+        valid = isObject$1(value);
     }
     else if (expectedType === 'Array') {
         valid = isArray(value);
@@ -575,7 +593,7 @@ function formatApiArgs(args, options) {
         }
         else {
             // defaultValue
-            if (!hasOwn(params, name)) {
+            if (!hasOwn$1(params, name)) {
                 params[name] = formatterOrDefaultValue;
             }
         }
@@ -643,6 +661,9 @@ function wrapperSyncApi(name, fn, protocol, options) {
 function wrapperAsyncApi(name, fn, protocol, options) {
     return wrapperTaskApi(name, fn, protocol, options);
 }
+function defineTaskApi(name, fn, protocol, options) {
+    return promisify(name, wrapperTaskApi(name, fn, ('production' !== 'production') ? protocol : undefined, options));
+}
 function defineSyncApi(name, fn, protocol, options) {
     return wrapperSyncApi(name, fn, ('production' !== 'production') ? protocol : undefined, options);
 }
@@ -663,6 +684,7 @@ function getBaseSystemInfo() {
 }
 
 const ON_REACH_BOTTOM_DISTANCE = 50;
+const I18N_JSON_DELIMITERS = ['%', '%'];
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 // lifecycle
 // App and Page
@@ -679,6 +701,8 @@ const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
 const ON_REACH_BOTTOM = 'onReachBottom';
+// navigationBar
+const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
 // framework
 const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
@@ -717,6 +741,25 @@ function once(fn, ctx = null) {
     });
 }
 
+const encode$2 = encodeURIComponent;
+function stringifyQuery$1(obj, encodeStr = encode$2) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
 /**
  * Decode text using `decodeURIComponent`. Returns the original text if it
  * fails.
@@ -1178,41 +1221,514 @@ function normalizeTabBarStyles(borderStyle) {
 function normalizeTitleColor(titleColor) {
     return titleColor === 'black' ? '#000000' : '#ffffff';
 }
+function resolveStringStyleItem(modeStyle, styleItem, key) {
+    if (isString(styleItem) && styleItem.startsWith('@')) {
+        const _key = styleItem.replace('@', '');
+        let _styleItem = modeStyle[_key] || styleItem;
+        switch (key) {
+            case 'titleColor':
+                _styleItem = normalizeTitleColor(_styleItem);
+                break;
+            case 'borderStyle':
+                _styleItem = normalizeTabBarStyles(_styleItem);
+                break;
+        }
+        return _styleItem;
+    }
+    return styleItem;
+}
 function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
-    if (!modeStyle) {
+    if (typeof modeStyle === 'undefined')
         return pageStyle;
-    }
     Object.keys(pageStyle).forEach((key) => {
-        let styleItem = pageStyle[key] // Object Array String
-        ;
-        styles[key] = (() => {
-            if (isPlainObject(styleItem)) {
+        const styleItem = pageStyle[key]; // Object Array String
+        const parseStyleItem = () => {
+            if (isPlainObject(styleItem))
                 return normalizeStyles(styleItem, themeConfig, mode);
-            }
-            else if (isArray(styleItem)) {
-                return styleItem.map((item) => isPlainObject(item)
-                    ? normalizeStyles(item, themeConfig, mode)
-                    : item);
-            }
-            else if (isString(styleItem) && styleItem.startsWith('@')) {
-                const _key = styleItem.replace('@', '');
-                let _styleItem = modeStyle[_key] || styleItem;
-                switch (key) {
-                    case 'titleColor':
-                        _styleItem = normalizeTitleColor(_styleItem);
-                        break;
-                    case 'borderStyle':
-                        _styleItem = normalizeTabBarStyles(_styleItem);
-                        break;
-                }
-                return _styleItem;
-            }
-            return styleItem;
-        })();
+            if (isArray(styleItem))
+                return styleItem.map((item) => {
+                    if (typeof item === 'object')
+                        return normalizeStyles(item, themeConfig, mode);
+                    return resolveStringStyleItem(modeStyle, item);
+                });
+            return resolveStringStyleItem(modeStyle, styleItem, key);
+        };
+        styles[key] = parseStyleItem();
     });
     return styles;
+}
+
+/**
+ * 主要文件路径分为如下四种
+ * - 安装文件路径（仅能访问rawfile）鸿蒙$rawfile('index.html')对应一个Resource对象，为方便拼接路径，使用`resource://`协议表示
+ * - 临时文件路径（temp）   系统api如下载、选择图片产生的压缩文件会存放于此处，应用退出后自动删除
+ * - 缓存文件路径（cache）  用于存储图片缓存等，达到一定大小或时间会被系统自动清理
+ * - 用户文件路径（files）  持久保存
+ *
+ * TODO fileManager、原生fs对象？沙箱
+ *
+ * 参考文档：
+ * - [微信小程序文件系统](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/file-system.html)
+ * - [鸿蒙应用沙箱目录](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-sandbox-directory-0000001774280086)
+ */
+/**
+ * 内部使用不暴露给用户
+ */
+const env = {
+    // RESOURCE_PATH: 'resource://',
+    // 以下路径均不以`/`结尾
+    USER_DATA_PATH: '',
+    TEMP_PATH: '',
+    CACHE_PATH: '',
+};
+function initEnv() {
+    const context = getContext();
+    env.USER_DATA_PATH = context.filesDir;
+    env.TEMP_PATH = context.tempDir;
+    env.CACHE_PATH = context.cacheDir;
+    return env;
+}
+const initEnvOnce = once(initEnv);
+function getEnv() {
+    return initEnvOnce();
+}
+
+function getRealPath(filepath) {
+    return filepath;
+}
+
+const isObject = (val) => val !== null && typeof val === 'object';
+const defaultDelimiters = ['{', '}'];
+class BaseFormatter {
+    _caches;
+    constructor() {
+        this._caches = Object.create(null);
+    }
+    interpolate(message, values, delimiters = defaultDelimiters) {
+        if (!values) {
+            return [message];
+        }
+        let tokens = this._caches[message];
+        if (!tokens) {
+            tokens = parse(message, delimiters);
+            this._caches[message] = tokens;
+        }
+        return compile(tokens, values);
+    }
+}
+const RE_TOKEN_LIST_VALUE = /^(?:\d)+/;
+const RE_TOKEN_NAMED_VALUE = /^(?:\w)+/;
+function parse(format, [startDelimiter, endDelimiter]) {
+    const tokens = [];
+    let position = 0;
+    let text = '';
+    while (position < format.length) {
+        let char = format[position++];
+        if (char === startDelimiter) {
+            if (text) {
+                tokens.push({ type: 'text', value: text });
+            }
+            text = '';
+            let sub = '';
+            char = format[position++];
+            while (char !== undefined && char !== endDelimiter) {
+                sub += char;
+                char = format[position++];
+            }
+            const isClosed = char === endDelimiter;
+            const type = RE_TOKEN_LIST_VALUE.test(sub)
+                ? 'list'
+                : isClosed && RE_TOKEN_NAMED_VALUE.test(sub)
+                    ? 'named'
+                    : 'unknown';
+            tokens.push({ value: sub, type });
+        }
+        //  else if (char === '%') {
+        //   // when found rails i18n syntax, skip text capture
+        //   if (format[position] !== '{') {
+        //     text += char
+        //   }
+        // }
+        else {
+            text += char;
+        }
+    }
+    text && tokens.push({ type: 'text', value: text });
+    return tokens;
+}
+function compile(tokens, values) {
+    const compiled = [];
+    let index = 0;
+    const mode = Array.isArray(values)
+        ? 'list'
+        : isObject(values)
+            ? 'named'
+            : 'unknown';
+    if (mode === 'unknown') {
+        return compiled;
+    }
+    while (index < tokens.length) {
+        const token = tokens[index];
+        switch (token.type) {
+            case 'text':
+                compiled.push(token.value);
+                break;
+            case 'list':
+                compiled.push(values[parseInt(token.value, 10)]);
+                break;
+            case 'named':
+                if (mode === 'named') {
+                    compiled.push(values[token.value]);
+                }
+                break;
+        }
+        index++;
+    }
+    return compiled;
+}
+
+const LOCALE_ZH_HANS = 'zh-Hans';
+const LOCALE_ZH_HANT = 'zh-Hant';
+const LOCALE_EN = 'en';
+const LOCALE_FR = 'fr';
+const LOCALE_ES = 'es';
+const hasOwnProperty = Object.prototype.hasOwnProperty;
+const hasOwn = (val, key) => hasOwnProperty.call(val, key);
+const defaultFormatter = new BaseFormatter();
+function include(str, parts) {
+    return !!parts.find((part) => str.indexOf(part) !== -1);
+}
+function startsWith(str, parts) {
+    return parts.find((part) => str.indexOf(part) === 0);
+}
+function normalizeLocale(locale, messages) {
+    if (!locale) {
+        return;
+    }
+    locale = locale.trim().replace(/_/g, '-');
+    if (messages && messages[locale]) {
+        return locale;
+    }
+    locale = locale.toLowerCase();
+    if (locale === 'chinese') {
+        // 支付宝
+        return LOCALE_ZH_HANS;
+    }
+    if (locale.indexOf('zh') === 0) {
+        if (locale.indexOf('-hans') > -1) {
+            return LOCALE_ZH_HANS;
+        }
+        if (locale.indexOf('-hant') > -1) {
+            return LOCALE_ZH_HANT;
+        }
+        if (include(locale, ['-tw', '-hk', '-mo', '-cht'])) {
+            return LOCALE_ZH_HANT;
+        }
+        return LOCALE_ZH_HANS;
+    }
+    let locales = [LOCALE_EN, LOCALE_FR, LOCALE_ES];
+    if (messages && Object.keys(messages).length > 0) {
+        locales = Object.keys(messages);
+    }
+    const lang = startsWith(locale, locales);
+    if (lang) {
+        return lang;
+    }
+}
+class I18n {
+    locale = LOCALE_EN;
+    fallbackLocale = LOCALE_EN;
+    message = {};
+    messages = {};
+    watchers = [];
+    formater;
+    constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
+        if (fallbackLocale) {
+            this.fallbackLocale = fallbackLocale;
+        }
+        this.formater = formater || defaultFormatter;
+        this.messages = messages || {};
+        this.setLocale(locale || LOCALE_EN);
+        if (watcher) {
+            this.watchLocale(watcher);
+        }
+    }
+    setLocale(locale) {
+        const oldLocale = this.locale;
+        this.locale = normalizeLocale(locale, this.messages) || this.fallbackLocale;
+        if (!this.messages[this.locale]) {
+            // 可能初始化时不存在
+            this.messages[this.locale] = {};
+        }
+        this.message = this.messages[this.locale];
+        // 仅发生变化时，通知
+        if (oldLocale !== this.locale) {
+            this.watchers.forEach((watcher) => {
+                watcher(this.locale, oldLocale);
+            });
+        }
+    }
+    getLocale() {
+        return this.locale;
+    }
+    watchLocale(fn) {
+        const index = this.watchers.push(fn) - 1;
+        return () => {
+            this.watchers.splice(index, 1);
+        };
+    }
+    add(locale, message, override = true) {
+        const curMessages = this.messages[locale];
+        if (curMessages) {
+            if (override) {
+                Object.assign(curMessages, message);
+            }
+            else {
+                Object.keys(message).forEach((key) => {
+                    if (!hasOwn(curMessages, key)) {
+                        curMessages[key] = message[key];
+                    }
+                });
+            }
+        }
+        else {
+            this.messages[locale] = message;
+        }
+    }
+    f(message, values, delimiters) {
+        return this.formater.interpolate(message, values, delimiters).join('');
+    }
+    t(key, locale, values) {
+        let message = this.message;
+        if (typeof locale === 'string') {
+            locale = normalizeLocale(locale, this.messages);
+            locale && (message = this.messages[locale]);
+        }
+        else {
+            values = locale;
+        }
+        if (!hasOwn(message, key)) {
+            console.warn(`Cannot translate the value of keypath ${key}. Use the value of keypath as default.`);
+            return key;
+        }
+        return this.formater.interpolate(message[key], values).join('');
+    }
+}
+
+function watchAppLocale(appVm, i18n) {
+    // 需要保证 watch 的触发在组件渲染之前
+    if (appVm.$watchLocale) {
+        // vue2
+        appVm.$watchLocale((newLocale) => {
+            i18n.setLocale(newLocale);
+        });
+    }
+    else {
+        appVm.$watch(() => appVm.$locale, (newLocale) => {
+            i18n.setLocale(newLocale);
+        });
+    }
+}
+function getDefaultLocale() {
+    if (typeof uni !== 'undefined' && uni.getLocale) {
+        return uni.getLocale();
+    }
+    // 小程序平台，uni 和 uni-i18n 互相引用，导致访问不到 uni，故在 global 上挂了 getLocale
+    if (typeof global !== 'undefined' && global.getLocale) {
+        return global.getLocale();
+    }
+    return LOCALE_EN;
+}
+function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
+    // 兼容旧版本入参
+    if (typeof locale !== 'string') {
+        [locale, messages] = [
+            messages,
+            locale,
+        ];
+    }
+    if (typeof locale !== 'string') {
+        // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
+        locale = getDefaultLocale();
+    }
+    if (typeof fallbackLocale !== 'string') {
+        fallbackLocale =
+            (typeof __uniConfig !== 'undefined' && __uniConfig.fallbackLocale) ||
+                LOCALE_EN;
+    }
+    const i18n = new I18n({
+        locale,
+        fallbackLocale,
+        messages,
+        watcher,
+    });
+    let t = (key, values) => {
+        if (typeof getApp !== 'function') {
+            // app view
+            /* eslint-disable no-func-assign */
+            t = function (key, values) {
+                return i18n.t(key, values);
+            };
+        }
+        else {
+            let isWatchedAppLocale = false;
+            t = function (key, values) {
+                const appVm = getApp().$vm;
+                // 可能$vm还不存在，比如在支付宝小程序中，组件定义较早，在props的default里使用了t()函数（如uni-goods-nav），此时app还未初始化
+                // options: {
+                // 	type: Array,
+                // 	default () {
+                // 		return [{
+                // 			icon: 'shop',
+                // 			text: t("uni-goods-nav.options.shop"),
+                // 		}, {
+                // 			icon: 'cart',
+                // 			text: t("uni-goods-nav.options.cart")
+                // 		}]
+                // 	}
+                // },
+                if (appVm) {
+                    // 触发响应式
+                    appVm.$locale;
+                    if (!isWatchedAppLocale) {
+                        isWatchedAppLocale = true;
+                        watchAppLocale(appVm, i18n);
+                    }
+                }
+                return i18n.t(key, values);
+            };
+        }
+        return t(key, values);
+    };
+    return {
+        i18n,
+        f(message, values, delimiters) {
+            return i18n.f(message, values, delimiters);
+        },
+        t(key, values) {
+            return t(key, values);
+        },
+        add(locale, message, override = true) {
+            return i18n.add(locale, message, override);
+        },
+        watch(fn) {
+            return i18n.watchLocale(fn);
+        },
+        getLocale() {
+            return i18n.getLocale();
+        },
+        setLocale(newLocale) {
+            return i18n.setLocale(newLocale);
+        },
+    };
+}
+
+function isI18nStr(value, delimiters) {
+    return value.indexOf(delimiters[0]) > -1;
+}
+
+const isEnableLocale = /*#__PURE__*/ once(() => typeof __uniConfig !== 'undefined' &&
+    __uniConfig.locales &&
+    !!Object.keys(__uniConfig.locales).length);
+
+let i18n;
+function getLocaleMessage() {
+    const locale = uni.getLocale();
+    const locales = __uniConfig.locales;
+    return (locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {});
+}
+function formatI18n(message) {
+    if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+        return useI18n().f(message, getLocaleMessage(), I18N_JSON_DELIMITERS);
+    }
+    return message;
+}
+function resolveJsonObj(jsonObj, names) {
+    if (names.length === 1) {
+        if (jsonObj) {
+            const _isI18nStr = (value) => isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS);
+            const _name = names[0];
+            let filterJsonObj = [];
+            if (isArray(jsonObj) &&
+                (filterJsonObj = jsonObj.filter((item) => _isI18nStr(item[_name])))
+                    .length) {
+                return filterJsonObj;
+            }
+            const value = jsonObj[names[0]];
+            if (_isI18nStr(value)) {
+                return jsonObj;
+            }
+        }
+        return;
+    }
+    const name = names.shift();
+    return resolveJsonObj(jsonObj && jsonObj[name], names);
+}
+function defineI18nProperties(obj, names) {
+    return names.map((name) => defineI18nProperty(obj, name));
+}
+function defineI18nProperty(obj, names) {
+    const jsonObj = resolveJsonObj(obj, names);
+    if (!jsonObj) {
+        return false;
+    }
+    const prop = names[names.length - 1];
+    if (isArray(jsonObj)) {
+        jsonObj.forEach((item) => defineI18nProperty(item, [prop]));
+    }
+    else {
+        let value = jsonObj[prop];
+        Object.defineProperty(jsonObj, prop, {
+            get() {
+                return formatI18n(value);
+            },
+            set(v) {
+                value = v;
+            },
+        });
+    }
+    return true;
+}
+function useI18n() {
+    if (!i18n) {
+        let locale;
+        {
+            locale = uni.getSystemInfoSync().language;
+        }
+        i18n = initVueI18n(locale);
+        // 自定义locales
+        if (isEnableLocale()) {
+            const localeKeys = Object.keys(__uniConfig.locales || {});
+            if (localeKeys.length) {
+                localeKeys.forEach((locale) => i18n.add(locale, __uniConfig.locales[locale]));
+            }
+            // initVueI18n 时 messages 还没有，导致用户自定义 locale 可能不生效，当设置完 messages 后，重新设置 locale
+            i18n.setLocale(locale);
+        }
+    }
+    return i18n;
+}
+
+function initNavigationBarI18n(navigationBar) {
+    if (isEnableLocale()) {
+        return defineI18nProperties(navigationBar, [
+            ['titleText'],
+            ['searchInput', 'placeholder'],
+            ['buttons', 'text'],
+        ]);
+    }
+}
+function initPullToRefreshI18n(pullToRefresh) {
+    if (isEnableLocale()) {
+        const CAPTION = 'caption';
+        return defineI18nProperties(pullToRefresh, [
+            ['contentdown', CAPTION],
+            ['contentover', CAPTION],
+            ['contentrefresh', CAPTION],
+        ]);
+    }
 }
 
 function initBridge(subscribeNamespace) {
@@ -1244,6 +1760,32 @@ function initBridge(subscribeNamespace) {
 
 const INVOKE_VIEW_API = 'invokeViewApi';
 const INVOKE_SERVICE_API = 'invokeServiceApi';
+
+function hasRpx(str) {
+    str = str + '';
+    return str.indexOf('rpx') !== -1 || str.indexOf('upx') !== -1;
+}
+function rpx2px(str, replace = false) {
+    if (replace) {
+        return rpx2pxWithReplace(str);
+    }
+    if (isString(str)) {
+        const res = parseInt(str) || 0;
+        if (hasRpx(str)) {
+            return uni.upx2px(res);
+        }
+        return res;
+    }
+    return str;
+}
+function rpx2pxWithReplace(str) {
+    if (!hasRpx(str)) {
+        return str;
+    }
+    return str.replace(/(\d+(\.\d+)?)[ru]px/g, (_a, b) => {
+        return uni.upx2px(parseFloat(b)) + 'px';
+    });
+}
 
 function getCurrentPage() {
     const pages = getCurrentPages();
@@ -1286,6 +1828,18 @@ function initRouteMeta(pageMeta, id) {
         navigationBar.titleImage &&
         (navigationBar.titleText = '');
     return res;
+}
+function normalizePullToRefreshRpx(pullToRefresh) {
+    if (pullToRefresh.offset) {
+        pullToRefresh.offset = rpx2px(pullToRefresh.offset);
+    }
+    if (pullToRefresh.height) {
+        pullToRefresh.height = rpx2px(pullToRefresh.height);
+    }
+    if (pullToRefresh.range) {
+        pullToRefresh.range = rpx2px(pullToRefresh.range);
+    }
+    return pullToRefresh;
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
     const { id, route } = meta;
@@ -1504,10 +2058,6 @@ function getEnterOptions() {
     // TODO: Implement
     return extend({}, enterOptions$1);
 }
-function getRealPath(filepath) {
-    // TODO: Implement
-    return filepath;
-}
 
 const appHooks = {
     [ON_UNHANDLE_REJECTION]: [],
@@ -1616,6 +2166,136 @@ const GetVideoInfoProtocol = {
         type: String,
         required: true,
     },
+};
+
+const API_REQUEST = 'request';
+const dataType = {
+    JSON: 'json',
+};
+const RESPONSE_TYPE = ['text', 'arraybuffer'];
+const DEFAULT_RESPONSE_TYPE = 'text';
+const encode$1 = encodeURIComponent;
+function stringifyQuery(url, data) {
+    let str = url.split('#');
+    const hash = str[1] || '';
+    str = str[0].split('?');
+    let query = str[1] || '';
+    url = str[0];
+    const search = query.split('&').filter((item) => item);
+    const params = {};
+    search.forEach((item) => {
+        const part = item.split('=');
+        params[part[0]] = part[1];
+    });
+    for (const key in data) {
+        if (hasOwn$1(data, key)) {
+            let v = data[key];
+            if (typeof v === 'undefined' || v === null) {
+                v = '';
+            }
+            else if (isPlainObject(v)) {
+                v = JSON.stringify(v);
+            }
+            params[encode$1(key)] = encode$1(v);
+        }
+    }
+    query = Object.keys(params)
+        .map((item) => `${item}=${params[item]}`)
+        .join('&');
+    return url + (query ? '?' + query : '') + (hash ? '#' + hash : '');
+}
+const RequestProtocol = {
+    method: String,
+    data: [Object, String, Array, ArrayBuffer],
+    url: {
+        type: String,
+        required: true,
+    },
+    header: Object,
+    dataType: String,
+    responseType: String,
+    withCredentials: Boolean,
+};
+const RequestOptions = {
+    formatArgs: {
+        method(value, params) {
+            params.method = elemInArray((value || '').toUpperCase(), HTTP_METHODS);
+        },
+        data(value, params) {
+            params.data = value || '';
+        },
+        url(value, params) {
+            if (params.method === HTTP_METHODS[0] &&
+                isPlainObject(params.data) &&
+                Object.keys(params.data).length) {
+                // 将 method,data 校验提前,保证 url 校验时,method,data 已被格式化
+                params.url = stringifyQuery(value, params.data);
+            }
+        },
+        header(value, params) {
+            const header = (params.header = value || {});
+            if (params.method !== HTTP_METHODS[0]) {
+                if (!Object.keys(header).find((key) => key.toLowerCase() === 'content-type')) {
+                    header['Content-Type'] = 'application/json';
+                }
+            }
+        },
+        dataType(value, params) {
+            params.dataType = (value || dataType.JSON).toLowerCase();
+        },
+        responseType(value, params) {
+            params.responseType = (value || '').toLowerCase();
+            if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+                params.responseType = DEFAULT_RESPONSE_TYPE;
+            }
+        },
+    },
+};
+
+const API_DOWNLOAD_FILE = 'downloadFile';
+const DownloadFileOptions = {
+    formatArgs: {
+        header(value, params) {
+            params.header = value || {};
+        },
+    },
+};
+const DownloadFileProtocol = {
+    url: {
+        type: String,
+        required: true,
+    },
+    header: Object,
+    timeout: Number,
+};
+
+const API_UPLOAD_FILE = 'uploadFile';
+const UploadFileOptions = {
+    formatArgs: {
+        filePath(filePath, params) {
+            if (filePath) {
+                params.filePath = getRealPath(filePath);
+            }
+        },
+        header(value, params) {
+            params.header = value || {};
+        },
+        formData(value, params) {
+            params.formData = value || {};
+        },
+    },
+};
+const UploadFileProtocol = {
+    url: {
+        type: String,
+        required: true,
+    },
+    files: Array,
+    filePath: String,
+    name: String,
+    header: Object,
+    formData: Object,
+    timeout: Number,
 };
 
 function encodeQueryString(url) {
@@ -1826,6 +2506,7 @@ const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, function ({} = {}, { resolv
         .then(resolve, reject);
 }, ChooseVideoProtocol, ChooseVideoOptions);
 
+// TODO 网络图片
 const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, function ({ src }, { resolve, reject }) {
     _getImageInfo(src).then(resolve, reject);
 }, GetImageInfoProtocol, GetImageInfoOptions);
@@ -1844,6 +2525,359 @@ const getVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, function ({ src }, { res
     })
         .then(resolve, reject);
 }, GetVideoInfoProtocol, GetVideoInfoOptions);
+
+// copy from uni-app-plus/src/service/api/network/request.ts
+const cookiesParse = (header) => {
+    let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
+    let cookiesArr = [];
+    if (!cookiesStr) {
+        return [];
+    }
+    if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
+        cookiesStr = cookiesStr.slice(1, -1);
+    }
+    const handleCookiesArr = cookiesStr.split(';');
+    for (let i = 0; i < handleCookiesArr.length; i++) {
+        if (handleCookiesArr[i].indexOf('Expires=') !== -1 ||
+            handleCookiesArr[i].indexOf('expires=') !== -1) {
+            cookiesArr.push(handleCookiesArr[i].replace(',', ''));
+        }
+        else {
+            cookiesArr.push(handleCookiesArr[i]);
+        }
+    }
+    cookiesArr = cookiesArr.join(';').split(',');
+    return cookiesArr;
+};
+class RequestTask {
+    _requestTask;
+    constructor(requestTask) {
+        this._requestTask = requestTask;
+    }
+    abort() {
+        this._requestTask.abort();
+    }
+    onHeadersReceived(callback) {
+        this._requestTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback) {
+        this._requestTask.offHeadersReceived(callback);
+    }
+}
+const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
+    let { header, method, data, dataType, timeout, url, responseType } = args;
+    let contentType;
+    // header
+    const headers = {};
+    for (const name in header) {
+        if (name.toLowerCase() === 'content-type') {
+            contentType = header[name];
+        }
+        headers[name.toLowerCase()] = header[name];
+    }
+    if (!contentType && method === 'POST') {
+        headers['Content-Type'] =
+            'application/x-www-form-urlencoded; charset=UTF-8';
+    }
+    // url data
+    if (method === 'GET' && data && isPlainObject(data)) {
+        url +=
+            '?' +
+                Object.keys(data)
+                    .map((key) => {
+                    return (encodeURIComponent(key) +
+                        '=' +
+                        encodeURIComponent(data[key]));
+                })
+                    .join('&');
+        data = undefined;
+    }
+    else if (method !== 'GET' &&
+        contentType &&
+        contentType.indexOf('application/json') === 0 &&
+        isPlainObject(data)) {
+        data = JSON.stringify(data);
+    }
+    else if (method !== 'GET' &&
+        contentType &&
+        contentType.indexOf('application/x-www-form-urlencoded') === 0 &&
+        isPlainObject(data)) {
+        data = Object.keys(data)
+            .map((key) => {
+            return (encodeURIComponent(key) +
+                '=' +
+                encodeURIComponent(data[key]));
+        })
+            .join('&');
+    }
+    // 其他参数
+    let expectDataType = http.HttpDataType.STRING;
+    if (responseType === 'arraybuffer') {
+        expectDataType = http.HttpDataType.ARRAY_BUFFER;
+    }
+    else if (dataType === 'json') {
+        expectDataType = http.HttpDataType.OBJECT;
+    }
+    else {
+        expectDataType = http.HttpDataType.STRING;
+    }
+    const httpRequest = http.createHttp();
+    const emitter = new E();
+    const requestTask = {
+        abort() {
+            httpRequest.destroy();
+        },
+        onHeadersReceived(callback) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived(callback) {
+            emitter.off('headersReceive', callback);
+        },
+    };
+    httpRequest.on('headersReceive', (header) => {
+        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
+        // emitter.emit('headersReceive', header);
+    });
+    httpRequest.request(url, {
+        header: headers,
+        method: (method || 'GET').toUpperCase(), // 仅OPTIONS不支持
+        extraData: data,
+        expectDataType,
+        connectTimeout: timeout, // 不支持仅设置一个timeout
+        readTimeout: timeout,
+    }, (err, res) => {
+        if (err) {
+            /**
+             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
+             * {"code":2300023,"message":"Failed writing received data to disk/application"}
+             */
+            reject(err.message);
+        }
+        else {
+            resolve({
+                data: res.result,
+                statusCode: res.responseCode,
+                header: res.header,
+                cookies: cookiesParse(res.header),
+            });
+        }
+        requestTask.offHeadersReceived();
+        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
+    });
+    return new RequestTask(requestTask);
+}, RequestProtocol, RequestOptions);
+
+class UploadTask {
+    _uploadTask;
+    constructor(uploadTask) {
+        this._uploadTask = uploadTask;
+    }
+    abort() {
+        this._uploadTask.abort();
+    }
+    onProgressUpdate(callback) {
+        this._uploadTask.onProgressUpdate(callback);
+    }
+    offProgressUpdate(callback) {
+        this._uploadTask.offProgressUpdate(callback);
+    }
+    onHeadersReceived(callback) {
+        this._uploadTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback) {
+        this._uploadTask.offHeadersReceived(callback);
+    }
+}
+const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve, reject }) => {
+    let { url, timeout, header, formData, files, filePath, name } = args;
+    // header
+    const headers = {};
+    for (const name in header) {
+        headers[name.toLowerCase()] = header[name];
+    }
+    headers['Content-Type'] = 'multipart/form-data';
+    const multiFormDataList = [];
+    for (const name in formData) {
+        if (hasOwn$1(formData, name)) {
+            multiFormDataList.push({
+                name,
+                contentType: 'text/plain',
+                data: String(formData[name]),
+            });
+        }
+    }
+    if (files && files.length) {
+        for (let i = 0; i < files.length; i++) {
+            const { name, uri } = files[i];
+            multiFormDataList.push({
+                name: name || 'file',
+                contentType: 'application/octet-stream', // TODO 根据文件后缀设置contentType
+                filePath: getRealPath(uri),
+            });
+        }
+    }
+    else {
+        multiFormDataList.push({
+            name: name || 'file',
+            contentType: 'application/octet-stream', // TODO 根据文件后缀设置contentType
+            filePath: getRealPath(filePath),
+        });
+    }
+    const httpRequest = http.createHttp();
+    const emitter = new E();
+    const uploadTask = {
+        abort() {
+            httpRequest.destroy();
+        },
+        onHeadersReceived(callback) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived(callback) {
+            emitter.off('headersReceive', callback);
+        },
+        onProgressUpdate(callback) {
+            emitter.on('progress', callback);
+        },
+        offProgressUpdate(callback) {
+            emitter.off('progress', callback);
+        },
+    };
+    httpRequest.on('headersReceive', (header) => {
+        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
+        // emitter.emit('headersReceive', header);
+    });
+    httpRequest.on('dataSendProgress', ({ sendSize, totalSize }) => {
+        emitter.emit('progress', {
+            progress: Math.floor((sendSize / totalSize) * 100),
+            totalBytesSent: sendSize,
+            totalBytesExpectedToSend: totalSize,
+        });
+    });
+    httpRequest.request(url, {
+        header: headers,
+        method: http.RequestMethod.POST,
+        connectTimeout: timeout, // 不支持仅设置一个timeout
+        readTimeout: timeout,
+        multiFormDataList,
+        expectDataType: http.HttpDataType.STRING,
+    }, (err, res) => {
+        if (err) {
+            /**
+             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
+             * {"code":2300023,"message":"Failed writing received data to disk/application"}
+             */
+            reject(err.message);
+        }
+        else {
+            resolve({
+                data: res.result,
+                statusCode: res.responseCode,
+            });
+        }
+        uploadTask.offHeadersReceived();
+        uploadTask.offProgressUpdate();
+        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
+    });
+    return new UploadTask(uploadTask);
+}, UploadFileProtocol, UploadFileOptions);
+
+class DownloadTask {
+    _downloadTask;
+    constructor(downloadTask) {
+        this._downloadTask = downloadTask;
+    }
+    abort() {
+        this._downloadTask.abort();
+    }
+    onProgressUpdate(callback) {
+        this._downloadTask.onProgressUpdate(callback);
+    }
+    offProgressUpdate(callback) {
+        this._downloadTask.offProgressUpdate(callback);
+    }
+    onHeadersReceived(callback) {
+        this._downloadTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback) {
+        this._downloadTask.offHeadersReceived(callback);
+    }
+}
+const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve, reject }) => {
+    let { url, timeout, header } = args;
+    const httpRequest = http.createHttp();
+    const emitter = new E();
+    const downloadTask = {
+        abort() {
+            httpRequest.destroy();
+        },
+        onHeadersReceived(callback) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived(callback) {
+            emitter.off('headersReceive', callback);
+        },
+        onProgressUpdate(callback) {
+            emitter.on('progress', callback);
+        },
+        offProgressUpdate(callback) {
+            emitter.off('progress', callback);
+        },
+    };
+    httpRequest.on('headersReceive', (header) => {
+        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
+        // emitter.emit('headersReceive', header);
+    });
+    httpRequest.on('dataReceiveProgress', ({ receiveSize, totalSize }) => {
+        emitter.emit('progress', {
+            progress: Math.floor((receiveSize / totalSize) * 100),
+            totalBytesWritten: receiveSize,
+            totalBytesExpectedToWrite: totalSize,
+        });
+    });
+    const { TEMP_PATH } = getEnv();
+    const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp'; // TODO 正在咨询有无内置mimeType，目前无法根据content-type获取文件后缀
+    const stream = fs.createStreamSync(tempFilePath, 'w+');
+    let writePromise = Promise.resolve(0);
+    async function queueWrite(data) {
+        writePromise = writePromise.then(async (total) => {
+            const length = await stream.write(data);
+            return total + length;
+        });
+        return writePromise;
+    }
+    httpRequest.on('dataReceive', (data) => {
+        queueWrite(data);
+    });
+    httpRequest.requestInStream(url, {
+        header,
+        method: http.RequestMethod.GET,
+        connectTimeout: timeout, // 不支持仅设置一个timeout
+        readTimeout: timeout,
+    }, (err, statusCode) => {
+        // 此回调先于dataEnd回调执行
+        if (err) {
+            /**
+             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
+             * {"code":2300023,"message":"Failed writing received data to disk/application"}
+             */
+            reject(err.message);
+        }
+        else {
+            writePromise.then(() => {
+                stream.flushSync();
+                stream.closeSync();
+                resolve({
+                    tempFilePath,
+                    statusCode,
+                });
+            });
+        }
+        downloadTask.offHeadersReceived();
+        downloadTask.offProgressUpdate();
+        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
+    });
+    return new DownloadTask(downloadTask);
+}, DownloadFileProtocol, DownloadFileOptions);
 
 function getLocale() {
     return 'zh-CN';
@@ -1944,12 +2978,274 @@ const ACTION_TYPE_DICT = 0;
 const WEBVIEW_INSERTED = 'webviewInserted';
 const WEBVIEW_REMOVED = 'webviewRemoved';
 
+function initNVue(webviewStyle, routeMeta, path) {
+    if (path && routeMeta.isNVue) {
+        webviewStyle.uniNView = {
+            path,
+            defaultFontSize: __uniConfig.defaultFontSize,
+            viewport: __uniConfig.viewport,
+        };
+    }
+}
+
+const colorRE = /^#[a-z0-9]{6}$/i;
+function isColor(color) {
+    return color && (colorRE.test(color) || color === 'transparent');
+}
+
+function initBackgroundColor(webviewStyle, routeMeta) {
+    let { backgroundColor } = routeMeta;
+    if (!backgroundColor) {
+        return;
+    }
+    if (!isColor(backgroundColor)) {
+        return;
+    }
+    if (!webviewStyle.background) {
+        webviewStyle.background = backgroundColor;
+    }
+    else {
+        backgroundColor = webviewStyle.background;
+    }
+    if (!webviewStyle.backgroundColorTop) {
+        webviewStyle.backgroundColorTop = backgroundColor;
+    }
+    if (!webviewStyle.backgroundColorBottom) {
+        webviewStyle.backgroundColorBottom = backgroundColor;
+    }
+    if (!webviewStyle.animationAlphaBGColor) {
+        webviewStyle.animationAlphaBGColor = backgroundColor;
+    }
+    if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+        webviewStyle.webviewBGTransparent = true;
+    }
+}
+
+function initPopGesture(webviewStyle, routeMeta) {
+    // 不支持 hide
+    if (webviewStyle.popGesture === 'hide') {
+        delete webviewStyle.popGesture;
+    }
+    // 似乎没用了吧？记得是之前流应用时，需要 appback 的逻辑
+    if (routeMeta.isQuit) {
+        webviewStyle.popGesture = ('none');
+    }
+}
+
+function initPullToRefresh(webviewStyle, routeMeta) {
+    if (!routeMeta.enablePullDownRefresh) {
+        return;
+    }
+    const pullToRefresh = normalizePullToRefreshRpx(extend({}, defaultPullToRefresh, routeMeta.pullToRefresh));
+    webviewStyle.pullToRefresh = initWebviewPullToRefreshI18n(pullToRefresh, routeMeta);
+}
+function initWebviewPullToRefreshI18n(pullToRefresh, routeMeta) {
+    const i18nResult = initPullToRefreshI18n(pullToRefresh);
+    if (!i18nResult) {
+        return pullToRefresh;
+    }
+    const [contentdownI18n, contentoverI18n, contentrefreshI18n] = i18nResult;
+    if (contentdownI18n || contentoverI18n || contentrefreshI18n) {
+        uni.onLocaleChange(() => {
+            const webview = plus.webview.getWebviewById(routeMeta.id + '');
+            if (!webview) {
+                return;
+            }
+            const newPullToRefresh = {
+                support: true,
+            };
+            if (contentdownI18n) {
+                newPullToRefresh.contentdown = {
+                    caption: pullToRefresh.contentdown.caption,
+                };
+            }
+            if (contentoverI18n) {
+                newPullToRefresh.contentover = {
+                    caption: pullToRefresh.contentover.caption,
+                };
+            }
+            if (contentrefreshI18n) {
+                newPullToRefresh.contentrefresh = {
+                    caption: pullToRefresh.contentrefresh.caption,
+                };
+            }
+            if (('production' !== 'production')) {
+                console.log(formatLog('updateWebview', webview.id, newPullToRefresh));
+            }
+            webview.setStyle({
+                pullToRefresh: newPullToRefresh,
+            });
+        });
+    }
+    return pullToRefresh;
+}
+const defaultPullToRefresh = {
+    support: true,
+    style: 'default',
+    height: '50px',
+    range: '200px',
+    contentdown: {
+        caption: '',
+    },
+    contentover: {
+        caption: '',
+    },
+    contentrefresh: {
+        caption: '',
+    },
+};
+
+function initTitleNView(webviewStyle, routeMeta) {
+    const { navigationBar } = routeMeta;
+    if (navigationBar.style === 'custom') {
+        return false;
+    }
+    let autoBackButton = true;
+    if (routeMeta.isQuit) {
+        autoBackButton = false;
+    }
+    const titleNView = {
+        autoBackButton,
+    };
+    Object.keys(navigationBar).forEach((name) => {
+        const value = navigationBar[name];
+        if (name === 'titleImage' && value) {
+            titleNView.tags = createTitleImageTags(value);
+        }
+        else if (name === 'buttons' && isArray(value)) {
+            titleNView.buttons = value.map((button, index) => {
+                button.onclick = createTitleNViewBtnClick(index);
+                return button;
+            });
+        }
+        else {
+            titleNView[name] =
+                value;
+        }
+    });
+    webviewStyle.titleNView = initTitleNViewI18n(titleNView, routeMeta);
+}
+function initTitleNViewI18n(titleNView, routeMeta) {
+    const i18nResult = initNavigationBarI18n(titleNView);
+    if (!i18nResult) {
+        return titleNView;
+    }
+    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+    if (titleTextI18n || searchInputPlaceholderI18n) {
+        uni.onLocaleChange(() => {
+            const webview = plus.webview.getWebviewById(routeMeta.id + '');
+            if (!webview) {
+                return;
+            }
+            const newTitleNView = {};
+            if (titleTextI18n) {
+                newTitleNView.titleText = titleNView.titleText;
+            }
+            if (searchInputPlaceholderI18n) {
+                newTitleNView.searchInput = {
+                    placeholder: titleNView.searchInput.placeholder,
+                };
+            }
+            if (('production' !== 'production')) {
+                console.log(formatLog('updateWebview', webview.id, newTitleNView));
+            }
+            webview.setStyle({
+                titleNView: newTitleNView,
+            });
+        });
+    }
+    return titleNView;
+}
+function createTitleImageTags(titleImage) {
+    return [
+        {
+            tag: 'img',
+            src: titleImage,
+            position: {
+                left: 'auto',
+                top: 'auto',
+                width: 'auto',
+                height: '26px',
+            },
+        },
+    ];
+}
+function createTitleNViewBtnClick(index) {
+    return function onClick(btn) {
+        btn.index = index;
+        invokeHook(ON_NAVIGATION_BAR_BUTTON_TAP, btn);
+    };
+}
+
+function parseWebviewStyle(path, routeMeta, webview) {
+    const webviewStyle = {
+        bounce: 'vertical',
+    };
+    Object.keys(routeMeta).forEach((name) => {
+        if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+            webviewStyle[name] =
+                routeMeta[name];
+        }
+    });
+    if (webview.id !== '1') {
+        // 首页 nvue 已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
+        initNVue(webviewStyle, routeMeta, path);
+    }
+    initPopGesture(webviewStyle, routeMeta);
+    initBackgroundColor(webviewStyle, routeMeta);
+    initTitleNView(webviewStyle, routeMeta);
+    initPullToRefresh(webviewStyle, routeMeta);
+    return webviewStyle;
+}
+const WEBVIEW_STYLE_BLACKLIST = [
+    'id',
+    'route',
+    'isNVue',
+    'isQuit',
+    'isEntry',
+    'isTabBar',
+    'tabBarIndex',
+    'windowTop',
+    'topWindow',
+    'leftWindow',
+    'rightWindow',
+    'maxWidth',
+    'usingComponents',
+    'disableScroll',
+    'enablePullDownRefresh',
+    'navigationBar',
+    'pullToRefresh',
+    'onReachBottomDistance',
+    'pageOrientation',
+    'backgroundColor',
+];
+
 let id = 2;
 function getWebviewId() {
     return id;
 }
 function genWebviewId() {
     return id++;
+}
+function encode(val) {
+    return val;
+}
+function initUniPageUrl(path, query) {
+    const queryString = query ? stringifyQuery$1(query, encode) : '';
+    return {
+        path: path.slice(1),
+        query: queryString ? queryString.slice(1) : queryString,
+    };
+}
+function initDebugRefresh(isTab, path, query) {
+    const queryString = query ? stringifyQuery$1(query, encode) : '';
+    return {
+        isTab,
+        arguments: JSON.stringify({
+            path: path.slice(1),
+            query: queryString ? queryString.slice(1) : queryString,
+        }),
+    };
 }
 
 const downgrade = 'Harmony' === 'Android' ;
@@ -2553,6 +3849,26 @@ function initRouteOptions(path, openType) {
     return routeOptions;
 }
 
+function initWebviewStyle(webview, path, query, routeMeta) {
+    // TODO parseTheme
+    const getWebviewStyle = () => parseWebviewStyle(path, routeMeta, webview);
+    const webviewStyle = getWebviewStyle();
+    webviewStyle.uniPageUrl = initUniPageUrl(path, query);
+    const isTabBar = !!routeMeta.isTabBar;
+    webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
+    // TODO webviewStyle.locale
+    if (('production' !== 'production')) {
+        console.log(formatLog('updateWebview', webviewStyle));
+    }
+    // TODO useWebviewThemeChange
+    webview.setStyle(webviewStyle);
+}
+
+function initWebview(webview, path, query, routeMeta) {
+    initWebviewStyle(webview, path, query, routeMeta);
+    // TODO initWebviewEvent(webview)
+}
+
 function createWebview(options) {
     if (getWebviewId() === 2) {
         return plus.webview.getLaunchWebview();
@@ -2577,10 +3893,11 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
         webview.nvue = routeOptions.meta.isNVue;
     }
     routeOptions.meta.id = parseInt(webview.id);
+    // TODO tabBar
     if (('production' !== 'production')) {
         console.log(formatLog('registerPage', path, webview.id));
     }
-    // TODO initWebview
+    initWebview(webview, path, query, routeOptions.meta);
     const route = path.slice(1);
     webview.__uniapp_route = route;
     const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 
@@ -2604,7 +3921,7 @@ function initPageOptions({ meta }) {
         disableScroll: meta.disableScroll === true,
         onPageScroll: false,
         onPageReachBottom: false,
-        onReachBottomDistance: hasOwn(meta, 'onReachBottomDistance')
+        onReachBottomDistance: hasOwn$1(meta, 'onReachBottomDistance')
             ? meta.onReachBottomDistance
             : ON_REACH_BOTTOM_DISTANCE,
         statusbarHeight,
@@ -2750,12 +4067,15 @@ var uni$1 = {
   __proto__: null,
   chooseImage: chooseImage,
   chooseVideo: chooseVideo,
+  downloadFile: downloadFile,
   getImageInfo: getImageInfo,
   getLocale: getLocale,
   getSystemInfoSync: getSystemInfoSync,
   getVideoInfo: getVideoInfo,
   navigateBack: navigateBack,
-  navigateTo: navigateTo
+  navigateTo: navigateTo,
+  request: request,
+  uploadFile: uploadFile
 };
 
 const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
