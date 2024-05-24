@@ -1,7 +1,7 @@
 import { hasOwn } from '@vue/shared'
 import type { RegisterPageOptions } from '@dcloudio/uni-app-plus/service/framework/page/register'
 import { initRouteOptions } from '@dcloudio/uni-app-plus/service/framework/page/routeOptions'
-import { createWebview } from '../webview'
+import { createWebview, initWebview } from '../webview'
 import {
   ON_REACH_BOTTOM_DISTANCE,
   type PageNodeOptions,
@@ -35,11 +35,14 @@ export function registerPage({
 
   routeOptions.meta.id = parseInt(webview.id!)
 
+  // TODO tabBar
+
   if (__DEV__) {
     console.log(formatLog('registerPage', path, webview.id))
   }
 
-  // TODO initWebview
+  initWebview(webview, path, query, routeOptions.meta)
+
   const route = path.slice(1)
   ;(webview as any).__uniapp_route = route
 
