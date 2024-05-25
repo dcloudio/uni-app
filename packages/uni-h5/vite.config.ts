@@ -1,9 +1,7 @@
-import fs from 'fs-extra'
 import path from 'path'
-import execa from 'execa'
 
-import { type Plugin, defineConfig } from 'vite'
-import { sync } from 'fast-glob'
+import { defineConfig } from 'vite'
+
 import jscc from 'rollup-plugin-jscc'
 import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
@@ -16,6 +14,7 @@ import type { OutputChunk } from 'rollup'
 import { normalizePath, stripOptions } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
+import { uts2ts } from '../../scripts/ext-api'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -184,41 +183,6 @@ export default defineConfig({
 //   process.exit(0)
 // }
 
-const extApiDirTemp = path.resolve(__dirname, 'temp', 'uni-ext-api')
-
-async function checkExtApiDir(name: string) {
-  if (fs.existsSync(path.resolve(extApiDirTemp, name))) {
-    return
-  }
-  const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR!)
-
-  // 拷贝到临时目录
-  fs.copySync(path.resolve(extApiDir, name), path.resolve(extApiDirTemp, name))
-  // 重命名后缀
-  sync('**/*.uts', {
-    absolute: true,
-    cwd: path.resolve(extApiDirTemp, name),
-  }).forEach((file) => {
-    fs.renameSync(file, file + '.ts')
-  })
-
-  await checkExtApiTypes()
-}
-
-async function resolveExtApi(name: string) {
-  await checkExtApiDir(name)
-  const filename = path.resolve(
-    extApiDirTemp,
-    name,
-    'utssdk',
-    'app-android',
-    'index.uts.ts'
-  )
-  return fs.existsSync(filename)
-    ? filename
-    : path.resolve(extApiDirTemp, name, 'utssdk', 'index.uts.ts')
-}
-
 function uniExtApi() {
   const uniApi = normalizePath(path.resolve(__dirname, '../uni-api'))
   return AutoImport({
@@ -234,56 +198,5 @@ function uniExtApi() {
         ],
       },
     ],
-  })
-}
-
-function uts2ts(): Plugin {
-  return {
-    name: 'uts2ts',
-    config() {
-      return {
-        resolve: {
-          extensions: [
-            '.mjs',
-            '.js',
-            '.mts',
-            '.ts',
-            '.jsx',
-            '.tsx',
-            '.json',
-            '.uts.ts',
-          ],
-          alias: [
-            {
-              find: '@dcloudio/uni-runtime',
-              replacement: resolve('../uni-runtime/src/index.ts'),
-            },
-            {
-              find: /^@dcloudio\/uni-ext-api\/(.*)/,
-              replacement: '$1',
-              customResolver(source) {
-                return resolveExtApi(source)
-              },
-            },
-          ],
-        },
-      }
-    },
-    buildStart() {
-      // 清理临时目录
-      fs.emptyDirSync(extApiDirTemp)
-    },
-    buildEnd(error) {
-      if (!error) {
-        // 清理临时目录
-        fs.emptyDirSync(extApiDirTemp)
-      }
-    },
-  }
-}
-
-async function checkExtApiTypes() {
-  await execa('tsc', ['-p', './tsconfig.api.json'], {
-    stdio: 'inherit',
   })
 }
