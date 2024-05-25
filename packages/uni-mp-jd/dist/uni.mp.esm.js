@@ -891,7 +891,8 @@ var parseOptions = extend({}, baseParseOptions, {
 
 const createComponent = initCreateComponent(parseOptions);
 const createPage = initCreatePage(parseOptions);
-// 重写 Object.getPrototypeOf、Object.prototype.hasOwnProperty 方法。JD 小程序使用该方法获取值
+// 重写 Object.getPrototypeOf、Object.prototype.hasOwnProperty 方法
+// jd 会从原型链上拿值，导致后追加的属性无法被拿到
 const OriginalGetPrototypeOf = Object.getPrototypeOf;
 Object.getPrototypeOf = function (obj) {
     if ('$vm' in obj) {

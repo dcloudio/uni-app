@@ -3,8 +3,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
 const uniShared = require("@dcloudio/uni-shared");
-const uniI18n = require("@dcloudio/uni-i18n");
 const vueRouter = require("vue-router");
+const uniI18n = require("@dcloudio/uni-i18n");
 function arrayPop(array) {
   if (array.length === 0) {
     return null;
@@ -1619,7 +1619,6 @@ const index$A = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
-    useI18n();
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -12858,9 +12857,9 @@ function parseTheme(pageStyle) {
   return __uniConfig.darkmode ? parsedStyle : pageStyle;
 }
 function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactived = vue.isReactive(pageStyle);
-  const reactivePageStyle = isReactived ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactived) {
+  const isReactivity = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
     vue.watch(pageStyle, (value) => {
       const _pageStyle = parseTheme(value);
       for (const key in _pageStyle) {

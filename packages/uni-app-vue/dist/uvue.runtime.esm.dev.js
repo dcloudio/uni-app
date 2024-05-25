@@ -1436,11 +1436,11 @@ function normalizeProps(props) {
   return props;
 }
 var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
-// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
-function isRootImmediateHookX(name) {
-  var PAGE_SYNC_HOOKS = [ON_LOAD];
+function isRootImmediateHook(name) {
+  var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
   return PAGE_SYNC_HOOKS.indexOf(name) > -1;
 }
+// isRootImmediateHookX deprecated
 function isRootHook(name) {
   return PAGE_HOOKS.indexOf(name) > -1;
 }
@@ -4314,7 +4314,7 @@ function injectHook(type, hook) {
   if (target) {
     if (isRootHook(type) && target !== target.root) {
       target = target.root;
-      if (isRootImmediateHookX(type)) {
+      if (isRootImmediateHook(type)) {
         var proxy = target.proxy;
         callWithAsyncErrorHandling(hook.bind(proxy), target, type, ON_LOAD === type ? [proxy.$page.options] : []);
       }

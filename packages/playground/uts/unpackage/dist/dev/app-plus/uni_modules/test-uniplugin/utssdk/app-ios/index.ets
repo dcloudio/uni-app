@@ -1,20 +1,20 @@
 type ShowToast = (msg: string) => void;
 import { UIDevice } from 'UIKit';
 import { CLLocationManager, CLAuthorizationStatus } from 'CoreLocation';
-type GetBatteryInfoOptions = {
-    name: string;
-    pwd: number;
-    success?: (res: UTSJSONObject) => void;
-    fail?: (res: UTSJSONObject) => void;
-    complete?: (res: UTSJSONObject) => void;
-};
+class GetBatteryInfoOptions extends UTSObject {
+    name!: string;
+    pwd!: number;
+    success: ((res: UTSJSONObject) => void) | null = null;
+    fail: ((res: UTSJSONObject) => void) | null = null;
+    complete: ((res: UTSJSONObject) => void) | null = null;
+}
 function getBatteryInfo(options: GetBatteryInfoOptions) {
     new UIAlertController(title = title, message = message, preferredStyle = UIAlertController.Style.alert);
     const res = {
         errMsg: 'getBatteryInfo:ok',
         level: UIDevice.current.batteryLevel * 100,
         isCharging: UIDevice.current.batteryState == UIDevice.BatteryState.charging
-    };
+    } as UTSJSONObject;
     if (options.success != null) {
         options.success!(res);
     }
@@ -25,7 +25,7 @@ function getBatteryInfo(options: GetBatteryInfoOptions) {
 function test1(callback: () => void): string {
     console.log({
         "a": "b"
-    }, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
+    } as UTSJSONObject, " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:33");
     console.log('test1', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:34");
     console.log('ndef android', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:42");
     console.log('ndef ios', " at uni_modules/test-uniplugin/utssdk/app-ios/index.uts:45");
@@ -66,8 +66,8 @@ async function testAsync() {
     };
 }
 const showToast1: ShowToast = (msg)=>{};
-const showToast2: ShowToast = function(msg) {};
-const showToast3: ShowToast = function showToast(msg) {};
+const showToast2: ShowToast = (msg)=>{};
+const showToast3: ShowToast = (msg)=>{};
 export { getBatteryInfo as default };
 export { test1 as test1 };
 export { Test as Test };

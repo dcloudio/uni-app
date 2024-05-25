@@ -3,7 +3,7 @@ import fs from '@ohos.file.fs';
 import media from '@ohos.multimedia.media';
 import image from '@ohos.multimedia.image';
 import http from '@ohos.net.http';
-import { injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 async function _getVideoInfo(uri) {
     const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
@@ -315,7 +315,8 @@ function assertType(value, type) {
     }
     else {
         {
-            valid = value instanceof type;
+            // App平台ArrayBuffer等参数跨实例传输，无法通过 instanceof 识别
+            valid = value instanceof type || toRawType(value) === getType(type);
         }
     }
     return {
@@ -1544,10 +1545,17 @@ function getDefaultLocale() {
 function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     // 兼容旧版本入参
     if (typeof locale !== 'string') {
-        [locale, messages] = [
+        // ;[locale, messages] = [
+        //   messages as unknown as string,
+        //   locale as unknown as LocaleMessages,
+        // ]
+        // 暂不使用数组解构，uts编译器暂未支持。
+        const options = [
             messages,
             locale,
         ];
+        locale = options[0];
+        messages = options[1];
     }
     if (typeof locale !== 'string') {
         // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
@@ -1695,7 +1703,12 @@ function useI18n() {
     if (!i18n) {
         let locale;
         {
-            locale = uni.getSystemInfoSync().language;
+            if (typeof getApp === 'function') {
+                locale = weex.requireModule('plus').getLanguage();
+            }
+            else {
+                locale = plus.webview.currentWebview().getStyle().locale;
+            }
         }
         i18n = initVueI18n(locale);
         // 自定义locales
@@ -1710,6 +1723,36 @@ function useI18n() {
     }
     return i18n;
 }
+
+// This file is created by scripts/i18n.js
+// Do not modify this file!!!!!!!!!
+function normalizeMessages(module, keys, values) {
+    return keys.reduce((res, name, index) => {
+        res[module + name] = values[index];
+        return res;
+    }, {});
+}
+const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
+    const name = 'uni.app.';
+    const keys = ['quit'];
+    {
+        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Press back button again to exit']), false);
+    }
+    {
+        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Pulse otra vez para salir']), false);
+    }
+    {
+        useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+            "Appuyez à nouveau pour quitter l'application",
+        ]), false);
+    }
+    {
+        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['再按一次退出应用']), false);
+    }
+    {
+        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['再按一次退出應用']), false);
+    }
+});
 
 function initNavigationBarI18n(navigationBar) {
     if (isEnableLocale()) {
@@ -1875,6 +1918,12 @@ function invokeHook(vm, name, args) {
     if (!vm) {
         return;
     }
+    // 兼容 nvue
+    {
+        if (vm.__call_hook) {
+            return vm.__call_hook(name, args);
+        }
+    }
     const hooks = vm.$[name];
     return hooks && invokeArrayFns(hooks, args);
 }
@@ -2010,6 +2059,19 @@ function initService() {
         initOn();
         initSubscribe();
     }
+}
+function initAppVm(appVm) {
+    appVm.$vm = appVm;
+    appVm.$mpType = 'app';
+    const locale = ref(useI18n().getLocale());
+    Object.defineProperty(appVm, '$locale', {
+        get() {
+            return locale.value;
+        },
+        set(v) {
+            locale.value = v;
+        },
+    });
 }
 function initPageVm(pageVm, page) {
     pageVm.route = page.route;
@@ -2447,6 +2509,11 @@ function createNormalizeUrl(type) {
             return;
         }
         else if (type === API_PRELOAD_PAGE) {
+            {
+                if (!routeOptions.meta.isNVue) {
+                    return 'can not preload vue page';
+                }
+            }
             if (routeOptions.meta.isTabBar) {
                 const pages = getCurrentPages();
                 const tabBarPagePath = routeOptions.path.slice(1);
@@ -4008,11 +4075,10 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject 
 }, NavigateBackProtocol, NavigateBackOptions);
 let firstBackTime = 0;
 function quit() {
-    // TODO initI18nAppMsgsOnce()
+    initI18nAppMsgsOnce();
     if (!firstBackTime) {
         firstBackTime = Date.now();
-        // TODO useI18n
-        plus.nativeUI.toast('再按一次退出應用');
+        plus.nativeUI.toast(useI18n().t('uni.app.quit'));
         setTimeout(() => {
             firstBackTime = 0;
         }, 2000);
@@ -4321,10 +4387,16 @@ let appCtx;
 const defaultApp = {
     globalData: {},
 };
-function initAppVm(appVm) {
-    appVm.$vm = appVm;
-    appVm.$mpType = 'app';
-    // TODO useI18n
+function getApp$1({ allowDefault = false } = {}) {
+    if (appCtx) {
+        // 真实的 App 已初始化
+        return appCtx;
+    }
+    if (allowDefault) {
+        // 返回默认实现
+        return defaultApp;
+    }
+    console.error('[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.');
 }
 function registerApp(appVm) {
     if (('production' !== 'production')) {
@@ -4346,6 +4418,7 @@ function registerApp(appVm) {
 
 var index = {
     uni: uni$1,
+    getApp: getApp$1,
     getCurrentPages: getCurrentPages$1,
     __definePage: definePage,
     __registerApp: registerApp,

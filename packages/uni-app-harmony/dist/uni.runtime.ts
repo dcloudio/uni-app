@@ -35,11 +35,11 @@ async function _getVideoInfo(uri: string): Promise<VideoInfo> {
         size = (await fs.stat(file.fd)).size;
         avMetadataExtractor.dataSrc = {
             fileSize: size,
-            callback: (buffer: ArrayBuffer, length: number, pos?: number)=>{
+            callback: (buffer: ArrayBuffer, length: number, pos: number | null = null)=>{
                 return fs.readSync(file.fd, buffer, {
                     offset: pos,
                     length
-                });
+                } as UTSJSONObject);
             }
         };
         metadata = await avMetadataExtractor.fetchMetadata();
@@ -155,7 +155,7 @@ async function _chooseMedia(options: chooseMediaOptions): Promise<chooseMediaSuc
             duration: videoInfo.duration,
             width: videoInfo.width,
             height: videoInfo.height
-        });
+        } as UTSJSONObject);
     }
     return {
         tempFiles
@@ -187,14 +187,14 @@ function hasLeadingSlash(str: string) {
 function addLeadingSlash(str: string) {
     return hasLeadingSlash(str) ? str : '/' + str;
 }
-const invokeArrayFns = (fns: Function[], arg?: Object)=>{
+const invokeArrayFns = (fns: Function[], arg: Object | null = null)=>{
     let ret;
     for(let i = 0; i < fns.length; i++){
         ret = fns[i](arg);
     }
     return ret;
 };
-function once<T extends (...args: Object[]) => Object>(fn: T, ctx: unknown = null): T {
+function once<T extends (...args: Object[]) => Object>(fn: T, ctx: Object = null): T {
     let res: Object;
     return (...args: Object[])=>{
         if (fn) {
@@ -205,7 +205,7 @@ function once<T extends (...args: Object[]) => Object>(fn: T, ctx: unknown = nul
     } as T;
 }
 const encode = encodeURIComponent;
-function stringifyQuery(obj?: Record<string, Object>, encodeStr = encode) {
+function stringifyQuery(obj: Record<string, Object> | null = null, encodeStr = encode) {
     const res = obj ? Object.keys(obj).map((key)=>{
         let val = obj[key];
         if (typeof val === undefined || val === null) {
@@ -249,20 +249,20 @@ function parseQuery(search: string) {
     return query;
 }
 function parseUrl(url: string) {
-    const [path, querystring] = url.split('?', 2);
+    const _url_split = url.split('?', 2), path = _url_split[0], querystring = _url_split[1];
     return {
         path,
         query: parseQuery(querystring || '')
     };
 }
 class DOMException extends Error {
-    constructor(message?: string){
+    constructor(message: string | null = null){
         super(message);
         this.name = 'DOMException';
     }
 }
 type UniCSSStyleDeclarationJSON = string | null | Record<string, string | string[]> | [string, Record<string, string | string[]>];
-function normalizeEventType(type: string, options?: AddEventListenerOptions) {
+function normalizeEventType(type: string, options: AddEventListenerOptions | null = null) {
     if (options) {
         if (options.capture) {
             type += 'Capture';
@@ -278,17 +278,17 @@ function normalizeEventType(type: string, options?: AddEventListenerOptions) {
 }
 type UniNodeType = typeof NODE_TYPE_PAGE | typeof NODE_TYPE_ELEMENT | typeof NODE_TYPE_TEXT | typeof NODE_TYPE_COMMENT;
 function sibling(node: UniNode, type: string | string) {
-    const { parentNode  } = node;
+    const parentNode = node.parentNode;
     if (!parentNode) {
         return null;
     }
-    const { childNodes  } = parentNode;
+    const childNodes = parentNode.childNodes;
     return childNodes[childNodes.indexOf(node) + (type === 'n' ? 1 : -1)] || null;
 }
 function removeNode(node: UniNode) {
-    const { parentNode  } = node;
+    const parentNode = node.parentNode;
     if (parentNode) {
-        const { childNodes  } = parentNode;
+        const childNodes = parentNode.childNodes;
         const index = childNodes.indexOf(node);
         if (index > -1) {
             node.parentNode = null;
@@ -313,7 +313,7 @@ interface IUniPageNode {
     onAddEvent: (thisNode: UniNode, name: string, flag: number) => void;
     onAddWxsEvent: (thisNode: UniNode, name: string, wxsEvent: string, flag: number) => void;
     onRemoveEvent: (thisNode: UniNode, name: string) => void;
-    onSetAttribute: (thisNode: UniNode, qualifiedName: string, value: unknown) => void;
+    onSetAttribute: (thisNode: UniNode, qualifiedName: string, value: Object) => void;
     onRemoveAttribute: (thisNode: UniNode, qualifiedName: string) => void;
     onTextContent: (thisNode: UniNode, text: string) => void;
     onNodeValue: (thisNode: UniNode, val: string | null) => void;
@@ -355,11 +355,11 @@ function createUniEvent(evt: Record<string, Object>) {
     if (evt instanceof UniEvent) {
         return evt;
     }
-    const [type] = parseEventName(evt.type);
+    const _parseEventName = parseEventName(evt.type), type = _parseEventName[0];
     const uniEvent = new UniEvent(type, {
         bubbles: false,
         cancelable: false
-    });
+    } as UTSJSONObject);
     extend(uniEvent, evt);
     return uniEvent;
 }
@@ -380,11 +380,11 @@ class UniEventTarget {
         }
         return event.cancelable && event.defaultPrevented;
     }
-    addEventListener(type: string, listener: UniEventListener, options?: AddEventListenerOptions): void {
+    addEventListener(type: string, listener: UniEventListener, options: AddEventListenerOptions | null = null): void {
         type = normalizeEventType(type, options);
         (this.listeners[type] || (this.listeners[type] = [])).push(listener);
     }
-    removeEventListener(type: string, callback: UniEventListener, options?: AddEventListenerOptions): void {
+    removeEventListener(type: string, callback: UniEventListener, options: AddEventListenerOptions | null = null): void {
         type = normalizeEventType(type, options);
         const listeners = this.listeners[type];
         if (!listeners) {
@@ -408,7 +408,7 @@ class UniNode extends UniEventTarget {
     constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode){
         super();
         if (container) {
-            const { pageNode  } = container;
+            const pageNode = container.pageNode;
             if (pageNode) {
                 this.pageNode = pageNode;
                 this.nodeId = pageNode!.genId();
@@ -423,7 +423,7 @@ class UniNode extends UniEventTarget {
         return this.childNodes[0] || null;
     }
     get lastChild(): UniNode | null {
-        const { childNodes  } = this;
+        const childNodes = this.childNodes;
         const length = childNodes.length;
         return length ? childNodes[length - 1] : null;
     }
@@ -444,9 +444,9 @@ class UniNode extends UniEventTarget {
         }
     }
     get parentElement(): UniElement | null {
-        const { parentNode  } = this;
+        const parentNode = this.parentNode;
         if (parentNode && parentNode.nodeType === 1) {
-            return parentNode as unknown as UniElement;
+            return parentNode as Object as UniElement;
         }
         return null;
     }
@@ -456,11 +456,11 @@ class UniNode extends UniEventTarget {
     appendChild(newChild: UniNode): UniNode {
         return this.insertBefore(newChild, null);
     }
-    cloneNode(deep?: boolean): UniNode {
+    cloneNode(deep: boolean | null = null): UniNode {
         const cloned = extend(Object.create(Object.getPrototypeOf(this)), this) as UniNode;
-        const { attributes  } = cloned as unknown as UniElement;
+        const attributes = cloned as Object as UniElement.attributes;
         if (attributes) {
-            (cloned as unknown as UniElement).attributes = extend({}, attributes);
+            (cloned as Object as UniElement).attributes = extend({} as UTSJSONObject, attributes);
         }
         if (deep) {
             cloned.childNodes = cloned.childNodes.map((childNode)=>childNode.cloneNode(true));
@@ -472,7 +472,7 @@ class UniNode extends UniEventTarget {
         newChild.pageNode = this.pageNode;
         newChild.parentNode = this;
         checkNodeId(newChild);
-        const { childNodes  } = this;
+        const childNodes = this.childNodes;
         if (refChild) {
             const index = childNodes.indexOf(refChild);
             if (index === -1) {
@@ -485,7 +485,7 @@ class UniNode extends UniEventTarget {
         return this.pageNode && !this.pageNode.isUnmounted ? this.pageNode.onInsertBefore(this, newChild, refChild) : newChild;
     }
     removeChild(oldChild: UniNode): UniNode {
-        const { childNodes  } = this;
+        const childNodes = this.childNodes;
         const index = childNodes.indexOf(oldChild);
         if (index === -1) {
             throw new DOMException(`Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.`);
@@ -508,7 +508,7 @@ interface UniNodeJSONMinify {
 interface UniNodeJSON {
     i: number;
     n: string | number;
-    a: Record<string, unknown>;
+    a: Record<string, Object>;
     e: Record<string, number>;
     w: Record<string, [string, number]>;
     s?: UniCSSStyleDeclarationJSON;
@@ -560,7 +560,7 @@ type RemoveAction = [typeof ACTION_TYPE_REMOVE, number];
 type AddEventAction = [typeof ACTION_TYPE_ADD_EVENT, number, string | number, number];
 type AddWxsEventAction = [typeof ACTION_TYPE_ADD_WXS_EVENT, number, string | number, string | number, number];
 type RemoveEventAction = [typeof ACTION_TYPE_REMOVE_EVENT, number, string | number];
-type SetAttributeAction = [typeof ACTION_TYPE_SET_ATTRIBUTE, number, string | number, unknown | number];
+type SetAttributeAction = [typeof ACTION_TYPE_SET_ATTRIBUTE, number, string | number, Object | number];
 type RemoveAttributeAction = [typeof ACTION_TYPE_REMOVE_ATTRIBUTE, number, string | number];
 type SetTextAction = [typeof ACTION_TYPE_SET_TEXT, number, string | number];
 type PageScrollAction = [typeof ACTION_TYPE_PAGE_SCROLL, number];
@@ -578,7 +578,7 @@ class EventChannel {
         args: Object[];
         eventName: string;
     }[];
-    constructor(id?: number, events?: NavigateToOptionEvents){
+    constructor(id: number | null = null, events: NavigateToOptionEvents | null = null){
         this.id = id;
         this.listener = {};
         this.emitCache = [];
@@ -594,7 +594,7 @@ class EventChannel {
             return this.emitCache.push({
                 eventName,
                 args
-            });
+            } as UTSJSONObject);
         }
         fns.forEach((opt)=>{
             opt.fn.apply(opt.fn, args);
@@ -626,15 +626,14 @@ class EventChannel {
             delete this.listener[eventName];
         }
     }
-    _clearCache(eventName?: string) {
+    _clearCache(eventName: string | null = null) {
         for(let index = 0; index < this.emitCache.length; index++){
             const cache = this.emitCache[index];
             const _name = eventName ? cache.eventName === eventName ? eventName : null : cache.eventName;
             if (!_name) continue;
             const location = this.emit.apply(this, [
-                _name,
-                ...cache.args
-            ]);
+                _name
+            ].concat(cache.args));
             if (typeof location === 'number') {
                 this.emitCache.pop();
                 continue;
@@ -647,36 +646,36 @@ class EventChannel {
         (this.listener[eventName] || (this.listener[eventName] = [])).push({
             fn,
             type
-        });
+        } as UTSJSONObject);
     }
 }
 interface E {
-    e: Record<string, unknown>;
+    e: Record<string, Object>;
     on: (name: EventName, callback: EventCallback, ctx?: Object) => this;
     once: (name: EventName, callback: EventCallback, ctx?: Object) => this;
     emit: (name: EventName, ...args: Object[]) => this;
     off: (name: EventName, callback?: EventCallback) => this;
 }
-const E = function() {} as unknown as {
+const E = function() {} as Object as {
     new(): E;
 };
 type EventName = string;
 type EventCallback = Function;
 E.prototype = {
-    on: function(name: EventName, callback: EventCallback, ctx?: Object) {
+    on: function(name: EventName, callback: EventCallback, ctx: Object | null = null) {
         let e = this.e || (this.e = {});
         (e[name] || (e[name] = [])).push({
             fn: callback,
             ctx: ctx
-        });
+        } as UTSJSONObject);
         return this;
     },
-    once: function(name: EventName, callback: EventCallback, ctx?: Object) {
+    once: function(name: EventName, callback: EventCallback, ctx: Object | null = null) {
         let self = this;
-        function listener() {
+        const listener = ()=>{
             self.off(name, listener);
             callback.apply(ctx, arguments);
-        }
+        };
         listener._ = callback;
         return this.on(name, listener, ctx);
     },
@@ -690,7 +689,7 @@ E.prototype = {
         }
         return this;
     },
-    off: function(name: EventName, callback?: EventCallback) {
+    off: function(name: EventName, callback: EventCallback | null = null) {
         let e = this.e || (this.e = {});
         let evts = e[name];
         let liveEvents = [];
@@ -710,8 +709,8 @@ E.prototype = {
 const borderStyles = {
     black: 'rgba(0,0,0,0.4)',
     white: 'rgba(255,255,255,0.4)'
-};
-function normalizeTabBarStyles(borderStyle?: string) {
+} as UTSJSONObject;
+function normalizeTabBarStyles(borderStyle: string | null = null) {
     if (borderStyle && borderStyle in borderStyles) {
         return borderStyles[borderStyle as keyof typeof borderStyles];
     }
@@ -720,7 +719,7 @@ function normalizeTabBarStyles(borderStyle?: string) {
 function normalizeTitleColor(titleColor: string) {
     return titleColor === 'black' ? '#000000' : '#ffffff';
 }
-function resolveStringStyleItem(modeStyle: Record<string, string>, styleItem: string, key?: string) {
+function resolveStringStyleItem(modeStyle: Record<string, string>, styleItem: string, key: string | null = null) {
     if (isString(styleItem) && styleItem.startsWith('@')) {
         const _key = (styleItem as string).replace('@', '');
         let _styleItem = modeStyle![_key] || styleItem;
@@ -756,7 +755,7 @@ function normalizeStyles<T extends object>(pageStyle: T, themeConfig: UniApp.The
     });
     return styles;
 }
-const isObject = (val: unknown): val is Record<Object, Object> =>val !== null && typeof val === 'object';
+const isObject = (val: Object): val is Record<Object, Object> =>val !== null && typeof val === 'object';
 const defaultDelimiters: [string, string] = [
     '{',
     '}'
@@ -768,7 +767,7 @@ class BaseFormatter {
     constructor(){
         this._caches = Object.create(null);
     }
-    interpolate(message: string, values?: Record<string, unknown> | Array<unknown>, delimiters: [string, string] = defaultDelimiters): Array<unknown> {
+    interpolate(message: string, values: Record<string, Object> | Array<Object> | null = null, delimiters: [string, string] = defaultDelimiters): Array<Object> {
         if (!values) {
             return [
                 message
@@ -782,13 +781,14 @@ class BaseFormatter {
         return compile(tokens, values);
     }
 }
-type Token = {
-    type: string | string | string | string;
-    value: string;
-};
+class Token extends UTSObject {
+    type!: string | string | string | string;
+    value!: string;
+}
 const RE_TOKEN_LIST_VALUE: RegExp = /^(?:\d)+/;
 const RE_TOKEN_NAMED_VALUE: RegExp = /^(?:\w)+/;
-function parse(format: string, [startDelimiter, endDelimiter]: [string, string]): Array<Token> {
+function parse(format: string, ref1: [string, string]): Array<Token> {
+    let startDelimiter = ref1[0], endDelimiter = ref1[1];
     const tokens: Array<Token> = [];
     let position: number = 0;
     let text: string = '';
@@ -799,7 +799,7 @@ function parse(format: string, [startDelimiter, endDelimiter]: [string, string])
                 tokens.push({
                     type: 'text',
                     value: text
-                });
+                } as UTSJSONObject);
             }
             text = '';
             let sub: string = '';
@@ -813,7 +813,7 @@ function parse(format: string, [startDelimiter, endDelimiter]: [string, string])
             tokens.push({
                 value: sub,
                 type
-            });
+            } as UTSJSONObject);
         } else {
             text += char;
         }
@@ -821,11 +821,11 @@ function parse(format: string, [startDelimiter, endDelimiter]: [string, string])
     text && tokens.push({
         type: 'text',
         value: text
-    });
+    } as UTSJSONObject);
     return tokens;
 }
-function compile(tokens: Array<Token>, values: Record<string, unknown> | Array<unknown>): Array<unknown> {
-    const compiled: Array<unknown> = [];
+function compile(tokens: Array<Token>, values: Record<string, Object> | Array<Object>): Array<Object> {
+    const compiled: Array<Object> = [];
     let index: number = 0;
     const mode: string = Array.isArray(values) ? 'list' : isObject(values) ? 'named' : 'unknown';
     if (mode === 'unknown') {
@@ -838,11 +838,11 @@ function compile(tokens: Array<Token>, values: Record<string, unknown> | Array<u
                 compiled.push(token.value);
                 break;
             case 'list':
-                compiled.push((values as Record<string, unknown>)[parseInt(token.value, 10)]);
+                compiled.push((values as Record<string, Object>)[parseInt(token.value, 10)]);
                 break;
             case 'named':
                 if (mode === 'named') {
-                    compiled.push((values as Record<string, unknown>)[token.value]);
+                    compiled.push((values as Record<string, Object>)[token.value]);
                 } else {
                     if (process.env.NODE_ENV !== 'production') {
                         console.warn(`Type of token '${token.type}' and format of value '${mode}' don't match!`);
@@ -867,7 +867,7 @@ const LOCALE_ES = 'es';
 type BuiltInLocale = typeof LOCALE_ZH_HANS | typeof LOCALE_ZH_HANT | typeof LOCALE_EN | typeof LOCALE_FR | typeof LOCALE_ES;
 type LocaleMessages = Record<string, Record<string, string>>;
 interface Formatter {
-    interpolate: (message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]) => Array<unknown>;
+    interpolate: (message: string, values?: Record<string, Object> | Array<Object>, delimiters?: [string, string]) => Array<Object>;
 }
 type LocaleWatcher = (newLocale: string, oldLocale: string) => void;
 interface I18nOptions {
@@ -886,7 +886,7 @@ function include(str: string, parts: string[]) {
 function startsWith(str: string, parts: string[]) {
     return parts.find((part)=>str.indexOf(part) === 0);
 }
-function normalizeLocale(locale: string, messages?: LocaleMessages): BuiltInLocale | undefined {
+function normalizeLocale(locale: string, messages: LocaleMessages | null = null): BuiltInLocale | undefined {
     if (!locale) {
         return;
     }
@@ -935,7 +935,8 @@ class I18n {
     private messages: LocaleMessages = {};
     private watchers: LocaleWatcher[] = [];
     private formater: Formatter;
-    constructor({ locale , fallbackLocale , messages , watcher , formater  }: I18nOptions){
+    constructor(ref1: I18nOptions){
+        let locale = ref1.locale, fallbackLocale = ref1.fallbackLocale, messages = ref1.messages, watcher = ref1.watcher, formater = ref1.formater;
         if (fallbackLocale) {
             this.fallbackLocale = fallbackLocale;
         }
@@ -984,16 +985,16 @@ class I18n {
             this.messages[locale] = message;
         }
     }
-    f(message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]) {
+    f(message: string, values: Record<string, Object> | Array<Object> | null = null, delimiters: [string, string] | null = null) {
         return this.formater.interpolate(message, values, delimiters).join('');
     }
-    t(key: string, values?: Record<string, unknown> | Array<unknown> | BuiltInLocale): string {
-        return this.t(key as string, null, values as Record<string, unknown> | Array<unknown>) as string;
+    t(key: string, values: Record<string, Object> | Array<Object> | BuiltInLocale | null = null): string {
+        return this.t(key as string, null, values as Record<string, Object> | Array<Object>) as string;
     }
-    t(key: string, locale?: BuiltInLocale, values?: Record<string, unknown> | Array<unknown>): string {
-        return this.t(key as string, locale as BuiltInLocale, values as Record<string, unknown> | Array<unknown>) as string;
+    t(key: string, locale: BuiltInLocale | null = null, values: Record<string, Object> | Array<Object> | null = null): string {
+        return this.t(key as string, locale as BuiltInLocale, values as Record<string, Object> | Array<Object>) as string;
     }
-    t(key: string, locale?: BuiltInLocale, values?: Record<string, unknown> | Array<unknown>) {
+    t(key: string, locale: BuiltInLocale | null = null, values: Record<string, Object> | Array<Object> | null = null) {
         let message = this.message;
         if (typeof locale === 'string') {
             locale = normalizeLocale(locale, this.messages);
@@ -1008,7 +1009,7 @@ class I18n {
         return this.formater.interpolate(message[key], values).join('');
     }
 }
-type Interpolate = (key: string, values?: Record<string, unknown> | Array<unknown>) => string;
+type Interpolate = (key: string, values?: Record<string, Object> | Array<Object>) => string;
 function watchAppLocale(appVm: Object, i18n: I18n) {
     if (appVm.$watchLocale) {
         appVm.$watchLocale((newLocale: string)=>{
@@ -1029,12 +1030,14 @@ function getDefaultLocale(): string {
     }
     return LOCALE_EN;
 }
-function initVueI18n(locale?: string, messages: LocaleMessages = {}, fallbackLocale?: string, watcher?: (locale: string) => void) {
+function initVueI18n(locale: string | null = null, messages: LocaleMessages = {}, fallbackLocale: string | null = null, watcher: ((locale: string) => void) | null = null) {
     if (typeof locale !== 'string') {
-        [locale, messages] = [
-            messages as unknown as string,
-            locale as unknown as LocaleMessages
+        const options = [
+            messages as Object as string,
+            locale as Object as LocaleMessages
         ];
+        locale = options[0] as string;
+        messages = options[1] as LocaleMessages;
     }
     if (typeof locale !== 'string') {
         locale = getDefaultLocale();
@@ -1047,7 +1050,7 @@ function initVueI18n(locale?: string, messages: LocaleMessages = {}, fallbackLoc
         fallbackLocale,
         messages,
         watcher
-    });
+    } as UTSJSONObject);
     let t: Interpolate = (key, values)=>{
         if (typeof getApp !== 'function') {
             t = function(key, values) {
@@ -1071,10 +1074,10 @@ function initVueI18n(locale?: string, messages: LocaleMessages = {}, fallbackLoc
     };
     return {
         i18n,
-        f (message: string, values?: Record<string, unknown> | Array<unknown>, delimiters?: [string, string]) {
+        f (message: string, values: Record<string, Object> | Array<Object> | null = null, delimiters: [string, string] | null = null) {
             return i18n.f(message, values, delimiters);
         },
-        t (key: string, values?: Record<string, unknown> | Array<unknown>) {
+        t (key: string, values: Record<string, Object> | Array<Object> | null = null) {
             return t(key, values);
         },
         add (locale: BuiltInLocale, message: Record<string, string>, override: boolean = true) {
@@ -1148,7 +1151,7 @@ function defineI18nProperty(obj: Record<string, Object>, names: string[]) {
             set (v) {
                 value = v;
             }
-        });
+        } as UTSJSONObject);
     }
     return true;
 }
@@ -1167,6 +1170,43 @@ function useI18n() {
     }
     return i18n;
 }
+function normalizeMessages(module: string, keys: string[], values: string[]) {
+    return keys.reduce((res, name, index)=>{
+        res[module + name] = values[index];
+        return res;
+    }, {} as UTSJSONObject);
+}
+const initI18nAppMsgsOnce = once(()=>{
+    const name = 'uni.app.';
+    const keys = [
+        'quit'
+    ];
+    if (__UNI_FEATURE_I18N_EN__) {
+        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, [
+            'Press back button again to exit'
+        ]), false);
+    }
+    if (__UNI_FEATURE_I18N_ES__) {
+        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, [
+            'Pulse otra vez para salir'
+        ]), false);
+    }
+    if (__UNI_FEATURE_I18N_FR__) {
+        useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+            "Appuyez à nouveau pour quitter l'application"
+        ]), false);
+    }
+    if (__UNI_FEATURE_I18N_ZH_HANS__) {
+        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, [
+            '再按一次退出应用'
+        ]), false);
+    }
+    if (__UNI_FEATURE_I18N_ZH_HANT__) {
+        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, [
+            '再按一次退出應用'
+        ]), false);
+    }
+});
 function initNavigationBarI18n(navigationBar: UniApp.PageNavigationBar | PlusWebviewWebviewTitleNViewStyles) {
     if (isEnableLocale()) {
         return defineI18nProperties(navigationBar, [
@@ -1212,7 +1252,7 @@ function initBridge(subscribeNamespace: string | string | string): Omit<UniApp.U
         once (event: string, callback: UniApp.CallbackFunction) {
             return emitter.once(event, callback);
         },
-        off (event: string, callback?: UniApp.CallbackFunction) {
+        off (event: string, callback: UniApp.CallbackFunction | null = null) {
             return emitter.off(event, callback);
         },
         emit (event: string, ...args: Object[]) {
@@ -1224,7 +1264,7 @@ function initBridge(subscribeNamespace: string | string | string): Omit<UniApp.U
         unsubscribe (event: string, callback: UniApp.CallbackFunction): void {
             emitter.off(`${subscribeNamespace}.${event}`, callback);
         },
-        subscribeHandler (event: string, args: unknown, pageId?: number): void {
+        subscribeHandler (event: string, args: Object, pageId: number | null = null): void {
             emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
         }
     };
@@ -1291,15 +1331,15 @@ const PAGE_META_KEYS = [
 function initGlobalStyle() {
     return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
-function initRouteMeta(pageMeta: UniApp.PageRouteMeta, id?: number): UniApp.PageRouteMeta {
+function initRouteMeta(pageMeta: UniApp.PageRouteMeta, id: number | null = null): UniApp.PageRouteMeta {
     const globalStyle = initGlobalStyle();
     const res = extend({
         id
-    }, globalStyle, pageMeta);
+    } as UTSJSONObject, globalStyle, pageMeta);
     PAGE_META_KEYS.forEach((name)=>{
-        (res as Object)[name] = extend({}, globalStyle[name], pageMeta[name]);
+        (res as Object)[name] = extend({} as UTSJSONObject, globalStyle[name], pageMeta[name]);
     });
-    const { navigationBar  } = res;
+    const navigationBar = res.navigationBar;
     navigationBar.titleText && navigationBar.titleImage && (navigationBar.titleText = '');
     return res;
 }
@@ -1315,8 +1355,8 @@ function normalizePullToRefreshRpx(pullToRefresh: UniApp.PageRefreshOptions) {
     }
     return pullToRefresh;
 }
-function initPageInternalInstance(openType: UniApp.OpenType, url: string, pageQuery: Record<string, Object>, meta: UniApp.PageRouteMeta, eventChannel?: EventChannel, themeMode?: UniApp.ThemeMode): Page.PageInstance[string] {
-    const { id , route  } = meta;
+function initPageInternalInstance(openType: UniApp.OpenType, url: string, pageQuery: Record<string, Object>, meta: UniApp.PageRouteMeta, eventChannel: EventChannel | null = null, themeMode: UniApp.ThemeMode | null = null): Page.PageInstance[string] {
+    const id = meta.id, route = meta.route;
     const titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
     return {
         id: id!,
@@ -1330,10 +1370,10 @@ function initPageInternalInstance(openType: UniApp.OpenType, url: string, pageQu
         statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark'
     };
 }
-function invokeHook(name: string, args?: unknown): unknown;
-function invokeHook(id: number, name: string, args?: unknown): unknown;
-function invokeHook(vm: ComponentPublicInstance, name: string, args?: unknown): unknown;
-function invokeHook(vm: ComponentPublicInstance | string | number, name?: string | unknown, args?: unknown) {
+function invokeHook(name: string, args: Object | null = null): Object;
+function invokeHook(id: number, name: string, args: Object | null = null): Object;
+function invokeHook(vm: ComponentPublicInstance, name: string, args: Object | null = null): Object;
+function invokeHook(vm: ComponentPublicInstance | string | number, name: string | Object | null = null, args: Object | null = null) {
     if (isString(vm)) {
         args = name;
         name = vm;
@@ -1349,7 +1389,7 @@ function invokeHook(vm: ComponentPublicInstance | string | number, name?: string
     if (!vm) {
         return;
     }
-    const hooks = (vm.$ as unknown as {
+    const hooks = (vm.$ as Object as {
         [name: string]: Function[];
     })[name as string];
     return hooks && invokeArrayFns(hooks, args);
@@ -1394,23 +1434,23 @@ function getRouteMeta(path: string) {
         return routeOptions.meta;
     }
 }
-const invokeOnCallback: UniApp.UniServiceJSBridge[string] = (name: string, res: unknown)=>UniServiceJSBridge.emit('api.' + name, res);
+const invokeOnCallback: UniApp.UniServiceJSBridge[string] = (name: string, res: Object)=>UniServiceJSBridge.emit('api.' + name, res);
 let invokeViewMethodId = 1;
-function publishViewMethodName(pageId?: number) {
+function publishViewMethodName(pageId: number | null = null) {
     return (pageId || getCurrentPageId()) + '.' + INVOKE_VIEW_API;
 }
-const invokeViewMethod: UniApp.UniServiceJSBridge[string] = (name: string, args: unknown, pageId: number, callback?: (res: Object) => void)=>{
-    const { subscribe , publishHandler  } = UniServiceJSBridge;
+const invokeViewMethod: UniApp.UniServiceJSBridge[string] = (name: string, args: Object, pageId: number, callback: ((res: Object) => void) | null = null)=>{
+    const subscribe = UniServiceJSBridge.subscribe, publishHandler = UniServiceJSBridge.publishHandler;
     const id = callback ? invokeViewMethodId++ : 0;
     callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
     publishHandler(publishViewMethodName(pageId), {
         id,
         name,
         args
-    }, pageId);
+    } as UTSJSONObject, pageId);
 };
-const invokeViewMethodKeepAlive: UniApp.UniServiceJSBridge[string] = (name: string, args: unknown, callback: (res: Object) => void, pageId: number)=>{
-    const { subscribe , unsubscribe , publishHandler  } = UniServiceJSBridge;
+const invokeViewMethodKeepAlive: UniApp.UniServiceJSBridge[string] = (name: string, args: Object, callback: (res: Object) => void, pageId: number)=>{
+    const subscribe = UniServiceJSBridge.subscribe, unsubscribe = UniServiceJSBridge.unsubscribe, publishHandler = UniServiceJSBridge.publishHandler;
     const id = invokeViewMethodId++;
     const subscribeName = INVOKE_VIEW_API + '.' + id;
     subscribe(subscribeName, callback);
@@ -1418,7 +1458,7 @@ const invokeViewMethodKeepAlive: UniApp.UniServiceJSBridge[string] = (name: stri
         id,
         name,
         args
-    }, pageId);
+    } as UTSJSONObject, pageId);
     return ()=>{
         unsubscribe(subscribeName);
     };
@@ -1433,26 +1473,27 @@ function registerServiceMethod<Args = Object, Res = Object>(name: string, fn: Se
         serviceMethods[name] = fn;
     }
 }
-function onInvokeServiceMethod({ id , name , args  }: {
+function onInvokeServiceMethod(ref1: {
     id: number;
     name: string;
     args: Object;
 }, pageId: number) {
-    const publish = (res: unknown)=>{
+    let id = ref1.id, name = ref1.name, args = ref1.args;
+    const publish = (res: Object)=>{
         id && UniServiceJSBridge.publishHandler(INVOKE_SERVICE_API + '.' + id, res, pageId);
     };
     const handler = serviceMethods[name];
     if (handler) {
         handler(args, publish);
     } else {
-        publish({});
+        publish({} as UTSJSONObject);
     }
 }
 const ServiceJSBridge = extend(initBridge('view'), {
     invokeOnCallback,
     invokeViewMethod,
     invokeViewMethodKeepAlive
-});
+} as UTSJSONObject);
 interface LaunchOptions {
     path: string;
     query: Record<string, Object>;
@@ -1473,7 +1514,7 @@ function createLaunchOptions() {
         }
     };
 }
-function defineGlobalData(app: ComponentPublicInstance, defaultGlobalData?: Record<string, unknown>) {
+function defineGlobalData(app: ComponentPublicInstance, defaultGlobalData: Record<string, Object> | null = null) {
     const options = app.$options || {};
     options.globalData = extend(options.globalData || {}, defaultGlobalData);
     Object.defineProperty(app, 'globalData', {
@@ -1483,10 +1524,10 @@ function defineGlobalData(app: ComponentPublicInstance, defaultGlobalData?: Reco
         set (newGlobalData) {
             options.globalData = newGlobalData;
         }
-    });
+    } as UTSJSONObject);
 }
 function initOn() {
-    const { on  } = UniServiceJSBridge;
+    const on = UniServiceJSBridge.on;
     on(ON_RESIZE, onResize);
     on(ON_APP_ENTER_FOREGROUND, onAppEnterForeground);
     on(ON_APP_ENTER_BACKGROUND, onAppEnterBackground);
@@ -1512,13 +1553,26 @@ function initSubscribe() {
     SUBSCRIBE_LIFECYCLE_HOOKS.forEach((name)=>UniServiceJSBridge.subscribe(name, createPageEvent(name)));
 }
 function createPageEvent(name: string) {
-    return (args: unknown, pageId: string)=>{
+    return (args: Object, pageId: string)=>{
         invokeHook(parseInt(pageId), name, args);
     };
 }
 function initService() {
     initOn();
     initSubscribe();
+}
+function initAppVm(appVm: ComponentPublicInstance) {
+    appVm.$vm = appVm;
+    appVm.$mpType = 'app';
+    const locale = ref(useI18n().getLocale());
+    Object.defineProperty(appVm, '$locale', {
+        get () {
+            return locale.value;
+        },
+        set (v) {
+            locale.value = v;
+        }
+    } as UTSJSONObject);
 }
 function initPageVm(pageVm: ComponentPublicInstance, page: Page.PageInstance[string]) {
     pageVm.route = page.route;
@@ -1531,7 +1585,7 @@ function initPageVm(pageVm: ComponentPublicInstance, page: Page.PageInstance[str
         pageVm.$.__isActive = true;
     }
 }
-function hasCallback(args: unknown) {
+function hasCallback(args: Object) {
     if (isPlainObject(args) && [
         API_SUCCESS,
         API_FAIL,
@@ -1567,7 +1621,7 @@ const globalInterceptors: Interceptors = {};
 const scopedInterceptors: {
     [key: string]: Interceptors;
 } = {};
-function formatApiArgs<T extends ApiLike>(args: Object[], options?: ApiOptions<T>) {
+function formatApiArgs<T extends ApiLike>(args: Object[], options: ApiOptions<T> | null = null) {
     const params = args[0];
     if (!options || (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
         return;
@@ -1589,7 +1643,7 @@ function formatApiArgs<T extends ApiLike>(args: Object[], options?: ApiOptions<T
         }
     }
 }
-function invokeSuccess(id: number, name: string, res: unknown) {
+function invokeSuccess(id: number, name: string, res: Object) {
     const result: {
         errSubject?: string;
         errMsg: string;
@@ -1599,17 +1653,17 @@ function invokeSuccess(id: number, name: string, res: unknown) {
     result.errSubject = name;
     return invokeCallback(id, extend((res || {}) as Object, result));
 }
-function invokeFail(id: number, name: string, errMsg?: string, errRes: Object = {}) {
+function invokeFail(id: number, name: string, errMsg: string | null = null, errRes: Object = {}) {
     const apiErrMsg = name + ':fail' + (errMsg ? ' ' + errMsg : '');
     let res = extend({
         errMsg: apiErrMsg
-    }, errRes);
+    } as UTSJSONObject, errRes);
     if (typeof UniError !== 'undefined') {
         res = typeof errRes.errCode !== 'undefined' ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
     }
     return invokeCallback(id, res);
 }
-function beforeInvokeApi<T extends ApiLike>(name: string, args: Object[], protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
+function beforeInvokeApi<T extends ApiLike>(name: string, args: Object[], protocol: ApiProtocols<T> | null = null, options: ApiOptions<T> | null = null) {
     if (options && options.beforeInvoke) {
         const errMsg = options.beforeInvoke(args);
         if (isString(errMsg)) {
@@ -1629,9 +1683,9 @@ function normalizeErrMsg(errMsg: string | Error) {
         console.error(errMsg.message + '\n' + errMsg.stack);
         return errMsg.message;
     }
-    return errMsg as unknown as string;
+    return errMsg as Object as string;
 }
-function wrapperTaskApi<T extends ApiLike>(name: string, fn: Function, protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
+function wrapperTaskApi<T extends ApiLike>(name: string, fn: Function, protocol: ApiProtocols<T> | null = null, options: ApiOptions<T> | null = null) {
     return (args: Record<string, Object>)=>{
         const id = createAsyncApiCallback(name, args, options);
         const errMsg = beforeInvokeApi(name, [
@@ -1641,20 +1695,20 @@ function wrapperTaskApi<T extends ApiLike>(name: string, fn: Function, protocol?
             return invokeFail(id, name, errMsg);
         }
         return fn(args, {
-            resolve: (res: unknown)=>invokeSuccess(id, name, res),
-            reject: (errMsg: string | Error, errRes?: Object)=>invokeFail(id, name, normalizeErrMsg(errMsg), errRes)
-        });
+            resolve: (res: Object)=>invokeSuccess(id, name, res),
+            reject: (errMsg: string | Error, errRes: Object | null = null)=>invokeFail(id, name, normalizeErrMsg(errMsg), errRes)
+        } as UTSJSONObject);
     };
 }
-function wrapperAsyncApi<T extends ApiLike>(name: string, fn: Function, protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
+function wrapperAsyncApi<T extends ApiLike>(name: string, fn: Function, protocol: ApiProtocols<T> | null = null, options: ApiOptions<T> | null = null) {
     return wrapperTaskApi(name, fn, protocol, options);
 }
-function wrapperHook(hook: Function, params?: Record<string, Object>) {
-    return function(data: unknown) {
+function wrapperHook(hook: Function, params: Record<string, Object> | null = null) {
+    return (data: Object)=>{
         return hook(data, params) || data;
     };
 }
-function queue(hooks: Function[], data: unknown, params?: Record<string, Object>): Promise<Object> {
+function queue(hooks: Function[], data: Object, params: Record<string, Object> | null = null): Promise<Object> {
     let promise: Object = false;
     for(let i = 0; i < hooks.length; i++){
         const hook = hooks[i];
@@ -1691,15 +1745,15 @@ function wrapperOptions(interceptors: Interceptors, options: Record<string, Obje
             return;
         }
         const oldCallback = options[name];
-        options[name] = function callbackInterceptor(res: unknown) {
-            queue(hooks, res, options).then((res: unknown)=>{
+        options[name] = function callbackInterceptor(res: Object) {
+            queue(hooks, res, options).then((res: Object)=>{
                 return (isFunction(oldCallback) && oldCallback(res)) || res;
             });
         };
     });
     return options;
 }
-function wrapperReturnValue(method: string, returnValue: unknown) {
+function wrapperReturnValue(method: string, returnValue: Object) {
     const returnValueHooks: Function[] = [];
     if (isArray(globalInterceptors.returnValue)) {
         returnValueHooks.push(...globalInterceptors.returnValue);
@@ -1730,7 +1784,7 @@ function getApiInterceptorHooks(method: string) {
     }
     return interceptor;
 }
-function invokeApi(method: string, api: Function, options: object, params: unknown[]) {
+function invokeApi(method: string, api: Function, options: object, params: Object[]) {
     const interceptor = getApiInterceptorHooks(method);
     if (interceptor && Object.keys(interceptor).length) {
         if (isArray(interceptor.invoke)) {
@@ -1744,11 +1798,11 @@ function invokeApi(method: string, api: Function, options: object, params: unkno
     }
     return api(options, ...params);
 }
-function handlePromise(promise: Promise<unknown>) {
+function handlePromise(promise: Promise<Object>) {
     return promise;
 }
 function promisify(name: string, fn: Function) {
-    return (args = {}, ...rest: unknown[])=>{
+    return (args = {}, ...rest: Object[])=>{
         if (hasCallback(args)) {
             return wrapperReturnValue(name, invokeApi(name, fn, args, rest));
         }
@@ -1756,21 +1810,21 @@ function promisify(name: string, fn: Function) {
             invokeApi(name, fn, extend(args, {
                 success: resolve,
                 fail: reject
-            }), rest);
+            } as UTSJSONObject), rest);
         })));
     };
 }
 function defineTaskApi<T extends TaskApiLike, P extends AsyncMethodOptionLike = AsyncApiOptions<T>>(name: string, fn: (args: Omit<P, CALLBACK_TYPES>, res: {
     resolve: (res?: AsyncApiRes<P> | void) => void;
     reject: <R extends object>(err?: string, errRes?: R & object) => void;
-}) => ReturnType<T>, protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
-    return promisify(name, wrapperTaskApi(name, fn, undefined, options)) as unknown as T;
+}) => ReturnType<T>, protocol: ApiProtocols<T> | null = null, options: ApiOptions<T> | null = null) {
+    return promisify(name, wrapperTaskApi(name, fn, undefined, options)) as Object as T;
 }
 type DefineAsyncApiFn<T extends AsyncApiLike, P extends AsyncMethodOptionLike = AsyncApiOptions<T>> = (args: P extends undefined ? undefined : Omit<P, CALLBACK_TYPES>, res: {
     resolve: (res: AsyncApiRes<P> | void) => void;
     reject: (errMsg?: string, errRes?: Object) => void;
 }) => void;
-function defineAsyncApi<T extends AsyncApiLike, P extends AsyncMethodOptionLike = AsyncApiOptions<T>>(name: string, fn: DefineAsyncApiFn<T>, protocol?: ApiProtocols<T>, options?: ApiOptions<T>) {
+function defineAsyncApi<T extends AsyncApiLike, P extends AsyncMethodOptionLike = AsyncApiOptions<T>>(name: string, fn: DefineAsyncApiFn<T>, protocol: ApiProtocols<T> | null = null, options: ApiOptions<T> | null = null) {
     return promisify(name, wrapperAsyncApi(name, fn as Object, undefined, options)) as AsyncApi<P>;
 }
 function getRealPath(filepath: string) {
@@ -1840,12 +1894,12 @@ const API_NAVIGATE_BACK = 'navigateBack';
 type API_TYPE_NAVIGATE_BACK = typeof uni.navigateBack1;
 const API_PRELOAD_PAGE = 'preloadPage';
 const API_UN_PRELOAD_PAGE = 'unPreloadPage';
-const NavigateToProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> = extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateToProtocol: ApiProtocol<API_TYPE_NAVIGATE_TO> = extend({} as UTSJSONObject, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
 const NavigateBackProtocol: ApiProtocol<API_TYPE_NAVIGATE_BACK> = extend({
     delta: {
         type: Number
     }
-}, createAnimationProtocol(ANIMATION_OUT));
+} as UTSJSONObject, createAnimationProtocol(ANIMATION_OUT));
 const NavigateToOptions: ApiOptions<API_TYPE_NAVIGATE_TO> = createRouteOptions(API_NAVIGATE_TO);
 const NavigateBackOptions: ApiOptions<API_TYPE_NAVIGATE_BACK> = {
     formatArgs: {
@@ -1859,7 +1913,7 @@ function createAnimationProtocol(animationTypes: string[]) {
     return {
         animationType: {
             type: String as Object,
-            validator (type?: string) {
+            validator (type: string | null = null) {
                 if (type && animationTypes.indexOf(type) === -1) {
                     return ('`' + type + '` is not supported for `animationType` (supported values are: `' + animationTypes.join('`|`') + '`)');
                 }
@@ -1883,7 +1937,7 @@ function createRouteOptions(type: string): ApiOptions<API_TYPE_NAVIGATE_TO> {
     };
 }
 function createNormalizeUrl(type: string) {
-    return function normalizeUrl(url: string, params: Record<string, Object>) {
+    return (url: string, params: Record<string, Object>)=>{
         if (!url) {
             return `Missing required args: "url"`;
         }
@@ -1948,7 +2002,7 @@ const DownloadFileProtocol: ApiProtocol<API_TYPE_DOWNLOAD_FILE> = {
 type API_TYPE_REQUEST = typeof uni.request;
 const dataType = {
     JSON: 'json'
-};
+} as UTSJSONObject;
 const RESPONSE_TYPE = [
     'text',
     'arraybuffer'
@@ -2099,7 +2153,7 @@ const env = {
     USER_DATA_PATH: '',
     TEMP_PATH: '',
     CACHE_PATH: ''
-};
+} as UTSJSONObject;
 declare function getContext(): Context;
 function initEnv() {
     const context = getContext();
@@ -2112,12 +2166,6 @@ const initEnvOnce = once(initEnv);
 function getEnv() {
     return initEnvOnce();
 }
-type ActionsItemType = string | number | boolean | undefined | Array<number>;
-type ActionsItemData = Array<ActionsItemType>;
-type ActionsItem = {
-    method: string;
-    data: ActionsItemData | Array<ActionsItem>;
-};
 type AppHideHook = () => void;
 interface AppHooks {
     onUnhandledRejection: UniApp.OnUnhandledRejectionCallback[];
@@ -2197,11 +2245,12 @@ const UploadFileProtocol: ApiProtocol<API_TYPE_UPLOAD_FILE> = {
     timeout: Number
 };
 import picker1 from '@ohos.file.picker';
-const chooseImage: API_TYPE_CHOOSE_IMAGE = defineAsyncApi(API_CHOOSE_IMAGE, function({ count  } = {}, { resolve , reject  }) {
+const chooseImage: API_TYPE_CHOOSE_IMAGE = defineAsyncApi(API_CHOOSE_IMAGE, function({ count  } = {}, ref1) {
+    let resolve = ref1.resolve, reject = ref1.reject;
     _chooseMedia({
         mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
         count
-    }).then((res)=>{
+    } as UTSJSONObject).then((res)=>{
         return {
             tempFilePaths: res.tempFiles.map((file)=>file.tempFilePath),
             tempFiles: res.tempFiles.map((file)=>{
@@ -2214,10 +2263,11 @@ const chooseImage: API_TYPE_CHOOSE_IMAGE = defineAsyncApi(API_CHOOSE_IMAGE, func
     }).then(resolve, reject);
 }, ChooseImageProtocol, ChooseImageOptions);
 import picker2 from '@ohos.file.picker';
-const chooseVideo: API_TYPE_CHOOSE_VIDEO = defineAsyncApi(API_CHOOSE_VIDEO, function({} = {}, { resolve , reject  }) {
+const chooseVideo: API_TYPE_CHOOSE_VIDEO = defineAsyncApi(API_CHOOSE_VIDEO, function({} = {}, ref1) {
+    let resolve = ref1.resolve, reject = ref1.reject;
     _chooseMedia({
         mimeType: picker2.PhotoViewMIMETypes.VIDEO_TYPE
-    }).then((res)=>{
+    } as UTSJSONObject).then((res)=>{
         const file = res.tempFiles[0];
         return {
             tempFilePath: file.tempFilePath,
@@ -2228,10 +2278,12 @@ const chooseVideo: API_TYPE_CHOOSE_VIDEO = defineAsyncApi(API_CHOOSE_VIDEO, func
         };
     }).then(resolve, reject);
 }, ChooseVideoProtocol, ChooseVideoOptions);
-const getImageInfo: API_TYPE_GET_IMAGE_INFO = defineAsyncApi(API_GET_IMAGE_INFO, function({ src  }, { resolve , reject  }) {
+const getImageInfo: API_TYPE_GET_IMAGE_INFO = defineAsyncApi(API_GET_IMAGE_INFO, function(ref1, ref2) {
+    let src = ref1.src, resolve = ref2.resolve, reject = ref2.reject;
     _getImageInfo(src).then(resolve, reject);
 }, GetImageInfoProtocol, GetImageInfoOptions);
-const getVideoInfo: API_TYPE_GET_VIDEO_INFO = defineAsyncApi(API_GET_VIDEO_INFO, function({ src  }, { resolve , reject  }) {
+const getVideoInfo: API_TYPE_GET_VIDEO_INFO = defineAsyncApi(API_GET_VIDEO_INFO, function(ref1, ref2) {
+    let src = ref1.src, resolve = ref2.resolve, reject = ref2.reject;
     _getVideoInfo(src).then((res)=>{
         return {
             size: res.size,
@@ -2280,12 +2332,13 @@ class RequestTask implements UniApp.RequestTask {
     onHeadersReceived(callback: Function) {
         this._requestTask.onHeadersReceived(callback);
     }
-    offHeadersReceived(callback?: Function) {
+    offHeadersReceived(callback: Function | null = null) {
         this._requestTask.offHeadersReceived(callback);
     }
 }
-const request = defineTaskApi(API_REQUEST, (args, { resolve , reject  })=>{
-    let { header , method , data , dataType , timeout , url , responseType  } = args;
+const request = defineTaskApi(API_REQUEST, (args, ref1)=>{
+    let resolve = ref1.resolve, reject = ref1.reject;
+    let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
     let contentType;
     const headers = {} as Record<string, Object>;
     for(const name in header){
@@ -2326,10 +2379,10 @@ const request = defineTaskApi(API_REQUEST, (args, { resolve , reject  })=>{
         onHeadersReceived (callback: Function) {
             emitter.on('headersReceive', callback);
         },
-        offHeadersReceived (callback?: Function) {
+        offHeadersReceived (callback: Function | null = null) {
             emitter.off('headersReceive', callback);
         }
-    };
+    } as UTSJSONObject;
     httpRequest.on('headersReceive', (header: Object)=>{});
     httpRequest.request(url, {
         header: headers,
@@ -2338,7 +2391,7 @@ const request = defineTaskApi(API_REQUEST, (args, { resolve , reject  })=>{
         expectDataType,
         connectTimeout: timeout,
         readTimeout: timeout
-    }, (err, res)=>{
+    } as UTSJSONObject, (err, res)=>{
         if (err) {
             reject(err.message);
         } else {
@@ -2347,7 +2400,7 @@ const request = defineTaskApi(API_REQUEST, (args, { resolve , reject  })=>{
                 statusCode: res.responseCode,
                 header: res.header,
                 cookies: cookiesParse(res.header as Record<string, Object>)
-            });
+            } as UTSJSONObject);
         }
         requestTask.offHeadersReceived();
         httpRequest.destroy();
@@ -2373,18 +2426,19 @@ class UploadTask implements UniApp.UploadTask {
     onProgressUpdate(callback: Function) {
         this._uploadTask.onProgressUpdate(callback);
     }
-    offProgressUpdate(callback?: Function) {
+    offProgressUpdate(callback: Function | null = null) {
         this._uploadTask.offProgressUpdate(callback);
     }
     onHeadersReceived(callback: Function) {
         this._uploadTask.onHeadersReceived(callback);
     }
-    offHeadersReceived(callback?: Function) {
+    offHeadersReceived(callback: Function | null = null) {
         this._uploadTask.offHeadersReceived(callback);
     }
 }
-const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve , reject  })=>{
-    let { url , timeout , header , formData , files , filePath , name  } = args;
+const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, ref1)=>{
+    let resolve = ref1.resolve, reject = ref1.reject;
+    let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
     const headers = {} as Record<string, Object>;
     for(const name in header){
         headers[name.toLowerCase()] = header[name];
@@ -2397,24 +2451,24 @@ const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve , reject  })=
                 name,
                 contentType: 'text/plain',
                 data: String(formData[name])
-            });
+            } as UTSJSONObject);
         }
     }
     if (files && files.length) {
         for(let i = 0; i < files.length; i++){
-            const { name , uri  } = files[i];
+            const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
             multiFormDataList.push({
                 name: name || 'file',
                 contentType: 'application/octet-stream',
                 filePath: getRealPath(uri!)
-            });
+            } as UTSJSONObject);
         }
     } else {
         multiFormDataList.push({
             name: name || 'file',
             contentType: 'application/octet-stream',
             filePath: getRealPath(filePath!)
-        });
+        } as UTSJSONObject);
     }
     const httpRequest = http1.createHttp();
     const emitter = new E();
@@ -2425,23 +2479,24 @@ const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve , reject  })=
         onHeadersReceived (callback: Function) {
             emitter.on('headersReceive', callback);
         },
-        offHeadersReceived (callback?: Function) {
+        offHeadersReceived (callback: Function | null = null) {
             emitter.off('headersReceive', callback);
         },
         onProgressUpdate (callback: Function) {
             emitter.on('progress', callback);
         },
-        offProgressUpdate (callback?: Function) {
+        offProgressUpdate (callback: Function | null = null) {
             emitter.off('progress', callback);
         }
     };
     httpRequest.on('headersReceive', (header: Object)=>{});
-    httpRequest.on('dataSendProgress', ({ sendSize , totalSize  })=>{
+    httpRequest.on('dataSendProgress', (ref1)=>{
+        let sendSize = ref1.sendSize, totalSize = ref1.totalSize;
         emitter.emit('progress', {
             progress: Math.floor((sendSize / totalSize) * 100),
             totalBytesSent: sendSize,
             totalBytesExpectedToSend: totalSize
-        });
+        } as UTSJSONObject);
     });
     httpRequest.request(url, {
         header: headers,
@@ -2450,14 +2505,14 @@ const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve , reject  })=
         readTimeout: timeout,
         multiFormDataList,
         expectDataType: http1.HttpDataType.STRING
-    }, (err, res)=>{
+    } as UTSJSONObject, (err, res)=>{
         if (err) {
             reject(err.message);
         } else {
             resolve({
                 data: res.result as string,
                 statusCode: res.responseCode
-            });
+            } as UTSJSONObject);
         }
         uploadTask.offHeadersReceived();
         uploadTask.offProgressUpdate();
@@ -2485,18 +2540,19 @@ class DownloadTask implements UniApp.DownloadTask {
     onProgressUpdate(callback: Function) {
         this._downloadTask.onProgressUpdate(callback);
     }
-    offProgressUpdate(callback?: Function) {
+    offProgressUpdate(callback: Function | null = null) {
         this._downloadTask.offProgressUpdate(callback);
     }
     onHeadersReceived(callback: Function) {
         this._downloadTask.onHeadersReceived(callback);
     }
-    offHeadersReceived(callback?: Function) {
+    offHeadersReceived(callback: Function | null = null) {
         this._downloadTask.offHeadersReceived(callback);
     }
 }
-const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve , reject  })=>{
-    let { url , timeout , header  } = args;
+const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, ref1)=>{
+    let resolve = ref1.resolve, reject = ref1.reject;
+    let url = args.url, timeout = args.timeout, header = args.header;
     const httpRequest = http2.createHttp();
     const emitter = new E();
     const downloadTask: IDownloadTask = {
@@ -2506,35 +2562,36 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve , reject 
         onHeadersReceived (callback: Function) {
             emitter.on('headersReceive', callback);
         },
-        offHeadersReceived (callback?: Function) {
+        offHeadersReceived (callback: Function | null = null) {
             emitter.off('headersReceive', callback);
         },
         onProgressUpdate (callback: Function) {
             emitter.on('progress', callback);
         },
-        offProgressUpdate (callback?: Function) {
+        offProgressUpdate (callback: Function | null = null) {
             emitter.off('progress', callback);
         }
     };
     httpRequest.on('headersReceive', (header: Object)=>{});
-    httpRequest.on('dataReceiveProgress', ({ receiveSize , totalSize  })=>{
+    httpRequest.on('dataReceiveProgress', (ref1)=>{
+        let receiveSize = ref1.receiveSize, totalSize = ref1.totalSize;
         emitter.emit('progress', {
             progress: Math.floor((receiveSize / totalSize) * 100),
             totalBytesWritten: receiveSize,
             totalBytesExpectedToWrite: totalSize
-        });
+        } as UTSJSONObject);
     });
-    const { TEMP_PATH  } = getEnv();
+    const TEMP_PATH = getEnv().TEMP_PATH;
     const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp';
     const stream = fs1.createStreamSync(tempFilePath, 'w+');
     let writePromise = Promise.resolve(0);
-    async function queueWrite(data: ArrayBuffer): Promise<number> {
+    const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
         writePromise = writePromise.then(async (total)=>{
             const length = await stream.write(data);
             return total + length;
         });
         return writePromise;
-    }
+    };
     httpRequest.on('dataReceive', (data)=>{
         queueWrite(data);
     });
@@ -2543,7 +2600,7 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve , reject 
         method: http2.RequestMethod.GET,
         connectTimeout: timeout,
         readTimeout: timeout
-    }, (err, statusCode)=>{
+    } as UTSJSONObject, (err, statusCode)=>{
         if (err) {
             reject(err.message);
         } else {
@@ -2553,7 +2610,7 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve , reject 
                 resolve({
                     tempFilePath,
                     statusCode
-                });
+                } as UTSJSONObject);
             });
         }
         downloadTask.offHeadersReceived();
@@ -2599,11 +2656,11 @@ class UniPageNode extends UniNode implements IUniPageNode {
     private _createActionMap = new Map<number, CreateAction>();
     updateActions: (PageAction | DictAction)[] = [];
     dicts: Dictionary = [];
-    normalizeDict: (value: unknown, normalizeValue?: boolean) => Object | number;
+    normalizeDict: (value: Object, normalizeValue?: boolean) => Object | number;
     isUnmounted: boolean;
     private _update: () => void;
     constructor(pageId: number, options: PageNodeOptions, setup: boolean = false){
-        super(0, '#page', null as unknown as IUniPageNode);
+        super(0, '#page', null as Object as IUniPageNode);
         this.nodeId = 0;
         this.pageId = pageId;
         this.pageNode = this;
@@ -2620,7 +2677,7 @@ class UniPageNode extends UniNode implements IUniPageNode {
         this._update = this.update.bind(this);
         setup && this.setup();
     }
-    _normalizeDict(value: unknown, normalizeValue: boolean = true) {
+    _normalizeDict(value: Object, normalizeValue: boolean = true) {
         if (!ACTION_MINIFY) {
             return value;
         }
@@ -2646,7 +2703,7 @@ class UniPageNode extends UniNode implements IUniPageNode {
         if (!ACTION_MINIFY) {
             return value;
         }
-        const { dicts  } = this;
+        const dicts = this.dicts;
         const index = dicts.indexOf(value);
         if (index > -1) {
             return index;
@@ -2689,7 +2746,7 @@ class UniPageNode extends UniNode implements IUniPageNode {
             pushRemoveEventAction(this, thisNode.nodeId!, name);
         }
     }
-    onSetAttribute(thisNode: UniNode, qualifiedName: string, value: unknown) {
+    onSetAttribute(thisNode: UniNode, qualifiedName: string, value: Object) {
         if (thisNode.parentNode) {
             pushSetAttributeAction(this, thisNode.nodeId!, qualifiedName, value);
         }
@@ -2712,7 +2769,7 @@ class UniPageNode extends UniNode implements IUniPageNode {
     genId() {
         return this._id++;
     }
-    push(action: PageAction, extras?: unknown) {
+    push(action: PageAction, extras: Object | null = null) {
         if (this.isUnmounted) {
             return;
         }
@@ -2766,7 +2823,7 @@ class UniPageNode extends UniNode implements IUniPageNode {
         ]);
     }
     update() {
-        const { dicts , updateActions , _createActionMap  } = this;
+        const _this = this, dicts = _this.dicts, updateActions = _this.updateActions;
         if (!this._created) {
             this._created = true;
             updateActions.push(this.createdAction);
@@ -2814,7 +2871,7 @@ function setupPage(component: VuePageComponent) {
     const oldSetup = component.setup;
     component.inheritAttrs = false;
     component.setup = (_, ctx)=>{
-        const { attrs: { __pageId , __pagePath , __pageQuery , __pageInstance  }  } = ctx;
+        const _ctx_attrs = ctx.attrs, __pageId = _ctx_attrs.__pageId, __pagePath = _ctx_attrs.__pagePath, __pageQuery = _ctx_attrs.__pageQuery, __pageInstance = _ctx_attrs.__pageInstance;
         const instance = getCurrentInstance()!;
         const pageVm = instance.proxy!;
         initPageVm(pageVm, __pageInstance as Page.PageInstance[string]);
@@ -2864,29 +2921,29 @@ function initVueApp(appVm: ComponentPublicInstance) {
         get () {
             return getAllPages().map((page)=>page.$vm);
         }
-    });
+    } as UTSJSONObject);
     const appContext = internalInstance.appContext;
     vueApp = extend(appContext.app, {
         mountPage (pageComponent: VuePageComponent, pageProps: Record<string, Object>, pageContainer: UniNode) {
             const vnode = createVNode(pageComponent, pageProps);
             vnode.appContext = appContext;
             (vnode as Object).__page_container__ = pageContainer;
-            render(vnode, pageContainer as unknown as Element);
+            render(vnode, pageContainer as Object as Element);
             const publicThis = vnode.component!.proxy!;
             (publicThis as Object).__page_container__ = pageContainer;
             return publicThis;
         },
         unmountPage: (pageInstance: ComponentPublicInstance)=>{
-            const { __page_container__  } = pageInstance as Object;
+            const __page_container__ = pageInstance as Object.__page_container__;
             if (__page_container__) {
                 __page_container__.isUnmounted = true;
                 render(null, __page_container__);
             }
         }
-    });
+    } as UTSJSONObject);
 }
 type VuePageAsyncComponent = () => Promise<VuePageComponent>;
-function isVuePageAsyncComponent(component: unknown): component is VuePageAsyncComponent {
+function isVuePageAsyncComponent(component: Object): component is VuePageAsyncComponent {
     return isFunction(component);
 }
 const pagesMap = new Map<string, ReturnType<typeof createFactory>>();
@@ -2911,7 +2968,7 @@ function findNode(name: string | string, value: string | number, uniNode: UniNod
     if (uniNode[name] === value) {
         return uniNode;
     }
-    const { childNodes  } = uniNode;
+    const childNodes = uniNode.childNodes;
     for(let i = 0; i < childNodes.length; i++){
         const uniNode = findNode(name, value, childNodes[i]);
         if (uniNode) {
@@ -2939,7 +2996,7 @@ function pushInsertAction(pageNode: UniPageNode, newChild: UniBaseNode, parentNo
     const nodeJson = newChild.toJSON({
         attr: true,
         normalize: pageNode.normalizeDict
-    });
+    } as UTSJSONObject);
     pageNode.push([
         4,
         newChild.nodeId!,
@@ -2977,10 +3034,10 @@ function pushRemoveEventAction(pageNode: UniPageNode, nodeId: number, name: stri
         pageNode.addDict(name)
     ]);
 }
-function normalizeAttrValue(pageNode: UniPageNode, name: string, value: unknown) {
+function normalizeAttrValue(pageNode: UniPageNode, name: string, value: Object) {
     return name === 'style' && isPlainObject(value) ? pageNode.normalizeDict(value) : pageNode.addDict(value as Value);
 }
-function pushSetAttributeAction(pageNode: UniPageNode, nodeId: number, name: string, value: unknown) {
+function pushSetAttributeAction(pageNode: UniPageNode, nodeId: number, name: string, value: Object) {
     pageNode.push([
         6,
         nodeId,
@@ -3002,7 +3059,7 @@ function pushSetTextAction(pageNode: UniPageNode, nodeId: number, text: string) 
         pageNode.addDict(text)
     ]);
 }
-function createPageNode(pageId: number, pageOptions: PageNodeOptions, setup?: boolean) {
+function createPageNode(pageId: number, pageOptions: PageNodeOptions, setup: boolean | null = null) {
     return new UniPageNode(pageId, pageOptions, setup);
 }
 function createVuePage(__pageId: number, __pagePath: string, __pageQuery: Record<string, Object>, __pageInstance: Page.PageInstance[string], pageOptions: PageNodeOptions) {
@@ -3014,7 +3071,7 @@ function createVuePage(__pageId: number, __pagePath: string, __pageQuery: Record
             __pagePath,
             __pageQuery,
             __pageInstance
-        }, pageNode);
+        } as UTSJSONObject, pageNode);
     if (isPromise(component)) {
         return component.then((component)=>mountPage(component));
     }
@@ -3033,17 +3090,17 @@ function initScope(pageId: number, vm: ComponentPublicInstance, pageInstance: Pa
         get () {
             return vm.$nativePage!.viewToTempFilePath.bind(vm.$nativePage!);
         }
-    });
+    } as UTSJSONObject);
     Object.defineProperty(vm, '$getPageStyle', {
         get () {
             return vm.$nativePage!.getPageStyle.bind(vm.$nativePage!);
         }
-    });
+    } as UTSJSONObject);
     Object.defineProperty(vm, '$setPageStyle', {
         get () {
             return vm.$nativePage!.setPageStyle.bind(vm.$nativePage!);
         }
-    });
+    } as UTSJSONObject);
     vm.getOpenerEventChannel = ()=>{
         if (!pageInstance.eventChannel) {
             pageInstance.eventChannel = new EventChannel(pageId);
@@ -3062,11 +3119,11 @@ function initNVue(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.Page
     }
 }
 const colorRE = /^#[a-z0-9]{6}$/i;
-function isColor(color?: string) {
+function isColor(color: string | null = null) {
     return color && (colorRE.test(color) || color === 'transparent');
 }
 function initBackgroundColor(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.PageRouteMeta) {
-    let { backgroundColor  } = routeMeta;
+    let backgroundColor = routeMeta.backgroundColor;
     if (!backgroundColor) {
         return;
     }
@@ -3103,7 +3160,7 @@ function initPullToRefresh(webviewStyle: PlusWebviewWebviewStyles, routeMeta: Un
     if (!routeMeta.enablePullDownRefresh) {
         return;
     }
-    const pullToRefresh = normalizePullToRefreshRpx(extend({}, plus.os.name === 'Android' ? defaultAndroidPullToRefresh : defaultPullToRefresh, routeMeta.pullToRefresh)) as unknown as PlusWebviewWebviewPullToRefreshStyles;
+    const pullToRefresh = normalizePullToRefreshRpx(extend({} as UTSJSONObject, plus.os.name === 'Android' ? defaultAndroidPullToRefresh : defaultPullToRefresh, routeMeta.pullToRefresh)) as Object as PlusWebviewWebviewPullToRefreshStyles;
     webviewStyle.pullToRefresh = initWebviewPullToRefreshI18n(pullToRefresh, routeMeta);
 }
 function initWebviewPullToRefreshI18n(pullToRefresh: PlusWebviewWebviewPullToRefreshStyles, routeMeta: UniApp.PageRouteMeta) {
@@ -3111,7 +3168,7 @@ function initWebviewPullToRefreshI18n(pullToRefresh: PlusWebviewWebviewPullToRef
     if (!i18nResult) {
         return pullToRefresh;
     }
-    const [contentdownI18n, contentoverI18n, contentrefreshI18n] = i18nResult;
+    const contentdownI18n = i18nResult[0], contentoverI18n = i18nResult[1], contentrefreshI18n = i18nResult[2];
     if (contentdownI18n || contentoverI18n || contentrefreshI18n) {
         .onLocaleChange(()=>{
             const webview = plus.webview.getWebviewById(routeMeta.id + '');
@@ -3138,7 +3195,7 @@ function initWebviewPullToRefreshI18n(pullToRefresh: PlusWebviewWebviewPullToRef
             }
             webview.setStyle({
                 pullToRefresh: newPullToRefresh
-            });
+            } as UTSJSONObject);
         });
     }
     return pullToRefresh;
@@ -3146,7 +3203,7 @@ function initWebviewPullToRefreshI18n(pullToRefresh: PlusWebviewWebviewPullToRef
 const defaultAndroidPullToRefresh = {
     support: true,
     style: 'circle'
-};
+} as UTSJSONObject;
 const defaultPullToRefresh = {
     support: true,
     style: 'default',
@@ -3161,9 +3218,9 @@ const defaultPullToRefresh = {
     contentrefresh: {
         caption: ''
     }
-};
+} as UTSJSONObject;
 function initTitleNView(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.PageRouteMeta) {
-    const { navigationBar  } = routeMeta;
+    const navigationBar = routeMeta.navigationBar;
     if (navigationBar.style === 'custom') {
         return false;
     }
@@ -3194,7 +3251,7 @@ function initTitleNViewI18n(titleNView: PlusWebviewWebviewTitleNViewStyles, rout
     if (!i18nResult) {
         return titleNView;
     }
-    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+    const titleTextI18n = i18nResult[0], searchInputPlaceholderI18n = i18nResult[1];
     if (titleTextI18n || searchInputPlaceholderI18n) {
         .onLocaleChange(()=>{
             const webview = plus.webview.getWebviewById(routeMeta.id + '');
@@ -3212,7 +3269,7 @@ function initTitleNViewI18n(titleNView: PlusWebviewWebviewTitleNViewStyles, rout
             }
             webview.setStyle({
                 titleNView: newTitleNView
-            });
+            } as UTSJSONObject);
         });
     }
     return titleNView;
@@ -3232,7 +3289,7 @@ function createTitleImageTags(titleImage: string) {
     ];
 }
 function createTitleNViewBtnClick(index: number) {
-    return function onClick(btn: UniApp.PageNavigationBarButton) {
+    return (btn: UniApp.PageNavigationBarButton)=>{
         (btn as Object).index = index;
         invokeHook(ON_NAVIGATION_BAR_BUTTON_TAP, btn);
     };
@@ -3263,7 +3320,7 @@ function initDebugRefresh(isTab: boolean, path: string, query: Record<string, Ob
         arguments: JSON.stringify({
             path: path.slice(1),
             query: queryString ? queryString.slice(1) : queryString
-        })
+        } as UTSJSONObject)
     };
 }
 function parseWebviewStyle(path: string, routeMeta: UniApp.PageRouteMeta, webview: {
@@ -3335,7 +3392,7 @@ function createPreloadWebview() {
     if (!preloadWebview || (preloadWebview as Object).__uniapp_route) {
         preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()), {
             contentAdjust: false
-        });
+        } as UTSJSONObject);
     }
     return preloadWebview;
 }
@@ -3358,16 +3415,17 @@ function backbuttonListener() {
 }
 const enterOptions: LaunchOptions = createLaunchOptions();
 const launchOptions: LaunchOptions = createLaunchOptions();
-function initLaunchOptions({ path , query , referrerInfo  }: Partial<RedirectInfo>) {
+function initLaunchOptions(ref1: Partial<RedirectInfo>) {
+    let path = ref1.path, query = ref1.query, referrerInfo = ref1.referrerInfo;
     extend(launchOptions, {
         path,
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
         channel: undefined,
         launcher: undefined
-    });
+    } as UTSJSONObject);
     extend(enterOptions, launchOptions);
-    return extend({}, launchOptions);
+    return extend({} as UTSJSONObject, launchOptions);
 }
 interface RedirectInfo extends Omit<LaunchOptions, string | string> {
     query: string;
@@ -3387,7 +3445,7 @@ interface RouteOptions {
     path: string;
     query: Record<string, Object>;
 }
-function closeWebview(webview: PlusWebviewWebviewObject, animationType: string, animationDuration?: number) {
+function closeWebview(webview: PlusWebviewWebviewObject, animationType: string, animationDuration: number | null = null) {
     webview[(webview as Object).__preload__ ? 'hide' : 'close'](animationType as Object, animationDuration);
 }
 interface PendingNavigator {
@@ -3410,7 +3468,7 @@ function pendingNavigate() {
     if (!pendingNavigator) {
         return;
     }
-    const { callback  } = pendingNavigator;
+    const callback = pendingNavigator.callback;
     pendingNavigator = false;
     return callback();
 }
@@ -3433,11 +3491,11 @@ function navigateFinish() {
     }
     preloadWebview.loaded ? pendingNavigator.callback() : onWebviewReady(preloadWebview.id!, pendingNavigate);
 }
-function showWebview(webview: PlusWebviewWebviewObject, animationType: string, animationDuration: number, showCallback: Function, delay?: number) {
+function showWebview(webview: PlusWebviewWebviewObject, animationType: string, animationDuration: number, showCallback: Function, delay: number | null = null) {
     if (typeof delay === 'undefined') {
         delay = (webview as Object).nvue ? 0 : 100;
     }
-    const execShowCallback = function() {
+    const execShowCallback = ()=>{
         if (execShowCallback._called) {
             return;
         }
@@ -3464,7 +3522,8 @@ function backWebview(webview: PlusWebviewWebviewObject, callback: () => void) {
         return callback();
     }
     const childWebview = children.find((webview)=>webview.id!.indexOf(WEBVIEW_ID_PREFIX) === 0) || children[0];
-    childWebview.canBack(({ canBack  })=>{
+    childWebview.canBack((ref1)=>{
+        let canBack = ref1.canBack;
         if (canBack) {
             childWebview.back();
         } else {
@@ -3528,14 +3587,15 @@ function createWebview(options: CreateWebviewOptions) {
 function getStatusbarHeight() {
     return 0;
 }
-function registerPage({ url , path , query , openType , webview , nvuePageVm , eventChannel  }: RegisterPageOptions) {
+function registerPage(ref1: RegisterPageOptions) {
+    let url = ref1.url, path = ref1.path, query = ref1.query, openType = ref1.openType, webview = ref1.webview, nvuePageVm = ref1.nvuePageVm, eventChannel = ref1.eventChannel;
     const routeOptions = initRouteOptions(path, openType);
     if (!webview) {
         webview = createWebview({
             path,
             routeOptions,
             query
-        });
+        } as UTSJSONObject);
     } else {
         webview = plus.webview.getWebviewById(webview.id);
         (webview as Object).nvue = routeOptions.meta.isNVue;
@@ -3549,9 +3609,10 @@ function registerPage({ url , path , query , openType , webview , nvuePageVm , e
     createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
     return webview;
 }
-function initPageOptions({ meta  }: UniApp.UniRoute): PageNodeOptions {
+function initPageOptions(ref1: UniApp.UniRoute): PageNodeOptions {
+    let meta = ref1.meta;
     const statusbarHeight = getStatusbarHeight();
-    const { platform , pixelRatio , windowWidth  } = getBaseSystemInfo();
+    const _getBaseSystemInfo = getBaseSystemInfo(), platform = _getBaseSystemInfo.platform, pixelRatio = _getBaseSystemInfo.pixelRatio, windowWidth = _getBaseSystemInfo.windowWidth;
     return {
         css: true,
         route: meta.route,
@@ -3574,18 +3635,19 @@ interface NavigateToOptions extends RouteOptions {
     aniType: string;
     aniDuration: number;
 }
-function initAnimation(path: string, animationType?: string, animationDuration?: number) {
-    const { globalStyle  } = __uniConfig;
+function initAnimation(path: string, animationType: string | null = null, animationDuration: number | null = null) {
+    const globalStyle = __uniConfig.globalStyle;
     const meta = getRouteMeta(path)!;
     return [
         animationType || meta.animationType || globalStyle.animationType || ANI_SHOW,
         animationDuration || meta.animationDuration || globalStyle.animationDuration || 300
     ] as const;
 }
-const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (args, { resolve , reject  })=>{
-    const { url , events , animationType , animationDuration  } = args;
-    const { path , query  } = parseUrl(url);
-    const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (args, ref1)=>{
+    let resolve = ref1.resolve, reject = ref1.reject;
+    const url = args.url, events = args.events, animationType = args.animationType, animationDuration = args.animationDuration;
+    const _parseUrl = parseUrl(url), path = _parseUrl.path, query = _parseUrl.query;
+    const _initAnimation = initAnimation(path, animationType, animationDuration), aniType = _initAnimation[0], aniDuration = _initAnimation[1];
     navigate(path, ()=>{
         _navigateTo({
             url,
@@ -3594,7 +3656,7 @@ const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (args, { resolve , r
             events,
             aniType,
             aniDuration
-        }).then(resolve).catch(reject);
+        } as UTSJSONObject).then(resolve).catch(reject);
     }, (args as Object).openType === 'appLaunch');
 };
 const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
@@ -3603,9 +3665,10 @@ interface NavigateToOptions extends RouteOptions {
     aniType: string;
     aniDuration: number;
 }
-function _navigateTo({ url , path , query , events , aniType , aniDuration  }: NavigateToOptions): Promise<void | {
+function _navigateTo(ref1: NavigateToOptions): Promise<void | {
     eventChannel: EventChannel;
 }> {
+    let url = ref1.url, path = ref1.path, query = ref1.query, events = ref1.events, aniType = ref1.aniType, aniDuration = ref1.aniDuration;
     invokeHook(ON_HIDE);
     invokeHook(ON_HIDE);
     const eventChannel = new EventChannel(getWebviewId() + 1, events);
@@ -3616,21 +3679,22 @@ function _navigateTo({ url , path , query , events , aniType , aniDuration  }: N
             query,
             openType: 'navigateTo',
             eventChannel
-        }), aniType, aniDuration, ()=>{
+        } as UTSJSONObject), aniType, aniDuration, ()=>{
             resolve({
                 eventChannel
-            });
+            } as UTSJSONObject);
         });
     });
 }
-const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve , reject  })=>{
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, ref1)=>{
+    let resolve = ref1.resolve, reject = ref1.reject;
     const page = getCurrentPage();
     if (!page) {
         return reject(`getCurrentPages is empty`);
     }
     if (invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {
         from: (args as Object).from || 'navigateBack'
-    })) {
+    } as UTSJSONObject)) {
         return resolve();
     }
     if (.hideToast) {
@@ -3644,16 +3708,17 @@ const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve , reject
     } else if (isDirectPage(page)) {
         reLaunchEntryPage();
     } else {
-        const { delta , animationType , animationDuration  } = args!;
+        const _ref = args!, delta = _ref.delta, animationType = _ref.animationType, animationDuration = _ref.animationDuration;
         back(delta!, animationType, animationDuration);
     }
     return resolve();
 }, NavigateBackProtocol, NavigateBackOptions);
 let firstBackTime = 0;
 function quit() {
+    initI18nAppMsgsOnce();
     if (!firstBackTime) {
         firstBackTime = Date.now();
-        plus.nativeUI.toast('再按一次退出應用');
+        plus.nativeUI.toast(useI18n().t('uni.app.quit'));
         setTimeout(()=>{
             firstBackTime = 0;
         }, 2000);
@@ -3661,7 +3726,7 @@ function quit() {
         plus.runtime.quit();
     }
 }
-function back(delta: number, animationType?: string, animationDuration?: number) {
+function back(delta: number, animationType: string | null = null, animationDuration: number | null = null) {
     const pages = getCurrentPages();
     const len = pages.length;
     const currentPage = pages[len - 1];
@@ -3670,7 +3735,7 @@ function back(delta: number, animationType?: string, animationDuration?: number)
             closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
         });
     }
-    const backPage = function(webview: PlusWebviewWebviewObject) {
+    const backPage = (webview: PlusWebviewWebviewObject)=>{
         if (animationType) {
             closeWebview(webview, animationType, animationDuration || 300);
         } else {
@@ -3701,13 +3766,13 @@ const mod = {
     request,
     uploadFile,
     downloadFile,
-    getLocale,
-    getSystemInfoSync
-};
+    getSystemInfoSync,
+    getLocale
+} as UTSJSONObject;
 const UniServiceJSBridge1 = extend(ServiceJSBridge, {
     publishHandler
-});
-function publishHandler(event: string, args: unknown, pageIds: number | number[]) {
+} as UTSJSONObject);
+function publishHandler(event: string, args: Object, pageIds: number | number[]) {
     args = JSON.stringify(args);
     if (!isArray(pageIds)) {
         pageIds = [
@@ -3777,12 +3842,13 @@ function onVdSync(actions: EventAction[], pageId: string) {
         }
     });
 }
-function subscribePlusMessage({ data  }: {
+function subscribePlusMessage(ref1: {
     data: {
         type: string;
         args: Record<string, Object>;
     };
 }) {
+    let data = ref1.data;
     if (data && data.type) {
         UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
     }
@@ -3806,15 +3872,16 @@ function subscribeNavigator() {
                 }) {
                     console.error(res.errMsg);
                 }
-            }));
+            } as UTSJSONObject));
         });
     });
 }
-const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (args, { resolve , reject  })=>{
+const $switchTab: DefineAsyncApiFn<API_TYPE_SWITCH_TAB> = (args, ref1)=>{
+    let resolve = ref1.resolve, reject = ref1.reject;
     throw new Error('API $switchTab is not yet implemented');
 };
 let isLaunchWebviewReady = false;
-function subscribeWebviewReady(_data: unknown, pageId: string) {
+function subscribeWebviewReady(_data: Object, pageId: string) {
     const isLaunchWebview = pageId === '1';
     if (isLaunchWebview && isLaunchWebviewReady) {
         return;
@@ -3841,31 +3908,32 @@ function onLaunchWebviewReady() {
     const args = {
         url: entryPagePath + (__uniConfig.entryPageQuery || ''),
         openType: 'appLaunch'
-    };
+    } as UTSJSONObject;
     const handler = {
         resolve () {},
         reject () {}
-    };
+    } as UTSJSONObject;
     if (routeOptions.meta.isTabBar) {
         return $switchTab(args, handler);
     }
     return $navigateTo(args, handler);
 }
-function onWebviewInserted(_: unknown, pageId: string) {
+function onWebviewInserted(_: Object, pageId: string) {
     const page = getPageById(parseInt(pageId));
     page && ((page as Object).__uniapp_webview = true);
 }
-function onWebviewRemoved(_: unknown, pageId: string) {
+function onWebviewRemoved(_: Object, pageId: string) {
     const page = getPageById(parseInt(pageId));
     page && delete (page as Object).__uniapp_webview;
 }
 type Name = string | string | string | string | string | string;
-type WebInvokeData = {
-    name: Name;
-    arg: Object;
-};
+class WebInvokeData extends UTSObject {
+    name!: Name;
+    arg!: Object;
+}
 type WebInvokeAppService = (webInvokeData: WebInvokeData, pageIds: string[]) => void;
-const onWebInvokeAppService: WebInvokeAppService = ({ name , arg  }, pageIds)=>{
+const onWebInvokeAppService: WebInvokeAppService = (ref1, pageIds)=>{
+    let name = ref1.name, arg = ref1.arg;
     if (name === 'postMessage') {
         onMessage(pageIds[0], arg);
     } else {
@@ -3875,7 +3943,7 @@ const onWebInvokeAppService: WebInvokeAppService = ({ name , arg  }, pageIds)=>{
             }) {
                 console.error(res.errMsg);
             }
-        }));
+        } as UTSJSONObject));
     }
 };
 function onMessage(pageId: string, arg: Object) {
@@ -3889,14 +3957,16 @@ function onMessage(pageId: string, arg: Object) {
                 arg
             ]
         }
-    }));
+    } as UTSJSONObject));
 }
 function initSubscribeHandlers() {
-    const { subscribe , subscribeHandler , publishHandler  } = UniServiceJSBridge;
-    onPlusMessage('subscribeHandler', ({ type , data , pageId  })=>{
+    const subscribe = UniServiceJSBridge.subscribe, subscribeHandler = UniServiceJSBridge.subscribeHandler, publishHandler = UniServiceJSBridge.publishHandler;
+    onPlusMessage('subscribeHandler', (ref1)=>{
+        let type = ref1.type, data = ref1.data, pageId = ref1.pageId;
         subscribeHandler(type, data, pageId);
     });
-    onPlusMessage(WEB_INVOKE_APPSERVICE, ({ data , webviewIds  })=>{
+    onPlusMessage(WEB_INVOKE_APPSERVICE, (ref1)=>{
+        let data = ref1.data, webviewIds = ref1.webviewIds;
         onWebInvokeAppService(data, webviewIds);
     });
     subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
@@ -3907,7 +3977,7 @@ function initSubscribeHandlers() {
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
     const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath!));
     if (routeOptions) {
-        publishHandler(ON_WEBVIEW_READY, {}, 1);
+        publishHandler(ON_WEBVIEW_READY, {} as UTSJSONObject, 1);
     }
 }
 function initGlobalEvent() {
@@ -3917,22 +3987,27 @@ function initGlobalEvent() {
 }
 function initAppLaunch(appVm: ComponentPublicInstance) {
     injectAppHooks(appVm.$);
-    const { entryPagePath , entryPageQuery , referrerInfo  } = __uniConfig;
+    const entryPagePath = __uniConfig.entryPagePath, entryPageQuery = __uniConfig.entryPageQuery, referrerInfo = __uniConfig.referrerInfo;
     const args = initLaunchOptions({
         path: entryPagePath,
         query: entryPageQuery,
         referrerInfo: referrerInfo
-    });
+    } as UTSJSONObject);
     invokeHook(appVm, ON_LAUNCH, args);
     invokeHook(appVm, ON_SHOW, args);
 }
 let appCtx: ComponentPublicInstance;
 const defaultApp = {
     globalData: {}
-};
-function initAppVm(appVm: ComponentPublicInstance) {
-    appVm.$vm = appVm;
-    appVm.$mpType = 'app';
+} as UTSJSONObject;
+function getApp1({ allowDefault =false  } = {}) {
+    if (appCtx) {
+        return appCtx;
+    }
+    if (allowDefault) {
+        return defaultApp;
+    }
+    console.error('[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.');
 }
 function registerApp(appVm: ComponentPublicInstance) {
     initVueApp(appVm);
@@ -3948,15 +4023,16 @@ function registerApp(appVm: ComponentPublicInstance) {
 }
 const default = {
     uni: mod,
+    getApp: getApp1,
     getCurrentPages: getCurrentPages1,
     __definePage: definePage,
     __registerApp: registerApp,
     UniServiceJSBridge: UniServiceJSBridge1
-};
+} as UTSJSONObject;
 export { default as default,  };
 'use strict';
 function tryCatch(fn: Function): Function {
-    return function() {
+    return ()=>{
         try {
             return fn.apply(fn, arguments);
         } catch (e) {
@@ -3980,7 +4056,7 @@ function addInvokeCallback(id: number, name: string, callback: Function, keepAli
     };
     return id;
 }
-function invokeCallback(id: number, res: unknown, extras?: unknown) {
+function invokeCallback(id: number, res: Object, extras: Object | null = null) {
     if (typeof id === 'number') {
         const opts = invokeCallbacks[id];
         if (opts) {
@@ -4023,7 +4099,7 @@ function createAsyncApiCallback(name: string, args: Record<string, Object> = {},
     if (!isPlainObject(args)) {
         args = {};
     }
-    const { success , fail , complete  } = getApiCallbacks(args);
+    const _getApiCallbacks = getApiCallbacks(args), success = _getApiCallbacks.success, fail = _getApiCallbacks.fail, complete = _getApiCallbacks.complete;
     const hasSuccess = isFunction(success);
     const hasFail = isFunction(fail);
     const hasComplete = isFunction(complete);

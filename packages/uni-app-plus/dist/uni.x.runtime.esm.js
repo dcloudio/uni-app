@@ -3891,7 +3891,7 @@ class UniProgressActiveendEventDetail {
     this.curPercent = value;
   }
 }
-class UniProgressActiveendEvent extends CustomEvent {
+class UniProgressActiveendEvent extends UniCustomEvent {
   constructor(value) {
     super("activeend", {
       detail: new UniProgressActiveendEventDetail(value)
@@ -4047,7 +4047,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
         if (percent <= data.curPercent + 1) {
           clearTimer();
           data.curPercent = percent;
-          emit("activeend", new UniProgressActiveendEvent(percent));
+          emit("activeend", initUniCustomEvent(data.$uniProgressElement, new UniProgressActiveendEvent(percent)));
         } else {
           ++data.curPercent;
         }

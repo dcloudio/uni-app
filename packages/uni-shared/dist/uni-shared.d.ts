@@ -284,8 +284,6 @@ export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;
 
-export declare function isRootImmediateHookX(name: string): boolean;
-
 export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
 
 export declare function isUniXElement(name: string): boolean;
@@ -340,7 +338,7 @@ export declare function normalizeProps(props: Record<string, any> | null): Recor
 
 export declare function normalizeStyle(value: unknown): NormalizedStyle | string | undefined;
 
-export declare function normalizeStyles<T extends Object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
+export declare function normalizeStyles<T extends object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
 
 export declare function normalizeTabBarStyles(borderStyle?: string): string | undefined;
 

@@ -1362,7 +1362,9 @@
     var fallbackLocale = arguments.length > 2 ? arguments[2] : void 0;
     var watcher = arguments.length > 3 ? arguments[3] : void 0;
     if (typeof locale !== "string") {
-      [locale, messages2] = [messages2, locale];
+      var options = [messages2, locale];
+      locale = options[0];
+      messages2 = options[1];
     }
     if (typeof locale !== "string") {
       locale = getDefaultLocale();
@@ -1443,6 +1445,8 @@
     }
     return i18n;
   }
+  var initI18nButtonMsgsOnce = /* @__PURE__ */ once(() => {
+  });
   function initBridge(subscribeNamespace) {
     var emitter = new E$1();
     return {
@@ -2464,6 +2468,37 @@
   function isRef(r) {
     return !!(r && r.__v_isRef === true);
   }
+  function ref(value) {
+    return createRef(value, false);
+  }
+  function createRef(rawValue, shallow) {
+    if (isRef(rawValue)) {
+      return rawValue;
+    }
+    return new RefImpl(rawValue, shallow);
+  }
+  class RefImpl {
+    constructor(value, __v_isShallow) {
+      this.__v_isShallow = __v_isShallow;
+      this.dep = void 0;
+      this.__v_isRef = true;
+      this._rawValue = __v_isShallow ? value : toRaw(value);
+      this._value = __v_isShallow ? value : toReactive(value);
+    }
+    get value() {
+      trackRefValue(this);
+      return this._value;
+    }
+    set value(newVal) {
+      var useDirectValue = this.__v_isShallow || isShallow(newVal) || isReadonly(newVal);
+      newVal = useDirectValue ? newVal : toRaw(newVal);
+      if (hasChanged(newVal, this._rawValue)) {
+        this._rawValue = newVal;
+        this._value = useDirectValue ? newVal : toReactive(newVal);
+        triggerRefValue(this, 4, newVal);
+      }
+    }
+  }
   function unref(ref2) {
     return isRef(ref2) ? ref2.value : ref2;
   }
@@ -3317,6 +3352,19 @@
         resetTracking();
       }
     }
+  }
+  /*! #__NO_SIDE_EFFECTS__ */
+  // @__NO_SIDE_EFFECTS__
+  function defineComponent(options, extraOptions) {
+    return isFunction(options) ? (
+      // #8326: extend call and options.name access are considered side-effects
+      // by Rollup, so we have to wrap it in a pure-annotated IIFE.
+      /* @__PURE__ */ (() => extend({
+        name: options.name
+      }, extraOptions, {
+        setup: options
+      }))()
+    ) : options;
   }
   var isAsyncWrapper = (i2) => !!i2.type.__asyncLoader;
   var isKeepAlive = (vnode) => vnode.type.__isKeepAlive;
@@ -6168,6 +6216,26 @@
     var c2 = computed$1(getterOrOptions, debugOptions, isInSSRComponentSetup);
     return c2;
   };
+  function h(type, propsOrChildren, children) {
+    var l = arguments.length;
+    if (l === 2) {
+      if (isObject$1(propsOrChildren) && !isArray(propsOrChildren)) {
+        if (isVNode(propsOrChildren)) {
+          return createVNode(type, null, [propsOrChildren]);
+        }
+        return createVNode(type, propsOrChildren);
+      } else {
+        return createVNode(type, null, propsOrChildren);
+      }
+    } else {
+      if (l > 3) {
+        children = Array.prototype.slice.call(arguments, 2);
+      } else if (l === 3 && isVNode(children)) {
+        children = [children];
+      }
+      return createVNode(type, propsOrChildren, children);
+    }
+  }
   var version = "3.4.21";
   var svgNS = "http://www.w3.org/2000/svg";
   var mathmlNS = "http://www.w3.org/1998/Math/MathML";
@@ -6795,6 +6863,14 @@
     Object.keys(cssVars).forEach((name) => {
       style.setProperty(name, cssVars[name]);
     });
+  }
+  function PolySymbol(name) {
+    return Symbol(name);
+  }
+  function useCurrentPageId() {
+    {
+      return getCurrentPageId();
+    }
   }
   function getCurrentPage() {
     {
@@ -7537,7 +7613,7 @@
     var extra = desc.stat_desc.extra_bits;
     var base = desc.stat_desc.extra_base;
     var max_length = desc.stat_desc.max_length;
-    var h;
+    var h2;
     var n, m;
     var bits;
     var xbits;
@@ -7547,8 +7623,8 @@
       s.bl_count[bits] = 0;
     }
     tree[s.heap[s.heap_max] * 2 + 1] = 0;
-    for (h = s.heap_max + 1; h < HEAP_SIZE$1; h++) {
-      n = s.heap[h];
+    for (h2 = s.heap_max + 1; h2 < HEAP_SIZE$1; h2++) {
+      n = s.heap[h2];
       bits = tree[tree[n * 2 + 1] * 2 + 1] + 1;
       if (bits > max_length) {
         bits = max_length;
@@ -7585,7 +7661,7 @@
     for (bits = max_length; bits !== 0; bits--) {
       n = s.bl_count[bits];
       while (n !== 0) {
-        m = s.heap[--h];
+        m = s.heap[--h2];
         if (m > max_code) {
           continue;
         }
@@ -12414,14 +12490,14 @@
       this.updateView();
     }
     appendChild(node) {
-      var ref = this.$.appendChild(node);
+      var ref2 = this.$.appendChild(node);
       this.updateView(true);
-      return ref;
+      return ref2;
     }
     insertBefore(newChild, refChild) {
-      var ref = this.$.insertBefore(newChild, refChild);
+      var ref2 = this.$.insertBefore(newChild, refChild);
       this.updateView(true);
-      return ref;
+      return ref2;
     }
     appendUniChild(node) {
       this.$children.push(node);
@@ -12889,6 +12965,277 @@
       startAnimation(this);
     }
   };
+  var defineBuiltInComponent = (options) => {
+    options.__reserved = true;
+    var {
+      props,
+      mixins
+    } = options;
+    if (!props || !props.animation) {
+      (mixins || (options.mixins = [])).push(animation);
+    }
+    return defineSystemComponent(options);
+  };
+  var defineSystemComponent = (options) => {
+    options.__reserved = true;
+    options.compatConfig = {
+      MODE: 3
+      // 标记为vue3
+    };
+    return /* @__PURE__ */ defineComponent(options);
+  };
+  function withWebEvent(fn) {
+    return fn.__wwe = true, fn;
+  }
+  function useHover(props) {
+    var hovering = ref(false);
+    var hoverTouch = false;
+    var hoverStartTimer;
+    var hoverStayTimer;
+    function hoverReset() {
+      requestAnimationFrame(() => {
+        clearTimeout(hoverStayTimer);
+        hoverStayTimer = setTimeout(() => {
+          hovering.value = false;
+        }, parseInt(props.hoverStayTime));
+      });
+    }
+    function onTouchstartPassive(evt) {
+      if (evt.touches.length > 1) {
+        return;
+      }
+      handleHoverStart(evt);
+    }
+    function onMousedown(evt) {
+      if (hoverTouch) {
+        return;
+      }
+      handleHoverStart(evt);
+      window.addEventListener("mouseup", handlePCHoverEnd);
+    }
+    function handleHoverStart(evt) {
+      if (evt._hoverPropagationStopped) {
+        return;
+      }
+      if (!props.hoverClass || props.hoverClass === "none" || props.disabled) {
+        return;
+      }
+      if (props.hoverStopPropagation) {
+        evt._hoverPropagationStopped = true;
+      }
+      hoverTouch = true;
+      hoverStartTimer = setTimeout(() => {
+        hovering.value = true;
+        if (!hoverTouch) {
+          hoverReset();
+        }
+      }, parseInt(props.hoverStartTime));
+    }
+    function onTouchend() {
+      handleHoverEnd();
+    }
+    function onMouseup() {
+      if (!hoverTouch) {
+        return;
+      }
+      handlePCHoverEnd();
+    }
+    function handleHoverEnd() {
+      hoverTouch = false;
+      if (hovering.value) {
+        hoverReset();
+      }
+    }
+    function handlePCHoverEnd() {
+      handleHoverEnd();
+      window.removeEventListener("mouseup", handlePCHoverEnd);
+    }
+    function onTouchcancel() {
+      hoverTouch = false;
+      hovering.value = false;
+      clearTimeout(hoverStartTimer);
+    }
+    return {
+      hovering,
+      binding: {
+        onTouchstartPassive: withWebEvent(onTouchstartPassive),
+        onMousedown: withWebEvent(onMousedown),
+        onTouchend: withWebEvent(onTouchend),
+        onMouseup: withWebEvent(onMouseup),
+        onTouchcancel: withWebEvent(onTouchcancel)
+      }
+    };
+  }
+  function useBooleanAttr(props, keys) {
+    if (isString(keys)) {
+      keys = [keys];
+    }
+    return keys.reduce((res, key2) => {
+      if (props[key2]) {
+        res[key2] = true;
+      }
+      return res;
+    }, /* @__PURE__ */ Object.create(null));
+  }
+  var uniFormKey = PolySymbol("uf");
+  var uniLabelKey = PolySymbol("ul");
+  function useListeners(props, listeners2) {
+    _addListeners(props.id, listeners2);
+    watch(() => props.id, (newId, oldId) => {
+      _removeListeners(oldId, listeners2, true);
+      _addListeners(newId, listeners2, true);
+    });
+    onUnmounted(() => {
+      _removeListeners(props.id, listeners2);
+    });
+  }
+  function _addListeners(id2, listeners2, watch2) {
+    var pageId = useCurrentPageId();
+    if (watch2 && !id2) {
+      return;
+    }
+    if (!isPlainObject(listeners2)) {
+      return;
+    }
+    Object.keys(listeners2).forEach((name) => {
+      if (watch2) {
+        if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
+          UniViewJSBridge.on("uni-".concat(name, "-").concat(pageId, "-").concat(id2), listeners2[name]);
+        }
+      } else {
+        if (name.indexOf("uni-") === 0) {
+          UniViewJSBridge.on(name, listeners2[name]);
+        } else if (id2) {
+          UniViewJSBridge.on("uni-".concat(name, "-").concat(pageId, "-").concat(id2), listeners2[name]);
+        }
+      }
+    });
+  }
+  function _removeListeners(id2, listeners2, watch2) {
+    var pageId = useCurrentPageId();
+    if (watch2 && !id2) {
+      return;
+    }
+    if (!isPlainObject(listeners2)) {
+      return;
+    }
+    Object.keys(listeners2).forEach((name) => {
+      if (watch2) {
+        if (name.indexOf("@") !== 0 && name.indexOf("uni-") !== 0) {
+          UniViewJSBridge.off("uni-".concat(name, "-").concat(pageId, "-").concat(id2), listeners2[name]);
+        }
+      } else {
+        if (name.indexOf("uni-") === 0) {
+          UniViewJSBridge.off(name, listeners2[name]);
+        } else if (id2) {
+          UniViewJSBridge.off("uni-".concat(name, "-").concat(pageId, "-").concat(id2), listeners2[name]);
+        }
+      }
+    });
+  }
+  var buttonProps = {
+    id: {
+      type: String,
+      default: ""
+    },
+    hoverClass: {
+      type: String,
+      default: "button-hover"
+    },
+    hoverStartTime: {
+      type: [Number, String],
+      default: 20
+    },
+    hoverStayTime: {
+      type: [Number, String],
+      default: 70
+    },
+    hoverStopPropagation: {
+      type: Boolean,
+      default: false
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    formType: {
+      type: String,
+      default: ""
+    },
+    openType: {
+      type: String,
+      default: ""
+    },
+    loading: {
+      type: [Boolean, String],
+      default: false
+    },
+    plain: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
+  const Button = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Button",
+    props: buttonProps,
+    setup(props, _ref) {
+      var {
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      {
+        initI18nButtonMsgsOnce();
+      }
+      var uniForm = inject(uniFormKey, false);
+      var {
+        hovering,
+        binding
+      } = useHover(props);
+      var onClick = withWebEvent((e, isLabelClick) => {
+        if (props.disabled) {
+          return e.stopImmediatePropagation();
+        }
+        if (isLabelClick) {
+          rootRef.value.click();
+        }
+        var formType = props.formType;
+        if (formType) {
+          if (!uniForm) {
+            return;
+          }
+          if (formType === "submit") {
+            uniForm.submit(e);
+          } else if (formType === "reset") {
+            uniForm.reset(e);
+          }
+          return;
+        }
+      });
+      var uniLabel = inject(uniLabelKey, false);
+      if (uniLabel) {
+        uniLabel.addHandler(onClick);
+        onBeforeUnmount(() => {
+          uniLabel.removeHandler(onClick);
+        });
+      }
+      useListeners(props, {
+        "label-click": onClick
+      });
+      return () => {
+        var hoverClass = props.hoverClass;
+        var booleanAttrs = useBooleanAttr(props, "disabled");
+        var loadingAttrs = useBooleanAttr(props, "loading");
+        var plainAttrs = useBooleanAttr(props, "plain");
+        var hasHoverClass = hoverClass && hoverClass !== "none";
+        return createVNode("uni-button", mergeProps({
+          "ref": rootRef,
+          "onClick": onClick,
+          "id": props.id,
+          "class": hasHoverClass && hovering.value ? hoverClass : ""
+        }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick", "id"]);
+      };
+    }
+  });
   {
     plusReady(() => {
     });
@@ -13119,10 +13466,149 @@
       super(id2, document.createElement("uni-view"), parentNodeId, refNodeId, nodeJson);
     }
   }
+  function createWrapper(component, props) {
+    return () => h(component, props);
+  }
+  class UniComponent extends UniNode {
+    constructor(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector) {
+      super(id2, tag, parentNodeId);
+      var container = document.createElement("div");
+      container.__vueParent = getVueParent(this);
+      this.$props = reactive({});
+      this.init(nodeJson);
+      this.$app = createApp(createWrapper(component, this.$props));
+      this.$app.mount(container);
+      this.$ = container.firstElementChild;
+      this.$.__id = id2;
+      if (selector) {
+        this.$holder = this.$.querySelector(selector);
+      }
+      if (hasOwn$1(nodeJson, "t")) {
+        this.setText(nodeJson.t || "");
+      }
+      if (nodeJson.a && hasOwn$1(nodeJson.a, ATTR_V_SHOW)) {
+        patchVShow(this.$, nodeJson.a[ATTR_V_SHOW]);
+      }
+      this.insert(parentNodeId, refNodeId);
+      flushPostFlushCbs();
+    }
+    init(nodeJson) {
+      var {
+        a,
+        e,
+        w
+      } = nodeJson;
+      if (a) {
+        this.setWxsProps(a);
+        Object.keys(a).forEach((n) => {
+          this.setAttr(n, a[n]);
+        });
+      }
+      if (hasOwn$1(nodeJson, "s")) {
+        this.setAttr("style", nodeJson.s);
+      }
+      if (e) {
+        Object.keys(e).forEach((n) => {
+          this.addEvent(n, e[n]);
+        });
+      }
+      if (w) {
+        this.addWxsEvents(nodeJson.w);
+      }
+    }
+    setText(text) {
+      (this.$holder || this.$).textContent = text;
+      this.updateView();
+    }
+    addWxsEvent(name, wxsEvent, flag) {
+      this.$props[name] = createWxsEventInvoker(this, wxsEvent, flag);
+    }
+    addEvent(name, value) {
+      this.$props[name] = createInvoker(this.id, value, parseEventName(name)[1]);
+    }
+    removeEvent(name) {
+      this.$props[name] = null;
+    }
+    setAttr(name, value) {
+      if (name === ATTR_V_SHOW) {
+        if (this.$) {
+          patchVShow(this.$, value);
+        }
+      } else if (name === ATTR_V_OWNER_ID) {
+        this.$.__ownerId = value;
+      } else if (name === ATTR_V_RENDERJS) {
+        queuePostActionJob(() => initRenderjs(this, value), JOB_PRIORITY_RENDERJS);
+      } else if (name === ATTR_STYLE) {
+        var newStyle = decodeAttr(value, this.$ || $(this.pid).$);
+        var oldStyle = this.$props.style;
+        if (isPlainObject(newStyle) && isPlainObject(oldStyle)) {
+          Object.keys(newStyle).forEach((n) => {
+            oldStyle[n] = newStyle[n];
+          });
+        } else {
+          this.$props.style = newStyle;
+        }
+      } else if (isCssVar(name)) {
+        this.$.style.setProperty(name, normalizeStyleValue$1(value));
+      } else {
+        value = decodeAttr(value, this.$ || $(this.pid).$);
+        if (!this.wxsPropsInvoke(name, value, true)) {
+          this.$props[name] = value;
+        }
+      }
+      this.updateView();
+    }
+    removeAttr(name) {
+      if (isCssVar(name)) {
+        this.$.style.removeProperty(name);
+      } else {
+        this.$props[name] = null;
+      }
+      this.updateView();
+    }
+    remove() {
+      this.removeUniParent();
+      this.isUnmounted = true;
+      this.$app.unmount();
+      removeElement(this.id);
+      this.removeUniChildren();
+      this.updateView();
+    }
+    appendChild(node) {
+      var res = (this.$holder || this.$).appendChild(node);
+      this.updateView(true);
+      return res;
+    }
+    insertBefore(newChild, refChild) {
+      var res = (this.$holder || this.$).insertBefore(newChild, refChild);
+      this.updateView(true);
+      return res;
+    }
+  }
+  function getVueParent(node) {
+    while (node && node.pid > 0) {
+      node = $(node.pid);
+      if (node) {
+        var {
+          __vueParentComponent
+        } = node.$;
+        if (__vueParentComponent) {
+          return __vueParentComponent;
+        }
+      }
+    }
+    return null;
+  }
+  class UniButton extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-button", Button, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
-    VIEW: UniViewElement
+    VIEW: UniViewElement,
+    BUTTON: UniButton
   };
   function pageScrollTo(_ref2, publish) {
     var {
