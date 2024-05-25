@@ -6,7 +6,12 @@ import {
   NavigateBackProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
+import {
+  getCurrentPage,
+  initI18nAppMsgsOnce,
+  invokeHook,
+  useI18n,
+} from '@dcloudio/uni-core'
 import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
 
 import {
@@ -60,11 +65,10 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
 let firstBackTime = 0
 
 function quit() {
-  // TODO initI18nAppMsgsOnce()
+  initI18nAppMsgsOnce()
   if (!firstBackTime) {
     firstBackTime = Date.now()
-    // TODO useI18n
-    plus.nativeUI.toast('再按一次退出應用')
+    plus.nativeUI.toast(useI18n().t('uni.app.quit'))
     setTimeout(() => {
       firstBackTime = 0
     }, 2000)
