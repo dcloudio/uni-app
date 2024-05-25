@@ -7,6 +7,7 @@ import {
   transformRef,
 } from '@dcloudio/uni-cli-shared'
 import type { UniMiniProgramPluginOptions } from '@dcloudio/uni-mp-vite'
+import packageJson from '@dcloudio/uni-mp-xhs/package.json'
 
 import source from './project.config.json'
 import { transformOn } from './transforms/vOn'
@@ -23,6 +24,17 @@ export const compilerOptions: CompilerOptions = {
 }
 
 const COMPONENTS_DIR = 'xhscomponents'
+
+/**
+ * 收集 Uniapp 框架信息，for 小红书开发者工具埋点上报
+ */
+const uniappInfoSource = Object.assign(source, {
+  framework: {
+    tool: 'Uniapp',
+    name: packageJson.name,
+    version: packageJson.version,
+  },
+})
 
 export const miniProgram: MiniProgramCompilerOptions = {
   class: {
@@ -102,7 +114,7 @@ export const options: UniMiniProgramPluginOptions = {
   project: {
     filename: projectConfigFilename,
     config: ['project.config.json'],
-    source,
+    source: uniappInfoSource,
   },
   template: {
     /* eslint-disable no-restricted-syntax */

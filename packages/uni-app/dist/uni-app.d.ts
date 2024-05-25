@@ -83,6 +83,38 @@ declare type onSaveExitStateHook = () => SaveExitState;
 
 export declare const onShareAppMessage: (hook: (options: Page.ShareAppMessageOption) => Page.CustomShareContent | Promise<Omit<Page.CustomShareContent, "promise">>, target?: ComponentInternalInstance | null) => void;
 
+export declare const onShareChat: (hook: (options: {
+    /**
+     * 转发的路径
+     * @default 当前页面路径
+     */
+    path?: string;
+    /**
+     * 自定义标题，即聊天群组内分享内容显示的标题
+     * @default 当前小程序名称
+     */
+    title?: string;
+    /**
+     * 自定义页面路径中携带的参数，如 path?a=1&b=2 的 “?” 后面部分
+     * @default 当前页面路径携带的参数
+     */
+    query?: string;
+    /**
+     * 自定义图片路径，可以是本地文件或者网络图片(IOS 客户端路径中如果含中文需要encode) 。支持 PNG 及 JPG，显示图片长宽比是 1:1
+     * @default 默认使用小程序 Logo
+     */
+    imageUrl?: string;
+    /**
+     * 如果该参数存在，则以 resolve 结果为准，如果三秒内不 resolve，分享会使用上面传入的默认
+     */
+    promise?: Promise<any>;
+    /**
+     * 好友分享的内容描述
+     * @default 默认取小程序描述
+     */
+    content?: string;
+}) => void, target?: ComponentInternalInstance | null) => void;
+
 export declare const onShareTimeline: (hook: () => Page.ShareTimelineContent, target?: ComponentInternalInstance | null) => void;
 
 export declare const onShow: (hook: ((options?: App.LaunchShowOption | undefined) => void) | (() => void), target?: ComponentInternalInstance | null) => void;

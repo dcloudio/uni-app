@@ -10,6 +10,59 @@ function _interopDefault (e) { return e && e.__esModule ? e : { default: e }; }
 var initMiniProgramPlugin__default = /*#__PURE__*/_interopDefault(initMiniProgramPlugin);
 var path__default = /*#__PURE__*/_interopDefault(path);
 
+var name = "@dcloudio/uni-mp-xhs";
+var version = "3.0.0-alpha-4010820240517001";
+var description$1 = "uniapp mp-xhs";
+var main = "dist/index.js";
+var files = [
+	"dist",
+	"lib"
+];
+var repository = {
+	type: "git",
+	url: "git+https://github.com/dcloudio/uni-app.git",
+	directory: "packages/uni-mp-xhs"
+};
+var scripts = {
+	test: "echo \"Error: no test specified\" && exit 1"
+};
+var license = "Apache-2.0";
+var gitHead = "33e807d66e1fe47e2ee08ad9c59247e37b8884da";
+var devDependencies = {
+	"@dcloudio/uni-mp-weixin": "3.0.0-alpha-4010820240517001",
+	"@dcloudio/uni-mp-alipay": "3.0.0-alpha-4010820240517001",
+	"@vue/compiler-core": "3.4.21"
+};
+var dependencies = {
+	"@dcloudio/uni-cli-shared": "3.0.0-alpha-4010820240517001",
+	"@dcloudio/uni-mp-compiler": "3.0.0-alpha-4010820240517001",
+	"@dcloudio/uni-mp-vite": "3.0.0-alpha-4010820240517001",
+	"@dcloudio/uni-mp-vue": "3.0.0-alpha-4010820240517001",
+	"@dcloudio/uni-shared": "3.0.0-alpha-4010820240517001",
+	"@vue/shared": "3.4.21"
+};
+var packageJson = {
+	name: name,
+	version: version,
+	description: description$1,
+	main: main,
+	files: files,
+	repository: repository,
+	scripts: scripts,
+	license: license,
+	"uni-app": {
+	name: "mp-xhs",
+	title: "小红书小程序",
+	apply: [
+		"mp-xhs"
+	],
+	main: "dist/uni.compiler.js"
+},
+	gitHead: gitHead,
+	devDependencies: devDependencies,
+	dependencies: dependencies
+};
+
 var description = "项目配置文件。";
 var packOptions = {
 	ignore: [
@@ -73,6 +126,16 @@ const compilerOptions = {
     directiveTransforms,
 };
 const COMPONENTS_DIR = 'xhscomponents';
+/**
+ * 收集 Uniapp 框架信息，for 小红书开发者工具埋点上报
+ */
+const uniappInfoSource = Object.assign(source, {
+    framework: {
+        tool: 'Uniapp',
+        name: packageJson.name,
+        version: packageJson.version,
+    },
+});
 const miniProgram = {
     class: {
         array: false,
@@ -150,7 +213,7 @@ const options = {
     project: {
         filename: projectConfigFilename,
         config: ['project.config.json'],
-        source,
+        source: uniappInfoSource,
     },
     template: Object.assign(Object.assign({}, miniProgram), { filter: {
             extname: '.sjs',
