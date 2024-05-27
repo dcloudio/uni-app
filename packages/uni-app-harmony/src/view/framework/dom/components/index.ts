@@ -3,6 +3,7 @@ import { UniComment } from '@dcloudio/uni-app-plus/view/framework/dom/elements/U
 import { UniViewElement } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniViewElement'
 import { UniButton } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniButton'
 import { UniImage } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniImage'
+import { UniTextElement } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniTextElement'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -10,4 +11,5 @@ export const BuiltInComponents = {
   VIEW: UniViewElement,
   BUTTON: UniButton,
   IMAGE: UniImage,
+  TEXT: UniTextElement,
 }
