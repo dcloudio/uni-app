@@ -6,6 +6,7 @@ import { UniImage } from '@dcloudio/uni-app-plus/view/framework/dom/components/U
 import { UniTextElement } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniTextElement'
 import { UniNavigator } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniNavigator'
 import { UniRichText } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniRichText'
+import { UniProgress } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniProgress'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -16,4 +17,5 @@ export const BuiltInComponents = {
   TEXT: UniTextElement,
   NAVIGATOR: UniNavigator,
   'RICH-TEXT': UniRichText,
+  PROGRESS: UniProgress,
 }
