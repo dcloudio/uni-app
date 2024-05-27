@@ -7,6 +7,9 @@ import { UniTextElement } from '@dcloudio/uni-app-plus/view/framework/dom/elemen
 import { UniNavigator } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniNavigator'
 import { UniRichText } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniRichText'
 import { UniProgress } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniProgress'
+import { UniLabel } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniLabel'
+import { UniCheckboxGroup } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniCheckboxGroup'
+import { UniCheckbox } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniCheckbox'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -18,4 +21,7 @@ export const BuiltInComponents = {
   NAVIGATOR: UniNavigator,
   'RICH-TEXT': UniRichText,
   PROGRESS: UniProgress,
+  LABEL: UniLabel,
+  CHECKBOX: UniCheckbox,
+  'CHECKBOX-GROUP': UniCheckboxGroup,
 }
