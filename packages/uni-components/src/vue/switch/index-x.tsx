@@ -73,10 +73,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'Switch',
   props,
   emits: ['change'],
+  //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-switch',
     class: UniSwitchElement,
   },
+  //#endif
   setup(props, { emit }) {
     const rootRef = ref<HTMLElement | null>(null)
     const switchChecked = ref(props.checked)
@@ -117,6 +119,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         checkedCache.value = val
       }
     )
+
+    //#if _X_ && !_NODE_JS_
     onMounted(() => {
       const rootElement = rootRef.value as UniSwitchElement
       Object.defineProperty(rootElement, 'checked', {
@@ -129,6 +133,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       })
       rootElement.attachVmProps(props)
     })
+    //#endif
 
     return () => {
       const {
