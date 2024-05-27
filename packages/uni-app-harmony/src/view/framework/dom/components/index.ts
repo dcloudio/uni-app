@@ -10,6 +10,8 @@ import { UniProgress } from '@dcloudio/uni-app-plus/view/framework/dom/component
 import { UniLabel } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniLabel'
 import { UniCheckboxGroup } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniCheckboxGroup'
 import { UniCheckbox } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniCheckbox'
+import { UniRadio } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniRadio'
+import { UniRadioGroup } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniRadioGroup'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -24,4 +26,6 @@ export const BuiltInComponents = {
   LABEL: UniLabel,
   CHECKBOX: UniCheckbox,
   'CHECKBOX-GROUP': UniCheckboxGroup,
+  RADIO: UniRadio,
+  'RADIO-GROUP': UniRadioGroup,
 }
