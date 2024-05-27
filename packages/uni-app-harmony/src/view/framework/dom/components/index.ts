@@ -4,6 +4,7 @@ import { UniViewElement } from '@dcloudio/uni-app-plus/view/framework/dom/elemen
 import { UniButton } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniButton'
 import { UniImage } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniImage'
 import { UniTextElement } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniTextElement'
+import { UniNavigator } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniNavigator'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -12,4 +13,5 @@ export const BuiltInComponents = {
   BUTTON: UniButton,
   IMAGE: UniImage,
   TEXT: UniTextElement,
+  NAVIGATOR: UniNavigator,
 }
