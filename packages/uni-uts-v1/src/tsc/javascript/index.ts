@@ -93,6 +93,7 @@ export const uts2js: uts2js = (options) => {
             'uniapp-cli-vite/node_modules/@vue/runtime-core'
           ),
         ],
+        vuex: [path.resolve(pluginPath, 'uniapp-cli-vite/node_modules/vuex')],
         ...virtualPaths,
       },
       typeRoots: [path.resolve(__dirname, '../../../lib/tsconfig/types')],
