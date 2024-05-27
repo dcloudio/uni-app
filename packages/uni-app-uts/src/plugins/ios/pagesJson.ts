@@ -62,7 +62,14 @@ export function uniAppPagesPlugin(): Plugin {
       }
       if (isPages(id)) {
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
+        // dark mode
+        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
+
+        // pages.json
         const pagesJson = normalizeUniAppXAppPagesJson(code)
+
+        // add themeConfig - can move to uni-x/index.ts
+        pagesJson.themeConfig = readThemeJSONFile()
 
         setGlobalPageOrientation(pagesJson.globalStyle?.pageOrientation || '')
 
@@ -71,6 +78,7 @@ export function uniAppPagesPlugin(): Plugin {
         this.emitFile({
           fileName: APP_CONFIG,
           type: 'asset',
+          // 生成 app-config.js
           source: normalizeUniAppXAppConfig(
             pagesJson,
             parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
@@ -85,5 +93,19 @@ export function uniAppPagesPlugin(): Plugin {
     buildEnd() {
       isFirst = false
     },
+  }
+}
+
+function readThemeJSONFile() {
+  try {
+    // 后续读取 theme location
+    const themeJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'theme.json')
+    let content = '{}'
+    if (fs.existsSync(themeJsonPath)) {
+      content = fs.readFileSync(themeJsonPath, 'utf8')
+    }
+    return JSON.parse(content)
+  } catch (error) {
+    console.error('read theme.json error:', error)
   }
 }
