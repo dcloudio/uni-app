@@ -5,6 +5,7 @@ import { UniButton } from '@dcloudio/uni-app-plus/view/framework/dom/components/
 import { UniImage } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniImage'
 import { UniTextElement } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniTextElement'
 import { UniNavigator } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniNavigator'
+import { UniRichText } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniRichText'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -14,4 +15,5 @@ export const BuiltInComponents = {
   IMAGE: UniImage,
   TEXT: UniTextElement,
   NAVIGATOR: UniNavigator,
+  'RICH-TEXT': UniRichText,
 }
