@@ -12,6 +12,13 @@ import { UniCheckboxGroup } from '@dcloudio/uni-app-plus/view/framework/dom/comp
 import { UniCheckbox } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniCheckbox'
 import { UniRadio } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniRadio'
 import { UniRadioGroup } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniRadioGroup'
+import { UniSlider } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniSlider'
+import { UniSwitch } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniSwitch'
+import { UniInput } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniInput'
+import { UniTextarea } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniTextarea'
+import { UniEditor } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniEditor'
+// import { UniPickerView } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniPickerView'
+// import { UniPickerViewColumn } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniPickerViewColumn'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -28,4 +35,11 @@ export const BuiltInComponents = {
   'CHECKBOX-GROUP': UniCheckboxGroup,
   RADIO: UniRadio,
   'RADIO-GROUP': UniRadioGroup,
+  SLIDER: UniSlider,
+  SWITCH: UniSwitch,
+  INPUT: UniInput,
+  TEXTAREA: UniTextarea,
+  EDITOR: UniEditor,
+  // 'PICKER-VIEW': UniPickerView,
+  // 'PICKER-VIEW-COLUMN': UniPickerViewColumn,
 }
