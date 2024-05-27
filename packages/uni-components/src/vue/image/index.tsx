@@ -1,17 +1,17 @@
 import {
-  ref,
-  Ref,
-  watch,
+  type ExtractPropTypes,
+  type Ref,
   computed,
-  reactive,
-  onMounted,
   onBeforeUnmount,
-  ExtractPropTypes,
+  onMounted,
+  reactive,
+  ref,
+  watch,
 } from 'vue'
 import { getRealPath } from '@dcloudio/uni-platform'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import { CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
+import { type CustomEventTrigger, useCustomEvent } from '../../helpers/useEvent'
 import ResizeSensor from '../resize-sensor/index'
 
 const props = {
@@ -100,7 +100,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-image ref={rootRef}>
           <div style={state.modeStyle} />
           {FIX_MODES[props.mode as keyof typeof FIX_MODES] ? (
-            // @ts-ignore
             <ResizeSensor onResize={fixSize} />
           ) : (
             <span></span>
