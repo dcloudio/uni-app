@@ -70,11 +70,8 @@ export const SetTabBarStyleOptions: ApiOptions<API_TYPE_SET_TAB_BAR_STYLE> = {
         params.backgroundImage = getRealPath(value)
       }
     },
-    borderStyle(value, params) {
-      if (value) {
-        params.borderStyle = value === 'white' ? 'white' : 'black'
-      }
-    },
+    // 移除 format borderStyle，只在小程序有黑白限制，uni-app/x 允许自定义颜色
+    // borderStyle(value, params) {},
   },
 }
 export const API_HIDE_TAB_BAR = 'hideTabBar'
