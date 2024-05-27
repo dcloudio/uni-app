@@ -36,7 +36,9 @@ export function parseUTSJavaScriptRuntimeStacktrace(
         ? COLORS[options.logType as string] || ''
         : ''
       const [errorCode, ...other] = codes
-      let error = 'error: ' + errorCode
+      let error =
+        `error: ${errorCode.includes('[EXCEPTION] ') ? '' : '[EXCEPTION] '}` +
+        errorCode
       if (color) {
         error = color + error + color
       }
@@ -47,7 +49,9 @@ export function parseUTSJavaScriptRuntimeStacktrace(
       const color = options.logType
         ? COLORS[options.logType as string] || ''
         : ''
-      let error = 'error: ' + res[0]
+      let error =
+        `error: ${res[0].includes('[EXCEPTION] ') ? '' : '[EXCEPTION] '}` +
+        +res[0]
       if (color) {
         error = color + error + color
       }
