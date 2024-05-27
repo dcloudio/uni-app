@@ -305,6 +305,7 @@ declare namespace UniNamespace {
       needLogin?: string[]
       resToLogin?: boolean
     }
+    themeConfig?: Record<string, any>
   }
 
   interface ThemeJson {
