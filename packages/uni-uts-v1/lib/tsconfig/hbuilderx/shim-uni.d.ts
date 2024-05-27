@@ -23,6 +23,7 @@ import type {
   VNode,
   VNodeProps
 } from 'vue'
+import type { Store } from 'vuex'
 
 type Data = Record<string, unknown>;
 
@@ -32,6 +33,7 @@ declare module 'vue' {
     $data : Record<string, any | null>
     $callMethod : (methodName : string, ...args : (any | null)[]) => any | null
     $children : ComponentPublicInstance[]
+    $store: Store<any>
   }
   export type OnCleanup = (cleanupFn : () => void) => void;
   export function definePlugin<T extends Plugin = Plugin>(plugin : T) : T
