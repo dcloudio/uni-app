@@ -20,6 +20,12 @@ import { UniForm } from '@dcloudio/uni-app-plus/view/framework/dom/components/Un
 // import { UniEditor } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniEditor'
 import { UniPickerView } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniPickerView'
 import { UniPickerViewColumn } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniPickerViewColumn'
+import { UniScrollView } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniScrollView'
+import { UniSwiper } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniSwiper'
+import { UniSwiperItem } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniSwiperItem'
+import { UniMovableArea } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniMovableArea'
+import { UniMovableView } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniMovableView'
+import { UniIcon } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniIcon'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -44,4 +50,10 @@ export const BuiltInComponents = {
   // EDITOR: UniEditor,
   'PICKER-VIEW': UniPickerView,
   'PICKER-VIEW-COLUMN': UniPickerViewColumn,
+  'SCROLL-VIEW': UniScrollView,
+  SWIPER: UniSwiper,
+  'SWIPER-ITEM': UniSwiperItem,
+  'MOVABLE-AREA': UniMovableArea,
+  'MOVABLE-VIEW': UniMovableView,
+  ICON: UniIcon,
 }
