@@ -1426,50 +1426,6 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
-function transformRpx(value) {
-  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
-    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
-      return `${uni.upx2px(parseFloat(num))}px`;
-    });
-  }
-  return value;
-}
-class UniElement extends HTMLElement {
-  constructor() {
-    super();
-    this._props = {};
-    this.__isUniElement = true;
-  }
-  attachVmProps(props2) {
-    this._props = props2;
-  }
-  getAttribute(qualifiedName) {
-    const name = shared.camelize(qualifiedName);
-    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
-  }
-  get style() {
-    const originalStyle = super.style;
-    if (originalStyle.__patchRpx__) {
-      return originalStyle;
-    }
-    originalStyle.__patchRpx__ = true;
-    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
-    super.style.setProperty = function(property, value, priority) {
-      return originalSetProperty(
-        property,
-        value ? transformRpx(value + "") : value,
-        priority || void 0
-      );
-    };
-    return super.style;
-  }
-  get tagName() {
-    return super.tagName.replace(/^UNI-/, "");
-  }
-  get nodeName() {
-    return super.nodeName.replace(/^UNI-/, "");
-  }
-}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 const index$C = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
@@ -1890,7 +1846,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -1907,7 +1863,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
     shared.isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       shared.isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -2106,7 +2062,7 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
   if (!errMsg || shared.isString(errMsg)) {
     return errMsg;
   }
@@ -2125,7 +2081,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg2), errRes)
+      reject: (errMsg2, errRes) => invokeFail(id, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -3547,12 +3503,9 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [vue.createVNode("div", {
         "style": state.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? (
-        // @ts-ignore
-        vue.createVNode(ResizeSensor, {
-          "onResize": fixSize
-        }, null, 8, ["onResize"])
-      ) : vue.createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? vue.createVNode(ResizeSensor, {
+        "onResize": fixSize
+      }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
     };
   }
 });
@@ -7858,16 +7811,10 @@ const props$c = {
     default: ""
   }
 };
-class UniSwitchElement extends UniElement {
-}
 const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$c,
   emits: ["change"],
-  rootElement: {
-    name: "uni-switch",
-    class: UniSwitchElement
-  },
   setup(props2, {
     emit: emit2
   }) {
@@ -8257,9 +8204,12 @@ function getChildren(root) {
   }
   return children;
 }
+const ChildType = ["ListItem", "StickySection", "StickyHeader"];
 function walk(vnode, children) {
-  if (vnode.component) {
+  if (vnode.component && vnode.component.type && vnode.component.type.name && ChildType.includes(vnode.component.type.name)) {
     children.push(vnode);
+  } else if (vnode.component) {
+    walk(vnode.component.subTree, children);
   } else if (vnode.shapeFlag & 16) {
     const vnodes = vnode.children;
     for (let i = 0; i < vnodes.length; i++) {
@@ -8415,7 +8365,7 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       }
     });
     function forceRearrange() {
-      traverseAllItems((child) => {
+      traverseAllItems(visibleVNode, (child) => {
         const exposed = child.component.exposed;
         if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
           exposed.__listViewChildStatus.seen.value = false;
@@ -8431,8 +8381,8 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
       resetContainerSize();
       forceRearrange();
     }
-    function traverseAllItems(callback) {
-      traverseListView(visibleVNode, (child) => {
+    function traverseAllItems(visibleVNode2, callback) {
+      traverseListView(visibleVNode2, (child) => {
         var _a;
         const childType = (_a = child.component) == null ? void 0 : _a.type.name;
         if (childType === "StickySection") {
@@ -8445,6 +8395,10 @@ const index$h = /* @__PURE__ */ defineBuiltInComponent({
           });
         } else if (childType === "ListItem") {
           callback(child);
+        } else if (childType === "StickyHeader")
+          ;
+        else if (child.component && child.component.subTree) {
+          traverseAllItems(child.component.subTree, callback);
         }
       });
     }

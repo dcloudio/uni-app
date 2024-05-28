@@ -323,7 +323,7 @@ function getApiCallbacks(args) {
     }
     return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
     if (!errMsg || errMsg.indexOf(':fail') === -1) {
         return name + ':ok';
     }
@@ -340,7 +340,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     const callbackId = invokeCallbackId++;
     addInvokeCallback(callbackId, name, (res) => {
         res = res || {};
-        res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+        res.errMsg = normalizeErrMsg(res.errMsg, name);
         isFunction(beforeAll) && beforeAll(res);
         if (res.errMsg === name + ':ok') {
             isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -572,7 +572,7 @@ function wrapperOffApi(name, fn, options) {
         }
     };
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
     if (!errMsg || isString(errMsg)) {
         return errMsg;
     }
@@ -591,7 +591,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
         }
         return fn(args, {
             resolve: (res) => invokeSuccess(id, name, res),
-            reject: (errMsg, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
+            reject: (errMsg, errRes) => invokeFail(id, name, parseErrMsg(errMsg), errRes),
         });
     };
 }

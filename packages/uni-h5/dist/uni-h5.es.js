@@ -2877,7 +2877,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -2894,7 +2894,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
     isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -3128,7 +3128,7 @@ function wrapperOffApi(name, fn, options) {
     }
   };
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
   if (!errMsg || isString(errMsg)) {
     return errMsg;
   }
@@ -3147,7 +3147,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id2, name, normalizeErrMsg(errMsg2), errRes)
+      reject: (errMsg2, errRes) => invokeFail(id2, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -9014,12 +9014,9 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [createVNode("div", {
         "style": state2.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? (
-        // @ts-ignore
-        createVNode(ResizeSensor, {
-          "onResize": fixSize
-        }, null, 8, ["onResize"])
-      ) : createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? createVNode(ResizeSensor, {
+        "onResize": fixSize
+      }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
   }
 });

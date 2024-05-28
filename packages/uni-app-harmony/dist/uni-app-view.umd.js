@@ -91,7 +91,7 @@
     }).a != 7;
   });
   var isObject$2 = _isObject;
-  var _toPrimitive = function(it, S) {
+  var _toPrimitive$1 = function(it, S) {
     if (!isObject$2(it))
       return it;
     var fn, val;
@@ -105,7 +105,7 @@
   };
   var anObject$2 = _anObject;
   var IE8_DOM_DEFINE = _ie8DomDefine;
-  var toPrimitive = _toPrimitive;
+  var toPrimitive = _toPrimitive$1;
   var dP$2 = Object.defineProperty;
   _objectDp.f = _descriptors ? Object.defineProperty : function defineProperty(O, P, Attributes) {
     anObject$2(O);
@@ -625,7 +625,7 @@
   * (c) 2018-present Yuxi (Evan) You and Vue contributors
   * @license MIT
   **/
-  function makeMap(str, expectsLowerCase) {
+  function makeMap$1(str, expectsLowerCase) {
     var set2 = new Set(str.split(","));
     return expectsLowerCase ? (val) => set2.has(val.toLowerCase()) : (val) => set2.has(val);
   }
@@ -663,7 +663,7 @@
   };
   var isPlainObject = (val) => toTypeString(val) === "[object Object]";
   var isIntegerKey = (key2) => isString(key2) && key2 !== "NaN" && key2[0] !== "-" && "" + parseInt(key2, 10) === key2;
-  var isReservedProp = /* @__PURE__ */ makeMap(
+  var isReservedProp = /* @__PURE__ */ makeMap$1(
     // the leading comma is intentional so empty string "" is also included
     ",key,ref,ref_for,ref_key,onVnodeBeforeMount,onVnodeMounted,onVnodeBeforeUpdate,onVnodeUpdated,onVnodeBeforeUnmount,onVnodeUnmounted"
   );
@@ -773,7 +773,7 @@
     return res.trim();
   }
   var specialBooleanAttrs = "itemscope,allowfullscreen,formnovalidate,ismap,nomodule,novalidate,readonly";
-  var isSpecialBooleanAttr = /* @__PURE__ */ makeMap(specialBooleanAttrs);
+  var isSpecialBooleanAttr = /* @__PURE__ */ makeMap$1(specialBooleanAttrs);
   function includeBooleanAttr(value) {
     return !!value || value === "";
   }
@@ -809,6 +809,7 @@
     }
   });
   var LINEFEED = "\n";
+  var PRIMARY_COLOR = "#007aff";
   var SCHEME_RE = /^([a-z-]+:)?\/\//i;
   var DATA_RE = /^data:.*,.*/;
   var WXS_PROTOCOL = "wxs://";
@@ -1077,6 +1078,22 @@
   var ACTION_TYPE_ADD_WXS_EVENT = 12;
   var ACTION_TYPE_PAGE_SCROLL = 15;
   var ACTION_TYPE_EVENT = 20;
+  function debounce(fn, delay, _ref2) {
+    var {
+      clearTimeout: clearTimeout2,
+      setTimeout: setTimeout2
+    } = _ref2;
+    var timeout;
+    var newFn = function() {
+      clearTimeout2(timeout);
+      var timerFn = () => fn.apply(this, arguments);
+      timeout = setTimeout2(timerFn, delay);
+    };
+    newFn.cancel = function() {
+      clearTimeout2(timeout);
+    };
+    return newFn;
+  }
   var E = function() {
   };
   E.prototype = {
@@ -1528,7 +1545,7 @@
   });
   var LONGPRESS_TIMEOUT = 350;
   var LONGPRESS_THRESHOLD = 10;
-  var passiveOptions = /* @__PURE__ */ passive(true);
+  var passiveOptions$1 = /* @__PURE__ */ passive(true);
   var longPressTimer;
   function clearLongPressTimer() {
     if (longPressTimer) {
@@ -1578,10 +1595,10 @@
     }
   }
   function initLongPress() {
-    window.addEventListener("touchstart", touchstart, passiveOptions);
-    window.addEventListener("touchmove", touchmove, passiveOptions);
-    window.addEventListener("touchend", clearLongPressTimer, passiveOptions);
-    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions);
+    window.addEventListener("touchstart", touchstart, passiveOptions$1);
+    window.addEventListener("touchmove", touchmove, passiveOptions$1);
+    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$1);
+    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$1);
   }
   function checkValue$1(value, defaultValue) {
     var newValue = Number(value);
@@ -1913,7 +1930,7 @@
     }
     resetScheduling();
   }
-  var isNonTrackableKeys = /* @__PURE__ */ makeMap("__proto__,__v_isRef,__isVue");
+  var isNonTrackableKeys = /* @__PURE__ */ makeMap$1("__proto__,__v_isRef,__isVue");
   var builtInSymbols = new Set(/* @__PURE__ */ Object.getOwnPropertyNames(Symbol).filter((key2) => key2 !== "arguments" && key2 !== "caller").map((key2) => Symbol[key2]).filter(isSymbol));
   var arrayInstrumentations = /* @__PURE__ */ createArrayInstrumentations();
   function createArrayInstrumentations() {
@@ -2585,11 +2602,11 @@
     var close = ">" + postfix;
     return vnode.props ? [open, ...formatProps(vnode.props), close] : [open + close];
   }
-  function formatProps(props) {
+  function formatProps(props2) {
     var res = [];
-    var keys = Object.keys(props);
+    var keys = Object.keys(props2);
     keys.slice(0, 3).forEach((key2) => {
-      res.push(...formatProp(key2, props[key2]));
+      res.push(...formatProp(key2, props2[key2]));
     });
     if (keys.length > 3) {
       res.push(" ...");
@@ -2794,22 +2811,22 @@
       }
     }
   }
-  function emit(instance, event) {
+  function emit$2(instance, event) {
     if (instance.isUnmounted)
       return;
-    var props = instance.vnode.props || EMPTY_OBJ;
+    var props2 = instance.vnode.props || EMPTY_OBJ;
     for (var _len6 = arguments.length, rawArgs = new Array(_len6 > 2 ? _len6 - 2 : 0), _key7 = 2; _key7 < _len6; _key7++) {
       rawArgs[_key7 - 2] = arguments[_key7];
     }
     var args = rawArgs;
     var isModelListener2 = event.startsWith("update:");
     var modelArg = isModelListener2 && event.slice(7);
-    if (modelArg && modelArg in props) {
+    if (modelArg && modelArg in props2) {
       var modifiersKey = "".concat(modelArg === "modelValue" ? "model" : modelArg, "Modifiers");
       var {
         number,
         trim
-      } = props[modifiersKey] || EMPTY_OBJ;
+      } = props2[modifiersKey] || EMPTY_OBJ;
       if (trim) {
         args = rawArgs.map((a) => isString(a) ? a.trim() : a);
       }
@@ -2818,15 +2835,15 @@
       }
     }
     var handlerName;
-    var handler = props[handlerName = toHandlerKey(event)] || // also try camelCase event handler (#2249)
-    props[handlerName = toHandlerKey(camelize(event))];
+    var handler = props2[handlerName = toHandlerKey(event)] || // also try camelCase event handler (#2249)
+    props2[handlerName = toHandlerKey(camelize(event))];
     if (!handler && isModelListener2) {
-      handler = props[handlerName = toHandlerKey(hyphenate(event))];
+      handler = props2[handlerName = toHandlerKey(hyphenate(event))];
     }
     if (handler) {
       callWithAsyncErrorHandling(handler, instance, 6, args);
     }
-    var onceHandler = props[handlerName + "Once"];
+    var onceHandler = props2[handlerName + "Once"];
     if (onceHandler) {
       if (!instance.emitted) {
         instance.emitted = {};
@@ -2932,7 +2949,7 @@
       vnode,
       proxy,
       withProxy,
-      props,
+      props: props2,
       propsOptions: [propsOptions],
       slots,
       attrs: attrs2,
@@ -2956,13 +2973,13 @@
             return Reflect.get(target, key2, receiver);
           }
         }) : proxyToUse;
-        result = normalizeVNode(render2.call(thisProxy, proxyToUse, renderCache, props, setupState, data, ctx2));
+        result = normalizeVNode(render2.call(thisProxy, proxyToUse, renderCache, props2, setupState, data, ctx2));
         fallthroughAttrs = attrs2;
       } else {
         var render22 = Component;
         if (false)
           ;
-        result = normalizeVNode(render22.length > 1 ? render22(props, false ? {
+        result = normalizeVNode(render22.length > 1 ? render22(props2, false ? {
           get attrs() {
             markAttrsAccessed();
             return attrs2;
@@ -2974,7 +2991,7 @@
           slots,
           emit: emit2
         }) : render22(
-          props,
+          props2,
           null
           /* we know it doesn't need it */
         ));
@@ -3021,10 +3038,10 @@
     }
     return res;
   };
-  var filterModelListeners = (attrs2, props) => {
+  var filterModelListeners = (attrs2, props2) => {
     var res = {};
     for (var key2 in attrs2) {
-      if (!isModelListener(key2) || !(key2.slice(9) in props)) {
+      if (!isModelListener(key2) || !(key2.slice(9) in props2)) {
         res[key2] = attrs2[key2];
       }
     }
@@ -3337,6 +3354,36 @@
     }
     return value;
   }
+  function withDirectives(vnode, directives) {
+    if (currentRenderingInstance === null) {
+      return vnode;
+    }
+    var instance = getExposeProxy(currentRenderingInstance) || currentRenderingInstance.proxy;
+    var bindings = vnode.dirs || (vnode.dirs = []);
+    for (var i2 = 0; i2 < directives.length; i2++) {
+      var [dir, value, arg, modifiers = EMPTY_OBJ] = directives[i2];
+      if (dir) {
+        if (isFunction(dir)) {
+          dir = {
+            mounted: dir,
+            updated: dir
+          };
+        }
+        if (dir.deep) {
+          traverse(value);
+        }
+        bindings.push({
+          dir,
+          instance,
+          value,
+          oldValue: void 0,
+          arg,
+          modifiers
+        });
+      }
+    }
+    return vnode;
+  }
   function invokeDirectiveHook(vnode, prevVNode, instance, name) {
     var bindings = vnode.dirs;
     var oldBindings = prevVNode && prevVNode.dirs;
@@ -3498,7 +3545,7 @@
         ctx: ctx2,
         setupState,
         data,
-        props,
+        props: props2,
         accessCache,
         type,
         appContext
@@ -3515,7 +3562,7 @@
             case 4:
               return ctx2[key2];
             case 3:
-              return props[key2];
+              return props2[key2];
           }
         } else if (hasSetupBinding(setupState, key2)) {
           accessCache[key2] = 1;
@@ -3529,7 +3576,7 @@
           (normalizedProps = instance.propsOptions[0]) && hasOwn$1(normalizedProps, key2)
         ) {
           accessCache[key2] = 3;
-          return props[key2];
+          return props2[key2];
         } else if (ctx2 !== EMPTY_OBJ && hasOwn$1(ctx2, key2)) {
           accessCache[key2] = 4;
           return ctx2[key2];
@@ -3612,8 +3659,8 @@
       return Reflect.defineProperty(target, key2, descriptor2);
     }
   };
-  function normalizePropsOrEmits(props) {
-    return isArray(props) ? props.reduce((normalized, p2) => (normalized[p2] = null, normalized), {}) : props;
+  function normalizePropsOrEmits(props2) {
+    return isArray(props2) ? props2.reduce((normalized, p2) => (normalized[p2] = null, normalized), {}) : props2;
   }
   var shouldCacheAccess = true;
   function applyOptions(instance) {
@@ -4106,36 +4153,36 @@
   }
   function initProps(instance, rawProps, isStateful) {
     var isSSR = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
-    var props = {};
+    var props2 = {};
     var attrs2 = {};
     def(attrs2, InternalObjectKey, 1);
     instance.propsDefaults = /* @__PURE__ */ Object.create(null);
-    setFullProps(instance, rawProps, props, attrs2);
+    setFullProps(instance, rawProps, props2, attrs2);
     for (var key2 in instance.propsOptions[0]) {
-      if (!(key2 in props)) {
-        props[key2] = void 0;
+      if (!(key2 in props2)) {
+        props2[key2] = void 0;
       }
     }
     if (isStateful) {
-      instance.props = isSSR ? props : shallowReactive(props);
+      instance.props = isSSR ? props2 : shallowReactive(props2);
     } else {
       if (!instance.type.props) {
         instance.props = attrs2;
       } else {
-        instance.props = props;
+        instance.props = props2;
       }
     }
     instance.attrs = attrs2;
   }
   function updateProps(instance, rawProps, rawPrevProps, optimized) {
     var {
-      props,
+      props: props2,
       attrs: attrs2,
       vnode: {
         patchFlag
       }
     } = instance;
-    var rawCurrentProps = toRaw(props);
+    var rawCurrentProps = toRaw(props2);
     var [options] = instance.propsOptions;
     var hasAttrsChanged = false;
     if (
@@ -4160,7 +4207,7 @@
               }
             } else {
               var camelizedKey = camelize(key2);
-              props[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value, instance, false);
+              props2[camelizedKey] = resolvePropValue(options, rawCurrentProps, camelizedKey, value, instance, false);
             }
           } else {
             if (value !== attrs2[key2]) {
@@ -4171,7 +4218,7 @@
         }
       }
     } else {
-      if (setFullProps(instance, rawProps, props, attrs2)) {
+      if (setFullProps(instance, rawProps, props2, attrs2)) {
         hasAttrsChanged = true;
       }
       var kebabKey;
@@ -4184,10 +4231,10 @@
             if (rawPrevProps && // for camelCase
             (rawPrevProps[_key14] !== void 0 || // for kebab-case
             rawPrevProps[kebabKey] !== void 0)) {
-              props[_key14] = resolvePropValue(options, rawCurrentProps, _key14, void 0, instance, true);
+              props2[_key14] = resolvePropValue(options, rawCurrentProps, _key14, void 0, instance, true);
             }
           } else {
-            delete props[_key14];
+            delete props2[_key14];
           }
         }
       }
@@ -4204,7 +4251,7 @@
       trigger(instance, "set", "$attrs");
     }
   }
-  function setFullProps(instance, rawProps, props, attrs2) {
+  function setFullProps(instance, rawProps, props2, attrs2) {
     var [options, needCastKeys] = instance.propsOptions;
     var hasAttrsChanged = false;
     var rawCastValues;
@@ -4217,7 +4264,7 @@
         var camelKey = void 0;
         if (options && hasOwn$1(options, camelKey = camelize(key2))) {
           if (!needCastKeys || !needCastKeys.includes(camelKey)) {
-            props[camelKey] = value;
+            props2[camelKey] = value;
           } else {
             (rawCastValues || (rawCastValues = {}))[camelKey] = value;
           }
@@ -4230,16 +4277,16 @@
       }
     }
     if (needCastKeys) {
-      var rawCurrentProps = toRaw(props);
+      var rawCurrentProps = toRaw(props2);
       var castValues = rawCastValues || EMPTY_OBJ;
       for (var i2 = 0; i2 < needCastKeys.length; i2++) {
         var _key16 = needCastKeys[i2];
-        props[_key16] = resolvePropValue(options, rawCurrentProps, _key16, castValues[_key16], instance, !hasOwn$1(castValues, _key16));
+        props2[_key16] = resolvePropValue(options, rawCurrentProps, _key16, castValues[_key16], instance, !hasOwn$1(castValues, _key16));
       }
     }
     return hasAttrsChanged;
   }
-  function resolvePropValue(options, props, key2, value, instance, isAbsent) {
+  function resolvePropValue(options, props2, key2, value, instance, isAbsent) {
     var opt = options[key2];
     if (opt != null) {
       var hasDefault = hasOwn$1(opt, "default");
@@ -4253,7 +4300,7 @@
             value = propsDefaults[key2];
           } else {
             var reset = setCurrentInstance(instance);
-            value = propsDefaults[key2] = defaultValue.call(null, props);
+            value = propsDefaults[key2] = defaultValue.call(null, props2);
             reset();
           }
         } else {
@@ -4290,8 +4337,8 @@
     if (!isFunction(comp)) {
       var extendProps = (raw2) => {
         hasExtends = true;
-        var [props, keys] = normalizePropsOptions(raw2, appContext, true);
-        extend(normalized, props);
+        var [props2, keys] = normalizePropsOptions(raw2, appContext, true);
+        extend(normalized, props2);
         if (keys)
           needCastKeys.push(...keys);
       };
@@ -4681,12 +4728,12 @@
       var el;
       var vnodeHook;
       var {
-        props,
+        props: props2,
         shapeFlag,
         transition,
         dirs
       } = vnode;
-      el = vnode.el = hostCreateElement(vnode.type, namespace, props && props.is, props);
+      el = vnode.el = hostCreateElement(vnode.type, namespace, props2 && props2.is, props2);
       if (shapeFlag & 8) {
         hostSetElementText(el, vnode.children);
       } else if (shapeFlag & 16) {
@@ -4696,16 +4743,16 @@
         invokeDirectiveHook(vnode, null, parentComponent, "created");
       }
       setScopeId(el, vnode, vnode.scopeId, slotScopeIds, parentComponent);
-      if (props) {
-        for (var key2 in props) {
+      if (props2) {
+        for (var key2 in props2) {
           if (key2 !== "value" && !isReservedProp(key2)) {
-            hostPatchProp(el, key2, null, props[key2], namespace, vnode.children, parentComponent, parentSuspense, unmountChildren);
+            hostPatchProp(el, key2, null, props2[key2], namespace, vnode.children, parentComponent, parentSuspense, unmountChildren);
           }
         }
-        if ("value" in props) {
-          hostPatchProp(el, "value", null, props.value, namespace);
+        if ("value" in props2) {
+          hostPatchProp(el, "value", null, props2.value, namespace);
         }
-        if (vnodeHook = props.onVnodeBeforeMount) {
+        if (vnodeHook = props2.onVnodeBeforeMount) {
           invokeVNodeHook(vnodeHook, parentComponent, vnode);
         }
       }
@@ -4721,7 +4768,7 @@
         transition.beforeEnter(el);
       }
       hostInsert(el, container, anchor);
-      if ((vnodeHook = props && props.onVnodeMounted) || needCallTransitionHooks || dirs) {
+      if ((vnodeHook = props2 && props2.onVnodeMounted) || needCallTransitionHooks || dirs) {
         queuePostRenderEffect(() => {
           vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
           needCallTransitionHooks && transition.enter(el);
@@ -4965,7 +5012,7 @@
           var vnodeHook;
           var {
             el,
-            props
+            props: props2
           } = initialVNode;
           var {
             bm,
@@ -4977,7 +5024,7 @@
           if (bm) {
             invokeArrayFns(bm);
           }
-          if (!isAsyncWrapperVNode && (vnodeHook = props && props.onVnodeBeforeMount)) {
+          if (!isAsyncWrapperVNode && (vnodeHook = props2 && props2.onVnodeBeforeMount)) {
             invokeVNodeHook(vnodeHook, parent, initialVNode);
           }
           toggleRecurse(instance, true);
@@ -5005,7 +5052,7 @@
           if (m) {
             queuePostRenderEffect(m, parentSuspense);
           }
-          if (!isAsyncWrapperVNode && (vnodeHook = props && props.onVnodeMounted)) {
+          if (!isAsyncWrapperVNode && (vnodeHook = props2 && props2.onVnodeMounted)) {
             var scopedInitialVNode = initialVNode;
             queuePostRenderEffect(() => invokeVNodeHook(vnodeHook, parent, scopedInitialVNode), parentSuspense);
           }
@@ -5339,7 +5386,7 @@
       var optimized = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : false;
       var {
         type,
-        props,
+        props: props2,
         ref: ref2,
         children,
         dynamicChildren,
@@ -5357,7 +5404,7 @@
       var shouldInvokeDirs = shapeFlag & 1 && dirs;
       var shouldInvokeVnodeHook = !isAsyncWrapper(vnode);
       var vnodeHook;
-      if (shouldInvokeVnodeHook && (vnodeHook = props && props.onVnodeBeforeUnmount)) {
+      if (shouldInvokeVnodeHook && (vnodeHook = props2 && props2.onVnodeBeforeUnmount)) {
         invokeVNodeHook(vnodeHook, parentComponent, vnode);
       }
       if (shapeFlag & 6) {
@@ -5382,7 +5429,7 @@
           remove2(vnode);
         }
       }
-      if (shouldInvokeVnodeHook && (vnodeHook = props && props.onVnodeUnmounted) || shouldInvokeDirs) {
+      if (shouldInvokeVnodeHook && (vnodeHook = props2 && props2.onVnodeUnmounted) || shouldInvokeDirs) {
         queuePostRenderEffect(() => {
           vnodeHook && invokeVNodeHook(vnodeHook, parentComponent, vnode);
           shouldInvokeDirs && invokeDirectiveHook(vnode, null, parentComponent, "unmounted");
@@ -5525,9 +5572,9 @@
   function resolveChildrenNamespace(_ref14, currentNamespace) {
     var {
       type,
-      props
+      props: props2
     } = _ref14;
-    return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props && props.encoding && props.encoding.includes("html") ? void 0 : currentNamespace;
+    return currentNamespace === "svg" && type === "foreignObject" || currentNamespace === "mathml" && type === "annotation-xml" && props2 && props2.encoding && props2.encoding.includes("html") ? void 0 : currentNamespace;
   }
   function toggleRecurse(_ref15, allowed) {
     var {
@@ -5651,7 +5698,7 @@
     } : ref2 : null;
   };
   function createBaseVNode(type) {
-    var props = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
+    var props2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
     var children = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : null;
     var patchFlag = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
     var dynamicProps = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : null;
@@ -5662,9 +5709,9 @@
       __v_isVNode: true,
       __v_skip: true,
       type,
-      props,
-      key: props && normalizeKey(props),
-      ref: props && normalizeRef(props),
+      props: props2,
+      key: props2 && normalizeKey(props2),
+      ref: props2 && normalizeRef(props2),
       scopeId: currentScopeId,
       slotScopeIds: null,
       children,
@@ -5709,7 +5756,7 @@
   }
   var createVNode = _createVNode;
   function _createVNode(type) {
-    var props = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
+    var props2 = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : null;
     var children = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : null;
     var patchFlag = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : 0;
     var dynamicProps = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : null;
@@ -5720,7 +5767,7 @@
     if (isVNode(type)) {
       var cloned = cloneVNode(
         type,
-        props,
+        props2,
         true
         /* mergeRef: true */
       );
@@ -5740,39 +5787,39 @@
     if (isClassComponent(type)) {
       type = type.__vccOpts;
     }
-    if (props) {
-      props = guardReactiveProps(props);
+    if (props2) {
+      props2 = guardReactiveProps(props2);
       var {
         class: klass,
         style
-      } = props;
+      } = props2;
       if (klass && !isString(klass)) {
-        props.class = normalizeClass(klass);
+        props2.class = normalizeClass(klass);
       }
       if (isObject$1(style)) {
         if (isProxy(style) && !isArray(style)) {
           style = extend({}, style);
         }
-        props.style = normalizeStyle(style);
+        props2.style = normalizeStyle(style);
       }
     }
     var shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject$1(type) ? 4 : isFunction(type) ? 2 : 0;
-    return createBaseVNode(type, props, children, patchFlag, dynamicProps, shapeFlag, isBlockNode, true);
+    return createBaseVNode(type, props2, children, patchFlag, dynamicProps, shapeFlag, isBlockNode, true);
   }
-  function guardReactiveProps(props) {
-    if (!props)
+  function guardReactiveProps(props2) {
+    if (!props2)
       return null;
-    return isProxy(props) || InternalObjectKey in props ? extend({}, props) : props;
+    return isProxy(props2) || InternalObjectKey in props2 ? extend({}, props2) : props2;
   }
   function cloneVNode(vnode, extraProps) {
     var mergeRef = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
     var {
-      props,
+      props: props2,
       ref: ref2,
       patchFlag,
       children
     } = vnode;
-    var mergedProps = extraProps ? mergeProps(props || {}, extraProps) : props;
+    var mergedProps = extraProps ? mergeProps(props2 || {}, extraProps) : props2;
     var cloned = {
       __v_isVNode: true,
       __v_skip: true,
@@ -6006,13 +6053,14 @@
       };
     }
     instance.root = parent ? parent.root : instance;
-    instance.emit = emit.bind(null, instance);
+    instance.emit = emit$2.bind(null, instance);
     if (vnode.ce) {
       vnode.ce(instance);
     }
     return instance;
   }
   var currentInstance = null;
+  var getCurrentInstance = () => currentInstance || currentRenderingInstance;
   var internalSetCurrentInstance;
   var setInSSRSetupState;
   {
@@ -6053,11 +6101,11 @@
     var isSSR = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
     isSSR && setInSSRSetupState(isSSR);
     var {
-      props,
+      props: props2,
       children
     } = instance.vnode;
     var isStateful = isStatefulComponent(instance);
-    initProps(instance, props, isStateful, isSSR);
+    initProps(instance, props2, isStateful, isSSR);
     initSlots(instance, children);
     var setupResult = isStateful ? setupStatefulComponent(instance, isSSR) : void 0;
     isSSR && setInSSRSetupState(false);
@@ -6251,12 +6299,12 @@
         parent.removeChild(child);
       }
     },
-    createElement: (tag, namespace, is, props) => {
+    createElement: (tag, namespace, is, props2) => {
       var el = namespace === "svg" ? doc.createElementNS(svgNS, tag) : namespace === "mathml" ? doc.createElementNS(mathmlNS, tag) : doc.createElement(tag, is ? {
         is
       } : void 0);
-      if (tag === "select" && props && props.multiple != null) {
-        el.setAttribute("multiple", props.multiple);
+      if (tag === "select" && props2 && props2.multiple != null) {
+        el.setAttribute("multiple", props2.multiple);
       }
       return el;
     },
@@ -6322,6 +6370,67 @@
   }
   var vShowOriginalDisplay = Symbol("_vod");
   var vShowHidden = Symbol("_vsh");
+  var vShow = {
+    beforeMount(el, _ref23, _ref24) {
+      var {
+        value
+      } = _ref23;
+      var {
+        transition
+      } = _ref24;
+      el[vShowOriginalDisplay] = el.style.display === "none" ? "" : el.style.display;
+      if (transition && value) {
+        transition.beforeEnter(el);
+      } else {
+        setDisplay(el, value);
+      }
+    },
+    mounted(el, _ref25, _ref26) {
+      var {
+        value
+      } = _ref25;
+      var {
+        transition
+      } = _ref26;
+      if (transition && value) {
+        transition.enter(el);
+      }
+    },
+    updated(el, _ref27, _ref28) {
+      var {
+        value,
+        oldValue
+      } = _ref27;
+      var {
+        transition
+      } = _ref28;
+      if (!value === !oldValue)
+        return;
+      if (transition) {
+        if (value) {
+          transition.beforeEnter(el);
+          setDisplay(el, true);
+          transition.enter(el);
+        } else {
+          transition.leave(el, () => {
+            setDisplay(el, false);
+          });
+        }
+      } else {
+        setDisplay(el, value);
+      }
+    },
+    beforeUnmount(el, _ref29) {
+      var {
+        value
+      } = _ref29;
+      setDisplay(el, value);
+    }
+  };
+  function setDisplay(el, value) {
+    el.style.display = value ? el[vShowOriginalDisplay] : "none";
+    el[vShowHidden] = !value;
+  }
   var CSS_VAR_TEXT = Symbol("");
   var displayRE = /(^|;)\s*display\s*:/;
   function patchStyle$1(el, prev, next) {
@@ -6647,7 +6756,7 @@
     return container;
   }
   var attrs = ["top", "left", "right", "bottom"];
-  var inited;
+  var inited$1;
   var elementComputedStyle = {};
   var support;
   function getSupport() {
@@ -6665,8 +6774,8 @@
   function init() {
     support = typeof support === "string" ? support : getSupport();
     if (!support) {
-      attrs.forEach(function(attr) {
-        elementComputedStyle[attr] = 0;
+      attrs.forEach(function(attr2) {
+        elementComputedStyle[attr2] = 0;
       });
       return;
     }
@@ -6699,7 +6808,7 @@
       window.addEventListener("test", null, opts);
     } catch (e) {
     }
-    function addChild(parent, attr) {
+    function addChild(parent, attr2) {
       var a1 = document.createElement("div");
       var a2 = document.createElement("div");
       var a1Children = document.createElement("div");
@@ -6712,7 +6821,7 @@
         height: "200px",
         boxSizing: "border-box",
         overflow: "hidden",
-        paddingBottom: support + "(safe-area-inset-" + attr + ")"
+        paddingBottom: support + "(safe-area-inset-" + attr2 + ")"
       };
       setStyle2(a1, aStyle);
       setStyle2(a2, aStyle);
@@ -6743,13 +6852,13 @@
           a1.scrollTop = a2.scrollTop = MAX;
           a1LastScrollTop = a1.scrollTop;
           a2LastScrollTop = a2.scrollTop;
-          attrChange(attr);
+          attrChange(attr2);
         }
         a1.addEventListener("scroll", onScroll, passiveEvents);
         a2.addEventListener("scroll", onScroll, passiveEvents);
       });
       var computedStyle = getComputedStyle(a1);
-      Object.defineProperty(elementComputedStyle, attr, {
+      Object.defineProperty(elementComputedStyle, attr2, {
         configurable: true,
         get: function() {
           return parseFloat(computedStyle.paddingBottom);
@@ -6772,21 +6881,21 @@
     });
     document.body.appendChild(parentDiv);
     parentReady();
-    inited = true;
+    inited$1 = true;
   }
-  function getAttr(attr) {
-    if (!inited) {
+  function getAttr(attr2) {
+    if (!inited$1) {
       init();
     }
-    return elementComputedStyle[attr];
+    return elementComputedStyle[attr2];
   }
   var changeAttrs = [];
-  function attrChange(attr) {
+  function attrChange(attr2) {
     if (!changeAttrs.length) {
       setTimeout(function() {
         var style = {};
-        changeAttrs.forEach(function(attr2) {
-          style[attr2] = elementComputedStyle[attr2];
+        changeAttrs.forEach(function(attr3) {
+          style[attr3] = elementComputedStyle[attr3];
         });
         changeAttrs.length = 0;
         callbacks.forEach(function(callback) {
@@ -6794,14 +6903,14 @@
         });
       }, 0);
     }
-    changeAttrs.push(attr);
+    changeAttrs.push(attr2);
   }
   var callbacks = [];
   function onChange(callback) {
     if (!getSupport()) {
       return;
     }
-    if (!inited) {
+    if (!inited$1) {
       init();
     }
     if (typeof callback === "function") {
@@ -6835,6 +6944,8 @@
   };
   var out = safeAreaInsets;
   const safeAreaInsets$1 = /* @__PURE__ */ getDefaultExportFromCjs(out);
+  var onEventPrevent = /* @__PURE__ */ withModifiers(() => {
+  }, ["prevent"]);
   function getWindowOffsetCssVar(style, name) {
     return parseInt((style.getPropertyValue(name).match(/\d+/) || ["0"])[0]);
   }
@@ -6866,6 +6977,19 @@
   }
   function PolySymbol(name) {
     return Symbol(name);
+  }
+  var ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+  function createSvgIconVNode(path) {
+    var color = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "#000";
+    var size2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 27;
+    return createVNode("svg", {
+      width: size2,
+      height: size2,
+      viewBox: "0 0 32 32"
+    }, [createVNode("path", {
+      d: path,
+      fill: color
+    }, null, 8, ["d", "fill"])], 8, ["width", "height"]);
   }
   function useCurrentPageId() {
     {
@@ -11489,6 +11613,9 @@
   var constants = constants$1;
   var pako = {};
   assign(pako, deflate, inflate, constants);
+  function getRealPath$1(filepath) {
+    return filepath;
+  }
   var API_UPX2PX = "upx2px";
   var EPS = 1e-4;
   var BASE_DEVICE_WIDTH = 750;
@@ -11638,7 +11765,7 @@
       if (options.root && options.root.nodeType != 1 && options.root.nodeType != 9) {
         throw new Error("root must be a Document or Element");
       }
-      this._checkForIntersections = throttle(this._checkForIntersections.bind(this), this.THROTTLE_TIMEOUT);
+      this._checkForIntersections = throttle2(this._checkForIntersections.bind(this), this.THROTTLE_TIMEOUT);
       this._callback = callback;
       this._observationTargets = [];
       this._queuedEntries = [];
@@ -11987,7 +12114,7 @@
     function now() {
       return window.performance && performance.now && performance.now();
     }
-    function throttle(fn, timeout) {
+    function throttle2(fn, timeout) {
       var timer = null;
       return function() {
         if (!timer) {
@@ -12968,10 +13095,10 @@
   var defineBuiltInComponent = (options) => {
     options.__reserved = true;
     var {
-      props,
+      props: props2,
       mixins
     } = options;
-    if (!props || !props.animation) {
+    if (!props2 || !props2.animation) {
       (mixins || (options.mixins = [])).push(animation);
     }
     return defineSystemComponent(options);
@@ -12987,7 +13114,25 @@
   function withWebEvent(fn) {
     return fn.__wwe = true, fn;
   }
-  function useHover(props) {
+  function useCustomEvent(ref2, emit2) {
+    return (name, evt, detail) => {
+      if (ref2.value) {
+        emit2(name, normalizeCustomEvent(name, evt, ref2.value, detail || {}));
+      }
+    };
+  }
+  function normalizeCustomEvent(name, domEvt, el, detail) {
+    var target;
+    target = normalizeTarget(el);
+    return {
+      type: detail.type || name,
+      timeStamp: domEvt.timeStamp || 0,
+      target,
+      currentTarget: target,
+      detail
+    };
+  }
+  function useHover(props2) {
     var hovering = ref(false);
     var hoverTouch = false;
     var hoverStartTimer;
@@ -12997,7 +13142,7 @@
         clearTimeout(hoverStayTimer);
         hoverStayTimer = setTimeout(() => {
           hovering.value = false;
-        }, parseInt(props.hoverStayTime));
+        }, parseInt(props2.hoverStayTime));
       });
     }
     function onTouchstartPassive(evt) {
@@ -13017,10 +13162,10 @@
       if (evt._hoverPropagationStopped) {
         return;
       }
-      if (!props.hoverClass || props.hoverClass === "none" || props.disabled) {
+      if (!props2.hoverClass || props2.hoverClass === "none" || props2.disabled) {
         return;
       }
-      if (props.hoverStopPropagation) {
+      if (props2.hoverStopPropagation) {
         evt._hoverPropagationStopped = true;
       }
       hoverTouch = true;
@@ -13029,7 +13174,7 @@
         if (!hoverTouch) {
           hoverReset();
         }
-      }, parseInt(props.hoverStartTime));
+      }, parseInt(props2.hoverStartTime));
     }
     function onTouchend() {
       handleHoverEnd();
@@ -13066,27 +13211,122 @@
       }
     };
   }
-  function useBooleanAttr(props, keys) {
+  function useBooleanAttr(props2, keys) {
     if (isString(keys)) {
       keys = [keys];
     }
     return keys.reduce((res, key2) => {
-      if (props[key2]) {
+      if (props2[key2]) {
         res[key2] = true;
       }
       return res;
     }, /* @__PURE__ */ Object.create(null));
   }
   var uniFormKey = PolySymbol("uf");
+  const Form = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Form",
+    emits: ["submit", "reset"],
+    setup(_props, _ref) {
+      var {
+        slots,
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      provideForm(useCustomEvent(rootRef, emit2));
+      return () => createVNode("uni-form", {
+        "ref": rootRef
+      }, [createVNode("span", null, [slots.default && slots.default()])], 512);
+    }
+  });
+  function provideForm(trigger2) {
+    var fields = [];
+    provide(uniFormKey, {
+      addField(field) {
+        fields.push(field);
+      },
+      removeField(field) {
+        fields.splice(fields.indexOf(field), 1);
+      },
+      submit(evt) {
+        trigger2("submit", evt, {
+          value: fields.reduce((res, field) => {
+            if (field.submit) {
+              var [name, value] = field.submit();
+              name && (res[name] = value);
+            }
+            return res;
+          }, /* @__PURE__ */ Object.create(null))
+        });
+      },
+      reset(evt) {
+        fields.forEach((field) => field.reset && field.reset());
+        trigger2("reset", evt);
+      }
+    });
+    return fields;
+  }
+  var labelProps = {
+    for: {
+      type: String,
+      default: ""
+    }
+  };
   var uniLabelKey = PolySymbol("ul");
-  function useListeners(props, listeners2) {
-    _addListeners(props.id, listeners2);
-    watch(() => props.id, (newId, oldId) => {
+  function useProvideLabel() {
+    var handlers = [];
+    provide(uniLabelKey, {
+      addHandler(handler) {
+        handlers.push(handler);
+      },
+      removeHandler(handler) {
+        handlers.splice(handlers.indexOf(handler), 1);
+      }
+    });
+    return handlers;
+  }
+  const Label = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Label",
+    props: labelProps,
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var pageId = useCurrentPageId();
+      var handlers = useProvideLabel();
+      var pointer = computed(() => props2.for || slots.default && slots.default.length);
+      var _onClick = withWebEvent(($event) => {
+        var EventTarget = $event.target;
+        var stopPropagation = /^uni-(checkbox|radio|switch)-/.test(EventTarget.className);
+        if (!stopPropagation) {
+          stopPropagation = /^uni-(checkbox|radio|switch|button)$|^(svg|path)$/i.test(EventTarget.tagName);
+        }
+        if (stopPropagation) {
+          return;
+        }
+        if (props2.for) {
+          UniViewJSBridge.emit("uni-label-click-" + pageId + "-" + props2.for, $event, true);
+        } else {
+          handlers.length && handlers[0]($event, true);
+        }
+      });
+      return () => createVNode("uni-label", {
+        "ref": rootRef,
+        "class": {
+          "uni-label-pointer": pointer
+        },
+        "onClick": _onClick
+      }, [slots.default && slots.default()], 10, ["onClick"]);
+    }
+  });
+  function useListeners(props2, listeners2) {
+    _addListeners(props2.id, listeners2);
+    watch(() => props2.id, (newId, oldId) => {
       _removeListeners(oldId, listeners2, true);
       _addListeners(newId, listeners2, true);
     });
     onUnmounted(() => {
-      _removeListeners(props.id, listeners2);
+      _removeListeners(props2.id, listeners2);
     });
   }
   function _addListeners(id2, listeners2, watch2) {
@@ -13178,7 +13418,7 @@
   const Button = /* @__PURE__ */ defineBuiltInComponent({
     name: "Button",
     props: buttonProps,
-    setup(props, _ref) {
+    setup(props2, _ref) {
       var {
         slots
       } = _ref;
@@ -13190,15 +13430,15 @@
       var {
         hovering,
         binding
-      } = useHover(props);
+      } = useHover(props2);
       var onClick = withWebEvent((e, isLabelClick) => {
-        if (props.disabled) {
+        if (props2.disabled) {
           return e.stopImmediatePropagation();
         }
         if (isLabelClick) {
           rootRef.value.click();
         }
-        var formType = props.formType;
+        var formType = props2.formType;
         if (formType) {
           if (!uniForm) {
             return;
@@ -13218,30 +13458,2777 @@
           uniLabel.removeHandler(onClick);
         });
       }
-      useListeners(props, {
+      useListeners(props2, {
         "label-click": onClick
       });
       return () => {
-        var hoverClass = props.hoverClass;
-        var booleanAttrs = useBooleanAttr(props, "disabled");
-        var loadingAttrs = useBooleanAttr(props, "loading");
-        var plainAttrs = useBooleanAttr(props, "plain");
+        var hoverClass = props2.hoverClass;
+        var booleanAttrs = useBooleanAttr(props2, "disabled");
+        var loadingAttrs = useBooleanAttr(props2, "loading");
+        var plainAttrs = useBooleanAttr(props2, "plain");
         var hasHoverClass = hoverClass && hoverClass !== "none";
         return createVNode("uni-button", mergeProps({
           "ref": rootRef,
           "onClick": onClick,
-          "id": props.id,
+          "id": props2.id,
           "class": hasHoverClass && hovering.value ? hoverClass : ""
         }, hasHoverClass && binding, booleanAttrs, loadingAttrs, plainAttrs), [slots.default && slots.default()], 16, ["onClick", "id"]);
       };
     }
   });
+  const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+    name: "ResizeSensor",
+    props: {
+      initial: {
+        type: Boolean,
+        default: false
+      }
+    },
+    emits: ["resize"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var reset = useResizeSensorReset(rootRef);
+      var update = useResizeSensorUpdate(rootRef, emit2, reset);
+      useResizeSensorLifecycle(rootRef, props2, update, reset);
+      return () => createVNode("uni-resize-sensor", {
+        "ref": rootRef,
+        "onAnimationstartOnce": update
+      }, [createVNode("div", {
+        "onScroll": update
+      }, [createVNode("div", null, null)], 40, ["onScroll"]), createVNode("div", {
+        "onScroll": update
+      }, [createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+    }
+  });
+  function useResizeSensorUpdate(rootRef, emit2, reset) {
+    var size2 = reactive({
+      width: -1,
+      height: -1
+    });
+    watch(() => extend({}, size2), (value) => emit2("resize", value));
+    return () => {
+      var rootEl = rootRef.value;
+      if (!rootEl)
+        return;
+      size2.width = rootEl.offsetWidth;
+      size2.height = rootEl.offsetHeight;
+      reset();
+    };
+  }
+  function useResizeSensorReset(rootRef) {
+    return () => {
+      var {
+        firstElementChild,
+        lastElementChild
+      } = rootRef.value;
+      firstElementChild.scrollLeft = 1e5;
+      firstElementChild.scrollTop = 1e5;
+      lastElementChild.scrollLeft = 1e5;
+      lastElementChild.scrollTop = 1e5;
+    };
+  }
+  function useResizeSensorLifecycle(rootRef, props2, update, reset) {
+    onActivated(reset);
+    onMounted(() => {
+      if (props2.initial) {
+        nextTick(update);
+      }
+      var rootEl = rootRef.value;
+      if (rootEl.offsetParent !== rootEl.parentElement) {
+        rootEl.parentElement.style.position = "relative";
+      }
+      if (!("AnimationEvent" in window)) {
+        reset();
+      }
+    });
+  }
+  var uniCheckGroupKey = PolySymbol("ucg");
+  var props$b = {
+    name: {
+      type: String,
+      default: ""
+    }
+  };
+  const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
+    name: "CheckboxGroup",
+    props: props$b,
+    emits: ["change"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2,
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      useProvideCheckGroup(props2, trigger2);
+      return () => {
+        return createVNode("uni-checkbox-group", {
+          "ref": rootRef
+        }, [slots.default && slots.default()], 512);
+      };
+    }
+  });
+  function useProvideCheckGroup(props2, trigger2) {
+    var fields = [];
+    var getFieldsValue = () => fields.reduce((res, field) => {
+      if (field.value.checkboxChecked) {
+        res.push(field.value.value);
+      }
+      return res;
+    }, new Array());
+    provide(uniCheckGroupKey, {
+      addField(field) {
+        fields.push(field);
+      },
+      removeField(field) {
+        fields.splice(fields.indexOf(field), 1);
+      },
+      checkboxChange($event) {
+        trigger2("change", $event, {
+          value: getFieldsValue()
+        });
+      }
+    });
+    var uniForm = inject(uniFormKey, false);
+    if (uniForm) {
+      uniForm.addField({
+        submit: () => {
+          var data = ["", null];
+          if (props2.name !== "") {
+            data[0] = props2.name;
+            data[1] = getFieldsValue();
+          }
+          return data;
+        }
+      });
+    }
+    return getFieldsValue;
+  }
+  var props$a = {
+    checked: {
+      type: [Boolean, String],
+      default: false
+    },
+    id: {
+      type: String,
+      default: ""
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    value: {
+      type: String,
+      default: ""
+    },
+    color: {
+      type: String,
+      default: "#007aff"
+    },
+    backgroundColor: {
+      type: String,
+      default: ""
+    },
+    borderColor: {
+      type: String,
+      default: ""
+    },
+    activeBackgroundColor: {
+      type: String,
+      default: ""
+    },
+    activeBorderColor: {
+      type: String,
+      default: ""
+    },
+    iconColor: {
+      type: String,
+      default: ""
+    },
+    // 图标颜色,同color,优先级大于iconColor
+    foregroundColor: {
+      type: String,
+      default: ""
+    }
+  };
+  const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Checkbox",
+    props: props$a,
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var checkboxChecked = ref(props2.checked);
+      var checkboxCheckedBool = computed(() => {
+        return checkboxChecked.value === "true" || checkboxChecked.value === true;
+      });
+      var checkboxValue = ref(props2.value);
+      function getCheckBoxStyle(checked) {
+        if (props2.disabled) {
+          return {
+            backgroundColor: "#E1E1E1",
+            borderColor: "#D1D1D1"
+          };
+        }
+        var style = {};
+        if (checked) {
+          if (props2.activeBorderColor)
+            style.borderColor = props2.activeBorderColor;
+          if (props2.activeBackgroundColor)
+            style.backgroundColor = props2.activeBackgroundColor;
+        } else {
+          if (props2.borderColor)
+            style.borderColor = props2.borderColor;
+          if (props2.backgroundColor)
+            style.backgroundColor = props2.backgroundColor;
+        }
+        return style;
+      }
+      var checkboxStyle = computed(() => {
+        return getCheckBoxStyle(checkboxCheckedBool.value);
+      });
+      watch([() => props2.checked, () => props2.value], (_ref2) => {
+        var [newChecked, newModelValue] = _ref2;
+        checkboxChecked.value = newChecked;
+        checkboxValue.value = newModelValue;
+      });
+      var reset = () => {
+        checkboxChecked.value = false;
+      };
+      var {
+        uniCheckGroup,
+        uniLabel
+      } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
+      var _onClick = ($event) => {
+        if (props2.disabled) {
+          return;
+        }
+        checkboxChecked.value = !checkboxChecked.value;
+        uniCheckGroup && uniCheckGroup.checkboxChange($event);
+        $event.stopPropagation();
+      };
+      if (!!uniLabel) {
+        uniLabel.addHandler(_onClick);
+        onBeforeUnmount(() => {
+          uniLabel.removeHandler(_onClick);
+        });
+      }
+      useListeners(props2, {
+        "label-click": _onClick
+      });
+      return () => {
+        var booleanAttrs = useBooleanAttr(props2, "disabled");
+        var realCheckValue;
+        realCheckValue = checkboxChecked.value;
+        return createVNode("uni-checkbox", mergeProps(booleanAttrs, {
+          "id": props2.id,
+          "onClick": _onClick,
+          "ref": rootRef
+        }), [createVNode("div", {
+          "class": "uni-checkbox-wrapper",
+          "style": {
+            "--HOVER-BD-COLOR": props2.activeBorderColor
+          }
+        }, [createVNode("div", {
+          "class": ["uni-checkbox-input", {
+            "uni-checkbox-input-disabled": props2.disabled
+          }],
+          "style": checkboxStyle.value
+        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      };
+    }
+  });
+  function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
+    var field = computed(() => ({
+      checkboxChecked: Boolean(checkboxChecked.value),
+      value: checkboxValue.value
+    }));
+    var formField = {
+      reset
+    };
+    var uniCheckGroup = inject(uniCheckGroupKey, false);
+    if (!!uniCheckGroup) {
+      uniCheckGroup.addField(field);
+    }
+    var uniForm = inject(uniFormKey, false);
+    if (!!uniForm) {
+      uniForm.addField(formField);
+    }
+    var uniLabel = inject(uniLabelKey, false);
+    onBeforeUnmount(() => {
+      uniCheckGroup && uniCheckGroup.removeField(field);
+      uniForm && uniForm.removeField(formField);
+    });
+    return {
+      uniCheckGroup,
+      uniForm,
+      uniLabel
+    };
+  }
+  var resetTimer;
+  var isAndroid;
+  var osVersion;
+  var keyboardHeight;
+  var keyboardChangeCallback;
+  var webviewStyle;
   {
     plusReady(() => {
+      isAndroid = false;
+      osVersion = "";
     });
     document.addEventListener("keyboardchange", function(event) {
-      event.height;
+      keyboardHeight = event.height;
+      keyboardChangeCallback && keyboardChangeCallback();
     }, false);
+  }
+  function iosHideKeyboard() {
+  }
+  function setSoftinputTemporary(props2, el, reset) {
+    plusReady(() => {
+      var MODE_ADJUSTRESIZE = "adjustResize";
+      var MODE_ADJUSTPAN = "adjustPan";
+      var MODE_NOTHING = "nothing";
+      var currentWebview = plus.webview.currentWebview();
+      var style = webviewStyle || currentWebview.getStyle() || {};
+      var options = {
+        mode: reset || style.softinputMode === MODE_ADJUSTRESIZE ? MODE_ADJUSTRESIZE : props2.adjustPosition ? MODE_ADJUSTPAN : MODE_NOTHING,
+        position: {
+          top: 0,
+          height: 0
+        }
+      };
+      if (options.mode === MODE_ADJUSTPAN) {
+        var rect = el.getBoundingClientRect();
+        options.position.top = rect.top;
+        options.position.height = rect.height + (Number(props2.cursorSpacing) || 0);
+      }
+      currentWebview.setSoftinputTemporary(options);
+    });
+  }
+  function setSoftinputNavBar(props2, state) {
+    if (props2.showConfirmBar === "auto") {
+      delete state.softinputNavBar;
+      return;
+    }
+    plusReady(() => {
+      var currentWebview = plus.webview.currentWebview();
+      var {
+        softinputNavBar
+      } = currentWebview.getStyle() || {};
+      var showConfirmBar = softinputNavBar !== "none";
+      if (showConfirmBar !== props2.showConfirmBar) {
+        state.softinputNavBar = softinputNavBar || "auto";
+        currentWebview.setStyle({
+          softinputNavBar: props2.showConfirmBar ? "auto" : "none"
+        });
+      } else {
+        delete state.softinputNavBar;
+      }
+    });
+  }
+  function resetSoftinputNavBar(state) {
+    var softinputNavBar = state.softinputNavBar;
+    if (softinputNavBar) {
+      plusReady(() => {
+        var currentWebview = plus.webview.currentWebview();
+        currentWebview.setStyle({
+          softinputNavBar
+        });
+      });
+    }
+  }
+  var props$9 = {
+    cursorSpacing: {
+      type: [Number, String],
+      default: 0
+    },
+    showConfirmBar: {
+      type: [Boolean, String],
+      default: "auto"
+    },
+    adjustPosition: {
+      type: [Boolean, String],
+      default: true
+    },
+    autoBlur: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
+  var emit$1 = ["keyboardheightchange"];
+  function useKeyboard(props2, elRef, trigger2) {
+    var state = {};
+    function initKeyboard(el) {
+      var focus;
+      var isApple = computed(() => String(navigator.vendor).indexOf("Apple") === 0);
+      var keyboardChange = () => {
+        trigger2("keyboardheightchange", {}, {
+          height: keyboardHeight,
+          duration: 0.25
+        });
+        if (focus && keyboardHeight === 0) {
+          setSoftinputTemporary(props2, el);
+        }
+        if (props2.autoBlur && focus && keyboardHeight === 0 && (isAndroid || parseInt(osVersion) >= 13)) {
+          document.activeElement.blur();
+        }
+      };
+      el.addEventListener("focus", () => {
+        focus = true;
+        clearTimeout(resetTimer);
+        document.addEventListener("click", iosHideKeyboard, false);
+        {
+          keyboardChangeCallback = keyboardChange;
+          if (keyboardHeight) {
+            trigger2("keyboardheightchange", {}, {
+              height: keyboardHeight,
+              duration: 0
+            });
+          }
+          setSoftinputNavBar(props2, state);
+          setSoftinputTemporary(props2, el);
+        }
+      });
+      {
+        if (isAndroid) {
+          el.addEventListener("click", () => {
+            if (!props2.disabled && !props2.readOnly && focus && keyboardHeight === 0) {
+              setSoftinputTemporary(props2, el);
+            }
+          });
+        }
+        if (!isAndroid) {
+          if (parseInt(osVersion) < 12) {
+            el.addEventListener("touchstart", () => {
+              if (!props2.disabled && !props2.readOnly && !focus) {
+                setSoftinputTemporary(props2, el);
+              }
+            });
+          }
+          if (parseFloat(osVersion) >= 14.6 && !webviewStyle) {
+            plusReady(() => {
+              var currentWebview = plus.webview.currentWebview();
+              webviewStyle = currentWebview.getStyle() || {};
+            });
+          }
+        }
+      }
+      var onKeyboardHide = () => {
+        document.removeEventListener("click", iosHideKeyboard, false);
+        {
+          keyboardChangeCallback = null;
+          if (keyboardHeight) {
+            trigger2("keyboardheightchange", {}, {
+              height: 0,
+              duration: 0
+            });
+          }
+          resetSoftinputNavBar(state);
+          if (isAndroid) {
+            resetTimer = setTimeout(() => {
+              setSoftinputTemporary(props2, el, true);
+            }, 300);
+          }
+        }
+        if (isApple.value) {
+          document.documentElement.scrollTo(document.documentElement.scrollLeft, document.documentElement.scrollTop);
+        }
+      };
+      el.addEventListener("blur", () => {
+        if (isApple.value) {
+          el.blur();
+        }
+        focus = false;
+        onKeyboardHide();
+      });
+    }
+    watch(() => elRef.value, (el) => el && initKeyboard(el));
+  }
+  var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
+  var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
+  var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
+  var empty = /* @__PURE__ */ makeMap("area,base,basefont,br,col,frame,hr,img,input,link,meta,param,embed,command,keygen,source,track,wbr");
+  var block = /* @__PURE__ */ makeMap("a,address,article,applet,aside,audio,blockquote,button,canvas,center,dd,del,dir,div,dl,dt,fieldset,figcaption,figure,footer,form,frameset,h1,h2,h3,h4,h5,h6,header,hgroup,hr,iframe,isindex,li,map,menu,noframes,noscript,object,ol,output,p,pre,section,script,table,tbody,td,tfoot,th,thead,tr,ul,video");
+  var inline = /* @__PURE__ */ makeMap("abbr,acronym,applet,b,basefont,bdo,big,br,button,cite,code,del,dfn,em,font,i,iframe,img,input,ins,kbd,label,map,object,q,s,samp,script,select,small,span,strike,strong,sub,sup,textarea,tt,u,var");
+  var closeSelf = /* @__PURE__ */ makeMap("colgroup,dd,dt,li,options,p,td,tfoot,th,thead,tr");
+  var fillAttrs = /* @__PURE__ */ makeMap("checked,compact,declare,defer,disabled,ismap,multiple,nohref,noresize,noshade,nowrap,readonly,selected");
+  var special = /* @__PURE__ */ makeMap("script,style");
+  function HTMLParser(html, handler) {
+    var index;
+    var chars;
+    var match;
+    var stack2 = [];
+    var last = html;
+    stack2.last = function() {
+      return this[this.length - 1];
+    };
+    while (html) {
+      chars = true;
+      if (!stack2.last() || !special[stack2.last()]) {
+        if (html.indexOf("<!--") == 0) {
+          index = html.indexOf("-->");
+          if (index >= 0) {
+            if (handler.comment) {
+              handler.comment(html.substring(4, index));
+            }
+            html = html.substring(index + 3);
+            chars = false;
+          }
+        } else if (html.indexOf("</") == 0) {
+          match = html.match(endTag);
+          if (match) {
+            html = html.substring(match[0].length);
+            match[0].replace(endTag, parseEndTag);
+            chars = false;
+          }
+        } else if (html.indexOf("<") == 0) {
+          match = html.match(startTag);
+          if (match) {
+            html = html.substring(match[0].length);
+            match[0].replace(startTag, parseStartTag);
+            chars = false;
+          }
+        }
+        if (chars) {
+          index = html.indexOf("<");
+          var text = index < 0 ? html : html.substring(0, index);
+          html = index < 0 ? "" : html.substring(index);
+          if (handler.chars) {
+            handler.chars(text);
+          }
+        }
+      } else {
+        html = html.replace(new RegExp("([\\s\\S]*?)</" + stack2.last() + "[^>]*>"), function(all, text2) {
+          text2 = text2.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
+          if (handler.chars) {
+            handler.chars(text2);
+          }
+          return "";
+        });
+        parseEndTag("", stack2.last());
+      }
+      if (html == last) {
+        throw "Parse Error: " + html;
+      }
+      last = html;
+    }
+    parseEndTag();
+    function parseStartTag(tag, tagName, rest, unary) {
+      tagName = tagName.toLowerCase();
+      if (block[tagName]) {
+        while (stack2.last() && inline[stack2.last()]) {
+          parseEndTag("", stack2.last());
+        }
+      }
+      if (closeSelf[tagName] && stack2.last() == tagName) {
+        parseEndTag("", tagName);
+      }
+      unary = empty[tagName] || !!unary;
+      if (!unary) {
+        stack2.push(tagName);
+      }
+      if (handler.start) {
+        var attrs2 = [];
+        rest.replace(attr, function(match2, name) {
+          var value = arguments[2] ? arguments[2] : arguments[3] ? arguments[3] : arguments[4] ? arguments[4] : fillAttrs[name] ? name : "";
+          attrs2.push({
+            name,
+            value,
+            escaped: value.replace(/(^|[^\\])"/g, '$1\\"')
+            // "
+          });
+        });
+        if (handler.start) {
+          handler.start(tagName, attrs2, unary);
+        }
+      }
+    }
+    function parseEndTag(tag, tagName) {
+      if (!tagName) {
+        var pos = 0;
+      } else {
+        for (var pos = stack2.length - 1; pos >= 0; pos--) {
+          if (stack2[pos] == tagName) {
+            break;
+          }
+        }
+      }
+      if (pos >= 0) {
+        for (var i2 = stack2.length - 1; i2 >= pos; i2--) {
+          if (handler.end) {
+            handler.end(stack2[i2]);
+          }
+        }
+        stack2.length = pos;
+      }
+    }
+  }
+  function makeMap(str) {
+    var obj = {};
+    var items = str.split(",");
+    for (var i2 = 0; i2 < items.length; i2++) {
+      obj[items[i2]] = true;
+    }
+    return obj;
+  }
+  var props$8 = {
+    src: {
+      type: String,
+      default: ""
+    },
+    mode: {
+      type: String,
+      default: "scaleToFill"
+    },
+    lazyLoad: {
+      type: [Boolean, String],
+      default: false
+    },
+    draggable: {
+      type: Boolean,
+      default: false
+    }
+  };
+  var FIX_MODES = {
+    widthFix: ["offsetWidth", "height", (value, ratio) => value / ratio],
+    heightFix: ["offsetHeight", "width", (value, ratio) => value * ratio]
+  };
+  var IMAGE_MODES = {
+    aspectFit: ["center center", "contain"],
+    aspectFill: ["center center", "cover"],
+    widthFix: [, "100% 100%"],
+    heightFix: [, "100% 100%"],
+    top: ["center top"],
+    bottom: ["center bottom"],
+    center: ["center center"],
+    left: ["left center"],
+    right: ["right center"],
+    "top left": ["left top"],
+    "top right": ["right top"],
+    "bottom left": ["left bottom"],
+    "bottom right": ["right bottom"]
+  };
+  const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Image",
+    props: props$8,
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var state = useImageState(rootRef, props2);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      var {
+        fixSize
+      } = useImageSize(rootRef, props2, state);
+      useImageLoader(state, props2, rootRef, fixSize, trigger2);
+      return () => {
+        return createVNode("uni-image", {
+          "ref": rootRef
+        }, [createVNode("div", {
+          "style": state.modeStyle
+        }, null, 4), FIX_MODES[props2.mode] ? createVNode(ResizeSensor, {
+          "onResize": fixSize
+        }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
+      };
+    }
+  });
+  function useImageState(rootRef, props2) {
+    var imgSrc = ref("");
+    var modeStyleRef = computed(() => {
+      var size2 = "auto";
+      var position = "";
+      var opts = IMAGE_MODES[props2.mode];
+      if (!opts) {
+        position = "0% 0%";
+        size2 = "100% 100%";
+      } else {
+        opts[0] && (position = opts[0]);
+        opts[1] && (size2 = opts[1]);
+      }
+      return "background-image:".concat(imgSrc.value ? 'url("' + imgSrc.value + '")' : "none", ";background-position:").concat(position, ";background-size:").concat(size2, ";");
+    });
+    var state = reactive({
+      rootEl: rootRef,
+      src: computed(() => props2.src ? getRealPath$1(props2.src) : ""),
+      origWidth: 0,
+      origHeight: 0,
+      origStyle: {
+        width: "",
+        height: ""
+      },
+      modeStyle: modeStyleRef,
+      imgSrc
+    });
+    onMounted(() => {
+      var rootEl = rootRef.value;
+      var style = rootEl.style;
+      state.origWidth = Number(style.width) || 0;
+      state.origHeight = Number(style.height) || 0;
+    });
+    return state;
+  }
+  function useImageLoader(state, props2, rootRef, fixSize, trigger2) {
+    var img;
+    var draggableImg;
+    var setState = function() {
+      var width = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 0;
+      var height = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
+      var imgSrc = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : "";
+      state.origWidth = width;
+      state.origHeight = height;
+      state.imgSrc = imgSrc;
+    };
+    var loadImage = (src) => {
+      if (!src) {
+        resetImage();
+        setState();
+        return;
+      }
+      img = img || new Image();
+      img.onload = (evt) => {
+        var {
+          width,
+          height
+        } = img;
+        setState(width, height, src);
+        fixSize();
+        img.draggable = props2.draggable;
+        if (draggableImg) {
+          draggableImg.remove();
+        }
+        draggableImg = img;
+        rootRef.value.appendChild(img);
+        resetImage();
+        trigger2("load", evt, {
+          width,
+          height
+        });
+      };
+      img.onerror = (evt) => {
+        setState();
+        resetImage();
+        trigger2("error", evt, {
+          errMsg: "GET ".concat(state.src, " 404 (Not Found)")
+        });
+      };
+      img.src = src;
+    };
+    var resetImage = () => {
+      if (img) {
+        img.onload = null;
+        img.onerror = null;
+        img = null;
+      }
+    };
+    watch(() => state.src, (value) => loadImage(value));
+    watch(() => state.imgSrc, (value) => {
+      if (!value && draggableImg) {
+        draggableImg.remove();
+        draggableImg = null;
+      }
+    });
+    onMounted(() => loadImage(state.src));
+    onBeforeUnmount(() => resetImage());
+  }
+  var isChrome = navigator.vendor === "Google Inc.";
+  function fixNumber(num) {
+    if (isChrome && num > 10) {
+      num = Math.round(num / 2) * 2;
+    }
+    return num;
+  }
+  function useImageSize(rootRef, props2, state) {
+    var fixSize = () => {
+      var {
+        mode
+      } = props2;
+      var names = FIX_MODES[mode];
+      if (!names) {
+        return;
+      }
+      var {
+        origWidth,
+        origHeight
+      } = state;
+      var ratio = origWidth && origHeight ? origWidth / origHeight : 0;
+      if (!ratio) {
+        return;
+      }
+      var rootEl = rootRef.value;
+      var value = rootEl[names[0]];
+      if (value) {
+        rootEl.style[names[1]] = fixNumber(names[2](value, ratio)) + "px";
+      }
+      {
+        window.dispatchEvent(new CustomEvent("updateview"));
+      }
+    };
+    var resetSize = () => {
+      var {
+        style
+      } = rootRef.value;
+      var {
+        origStyle: {
+          width,
+          height
+        }
+      } = state;
+      style.width = width;
+      style.height = height;
+    };
+    watch(() => props2.mode, (value, oldValue) => {
+      if (FIX_MODES[oldValue]) {
+        resetSize();
+      }
+      if (FIX_MODES[value]) {
+        fixSize();
+      }
+    });
+    return {
+      fixSize,
+      resetSize
+    };
+  }
+  function throttle(fn, wait) {
+    var last = 0;
+    var timeout;
+    var waitCallback;
+    var newFn = function() {
+      for (var _len = arguments.length, arg = new Array(_len), _key = 0; _key < _len; _key++) {
+        arg[_key] = arguments[_key];
+      }
+      var now = Date.now();
+      clearTimeout(timeout);
+      waitCallback = () => {
+        waitCallback = null;
+        last = now;
+        fn.apply(this, arg);
+      };
+      if (now - last < wait) {
+        timeout = setTimeout(waitCallback, wait - (now - last));
+        return;
+      }
+      waitCallback();
+    };
+    newFn.cancel = function() {
+      clearTimeout(timeout);
+      waitCallback = null;
+    };
+    newFn.flush = function() {
+      clearTimeout(timeout);
+      waitCallback && waitCallback();
+    };
+    return newFn;
+  }
+  var passiveOptions = /* @__PURE__ */ passive(true);
+  var states = [];
+  var userInteract = 0;
+  var inited = false;
+  var setUserAction = (userAction) => states.forEach((vm) => vm.userAction = userAction);
+  function addInteractListener() {
+    var vm = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {
+      userAction: false
+    };
+    if (!inited) {
+      var eventNames = ["touchstart", "touchmove", "touchend", "mousedown", "mouseup"];
+      eventNames.forEach((eventName) => {
+        document.addEventListener(eventName, function() {
+          !userInteract && setUserAction(true);
+          userInteract++;
+          setTimeout(() => {
+            !--userInteract && setUserAction(false);
+          }, 0);
+        }, passiveOptions);
+      });
+      inited = true;
+    }
+    states.push(vm);
+  }
+  function removeInteractListener(vm) {
+    var index = states.indexOf(vm);
+    if (index >= 0) {
+      states.splice(index, 1);
+    }
+  }
+  function useUserAction() {
+    var state = reactive({
+      /**
+       * 是否用户激活
+       */
+      userAction: false
+    });
+    onMounted(() => {
+      addInteractListener(state);
+    });
+    onBeforeUnmount(() => {
+      removeInteractListener(state);
+    });
+    return {
+      state
+    };
+  }
+  function useScopedAttrs() {
+    var state = reactive({
+      attrs: {}
+    });
+    onMounted(() => {
+      var instance = getCurrentInstance();
+      while (instance) {
+        var scopeId = instance.type.__scopeId;
+        if (scopeId) {
+          state.attrs[scopeId] = "";
+        }
+        instance = instance.proxy && instance.proxy.$mpType === "page" ? null : instance.parent;
+      }
+    });
+    return {
+      state
+    };
+  }
+  function useFormField(nameKey, value) {
+    var uniForm = inject(
+      uniFormKey,
+      false
+      // remove warning
+    );
+    if (!uniForm) {
+      return;
+    }
+    var instance = getCurrentInstance();
+    var ctx2 = {
+      submit() {
+        var proxy = instance.proxy;
+        return [proxy[nameKey], isString(value) ? proxy[value] : value.value];
+      },
+      reset() {
+        if (isString(value)) {
+          instance.proxy[value] = "";
+        } else {
+          value.value = "";
+        }
+      }
+    };
+    uniForm.addField(ctx2);
+    onBeforeUnmount(() => {
+      uniForm.removeField(ctx2);
+    });
+  }
+  function getSelectedTextRange(_, resolve) {
+    var activeElement = document.activeElement;
+    if (!activeElement) {
+      return resolve({});
+    }
+    var data = {};
+    if (["input", "textarea"].includes(activeElement.tagName.toLowerCase())) {
+      data.start = activeElement.selectionStart;
+      data.end = activeElement.selectionEnd;
+    }
+    resolve(data);
+  }
+  var UniViewJSBridgeSubscribe = function() {
+    registerViewMethod(getCurrentPageId(), "getSelectedTextRange", getSelectedTextRange);
+  };
+  var FOCUS_DELAY = 200;
+  var startTime;
+  function getValueString(value, type, maxlength) {
+    if (type === "number" && isNaN(Number(value))) {
+      value = "";
+    }
+    var valueStr = value === null || value === void 0 ? "" : String(value);
+    if (maxlength == void 0) {
+      return valueStr;
+    }
+    return valueStr.slice(0, maxlength);
+  }
+  var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
+  var props$7 = /* @__PURE__ */ extend({}, {
+    name: {
+      type: String,
+      default: ""
+    },
+    modelValue: {
+      type: [String, Number]
+    },
+    value: {
+      type: [String, Number]
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    /**
+     * 已废弃属性，用于历史兼容
+     */
+    autoFocus: {
+      type: [Boolean, String],
+      default: false
+    },
+    focus: {
+      type: [Boolean, String],
+      default: false
+    },
+    cursor: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionStart: {
+      type: [Number, String],
+      default: -1
+    },
+    selectionEnd: {
+      type: [Number, String],
+      default: -1
+    },
+    type: {
+      type: String,
+      default: "text"
+    },
+    password: {
+      type: [Boolean, String],
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    placeholderStyle: {
+      type: String,
+      default: ""
+    },
+    placeholderClass: {
+      type: String,
+      default: ""
+    },
+    maxlength: {
+      type: [Number, String],
+      default: 140
+    },
+    confirmType: {
+      type: String,
+      default: "done"
+    },
+    confirmHold: {
+      type: Boolean,
+      default: false
+    },
+    ignoreCompositionEvent: {
+      type: Boolean,
+      default: true
+    },
+    step: {
+      type: String,
+      default: "0.000000000000000001"
+    },
+    inputmode: {
+      type: String,
+      default: void 0,
+      validator: (value) => !!~INPUT_MODES.indexOf(value)
+    },
+    cursorColor: {
+      type: String,
+      default: ""
+    }
+  }, props$9);
+  var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
+  function useBase(props2, rootRef, emit2) {
+    var fieldRef = ref(null);
+    var trigger2 = useCustomEvent(rootRef, emit2);
+    var selectionStart = computed(() => {
+      var selectionStart2 = Number(props2.selectionStart);
+      return isNaN(selectionStart2) ? -1 : selectionStart2;
+    });
+    var selectionEnd = computed(() => {
+      var selectionEnd2 = Number(props2.selectionEnd);
+      return isNaN(selectionEnd2) ? -1 : selectionEnd2;
+    });
+    var cursor = computed(() => {
+      var cursor2 = Number(props2.cursor);
+      return isNaN(cursor2) ? -1 : cursor2;
+    });
+    var maxlength = computed(() => {
+      var maxlength2 = Number(props2.maxlength);
+      {
+        return isNaN(maxlength2) ? 140 : maxlength2;
+      }
+    });
+    var value = "";
+    {
+      value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+    }
+    var state = reactive({
+      value,
+      valueOrigin: value,
+      maxlength,
+      focus: props2.focus,
+      composing: false,
+      selectionStart,
+      selectionEnd,
+      cursor
+    });
+    watch(() => state.focus, (val) => emit2("update:focus", val));
+    watch(() => state.maxlength, (val) => state.value = state.value.slice(0, val), {
+      immediate: false
+    });
+    return {
+      fieldRef,
+      state,
+      trigger: trigger2
+    };
+  }
+  function useValueSync(props2, state, emit2, trigger2) {
+    var valueChangeFn = null;
+    {
+      valueChangeFn = debounce((val) => {
+        state.value = getValueString(val, props2.type);
+      }, 100, {
+        setTimeout,
+        clearTimeout
+      });
+    }
+    watch(() => props2.modelValue, valueChangeFn);
+    watch(() => props2.value, valueChangeFn);
+    var triggerInputFn = throttle((event, detail) => {
+      valueChangeFn.cancel();
+      emit2("update:modelValue", detail.value);
+      emit2("update:value", detail.value);
+      trigger2("input", event, detail);
+    }, 100);
+    var triggerInput = (event, detail, force) => {
+      valueChangeFn.cancel();
+      triggerInputFn(event, detail);
+      if (force) {
+        triggerInputFn.flush();
+      }
+    };
+    onBeforeMount(() => {
+      valueChangeFn.cancel();
+      triggerInputFn.cancel();
+    });
+    return {
+      trigger: trigger2,
+      triggerInput
+    };
+  }
+  function useAutoFocus(props2, fieldRef) {
+    var {
+      state: userActionState
+    } = useUserAction();
+    var needFocus = computed(() => props2.autoFocus || props2.focus);
+    function focus() {
+      if (!needFocus.value) {
+        return;
+      }
+      var field = fieldRef.value;
+      if (!field || !("plus" in window)) {
+        setTimeout(focus, 100);
+        return;
+      }
+      {
+        var timeout = FOCUS_DELAY - (Date.now() - startTime);
+        if (timeout > 0) {
+          setTimeout(focus, timeout);
+          return;
+        }
+        field.focus();
+        if (!userActionState.userAction) {
+          plus.key.showSoftKeybord();
+        }
+      }
+    }
+    function blur() {
+      var field = fieldRef.value;
+      if (field) {
+        field.blur();
+      }
+    }
+    watch(() => props2.focus, (value) => {
+      if (value) {
+        focus();
+      } else {
+        blur();
+      }
+    });
+    onMounted(() => {
+      startTime = startTime || Date.now();
+      if (needFocus.value) {
+        nextTick(focus);
+      }
+    });
+  }
+  function useEvent(fieldRef, state, props2, trigger2, triggerInput, beforeInput) {
+    function checkSelection() {
+      var field = fieldRef.value;
+      if (field && state.focus && state.selectionStart > -1 && state.selectionEnd > -1 && field.type !== "number") {
+        field.selectionStart = state.selectionStart;
+        field.selectionEnd = state.selectionEnd;
+      }
+    }
+    function checkCursor() {
+      var field = fieldRef.value;
+      if (field && state.focus && state.selectionStart < 0 && state.selectionEnd < 0 && state.cursor > -1 && field.type !== "number") {
+        field.selectionEnd = field.selectionStart = state.cursor;
+      }
+    }
+    function getFieldSelectionEnd(field) {
+      if (field.type === "number") {
+        return null;
+      } else {
+        return field.selectionEnd;
+      }
+    }
+    function initField() {
+      var field = fieldRef.value;
+      if (!field)
+        return;
+      var onFocus = function(event) {
+        state.focus = true;
+        trigger2("focus", event, {
+          value: state.value
+        });
+        checkSelection();
+        checkCursor();
+      };
+      var onInput = function(event, force) {
+        event.stopPropagation();
+        if (isFunction(beforeInput) && beforeInput(event, state) === false) {
+          return;
+        }
+        state.value = field.value;
+        if (!state.composing || !props2.ignoreCompositionEvent) {
+          triggerInput(event, {
+            value: field.value,
+            cursor: getFieldSelectionEnd(field)
+          }, force);
+        }
+      };
+      var onBlur = function(event) {
+        if (state.composing) {
+          state.composing = false;
+          onInput(event, true);
+        }
+        state.focus = false;
+        trigger2("blur", event, {
+          value: state.value,
+          cursor: getFieldSelectionEnd(event.target)
+        });
+      };
+      field.addEventListener("change", (event) => event.stopPropagation());
+      field.addEventListener("focus", onFocus);
+      field.addEventListener("blur", onBlur);
+      field.addEventListener("input", onInput);
+      field.addEventListener("compositionstart", (event) => {
+        event.stopPropagation();
+        state.composing = true;
+        _onComposition(event);
+      });
+      field.addEventListener("compositionend", (event) => {
+        event.stopPropagation();
+        if (state.composing) {
+          state.composing = false;
+          onInput(event);
+        }
+        _onComposition(event);
+      });
+      field.addEventListener("compositionupdate", _onComposition);
+      function _onComposition(event) {
+        if (!props2.ignoreCompositionEvent) {
+          trigger2(event.type, event, {
+            value: event.data
+          });
+        }
+      }
+    }
+    watch([() => state.selectionStart, () => state.selectionEnd], checkSelection);
+    watch(() => state.cursor, checkCursor);
+    watch(() => fieldRef.value, initField);
+  }
+  function useField(props2, rootRef, emit2, beforeInput) {
+    UniViewJSBridgeSubscribe();
+    var {
+      fieldRef,
+      state,
+      trigger: trigger2
+    } = useBase(props2, rootRef, emit2);
+    var {
+      triggerInput
+    } = useValueSync(props2, state, emit2, trigger2);
+    useAutoFocus(props2, fieldRef);
+    useKeyboard(props2, fieldRef, trigger2);
+    var {
+      state: scopedAttrsState
+    } = useScopedAttrs();
+    useFormField("name", state);
+    useEvent(fieldRef, state, props2, trigger2, triggerInput, beforeInput);
+    var fixDisabledColor = String(navigator.vendor).indexOf("Apple") === 0 && CSS.supports("image-orientation:from-image");
+    return {
+      fieldRef,
+      state,
+      scopedAttrsState,
+      fixDisabledColor,
+      trigger: trigger2
+    };
+  }
+  var props$6 = /* @__PURE__ */ extend({}, props$7, {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    textContentType: {
+      type: String,
+      default: ""
+    }
+  });
+  function resolveDigitDecimalPoint(event, cache2, state, input) {
+    if (event.data === ".") {
+      {
+        if (cache2.value.slice(-1) === ".") {
+          state.value = input.value = cache2.value = cache2.value.slice(0, -1);
+          return false;
+        } else if (cache2.value.includes(".")) {
+          state.value = input.value = cache2.value;
+          return false;
+        }
+      }
+      if (cache2.value) {
+        cache2.value += ".";
+        return false;
+      }
+    }
+  }
+  const Input = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Input",
+    props: props$6,
+    emits: ["confirm", ...emit],
+    setup(props2, _ref) {
+      var {
+        emit: emit2,
+        expose
+      } = _ref;
+      var INPUT_TYPES = ["text", "number", "idcard", "digit", "password", "tel"];
+      var AUTOCOMPLETES = ["off", "one-time-code"];
+      var type = computed(() => {
+        var type2 = "";
+        switch (props2.type) {
+          case "text":
+            if (props2.confirmType === "search") {
+              type2 = "search";
+            }
+            break;
+          case "idcard":
+            type2 = "text";
+            break;
+          case "digit":
+            type2 = "number";
+            break;
+          default:
+            type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+            break;
+        }
+        return props2.password ? "password" : type2;
+      });
+      var autocomplete = computed(() => {
+        var camelizeIndex = AUTOCOMPLETES.indexOf(props2.textContentType);
+        var kebabCaseIndex = AUTOCOMPLETES.indexOf(hyphenate(props2.textContentType));
+        var index = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
+        return AUTOCOMPLETES[index];
+      });
+      var cache2 = ref("");
+      var resetCache;
+      var rootRef = ref(null);
+      var {
+        fieldRef,
+        state,
+        scopedAttrsState,
+        fixDisabledColor,
+        trigger: trigger2
+      } = useField(props2, rootRef, emit2, (event, state2) => {
+        var input = event.target;
+        if (type.value === "number") {
+          if (resetCache) {
+            input.removeEventListener("blur", resetCache);
+            resetCache = null;
+          }
+          if (input.validity && !input.validity.valid) {
+            if ((!cache2.value || !input.value) && event.data === "-" || cache2.value[0] === "-" && event.inputType === "deleteContentBackward") {
+              cache2.value = "-";
+              state2.value = "";
+              resetCache = () => {
+                cache2.value = input.value = "";
+              };
+              input.addEventListener("blur", resetCache);
+              return false;
+            }
+            var res = resolveDigitDecimalPoint(event, cache2, state2, input);
+            if (typeof res === "boolean")
+              return res;
+            cache2.value = state2.value = input.value = cache2.value === "-" ? "" : cache2.value;
+            return false;
+          } else {
+            var _res = resolveDigitDecimalPoint(event, cache2, state2, input);
+            if (typeof _res === "boolean")
+              return _res;
+            cache2.value = input.value;
+          }
+          var maxlength = state2.maxlength;
+          if (maxlength > 0 && input.value.length > maxlength) {
+            input.value = input.value.slice(0, maxlength);
+            state2.value = input.value;
+            return false;
+          }
+        }
+      });
+      watch(() => state.value, (value) => {
+        if (props2.type === "number" && !(cache2.value === "-" && value === "")) {
+          cache2.value = value.toString();
+        }
+      });
+      var NUMBER_TYPES = ["number", "digit"];
+      var step2 = computed(() => NUMBER_TYPES.includes(props2.type) ? props2.step : "");
+      function onKeyUpEnter(event) {
+        if (event.key !== "Enter") {
+          return;
+        }
+        var input = event.target;
+        event.stopPropagation();
+        trigger2("confirm", event, {
+          value: input.value
+        });
+        !props2.confirmHold && input.blur();
+      }
+      expose({
+        $triggerInput: (detail) => {
+          emit2("update:modelValue", detail.value);
+          emit2("update:value", detail.value);
+          state.value = detail.value;
+        }
+      });
+      return () => {
+        var inputNode = props2.disabled && fixDisabledColor ? createVNode("input", {
+          "key": "disabled-input",
+          "ref": fieldRef,
+          "value": state.value,
+          "tabindex": "-1",
+          "readonly": !!props2.disabled,
+          "type": type.value,
+          "maxlength": state.maxlength,
+          "step": step2.value,
+          "class": "uni-input-input",
+          "style": props2.cursorColor ? {
+            caretColor: props2.cursorColor
+          } : {},
+          "onFocus": (event) => event.target.blur()
+        }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : createVNode("input", {
+          "key": "input",
+          "ref": fieldRef,
+          "value": state.value,
+          "onInput": (event) => {
+            state.value = event.target.value.toString();
+          },
+          "disabled": !!props2.disabled,
+          "type": type.value,
+          "maxlength": state.maxlength,
+          "step": step2.value,
+          "enterkeyhint": props2.confirmType,
+          "pattern": props2.type === "number" ? "[0-9]*" : void 0,
+          "class": "uni-input-input",
+          "style": props2.cursorColor ? {
+            caretColor: props2.cursorColor
+          } : {},
+          "autocomplete": autocomplete.value,
+          "onKeyup": onKeyUpEnter,
+          "inputmode": props2.inputmode
+        }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
+        return createVNode("uni-input", {
+          "ref": rootRef
+        }, [createVNode("div", {
+          "class": "uni-input-wrapper"
+        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "style": props2.placeholderStyle,
+          "class": ["uni-input-placeholder", props2.placeholderClass]
+        }), [props2.placeholder], 16), [[vShow, !(state.value.length || cache2.value === "-" || cache2.value.includes("."))]]), props2.confirmType === "search" ? createVNode("form", {
+          "action": "",
+          "onSubmit": (event) => event.preventDefault(),
+          "class": "uni-input-form"
+        }, [inputNode], 40, ["onSubmit"]) : inputNode])], 512);
+      };
+    }
+  });
+  var addListenerToElement = function(element, type, callback, capture) {
+    element.addEventListener(type, ($event) => {
+      if (isFunction(callback)) {
+        if (callback($event) === false) {
+          if (typeof $event.cancelable !== "undefined" ? $event.cancelable : true) {
+            $event.preventDefault();
+          }
+          $event.stopPropagation();
+        }
+      }
+    }, {
+      passive: false
+    });
+  };
+  var __mouseMoveEventListener;
+  var __mouseUpEventListener;
+  function useTouchtrack(element, method, useCancel) {
+    onBeforeUnmount(() => {
+      document.removeEventListener("mousemove", __mouseMoveEventListener);
+      document.removeEventListener("mouseup", __mouseUpEventListener);
+    });
+    var x0 = 0;
+    var y0 = 0;
+    var x1 = 0;
+    var y1 = 0;
+    var fn = function($event, state, x, y) {
+      if (method({
+        // @ts-expect-error
+        cancelable: $event.cancelable,
+        target: $event.target,
+        currentTarget: $event.currentTarget,
+        preventDefault: $event.preventDefault.bind($event),
+        stopPropagation: $event.stopPropagation.bind($event),
+        touches: $event.touches,
+        changedTouches: $event.changedTouches,
+        detail: {
+          state,
+          x,
+          y,
+          dx: x - x0,
+          dy: y - y0,
+          ddx: x - x1,
+          ddy: y - y1,
+          timeStamp: $event.timeStamp
+        }
+      }) === false) {
+        return false;
+      }
+    };
+    var $eventOld = null;
+    var hasTouchStart;
+    var hasMouseDown;
+    addListenerToElement(element, "touchstart", function($event) {
+      hasTouchStart = true;
+      if ($event.touches.length === 1 && !$eventOld) {
+        $eventOld = $event;
+        x0 = x1 = $event.touches[0].pageX;
+        y0 = y1 = $event.touches[0].pageY;
+        return fn($event, "start", x0, y0);
+      }
+    });
+    addListenerToElement(element, "mousedown", function($event) {
+      hasMouseDown = true;
+      if (!hasTouchStart && !$eventOld) {
+        $eventOld = $event;
+        x0 = x1 = $event.pageX;
+        y0 = y1 = $event.pageY;
+        return fn($event, "start", x0, y0);
+      }
+    });
+    addListenerToElement(element, "touchmove", function($event) {
+      if ($event.touches.length === 1 && $eventOld) {
+        var res = fn($event, "move", $event.touches[0].pageX, $event.touches[0].pageY);
+        x1 = $event.touches[0].pageX;
+        y1 = $event.touches[0].pageY;
+        return res;
+      }
+    });
+    var mouseMoveEventListener = __mouseMoveEventListener = function($event) {
+      if (!hasTouchStart && hasMouseDown && $eventOld) {
+        var res = fn($event, "move", $event.pageX, $event.pageY);
+        x1 = $event.pageX;
+        y1 = $event.pageY;
+        return res;
+      }
+    };
+    document.addEventListener("mousemove", mouseMoveEventListener);
+    addListenerToElement(element, "touchend", function($event) {
+      if ($event.touches.length === 0 && $eventOld) {
+        hasTouchStart = false;
+        $eventOld = null;
+        return fn($event, "end", $event.changedTouches[0].pageX, $event.changedTouches[0].pageY);
+      }
+    });
+    var mouseUpEventListener = __mouseUpEventListener = function($event) {
+      hasMouseDown = false;
+      if (!hasTouchStart && $eventOld) {
+        $eventOld = null;
+        return fn($event, "end", $event.pageX, $event.pageY);
+      }
+    };
+    document.addEventListener("mouseup", mouseUpEventListener);
+    addListenerToElement(element, "touchcancel", function($event) {
+      if ($eventOld) {
+        hasTouchStart = false;
+        var $eventTemp = $eventOld;
+        $eventOld = null;
+        return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
+      }
+    });
+  }
+  var OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
+  var ANIMATION_IN = ["slide-in-right", "slide-in-left", "slide-in-top", "slide-in-bottom", "fade-in", "zoom-out", "zoom-fade-out", "pop-in", "none"];
+  var ANIMATION_OUT = ["slide-out-right", "slide-out-left", "slide-out-top", "slide-out-bottom", "fade-out", "zoom-in", "zoom-fade-in", "pop-out", "none"];
+  var navigatorProps = {
+    hoverClass: {
+      type: String,
+      default: "navigator-hover"
+    },
+    url: {
+      type: String,
+      default: ""
+    },
+    openType: {
+      type: String,
+      default: "navigate",
+      validator(value) {
+        return Boolean(~OPEN_TYPES.indexOf(value));
+      }
+    },
+    delta: {
+      type: Number,
+      default: 1
+    },
+    hoverStartTime: {
+      type: [Number, String],
+      default: 50
+    },
+    hoverStayTime: {
+      type: [Number, String],
+      default: 600
+    },
+    exists: {
+      type: String,
+      default: ""
+    },
+    hoverStopPropagation: {
+      type: Boolean,
+      default: false
+    },
+    animationType: {
+      type: String,
+      default: "",
+      validator(value) {
+        return !value || ANIMATION_IN.concat(ANIMATION_OUT).includes(value);
+      }
+    },
+    animationDuration: {
+      type: [String, Number],
+      default: 300
+    }
+  };
+  function createNavigatorOnClick(props2) {
+    return () => {
+      if (props2.openType !== "navigateBack" && !props2.url) {
+        console.error("<navigator/> should have url attribute when using navigateTo, redirectTo, reLaunch or switchTab");
+        return;
+      }
+      var animationDuration = parseInt(props2.animationDuration);
+      switch (props2.openType) {
+        case "navigate":
+          uni.navigateTo({
+            url: props2.url,
+            animationType: props2.animationType || "pop-in",
+            animationDuration
+          });
+          break;
+        case "redirect":
+          uni.redirectTo({
+            url: props2.url,
+            exists: props2.exists
+          });
+          break;
+        case "switchTab":
+          uni.switchTab({
+            url: props2.url
+          });
+          break;
+        case "reLaunch":
+          uni.reLaunch({
+            url: props2.url
+          });
+          break;
+        case "navigateBack":
+          uni.navigateBack({
+            delta: props2.delta,
+            animationType: props2.animationType || "pop-out",
+            animationDuration
+          });
+          break;
+      }
+    };
+  }
+  const Navigator = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Navigator",
+    inheritAttrs: false,
+    compatConfig: {
+      MODE: 3
+    },
+    props: /* @__PURE__ */ extend({}, navigatorProps, {
+      renderLink: {
+        type: Boolean,
+        default: true
+      }
+    }),
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var vm = getCurrentInstance();
+      var __scopeId = vm && vm.vnode.scopeId || "";
+      var {
+        hovering,
+        binding
+      } = useHover(props2);
+      var onClick = createNavigatorOnClick(props2);
+      return () => {
+        var {
+          hoverClass,
+          url
+        } = props2;
+        var hasHoverClass = props2.hoverClass && props2.hoverClass !== "none";
+        var innerNode = props2.renderLink ? createVNode("a", {
+          "class": "navigator-wrap",
+          "href": url,
+          "onClick": onEventPrevent,
+          "onMousedown": onEventPrevent
+        }, [slots.default && slots.default()], 40, ["href", "onClick", "onMousedown"]) : slots.default && slots.default();
+        return createVNode("uni-navigator", mergeProps({
+          "class": hasHoverClass && hovering.value ? hoverClass : "",
+          "ref": rootRef
+        }, hasHoverClass && binding, vm ? vm.attrs : {}, {
+          [__scopeId]: ""
+        }, {
+          "onClick": onClick
+        }), [innerNode], 16, ["onClick"]);
+      };
+    }
+  });
+  var FONT_SIZE = 16;
+  var PROGRESS_VALUES = {
+    activeColor: PRIMARY_COLOR,
+    backgroundColor: "#EBEBEB",
+    activeMode: "backwards"
+  };
+  var progressProps = {
+    percent: {
+      type: [Number, String],
+      default: 0,
+      validator(value) {
+        return !isNaN(parseFloat(value));
+      }
+    },
+    fontSize: {
+      type: [String, Number],
+      default: FONT_SIZE
+    },
+    showInfo: {
+      type: [Boolean, String],
+      default: false
+    },
+    strokeWidth: {
+      type: [Number, String],
+      default: 6,
+      validator(value) {
+        return !isNaN(parseFloat(value));
+      }
+    },
+    color: {
+      type: String,
+      default: PROGRESS_VALUES.activeColor
+    },
+    activeColor: {
+      type: String,
+      default: PROGRESS_VALUES.activeColor
+    },
+    backgroundColor: {
+      type: String,
+      default: PROGRESS_VALUES.backgroundColor
+    },
+    active: {
+      type: [Boolean, String],
+      default: false
+    },
+    activeMode: {
+      type: String,
+      default: PROGRESS_VALUES.activeMode
+    },
+    duration: {
+      type: [Number, String],
+      default: 30,
+      validator(value) {
+        return !isNaN(parseFloat(value));
+      }
+    },
+    borderRadius: {
+      type: [Number, String],
+      default: 0
+    }
+  };
+  const Progress = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Progress",
+    props: progressProps,
+    setup(props2) {
+      var rootRef = ref(null);
+      var state = useProgressState(props2);
+      _activeAnimation(state, props2);
+      watch(() => state.realPercent, (newValue, oldValue) => {
+        state.strokeTimer && clearInterval(state.strokeTimer);
+        state.lastPercent = oldValue || 0;
+        _activeAnimation(state, props2);
+      });
+      return () => {
+        var {
+          showInfo
+        } = props2;
+        var {
+          outerBarStyle,
+          innerBarStyle,
+          currentPercent
+        } = state;
+        return createVNode("uni-progress", {
+          "class": "uni-progress",
+          "ref": rootRef
+        }, [createVNode("div", {
+          "style": outerBarStyle,
+          "class": "uni-progress-bar"
+        }, [createVNode("div", {
+          "style": innerBarStyle,
+          "class": "uni-progress-inner-bar"
+        }, null, 4)], 4), showInfo ? (
+          // {currentPercent}% 的写法会影响 SSR Hydration (tsx插件的问题)
+          createVNode("p", {
+            "class": "uni-progress-info"
+          }, [currentPercent + "%"])
+        ) : ""], 512);
+      };
+    }
+  });
+  function useProgressState(props2) {
+    var currentPercent = ref(0);
+    var outerBarStyle = computed(() => "background-color: ".concat(props2.backgroundColor, "; height: ").concat(props2.strokeWidth, "px;"));
+    var innerBarStyle = computed(() => {
+      var backgroundColor = props2.color !== PROGRESS_VALUES.activeColor && props2.activeColor === PROGRESS_VALUES.activeColor ? props2.color : props2.activeColor;
+      return "width: ".concat(currentPercent.value, "%;background-color: ").concat(backgroundColor);
+    });
+    var realPercent = computed(() => {
+      if (typeof props2.percent === "string" && !/^-?\d*\.?\d*$/.test(props2.percent)) {
+        return 0;
+      }
+      var realValue = parseFloat(props2.percent);
+      if (Number.isNaN(realValue) || realValue < 0) {
+        realValue = 0;
+      } else if (realValue > 100) {
+        realValue = 100;
+      }
+      return realValue;
+    });
+    var state = reactive({
+      outerBarStyle,
+      innerBarStyle,
+      realPercent,
+      currentPercent,
+      strokeTimer: 0,
+      lastPercent: 0
+    });
+    return state;
+  }
+  function _activeAnimation(state, props2) {
+    if (props2.active) {
+      state.currentPercent = props2.activeMode === PROGRESS_VALUES.activeMode ? 0 : state.lastPercent;
+      state.strokeTimer = setInterval(() => {
+        if (state.currentPercent + 1 > state.realPercent) {
+          state.currentPercent = state.realPercent;
+          state.strokeTimer && clearInterval(state.strokeTimer);
+        } else {
+          state.currentPercent += 1;
+        }
+      }, parseFloat(props2.duration));
+    } else {
+      state.currentPercent = state.realPercent;
+    }
+  }
+  var uniRadioGroupKey = PolySymbol("ucg");
+  var props$5 = {
+    name: {
+      type: String,
+      default: ""
+    }
+  };
+  const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
+    name: "RadioGroup",
+    props: props$5,
+    // emits: ['change'],
+    setup(props2, _ref) {
+      var {
+        emit: emit2,
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      useProvideRadioGroup(props2, trigger2);
+      return () => {
+        return createVNode("uni-radio-group", {
+          "ref": rootRef
+        }, [slots.default && slots.default()], 512);
+      };
+    }
+  });
+  function useProvideRadioGroup(props2, trigger2) {
+    var fields = [];
+    onMounted(() => {
+      _resetRadioGroupValue(fields.length - 1);
+    });
+    var getFieldsValue = () => {
+      var _fields$find;
+      return (_fields$find = fields.find((field) => field.value.radioChecked)) === null || _fields$find === void 0 ? void 0 : _fields$find.value.value;
+    };
+    provide(uniRadioGroupKey, {
+      addField(field) {
+        fields.push(field);
+      },
+      removeField(field) {
+        fields.splice(fields.indexOf(field), 1);
+      },
+      radioChange($event, field) {
+        var index = fields.indexOf(field);
+        _resetRadioGroupValue(index, true);
+        trigger2("change", $event, {
+          value: getFieldsValue()
+        });
+      }
+    });
+    var uniForm = inject(uniFormKey, false);
+    var formField = {
+      submit: () => {
+        var data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
+        }
+        return data;
+      }
+    };
+    if (uniForm) {
+      uniForm.addField(formField);
+      onBeforeUnmount(() => {
+        uniForm.removeField(formField);
+      });
+    }
+    function setFieldChecked(field, radioChecked) {
+      field.value = {
+        radioChecked,
+        value: field.value.value
+      };
+    }
+    function _resetRadioGroupValue(key2, change) {
+      fields.forEach((value, index) => {
+        if (index === key2) {
+          return;
+        }
+        if (change) {
+          setFieldChecked(fields[index], false);
+        } else {
+          fields.forEach((v, i2) => {
+            if (index >= i2) {
+              return;
+            }
+            if (fields[i2].value.radioChecked) {
+              setFieldChecked(fields[index], false);
+            }
+          });
+        }
+      });
+    }
+    return fields;
+  }
+  var props$4 = {
+    checked: {
+      type: [Boolean, String],
+      default: false
+    },
+    id: {
+      type: String,
+      default: ""
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    value: {
+      type: String,
+      default: ""
+    },
+    color: {
+      type: String,
+      default: "#007aff"
+    },
+    backgroundColor: {
+      type: String,
+      default: ""
+    },
+    borderColor: {
+      type: String,
+      default: ""
+    },
+    activeBackgroundColor: {
+      type: String,
+      default: ""
+    },
+    activeBorderColor: {
+      type: String,
+      default: ""
+    },
+    iconColor: {
+      type: String,
+      default: "#ffffff"
+    }
+  };
+  const Radio = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Radio",
+    props: props$4,
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var radioChecked = ref(props2.checked);
+      var radioValue = ref(props2.value);
+      function getRadioStyle(checked) {
+        if (props2.disabled) {
+          return {
+            backgroundColor: "#E1E1E1",
+            borderColor: "#D1D1D1"
+          };
+        }
+        var style = {};
+        if (radioChecked.value) {
+          style.backgroundColor = props2.activeBackgroundColor || props2.color;
+          style.borderColor = props2.activeBorderColor || style.backgroundColor;
+        } else {
+          if (props2.borderColor)
+            style.borderColor = props2.borderColor;
+          if (props2.backgroundColor)
+            style.backgroundColor = props2.backgroundColor;
+        }
+        return style;
+      }
+      var radioStyle = computed(() => {
+        return getRadioStyle(radioChecked.value);
+      });
+      watch([() => props2.checked, () => props2.value], (_ref2) => {
+        var [newChecked, newModelValue] = _ref2;
+        radioChecked.value = newChecked;
+        radioValue.value = newModelValue;
+      });
+      var reset = () => {
+        radioChecked.value = false;
+      };
+      var {
+        uniCheckGroup,
+        uniLabel,
+        field
+      } = useRadioInject(radioChecked, radioValue, reset);
+      var _onClick = ($event) => {
+        if (props2.disabled || radioChecked.value) {
+          return;
+        }
+        radioChecked.value = true;
+        uniCheckGroup && uniCheckGroup.radioChange($event, field);
+        $event.stopPropagation();
+      };
+      if (!!uniLabel) {
+        uniLabel.addHandler(_onClick);
+        onBeforeUnmount(() => {
+          uniLabel.removeHandler(_onClick);
+        });
+      }
+      useListeners(props2, {
+        "label-click": _onClick
+      });
+      return () => {
+        var booleanAttrs = useBooleanAttr(props2, "disabled");
+        var realCheckValue;
+        realCheckValue = radioChecked.value;
+        return createVNode("uni-radio", mergeProps(booleanAttrs, {
+          "id": props2.id,
+          "onClick": _onClick,
+          "ref": rootRef
+        }), [createVNode("div", {
+          "class": "uni-radio-wrapper",
+          "style": {
+            "--HOVER-BD-COLOR": !radioChecked.value ? props2.activeBorderColor : radioStyle.value.borderColor
+          }
+        }, [createVNode("div", {
+          "class": ["uni-radio-input", {
+            "uni-radio-input-disabled": props2.disabled
+          }],
+          "style": radioStyle.value
+        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      };
+    }
+  });
+  function useRadioInject(radioChecked, radioValue, reset) {
+    var field = computed({
+      get: () => ({
+        radioChecked: Boolean(radioChecked.value),
+        value: radioValue.value
+      }),
+      set: (_ref3) => {
+        var {
+          radioChecked: checked
+        } = _ref3;
+        radioChecked.value = checked;
+      }
+    });
+    var formField = {
+      reset
+    };
+    var uniCheckGroup = inject(uniRadioGroupKey, false);
+    if (!!uniCheckGroup) {
+      uniCheckGroup.addField(field);
+    }
+    var uniForm = inject(uniFormKey, false);
+    if (!!uniForm) {
+      uniForm.addField(formField);
+    }
+    var uniLabel = inject(uniLabelKey, false);
+    onBeforeUnmount(() => {
+      uniCheckGroup && uniCheckGroup.removeField(field);
+      uniForm && uniForm.removeField(formField);
+    });
+    return {
+      uniCheckGroup,
+      uniForm,
+      uniLabel,
+      field
+    };
+  }
+  var TAGS = {
+    a: "",
+    abbr: "",
+    address: "",
+    article: "",
+    aside: "",
+    b: "",
+    bdi: "",
+    bdo: ["dir"],
+    big: "",
+    blockquote: "",
+    br: "",
+    caption: "",
+    center: "",
+    cite: "",
+    code: "",
+    col: ["span", "width"],
+    colgroup: ["span", "width"],
+    dd: "",
+    del: "",
+    div: "",
+    dl: "",
+    dt: "",
+    em: "",
+    fieldset: "",
+    font: "",
+    footer: "",
+    h1: "",
+    h2: "",
+    h3: "",
+    h4: "",
+    h5: "",
+    h6: "",
+    header: "",
+    hr: "",
+    i: "",
+    img: ["alt", "src", "height", "width"],
+    ins: "",
+    label: "",
+    legend: "",
+    li: "",
+    mark: "",
+    nav: "",
+    ol: ["start", "type"],
+    p: "",
+    pre: "",
+    q: "",
+    rt: "",
+    ruby: "",
+    s: "",
+    section: "",
+    small: "",
+    span: "",
+    strong: "",
+    sub: "",
+    sup: "",
+    table: ["width"],
+    tbody: "",
+    td: ["colspan", "height", "rowspan", "width"],
+    tfoot: "",
+    th: ["colspan", "height", "rowspan", "width"],
+    thead: "",
+    tr: ["colspan", "height", "rowspan", "width"],
+    tt: "",
+    u: "",
+    ul: ""
+  };
+  var CHARS = {
+    amp: "&",
+    gt: ">",
+    lt: "<",
+    nbsp: " ",
+    quot: '"',
+    apos: "'",
+    ldquo: "“",
+    rdquo: "”",
+    yen: "￥",
+    radic: "√",
+    lceil: "⌈",
+    rceil: "⌉",
+    lfloor: "⌊",
+    rfloor: "⌋",
+    hellip: "…"
+  };
+  function decodeEntities(htmlString) {
+    return htmlString.replace(/&(([a-zA-Z]+)|(#x{0,1}[\da-zA-Z]+));/gi, function(match, stage) {
+      if (hasOwn$1(CHARS, stage) && CHARS[stage]) {
+        return CHARS[stage];
+      }
+      if (/^#[0-9]{1,4}$/.test(stage)) {
+        return String.fromCharCode(stage.slice(1));
+      }
+      if (/^#x[0-9a-f]{1,4}$/i.test(stage)) {
+        return String.fromCharCode(0 + stage.slice(1));
+      }
+      return match;
+    });
+  }
+  function processClickEvent(node, triggerItemClick) {
+    if (["a", "img"].includes(node.name) && triggerItemClick) {
+      return {
+        onClick: (e) => {
+          triggerItemClick(e, {
+            node
+          });
+          e.stopPropagation();
+          e.preventDefault();
+          e.returnValue = false;
+        }
+      };
+    }
+  }
+  function normalizeAttrs(tagName, attrs2) {
+    if (!isPlainObject(attrs2))
+      return;
+    for (var key2 in attrs2) {
+      if (hasOwn$1(attrs2, key2)) {
+        var value = attrs2[key2];
+        if (tagName === "img" && key2 === "src")
+          attrs2[key2] = getRealPath$1(value);
+      }
+    }
+  }
+  var nodeList2VNode = (scopeId, triggerItemClick, nodeList) => {
+    if (!nodeList || isArray(nodeList) && !nodeList.length)
+      return [];
+    return nodeList.map((node) => {
+      var _a;
+      if (!isPlainObject(node)) {
+        return;
+      }
+      if (!hasOwn$1(node, "type") || node.type === "node") {
+        var nodeProps = {
+          [scopeId]: ""
+        };
+        var tagName = (_a = node.name) == null ? void 0 : _a.toLowerCase();
+        if (!hasOwn$1(TAGS, tagName)) {
+          return;
+        }
+        normalizeAttrs(tagName, node.attrs);
+        nodeProps = extend(nodeProps, processClickEvent(node, triggerItemClick), node.attrs);
+        return h(node.name, nodeProps, nodeList2VNode(scopeId, triggerItemClick, node.children));
+      }
+      if (node.type === "text" && isString(node.text) && node.text !== "")
+        return createTextVNode(decodeEntities(node.text || ""));
+    });
+  };
+  function removeDOCTYPE(html) {
+    return html.replace(/<\?xml.*\?>\n/, "").replace(/<!doctype.*>\n/, "").replace(/<!DOCTYPE.*>\n/, "");
+  }
+  function parseAttrs(attrs2) {
+    return attrs2.reduce(function(pre, attr2) {
+      var value = attr2.value;
+      var name = attr2.name;
+      if (value.match(/ /) && ["style", "src"].indexOf(name) === -1) {
+        value = value.split(" ");
+      }
+      if (pre[name]) {
+        if (Array.isArray(pre[name])) {
+          pre[name].push(value);
+        } else {
+          pre[name] = [pre[name], value];
+        }
+      } else {
+        pre[name] = value;
+      }
+      return pre;
+    }, {});
+  }
+  function parseHtml(html) {
+    html = removeDOCTYPE(html);
+    var stacks = [];
+    var results = {
+      node: "root",
+      children: []
+    };
+    HTMLParser(html, {
+      start: function(tag, attrs2, unary) {
+        var node = {
+          name: tag
+        };
+        if (attrs2.length !== 0) {
+          node.attrs = parseAttrs(attrs2);
+        }
+        if (unary) {
+          var parent = stacks[0] || results;
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(node);
+        } else {
+          stacks.unshift(node);
+        }
+      },
+      end: function(tag) {
+        var node = stacks.shift();
+        if (node.name !== tag)
+          console.error("invalid state: mismatch end tag");
+        if (stacks.length === 0) {
+          results.children.push(node);
+        } else {
+          var parent = stacks[0];
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(node);
+        }
+      },
+      chars: function(text) {
+        var node = {
+          type: "text",
+          text
+        };
+        if (stacks.length === 0) {
+          results.children.push(node);
+        } else {
+          var parent = stacks[0];
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(node);
+        }
+      },
+      comment: function(text) {
+        var node = {
+          node: "comment",
+          text
+        };
+        var parent = stacks[0];
+        if (parent) {
+          if (!parent.children) {
+            parent.children = [];
+          }
+          parent.children.push(node);
+        }
+      }
+    });
+    return results.children;
+  }
+  var props$3 = {
+    nodes: {
+      type: [Array, String],
+      default: function() {
+        return [];
+      }
+    }
+  };
+  const RichText = /* @__PURE__ */ defineBuiltInComponent({
+    name: "RichText",
+    compatConfig: {
+      MODE: 3
+    },
+    props: props$3,
+    emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var vm = getCurrentInstance();
+      var scopeId = vm && vm.vnode.scopeId || "";
+      var rootRef = ref(null);
+      var _vnode = ref([]);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      function triggerItemClick(e) {
+        var detail = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+        trigger2("itemclick", e, detail);
+      }
+      function renderVNode() {
+        var nodeList = props2.nodes;
+        if (isString(nodeList)) {
+          nodeList = parseHtml(props2.nodes);
+        }
+        _vnode.value = nodeList2VNode(scopeId, triggerItemClick, nodeList);
+      }
+      watch(() => props2.nodes, renderVNode, {
+        immediate: true
+      });
+      return () => h("uni-rich-text", {
+        ref: rootRef
+      }, h("div", {}, _vnode.value));
+    }
+  });
+  var props$2 = {
+    name: {
+      type: String,
+      default: ""
+    },
+    min: {
+      type: [Number, String],
+      default: 0
+    },
+    max: {
+      type: [Number, String],
+      default: 100
+    },
+    value: {
+      type: [Number, String],
+      default: 0
+    },
+    step: {
+      type: [Number, String],
+      default: 1
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    color: {
+      type: String,
+      default: "#e9e9e9"
+    },
+    backgroundColor: {
+      type: String,
+      default: "#e9e9e9"
+    },
+    activeColor: {
+      type: String,
+      default: "#007aff"
+    },
+    selectedColor: {
+      type: String,
+      default: "#007aff"
+    },
+    blockColor: {
+      type: String,
+      default: "#ffffff"
+    },
+    blockSize: {
+      type: [Number, String],
+      default: 28
+    },
+    showValue: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
+  const Slider = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Slider",
+    props: props$2,
+    emits: ["changing", "change"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var sliderRef = ref(null);
+      var sliderValueRef = ref(null);
+      var sliderHandleRef = ref(null);
+      var sliderValue = ref(Number(props2.value));
+      watch(() => props2.value, (val) => {
+        sliderValue.value = Number(val);
+      });
+      var trigger2 = useCustomEvent(sliderRef, emit2);
+      var state = useSliderState(props2, sliderValue);
+      var {
+        _onClick,
+        _onTrack
+      } = useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger2);
+      onMounted(() => {
+        useTouchtrack(sliderHandleRef.value, _onTrack);
+      });
+      return () => {
+        var {
+          setBgColor,
+          setBlockBg,
+          setActiveColor,
+          setBlockStyle
+        } = state;
+        return createVNode("uni-slider", {
+          "ref": sliderRef,
+          "onClick": withWebEvent(_onClick)
+        }, [createVNode("div", {
+          "class": "uni-slider-wrapper"
+        }, [createVNode("div", {
+          "class": "uni-slider-tap-area"
+        }, [createVNode("div", {
+          "style": setBgColor.value,
+          "class": "uni-slider-handle-wrapper"
+        }, [createVNode("div", {
+          "ref": sliderHandleRef,
+          "style": setBlockBg.value,
+          "class": "uni-slider-handle"
+        }, null, 4), createVNode("div", {
+          "style": setBlockStyle.value,
+          "class": "uni-slider-thumb"
+        }, null, 4), createVNode("div", {
+          "style": setActiveColor.value,
+          "class": "uni-slider-track"
+        }, null, 4)], 4)]), withDirectives(createVNode("span", {
+          "ref": sliderValueRef,
+          "class": "uni-slider-value"
+        }, [sliderValue.value], 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 8, ["onClick"]);
+      };
+    }
+  });
+  var getValueWidth = (value, min2, max2) => {
+    max2 = Number(max2);
+    min2 = Number(min2);
+    return 100 * (value - min2) / (max2 - min2) + "%";
+  };
+  function useSliderState(props2, sliderValue) {
+    var _getValueWidth = () => {
+      return getValueWidth(sliderValue.value, props2.min, props2.max);
+    };
+    var _getBgColor = () => {
+      return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
+    };
+    var _getActiveColor = () => {
+      return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    };
+    var state = {
+      setBgColor: computed(() => ({
+        backgroundColor: _getBgColor()
+      })),
+      setBlockBg: computed(() => ({
+        left: _getValueWidth()
+      })),
+      setActiveColor: computed(() => ({
+        backgroundColor: _getActiveColor(),
+        width: _getValueWidth()
+      })),
+      setBlockStyle: computed(() => ({
+        width: props2.blockSize + "px",
+        height: props2.blockSize + "px",
+        marginLeft: -props2.blockSize / 2 + "px",
+        marginTop: -props2.blockSize / 2 + "px",
+        left: _getValueWidth(),
+        backgroundColor: props2.blockColor
+      }))
+    };
+    return state;
+  }
+  function useSliderLoader(props2, sliderValue, sliderRef, sliderValueRef, trigger2) {
+    var _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      _onUserChangedValue($event);
+      trigger2("change", $event, {
+        value: sliderValue.value
+      });
+    };
+    var _filterValue = (e) => {
+      var max2 = Number(props2.max);
+      var min2 = Number(props2.min);
+      var step2 = Number(props2.step);
+      return e < min2 ? min2 : e > max2 ? max2 : computeController.mul.call(Math.round((e - min2) / step2), step2) + min2;
+    };
+    var _onUserChangedValue = (e) => {
+      var max2 = Number(props2.max);
+      var min2 = Number(props2.min);
+      var sliderRightBox = sliderValueRef.value;
+      var sliderRightBoxLeft = getComputedStyle(sliderRightBox, null).marginLeft;
+      var sliderRightBoxWidth = sliderRightBox.offsetWidth;
+      sliderRightBoxWidth = sliderRightBoxWidth + parseInt(sliderRightBoxLeft);
+      var slider = sliderRef.value;
+      var offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
+      var boxLeft = slider.getBoundingClientRect().left;
+      var value = (e.x - boxLeft) * (max2 - min2) / offsetWidth + min2;
+      sliderValue.value = _filterValue(value);
+    };
+    var _onTrack = (e) => {
+      if (!props2.disabled) {
+        return e.detail.state === "move" ? (_onUserChangedValue({
+          x: e.detail.x
+        }), trigger2("changing", e, {
+          value: sliderValue.value
+        }), false) : e.detail.state === "end" && trigger2("change", e, {
+          value: sliderValue.value
+        });
+      }
+    };
+    var uniForm = inject(uniFormKey, false);
+    if (!!uniForm) {
+      var field = {
+        reset: () => sliderValue.value = Number(props2.min),
+        submit: () => {
+          var data = ["", null];
+          if (props2.name !== "") {
+            data[0] = props2.name;
+            data[1] = sliderValue.value;
+          }
+          return data;
+        }
+      };
+      uniForm.addField(field);
+      onBeforeUnmount(() => {
+        uniForm.removeField(field);
+      });
+    }
+    return {
+      _onClick,
+      _onTrack
+    };
+  }
+  var computeController = {
+    mul: function(arg) {
+      var m = 0;
+      var s1 = this.toString();
+      var s2 = arg.toString();
+      try {
+        m += s1.split(".")[1].length;
+      } catch (e) {
+      }
+      try {
+        m += s2.split(".")[1].length;
+      } catch (e) {
+      }
+      return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
+    }
+  };
+  var props$1 = {
+    name: {
+      type: String,
+      default: ""
+    },
+    checked: {
+      type: [Boolean, String],
+      default: false
+    },
+    type: {
+      type: String,
+      default: "switch"
+    },
+    id: {
+      type: String,
+      default: ""
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    color: {
+      type: String,
+      default: ""
+    }
+  };
+  const Switch = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Switch",
+    props: props$1,
+    emits: ["change"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var switchChecked = ref(props2.checked);
+      var uniLabel = useSwitchInject(props2, switchChecked);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      watch(() => props2.checked, (val) => {
+        switchChecked.value = val;
+      });
+      var _onClick = ($event) => {
+        if (props2.disabled) {
+          return;
+        }
+        switchChecked.value = !switchChecked.value;
+        trigger2("change", $event, {
+          value: switchChecked.value
+        });
+      };
+      if (!!uniLabel) {
+        uniLabel.addHandler(_onClick);
+        onBeforeUnmount(() => {
+          uniLabel.removeHandler(_onClick);
+        });
+      }
+      useListeners(props2, {
+        "label-click": _onClick
+      });
+      return () => {
+        var {
+          color,
+          type
+        } = props2;
+        var booleanAttrs = useBooleanAttr(props2, "disabled");
+        var switchInputStyle = {};
+        if (color && switchChecked.value) {
+          switchInputStyle["backgroundColor"] = color;
+          switchInputStyle["borderColor"] = color;
+        }
+        var realCheckValue;
+        realCheckValue = switchChecked.value;
+        return createVNode("uni-switch", mergeProps({
+          "id": props2.id,
+          "ref": rootRef
+        }, booleanAttrs, {
+          "onClick": _onClick
+        }), [createVNode("div", {
+          "class": "uni-switch-wrapper"
+        }, [withDirectives(createVNode("div", {
+          "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
+          "style": switchInputStyle
+        }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
+          "class": "uni-checkbox-input"
+        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
+      };
+    }
+  });
+  function useSwitchInject(props2, switchChecked) {
+    var uniForm = inject(uniFormKey, false);
+    var uniLabel = inject(uniLabelKey, false);
+    var formField = {
+      submit: () => {
+        var data = ["", null];
+        if (props2.name) {
+          data[0] = props2.name;
+          data[1] = switchChecked.value;
+        }
+        return data;
+      },
+      reset: () => {
+        switchChecked.value = false;
+      }
+    };
+    if (!!uniForm) {
+      uniForm.addField(formField);
+      onUnmounted(() => {
+        uniForm.removeField(formField);
+      });
+    }
+    return uniLabel;
   }
   var SPACE_UNICODE = {
     ensp: " ",
@@ -13284,6 +16271,222 @@
   function parseText(text, options) {
     return normalizeText(text, options).split(LINEFEED);
   }
+  function ownKeys(e, r) {
+    var t = Object.keys(e);
+    if (Object.getOwnPropertySymbols) {
+      var o = Object.getOwnPropertySymbols(e);
+      r && (o = o.filter(function(r2) {
+        return Object.getOwnPropertyDescriptor(e, r2).enumerable;
+      })), t.push.apply(t, o);
+    }
+    return t;
+  }
+  function _objectSpread2(e) {
+    for (var r = 1; r < arguments.length; r++) {
+      var t = null != arguments[r] ? arguments[r] : {};
+      r % 2 ? ownKeys(Object(t), true).forEach(function(r2) {
+        _defineProperty(e, r2, t[r2]);
+      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r2) {
+        Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+      });
+    }
+    return e;
+  }
+  function _toPrimitive(t, r) {
+    if ("object" != typeof t || !t)
+      return t;
+    var e = t[Symbol.toPrimitive];
+    if (void 0 !== e) {
+      var i2 = e.call(t, r || "default");
+      if ("object" != typeof i2)
+        return i2;
+      throw new TypeError("@@toPrimitive must return a primitive value.");
+    }
+    return ("string" === r ? String : Number)(t);
+  }
+  function _toPropertyKey(t) {
+    var i2 = _toPrimitive(t, "string");
+    return "symbol" == typeof i2 ? i2 : i2 + "";
+  }
+  function _defineProperty(obj, key2, value) {
+    key2 = _toPropertyKey(key2);
+    if (key2 in obj) {
+      Object.defineProperty(obj, key2, {
+        value,
+        enumerable: true,
+        configurable: true,
+        writable: true
+      });
+    } else {
+      obj[key2] = value;
+    }
+    return obj;
+  }
+  var props = /* @__PURE__ */ extend({}, props$7, {
+    placeholderClass: {
+      type: String,
+      default: "input-placeholder"
+    },
+    autoHeight: {
+      type: [Boolean, String],
+      default: false
+    },
+    confirmType: {
+      type: String,
+      default: "return",
+      validator(val) {
+        return ConfirmTypes.concat("return").includes(val);
+      }
+    }
+  });
+  var fixMargin = false;
+  var ConfirmTypes = ["done", "go", "next", "search", "send"];
+  function setFixMargin() {
+    var DARK_TEST_STRING = "(prefers-color-scheme: dark)";
+    fixMargin = String(navigator.platform).indexOf("iP") === 0 && String(navigator.vendor).indexOf("Apple") === 0 && window.matchMedia(DARK_TEST_STRING).media !== DARK_TEST_STRING;
+  }
+  const Textarea = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Textarea",
+    props,
+    emits: ["confirm", "linechange", ...emit],
+    setup(props2, _ref) {
+      var {
+        emit: emit2,
+        expose
+      } = _ref;
+      var rootRef = ref(null);
+      var wrapperRef = ref(null);
+      var {
+        fieldRef,
+        state,
+        scopedAttrsState,
+        fixDisabledColor,
+        trigger: trigger2
+      } = useField(props2, rootRef, emit2);
+      var valueCompute = computed(() => state.value.split(LINEFEED));
+      var isDone = computed(() => ConfirmTypes.includes(props2.confirmType));
+      var heightRef = ref(0);
+      var lineRef = ref(null);
+      watch(() => heightRef.value, (height) => {
+        var el = rootRef.value;
+        var lineEl = lineRef.value;
+        var wrapper = wrapperRef.value;
+        var lineHeight = parseFloat(getComputedStyle(el).lineHeight);
+        if (isNaN(lineHeight)) {
+          lineHeight = lineEl.offsetHeight;
+        }
+        var lineCount = Math.round(height / lineHeight);
+        trigger2("linechange", {}, {
+          height,
+          heightRpx: 750 / window.innerWidth * height,
+          lineCount
+        });
+        if (props2.autoHeight) {
+          el.style.height = "auto";
+          wrapper.style.height = height + "px";
+        }
+      });
+      function onResize(_ref2) {
+        var {
+          height
+        } = _ref2;
+        heightRef.value = height;
+      }
+      function confirm(event) {
+        trigger2("confirm", event, {
+          value: state.value
+        });
+      }
+      function onKeyDownEnter(event) {
+        if (event.key !== "Enter") {
+          return;
+        }
+        if (isDone.value) {
+          event.preventDefault();
+        }
+      }
+      function onKeyUpEnter(event) {
+        if (event.key !== "Enter") {
+          return;
+        }
+        if (isDone.value) {
+          confirm(event);
+          var textarea = event.target;
+          !props2.confirmHold && textarea.blur();
+        }
+      }
+      {
+        setFixMargin();
+      }
+      expose({
+        $triggerInput: (detail) => {
+          emit2("update:modelValue", detail.value);
+          emit2("update:value", detail.value);
+          state.value = detail.value;
+        }
+      });
+      return () => {
+        var textareaNode = props2.disabled && fixDisabledColor ? createVNode("textarea", {
+          "key": "disabled-textarea",
+          "ref": fieldRef,
+          "value": state.value,
+          "tabindex": "-1",
+          "readonly": !!props2.disabled,
+          "maxlength": state.maxlength,
+          "class": {
+            "uni-textarea-textarea": true,
+            "uni-textarea-textarea-fix-margin": fixMargin
+          },
+          "style": _objectSpread2({
+            overflowY: props2.autoHeight ? "hidden" : "auto"
+          }, props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }),
+          "onFocus": (event) => event.target.blur()
+        }, null, 46, ["value", "readonly", "maxlength", "onFocus"]) : createVNode("textarea", {
+          "key": "textarea",
+          "ref": fieldRef,
+          "value": state.value,
+          "disabled": !!props2.disabled,
+          "maxlength": state.maxlength,
+          "enterkeyhint": props2.confirmType,
+          "inputmode": props2.inputmode,
+          "class": {
+            "uni-textarea-textarea": true,
+            "uni-textarea-textarea-fix-margin": fixMargin
+          },
+          "style": _objectSpread2({
+            overflowY: props2.autoHeight ? "hidden" : "auto"
+          }, props2.cursorColor && {
+            caretColor: props2.cursorColor
+          }),
+          "onKeydown": onKeyDownEnter,
+          "onKeyup": onKeyUpEnter
+        }, null, 46, ["value", "disabled", "maxlength", "enterkeyhint", "inputmode", "onKeydown", "onKeyup"]);
+        return createVNode("uni-textarea", {
+          "ref": rootRef
+        }, [createVNode("div", {
+          "ref": wrapperRef,
+          "class": "uni-textarea-wrapper"
+        }, [withDirectives(createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "style": props2.placeholderStyle,
+          "class": ["uni-textarea-placeholder", props2.placeholderClass]
+        }), [props2.placeholder], 16), [[vShow, !state.value.length]]), createVNode("div", {
+          "ref": lineRef,
+          "class": "uni-textarea-line"
+        }, [" "], 512), createVNode("div", {
+          "class": "uni-textarea-compute"
+        }, [valueCompute.value.map((item) => createVNode("div", null, [item.trim() ? item : "."])), createVNode(ResizeSensor, {
+          "initial": true,
+          "onResize": onResize
+        }, null, 8, ["initial", "onResize"])]), props2.confirmType === "search" ? createVNode("form", {
+          "action": "",
+          "onSubmit": () => false,
+          "class": "uni-input-form"
+        }, [textareaNode], 40, ["onSubmit"]) : textareaNode], 512)], 512);
+      };
+    }
+  });
   function getContextInfo(el) {
     return el.__uniContextInfo;
   }
@@ -13355,11 +16558,11 @@
       }
     }
   }
-  var PROP_NAMES_HOVER = ["hover-class", "hover-stop-propagation", "hover-start-time", "hover-stay-time"];
+  var PROP_NAMES_HOVER$1 = ["hover-class", "hover-stop-propagation", "hover-start-time", "hover-stay-time"];
   class UniHoverElement extends UniAnimationElement {
     constructor(id2, element, parentNodeId, refNodeId, nodeJson) {
       var propNames = arguments.length > 5 && arguments[5] !== void 0 ? arguments[5] : [];
-      super(id2, element, parentNodeId, refNodeId, nodeJson, [...PROP_NAMES_HOVER, ...propNames]);
+      super(id2, element, parentNodeId, refNodeId, nodeJson, [...PROP_NAMES_HOVER$1, ...propNames]);
     }
     update() {
       var isMounted = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : false;
@@ -13378,12 +16581,12 @@
     }
   }
   class Hover {
-    constructor($2, props) {
+    constructor($2, props2) {
       this._listening = false;
       this._hovering = false;
       this._hoverTouch = false;
       this.$ = $2;
-      this.props = props;
+      this.props = props2;
       this.__hoverTouchStart = this._hoverTouchStart.bind(this);
       this.__hoverTouchEnd = this._hoverTouchEnd.bind(this);
       this.__hoverTouchCancel = this._hoverTouchCancel.bind(this);
@@ -13466,8 +16669,8 @@
       super(id2, document.createElement("uni-view"), parentNodeId, refNodeId, nodeJson);
     }
   }
-  function createWrapper(component, props) {
-    return () => h(component, props);
+  function createWrapper(component, props2) {
+    return () => h(component, props2);
   }
   class UniComponent extends UniNode {
     constructor(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector) {
@@ -13599,16 +16802,171 @@
     }
     return null;
   }
+  function setHolderText(holder, clazz, text) {
+    holder.childNodes.forEach((childNode) => {
+      if (childNode instanceof Element) {
+        if (childNode.className.indexOf(clazz) === -1) {
+          holder.removeChild(childNode);
+        }
+      } else {
+        holder.removeChild(childNode);
+      }
+    });
+    holder.appendChild(document.createTextNode(text));
+  }
+  var vModelNames = ["value", "modelValue"];
+  function initVModel(props2) {
+    vModelNames.forEach((name) => {
+      if (hasOwn$1(props2, name)) {
+        var event = "onUpdate:" + name;
+        if (!hasOwn$1(props2, event)) {
+          props2[event] = (v) => props2[name] = v;
+        }
+      }
+    });
+  }
   class UniButton extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-button", Button, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniImage extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-image", Image$1, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  var PROP_NAMES_HOVER = ["space", "decode"];
+  class UniTextElement extends UniAnimationElement {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, document.createElement("uni-text"), parentNodeId, refNodeId, nodeJson, PROP_NAMES_HOVER);
+      this._text = "";
+    }
+    init(nodeJson) {
+      this._text = nodeJson.t || "";
+      super.init(nodeJson);
+    }
+    setText(text) {
+      this._text = text;
+      this.update();
+      this.updateView();
+    }
+    update() {
+      var isMounted = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : false;
+      var {
+        $props: {
+          space,
+          decode
+        }
+      } = this;
+      this.$.textContent = parseText(this._text, {
+        space,
+        decode
+      }).join(LINEFEED);
+      super.update(isMounted);
+    }
+  }
+  class UniNavigator extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-navigator", Navigator, parentNodeId, refNodeId, nodeJson, "uni-navigator");
+    }
+  }
+  class UniRichText extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-rich-text", RichText, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniProgress extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-progress", Progress, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniLabel extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-label", Label, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniCheckboxGroup extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-checkbox-group", CheckboxGroup, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniCheckbox extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-checkbox", Checkbox, parentNodeId, refNodeId, nodeJson, ".uni-checkbox-wrapper");
+    }
+    setText(text) {
+      setHolderText(this.$holder, "uni-checkbox-input", text);
+    }
+  }
+  class UniRadio extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-radio", Radio, parentNodeId, refNodeId, nodeJson, ".uni-radio-wrapper");
+    }
+    setText(text) {
+      setHolderText(this.$holder, "uni-radio-input", text);
+    }
+  }
+  class UniRadioGroup extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-radio-group", RadioGroup, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniSlider extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-slider", Slider, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniSwitch extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-switch", Switch, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniInput extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-input", Input, parentNodeId, refNodeId, nodeJson);
+    }
+    init(nodeJson) {
+      super.init(nodeJson);
+      initVModel(this.$props);
+    }
+  }
+  class UniTextarea extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-textarea", Textarea, parentNodeId, refNodeId, nodeJson);
+    }
+    init(nodeJson) {
+      super.init(nodeJson);
+      initVModel(this.$props);
+    }
+  }
+  class UniForm extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-form", Form, parentNodeId, refNodeId, nodeJson, "span");
     }
   }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
     VIEW: UniViewElement,
-    BUTTON: UniButton
+    BUTTON: UniButton,
+    IMAGE: UniImage,
+    TEXT: UniTextElement,
+    NAVIGATOR: UniNavigator,
+    "RICH-TEXT": UniRichText,
+    PROGRESS: UniProgress,
+    LABEL: UniLabel,
+    CHECKBOX: UniCheckbox,
+    "CHECKBOX-GROUP": UniCheckboxGroup,
+    RADIO: UniRadio,
+    "RADIO-GROUP": UniRadioGroup,
+    SLIDER: UniSlider,
+    SWITCH: UniSwitch,
+    INPUT: UniInput,
+    TEXTAREA: UniTextarea,
+    FORM: UniForm
+    // EDITOR: UniEditor,
+    // 'PICKER-VIEW': UniPickerView,
+    // 'PICKER-VIEW-COLUMN': UniPickerViewColumn,
   };
   function pageScrollTo(_ref2, publish) {
     var {

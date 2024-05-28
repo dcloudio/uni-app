@@ -1,6 +1,6 @@
-type ShowToast = (msg: string) => void;
-import { UIDevice } from 'UIKit';
 import { CLLocationManager, CLAuthorizationStatus } from 'CoreLocation';
+import { UIDevice } from 'UIKit';
+type ShowToast = (msg: string) => void;
 class GetBatteryInfoOptions extends UTSObject {
     name!: string;
     pwd!: number;

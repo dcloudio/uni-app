@@ -1,9 +1,15 @@
-import picker from '@ohos.file.picker';
 import fs from '@ohos.file.fs';
-import media from '@ohos.multimedia.media';
+import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
+import media from '@ohos.multimedia.media';
+import http from '@ohos.net.http';
+import fs1 from '@ohos.file.fs';
+import http1 from '@ohos.net.http';
+import http2 from '@ohos.net.http';
+import picker1 from '@ohos.file.picker';
+import picker2 from '@ohos.file.picker';
 interface MediaFile {
-    fileType: string | string;
+    fileType: 'video' | 'image';
     tempFilePath: string;
     size: number;
     width?: number;
@@ -20,7 +26,7 @@ interface chooseMediaSuccessCallbackResult {
 }
 interface VideoInfo {
     size: number;
-    orientation?: string | string | string | string | string | string | string | string;
+    orientation?: 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
     type?: string;
     duration?: number;
     height?: number;
@@ -54,7 +60,7 @@ async function _getVideoInfo(uri: string): Promise<VideoInfo> {
         'right',
         'down',
         'left'
-    ] as VideoInfo[string][];
+    ] as VideoInfo['orientation'][];
     return {
         size: size,
         duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
@@ -66,7 +72,7 @@ async function _getVideoInfo(uri: string): Promise<VideoInfo> {
 }
 interface ImageInfo {
     path: string;
-    orientation: string | string | string | string | string | string | string | string;
+    orientation: 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
     height: number;
     width: number;
 }
@@ -86,7 +92,7 @@ async function _getImageInfo(uri: string): Promise<ImageInfo> {
     } else if (typeof orientation === 'number') {
         orientationNum = orientation;
     }
-    let orientationStr: ImageInfo[string] = 'up';
+    let orientationStr: ImageInfo['orientation'] = 'up';
     switch(orientationNum){
         case 2:
             orientationStr = 'up-mirrored';
@@ -277,7 +283,7 @@ function normalizeEventType(type: string, options: AddEventListenerOptions | nul
     return `on${capitalize(camelize(type))}`;
 }
 type UniNodeType = typeof NODE_TYPE_PAGE | typeof NODE_TYPE_ELEMENT | typeof NODE_TYPE_TEXT | typeof NODE_TYPE_COMMENT;
-function sibling(node: UniNode, type: string | string) {
+function sibling(node: UniNode, type: 'n' | 'p') {
     const parentNode = node.parentNode;
     if (!parentNode) {
         return null;
@@ -568,7 +574,7 @@ type PageUpdateAction = CreateAction | InsertAction | RemoveAction | AddEventAct
 type PageAction = PageCreateAction | PageCreatedAction | PageUpdateAction | PageScrollAction;
 type NavigateToOptionEvents = Record<string, (...args: Object[]) => void>;
 interface EventChannelListener {
-    type: string | string;
+    type: 'on' | 'once';
     fn: (...args: Object[]) => void;
 }
 class EventChannel {
@@ -601,15 +607,15 @@ class EventChannel {
         });
         this.listener[eventName] = fns.filter((opt)=>opt.type !== 'once');
     }
-    on(eventName: string, fn: EventChannelListener[string]) {
+    on(eventName: string, fn: EventChannelListener['fn']) {
         this._addListener(eventName, 'on', fn);
         this._clearCache(eventName);
     }
-    once(eventName: string, fn: EventChannelListener[string]) {
+    once(eventName: string, fn: EventChannelListener['fn']) {
         this._addListener(eventName, 'once', fn);
         this._clearCache(eventName);
     }
-    off(eventName: string, fn: EventChannelListener[string]) {
+    off(eventName: string, fn: EventChannelListener['fn']) {
         const fns = this.listener[eventName];
         if (!fns) {
             return;
@@ -642,7 +648,7 @@ class EventChannel {
             index--;
         }
     }
-    _addListener(eventName: string, type: EventChannelListener[string], fn: EventChannelListener[string]) {
+    _addListener(eventName: string, type: EventChannelListener['type'], fn: EventChannelListener['fn']) {
         (this.listener[eventName] || (this.listener[eventName] = [])).push({
             fn,
             type
@@ -656,13 +662,13 @@ interface E {
     emit: (name: EventName, ...args: Object[]) => this;
     off: (name: EventName, callback?: EventCallback) => this;
 }
-const E = function() {} as Object as {
+const E = ()=>{} as Object as {
     new(): E;
 };
 type EventName = string;
 type EventCallback = Function;
 E.prototype = {
-    on: function(name: EventName, callback: EventCallback, ctx: Object | null = null) {
+    on: (name: EventName, callback: EventCallback, ctx: Object | null = null)=>{
         let e = this.e || (this.e = {});
         (e[name] || (e[name] = [])).push({
             fn: callback,
@@ -670,7 +676,7 @@ E.prototype = {
         } as UTSJSONObject);
         return this;
     },
-    once: function(name: EventName, callback: EventCallback, ctx: Object | null = null) {
+    once: (name: EventName, callback: EventCallback, ctx: Object | null = null)=>{
         let self = this;
         const listener = ()=>{
             self.off(name, listener);
@@ -679,7 +685,7 @@ E.prototype = {
         listener._ = callback;
         return this.on(name, listener, ctx);
     },
-    emit: function(name: EventName) {
+    emit: (name: EventName)=>{
         let data = [].slice.call(arguments, 1);
         let evtArr = ((this.e || (this.e = {}))[name] || []).slice();
         let i = 0;
@@ -689,7 +695,7 @@ E.prototype = {
         }
         return this;
     },
-    off: function(name: EventName, callback: EventCallback | null = null) {
+    off: (name: EventName, callback: EventCallback | null = null)=>{
         let e = this.e || (this.e = {});
         let evts = e[name];
         let liveEvents = [];
@@ -782,7 +788,7 @@ class BaseFormatter {
     }
 }
 class Token extends UTSObject {
-    type!: string | string | string | string;
+    type!: 'text' | 'named' | 'list' | 'unknown';
     value!: string;
 }
 const RE_TOKEN_LIST_VALUE: RegExp = /^(?:\d)+/;
@@ -1053,12 +1059,12 @@ function initVueI18n(locale: string | null = null, messages: LocaleMessages = {}
     } as UTSJSONObject);
     let t: Interpolate = (key, values)=>{
         if (typeof getApp !== 'function') {
-            t = function(key, values) {
+            t = (key, values)=>{
                 return i18n.t(key, values);
             };
         } else {
             let isWatchedAppLocale = false;
-            t = function(key, values) {
+            t = (key, values)=>{
                 const appVm = getApp().$vm;
                 if (appVm) {
                     appVm.$locale;
@@ -1243,7 +1249,7 @@ function initPullToRefreshI18n(pullToRefresh: UniApp.PageRefreshOptions | PlusWe
         ]) as [boolean, boolean, boolean];
     }
 }
-function initBridge(subscribeNamespace: string | string | string): Omit<UniApp.UniServiceJSBridge, string | string | string | string> {
+function initBridge(subscribeNamespace: 'service' | 'view' | 'nvue'): Omit<UniApp.UniServiceJSBridge, 'invokeOnCallback' | 'invokeViewMethod' | 'invokeViewMethodKeepAlive' | 'publishHandler'> {
     const emitter = new E();
     return {
         on (event: string, callback: UniApp.CallbackFunction) {
@@ -1355,7 +1361,7 @@ function normalizePullToRefreshRpx(pullToRefresh: UniApp.PageRefreshOptions) {
     }
     return pullToRefresh;
 }
-function initPageInternalInstance(openType: UniApp.OpenType, url: string, pageQuery: Record<string, Object>, meta: UniApp.PageRouteMeta, eventChannel: EventChannel | null = null, themeMode: UniApp.ThemeMode | null = null): Page.PageInstance[string] {
+function initPageInternalInstance(openType: UniApp.OpenType, url: string, pageQuery: Record<string, Object>, meta: UniApp.PageRouteMeta, eventChannel: EventChannel | null = null, themeMode: UniApp.ThemeMode | null = null): Page.PageInstance['$page'] {
     const id = meta.id, route = meta.route;
     const titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
     return {
@@ -1434,12 +1440,12 @@ function getRouteMeta(path: string) {
         return routeOptions.meta;
     }
 }
-const invokeOnCallback: UniApp.UniServiceJSBridge[string] = (name: string, res: Object)=>UniServiceJSBridge.emit('api.' + name, res);
+const invokeOnCallback: UniApp.UniServiceJSBridge['invokeOnCallback'] = (name: string, res: Object)=>UniServiceJSBridge.emit('api.' + name, res);
 let invokeViewMethodId = 1;
 function publishViewMethodName(pageId: number | null = null) {
     return (pageId || getCurrentPageId()) + '.' + INVOKE_VIEW_API;
 }
-const invokeViewMethod: UniApp.UniServiceJSBridge[string] = (name: string, args: Object, pageId: number, callback: ((res: Object) => void) | null = null)=>{
+const invokeViewMethod: UniApp.UniServiceJSBridge['invokeViewMethod'] = (name: string, args: Object, pageId: number, callback: ((res: Object) => void) | null = null)=>{
     const subscribe = UniServiceJSBridge.subscribe, publishHandler = UniServiceJSBridge.publishHandler;
     const id = callback ? invokeViewMethodId++ : 0;
     callback && subscribe(INVOKE_VIEW_API + '.' + id, callback, true);
@@ -1449,7 +1455,7 @@ const invokeViewMethod: UniApp.UniServiceJSBridge[string] = (name: string, args:
         args
     } as UTSJSONObject, pageId);
 };
-const invokeViewMethodKeepAlive: UniApp.UniServiceJSBridge[string] = (name: string, args: Object, callback: (res: Object) => void, pageId: number)=>{
+const invokeViewMethodKeepAlive: UniApp.UniServiceJSBridge['invokeViewMethodKeepAlive'] = (name: string, args: Object, callback: (res: Object) => void, pageId: number)=>{
     const subscribe = UniServiceJSBridge.subscribe, unsubscribe = UniServiceJSBridge.unsubscribe, publishHandler = UniServiceJSBridge.publishHandler;
     const id = invokeViewMethodId++;
     const subscribeName = INVOKE_VIEW_API + '.' + id;
@@ -1574,7 +1580,7 @@ function initAppVm(appVm: ComponentPublicInstance) {
         }
     } as UTSJSONObject);
 }
-function initPageVm(pageVm: ComponentPublicInstance, page: Page.PageInstance[string]) {
+function initPageVm(pageVm: ComponentPublicInstance, page: Page.PageInstance['$page']) {
     pageVm.route = page.route;
     pageVm.$vm = pageVm;
     pageVm.$page = page;
@@ -1675,7 +1681,7 @@ function beforeInvokeApi<T extends ApiLike>(name: string, args: Object[], protoc
         return errMsg;
     }
 }
-function normalizeErrMsg(errMsg: string | Error) {
+function parseErrMsg(errMsg: string | Error) {
     if (!errMsg || isString(errMsg)) {
         return errMsg;
     }
@@ -1696,7 +1702,7 @@ function wrapperTaskApi<T extends ApiLike>(name: string, fn: Function, protocol:
         }
         return fn(args, {
             resolve: (res: Object)=>invokeSuccess(id, name, res),
-            reject: (errMsg: string | Error, errRes: Object | null = null)=>invokeFail(id, name, normalizeErrMsg(errMsg), errRes)
+            reject: (errMsg: string | Error, errRes: Object | null = null)=>invokeFail(id, name, parseErrMsg(errMsg), errRes)
         } as UTSJSONObject);
     };
 }
@@ -1745,7 +1751,7 @@ function wrapperOptions(interceptors: Interceptors, options: Record<string, Obje
             return;
         }
         const oldCallback = options[name];
-        options[name] = function callbackInterceptor(res: Object) {
+        options[name] = (res: Object)=>{
             queue(hooks, res, options).then((res: Object)=>{
                 return (isFunction(oldCallback) && oldCallback(res)) || res;
             });
@@ -2244,8 +2250,7 @@ const UploadFileProtocol: ApiProtocol<API_TYPE_UPLOAD_FILE> = {
     formData: Object,
     timeout: Number
 };
-import picker1 from '@ohos.file.picker';
-const chooseImage: API_TYPE_CHOOSE_IMAGE = defineAsyncApi(API_CHOOSE_IMAGE, function({ count  } = {}, ref1) {
+const chooseImage: API_TYPE_CHOOSE_IMAGE = defineAsyncApi(API_CHOOSE_IMAGE, ({ count  } = {}, ref1)=>{
     let resolve = ref1.resolve, reject = ref1.reject;
     _chooseMedia({
         mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
@@ -2262,8 +2267,7 @@ const chooseImage: API_TYPE_CHOOSE_IMAGE = defineAsyncApi(API_CHOOSE_IMAGE, func
         };
     }).then(resolve, reject);
 }, ChooseImageProtocol, ChooseImageOptions);
-import picker2 from '@ohos.file.picker';
-const chooseVideo: API_TYPE_CHOOSE_VIDEO = defineAsyncApi(API_CHOOSE_VIDEO, function({} = {}, ref1) {
+const chooseVideo: API_TYPE_CHOOSE_VIDEO = defineAsyncApi(API_CHOOSE_VIDEO, ({} = {}, ref1)=>{
     let resolve = ref1.resolve, reject = ref1.reject;
     _chooseMedia({
         mimeType: picker2.PhotoViewMIMETypes.VIDEO_TYPE
@@ -2278,11 +2282,11 @@ const chooseVideo: API_TYPE_CHOOSE_VIDEO = defineAsyncApi(API_CHOOSE_VIDEO, func
         };
     }).then(resolve, reject);
 }, ChooseVideoProtocol, ChooseVideoOptions);
-const getImageInfo: API_TYPE_GET_IMAGE_INFO = defineAsyncApi(API_GET_IMAGE_INFO, function(ref1, ref2) {
+const getImageInfo: API_TYPE_GET_IMAGE_INFO = defineAsyncApi(API_GET_IMAGE_INFO, (ref1, ref2)=>{
     let src = ref1.src, resolve = ref2.resolve, reject = ref2.reject;
     _getImageInfo(src).then(resolve, reject);
 }, GetImageInfoProtocol, GetImageInfoOptions);
-const getVideoInfo: API_TYPE_GET_VIDEO_INFO = defineAsyncApi(API_GET_VIDEO_INFO, function(ref1, ref2) {
+const getVideoInfo: API_TYPE_GET_VIDEO_INFO = defineAsyncApi(API_GET_VIDEO_INFO, (ref1, ref2)=>{
     let src = ref1.src, resolve = ref2.resolve, reject = ref2.reject;
     _getVideoInfo(src).then((res)=>{
         return {
@@ -2295,7 +2299,6 @@ const getVideoInfo: API_TYPE_GET_VIDEO_INFO = defineAsyncApi(API_GET_VIDEO_INFO,
         };
     }).then(resolve, reject);
 }, GetVideoInfoProtocol, GetVideoInfoOptions);
-import http from '@ohos.net.http';
 const cookiesParse = (header: Record<string, string>)=>{
     let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
     let cookiesArr: string[] = [];
@@ -2407,7 +2410,6 @@ const request = defineTaskApi(API_REQUEST, (args, ref1)=>{
     });
     return new RequestTask(requestTask);
 }, RequestProtocol, RequestOptions);
-import http1 from '@ohos.net.http';
 interface IUploadTask {
     abort: Function;
     onHeadersReceived: Function;
@@ -2520,8 +2522,6 @@ const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, ref1)=>{
     });
     return new UploadTask(uploadTask);
 }, UploadFileProtocol, UploadFileOptions);
-import http2 from '@ohos.net.http';
-import fs1 from '@ohos.file.fs';
 interface IDownloadTask {
     abort: Function;
     onHeadersReceived: Function;
@@ -2874,8 +2874,8 @@ function setupPage(component: VuePageComponent) {
         const _ctx_attrs = ctx.attrs, __pageId = _ctx_attrs.__pageId, __pagePath = _ctx_attrs.__pagePath, __pageQuery = _ctx_attrs.__pageQuery, __pageInstance = _ctx_attrs.__pageInstance;
         const instance = getCurrentInstance()!;
         const pageVm = instance.proxy!;
-        initPageVm(pageVm, __pageInstance as Page.PageInstance[string]);
-        addCurrentPage(initScope(__pageId as number, pageVm, __pageInstance as Page.PageInstance[string]));
+        initPageVm(pageVm, __pageInstance as Page.PageInstance['$page']);
+        addCurrentPage(initScope(__pageId as number, pageVm, __pageInstance as Page.PageInstance['$page']));
         if (oldSetup) {
             return oldSetup(__pageQuery as Object, ctx);
         }
@@ -2954,14 +2954,14 @@ interface PageProps {
     __pageId: number;
     __pagePath: string;
     __pageQuery: Record<string, Object>;
-    __pageInstance: Page.PageInstance[string];
+    __pageInstance: Page.PageInstance['$page'];
 }
 function getPageNode(pageId: number): UniPageNode | null {
     const page = getPageById(pageId);
     if (!page) return null;
     return (page as Object).__page_container__ as UniPageNode;
 }
-function findNode(name: string | string, value: string | number, uniNode: UniNode | number): UniNode | null {
+function findNode(name: 'nodeId' | 'nodeName', value: string | number, uniNode: UniNode | number): UniNode | null {
     if (typeof uniNode === 'number') {
         uniNode = getPageNode(uniNode) as UniNode;
     }
@@ -3062,7 +3062,7 @@ function pushSetTextAction(pageNode: UniPageNode, nodeId: number, text: string) 
 function createPageNode(pageId: number, pageOptions: PageNodeOptions, setup: boolean | null = null) {
     return new UniPageNode(pageId, pageOptions, setup);
 }
-function createVuePage(__pageId: number, __pagePath: string, __pageQuery: Record<string, Object>, __pageInstance: Page.PageInstance[string], pageOptions: PageNodeOptions) {
+function createVuePage(__pageId: number, __pagePath: string, __pageQuery: Record<string, Object>, __pageInstance: Page.PageInstance['$page'], pageOptions: PageNodeOptions) {
     const pageNode = createPageNode(__pageId, pageOptions, true);
     const app = getVueApp();
     const component = pagesMap.get(__pagePath)!();
@@ -3085,7 +3085,7 @@ function createFactory(component: VuePageAsyncComponent | VuePageComponent) {
         return setupPage(component);
     };
 }
-function initScope(pageId: number, vm: ComponentPublicInstance, pageInstance: Page.PageInstance[string]) {
+function initScope(pageId: number, vm: ComponentPublicInstance, pageInstance: Page.PageInstance['$page']) {
     Object.defineProperty(vm, '$viewToTempFilePath', {
         get () {
             return vm.$nativePage!.viewToTempFilePath.bind(vm.$nativePage!);
@@ -3153,7 +3153,7 @@ function initPopGesture(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniAp
         delete webviewStyle.popGesture;
     }
     if (routeMeta.isQuit) {
-        webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none' as PlusWebviewWebviewStyles[string];
+        webviewStyle.popGesture = plus.os.name === 'iOS' ? 'appback' : 'none' as PlusWebviewWebviewStyles['popGesture'];
     }
 }
 function initPullToRefresh(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniApp.PageRouteMeta) {
@@ -3236,7 +3236,7 @@ function initTitleNView(webviewStyle: PlusWebviewWebviewStyles, routeMeta: UniAp
         if (name === 'titleImage' && value) {
             titleNView.tags = createTitleImageTags(value as string);
         } else if (name === 'buttons' && isArray(value)) {
-            titleNView.buttons = (value as UniApp.PageNavigationBar[string])!.map((button, index)=>{
+            titleNView.buttons = (value as UniApp.PageNavigationBar['buttons'])!.map((button, index)=>{
                 (button as Object).onclick = createTitleNViewBtnClick(index);
                 return button;
             });
@@ -3277,7 +3277,7 @@ function initTitleNViewI18n(titleNView: PlusWebviewWebviewTitleNViewStyles, rout
 function createTitleImageTags(titleImage: string) {
     return [
         {
-            tag: 'img' as string,
+            tag: 'img' as 'img',
             src: titleImage,
             position: {
                 left: 'auto',
@@ -3301,7 +3301,7 @@ function getWebviewId() {
 function genWebviewId() {
     return id++;
 }
-function encode2(val: Parameters<typeof encodeURIComponent>[number]) {
+function encode2(val: Parameters<typeof encodeURIComponent>[0]) {
     return val as string;
 }
 type InitUniPageUrl = ReturnType<typeof initUniPageUrl>;
@@ -3371,7 +3371,7 @@ const WEBVIEW_STYLE_BLACKLIST = [
     'backgroundColor'
 ];
 type SetStatusBarStyle = typeof plus.navigator.setStatusBarStyle;
-type StatusBarStyle = Parameters<SetStatusBarStyle>[number];
+type StatusBarStyle = Parameters<SetStatusBarStyle>[0];
 let oldSetStatusBarStyle = plus.navigator.setStatusBarStyle;
 function newSetStatusBarStyle(style: StatusBarStyle) {
     style;
@@ -3427,7 +3427,7 @@ function initLaunchOptions(ref1: Partial<RedirectInfo>) {
     extend(enterOptions, launchOptions);
     return extend({} as UTSJSONObject, launchOptions);
 }
-interface RedirectInfo extends Omit<LaunchOptions, string | string> {
+interface RedirectInfo extends Omit<LaunchOptions, 'query' | 'scene'> {
     query: string;
     userAction: boolean;
 }
@@ -3766,8 +3766,8 @@ const mod = {
     request,
     uploadFile,
     downloadFile,
-    getSystemInfoSync,
-    getLocale
+    getLocale,
+    getSystemInfoSync
 } as UTSJSONObject;
 const UniServiceJSBridge1 = extend(ServiceJSBridge, {
     publishHandler
@@ -3800,11 +3800,11 @@ function hookKeyboardEvent(event: UniEvent, callback: (event: UniEvent) => void)
         if (keyboardHeight > 0) {
             event.detail!.height = keyboardHeight;
         } else {
-            focusTimer = setTimeout(function() {
+            focusTimer = setTimeout(()=>{
                 event.detail!.height = keyboardHeight;
                 callback(event);
             }, focusTimeout);
-            (function() {
+            (()=>{
                 if (focusTimer) {
                     clearTimeout(focusTimer);
                     focusTimer = null;
@@ -3817,7 +3817,7 @@ function hookKeyboardEvent(event: UniEvent, callback: (event: UniEvent) => void)
     }
     callback(event);
 }
-type EventAction = [typeof ACTION_TYPE_EVENT, Parameters<typeof onNodeEvent>[number], Parameters<typeof onNodeEvent>[number]];
+type EventAction = [typeof ACTION_TYPE_EVENT, Parameters<typeof onNodeEvent>[0], Parameters<typeof onNodeEvent>[1]];
 function onNodeEvent(nodeId: number, evt: UniEvent, pageNode: UniPageNode) {
     const type = evt.type;
     if (type === 'onFocus' || type === 'onBlur') {
@@ -3926,7 +3926,7 @@ function onWebviewRemoved(_: Object, pageId: string) {
     const page = getPageById(parseInt(pageId));
     page && delete (page as Object).__uniapp_webview;
 }
-type Name = string | string | string | string | string | string;
+type Name = 'navigateTo' | 'navigateBack' | 'switchTab' | 'reLaunch' | 'redirectTo' | 'postMessage';
 class WebInvokeData extends UTSObject {
     name!: Name;
     arg!: Object;
@@ -4089,7 +4089,7 @@ function getApiCallbacks(args: Record<string, Object>) {
 interface ApiRes {
     errMsg: string;
 }
-function normalizeErrMsg1(errMsg: string, name: string) {
+function normalizeErrMsg(errMsg: string, name: string) {
     if (!errMsg || errMsg.indexOf(':fail') === -1) {
         return name + ':ok';
     }
@@ -4106,7 +4106,7 @@ function createAsyncApiCallback(name: string, args: Record<string, Object> = {},
     const callbackId = invokeCallbackId++;
     addInvokeCallback(callbackId, name, (res: ApiRes)=>{
         res = res || {};
-        res.errMsg = normalizeErrMsg1(res.errMsg, name);
+        res.errMsg = normalizeErrMsg(res.errMsg, name);
         isFunction(beforeAll) && beforeAll(res);
         if (res.errMsg === name + ':ok') {
             isFunction(beforeSuccess) && beforeSuccess(res, args);
