@@ -2,7 +2,6 @@ import path from 'path'
 import fs from 'fs-extra'
 import {
   PAGES_JSON_UTS,
-  ThemeSassParser,
   createRollupError,
   genUTSClassName,
   normalizeUniAppXAppPagesJson,
@@ -44,6 +43,7 @@ export function uniAppPagesPlugin(): Plugin {
     transform(code, id) {
       if (isPages(id)) {
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
+        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
         let pagesJson: UniApp.PagesJson = {
           pages: [],
           globalStyle: {
@@ -110,7 +110,7 @@ export function uniAppPagesPlugin(): Plugin {
         launchPage = stringifyLaunchPage(pagesJson.pages[0])
 
         // theme.json
-        themeConfig = readUniSassAsStringifyMap()
+        themeConfig = readThemeJSONFileAsStringifyMap()
         return {
           code: `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
           export default 'pages.json'`,
@@ -165,13 +165,22 @@ function stringifyPageStyle(pageStyle: UniApp.PagesJsonPageStyle) {
   return stringifyMap(pageStyle)
 }
 
-function readUniSassAsStringifyMap() {
-  const uniScssPath = path.resolve(process.env.UNI_INPUT_DIR, 'uni.scss')
-  let result = {}
-  if (fs.existsSync(uniScssPath)) {
-    const content = fs.readFileSync(uniScssPath, 'utf8')
-    const parser = new ThemeSassParser()
-    result = parser.parse(content)
+// function readUniSassAsStringifyMap() {
+//   const uniScssPath = path.resolve(process.env.UNI_INPUT_DIR, 'uni.scss')
+//   let result = {}
+//   if (fs.existsSync(uniScssPath)) {
+//     const content = fs.readFileSync(uniScssPath, 'utf8')
+//     const parser = new ThemeSassParser()
+//     result = parser.parse(content)
+//   }
+//   return stringifyMap(result)
+// }
+
+function readThemeJSONFileAsStringifyMap() {
+  const themeJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'theme.json')
+  let content = '{}'
+  if (fs.existsSync(themeJsonPath)) {
+    content = fs.readFileSync(themeJsonPath, 'utf8')
   }
-  return stringifyMap(result)
+  return stringifyMap(JSON.parse(content))
 }
