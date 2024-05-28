@@ -21,6 +21,7 @@ import type {
   Plugin,
   Ref,
   VNode,
+  VNodeChild,
   VNodeProps
 } from 'vue'
 import type { Store } from 'vuex'
@@ -28,8 +29,14 @@ import type { Store } from 'vuex'
 type Data = Record<string, unknown>;
 
 declare module 'vue' {
+  
+  export interface ComponentCustomOptions {
+    onShow?(options: OnShowOptions): void;
+  }
+  
   export const defineMixin : typeof defineComponent
   export interface ComponentCustomProperties {
+    [key: string]: any
     $data : Record<string, any | null>
     $callMethod : (methodName : string, ...args : (any | null)[]) => any | null
     $children : ComponentPublicInstance[]
@@ -57,6 +64,11 @@ declare module 'vue' {
   export declare function toRef<T>(obj : object, key : string) : Ref<T>;
   export declare function toRaw<T>(observed : any) : T;
   export declare function customRef<T>(factory : Function) : Ref<T>;
+  
+  
+  export function renderList<T>(source: T[] | undefined | null, renderItem: (value: T, index: number) => VNodeChild): VNodeChild[];
+  export const vShow: any
+  export const withModifiers: (fn: Function, modifiers: string[]) => Function;
   
   /**
    * vue internal
