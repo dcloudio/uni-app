@@ -9,6 +9,8 @@ import {
 } from '@dcloudio/uni-app-plus/service/framework/webview'
 export type { RouteOptions } from '@dcloudio/uni-app-plus/service/api/route/utils'
 
+export { closePage } from '@dcloudio/uni-app-plus/service/api/route/utils'
+
 export function navigate(
   path: string,
   callback: () => void,

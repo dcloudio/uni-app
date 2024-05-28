@@ -11,6 +11,7 @@ import { initPageInternalInstance } from '@dcloudio/uni-core'
 import { createVuePage } from '@dcloudio/uni-app-plus/service/framework/page/define'
 import { getStatusbarHeight } from '../../../helpers/statusBar'
 import { getBaseSystemInfo } from '../../api/base/getBaseSystemInfo'
+import tabBar from '../app/tabBar'
 
 export function registerPage({
   url,
@@ -35,7 +36,10 @@ export function registerPage({
 
   routeOptions.meta.id = parseInt(webview.id!)
 
-  // TODO tabBar
+  const isTabBar = !!routeOptions.meta.isTabBar
+  if (isTabBar) {
+    tabBar.append(webview)
+  }
 
   if (__DEV__) {
     console.log(formatLog('registerPage', path, webview.id))

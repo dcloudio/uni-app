@@ -6,6 +6,7 @@ import { initVueApp } from '@dcloudio/uni-app-plus/service/framework/app/vueApp'
 import { initSubscribeHandlers } from './subscriber'
 import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
+import { initTabBar } from './initTabBar'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
@@ -43,6 +44,8 @@ export function registerApp(appVm: ComponentPublicInstance) {
   defineGlobalData(appCtx, defaultApp.globalData)
 
   initService()
+
+  initTabBar()
 
   initGlobalEvent()
 
