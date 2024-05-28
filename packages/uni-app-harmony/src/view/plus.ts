@@ -4,8 +4,14 @@ import { extend } from '@vue/shared'
 export default {
   webview: {
     currentWebview() {
-      // TODO getStyle
-      return extend({}, nativeChannel.invokeSync('currentWebview'))
+      return extend(
+        {
+          getStyle: () => {
+            return extend({}, nativeChannel.invokeSync('getStyle'))
+          },
+        },
+        nativeChannel.invokeSync('currentWebview')
+      )
     },
     postMessageToUniNView(data: any, id: string) {
       nativeChannel.invokeSync('postMessageToUniNView', {
