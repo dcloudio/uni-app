@@ -27,6 +27,7 @@ export function getBorderStyle(borderStyle: string): string {
   return value ?? borderStyle
 }
 
+// keep borderStyle aliways black/white
 function fixBorderStyle(tabBarConfig: Map<string, any>) {
   let borderStyle = tabBarConfig.get('borderStyle')
   if (!isString(borderStyle)) {
@@ -235,6 +236,9 @@ function getTabPage(
   return new TabPageInfo(page, isFirst)
 }
 
+/**
+ * switchSelect 切换 tab
+ */
 export function switchSelect(
   selected: number,
   path: string,
