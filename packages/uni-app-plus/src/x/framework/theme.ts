@@ -3,27 +3,24 @@ import { getAllPages } from '../../service/framework/page/getCurrentPages'
 import { getTabBar } from './app/tabBar'
 
 const APP_THEME_AUTO = 'auto'
-const THEME_KEY_PREFIX = '@'
+export const THEME_KEY_PREFIX = '@'
+
+type IThemeMode = 'dark' | 'light'
 
 declare const uni: any
 
-export function getAppThemeFallbackOS(): string {
-  uni.getSystemInfo({
-    success: (result) => {
-      const osTheme = result.osTheme
-      const appTheme = result.appTheme // maybe auto
-      console.log(osTheme, appTheme)
-    },
-    fail: (error) => {},
-  })
-  // const themeMode = uni.getAppTheme()
-  // if (themeMode == APP_THEME_AUTO) {
-  //   return uni.getOsTheme()
-  // }
-  // return themeMode
+// 获取 appTheme > osTheme
+export function getAppThemeFallbackOS(): IThemeMode {
+  let fallbackOSTheme
 
-  // return themeMode
-  return 'dark'
+  const appTheme = uni.getAppBaseInfo().appTheme as IThemeMode & 'auto'
+
+  fallbackOSTheme = appTheme
+  if (appTheme === APP_THEME_AUTO) {
+    const osTheme = uni.getDeviceInfo().osTheme as IThemeMode
+    fallbackOSTheme = osTheme
+  }
+  return fallbackOSTheme
 }
 
 // 监听主题 id，用来 off
@@ -39,19 +36,28 @@ function clearAppThemeChangeCallbackId() {
 }
 
 // App主题为auto时需要监听OS主题变化
-export function registerThemeChange(callback: (themeMode: string) => void) {
+export function registerThemeChange(callback: (themeMode: IThemeMode) => void) {
   if (appThemeChangeCallbackId !== -1) {
+    if (typeof uni.offAppThemeChange !== 'function') {
+      console.error('uni.offAppThemeChange is not a function')
+      return
+    }
     uni.offAppThemeChange(appThemeChangeCallbackId)
     clearAppThemeChangeCallbackId()
+  }
+  if (typeof uni.onAppThemeChange !== 'function') {
+    console.error('uni.onAppThemeChange is not a function')
+    return
   }
   appThemeChangeCallbackId = uni.onAppThemeChange(function (
     res1: UTSJSONObject
   ) {
-    const appThemeMode = res1['appTheme'] as string
+    const appThemeMode = res1['appTheme'] as IThemeMode & 'auto'
     if (appThemeMode !== APP_THEME_AUTO) {
       callback(appThemeMode)
+    } else {
+      callback(getAppThemeFallbackOS())
     }
-    callback('dark')
   })
 
   if (osThemeChangeCallbackId !== -1) {
@@ -59,71 +65,83 @@ export function registerThemeChange(callback: (themeMode: string) => void) {
     clearOsThemeChangeCallbackId()
   }
   osThemeChangeCallbackId = uni.onOsThemeChange(function (res2: UTSJSONObject) {
-    // if (uni.getAppBaseInfo().appTheme == APP_THEME_AUTO) {
-    //   const osThemeMode = res2['osTheme'] as string
-    //   callback(osThemeMode)
-    // }
-    callback('dark')
+    const appTheme = uni.getAppBaseInfo().appTheme as IThemeMode & 'auto'
+    const currentOsTheme = res2['osTheme'] as IThemeMode
+
+    if (appTheme === APP_THEME_AUTO) {
+      callback(currentOsTheme)
+    }
   })
 }
 
 // 切换主题
-export const onThemeChange = function (themeMode: string) {
+export const onThemeChange = function (themeMode: IThemeMode) {
   // page
-  const pages = getAllPages()
-  pages.forEach((page) => {
-    // page.$setPageStyle(
-    //   new Map([
-    //     ['backgroundColor', 'blue'],
-    //     ['navigationBarBackgroundColor', 'red'],
-    //   ])
-    // )
-    // navigationBarBackgroundColor
-    // page.setPageStyle(new UTSJSONObject(parsePageStyle(value.$route!, '')))
-  })
+  const handlePage = () => {
+    const pages = getAllPages()
+
+    pages.forEach((page) => {
+      const _pageStyle = page.$getPageStyle()
+      const pageStyle = JSON.parse(JSON.stringify(_pageStyle))
+      normalizePageStyles(pageStyle, __uniConfig.themeConfig, themeMode)
+
+      // obj 转 map
+      const style = new Map<string, any | null>()
+      Object.keys(pageStyle).forEach((key) => {
+        style.set(key, pageStyle[key])
+      })
+
+      // 最终结果
+      page.$setPageStyle(style)
+    })
+  }
+
+  handlePage()
 
   // tabBar
-  const tabBar = getTabBar()
-  if (tabBar !== null) {
-    const tabBarConfig = extend({}, __uniConfig.tabBar!)
+  const handleTabBar = () => {
+    const tabBar = getTabBar()
+    if (tabBar !== null) {
+      const tabBarConfig = extend({}, __uniConfig.tabBar!)
 
-    normalizeTabBarStyles(
-      tabBarConfig,
-      __uniConfig.themeConfig,
-      getAppThemeFallbackOS()
-    )
+      normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode)
 
-    const tabBarStyle = new Map<string, any | null>()
-    const tabBarItemUpdateConfig = ['iconPath', 'selectedIconPath']
+      const tabBarStyle = new Map<string, any | null>()
+      const tabBarItemUpdateConfig = ['iconPath', 'selectedIconPath']
+      const tabBarConfigKeys = Object.keys(tabBarConfig)
 
-    const tabBarConfigKeys = Object.keys(tabBarConfig)
-    tabBarConfigKeys.forEach((key) => {
-      const value = tabBarConfig[key]
-      if (isString(value)) {
-        tabBarStyle.set(key, value)
-      } else if (isArray(value)) {
-        const valueAsArray = value as Array<Record<string, any>>
-        let index = 0
-        valueAsArray.forEach((item) => {
-          const tabBarItemMap = new Map<string, any | null>()
-          tabBarItemMap.set('index', index)
-          tabBarItemUpdateConfig.forEach((tabBarItemkey) => {
-            if (item[tabBarItemkey] != null) {
-              tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey])
-            }
+      tabBarConfigKeys.forEach((key) => {
+        const value = tabBarConfig[key]
+        if (isString(value)) {
+          tabBarStyle.set(key, value)
+        } else if (isArray(value)) {
+          const valueAsArray = value as Array<Record<string, any>>
+          let index = 0
+          valueAsArray.forEach((item) => {
+            const tabBarItemMap = new Map<string, any | null>()
+            tabBarItemMap.set('index', index)
+            tabBarItemUpdateConfig.forEach((tabBarItemkey) => {
+              if (item[tabBarItemkey] != null) {
+                tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey])
+              }
+            })
+            // set TabBarItem
+            tabBar.setTabBarItem(tabBarItemMap)
+            index++
           })
-          tabBar.setTabBarItem(tabBarItemMap)
-          index++
-        })
-      }
-    })
-    tabBar.setTabBarStyle(tabBarStyle)
+        }
+      })
+      // set TabBarStyle
+      tabBar.setTabBarStyle(tabBarStyle)
+    }
   }
+
+  handleTabBar()
 }
 
 export function normalizePageStyles(
-  pageStyle: Map<string, any | null>,
-  themeConfig: Map<string, Map<string, any>>,
+  pageStyle: Record<string, any | null>,
+  themeConfig: Record<string, any>,
   themeMode: string
 ) {
   const themeMap = themeConfig[themeMode]
@@ -134,6 +152,7 @@ export function normalizePageStyles(
   normalizeStyles(pageStyle as Map<string, any>, themeMap)
 }
 
+// 传递 style 替换当前主题色
 function normalizeStyles(
   style: Record<string, any>,
   themeMap: Record<string, any>
@@ -153,7 +172,7 @@ function normalizeStyles(
       }
     } else if (isArray(value)) {
       const valueAsArray = value as Array<Map<string, any>>
-      valueAsArray.forEach((item, _) => {
+      valueAsArray.forEach((item) => {
         normalizeStyles(item, themeMap)
       })
     }
@@ -165,8 +184,10 @@ export function normalizeTabBarStyles(
   themeConfig: Record<string, any>,
   themeMode: string
 ) {
-  const themeMap = themeConfig['dark']
-  // const themeMap = themeConfig[themeMode]
+  if (!themeConfig) {
+    return
+  }
+  const themeMap = themeConfig[themeMode]
   if (themeMap == null) {
     return
   }
@@ -175,5 +196,9 @@ export function normalizeTabBarStyles(
 }
 
 export function useTheme() {
+  // 监听
   registerThemeChange(onThemeChange)
+
+  // 立即生效
+  onThemeChange(getAppThemeFallbackOS())
 }

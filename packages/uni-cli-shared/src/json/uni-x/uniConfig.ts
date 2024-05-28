@@ -32,6 +32,7 @@ export function normalizeAppXUniConfig(
     config.conditionUrl = config.entryPagePath
     config.entryPagePath = config.realEntryPagePath
   }
+  // darkmode
   if (pagesJson.themeConfig) {
     config.themeConfig = pagesJson.themeConfig
   }
