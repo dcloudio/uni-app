@@ -23,7 +23,8 @@ function resolve(file: string) {
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
 
 const isX = process.env.UNI_APP_X === 'true'
-const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR
+// 暂不启用
+const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR && false
 
 const rollupPlugins = [
   replace({

@@ -1,3 +1,4 @@
+import fs from 'fs-extra'
 import path from 'path'
 
 import { defineConfig } from 'vite'
@@ -8,8 +9,9 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 
-import { cssTarget } from '@dcloudio/uni-cli-shared'
+import { cssTarget, parseInjects } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
+import { resolveExtApiTempDir } from '../../scripts/ext-api'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -172,3 +174,64 @@ export default defineConfig({
     },
   },
 })
+
+function parseExtApiInjects(uniModulesDir: string) {
+  return parseInjects(
+    true,
+    'app',
+    'arkts', // javascript|kotlin|swift (不传入)
+    '',
+    uniModulesDir,
+    require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
+      'uni-ext-api'
+    ] || {}
+  )
+}
+
+initArkTSExtApi()
+
+function initArkTSExtApi() {
+  if (!process.env.UNI_APP_EXT_API_DIR) {
+    return
+  }
+  // 遍历所有 ext-api，查找已实现 app-harmony 的 ext-api
+  const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR)
+  const extApiTempDir = resolveExtApiTempDir('uni-app-harmony')
+  const extApis: string[] = []
+  const importExtApis: string[] = []
+  const defineExtApis: string[] = []
+  for (const extApi of fs.readdirSync(extApiDir)) {
+    const extApiPath = path.resolve(extApiDir, extApi)
+    if (
+      !fs.existsSync(
+        path.resolve(extApiPath, 'utssdk', 'app-harmony', 'index.uts')
+      )
+    ) {
+      continue
+    }
+    const injects = parseExtApiInjects(extApiPath)
+    if (Object.keys(injects).length === 0) {
+      continue
+    }
+    const specifiers: string[] = []
+    Object.keys(injects).forEach((key) => {
+      const local = key.replace(/\./g, '_')
+      specifiers.push(`${injects[key][1]} as ${local}`)
+      defineExtApis.push(`${key.replace('uni.', 'uniExtApi.')} = ${local}`)
+    })
+    importExtApis.push(
+      `import { ${specifiers.join(
+        ', '
+      )} } from './${extApi}/utssdk/app-harmony/index.uts'`
+    )
+    fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
+  }
+
+  // 生成 ext-api/index.ts
+  const extApiIndex = path.resolve(extApiTempDir, 'index.uts')
+  fs.writeFileSync(
+    extApiIndex,
+    `${importExtApis.join('\n')}
+${defineExtApis.join('\n')}`
+  )
+}

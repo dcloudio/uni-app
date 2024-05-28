@@ -272,7 +272,9 @@ async function buildArkTS(target, buildJson) {
           }, {}),
           parseOptions: {
             tsx: true,
-            noEarlyErrors: true
+            noEarlyErrors: true,
+            allowComplexUnionType: true,
+            allowTsLitType: true,
           },
           globals: {
             vars,
@@ -293,7 +295,9 @@ async function buildArkTS(target, buildJson) {
           },
           treeshake: {
             noSideEffects: true
-          }
+          },
+          wrapperFunctionName: options.wrapper?.name,
+          wrapperFunctionArgs: options.wrapper?.args
         },
       }
       console.log(buildOptions)

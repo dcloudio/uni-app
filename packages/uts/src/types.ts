@@ -35,6 +35,7 @@ export type UTSInputOptions = UTSParseOptions & {
   parseOptions?: {
     tsx?: boolean
     noEarlyErrors?: boolean
+    allowComplexUnionType?: boolean
   }
 }
 
@@ -83,6 +84,8 @@ export type UTSOutputOptions = {
     manualPureFunctions?: string[]
     noSideEffects?: boolean
   }
+  wrapperFunctionName?: string
+  wrapperFunctionArgs?: [string, string][]
 }
 export interface UTSOptions {
   mode?: string

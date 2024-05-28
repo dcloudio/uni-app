@@ -280,18 +280,10 @@ function parseInject(
                   process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' &&
                   source.includes('app-js')
                 if (!skipCheck) {
-                  if (language === 'javascript') {
-                    if (appOptions.js === false) {
-                      return
-                    }
-                  } else if (language === 'kotlin') {
-                    if (appOptions.kotlin === false) {
-                      return
-                    }
-                  } else if (language === 'swift') {
-                    if (appOptions.swift === false) {
-                      return
-                    }
+                  const targetLanguage =
+                    language === 'javascript' ? 'js' : language
+                  if (targetLanguage && appOptions[targetLanguage] === false) {
+                    return
                   }
                 }
               }

@@ -53,11 +53,11 @@ export function uts2ts(): Plugin {
   }
 }
 
-function resolveExtApiTempDir(target: string) {
+export function resolveExtApiTempDir(target: string) {
   return path.resolve(__dirname, '../packages', target, 'temp', 'uni-ext-api')
 }
 
-function clearExtApiTempDir(target: Target) {
+export function clearExtApiTempDir(target: Target) {
   fs.emptyDirSync(resolveExtApiTempDir(target))
 }
 
