@@ -1,6 +1,5 @@
 import path, { join, relative } from 'path'
 import fs from 'fs-extra'
-import { makeLegalIdentifier } from '@rollup/pluginutils'
 import type { APP_PLATFORM } from './manifest/utils'
 import { normalizePath, resolveSourceMapPath } from './shared'
 import {
@@ -29,12 +28,9 @@ function createRollupCommonjsCode(
   _pluginDir: string,
   pluginRelativeDir: string
 ) {
-  const name = makeLegalIdentifier(pluginRelativeDir)
+  // const name = makeLegalIdentifier(pluginRelativeDir)
   return `
-import * as commonjsHelpers from "\0commonjsHelpers.js"
-const ${name} = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
-export default /*@__PURE__*/commonjsHelpers.getDefaultExportFromCjs(${name});
-export { ${name} as __moduleExports };
+export default uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
 `
 }
 function createWebpackCommonjsCode(pluginRelativeDir: string) {
@@ -47,13 +43,15 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
   if (isX && !fs.existsSync(path.resolve(pluginDir, 'utssdk'))) {
     return compileEncryptByUniHelpers(pluginDir)
   }
+
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const utsPlatform = process.env.UNI_UTS_PLATFORM as APP_PLATFORM
   const isRollup = !!process.env.UNI_UTS_USING_ROLLUP
   const pluginRelativeDir = relative(inputDir, pluginDir)
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
-  let code = isX
+  const isNative = isX && utsPlatform === 'app-android'
+  let code = isNative
     ? ''
     : isRollup
     ? createRollupCommonjsCode(pluginDir, pluginRelativeDir)
@@ -75,7 +73,7 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
     }
   }
   const cacheDir = process.env.HX_DEPENDENCIES_DIR!
-  if (!isX) {
+  if (!isNative) {
     // 读取缓存目录的 js code
     const indexJsPath = resolveJsCodeCacheFilename(
       utsPlatform,
