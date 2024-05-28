@@ -684,6 +684,7 @@ function getBaseSystemInfo() {
     };
 }
 
+const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
 const I18N_JSON_DELIMITERS = ['%', '%'];
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
@@ -701,6 +702,7 @@ const ON_UNLOAD = 'onUnload';
 const ON_RESIZE = 'onResize';
 const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
 // navigationBar
 const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
@@ -2121,6 +2123,8 @@ function getEnterOptions() {
     return extend({}, enterOptions$1);
 }
 
+const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
+
 const appHooks = {
     [ON_UNHANDLE_REJECTION]: [],
     [ON_PAGE_NOT_FOUND]: [],
@@ -2428,8 +2432,11 @@ const NavigateBackProtocol =
         type: Number,
     },
 }, createAnimationProtocol(ANIMATION_OUT));
+const SwitchTabProtocol = BaseRouteProtocol;
 const NavigateToOptions = 
 /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+const SwitchTabOptions = 
+/*#__PURE__*/ createRouteOptions(API_SWITCH_TAB);
 const NavigateBackOptions = {
     formatArgs: {
         delta(value, params) {
@@ -3461,6 +3468,10 @@ function setPendingNavigator(path, callback, msg) {
         console.log(formatLog('setPendingNavigator', path, msg));
     }
 }
+function closePage(page, animationType, animationDuration) {
+    removePage(page);
+    closeWebview(page.$getAppWebview(), animationType, animationDuration);
+}
 function pendingNavigate() {
     if (!pendingNavigator) {
         return;
@@ -3948,6 +3959,209 @@ function getStatusbarHeight() {
     return 0;
 }
 
+let config;
+/**
+ * tabbar显示状态
+ */
+let visible = true;
+let tabBar;
+/**
+ * 设置角标
+ * @param {string} type
+ * @param {number} index
+ * @param {string} text
+ */
+function setTabBarBadge(type, index, text) {
+    if (!tabBar) {
+        return;
+    }
+    if (type === 'none') {
+        tabBar.hideTabBarRedDot({
+            index,
+        });
+        tabBar.removeTabBarBadge({
+            index,
+        });
+    }
+    else if (type === 'text') {
+        tabBar.setTabBarBadge({
+            index,
+            text,
+        });
+    }
+    else if (type === 'redDot') {
+        tabBar.showTabBarRedDot({
+            index,
+        });
+    }
+}
+/**
+ * 动态设置 tabBar 多项的内容
+ */
+function setTabBarItems(tabBarConfig) {
+    tabBar && tabBar.setTabBarItems(tabBarConfig);
+}
+/**
+ * 动态设置 tabBar 某一项的内容
+ */
+function setTabBarItem(index, text, iconPath, selectedIconPath, visible, iconfont) {
+    const item = {
+        index,
+    };
+    if (text !== undefined) {
+        item.text = text;
+    }
+    if (iconPath) {
+        item.iconPath = getRealPath(iconPath);
+    }
+    if (selectedIconPath) {
+        item.selectedIconPath = getRealPath(selectedIconPath);
+    }
+    if (iconfont !== undefined) {
+        item.iconfont = iconfont;
+    }
+    if (visible !== undefined) {
+        item.visible = config.list[index].visible = visible;
+        delete item.index;
+        const tabbarItems = config.list.map((item) => ({
+            visible: item.visible,
+        }));
+        tabbarItems[index] = item;
+        setTabBarItems({ list: tabbarItems });
+    }
+    else {
+        tabBar && tabBar.setTabBarItem(item);
+    }
+}
+/**
+ * 动态设置 tabBar 的整体样式
+ * @param {Object} style 样式
+ */
+function setTabBarStyle(style) {
+    tabBar && tabBar.setTabBarStyle(style);
+}
+/**
+ * 隐藏 tabBar
+ * @param {boolean} animation 是否需要动画效果
+ */
+function hideTabBar(animation) {
+    visible = false;
+    tabBar &&
+        tabBar.hideTabBar({
+            animation,
+        });
+}
+/**
+ * 显示 tabBar
+ * @param {boolean} animation 是否需要动画效果
+ */
+function showTabBar(animation) {
+    visible = true;
+    tabBar &&
+        tabBar.showTabBar({
+            animation,
+        });
+}
+const maskClickCallback = [];
+var tabBarInstance = {
+    id: '0',
+    init(options, clickCallback) {
+        if (options && options.list.length) {
+            config = options;
+        }
+        try {
+            tabBar = weex.requireModule('uni-tabview');
+        }
+        catch (error) {
+            console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
+        }
+        tabBar.onMaskClick(() => {
+            maskClickCallback.forEach((callback) => {
+                callback();
+            });
+        });
+        tabBar &&
+            tabBar.onClick(({ index }) => {
+                clickCallback(config.list[index], index);
+            });
+        tabBar &&
+            tabBar.onMidButtonClick(() => {
+                return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+            });
+        // TODO useTabBarThemeChange(tabBar, options)
+    },
+    indexOf(page) {
+        const config = this.config;
+        const itemLength = config && config.list && config.list.length;
+        if (itemLength) {
+            for (let i = 0; i < itemLength; i++) {
+                if (config.list[i].pagePath === page ||
+                    config.list[i].pagePath === `${page}.html`) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    },
+    switchTab(page) {
+        const index = this.indexOf(page);
+        if (index >= 0) {
+            tabBar &&
+                tabBar.switchSelect({
+                    index,
+                });
+            return true;
+        }
+        return false;
+    },
+    setTabBarBadge,
+    setTabBarItem,
+    setTabBarStyle,
+    hideTabBar,
+    showTabBar,
+    append(webview) {
+        tabBar &&
+            tabBar.append({
+                id: webview.id,
+            }, ({ code }) => {
+                if (code !== 0) {
+                    setTimeout(() => {
+                        this.append(webview);
+                    }, 20);
+                }
+            });
+    },
+    get config() {
+        return config || __uniConfig.tabBar;
+    },
+    get visible() {
+        return visible;
+    },
+    get height() {
+        const config = this.config;
+        return ((config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
+            plus.navigator.getSafeAreaInsets().deviceBottom);
+    },
+    // tabBar是否遮挡内容区域
+    get cover() {
+        const config = this.config;
+        const array = ['extralight', 'light', 'dark'];
+        return config && array.indexOf(config.blurEffect) >= 0;
+    },
+    setStyle({ mask }) {
+        tabBar.setMask({
+            color: mask,
+        });
+    },
+    addEventListener(_name, callback) {
+        maskClickCallback.push(callback);
+    },
+    removeEventListener(_name, callback) {
+        const callbackIndex = maskClickCallback.indexOf(callback);
+        maskClickCallback.splice(callbackIndex, 1);
+    },
+};
+
 function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
     // TODO initEntry()
     // TODO preloadWebviews[url]
@@ -3960,7 +4174,10 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
         webview.nvue = routeOptions.meta.isNVue;
     }
     routeOptions.meta.id = parseInt(webview.id);
-    // TODO tabBar
+    const isTabBar = !!routeOptions.meta.isTabBar;
+    if (isTabBar) {
+        tabBarInstance.append(webview);
+    }
     if (('production' !== 'production')) {
         console.log(formatLog('registerPage', path, webview.id));
     }
@@ -4129,6 +4346,105 @@ function back(delta, animationType, animationDuration) {
     });
 }
 
+const $switchTab = (args, { resolve, reject }) => {
+    const { url } = args;
+    const { path, query } = parseUrl(url);
+    navigate(path, () => {
+        _switchTab({
+            url,
+            path,
+            query,
+        })
+            .then(resolve)
+            .catch(reject);
+    }, args.openType === 'appLaunch');
+};
+const switchTab = defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
+function _switchTab({ url, path, query, }) {
+    tabBarInstance.switchTab(path.slice(1));
+    const pages = getCurrentPages();
+    const len = pages.length;
+    let callOnHide = false;
+    let callOnShow = false;
+    let currentPage;
+    if (len >= 1) {
+        // 前一个页面是非 tabBar 页面
+        currentPage = pages[len - 1];
+        if (currentPage && !currentPage.$.__isTabBar) {
+            // 前一个页面为非 tabBar 页面时，目标tabBar需要强制触发onShow
+            // 该情况下目标页tabBarPage的visible是不对的
+            // 除非每次路由跳转都处理一遍tabBarPage的visible，目前仅switchTab会处理
+            // 简单起见，暂时直接判断该情况，执行onShow
+            callOnShow = true;
+            pages.reverse().forEach((page) => {
+                if (!page.$.__isTabBar && page !== currentPage) {
+                    closePage(page, 'none');
+                }
+            });
+            removePage(currentPage);
+            // 延迟执行避免iOS应用退出
+            setTimeout(() => {
+                if (currentPage.$page.openType === 'redirectTo') {
+                    closeWebview(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
+                }
+                else {
+                    closeWebview(currentPage.$getAppWebview(), 'auto');
+                }
+            }, 100);
+        }
+        else {
+            callOnHide = true;
+        }
+    }
+    let tabBarPage;
+    // 查找当前 tabBarPage，且设置 visible
+    getAllPages().forEach((page) => {
+        if (addLeadingSlash(page.route) === path) {
+            if (!page.$.__isActive) {
+                // 之前未显示
+                callOnShow = true;
+            }
+            page.$.__isActive = true;
+            tabBarPage = page;
+        }
+        else {
+            if (page.$.__isTabBar) {
+                page.$.__isActive = false;
+            }
+        }
+    });
+    // 相同tabBar页面
+    if (currentPage === tabBarPage) {
+        callOnHide = false;
+    }
+    if (currentPage && callOnHide) {
+        invokeHook(currentPage, ON_HIDE);
+    }
+    return new Promise((resolve) => {
+        if (tabBarPage) {
+            const webview = tabBarPage.$getAppWebview();
+            webview.show('none');
+            // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
+            if (callOnShow && !webview.__preload__) {
+                invokeHook(tabBarPage, ON_SHOW);
+            }
+            // TODO setStatusBarStyle()
+            resolve(undefined);
+        }
+        else {
+            showWebview(registerPage({
+                url,
+                path,
+                query,
+                openType: 'switchTab',
+            }), 'none', 0, () => {
+                // TODO setStatusBarStyle()
+                resolve(undefined);
+            }, 70);
+        }
+    });
+}
+
 var uni$1 = {
   __proto__: null,
   chooseImage: chooseImage,
@@ -4141,6 +4457,7 @@ var uni$1 = {
   navigateBack: navigateBack,
   navigateTo: navigateTo,
   request: request,
+  switchTab: switchTab,
   uploadFile: uploadFile
 };
 
@@ -4258,10 +4575,6 @@ function subscribeNavigator() {
         });
     });
 }
-
-const $switchTab = (args, { resolve, reject }) => {
-    throw new Error('API $switchTab is not yet implemented');
-};
 
 let isLaunchWebviewReady = false; // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady
 function subscribeWebviewReady(_data, pageId) {
@@ -4383,6 +4696,36 @@ function initAppLaunch(appVm) {
     invokeHook(appVm, ON_SHOW, args);
 }
 
+function initTabBar() {
+    const { tabBar } = __uniConfig;
+    const len = tabBar && tabBar.list && tabBar.list.length;
+    if (!len) {
+        return;
+    }
+    const { entryPagePath } = __uniConfig;
+    tabBar.selectedIndex = 0;
+    const selected = tabBar.list.findIndex((page) => page.pagePath === entryPagePath);
+    tabBarInstance.init(tabBar, (item, index) => {
+        uni.switchTab({
+            url: addLeadingSlash(item.pagePath),
+            openType: 'switchTab',
+            from: 'tabBar',
+            success() {
+                invokeHook(ON_TAB_ITEM_TAP, {
+                    index,
+                    text: item.text,
+                    pagePath: item.pagePath,
+                });
+            },
+        });
+    });
+    if (selected !== -1) {
+        // 取当前 tab 索引值
+        tabBar.selectedIndex = selected;
+        selected !== 0 && tabBarInstance.switchTab(entryPagePath);
+    }
+}
+
 let appCtx;
 const defaultApp = {
     globalData: {},
@@ -4409,6 +4752,7 @@ function registerApp(appVm) {
     extend(appCtx, defaultApp); // 拷贝默认实现
     defineGlobalData(appCtx, defaultApp.globalData);
     initService();
+    initTabBar();
     initGlobalEvent();
     initSubscribeHandlers();
     initAppLaunch(appVm);
