@@ -35,5 +35,8 @@ module.exports = {
   testPathIgnorePatterns: ['/node_modules/'],
   transform: {
     'service\\.runtime\\.esm\\.js$': ['ts-jest', {}],
+    '^.+\\.tsx?$': ['ts-jest', {
+      tsconfig: 'tsconfig.test.json'
+    }]
   },
 }
