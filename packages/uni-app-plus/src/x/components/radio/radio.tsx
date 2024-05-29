@@ -83,10 +83,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     })
     const iconStyle = computed(() => {
-      const color =
-        props.foregroundColor.length > 0
-          ? props.foregroundColor
-          : props.iconColor
+      let color = ''
+
+      if (props.foregroundColor.length > 0) {
+        color = props.foregroundColor
+      } else if (props.iconColor.length > 0) {
+        color = props.iconColor
+      }
+
       return {
         color: props.disabled ? '#adadad' : color,
       }
