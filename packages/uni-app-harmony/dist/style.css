@@ -1056,3 +1056,436 @@ uni-textarea[hidden] {
   /* 用于重置iOS14以下禁用状态文字颜色 */
   -webkit-text-fill-color: currentcolor;
 }
+uni-picker-view {
+  display: block;
+}
+
+.uni-picker-view-wrapper {
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  height: 100%;
+}
+
+uni-picker-view[hidden] {
+  display: none;
+}
+uni-picker-view-column {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  overflow: hidden;
+}
+
+uni-picker-view-column[hidden] {
+  display: none;
+}
+
+.uni-picker-view-group {
+  height: 100%;
+  overflow: hidden;
+}
+
+.uni-picker-view-mask {
+  transform: translateZ(0);
+}
+
+.uni-picker-view-indicator,
+.uni-picker-view-mask {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.uni-picker-view-mask {
+  top: 0;
+  height: 100%;
+  margin: 0 auto;
+  background-image: linear-gradient(
+      180deg,
+      hsla(0, 0%, 100%, 0.95),
+      hsla(0, 0%, 100%, 0.6)
+    ),
+    linear-gradient(0deg, hsla(0, 0%, 100%, 0.95), hsla(0, 0%, 100%, 0.6));
+  background-position: top, bottom;
+  background-size: 100% 102px;
+  background-repeat: no-repeat;
+  transform: translateZ(0);
+}
+
+.uni-picker-view-indicator {
+  height: 34px;
+  /* top: 102px; */
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.uni-picker-view-content {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  will-change: transform;
+  padding: 102px 0;
+  cursor: pointer;
+}
+
+.uni-picker-view-content > * {
+  height: var(--picker-view-column-indicator-height);
+  overflow: hidden;
+}
+
+.uni-picker-view-indicator:after,
+.uni-picker-view-indicator:before {
+  content: ' ';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  color: #e5e5e5;
+}
+
+.uni-picker-view-indicator:before {
+  top: 0;
+  border-top: 1px solid #e5e5e5;
+  transform-origin: 0 0;
+  transform: scaleY(0.5);
+}
+
+.uni-picker-view-indicator:after {
+  bottom: 0;
+  border-bottom: 1px solid #e5e5e5;
+  transform-origin: 0 100%;
+  transform: scaleY(0.5);
+}
+
+.uni-picker-view-indicator:after,
+.uni-picker-view-indicator:before {
+  content: ' ';
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 1px;
+  color: #e5e5e5;
+}
+
+@media (prefers-color-scheme: dark) {
+  .uni-picker-view-indicator:before {
+    border-top-color: var(--UI-FG-3);
+  }
+  .uni-picker-view-indicator:after {
+    border-bottom-color: var(--UI-FG-3);
+  }
+  .uni-picker-view-mask {
+    background-image: linear-gradient(
+        180deg,
+        rgba(35, 35, 35, 0.95),
+        rgba(35, 35, 35, 0.6)
+      ),
+      linear-gradient(0deg, rgba(35, 35, 35, 0.95), rgba(35, 35, 35, 0.6));
+  }
+}
+uni-scroll-view {
+  display: block;
+  width: 100%;
+}
+
+uni-scroll-view[hidden] {
+  display: none;
+}
+
+.uni-scroll-view {
+  position: relative;
+  -webkit-overflow-scrolling: touch;
+  width: 100%;
+  /* display: flex; 时在安卓下会导致scrollWidth和offsetWidth一样 */
+  height: 100%;
+  max-height: inherit;
+}
+
+.uni-scroll-view-scrollbar-hidden::-webkit-scrollbar {
+  display: none;
+}
+
+.uni-scroll-view-scrollbar-hidden {
+  -moz-scrollbars: none;
+  scrollbar-width: none;
+}
+
+.uni-scroll-view-content {
+  width: 100%;
+  height: 100%;
+}.uni-scroll-view-refresher {
+  position: relative;
+  overflow: hidden;
+  flex-shrink: 0;
+}
+
+.uni-scroll-view-refresher-container {
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.uni-scroll-view-refresh {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.uni-scroll-view-refresh-inner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: #fff;
+  box-shadow: 0 1px 6px rgba(0, 0, 0, 0.117647),
+    0 1px 4px rgba(0, 0, 0, 0.117647);
+}
+
+.uni-scroll-view-refresh__spinner {
+  transform-origin: center center;
+  animation: uni-scroll-view-refresh-rotate 2s linear infinite;
+}
+
+.uni-scroll-view-refresh__spinner > circle {
+  stroke: currentColor;
+  stroke-linecap: round;
+  animation: uni-scroll-view-refresh-dash 2s linear infinite;
+}
+
+@keyframes uni-scroll-view-refresh-rotate {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes uni-scroll-view-refresh-dash {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
+  }
+
+  50% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -35px;
+  }
+
+  100% {
+    stroke-dasharray: 89, 200;
+    stroke-dashoffset: -124px;
+  }
+}
+uni-swiper {
+  display: block;
+  height: 150px;
+}
+
+uni-swiper[hidden] {
+  display: none;
+}
+
+.uni-swiper-wrapper {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform: translateZ(0);
+}
+
+.uni-swiper-slides {
+  position: absolute;
+  left: 0;
+  top: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.uni-swiper-slide-frame {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  will-change: transform;
+}
+
+.uni-swiper-dots {
+  position: absolute;
+  font-size: 0;
+}
+
+.uni-swiper-dots-horizontal {
+  left: 50%;
+  bottom: 10px;
+  text-align: center;
+  white-space: nowrap;
+  transform: translate(-50%, 0);
+}
+
+.uni-swiper-dots-horizontal .uni-swiper-dot {
+  margin-right: 8px;
+}
+
+.uni-swiper-dots-horizontal .uni-swiper-dot:last-child {
+  margin-right: 0;
+}
+
+.uni-swiper-dots-vertical {
+  right: 10px;
+  top: 50%;
+  text-align: right;
+  transform: translate(0, -50%);
+}
+
+.uni-swiper-dots-vertical .uni-swiper-dot {
+  display: block;
+  margin-bottom: 9px;
+}
+
+.uni-swiper-dots-vertical .uni-swiper-dot:last-child {
+  margin-bottom: 0;
+}
+
+.uni-swiper-dot {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  cursor: pointer;
+  transition-property: background-color;
+  transition-timing-function: ease;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 50%;
+}
+
+.uni-swiper-dot-active {
+  background-color: #000000;
+}
+
+.uni-swiper-navigation {
+  width: 26px;
+  height: 26px;
+  cursor: pointer;
+  position: absolute;
+  top: 50%;
+  margin-top: -13px;
+  display: flex;
+  align-items: center;
+  transition: all 0.2s;
+  border-radius: 50%;
+  opacity: 1;
+}
+
+.uni-swiper-navigation-disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
+.uni-swiper-navigation-hide {
+  opacity: 0;
+  cursor: auto;
+  pointer-events: none;
+}
+
+.uni-swiper-navigation-prev {
+  left: 10px;
+}
+
+.uni-swiper-navigation-prev svg {
+  margin-left: -1px;
+  left: 10px;
+}
+
+.uni-swiper-navigation-prev.uni-swiper-navigation-vertical {
+  top: 18px;
+  left: 50%;
+  margin-left: -13px;
+}
+
+.uni-swiper-navigation-prev.uni-swiper-navigation-vertical svg {
+  transform: rotate(90deg);
+  margin-left: auto;
+  margin-top: -2px;
+}
+
+.uni-swiper-navigation-next {
+  right: 10px;
+}
+
+.uni-swiper-navigation-next svg {
+  transform: rotate(180deg);
+}
+
+.uni-swiper-navigation-next.uni-swiper-navigation-vertical {
+  top: auto;
+  bottom: 5px;
+  left: 50%;
+  margin-left: -13px;
+}
+
+.uni-swiper-navigation-next.uni-swiper-navigation-vertical svg {
+  margin-top: 2px;
+  transform: rotate(270deg);
+}
+uni-swiper-item {
+  display: block;
+  overflow: hidden;
+  will-change: transform;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+}
+
+uni-swiper-item[hidden] {
+  display: none;
+}
+uni-movable-area {
+  display: block;
+  position: relative;
+  width: 10px;
+  height: 10px;
+}
+
+uni-movable-area[hidden] {
+  display: none;
+}
+uni-movable-view {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  top: 0px;
+  left: 0px;
+  position: absolute;
+  cursor: grab;
+}
+
+uni-movable-view[hidden] {
+  display: none;
+}
+uni-icon {
+  display: inline-block;
+  font-size: 0;
+  box-sizing: border-box;
+}
+
+uni-icon[hidden] {
+  display: none;
+}

@@ -58,7 +58,7 @@
   var _fails = function(exec) {
     try {
       return !!exec();
-    } catch (e) {
+    } catch (e2) {
       return true;
     }
   };
@@ -114,7 +114,7 @@
     if (IE8_DOM_DEFINE)
       try {
         return dP$2(O, P, Attributes);
-      } catch (e) {
+      } catch (e2) {
       }
     if ("get" in Attributes || "set" in Attributes)
       throw TypeError("Accessors not supported!");
@@ -220,16 +220,16 @@
       return fn;
     switch (length) {
       case 1:
-        return function(a) {
-          return fn.call(that, a);
+        return function(a2) {
+          return fn.call(that, a2);
         };
       case 2:
-        return function(a, b) {
-          return fn.call(that, a, b);
+        return function(a2, b) {
+          return fn.call(that, a2, b);
         };
       case 3:
-        return function(a, b, c2) {
-          return fn.call(that, a, b, c2);
+        return function(a2, b, c2) {
+          return fn.call(that, a2, b, c2);
         };
     }
     return function() {
@@ -480,7 +480,7 @@
             return new Constructor(this, kind);
           };
       }
-      return function entries() {
+      return function entries2() {
         return new Constructor(this, kind);
       };
     };
@@ -1098,8 +1098,8 @@
   };
   E.prototype = {
     on: function(name, callback, ctx2) {
-      var e = this.e || (this.e = {});
-      (e[name] || (e[name] = [])).push({
+      var e2 = this.e || (this.e = {});
+      (e2[name] || (e2[name] = [])).push({
         fn: callback,
         ctx: ctx2
       });
@@ -1125,8 +1125,8 @@
       return this;
     },
     off: function(name, callback) {
-      var e = this.e || (this.e = {});
-      var evts = e[name];
+      var e2 = this.e || (this.e = {});
+      var evts = e2[name];
       var liveEvents = [];
       if (evts && callback) {
         for (var i2 = evts.length - 1; i2 >= 0; i2--) {
@@ -1137,7 +1137,7 @@
         }
         liveEvents = evts;
       }
-      liveEvents.length ? e[name] = liveEvents : delete e[name];
+      liveEvents.length ? e2[name] = liveEvents : delete e2[name];
       return this;
     }
   };
@@ -1395,14 +1395,14 @@
       messages: messages2,
       watcher
     });
-    var t = (key2, values) => {
+    var t2 = (key2, values) => {
       if (typeof getApp !== "function") {
-        t = function(key22, values2) {
+        t2 = function(key22, values2) {
           return i18n2.t(key22, values2);
         };
       } else {
         var isWatchedAppLocale = false;
-        t = function(key22, values2) {
+        t2 = function(key22, values2) {
           var appVm = getApp().$vm;
           if (appVm) {
             appVm.$locale;
@@ -1414,7 +1414,7 @@
           return i18n2.t(key22, values2);
         };
       }
-      return t(key2, values);
+      return t2(key2, values);
     };
     return {
       i18n: i18n2,
@@ -1422,7 +1422,7 @@
         return i18n2.f(message, values, delimiters);
       },
       t(key2, values) {
-        return t(key2, values);
+        return t2(key2, values);
       },
       add(locale2, message) {
         var override = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : true;
@@ -1545,7 +1545,7 @@
   });
   var LONGPRESS_TIMEOUT = 350;
   var LONGPRESS_THRESHOLD = 10;
-  var passiveOptions$1 = /* @__PURE__ */ passive(true);
+  var passiveOptions$2 = /* @__PURE__ */ passive(true);
   var longPressTimer;
   function clearLongPressTimer() {
     if (longPressTimer) {
@@ -1595,10 +1595,10 @@
     }
   }
   function initLongPress() {
-    window.addEventListener("touchstart", touchstart, passiveOptions$1);
-    window.addEventListener("touchmove", touchmove, passiveOptions$1);
-    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$1);
-    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$1);
+    window.addEventListener("touchstart", touchstart, passiveOptions$2);
+    window.addEventListener("touchmove", touchmove, passiveOptions$2);
+    window.addEventListener("touchend", clearLongPressTimer, passiveOptions$2);
+    window.addEventListener("touchcancel", clearLongPressTimer, passiveOptions$2);
   }
   function checkValue$1(value, defaultValue) {
     var newValue = Number(value);
@@ -1743,8 +1743,8 @@
       }
       return this._dirtyLevel >= 4;
     }
-    set dirty(v) {
-      this._dirtyLevel = v ? 4 : 0;
+    set dirty(v2) {
+      this._dirtyLevel = v2 ? 4 : 0;
     }
     run() {
       this._dirtyLevel = 0;
@@ -2093,7 +2093,7 @@
   var readonlyHandlers = /* @__PURE__ */ new ReadonlyReactiveHandler();
   var shallowReactiveHandlers = /* @__PURE__ */ new MutableReactiveHandler(true);
   var toShallow = (value) => value;
-  var getProto = (v) => Reflect.getPrototypeOf(v);
+  var getProto = (v2) => Reflect.getPrototypeOf(v2);
   function get(target, key2) {
     var isReadonly2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
     var isShallow2 = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
@@ -2447,8 +2447,8 @@
     get _dirty() {
       return this.effect.dirty;
     }
-    set _dirty(v) {
-      this.effect.dirty = v;
+    set _dirty(v2) {
+      this.effect.dirty = v2;
     }
     // #endregion
   }
@@ -2487,6 +2487,9 @@
   }
   function ref(value) {
     return createRef(value, false);
+  }
+  function shallowRef(value) {
+    return createRef(value, true);
   }
   function createRef(rawValue, shallow) {
     if (isRef(rawValue)) {
@@ -2544,9 +2547,9 @@
       args[_key5 - 1] = arguments[_key5];
     }
     if (appWarnHandler) {
-      callWithErrorHandling(appWarnHandler, instance, 11, [msg2 + args.map((a) => {
+      callWithErrorHandling(appWarnHandler, instance, 11, [msg2 + args.map((a2) => {
         var _a, _b;
-        return (_b = (_a = a.toString) == null ? void 0 : _a.call(a)) != null ? _b : JSON.stringify(a);
+        return (_b = (_a = a2.toString) == null ? void 0 : _a.call(a2)) != null ? _b : JSON.stringify(a2);
       }).join(""), instance && instance.proxy, trace.map((_ref) => {
         var {
           vnode
@@ -2762,7 +2765,7 @@
   }
   function flushPostFlushCbs(seen) {
     if (pendingPostFlushCbs.length) {
-      var deduped = [...new Set(pendingPostFlushCbs)].sort((a, b) => getId(a) - getId(b));
+      var deduped = [...new Set(pendingPostFlushCbs)].sort((a2, b) => getId(a2) - getId(b));
       pendingPostFlushCbs.length = 0;
       if (activePostFlushCbs) {
         activePostFlushCbs.push(...deduped);
@@ -2777,12 +2780,12 @@
     }
   }
   var getId = (job) => job.id == null ? Infinity : job.id;
-  var comparator = (a, b) => {
-    var diff = getId(a) - getId(b);
+  var comparator = (a2, b) => {
+    var diff = getId(a2) - getId(b);
     if (diff === 0) {
-      if (a.pre && !b.pre)
+      if (a2.pre && !b.pre)
         return -1;
-      if (b.pre && !a.pre)
+      if (b.pre && !a2.pre)
         return 1;
     }
     return diff;
@@ -2828,7 +2831,7 @@
         trim
       } = props2[modifiersKey] || EMPTY_OBJ;
       if (trim) {
-        args = rawArgs.map((a) => isString(a) ? a.trim() : a);
+        args = rawArgs.map((a2) => isString(a2) ? a2.trim() : a2);
       }
       if (number) {
         args = rawArgs.map(looseToNumber);
@@ -3150,6 +3153,9 @@
       return ctx2;
     }
   };
+  function watchEffect(effect2, options) {
+    return doWatch(effect2, null, options);
+  }
   var INITIAL_WATCHER_VALUE = {};
   function watch(source, cb, options) {
     return doWatch(source, cb, options);
@@ -3244,7 +3250,7 @@
       }
       if (cb) {
         var newValue = effect2.run();
-        if (deep || forceTrigger || (isMultiSource ? newValue.some((v, i2) => hasChanged(v, oldValue[i2])) : hasChanged(newValue, oldValue)) || false) {
+        if (deep || forceTrigger || (isMultiSource ? newValue.some((v2, i2) => hasChanged(v2, oldValue[i2])) : hasChanged(newValue, oldValue)) || false) {
           if (cleanup) {
             cleanup();
           }
@@ -3344,8 +3350,8 @@
         traverse(value[i2], depth, currentDepth, seen);
       }
     } else if (isSet(value) || isMap(value)) {
-      value.forEach((v) => {
-        traverse(v, depth, currentDepth, seen);
+      value.forEach((v2) => {
+        traverse(v2, depth, currentDepth, seen);
       });
     } else if (isPlainObject(value)) {
       for (var key2 in value) {
@@ -3741,7 +3747,7 @@
           enumerable: true,
           configurable: true,
           get: () => c2.value,
-          set: (v) => c2.value = v
+          set: (v2) => c2.value = v2
         });
       };
       for (var _key11 in computedOptions) {
@@ -3826,7 +3832,7 @@
           enumerable: true,
           configurable: true,
           get: () => injected.value,
-          set: (v) => injected.value = v
+          set: (v2) => injected.value = v2
         });
       } else {
         ctx2[key3] = injected;
@@ -4042,7 +4048,7 @@
         get config() {
           return context.config;
         },
-        set config(v) {
+        set config(v2) {
         },
         use(plugin) {
           for (var _len8 = arguments.length, options = new Array(_len8 > 1 ? _len8 - 1 : 0), _key13 = 1; _key13 < _len8; _key13++) {
@@ -4415,12 +4421,12 @@
     }
     return "";
   }
-  function isSameType(a, b) {
-    return getType(a) === getType(b);
+  function isSameType(a2, b) {
+    return getType(a2) === getType(b);
   }
   function getTypeIndex(type, expectedTypes) {
     if (isArray(expectedTypes)) {
-      return expectedTypes.findIndex((t) => isSameType(t, type));
+      return expectedTypes.findIndex((t2) => isSameType(t2, type));
     } else if (isFunction(expectedTypes)) {
       return isSameType(expectedTypes, type) ? 0 : -1;
     }
@@ -5611,7 +5617,7 @@
   function getSequence(arr) {
     var p2 = arr.slice();
     var result = [0];
-    var i2, j, u, v, c2;
+    var i2, j, u, v2, c2;
     var len = arr.length;
     for (i2 = 0; i2 < len; i2++) {
       var arrI = arr[i2];
@@ -5623,13 +5629,13 @@
           continue;
         }
         u = 0;
-        v = result.length - 1;
-        while (u < v) {
-          c2 = u + v >> 1;
+        v2 = result.length - 1;
+        while (u < v2) {
+          c2 = u + v2 >> 1;
           if (arr[result[c2]] < arrI) {
             u = c2 + 1;
           } else {
-            v = c2;
+            v2 = c2;
           }
         }
         if (arrI < arr[result[u]]) {
@@ -5641,10 +5647,10 @@
       }
     }
     u = result.length;
-    v = result[u - 1];
+    v2 = result[u - 1];
     while (u-- > 0) {
-      result[u] = v;
-      v = p2[v];
+      result[u] = v2;
+      v2 = p2[v2];
     }
     return result;
   }
@@ -6064,21 +6070,21 @@
   var internalSetCurrentInstance;
   var setInSSRSetupState;
   {
-    var g = getGlobalThis();
+    var g$1 = getGlobalThis();
     var registerGlobalSetter = (key2, setter) => {
       var setters;
-      if (!(setters = g[key2]))
-        setters = g[key2] = [];
+      if (!(setters = g$1[key2]))
+        setters = g$1[key2] = [];
       setters.push(setter);
-      return (v) => {
+      return (v2) => {
         if (setters.length > 1)
-          setters.forEach((set2) => set2(v));
+          setters.forEach((set2) => set2(v2));
         else
-          setters[0](v);
+          setters[0](v2);
       };
     };
-    internalSetCurrentInstance = registerGlobalSetter("__VUE_INSTANCE_SETTERS__", (v) => currentInstance = v);
-    setInSSRSetupState = registerGlobalSetter("__VUE_SSR_SETTERS__", (v) => isInSSRComponentSetup = v);
+    internalSetCurrentInstance = registerGlobalSetter("__VUE_INSTANCE_SETTERS__", (v2) => currentInstance = v2);
+    setInSSRSetupState = registerGlobalSetter("__VUE_SSR_SETTERS__", (v2) => isInSSRComponentSetup = v2);
   }
   var setCurrentInstance = (instance) => {
     var prev = currentInstance;
@@ -6130,8 +6136,8 @@
         if (isSSR) {
           return setupResult.then((resolvedResult) => {
             handleSetupResult(instance, resolvedResult, isSSR);
-          }).catch((e) => {
-            handleError(e, instance, 0);
+          }).catch((e2) => {
+            handleError(e2, instance, 0);
           });
         } else {
           instance.asyncDep = setupResult;
@@ -6484,7 +6490,7 @@
   var importantRE$1 = /\s*!important$/;
   function setStyle$1(style, name, val) {
     if (isArray(val)) {
-      val.forEach((v) => setStyle$1(style, name, v));
+      val.forEach((v2) => setStyle$1(style, name, v2));
     } else {
       if (val == null)
         val = "";
@@ -6555,7 +6561,7 @@
     }
     try {
       el[key2] = value;
-    } catch (e) {
+    } catch (e2) {
     }
     needRemove && el.removeAttribute(key2);
   }
@@ -6598,29 +6604,29 @@
     return [event, options];
   }
   var cachedNow = 0;
-  var p = /* @__PURE__ */ Promise.resolve();
-  var getNow = () => cachedNow || (p.then(() => cachedNow = 0), cachedNow = Date.now());
+  var p$1 = /* @__PURE__ */ Promise.resolve();
+  var getNow = () => cachedNow || (p$1.then(() => cachedNow = 0), cachedNow = Date.now());
   function createInvoker$1(initialValue, instance) {
-    var invoker = (e) => {
-      if (!e._vts) {
-        e._vts = Date.now();
-      } else if (e._vts <= invoker.attached) {
+    var invoker = (e2) => {
+      if (!e2._vts) {
+        e2._vts = Date.now();
+      } else if (e2._vts <= invoker.attached) {
         return;
       }
-      callWithAsyncErrorHandling(patchStopImmediatePropagation(e, invoker.value), instance, 5, [e]);
+      callWithAsyncErrorHandling(patchStopImmediatePropagation(e2, invoker.value), instance, 5, [e2]);
     };
     invoker.value = initialValue;
     invoker.attached = getNow();
     return invoker;
   }
-  function patchStopImmediatePropagation(e, value) {
+  function patchStopImmediatePropagation(e2, value) {
     if (isArray(value)) {
-      var originalStop = e.stopImmediatePropagation;
-      e.stopImmediatePropagation = () => {
-        originalStop.call(e);
-        e._stopped = true;
+      var originalStop = e2.stopImmediatePropagation;
+      e2.stopImmediatePropagation = () => {
+        originalStop.call(e2);
+        e2._stopped = true;
       };
-      return value.map((fn) => (e2) => !e2._stopped && fn && fn(e2));
+      return value.map((fn) => (e22) => !e22._stopped && fn && fn(e22));
     } else {
       return value;
     }
@@ -6683,17 +6689,17 @@
   }
   var systemModifiers = ["ctrl", "shift", "alt", "meta"];
   var modifierGuards = {
-    stop: (e) => e.stopPropagation(),
-    prevent: (e) => e.preventDefault(),
-    self: (e) => e.target !== e.currentTarget,
-    ctrl: (e) => !e.ctrlKey,
-    shift: (e) => !e.shiftKey,
-    alt: (e) => !e.altKey,
-    meta: (e) => !e.metaKey,
-    left: (e) => "button" in e && e.button !== 0,
-    middle: (e) => "button" in e && e.button !== 1,
-    right: (e) => "button" in e && e.button !== 2,
-    exact: (e, modifiers) => systemModifiers.some((m) => e["".concat(m, "Key")] && !modifiers.includes(m))
+    stop: (e2) => e2.stopPropagation(),
+    prevent: (e2) => e2.preventDefault(),
+    self: (e2) => e2.target !== e2.currentTarget,
+    ctrl: (e2) => !e2.ctrlKey,
+    shift: (e2) => !e2.shiftKey,
+    alt: (e2) => !e2.altKey,
+    meta: (e2) => !e2.metaKey,
+    left: (e2) => "button" in e2 && e2.button !== 0,
+    middle: (e2) => "button" in e2 && e2.button !== 1,
+    right: (e2) => "button" in e2 && e2.button !== 2,
+    exact: (e2, modifiers) => systemModifiers.some((m) => e2["".concat(m, "Key")] && !modifiers.includes(m))
   };
   var withModifiers = (fn, modifiers) => {
     var cache2 = fn._withMods || (fn._withMods = {});
@@ -6806,7 +6812,7 @@
         }
       });
       window.addEventListener("test", null, opts);
-    } catch (e) {
+    } catch (e2) {
     }
     function addChild(parent, attr2) {
       var a1 = document.createElement("div");
@@ -6978,7 +6984,41 @@
   function PolySymbol(name) {
     return Symbol(name);
   }
+  function hasRpx(str) {
+    str = str + "";
+    return str.indexOf("rpx") !== -1 || str.indexOf("upx") !== -1;
+  }
+  function rpx2px(str) {
+    var replace = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
+    if (replace) {
+      return rpx2pxWithReplace(str);
+    }
+    if (isString(str)) {
+      var res = parseInt(str) || 0;
+      if (hasRpx(str)) {
+        return uni.upx2px(res);
+      }
+      return res;
+    }
+    return str;
+  }
+  function rpx2pxWithReplace(str) {
+    if (!hasRpx(str)) {
+      return str;
+    }
+    return str.replace(/(\d+(\.\d+)?)[ru]px/g, (_a, b) => {
+      return uni.upx2px(parseFloat(b)) + "px";
+    });
+  }
+  var ICON_PATH_CANCEL = "M20.928 10.176l-4.928 4.928-4.928-4.928-0.896 0.896 4.928 4.928-4.928 4.928 0.896 0.896 4.928-4.928 4.928 4.928 0.896-0.896-4.928-4.928 4.928-4.928-0.896-0.896zM16 2.080q-3.776 0-7.040 1.888-3.136 1.856-4.992 4.992-1.888 3.264-1.888 7.040t1.888 7.040q1.856 3.136 4.992 4.992 3.264 1.888 7.040 1.888t7.040-1.888q3.136-1.856 4.992-4.992 1.888-3.264 1.888-7.040t-1.888-7.040q-1.856-3.136-4.992-4.992-3.264-1.888-7.040-1.888zM16 28.64q-3.424 0-6.4-1.728-2.848-1.664-4.512-4.512-1.728-2.976-1.728-6.4t1.728-6.4q1.664-2.848 4.512-4.512 2.976-1.728 6.4-1.728t6.4 1.728q2.848 1.664 4.512 4.512 1.728 2.976 1.728 6.4t-1.728 6.4q-1.664 2.848-4.512 4.512-2.976 1.728-6.4 1.728z";
+  var ICON_PATH_CLEAR = "M16 0q-4.352 0-8.064 2.176-3.616 2.144-5.76 5.76-2.176 3.712-2.176 8.064t2.176 8.064q2.144 3.616 5.76 5.76 3.712 2.176 8.064 2.176t8.064-2.176q3.616-2.144 5.76-5.76 2.176-3.712 2.176-8.064t-2.176-8.064q-2.144-3.616-5.76-5.76-3.712-2.176-8.064-2.176zM22.688 21.408q0.32 0.32 0.304 0.752t-0.336 0.736-0.752 0.304-0.752-0.32l-5.184-5.376-5.376 5.184q-0.32 0.32-0.752 0.304t-0.736-0.336-0.304-0.752 0.32-0.752l5.376-5.184-5.184-5.376q-0.32-0.32-0.304-0.752t0.336-0.752 0.752-0.304 0.752 0.336l5.184 5.376 5.376-5.184q0.32-0.32 0.752-0.304t0.752 0.336 0.304 0.752-0.336 0.752l-5.376 5.184 5.184 5.376z";
+  var ICON_PATH_DOWNLOAD = "M15.808 1.696q-3.776 0-7.072 1.984-3.2 1.888-5.088 5.152-1.952 3.392-1.952 7.36 0 3.776 1.952 7.072 1.888 3.2 5.088 5.088 3.296 1.952 7.072 1.952 3.968 0 7.36-1.952 3.264-1.888 5.152-5.088 1.984-3.296 1.984-7.072 0-4-1.984-7.36-1.888-3.264-5.152-5.152-3.36-1.984-7.36-1.984zM20.864 18.592l-3.776 4.928q-0.448 0.576-1.088 0.576t-1.088-0.576l-3.776-4.928q-0.448-0.576-0.24-0.992t0.944-0.416h2.976v-8.928q0-0.256 0.176-0.432t0.4-0.176h1.216q0.224 0 0.4 0.176t0.176 0.432v8.928h2.976q0.736 0 0.944 0.416t-0.24 0.992z";
+  var ICON_PATH_INFO = "M15.808 0.128q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.176 3.776-2.176 8.16 0 4.224 2.176 7.872 2.080 3.552 5.632 5.632 3.648 2.176 7.872 2.176 4.384 0 8.16-2.176 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.416-2.176-8.16-2.112-3.616-5.728-5.728-3.744-2.176-8.16-2.176zM16.864 23.776q0 0.064-0.064 0.064h-1.568q-0.096 0-0.096-0.064l-0.256-11.328q0-0.064 0.064-0.064h2.112q0.096 0 0.064 0.064l-0.256 11.328zM16 10.88q-0.576 0-0.976-0.4t-0.4-0.96 0.4-0.96 0.976-0.4 0.976 0.4 0.4 0.96-0.4 0.96-0.976 0.4z";
+  var ICON_PATH_SEARCH = "M20.928 22.688q-1.696 1.376-3.744 2.112-2.112 0.768-4.384 0.768-3.488 0-6.464-1.728-2.88-1.696-4.576-4.608-1.76-2.976-1.76-6.464t1.76-6.464q1.696-2.88 4.576-4.576 2.976-1.76 6.464-1.76t6.464 1.76q2.912 1.696 4.608 4.576 1.728 2.976 1.728 6.464 0 2.272-0.768 4.384-0.736 2.048-2.112 3.744l9.312 9.28-1.824 1.824-9.28-9.312zM12.8 23.008q2.784 0 5.184-1.376 2.304-1.376 3.68-3.68 1.376-2.4 1.376-5.184t-1.376-5.152q-1.376-2.336-3.68-3.68-2.4-1.408-5.184-1.408t-5.152 1.408q-2.336 1.344-3.68 3.68-1.408 2.368-1.408 5.152t1.408 5.184q1.344 2.304 3.68 3.68 2.368 1.376 5.152 1.376zM12.8 23.008v0z";
   var ICON_PATH_SUCCESS_NO_CIRCLE = "M1.952 18.080q-0.32-0.352-0.416-0.88t0.128-0.976l0.16-0.352q0.224-0.416 0.64-0.528t0.8 0.176l6.496 4.704q0.384 0.288 0.912 0.272t0.88-0.336l17.312-14.272q0.352-0.288 0.848-0.256t0.848 0.352l-0.416-0.416q0.32 0.352 0.32 0.816t-0.32 0.816l-18.656 18.912q-0.32 0.352-0.8 0.352t-0.8-0.32l-7.936-8.064z";
+  var ICON_PATH_SUCCESS = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM24.832 11.328l-11.264 11.104q-0.032 0.032-0.112 0.032t-0.112-0.032l-5.216-5.376q-0.096-0.128 0-0.288l0.704-0.96q0.032-0.064 0.112-0.064t0.112 0.032l4.256 3.264q0.064 0.032 0.144 0.032t0.112-0.032l10.336-8.608q0.064-0.064 0.144-0.064t0.112 0.064l0.672 0.672q0.128 0.128 0 0.224z";
+  var ICON_PATH_WAITING = "M15.84 0.096q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM23.008 21.92l-0.512 0.896q-0.096 0.128-0.224 0.064l-8-3.808q-0.096-0.064-0.16-0.128-0.128-0.096-0.128-0.288l0.512-12.096q0-0.064 0.048-0.112t0.112-0.048h1.376q0.064 0 0.112 0.048t0.048 0.112l0.448 10.848 6.304 4.256q0.064 0.064 0.080 0.128t-0.016 0.128z";
+  var ICON_PATH_WARN = "M15.808 0.16q-4.224 0-7.872 2.176-3.552 2.112-5.632 5.728-2.144 3.744-2.144 8.128 0 4.192 2.144 7.872 2.112 3.52 5.632 5.632 3.68 2.144 7.872 2.144 4.384 0 8.128-2.144 3.616-2.080 5.728-5.632 2.176-3.648 2.176-7.872 0-4.384-2.176-8.128-2.112-3.616-5.728-5.728-3.744-2.176-8.128-2.176zM15.136 8.672h1.728q0.128 0 0.224 0.096t0.096 0.256l-0.384 10.24q0 0.064-0.048 0.112t-0.112 0.048h-1.248q-0.096 0-0.144-0.048t-0.048-0.112l-0.384-10.24q0-0.16 0.096-0.256t0.224-0.096zM16 23.328q-0.48 0-0.832-0.352t-0.352-0.848 0.352-0.848 0.832-0.352 0.832 0.352 0.352 0.848-0.352 0.848-0.832 0.352z";
   function createSvgIconVNode(path) {
     var color = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : "#000";
     var size2 = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 27;
@@ -7455,8 +7495,8 @@
   function publishHandler(event) {
     var args = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
     var pageId = getCurrentPageId() + "";
-    var webview = plus.webview;
-    webview.postMessageToUniNView({
+    var webview2 = plus.webview;
+    webview2.postMessageToUniNView({
       type: "subscribeHandler",
       args: {
         type: event,
@@ -7741,7 +7781,7 @@
     var n, m;
     var bits;
     var xbits;
-    var f;
+    var f2;
     var overflow = 0;
     for (bits = 0; bits <= MAX_BITS$1; bits++) {
       s.bl_count[bits] = 0;
@@ -7763,10 +7803,10 @@
       if (n >= base) {
         xbits = extra[n - base];
       }
-      f = tree[n * 2];
-      s.opt_len += f * (bits + xbits);
+      f2 = tree[n * 2];
+      s.opt_len += f2 * (bits + xbits);
       if (has_stree) {
-        s.static_len += f * (stree[n * 2 + 1] + xbits);
+        s.static_len += f2 * (stree[n * 2 + 1] + xbits);
       }
     }
     if (overflow === 0) {
@@ -7914,20 +7954,20 @@
     return tree[_n2] < tree[_m2] || tree[_n2] === tree[_m2] && depth[n] <= depth[m];
   }
   function pqdownheap(s, tree, k) {
-    var v = s.heap[k];
+    var v2 = s.heap[k];
     var j = k << 1;
     while (j <= s.heap_len) {
       if (j < s.heap_len && smaller(tree, s.heap[j + 1], s.heap[j], s.depth)) {
         j++;
       }
-      if (smaller(tree, v, s.heap[j], s.depth)) {
+      if (smaller(tree, v2, s.heap[j], s.depth)) {
         break;
       }
       s.heap[k] = s.heap[j];
       k = j;
       j <<= 1;
     }
-    s.heap[k] = v;
+    s.heap[k] = v2;
   }
   function compress_block(s, ltree, dtree) {
     var dist;
@@ -8275,10 +8315,10 @@
   }
   var crcTable = makeTable();
   function crc32$2(crc, buf, len, pos) {
-    var t = crcTable, end = pos + len;
+    var t2 = crcTable, end = pos + len;
     crc ^= -1;
     for (var i2 = pos; i2 < end; i2++) {
-      crc = crc >>> 8 ^ t[(crc ^ buf[i2]) & 255];
+      crc = crc >>> 8 ^ t2[(crc ^ buf[i2]) & 255];
     }
     return crc ^ -1;
   }
@@ -8356,8 +8396,8 @@
     strm.msg = msg$2[errorCode];
     return errorCode;
   }
-  function rank(f) {
-    return (f << 1) - (f > 4 ? 9 : 0);
+  function rank(f2) {
+    return (f2 << 1) - (f2 > 4 ? 9 : 0);
   }
   function zero(buf) {
     var len = buf.length;
@@ -11724,7 +11764,7 @@
     function getFrameElement(doc2) {
       try {
         return doc2.defaultView && doc2.defaultView.frameElement || null;
-      } catch (e) {
+      } catch (e2) {
         return null;
       }
     }
@@ -11841,11 +11881,11 @@
       var threshold = opt_threshold || [0];
       if (!Array.isArray(threshold))
         threshold = [threshold];
-      return threshold.sort().filter(function(t, i2, a) {
-        if (typeof t != "number" || isNaN(t) || t < 0 || t > 1) {
+      return threshold.sort().filter(function(t2, i2, a2) {
+        if (typeof t2 != "number" || isNaN(t2) || t2 < 0 || t2 > 1) {
           throw new Error("threshold must be a number between 0 and 1 inclusively");
         }
-        return t !== a[i2 - 1];
+        return t2 !== a2[i2 - 1];
       });
     };
     IntersectionObserver2.prototype._parseRootMargin = function(opt_rootMargin) {
@@ -12278,8 +12318,8 @@
   function requestComponentObserver($el, options, callback) {
     initIntersectionObserverPolyfill();
     var root = options.relativeToSelector ? $el.querySelector(options.relativeToSelector) : null;
-    var intersectionObserver = new IntersectionObserver((entries) => {
-      entries.forEach((entrie) => {
+    var intersectionObserver = new IntersectionObserver((entries2) => {
+      entries2.forEach((entrie) => {
         callback({
           intersectionRatio: rectifyIntersectionRatio(entrie),
           intersectionRect: normalizeRect(entrie.intersectionRect),
@@ -12338,7 +12378,7 @@
   }, Symbol.toStringTag, { value: "Module" }));
   function createGetDict(dict) {
     if (!dict.length) {
-      return (v) => v;
+      return (v2) => v2;
     }
     var getDict = function(value) {
       var includeValue = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : true;
@@ -12347,11 +12387,11 @@
       }
       var res = {};
       value.forEach((_ref) => {
-        var [n, v] = _ref;
+        var [n, v2] = _ref;
         if (includeValue) {
-          res[getDict(n)] = getDict(v);
+          res[getDict(n)] = getDict(v2);
         } else {
-          res[getDict(n)] = v;
+          res[getDict(n)] = v2;
         }
       });
       return res;
@@ -12405,6 +12445,7 @@
   }
   var postActionJobs = /* @__PURE__ */ new Set();
   var JOB_PRIORITY_UPDATE = 1;
+  var JOB_PRIORITY_REBUILD = 2;
   var JOB_PRIORITY_RENDERJS = 3;
   var JOB_PRIORITY_WXS_PROPS = 4;
   function queuePostActionJob(job, priority) {
@@ -12413,7 +12454,7 @@
   function flushPostActionJobs() {
     try {
       ;
-      [...postActionJobs].sort((a, b) => a.priority - b.priority).forEach((fn) => fn());
+      [...postActionJobs].sort((a2, b) => a2.priority - b.priority).forEach((fn) => fn());
     } finally {
       postActionJobs.clear();
     }
@@ -12489,8 +12530,8 @@
     return (newValue) => {
       try {
         invokeWxsProps(wxsInvoker, node.$, newValue, oldValue);
-      } catch (e) {
-        console.error(e);
+      } catch (e2) {
+        console.error(e2);
       }
       oldValue = newValue;
     };
@@ -12693,7 +12734,7 @@
       __wxsRemoveClass
     } = el;
     if (__wxsRemoveClass && __wxsRemoveClass.length) {
-      clazz = clazz.split(/\s+/).filter((v) => __wxsRemoveClass.indexOf(v) === -1).join(" ");
+      clazz = clazz.split(/\s+/).filter((v2) => __wxsRemoveClass.indexOf(v2) === -1).join(" ");
       __wxsRemoveClass.length = 0;
     }
     if (__wxsAddClass && __wxsAddClass.length) {
@@ -12812,7 +12853,7 @@
   var importantRE = /\s*!important$/;
   function setStyle(style, name, val) {
     if (isArray(val)) {
-      val.forEach((v) => setStyle(style, name, v));
+      val.forEach((v2) => setStyle(style, name, v2));
     } else {
       val = normalizeStyleValue$1(val);
       if (name.startsWith("--")) {
@@ -13431,9 +13472,9 @@
         hovering,
         binding
       } = useHover(props2);
-      var onClick = withWebEvent((e, isLabelClick) => {
+      var onClick = withWebEvent((e2, isLabelClick) => {
         if (props2.disabled) {
-          return e.stopImmediatePropagation();
+          return e2.stopImmediatePropagation();
         }
         if (isLabelClick) {
           rootRef.value.click();
@@ -13444,9 +13485,9 @@
             return;
           }
           if (formType === "submit") {
-            uniForm.submit(e);
+            uniForm.submit(e2);
           } else if (formType === "reset") {
-            uniForm.reset(e);
+            uniForm.reset(e2);
           }
           return;
         }
@@ -13546,7 +13587,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$b = {
+  var props$e = {
     name: {
       type: String,
       default: ""
@@ -13554,7 +13595,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$b,
+    props: props$e,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -13607,7 +13648,7 @@
     }
     return getFieldsValue;
   }
-  var props$a = {
+  var props$d = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -13656,7 +13697,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$a,
+    props: props$d,
     setup(props2, _ref) {
       var {
         slots
@@ -13841,7 +13882,7 @@
       });
     }
   }
-  var props$9 = {
+  var props$c = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -14075,7 +14116,79 @@
     }
     return obj;
   }
-  var props$8 = {
+  var INFO_COLOR = "#10aeff";
+  var WARN_COLOR = "#f76260";
+  var GREY_COLOR = "#b2b2b2";
+  var CANCEL_COLOR = "#f43530";
+  var ICONS = {
+    success: {
+      d: ICON_PATH_SUCCESS,
+      c: PRIMARY_COLOR
+    },
+    success_no_circle: {
+      d: ICON_PATH_SUCCESS_NO_CIRCLE,
+      c: PRIMARY_COLOR
+    },
+    info: {
+      d: ICON_PATH_INFO,
+      c: INFO_COLOR
+    },
+    warn: {
+      d: ICON_PATH_WARN,
+      c: WARN_COLOR
+    },
+    waiting: {
+      d: ICON_PATH_WAITING,
+      c: INFO_COLOR
+    },
+    cancel: {
+      d: ICON_PATH_CANCEL,
+      c: CANCEL_COLOR
+    },
+    download: {
+      d: ICON_PATH_DOWNLOAD,
+      c: PRIMARY_COLOR
+    },
+    search: {
+      d: ICON_PATH_SEARCH,
+      c: GREY_COLOR
+    },
+    clear: {
+      d: ICON_PATH_CLEAR,
+      c: GREY_COLOR
+    }
+  };
+  const Icon = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Icon",
+    props: {
+      type: {
+        type: String,
+        required: true,
+        default: ""
+      },
+      size: {
+        type: [String, Number],
+        default: 23
+      },
+      color: {
+        type: String,
+        default: ""
+      }
+    },
+    setup(props2) {
+      var rootRef = ref(null);
+      var path = computed(() => ICONS[props2.type]);
+      return () => {
+        var {
+          value
+        } = path;
+        return createVNode("uni-icon", {
+          "ref": rootRef
+        }, [value && value.d && createSvgIconVNode(value.d, props2.color || value.c, rpx2px(props2.size))], 512);
+      };
+    }
+  });
+  var props$b = {
     src: {
       type: String,
       default: ""
@@ -14114,7 +14227,7 @@
   };
   const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$8,
+    props: props$b,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -14325,7 +14438,7 @@
     };
     return newFn;
   }
-  var passiveOptions = /* @__PURE__ */ passive(true);
+  var passiveOptions$1 = /* @__PURE__ */ passive(true);
   var states = [];
   var userInteract = 0;
   var inited = false;
@@ -14343,7 +14456,7 @@
           setTimeout(() => {
             !--userInteract && setUserAction(false);
           }, 0);
-        }, passiveOptions);
+        }, passiveOptions$1);
       });
       inited = true;
     }
@@ -14446,7 +14559,7 @@
     return valueStr.slice(0, maxlength);
   }
   var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
-  var props$7 = /* @__PURE__ */ extend({}, {
+  var props$a = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -14533,7 +14646,7 @@
       type: String,
       default: ""
     }
-  }, props$9);
+  }, props$c);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -14773,7 +14886,7 @@
       trigger: trigger2
     };
   }
-  var props$6 = /* @__PURE__ */ extend({}, props$7, {
+  var props$9 = /* @__PURE__ */ extend({}, props$a, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -14802,7 +14915,7 @@
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$6,
+    props: props$9,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
       var {
@@ -14958,6 +15071,325 @@
       };
     }
   });
+  function entries(obj) {
+    return Object.keys(obj).map((key2) => [key2, obj[key2]]);
+  }
+  var DEFAULT_EXCLUDE_KEYS = ["class", "style"];
+  var LISTENER_PREFIX = /^on[A-Z]+/;
+  var useAttrs = function() {
+    var params = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+    var {
+      excludeListeners = false,
+      excludeKeys = []
+    } = params;
+    var instance = getCurrentInstance();
+    var attrs2 = shallowRef({});
+    var listeners2 = shallowRef({});
+    var excludeAttrs = shallowRef({});
+    var allExcludeKeys = excludeKeys.concat(DEFAULT_EXCLUDE_KEYS);
+    instance.attrs = reactive(instance.attrs);
+    watchEffect(() => {
+      var res = entries(instance.attrs).reduce((acc, _ref) => {
+        var [key2, val] = _ref;
+        if (allExcludeKeys.includes(key2)) {
+          acc.exclude[key2] = val;
+        } else if (LISTENER_PREFIX.test(key2)) {
+          if (!excludeListeners) {
+            acc.attrs[key2] = val;
+          }
+          acc.listeners[key2] = val;
+        } else {
+          acc.attrs[key2] = val;
+        }
+        return acc;
+      }, {
+        exclude: {},
+        attrs: {},
+        listeners: {}
+      });
+      attrs2.value = res.attrs;
+      listeners2.value = res.listeners;
+      excludeAttrs.value = res.exclude;
+    });
+    return {
+      $attrs: attrs2,
+      $listeners: listeners2,
+      $excludeAttrs: excludeAttrs
+    };
+  };
+  var webview;
+  var pullToRefreshStyle;
+  function initScrollBounce() {
+    {
+      plusReady(() => {
+        if (!webview) {
+          webview = plus.webview.currentWebview();
+        }
+        if (!pullToRefreshStyle) {
+          pullToRefreshStyle = (webview.getStyle() || {}).pullToRefresh || {};
+        }
+      });
+    }
+  }
+  function disableScrollBounce(_ref) {
+    var {
+      disable
+    } = _ref;
+    {
+      if (pullToRefreshStyle && pullToRefreshStyle.support) {
+        webview.setPullToRefresh(Object.assign({}, pullToRefreshStyle, {
+          support: !disable
+        }));
+      }
+    }
+  }
+  function flatVNode(nodes) {
+    var array = [];
+    if (isArray(nodes)) {
+      nodes.forEach((vnode) => {
+        if (isVNode(vnode)) {
+          if (vnode.type === Fragment) {
+            array.push(...flatVNode(vnode.children));
+          } else {
+            array.push(vnode);
+          }
+        } else if (isArray(vnode)) {
+          array.push(...flatVNode(vnode));
+        }
+      });
+    }
+    return array;
+  }
+  function useRebuild(callback) {
+    var instance = getCurrentInstance();
+    instance.rebuild = callback;
+  }
+  var movableAreaProps = {
+    scaleArea: {
+      type: Boolean,
+      default: false
+    }
+  };
+  const MovableArea = /* @__PURE__ */ defineBuiltInComponent({
+    inheritAttrs: false,
+    name: "MovableArea",
+    props: movableAreaProps,
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var _isMounted = ref(false);
+      var {
+        setContexts,
+        events: movableAreaEvents
+      } = useMovableAreaState(props2, rootRef);
+      var {
+        $listeners,
+        $attrs,
+        $excludeAttrs
+      } = useAttrs();
+      var _listeners = $listeners.value;
+      var events = ["onTouchstart", "onTouchmove", "onTouchend"];
+      events.forEach((event) => {
+        var existing = _listeners[event];
+        var ours = movableAreaEvents["_".concat(event)];
+        _listeners[event] = existing ? [].concat(existing, ours) : ours;
+      });
+      onMounted(() => {
+        movableAreaEvents._resize();
+        initScrollBounce();
+        _isMounted.value = true;
+      });
+      var movableViewItems = [];
+      var originMovableViewContexts = [];
+      function updateMovableViewContexts() {
+        var contexts = [];
+        var _loop = function(index2) {
+          var movableViewItem = movableViewItems[index2];
+          if (!(movableViewItem instanceof Element)) {
+            movableViewItem = movableViewItem.el;
+          }
+          var movableViewContext = originMovableViewContexts.find((context) => movableViewItem === context.rootRef.value);
+          if (movableViewContext) {
+            contexts.push(markRaw(movableViewContext));
+          }
+        };
+        for (var index = 0; index < movableViewItems.length; index++) {
+          _loop(index);
+        }
+        setContexts(contexts);
+      }
+      {
+        useRebuild(() => {
+          movableViewItems = rootRef.value.children;
+          updateMovableViewContexts();
+        });
+      }
+      var addMovableViewContext = (movableViewContext) => {
+        originMovableViewContexts.push(movableViewContext);
+        updateMovableViewContexts();
+      };
+      var removeMovableViewContext = (movableViewContext) => {
+        var index = originMovableViewContexts.indexOf(movableViewContext);
+        if (index >= 0) {
+          originMovableViewContexts.splice(index, 1);
+          updateMovableViewContexts();
+        }
+      };
+      provide("_isMounted", _isMounted);
+      provide("movableAreaRootRef", rootRef);
+      provide("addMovableViewContext", addMovableViewContext);
+      provide("removeMovableViewContext", removeMovableViewContext);
+      return () => {
+        slots.default && slots.default();
+        return createVNode("uni-movable-area", mergeProps({
+          "ref": rootRef
+        }, $attrs.value, $excludeAttrs.value, _listeners), [createVNode(ResizeSensor, {
+          "onResize": movableAreaEvents._resize
+        }, null, 8, ["onResize"]), movableViewItems], 16);
+      };
+    }
+  });
+  function calc(e2) {
+    return Math.sqrt(e2.x * e2.x + e2.y * e2.y);
+  }
+  function useMovableAreaState(props2, rootRef) {
+    var width = ref(0);
+    var height = ref(0);
+    var gapV = reactive({
+      x: null,
+      y: null
+    });
+    var pinchStartLen = ref(null);
+    var _scaleMovableView = null;
+    var movableViewContexts = [];
+    function _updateScale(e2) {
+      if (e2 && e2 !== 1) {
+        if (props2.scaleArea) {
+          movableViewContexts.forEach(function(item) {
+            item._setScale(e2);
+          });
+        } else {
+          if (_scaleMovableView) {
+            _scaleMovableView._setScale(e2);
+          }
+        }
+      }
+    }
+    function _find(target) {
+      var items = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : movableViewContexts;
+      var root = rootRef.value;
+      function get2(node) {
+        for (var i2 = 0; i2 < items.length; i2++) {
+          var item = items[i2];
+          if (node === item.rootRef.value) {
+            return item;
+          }
+        }
+        if (node === root || node === document.body || node === document) {
+          return null;
+        }
+        return get2(node.parentNode);
+      }
+      return get2(target);
+    }
+    var _onTouchstart = withWebEvent((t2) => {
+      disableScrollBounce({
+        disable: true
+      });
+      var i2 = t2.touches;
+      if (i2) {
+        if (i2.length > 1) {
+          var r = {
+            x: i2[1].pageX - i2[0].pageX,
+            y: i2[1].pageY - i2[0].pageY
+          };
+          pinchStartLen.value = calc(r);
+          gapV.x = r.x;
+          gapV.y = r.y;
+          if (!props2.scaleArea) {
+            var touch0 = _find(i2[0].target);
+            var touch1 = _find(i2[1].target);
+            _scaleMovableView = touch0 && touch0 === touch1 ? touch0 : null;
+          }
+        }
+      }
+    });
+    var _onTouchmove = withWebEvent((t2) => {
+      var n = t2.touches;
+      if (n) {
+        if (n.length > 1) {
+          t2.preventDefault();
+          var i2 = {
+            x: n[1].pageX - n[0].pageX,
+            y: n[1].pageY - n[0].pageY
+          };
+          if (gapV.x !== null && pinchStartLen.value && pinchStartLen.value > 0) {
+            var r = calc(i2) / pinchStartLen.value;
+            _updateScale(r);
+          }
+          gapV.x = i2.x;
+          gapV.y = i2.y;
+        }
+      }
+    });
+    var _onTouchend = withWebEvent((e2) => {
+      disableScrollBounce({
+        disable: false
+      });
+      var t2 = e2.touches;
+      if (!(t2 && t2.length)) {
+        if (e2.changedTouches) {
+          gapV.x = 0;
+          gapV.y = 0;
+          pinchStartLen.value = null;
+          if (props2.scaleArea) {
+            movableViewContexts.forEach(function(item) {
+              item._endScale();
+            });
+          } else {
+            if (_scaleMovableView) {
+              _scaleMovableView._endScale();
+            }
+          }
+        }
+      }
+    });
+    function _resize() {
+      _getWH();
+      movableViewContexts.forEach(function(item, index) {
+        item.setParent();
+      });
+    }
+    function _getWH() {
+      var style = window.getComputedStyle(rootRef.value);
+      var rect = rootRef.value.getBoundingClientRect();
+      width.value = rect.width - ["Left", "Right"].reduce(function(all, item) {
+        var LEFT = "border" + item + "Width";
+        var RIGHT = "padding" + item;
+        return all + parseFloat(style[LEFT]) + parseFloat(style[RIGHT]);
+      }, 0);
+      height.value = rect.height - ["Top", "Bottom"].reduce(function(all, item) {
+        var TOP = "border" + item + "Width";
+        var BOTTOM = "padding" + item;
+        return all + parseFloat(style[TOP]) + parseFloat(style[BOTTOM]);
+      }, 0);
+    }
+    provide("movableAreaWidth", width);
+    provide("movableAreaHeight", height);
+    return {
+      setContexts(contexts) {
+        movableViewContexts = contexts;
+      },
+      events: {
+        _onTouchstart,
+        _onTouchmove,
+        _onTouchend,
+        _resize
+      }
+    };
+  }
   var addListenerToElement = function(element, type, callback, capture) {
     element.addEventListener(type, ($event) => {
       if (isFunction(callback)) {
@@ -15068,6 +15500,1059 @@
         return fn($event, useCancel ? "cancel" : "end", $eventTemp.touches[0].pageX, $eventTemp.touches[0].pageY);
       }
     });
+  }
+  function e(e2, t2, n) {
+    return e2 > t2 - n && e2 < t2 + n;
+  }
+  function t(t2, n) {
+    return e(t2, 0, n);
+  }
+  function Decline() {
+  }
+  Decline.prototype.x = function(e2) {
+    return Math.sqrt(e2);
+  };
+  function Friction$1(e2, t2) {
+    this._m = e2;
+    this._f = 1e3 * t2;
+    this._startTime = 0;
+    this._v = 0;
+  }
+  Friction$1.prototype.setV = function(x, y) {
+    var n = Math.pow(Math.pow(x, 2) + Math.pow(y, 2), 0.5);
+    this._x_v = x;
+    this._y_v = y;
+    this._x_a = -this._f * this._x_v / n;
+    this._y_a = -this._f * this._y_v / n;
+    this._t = Math.abs(x / this._x_a) || Math.abs(y / this._y_a);
+    this._lastDt = null;
+    this._startTime = (/* @__PURE__ */ new Date()).getTime();
+  };
+  Friction$1.prototype.setS = function(x, y) {
+    this._x_s = x;
+    this._y_s = y;
+  };
+  Friction$1.prototype.s = function(t2) {
+    if (void 0 === t2) {
+      t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+    }
+    if (t2 > this._t) {
+      t2 = this._t;
+      this._lastDt = t2;
+    }
+    var x = this._x_v * t2 + 0.5 * this._x_a * Math.pow(t2, 2) + this._x_s;
+    var y = this._y_v * t2 + 0.5 * this._y_a * Math.pow(t2, 2) + this._y_s;
+    if (this._x_a > 0 && x < this._endPositionX || this._x_a < 0 && x > this._endPositionX) {
+      x = this._endPositionX;
+    }
+    if (this._y_a > 0 && y < this._endPositionY || this._y_a < 0 && y > this._endPositionY) {
+      y = this._endPositionY;
+    }
+    return {
+      x,
+      y
+    };
+  };
+  Friction$1.prototype.ds = function(t2) {
+    if (void 0 === t2) {
+      t2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+    }
+    if (t2 > this._t) {
+      t2 = this._t;
+    }
+    return {
+      dx: this._x_v + this._x_a * t2,
+      dy: this._y_v + this._y_a * t2
+    };
+  };
+  Friction$1.prototype.delta = function() {
+    return {
+      x: -1.5 * Math.pow(this._x_v, 2) / this._x_a || 0,
+      y: -1.5 * Math.pow(this._y_v, 2) / this._y_a || 0
+    };
+  };
+  Friction$1.prototype.dt = function() {
+    return -this._x_v / this._x_a;
+  };
+  Friction$1.prototype.done = function() {
+    var t2 = e(this.s().x, this._endPositionX) || e(this.s().y, this._endPositionY) || this._lastDt === this._t;
+    this._lastDt = null;
+    return t2;
+  };
+  Friction$1.prototype.setEnd = function(x, y) {
+    this._endPositionX = x;
+    this._endPositionY = y;
+  };
+  Friction$1.prototype.reconfigure = function(m, f2) {
+    this._m = m;
+    this._f = 1e3 * f2;
+  };
+  function Spring$1(m, k, c2) {
+    this._m = m;
+    this._k = k;
+    this._c = c2;
+    this._solution = null;
+    this._endPosition = 0;
+    this._startTime = 0;
+  }
+  Spring$1.prototype._solve = function(e2, t2) {
+    var n = this._c;
+    var i2 = this._m;
+    var r = this._k;
+    var o2 = n * n - 4 * i2 * r;
+    if (o2 === 0) {
+      var a2 = -n / (2 * i2);
+      var s = e2;
+      var l = t2 / (a2 * e2);
+      return {
+        x: function(e3) {
+          return (s + l * e3) * Math.pow(Math.E, a2 * e3);
+        },
+        dx: function(e3) {
+          var t3 = Math.pow(Math.E, a2 * e3);
+          return a2 * (s + l * e3) * t3 + l * t3;
+        }
+      };
+    }
+    if (o2 > 0) {
+      var c2 = (-n - Math.sqrt(o2)) / (2 * i2);
+      var u = (-n + Math.sqrt(o2)) / (2 * i2);
+      var d = (t2 - c2 * e2) / (u - c2);
+      var h2 = e2 - d;
+      return {
+        x: function(e3) {
+          var t3;
+          var n2;
+          if (e3 === this._t) {
+            t3 = this._powER1T;
+            n2 = this._powER2T;
+          }
+          this._t = e3;
+          if (!t3) {
+            t3 = this._powER1T = Math.pow(Math.E, c2 * e3);
+          }
+          if (!n2) {
+            n2 = this._powER2T = Math.pow(Math.E, u * e3);
+          }
+          return h2 * t3 + d * n2;
+        },
+        dx: function(e3) {
+          var t3;
+          var n2;
+          if (e3 === this._t) {
+            t3 = this._powER1T;
+            n2 = this._powER2T;
+          }
+          this._t = e3;
+          if (!t3) {
+            t3 = this._powER1T = Math.pow(Math.E, c2 * e3);
+          }
+          if (!n2) {
+            n2 = this._powER2T = Math.pow(Math.E, u * e3);
+          }
+          return h2 * c2 * t3 + d * u * n2;
+        }
+      };
+    }
+    var p2 = Math.sqrt(4 * i2 * r - n * n) / (2 * i2);
+    var f2 = -n / 2 * i2;
+    var v2 = e2;
+    var g2 = (t2 - f2 * e2) / p2;
+    return {
+      x: function(e3) {
+        return Math.pow(Math.E, f2 * e3) * (v2 * Math.cos(p2 * e3) + g2 * Math.sin(p2 * e3));
+      },
+      dx: function(e3) {
+        var t3 = Math.pow(Math.E, f2 * e3);
+        var n2 = Math.cos(p2 * e3);
+        var i3 = Math.sin(p2 * e3);
+        return t3 * (g2 * p2 * n2 - v2 * p2 * i3) + f2 * t3 * (g2 * i3 + v2 * n2);
+      }
+    };
+  };
+  Spring$1.prototype.x = function(e2) {
+    if (void 0 === e2) {
+      e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+    }
+    return this._solution ? this._endPosition + this._solution.x(e2) : 0;
+  };
+  Spring$1.prototype.dx = function(e2) {
+    if (void 0 === e2) {
+      e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+    }
+    return this._solution ? this._solution.dx(e2) : 0;
+  };
+  Spring$1.prototype.setEnd = function(e2, n, i2) {
+    if (!i2) {
+      i2 = (/* @__PURE__ */ new Date()).getTime();
+    }
+    if (e2 !== this._endPosition || !t(n, 0.1)) {
+      n = n || 0;
+      var r = this._endPosition;
+      if (this._solution) {
+        if (t(n, 0.1)) {
+          n = this._solution.dx((i2 - this._startTime) / 1e3);
+        }
+        r = this._solution.x((i2 - this._startTime) / 1e3);
+        if (t(n, 0.1)) {
+          n = 0;
+        }
+        if (t(r, 0.1)) {
+          r = 0;
+        }
+        r += this._endPosition;
+      }
+      if (!(this._solution && t(r - e2, 0.1) && t(n, 0.1))) {
+        this._endPosition = e2;
+        this._solution = this._solve(r - this._endPosition, n);
+        this._startTime = i2;
+      }
+    }
+  };
+  Spring$1.prototype.snap = function(e2) {
+    this._startTime = (/* @__PURE__ */ new Date()).getTime();
+    this._endPosition = e2;
+    this._solution = {
+      x: function() {
+        return 0;
+      },
+      dx: function() {
+        return 0;
+      }
+    };
+  };
+  Spring$1.prototype.done = function(n) {
+    if (!n) {
+      n = (/* @__PURE__ */ new Date()).getTime();
+    }
+    return e(this.x(), this._endPosition, 0.1) && t(this.dx(), 0.1);
+  };
+  Spring$1.prototype.reconfigure = function(m, t2, c2) {
+    this._m = m;
+    this._k = t2;
+    this._c = c2;
+    if (!this.done()) {
+      this._solution = this._solve(this.x() - this._endPosition, this.dx());
+      this._startTime = (/* @__PURE__ */ new Date()).getTime();
+    }
+  };
+  Spring$1.prototype.springConstant = function() {
+    return this._k;
+  };
+  Spring$1.prototype.damping = function() {
+    return this._c;
+  };
+  Spring$1.prototype.configuration = function() {
+    function e2(e3, t3) {
+      e3.reconfigure(1, t3, e3.damping());
+    }
+    function t2(e3, t3) {
+      e3.reconfigure(1, e3.springConstant(), t3);
+    }
+    return [{
+      label: "Spring Constant",
+      read: this.springConstant.bind(this),
+      write: e2.bind(this, this),
+      min: 100,
+      max: 1e3
+    }, {
+      label: "Damping",
+      read: this.damping.bind(this),
+      write: t2.bind(this, this),
+      min: 1,
+      max: 500
+    }];
+  };
+  function STD(e2, t2, n) {
+    this._springX = new Spring$1(e2, t2, n);
+    this._springY = new Spring$1(e2, t2, n);
+    this._springScale = new Spring$1(e2, t2, n);
+    this._startTime = 0;
+  }
+  STD.prototype.setEnd = function(e2, t2, n, i2) {
+    var r = (/* @__PURE__ */ new Date()).getTime();
+    this._springX.setEnd(e2, i2, r);
+    this._springY.setEnd(t2, i2, r);
+    this._springScale.setEnd(n, i2, r);
+    this._startTime = r;
+  };
+  STD.prototype.x = function() {
+    var e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+    return {
+      x: this._springX.x(e2),
+      y: this._springY.x(e2),
+      scale: this._springScale.x(e2)
+    };
+  };
+  STD.prototype.done = function() {
+    var e2 = (/* @__PURE__ */ new Date()).getTime();
+    return this._springX.done(e2) && this._springY.done(e2) && this._springScale.done(e2);
+  };
+  STD.prototype.reconfigure = function(e2, t2, n) {
+    this._springX.reconfigure(e2, t2, n);
+    this._springY.reconfigure(e2, t2, n);
+    this._springScale.reconfigure(e2, t2, n);
+  };
+  var movableViewProps = {
+    direction: {
+      type: String,
+      default: "none"
+    },
+    inertia: {
+      type: [Boolean, String],
+      default: false
+    },
+    outOfBounds: {
+      type: [Boolean, String],
+      default: false
+    },
+    x: {
+      type: [Number, String],
+      default: 0
+    },
+    y: {
+      type: [Number, String],
+      default: 0
+    },
+    damping: {
+      type: [Number, String],
+      default: 20
+    },
+    friction: {
+      type: [Number, String],
+      default: 2
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    scale: {
+      type: [Boolean, String],
+      default: false
+    },
+    scaleMin: {
+      type: [Number, String],
+      default: 0.5
+    },
+    scaleMax: {
+      type: [Number, String],
+      default: 10
+    },
+    scaleValue: {
+      type: [Number, String],
+      default: 1
+    },
+    animation: {
+      type: [Boolean, String],
+      default: true
+    }
+  };
+  function v(a2, b) {
+    return +((1e3 * a2 - 1e3 * b) / 1e3).toFixed(1);
+  }
+  const MovableView = /* @__PURE__ */ defineBuiltInComponent({
+    name: "MovableView",
+    props: movableViewProps,
+    emits: ["change", "scale"],
+    setup(props2, _ref) {
+      var {
+        slots,
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      var {
+        setParent
+      } = useMovableViewState(props2, trigger2, rootRef);
+      return () => {
+        return createVNode("uni-movable-view", {
+          "ref": rootRef
+        }, [createVNode(ResizeSensor, {
+          "onResize": setParent
+        }, null, 8, ["onResize"]), slots.default && slots.default()], 512);
+      };
+    }
+  });
+  var requesting = false;
+  function _requestAnimationFrame(e2) {
+    if (!requesting) {
+      requesting = true;
+      requestAnimationFrame(function() {
+        e2();
+        requesting = false;
+      });
+    }
+  }
+  function p(t2, n) {
+    if (t2 === n) {
+      return 0;
+    }
+    var i2 = t2.offsetLeft;
+    return t2.offsetParent ? i2 += p(t2.offsetParent, n) : 0;
+  }
+  function f(t2, n) {
+    if (t2 === n) {
+      return 0;
+    }
+    var i2 = t2.offsetTop;
+    return t2.offsetParent ? i2 += f(t2.offsetParent, n) : 0;
+  }
+  function g(friction, execute, endCallback) {
+    var record = {
+      id: 0,
+      cancelled: false
+    };
+    var cancel = function(record2) {
+      if (record2 && record2.id) {
+        cancelAnimationFrame(record2.id);
+      }
+      if (record2) {
+        record2.cancelled = true;
+      }
+    };
+    function fn(record2, friction2, execute2, endCallback2) {
+      if (!record2 || !record2.cancelled) {
+        execute2(friction2);
+        var isDone = friction2.done();
+        if (!isDone) {
+          if (!record2.cancelled) {
+            record2.id = requestAnimationFrame(fn.bind(null, record2, friction2, execute2, endCallback2));
+          }
+        }
+        if (isDone && endCallback2) {
+          endCallback2(friction2);
+        }
+      }
+    }
+    fn(record, friction, execute, endCallback);
+    return {
+      cancel: cancel.bind(null, record),
+      model: friction
+    };
+  }
+  function _getPx(val) {
+    if (/\d+[ur]px$/i.test(val)) {
+      return uni.upx2px(parseFloat(val));
+    }
+    return Number(val) || 0;
+  }
+  function useMovableViewLayout(rootRef, _scale, _adjustScale) {
+    var movableAreaWidth = inject("movableAreaWidth", ref(0));
+    var movableAreaHeight = inject("movableAreaHeight", ref(0));
+    var movableAreaRootRef = inject("movableAreaRootRef");
+    var _offset = {
+      x: 0,
+      y: 0
+    };
+    var _scaleOffset = {
+      x: 0,
+      y: 0
+    };
+    var width = ref(0);
+    var height = ref(0);
+    var minX = ref(0);
+    var minY = ref(0);
+    var maxX = ref(0);
+    var maxY = ref(0);
+    function _updateBoundary() {
+      var x = 0 - _offset.x + _scaleOffset.x;
+      var _width = movableAreaWidth.value - width.value - _offset.x - _scaleOffset.x;
+      minX.value = Math.min(x, _width);
+      maxX.value = Math.max(x, _width);
+      var y = 0 - _offset.y + _scaleOffset.y;
+      var _height = movableAreaHeight.value - height.value - _offset.y - _scaleOffset.y;
+      minY.value = Math.min(y, _height);
+      maxY.value = Math.max(y, _height);
+    }
+    function _updateOffset() {
+      _offset.x = p(rootRef.value, movableAreaRootRef.value);
+      _offset.y = f(rootRef.value, movableAreaRootRef.value);
+    }
+    function _updateWH(scale) {
+      scale = scale || _scale.value;
+      scale = _adjustScale(scale);
+      var rect = rootRef.value.getBoundingClientRect();
+      height.value = rect.height / _scale.value;
+      width.value = rect.width / _scale.value;
+      var _height = height.value * scale;
+      var _width = width.value * scale;
+      _scaleOffset.x = (_width - width.value) / 2;
+      _scaleOffset.y = (_height - height.value) / 2;
+    }
+    return {
+      _updateBoundary,
+      _updateOffset,
+      _updateWH,
+      _scaleOffset,
+      minX,
+      minY,
+      maxX,
+      maxY
+    };
+  }
+  function useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger2) {
+    var dampingNumber = computed(() => {
+      var val = Number(props2.damping);
+      return isNaN(val) ? 20 : val;
+    });
+    var xMove = computed(() => props2.direction === "all" || props2.direction === "horizontal");
+    var yMove = computed(() => props2.direction === "all" || props2.direction === "vertical");
+    var xSync = ref(_getPx(props2.x));
+    var ySync = ref(_getPx(props2.y));
+    watch(() => props2.x, (val) => {
+      xSync.value = _getPx(val);
+    });
+    watch(() => props2.y, (val) => {
+      ySync.value = _getPx(val);
+    });
+    watch(xSync, (val) => {
+      _setX(val);
+    });
+    watch(ySync, (val) => {
+      _setY(val);
+    });
+    var _STD = new STD(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+    function _getLimitXY(x, y) {
+      var outOfBounds = false;
+      if (x > maxX.value) {
+        x = maxX.value;
+        outOfBounds = true;
+      } else {
+        if (x < minX.value) {
+          x = minX.value;
+          outOfBounds = true;
+        }
+      }
+      if (y > maxY.value) {
+        y = maxY.value;
+        outOfBounds = true;
+      } else {
+        if (y < minY.value) {
+          y = minY.value;
+          outOfBounds = true;
+        }
+      }
+      return {
+        x,
+        y,
+        outOfBounds
+      };
+    }
+    function FAandSFACancel() {
+      if (_FA) {
+        _FA.cancel();
+      }
+      if (_SFA) {
+        _SFA.cancel();
+      }
+    }
+    function _animationTo(x, y, scale, source, r, o2) {
+      FAandSFACancel();
+      if (!xMove.value) {
+        x = _translateX.value;
+      }
+      if (!yMove.value) {
+        y = _translateY.value;
+      }
+      if (!props2.scale) {
+        scale = _scale.value;
+      }
+      var limitXY = _getLimitXY(x, y);
+      x = limitXY.x;
+      y = limitXY.y;
+      if (!props2.animation) {
+        _setTransform(x, y, scale, source, r, o2);
+        return;
+      }
+      _STD._springX._solution = null;
+      _STD._springY._solution = null;
+      _STD._springScale._solution = null;
+      _STD._springX._endPosition = _translateX.value;
+      _STD._springY._endPosition = _translateY.value;
+      _STD._springScale._endPosition = _scale.value;
+      _STD.setEnd(x, y, scale, 1);
+      _SFA = g(_STD, function() {
+        var data = _STD.x();
+        var x2 = data.x;
+        var y2 = data.y;
+        var scale2 = data.scale;
+        _setTransform(x2, y2, scale2, source, r, o2);
+      }, function() {
+        _SFA.cancel();
+      });
+    }
+    function _setTransform(x, y, scale) {
+      var source = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : "";
+      var r = arguments.length > 4 ? arguments[4] : void 0;
+      var o2 = arguments.length > 5 ? arguments[5] : void 0;
+      if (!(x !== null && x.toString() !== "NaN" && typeof x === "number")) {
+        x = _translateX.value || 0;
+      }
+      if (!(y !== null && y.toString() !== "NaN" && typeof y === "number")) {
+        y = _translateY.value || 0;
+      }
+      x = Number(x.toFixed(1));
+      y = Number(y.toFixed(1));
+      scale = Number(scale.toFixed(1));
+      if (!(_translateX.value === x && _translateY.value === y)) {
+        if (!r) {
+          trigger2("change", {}, {
+            x: v(x, _scaleOffset.x),
+            y: v(y, _scaleOffset.y),
+            source
+          });
+        }
+      }
+      if (!props2.scale) {
+        scale = _scale.value;
+      }
+      scale = _adjustScale(scale);
+      scale = +scale.toFixed(3);
+      if (o2 && scale !== _scale.value) {
+        trigger2("scale", {}, {
+          x,
+          y,
+          scale
+        });
+      }
+      var transform = "translateX(" + x + "px) translateY(" + y + "px) translateZ(0px) scale(" + scale + ")";
+      if (rootRef.value) {
+        rootRef.value.style.transform = transform;
+        rootRef.value.style.webkitTransform = transform;
+        _translateX.value = x;
+        _translateY.value = y;
+        _scale.value = scale;
+      }
+    }
+    function _revise(source) {
+      var limitXY = _getLimitXY(_translateX.value, _translateY.value);
+      var x = limitXY.x;
+      var y = limitXY.y;
+      var outOfBounds = limitXY.outOfBounds;
+      if (outOfBounds) {
+        _animationTo(x, y, _scale.value, source);
+      }
+      return outOfBounds;
+    }
+    function _setX(val) {
+      if (xMove.value) {
+        if (val + _scaleOffset.x === _translateX.value) {
+          return _translateX;
+        } else {
+          if (_SFA) {
+            _SFA.cancel();
+          }
+          _animationTo(val + _scaleOffset.x, ySync.value + _scaleOffset.y, _scale.value);
+        }
+      }
+      return val;
+    }
+    function _setY(val) {
+      if (yMove.value) {
+        if (val + _scaleOffset.y === _translateY.value) {
+          return _translateY;
+        } else {
+          if (_SFA) {
+            _SFA.cancel();
+          }
+          _animationTo(xSync.value + _scaleOffset.x, val + _scaleOffset.y, _scale.value);
+        }
+      }
+      return val;
+    }
+    return {
+      FAandSFACancel,
+      _getLimitXY,
+      _animationTo,
+      _setTransform,
+      _revise,
+      dampingNumber,
+      xMove,
+      yMove,
+      xSync,
+      ySync,
+      _STD
+    };
+  }
+  function useMovableViewInit(props2, rootRef, trigger2, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA) {
+    var scaleMinNumber = computed(() => {
+      var val = Number(props2.scaleMin);
+      return isNaN(val) ? 0.5 : val;
+    });
+    var scaleMaxNumber = computed(() => {
+      var val = Number(props2.scaleMax);
+      return isNaN(val) ? 10 : val;
+    });
+    var scaleValueSync = ref(Number(props2.scaleValue) || 1);
+    watch(scaleValueSync, (val) => {
+      _setScaleValue(val);
+    });
+    watch(scaleMinNumber, () => {
+      _setScaleMinOrMax();
+    });
+    watch(scaleMaxNumber, () => {
+      _setScaleMinOrMax();
+    });
+    watch(() => props2.scaleValue, (val) => {
+      scaleValueSync.value = Number(val) || 0;
+    });
+    var {
+      _updateBoundary,
+      _updateOffset,
+      _updateWH,
+      _scaleOffset,
+      minX,
+      minY,
+      maxX,
+      maxY
+    } = useMovableViewLayout(rootRef, _scale, _adjustScale);
+    var {
+      FAandSFACancel,
+      _getLimitXY,
+      _animationTo,
+      _setTransform,
+      _revise,
+      dampingNumber,
+      xMove,
+      yMove,
+      xSync,
+      ySync,
+      _STD
+    } = useMovableViewTransform(rootRef, props2, _scaleOffset, _scale, maxX, maxY, minX, minY, _translateX, _translateY, _SFA, _FA, _adjustScale, trigger2);
+    function _updateScale(scale, animat) {
+      if (props2.scale) {
+        scale = _adjustScale(scale);
+        _updateWH(scale);
+        _updateBoundary();
+        var limitXY = _getLimitXY(_translateX.value, _translateY.value);
+        var x = limitXY.x;
+        var y = limitXY.y;
+        if (animat) {
+          _animationTo(x, y, scale, "", true, true);
+        } else {
+          _requestAnimationFrame(function() {
+            _setTransform(x, y, scale, "", true, true);
+          });
+        }
+      }
+    }
+    function _beginScale() {
+      _isScaling.value = true;
+    }
+    function _updateOldScale(scale) {
+      _oldScale.value = scale;
+    }
+    function _adjustScale(scale) {
+      scale = Math.max(0.5, scaleMinNumber.value, scale);
+      scale = Math.min(10, scaleMaxNumber.value, scale);
+      return scale;
+    }
+    function _setScaleMinOrMax() {
+      if (!props2.scale) {
+        return false;
+      }
+      _updateScale(_scale.value, true);
+      _updateOldScale(_scale.value);
+    }
+    function _setScaleValue(scale) {
+      if (!props2.scale) {
+        return false;
+      }
+      scale = _adjustScale(scale);
+      _updateScale(scale, true);
+      _updateOldScale(scale);
+      return scale;
+    }
+    function _endScale() {
+      _isScaling.value = false;
+      _updateOldScale(_scale.value);
+    }
+    function _setScale(scale) {
+      if (scale) {
+        scale = _oldScale.value * scale;
+        _beginScale();
+        _updateScale(scale);
+      }
+    }
+    return {
+      // scale
+      _updateOldScale,
+      _endScale,
+      _setScale,
+      scaleValueSync,
+      // layout
+      _updateBoundary,
+      _updateOffset,
+      _updateWH,
+      _scaleOffset,
+      minX,
+      minY,
+      maxX,
+      maxY,
+      // transform
+      FAandSFACancel,
+      _getLimitXY,
+      _animationTo,
+      _setTransform,
+      _revise,
+      dampingNumber,
+      xMove,
+      yMove,
+      xSync,
+      ySync,
+      _STD
+    };
+  }
+  function useMovableViewState(props2, trigger2, rootRef) {
+    var _isMounted = inject("_isMounted", ref(false));
+    var addMovableViewContext = inject("addMovableViewContext", () => {
+    });
+    var removeMovableViewContext = inject("removeMovableViewContext", () => {
+    });
+    var _scale = ref(1);
+    var _oldScale = ref(1);
+    var _isScaling = ref(false);
+    var _translateX = ref(0);
+    var _translateY = ref(0);
+    var _SFA = null;
+    var _FA = null;
+    var _isTouching = false;
+    var __baseX;
+    var __baseY;
+    var _checkCanMove = null;
+    var _firstMoveDirection = null;
+    var _declineX = new Decline();
+    var _declineY = new Decline();
+    var __touchInfo = {
+      historyX: [0, 0],
+      historyY: [0, 0],
+      historyT: [0, 0]
+    };
+    var frictionNumber = computed(() => {
+      var val = Number(props2.friction);
+      return isNaN(val) || val <= 0 ? 2 : val;
+    });
+    var _friction = new Friction$1(1, frictionNumber.value);
+    watch(() => props2.disabled, () => {
+      __handleTouchStart();
+    });
+    var {
+      // scale
+      _updateOldScale,
+      _endScale,
+      _setScale,
+      scaleValueSync,
+      // layout
+      _updateBoundary,
+      _updateOffset,
+      _updateWH,
+      _scaleOffset,
+      minX,
+      minY,
+      maxX,
+      maxY,
+      // transform
+      FAandSFACancel,
+      _getLimitXY,
+      _setTransform,
+      _revise,
+      dampingNumber,
+      xMove,
+      yMove,
+      xSync,
+      ySync,
+      _STD
+    } = useMovableViewInit(props2, rootRef, trigger2, _scale, _oldScale, _isScaling, _translateX, _translateY, _SFA, _FA);
+    function __handleTouchStart() {
+      if (!_isScaling.value) {
+        if (!props2.disabled) {
+          disableScrollBounce({
+            disable: true
+          });
+          FAandSFACancel();
+          __touchInfo.historyX = [0, 0];
+          __touchInfo.historyY = [0, 0];
+          __touchInfo.historyT = [0, 0];
+          if (xMove.value) {
+            __baseX = _translateX.value;
+          }
+          if (yMove.value) {
+            __baseY = _translateY.value;
+          }
+          rootRef.value.style.willChange = "transform";
+          _checkCanMove = null;
+          _firstMoveDirection = null;
+          _isTouching = true;
+        }
+      }
+    }
+    function __handleTouchMove(event) {
+      if (!_isScaling.value && !props2.disabled && _isTouching) {
+        var x = _translateX.value;
+        var y = _translateY.value;
+        if (_firstMoveDirection === null) {
+          _firstMoveDirection = Math.abs(event.detail.dx / event.detail.dy) > 1 ? "htouchmove" : "vtouchmove";
+        }
+        if (xMove.value) {
+          x = event.detail.dx + __baseX;
+          __touchInfo.historyX.shift();
+          __touchInfo.historyX.push(x);
+          if (!yMove.value && _checkCanMove === null) {
+            _checkCanMove = Math.abs(event.detail.dx / event.detail.dy) < 1;
+          }
+        }
+        if (yMove.value) {
+          y = event.detail.dy + __baseY;
+          __touchInfo.historyY.shift();
+          __touchInfo.historyY.push(y);
+          if (!xMove.value && _checkCanMove === null) {
+            _checkCanMove = Math.abs(event.detail.dy / event.detail.dx) < 1;
+          }
+        }
+        __touchInfo.historyT.shift();
+        __touchInfo.historyT.push(event.detail.timeStamp);
+        if (!_checkCanMove) {
+          event.preventDefault();
+          var source = "touch";
+          if (x < minX.value) {
+            if (props2.outOfBounds) {
+              source = "touch-out-of-bounds";
+              x = minX.value - _declineX.x(minX.value - x);
+            } else {
+              x = minX.value;
+            }
+          } else if (x > maxX.value) {
+            if (props2.outOfBounds) {
+              source = "touch-out-of-bounds";
+              x = maxX.value + _declineX.x(x - maxX.value);
+            } else {
+              x = maxX.value;
+            }
+          }
+          if (y < minY.value) {
+            if (props2.outOfBounds) {
+              source = "touch-out-of-bounds";
+              y = minY.value - _declineY.x(minY.value - y);
+            } else {
+              y = minY.value;
+            }
+          } else {
+            if (y > maxY.value) {
+              if (props2.outOfBounds) {
+                source = "touch-out-of-bounds";
+                y = maxY.value + _declineY.x(y - maxY.value);
+              } else {
+                y = maxY.value;
+              }
+            }
+          }
+          _requestAnimationFrame(function() {
+            _setTransform(x, y, _scale.value, source);
+          });
+        }
+      }
+    }
+    function __handleTouchEnd() {
+      if (!_isScaling.value && !props2.disabled && _isTouching) {
+        disableScrollBounce({
+          disable: false
+        });
+        rootRef.value.style.willChange = "auto";
+        _isTouching = false;
+        if (!_checkCanMove && !_revise("out-of-bounds") && props2.inertia) {
+          var xv = 1e3 * (__touchInfo.historyX[1] - __touchInfo.historyX[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
+          var yv = 1e3 * (__touchInfo.historyY[1] - __touchInfo.historyY[0]) / (__touchInfo.historyT[1] - __touchInfo.historyT[0]);
+          var __translateX = _translateX.value;
+          var __translateY = _translateY.value;
+          _friction.setV(xv, yv);
+          _friction.setS(__translateX, __translateY);
+          var x0 = _friction.delta().x;
+          var y0 = _friction.delta().y;
+          var x = x0 + __translateX;
+          var y = y0 + __translateY;
+          if (x < minX.value) {
+            x = minX.value;
+            y = __translateY + (minX.value - __translateX) * y0 / x0;
+          } else {
+            if (x > maxX.value) {
+              x = maxX.value;
+              y = __translateY + (maxX.value - __translateX) * y0 / x0;
+            }
+          }
+          if (y < minY.value) {
+            y = minY.value;
+            x = __translateX + (minY.value - __translateY) * x0 / y0;
+          } else {
+            if (y > maxY.value) {
+              y = maxY.value;
+              x = __translateX + (maxY.value - __translateY) * x0 / y0;
+            }
+          }
+          _friction.setEnd(x, y);
+          _FA = g(_friction, function() {
+            var t2 = _friction.s();
+            var x2 = t2.x;
+            var y2 = t2.y;
+            _setTransform(x2, y2, _scale.value, "friction");
+          }, function() {
+            _FA.cancel();
+          });
+        }
+      }
+      if (!props2.outOfBounds && !props2.inertia) {
+        FAandSFACancel();
+      }
+    }
+    function setParent() {
+      if (!_isMounted.value) {
+        return;
+      }
+      FAandSFACancel();
+      var scale = props2.scale ? scaleValueSync.value : 1;
+      _updateOffset();
+      _updateWH(scale);
+      _updateBoundary();
+      var limitXY = _getLimitXY(xSync.value + _scaleOffset.x, ySync.value + _scaleOffset.y);
+      var x = limitXY.x;
+      var y = limitXY.y;
+      _setTransform(x, y, scale, "", true);
+      _updateOldScale(scale);
+    }
+    onMounted(() => {
+      useTouchtrack(rootRef.value, (event) => {
+        switch (event.detail.state) {
+          case "start":
+            __handleTouchStart();
+            break;
+          case "move":
+            __handleTouchMove(event);
+            break;
+          case "end":
+            __handleTouchEnd();
+        }
+      });
+      setParent();
+      _friction.reconfigure(1, frictionNumber.value);
+      _STD.reconfigure(1, 9 * Math.pow(dampingNumber.value, 2) / 40, dampingNumber.value);
+      rootRef.value.style.transformOrigin = "center";
+      initScrollBounce();
+      var context = {
+        rootRef,
+        setParent,
+        _endScale,
+        _setScale
+      };
+      addMovableViewContext(context);
+      onUnmounted(() => {
+        removeMovableViewContext(context);
+      });
+    });
+    onUnmounted(() => {
+      FAandSFACancel();
+    });
+    return {
+      setParent
+    };
   }
   var OPEN_TYPES = ["navigate", "redirect", "switchTab", "reLaunch", "navigateBack"];
   var ANIMATION_IN = ["slide-in-right", "slide-in-left", "slide-in-top", "slide-in-bottom", "fade-in", "zoom-out", "zoom-fade-out", "pop-in", "none"];
@@ -15205,6 +16690,1006 @@
         }, {
           "onClick": onClick
         }), [innerNode], 16, ["onClick"]);
+      };
+    }
+  });
+  var pickerViewProps = {
+    value: {
+      type: Array,
+      default() {
+        return [];
+      },
+      validator: function(val) {
+        return isArray(val) && val.filter((val2) => typeof val2 === "number").length === val.length;
+      }
+    },
+    indicatorStyle: {
+      type: String,
+      default: ""
+    },
+    indicatorClass: {
+      type: String,
+      default: ""
+    },
+    maskStyle: {
+      type: String,
+      default: ""
+    },
+    maskClass: {
+      type: String,
+      default: ""
+    }
+  };
+  function useState$1(props2) {
+    var value = reactive([...props2.value]);
+    var state = reactive({
+      value,
+      height: 34
+    });
+    watch(() => props2.value, (val, oldVal) => {
+      if (val === oldVal || val.length !== oldVal.length || val.findIndex((item, index) => item !== oldVal[index]) >= 0) {
+        state.value.length = val.length;
+        val.forEach((val2, index) => {
+          if (val2 !== state.value[index]) {
+            state.value.splice(index, 1, val2);
+          }
+        });
+      }
+    });
+    return state;
+  }
+  const PickerView = /* @__PURE__ */ defineBuiltInComponent({
+    name: "PickerView",
+    props: pickerViewProps,
+    emits: ["change", "pickstart", "pickend", "update:value"],
+    setup(props2, _ref) {
+      var {
+        slots,
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var wrapperRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      var state = useState$1(props2);
+      var resizeSensorRef = ref(null);
+      var onMountedCallback = () => {
+        var resizeSensor = resizeSensorRef.value;
+        resizeSensor && (state.height = resizeSensor.$el.offsetHeight);
+      };
+      var ColumnsPreRef = ref([]);
+      var columnsRef = ref([]);
+      function getItemIndex(vnode) {
+        var columnVNodes = columnsRef.value;
+        if (columnVNodes instanceof HTMLCollection) {
+          return Array.prototype.indexOf.call(columnVNodes, vnode.el);
+        } else {
+          columnVNodes = columnVNodes.filter((vnode2) => vnode2.type !== Comment);
+        }
+        var index = columnVNodes.indexOf(vnode);
+        return index !== -1 ? index : ColumnsPreRef.value.indexOf(vnode);
+      }
+      var getPickerViewColumn = function(columnInstance) {
+        var ref2 = computed({
+          get() {
+            var index = getItemIndex(columnInstance.vnode);
+            return state.value[index] || 0;
+          },
+          set(current) {
+            var index = getItemIndex(columnInstance.vnode);
+            if (index < 0) {
+              return;
+            }
+            var oldCurrent = state.value[index];
+            if (oldCurrent !== current) {
+              state.value[index] = current;
+              var value = state.value.map((val) => val);
+              emit2("update:value", value);
+              trigger2("change", {}, {
+                value
+              });
+            }
+          }
+        });
+        return ref2;
+      };
+      provide("getPickerViewColumn", getPickerViewColumn);
+      provide("pickerViewProps", props2);
+      provide("pickerViewState", state);
+      {
+        useRebuild(() => {
+          onMountedCallback();
+          wrapperRef.value && (columnsRef.value = wrapperRef.value.children);
+        });
+      }
+      return () => {
+        var defaultSlots = slots.default && slots.default();
+        return createVNode("uni-picker-view", {
+          "ref": rootRef
+        }, [createVNode(ResizeSensor, {
+          "ref": resizeSensorRef,
+          "onResize": (_ref2) => {
+            var {
+              height
+            } = _ref2;
+            return state.height = height;
+          }
+        }, null, 8, ["onResize"]), createVNode("div", {
+          "ref": wrapperRef,
+          "class": "uni-picker-view-wrapper"
+        }, [defaultSlots], 512)], 512);
+      };
+    }
+  });
+  class Friction {
+    constructor(drag) {
+      this._drag = drag;
+      this._dragLog = Math.log(drag);
+      this._x = 0;
+      this._v = 0;
+      this._startTime = 0;
+    }
+    set(x, v2) {
+      this._x = x;
+      this._v = v2;
+      this._startTime = (/* @__PURE__ */ new Date()).getTime();
+    }
+    setVelocityByEnd(e2) {
+      this._v = (e2 - this._x) * this._dragLog / (Math.pow(this._drag, 100) - 1);
+    }
+    x(e2) {
+      if (e2 === void 0) {
+        e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+      }
+      var t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+      this._dt = e2;
+      return this._x + this._v * t2 / this._dragLog - this._v / this._dragLog;
+    }
+    dx(e2) {
+      if (e2 === void 0) {
+        e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+      }
+      var t2 = e2 === this._dt && this._powDragDt ? this._powDragDt : this._powDragDt = Math.pow(this._drag, e2);
+      this._dt = e2;
+      return this._v * t2;
+    }
+    done() {
+      return Math.abs(this.dx()) < 3;
+    }
+    reconfigure(e2) {
+      var t2 = this.x();
+      var n = this.dx();
+      this._drag = e2;
+      this._dragLog = Math.log(e2);
+      this.set(t2, n);
+    }
+    configuration() {
+      var e2 = this;
+      return [{
+        label: "Friction",
+        read: function() {
+          return e2._drag;
+        },
+        write: function(t2) {
+          e2.reconfigure(t2);
+        },
+        min: 1e-3,
+        max: 0.1,
+        step: 1e-3
+      }];
+    }
+  }
+  function o(e2, t2, n) {
+    return e2 > t2 - n && e2 < t2 + n;
+  }
+  function a(e2, t2) {
+    return o(e2, 0, t2);
+  }
+  class Spring {
+    constructor(m, k, c2) {
+      this._m = m;
+      this._k = k;
+      this._c = c2;
+      this._solution = null;
+      this._endPosition = 0;
+      this._startTime = 0;
+    }
+    _solve(e2, t2) {
+      var n = this._c;
+      var i2 = this._m;
+      var r = this._k;
+      var o2 = n * n - 4 * i2 * r;
+      if (o2 === 0) {
+        var a3 = -n / (2 * i2);
+        var s2 = e2;
+        var l2 = t2 / (a3 * e2);
+        return {
+          x: function(e22) {
+            return (s2 + l2 * e22) * Math.pow(Math.E, a3 * e22);
+          },
+          dx: function(e22) {
+            var t22 = Math.pow(Math.E, a3 * e22);
+            return a3 * (s2 + l2 * e22) * t22 + l2 * t22;
+          }
+        };
+      }
+      if (o2 > 0) {
+        var c2 = (-n - Math.sqrt(o2)) / (2 * i2);
+        var u = (-n + Math.sqrt(o2)) / (2 * i2);
+        var _l = (t2 - c2 * e2) / (u - c2);
+        var _s = e2 - _l;
+        return {
+          x: function(e22) {
+            var t22;
+            var n2;
+            if (e22 === this._t) {
+              t22 = this._powER1T;
+              n2 = this._powER2T;
+            }
+            this._t = e22;
+            if (!t22) {
+              t22 = this._powER1T = Math.pow(Math.E, c2 * e22);
+            }
+            if (!n2) {
+              n2 = this._powER2T = Math.pow(Math.E, u * e22);
+            }
+            return _s * t22 + _l * n2;
+          },
+          dx: function(e22) {
+            var t22;
+            var n2;
+            if (e22 === this._t) {
+              t22 = this._powER1T;
+              n2 = this._powER2T;
+            }
+            this._t = e22;
+            if (!t22) {
+              t22 = this._powER1T = Math.pow(Math.E, c2 * e22);
+            }
+            if (!n2) {
+              n2 = this._powER2T = Math.pow(Math.E, u * e22);
+            }
+            return _s * c2 * t22 + _l * u * n2;
+          }
+        };
+      }
+      var d = Math.sqrt(4 * i2 * r - n * n) / (2 * i2);
+      var a2 = -n / 2 * i2;
+      var s = e2;
+      var l = (t2 - a2 * e2) / d;
+      return {
+        x: function(e22) {
+          return Math.pow(Math.E, a2 * e22) * (s * Math.cos(d * e22) + l * Math.sin(d * e22));
+        },
+        dx: function(e22) {
+          var t22 = Math.pow(Math.E, a2 * e22);
+          var n2 = Math.cos(d * e22);
+          var i22 = Math.sin(d * e22);
+          return t22 * (l * d * n2 - s * d * i22) + a2 * t22 * (l * i22 + s * n2);
+        }
+      };
+    }
+    x(e2) {
+      if (e2 === void 0) {
+        e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+      }
+      return this._solution ? this._endPosition + this._solution.x(e2) : 0;
+    }
+    dx(e2) {
+      if (e2 === void 0) {
+        e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+      }
+      return this._solution ? this._solution.dx(e2) : 0;
+    }
+    setEnd(e2, t2, n) {
+      if (!n) {
+        n = (/* @__PURE__ */ new Date()).getTime();
+      }
+      if (e2 !== this._endPosition || !a(t2, 0.4)) {
+        t2 = t2 || 0;
+        var i2 = this._endPosition;
+        if (this._solution) {
+          if (a(t2, 0.4)) {
+            t2 = this._solution.dx((n - this._startTime) / 1e3);
+          }
+          i2 = this._solution.x((n - this._startTime) / 1e3);
+          if (a(t2, 0.4)) {
+            t2 = 0;
+          }
+          if (a(i2, 0.4)) {
+            i2 = 0;
+          }
+          i2 += this._endPosition;
+        }
+        if (!(this._solution && a(i2 - e2, 0.4) && a(t2, 0.4))) {
+          this._endPosition = e2;
+          this._solution = this._solve(i2 - this._endPosition, t2);
+          this._startTime = n;
+        }
+      }
+    }
+    snap(e2) {
+      this._startTime = (/* @__PURE__ */ new Date()).getTime();
+      this._endPosition = e2;
+      this._solution = {
+        x: function() {
+          return 0;
+        },
+        dx: function() {
+          return 0;
+        }
+      };
+    }
+    done(e2) {
+      if (!e2) {
+        e2 = (/* @__PURE__ */ new Date()).getTime();
+      }
+      return o(this.x(), this._endPosition, 0.4) && a(this.dx(), 0.4);
+    }
+    reconfigure(e2, t2, n) {
+      this._m = e2;
+      this._k = t2;
+      this._c = n;
+      if (!this.done()) {
+        this._solution = this._solve(this.x() - this._endPosition, this.dx());
+        this._startTime = (/* @__PURE__ */ new Date()).getTime();
+      }
+    }
+    springConstant() {
+      return this._k;
+    }
+    damping() {
+      return this._c;
+    }
+    configuration() {
+      function e2(e22, t22) {
+        e22.reconfigure(1, t22, e22.damping());
+      }
+      function t2(e22, t22) {
+        e22.reconfigure(1, e22.springConstant(), t22);
+      }
+      return [{
+        label: "Spring Constant",
+        read: this.springConstant.bind(this),
+        write: e2.bind(this, this),
+        min: 100,
+        max: 1e3
+      }, {
+        label: "Damping",
+        read: this.damping.bind(this),
+        write: t2.bind(this, this),
+        min: 1,
+        max: 500
+      }];
+    }
+  }
+  class Scroll {
+    constructor(extent, friction, spring) {
+      this._extent = extent;
+      this._friction = friction || new Friction(0.01);
+      this._spring = spring || new Spring(1, 90, 20);
+      this._startTime = 0;
+      this._springing = false;
+      this._springOffset = 0;
+    }
+    snap(e2, t2) {
+      this._springOffset = 0;
+      this._springing = true;
+      this._spring.snap(e2);
+      this._spring.setEnd(t2);
+    }
+    set(e2, t2) {
+      this._friction.set(e2, t2);
+      if (e2 > 0 && t2 >= 0) {
+        this._springOffset = 0;
+        this._springing = true;
+        this._spring.snap(e2);
+        this._spring.setEnd(0);
+      } else {
+        if (e2 < -this._extent && t2 <= 0) {
+          this._springOffset = 0;
+          this._springing = true;
+          this._spring.snap(e2);
+          this._spring.setEnd(-this._extent);
+        } else {
+          this._springing = false;
+        }
+      }
+      this._startTime = (/* @__PURE__ */ new Date()).getTime();
+    }
+    x(e2) {
+      if (!this._startTime) {
+        return 0;
+      }
+      if (!e2) {
+        e2 = ((/* @__PURE__ */ new Date()).getTime() - this._startTime) / 1e3;
+      }
+      if (this._springing) {
+        return this._spring.x() + this._springOffset;
+      }
+      var t2 = this._friction.x(e2);
+      var n = this.dx(e2);
+      if (t2 > 0 && n >= 0 || t2 < -this._extent && n <= 0) {
+        this._springing = true;
+        this._spring.setEnd(0, n);
+        if (t2 < -this._extent) {
+          this._springOffset = -this._extent;
+        } else {
+          this._springOffset = 0;
+        }
+        t2 = this._spring.x() + this._springOffset;
+      }
+      return t2;
+    }
+    dx(e2) {
+      var t2;
+      if (this._lastTime === e2) {
+        t2 = this._lastDx;
+      } else {
+        t2 = this._springing ? this._spring.dx(e2) : this._friction.dx(e2);
+      }
+      this._lastTime = e2;
+      this._lastDx = t2;
+      return t2;
+    }
+    done() {
+      return this._springing ? this._spring.done() : this._friction.done();
+    }
+    setVelocityByEnd(e2) {
+      this._friction.setVelocityByEnd(e2);
+    }
+    configuration() {
+      var e2 = this._friction.configuration();
+      e2.push.apply(e2, this._spring.configuration());
+      return e2;
+    }
+  }
+  function createAnimation(scroll, onScroll, onEnd) {
+    var state = {
+      id: 0,
+      cancelled: false
+    };
+    function startAnimation2(state2, scroll2, onScroll2, onEnd2) {
+      if (!state2 || !state2.cancelled) {
+        onScroll2(scroll2);
+        var isDone = scroll2.done();
+        if (!isDone) {
+          if (!state2.cancelled) {
+            state2.id = requestAnimationFrame(startAnimation2.bind(null, state2, scroll2, onScroll2, onEnd2));
+          }
+        }
+        if (isDone && onEnd2) {
+          onEnd2(scroll2);
+        }
+      }
+    }
+    function cancel(state2) {
+      if (state2 && state2.id) {
+        cancelAnimationFrame(state2.id);
+      }
+      if (state2) {
+        state2.cancelled = true;
+      }
+    }
+    startAnimation2(state, scroll, onScroll, onEnd);
+    return {
+      cancel: cancel.bind(null, state),
+      model: scroll
+    };
+  }
+  class Scroller {
+    constructor(element, options) {
+      options = options || {};
+      this._element = element;
+      this._options = options;
+      this._enableSnap = options.enableSnap || false;
+      this._itemSize = options.itemSize || 0;
+      this._enableX = options.enableX || false;
+      this._enableY = options.enableY || false;
+      this._shouldDispatchScrollEvent = !!options.onScroll;
+      if (this._enableX) {
+        this._extent = (options.scrollWidth || this._element.offsetWidth) - this._element.parentElement.offsetWidth;
+        this._scrollWidth = options.scrollWidth;
+      } else {
+        this._extent = (options.scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight;
+        this._scrollHeight = options.scrollHeight;
+      }
+      this._position = 0;
+      this._scroll = new Scroll(this._extent, options.friction, options.spring);
+      this._onTransitionEnd = this.onTransitionEnd.bind(this);
+      this.updatePosition();
+    }
+    onTouchStart() {
+      this._startPosition = this._position;
+      this._lastChangePos = this._startPosition;
+      if (this._startPosition > 0) {
+        this._startPosition /= 0.5;
+      } else {
+        if (this._startPosition < -this._extent) {
+          this._startPosition = (this._startPosition + this._extent) / 0.5 - this._extent;
+        }
+      }
+      if (this._animation) {
+        this._animation.cancel();
+        this._scrolling = false;
+      }
+      this.updatePosition();
+    }
+    onTouchMove(x, y) {
+      var startPosition = this._startPosition;
+      if (this._enableX) {
+        startPosition += x;
+      } else if (this._enableY) {
+        startPosition += y;
+      }
+      if (startPosition > 0) {
+        startPosition *= 0.5;
+      } else if (startPosition < -this._extent) {
+        startPosition = 0.5 * (startPosition + this._extent) - this._extent;
+      }
+      this._position = startPosition;
+      this.updatePosition();
+      this.dispatchScroll();
+    }
+    onTouchEnd(x, y, o2) {
+      if (this._enableSnap && this._position > -this._extent && this._position < 0) {
+        if (this._enableY && (Math.abs(y) < this._itemSize && Math.abs(o2.y) < 300 || Math.abs(o2.y) < 150)) {
+          this.snap();
+          return;
+        }
+        if (this._enableX && (Math.abs(x) < this._itemSize && Math.abs(o2.x) < 300 || Math.abs(o2.x) < 150)) {
+          this.snap();
+          return;
+        }
+      }
+      if (this._enableX) {
+        this._scroll.set(this._position, o2.x);
+      } else if (this._enableY) {
+        this._scroll.set(this._position, o2.y);
+      }
+      var c2;
+      if (this._enableSnap) {
+        var s = this._scroll._friction.x(100);
+        var l = s % this._itemSize;
+        c2 = Math.abs(l) > this._itemSize / 2 ? s - (this._itemSize - Math.abs(l)) : s - l;
+        if (c2 <= 0 && c2 >= -this._extent) {
+          this._scroll.setVelocityByEnd(c2);
+        }
+      }
+      this._lastTime = Date.now();
+      this._lastDelay = 0;
+      this._scrolling = true;
+      this._lastChangePos = this._position;
+      this._lastIdx = Math.floor(Math.abs(this._position / this._itemSize));
+      this._animation = createAnimation(this._scroll, () => {
+        var e2 = Date.now();
+        var i2 = (e2 - this._scroll._startTime) / 1e3;
+        var r = this._scroll.x(i2);
+        this._position = r;
+        this.updatePosition();
+        var o22 = this._scroll.dx(i2);
+        if (this._shouldDispatchScrollEvent && e2 - this._lastTime > this._lastDelay) {
+          this.dispatchScroll();
+          this._lastDelay = Math.abs(2e3 / o22);
+          this._lastTime = e2;
+        }
+      }, () => {
+        if (this._enableSnap) {
+          if (c2 <= 0 && c2 >= -this._extent) {
+            this._position = c2;
+            this.updatePosition();
+          }
+          if (isFunction(this._options.onSnap)) {
+            this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+          }
+        }
+        if (this._shouldDispatchScrollEvent) {
+          this.dispatchScroll();
+        }
+        this._scrolling = false;
+      });
+    }
+    onTransitionEnd() {
+      this._element.style.webkitTransition = "";
+      this._element.style.transition = "";
+      this._element.removeEventListener("transitionend", this._onTransitionEnd);
+      if (this._snapping) {
+        this._snapping = false;
+      }
+      this.dispatchScroll();
+    }
+    snap() {
+      var itemSize = this._itemSize;
+      var position = this._position % itemSize;
+      var i2 = Math.abs(position) > this._itemSize / 2 ? this._position - (itemSize - Math.abs(position)) : this._position - position;
+      if (this._position !== i2) {
+        this._snapping = true;
+        this.scrollTo(-i2);
+        if (isFunction(this._options.onSnap)) {
+          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+        }
+      }
+    }
+    scrollTo(position, time) {
+      if (this._animation) {
+        this._animation.cancel();
+        this._scrolling = false;
+      }
+      if (typeof position === "number") {
+        this._position = -position;
+      }
+      if (this._position < -this._extent) {
+        this._position = -this._extent;
+      } else {
+        if (this._position > 0) {
+          this._position = 0;
+        }
+      }
+      var transition = "transform " + (time || 0.2) + "s ease-out";
+      this._element.style.webkitTransition = "-webkit-" + transition;
+      this._element.style.transition = transition;
+      this.updatePosition();
+      this._element.addEventListener("transitionend", this._onTransitionEnd);
+    }
+    dispatchScroll() {
+      if (isFunction(this._options.onScroll) && Math.round(Number(this._lastPos)) !== Math.round(this._position)) {
+        this._lastPos = this._position;
+        var event = {
+          target: {
+            scrollLeft: this._enableX ? -this._position : 0,
+            scrollTop: this._enableY ? -this._position : 0,
+            scrollHeight: this._scrollHeight || this._element.offsetHeight,
+            scrollWidth: this._scrollWidth || this._element.offsetWidth,
+            offsetHeight: this._element.parentElement.offsetHeight,
+            offsetWidth: this._element.parentElement.offsetWidth
+          }
+        };
+        this._options.onScroll(event);
+      }
+    }
+    update(height, scrollHeight, itemSize) {
+      var extent = 0;
+      var position = this._position;
+      if (this._enableX) {
+        extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetWidth) - this._element.parentElement.offsetWidth : 0;
+        this._scrollWidth = scrollHeight;
+      } else {
+        extent = this._element.childNodes.length ? (scrollHeight || this._element.offsetHeight) - this._element.parentElement.offsetHeight : 0;
+        this._scrollHeight = scrollHeight;
+      }
+      if (typeof height === "number") {
+        this._position = -height;
+      }
+      if (this._position < -extent) {
+        this._position = -extent;
+      } else {
+        if (this._position > 0) {
+          this._position = 0;
+        }
+      }
+      this._itemSize = itemSize || this._itemSize;
+      this.updatePosition();
+      if (position !== this._position) {
+        this.dispatchScroll();
+        if (isFunction(this._options.onSnap)) {
+          this._options.onSnap(Math.floor(Math.abs(this._position) / this._itemSize));
+        }
+      }
+      this._extent = extent;
+      this._scroll._extent = extent;
+    }
+    updatePosition() {
+      var transform = "";
+      if (this._enableX) {
+        transform = "translateX(" + this._position + "px) translateZ(0)";
+      } else {
+        if (this._enableY) {
+          transform = "translateY(" + this._position + "px) translateZ(0)";
+        }
+      }
+      this._element.style.webkitTransform = transform;
+      this._element.style.transform = transform;
+    }
+    isScrolling() {
+      return this._scrolling || this._snapping;
+    }
+  }
+  function useScroller(element, options) {
+    var touchInfo = {
+      trackingID: -1,
+      maxDy: 0,
+      maxDx: 0
+    };
+    var scroller = new Scroller(element, options);
+    function findDelta(event) {
+      var touchtrackEvent = event;
+      var mouseEvent = event;
+      return touchtrackEvent.detail.state === "move" || touchtrackEvent.detail.state === "end" ? {
+        x: touchtrackEvent.detail.dx,
+        y: touchtrackEvent.detail.dy
+      } : {
+        x: mouseEvent.screenX - touchInfo.x,
+        y: mouseEvent.screenY - touchInfo.y
+      };
+    }
+    function handleTouchStart(event) {
+      var touchtrackEvent = event;
+      var mouseEvent = event;
+      if (touchtrackEvent.detail.state === "start") {
+        touchInfo.trackingID = "touch";
+        touchInfo.x = touchtrackEvent.detail.x;
+        touchInfo.y = touchtrackEvent.detail.y;
+      } else {
+        touchInfo.trackingID = "mouse";
+        touchInfo.x = mouseEvent.screenX;
+        touchInfo.y = mouseEvent.screenY;
+      }
+      touchInfo.maxDx = 0;
+      touchInfo.maxDy = 0;
+      touchInfo.historyX = [0];
+      touchInfo.historyY = [0];
+      touchInfo.historyTime = [touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp];
+      touchInfo.listener = scroller;
+      if (scroller.onTouchStart) {
+        scroller.onTouchStart();
+      }
+      if (typeof event.cancelable !== "boolean" || event.cancelable)
+        event.preventDefault();
+    }
+    function handleTouchMove(event) {
+      var touchtrackEvent = event;
+      var mouseEvent = event;
+      if (touchInfo.trackingID !== -1) {
+        if (typeof event.cancelable !== "boolean" || event.cancelable)
+          event.preventDefault();
+        var delta = findDelta(event);
+        if (delta) {
+          for (touchInfo.maxDy = Math.max(touchInfo.maxDy, Math.abs(delta.y)), touchInfo.maxDx = Math.max(touchInfo.maxDx, Math.abs(delta.x)), touchInfo.historyX.push(delta.x), touchInfo.historyY.push(delta.y), touchInfo.historyTime.push(touchtrackEvent.detail.timeStamp || mouseEvent.timeStamp); touchInfo.historyTime.length > 10; ) {
+            touchInfo.historyTime.shift();
+            touchInfo.historyX.shift();
+            touchInfo.historyY.shift();
+          }
+          if (touchInfo.listener && touchInfo.listener.onTouchMove) {
+            touchInfo.listener.onTouchMove(delta.x, delta.y);
+          }
+        }
+      }
+    }
+    function handleTouchEnd(event) {
+      if (touchInfo.trackingID !== -1) {
+        event.preventDefault();
+        var delta = findDelta(event);
+        if (delta) {
+          var listener = touchInfo.listener;
+          touchInfo.trackingID = -1;
+          touchInfo.listener = null;
+          var length = touchInfo.historyTime.length;
+          var o2 = {
+            x: 0,
+            y: 0
+          };
+          if (length > 2) {
+            for (var i2 = touchInfo.historyTime.length - 1, time1 = touchInfo.historyTime[i2], x = touchInfo.historyX[i2], y = touchInfo.historyY[i2]; i2 > 0; ) {
+              i2--;
+              var time0 = touchInfo.historyTime[i2];
+              var time = time1 - time0;
+              if (time > 30 && time < 50) {
+                o2.x = (x - touchInfo.historyX[i2]) / (time / 1e3);
+                o2.y = (y - touchInfo.historyY[i2]) / (time / 1e3);
+                break;
+              }
+            }
+          }
+          touchInfo.historyTime = [];
+          touchInfo.historyX = [];
+          touchInfo.historyY = [];
+          if (listener && listener.onTouchEnd) {
+            listener.onTouchEnd(delta.x, delta.y, o2);
+          }
+        }
+      }
+    }
+    return {
+      scroller,
+      handleTouchStart,
+      handleTouchMove,
+      handleTouchEnd
+    };
+  }
+  function useCustomClick(dom) {
+    var MAX_MOVE = 20;
+    var x = 0;
+    var y = 0;
+    dom.addEventListener("touchstart", (event) => {
+      var info = event.changedTouches[0];
+      x = info.clientX;
+      y = info.clientY;
+    });
+    dom.addEventListener("touchend", (event) => {
+      var info = event.changedTouches[0];
+      if (Math.abs(info.clientX - x) < MAX_MOVE && Math.abs(info.clientY - y) < MAX_MOVE) {
+        var options = {
+          bubbles: true,
+          cancelable: true,
+          target: event.target,
+          currentTarget: event.currentTarget
+        };
+        var customClick = new CustomEvent("click", options);
+        var props2 = ["screenX", "screenY", "clientX", "clientY", "pageX", "pageY"];
+        props2.forEach((key2) => {
+          customClick[key2] = info[key2];
+        });
+        event.target.dispatchEvent(customClick);
+      }
+    });
+  }
+  const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
+    name: "PickerViewColumn",
+    setup(props2, _ref) {
+      var {
+        slots,
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var contentRef = ref(null);
+      var getPickerViewColumn = inject("getPickerViewColumn");
+      var instance = getCurrentInstance();
+      var currentRef = getPickerViewColumn ? getPickerViewColumn(instance) : ref(0);
+      var pickerViewProps2 = inject("pickerViewProps");
+      var pickerViewState = inject("pickerViewState");
+      var indicatorHeight = ref(34);
+      var resizeSensorRef = ref(null);
+      var initIndicatorHeight = () => {
+        var resizeSensor = resizeSensorRef.value;
+        indicatorHeight.value = resizeSensor.$el.offsetHeight;
+      };
+      var maskSize = computed(() => (pickerViewState.height - indicatorHeight.value) / 2);
+      var {
+        state: scopedAttrsState
+      } = useScopedAttrs();
+      var scroller;
+      var state = reactive({
+        current: currentRef.value,
+        length: 0
+      });
+      var updatesScrollerRequest;
+      function updatesScroller() {
+        if (scroller && !updatesScrollerRequest) {
+          updatesScrollerRequest = true;
+          nextTick(() => {
+            updatesScrollerRequest = false;
+            var current = Math.min(state.current, state.length - 1);
+            current = Math.max(current, 0);
+            scroller.update(current * indicatorHeight.value, void 0, indicatorHeight.value);
+          });
+        }
+      }
+      watch(() => currentRef.value, (current) => {
+        if (current !== state.current) {
+          state.current = current;
+          updatesScroller();
+        }
+      });
+      watch(() => state.current, (current) => currentRef.value = current);
+      watch([() => indicatorHeight.value, () => state.length, () => pickerViewState.height], updatesScroller);
+      var oldDeltaY = 0;
+      function handleWheel(event) {
+        var deltaY = oldDeltaY + event.deltaY;
+        if (Math.abs(deltaY) > 10) {
+          oldDeltaY = 0;
+          var current = Math.min(state.current + (deltaY < 0 ? -1 : 1), state.length - 1);
+          state.current = current = Math.max(current, 0);
+          scroller.scrollTo(current * indicatorHeight.value);
+        } else {
+          oldDeltaY = deltaY;
+        }
+        event.preventDefault();
+      }
+      function handleTap(_ref2) {
+        var {
+          clientY
+        } = _ref2;
+        var el = rootRef.value;
+        if (!scroller.isScrolling()) {
+          var rect = el.getBoundingClientRect();
+          var r = clientY - rect.top - pickerViewState.height / 2;
+          var o2 = indicatorHeight.value / 2;
+          if (!(Math.abs(r) <= o2)) {
+            var a2 = Math.ceil((Math.abs(r) - o2) / indicatorHeight.value);
+            var s = r < 0 ? -a2 : a2;
+            var current = Math.min(state.current + s, state.length - 1);
+            state.current = current = Math.max(current, 0);
+            scroller.scrollTo(current * indicatorHeight.value);
+          }
+        }
+      }
+      var initScroller = () => {
+        var el = rootRef.value;
+        var content = contentRef.value;
+        var {
+          scroller: scrollerOrigin,
+          handleTouchStart,
+          handleTouchMove,
+          handleTouchEnd
+        } = useScroller(content, {
+          enableY: true,
+          enableX: false,
+          enableSnap: true,
+          itemSize: indicatorHeight.value,
+          friction: new Friction(1e-4),
+          spring: new Spring(2, 90, 20),
+          onSnap: (index) => {
+            if (!isNaN(index) && index !== state.current) {
+              state.current = index;
+            }
+          }
+        });
+        scroller = scrollerOrigin;
+        useTouchtrack(el, (e2) => {
+          switch (e2.detail.state) {
+            case "start":
+              handleTouchStart(e2);
+              disableScrollBounce({
+                disable: true
+              });
+              break;
+            case "move":
+              handleTouchMove(e2);
+              e2.stopPropagation();
+              break;
+            case "end":
+            case "cancel":
+              handleTouchEnd(e2);
+              disableScrollBounce({
+                disable: false
+              });
+          }
+        }, true);
+        useCustomClick(el);
+        initScrollBounce();
+        updatesScroller();
+      };
+      {
+        var isMounted = false;
+        useRebuild(() => {
+          contentRef.value && (state.length = contentRef.value.children.length);
+          if (!isMounted) {
+            isMounted = true;
+            initIndicatorHeight();
+            initScroller();
+          }
+        });
+      }
+      return () => {
+        var defaultSlots = slots.default && slots.default();
+        var padding = "".concat(maskSize.value, "px 0");
+        return createVNode("uni-picker-view-column", {
+          "ref": rootRef
+        }, [createVNode("div", {
+          "onWheel": handleWheel,
+          "onClick": handleTap,
+          "class": "uni-picker-view-group"
+        }, [createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "class": ["uni-picker-view-mask", pickerViewProps2.maskClass],
+          "style": "background-size: 100% ".concat(maskSize.value, "px;").concat(pickerViewProps2.maskStyle)
+        }), null, 16), createVNode("div", mergeProps(scopedAttrsState.attrs, {
+          "class": ["uni-picker-view-indicator", pickerViewProps2.indicatorClass],
+          "style": pickerViewProps2.indicatorStyle
+        }), [createVNode(ResizeSensor, {
+          "ref": resizeSensorRef,
+          "onResize": (_ref3) => {
+            var {
+              height
+            } = _ref3;
+            return indicatorHeight.value = height;
+          }
+        }, null, 8, ["onResize"])], 16), createVNode("div", {
+          "ref": contentRef,
+          "class": ["uni-picker-view-content"],
+          "style": {
+            padding,
+            "--picker-view-column-indicator-height": "".concat(indicatorHeight.value, "px")
+          }
+        }, [defaultSlots], 4)], 40, ["onWheel", "onClick"])], 512);
       };
     }
   });
@@ -15353,7 +17838,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$5 = {
+  var props$8 = {
     name: {
       type: String,
       default: ""
@@ -15361,7 +17846,7 @@
   };
   const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$5,
+    props: props$8,
     // emits: ['change'],
     setup(props2, _ref) {
       var {
@@ -15433,7 +17918,7 @@
         if (change) {
           setFieldChecked(fields[index], false);
         } else {
-          fields.forEach((v, i2) => {
+          fields.forEach((v2, i2) => {
             if (index >= i2) {
               return;
             }
@@ -15446,7 +17931,7 @@
     }
     return fields;
   }
-  var props$4 = {
+  var props$7 = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -15490,7 +17975,7 @@
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$4,
+    props: props$7,
     setup(props2, _ref) {
       var {
         slots
@@ -15709,13 +18194,13 @@
   function processClickEvent(node, triggerItemClick) {
     if (["a", "img"].includes(node.name) && triggerItemClick) {
       return {
-        onClick: (e) => {
-          triggerItemClick(e, {
+        onClick: (e2) => {
+          triggerItemClick(e2, {
             node
           });
-          e.stopPropagation();
-          e.preventDefault();
-          e.returnValue = false;
+          e2.stopPropagation();
+          e2.preventDefault();
+          e2.returnValue = false;
         }
       };
     }
@@ -15847,7 +18332,7 @@
     });
     return results.children;
   }
-  var props$3 = {
+  var props$6 = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -15860,7 +18345,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$3,
+    props: props$6,
     emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
     setup(props2, _ref) {
       var {
@@ -15871,9 +18356,9 @@
       var rootRef = ref(null);
       var _vnode = ref([]);
       var trigger2 = useCustomEvent(rootRef, emit2);
-      function triggerItemClick(e) {
+      function triggerItemClick(e2) {
         var detail = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-        trigger2("itemclick", e, detail);
+        trigger2("itemclick", e2, detail);
       }
       function renderVNode() {
         var nodeList = props2.nodes;
@@ -15890,7 +18375,631 @@
       }, h("div", {}, _vnode.value));
     }
   });
-  var props$2 = {
+  const Refresher = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Refresher",
+    props: {
+      refreshState: {
+        type: String,
+        default: ""
+      },
+      refresherHeight: {
+        type: Number,
+        default: 0
+      },
+      refresherThreshold: {
+        type: Number,
+        default: 45
+      },
+      refresherDefaultStyle: {
+        type: String,
+        default: "black"
+      },
+      refresherBackground: {
+        type: String,
+        default: "#fff"
+      }
+    },
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var rootStyle = computed(() => {
+        var style = {
+          backgroundColor: props2.refresherBackground
+        };
+        switch (props2.refreshState) {
+          case "pulling":
+            style.height = props2.refresherHeight + "px";
+            break;
+          case "refreshing":
+            style.height = props2.refresherThreshold + "px";
+            style.transition = "height 0.3s";
+            break;
+          case "":
+          case "refresherabort":
+          case "restore":
+            style.height = "0px";
+            style.transition = "height 0.3s";
+            break;
+        }
+        return style;
+      });
+      var refreshRotate = computed(() => {
+        var route = props2.refresherHeight / props2.refresherThreshold;
+        return (route > 1 ? 1 : route) * 360;
+      });
+      return () => {
+        var {
+          refreshState,
+          refresherDefaultStyle,
+          refresherThreshold
+        } = props2;
+        return createVNode("div", {
+          "ref": rootRef,
+          "style": rootStyle.value,
+          "class": "uni-scroll-view-refresher"
+        }, [refresherDefaultStyle !== "none" ? createVNode("div", {
+          "class": "uni-scroll-view-refresh"
+        }, [createVNode("div", {
+          "class": "uni-scroll-view-refresh-inner"
+        }, [refreshState == "pulling" ? createVNode("svg", {
+          "key": "refresh__icon",
+          "style": {
+            transform: "rotate(" + refreshRotate.value + "deg)"
+          },
+          "fill": "#2BD009",
+          "class": "uni-scroll-view-refresh__icon",
+          "width": "24",
+          "height": "24",
+          "viewBox": "0 0 24 24"
+        }, [createVNode("path", {
+          "d": "M17.65 6.35C16.2 4.9 14.21 4 12 4c-4.42 0-7.99 3.58-7.99 8s3.57 8 7.99 8c3.73 0 6.84-2.55 7.73-6h-2.08c-.82 2.33-3.04 4-5.65 4-3.31 0-6-2.69-6-6s2.69-6 6-6c1.66 0 3.14.69 4.22 1.78L13 11h7V4l-2.35 2.35z"
+        }, null), createVNode("path", {
+          "d": "M0 0h24v24H0z",
+          "fill": "none"
+        }, null)], 4) : null, refreshState == "refreshing" ? createVNode("svg", {
+          "key": "refresh__spinner",
+          "class": "uni-scroll-view-refresh__spinner",
+          "width": "24",
+          "height": "24",
+          "viewBox": "25 25 50 50"
+        }, [createVNode("circle", {
+          "cx": "50",
+          "cy": "50",
+          "r": "20",
+          "fill": "none",
+          "style": "color: #2bd009",
+          "stroke-width": "3"
+        }, null)]) : null])]) : null, refresherDefaultStyle === "none" ? createVNode("div", {
+          "class": "uni-scroll-view-refresher-container",
+          "style": {
+            height: "".concat(refresherThreshold, "px")
+          }
+        }, [slots.default && slots.default()]) : null], 4);
+      };
+    }
+  });
+  var passiveOptions = /* @__PURE__ */ passive(true);
+  var props$5 = {
+    direction: {
+      type: [String],
+      default: "vertical"
+    },
+    scrollX: {
+      type: [Boolean, String],
+      default: false
+    },
+    scrollY: {
+      type: [Boolean, String],
+      default: false
+    },
+    showScrollbar: {
+      type: [Boolean, String],
+      default: true
+    },
+    upperThreshold: {
+      type: [Number, String],
+      default: 50
+    },
+    lowerThreshold: {
+      type: [Number, String],
+      default: 50
+    },
+    scrollTop: {
+      type: [Number, String],
+      default: 0
+    },
+    scrollLeft: {
+      type: [Number, String],
+      default: 0
+    },
+    scrollIntoView: {
+      type: String,
+      default: ""
+    },
+    scrollWithAnimation: {
+      type: [Boolean, String],
+      default: false
+    },
+    enableBackToTop: {
+      type: [Boolean, String],
+      default: false
+    },
+    refresherEnabled: {
+      type: [Boolean, String],
+      default: false
+    },
+    refresherThreshold: {
+      type: Number,
+      default: 45
+    },
+    refresherDefaultStyle: {
+      type: String,
+      default: "black"
+    },
+    refresherBackground: {
+      type: String,
+      default: "#fff"
+    },
+    refresherTriggered: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
+  const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
+    name: "ScrollView",
+    compatConfig: {
+      MODE: 3
+    },
+    props: props$5,
+    emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2,
+        slots,
+        expose
+      } = _ref;
+      var rootRef = ref(null);
+      var main = ref(null);
+      var wrap = ref(null);
+      var content = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      var {
+        state,
+        scrollTopNumber,
+        scrollLeftNumber
+      } = useScrollViewState(props2);
+      var {
+        realScrollX,
+        realScrollY,
+        _scrollLeftChanged,
+        _scrollTopChanged
+      } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger2, rootRef, main, content, emit2);
+      var mainStyle = computed(() => {
+        var style = "";
+        realScrollX.value ? style += "overflow-x:auto;" : style += "overflow-x:hidden;";
+        realScrollY.value ? style += "overflow-y:auto;" : style += "overflow-y:hidden;";
+        return style;
+      });
+      var scrollBarClassName = computed(() => {
+        var className = "uni-scroll-view";
+        if (props2.showScrollbar === false) {
+          className += " uni-scroll-view-scrollbar-hidden";
+        }
+        return className;
+      });
+      expose({
+        // 自动化测试需要暴露main从而获取scrollLeft
+        $getMain() {
+          return main.value;
+        }
+      });
+      return () => {
+        var {
+          refresherEnabled,
+          refresherBackground,
+          refresherDefaultStyle,
+          refresherThreshold
+        } = props2;
+        var {
+          refresherHeight,
+          refreshState
+        } = state;
+        return createVNode("uni-scroll-view", {
+          "ref": rootRef
+        }, [createVNode("div", {
+          "ref": wrap,
+          "class": "uni-scroll-view"
+        }, [createVNode("div", {
+          "ref": main,
+          "style": mainStyle.value,
+          "class": scrollBarClassName.value
+        }, [refresherEnabled ? createVNode(Refresher, {
+          "refreshState": refreshState,
+          "refresherHeight": refresherHeight,
+          "refresherThreshold": refresherThreshold,
+          "refresherDefaultStyle": refresherDefaultStyle,
+          "refresherBackground": refresherBackground
+        }, {
+          default: () => [refresherDefaultStyle == "none" ? slots.refresher && slots.refresher() : null]
+        }, 8, ["refreshState", "refresherHeight", "refresherThreshold", "refresherDefaultStyle", "refresherBackground"]) : null, createVNode("div", {
+          "ref": content,
+          "class": "uni-scroll-view-content"
+        }, [slots.default && slots.default()], 512)], 6)], 512)], 512);
+      };
+    }
+  });
+  function useScrollViewState(props2) {
+    var scrollTopNumber = computed(() => {
+      return Number(props2.scrollTop) || 0;
+    });
+    var scrollLeftNumber = computed(() => {
+      return Number(props2.scrollLeft) || 0;
+    });
+    var state = reactive({
+      lastScrollTop: scrollTopNumber.value,
+      lastScrollLeft: scrollLeftNumber.value,
+      lastScrollToUpperTime: 0,
+      lastScrollToLowerTime: 0,
+      refresherHeight: 0,
+      refreshState: ""
+    });
+    return {
+      state,
+      scrollTopNumber,
+      scrollLeftNumber
+    };
+  }
+  function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger2, rootRef, main, content, emit2) {
+    var beforeRefreshing = false;
+    var toUpperNumber = 0;
+    var triggerAbort = false;
+    var __transitionEnd = () => {
+    };
+    var realScrollX = computed(() => {
+      return props2.scrollX;
+    });
+    var realScrollY = computed(() => {
+      return props2.scrollY;
+    });
+    var upperThresholdNumber = computed(() => {
+      var val = Number(props2.upperThreshold);
+      return isNaN(val) ? 50 : val;
+    });
+    var lowerThresholdNumber = computed(() => {
+      var val = Number(props2.lowerThreshold);
+      return isNaN(val) ? 50 : val;
+    });
+    function scrollTo2(scrollToValue, direction) {
+      var container = main.value;
+      var transformValue = 0;
+      var transform = "";
+      scrollToValue < 0 ? scrollToValue = 0 : direction === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
+      direction === "x" ? transformValue = container.scrollLeft - scrollToValue : direction === "y" && (transformValue = container.scrollTop - scrollToValue);
+      if (transformValue === 0)
+        return;
+      var _content = content.value;
+      _content.style.transition = "transform .3s ease-out";
+      _content.style.webkitTransition = "-webkit-transform .3s ease-out";
+      if (direction === "x") {
+        transform = "translateX(" + transformValue + "px) translateZ(0)";
+      } else {
+        direction === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
+      }
+      _content.removeEventListener("transitionend", __transitionEnd);
+      _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
+      __transitionEnd = () => _transitionEnd(scrollToValue, direction);
+      _content.addEventListener("transitionend", __transitionEnd);
+      _content.addEventListener("webkitTransitionEnd", __transitionEnd);
+      if (direction === "x") {
+        container.style.overflowX = "hidden";
+      } else if (direction === "y") {
+        container.style.overflowY = "hidden";
+      }
+      _content.style.transform = transform;
+      _content.style.webkitTransform = transform;
+    }
+    function _handleScroll($event) {
+      var target = $event.target;
+      trigger2("scroll", $event, {
+        scrollLeft: target.scrollLeft,
+        scrollTop: target.scrollTop,
+        scrollHeight: target.scrollHeight,
+        scrollWidth: target.scrollWidth,
+        deltaX: state.lastScrollLeft - target.scrollLeft,
+        deltaY: state.lastScrollTop - target.scrollTop
+      });
+      if (realScrollY.value) {
+        if (target.scrollTop <= upperThresholdNumber.value && state.lastScrollTop - target.scrollTop > 0 && $event.timeStamp - state.lastScrollToUpperTime > 200) {
+          trigger2("scrolltoupper", $event, {
+            direction: "top"
+          });
+          state.lastScrollToUpperTime = $event.timeStamp;
+        }
+        if (target.scrollTop + target.offsetHeight + lowerThresholdNumber.value >= target.scrollHeight && state.lastScrollTop - target.scrollTop < 0 && $event.timeStamp - state.lastScrollToLowerTime > 200) {
+          trigger2("scrolltolower", $event, {
+            direction: "bottom"
+          });
+          state.lastScrollToLowerTime = $event.timeStamp;
+        }
+      }
+      if (realScrollX.value) {
+        if (target.scrollLeft <= upperThresholdNumber.value && state.lastScrollLeft - target.scrollLeft > 0 && $event.timeStamp - state.lastScrollToUpperTime > 200) {
+          trigger2("scrolltoupper", $event, {
+            direction: "left"
+          });
+          state.lastScrollToUpperTime = $event.timeStamp;
+        }
+        if (target.scrollLeft + target.offsetWidth + lowerThresholdNumber.value >= target.scrollWidth && state.lastScrollLeft - target.scrollLeft < 0 && $event.timeStamp - state.lastScrollToLowerTime > 200) {
+          trigger2("scrolltolower", $event, {
+            direction: "right"
+          });
+          state.lastScrollToLowerTime = $event.timeStamp;
+        }
+      }
+      state.lastScrollTop = target.scrollTop;
+      state.lastScrollLeft = target.scrollLeft;
+    }
+    function _scrollTopChanged(val) {
+      if (realScrollY.value) {
+        {
+          if (props2.scrollWithAnimation) {
+            scrollTo2(val, "y");
+          } else {
+            main.value.scrollTop = val;
+          }
+        }
+      }
+    }
+    function _scrollLeftChanged(val) {
+      if (realScrollX.value) {
+        {
+          if (props2.scrollWithAnimation) {
+            scrollTo2(val, "x");
+          } else {
+            main.value.scrollLeft = val;
+          }
+        }
+      }
+    }
+    function _scrollIntoViewChanged(val) {
+      if (val) {
+        if (!/^[_a-zA-Z][-_a-zA-Z0-9:]*$/.test(val)) {
+          console.error("id error: scroll-into-view=".concat(val));
+          return;
+        }
+        var element = rootRef.value.querySelector("#" + val);
+        if (element) {
+          var mainRect = main.value.getBoundingClientRect();
+          var elRect = element.getBoundingClientRect();
+          if (realScrollX.value) {
+            var left = elRect.left - mainRect.left;
+            var scrollLeft = main.value.scrollLeft;
+            var x = scrollLeft + left;
+            if (props2.scrollWithAnimation) {
+              scrollTo2(x, "x");
+            } else {
+              main.value.scrollLeft = x;
+            }
+          }
+          if (realScrollY.value) {
+            var top = elRect.top - mainRect.top;
+            var scrollTop = main.value.scrollTop;
+            var y = scrollTop + top;
+            if (props2.scrollWithAnimation) {
+              scrollTo2(y, "y");
+            } else {
+              main.value.scrollTop = y;
+            }
+          }
+        }
+      }
+    }
+    function _transitionEnd(val, direction) {
+      content.value.style.transition = "";
+      content.value.style.webkitTransition = "";
+      content.value.style.transform = "";
+      content.value.style.webkitTransform = "";
+      var _main = main.value;
+      if (direction === "x") {
+        _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
+        _main.scrollLeft = val;
+      } else if (direction === "y") {
+        _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
+        _main.scrollTop = val;
+      }
+      content.value.removeEventListener("transitionend", __transitionEnd);
+      content.value.removeEventListener("webkitTransitionEnd", __transitionEnd);
+    }
+    function _setRefreshState(_state) {
+      if (!props2.refresherEnabled)
+        return;
+      switch (_state) {
+        case "refreshing":
+          state.refresherHeight = props2.refresherThreshold;
+          if (!beforeRefreshing) {
+            beforeRefreshing = true;
+            trigger2("refresherrefresh", {}, {
+              dy: touchEnd.y - touchStart.y
+            });
+            emit2("update:refresherTriggered", true);
+          }
+          break;
+        case "restore":
+        case "refresherabort":
+          beforeRefreshing = false;
+          state.refresherHeight = toUpperNumber = 0;
+          if (_state === "restore") {
+            triggerAbort = false;
+            trigger2("refresherrestore", {}, {
+              dy: touchEnd.y - touchStart.y
+            });
+          }
+          if (_state === "refresherabort" && triggerAbort) {
+            triggerAbort = false;
+            trigger2("refresherabort", {}, {
+              dy: touchEnd.y - touchStart.y
+            });
+          }
+          break;
+      }
+      state.refreshState = _state;
+    }
+    var touchStart = {
+      x: 0,
+      y: 0
+    };
+    var touchEnd = {
+      x: 0,
+      y: props2.refresherThreshold
+    };
+    onMounted(() => {
+      nextTick(() => {
+        _scrollTopChanged(scrollTopNumber.value);
+        _scrollLeftChanged(scrollLeftNumber.value);
+      });
+      _scrollIntoViewChanged(props2.scrollIntoView);
+      var __handleScroll = function(event) {
+        event.preventDefault();
+        event.stopPropagation();
+        _handleScroll(event);
+      };
+      var needStop = null;
+      var __handleTouchMove = function(event) {
+        if (touchStart === null)
+          return;
+        var x = event.touches[0].pageX;
+        var y = event.touches[0].pageY;
+        var _main = main.value;
+        if (Math.abs(x - touchStart.x) > Math.abs(y - touchStart.y)) {
+          if (realScrollX.value) {
+            if (_main.scrollLeft === 0 && x > touchStart.x) {
+              needStop = false;
+              return;
+            } else if (_main.scrollWidth === _main.offsetWidth + _main.scrollLeft && x < touchStart.x) {
+              needStop = false;
+              return;
+            }
+            needStop = true;
+          } else {
+            needStop = false;
+          }
+        } else {
+          if (realScrollY.value) {
+            if (_main.scrollTop === 0 && y > touchStart.y) {
+              needStop = false;
+              if (props2.refresherEnabled && event.cancelable !== false)
+                event.preventDefault();
+            } else if (_main.scrollHeight === _main.offsetHeight + _main.scrollTop && y < touchStart.y) {
+              needStop = false;
+              return;
+            } else {
+              needStop = true;
+            }
+          } else {
+            needStop = false;
+          }
+        }
+        if (needStop) {
+          event.stopPropagation();
+        }
+        if (_main.scrollTop === 0 && event.touches.length === 1) {
+          _setRefreshState("pulling");
+        }
+        if (props2.refresherEnabled && state.refreshState === "pulling") {
+          var dy = y - touchStart.y;
+          if (toUpperNumber === 0) {
+            toUpperNumber = y;
+          }
+          if (!beforeRefreshing) {
+            state.refresherHeight = y - toUpperNumber;
+            if (state.refresherHeight > 0) {
+              triggerAbort = true;
+              trigger2("refresherpulling", event, {
+                deltaY: dy,
+                dy
+              });
+            }
+          } else {
+            state.refresherHeight = dy + props2.refresherThreshold;
+            triggerAbort = false;
+          }
+        }
+      };
+      var __handleTouchStart = function(event) {
+        if (event.touches.length === 1) {
+          disableScrollBounce({
+            disable: true
+          });
+          touchStart = {
+            x: event.touches[0].pageX,
+            y: event.touches[0].pageY
+          };
+        }
+      };
+      var __handleTouchEnd = function(event) {
+        touchEnd = {
+          x: event.changedTouches[0].pageX,
+          y: event.changedTouches[0].pageY
+        };
+        disableScrollBounce({
+          disable: false
+        });
+        if (state.refresherHeight >= props2.refresherThreshold) {
+          _setRefreshState("refreshing");
+        } else {
+          _setRefreshState("refresherabort");
+        }
+        touchStart = {
+          x: 0,
+          y: 0
+        };
+        touchEnd = {
+          x: 0,
+          y: props2.refresherThreshold
+        };
+      };
+      main.value.addEventListener("touchstart", __handleTouchStart, passiveOptions);
+      main.value.addEventListener("touchmove", __handleTouchMove, passive(false));
+      main.value.addEventListener("scroll", __handleScroll, passive(false));
+      main.value.addEventListener("touchend", __handleTouchEnd, passiveOptions);
+      initScrollBounce();
+      onBeforeUnmount(() => {
+        main.value.removeEventListener("touchstart", __handleTouchStart);
+        main.value.removeEventListener("touchmove", __handleTouchMove);
+        main.value.removeEventListener("scroll", __handleScroll);
+        main.value.removeEventListener("touchend", __handleTouchEnd);
+      });
+    });
+    onActivated(() => {
+      realScrollY.value && (main.value.scrollTop = state.lastScrollTop);
+      realScrollX.value && (main.value.scrollLeft = state.lastScrollLeft);
+    });
+    watch(scrollTopNumber, (val) => {
+      _scrollTopChanged(val);
+    });
+    watch(scrollLeftNumber, (val) => {
+      _scrollLeftChanged(val);
+    });
+    watch(() => props2.scrollIntoView, (val) => {
+      _scrollIntoViewChanged(val);
+    });
+    watch(() => props2.refresherTriggered, (val) => {
+      if (val === true) {
+        _setRefreshState("refreshing");
+      } else if (val === false) {
+        _setRefreshState("restore");
+      }
+    });
+    return {
+      realScrollX,
+      realScrollY,
+      _scrollTopChanged,
+      _scrollLeftChanged
+    };
+  }
+  var props$4 = {
     name: {
       type: String,
       default: ""
@@ -15946,7 +19055,7 @@
   };
   const Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$2,
+    props: props$4,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -16049,13 +19158,13 @@
         value: sliderValue.value
       });
     };
-    var _filterValue = (e) => {
+    var _filterValue = (e2) => {
       var max2 = Number(props2.max);
       var min2 = Number(props2.min);
       var step2 = Number(props2.step);
-      return e < min2 ? min2 : e > max2 ? max2 : computeController.mul.call(Math.round((e - min2) / step2), step2) + min2;
+      return e2 < min2 ? min2 : e2 > max2 ? max2 : computeController.mul.call(Math.round((e2 - min2) / step2), step2) + min2;
     };
-    var _onUserChangedValue = (e) => {
+    var _onUserChangedValue = (e2) => {
       var max2 = Number(props2.max);
       var min2 = Number(props2.min);
       var sliderRightBox = sliderValueRef.value;
@@ -16065,16 +19174,16 @@
       var slider = sliderRef.value;
       var offsetWidth = slider.offsetWidth - (props2.showValue ? sliderRightBoxWidth : 0);
       var boxLeft = slider.getBoundingClientRect().left;
-      var value = (e.x - boxLeft) * (max2 - min2) / offsetWidth + min2;
+      var value = (e2.x - boxLeft) * (max2 - min2) / offsetWidth + min2;
       sliderValue.value = _filterValue(value);
     };
-    var _onTrack = (e) => {
+    var _onTrack = (e2) => {
       if (!props2.disabled) {
-        return e.detail.state === "move" ? (_onUserChangedValue({
-          x: e.detail.x
-        }), trigger2("changing", e, {
+        return e2.detail.state === "move" ? (_onUserChangedValue({
+          x: e2.detail.x
+        }), trigger2("changing", e2, {
           value: sliderValue.value
-        }), false) : e.detail.state === "end" && trigger2("change", e, {
+        }), false) : e2.detail.state === "end" && trigger2("change", e2, {
           value: sliderValue.value
         });
       }
@@ -16109,15 +19218,685 @@
       var s2 = arg.toString();
       try {
         m += s1.split(".")[1].length;
-      } catch (e) {
+      } catch (e2) {
       }
       try {
         m += s2.split(".")[1].length;
-      } catch (e) {
+      } catch (e2) {
       }
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
+  var props$3 = {
+    indicatorDots: {
+      type: [Boolean, String],
+      default: false
+    },
+    vertical: {
+      type: [Boolean, String],
+      default: false
+    },
+    autoplay: {
+      type: [Boolean, String],
+      default: false
+    },
+    circular: {
+      type: [Boolean, String],
+      default: false
+    },
+    interval: {
+      type: [Number, String],
+      default: 5e3
+    },
+    duration: {
+      type: [Number, String],
+      default: 500
+    },
+    current: {
+      type: [Number, String],
+      default: 0
+    },
+    indicatorColor: {
+      type: String,
+      default: ""
+    },
+    indicatorActiveColor: {
+      type: String,
+      default: ""
+    },
+    previousMargin: {
+      type: String,
+      default: ""
+    },
+    nextMargin: {
+      type: String,
+      default: ""
+    },
+    currentItemId: {
+      type: String,
+      default: ""
+    },
+    skipHiddenItemLayout: {
+      type: [Boolean, String],
+      default: false
+    },
+    displayMultipleItems: {
+      type: [Number, String],
+      default: 1
+    },
+    disableTouch: {
+      type: [Boolean, String],
+      default: false
+    },
+    navigation: {
+      type: [Boolean, String],
+      default: false
+    },
+    navigationColor: {
+      type: String,
+      default: "#fff"
+    },
+    navigationActiveColor: {
+      type: String,
+      default: "rgba(53, 53, 53, 0.6)"
+    }
+  };
+  function useState(props2) {
+    var interval = computed(() => {
+      var interval2 = Number(props2.interval);
+      return isNaN(interval2) ? 5e3 : interval2;
+    });
+    var duration = computed(() => {
+      var duration2 = Number(props2.duration);
+      return isNaN(duration2) ? 500 : duration2;
+    });
+    var displayMultipleItems = computed(() => {
+      var displayMultipleItems2 = Math.round(props2.displayMultipleItems);
+      return isNaN(displayMultipleItems2) ? 1 : displayMultipleItems2;
+    });
+    var state = reactive({
+      interval,
+      duration,
+      displayMultipleItems,
+      current: Math.round(props2.current) || 0,
+      currentItemId: props2.currentItemId,
+      userTracking: false
+    });
+    return state;
+  }
+  function useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger2) {
+    function cancelSchedule() {
+      if (timer) {
+        clearTimeout(timer);
+        timer = null;
+      }
+    }
+    var timer = null;
+    var invalid = true;
+    var viewportPosition = 0;
+    var viewportMoveRatio = 1;
+    var animating = null;
+    var requestedAnimation = false;
+    var contentTrackViewport = 0;
+    var transitionStart;
+    var currentChangeSource = "";
+    var animationFrame;
+    var swiperEnabled = computed(() => swiperContexts.value.length > state.displayMultipleItems);
+    var circularEnabled = computed(() => props2.circular && swiperEnabled.value);
+    function checkCircularLayout(index) {
+      if (!invalid) {
+        for (var items = swiperContexts.value, n = items.length, i2 = index + state.displayMultipleItems, r = 0; r < n; r++) {
+          var item = items[r];
+          var s = Math.floor(index / n) * n + r;
+          var l = s + n;
+          var c2 = s - n;
+          var u = Math.max(index - (s + 1), s - i2, 0);
+          var d = Math.max(index - (l + 1), l - i2, 0);
+          var h2 = Math.max(index - (c2 + 1), c2 - i2, 0);
+          var p2 = Math.min(u, d, h2);
+          var position = [s, l, c2][[u, d, h2].indexOf(p2)];
+          item.updatePosition(position, props2.vertical);
+        }
+      }
+    }
+    function updateViewport(index) {
+      if (!(Math.floor(2 * viewportPosition) === Math.floor(2 * index) && Math.ceil(2 * viewportPosition) === Math.ceil(2 * index))) {
+        if (circularEnabled.value) {
+          checkCircularLayout(index);
+        }
+      }
+      var x = props2.vertical ? "0" : 100 * -index * viewportMoveRatio + "%";
+      var y = props2.vertical ? 100 * -index * viewportMoveRatio + "%" : "0";
+      var transform = "translate(" + x + ", " + y + ") translateZ(0)";
+      var slideFrame = slideFrameRef.value;
+      if (slideFrame) {
+        slideFrame.style.webkitTransform = transform;
+        slideFrame.style.transform = transform;
+      }
+      viewportPosition = index;
+      if (!transitionStart) {
+        if (index % 1 === 0) {
+          return;
+        }
+        transitionStart = index;
+      }
+      index -= Math.floor(transitionStart);
+      var items = swiperContexts.value;
+      if (index <= -(items.length - 1)) {
+        index += items.length;
+      } else if (index >= items.length) {
+        index -= items.length;
+      }
+      index = transitionStart % 1 > 0.5 || transitionStart < 0 ? index - 1 : index;
+      trigger2("transition", {}, {
+        dx: props2.vertical ? 0 : index * slideFrame.offsetWidth,
+        dy: props2.vertical ? index * slideFrame.offsetHeight : 0
+      });
+    }
+    function endViewportAnimation() {
+      if (animating) {
+        updateViewport(animating.toPos);
+        animating = null;
+      }
+    }
+    function normalizeCurrentValue(current) {
+      var length = swiperContexts.value.length;
+      if (!length) {
+        return -1;
+      }
+      var index = (Math.round(current) % length + length) % length;
+      if (circularEnabled.value) {
+        if (length <= state.displayMultipleItems) {
+          return 0;
+        }
+      } else if (index > length - state.displayMultipleItems) {
+        return length - state.displayMultipleItems;
+      }
+      return index;
+    }
+    function cancelViewportAnimation() {
+      animating = null;
+    }
+    function animateFrameFuncProto() {
+      if (!animating) {
+        requestedAnimation = false;
+        return;
+      }
+      var _animating = animating;
+      var toPos = _animating.toPos;
+      var acc = _animating.acc;
+      var endTime = _animating.endTime;
+      var source = _animating.source;
+      var time = endTime - Date.now();
+      if (time <= 0) {
+        updateViewport(toPos);
+        animating = null;
+        requestedAnimation = false;
+        transitionStart = null;
+        var item = swiperContexts.value[state.current];
+        if (item) {
+          var currentItemId = item.getItemId();
+          trigger2("animationfinish", {}, {
+            current: state.current,
+            currentItemId,
+            source
+          });
+        }
+        return;
+      }
+      var s = acc * time * time / 2;
+      var l = toPos + s;
+      updateViewport(l);
+      animationFrame = requestAnimationFrame(animateFrameFuncProto);
+    }
+    function animateViewport(current, source, n) {
+      cancelViewportAnimation();
+      var duration = state.duration;
+      var length = swiperContexts.value.length;
+      var position = viewportPosition;
+      if (circularEnabled.value) {
+        if (n < 0) {
+          for (; position < current; ) {
+            position += length;
+          }
+          for (; position - length > current; ) {
+            position -= length;
+          }
+        } else if (n > 0) {
+          for (; position > current; ) {
+            position -= length;
+          }
+          for (; position + length < current; ) {
+            position += length;
+          }
+          if (position + length - current < current - position) {
+            position += length;
+          }
+        } else {
+          for (; position + length < current; ) {
+            position += length;
+          }
+          for (; position - length > current; ) {
+            position -= length;
+          }
+          if (position + length - current < current - position) {
+            position += length;
+          }
+        }
+      } else if (source === "click") {
+        current = current + state.displayMultipleItems - 1 < length ? current : 0;
+      }
+      animating = {
+        toPos: current,
+        acc: 2 * (position - current) / (duration * duration),
+        endTime: Date.now() + duration,
+        source
+      };
+      if (!requestedAnimation) {
+        requestedAnimation = true;
+        animationFrame = requestAnimationFrame(animateFrameFuncProto);
+      }
+    }
+    function scheduleAutoplay() {
+      cancelSchedule();
+      var items = swiperContexts.value;
+      var callback = function() {
+        timer = null;
+        currentChangeSource = "autoplay";
+        if (circularEnabled.value) {
+          state.current = normalizeCurrentValue(state.current + 1);
+        } else {
+          state.current = state.current + state.displayMultipleItems < items.length ? state.current + 1 : 0;
+        }
+        animateViewport(state.current, "autoplay", circularEnabled.value ? 1 : 0);
+        timer = setTimeout(callback, state.interval);
+      };
+      if (!(invalid || items.length <= state.displayMultipleItems)) {
+        timer = setTimeout(callback, state.interval);
+      }
+    }
+    function resetLayout() {
+      cancelSchedule();
+      endViewportAnimation();
+      var items = swiperContexts.value;
+      for (var i2 = 0; i2 < items.length; i2++) {
+        items[i2].updatePosition(i2, props2.vertical);
+      }
+      viewportMoveRatio = 1;
+      var slideFrameEl = slideFrameRef.value;
+      if (state.displayMultipleItems === 1 && items.length) {
+        var itemRect = items[0].getBoundingClientRect();
+        var slideFrameRect = slideFrameEl.getBoundingClientRect();
+        viewportMoveRatio = itemRect.width / slideFrameRect.width;
+        if (!(viewportMoveRatio > 0 && viewportMoveRatio < 1)) {
+          viewportMoveRatio = 1;
+        }
+      }
+      var position = viewportPosition;
+      viewportPosition = -2;
+      var current = state.current;
+      if (current >= 0) {
+        invalid = false;
+        if (state.userTracking) {
+          updateViewport(position + current - contentTrackViewport);
+          contentTrackViewport = current;
+        } else {
+          updateViewport(current);
+          if (props2.autoplay) {
+            scheduleAutoplay();
+          }
+        }
+      } else {
+        invalid = true;
+        updateViewport(-state.displayMultipleItems - 1);
+      }
+    }
+    watch([() => props2.current, () => props2.currentItemId, () => [...swiperContexts.value]], () => {
+      var current = -1;
+      if (props2.currentItemId) {
+        for (var i2 = 0, items = swiperContexts.value; i2 < items.length; i2++) {
+          var itemId = items[i2].getItemId();
+          if (itemId === props2.currentItemId) {
+            current = i2;
+            break;
+          }
+        }
+      }
+      if (current < 0) {
+        current = Math.round(props2.current) || 0;
+      }
+      current = current < 0 ? 0 : current;
+      if (state.current !== current) {
+        currentChangeSource = "";
+        state.current = current;
+      }
+    });
+    watch([() => props2.vertical, () => circularEnabled.value, () => state.displayMultipleItems, () => [...swiperContexts.value]], resetLayout);
+    watch(() => state.interval, () => {
+      if (timer) {
+        cancelSchedule();
+        scheduleAutoplay();
+      }
+    });
+    function currentChanged(current, history) {
+      var source = currentChangeSource;
+      currentChangeSource = "";
+      var items = swiperContexts.value;
+      if (!source) {
+        var length = items.length;
+        animateViewport(current, "", circularEnabled.value && history + (length - current) % length > length / 2 ? 1 : 0);
+      }
+      var item = items[current];
+      if (item) {
+        var currentItemId = state.currentItemId = item.getItemId();
+        trigger2("change", {}, {
+          current: state.current,
+          currentItemId,
+          source
+        });
+      }
+    }
+    watch(() => state.current, (val, oldVal) => {
+      currentChanged(val, oldVal);
+      emit2("update:current", val);
+    });
+    watch(() => state.currentItemId, (val) => {
+      emit2("update:currentItemId", val);
+    });
+    function inintAutoplay(enable) {
+      if (enable) {
+        scheduleAutoplay();
+      } else {
+        cancelSchedule();
+      }
+    }
+    watch(() => props2.autoplay && !state.userTracking, inintAutoplay);
+    inintAutoplay(props2.autoplay && !state.userTracking);
+    onMounted(() => {
+      var userDirectionChecked = false;
+      var contentTrackSpeed = 0;
+      var contentTrackT = 0;
+      function handleTrackStart() {
+        cancelSchedule();
+        contentTrackViewport = viewportPosition;
+        contentTrackSpeed = 0;
+        contentTrackT = Date.now();
+        cancelViewportAnimation();
+      }
+      function handleTrackMove(data) {
+        var oldContentTrackT = contentTrackT;
+        contentTrackT = Date.now();
+        var length = swiperContexts.value.length;
+        var other = length - state.displayMultipleItems;
+        function calc2(val) {
+          return 0.5 - 0.25 / (val + 0.5);
+        }
+        function move(oldVal, newVal) {
+          var val = contentTrackViewport + oldVal;
+          contentTrackSpeed = 0.6 * contentTrackSpeed + 0.4 * newVal;
+          if (!circularEnabled.value) {
+            if (val < 0 || val > other) {
+              if (val < 0) {
+                val = -calc2(-val);
+              } else {
+                if (val > other) {
+                  val = other + calc2(val - other);
+                }
+              }
+              contentTrackSpeed = 0;
+            }
+          }
+          updateViewport(val);
+        }
+        var time = contentTrackT - oldContentTrackT || 1;
+        var slideFrameEl = slideFrameRef.value;
+        if (props2.vertical) {
+          move(-data.dy / slideFrameEl.offsetHeight, -data.ddy / time);
+        } else {
+          move(-data.dx / slideFrameEl.offsetWidth, -data.ddx / time);
+        }
+      }
+      function handleTrackEnd(isCancel) {
+        state.userTracking = false;
+        var t2 = contentTrackSpeed / Math.abs(contentTrackSpeed);
+        var n = 0;
+        if (!isCancel && Math.abs(contentTrackSpeed) > 0.2) {
+          n = 0.5 * t2;
+        }
+        var current = normalizeCurrentValue(viewportPosition + n);
+        if (isCancel) {
+          updateViewport(contentTrackViewport);
+        } else {
+          currentChangeSource = "touch";
+          state.current = current;
+          animateViewport(current, "touch", n !== 0 ? n : current === 0 && circularEnabled.value && viewportPosition >= 1 ? 1 : 0);
+        }
+      }
+      useTouchtrack(slideFrameRef.value, (event) => {
+        if (props2.disableTouch) {
+          return;
+        }
+        if (!invalid) {
+          if (event.detail.state === "start") {
+            state.userTracking = true;
+            userDirectionChecked = false;
+            return handleTrackStart();
+          }
+          if (event.detail.state === "end") {
+            return handleTrackEnd(false);
+          }
+          if (event.detail.state === "cancel") {
+            return handleTrackEnd(true);
+          }
+          if (state.userTracking) {
+            if (!userDirectionChecked) {
+              userDirectionChecked = true;
+              var t2 = Math.abs(event.detail.dx);
+              var n = Math.abs(event.detail.dy);
+              if (t2 >= n && props2.vertical) {
+                state.userTracking = false;
+              } else {
+                if (t2 <= n && !props2.vertical) {
+                  state.userTracking = false;
+                }
+              }
+              if (!state.userTracking) {
+                if (props2.autoplay) {
+                  scheduleAutoplay();
+                }
+                return;
+              }
+            }
+            handleTrackMove(event.detail);
+            return false;
+          }
+        }
+      });
+    });
+    onUnmounted(() => {
+      cancelSchedule();
+      cancelAnimationFrame(animationFrame);
+    });
+    function onSwiperDotClick(index) {
+      animateViewport(state.current = index, currentChangeSource = "click", circularEnabled.value ? 1 : 0);
+    }
+    return {
+      onSwiperDotClick,
+      circularEnabled,
+      swiperEnabled
+    };
+  }
+  const Swiper = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Swiper",
+    props: props$3,
+    emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
+    setup(props2, _ref) {
+      var {
+        slots,
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      var slidesWrapperRef = ref(null);
+      var slideFrameRef = ref(null);
+      var state = useState(props2);
+      var slidesStyle = computed(() => {
+        var style = {};
+        if (props2.nextMargin || props2.previousMargin) {
+          style = props2.vertical ? {
+            left: 0,
+            right: 0,
+            top: rpx2px(props2.previousMargin, true),
+            bottom: rpx2px(props2.nextMargin, true)
+          } : {
+            top: 0,
+            bottom: 0,
+            left: rpx2px(props2.previousMargin, true),
+            right: rpx2px(props2.nextMargin, true)
+          };
+        }
+        return style;
+      });
+      var slideFrameStyle = computed(() => {
+        var value = Math.abs(100 / state.displayMultipleItems) + "%";
+        return {
+          width: props2.vertical ? "100%" : value,
+          height: !props2.vertical ? "100%" : value
+        };
+      });
+      var swiperItems = [];
+      var originSwiperContexts = [];
+      var swiperContexts = ref([]);
+      function updateSwiperContexts() {
+        var contexts = [];
+        var _loop = function(index2) {
+          var swiperItem = swiperItems[index2];
+          if (!(swiperItem instanceof Element)) {
+            swiperItem = swiperItem.el;
+          }
+          var swiperContext = originSwiperContexts.find((context) => swiperItem === context.rootRef.value);
+          if (swiperContext) {
+            contexts.push(markRaw(swiperContext));
+          }
+        };
+        for (var index = 0; index < swiperItems.length; index++) {
+          _loop(index);
+        }
+        swiperContexts.value = contexts;
+      }
+      {
+        useRebuild(() => {
+          swiperItems = slideFrameRef.value.children;
+          updateSwiperContexts();
+        });
+      }
+      var addSwiperContext = function(swiperContext) {
+        originSwiperContexts.push(swiperContext);
+        updateSwiperContexts();
+      };
+      provide("addSwiperContext", addSwiperContext);
+      var removeSwiperContext = function(swiperContext) {
+        var index = originSwiperContexts.indexOf(swiperContext);
+        if (index >= 0) {
+          originSwiperContexts.splice(index, 1);
+          updateSwiperContexts();
+        }
+      };
+      provide("removeSwiperContext", removeSwiperContext);
+      var {
+        onSwiperDotClick,
+        circularEnabled,
+        swiperEnabled
+      } = useLayout(props2, state, swiperContexts, slideFrameRef, emit2, trigger2);
+      var createNavigationTsx = () => null;
+      return () => {
+        var defaultSlots = slots.default && slots.default();
+        swiperItems = flatVNode(defaultSlots);
+        return createVNode("uni-swiper", {
+          "ref": rootRef
+        }, [createVNode("div", {
+          "ref": slidesWrapperRef,
+          "class": "uni-swiper-wrapper"
+        }, [createVNode("div", {
+          "class": "uni-swiper-slides",
+          "style": slidesStyle.value
+        }, [createVNode("div", {
+          "ref": slideFrameRef,
+          "class": "uni-swiper-slide-frame",
+          "style": slideFrameStyle.value
+        }, [defaultSlots], 4)], 4), props2.indicatorDots && createVNode("div", {
+          "class": ["uni-swiper-dots", props2.vertical ? "uni-swiper-dots-vertical" : "uni-swiper-dots-horizontal"]
+        }, [swiperContexts.value.map((_, index, array) => createVNode("div", {
+          "onClick": () => onSwiperDotClick(index),
+          "class": {
+            "uni-swiper-dot": true,
+            "uni-swiper-dot-active": index < state.current + state.displayMultipleItems && index >= state.current || index < state.current + state.displayMultipleItems - array.length
+          },
+          "style": {
+            background: index === state.current ? props2.indicatorActiveColor : props2.indicatorColor
+          }
+        }, null, 14, ["onClick"]))], 2), createNavigationTsx()], 512)], 512);
+      };
+    }
+  });
+  var props$2 = {
+    itemId: {
+      type: String,
+      default: ""
+    }
+  };
+  const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
+    name: "SwiperItem",
+    props: props$2,
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var rootRef = ref(null);
+      var context = {
+        rootRef,
+        getItemId() {
+          return props2.itemId;
+        },
+        getBoundingClientRect() {
+          var el = rootRef.value;
+          return el.getBoundingClientRect();
+        },
+        updatePosition(position, vertical) {
+          var x = vertical ? "0" : 100 * position + "%";
+          var y = vertical ? 100 * position + "%" : "0";
+          var rootEl = rootRef.value;
+          var value = "translate(".concat(x, ",").concat(y, ") translateZ(0)");
+          if (rootEl) {
+            rootEl.style.webkitTransform = value;
+            rootEl.style.transform = value;
+          }
+        }
+      };
+      onMounted(() => {
+        var addSwiperContext = inject("addSwiperContext");
+        if (addSwiperContext) {
+          addSwiperContext(context);
+        }
+      });
+      onUnmounted(() => {
+        var removeSwiperContext = inject("removeSwiperContext");
+        if (removeSwiperContext) {
+          removeSwiperContext(context);
+        }
+      });
+      return () => {
+        return createVNode("uni-swiper-item", {
+          "ref": rootRef,
+          "style": {
+            position: "absolute",
+            width: "100%",
+            height: "100%"
+          }
+        }, [slots.default && slots.default()], 512);
+      };
+    }
+  });
   var props$1 = {
     name: {
       type: String,
@@ -16271,41 +20050,41 @@
   function parseText(text, options) {
     return normalizeText(text, options).split(LINEFEED);
   }
-  function ownKeys(e, r) {
-    var t = Object.keys(e);
+  function ownKeys(e2, r) {
+    var t2 = Object.keys(e2);
     if (Object.getOwnPropertySymbols) {
-      var o = Object.getOwnPropertySymbols(e);
-      r && (o = o.filter(function(r2) {
-        return Object.getOwnPropertyDescriptor(e, r2).enumerable;
-      })), t.push.apply(t, o);
+      var o2 = Object.getOwnPropertySymbols(e2);
+      r && (o2 = o2.filter(function(r2) {
+        return Object.getOwnPropertyDescriptor(e2, r2).enumerable;
+      })), t2.push.apply(t2, o2);
     }
-    return t;
+    return t2;
   }
-  function _objectSpread2(e) {
+  function _objectSpread2(e2) {
     for (var r = 1; r < arguments.length; r++) {
-      var t = null != arguments[r] ? arguments[r] : {};
-      r % 2 ? ownKeys(Object(t), true).forEach(function(r2) {
-        _defineProperty(e, r2, t[r2]);
-      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function(r2) {
-        Object.defineProperty(e, r2, Object.getOwnPropertyDescriptor(t, r2));
+      var t2 = null != arguments[r] ? arguments[r] : {};
+      r % 2 ? ownKeys(Object(t2), true).forEach(function(r2) {
+        _defineProperty(e2, r2, t2[r2]);
+      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e2, Object.getOwnPropertyDescriptors(t2)) : ownKeys(Object(t2)).forEach(function(r2) {
+        Object.defineProperty(e2, r2, Object.getOwnPropertyDescriptor(t2, r2));
       });
     }
-    return e;
+    return e2;
   }
-  function _toPrimitive(t, r) {
-    if ("object" != typeof t || !t)
-      return t;
-    var e = t[Symbol.toPrimitive];
-    if (void 0 !== e) {
-      var i2 = e.call(t, r || "default");
+  function _toPrimitive(t2, r) {
+    if ("object" != typeof t2 || !t2)
+      return t2;
+    var e2 = t2[Symbol.toPrimitive];
+    if (void 0 !== e2) {
+      var i2 = e2.call(t2, r || "default");
       if ("object" != typeof i2)
         return i2;
       throw new TypeError("@@toPrimitive must return a primitive value.");
     }
-    return ("string" === r ? String : Number)(t);
+    return ("string" === r ? String : Number)(t2);
   }
-  function _toPropertyKey(t) {
-    var i2 = _toPrimitive(t, "string");
+  function _toPropertyKey(t2) {
+    var i2 = _toPrimitive(t2, "string");
     return "symbol" == typeof i2 ? i2 : i2 + "";
   }
   function _defineProperty(obj, key2, value) {
@@ -16322,7 +20101,7 @@
     }
     return obj;
   }
-  var props = /* @__PURE__ */ extend({}, props$7, {
+  var props = /* @__PURE__ */ extend({}, props$a, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -16697,22 +20476,22 @@
     }
     init(nodeJson) {
       var {
-        a,
-        e,
+        a: a2,
+        e: e2,
         w
       } = nodeJson;
-      if (a) {
-        this.setWxsProps(a);
-        Object.keys(a).forEach((n) => {
-          this.setAttr(n, a[n]);
+      if (a2) {
+        this.setWxsProps(a2);
+        Object.keys(a2).forEach((n) => {
+          this.setAttr(n, a2[n]);
         });
       }
       if (hasOwn$1(nodeJson, "s")) {
         this.setAttr("style", nodeJson.s);
       }
-      if (e) {
-        Object.keys(e).forEach((n) => {
-          this.addEvent(n, e[n]);
+      if (e2) {
+        Object.keys(e2).forEach((n) => {
+          this.addEvent(n, e2[n]);
         });
       }
       if (w) {
@@ -16788,6 +20567,39 @@
       return res;
     }
   }
+  class UniContainerComponent extends UniComponent {
+    constructor(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector) {
+      super(id2, tag, component, parentNodeId, refNodeId, nodeJson, selector);
+    }
+    getRebuildFn() {
+      if (!this._rebuild) {
+        this._rebuild = this.rebuild.bind(this);
+      }
+      return this._rebuild;
+    }
+    setText(text) {
+      queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
+      return super.setText(text);
+    }
+    appendChild(node) {
+      queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
+      return super.appendChild(node);
+    }
+    insertBefore(newChild, refChild) {
+      queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
+      return super.insertBefore(newChild, refChild);
+    }
+    removeUniChild(node) {
+      queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
+      return super.removeUniChild(node);
+    }
+    rebuild() {
+      var vm = this.$.__vueParentComponent;
+      if (vm.rebuild) {
+        vm.rebuild();
+      }
+    }
+  }
   function getVueParent(node) {
     while (node && node.pid > 0) {
       node = $(node.pid);
@@ -16820,7 +20632,7 @@
       if (hasOwn$1(props2, name)) {
         var event = "onUpdate:" + name;
         if (!hasOwn$1(props2, event)) {
-          props2[event] = (v) => props2[name] = v;
+          props2[event] = (v2) => props2[name] = v2;
         }
       }
     });
@@ -16944,6 +20756,49 @@
       super(id2, "uni-form", Form, parentNodeId, refNodeId, nodeJson, "span");
     }
   }
+  class UniPickerView extends UniContainerComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-picker-view", PickerView, parentNodeId, refNodeId, nodeJson, ".uni-picker-view-wrapper");
+    }
+  }
+  class UniPickerViewColumn extends UniContainerComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-picker-view-column", PickerViewColumn, parentNodeId, refNodeId, nodeJson, ".uni-picker-view-content");
+    }
+  }
+  class UniScrollView extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-scroll-view", ScrollView, parentNodeId, refNodeId, nodeJson, ".uni-scroll-view-content");
+    }
+    setText(text) {
+      setHolderText(this.$holder, "uni-scroll-view-refresher", text);
+    }
+  }
+  class UniSwiper extends UniContainerComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-swiper", Swiper, parentNodeId, refNodeId, nodeJson, ".uni-swiper-slide-frame");
+    }
+  }
+  class UniSwiperItem extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-swiper-item", SwiperItem, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniMovableArea extends UniContainerComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-movable-area", MovableArea, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniMovableView extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-movable-view", MovableView, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  class UniIcon extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
@@ -16963,10 +20818,16 @@
     SWITCH: UniSwitch,
     INPUT: UniInput,
     TEXTAREA: UniTextarea,
-    FORM: UniForm
+    FORM: UniForm,
     // EDITOR: UniEditor,
-    // 'PICKER-VIEW': UniPickerView,
-    // 'PICKER-VIEW-COLUMN': UniPickerViewColumn,
+    "PICKER-VIEW": UniPickerView,
+    "PICKER-VIEW-COLUMN": UniPickerViewColumn,
+    "SCROLL-VIEW": UniScrollView,
+    SWIPER: UniSwiper,
+    "SWIPER-ITEM": UniSwiperItem,
+    "MOVABLE-AREA": UniMovableArea,
+    "MOVABLE-VIEW": UniMovableView,
+    ICON: UniIcon
   };
   function pageScrollTo(_ref2, publish) {
     var {
@@ -17006,8 +20867,8 @@
     pageReadyCallbacks.forEach((fn) => {
       try {
         fn();
-      } catch (e) {
-        console.error(e);
+      } catch (e2) {
+        console.error(e2);
       }
     });
     pageReadyCallbacks.length = 0;
@@ -17228,8 +21089,8 @@
     }
     if (isArray(fields.properties)) {
       fields.properties.forEach((prop) => {
-        prop = prop.replace(/-([a-z])/g, function(e, t) {
-          return t.toUpperCase();
+        prop = prop.replace(/-([a-z])/g, function(e2, t2) {
+          return t2.toUpperCase();
         });
       });
     }
@@ -17458,7 +21319,11 @@
   const plus$1 = {
     webview: {
       currentWebview() {
-        return extend({}, nativeChannel.invokeSync("currentWebview"));
+        return extend({
+          getStyle: () => {
+            return extend({}, nativeChannel.invokeSync("getStyle"));
+          }
+        }, nativeChannel.invokeSync("currentWebview"));
       },
       postMessageToUniNView(data, id2) {
         nativeChannel.invokeSync("postMessageToUniNView", {

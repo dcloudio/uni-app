@@ -3,7 +3,7 @@ const path = require('path')
 const colors = require('picocolors')
 const execa = require('execa')
 const { spawn } = require('child_process')
-
+const { parse } = require('jsonc-parser')
 const { config } = require('dotenv')
 
 config()
@@ -233,7 +233,7 @@ async function build(target) {
     }
   }
   if (hasArkTSBundler) {
-    await buildArkTS(target, require(path.resolve(pkgDir, 'build.ets.json')))
+    await buildArkTS(target, parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8')))
   }
 }
 
@@ -304,6 +304,10 @@ async function buildArkTS(target, buildJson) {
       await bundleArkTS(buildOptions).then((res) => {
         console.log('bundle: ' + (Date.now() - start) + 'ms')
         console.log(JSON.stringify(res))
+        if (options.banner) {
+          const filePath = path.resolve(buildOptions.output.outDir, buildOptions.output.outFilename)
+          fs.writeFileSync(filePath, options.banner + '\n' + fs.readFileSync(filePath, 'utf8'))
+        }
       })
     }
   }

@@ -51,7 +51,7 @@ export function parseUTSJavaScriptRuntimeStacktrace(
         : ''
       let error =
         `error: ${res[0].includes('[EXCEPTION] ') ? '' : '[EXCEPTION] '}` +
-        +res[0]
+        res[0]
       if (color) {
         error = color + error + color
       }

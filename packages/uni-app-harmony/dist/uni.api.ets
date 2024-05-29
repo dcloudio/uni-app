@@ -1,10 +1,91 @@
+import { IUniError, UTSObject, UTSJSONObject, string } from './uts'
+import { defineAsyncApi } from './uni.api'
 import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
 import fs from '@ohos.file.fs';
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
-export function initUniExtApi(uniExtApi: ESObject, shared: ESObject, UTSJSONObject: ESObject, UTSJSONObject: ESObject) {
+export { MediaOrientation as MediaOrientation };
+export { MediaErrorCode as MediaErrorCode };
+export { IMediaError as IMediaError };
+export { ChooseImageSuccess as ChooseImageSuccess };
+export { ChooseImageFail as ChooseImageFail };
+export { ChooseImageSuccessCallback as ChooseImageSuccessCallback };
+export { ChooseImageFailCallback as ChooseImageFailCallback };
+export { ChooseImageCompleteCallback as ChooseImageCompleteCallback };
+export { ChooseImageCropOptions as ChooseImageCropOptions };
+export { ChooseImageOptions as ChooseImageOptions };
+export { ChooseImage as ChooseImage };
+export { PreviewImageSuccess as PreviewImageSuccess };
+export { LongPressActionsSuccessData as LongPressActionsSuccessData };
+export { LongPressActionsOptions as LongPressActionsOptions };
+export { PreviewImageFail as PreviewImageFail };
+export { PreviewImageSuccessCallback as PreviewImageSuccessCallback };
+export { PreviewImageFailCallback as PreviewImageFailCallback };
+export { PreviewImageCompleteCallback as PreviewImageCompleteCallback };
+export { PreviewImageOptions as PreviewImageOptions };
+export { PreviewImage as PreviewImage };
+export { ClosePreviewImage as ClosePreviewImage };
+export { ClosePreviewImageSuccess as ClosePreviewImageSuccess };
+export { ClosePreviewImageFail as ClosePreviewImageFail };
+export { ClosePreviewImageSuccessCallback as ClosePreviewImageSuccessCallback };
+export { ClosePreviewImageFailCallback as ClosePreviewImageFailCallback };
+export { ClosePreviewImageCompleteCallback as ClosePreviewImageCompleteCallback };
+export { ClosePreviewImageOptions as ClosePreviewImageOptions };
+export { GetImageInfo as GetImageInfo };
+export { GetImageInfoSuccess as GetImageInfoSuccess };
+export { GetImageInfoFail as GetImageInfoFail };
+export { GetImageInfoSuccessCallback as GetImageInfoSuccessCallback };
+export { GetImageInfoFailCallback as GetImageInfoFailCallback };
+export { GetImageInfoCompleteCallback as GetImageInfoCompleteCallback };
+export { GetImageInfoOptions as GetImageInfoOptions };
+export { SaveImageToPhotosAlbum as SaveImageToPhotosAlbum };
+export { SaveImageToPhotosAlbumSuccess as SaveImageToPhotosAlbumSuccess };
+export { SaveImageToPhotosAlbumFail as SaveImageToPhotosAlbumFail };
+export { SaveImageToPhotosAlbumSuccessCallback as SaveImageToPhotosAlbumSuccessCallback };
+export { SaveImageToPhotosAlbumFailCallback as SaveImageToPhotosAlbumFailCallback };
+export { SaveImageToPhotosAlbumCompleteCallback as SaveImageToPhotosAlbumCompleteCallback };
+export { SaveImageToPhotosAlbumOptions as SaveImageToPhotosAlbumOptions };
+export { CompressImage as CompressImage };
+export { CompressImageSuccess as CompressImageSuccess };
+export { CompressImageFail as CompressImageFail };
+export { CompressImageSuccessCallback as CompressImageSuccessCallback };
+export { CompressImageFailCallback as CompressImageFailCallback };
+export { CompressImageCompleteCallback as CompressImageCompleteCallback };
+export { CompressImageOptions as CompressImageOptions };
+export { ChooseVideoSuccess as ChooseVideoSuccess };
+export { ChooseVideoFail as ChooseVideoFail };
+export { ChooseVideoSuccessCallback as ChooseVideoSuccessCallback };
+export { ChooseVideoFailCallback as ChooseVideoFailCallback };
+export { ChooseVideoCompleteCallback as ChooseVideoCompleteCallback };
+export { ChooseVideoOptions as ChooseVideoOptions };
+export { ChooseVideo as ChooseVideo };
+export { GetVideoInfoSuccess as GetVideoInfoSuccess };
+export { GetVideoInfoFail as GetVideoInfoFail };
+export { GetVideoInfoSuccessCallback as GetVideoInfoSuccessCallback };
+export { GetVideoInfoFailCallback as GetVideoInfoFailCallback };
+export { GetVideoInfoCompleteCallback as GetVideoInfoCompleteCallback };
+export { GetVideoInfoOptions as GetVideoInfoOptions };
+export { GetVideoInfo as GetVideoInfo };
+export { SaveVideoToPhotosAlbumSuccess as SaveVideoToPhotosAlbumSuccess };
+export { SaveVideoToPhotosAlbumFail as SaveVideoToPhotosAlbumFail };
+export { SaveVideoToPhotosAlbumSuccessCallback as SaveVideoToPhotosAlbumSuccessCallback };
+export { SaveVideoToPhotosAlbumFailCallback as SaveVideoToPhotosAlbumFailCallback };
+export { SaveVideoToPhotosAlbumCompleteCallback as SaveVideoToPhotosAlbumCompleteCallback };
+export { SaveVideoToPhotosAlbumOptions as SaveVideoToPhotosAlbumOptions };
+export { SaveVideoToPhotosAlbum as SaveVideoToPhotosAlbum };
+export { CompressVideoSuccess as CompressVideoSuccess };
+export { CompressVideoFail as CompressVideoFail };
+export { CompressVideoSuccessCallback as CompressVideoSuccessCallback };
+export { CompressVideoFailCallback as CompressVideoFailCallback };
+export { CompressVideoCompleteCallback as CompressVideoCompleteCallback };
+export { CompressVideoOptions as CompressVideoOptions };
+export { CompressVideo as CompressVideo };
+export { Uni as Uni };
+export { chooseImage as chooseImage, chooseVideo as chooseVideo, getImageInfo as getImageInfo, getVideoInfo as getVideoInfo };
+export { default as default };
+export function initUniExtApi(APP_ID: string) {
     const API_CHOOSE_IMAGE = 'chooseImage';
     const API_CHOOSE_VIDEO = 'chooseVideo';
     const API_GET_IMAGE_INFO = 'getImageInfo';
@@ -240,7 +321,7 @@ export function initUniExtApi(uniExtApi: ESObject, shared: ESObject, UTSJSONObje
                         fileType: 'image',
                         tempFilePath: uri,
                         size: stat.size
-                    };
+                    } as MediaFile;
                 })
             };
         }
@@ -255,27 +336,29 @@ export function initUniExtApi(uniExtApi: ESObject, shared: ESObject, UTSJSONObje
                 duration: videoInfo.duration,
                 width: videoInfo.width,
                 height: videoInfo.height
-            } as UTSJSONObject);
+            } as MediaFile);
         }
         return {
             tempFiles
         };
     };
-    const chooseImage: ChooseImage = defineAsyncApi(API_CHOOSE_IMAGE, (params: ChooseMediaOptions, ref)=>{
+    const chooseImage: ChooseImage = defineAsyncApi(API_CHOOSE_IMAGE, (params, ref)=>{
         let resolve = ref.resolve, reject = ref.reject;
         _chooseMedia({
             mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
             count: params.count
         } as ChooseMediaOptions).then((res)=>{
             return {
+                errSubject: 'chooseImage',
+                errMsg: 'chooseImage:ok',
                 tempFilePaths: res.tempFiles.map((file)=>file.tempFilePath),
                 tempFiles: res.tempFiles.map((file)=>{
                     return {
                         path: file.tempFilePath,
                         size: file.size
-                    };
+                    } as UTSJSONObject;
                 })
-            };
+            } as ChooseImageSuccess;
         }).then(resolve, reject);
     });
     const chooseVideo: ChooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, (_, ref)=>{
@@ -290,7 +373,7 @@ export function initUniExtApi(uniExtApi: ESObject, shared: ESObject, UTSJSONObje
                 size: file.size,
                 width: file.width,
                 height: file.height
-            };
+            } as ChooseVideoSuccess;
         }).then(resolve, reject);
     });
     const getImageInfo: GetImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (ref: GetImageInfoOptions, ref1)=>{
@@ -307,11 +390,19 @@ export function initUniExtApi(uniExtApi: ESObject, shared: ESObject, UTSJSONObje
                 height: res.height!,
                 type: res.type!,
                 orientation: res.orientation!
-            };
+            } as GetVideoInfoSuccess;
         }).then(resolve, reject);
     });
-    uniExtApi.chooseImage = chooseImage;
-    uniExtApi.getImageInfo = getImageInfo;
-    uniExtApi.chooseVideo = chooseVideo;
-    uniExtApi.getVideoInfo = getVideoInfo;
+    interface UniExtApi {
+        chooseImage: ChooseImage;
+        getImageInfo: GetImageInfo;
+        chooseVideo: ChooseVideo;
+        getVideoInfo: GetVideoInfo;
+    }
+    const default = {
+        chooseImage,
+        getImageInfo,
+        chooseVideo,
+        getVideoInfo
+    } as UniExtApi;
 }

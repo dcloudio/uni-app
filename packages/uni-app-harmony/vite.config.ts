@@ -9,7 +9,7 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 
-import { cssTarget, parseInjects } from '@dcloudio/uni-cli-shared'
+import { capitalize, cssTarget, parseInjects } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { resolveExtApiTempDir } from '../../scripts/ext-api'
 
@@ -197,9 +197,10 @@ function initArkTSExtApi() {
   // 遍历所有 ext-api，查找已实现 app-harmony 的 ext-api
   const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR)
   const extApiTempDir = resolveExtApiTempDir('uni-app-harmony')
-  const extApis: string[] = []
   const importExtApis: string[] = []
+  const exportExtApis: string[] = []
   const defineExtApis: string[] = []
+  const uniExtApis: string[] = []
   for (const extApi of fs.readdirSync(extApiDir)) {
     const extApiPath = path.resolve(extApiDir, extApi)
     if (
@@ -215,14 +216,20 @@ function initArkTSExtApi() {
     }
     const specifiers: string[] = []
     Object.keys(injects).forEach((key) => {
-      const local = key.replace(/\./g, '_')
-      specifiers.push(`${injects[key][1]} as ${local}`)
-      defineExtApis.push(`${key.replace('uni.', 'uniExtApi.')} = ${local}`)
+      const api = injects[key][1]
+      const apiType = capitalize(api)
+      specifiers.push(api)
+      specifiers.push(apiType)
+      defineExtApis.push(api)
+      uniExtApis.push(`${api}: ${apiType}`)
     })
     importExtApis.push(
       `import { ${specifiers.join(
         ', '
       )} } from './${extApi}/utssdk/app-harmony/index.uts'`
+    )
+    exportExtApis.push(
+      `export * from './${extApi}/utssdk/app-harmony/index.uts'`
     )
     fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
   }
@@ -232,6 +239,12 @@ function initArkTSExtApi() {
   fs.writeFileSync(
     extApiIndex,
     `${importExtApis.join('\n')}
-${defineExtApis.join('\n')}`
+${exportExtApis.join('\n')}    
+interface UniExtApi {
+  ${uniExtApis.join(',\n  ')}
+}
+export default {
+  ${defineExtApis.join(',\n  ')}
+} as UniExtApi`
   )
 }

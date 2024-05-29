@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   '@babel/plugin-transform-block-scoping': 7.19.4
 
@@ -130,6 +134,9 @@ importers:
       jest:
         specifier: ^29.3.1
         version: 29.7.0(@types/node@18.19.31)
+      jsonc-parser:
+        specifier: ^3.2.0
+        version: 3.2.1
       lint-staged:
         specifier: ^10.5.3
         version: 10.5.4
@@ -11646,7 +11653,3 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
