@@ -402,6 +402,27 @@ function invokeCallback(id, res, extras) {
     }
     return res;
 }
+function findInvokeCallbackByName(name) {
+    for (const key in invokeCallbacks) {
+        if (invokeCallbacks[key].name === name) {
+            return true;
+        }
+    }
+    return false;
+}
+function onKeepAliveApiCallback(name) {
+    UniServiceJSBridge.on('api.' + name, (res) => {
+        for (const key in invokeCallbacks) {
+            const opts = invokeCallbacks[key];
+            if (opts.name === name) {
+                opts.callback(res);
+            }
+        }
+    });
+}
+function createKeepAliveApiCallback(name, callback) {
+    return addInvokeCallback(invokeCallbackId++, name, callback, true);
+}
 const API_SUCCESS = 'success';
 const API_FAIL = 'fail';
 const API_COMPLETE = 'complete';
@@ -627,6 +648,27 @@ function beforeInvokeApi(name, args, protocol, options) {
         return errMsg;
     }
 }
+function checkCallback(callback) {
+    if (!isFunction(callback)) {
+        throw new Error('Invalid args: type check failed for args "callback". Expected Function');
+    }
+}
+function wrapperOnApi(name, fn, options) {
+    return (callback) => {
+        checkCallback(callback);
+        const errMsg = beforeInvokeApi(name, [callback], undefined, options);
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        // 是否是首次调用on,如果是首次，需要初始化onMethod监听
+        const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+        createKeepAliveApiCallback(name, callback);
+        if (isFirstInvokeOnApi) {
+            onKeepAliveApiCallback(name);
+            fn();
+        }
+    };
+}
 function parseErrMsg(errMsg) {
     if (!errMsg || isString(errMsg)) {
         return errMsg;
@@ -662,6 +704,9 @@ function wrapperSyncApi(name, fn, protocol, options) {
 function wrapperAsyncApi(name, fn, protocol, options) {
     return wrapperTaskApi(name, fn, protocol, options);
 }
+function defineOnApi(name, fn, options) {
+    return wrapperOnApi(name, fn, options);
+}
 function defineTaskApi(name, fn, protocol, options) {
     return promisify(name, wrapperTaskApi(name, fn, ('production' !== 'production') ? protocol : undefined, options));
 }
@@ -677,10 +722,12 @@ function defineAsyncApi(name, fn, protocol, options) {
  * @returns
  */
 function getBaseSystemInfo() {
+    const plus = weex.requireModule('plus');
     return {
         platform: 'harmony',
         pixelRatio: vp2px(1),
         windowWidth: lpx2px(720), // TODO designWidth可配置
+        language: plus.getLanguage()
     };
 }
 
@@ -2125,6 +2172,40 @@ function getEnterOptions() {
 
 const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
 
+const API_SET_LOCALE = 'setLocale';
+const API_GET_LOCALE = 'getLocale';
+const API_ON_LOCALE_CHANGE = 'onLocaleChange';
+const getLocale = defineSyncApi(API_GET_LOCALE, () => {
+    // 优先使用 $locale
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return app.$vm.$locale;
+    }
+    return useI18n().getLocale();
+});
+const onLocaleChange = defineOnApi(API_ON_LOCALE_CHANGE, () => { });
+const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
+    const app = getApp();
+    if (!app) {
+        return false;
+    }
+    const oldLocale = app.$vm.$locale;
+    if (oldLocale !== locale) {
+        app.$vm.$locale = locale;
+        {
+            const pages = getCurrentPages();
+            pages.forEach((page) => {
+                UniServiceJSBridge.publishHandler(API_SET_LOCALE, locale, page.$page.id);
+            });
+            weex.requireModule('plus').setLanguage(locale);
+        }
+        // 执行 uni.onLocaleChange
+        UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
+        return true;
+    }
+    return false;
+});
+
 const appHooks = {
     [ON_UNHANDLE_REJECTION]: [],
     [ON_PAGE_NOT_FOUND]: [],
@@ -2952,10 +3033,6 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve, reject }
     });
     return new DownloadTask(downloadTask);
 }, DownloadFileProtocol, DownloadFileOptions);
-
-function getLocale() {
-    return 'zh-CN';
-}
 
 function getSystemInfoSync() {
     // TODO: implement
@@ -3934,7 +4011,7 @@ function initWebviewStyle(webview, path, query, routeMeta) {
     webviewStyle.uniPageUrl = initUniPageUrl(path, query);
     const isTabBar = !!routeMeta.isTabBar;
     webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
-    // TODO webviewStyle.locale
+    webviewStyle.locale = weex.requireModule('plus').getLanguage();
     if (('production' !== 'production')) {
         console.log(formatLog('updateWebview', webviewStyle));
     }
@@ -4456,7 +4533,9 @@ var uni$1 = {
   getVideoInfo: getVideoInfo,
   navigateBack: navigateBack,
   navigateTo: navigateTo,
+  onLocaleChange: onLocaleChange,
   request: request,
+  setLocale: setLocale,
   switchTab: switchTab,
   uploadFile: uploadFile
 };

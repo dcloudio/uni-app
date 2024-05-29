@@ -64,11 +64,11 @@ export default defineConfig({
     __PLATFORM__: JSON.stringify('app'),
     __NODE_JS__: false,
     __APP_VIEW__: true,
-    __UNI_FEATURE_I18N_EN__: false,
-    __UNI_FEATURE_I18N_ES__: false,
-    __UNI_FEATURE_I18N_FR__: false,
-    __UNI_FEATURE_I18N_ZH_HANS__: false,
-    __UNI_FEATURE_I18N_ZH_HANT__: false,
+    __UNI_FEATURE_I18N_EN__: true,
+    __UNI_FEATURE_I18N_ES__: true,
+    __UNI_FEATURE_I18N_FR__: true,
+    __UNI_FEATURE_I18N_ZH_HANS__: true,
+    __UNI_FEATURE_I18N_ZH_HANT__: true,
     __IMPORT_META_ENV_BASE_URL__: JSON.stringify(''),
     'process.env.NODE_ENV': JSON.stringify('production'),
     __X__: false,
@@ -239,7 +239,7 @@ function initArkTSExtApi() {
   fs.writeFileSync(
     extApiIndex,
     `${importExtApis.join('\n')}
-${exportExtApis.join('\n')}    
+${exportExtApis.join('\n')}
 interface UniExtApi {
   ${uniExtApis.join(',\n  ')}
 }

@@ -1462,8 +1462,6 @@
     }
     return i18n;
   }
-  var initI18nButtonMsgsOnce = /* @__PURE__ */ once(() => {
-  });
   function initBridge(subscribeNamespace) {
     var emitter = new E$1();
     return {
@@ -7555,11 +7553,13 @@
     return wrapperSyncApi(name, fn, void 0, options);
   }
   function getBaseSystemInfo() {
+    var plus2 = weex.requireModule("plus");
     return {
       platform: "harmony",
       pixelRatio: vp2px(1),
-      windowWidth: lpx2px(720)
+      windowWidth: lpx2px(720),
       // TODO designWidth可配置
+      language: plus2.getLanguage()
     };
   }
   var common = {};
@@ -13464,9 +13464,6 @@
         slots
       } = _ref;
       var rootRef = ref(null);
-      {
-        initI18nButtonMsgsOnce();
-      }
       var uniForm = inject(uniFormKey, false);
       var {
         hovering,

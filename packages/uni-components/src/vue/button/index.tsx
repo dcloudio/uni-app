@@ -22,7 +22,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   //#endif
   setup(props, { slots }) {
     const rootRef = ref<HTMLElement | null>(null)
-    if (__PLATFORM__ === 'app') {
+    if (__PLATFORM__ === 'app' && __PLUS__) {
       initI18nButtonMsgsOnce()
     }
     const uniForm = inject<UniFormCtx>(

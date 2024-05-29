@@ -19,7 +19,7 @@ export function initWebviewStyle(
 
   webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query)
 
-  // TODO webviewStyle.locale
+  webviewStyle.locale = weex.requireModule('plus').getLanguage()
   if (__DEV__) {
     console.log(formatLog('updateWebview', webviewStyle))
   }

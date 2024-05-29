@@ -6,9 +6,11 @@ declare function lpx2px(value: number): number
  * @returns
  */
 export function getBaseSystemInfo() {
+  const plus = weex.requireModule('plus')
   return {
     platform: 'harmony',
     pixelRatio: vp2px(1),
     windowWidth: lpx2px(720), // TODO designWidth可配置
+    language: plus.getLanguage(),
   }
 }
