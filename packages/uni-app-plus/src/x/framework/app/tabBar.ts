@@ -7,6 +7,7 @@ import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import type { ComponentPublicInstance } from 'vue'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { registerPage } from '../page'
+import { getAppThemeFallbackOS, normalizeTabBarStyles } from '../theme'
 
 // 存储 callback
 export let onTabBarMidButtonTapCallback: Function[] = []
@@ -86,6 +87,13 @@ function init() {
       __uniConfig.tabBar[key as keyof typeof __uniConfig.tabBar]
     )
   }
+  // dark mode
+  normalizeTabBarStyles(
+    tabBarConfig,
+    __uniConfig.themeConfig,
+    getAppThemeFallbackOS()
+  )
+
   fixBorderStyle(tabBarConfig)
   tabBar0!.initTabBar(tabBarConfig)
   tabBar0!.addEventListener('tabBarItemTap', function (event: Event) {

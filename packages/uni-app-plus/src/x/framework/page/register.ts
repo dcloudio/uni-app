@@ -24,6 +24,7 @@ import { getVueApp } from '../../../service/framework/app/vueApp'
 import type { VuePageComponent } from '../../../service/framework/page/define'
 import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
+import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 
 type PageNodeOptions = {}
 
@@ -38,7 +39,9 @@ export interface RegisterPageOptions {
 }
 
 // parsePageStyle
-function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
+export function parsePageStyle(
+  route: UniApp.UniRoute
+): Map<string, any | null> {
   const style = new Map<string, any | null>()
   const routeMeta = route.meta
   const routeKeys = [
@@ -64,6 +67,13 @@ function parsePageStyle(route: UniApp.UniRoute): Map<string, any | null> {
     'navigationBarTextStyle',
     'navigationStyle',
   ]
+
+  // 替换 dark mode 中的变量
+  normalizePageStyles(
+    routeMeta,
+    __uniConfig.themeConfig,
+    getAppThemeFallbackOS()
+  )
 
   Object.keys(routeMeta).forEach((key) => {
     // 使用黑名单机制兼容后续新增的属性
