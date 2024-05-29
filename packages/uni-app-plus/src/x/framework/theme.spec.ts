@@ -59,9 +59,9 @@ describe('test: getAppThemeFallbackOS', () => {
 describe('test: normalizePageStyles', () => {
   it('should normalize page styles', () => {
     const pageStyle = {
-      backgroundColor: '$bgColor',
-      textColor: '$textColor',
-      buttonColor: '$buttonColor',
+      backgroundColor: '@bgColor',
+      textColor: '@textColor',
+      buttonColor: '@buttonColor',
     }
     const themeConfig = {
       dark: {
@@ -90,9 +90,9 @@ describe('test: normalizePageStyles', () => {
 describe('test: normalizeTabBarStyles', () => {
   it('should normalize tab bar styles', () => {
     const tabBar = {
-      backgroundColor: '$bgColor',
-      textColor: '$textColor',
-      buttonColor: '$buttonColor',
+      backgroundColor: '@bgColor',
+      textColor: '@textColor',
+      buttonColor: '@buttonColor',
     }
     const themeConfig = {
       dark: {
