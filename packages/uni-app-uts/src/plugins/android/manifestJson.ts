@@ -73,12 +73,20 @@ export function uniAppManifestPlugin(): Plugin {
         const darkModeCode = darkMode
           ? `override darkmode: boolean = ${darkMode}`
           : ''
+        const hasDefaultAppTheme =
+          ['dark', 'light', 'auto'].indexOf(
+            manifestJson.app?.defaultAppTheme
+          ) !== -1
+        const defaultAppThemeCode = hasDefaultAppTheme
+          ? `override defaultAppTheme: string = "${manifestJson.app.defaultAppTheme}"`
+          : ''
 
         const codes = [
           singleThreadCode,
           flexDirCode,
           splashScreenCode,
           darkModeCode,
+          defaultAppThemeCode,
         ]
           .filter(Boolean)
           .join('\n')

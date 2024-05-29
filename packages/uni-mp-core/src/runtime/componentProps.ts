@@ -1,7 +1,4 @@
-import type {
-  ComponentPropsOptions,
-  ComponentPublicInstance,
-} from '@vue/runtime-core'
+import type { ComponentPropsOptions, ComponentPublicInstance } from 'vue'
 import { extend, isArray, isFunction, isPlainObject } from '@vue/shared'
 import type { MPComponentInstance, MPComponentOptions } from './component'
 // @ts-expect-error

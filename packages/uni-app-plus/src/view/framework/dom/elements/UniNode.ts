@@ -1,7 +1,7 @@
 import { hasOwn } from '@vue/shared'
 import { ATTR_CHANGE_PREFIX, type UniNodeJSON } from '@dcloudio/uni-shared'
 
-import { $, getElement, removeElement } from '../page'
+import { $, getElement, removeElement } from '../store'
 import { JOB_PRIORITY_WXS_PROPS, queuePostActionJob } from '../scheduler'
 import { type WxsPropsInvoker, createWxsPropsInvoker } from '../wxs'
 import { destroyRenderjs } from '../renderjs'

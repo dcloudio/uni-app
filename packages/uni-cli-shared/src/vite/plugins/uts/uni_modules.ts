@@ -225,6 +225,9 @@ export function uniDecryptUniModulesPlugin(): Plugin {
             process.env.NODE_ENV !== 'development'
               ? 'production'
               : 'development',
+          packType:
+            process.env.UNI_APP_PACK_TYPE ||
+            (process.env.NODE_ENV !== 'development' ? 'release' : 'debug'),
           compilerVersion: process.env.UNI_COMPILER_VERSION,
           appid: manifest.appid,
           appname: manifest.name,

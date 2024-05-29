@@ -1,15 +1,15 @@
 import {
-  VNode,
-  Component,
+  Comment,
+  type Component,
+  type VNode,
   createTextVNode,
   createVNode,
-  Comment,
-  ref,
   onMounted,
+  ref,
 } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
-import { DecodeOptions, parseText } from '../../helpers/text'
+import { type DecodeOptions, parseText } from '../../helpers/text'
 
 export class UniTextElement extends UniElement {}
 export default /*#__PURE__*/ defineBuiltInComponent({

@@ -1,6 +1,7 @@
 export enum UTSTarget {
   KOTLIN = 'kotlin',
   SWIFT = 'swift',
+  ARKTS = 'arkts',
 }
 export interface UTSParserConfig {
   /**
@@ -26,9 +27,16 @@ export type UTSInputOptions = UTSParseOptions & {
   fileContent?: string
   fileAppendContent?: string
   paths: Record<string, string>
+  externals?: Record<string, string>
   uniModules?: string[]
   globals?: {
     envs?: Record<string, string>
+    vars?: Record<string, string>
+  }
+  parseOptions?: {
+    tsx?: boolean
+    noEarlyErrors?: boolean
+    allowComplexUnionType?: boolean
   }
 }
 
@@ -73,6 +81,12 @@ export type UTSOutputOptions = {
     uniCloudObjectInfo?: { name: string; methodList: string[] }[]
     autoImports?: Record<string, [[string, string]]>
   }
+  treeshake?: {
+    manualPureFunctions?: string[]
+    noSideEffects?: boolean
+  }
+  wrapperFunctionName?: string
+  wrapperFunctionArgs?: [string, string][]
 }
 export interface UTSOptions {
   mode?: string

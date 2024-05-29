@@ -140,6 +140,8 @@ export function parseComponent(
   return mpComponentOptions
 }
 
+declare const Component: WechatMiniprogram.Component.Constructor
+
 export function initCreateComponent(parseOptions: ParseComponentOptions) {
   return function createComponent(vueComponentOptions: ComponentOptions) {
     return Component(parseComponent(vueComponentOptions, parseOptions))

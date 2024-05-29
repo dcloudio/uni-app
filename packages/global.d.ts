@@ -34,6 +34,7 @@ declare var __DEV__: boolean
 declare var __TEST__: boolean
 declare var __NODE_JS__: boolean
 declare var __APP_VIEW__: boolean
+declare var __PLUS__: boolean
 
 // Feature flags
 declare var __VUE_OPTIONS_API__: boolean

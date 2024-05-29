@@ -16,23 +16,8 @@ import {
 import { UniElement } from './elements/UniElement'
 import { UniNode } from './elements/UniNode'
 import { BuiltInComponents } from './components'
-
-const elements = new Map<number, UniNode>()
-
-export function $(id: number) {
-  return elements.get(id) as UniElement<any>
-}
-
-export function getElement(id: number) {
-  return elements.get(id)
-}
-
-export function removeElement(id: number) {
-  if (__DEV__) {
-    console.log(formatLog('Remove', id, elements.size - 1))
-  }
-  return elements.delete(id)
-}
+import { setElement } from './store'
+export { $, getElement, setElement, removeElement } from './store'
 
 export function createElement(
   id: number,
@@ -64,7 +49,7 @@ export function createElement(
       )
     }
   }
-  elements.set(id, element)
+  setElement(id, element)
   return element
 }
 

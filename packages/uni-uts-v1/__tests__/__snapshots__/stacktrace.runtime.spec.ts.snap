@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`uts:stacktrace:runtime parseUTSJavaScriptRuntimeStacktrace 1`] = `
-"error: ReferenceError:Can't find variable: a
+"error: [EXCEPTION] ReferenceError:Can't find variable: a
 at pages/index/index.uvue:3:8
 1  |  <script lang="uts">
 2  |      setTimeout(() => {
@@ -12,7 +12,7 @@ at pages/index/index.uvue:3:8
 `;
 
 exports[`uts:stacktrace:runtime parseUTSJavaScriptRuntimeStacktrace 2`] = `
-"error: at <Index __pageId=1 __pagePath="pages/index/index" __pageQuery=  ... >
+"error: [EXCEPTION] at <Index __pageId=1 __pagePath="pages/index/index" __pageQuery=  ... >
 Can't find variable: a
 at pages/index/index.uvue:7:12
 5  |      export default {

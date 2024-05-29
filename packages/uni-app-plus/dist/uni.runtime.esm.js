@@ -323,7 +323,7 @@ function getApiCallbacks(args) {
     }
     return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
     if (!errMsg || errMsg.indexOf(':fail') === -1) {
         return name + ':ok';
     }
@@ -340,7 +340,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     const callbackId = invokeCallbackId++;
     addInvokeCallback(callbackId, name, (res) => {
         res = res || {};
-        res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+        res.errMsg = normalizeErrMsg(res.errMsg, name);
         isFunction(beforeAll) && beforeAll(res);
         if (res.errMsg === name + ':ok') {
             isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -572,7 +572,7 @@ function wrapperOffApi(name, fn, options) {
         }
     };
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
     if (!errMsg || isString(errMsg)) {
         return errMsg;
     }
@@ -591,7 +591,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
         }
         return fn(args, {
             resolve: (res) => invokeSuccess(id, name, res),
-            reject: (errMsg, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
+            reject: (errMsg, errRes) => invokeFail(id, name, parseErrMsg(errMsg), errRes),
         });
     };
 }
@@ -1001,10 +1001,17 @@ function getDefaultLocale() {
 function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     // 兼容旧版本入参
     if (typeof locale !== 'string') {
-        [locale, messages] = [
+        // ;[locale, messages] = [
+        //   messages as unknown as string,
+        //   locale as unknown as LocaleMessages,
+        // ]
+        // 暂不使用数组解构，uts编译器暂未支持。
+        const options = [
             messages,
             locale,
         ];
+        locale = options[0];
+        messages = options[1];
     }
     if (typeof locale !== 'string') {
         // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
@@ -18389,7 +18396,7 @@ function createNVueWebview({ path, query, routeOptions, webviewExtras, }) {
 
 let preloadWebview$1;
 function setPreloadWebview(webview) {
-    preloadWebview$1 = webview;
+    return (preloadWebview$1 = webview);
 }
 function getPreloadWebview() {
     return preloadWebview$1;
@@ -18796,7 +18803,7 @@ function showWebview(webview, animationType, animationDuration, showCallback, de
 function backWebview(webview, callback) {
     const children = webview.children();
     if (!children || !children.length) {
-        // 有子 webview
+        // 无子 webview
         return callback();
     }
     // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
@@ -19535,7 +19542,7 @@ function createNVuePage(pageId, webview, pageInstance) {
     }
 }
 
-const $navigateTo = (args, { resolve, reject }) => {
+const $navigateTo =  (args, { resolve, reject }) => {
     const { url, events, animationType, animationDuration } = args;
     const { path, query } = parseUrl(url);
     const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
@@ -19552,7 +19559,7 @@ const $navigateTo = (args, { resolve, reject }) => {
             .catch(reject);
     }, args.openType === 'appLaunch');
 };
-const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+const navigateTo = /*#__PURE__*/ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     // 当前页面触发 onHide
     invokeHook(ON_HIDE);

@@ -1,7 +1,163 @@
 import picker from '@ohos.file.picker';
 import fs from '@ohos.file.fs';
-import promptAction from '@ohos.promptAction';
-import { injectHook, createVNode, render, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import media from '@ohos.multimedia.media';
+import image from '@ohos.multimedia.image';
+import http from '@ohos.net.http';
+import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+
+async function _getVideoInfo(uri) {
+    const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+    const avMetadataExtractor = await media.createAVMetadataExtractor();
+    let metadata = null;
+    let size = 0;
+    try {
+        size = (await fs.stat(file.fd)).size;
+        avMetadataExtractor.dataSrc = {
+            fileSize: size,
+            callback: (buffer, length, pos) => {
+                return fs.readSync(file.fd, buffer, {
+                    offset: pos,
+                    length,
+                });
+            },
+        };
+        metadata = await avMetadataExtractor.fetchMetadata();
+    }
+    catch (error) {
+        throw error;
+    }
+    finally {
+        await avMetadataExtractor.release();
+        await fs.close(file);
+    }
+    const videoOrientationArr = [
+        'up',
+        'right',
+        'down',
+        'left',
+    ];
+    return {
+        size: size,
+        duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
+        width: metadata.videoWidth ? Number(metadata.videoWidth) : undefined,
+        height: metadata.videoHeight ? Number(metadata.videoHeight) : undefined,
+        type: metadata.mimeType,
+        orientation: metadata.videoOrientation
+            ? videoOrientationArr[Number(metadata.videoOrientation) / 90]
+            : undefined,
+    };
+}
+async function _getImageInfo(uri) {
+    const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+    const imageSource = image.createImageSource(file.fd);
+    const imageInfo = await imageSource.getImageInfo();
+    const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+    let orientationNum = 0;
+    if (typeof orientation === 'string') {
+        const matched = orientation.match(/^Unknown value (\d)$/);
+        if (matched && matched[1]) {
+            orientationNum = Number(matched[1]);
+        }
+        else if (/^\d$/.test(orientation)) {
+            orientationNum = Number(orientation);
+        }
+    }
+    else if (typeof orientation === 'number') {
+        orientationNum = orientation;
+    }
+    let orientationStr = 'up';
+    switch (orientationNum) {
+        case 2:
+            orientationStr = 'up-mirrored';
+            break;
+        case 3:
+            orientationStr = 'down';
+            break;
+        case 4:
+            orientationStr = 'down-mirrored';
+            break;
+        case 5:
+            orientationStr = 'left-mirrored';
+            break;
+        case 6:
+            orientationStr = 'right';
+            break;
+        case 7:
+            orientationStr = 'right-mirrored';
+            break;
+        case 8:
+            orientationStr = 'left';
+            break;
+        case 0:
+        case 1:
+        default:
+            orientationStr = 'up';
+            break;
+    }
+    return {
+        path: uri,
+        width: imageInfo.size.width,
+        height: imageInfo.size.height,
+        orientation: orientationStr,
+    };
+}
+/**
+ *
+ * 注意
+ * - 使用系统picker，无需申请权限
+ * - 仅支持选图片或视频，不能混选
+ *
+ * 差异项记录
+ * - 鸿蒙的PhotoViewPicker可以选择视频、图片。PhotoViewPicker不支持sizeType参数、maxDuration参数。
+ * - PhotoViewPicker进行媒体文件选择时相机按钮无法屏蔽，因此不支持sourceType参数。
+ *
+ * 关键文档参考：
+ * - [用户文件uri介绍](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/user-file-uri-intro-0000001821000049)
+ * - [系统能力使用说明](https://developer.huawei.com/consumer/cn/doc/harmonyos-references-V5/syscap-0000001774120846-V5)
+ * - [requestPermissions标签](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/module-configuration-file-0000001820879553-V5#ZH-CN_TOPIC_0000001881258481__requestpermissions%E6%A0%87%E7%AD%BE)
+ * - [向用户申请授权](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/request-user-authorization-0000001774279718-V5)
+ * - [应用/服务签名](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-signing-0000001587684945#section9786111152213)，ohos.permission.READ_IMAGEVIDEO权限需要自助签名方可使用
+ * - [AVMetadataExtractor](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-media-0000001821001557#ZH-CN_TOPIC_0000001811157018__avmetadataextractor11)
+ */
+async function _chooseMedia(options) {
+    const photoSelectOptions = new picker.PhotoSelectOptions();
+    const mimeType = options.mimeType;
+    photoSelectOptions.MIMEType = mimeType;
+    photoSelectOptions.maxSelectNumber = options.count || 9;
+    const photoPicker = new picker.PhotoViewPicker();
+    const photoSelectResult = await photoPicker.select(photoSelectOptions);
+    const uris = photoSelectResult.photoUris;
+    if (mimeType !== picker.PhotoViewMIMETypes.VIDEO_TYPE) {
+        return {
+            tempFiles: uris.map((uri) => {
+                const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
+                const stat = fs.statSync(file.fd);
+                fs.closeSync(file);
+                return {
+                    fileType: 'image',
+                    tempFilePath: uri,
+                    size: stat.size,
+                };
+            }),
+        };
+    }
+    const tempFiles = [];
+    for (let i = 0; i < uris.length; i++) {
+        const uri = uris[i];
+        const videoInfo = await _getVideoInfo(uri);
+        tempFiles.push({
+            fileType: 'video',
+            tempFilePath: uri,
+            size: videoInfo.size,
+            duration: videoInfo.duration,
+            width: videoInfo.width,
+            height: videoInfo.height,
+        });
+    }
+    return {
+        tempFiles,
+    };
+}
 
 /**
 * @vue/shared v3.4.21
@@ -35,6 +191,10 @@ const cacheStringFunction = (fn) => {
     return hit || (cache[str] = fn(str));
   };
 };
+const camelizeRE = /-(\w)/g;
+const camelize = cacheStringFunction((str) => {
+  return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
+});
 const hyphenateRE = /\B([A-Z])/g;
 const hyphenate = cacheStringFunction(
   (str) => str.replace(hyphenateRE, "-$1").toLowerCase()
@@ -45,6 +205,23 @@ const capitalize = cacheStringFunction((str) => {
 
 const CHOOSE_SIZE_TYPES = ['original', 'compressed'];
 const CHOOSE_SOURCE_TYPES = ['album', 'camera'];
+const HTTP_METHODS = [
+    'GET',
+    'OPTIONS',
+    'HEAD',
+    'POST',
+    'PUT',
+    'DELETE',
+    'TRACE',
+    'CONNECT',
+    'PATCH',
+];
+function elemInArray(str, arr) {
+    if (!str || arr.indexOf(str) === -1) {
+        return arr[0];
+    }
+    return str;
+}
 function elemsInArray(strArr, optionalVal) {
     if (!isArray(strArr) ||
         strArr.length === 0 ||
@@ -138,7 +315,8 @@ function assertType(value, type) {
     }
     else {
         {
-            valid = value instanceof type;
+            // App平台ArrayBuffer等参数跨实例传输，无法通过 instanceof 识别
+            valid = value instanceof type || toRawType(value) === getType(type);
         }
     }
     return {
@@ -224,6 +402,27 @@ function invokeCallback(id, res, extras) {
     }
     return res;
 }
+function findInvokeCallbackByName(name) {
+    for (const key in invokeCallbacks) {
+        if (invokeCallbacks[key].name === name) {
+            return true;
+        }
+    }
+    return false;
+}
+function onKeepAliveApiCallback(name) {
+    UniServiceJSBridge.on('api.' + name, (res) => {
+        for (const key in invokeCallbacks) {
+            const opts = invokeCallbacks[key];
+            if (opts.name === name) {
+                opts.callback(res);
+            }
+        }
+    });
+}
+function createKeepAliveApiCallback(name, callback) {
+    return addInvokeCallback(invokeCallbackId++, name, callback, true);
+}
 const API_SUCCESS = 'success';
 const API_FAIL = 'fail';
 const API_COMPLETE = 'complete';
@@ -238,7 +437,7 @@ function getApiCallbacks(args) {
     }
     return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
     if (!errMsg || errMsg.indexOf(':fail') === -1) {
         return name + ':ok';
     }
@@ -255,7 +454,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     const callbackId = invokeCallbackId++;
     addInvokeCallback(callbackId, name, (res) => {
         res = res || {};
-        res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+        res.errMsg = normalizeErrMsg(res.errMsg, name);
         isFunction(beforeAll) && beforeAll(res);
         if (res.errMsg === name + ':ok') {
             isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -449,7 +648,28 @@ function beforeInvokeApi(name, args, protocol, options) {
         return errMsg;
     }
 }
-function normalizeErrMsg(errMsg) {
+function checkCallback(callback) {
+    if (!isFunction(callback)) {
+        throw new Error('Invalid args: type check failed for args "callback". Expected Function');
+    }
+}
+function wrapperOnApi(name, fn, options) {
+    return (callback) => {
+        checkCallback(callback);
+        const errMsg = beforeInvokeApi(name, [callback], undefined, options);
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        // 是否是首次调用on,如果是首次，需要初始化onMethod监听
+        const isFirstInvokeOnApi = !findInvokeCallbackByName(name);
+        createKeepAliveApiCallback(name, callback);
+        if (isFirstInvokeOnApi) {
+            onKeepAliveApiCallback(name);
+            fn();
+        }
+    };
+}
+function parseErrMsg(errMsg) {
     if (!errMsg || isString(errMsg)) {
         return errMsg;
     }
@@ -468,7 +688,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
         }
         return fn(args, {
             resolve: (res) => invokeSuccess(id, name, res),
-            reject: (errMsg, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
+            reject: (errMsg, errRes) => invokeFail(id, name, parseErrMsg(errMsg), errRes),
         });
     };
 }
@@ -484,6 +704,12 @@ function wrapperSyncApi(name, fn, protocol, options) {
 function wrapperAsyncApi(name, fn, protocol, options) {
     return wrapperTaskApi(name, fn, protocol, options);
 }
+function defineOnApi(name, fn, options) {
+    return wrapperOnApi(name, fn, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+    return promisify(name, wrapperTaskApi(name, fn, ('production' !== 'production') ? protocol : undefined, options));
+}
 function defineSyncApi(name, fn, protocol, options) {
     return wrapperSyncApi(name, fn, ('production' !== 'production') ? protocol : undefined, options);
 }
@@ -496,13 +722,18 @@ function defineAsyncApi(name, fn, protocol, options) {
  * @returns
  */
 function getBaseSystemInfo() {
+    const plus = weex.requireModule('plus');
     return {
-        platform: 'harmonyos',
+        platform: 'harmony',
         pixelRatio: vp2px(1),
         windowWidth: lpx2px(720), // TODO designWidth可配置
+        language: plus.getLanguage()
     };
 }
 
+const TABBAR_HEIGHT = 50;
+const ON_REACH_BOTTOM_DISTANCE = 50;
+const I18N_JSON_DELIMITERS = ['%', '%'];
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 // lifecycle
 // App and Page
@@ -516,8 +747,12 @@ const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 const ON_READY = 'onReady';
 const ON_UNLOAD = 'onUnload';
 const ON_RESIZE = 'onResize';
+const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
+const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
+// navigationBar
+const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
 // framework
 const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
@@ -556,6 +791,25 @@ function once(fn, ctx = null) {
     });
 }
 
+const encode$2 = encodeURIComponent;
+function stringifyQuery$1(obj, encodeStr = encode$2) {
+    const res = obj
+        ? Object.keys(obj)
+            .map((key) => {
+            let val = obj[key];
+            if (typeof val === undefined || val === null) {
+                val = '';
+            }
+            else if (isPlainObject(val)) {
+                val = JSON.stringify(val);
+            }
+            return encodeStr(key) + '=' + encodeStr(val);
+        })
+            .filter((x) => x.length > 0)
+            .join('&')
+        : null;
+    return res ? `?${res}` : '';
+}
 /**
  * Decode text using `decodeURIComponent`. Returns the original text if it
  * fails.
@@ -608,6 +862,35 @@ function parseQuery(search) {
     return query;
 }
 
+function parseUrl(url) {
+    const [path, querystring] = url.split('?', 2);
+    return {
+        path,
+        query: parseQuery(querystring || ''),
+    };
+}
+
+class DOMException extends Error {
+    constructor(message) {
+        super(message);
+        this.name = 'DOMException';
+    }
+}
+
+function normalizeEventType(type, options) {
+    if (options) {
+        if (options.capture) {
+            type += 'Capture';
+        }
+        if (options.once) {
+            type += 'Once';
+        }
+        if (options.passive) {
+            type += 'Passive';
+        }
+    }
+    return `on${capitalize(camelize(type))}`;
+}
 class UniEvent {
     type;
     bubbles;
@@ -644,6 +927,43 @@ function createUniEvent(evt) {
     extend(uniEvent, evt);
     return uniEvent;
 }
+class UniEventTarget {
+    listeners = Object.create(null);
+    dispatchEvent(evt) {
+        const listeners = this.listeners[evt.type];
+        if (!listeners) {
+            if (('production' !== 'production')) {
+                console.error(formatLog('dispatchEvent', this.nodeId), evt.type, 'not found');
+            }
+            return false;
+        }
+        // 格式化事件类型
+        const event = createUniEvent(evt);
+        const len = listeners.length;
+        for (let i = 0; i < len; i++) {
+            listeners[i].call(this, event);
+            if (event._end) {
+                break;
+            }
+        }
+        return event.cancelable && event.defaultPrevented;
+    }
+    addEventListener(type, listener, options) {
+        type = normalizeEventType(type, options);
+        (this.listeners[type] || (this.listeners[type] = [])).push(listener);
+    }
+    removeEventListener(type, callback, options) {
+        type = normalizeEventType(type, options);
+        const listeners = this.listeners[type];
+        if (!listeners) {
+            return;
+        }
+        const index = listeners.indexOf(callback);
+        if (index > -1) {
+            listeners.splice(index, 1);
+        }
+    }
+}
 const optionsModifierRE = /(?:Once|Passive|Capture)$/;
 function parseEventName(name) {
     let options;
@@ -658,6 +978,151 @@ function parseEventName(name) {
     return [hyphenate(name.slice(2)), options];
 }
 
+const NODE_TYPE_PAGE = 0;
+const NODE_TYPE_ELEMENT = 1;
+function sibling(node, type) {
+    const { parentNode } = node;
+    if (!parentNode) {
+        return null;
+    }
+    const { childNodes } = parentNode;
+    return childNodes[childNodes.indexOf(node) + (type === 'n' ? 1 : -1)] || null;
+}
+function removeNode(node) {
+    const { parentNode } = node;
+    if (parentNode) {
+        const { childNodes } = parentNode;
+        const index = childNodes.indexOf(node);
+        if (index > -1) {
+            node.parentNode = null;
+            childNodes.splice(index, 1);
+        }
+    }
+}
+function checkNodeId(node) {
+    if (!node.nodeId && node.pageNode) {
+        node.nodeId = node.pageNode.genId();
+    }
+}
+// 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
+class UniNode extends UniEventTarget {
+    nodeId;
+    nodeType;
+    nodeName;
+    childNodes;
+    pageNode = null;
+    parentNode = null;
+    __vueParentComponent;
+    _text = null;
+    constructor(nodeType, nodeName, container) {
+        super();
+        if (container) {
+            const { pageNode } = container;
+            if (pageNode) {
+                this.pageNode = pageNode;
+                this.nodeId = pageNode.genId();
+                !pageNode.isUnmounted && pageNode.onCreate(this, nodeName);
+            }
+        }
+        this.nodeType = nodeType;
+        this.nodeName = nodeName;
+        this.childNodes = [];
+    }
+    get firstChild() {
+        return this.childNodes[0] || null;
+    }
+    get lastChild() {
+        const { childNodes } = this;
+        const length = childNodes.length;
+        return length ? childNodes[length - 1] : null;
+    }
+    get nextSibling() {
+        return sibling(this, 'n');
+    }
+    get nodeValue() {
+        return null;
+    }
+    set nodeValue(_val) { }
+    get textContent() {
+        return this._text || '';
+    }
+    set textContent(text) {
+        this._text = text;
+        if (this.pageNode && !this.pageNode.isUnmounted) {
+            this.pageNode.onTextContent(this, text);
+        }
+    }
+    get parentElement() {
+        const { parentNode } = this;
+        if (parentNode && parentNode.nodeType === NODE_TYPE_ELEMENT) {
+            return parentNode;
+        }
+        return null;
+    }
+    get previousSibling() {
+        return sibling(this, 'p');
+    }
+    appendChild(newChild) {
+        return this.insertBefore(newChild, null);
+    }
+    cloneNode(deep) {
+        const cloned = extend(Object.create(Object.getPrototypeOf(this)), this);
+        const { attributes } = cloned;
+        if (attributes) {
+            cloned.attributes = extend({}, attributes);
+        }
+        if (deep) {
+            cloned.childNodes = cloned.childNodes.map((childNode) => childNode.cloneNode(true));
+        }
+        return cloned;
+    }
+    insertBefore(newChild, refChild) {
+        // 先从现在的父节点移除（注意：不能触发onRemoveChild，否则会生成先remove该 id，再 insert）
+        removeNode(newChild);
+        newChild.pageNode = this.pageNode;
+        newChild.parentNode = this;
+        checkNodeId(newChild);
+        const { childNodes } = this;
+        if (refChild) {
+            const index = childNodes.indexOf(refChild);
+            if (index === -1) {
+                throw new DOMException(`Failed to execute 'insertBefore' on 'Node': The node before which the new node is to be inserted is not a child of this node.`);
+            }
+            childNodes.splice(index, 0, newChild);
+        }
+        else {
+            childNodes.push(newChild);
+        }
+        return this.pageNode && !this.pageNode.isUnmounted
+            ? this.pageNode.onInsertBefore(this, newChild, refChild)
+            : newChild;
+    }
+    removeChild(oldChild) {
+        const { childNodes } = this;
+        const index = childNodes.indexOf(oldChild);
+        if (index === -1) {
+            throw new DOMException(`Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.`);
+        }
+        oldChild.parentNode = null;
+        childNodes.splice(index, 1);
+        return this.pageNode && !this.pageNode.isUnmounted
+            ? this.pageNode.onRemoveChild(oldChild)
+            : oldChild;
+    }
+}
+
+const ACTION_TYPE_PAGE_CREATE = 1;
+const ACTION_TYPE_PAGE_CREATED = 2;
+const ACTION_TYPE_CREATE = 3;
+const ACTION_TYPE_INSERT = 4;
+const ACTION_TYPE_REMOVE = 5;
+const ACTION_TYPE_SET_ATTRIBUTE = 6;
+const ACTION_TYPE_REMOVE_ATTRIBUTE = 7;
+const ACTION_TYPE_ADD_EVENT = 8;
+const ACTION_TYPE_REMOVE_EVENT = 9;
+const ACTION_TYPE_SET_TEXT = 10;
+const ACTION_TYPE_ADD_WXS_EVENT = 12;
+const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
 class EventChannel {
@@ -792,6 +1257,97 @@ E.prototype = {
         return this;
     },
 };
+
+const borderStyles = {
+    black: 'rgba(0,0,0,0.4)',
+    white: 'rgba(255,255,255,0.4)',
+};
+function normalizeTabBarStyles(borderStyle) {
+    if (borderStyle && borderStyle in borderStyles) {
+        return borderStyles[borderStyle];
+    }
+    return borderStyle;
+}
+function normalizeTitleColor(titleColor) {
+    return titleColor === 'black' ? '#000000' : '#ffffff';
+}
+function resolveStringStyleItem(modeStyle, styleItem, key) {
+    if (isString(styleItem) && styleItem.startsWith('@')) {
+        const _key = styleItem.replace('@', '');
+        let _styleItem = modeStyle[_key] || styleItem;
+        switch (key) {
+            case 'titleColor':
+                _styleItem = normalizeTitleColor(_styleItem);
+                break;
+            case 'borderStyle':
+                _styleItem = normalizeTabBarStyles(_styleItem);
+                break;
+        }
+        return _styleItem;
+    }
+    return styleItem;
+}
+function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
+    const modeStyle = themeConfig[mode];
+    const styles = {};
+    if (typeof modeStyle === 'undefined')
+        return pageStyle;
+    Object.keys(pageStyle).forEach((key) => {
+        const styleItem = pageStyle[key]; // Object Array String
+        const parseStyleItem = () => {
+            if (isPlainObject(styleItem))
+                return normalizeStyles(styleItem, themeConfig, mode);
+            if (isArray(styleItem))
+                return styleItem.map((item) => {
+                    if (typeof item === 'object')
+                        return normalizeStyles(item, themeConfig, mode);
+                    return resolveStringStyleItem(modeStyle, item);
+                });
+            return resolveStringStyleItem(modeStyle, styleItem, key);
+        };
+        styles[key] = parseStyleItem();
+    });
+    return styles;
+}
+
+/**
+ * 主要文件路径分为如下四种
+ * - 安装文件路径（仅能访问rawfile）鸿蒙$rawfile('index.html')对应一个Resource对象，为方便拼接路径，使用`resource://`协议表示
+ * - 临时文件路径（temp）   系统api如下载、选择图片产生的压缩文件会存放于此处，应用退出后自动删除
+ * - 缓存文件路径（cache）  用于存储图片缓存等，达到一定大小或时间会被系统自动清理
+ * - 用户文件路径（files）  持久保存
+ *
+ * TODO fileManager、原生fs对象？沙箱
+ *
+ * 参考文档：
+ * - [微信小程序文件系统](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/file-system.html)
+ * - [鸿蒙应用沙箱目录](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-sandbox-directory-0000001774280086)
+ */
+/**
+ * 内部使用不暴露给用户
+ */
+const env = {
+    // RESOURCE_PATH: 'resource://',
+    // 以下路径均不以`/`结尾
+    USER_DATA_PATH: '',
+    TEMP_PATH: '',
+    CACHE_PATH: '',
+};
+function initEnv() {
+    const context = getContext();
+    env.USER_DATA_PATH = context.filesDir;
+    env.TEMP_PATH = context.tempDir;
+    env.CACHE_PATH = context.cacheDir;
+    return env;
+}
+const initEnvOnce = once(initEnv);
+function getEnv() {
+    return initEnvOnce();
+}
+
+function getRealPath(filepath) {
+    return filepath;
+}
 
 const isObject = (val) => val !== null && typeof val === 'object';
 const defaultDelimiters = ['{', '}'];
@@ -1038,10 +1594,17 @@ function getDefaultLocale() {
 function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     // 兼容旧版本入参
     if (typeof locale !== 'string') {
-        [locale, messages] = [
+        // ;[locale, messages] = [
+        //   messages as unknown as string,
+        //   locale as unknown as LocaleMessages,
+        // ]
+        // 暂不使用数组解构，uts编译器暂未支持。
+        const options = [
             messages,
             locale,
         ];
+        locale = options[0];
+        messages = options[1];
     }
     if (typeof locale !== 'string') {
         // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
@@ -1119,16 +1682,82 @@ function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     };
 }
 
+function isI18nStr(value, delimiters) {
+    return value.indexOf(delimiters[0]) > -1;
+}
+
 const isEnableLocale = /*#__PURE__*/ once(() => typeof __uniConfig !== 'undefined' &&
     __uniConfig.locales &&
     !!Object.keys(__uniConfig.locales).length);
 
 let i18n;
+function getLocaleMessage() {
+    const locale = uni.getLocale();
+    const locales = __uniConfig.locales;
+    return (locales[locale] || locales[__uniConfig.fallbackLocale] || locales.en || {});
+}
+function formatI18n(message) {
+    if (isI18nStr(message, I18N_JSON_DELIMITERS)) {
+        return useI18n().f(message, getLocaleMessage(), I18N_JSON_DELIMITERS);
+    }
+    return message;
+}
+function resolveJsonObj(jsonObj, names) {
+    if (names.length === 1) {
+        if (jsonObj) {
+            const _isI18nStr = (value) => isString(value) && isI18nStr(value, I18N_JSON_DELIMITERS);
+            const _name = names[0];
+            let filterJsonObj = [];
+            if (isArray(jsonObj) &&
+                (filterJsonObj = jsonObj.filter((item) => _isI18nStr(item[_name])))
+                    .length) {
+                return filterJsonObj;
+            }
+            const value = jsonObj[names[0]];
+            if (_isI18nStr(value)) {
+                return jsonObj;
+            }
+        }
+        return;
+    }
+    const name = names.shift();
+    return resolveJsonObj(jsonObj && jsonObj[name], names);
+}
+function defineI18nProperties(obj, names) {
+    return names.map((name) => defineI18nProperty(obj, name));
+}
+function defineI18nProperty(obj, names) {
+    const jsonObj = resolveJsonObj(obj, names);
+    if (!jsonObj) {
+        return false;
+    }
+    const prop = names[names.length - 1];
+    if (isArray(jsonObj)) {
+        jsonObj.forEach((item) => defineI18nProperty(item, [prop]));
+    }
+    else {
+        let value = jsonObj[prop];
+        Object.defineProperty(jsonObj, prop, {
+            get() {
+                return formatI18n(value);
+            },
+            set(v) {
+                value = v;
+            },
+        });
+    }
+    return true;
+}
 function useI18n() {
     if (!i18n) {
         let locale;
         {
-            locale = uni.getSystemInfoSync().language;
+            if (typeof getApp === 'function') {
+                locale = weex.requireModule('plus').getLanguage();
+            }
+            else {
+                locale = plus.webview.currentWebview().getStyle().locale;
+            }
         }
         i18n = initVueI18n(locale);
         // 自定义locales
@@ -1152,25 +1781,47 @@ function normalizeMessages(module, keys, values) {
         return res;
     }, {});
 }
-const initI18nChooseImageMsgsOnce = /*#__PURE__*/ once(() => {
-    const name = 'uni.chooseImage.';
-    const keys = ['cancel', 'sourceType.album', 'sourceType.camera'];
+const initI18nAppMsgsOnce = /*#__PURE__*/ once(() => {
+    const name = 'uni.app.';
+    const keys = ['quit'];
     {
-        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Cancel', 'Album', 'Camera']), false);
+        useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ['Press back button again to exit']), false);
     }
     {
-        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Cancelar', 'Álbum', 'Cámara']), false);
+        useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ['Pulse otra vez para salir']), false);
     }
     {
-        useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ['Annuler', 'Album', 'Caméra']), false);
+        useI18n().add(LOCALE_FR, normalizeMessages(name, keys, [
+            "Appuyez à nouveau pour quitter l'application",
+        ]), false);
     }
     {
-        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['取消', '从相册选择', '拍摄']), false);
+        useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ['再按一次退出应用']), false);
     }
     {
-        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['取消', '從相冊選擇', '拍攝']), false);
+        useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ['再按一次退出應用']), false);
     }
 });
+
+function initNavigationBarI18n(navigationBar) {
+    if (isEnableLocale()) {
+        return defineI18nProperties(navigationBar, [
+            ['titleText'],
+            ['searchInput', 'placeholder'],
+            ['buttons', 'text'],
+        ]);
+    }
+}
+function initPullToRefreshI18n(pullToRefresh) {
+    if (isEnableLocale()) {
+        const CAPTION = 'caption';
+        return defineI18nProperties(pullToRefresh, [
+            ['contentdown', CAPTION],
+            ['contentover', CAPTION],
+            ['contentrefresh', CAPTION],
+        ]);
+    }
+}
 
 function initBridge(subscribeNamespace) {
     const emitter = new E();
@@ -1202,6 +1853,32 @@ function initBridge(subscribeNamespace) {
 const INVOKE_VIEW_API = 'invokeViewApi';
 const INVOKE_SERVICE_API = 'invokeServiceApi';
 
+function hasRpx(str) {
+    str = str + '';
+    return str.indexOf('rpx') !== -1 || str.indexOf('upx') !== -1;
+}
+function rpx2px(str, replace = false) {
+    if (replace) {
+        return rpx2pxWithReplace(str);
+    }
+    if (isString(str)) {
+        const res = parseInt(str) || 0;
+        if (hasRpx(str)) {
+            return uni.upx2px(res);
+        }
+        return res;
+    }
+    return str;
+}
+function rpx2pxWithReplace(str) {
+    if (!hasRpx(str)) {
+        return str;
+    }
+    return str.replace(/(\d+(\.\d+)?)[ru]px/g, (_a, b) => {
+        return uni.upx2px(parseFloat(b)) + 'px';
+    });
+}
+
 function getCurrentPage() {
     const pages = getCurrentPages();
     const len = pages.length;
@@ -1228,6 +1905,49 @@ function getCurrentPageVm() {
         return page.$vm;
     }
 }
+const PAGE_META_KEYS = ['navigationBar', 'pullToRefresh'];
+function initGlobalStyle() {
+    return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
+}
+function initRouteMeta(pageMeta, id) {
+    const globalStyle = initGlobalStyle();
+    const res = extend({ id }, globalStyle, pageMeta);
+    PAGE_META_KEYS.forEach((name) => {
+        res[name] = extend({}, globalStyle[name], pageMeta[name]);
+    });
+    const { navigationBar } = res;
+    navigationBar.titleText &&
+        navigationBar.titleImage &&
+        (navigationBar.titleText = '');
+    return res;
+}
+function normalizePullToRefreshRpx(pullToRefresh) {
+    if (pullToRefresh.offset) {
+        pullToRefresh.offset = rpx2px(pullToRefresh.offset);
+    }
+    if (pullToRefresh.height) {
+        pullToRefresh.height = rpx2px(pullToRefresh.height);
+    }
+    if (pullToRefresh.range) {
+        pullToRefresh.range = rpx2px(pullToRefresh.range);
+    }
+    return pullToRefresh;
+}
+function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
+    const { id, route } = meta;
+    const titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
+    return {
+        id: id,
+        path: addLeadingSlash(route),
+        route: route,
+        fullPath: url,
+        options: pageQuery,
+        meta,
+        openType,
+        eventChannel,
+        statusBarStyle: titleColor === '#ffffff' ? 'light' : 'dark',
+    };
+}
 
 function invokeHook(vm, name, args) {
     if (isString(vm)) {
@@ -1247,15 +1967,57 @@ function invokeHook(vm, name, args) {
     if (!vm) {
         return;
     }
+    // 兼容 nvue
+    {
+        if (vm.__call_hook) {
+            return vm.__call_hook(name, args);
+        }
+    }
     const hooks = vm.$[name];
     return hooks && invokeArrayFns(hooks, args);
 }
 
+function normalizeRoute(toRoute) {
+    if (toRoute.indexOf('/') === 0) {
+        return toRoute;
+    }
+    let fromRoute = '';
+    const pages = getCurrentPages();
+    if (pages.length) {
+        fromRoute = pages[pages.length - 1].$page.route;
+    }
+    return getRealRoute(fromRoute, toRoute);
+}
+function getRealRoute(fromRoute, toRoute) {
+    if (toRoute.indexOf('/') === 0) {
+        return toRoute;
+    }
+    if (toRoute.indexOf('./') === 0) {
+        return getRealRoute(fromRoute, toRoute.slice(2));
+    }
+    const toRouteArray = toRoute.split('/');
+    const toRouteLength = toRouteArray.length;
+    let i = 0;
+    for (; i < toRouteLength && toRouteArray[i] === '..'; i++) {
+        // noop
+    }
+    toRouteArray.splice(0, i);
+    toRoute = toRouteArray.join('/');
+    const fromRouteArray = fromRoute.length > 0 ? fromRoute.split('/') : [];
+    fromRouteArray.splice(fromRouteArray.length - i - 1, i + 1);
+    return addLeadingSlash(fromRouteArray.concat(toRouteArray).join('/'));
+}
 function getRouteOptions(path, alias = false) {
     if (alias) {
         return __uniRoutes.find((route) => route.path === path || route.alias === path);
     }
     return __uniRoutes.find((route) => route.path === path);
+}
+function getRouteMeta(path) {
+    const routeOptions = getRouteOptions(path);
+    if (routeOptions) {
+        return routeOptions.meta;
+    }
 }
 
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
@@ -1347,6 +2109,19 @@ function initService() {
         initSubscribe();
     }
 }
+function initAppVm(appVm) {
+    appVm.$vm = appVm;
+    appVm.$mpType = 'app';
+    const locale = ref(useI18n().getLocale());
+    Object.defineProperty(appVm, '$locale', {
+        get() {
+            return locale.value;
+        },
+        set(v) {
+            locale.value = v;
+        },
+    });
+}
 function initPageVm(pageVm, page) {
     pageVm.route = page.route;
     pageVm.$vm = pageVm;
@@ -1394,6 +2169,42 @@ function getEnterOptions() {
     // TODO: Implement
     return extend({}, enterOptions$1);
 }
+
+const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
+
+const API_SET_LOCALE = 'setLocale';
+const API_GET_LOCALE = 'getLocale';
+const API_ON_LOCALE_CHANGE = 'onLocaleChange';
+const getLocale = defineSyncApi(API_GET_LOCALE, () => {
+    // 优先使用 $locale
+    const app = getApp({ allowDefault: true });
+    if (app && app.$vm) {
+        return app.$vm.$locale;
+    }
+    return useI18n().getLocale();
+});
+const onLocaleChange = defineOnApi(API_ON_LOCALE_CHANGE, () => { });
+const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
+    const app = getApp();
+    if (!app) {
+        return false;
+    }
+    const oldLocale = app.$vm.$locale;
+    if (oldLocale !== locale) {
+        app.$vm.$locale = locale;
+        {
+            const pages = getCurrentPages();
+            pages.forEach((page) => {
+                UniServiceJSBridge.publishHandler(API_SET_LOCALE, locale, page.$page.id);
+            });
+            weex.requireModule('plus').setLanguage(locale);
+        }
+        // 执行 uni.onLocaleChange
+        UniServiceJSBridge.invokeOnCallback(API_ON_LOCALE_CHANGE, { locale });
+        return true;
+    }
+    return false;
+});
 
 const appHooks = {
     [ON_UNHANDLE_REJECTION]: [],
@@ -1448,148 +2259,818 @@ const ChooseImageProtocol = {
     extension: Array,
 };
 
-async function openAlbum(count = 9) {
-    return new Promise((resolve, reject) => {
-        try {
-            const photoSelectOptions = new picker.PhotoSelectOptions();
-            photoSelectOptions.MIMEType = picker.PhotoViewMIMETypes.IMAGE_TYPE;
-            photoSelectOptions.maxSelectNumber = count;
-            const photoPicker = new picker.PhotoViewPicker();
-            photoPicker
-                .select(photoSelectOptions)
-                .then((photoSelectResult) => {
-                resolve({
-                    tempFilePaths: photoSelectResult.photoUris,
-                    tempFiles: photoSelectResult.photoUris.map((uri) => {
-                        const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
-                        const stat = fs.statSync(file.fd);
-                        fs.closeSync(file);
-                        return {
-                            path: uri,
-                            size: stat.size,
-                        };
-                    }),
-                });
-                console.info('PhotoViewPicker.select successfully, PhotoSelectResult uri: ' +
-                    JSON.stringify(photoSelectResult));
-            })
-                .catch((error) => {
-                console.error('PhotoViewPicker.select failed with err: ' + JSON.stringify(error));
-                reject(error);
-            });
-        }
-        catch (error) {
-            reject(error);
-        }
+const API_CHOOSE_VIDEO = 'chooseVideo';
+const ChooseVideoOptions = {
+    formatArgs: {
+        sourceType(sourceType, params) {
+            params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
+        },
+        compressed: true,
+        maxDuration: 60,
+        camera: 'back',
+        extension(extension, params) {
+            if (extension instanceof Array && extension.length === 0) {
+                return 'param extension should not be empty.';
+            }
+            if (!extension)
+                params.extension = ['*'];
+        },
+    },
+};
+const ChooseVideoProtocol = {
+    sourceType: Array,
+    compressed: Boolean,
+    maxDuration: Number,
+    camera: String,
+    extension: Array,
+};
+
+const API_GET_IMAGE_INFO = 'getImageInfo';
+const GetImageInfoOptions = {
+    formatArgs: {
+        src(src, params) {
+            params.src = getRealPath(src);
+        },
+    },
+};
+const GetImageInfoProtocol = {
+    src: {
+        type: String,
+        required: true,
+    },
+};
+
+const API_GET_VIDEO_INFO = 'getVideoInfo';
+const GetVideoInfoOptions = {
+    formatArgs: {
+        src(src, params) {
+            params.src = getRealPath(src);
+        },
+    },
+};
+const GetVideoInfoProtocol = {
+    src: {
+        type: String,
+        required: true,
+    },
+};
+
+const API_REQUEST = 'request';
+const dataType = {
+    JSON: 'json',
+};
+const RESPONSE_TYPE = ['text', 'arraybuffer'];
+const DEFAULT_RESPONSE_TYPE = 'text';
+const encode$1 = encodeURIComponent;
+function stringifyQuery(url, data) {
+    let str = url.split('#');
+    const hash = str[1] || '';
+    str = str[0].split('?');
+    let query = str[1] || '';
+    url = str[0];
+    const search = query.split('&').filter((item) => item);
+    const params = {};
+    search.forEach((item) => {
+        const part = item.split('=');
+        params[part[0]] = part[1];
     });
+    for (const key in data) {
+        if (hasOwn$1(data, key)) {
+            let v = data[key];
+            if (typeof v === 'undefined' || v === null) {
+                v = '';
+            }
+            else if (isPlainObject(v)) {
+                v = JSON.stringify(v);
+            }
+            params[encode$1(key)] = encode$1(v);
+        }
+    }
+    query = Object.keys(params)
+        .map((item) => `${item}=${params[item]}`)
+        .join('&');
+    return url + (query ? '?' + query : '') + (hash ? '#' + hash : '');
 }
-async function openCamera() {
+const RequestProtocol = {
+    method: String,
+    data: [Object, String, Array, ArrayBuffer],
+    url: {
+        type: String,
+        required: true,
+    },
+    header: Object,
+    dataType: String,
+    responseType: String,
+    withCredentials: Boolean,
+};
+const RequestOptions = {
+    formatArgs: {
+        method(value, params) {
+            params.method = elemInArray((value || '').toUpperCase(), HTTP_METHODS);
+        },
+        data(value, params) {
+            params.data = value || '';
+        },
+        url(value, params) {
+            if (params.method === HTTP_METHODS[0] &&
+                isPlainObject(params.data) &&
+                Object.keys(params.data).length) {
+                // 将 method,data 校验提前,保证 url 校验时,method,data 已被格式化
+                params.url = stringifyQuery(value, params.data);
+            }
+        },
+        header(value, params) {
+            const header = (params.header = value || {});
+            if (params.method !== HTTP_METHODS[0]) {
+                if (!Object.keys(header).find((key) => key.toLowerCase() === 'content-type')) {
+                    header['Content-Type'] = 'application/json';
+                }
+            }
+        },
+        dataType(value, params) {
+            params.dataType = (value || dataType.JSON).toLowerCase();
+        },
+        responseType(value, params) {
+            params.responseType = (value || '').toLowerCase();
+            if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
+                params.responseType = DEFAULT_RESPONSE_TYPE;
+            }
+        },
+    },
+};
+
+const API_DOWNLOAD_FILE = 'downloadFile';
+const DownloadFileOptions = {
+    formatArgs: {
+        header(value, params) {
+            params.header = value || {};
+        },
+    },
+};
+const DownloadFileProtocol = {
+    url: {
+        type: String,
+        required: true,
+    },
+    header: Object,
+    timeout: Number,
+};
+
+const API_UPLOAD_FILE = 'uploadFile';
+const UploadFileOptions = {
+    formatArgs: {
+        filePath(filePath, params) {
+            if (filePath) {
+                params.filePath = getRealPath(filePath);
+            }
+        },
+        header(value, params) {
+            params.header = value || {};
+        },
+        formData(value, params) {
+            params.formData = value || {};
+        },
+    },
+};
+const UploadFileProtocol = {
+    url: {
+        type: String,
+        required: true,
+    },
+    files: Array,
+    filePath: String,
+    name: String,
+    header: Object,
+    formData: Object,
+    timeout: Number,
+};
+
+function encodeQueryString(url) {
+    if (!isString(url)) {
+        return url;
+    }
+    const index = url.indexOf('?');
+    if (index === -1) {
+        return url;
+    }
+    const query = url
+        .slice(index + 1)
+        .trim()
+        .replace(/^(\?|#|&)/, '');
+    if (!query) {
+        return url;
+    }
+    url = url.slice(0, index);
+    const params = [];
+    query.split('&').forEach((param) => {
+        const parts = param.replace(/\+/g, ' ').split('=');
+        const key = parts.shift();
+        const val = parts.length > 0 ? parts.join('=') : '';
+        params.push(key + '=' + encodeURIComponent(val));
+    });
+    return params.length ? url + '?' + params.join('&') : url;
+}
+
+const ANIMATION_IN = [
+    'slide-in-right',
+    'slide-in-left',
+    'slide-in-top',
+    'slide-in-bottom',
+    'fade-in',
+    'zoom-out',
+    'zoom-fade-out',
+    'pop-in',
+    'none',
+];
+const ANIMATION_OUT = [
+    'slide-out-right',
+    'slide-out-left',
+    'slide-out-top',
+    'slide-out-bottom',
+    'fade-out',
+    'zoom-in',
+    'zoom-fade-in',
+    'pop-out',
+    'none',
+];
+const BaseRouteProtocol = {
+    url: {
+        type: String,
+        required: true,
+    },
+};
+const API_NAVIGATE_TO = 'navigateTo';
+const API_REDIRECT_TO = 'redirectTo';
+const API_SWITCH_TAB = 'switchTab';
+const API_NAVIGATE_BACK = 'navigateBack';
+const API_PRELOAD_PAGE = 'preloadPage';
+const API_UN_PRELOAD_PAGE = 'unPreloadPage';
+const NavigateToProtocol = 
+/*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
+const NavigateBackProtocol = 
+/*#__PURE__*/ extend({
+    delta: {
+        type: Number,
+    },
+}, createAnimationProtocol(ANIMATION_OUT));
+const SwitchTabProtocol = BaseRouteProtocol;
+const NavigateToOptions = 
+/*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
+const SwitchTabOptions = 
+/*#__PURE__*/ createRouteOptions(API_SWITCH_TAB);
+const NavigateBackOptions = {
+    formatArgs: {
+        delta(value, params) {
+            value = parseInt(value + '') || 1;
+            params.delta = Math.min(getCurrentPages().length - 1, value);
+        },
+    },
+};
+function createAnimationProtocol(animationTypes) {
     return {
-        tempFilePaths: [],
-        tempFiles: [],
+        animationType: {
+            type: String,
+            validator(type) {
+                if (type && animationTypes.indexOf(type) === -1) {
+                    return ('`' +
+                        type +
+                        '` is not supported for `animationType` (supported values are: `' +
+                        animationTypes.join('`|`') +
+                        '`)');
+                }
+            },
+        },
+        animationDuration: {
+            type: Number,
+        },
     };
 }
-async function chooseSourceType() {
-    initI18nChooseImageMsgsOnce();
-    const { t } = useI18n();
-    return new Promise((resolve, reject) => {
-        try {
-            promptAction.showActionMenu({
-                title: '',
-                buttons: [
-                    {
-                        text: t('uni.chooseImage.sourceType.camera'),
-                        color: '#000000',
-                    },
-                    {
-                        text: t('uni.chooseImage.sourceType.album'),
-                        color: '#000000',
-                    },
-                ],
-            }, (err, data) => {
-                if (err) {
-                    console.info(`showActionMenu fail callback, error code: ${err.code}, error message: ${err.message}`);
-                    reject(err);
-                }
-                console.info('showActionMenu success callback, click button: ' + data.index);
-                switch (data.index) {
-                    case 0:
-                        resolve('camera');
-                        return;
-                    case 1:
-                        resolve('album');
-                        return;
-                    default:
-                        break;
-                }
-            });
-        }
-        catch (error) {
-            reject(error);
-        }
-    });
+let navigatorLock;
+function beforeRoute() {
+    navigatorLock = '';
 }
-const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, function ({ count, sourceType } = {}, { resolve, reject }) {
-    return Promise.resolve()
-        .then(async () => {
-        let realSourceType = '';
-        if (sourceType && sourceType.length === 1) {
-            if (sourceType.includes('album')) {
-                realSourceType = 'album';
+function createRouteOptions(type) {
+    return {
+        formatArgs: {
+            url: createNormalizeUrl(type),
+        },
+        beforeAll: beforeRoute,
+    };
+}
+function createNormalizeUrl(type) {
+    return function normalizeUrl(url, params) {
+        if (!url) {
+            return `Missing required args: "url"`;
+        }
+        // 格式化为绝对路径路由
+        url = normalizeRoute(url);
+        const pagePath = url.split('?')[0];
+        // 匹配路由是否存在
+        const routeOptions = getRouteOptions(pagePath, true);
+        if (!routeOptions) {
+            return 'page `' + url + '` is not found';
+        }
+        // 检测不同类型跳转
+        if (type === API_NAVIGATE_TO || type === API_REDIRECT_TO) {
+            if (routeOptions.meta.isTabBar) {
+                return `can not ${type} a tabbar page`;
             }
-            else if (sourceType.includes('camera')) {
-                realSourceType = 'camera';
+        }
+        else if (type === API_SWITCH_TAB) {
+            if (!routeOptions.meta.isTabBar) {
+                return 'can not switch to no-tabBar page';
             }
         }
-        if (!realSourceType) {
-            realSourceType = await chooseSourceType();
+        // switchTab不允许传递参数,reLaunch到一个tabBar页面是可以的
+        if ((type === API_SWITCH_TAB || type === API_PRELOAD_PAGE) &&
+            routeOptions.meta.isTabBar &&
+            params.openType !== 'appLaunch') {
+            url = pagePath;
         }
-        switch (realSourceType) {
-            case 'album':
-                return openAlbum(count);
-            case 'camera':
-                return openCamera();
+        // 首页自动格式化为`/`
+        if (routeOptions.meta.isEntry) {
+            url = url.replace(routeOptions.alias, '/');
         }
+        // 参数格式化
+        params.url = encodeQueryString(url);
+        if (type === API_UN_PRELOAD_PAGE) {
+            return;
+        }
+        else if (type === API_PRELOAD_PAGE) {
+            {
+                if (!routeOptions.meta.isNVue) {
+                    return 'can not preload vue page';
+                }
+            }
+            if (routeOptions.meta.isTabBar) {
+                const pages = getCurrentPages();
+                const tabBarPagePath = routeOptions.path.slice(1);
+                if (pages.find((page) => page.route === tabBarPagePath)) {
+                    return 'tabBar page `' + tabBarPagePath + '` already exists';
+                }
+            }
+            return;
+        }
+        // 主要拦截目标为用户快速点击时触发的多次跳转，该情况，通常前后 url 是一样的
+        if (navigatorLock === url && params.openType !== 'appLaunch') {
+            return `${navigatorLock} locked`;
+        }
+        // 至少 onLaunch 之后，再启用lock逻辑（onLaunch之前可能开发者手动调用路由API，来提前跳转）
+        // enableNavigatorLock 临时开关（不对外开放），避免该功能上线后，有部分情况异常，可以让开发者临时关闭 lock 功能
+        if (__uniConfig.ready) {
+            navigatorLock = url;
+        }
+    };
+}
+
+const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, function ({ count } = {}, { resolve, reject }) {
+    _chooseMedia({
+        mimeType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
+        count,
     })
-        .then(resolve)
-        .catch(reject);
+        .then((res) => {
+        return {
+            tempFilePaths: res.tempFiles.map((file) => file.tempFilePath),
+            tempFiles: res.tempFiles.map((file) => {
+                return {
+                    path: file.tempFilePath,
+                    size: file.size,
+                };
+            }),
+        };
+    })
+        .then(resolve, reject);
 }, ChooseImageProtocol, ChooseImageOptions);
 
-function getLocale() {
-    return 'zh-CN';
+const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, function ({} = {}, { resolve, reject }) {
+    _chooseMedia({
+        mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE,
+    })
+        .then((res) => {
+        const file = res.tempFiles[0];
+        return {
+            tempFilePath: file.tempFilePath,
+            duration: file.duration,
+            size: file.size,
+            width: file.width,
+            height: file.height,
+        };
+    })
+        // TODO 修正chooseVideo的类型
+        // @ts-expect-error tempFile、name 仅H5支持
+        .then(resolve, reject);
+}, ChooseVideoProtocol, ChooseVideoOptions);
+
+// TODO 网络图片
+const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, function ({ src }, { resolve, reject }) {
+    _getImageInfo(src).then(resolve, reject);
+}, GetImageInfoProtocol, GetImageInfoOptions);
+
+const getVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, function ({ src }, { resolve, reject }) {
+    _getVideoInfo(src)
+        .then((res) => {
+        return {
+            size: res.size,
+            duration: res.duration,
+            width: res.width,
+            height: res.height,
+            type: res.type,
+            orientation: res.orientation,
+        };
+    })
+        .then(resolve, reject);
+}, GetVideoInfoProtocol, GetVideoInfoOptions);
+
+// copy from uni-app-plus/src/service/api/network/request.ts
+const cookiesParse = (header) => {
+    let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
+    let cookiesArr = [];
+    if (!cookiesStr) {
+        return [];
+    }
+    if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
+        cookiesStr = cookiesStr.slice(1, -1);
+    }
+    const handleCookiesArr = cookiesStr.split(';');
+    for (let i = 0; i < handleCookiesArr.length; i++) {
+        if (handleCookiesArr[i].indexOf('Expires=') !== -1 ||
+            handleCookiesArr[i].indexOf('expires=') !== -1) {
+            cookiesArr.push(handleCookiesArr[i].replace(',', ''));
+        }
+        else {
+            cookiesArr.push(handleCookiesArr[i]);
+        }
+    }
+    cookiesArr = cookiesArr.join(';').split(',');
+    return cookiesArr;
+};
+class RequestTask {
+    _requestTask;
+    constructor(requestTask) {
+        this._requestTask = requestTask;
+    }
+    abort() {
+        this._requestTask.abort();
+    }
+    onHeadersReceived(callback) {
+        this._requestTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback) {
+        this._requestTask.offHeadersReceived(callback);
+    }
 }
+const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
+    let { header, method, data, dataType, timeout, url, responseType } = args;
+    let contentType;
+    // header
+    const headers = {};
+    for (const name in header) {
+        if (name.toLowerCase() === 'content-type') {
+            contentType = header[name];
+        }
+        headers[name.toLowerCase()] = header[name];
+    }
+    if (!contentType && method === 'POST') {
+        headers['Content-Type'] =
+            'application/x-www-form-urlencoded; charset=UTF-8';
+    }
+    // url data
+    if (method === 'GET' && data && isPlainObject(data)) {
+        url +=
+            '?' +
+                Object.keys(data)
+                    .map((key) => {
+                    return (encodeURIComponent(key) +
+                        '=' +
+                        encodeURIComponent(data[key]));
+                })
+                    .join('&');
+        data = undefined;
+    }
+    else if (method !== 'GET' &&
+        contentType &&
+        contentType.indexOf('application/json') === 0 &&
+        isPlainObject(data)) {
+        data = JSON.stringify(data);
+    }
+    else if (method !== 'GET' &&
+        contentType &&
+        contentType.indexOf('application/x-www-form-urlencoded') === 0 &&
+        isPlainObject(data)) {
+        data = Object.keys(data)
+            .map((key) => {
+            return (encodeURIComponent(key) +
+                '=' +
+                encodeURIComponent(data[key]));
+        })
+            .join('&');
+    }
+    // 其他参数
+    let expectDataType = http.HttpDataType.STRING;
+    if (responseType === 'arraybuffer') {
+        expectDataType = http.HttpDataType.ARRAY_BUFFER;
+    }
+    else if (dataType === 'json') {
+        expectDataType = http.HttpDataType.OBJECT;
+    }
+    else {
+        expectDataType = http.HttpDataType.STRING;
+    }
+    const httpRequest = http.createHttp();
+    const emitter = new E();
+    const requestTask = {
+        abort() {
+            httpRequest.destroy();
+        },
+        onHeadersReceived(callback) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived(callback) {
+            emitter.off('headersReceive', callback);
+        },
+    };
+    httpRequest.on('headersReceive', (header) => {
+        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
+        // emitter.emit('headersReceive', header);
+    });
+    httpRequest.request(url, {
+        header: headers,
+        method: (method || 'GET').toUpperCase(), // 仅OPTIONS不支持
+        extraData: data,
+        expectDataType,
+        connectTimeout: timeout, // 不支持仅设置一个timeout
+        readTimeout: timeout,
+    }, (err, res) => {
+        if (err) {
+            /**
+             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
+             * {"code":2300023,"message":"Failed writing received data to disk/application"}
+             */
+            reject(err.message);
+        }
+        else {
+            resolve({
+                data: res.result,
+                statusCode: res.responseCode,
+                header: res.header,
+                cookies: cookiesParse(res.header),
+            });
+        }
+        requestTask.offHeadersReceived();
+        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
+    });
+    return new RequestTask(requestTask);
+}, RequestProtocol, RequestOptions);
+
+class UploadTask {
+    _uploadTask;
+    constructor(uploadTask) {
+        this._uploadTask = uploadTask;
+    }
+    abort() {
+        this._uploadTask.abort();
+    }
+    onProgressUpdate(callback) {
+        this._uploadTask.onProgressUpdate(callback);
+    }
+    offProgressUpdate(callback) {
+        this._uploadTask.offProgressUpdate(callback);
+    }
+    onHeadersReceived(callback) {
+        this._uploadTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback) {
+        this._uploadTask.offHeadersReceived(callback);
+    }
+}
+const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve, reject }) => {
+    let { url, timeout, header, formData, files, filePath, name } = args;
+    // header
+    const headers = {};
+    for (const name in header) {
+        headers[name.toLowerCase()] = header[name];
+    }
+    headers['Content-Type'] = 'multipart/form-data';
+    const multiFormDataList = [];
+    for (const name in formData) {
+        if (hasOwn$1(formData, name)) {
+            multiFormDataList.push({
+                name,
+                contentType: 'text/plain',
+                data: String(formData[name]),
+            });
+        }
+    }
+    if (files && files.length) {
+        for (let i = 0; i < files.length; i++) {
+            const { name, uri } = files[i];
+            multiFormDataList.push({
+                name: name || 'file',
+                contentType: 'application/octet-stream', // TODO 根据文件后缀设置contentType
+                filePath: getRealPath(uri),
+            });
+        }
+    }
+    else {
+        multiFormDataList.push({
+            name: name || 'file',
+            contentType: 'application/octet-stream', // TODO 根据文件后缀设置contentType
+            filePath: getRealPath(filePath),
+        });
+    }
+    const httpRequest = http.createHttp();
+    const emitter = new E();
+    const uploadTask = {
+        abort() {
+            httpRequest.destroy();
+        },
+        onHeadersReceived(callback) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived(callback) {
+            emitter.off('headersReceive', callback);
+        },
+        onProgressUpdate(callback) {
+            emitter.on('progress', callback);
+        },
+        offProgressUpdate(callback) {
+            emitter.off('progress', callback);
+        },
+    };
+    httpRequest.on('headersReceive', (header) => {
+        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
+        // emitter.emit('headersReceive', header);
+    });
+    httpRequest.on('dataSendProgress', ({ sendSize, totalSize }) => {
+        emitter.emit('progress', {
+            progress: Math.floor((sendSize / totalSize) * 100),
+            totalBytesSent: sendSize,
+            totalBytesExpectedToSend: totalSize,
+        });
+    });
+    httpRequest.request(url, {
+        header: headers,
+        method: http.RequestMethod.POST,
+        connectTimeout: timeout, // 不支持仅设置一个timeout
+        readTimeout: timeout,
+        multiFormDataList,
+        expectDataType: http.HttpDataType.STRING,
+    }, (err, res) => {
+        if (err) {
+            /**
+             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
+             * {"code":2300023,"message":"Failed writing received data to disk/application"}
+             */
+            reject(err.message);
+        }
+        else {
+            resolve({
+                data: res.result,
+                statusCode: res.responseCode,
+            });
+        }
+        uploadTask.offHeadersReceived();
+        uploadTask.offProgressUpdate();
+        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
+    });
+    return new UploadTask(uploadTask);
+}, UploadFileProtocol, UploadFileOptions);
+
+class DownloadTask {
+    _downloadTask;
+    constructor(downloadTask) {
+        this._downloadTask = downloadTask;
+    }
+    abort() {
+        this._downloadTask.abort();
+    }
+    onProgressUpdate(callback) {
+        this._downloadTask.onProgressUpdate(callback);
+    }
+    offProgressUpdate(callback) {
+        this._downloadTask.offProgressUpdate(callback);
+    }
+    onHeadersReceived(callback) {
+        this._downloadTask.onHeadersReceived(callback);
+    }
+    offHeadersReceived(callback) {
+        this._downloadTask.offHeadersReceived(callback);
+    }
+}
+const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve, reject }) => {
+    let { url, timeout, header } = args;
+    const httpRequest = http.createHttp();
+    const emitter = new E();
+    const downloadTask = {
+        abort() {
+            httpRequest.destroy();
+        },
+        onHeadersReceived(callback) {
+            emitter.on('headersReceive', callback);
+        },
+        offHeadersReceived(callback) {
+            emitter.off('headersReceive', callback);
+        },
+        onProgressUpdate(callback) {
+            emitter.on('progress', callback);
+        },
+        offProgressUpdate(callback) {
+            emitter.off('progress', callback);
+        },
+    };
+    httpRequest.on('headersReceive', (header) => {
+        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
+        // emitter.emit('headersReceive', header);
+    });
+    httpRequest.on('dataReceiveProgress', ({ receiveSize, totalSize }) => {
+        emitter.emit('progress', {
+            progress: Math.floor((receiveSize / totalSize) * 100),
+            totalBytesWritten: receiveSize,
+            totalBytesExpectedToWrite: totalSize,
+        });
+    });
+    const { TEMP_PATH } = getEnv();
+    const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp'; // TODO 正在咨询有无内置mimeType，目前无法根据content-type获取文件后缀
+    const stream = fs.createStreamSync(tempFilePath, 'w+');
+    let writePromise = Promise.resolve(0);
+    async function queueWrite(data) {
+        writePromise = writePromise.then(async (total) => {
+            const length = await stream.write(data);
+            return total + length;
+        });
+        return writePromise;
+    }
+    httpRequest.on('dataReceive', (data) => {
+        queueWrite(data);
+    });
+    httpRequest.requestInStream(url, {
+        header,
+        method: http.RequestMethod.GET,
+        connectTimeout: timeout, // 不支持仅设置一个timeout
+        readTimeout: timeout,
+    }, (err, statusCode) => {
+        // 此回调先于dataEnd回调执行
+        if (err) {
+            /**
+             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
+             * {"code":2300023,"message":"Failed writing received data to disk/application"}
+             */
+            reject(err.message);
+        }
+        else {
+            writePromise.then(() => {
+                stream.flushSync();
+                stream.closeSync();
+                resolve({
+                    tempFilePath,
+                    statusCode,
+                });
+            });
+        }
+        downloadTask.offHeadersReceived();
+        downloadTask.offProgressUpdate();
+        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
+    });
+    return new DownloadTask(downloadTask);
+}, DownloadFileProtocol, DownloadFileOptions);
 
 function getSystemInfoSync() {
     // TODO: implement
     return getBaseSystemInfo();
 }
 
-var uni$1 = {
-  __proto__: null,
-  chooseImage: chooseImage,
-  getLocale: getLocale,
-  getSystemInfoSync: getSystemInfoSync
-};
-
-const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
-    publishHandler,
-});
-function publishHandler(event, args, pageIds) {
-    args = JSON.stringify(args);
-    if (('production' !== 'production')) {
-        console.log(formatLog('publishHandler', event, args, pageIds));
-    }
-    if (!isArray(pageIds)) {
-        pageIds = [pageIds];
-    }
-    const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
-    if (('production' !== 'production')) {
-        console.log(formatLog('publishHandler', 'size', evalJSCode.length));
-    }
-    pageIds.forEach((id) => {
-        const idStr = String(id);
-        const code = evalJSCode.replace('__PAGE_ID__', idStr);
-        console.log('TODO eval:', idStr, code);
+let vueApp;
+function getVueApp() {
+    return vueApp;
+}
+function initVueApp(appVm) {
+    const internalInstance = appVm.$;
+    // 定制 App 的 $children 为 devtools 服务 false
+    Object.defineProperty(internalInstance.ctx, '$children', {
+        get() {
+            return getAllPages().map((page) => page.$vm);
+        },
+    });
+    const appContext = internalInstance.appContext;
+    vueApp = extend(appContext.app, {
+        mountPage(pageComponent, pageProps, pageContainer) {
+            const vnode = createVNode(pageComponent, pageProps);
+            // store app context on the root VNode.
+            // this will be set on the root instance on initial mount.
+            vnode.appContext = appContext;
+            vnode.__page_container__ = pageContainer;
+            render(vnode, pageContainer);
+            const publicThis = vnode.component.proxy;
+            publicThis.__page_container__ = pageContainer;
+            return publicThis;
+        },
+        unmountPage: (pageInstance) => {
+            const { __page_container__ } = pageInstance;
+            if (__page_container__) {
+                __page_container__.isUnmounted = true;
+                render(null, __page_container__);
+            }
+        },
     });
 }
 
@@ -1628,94 +3109,350 @@ function getCurrentPages$1() {
     });
     return curPages;
 }
-
-function initVueApp(appVm) {
-    const internalInstance = appVm.$;
-    // 定制 App 的 $children 为 devtools 服务 false
-    Object.defineProperty(internalInstance.ctx, '$children', {
-        get() {
-            return getAllPages().map((page) => page.$vm);
-        },
-    });
-    const appContext = internalInstance.appContext;
-    extend(appContext.app, {
-        mountPage(pageComponent, pageProps, pageContainer) {
-            const vnode = createVNode(pageComponent, pageProps);
-            // store app context on the root VNode.
-            // this will be set on the root instance on initial mount.
-            vnode.appContext = appContext;
-            vnode.__page_container__ = pageContainer;
-            render(vnode, pageContainer);
-            const publicThis = vnode.component.proxy;
-            publicThis.__page_container__ = pageContainer;
-            return publicThis;
-        },
-        unmountPage: (pageInstance) => {
-            const { __page_container__ } = pageInstance;
-            if (__page_container__) {
-                __page_container__.isUnmounted = true;
-                render(null, __page_container__);
-            }
-        },
-    });
+function removePage(curPage) {
+    const index = pages.findIndex((page) => page === curPage);
+    if (index === -1) {
+        return;
+    }
+    if (!curPage.$page.meta.isNVue) {
+        getVueApp().unmountPage(curPage);
+    }
+    pages.splice(index, 1);
+    if (('production' !== 'production')) {
+        console.log(formatLog('removePage', curPage.$page));
+    }
 }
 
 const VD_SYNC = 'vdSync';
 const ON_WEBVIEW_READY = 'onWebviewReady';
+const ACTION_TYPE_DICT = 0;
 const WEBVIEW_INSERTED = 'webviewInserted';
 const WEBVIEW_REMOVED = 'webviewRemoved';
 
-let focusTimeout = 0;
-let keyboardHeight = 0;
-let focusTimer = null;
-function hookKeyboardEvent(event, callback) {
-    if (focusTimer) {
-        clearTimeout(focusTimer);
-        focusTimer = null;
-    }
-    if (event.type === 'onFocus') {
-        {
-            focusTimer = setTimeout(function () {
-                event.detail.height = keyboardHeight;
-                callback(event);
-            }, focusTimeout);
-            return;
-        }
-    }
-    callback(event);
-}
-
-function onNodeEvent(nodeId, evt, pageNode) {
-    const type = evt.type;
-    if (type === 'onFocus' || type === 'onBlur') {
-        hookKeyboardEvent(evt, (evt) => {
-            pageNode.fireEvent(nodeId, evt);
-        });
-    }
-    else {
-        pageNode.fireEvent(nodeId, evt);
+function initNVue(webviewStyle, routeMeta, path) {
+    if (path && routeMeta.isNVue) {
+        webviewStyle.uniNView = {
+            path,
+            defaultFontSize: __uniConfig.defaultFontSize,
+            viewport: __uniConfig.viewport,
+        };
     }
 }
 
-function onVdSync(actions, pageId) {
-    // 从所有pages中获取
-    const page = getPageById(parseInt(pageId));
-    if (!page) {
-        if (('production' !== 'production')) {
-            console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
-        }
+const colorRE = /^#[a-z0-9]{6}$/i;
+function isColor(color) {
+    return color && (colorRE.test(color) || color === 'transparent');
+}
+
+function initBackgroundColor(webviewStyle, routeMeta) {
+    let { backgroundColor } = routeMeta;
+    if (!backgroundColor) {
         return;
     }
-    const pageNode = page.__page_container__;
-    actions.forEach((action) => {
-        switch (action[0]) {
-            case ACTION_TYPE_EVENT:
-                onNodeEvent(action[1], action[2], pageNode);
-                break;
+    if (!isColor(backgroundColor)) {
+        return;
+    }
+    if (!webviewStyle.background) {
+        webviewStyle.background = backgroundColor;
+    }
+    else {
+        backgroundColor = webviewStyle.background;
+    }
+    if (!webviewStyle.backgroundColorTop) {
+        webviewStyle.backgroundColorTop = backgroundColor;
+    }
+    if (!webviewStyle.backgroundColorBottom) {
+        webviewStyle.backgroundColorBottom = backgroundColor;
+    }
+    if (!webviewStyle.animationAlphaBGColor) {
+        webviewStyle.animationAlphaBGColor = backgroundColor;
+    }
+    if (typeof webviewStyle.webviewBGTransparent === 'undefined') {
+        webviewStyle.webviewBGTransparent = true;
+    }
+}
+
+function initPopGesture(webviewStyle, routeMeta) {
+    // 不支持 hide
+    if (webviewStyle.popGesture === 'hide') {
+        delete webviewStyle.popGesture;
+    }
+    // 似乎没用了吧？记得是之前流应用时，需要 appback 的逻辑
+    if (routeMeta.isQuit) {
+        webviewStyle.popGesture = ('none');
+    }
+}
+
+function initPullToRefresh(webviewStyle, routeMeta) {
+    if (!routeMeta.enablePullDownRefresh) {
+        return;
+    }
+    const pullToRefresh = normalizePullToRefreshRpx(extend({}, defaultPullToRefresh, routeMeta.pullToRefresh));
+    webviewStyle.pullToRefresh = initWebviewPullToRefreshI18n(pullToRefresh, routeMeta);
+}
+function initWebviewPullToRefreshI18n(pullToRefresh, routeMeta) {
+    const i18nResult = initPullToRefreshI18n(pullToRefresh);
+    if (!i18nResult) {
+        return pullToRefresh;
+    }
+    const [contentdownI18n, contentoverI18n, contentrefreshI18n] = i18nResult;
+    if (contentdownI18n || contentoverI18n || contentrefreshI18n) {
+        uni.onLocaleChange(() => {
+            const webview = plus.webview.getWebviewById(routeMeta.id + '');
+            if (!webview) {
+                return;
+            }
+            const newPullToRefresh = {
+                support: true,
+            };
+            if (contentdownI18n) {
+                newPullToRefresh.contentdown = {
+                    caption: pullToRefresh.contentdown.caption,
+                };
+            }
+            if (contentoverI18n) {
+                newPullToRefresh.contentover = {
+                    caption: pullToRefresh.contentover.caption,
+                };
+            }
+            if (contentrefreshI18n) {
+                newPullToRefresh.contentrefresh = {
+                    caption: pullToRefresh.contentrefresh.caption,
+                };
+            }
+            if (('production' !== 'production')) {
+                console.log(formatLog('updateWebview', webview.id, newPullToRefresh));
+            }
+            webview.setStyle({
+                pullToRefresh: newPullToRefresh,
+            });
+        });
+    }
+    return pullToRefresh;
+}
+const defaultPullToRefresh = {
+    support: true,
+    style: 'default',
+    height: '50px',
+    range: '200px',
+    contentdown: {
+        caption: '',
+    },
+    contentover: {
+        caption: '',
+    },
+    contentrefresh: {
+        caption: '',
+    },
+};
+
+function initTitleNView(webviewStyle, routeMeta) {
+    const { navigationBar } = routeMeta;
+    if (navigationBar.style === 'custom') {
+        return false;
+    }
+    let autoBackButton = true;
+    if (routeMeta.isQuit) {
+        autoBackButton = false;
+    }
+    const titleNView = {
+        autoBackButton,
+    };
+    Object.keys(navigationBar).forEach((name) => {
+        const value = navigationBar[name];
+        if (name === 'titleImage' && value) {
+            titleNView.tags = createTitleImageTags(value);
         }
+        else if (name === 'buttons' && isArray(value)) {
+            titleNView.buttons = value.map((button, index) => {
+                button.onclick = createTitleNViewBtnClick(index);
+                return button;
+            });
+        }
+        else {
+            titleNView[name] =
+                value;
+        }
+    });
+    webviewStyle.titleNView = initTitleNViewI18n(titleNView, routeMeta);
+}
+function initTitleNViewI18n(titleNView, routeMeta) {
+    const i18nResult = initNavigationBarI18n(titleNView);
+    if (!i18nResult) {
+        return titleNView;
+    }
+    const [titleTextI18n, searchInputPlaceholderI18n] = i18nResult;
+    if (titleTextI18n || searchInputPlaceholderI18n) {
+        uni.onLocaleChange(() => {
+            const webview = plus.webview.getWebviewById(routeMeta.id + '');
+            if (!webview) {
+                return;
+            }
+            const newTitleNView = {};
+            if (titleTextI18n) {
+                newTitleNView.titleText = titleNView.titleText;
+            }
+            if (searchInputPlaceholderI18n) {
+                newTitleNView.searchInput = {
+                    placeholder: titleNView.searchInput.placeholder,
+                };
+            }
+            if (('production' !== 'production')) {
+                console.log(formatLog('updateWebview', webview.id, newTitleNView));
+            }
+            webview.setStyle({
+                titleNView: newTitleNView,
+            });
+        });
+    }
+    return titleNView;
+}
+function createTitleImageTags(titleImage) {
+    return [
+        {
+            tag: 'img',
+            src: titleImage,
+            position: {
+                left: 'auto',
+                top: 'auto',
+                width: 'auto',
+                height: '26px',
+            },
+        },
+    ];
+}
+function createTitleNViewBtnClick(index) {
+    return function onClick(btn) {
+        btn.index = index;
+        invokeHook(ON_NAVIGATION_BAR_BUTTON_TAP, btn);
+    };
+}
+
+function parseWebviewStyle(path, routeMeta, webview) {
+    const webviewStyle = {
+        bounce: 'vertical',
+    };
+    Object.keys(routeMeta).forEach((name) => {
+        if (WEBVIEW_STYLE_BLACKLIST.indexOf(name) === -1) {
+            webviewStyle[name] =
+                routeMeta[name];
+        }
+    });
+    if (webview.id !== '1') {
+        // 首页 nvue 已经在 manifest.json 中设置了 uniNView，不能再次设置，否则会二次加载
+        initNVue(webviewStyle, routeMeta, path);
+    }
+    initPopGesture(webviewStyle, routeMeta);
+    initBackgroundColor(webviewStyle, routeMeta);
+    initTitleNView(webviewStyle, routeMeta);
+    initPullToRefresh(webviewStyle, routeMeta);
+    return webviewStyle;
+}
+const WEBVIEW_STYLE_BLACKLIST = [
+    'id',
+    'route',
+    'isNVue',
+    'isQuit',
+    'isEntry',
+    'isTabBar',
+    'tabBarIndex',
+    'windowTop',
+    'topWindow',
+    'leftWindow',
+    'rightWindow',
+    'maxWidth',
+    'usingComponents',
+    'disableScroll',
+    'enablePullDownRefresh',
+    'navigationBar',
+    'pullToRefresh',
+    'onReachBottomDistance',
+    'pageOrientation',
+    'backgroundColor',
+];
+
+let id = 2;
+function getWebviewId() {
+    return id;
+}
+function genWebviewId() {
+    return id++;
+}
+function encode(val) {
+    return val;
+}
+function initUniPageUrl(path, query) {
+    const queryString = query ? stringifyQuery$1(query, encode) : '';
+    return {
+        path: path.slice(1),
+        query: queryString ? queryString.slice(1) : queryString,
+    };
+}
+function initDebugRefresh(isTab, path, query) {
+    const queryString = query ? stringifyQuery$1(query, encode) : '';
+    return {
+        isTab,
+        arguments: JSON.stringify({
+            path: path.slice(1),
+            query: queryString ? queryString.slice(1) : queryString,
+        }),
+    };
+}
+
+const downgrade = 'Harmony' === 'Android' ;
+const ANI_SHOW = 'pop-in';
+const ANI_DURATION = 300;
+const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
+const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
+const WEBVIEW_ID_PREFIX = 'webviewId';
+
+let preloadWebview;
+function setPreloadWebview(webview) {
+    return (preloadWebview = webview);
+}
+function getPreloadWebview() {
+    return preloadWebview;
+}
+function createPreloadWebview() {
+    if (!preloadWebview || preloadWebview.__uniapp_route) {
+        // 不存在，或已被使用
+        preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()), 
+        // @ts-expect-error
+        { contentAdjust: false });
+        if (('production' !== 'production')) {
+            console.log(formatLog('createPreloadWebview', preloadWebview.id));
+        }
+    }
+    return preloadWebview;
+}
+
+/**
+ * 是否处于直达页面
+ * @param page
+ * @returns
+ */
+function isDirectPage(page) {
+    return (__uniConfig.realEntryPagePath &&
+        page.$page.route === __uniConfig.entryPagePath);
+}
+/**
+ * 重新启动到首页
+ */
+function reLaunchEntryPage() {
+    __uniConfig.entryPagePath = __uniConfig.realEntryPagePath;
+    delete __uniConfig.realEntryPagePath;
+    uni.reLaunch({
+        url: addLeadingSlash(__uniConfig.entryPagePath),
     });
 }
 
+const EVENT_BACKBUTTON = 'backbutton';
+function backbuttonListener() {
+    uni.navigateBack({
+        from: 'backbutton',
+        success() { }, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
+    });
+}
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
 function initLaunchOptions({ path, query, referrerInfo, }) {
@@ -1731,52 +3468,357 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
     return extend({}, launchOptions);
 }
 
-function onPlusMessage(type, callback, once = false) {
-    UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
+function onWebviewReady(pageId, callback) {
+    UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
 }
-// function initEnterReLaunch(info: RedirectInfo) {
-//   __uniConfig.realEntryPagePath =
-//     __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
-//   __uniConfig.entryPagePath = info.path
-//   __uniConfig.entryPageQuery = info.query
-//   $reLaunch(
-//     { url: addLeadingSlash(info.path) + info.query },
-//     { resolve() {}, reject() {} }
-//   )
-// }
 
-const API_ROUTE = [
-    'switchTab',
-    'reLaunch',
-    'redirectTo',
-    'navigateTo',
-    'navigateBack',
-];
-function subscribeNavigator() {
-    API_ROUTE.forEach((name) => {
-        registerServiceMethod(name, (args) => {
-            uni[name](extend(args, {
-                fail(res) {
-                    console.error(res.errMsg);
-                },
-            }));
+function closeWebview(webview, animationType, animationDuration) {
+    webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
+}
+function showWebview(webview, animationType, animationDuration, showCallback, delay) {
+    if (typeof delay === 'undefined') {
+        delay = webview.nvue ? 0 : 100;
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('showWebview', 'delay', delay));
+    }
+    const execShowCallback = function () {
+        if (execShowCallback._called) {
+            if (('production' !== 'production')) {
+                console.log(formatLog('execShowCallback', 'prevent'));
+            }
+            return;
+        }
+        execShowCallback._called = true;
+        showCallback && showCallback();
+        navigateFinish();
+    };
+    execShowCallback._called = false;
+    setTimeout(() => {
+        const timer = setTimeout(() => {
+            if (('production' !== 'production')) {
+                console.log(formatLog('showWebview', 'callback', 'timer'));
+            }
+            execShowCallback();
+        }, animationDuration + 150);
+        webview.show(animationType, animationDuration, () => {
+            if (('production' !== 'production')) {
+                console.log(formatLog('showWebview', 'callback'));
+            }
+            if (!execShowCallback._called) {
+                clearTimeout(timer);
+            }
+            execShowCallback();
         });
+    }, delay);
+}
+function backWebview(webview, callback) {
+    const children = webview.children();
+    if (!children || !children.length) {
+        // 无子 webview
+        return callback();
+    }
+    // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
+    const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
+        children[0];
+    childWebview.canBack(({ canBack }) => {
+        if (canBack) {
+            childWebview.back(); // webview 返回
+        }
+        else {
+            callback();
+        }
     });
 }
 
-function subscribeWebviewReady(_data, pageId) {
-    // TODO
+let pendingNavigator = false;
+function getPendingNavigator() {
+    return pendingNavigator;
+}
+function setPendingNavigator(path, callback, msg) {
+    pendingNavigator = {
+        path,
+        nvue: getRouteMeta(path).isNVue,
+        callback,
+    };
+    if (('production' !== 'production')) {
+        console.log(formatLog('setPendingNavigator', path, msg));
+    }
+}
+function closePage(page, animationType, animationDuration) {
+    removePage(page);
+    closeWebview(page.$getAppWebview(), animationType, animationDuration);
+}
+function pendingNavigate() {
+    if (!pendingNavigator) {
+        return;
+    }
+    const { callback } = pendingNavigator;
+    if (('production' !== 'production')) {
+        console.log(formatLog('pendingNavigate', pendingNavigator.path));
+    }
+    pendingNavigator = false;
+    return callback();
+}
+function navigateFinish() {
+    if (__uniConfig.renderer === 'native') {
+        if (!pendingNavigator) {
+            return;
+        }
+        if (pendingNavigator.nvue) {
+            return pendingNavigate();
+        }
+        return;
+    }
+    // 创建预加载
+    const preloadWebview = createPreloadWebview();
+    if (('production' !== 'production')) {
+        console.log(formatLog('navigateFinish', 'preloadWebview', preloadWebview.id));
+    }
+    if (!pendingNavigator) {
+        return;
+    }
+    if (pendingNavigator.nvue) {
+        return pendingNavigate();
+    }
+    preloadWebview.loaded
+        ? pendingNavigator.callback()
+        : onWebviewReady(preloadWebview.id, pendingNavigate);
 }
 
-function onWebviewInserted(_, pageId) {
-    const page = getPageById(parseInt(pageId));
-    page && (page.__uniapp_webview = true);
-}
-function onWebviewRemoved(_, pageId) {
-    const page = getPageById(parseInt(pageId));
-    page && delete page.__uniapp_webview;
+function navigate(path, callback, isAppLaunch) {
+    const pendingNavigator = getPendingNavigator();
+    if (!isAppLaunch && pendingNavigator) {
+        return console.error(`Waiting to navigate to: ${pendingNavigator.path}, do not operate continuously: ${path}.`);
+    }
+    // 未创建 preloadWebview 或 preloadWebview 已被使用
+    const preloadWebview = getPreloadWebview();
+    const waitPreloadWebview = !preloadWebview || (preloadWebview && preloadWebview.__uniapp_route);
+    // 已创建未 loaded
+    const waitPreloadWebviewReady = preloadWebview && !preloadWebview.loaded;
+    if (waitPreloadWebview || waitPreloadWebviewReady) {
+        setPendingNavigator(path, callback, waitPreloadWebview ? 'waitForCreate' : 'waitForReady');
+    }
+    else {
+        callback();
+    }
+    if (waitPreloadWebviewReady) {
+        onWebviewReady(preloadWebview.id, pendingNavigate);
+    }
 }
 
+class UniPageNode extends UniNode {
+    pageId;
+    _id = 1;
+    _created = false;
+    _updating = false;
+    options;
+    createAction;
+    createdAction;
+    scrollAction;
+    _createActionMap = new Map();
+    updateActions = [];
+    dicts = [];
+    normalizeDict;
+    isUnmounted;
+    _update;
+    constructor(pageId, options, setup = false) {
+        super(NODE_TYPE_PAGE, '#page', null);
+        this.nodeId = 0;
+        this.pageId = pageId;
+        this.pageNode = this;
+        this.options = options;
+        this.isUnmounted = false;
+        this.createAction = [ACTION_TYPE_PAGE_CREATE, options];
+        this.createdAction = [ACTION_TYPE_PAGE_CREATED];
+        this.normalizeDict = this._normalizeDict.bind(this);
+        this._update = this.update.bind(this);
+        setup && this.setup();
+    }
+    _normalizeDict(value, normalizeValue = true) {
+        if (!isPlainObject(value)) {
+            return this.addDict(value);
+        }
+        const dictArray = [];
+        Object.keys(value).forEach((n) => {
+            const dict = [this.addDict(n)];
+            const v = value[n];
+            if (normalizeValue) {
+                dict.push(this.addDict(v));
+            }
+            else {
+                dict.push(v);
+            }
+            dictArray.push(dict);
+        });
+        return dictArray;
+    }
+    addDict(value) {
+        const { dicts } = this;
+        const index = dicts.indexOf(value);
+        if (index > -1) {
+            return index;
+        }
+        return dicts.push(value) - 1;
+    }
+    onInjectHook(hook) {
+        if ((hook === ON_PAGE_SCROLL || hook === ON_REACH_BOTTOM) &&
+            !this.scrollAction) {
+            this.scrollAction = [
+                ACTION_TYPE_PAGE_SCROLL,
+                this.options.onReachBottomDistance,
+            ];
+            this.push(this.scrollAction);
+        }
+    }
+    onCreate(thisNode, nodeName) {
+        pushCreateAction(this, thisNode.nodeId, nodeName);
+        return thisNode;
+    }
+    onInsertBefore(thisNode, newChild, refChild) {
+        pushInsertAction(this, newChild, thisNode.nodeId, (refChild && refChild.nodeId) || -1);
+        return newChild;
+    }
+    onRemoveChild(oldChild) {
+        pushRemoveAction(this, oldChild.nodeId);
+        return oldChild;
+    }
+    onAddEvent(thisNode, name, flag) {
+        if (thisNode.parentNode) {
+            pushAddEventAction(this, thisNode.nodeId, name, flag);
+        }
+    }
+    onAddWxsEvent(thisNode, name, wxsEvent, flag) {
+        if (thisNode.parentNode) {
+            pushAddWxsEventAction(this, thisNode.nodeId, name, wxsEvent, flag);
+        }
+    }
+    onRemoveEvent(thisNode, name) {
+        if (thisNode.parentNode) {
+            pushRemoveEventAction(this, thisNode.nodeId, name);
+        }
+    }
+    onSetAttribute(thisNode, qualifiedName, value) {
+        if (thisNode.parentNode) {
+            pushSetAttributeAction(this, thisNode.nodeId, qualifiedName, value);
+        }
+    }
+    onRemoveAttribute(thisNode, qualifiedName) {
+        if (thisNode.parentNode) {
+            pushRemoveAttributeAction(this, thisNode.nodeId, qualifiedName);
+        }
+    }
+    onTextContent(thisNode, text) {
+        if (thisNode.parentNode) {
+            pushSetTextAction(this, thisNode.nodeId, text);
+        }
+    }
+    onNodeValue(thisNode, val) {
+        if (thisNode.parentNode) {
+            pushSetTextAction(this, thisNode.nodeId, val);
+        }
+    }
+    genId() {
+        return this._id++;
+    }
+    push(action, extras) {
+        if (this.isUnmounted) {
+            if (('production' !== 'production')) {
+                console.log(formatLog('PageNode', 'push.prevent', action));
+            }
+            return;
+        }
+        switch (action[0]) {
+            case ACTION_TYPE_CREATE:
+                this._createActionMap.set(action[1], action);
+                break;
+            case ACTION_TYPE_INSERT:
+                const createAction = this._createActionMap.get(action[1]);
+                if (createAction) {
+                    createAction[3] = action[2]; // parentNodeId
+                    createAction[4] = action[3]; // anchorId
+                    if (extras) {
+                        createAction[5] = extras;
+                    }
+                }
+                else {
+                    // 部分手机上，create 和 insert 可能不在同一批次，被分批发送
+                    if (extras) {
+                        action[4] = extras;
+                    }
+                    this.updateActions.push(action);
+                    // if (('production' !== 'production')) {
+                    //   console.error(formatLog(`Insert`, action, 'not found createAction'))
+                    // }
+                }
+                break;
+        }
+        // insert 被合并进 create
+        if (action[0] !== ACTION_TYPE_INSERT) {
+            this.updateActions.push(action);
+        }
+        if (!this._updating) {
+            this._updating = true;
+            queuePostFlushCb(this._update);
+        }
+    }
+    restore() {
+        this.clear();
+        // createAction 需要单独发送，因为 view 层需要现根据 create 来设置 page 的 ready
+        this.setup();
+        if (this.scrollAction) {
+            this.push(this.scrollAction);
+        }
+        const restoreNode = (node) => {
+            this.onCreate(node, node.nodeName);
+            this.onInsertBefore(node.parentNode, node, null);
+            node.childNodes.forEach((childNode) => {
+                restoreNode(childNode);
+            });
+        };
+        this.childNodes.forEach((childNode) => restoreNode(childNode));
+        this.push(this.createdAction);
+    }
+    setup() {
+        this.send([this.createAction]);
+    }
+    update() {
+        const { dicts, updateActions, _createActionMap } = this;
+        if (('production' !== 'production')) {
+            console.log(formatLog('PageNode', 'update', updateActions.length, _createActionMap.size));
+        }
+        // 首次
+        if (!this._created) {
+            this._created = true;
+            updateActions.push(this.createdAction);
+        }
+        if (updateActions.length) {
+            if (dicts.length) {
+                updateActions.unshift([ACTION_TYPE_DICT, dicts]);
+            }
+            this.send(updateActions);
+        }
+        this.clear();
+    }
+    clear() {
+        this.dicts.length = 0;
+        this.updateActions.length = 0;
+        this._updating = false;
+        this._createActionMap.clear();
+    }
+    send(action) {
+        UniServiceJSBridge.publishHandler(VD_SYNC, action, this.pageId);
+    }
+    fireEvent(id, evt) {
+        const node = findNodeById(id, this);
+        if (node) {
+            node.dispatchEvent(evt);
+        }
+        else if (('production' !== 'production')) {
+            console.error(formatLog('PageNode', 'fireEvent', id, 'not found', evt));
+        }
+    }
+}
 function getPageNode(pageId) {
     const page = getPageById(pageId);
     if (!page)
@@ -1799,94 +3841,67 @@ function findNode(name, value, uniNode) {
     }
     return null;
 }
+function findNodeById(nodeId, uniNode) {
+    return findNode('nodeId', nodeId, uniNode);
+}
 function findNodeByTagName(tagName, uniNode) {
     return findNode('nodeName', tagName.toUpperCase(), uniNode);
 }
-
-const onWebInvokeAppService = ({ name, arg }, pageIds) => {
-    if (name === 'postMessage') {
-        onMessage(pageIds[0], arg);
-    }
-    else {
-        uni[name](extend(arg, {
-            fail(res) {
-                console.error(res.errMsg);
-            },
-        }));
-    }
-};
-function onMessage(pageId, arg) {
-    const uniNode = findNodeByTagName('web-view', parseInt(pageId));
-    uniNode &&
-        uniNode.dispatchEvent(createUniEvent({
-            type: 'onMessage',
-            target: Object.create(null),
-            currentTarget: Object.create(null),
-            detail: {
-                data: [arg],
-            },
-        }));
+function pushCreateAction(pageNode, nodeId, nodeName) {
+    pageNode.push([
+        ACTION_TYPE_CREATE,
+        nodeId,
+        pageNode.addDict(nodeName),
+        -1,
+        -1,
+    ]);
 }
-
-function initSubscribeHandlers() {
-    const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
-    onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
-        subscribeHandler(type, data, pageId);
+function pushInsertAction(pageNode, newChild, parentNodeId, refChildId) {
+    const nodeJson = newChild.toJSON({
+        attr: true,
+        normalize: pageNode.normalizeDict,
     });
-    onPlusMessage(WEB_INVOKE_APPSERVICE, ({ data, webviewIds }) => {
-        onWebInvokeAppService(data, webviewIds);
-    });
-    subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
-    subscribe(VD_SYNC, onVdSync);
-    subscribeServiceMethod();
-    // TODO subscribeAd
-    subscribeNavigator();
-    subscribe(WEBVIEW_INSERTED, onWebviewInserted);
-    subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
-    // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
-    const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
-    if (routeOptions) {
-        // 防止首页 webview 初始化过早， service 还未开始监听
-        publishHandler(ON_WEBVIEW_READY, {}, 1);
-    }
+    pageNode.push([ACTION_TYPE_INSERT, newChild.nodeId, parentNodeId, refChildId], Object.keys(nodeJson).length ? nodeJson : undefined);
 }
-
-function initAppLaunch(appVm) {
-    injectAppHooks(appVm.$);
-    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
-    const args = initLaunchOptions({
-        path: entryPagePath,
-        query: entryPageQuery,
-        referrerInfo: referrerInfo,
-    });
-    invokeHook(appVm, ON_LAUNCH, args);
-    invokeHook(appVm, ON_SHOW, args);
+function pushRemoveAction(pageNode, nodeId) {
+    pageNode.push([ACTION_TYPE_REMOVE, nodeId]);
 }
-
-let appCtx;
-const defaultApp = {
-    globalData: {},
-};
-function initAppVm(appVm) {
-    appVm.$vm = appVm;
-    appVm.$mpType = 'app';
-    // TODO useI18n
+function pushAddEventAction(pageNode, nodeId, name, value) {
+    pageNode.push([ACTION_TYPE_ADD_EVENT, nodeId, pageNode.addDict(name), value]);
 }
-function registerApp(appVm) {
-    if (('production' !== 'production')) {
-        console.log(formatLog('registerApp'));
-    }
-    // TODO 定制 useStore
-    initVueApp(appVm);
-    appCtx = appVm;
-    initAppVm(appCtx);
-    extend(appCtx, defaultApp); // 拷贝默认实现
-    defineGlobalData(appCtx, defaultApp.globalData);
-    initService();
-    initSubscribeHandlers();
-    initAppLaunch(appVm);
-    // TODO clearTempFile
-    __uniConfig.ready = true;
+function pushAddWxsEventAction(pageNode, nodeId, name, wxsEvent, value) {
+    pageNode.push([
+        ACTION_TYPE_ADD_WXS_EVENT,
+        nodeId,
+        pageNode.addDict(name),
+        pageNode.addDict(wxsEvent),
+        value,
+    ]);
+}
+function pushRemoveEventAction(pageNode, nodeId, name) {
+    pageNode.push([ACTION_TYPE_REMOVE_EVENT, nodeId, pageNode.addDict(name)]);
+}
+function normalizeAttrValue(pageNode, name, value) {
+    return name === 'style' && isPlainObject(value)
+        ? pageNode.normalizeDict(value)
+        : pageNode.addDict(value);
+}
+function pushSetAttributeAction(pageNode, nodeId, name, value) {
+    pageNode.push([
+        ACTION_TYPE_SET_ATTRIBUTE,
+        nodeId,
+        pageNode.addDict(name),
+        normalizeAttrValue(pageNode, name, value),
+    ]);
+}
+function pushRemoveAttributeAction(pageNode, nodeId, name) {
+    pageNode.push([ACTION_TYPE_REMOVE_ATTRIBUTE, nodeId, pageNode.addDict(name)]);
+}
+function pushSetTextAction(pageNode, nodeId, text) {
+    pageNode.push([ACTION_TYPE_SET_TEXT, nodeId, pageNode.addDict(text)]);
+}
+function createPageNode(pageId, pageOptions, setup) {
+    return new UniPageNode(pageId, pageOptions, setup);
 }
 
 function setupPage(component) {
@@ -1945,6 +3960,21 @@ const pagesMap = new Map();
 function definePage(pagePath, asyncComponent) {
     pagesMap.set(pagePath, once(createFactory(asyncComponent)));
 }
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions) {
+    const pageNode = createPageNode(__pageId, pageOptions, true);
+    const app = getVueApp();
+    const component = pagesMap.get(__pagePath)();
+    const mountPage = (component) => app.mountPage(component, {
+        __pageId,
+        __pagePath,
+        __pageQuery,
+        __pageInstance,
+    }, pageNode);
+    if (isPromise(component)) {
+        return component.then((component) => mountPage(component));
+    }
+    return mountPage(component);
+}
 function createFactory(component) {
     return () => {
         if (isVuePageAsyncComponent(component)) {
@@ -1954,8 +3984,864 @@ function createFactory(component) {
     };
 }
 
+function initRouteOptions(path, openType) {
+    // 需要序列化一遍
+    const routeOptions = JSON.parse(JSON.stringify(getRouteOptions(path)));
+    routeOptions.meta = initRouteMeta(routeOptions.meta);
+    if (openType !== 'preloadPage' &&
+        !__uniConfig.realEntryPagePath &&
+        (openType === 'reLaunch' || getCurrentPages().length === 0) // redirectTo
+    ) {
+        routeOptions.meta.isQuit = true;
+    }
+    else if (!routeOptions.meta.isTabBar) {
+        routeOptions.meta.isQuit = false;
+    }
+    // TODO
+    //   if (routeOptions.meta.isTabBar) {
+    //     routeOptions.meta.visible = true
+    //   }
+    return routeOptions;
+}
+
+function initWebviewStyle(webview, path, query, routeMeta) {
+    // TODO parseTheme
+    const getWebviewStyle = () => parseWebviewStyle(path, routeMeta, webview);
+    const webviewStyle = getWebviewStyle();
+    webviewStyle.uniPageUrl = initUniPageUrl(path, query);
+    const isTabBar = !!routeMeta.isTabBar;
+    webviewStyle.debugRefresh = initDebugRefresh(isTabBar, path, query);
+    webviewStyle.locale = weex.requireModule('plus').getLanguage();
+    if (('production' !== 'production')) {
+        console.log(formatLog('updateWebview', webviewStyle));
+    }
+    // TODO useWebviewThemeChange
+    webview.setStyle(webviewStyle);
+}
+
+function initWebview(webview, path, query, routeMeta) {
+    initWebviewStyle(webview, path, query, routeMeta);
+    // TODO initWebviewEvent(webview)
+}
+
+function createWebview(options) {
+    if (getWebviewId() === 2) {
+        return plus.webview.getLaunchWebview();
+    }
+    return getPreloadWebview();
+}
+
+function getStatusbarHeight() {
+    // TODO
+    return 0;
+}
+
+let config;
+/**
+ * tabbar显示状态
+ */
+let visible = true;
+let tabBar;
+/**
+ * 设置角标
+ * @param {string} type
+ * @param {number} index
+ * @param {string} text
+ */
+function setTabBarBadge(type, index, text) {
+    if (!tabBar) {
+        return;
+    }
+    if (type === 'none') {
+        tabBar.hideTabBarRedDot({
+            index,
+        });
+        tabBar.removeTabBarBadge({
+            index,
+        });
+    }
+    else if (type === 'text') {
+        tabBar.setTabBarBadge({
+            index,
+            text,
+        });
+    }
+    else if (type === 'redDot') {
+        tabBar.showTabBarRedDot({
+            index,
+        });
+    }
+}
+/**
+ * 动态设置 tabBar 多项的内容
+ */
+function setTabBarItems(tabBarConfig) {
+    tabBar && tabBar.setTabBarItems(tabBarConfig);
+}
+/**
+ * 动态设置 tabBar 某一项的内容
+ */
+function setTabBarItem(index, text, iconPath, selectedIconPath, visible, iconfont) {
+    const item = {
+        index,
+    };
+    if (text !== undefined) {
+        item.text = text;
+    }
+    if (iconPath) {
+        item.iconPath = getRealPath(iconPath);
+    }
+    if (selectedIconPath) {
+        item.selectedIconPath = getRealPath(selectedIconPath);
+    }
+    if (iconfont !== undefined) {
+        item.iconfont = iconfont;
+    }
+    if (visible !== undefined) {
+        item.visible = config.list[index].visible = visible;
+        delete item.index;
+        const tabbarItems = config.list.map((item) => ({
+            visible: item.visible,
+        }));
+        tabbarItems[index] = item;
+        setTabBarItems({ list: tabbarItems });
+    }
+    else {
+        tabBar && tabBar.setTabBarItem(item);
+    }
+}
+/**
+ * 动态设置 tabBar 的整体样式
+ * @param {Object} style 样式
+ */
+function setTabBarStyle(style) {
+    tabBar && tabBar.setTabBarStyle(style);
+}
+/**
+ * 隐藏 tabBar
+ * @param {boolean} animation 是否需要动画效果
+ */
+function hideTabBar(animation) {
+    visible = false;
+    tabBar &&
+        tabBar.hideTabBar({
+            animation,
+        });
+}
+/**
+ * 显示 tabBar
+ * @param {boolean} animation 是否需要动画效果
+ */
+function showTabBar(animation) {
+    visible = true;
+    tabBar &&
+        tabBar.showTabBar({
+            animation,
+        });
+}
+const maskClickCallback = [];
+var tabBarInstance = {
+    id: '0',
+    init(options, clickCallback) {
+        if (options && options.list.length) {
+            config = options;
+        }
+        try {
+            tabBar = weex.requireModule('uni-tabview');
+        }
+        catch (error) {
+            console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
+        }
+        tabBar.onMaskClick(() => {
+            maskClickCallback.forEach((callback) => {
+                callback();
+            });
+        });
+        tabBar &&
+            tabBar.onClick(({ index }) => {
+                clickCallback(config.list[index], index);
+            });
+        tabBar &&
+            tabBar.onMidButtonClick(() => {
+                return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+            });
+        // TODO useTabBarThemeChange(tabBar, options)
+    },
+    indexOf(page) {
+        const config = this.config;
+        const itemLength = config && config.list && config.list.length;
+        if (itemLength) {
+            for (let i = 0; i < itemLength; i++) {
+                if (config.list[i].pagePath === page ||
+                    config.list[i].pagePath === `${page}.html`) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    },
+    switchTab(page) {
+        const index = this.indexOf(page);
+        if (index >= 0) {
+            tabBar &&
+                tabBar.switchSelect({
+                    index,
+                });
+            return true;
+        }
+        return false;
+    },
+    setTabBarBadge,
+    setTabBarItem,
+    setTabBarStyle,
+    hideTabBar,
+    showTabBar,
+    append(webview) {
+        tabBar &&
+            tabBar.append({
+                id: webview.id,
+            }, ({ code }) => {
+                if (code !== 0) {
+                    setTimeout(() => {
+                        this.append(webview);
+                    }, 20);
+                }
+            });
+    },
+    get config() {
+        return config || __uniConfig.tabBar;
+    },
+    get visible() {
+        return visible;
+    },
+    get height() {
+        const config = this.config;
+        return ((config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
+            plus.navigator.getSafeAreaInsets().deviceBottom);
+    },
+    // tabBar是否遮挡内容区域
+    get cover() {
+        const config = this.config;
+        const array = ['extralight', 'light', 'dark'];
+        return config && array.indexOf(config.blurEffect) >= 0;
+    },
+    setStyle({ mask }) {
+        tabBar.setMask({
+            color: mask,
+        });
+    },
+    addEventListener(_name, callback) {
+        maskClickCallback.push(callback);
+    },
+    removeEventListener(_name, callback) {
+        const callbackIndex = maskClickCallback.indexOf(callback);
+        maskClickCallback.splice(callbackIndex, 1);
+    },
+};
+
+function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
+    // TODO initEntry()
+    // TODO preloadWebviews[url]
+    const routeOptions = initRouteOptions(path, openType);
+    if (!webview) {
+        webview = createWebview();
+    }
+    else {
+        webview = plus.webview.getWebviewById(webview.id);
+        webview.nvue = routeOptions.meta.isNVue;
+    }
+    routeOptions.meta.id = parseInt(webview.id);
+    const isTabBar = !!routeOptions.meta.isTabBar;
+    if (isTabBar) {
+        tabBarInstance.append(webview);
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('registerPage', path, webview.id));
+    }
+    initWebview(webview, path, query, routeOptions.meta);
+    const route = path.slice(1);
+    webview.__uniapp_route = route;
+    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 
+    // TODO theme
+    'light');
+    const id = parseInt(webview.id);
+    createVuePage(id, route, query, pageInstance, initPageOptions(routeOptions));
+    return webview;
+}
+function initPageOptions({ meta }) {
+    const statusbarHeight = getStatusbarHeight();
+    const { platform, pixelRatio, windowWidth } = getBaseSystemInfo();
+    return {
+        css: true,
+        route: meta.route,
+        version: 1,
+        locale: '',
+        platform,
+        pixelRatio,
+        windowWidth,
+        disableScroll: meta.disableScroll === true,
+        onPageScroll: false,
+        onPageReachBottom: false,
+        onReachBottomDistance: hasOwn$1(meta, 'onReachBottomDistance')
+            ? meta.onReachBottomDistance
+            : ON_REACH_BOTTOM_DISTANCE,
+        statusbarHeight,
+        // TODO meta.navigationBar.type === 'float'
+        windowTop: 0,
+        // TODO tabBar.cover
+        windowBottom: 0,
+    };
+}
+
+function initAnimation(path, animationType, animationDuration) {
+    const { globalStyle } = __uniConfig;
+    const meta = getRouteMeta(path);
+    return [
+        animationType ||
+            meta.animationType ||
+            globalStyle.animationType ||
+            ANI_SHOW,
+        animationDuration ||
+            meta.animationDuration ||
+            globalStyle.animationDuration ||
+            ANI_DURATION,
+    ];
+}
+
+const $navigateTo = (args, { resolve, reject }) => {
+    const { url, events, animationType, animationDuration } = args;
+    const { path, query } = parseUrl(url);
+    const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+    navigate(path, () => {
+        _navigateTo({
+            url,
+            path,
+            query,
+            events,
+            aniType,
+            aniDuration,
+        })
+            .then(resolve)
+            .catch(reject);
+    }, args.openType === 'appLaunch');
+};
+const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
+    // 当前页面触发 onHide
+    invokeHook(ON_HIDE);
+    invokeHook(ON_HIDE);
+    const eventChannel = new EventChannel(getWebviewId() + 1, events);
+    return new Promise((resolve) => {
+        showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
+            resolve({ eventChannel });
+        });
+        // TODO setStatusBarStyle()
+    });
+}
+
+const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
+    const page = getCurrentPage();
+    if (!page) {
+        return reject(`getCurrentPages is empty`);
+    }
+    if (invokeHook(page, ON_BACK_PRESS, {
+        from: args.from || 'navigateBack',
+    })) {
+        return resolve();
+    }
+    if (uni.hideToast) {
+        uni.hideToast();
+    }
+    if (uni.hideLoading) {
+        uni.hideLoading();
+    }
+    if (page.$page.meta.isQuit) {
+        quit();
+    }
+    else if (isDirectPage(page)) {
+        reLaunchEntryPage();
+    }
+    else {
+        const { delta, animationType, animationDuration } = args;
+        back(delta, animationType, animationDuration);
+    }
+    return resolve();
+}, NavigateBackProtocol, NavigateBackOptions);
+let firstBackTime = 0;
+function quit() {
+    initI18nAppMsgsOnce();
+    if (!firstBackTime) {
+        firstBackTime = Date.now();
+        plus.nativeUI.toast(useI18n().t('uni.app.quit'));
+        setTimeout(() => {
+            firstBackTime = 0;
+        }, 2000);
+    }
+    else if (Date.now() - firstBackTime < 2000) {
+        plus.runtime.quit();
+    }
+}
+function back(delta, animationType, animationDuration) {
+    const pages = getCurrentPages();
+    const len = pages.length;
+    const currentPage = pages[len - 1];
+    if (delta > 1) {
+        // 中间页隐藏
+        pages
+            .slice(len - delta, len - 1)
+            .reverse()
+            .forEach((deltaPage) => {
+            closeWebview(plus.webview.getWebviewById(deltaPage.$page.id + ''), 'none', 0);
+        });
+    }
+    const backPage = function (webview) {
+        if (animationType) {
+            closeWebview(webview, animationType, animationDuration || ANI_DURATION);
+        }
+        else {
+            if (currentPage.$page.openType === 'redirectTo') {
+                // 如果是 redirectTo 跳转的，需要指定 back 动画
+                closeWebview(webview, ANI_CLOSE, ANI_DURATION);
+            }
+            else {
+                closeWebview(webview, 'auto');
+            }
+        }
+        pages
+            .slice(len - delta, len)
+            .forEach((page) => removePage(page));
+        // TODO setStatusBarStyle()
+        // 前一个页面触发 onShow
+        invokeHook(ON_SHOW);
+    };
+    const webview = plus.webview.getWebviewById(currentPage.$page.id + '');
+    if (!currentPage.__uniapp_webview) {
+        return backPage(webview);
+    }
+    backWebview(webview, () => {
+        backPage(webview);
+    });
+}
+
+const $switchTab = (args, { resolve, reject }) => {
+    const { url } = args;
+    const { path, query } = parseUrl(url);
+    navigate(path, () => {
+        _switchTab({
+            url,
+            path,
+            query,
+        })
+            .then(resolve)
+            .catch(reject);
+    }, args.openType === 'appLaunch');
+};
+const switchTab = defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
+function _switchTab({ url, path, query, }) {
+    tabBarInstance.switchTab(path.slice(1));
+    const pages = getCurrentPages();
+    const len = pages.length;
+    let callOnHide = false;
+    let callOnShow = false;
+    let currentPage;
+    if (len >= 1) {
+        // 前一个页面是非 tabBar 页面
+        currentPage = pages[len - 1];
+        if (currentPage && !currentPage.$.__isTabBar) {
+            // 前一个页面为非 tabBar 页面时，目标tabBar需要强制触发onShow
+            // 该情况下目标页tabBarPage的visible是不对的
+            // 除非每次路由跳转都处理一遍tabBarPage的visible，目前仅switchTab会处理
+            // 简单起见，暂时直接判断该情况，执行onShow
+            callOnShow = true;
+            pages.reverse().forEach((page) => {
+                if (!page.$.__isTabBar && page !== currentPage) {
+                    closePage(page, 'none');
+                }
+            });
+            removePage(currentPage);
+            // 延迟执行避免iOS应用退出
+            setTimeout(() => {
+                if (currentPage.$page.openType === 'redirectTo') {
+                    closeWebview(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
+                }
+                else {
+                    closeWebview(currentPage.$getAppWebview(), 'auto');
+                }
+            }, 100);
+        }
+        else {
+            callOnHide = true;
+        }
+    }
+    let tabBarPage;
+    // 查找当前 tabBarPage，且设置 visible
+    getAllPages().forEach((page) => {
+        if (addLeadingSlash(page.route) === path) {
+            if (!page.$.__isActive) {
+                // 之前未显示
+                callOnShow = true;
+            }
+            page.$.__isActive = true;
+            tabBarPage = page;
+        }
+        else {
+            if (page.$.__isTabBar) {
+                page.$.__isActive = false;
+            }
+        }
+    });
+    // 相同tabBar页面
+    if (currentPage === tabBarPage) {
+        callOnHide = false;
+    }
+    if (currentPage && callOnHide) {
+        invokeHook(currentPage, ON_HIDE);
+    }
+    return new Promise((resolve) => {
+        if (tabBarPage) {
+            const webview = tabBarPage.$getAppWebview();
+            webview.show('none');
+            // 等visible状态都切换完之后，再触发onShow，否则开发者在onShow里边 getCurrentPages 会不准确
+            if (callOnShow && !webview.__preload__) {
+                invokeHook(tabBarPage, ON_SHOW);
+            }
+            // TODO setStatusBarStyle()
+            resolve(undefined);
+        }
+        else {
+            showWebview(registerPage({
+                url,
+                path,
+                query,
+                openType: 'switchTab',
+            }), 'none', 0, () => {
+                // TODO setStatusBarStyle()
+                resolve(undefined);
+            }, 70);
+        }
+    });
+}
+
+var uni$1 = {
+  __proto__: null,
+  chooseImage: chooseImage,
+  chooseVideo: chooseVideo,
+  downloadFile: downloadFile,
+  getImageInfo: getImageInfo,
+  getLocale: getLocale,
+  getSystemInfoSync: getSystemInfoSync,
+  getVideoInfo: getVideoInfo,
+  navigateBack: navigateBack,
+  navigateTo: navigateTo,
+  onLocaleChange: onLocaleChange,
+  request: request,
+  setLocale: setLocale,
+  switchTab: switchTab,
+  uploadFile: uploadFile
+};
+
+const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
+    publishHandler,
+});
+function publishHandler(event, args, pageIds) {
+    args = JSON.stringify(args);
+    if (('production' !== 'production')) {
+        console.log(formatLog('publishHandler', event, args, pageIds));
+    }
+    if (!isArray(pageIds)) {
+        pageIds = [pageIds];
+    }
+    const evalJSCode = `typeof UniViewJSBridge !== 'undefined' && UniViewJSBridge.subscribeHandler("${event}",${args},__PAGE_ID__)`;
+    if (('production' !== 'production')) {
+        console.log(formatLog('publishHandler', 'size', evalJSCode.length));
+    }
+    pageIds.forEach((id) => {
+        const idStr = String(id);
+        const webview = plus.webview.getWebviewById(idStr);
+        const code = evalJSCode.replace('__PAGE_ID__', idStr);
+        webview && webview.evalJS(code);
+    });
+}
+
+let focusTimeout = 0;
+let keyboardHeight = 0;
+let focusTimer = null;
+function hookKeyboardEvent(event, callback) {
+    if (focusTimer) {
+        clearTimeout(focusTimer);
+        focusTimer = null;
+    }
+    if (event.type === 'onFocus') {
+        {
+            focusTimer = setTimeout(function () {
+                event.detail.height = keyboardHeight;
+                callback(event);
+            }, focusTimeout);
+            return;
+        }
+    }
+    callback(event);
+}
+
+function onNodeEvent(nodeId, evt, pageNode) {
+    const type = evt.type;
+    if (type === 'onFocus' || type === 'onBlur') {
+        hookKeyboardEvent(evt, (evt) => {
+            pageNode.fireEvent(nodeId, evt);
+        });
+    }
+    else {
+        pageNode.fireEvent(nodeId, evt);
+    }
+}
+
+function onVdSync(actions, pageId) {
+    // 从所有pages中获取
+    const page = getPageById(parseInt(pageId));
+    if (!page) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('onVdSync', 'page', pageId, 'not found'));
+        }
+        return;
+    }
+    const pageNode = page.__page_container__;
+    actions.forEach((action) => {
+        switch (action[0]) {
+            case ACTION_TYPE_EVENT:
+                onNodeEvent(action[1], action[2], pageNode);
+                break;
+        }
+    });
+}
+
+function subscribePlusMessage({ data, }) {
+    if (('production' !== 'production')) {
+        console.log(formatLog('plusMessage', data));
+    }
+    if (data && data.type) {
+        UniServiceJSBridge.subscribeHandler('plusMessage.' + data.type, data.args);
+    }
+}
+function onPlusMessage(type, callback, once = false) {
+    UniServiceJSBridge.subscribe('plusMessage.' + type, callback, once);
+}
+// function initEnterReLaunch(info: RedirectInfo) {
+//   __uniConfig.realEntryPagePath =
+//     __uniConfig.realEntryPagePath || __uniConfig.entryPagePath
+//   __uniConfig.entryPagePath = info.path
+//   __uniConfig.entryPageQuery = info.query
+//   $reLaunch(
+//     { url: addLeadingSlash(info.path) + info.query },
+//     { resolve() {}, reject() {} }
+//   )
+// }
+
+const API_ROUTE = [
+    'switchTab',
+    'reLaunch',
+    'redirectTo',
+    'navigateTo',
+    'navigateBack',
+];
+function subscribeNavigator() {
+    API_ROUTE.forEach((name) => {
+        registerServiceMethod(name, (args) => {
+            uni[name](extend(args, {
+                fail(res) {
+                    console.error(res.errMsg);
+                },
+            }));
+        });
+    });
+}
+
+let isLaunchWebviewReady = false; // 目前首页双向确定 ready，可能会导致触发两次 onWebviewReady
+function subscribeWebviewReady(_data, pageId) {
+    const isLaunchWebview = pageId === '1';
+    if (isLaunchWebview && isLaunchWebviewReady) {
+        if (('production' !== 'production')) {
+            console.log('[uni-app] onLaunchWebviewReady.prevent');
+        }
+        return;
+    }
+    let preloadWebview = getPreloadWebview();
+    if (isLaunchWebview) {
+        // 首页
+        isLaunchWebviewReady = true;
+        preloadWebview = setPreloadWebview(plus.webview.getLaunchWebview());
+    }
+    else if (!preloadWebview) {
+        // preloadWebview 不存在，重新加载一下
+        preloadWebview = setPreloadWebview(plus.webview.getWebviewById(pageId));
+    }
+    // 仅当 preloadWebview 未 loaded 时处理
+    if (!preloadWebview.loaded) {
+        if (preloadWebview.id !== pageId) {
+            return console.error(`webviewReady[${preloadWebview.id}][${pageId}] not match`);
+        }
+        preloadWebview.loaded = true; // 标记已 ready
+    }
+    UniServiceJSBridge.emit(ON_WEBVIEW_READY + '.' + pageId);
+    isLaunchWebview && onLaunchWebviewReady();
+}
+function onLaunchWebviewReady() {
+    // TODO closeSplashscreen
+    const entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
+    const routeOptions = getRouteOptions(entryPagePath);
+    const args = {
+        url: entryPagePath + (__uniConfig.entryPageQuery || ''),
+        openType: 'appLaunch',
+    };
+    const handler = { resolve() { }, reject() { } };
+    if (routeOptions.meta.isTabBar) {
+        return $switchTab(args, handler);
+    }
+    return $navigateTo(args, handler);
+}
+
+function onWebviewInserted(_, pageId) {
+    const page = getPageById(parseInt(pageId));
+    page && (page.__uniapp_webview = true);
+}
+function onWebviewRemoved(_, pageId) {
+    const page = getPageById(parseInt(pageId));
+    page && delete page.__uniapp_webview;
+}
+
+const onWebInvokeAppService = ({ name, arg }, pageIds) => {
+    if (name === 'postMessage') {
+        onMessage(pageIds[0], arg);
+    }
+    else {
+        uni[name](extend(arg, {
+            fail(res) {
+                console.error(res.errMsg);
+            },
+        }));
+    }
+};
+function onMessage(pageId, arg) {
+    const uniNode = findNodeByTagName('web-view', parseInt(pageId));
+    uniNode &&
+        uniNode.dispatchEvent(createUniEvent({
+            type: 'onMessage',
+            target: Object.create(null),
+            currentTarget: Object.create(null),
+            detail: {
+                data: [arg],
+            },
+        }));
+}
+
+function initSubscribeHandlers() {
+    const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
+    onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
+        subscribeHandler(type, data, pageId);
+    });
+    onPlusMessage(WEB_INVOKE_APPSERVICE, ({ data, webviewIds }) => {
+        onWebInvokeAppService(data, webviewIds);
+    });
+    subscribe(ON_WEBVIEW_READY, subscribeWebviewReady);
+    subscribe(VD_SYNC, onVdSync);
+    subscribeServiceMethod();
+    // TODO subscribeAd
+    subscribeNavigator();
+    subscribe(WEBVIEW_INSERTED, onWebviewInserted);
+    subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
+    // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
+    const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
+    if (routeOptions) {
+        // 防止首页 webview 初始化过早， service 还未开始监听
+        publishHandler(ON_WEBVIEW_READY, {}, 1);
+    }
+}
+
+function initGlobalEvent() {
+    const plusGlobalEvent = plus.globalEvent;
+    plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
+    // TODO KeyboardHeightChange
+    plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
+}
+
+function initAppLaunch(appVm) {
+    injectAppHooks(appVm.$);
+    const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig;
+    const args = initLaunchOptions({
+        path: entryPagePath,
+        query: entryPageQuery,
+        referrerInfo: referrerInfo,
+    });
+    invokeHook(appVm, ON_LAUNCH, args);
+    invokeHook(appVm, ON_SHOW, args);
+}
+
+function initTabBar() {
+    const { tabBar } = __uniConfig;
+    const len = tabBar && tabBar.list && tabBar.list.length;
+    if (!len) {
+        return;
+    }
+    const { entryPagePath } = __uniConfig;
+    tabBar.selectedIndex = 0;
+    const selected = tabBar.list.findIndex((page) => page.pagePath === entryPagePath);
+    tabBarInstance.init(tabBar, (item, index) => {
+        uni.switchTab({
+            url: addLeadingSlash(item.pagePath),
+            openType: 'switchTab',
+            from: 'tabBar',
+            success() {
+                invokeHook(ON_TAB_ITEM_TAP, {
+                    index,
+                    text: item.text,
+                    pagePath: item.pagePath,
+                });
+            },
+        });
+    });
+    if (selected !== -1) {
+        // 取当前 tab 索引值
+        tabBar.selectedIndex = selected;
+        selected !== 0 && tabBarInstance.switchTab(entryPagePath);
+    }
+}
+
+let appCtx;
+const defaultApp = {
+    globalData: {},
+};
+function getApp$1({ allowDefault = false } = {}) {
+    if (appCtx) {
+        // 真实的 App 已初始化
+        return appCtx;
+    }
+    if (allowDefault) {
+        // 返回默认实现
+        return defaultApp;
+    }
+    console.error('[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.');
+}
+function registerApp(appVm) {
+    if (('production' !== 'production')) {
+        console.log(formatLog('registerApp'));
+    }
+    // TODO 定制 useStore
+    initVueApp(appVm);
+    appCtx = appVm;
+    initAppVm(appCtx);
+    extend(appCtx, defaultApp); // 拷贝默认实现
+    defineGlobalData(appCtx, defaultApp.globalData);
+    initService();
+    initTabBar();
+    initGlobalEvent();
+    initSubscribeHandlers();
+    initAppLaunch(appVm);
+    // TODO clearTempFile
+    __uniConfig.ready = true;
+}
+
 var index = {
     uni: uni$1,
+    getApp: getApp$1,
     getCurrentPages: getCurrentPages$1,
     __definePage: definePage,
     __registerApp: registerApp,

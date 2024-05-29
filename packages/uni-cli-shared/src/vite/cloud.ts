@@ -12,9 +12,10 @@ import {
   initCheckEnv,
   parseUniModulesWithComponents,
 } from '../uni_modules'
-import { cleanUrl, normalizePath } from './plugins/vitejs/utils'
+import { cleanUrl } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
 import { resolveUTSCompiler } from '../uts'
+import { normalizePath } from '../utils'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -31,6 +32,38 @@ export function createEncryptCssUrlReplacer(
       )
     }
     return url
+  }
+}
+
+// 处理静态资源加载（目前仅限非app-android）
+export function uniEncryptUniModulesAssetsPlugin(): Plugin {
+  let resolvedConfig: ResolvedConfig
+  return {
+    name: 'uni:encrypt-uni-modules-assets',
+    enforce: 'pre',
+    configResolved(config) {
+      resolvedConfig = config
+    },
+    resolveId(id, importer) {
+      if (resolvedConfig.assetsInclude(cleanUrl(id))) {
+        id = normalizePath(id)
+        if (importer && (id.startsWith('./') || id.startsWith('../'))) {
+          id = normalizePath(path.resolve(path.dirname(importer), id))
+        }
+        if (path.isAbsolute(id)) {
+          id = '@/' + path.relative(process.env.UNI_INPUT_DIR, id)
+        }
+        return `\0${id}`
+      }
+    },
+    load(id) {
+      if (resolvedConfig.assetsInclude(cleanUrl(id))) {
+        return {
+          code: `export default ${JSON.stringify(id.replace(/\0/g, ''))}`,
+          moduleSideEffects: false,
+        }
+      }
+    },
   }
 }
 
@@ -53,9 +86,28 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       config.build.rollupOptions.external = createExternal(config)
       resolvedConfig = config
     },
-    resolveId(id) {
-      if (resolvedConfig.assetsInclude(cleanUrl(id))) {
-        return `\0${id}`
+    resolveId(id, importer) {
+      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+        if (resolvedConfig.assetsInclude(cleanUrl(id))) {
+          id = normalizePath(id)
+          if (importer && (id.startsWith('./') || id.startsWith('../'))) {
+            id = normalizePath(path.resolve(path.dirname(importer), id))
+          }
+          if (path.isAbsolute(id)) {
+            id = '@/' + path.relative(process.env.UNI_INPUT_DIR, id)
+          }
+          return `\0${id}`
+        }
+      }
+    },
+    load(id) {
+      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+        if (resolvedConfig.assetsInclude(cleanUrl(id))) {
+          return {
+            code: `export default ${JSON.stringify(id.replace(/\0/g, ''))}`,
+            moduleSideEffects: false,
+          }
+        }
       }
     },
     generateBundle(_, bundle) {
@@ -155,13 +207,6 @@ function uvueOutDir() {
 function createExternal(config: ResolvedConfig) {
   return function external(source) {
     if (
-      // android 平台需要编译 assets 资源
-      process.env.UNI_UTS_PLATFORM !== 'app-android' &&
-      config.assetsInclude(cleanUrl(source))
-    ) {
-      return true
-    }
-    if (
       [
         'vue',
         'plugin-vue:export-helper',
@@ -209,18 +254,14 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
   // 生成入口文件
   const input: { [entryAlias: string]: string } = {}
   moduleNames.forEach((module) => {
-    const indexEncryptFile = path.resolve(
-      inputDir,
-      'uni_modules',
-      module,
-      'index.module.uts'
-    )
+    const moduleDir = path.resolve(inputDir, 'uni_modules', module)
+    const indexEncryptFile = path.resolve(moduleDir, 'index.module.uts')
     const codes: string[] = []
-    if (hasIndexFile(path.resolve(inputDir, 'uni_modules', module))) {
+    if (hasIndexFile(moduleDir)) {
       codes.push(`export * from './index'`)
     }
     // easyCom
-    if (modules[module].length) {
+    if (modules[module] && Object.keys(modules[module]).length) {
       codes.push(genEncryptEasyComModuleIndex(modules[module]))
     }
     if (codes.length) {

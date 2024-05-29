@@ -1,6 +1,5 @@
 import type { App } from 'vue';
 import type { ComponentInternalInstance } from 'vue';
-import type { ComponentInternalInstance as ComponentInternalInstance_2 } from '@vue/runtime-core';
 import { ComponentOptionsBase } from 'vue';
 import { ComponentPublicInstance } from 'vue';
 import type { createApp } from 'vue';
@@ -285,8 +284,6 @@ export declare function isRootHook(name: string): boolean;
 
 export declare function isRootImmediateHook(name: string): boolean;
 
-export declare function isRootImmediateHookX(name: string): boolean;
-
 export declare function isUniLifecycleHook(name: string, value: unknown, checkType?: boolean): boolean;
 
 export declare function isUniXElement(name: string): boolean;
@@ -341,7 +338,7 @@ export declare function normalizeProps(props: Record<string, any> | null): Recor
 
 export declare function normalizeStyle(value: unknown): NormalizedStyle | string | undefined;
 
-export declare function normalizeStyles<T extends Object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
+export declare function normalizeStyles<T extends object>(pageStyle: T, themeConfig?: UniApp.ThemeJson, mode?: UniApp.ThemeMode): T;
 
 export declare function normalizeTabBarStyles(borderStyle?: string): string | undefined;
 
@@ -790,7 +787,7 @@ export declare class UniNode extends UniEventTarget {
     childNodes: UniNode[];
     pageNode: IUniPageNode | null;
     parentNode: UniNode | null;
-    __vueParentComponent?: ComponentInternalInstance_2;
+    __vueParentComponent?: ComponentInternalInstance;
     protected _text: string | null;
     constructor(nodeType: UniNodeType, nodeName: string, container: UniElement | IUniPageNode);
     get firstChild(): UniNode | null;

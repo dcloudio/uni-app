@@ -5,6 +5,7 @@ import {
   resolveUTSCompiler,
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
+  uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
   uniUTSUVueJavaScriptPlugin,
@@ -33,7 +34,7 @@ export function init() {
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniAppIOSPlugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
-      ? [uniEncryptUniModulesPlugin()]
+      ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
       : [uniAppIOSMainPlugin(), uniAppManifestPlugin(), uniAppPagesPlugin()]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({

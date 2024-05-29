@@ -11,8 +11,10 @@ interface AppXUniConfig {
   entryPageQuery?: string
   conditionUrl?: string
   realEntryPagePath?: string
+  themeConfig?: unknown
 }
 
+// app-config.js 内容
 export function normalizeAppXUniConfig(
   pagesJson: UniApp.PagesJson,
   manifestJson: Record<string, any>
@@ -29,6 +31,10 @@ export function normalizeAppXUniConfig(
   if (config.realEntryPagePath) {
     config.conditionUrl = config.entryPagePath
     config.entryPagePath = config.realEntryPagePath
+  }
+  // darkmode
+  if (pagesJson.themeConfig) {
+    config.themeConfig = pagesJson.themeConfig
   }
   // TODO 待支持分包
   return JSON.stringify(config)

@@ -202,7 +202,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -228,7 +228,7 @@ function createAsyncApiCallback(name) {
   var callbackId2 = invokeCallbackId++;
   addInvokeCallback(callbackId2, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
     isFunction$1(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       isFunction$1(beforeSuccess) && beforeSuccess(res, args);
@@ -415,7 +415,7 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
   if (!errMsg || isString(errMsg)) {
     return errMsg;
   }
@@ -434,7 +434,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id2, name, normalizeErrMsg(errMsg2), errRes)
+      reject: (errMsg2, errRes) => invokeFail(id2, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -3891,7 +3891,7 @@ class UniProgressActiveendEventDetail {
     this.curPercent = value;
   }
 }
-class UniProgressActiveendEvent extends CustomEvent {
+class UniProgressActiveendEvent extends UniCustomEvent {
   constructor(value) {
     super("activeend", {
       detail: new UniProgressActiveendEventDetail(value)
@@ -4047,7 +4047,7 @@ const progress = /* @__PURE__ */ defineBuiltInComponent({
         if (percent <= data.curPercent + 1) {
           clearTimer();
           data.curPercent = percent;
-          emit("activeend", new UniProgressActiveendEvent(percent));
+          emit("activeend", initUniCustomEvent(data.$uniProgressElement, new UniProgressActiveendEvent(percent)));
         } else {
           ++data.curPercent;
         }

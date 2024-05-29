@@ -60,7 +60,7 @@ export function initPlugins(
       config,
       extend({ exclude: [...COMMON_EXCLUDE, /\/@dcloudio\/uni-app/] }, options)
     ),
-    'vite:vue'
+    process.env.UNI_APP_X === 'true' ? 'uts' : 'vite:vue'
   )
 
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')

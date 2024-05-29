@@ -4,6 +4,8 @@ import {
   type CreateVueAppComponent as CreateVueAppComponentOrigin,
   type CreateVueComponent as CreateVueComponentOrigin,
   type DebuggerEvent as DebuggerEventOrigin,
+  type DirectiveBinding as DirectiveBindingOrigin,
+  type Directive as DirectiveOrigin,
   type Directive as DirectiveOrigin,
   type EffectScope as EffectScopeOrigin,
   type OnCleanup as OnCleanupOrigin,
@@ -189,6 +191,8 @@ declare global {
   const withModifiers: typeof withModifiersOrigin
   const RenderHelpers: typeof RenderHelpersOrigin
   type RenderHelpers = RenderHelpersOrigin
+  type Directive = DirectiveOrigin
+  type DirectiveBinding = DirectiveBindingOrigin
   const resolveComponent: typeof resolveComponentOrigin
   const resolveEasyComponent: typeof resolveEasyComponentOrigin
   const resolveDynamicComponent: typeof resolveDynamicComponentOrigin

@@ -7,6 +7,10 @@ export class UniRadioElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
     super(data, pageNode)
   }
+
+  override tagName = 'RADIO'
+  override nodeName = this.tagName
+
   override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {

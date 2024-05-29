@@ -25,7 +25,8 @@ function publishHandler(
   }
   pageIds.forEach((id) => {
     const idStr = String(id)
+    const webview = plus.webview.getWebviewById(idStr)
     const code = evalJSCode.replace('__PAGE_ID__', idStr)
-    console.log('TODO eval:', idStr, code)
+    webview && webview.evalJS(code)
   })
 }

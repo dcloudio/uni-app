@@ -5,6 +5,9 @@ export type AutoImportOptions = Options
 const uniPreset = {
   from: '@dcloudio/uni-app',
   imports: [
+    // ssr
+    'ssrRef',
+    'shallowSsrRef',
     // uni-app lifecycle
     // App and Page
     'onShow',

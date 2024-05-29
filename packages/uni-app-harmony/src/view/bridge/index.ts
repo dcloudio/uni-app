@@ -21,9 +21,8 @@ function publishHandler(event: string, args: unknown = {}) {
         JSON.stringify(args)
     )
   }
-
-  console.log(
-    'TODO postMessage to service:',
+  const webview = plus.webview as any
+  webview.postMessageToUniNView(
     {
       type: 'subscribeHandler',
       args: {

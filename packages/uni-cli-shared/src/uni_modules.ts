@@ -280,18 +280,10 @@ function parseInject(
                   process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' &&
                   source.includes('app-js')
                 if (!skipCheck) {
-                  if (language === 'javascript') {
-                    if (appOptions.js === false) {
-                      return
-                    }
-                  } else if (language === 'kotlin') {
-                    if (appOptions.kotlin === false) {
-                      return
-                    }
-                  } else if (language === 'swift') {
-                    if (appOptions.swift === false) {
-                      return
-                    }
+                  const targetLanguage =
+                    language === 'javascript' ? 'js' : language
+                  if (targetLanguage && appOptions[targetLanguage] === false) {
+                    return
                   }
                 }
               }
@@ -357,13 +349,16 @@ export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
   })
 }
 
-export function genEncryptEasyComModuleIndex(components: string[]) {
+export function genEncryptEasyComModuleIndex(
+  components: Record<string, '.vue' | '.uvue'>
+) {
   const imports: string[] = []
   const ids: string[] = []
-  components.forEach((component) => {
+  Object.keys(components).forEach((component) => {
     const id = capitalize(camelize(component))
+
     imports.push(
-      `import ${id} from './components/${component}/${component}.vue'`
+      `import ${id} from './components/${component}/${component}${components[component]}'`
     )
     ids.push(id)
   })
@@ -376,7 +371,7 @@ export { ${ids.join(',')} }
 // 目前该函数仅在云端使用（目前仅限iOS/web），云端编译时，提交上来的uni_modules是过滤好的
 export function parseUniModulesWithComponents(inputDir: string) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
-  const uniModules: Record<string, string[]> = {}
+  const uniModules: Record<string, Record<string, '.vue' | '.uvue'>> = {}
   if (fs.existsSync(modulesDir)) {
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
       if (
@@ -409,7 +404,7 @@ export function parseEasyComComponents(
     pluginId,
     'components'
   )
-  const components: string[] = []
+  const components: Record<string, '.vue' | '.uvue'> = {}
   if (fs.existsSync(componentsDir)) {
     fs.readdirSync(componentsDir).forEach((componentDir) => {
       const componentFile = path.resolve(
@@ -417,23 +412,22 @@ export function parseEasyComComponents(
         componentDir,
         componentDir
       )
-      if (
-        ['.vue', '.uvue'].some((extname) => {
-          const filename = componentFile + extname
-          // 探测 filename 是否是二进制文件
-          if (fs.existsSync(filename)) {
-            if (detectBinary) {
-              // 延迟require，这个是新增的依赖，无法及时同步到内部测试版本HBuilderX中，导致报错，所以延迟require吧
-              if (require('isbinaryfile').isBinaryFileSync(filename)) {
-                return true
-              }
-            } else {
+      const extname = ['.vue', '.uvue'].find((extname) => {
+        const filename = componentFile + extname
+        // 探测 filename 是否是二进制文件
+        if (fs.existsSync(filename)) {
+          if (detectBinary) {
+            // 延迟require，这个是新增的依赖，无法及时同步到内部测试版本HBuilderX中，导致报错，所以延迟require吧
+            if (require('isbinaryfile').isBinaryFileSync(filename)) {
               return true
             }
+          } else {
+            return true
           }
-        })
-      ) {
-        components.push(componentDir)
+        }
+      })
+      if (extname) {
+        components[componentDir] = extname as '.vue' | '.uvue'
       }
     })
   }
@@ -563,6 +557,7 @@ function findEncryptUniModuleCache(
     ) {
       return pkg
     }
+    console.log(`插件${uniModuleId} 缓存已过期，需要重新云编译。`)
     // 已过期的插件，删除缓存
     fs.rmSync(uniModuleCacheDir, { recursive: true })
   }
@@ -663,6 +658,7 @@ export async function checkEncryptUniModules(
   inputDir: string,
   params: {
     mode: 'development' | 'production'
+    packType: 'debug' | 'release'
     compilerVersion: string // hxVersion
     appid: string
     appname: string
@@ -702,10 +698,22 @@ export async function checkEncryptUniModules(
           ','
         )}...`
       )
-      const downloadUrl = await U({
-        params,
-        attachment: zipFile,
-      })
+      let downloadUrl = ''
+      try {
+        downloadUrl = await U({
+          params,
+          attachment: zipFile,
+        })
+      } catch (e: any) {
+        if (e.message && e.message === '{"error":"UserNotLogin"}') {
+          console.log(
+            '当前项目包含需要云编译的付费插件，需要您先登录HBuilderX账号。'
+          )
+        } else {
+          console.error(e)
+        }
+        process.exit(0)
+      }
       await D(downloadUrl, downloadFile)
       // unzip
       const AdmZip = require('adm-zip')

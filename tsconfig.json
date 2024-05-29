@@ -43,7 +43,6 @@
     "node_modules/mini-types/types/api/index.d.ts",
     "node_modules/mini-types/types/page.d.ts",
     "node_modules/mini-types/types/component.d.ts",
-    "node_modules/mini-types/types/event.d.ts",
-    "packages/uni-app-harmony/global.d.ts"
+    "node_modules/mini-types/types/event.d.ts"
   ]
 }

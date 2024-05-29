@@ -7,7 +7,7 @@ declare namespace NodeJS {
     NODE_ENV: 'production' | 'development' | 'test'
     UNI_NODE_ENV: 'production' | 'development' | 'test'
     UNI_PLATFORM: UniApp.PLATFORM
-    UNI_APP_PLATFORM: 'android' | 'ios'
+    UNI_APP_PLATFORM: 'android' | 'ios' | 'harmony'
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
     UNI_UTS_PLATFORM: 'app-android' | 'app-ios' | 'web' | UniApp.PLATFORM
 
@@ -66,6 +66,8 @@ declare namespace NodeJS {
     UNI_COMPILE_TARGET?: 'uni_modules'
     UNI_COMPILE_CLOUD_DIR?: string
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string
+
+    UNI_APP_PACK_TYPE?: 'release' | 'debug'
   }
 }
 

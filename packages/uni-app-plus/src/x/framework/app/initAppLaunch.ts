@@ -4,6 +4,7 @@ import { ON_LAUNCH, ON_SHOW } from '@dcloudio/uni-shared'
 import type { ComponentPublicInstance } from 'vue'
 import { initLaunchOptions } from '../../../service/framework/app/utils'
 import { loadFontFaceByStyles } from '../utils'
+import { useTheme } from '../theme'
 
 export function initAppLaunch(appVm: ComponentPublicInstance) {
   injectAppHooks(appVm.$)
@@ -21,6 +22,9 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
   if (appStyle) {
     loadFontFaceByStyles(appStyle, true)
   }
+
+  // darkmode
+  useTheme()
 
   // TODO uni-app x
   // // https://tower.im/teams/226535/todos/16905/

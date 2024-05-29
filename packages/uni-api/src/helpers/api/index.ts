@@ -158,7 +158,7 @@ function wrapperOffApi<T extends ApiLike>(
   }
 }
 
-function normalizeErrMsg(errMsg: string | Error) {
+function parseErrMsg(errMsg: string | Error) {
   if (!errMsg || isString(errMsg)) {
     return errMsg
   }
@@ -184,7 +184,7 @@ function wrapperTaskApi<T extends ApiLike>(
     return fn(args, {
       resolve: (res: unknown) => invokeSuccess(id, name, res),
       reject: (errMsg: string | Error, errRes?: any) =>
-        invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
+        invokeFail(id, name, parseErrMsg(errMsg), errRes),
     })
   }
 }

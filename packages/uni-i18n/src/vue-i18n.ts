@@ -47,10 +47,17 @@ export function initVueI18n(
 ) {
   // 兼容旧版本入参
   if (typeof locale !== 'string') {
-    ;[locale, messages] = [
+    // ;[locale, messages] = [
+    //   messages as unknown as string,
+    //   locale as unknown as LocaleMessages,
+    // ]
+    // 暂不使用数组解构，uts编译器暂未支持。
+    const options = [
       messages as unknown as string,
       locale as unknown as LocaleMessages,
     ]
+    locale = options[0] as string
+    messages = options[1] as LocaleMessages
   }
   if (typeof locale !== 'string') {
     // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined

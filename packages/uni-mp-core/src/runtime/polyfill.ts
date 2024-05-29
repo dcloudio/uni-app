@@ -53,6 +53,9 @@ if (__PLATFORM__ === 'mp-baidu') {
   // https://smartprogram.baidu.com/forum/topic/show/153894
   ;(Page as any).after = (MPPage as any).after
 }
+
+declare let Component: WechatMiniprogram.Component.Constructor
+
 Component = function (options) {
   initMiniProgramHook('created', options, true)
   // 小程序组件

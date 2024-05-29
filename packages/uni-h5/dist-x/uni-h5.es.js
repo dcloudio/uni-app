@@ -8,8 +8,8 @@ import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, o
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, LINEFEED, PRIMARY_COLOR, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
+import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 function arrayPop(array) {
   if (array.length === 0) {
     return null;
@@ -2746,7 +2746,7 @@ class UniElement extends HTMLElement {
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
 class UniFormElement extends UniElement {
 }
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   rootElement: {
@@ -2816,7 +2816,7 @@ function useProvideLabel() {
 }
 class UniLabelElement extends UniElement {
 }
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   rootElement: {
@@ -2959,7 +2959,7 @@ const buttonProps = {
 };
 class UniButtonElement extends UniElement {
 }
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   rootElement: {
@@ -2975,7 +2975,6 @@ const index$y = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
-    useI18n();
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -3556,7 +3555,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -3573,7 +3572,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
     isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -3810,7 +3809,7 @@ function wrapperOffApi(name, fn, options) {
     }
   };
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
   if (!errMsg || isString(errMsg)) {
     return errMsg;
   }
@@ -3829,7 +3828,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id2, name, normalizeErrMsg(errMsg2), errRes)
+      reject: (errMsg2, errRes) => invokeFail(id2, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -5401,13 +5400,13 @@ const createMediaQueryObserver = /* @__PURE__ */ defineSyncApi("createMediaQuery
   }
   return new ServiceMediaQueryObserver(getCurrentPageVm());
 });
-let index$x = 0;
+let index$w = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
   const data = { options };
   const needCallOptions = options && ("success" in options || "fail" in options || "complete" in options);
   if (needCallOptions) {
-    const callbackId = String(index$x++);
+    const callbackId = String(index$w++);
     data.callbackId = callbackId;
     optionsCache[callbackId] = options;
   }
@@ -7864,7 +7863,7 @@ const props$y = {
 };
 class UniCanvasElement extends UniElement {
 }
-const index$w = /* @__PURE__ */ defineBuiltInComponent({
+const index$v = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: false,
   name: "Canvas",
   compatConfig: {
@@ -8351,7 +8350,7 @@ const props$x = {
 };
 class UniCheckboxGroupElement extends UniElement {
 }
-const index$v = /* @__PURE__ */ defineBuiltInComponent({
+const index$u = /* @__PURE__ */ defineBuiltInComponent({
   name: "CheckboxGroup",
   props: props$x,
   emits: ["change"],
@@ -8453,11 +8452,16 @@ const props$w = {
   iconColor: {
     type: String,
     default: ""
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foregroundColor: {
+    type: String,
+    default: ""
   }
 };
 class UniCheckboxElement extends UniElement {
 }
-const index$u = /* @__PURE__ */ defineBuiltInComponent({
+const index$t = /* @__PURE__ */ defineBuiltInComponent({
   name: "Checkbox",
   props: props$w,
   rootElement: {
@@ -8566,7 +8570,7 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -9469,7 +9473,7 @@ const props$u = /* @__PURE__ */ extend({}, props$v, {
 });
 class UniEditorElement extends UniElement {
 }
-const index$t = /* @__PURE__ */ defineBuiltInComponent({
+const index$s = /* @__PURE__ */ defineBuiltInComponent({
   name: "Editor",
   props: props$u,
   emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
@@ -9541,7 +9545,7 @@ const ICONS = {
 };
 class UniIconElement extends UniElement {
 }
-const index$s = /* @__PURE__ */ defineBuiltInComponent({
+const index$r = /* @__PURE__ */ defineBuiltInComponent({
   name: "Icon",
   props: {
     type: {
@@ -9618,7 +9622,7 @@ const IMAGE_MODES = {
 };
 class UniImageElement extends UniElement {
 }
-const index$r = /* @__PURE__ */ defineBuiltInComponent({
+const index$q = /* @__PURE__ */ defineBuiltInComponent({
   name: "Image",
   props: props$t,
   rootElement: {
@@ -9653,12 +9657,9 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [createVNode("div", {
         "style": state2.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? (
-        // @ts-ignore
-        createVNode(ResizeSensor, {
-          "onResize": fixSize
-        }, null, 8, ["onResize"])
-      ) : createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? createVNode(ResizeSensor, {
+        "onResize": fixSize
+      }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
   }
 });
@@ -12102,7 +12103,7 @@ function createNavigatorOnClick(props2) {
 }
 class UniNavigatorElement extends UniElement {
 }
-const index$q = /* @__PURE__ */ defineBuiltInComponent({
+const index$p = /* @__PURE__ */ defineBuiltInComponent({
   name: "Navigator",
   inheritAttrs: false,
   compatConfig: {
@@ -13269,7 +13270,7 @@ const progressProps = {
 };
 class UniProgressElement extends UniElement {
 }
-const index$p = /* @__PURE__ */ defineBuiltInComponent({
+const index$o = /* @__PURE__ */ defineBuiltInComponent({
   name: "Progress",
   props: progressProps,
   rootElement: {
@@ -13385,7 +13386,7 @@ const props$q = {
 };
 class UniRadioGroupElement extends UniElement {
 }
-const index$o = /* @__PURE__ */ defineBuiltInComponent({
+const index$n = /* @__PURE__ */ defineBuiltInComponent({
   name: "RadioGroup",
   props: props$q,
   // emits: ['change'],
@@ -13519,11 +13520,16 @@ const props$p = {
   iconColor: {
     type: String,
     default: "#ffffff"
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foregroundColor: {
+    type: String,
+    default: ""
   }
 };
 class UniRadioElement extends UniElement {
 }
-const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Radio",
   props: props$p,
   rootElement: {
@@ -13627,7 +13633,7 @@ const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -13922,7 +13928,7 @@ const props$o = {
 };
 class UniRichTextElement extends UniElement {
 }
-const index$n = /* @__PURE__ */ defineBuiltInComponent({
+const index$m = /* @__PURE__ */ defineBuiltInComponent({
   name: "RichText",
   compatConfig: {
     MODE: 3
@@ -14164,7 +14170,9 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
     } = useScrollViewState(props2);
     const {
       realScrollX,
-      realScrollY
+      realScrollY,
+      _scrollLeftChanged,
+      _scrollTopChanged
     } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = computed(() => {
       let style = "";
@@ -14197,7 +14205,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
             return main.value.scrollLeft;
           },
           set(val) {
-            main.value.scrollLeft = val;
+            _scrollLeftChanged(val);
           }
         },
         scrollTop: {
@@ -14205,7 +14213,7 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
             return main.value.scrollTop;
           },
           set(val) {
-            main.value.scrollTop = val;
+            _scrollTopChanged(val);
           }
         },
         scrollBy: {
@@ -14620,7 +14628,9 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
   });
   return {
     realScrollX,
-    realScrollY
+    realScrollY,
+    _scrollTopChanged,
+    _scrollLeftChanged
   };
 }
 const SLIDER_BLOCK_SIZE_MIN_VALUE = 12;
@@ -14658,6 +14668,11 @@ const props$m = {
     type: String,
     default: "#e9e9e9"
   },
+  // 优先级高于 activeColor
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
   activeColor: {
     type: String,
     default: "#007aff"
@@ -14669,6 +14684,15 @@ const props$m = {
   blockColor: {
     type: String,
     default: "#ffffff"
+  },
+  // 优先级高于blockColor
+  foregroundColor: {
+    type: String,
+    default: ""
+  },
+  valueColor: {
+    type: String,
+    default: "#888888"
   },
   blockSize: {
     type: [Number, String],
@@ -14718,7 +14742,7 @@ class UniSliderElement extends UniElement {
     this.inputValue.innerText = value.toString();
   }
 }
-const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$2 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Slider",
   props: props$m,
   emits: ["changing", "change"],
@@ -14752,7 +14776,8 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         setTrackBgColor,
         setActiveColor,
         setThumbStyle,
-        thumbTrackStyle
+        thumbTrackStyle,
+        setValueStyle
       } = state2;
       return createVNode("uni-slider", {
         "ref": sliderRef
@@ -14783,8 +14808,9 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         "onChange": withWebEvent(_onChange)
       }, null, 40, ["min", "max", "step", "value", "onInput", "onChange"])]), withDirectives(createVNode("span", {
         "ref": sliderValueRef,
+        "style": setValueStyle.value,
         "class": "uni-slider-value"
-      }, null, 512), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 512);
+      }, null, 4), [[vShow, props2.showValue]])]), createVNode("slot", null, null)], 512);
     };
   }
 });
@@ -14793,7 +14819,8 @@ function useSliderState(props2) {
     return props2.backgroundColor !== "#e9e9e9" ? props2.backgroundColor : props2.color !== "#007aff" ? props2.color : "#007aff";
   };
   const _getActiveColor = () => {
-    return props2.activeColor !== "#007aff" ? props2.activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
+    const activeColor = props2.activeBackgroundColor || props2.activeColor;
+    return activeColor !== "#007aff" ? activeColor : props2.selectedColor !== "#e9e9e9" ? props2.selectedColor : "#e9e9e9";
   };
   const _getBlockSizeString = () => {
     const blockSize = Math.min(Math.max(Number(props2.blockSize), SLIDER_BLOCK_SIZE_MIN_VALUE), SLIDER_BLOCK_SIZE_MAX_VALUE);
@@ -14812,7 +14839,10 @@ function useSliderState(props2) {
     setThumbStyle: computed(() => ({
       width: _getBlockSizeString(),
       height: _getBlockSizeString(),
-      backgroundColor: props2.blockColor
+      backgroundColor: props2.foregroundColor || props2.blockColor
+    })),
+    setValueStyle: computed(() => ({
+      color: props2.valueColor
     }))
   };
   return state2;
@@ -15688,11 +15718,27 @@ const props$j = {
   color: {
     type: String,
     default: ""
+  },
+  backgroundColor: {
+    type: String,
+    default: "#e9e9ea"
+  },
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
+  foregroundColor: {
+    type: String,
+    default: ""
+  },
+  activeForegroundColor: {
+    type: String,
+    default: ""
   }
 };
 class UniSwitchElement extends UniElement {
 }
-const index$m = /* @__PURE__ */ defineBuiltInComponent({
+const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
   name: "Switch",
   props: props$j,
   emits: ["change"],
@@ -15746,14 +15792,25 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     });
     return () => {
       const {
+        activeBackgroundColor,
+        activeForegroundColor,
+        backgroundColor,
         color,
+        foregroundColor,
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
       const switchInputStyle = {};
-      if (color && switchChecked.value) {
-        switchInputStyle["backgroundColor"] = color;
-        switchInputStyle["borderColor"] = color;
+      const fixColor = activeBackgroundColor || color;
+      const bgColor = switchChecked.value ? fixColor : backgroundColor;
+      if (bgColor) {
+        switchInputStyle["backgroundColor"] = bgColor;
+        switchInputStyle["borderColor"] = bgColor;
+      }
+      const thumbStyle = {};
+      const fgColor = switchChecked.value ? activeForegroundColor : foregroundColor;
+      if (fgColor) {
+        thumbStyle["backgroundColor"] = fgColor;
       }
       let realCheckValue;
       realCheckValue = checkedCache.value;
@@ -15767,7 +15824,10 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
       }, [withDirectives(createVNode("div", {
         "class": ["uni-switch-input", [switchChecked.value ? "uni-switch-input-checked" : ""]],
         "style": switchInputStyle
-      }, null, 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
+      }, [createVNode("div", {
+        "class": ["uni-switch-thumb", [switchChecked.value ? "uni-switch-thumb-checked" : ""]],
+        "style": thumbStyle
+      }, null, 6)], 6), [[vShow, type === "switch"]]), withDirectives(createVNode("div", {
         "class": "uni-checkbox-input"
       }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.color, 22) : ""], 512), [[vShow, type === "checkbox"]])])], 16, ["id", "onClick"]);
     };
@@ -16145,9 +16205,12 @@ function getChildren(root) {
   }
   return children;
 }
+const ChildType = ["ListItem", "StickySection", "StickyHeader"];
 function walk(vnode, children) {
-  if (vnode.component) {
+  if (vnode.component && vnode.component.type && vnode.component.type.name && ChildType.includes(vnode.component.type.name)) {
     children.push(vnode);
+  } else if (vnode.component) {
+    walk(vnode.component.subTree, children);
   } else if (vnode.shapeFlag & 16) {
     const vnodes = vnode.children;
     for (let i = 0; i < vnodes.length; i++) {
@@ -16382,7 +16445,7 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       rootElement.attachVmProps(props2);
     });
     function forceRearrange() {
-      traverseAllItems((child) => {
+      traverseAllItems(visibleVNode, (child) => {
         const exposed = child.component.exposed;
         if (exposed == null ? void 0 : exposed.__listViewChildStatus.seen.value) {
           exposed.__listViewChildStatus.seen.value = false;
@@ -16398,8 +16461,8 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
       resetContainerSize();
       forceRearrange();
     }
-    function traverseAllItems(callback) {
-      traverseListView(visibleVNode, (child) => {
+    function traverseAllItems(visibleVNode2, callback) {
+      traverseListView(visibleVNode2, (child) => {
         var _a;
         const childType = (_a = child.component) == null ? void 0 : _a.type.name;
         if (childType === "StickySection") {
@@ -16412,6 +16475,10 @@ const index$i = /* @__PURE__ */ defineBuiltInComponent({
           });
         } else if (childType === "ListItem") {
           callback(child);
+        } else if (childType === "StickyHeader")
+          ;
+        else if (child.component && child.component.subTree) {
+          traverseAllItems(child.component.subTree, callback);
         }
       });
     }
@@ -17869,9 +17936,9 @@ function parseTheme(pageStyle) {
   return __uniConfig.darkmode ? parsedStyle : pageStyle;
 }
 function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactived = isReactive(pageStyle);
-  const reactivePageStyle = isReactived ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactived) {
+  const isReactivity = isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
     watch(pageStyle, (value) => {
       const _pageStyle = parseTheme(value);
       for (const key in _pageStyle) {
@@ -21093,20 +21160,28 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       platform,
       system,
       deviceOrientation,
-      deviceType
-    } = browserInfo;
-    return {
-      brand,
-      deviceBrand,
-      deviceModel,
-      devicePixelRatio: window.devicePixelRatio,
-      deviceId: deviceId$1(),
-      deviceOrientation,
       deviceType,
-      model,
-      platform,
-      system
-    };
+      osname,
+      osversion
+    } = browserInfo;
+    return extend(
+      {
+        brand,
+        deviceBrand,
+        deviceModel,
+        devicePixelRatio: window.devicePixelRatio,
+        deviceId: deviceId$1(),
+        deviceOrientation,
+        deviceType,
+        model,
+        platform,
+        system
+      },
+      {
+        osName: osname ? osname.toLocaleLowerCase() : void 0,
+        osVersion: osversion
+      }
+    );
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
@@ -27648,19 +27723,19 @@ export {
   index$4 as AdDraw,
   AsyncErrorComponent,
   AsyncLoadingComponent,
-  index$y as Button,
+  index$x as Button,
   index$3 as Camera,
-  index$w as Canvas,
-  index$u as Checkbox,
-  index$v as CheckboxGroup,
+  index$v as Canvas,
+  index$t as Checkbox,
+  index$u as CheckboxGroup,
   index$8 as CoverImage,
   index$9 as CoverView,
-  index$t as Editor,
-  index$A as Form,
-  index$s as Icon,
-  index$r as Image,
+  index$s as Editor,
+  index$z as Form,
+  index$r as Icon,
+  index$q as Image,
   Input,
-  index$z as Label,
+  index$y as Label,
   LayoutComponent,
   index$h as ListItem,
   index$i as ListView,
@@ -27669,23 +27744,23 @@ export {
   Map$1 as Map,
   MovableArea,
   MovableView,
-  index$q as Navigator,
+  index$p as Navigator,
   index as PageComponent,
   index$7 as Picker,
   PickerView,
   PickerViewColumn,
-  index$p as Progress,
-  indexX$2 as Radio,
-  index$o as RadioGroup,
+  index$o as Progress,
+  indexX$3 as Radio,
+  index$n as RadioGroup,
   ResizeSensor,
-  index$n as RichText,
+  index$m as RichText,
   ScrollView,
-  indexX$1 as Slider,
+  indexX$2 as Slider,
   index$f as StickyHeader,
   index$g as StickySection,
   Swiper,
   SwiperItem,
-  index$m as Switch,
+  indexX$1 as Switch,
   index$l as Text,
   index$k as Textarea,
   UniButtonElement,

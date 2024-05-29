@@ -208,7 +208,10 @@ export const mixinDatacom = defineMixin({
       }).catch((err : any | null) => {
         this.mixinDatacomError = err as UniCloudError
         options?.fail?.(err)
-      }).finally(() => {
+      }).then(() => {
+        this.mixinDatacomLoading = false
+        options?.complete?.()
+      }, () => {
         this.mixinDatacomLoading = false
         options?.complete?.()
       })
