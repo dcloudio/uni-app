@@ -1,14 +1,14 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import {
-  onMounted,
-  getCurrentInstance,
-  computed,
-  ref,
-  watchEffect,
-  StyleValue,
-  watch,
+  type StyleValue,
   camelize,
+  computed,
+  getCurrentInstance,
+  onMounted,
+  ref,
+  watch,
+  watchEffect,
 } from 'vue'
 
 import { $dispatch } from '../../utils'

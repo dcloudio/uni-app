@@ -3,6 +3,9 @@ export class UniPickerViewColumnElement extends UniElementImpl {
     super(data, pageNode)
   }
 
+  override tagName = 'PICKER-VIEW-COLUMN'
+  override nodeName = this.tagName
+
   override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {
@@ -35,6 +38,9 @@ export class UniPickerViewElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
     super(data, pageNode)
   }
+
+  override tagName = 'PICKER-VIEW'
+  override nodeName = this.tagName
 
   override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
