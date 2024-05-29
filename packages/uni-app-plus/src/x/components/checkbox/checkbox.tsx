@@ -72,7 +72,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         return Object.assign({}, styles['uni-icon'])
       }
 
-      const color = props.iconColor.length > 0 ? props.iconColor : props.color
+      let color = ''
+
+      if (props.foregroundColor.length > 0) {
+        color = props.foregroundColor
+      } else if (props.iconColor.length > 0) {
+        color = props.iconColor
+      } else {
+        color = props.color
+      }
+
       return Object.assign({}, styles['uni-icon'], { color })
     })
 
