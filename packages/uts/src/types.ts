@@ -27,6 +27,7 @@ export type UTSInputOptions = UTSParseOptions & {
   fileContent?: string
   fileAppendContent?: string
   paths: Record<string, string>
+  externals?: Record<string, string>
   uniModules?: string[]
   globals?: {
     envs?: Record<string, string>

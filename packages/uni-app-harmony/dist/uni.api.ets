@@ -3,186 +3,217 @@ import { defineAsyncApi } from './uni.api'
 import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
-import fs from '@ohos.file.fs';
+import fs, { ReadOptions } from '@ohos.file.fs';
+import { isFunction } from "./uni-app-harmony-framework-dev.js";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
-export { MediaOrientation as MediaOrientation };
-export { MediaErrorCode as MediaErrorCode };
-export { IMediaError as IMediaError };
-export { ChooseImageSuccess as ChooseImageSuccess };
-export { ChooseImageFail as ChooseImageFail };
-export { ChooseImageSuccessCallback as ChooseImageSuccessCallback };
-export { ChooseImageFailCallback as ChooseImageFailCallback };
-export { ChooseImageCompleteCallback as ChooseImageCompleteCallback };
-export { ChooseImageCropOptions as ChooseImageCropOptions };
-export { ChooseImageOptions as ChooseImageOptions };
-export { ChooseImage as ChooseImage };
-export { PreviewImageSuccess as PreviewImageSuccess };
-export { LongPressActionsSuccessData as LongPressActionsSuccessData };
-export { LongPressActionsOptions as LongPressActionsOptions };
-export { PreviewImageFail as PreviewImageFail };
-export { PreviewImageSuccessCallback as PreviewImageSuccessCallback };
-export { PreviewImageFailCallback as PreviewImageFailCallback };
-export { PreviewImageCompleteCallback as PreviewImageCompleteCallback };
-export { PreviewImageOptions as PreviewImageOptions };
-export { PreviewImage as PreviewImage };
-export { ClosePreviewImage as ClosePreviewImage };
-export { ClosePreviewImageSuccess as ClosePreviewImageSuccess };
-export { ClosePreviewImageFail as ClosePreviewImageFail };
-export { ClosePreviewImageSuccessCallback as ClosePreviewImageSuccessCallback };
-export { ClosePreviewImageFailCallback as ClosePreviewImageFailCallback };
-export { ClosePreviewImageCompleteCallback as ClosePreviewImageCompleteCallback };
-export { ClosePreviewImageOptions as ClosePreviewImageOptions };
-export { GetImageInfo as GetImageInfo };
-export { GetImageInfoSuccess as GetImageInfoSuccess };
-export { GetImageInfoFail as GetImageInfoFail };
-export { GetImageInfoSuccessCallback as GetImageInfoSuccessCallback };
-export { GetImageInfoFailCallback as GetImageInfoFailCallback };
-export { GetImageInfoCompleteCallback as GetImageInfoCompleteCallback };
-export { GetImageInfoOptions as GetImageInfoOptions };
-export { SaveImageToPhotosAlbum as SaveImageToPhotosAlbum };
-export { SaveImageToPhotosAlbumSuccess as SaveImageToPhotosAlbumSuccess };
-export { SaveImageToPhotosAlbumFail as SaveImageToPhotosAlbumFail };
-export { SaveImageToPhotosAlbumSuccessCallback as SaveImageToPhotosAlbumSuccessCallback };
-export { SaveImageToPhotosAlbumFailCallback as SaveImageToPhotosAlbumFailCallback };
-export { SaveImageToPhotosAlbumCompleteCallback as SaveImageToPhotosAlbumCompleteCallback };
-export { SaveImageToPhotosAlbumOptions as SaveImageToPhotosAlbumOptions };
-export { CompressImage as CompressImage };
-export { CompressImageSuccess as CompressImageSuccess };
-export { CompressImageFail as CompressImageFail };
-export { CompressImageSuccessCallback as CompressImageSuccessCallback };
-export { CompressImageFailCallback as CompressImageFailCallback };
-export { CompressImageCompleteCallback as CompressImageCompleteCallback };
-export { CompressImageOptions as CompressImageOptions };
-export { ChooseVideoSuccess as ChooseVideoSuccess };
-export { ChooseVideoFail as ChooseVideoFail };
-export { ChooseVideoSuccessCallback as ChooseVideoSuccessCallback };
-export { ChooseVideoFailCallback as ChooseVideoFailCallback };
-export { ChooseVideoCompleteCallback as ChooseVideoCompleteCallback };
-export { ChooseVideoOptions as ChooseVideoOptions };
-export { ChooseVideo as ChooseVideo };
-export { GetVideoInfoSuccess as GetVideoInfoSuccess };
-export { GetVideoInfoFail as GetVideoInfoFail };
-export { GetVideoInfoSuccessCallback as GetVideoInfoSuccessCallback };
-export { GetVideoInfoFailCallback as GetVideoInfoFailCallback };
-export { GetVideoInfoCompleteCallback as GetVideoInfoCompleteCallback };
-export { GetVideoInfoOptions as GetVideoInfoOptions };
-export { GetVideoInfo as GetVideoInfo };
-export { SaveVideoToPhotosAlbumSuccess as SaveVideoToPhotosAlbumSuccess };
-export { SaveVideoToPhotosAlbumFail as SaveVideoToPhotosAlbumFail };
-export { SaveVideoToPhotosAlbumSuccessCallback as SaveVideoToPhotosAlbumSuccessCallback };
-export { SaveVideoToPhotosAlbumFailCallback as SaveVideoToPhotosAlbumFailCallback };
-export { SaveVideoToPhotosAlbumCompleteCallback as SaveVideoToPhotosAlbumCompleteCallback };
-export { SaveVideoToPhotosAlbumOptions as SaveVideoToPhotosAlbumOptions };
-export { SaveVideoToPhotosAlbum as SaveVideoToPhotosAlbum };
-export { CompressVideoSuccess as CompressVideoSuccess };
-export { CompressVideoFail as CompressVideoFail };
-export { CompressVideoSuccessCallback as CompressVideoSuccessCallback };
-export { CompressVideoFailCallback as CompressVideoFailCallback };
-export { CompressVideoCompleteCallback as CompressVideoCompleteCallback };
-export { CompressVideoOptions as CompressVideoOptions };
-export { CompressVideo as CompressVideo };
-export { Uni as Uni };
-export { chooseImage as chooseImage, chooseVideo as chooseVideo, getImageInfo as getImageInfo, getVideoInfo as getVideoInfo };
-export { default as default };
+export type MediaOrientation = 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
+export type MediaErrorCode = 1101001 | 1101002 | 1101003 | 1101004 | 1101005 | 1101006 | 1101007 | 1101008 | 1101009 | 1101010;
+export interface IMediaError extends IUniError {
+    errCode: MediaErrorCode;
+}
+export class ChooseImageSuccess extends UTSObject {
+    errSubject!: string;
+    errMsg!: string;
+    tempFilePaths!: Array<string>;
+    tempFiles!: Object;
+}
+export type ChooseImageFail = IMediaError;
+export type ChooseImageSuccessCallback = (callback: ChooseImageSuccess) => void;
+export type ChooseImageFailCallback = (callback: ChooseImageFail) => void;
+export type ChooseImageCompleteCallback = (callback: Object) => void;
+export class ChooseImageCropOptions extends UTSObject {
+    width!: number;
+    height!: number;
+    quality: (number) | null = null;
+    resize: (boolean) | null = null;
+}
+export class ChooseImageOptions extends UTSObject {
+    count: (number) | null = null;
+    sizeType: (string[]) | null = null;
+    sourceType: (string[]) | null = null;
+    extension: (string[]) | null = null;
+    crop: (ChooseImageCropOptions) | null = null;
+    success: (ChooseImageSuccessCallback) | null = null;
+    fail: (ChooseImageFailCallback) | null = null;
+    complete: (ChooseImageCompleteCallback) | null = null;
+}
+export type ChooseImage = (options: ChooseImageOptions) => void;
+export class PreviewImageSuccess extends UTSObject {
+    errSubject!: string;
+    errMsg!: string;
+}
+export class LongPressActionsSuccessData extends UTSObject {
+    tapIndex!: number;
+    index!: number;
+}
+export class LongPressActionsOptions extends UTSObject {
+    itemList!: string[];
+    itemColor: string | null = null;
+    success: ((result: LongPressActionsSuccessData) => void) | null = null;
+    fail: ((result: Object) => void) | null = null;
+    complete: ((result: Object) => void) | null = null;
+}
+export type PreviewImageFail = IMediaError;
+export type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
+export type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
+export type PreviewImageCompleteCallback = ChooseImageCompleteCallback;
+export class PreviewImageOptions extends UTSObject {
+    current: Object | null = null;
+    urls!: Array<string.ImageURIString>;
+    indicator: string | null = null;
+    loop: boolean | null = null;
+    longPressActions: LongPressActionsOptions | null = null;
+    success: (PreviewImageSuccessCallback) | null = null;
+    fail: (PreviewImageFailCallback) | null = null;
+    complete: (PreviewImageCompleteCallback) | null = null;
+}
+export type PreviewImage = (options: PreviewImageOptions) => void;
+export type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
+export class ClosePreviewImageSuccess extends UTSObject {
+    errMsg!: string;
+}
+export type ClosePreviewImageFail = IMediaError;
+export type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void;
+export type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void;
+export type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback;
+export class ClosePreviewImageOptions extends UTSObject {
+    success: (ClosePreviewImageSuccessCallback) | null = null;
+    fail: (ClosePreviewImageFailCallback) | null = null;
+    complete: (ClosePreviewImageCompleteCallback) | null = null;
+}
+export type GetImageInfo = (options: GetImageInfoOptions) => void;
+export class GetImageInfoSuccess extends UTSObject {
+    width!: number;
+    height!: number;
+    path!: string;
+    orientation: string | null = null;
+    type: string | null = null;
+}
+export type GetImageInfoFail = IMediaError;
+export type GetImageInfoSuccessCallback = (callback: GetImageInfoSuccess) => void;
+export type GetImageInfoFailCallback = (callback: GetImageInfoFail) => void;
+export type GetImageInfoCompleteCallback = ChooseImageCompleteCallback;
+export class GetImageInfoOptions extends UTSObject {
+    src!: string.ImageURIString;
+    success: (GetImageInfoSuccessCallback) | null = null;
+    fail: (GetImageInfoFailCallback) | null = null;
+    complete: (GetImageInfoCompleteCallback) | null = null;
+}
+export type SaveImageToPhotosAlbum = (options: SaveImageToPhotosAlbumOptions) => void;
+export class SaveImageToPhotosAlbumSuccess extends UTSObject {
+    path!: string;
+}
+export type SaveImageToPhotosAlbumFail = IMediaError;
+export type SaveImageToPhotosAlbumSuccessCallback = (callback: SaveImageToPhotosAlbumSuccess) => void;
+export type SaveImageToPhotosAlbumFailCallback = (callback: SaveImageToPhotosAlbumFail) => void;
+export type SaveImageToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+export class SaveImageToPhotosAlbumOptions extends UTSObject {
+    filePath!: string.ImageURIString;
+    success: (SaveImageToPhotosAlbumSuccessCallback) | null = null;
+    fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
+    complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
+}
+export type CompressImage = (options: CompressImageOptions) => void;
+export class CompressImageSuccess extends UTSObject {
+    tempFilePath!: string;
+}
+export type CompressImageFail = IMediaError;
+export type CompressImageSuccessCallback = (callback: CompressImageSuccess) => void;
+export type CompressImageFailCallback = (callback: CompressImageFail) => void;
+export type CompressImageCompleteCallback = ChooseImageCompleteCallback;
+export class CompressImageOptions extends UTSObject {
+    src!: string.ImageURIString;
+    quality: number | null = null;
+    rotate: number | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    compressedHeight: number | null = null;
+    compressedWidth: number | null = null;
+    success: (CompressImageSuccessCallback) | null = null;
+    fail: (CompressImageFailCallback) | null = null;
+    complete: (CompressImageCompleteCallback) | null = null;
+}
+export class ChooseVideoSuccess extends UTSObject {
+    tempFilePath!: string;
+    duration!: number;
+    size!: number;
+    height!: number;
+    width!: number;
+}
+export type ChooseVideoFail = IMediaError;
+export type ChooseVideoSuccessCallback = (callback: ChooseVideoSuccess) => void;
+export type ChooseVideoFailCallback = (callback: ChooseVideoFail) => void;
+export type ChooseVideoCompleteCallback = ChooseImageCompleteCallback;
+export class ChooseVideoOptions extends UTSObject {
+    sourceType: (string[]) | null = null;
+    compressed: boolean | null = true;
+    maxDuration: number | null = null;
+    camera: string | null = null;
+    extension: (string[]) | null = null;
+    success: (ChooseVideoSuccessCallback) | null = null;
+    fail: (ChooseVideoFailCallback) | null = null;
+    complete: (ChooseVideoCompleteCallback) | null = null;
+}
+export type ChooseVideo = (options: ChooseVideoOptions) => void;
+export class GetVideoInfoSuccess extends UTSObject {
+    orientation: string | null = null;
+    type: string | null = null;
+    duration!: number;
+    size!: number;
+    height!: number;
+    width!: number;
+    fps: number | null = null;
+    bitrate: number | null = null;
+}
+export type GetVideoInfoFail = IMediaError;
+export type GetVideoInfoSuccessCallback = (callback: GetVideoInfoSuccess) => void;
+export type GetVideoInfoFailCallback = (callback: GetVideoInfoFail) => void;
+export type GetVideoInfoCompleteCallback = ChooseImageCompleteCallback;
+export class GetVideoInfoOptions extends UTSObject {
+    src!: string.VideoURIString;
+    success: (GetVideoInfoSuccessCallback) | null = null;
+    fail: (GetVideoInfoFailCallback) | null = null;
+    complete: (GetVideoInfoCompleteCallback) | null = null;
+}
+export type GetVideoInfo = (options: GetVideoInfoOptions) => void;
+export class SaveVideoToPhotosAlbumSuccess extends UTSObject {
+}
+export type SaveVideoToPhotosAlbumFail = IMediaError;
+export type SaveVideoToPhotosAlbumSuccessCallback = (callback: SaveVideoToPhotosAlbumSuccess) => void;
+export type SaveVideoToPhotosAlbumFailCallback = (callback: SaveVideoToPhotosAlbumFail) => void;
+export type SaveVideoToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+export class SaveVideoToPhotosAlbumOptions extends UTSObject {
+    filePath!: string.VideoURIString;
+    success: (SaveVideoToPhotosAlbumSuccessCallback) | null = null;
+    fail: (SaveVideoToPhotosAlbumFailCallback) | null = null;
+    complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
+}
+export type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
+export class CompressVideoSuccess extends UTSObject {
+    tempFilePath!: string;
+    size!: number;
+}
+export type CompressVideoFail = IMediaError;
+export type CompressVideoSuccessCallback = (callback: CompressVideoSuccess) => void;
+export type CompressVideoFailCallback = (callback: CompressVideoFail) => void;
+export type CompressVideoCompleteCallback = ChooseImageCompleteCallback;
+export class CompressVideoOptions extends UTSObject {
+    src!: string.VideoURIString;
+    quality: string | null = null;
+    bitrate: number | null = null;
+    fps: number | null = null;
+    resolution: number | null = null;
+    success: (CompressVideoSuccessCallback) | null = null;
+    fail: (CompressVideoFailCallback) | null = null;
+    complete: (CompressVideoCompleteCallback) | null = null;
+}
+export type CompressVideo = (options: CompressVideoOptions) => void;
 export function initUniExtApi(APP_ID: string) {
     const API_CHOOSE_IMAGE = 'chooseImage';
     const API_CHOOSE_VIDEO = 'chooseVideo';
     const API_GET_IMAGE_INFO = 'getImageInfo';
     const API_GET_VIDEO_INFO = 'getVideoInfo';
-    type MediaOrientation = 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
-    type MediaErrorCode = 1101001 | 1101002 | 1101003 | 1101004 | 1101005 | 1101006 | 1101007 | 1101008 | 1101009 | 1101010;
-    interface IMediaError extends IUniError {
-        errCode: MediaErrorCode;
-    }
-    class ChooseImageSuccess extends UTSObject {
-        errSubject!: string;
-        errMsg!: string;
-        tempFilePaths!: Array<string>;
-        tempFiles!: Object;
-    }
-    type ChooseImageFail = IMediaError;
-    type ChooseImageSuccessCallback = (callback: ChooseImageSuccess) => void;
-    type ChooseImageFailCallback = (callback: ChooseImageFail) => void;
-    type ChooseImageCompleteCallback = (callback: Object) => void;
-    class ChooseImageCropOptions extends UTSObject {
-        width!: number;
-        height!: number;
-        quality: (number) | null = null;
-        resize: (boolean) | null = null;
-    }
-    class ChooseImageOptions extends UTSObject {
-        count: (number) | null = null;
-        sizeType: (string[]) | null = null;
-        sourceType: (string[]) | null = null;
-        extension: (string[]) | null = null;
-        crop: (ChooseImageCropOptions) | null = null;
-        success: (ChooseImageSuccessCallback) | null = null;
-        fail: (ChooseImageFailCallback) | null = null;
-        complete: (ChooseImageCompleteCallback) | null = null;
-    }
-    type ChooseImage = (options: ChooseImageOptions) => void;
-    type GetImageInfo = (options: GetImageInfoOptions) => void;
-    class GetImageInfoSuccess extends UTSObject {
-        width!: number;
-        height!: number;
-        path!: string;
-        orientation: string | null = null;
-        type: string | null = null;
-    }
-    type GetImageInfoFail = IMediaError;
-    type GetImageInfoSuccessCallback = (callback: GetImageInfoSuccess) => void;
-    type GetImageInfoFailCallback = (callback: GetImageInfoFail) => void;
-    type GetImageInfoCompleteCallback = ChooseImageCompleteCallback;
-    class GetImageInfoOptions extends UTSObject {
-        src!: string.ImageURIString;
-        success: (GetImageInfoSuccessCallback) | null = null;
-        fail: (GetImageInfoFailCallback) | null = null;
-        complete: (GetImageInfoCompleteCallback) | null = null;
-    }
-    class ChooseVideoSuccess extends UTSObject {
-        tempFilePath!: string;
-        duration!: number;
-        size!: number;
-        height!: number;
-        width!: number;
-    }
-    type ChooseVideoFail = IMediaError;
-    type ChooseVideoSuccessCallback = (callback: ChooseVideoSuccess) => void;
-    type ChooseVideoFailCallback = (callback: ChooseVideoFail) => void;
-    type ChooseVideoCompleteCallback = ChooseImageCompleteCallback;
-    class ChooseVideoOptions extends UTSObject {
-        sourceType: (string[]) | null = null;
-        compressed: boolean | null = true;
-        maxDuration: number | null = null;
-        camera: string | null = null;
-        extension: (string[]) | null = null;
-        success: (ChooseVideoSuccessCallback) | null = null;
-        fail: (ChooseVideoFailCallback) | null = null;
-        complete: (ChooseVideoCompleteCallback) | null = null;
-    }
-    type ChooseVideo = (options: ChooseVideoOptions) => void;
-    class GetVideoInfoSuccess extends UTSObject {
-        orientation: string | null = null;
-        type: string | null = null;
-        duration!: number;
-        size!: number;
-        height!: number;
-        width!: number;
-        fps: number | null = null;
-        bitrate: number | null = null;
-    }
-    type GetVideoInfoFail = IMediaError;
-    type GetVideoInfoSuccessCallback = (callback: GetVideoInfoSuccess) => void;
-    type GetVideoInfoFailCallback = (callback: GetVideoInfoFail) => void;
-    type GetVideoInfoCompleteCallback = ChooseImageCompleteCallback;
-    class GetVideoInfoOptions extends UTSObject {
-        src!: string.VideoURIString;
-        success: (GetVideoInfoSuccessCallback) | null = null;
-        fail: (GetVideoInfoFailCallback) | null = null;
-        complete: (GetVideoInfoCompleteCallback) | null = null;
-    }
-    type GetVideoInfo = (options: GetVideoInfoOptions) => void;
     interface MediaFile {
         fileType: 'video' | 'image';
         tempFilePath: string;
@@ -342,12 +373,13 @@ export function initUniExtApi(APP_ID: string) {
             tempFiles
         };
     };
-    const chooseImage: ChooseImage = defineAsyncApi(API_CHOOSE_IMAGE, (params, ref)=>{
+    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (params, ref)=>{
         let resolve = ref.resolve, reject = ref.reject;
         _chooseMedia({
             mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
             count: params.count
         } as ChooseMediaOptions).then((res)=>{
+            console.log(isFunction('a'));
             return {
                 errSubject: 'chooseImage',
                 errMsg: 'chooseImage:ok',
@@ -361,7 +393,7 @@ export function initUniExtApi(APP_ID: string) {
             } as ChooseImageSuccess;
         }).then(resolve, reject);
     });
-    const chooseVideo: ChooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, (_, ref)=>{
+    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (_, ref)=>{
         let resolve = ref.resolve, reject = ref.reject;
         _chooseMedia({
             mimeType: picker2.PhotoViewMIMETypes.VIDEO_TYPE
@@ -376,11 +408,11 @@ export function initUniExtApi(APP_ID: string) {
             } as ChooseVideoSuccess;
         }).then(resolve, reject);
     });
-    const getImageInfo: GetImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, (ref: GetImageInfoOptions, ref1)=>{
+    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (ref: GetImageInfoOptions, ref1)=>{
         let src = ref.src, resolve = ref1.resolve, reject = ref1.reject;
         _getImageInfo(src).then(resolve, reject);
     });
-    const getVideoInfo: GetVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, (ref: GetVideoInfoOptions, ref1)=>{
+    const getVideoInfo: GetVideoInfo = defineAsyncApi<GetVideoInfoOptions, GetVideoInfoSuccess>(API_GET_VIDEO_INFO, (ref: GetVideoInfoOptions, ref1)=>{
         let src = ref.src, resolve = ref1.resolve, reject = ref1.reject;
         _getVideoInfo(src).then((res)=>{
             return {
@@ -399,7 +431,7 @@ export function initUniExtApi(APP_ID: string) {
         chooseVideo: ChooseVideo;
         getVideoInfo: GetVideoInfo;
     }
-    const default = {
+    return {
         chooseImage,
         getImageInfo,
         chooseVideo,

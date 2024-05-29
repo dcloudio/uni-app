@@ -270,6 +270,7 @@ async function buildArkTS(target, buildJson) {
             paths[key] = alias[key].replace('<rootDir>', rootDir)
             return paths
           }, {}),
+          externals: options.externals || [],
           parseOptions: {
             tsx: true,
             noEarlyErrors: true,

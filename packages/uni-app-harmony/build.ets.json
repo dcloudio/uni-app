@@ -11,9 +11,10 @@
       "@dcloudio/uni-core": "<rootDir>/packages/uni-core/src",
       "@dcloudio/uni-i18n": "<rootDir>/packages/uni-i18n/src",
       "@dcloudio/uni-platform": "<rootDir>/packages/uni-app-harmony/src/platform",
-      "@dcloudio/uni-runtime": "<rootDir>/packages/uni-runtime/src",
-      "@dcloudio/uni-shared": "<rootDir>/packages/uni-shared/src"
+      "@dcloudio/uni-shared": "<rootDir>/packages/uni-shared/src",
+      "@dcloudio/uni-runtime": "./uni-app-harmony-framework-dev.js"
     },
+    "externals": ["./uni-app-harmony-framework-dev.js"],
     "replacements": {
       "__PLATFORM__": "'app-harmony'",
       "__DEV__": "false",
@@ -21,7 +22,7 @@
       "__APP_VIEW__": "false",
       "__NODE_JS__": "false"
     },
-    "banner":"import { IUniError, UTSObject, UTSJSONObject, string } from './uts'\nimport { defineAsyncApi } from './uni.api'",
+    "banner": "import { IUniError, UTSObject, UTSJSONObject, string } from './uts'\nimport { defineAsyncApi } from './uni.api'",
     "wrapper": {
       "name": "initUniExtApi",
       "args": [["APP_ID", "string"]]
