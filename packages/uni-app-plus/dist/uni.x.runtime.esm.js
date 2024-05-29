@@ -1,4 +1,4 @@
-import { normalizeStyles, addLeadingSlash, invokeArrayFns, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, parseUrl, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
 function getCurrentPage() {
@@ -43,7 +43,7 @@ function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, 
     id: id2,
     route
   } = meta;
-  var titleColor = normalizeStyles(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
+  var titleColor = normalizeStyles$1(meta.navigationBar, __uniConfig.themeConfig, themeMode).titleColor;
   return {
     id: id2,
     path: addLeadingSlash(route),
@@ -1075,6 +1075,348 @@ function getPageManager() {
 }
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
+function hasLeadingSlash(str) {
+  return str.indexOf("/") == 0;
+}
+function getRealPath(path) {
+  var fix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
+  if (hasLeadingSlash(path)) {
+    return path;
+  }
+  if (fix && path.indexOf(".") !== 0) {
+    return "/" + path;
+  }
+  var currentPage = getCurrentPage();
+  var currentPath = !currentPage ? "/" : parseUrl(currentPage.route).path;
+  var currentPathArray = currentPath.split("/");
+  var pathArray = path.split("/");
+  var resultArray = [];
+  for (var index2 = 0; index2 < pathArray.length; index2++) {
+    var element = pathArray[index2];
+    if (element == "..") {
+      currentPathArray.pop();
+    } else if (element != ".") {
+      resultArray.push(element);
+    }
+  }
+  return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
+}
+var onTabBarMidButtonTapCallback = [];
+var tabBar0 = null;
+var selected0 = -1;
+var tabs = /* @__PURE__ */ new Map();
+var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
+function getBorderStyle(borderStyle) {
+  var value = BORDER_COLORS.get(borderStyle);
+  return value !== null && value !== void 0 ? value : borderStyle;
+}
+function fixBorderStyle(tabBarConfig) {
+  var borderStyle = tabBarConfig.get("borderStyle");
+  if (!isString(borderStyle)) {
+    borderStyle = "black";
+  }
+  tabBarConfig.set("borderStyle", getBorderStyle(borderStyle));
+}
+function getTabList() {
+  var tabConfig = __uniConfig.tabBar ? /* @__PURE__ */ new Map() : null;
+  if (__uniConfig.tabBar) {
+    for (var key in __uniConfig.tabBar) {
+      tabConfig.set(key, __uniConfig.tabBar[key]);
+    }
+  }
+  if (tabConfig === null) {
+    return null;
+  }
+  var list = tabConfig.get("list");
+  return list;
+}
+function init() {
+  var list = getTabList();
+  var style = /* @__PURE__ */ new Map();
+  style.set("navigationStyle", "custom");
+  var page = getPageManager().createPage("tabBar", "tabBar", style);
+  var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["flex", "1"]])));
+  var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["overflow", "hidden"], ["flex", "1"]])));
+  document.appendChild(tabParent);
+  tabBar0 = document.getRealDomNodeById("tabs");
+  var tabBarConfig = /* @__PURE__ */ new Map();
+  for (var key in __uniConfig.tabBar) {
+    tabBarConfig.set(key, __uniConfig.tabBar[key]);
+  }
+  normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, getAppThemeFallbackOS());
+  fixBorderStyle(tabBarConfig);
+  tabBar0.initTabBar(tabBarConfig);
+  tabBar0.addEventListener("tabBarItemTap", function(event) {
+    var index2 = event.index;
+    if (index2 !== selected0) {
+      var item = list[index2];
+      var path = item.pagePath;
+      if (isString(path) && findPageRoute(getRealPath(path, true))) {
+        switchSelect(index2, path);
+      } else {
+        console.error("switchTab: pagePath not found");
+      }
+    }
+  });
+  tabBar0.addEventListener("tabBarMidButtonTap", function(event) {
+    onTabBarMidButtonTapCallback.forEach((callback) => {
+      if (typeof callback === "function") {
+        callback();
+      }
+    });
+  });
+  page.startRender();
+  page.show(null);
+}
+function removeTabBarPage(page) {
+  var pagePath = getRealPath(page.route, true);
+  if (tabs.get(pagePath) === page) {
+    tabs.delete(pagePath);
+    if (getTabIndex(pagePath) === selected0) {
+      selected0 = -1;
+    }
+  }
+}
+function getTabBar() {
+  return tabBar0;
+}
+function getTabIndex(path) {
+  var list = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : getTabList();
+  var selected = -1;
+  if (list && list.length !== 0) {
+    for (var index2 = 0; index2 < list.length; index2++) {
+      var page = list[index2];
+      var pagePath = page.pagePath;
+      if (isString(pagePath) && getRealPath(pagePath, true) == getRealPath(path, true)) {
+        selected = index2;
+        break;
+      }
+    }
+  }
+  return selected;
+}
+function findPageRoute(path) {
+  return __uniRoutes.find((route) => route.path === path);
+}
+function createTab(path, query, callback) {
+  registerPage({
+    url: path,
+    path,
+    query,
+    openType: "switchTab"
+  });
+  callback === null || callback === void 0 || callback();
+  var page = getCurrentPage();
+  tabBar0.appendItem(page.$page.id.toString());
+  return page;
+}
+function findTabPage(path) {
+  var _tabs$get;
+  var page = (_tabs$get = tabs.get(path)) !== null && _tabs$get !== void 0 ? _tabs$get : null;
+  var pages2 = getAllPages();
+  pages2.forEach((item) => item.$.__isActive = item === page);
+  if (page !== null) {
+    var index2 = pages2.indexOf(page);
+    if (index2 !== pages2.length - 1) {
+      pages2.splice(index2, 1);
+      pages2.push(page);
+    }
+  }
+  return page;
+}
+function isTabPage(page) {
+  var has = false;
+  tabs.forEach((value, key) => {
+    if (value === page) {
+      has = true;
+    }
+  });
+  return has;
+}
+class TabPageInfo {
+  constructor(page, isFirst) {
+    this.page = page;
+    this.isFirst = isFirst;
+  }
+}
+function getTabPage(path) {
+  var query = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
+  var rebuild = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
+  var callback = arguments.length > 3 ? arguments[3] : void 0;
+  var page = findTabPage(path);
+  var isFirst = false;
+  if (page === null || rebuild) {
+    isFirst = true;
+    page = createTab(path, query, callback);
+    tabs.set(path, page);
+  }
+  return new TabPageInfo(page, isFirst);
+}
+function switchSelect(selected, path) {
+  var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
+  var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
+  var callback = arguments.length > 4 ? arguments[4] : void 0;
+  var shouldShow = false;
+  if (tabBar0 === null) {
+    init();
+  }
+  var currentPage = getCurrentPage();
+  var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
+  var page = pageInfo.page;
+  if (currentPage !== page) {
+    shouldShow = true;
+    if (currentPage && isTabPage(currentPage)) {
+      invokeHook(currentPage, ON_HIDE);
+    }
+  }
+  tabBar0.switchSelect(page.$page.id.toString(), selected);
+  if (shouldShow) {
+    invokeHook(page, ON_SHOW);
+  }
+  selected0 = selected;
+}
+var APP_THEME_AUTO = "auto";
+var THEME_KEY_PREFIX = "@";
+function getAppThemeFallbackOS() {
+  var fallbackOSTheme;
+  var appTheme = uni.getAppBaseInfo().appTheme;
+  fallbackOSTheme = appTheme;
+  if (appTheme === APP_THEME_AUTO) {
+    var osTheme = uni.getDeviceInfo().osTheme;
+    fallbackOSTheme = osTheme;
+  }
+  return fallbackOSTheme;
+}
+var osThemeChangeCallbackId = -1;
+var appThemeChangeCallbackId = -1;
+function clearOsThemeChangeCallbackId() {
+  osThemeChangeCallbackId = -1;
+}
+function clearAppThemeChangeCallbackId() {
+  appThemeChangeCallbackId = -1;
+}
+function registerThemeChange(callback) {
+  if (appThemeChangeCallbackId !== -1) {
+    if (typeof uni.offAppThemeChange !== "function") {
+      console.error("uni.offAppThemeChange is not a function");
+      return;
+    }
+    uni.offAppThemeChange(appThemeChangeCallbackId);
+    clearAppThemeChangeCallbackId();
+  }
+  if (typeof uni.onAppThemeChange !== "function") {
+    console.error("uni.onAppThemeChange is not a function");
+    return;
+  }
+  appThemeChangeCallbackId = uni.onAppThemeChange(function(res1) {
+    var appThemeMode = res1["appTheme"];
+    if (appThemeMode !== APP_THEME_AUTO) {
+      callback(appThemeMode);
+    } else {
+      callback(getAppThemeFallbackOS());
+    }
+  });
+  if (osThemeChangeCallbackId !== -1) {
+    uni.offOsThemeChange(osThemeChangeCallbackId);
+    clearOsThemeChangeCallbackId();
+  }
+  osThemeChangeCallbackId = uni.onOsThemeChange(function(res2) {
+    var appTheme = uni.getAppBaseInfo().appTheme;
+    var currentOsTheme = res2["osTheme"];
+    if (appTheme === APP_THEME_AUTO) {
+      callback(currentOsTheme);
+    }
+  });
+}
+var onThemeChange = function(themeMode) {
+  var handlePage = () => {
+    var pages2 = getAllPages();
+    pages2.forEach((page) => {
+      var rawPageStyle = __uniRoutes.find((i) => i.path.endsWith(page.route)).meta;
+      var pageStyle = new UTSJSONObject(rawPageStyle);
+      normalizePageStyles(pageStyle, __uniConfig.themeConfig, themeMode);
+      var style = /* @__PURE__ */ new Map();
+      Object.keys(pageStyle).forEach((key) => {
+        style.set(key, pageStyle[key]);
+      });
+      page.$setPageStyle(style);
+    });
+  };
+  handlePage();
+  var handleTabBar = () => {
+    var tabBar = getTabBar();
+    if (tabBar !== null) {
+      var tabBarConfig = extend({}, __uniConfig.tabBar);
+      normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, themeMode);
+      var tabBarStyle = /* @__PURE__ */ new Map();
+      var tabBarItemUpdateConfig = ["iconPath", "selectedIconPath"];
+      var tabBarConfigKeys = Object.keys(tabBarConfig);
+      tabBarConfigKeys.forEach((key) => {
+        var value = tabBarConfig[key];
+        if (isString(value)) {
+          tabBarStyle.set(key, value);
+        } else if (isArray(value)) {
+          var valueAsArray = value;
+          var index2 = 0;
+          valueAsArray.forEach((item) => {
+            var tabBarItemMap = /* @__PURE__ */ new Map();
+            tabBarItemMap.set("index", index2);
+            tabBarItemUpdateConfig.forEach((tabBarItemkey) => {
+              if (item[tabBarItemkey] != null) {
+                tabBarItemMap.set(tabBarItemkey, item[tabBarItemkey]);
+              }
+            });
+            tabBar.setTabBarItem(tabBarItemMap);
+            index2++;
+          });
+        }
+      });
+      tabBar.setTabBarStyle(tabBarStyle);
+    }
+  };
+  handleTabBar();
+};
+function normalizePageStyles(pageStyle, themeConfig, themeMode) {
+  var themeMap = themeConfig === null || themeConfig === void 0 ? void 0 : themeConfig[themeMode];
+  if (!themeMap) {
+    return;
+  }
+  normalizeStyles(pageStyle, themeMap);
+}
+function normalizeStyles(style, themeMap) {
+  var styleKeys = Object.keys(style);
+  styleKeys.forEach((key) => {
+    var value = style[key];
+    if (isString(value)) {
+      var valueAsString = value;
+      if (valueAsString.startsWith(THEME_KEY_PREFIX)) {
+        var valueKey = valueAsString.slice(1);
+        var configValue = themeMap[valueKey];
+        if (configValue != null) {
+          style[key] = configValue;
+        }
+      }
+    } else if (isArray(value)) {
+      var valueAsArray = value;
+      valueAsArray.forEach((item) => {
+        normalizeStyles(item, themeMap);
+      });
+    }
+  });
+}
+function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
+  if (!themeConfig) {
+    return;
+  }
+  var themeMap = themeConfig[themeMode];
+  if (themeMap == null) {
+    return;
+  }
+  normalizeStyles(tabBar, themeMap);
+}
+function useTheme() {
+  registerThemeChange(onThemeChange);
+}
 function parsePageStyle(route) {
   var style = /* @__PURE__ */ new Map();
   var routeMeta = route.meta;
@@ -1096,6 +1438,7 @@ function parsePageStyle(route) {
     "navigationBar"
   ];
   var navKeys = ["navigationBarTitleText", "navigationBarBackgroundColor", "navigationBarTextStyle", "navigationStyle"];
+  normalizePageStyles(routeMeta, __uniConfig.themeConfig, getAppThemeFallbackOS());
   Object.keys(routeMeta).forEach((key) => {
     if (!routeKeys.includes(key) && !navKeys.includes(key)) {
       style.set(key, routeMeta[key]);
@@ -1280,205 +1623,6 @@ function initAnimation(path, animationType, animationDuration) {
   } = __uniConfig;
   var meta = getRouteMeta(path);
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
-}
-function hasLeadingSlash(str) {
-  return str.indexOf("/") == 0;
-}
-function getRealPath(path) {
-  var fix = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : false;
-  if (hasLeadingSlash(path)) {
-    return path;
-  }
-  if (fix && path.indexOf(".") !== 0) {
-    return "/" + path;
-  }
-  var currentPage = getCurrentPage();
-  var currentPath = !currentPage ? "/" : parseUrl(currentPage.route).path;
-  var currentPathArray = currentPath.split("/");
-  var pathArray = path.split("/");
-  var resultArray = [];
-  for (var index2 = 0; index2 < pathArray.length; index2++) {
-    var element = pathArray[index2];
-    if (element == "..") {
-      currentPathArray.pop();
-    } else if (element != ".") {
-      resultArray.push(element);
-    }
-  }
-  return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
-}
-var onTabBarMidButtonTapCallback = [];
-var tabBar0 = null;
-var selected0 = -1;
-var tabs = /* @__PURE__ */ new Map();
-var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
-function getBorderStyle(borderStyle) {
-  var value = BORDER_COLORS.get(borderStyle);
-  return value !== null && value !== void 0 ? value : borderStyle;
-}
-function fixBorderStyle(tabBarConfig) {
-  var borderStyle = tabBarConfig.get("borderStyle");
-  if (!isString(borderStyle)) {
-    borderStyle = "black";
-  }
-  tabBarConfig.set("borderStyle", getBorderStyle(borderStyle));
-}
-function getTabList() {
-  var tabConfig = __uniConfig.tabBar ? /* @__PURE__ */ new Map() : null;
-  if (__uniConfig.tabBar) {
-    for (var key in __uniConfig.tabBar) {
-      tabConfig.set(key, __uniConfig.tabBar[key]);
-    }
-  }
-  if (tabConfig === null) {
-    return null;
-  }
-  var list = tabConfig.get("list");
-  return list;
-}
-function init() {
-  var list = getTabList();
-  var style = /* @__PURE__ */ new Map();
-  style.set("navigationStyle", "custom");
-  var page = getPageManager().createPage("tabBar", "tabBar", style);
-  var document = page.createDocument(new NodeData("root", "view", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["flex", "1"]])));
-  var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["overflow", "hidden"], ["flex", "1"]])));
-  document.appendChild(tabParent);
-  tabBar0 = document.getRealDomNodeById("tabs");
-  var tabBarConfig = /* @__PURE__ */ new Map();
-  for (var key in __uniConfig.tabBar) {
-    tabBarConfig.set(key, __uniConfig.tabBar[key]);
-  }
-  fixBorderStyle(tabBarConfig);
-  tabBar0.initTabBar(tabBarConfig);
-  tabBar0.addEventListener("tabBarItemTap", function(event) {
-    var index2 = event.index;
-    if (index2 !== selected0) {
-      var item = list[index2];
-      var path = item.pagePath;
-      if (isString(path) && findPageRoute(getRealPath(path, true))) {
-        switchSelect(index2, path);
-      } else {
-        console.error("switchTab: pagePath not found");
-      }
-    }
-  });
-  tabBar0.addEventListener("tabBarMidButtonTap", function(event) {
-    onTabBarMidButtonTapCallback.forEach((callback) => {
-      if (typeof callback === "function") {
-        callback();
-      }
-    });
-  });
-  page.startRender();
-  page.show(null);
-}
-function removeTabBarPage(page) {
-  var pagePath = getRealPath(page.route, true);
-  if (tabs.get(pagePath) === page) {
-    tabs.delete(pagePath);
-    if (getTabIndex(pagePath) === selected0) {
-      selected0 = -1;
-    }
-  }
-}
-function getTabBar() {
-  return tabBar0;
-}
-function getTabIndex(path) {
-  var list = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : getTabList();
-  var selected = -1;
-  if (list && list.length !== 0) {
-    for (var index2 = 0; index2 < list.length; index2++) {
-      var page = list[index2];
-      var pagePath = page.pagePath;
-      if (isString(pagePath) && getRealPath(pagePath, true) == getRealPath(path, true)) {
-        selected = index2;
-        break;
-      }
-    }
-  }
-  return selected;
-}
-function findPageRoute(path) {
-  return __uniRoutes.find((route) => route.path === path);
-}
-function createTab(path, query, callback) {
-  registerPage({
-    url: path,
-    path,
-    query,
-    openType: "switchTab"
-  });
-  callback === null || callback === void 0 || callback();
-  var page = getCurrentPage();
-  tabBar0.appendItem(page.$page.id.toString());
-  return page;
-}
-function findTabPage(path) {
-  var _tabs$get;
-  var page = (_tabs$get = tabs.get(path)) !== null && _tabs$get !== void 0 ? _tabs$get : null;
-  var pages2 = getAllPages();
-  pages2.forEach((item) => item.$.__isActive = item === page);
-  if (page !== null) {
-    var index2 = pages2.indexOf(page);
-    if (index2 !== pages2.length - 1) {
-      pages2.splice(index2, 1);
-      pages2.push(page);
-    }
-  }
-  return page;
-}
-function isTabPage(page) {
-  var has = false;
-  tabs.forEach((value, key) => {
-    if (value === page) {
-      has = true;
-    }
-  });
-  return has;
-}
-class TabPageInfo {
-  constructor(page, isFirst) {
-    this.page = page;
-    this.isFirst = isFirst;
-  }
-}
-function getTabPage(path) {
-  var query = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : {};
-  var rebuild = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : false;
-  var callback = arguments.length > 3 ? arguments[3] : void 0;
-  var page = findTabPage(path);
-  var isFirst = false;
-  if (page === null || rebuild) {
-    isFirst = true;
-    page = createTab(path, query, callback);
-    tabs.set(path, page);
-  }
-  return new TabPageInfo(page, isFirst);
-}
-function switchSelect(selected, path) {
-  var query = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : {};
-  var rebuild = arguments.length > 3 && arguments[3] !== void 0 ? arguments[3] : false;
-  var callback = arguments.length > 4 ? arguments[4] : void 0;
-  var shouldShow = false;
-  if (tabBar0 === null) {
-    init();
-  }
-  var currentPage = getCurrentPage();
-  var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
-  var page = pageInfo.page;
-  if (currentPage !== page) {
-    shouldShow = true;
-    if (currentPage && isTabPage(currentPage)) {
-      invokeHook(currentPage, ON_HIDE);
-    }
-  }
-  tabBar0.switchSelect(page.$page.id.toString(), selected);
-  if (shouldShow) {
-    invokeHook(page, ON_SHOW);
-  }
-  selected0 = selected;
 }
 function closePage(page, animationType, animationDuration) {
   closeWebview(page.$nativePage, animationType, animationDuration);
@@ -2724,6 +2868,7 @@ function initAppLaunch(appVm) {
   if (appStyle) {
     loadFontFaceByStyles(appStyle, true);
   }
+  useTheme();
 }
 var isLaunchWebviewReady = false;
 function subscribeWebviewReady(_data, pageId) {
@@ -3021,6 +3166,8 @@ var CHECKBOX_ROOT_ELEMENT = "uni-checkbox-element";
 class UniCheckboxElement extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
+    this.tagName = "CHECKBOX";
+    this.nodeName = this.tagName;
     this._getAttribute = (key) => {
       return null;
     };
@@ -3257,6 +3404,8 @@ class UniCheckboxGroupElement extends UniFormControlElement {
   constructor(data, pageNode) {
     super(data, pageNode);
     this._initialValue = [];
+    this.tagName = "CHECKBOX-GROUP";
+    this.nodeName = this.tagName;
     this._getAttribute = (key) => {
       return null;
     };
@@ -3386,6 +3535,8 @@ var RADIO_ROOT_ELEMENT = "uni-radio-element";
 class UniRadioElement extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
+    this.tagName = "RADIO";
+    this.nodeName = this.tagName;
     this._getAttribute = (key) => {
       return null;
     };
@@ -3618,6 +3769,8 @@ class UniRadioGroupElement extends UniFormControlElement {
   constructor(data, pageNode) {
     super(data, pageNode);
     this._initialValue = "";
+    this.tagName = "RADIO-GROUP";
+    this.nodeName = this.tagName;
     this._getAttribute = (key) => {
       return null;
     };
@@ -3747,6 +3900,8 @@ const radioGroup$1 = /* @__PURE__ */ Object.defineProperty({
 class UniNavigatorElement extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
+    this.tagName = "NAVIGATOR";
+    this.nodeName = this.tagName;
     this._getAttribute = (key) => {
       return null;
     };
@@ -3901,6 +4056,8 @@ class UniProgressActiveendEvent extends UniCustomEvent {
 class UniProgressElement extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
+    this.tagName = "PROGRESS";
+    this.nodeName = this.tagName;
     this._getAttribute = (key) => {
       return null;
     };
@@ -4182,6 +4339,8 @@ var _style_picker_column = {
 class UniPickerViewColumnElement extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
+    this.tagName = "PICKER-VIEW-COLUMN";
+    this.nodeName = this.tagName;
     this._getAttribute = (key) => {
       return null;
     };
@@ -4209,6 +4368,8 @@ class UniPickerViewChangeEvent extends UniCustomEvent {
 class UniPickerViewElement extends UniElementImpl {
   constructor(data, pageNode) {
     super(data, pageNode);
+    this.tagName = "PICKER-VIEW";
+    this.nodeName = this.tagName;
     this._getAttribute = (key) => {
       return null;
     };
