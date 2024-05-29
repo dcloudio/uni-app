@@ -23,6 +23,9 @@ export class UniCheckboxGroupElement extends UniFormControlElement<string[]> {
     super(data, pageNode)
   }
 
+  override tagName = 'CHECKBOX-GROUP'
+  override nodeName = this.tagName
+
   override get value(): string[] {
     return this._getValue()
   }

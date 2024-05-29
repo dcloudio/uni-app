@@ -22,6 +22,9 @@ export class UniProgressElement extends UniElementImpl {
     super(data, pageNode)
   }
 
+  override tagName = 'PROGRESS'
+  override nodeName = this.tagName
+
   override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {

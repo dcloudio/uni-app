@@ -11,6 +11,9 @@ export class UniNavigatorElement extends UniElementImpl {
     return super.getAnyAttribute(key)
   }
 
+  override tagName = 'NAVIGATOR'
+  override nodeName = this.tagName
+
   _getAttribute = (key: string): string | null => {
     return null
   }

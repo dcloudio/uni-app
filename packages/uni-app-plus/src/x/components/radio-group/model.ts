@@ -23,6 +23,9 @@ export class UniRadioGroupElement extends UniFormControlElement<string> {
     super(data, pageNode)
   }
 
+  override tagName = 'RADIO-GROUP'
+  override nodeName = this.tagName
+
   override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {
