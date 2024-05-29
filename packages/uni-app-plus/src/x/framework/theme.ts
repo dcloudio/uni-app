@@ -81,8 +81,10 @@ export const onThemeChange = function (themeMode: IThemeMode) {
     const pages = getAllPages()
 
     pages.forEach((page) => {
-      const _pageStyle = page.$getPageStyle()
-      const pageStyle = JSON.parse(JSON.stringify(_pageStyle))
+      const rawPageStyle = __uniRoutes.find((i) =>
+        i.path.endsWith(page.route)
+      )!.meta
+      const pageStyle = new UTSJSONObject(rawPageStyle)
       normalizePageStyles(pageStyle, __uniConfig.themeConfig, themeMode)
 
       // obj 转 map
@@ -144,8 +146,8 @@ export function normalizePageStyles(
   themeConfig: Record<string, any>,
   themeMode: string
 ) {
-  const themeMap = themeConfig[themeMode]
-  if (themeMap == null) {
+  const themeMap = themeConfig?.[themeMode]
+  if (!themeMap) {
     return
   }
 
@@ -198,7 +200,4 @@ export function normalizeTabBarStyles(
 export function useTheme() {
   // 监听
   registerThemeChange(onThemeChange)
-
-  // 立即生效
-  onThemeChange(getAppThemeFallbackOS())
 }
