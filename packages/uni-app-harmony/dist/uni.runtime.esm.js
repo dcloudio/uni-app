@@ -727,7 +727,7 @@ function getBaseSystemInfo() {
         platform: 'harmony',
         pixelRatio: vp2px(1),
         windowWidth: lpx2px(720), // TODO designWidth可配置
-        language: plus.getLanguage()
+        language: plus.getLanguage(),
     };
 }
 
@@ -767,11 +767,17 @@ function formatLog(module, ...args) {
         .join(' ')}`;
 }
 
+function getLen(str = '') {
+    return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
+}
 function hasLeadingSlash(str) {
     return str.indexOf('/') === 0;
 }
 function addLeadingSlash(str) {
     return hasLeadingSlash(str) ? str : '/' + str;
+}
+function removeLeadingSlash(str) {
+    return hasLeadingSlash(str) ? str.slice(1) : str;
 }
 const invokeArrayFns = (fns, arg) => {
     let ret;
@@ -2019,6 +2025,24 @@ function getRouteMeta(path) {
         return routeOptions.meta;
     }
 }
+function normalizeTabBarRoute(index, oldPagePath, newPagePath) {
+    const oldTabBarRoute = getRouteOptions(addLeadingSlash(oldPagePath));
+    if (oldTabBarRoute) {
+        const { meta } = oldTabBarRoute;
+        delete meta.tabBarIndex;
+        meta.isQuit = meta.isTabBar = false;
+    }
+    const newTabBarRoute = getRouteOptions(addLeadingSlash(newPagePath));
+    if (newTabBarRoute) {
+        const { meta } = newTabBarRoute;
+        meta.tabBarIndex = index;
+        meta.isQuit = meta.isTabBar = true;
+        const tabBar = __uniConfig.tabBar;
+        if (tabBar && tabBar.list && tabBar.list[index]) {
+            tabBar.list[index].pagePath = removeLeadingSlash(newPagePath);
+        }
+    }
+}
 
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit('api.' + name, res);
 
@@ -2623,6 +2647,104 @@ function createNormalizeUrl(type) {
     };
 }
 
+const IndexProtocol = {
+    index: {
+        type: Number,
+        required: true,
+    },
+};
+const IndexOptions = {
+    beforeInvoke() {
+        const pageMeta = getCurrentPageMeta();
+        if (pageMeta && !pageMeta.isTabBar) {
+            return 'not TabBar page';
+        }
+    },
+    formatArgs: {
+        index(value) {
+            if (!__uniConfig.tabBar.list[value]) {
+                return 'tabbar item not found';
+            }
+        },
+    },
+};
+const API_SET_TAB_BAR_ITEM = 'setTabBarItem';
+const SetTabBarItemProtocol = 
+/*#__PURE__*/ extend({
+    text: String,
+    iconPath: String,
+    selectedIconPath: String,
+    pagePath: String,
+}, IndexProtocol);
+const SetTabBarItemOptions = {
+    beforeInvoke: IndexOptions.beforeInvoke,
+    formatArgs: /*#__PURE__*/ extend({
+        pagePath(value, params) {
+            if (value) {
+                params.pagePath = removeLeadingSlash(value);
+            }
+        },
+    }, IndexOptions.formatArgs),
+};
+const API_SET_TAB_BAR_STYLE = 'setTabBarStyle';
+const SetTabBarStyleProtocol = {
+    color: String,
+    selectedColor: String,
+    backgroundColor: String,
+    backgroundImage: String,
+    backgroundRepeat: String,
+    borderStyle: String,
+};
+const GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
+const SetTabBarStyleOptions = {
+    beforeInvoke: IndexOptions.beforeInvoke,
+    formatArgs: {
+        backgroundImage(value, params) {
+            if (value && !GRADIENT_RE.test(value)) {
+                params.backgroundImage = getRealPath(value);
+            }
+        },
+        borderStyle(value, params) {
+            if (value) {
+                params.borderStyle = value === 'white' ? 'white' : 'black';
+            }
+        },
+    },
+};
+const API_HIDE_TAB_BAR = 'hideTabBar';
+const HideTabBarProtocol = {
+    animation: Boolean,
+};
+const API_SHOW_TAB_BAR = 'showTabBar';
+const ShowTabBarProtocol = HideTabBarProtocol;
+const API_HIDE_TAB_BAR_RED_DOT = 'hideTabBarRedDot';
+const HideTabBarRedDotProtocol = IndexProtocol;
+const HideTabBarRedDotOptions = IndexOptions;
+const API_SHOW_TAB_BAR_RED_DOT = 'showTabBarRedDot';
+const ShowTabBarRedDotProtocol = IndexProtocol;
+const ShowTabBarRedDotOptions = IndexOptions;
+const API_REMOVE_TAB_BAR_BADGE = 'removeTabBarBadge';
+const RemoveTabBarBadgeProtocol = IndexProtocol;
+const RemoveTabBarBadgeOptions = IndexOptions;
+const API_SET_TAB_BAR_BADGE = 'setTabBarBadge';
+const SetTabBarBadgeProtocol = 
+/*#__PURE__*/ extend({
+    text: {
+        type: String,
+        required: true,
+    },
+}, IndexProtocol);
+const SetTabBarBadgeOptions = {
+    beforeInvoke: IndexOptions.beforeInvoke,
+    formatArgs: /*#__PURE__*/ extend({
+        text(value, params) {
+            if (getLen(value) >= 4) {
+                params.text = '...';
+            }
+        },
+    }, IndexOptions.formatArgs),
+};
+
 const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, function ({ count } = {}, { resolve, reject }) {
     _chooseMedia({
         mimeType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
@@ -3033,6 +3155,295 @@ const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve, reject }
     });
     return new DownloadTask(downloadTask);
 }, DownloadFileProtocol, DownloadFileOptions);
+
+let config;
+/**
+ * tabbar显示状态
+ */
+let visible = true;
+let tabBar;
+/**
+ * 设置角标
+ * @param {string} type
+ * @param {number} index
+ * @param {string} text
+ */
+function setTabBarBadge$1(type, index, text) {
+    if (!tabBar) {
+        return;
+    }
+    if (type === 'none') {
+        tabBar.hideTabBarRedDot({
+            index,
+        });
+        tabBar.removeTabBarBadge({
+            index,
+        });
+    }
+    else if (type === 'text') {
+        tabBar.setTabBarBadge({
+            index,
+            text,
+        });
+    }
+    else if (type === 'redDot') {
+        tabBar.showTabBarRedDot({
+            index,
+        });
+    }
+}
+/**
+ * 动态设置 tabBar 多项的内容
+ */
+function setTabBarItems(tabBarConfig) {
+    tabBar && tabBar.setTabBarItems(tabBarConfig);
+}
+/**
+ * 动态设置 tabBar 某一项的内容
+ */
+function setTabBarItem$1(index, text, iconPath, selectedIconPath, visible, iconfont) {
+    const item = {
+        index,
+    };
+    if (text !== undefined) {
+        item.text = text;
+    }
+    if (iconPath) {
+        item.iconPath = getRealPath(iconPath);
+    }
+    if (selectedIconPath) {
+        item.selectedIconPath = getRealPath(selectedIconPath);
+    }
+    if (iconfont !== undefined) {
+        item.iconfont = iconfont;
+    }
+    if (visible !== undefined) {
+        item.visible = config.list[index].visible = visible;
+        delete item.index;
+        const tabbarItems = config.list.map((item) => ({
+            visible: item.visible,
+        }));
+        tabbarItems[index] = item;
+        setTabBarItems({ list: tabbarItems });
+    }
+    else {
+        tabBar && tabBar.setTabBarItem(item);
+    }
+}
+/**
+ * 动态设置 tabBar 的整体样式
+ * @param {Object} style 样式
+ */
+function setTabBarStyle$1(style) {
+    tabBar && tabBar.setTabBarStyle(style);
+}
+/**
+ * 隐藏 tabBar
+ * @param {boolean} animation 是否需要动画效果
+ */
+function hideTabBar$1(animation) {
+    visible = false;
+    tabBar &&
+        tabBar.hideTabBar({
+            animation,
+        });
+}
+/**
+ * 显示 tabBar
+ * @param {boolean} animation 是否需要动画效果
+ */
+function showTabBar$1(animation) {
+    visible = true;
+    tabBar &&
+        tabBar.showTabBar({
+            animation,
+        });
+}
+const maskClickCallback = [];
+var tabBarInstance = {
+    id: '0',
+    init(options, clickCallback) {
+        if (options && options.list.length) {
+            config = options;
+        }
+        try {
+            tabBar = weex.requireModule('uni-tabview');
+        }
+        catch (error) {
+            console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
+        }
+        tabBar.onMaskClick(() => {
+            maskClickCallback.forEach((callback) => {
+                callback();
+            });
+        });
+        tabBar &&
+            tabBar.onClick(({ index }) => {
+                clickCallback(config.list[index], index);
+            });
+        tabBar &&
+            tabBar.onMidButtonClick(() => {
+                return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
+            });
+        // TODO useTabBarThemeChange(tabBar, options)
+    },
+    indexOf(page) {
+        const config = this.config;
+        const itemLength = config && config.list && config.list.length;
+        if (itemLength) {
+            for (let i = 0; i < itemLength; i++) {
+                if (config.list[i].pagePath === page ||
+                    config.list[i].pagePath === `${page}.html`) {
+                    return i;
+                }
+            }
+        }
+        return -1;
+    },
+    switchTab(page) {
+        const index = this.indexOf(page);
+        if (index >= 0) {
+            tabBar &&
+                tabBar.switchSelect({
+                    index,
+                });
+            return true;
+        }
+        return false;
+    },
+    setTabBarBadge: setTabBarBadge$1,
+    setTabBarItem: setTabBarItem$1,
+    setTabBarStyle: setTabBarStyle$1,
+    hideTabBar: hideTabBar$1,
+    showTabBar: showTabBar$1,
+    append(webview) {
+        tabBar &&
+            tabBar.append({
+                id: webview.id,
+            }, ({ code }) => {
+                if (code !== 0) {
+                    setTimeout(() => {
+                        this.append(webview);
+                    }, 20);
+                }
+            });
+    },
+    get config() {
+        return config || __uniConfig.tabBar;
+    },
+    get visible() {
+        return visible;
+    },
+    get height() {
+        const config = this.config;
+        return ((config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
+            plus.navigator.getSafeAreaInsets().deviceBottom);
+    },
+    // tabBar是否遮挡内容区域
+    get cover() {
+        const config = this.config;
+        const array = ['extralight', 'light', 'dark'];
+        return config && array.indexOf(config.blurEffect) >= 0;
+    },
+    setStyle({ mask }) {
+        tabBar.setMask({
+            color: mask,
+        });
+    },
+    addEventListener(_name, callback) {
+        maskClickCallback.push(callback);
+    },
+    removeEventListener(_name, callback) {
+        const callbackIndex = maskClickCallback.indexOf(callback);
+        maskClickCallback.splice(callbackIndex, 1);
+    },
+};
+
+function isTabBarPage(path = '') {
+    if (!(__uniConfig.tabBar && isArray(__uniConfig.tabBar.list))) {
+        return false;
+    }
+    try {
+        if (!path) {
+            const pages = getCurrentPages();
+            if (!pages.length) {
+                return false;
+            }
+            const page = pages[pages.length - 1];
+            if (!page) {
+                return false;
+            }
+            return page.$page.meta.isTabBar;
+        }
+        if (!/^\//.test(path)) {
+            path = addLeadingSlash(path);
+        }
+        const route = getRouteOptions(path);
+        return route && route.meta.isTabBar;
+    }
+    catch (e) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('isTabBarPage', e));
+        }
+    }
+    return false;
+}
+
+const setTabBarBadge = defineAsyncApi(API_SET_TAB_BAR_BADGE, ({ index, text }, { resolve, reject }) => {
+    tabBarInstance.setTabBarBadge('text', index, text);
+    resolve();
+}, SetTabBarBadgeProtocol, SetTabBarBadgeOptions);
+const setTabBarItem = defineAsyncApi(API_SET_TAB_BAR_ITEM, ({ index, text, iconPath, selectedIconPath, pagePath, visible, iconfont }, { resolve }) => {
+    tabBarInstance.setTabBarItem(index, text, iconPath, selectedIconPath, visible, iconfont);
+    if (pagePath) {
+        const tabBarItem = __uniConfig.tabBar.list[index];
+        if (tabBarItem) {
+            const oldPagePath = tabBarItem.pagePath;
+            const newPagePath = removeLeadingSlash(pagePath);
+            if (newPagePath !== oldPagePath) {
+                normalizeTabBarRoute(index, oldPagePath, newPagePath);
+            }
+        }
+    }
+    resolve();
+}, SetTabBarItemProtocol, SetTabBarItemOptions);
+const setTabBarStyle = defineAsyncApi(API_SET_TAB_BAR_STYLE, (style = {}, { resolve, reject }) => {
+    if (!isTabBarPage()) {
+        return reject('not TabBar page');
+    }
+    style.borderStyle = normalizeTabBarStyles(style.borderStyle);
+    tabBarInstance.setTabBarStyle(style);
+    resolve();
+}, SetTabBarStyleProtocol, SetTabBarStyleOptions);
+const hideTabBar = defineAsyncApi(API_HIDE_TAB_BAR, (args, { resolve, reject }) => {
+    const animation = args && args.animation;
+    if (!isTabBarPage()) {
+        return reject('not TabBar page');
+    }
+    tabBarInstance.hideTabBar(Boolean(animation));
+    resolve();
+}, HideTabBarProtocol);
+const showTabBar = defineAsyncApi(API_SHOW_TAB_BAR, (args, { resolve, reject }) => {
+    const animation = args && args.animation;
+    if (!isTabBarPage()) {
+        return reject('not TabBar page');
+    }
+    tabBarInstance.showTabBar(Boolean(animation));
+    resolve();
+}, ShowTabBarProtocol);
+const showTabBarRedDot = defineAsyncApi(API_SHOW_TAB_BAR_RED_DOT, ({ index }, { resolve, reject }) => {
+    tabBarInstance.setTabBarBadge('redDot', index);
+    resolve();
+}, ShowTabBarRedDotProtocol, ShowTabBarRedDotOptions);
+const setTabBarBadgeNone = (index) => tabBarInstance.setTabBarBadge('none', index);
+const removeTabBarBadge = defineAsyncApi(API_REMOVE_TAB_BAR_BADGE, ({ index }, { resolve, reject }) => {
+    setTabBarBadgeNone(index);
+    resolve();
+}, RemoveTabBarBadgeProtocol, RemoveTabBarBadgeOptions);
+const hideTabBarRedDot = defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, ({ index }, { resolve, reject }) => {
+    setTabBarBadgeNone(index);
+    resolve();
+}, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
 
 function getSystemInfoSync() {
     // TODO: implement
@@ -4036,209 +4447,6 @@ function getStatusbarHeight() {
     return 0;
 }
 
-let config;
-/**
- * tabbar显示状态
- */
-let visible = true;
-let tabBar;
-/**
- * 设置角标
- * @param {string} type
- * @param {number} index
- * @param {string} text
- */
-function setTabBarBadge(type, index, text) {
-    if (!tabBar) {
-        return;
-    }
-    if (type === 'none') {
-        tabBar.hideTabBarRedDot({
-            index,
-        });
-        tabBar.removeTabBarBadge({
-            index,
-        });
-    }
-    else if (type === 'text') {
-        tabBar.setTabBarBadge({
-            index,
-            text,
-        });
-    }
-    else if (type === 'redDot') {
-        tabBar.showTabBarRedDot({
-            index,
-        });
-    }
-}
-/**
- * 动态设置 tabBar 多项的内容
- */
-function setTabBarItems(tabBarConfig) {
-    tabBar && tabBar.setTabBarItems(tabBarConfig);
-}
-/**
- * 动态设置 tabBar 某一项的内容
- */
-function setTabBarItem(index, text, iconPath, selectedIconPath, visible, iconfont) {
-    const item = {
-        index,
-    };
-    if (text !== undefined) {
-        item.text = text;
-    }
-    if (iconPath) {
-        item.iconPath = getRealPath(iconPath);
-    }
-    if (selectedIconPath) {
-        item.selectedIconPath = getRealPath(selectedIconPath);
-    }
-    if (iconfont !== undefined) {
-        item.iconfont = iconfont;
-    }
-    if (visible !== undefined) {
-        item.visible = config.list[index].visible = visible;
-        delete item.index;
-        const tabbarItems = config.list.map((item) => ({
-            visible: item.visible,
-        }));
-        tabbarItems[index] = item;
-        setTabBarItems({ list: tabbarItems });
-    }
-    else {
-        tabBar && tabBar.setTabBarItem(item);
-    }
-}
-/**
- * 动态设置 tabBar 的整体样式
- * @param {Object} style 样式
- */
-function setTabBarStyle(style) {
-    tabBar && tabBar.setTabBarStyle(style);
-}
-/**
- * 隐藏 tabBar
- * @param {boolean} animation 是否需要动画效果
- */
-function hideTabBar(animation) {
-    visible = false;
-    tabBar &&
-        tabBar.hideTabBar({
-            animation,
-        });
-}
-/**
- * 显示 tabBar
- * @param {boolean} animation 是否需要动画效果
- */
-function showTabBar(animation) {
-    visible = true;
-    tabBar &&
-        tabBar.showTabBar({
-            animation,
-        });
-}
-const maskClickCallback = [];
-var tabBarInstance = {
-    id: '0',
-    init(options, clickCallback) {
-        if (options && options.list.length) {
-            config = options;
-        }
-        try {
-            tabBar = weex.requireModule('uni-tabview');
-        }
-        catch (error) {
-            console.log(`uni.requireNativePlugin("uni-tabview") error ${error}`);
-        }
-        tabBar.onMaskClick(() => {
-            maskClickCallback.forEach((callback) => {
-                callback();
-            });
-        });
-        tabBar &&
-            tabBar.onClick(({ index }) => {
-                clickCallback(config.list[index], index);
-            });
-        tabBar &&
-            tabBar.onMidButtonClick(() => {
-                return UniServiceJSBridge.invokeOnCallback(API_ON_TAB_BAR_MID_BUTTON_TAP);
-            });
-        // TODO useTabBarThemeChange(tabBar, options)
-    },
-    indexOf(page) {
-        const config = this.config;
-        const itemLength = config && config.list && config.list.length;
-        if (itemLength) {
-            for (let i = 0; i < itemLength; i++) {
-                if (config.list[i].pagePath === page ||
-                    config.list[i].pagePath === `${page}.html`) {
-                    return i;
-                }
-            }
-        }
-        return -1;
-    },
-    switchTab(page) {
-        const index = this.indexOf(page);
-        if (index >= 0) {
-            tabBar &&
-                tabBar.switchSelect({
-                    index,
-                });
-            return true;
-        }
-        return false;
-    },
-    setTabBarBadge,
-    setTabBarItem,
-    setTabBarStyle,
-    hideTabBar,
-    showTabBar,
-    append(webview) {
-        tabBar &&
-            tabBar.append({
-                id: webview.id,
-            }, ({ code }) => {
-                if (code !== 0) {
-                    setTimeout(() => {
-                        this.append(webview);
-                    }, 20);
-                }
-            });
-    },
-    get config() {
-        return config || __uniConfig.tabBar;
-    },
-    get visible() {
-        return visible;
-    },
-    get height() {
-        const config = this.config;
-        return ((config && config.height ? parseFloat(config.height) : TABBAR_HEIGHT) +
-            plus.navigator.getSafeAreaInsets().deviceBottom);
-    },
-    // tabBar是否遮挡内容区域
-    get cover() {
-        const config = this.config;
-        const array = ['extralight', 'light', 'dark'];
-        return config && array.indexOf(config.blurEffect) >= 0;
-    },
-    setStyle({ mask }) {
-        tabBar.setMask({
-            color: mask,
-        });
-    },
-    addEventListener(_name, callback) {
-        maskClickCallback.push(callback);
-    },
-    removeEventListener(_name, callback) {
-        const callbackIndex = maskClickCallback.indexOf(callback);
-        maskClickCallback.splice(callbackIndex, 1);
-    },
-};
-
 function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
     // TODO initEntry()
     // TODO preloadWebviews[url]
@@ -4531,11 +4739,19 @@ var uni$1 = {
   getLocale: getLocale,
   getSystemInfoSync: getSystemInfoSync,
   getVideoInfo: getVideoInfo,
+  hideTabBar: hideTabBar,
+  hideTabBarRedDot: hideTabBarRedDot,
   navigateBack: navigateBack,
   navigateTo: navigateTo,
   onLocaleChange: onLocaleChange,
+  removeTabBarBadge: removeTabBarBadge,
   request: request,
   setLocale: setLocale,
+  setTabBarBadge: setTabBarBadge,
+  setTabBarItem: setTabBarItem,
+  setTabBarStyle: setTabBarStyle,
+  showTabBar: showTabBar,
+  showTabBarRedDot: showTabBarRedDot,
   switchTab: switchTab,
   uploadFile: uploadFile
 };

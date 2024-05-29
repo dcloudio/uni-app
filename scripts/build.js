@@ -233,7 +233,11 @@ async function build(target) {
     }
   }
   if (hasArkTSBundler) {
-    await buildArkTS(target, parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8')))
+    if (process.env.UNI_APP_EXT_API_DIR) {
+      await buildArkTS(target, parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8')))
+    } else {
+      console.error(`Please set UNI_APP_EXT_API_DIR in .env file`)
+    }
   }
 }
 
