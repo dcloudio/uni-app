@@ -1,14 +1,14 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
-  watchEffect,
-  ref,
-  computed,
-  onMounted,
-  StyleValue,
-  onUnmounted,
-  getCurrentInstance,
+  type StyleValue,
   camelize,
+  computed,
+  getCurrentInstance,
+  onMounted,
+  onUnmounted,
+  ref,
   watch,
+  watchEffect,
 } from 'vue'
 import {
   RADIO_NAME,
@@ -83,8 +83,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       }
     })
     const iconStyle = computed(() => {
+      const color =
+        props.foregroundColor.length > 0
+          ? props.foregroundColor
+          : props.iconColor
       return {
-        color: props.disabled ? '#adadad' : props.iconColor,
+        color: props.disabled ? '#adadad' : color,
       }
     })
 

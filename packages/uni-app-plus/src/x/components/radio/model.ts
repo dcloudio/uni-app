@@ -69,4 +69,8 @@ export const radioProps = {
     type: String,
     default: '#ffffff',
   },
+  foregroundColor: {
+    type: String,
+    default: '',
+  },
 }
