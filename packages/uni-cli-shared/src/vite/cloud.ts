@@ -254,18 +254,14 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
   // 生成入口文件
   const input: { [entryAlias: string]: string } = {}
   moduleNames.forEach((module) => {
-    const indexEncryptFile = path.resolve(
-      inputDir,
-      'uni_modules',
-      module,
-      'index.module.uts'
-    )
+    const moduleDir = path.resolve(inputDir, 'uni_modules', module)
+    const indexEncryptFile = path.resolve(moduleDir, 'index.module.uts')
     const codes: string[] = []
-    if (hasIndexFile(path.resolve(inputDir, 'uni_modules', module))) {
+    if (hasIndexFile(moduleDir)) {
       codes.push(`export * from './index'`)
     }
     // easyCom
-    if (modules[module].length) {
+    if (modules[module] && Object.keys(modules[module]).length) {
       codes.push(genEncryptEasyComModuleIndex(modules[module]))
     }
     if (codes.length) {

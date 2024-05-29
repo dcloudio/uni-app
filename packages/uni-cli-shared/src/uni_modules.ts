@@ -349,13 +349,16 @@ export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
   })
 }
 
-export function genEncryptEasyComModuleIndex(components: string[]) {
+export function genEncryptEasyComModuleIndex(
+  components: Record<string, '.vue' | '.uvue'>
+) {
   const imports: string[] = []
   const ids: string[] = []
-  components.forEach((component) => {
+  Object.keys(components).forEach((component) => {
     const id = capitalize(camelize(component))
+
     imports.push(
-      `import ${id} from './components/${component}/${component}.vue'`
+      `import ${id} from './components/${component}/${component}${components[component]}'`
     )
     ids.push(id)
   })
@@ -368,7 +371,7 @@ export { ${ids.join(',')} }
 // 目前该函数仅在云端使用（目前仅限iOS/web），云端编译时，提交上来的uni_modules是过滤好的
 export function parseUniModulesWithComponents(inputDir: string) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
-  const uniModules: Record<string, string[]> = {}
+  const uniModules: Record<string, Record<string, '.vue' | '.uvue'>> = {}
   if (fs.existsSync(modulesDir)) {
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
       if (
@@ -401,7 +404,7 @@ export function parseEasyComComponents(
     pluginId,
     'components'
   )
-  const components: string[] = []
+  const components: Record<string, '.vue' | '.uvue'> = {}
   if (fs.existsSync(componentsDir)) {
     fs.readdirSync(componentsDir).forEach((componentDir) => {
       const componentFile = path.resolve(
@@ -409,23 +412,22 @@ export function parseEasyComComponents(
         componentDir,
         componentDir
       )
-      if (
-        ['.vue', '.uvue'].some((extname) => {
-          const filename = componentFile + extname
-          // 探测 filename 是否是二进制文件
-          if (fs.existsSync(filename)) {
-            if (detectBinary) {
-              // 延迟require，这个是新增的依赖，无法及时同步到内部测试版本HBuilderX中，导致报错，所以延迟require吧
-              if (require('isbinaryfile').isBinaryFileSync(filename)) {
-                return true
-              }
-            } else {
+      const extname = ['.vue', '.uvue'].find((extname) => {
+        const filename = componentFile + extname
+        // 探测 filename 是否是二进制文件
+        if (fs.existsSync(filename)) {
+          if (detectBinary) {
+            // 延迟require，这个是新增的依赖，无法及时同步到内部测试版本HBuilderX中，导致报错，所以延迟require吧
+            if (require('isbinaryfile').isBinaryFileSync(filename)) {
               return true
             }
+          } else {
+            return true
           }
-        })
-      ) {
-        components.push(componentDir)
+        }
+      })
+      if (extname) {
+        components[componentDir] = extname as '.vue' | '.uvue'
       }
     })
   }
