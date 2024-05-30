@@ -1,4 +1,4 @@
-import { isString } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
 import { getPageManager } from './app'
 import type { Event } from '@dcloudio/uni-app-x/types/native'
@@ -80,19 +80,19 @@ function init() {
   )
   document.appendChild(tabParent)
   tabBar0 = document.getRealDomNodeById<ITabsNode>('tabs')
-  const tabBarConfig = new Map<string, any>()
-  for (const key in __uniConfig.tabBar) {
-    tabBarConfig.set(
-      key,
-      __uniConfig.tabBar[key as keyof typeof __uniConfig.tabBar]
-    )
-  }
+
+  const _tabBarConfig = extend({}, __uniConfig.tabBar!)
   // dark mode
   normalizeTabBarStyles(
-    tabBarConfig,
+    _tabBarConfig,
     __uniConfig.themeConfig,
     getAppThemeFallbackOS()
   )
+
+  const tabBarConfig = new Map<string, any>()
+  for (const key in _tabBarConfig) {
+    tabBarConfig.set(key, _tabBarConfig[key as keyof typeof __uniConfig.tabBar])
+  }
 
   fixBorderStyle(tabBarConfig)
   tabBar0!.initTabBar(tabBarConfig)
