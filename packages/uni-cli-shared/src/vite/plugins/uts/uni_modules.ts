@@ -122,6 +122,10 @@ export function uniUTSUniModulesPlugin(
       if (isUTSProxy(id) || isUniHelpers(id)) {
         return id
       }
+      // 加密插件缓存目录的css文件
+      if (id.endsWith('.css')) {
+        return
+      }
       const module = resolveUTSAppModule(
         id,
         importer ? path.dirname(importer) : inputDir,
@@ -240,7 +244,11 @@ export function uniDecryptUniModulesPlugin(): Plugin {
       if (isUTSProxy(id) || isUniHelpers(id)) {
         return id
       }
-      if (isX && process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+      if (
+        isX &&
+        process.env.UNI_COMPILE_TARGET !== 'uni_modules' &&
+        !id.endsWith('.css')
+      ) {
         const resolvedId = resolveEncryptUniModule(
           id,
           process.env.UNI_UTS_PLATFORM,
