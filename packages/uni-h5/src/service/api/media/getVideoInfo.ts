@@ -35,7 +35,7 @@ export const getVideoInfo = defineAsyncApi<API_TYPE_GET_VIDEO_INFO>(
             clearTimeout(handle)
             video.onerror = null
             resolve({
-              size: file ? file.size : 0,
+              size: Math.ceil((file ? file.size : 0) / 1024),
               duration: video.duration || 0,
               width: video.videoWidth || 0,
               height: video.videoHeight || 0,
