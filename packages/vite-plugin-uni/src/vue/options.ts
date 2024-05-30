@@ -128,15 +128,20 @@ export function initPluginVueOptions(
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
   }
-  if (options.platform === 'h5' || options.platform === 'web') {
-    templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
-      isExternalUrl(options.base) ? options.base : ''
-    )
-  } else {
-    // 替换内置的 transformAssetUrls 逻辑
-    templateOptions.transformAssetUrls = {
-      tags: {},
-    }
+  // 合并 transformAssetUrls
+  const transformAssetUrls = createUniVueTransformAssetUrls(
+    isExternalUrl(options.base) ? options.base : ''
+  );
+  const optionsTransformAssetUrls = templateOptions.transformAssetUrls;
+  templateOptions.transformAssetUrls = {
+    ...transformAssetUrls,
+    ...optionsTransformAssetUrls,
+    tags: {
+      ...transformAssetUrls.tags,
+      ...optionsTransformAssetUrls.tags,
+    },
+  }
+  if (options.platform !== 'h5' && options.platform !== 'web') {
     compilerOptions.nodeTransforms.push(...getBaseNodeTransforms(options.base))
   }
 
