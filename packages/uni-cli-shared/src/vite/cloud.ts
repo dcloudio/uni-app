@@ -227,6 +227,10 @@ function createExternal(config: ResolvedConfig) {
     if (source.startsWith('@/uni_modules/')) {
       return true
     }
+    // android 系统库，三方库，iOS 的库呢？一般不包含.
+    if (source.includes('.')) {
+      return true
+    }
     return false
   }
 }
