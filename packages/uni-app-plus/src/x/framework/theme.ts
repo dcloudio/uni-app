@@ -1,6 +1,8 @@
 import { extend, isArray, isString } from '@vue/shared'
 import { getAllPages } from '../../service/framework/page/getCurrentPages'
 import { getTabBar } from './app/tabBar'
+import { parsePageStyle } from './page/register'
+import { initRouteOptions } from '../../service/framework/page/routeOptions'
 
 const APP_THEME_AUTO = 'auto'
 export const THEME_KEY_PREFIX = '@'
@@ -81,14 +83,11 @@ export const onThemeChange = function (themeMode: IThemeMode) {
     const pages = getAllPages()
 
     pages.forEach((page) => {
-      const rawPageStyle = __uniRoutes.find((i) =>
-        i.path.endsWith(page.route)
-      )!.meta
-      const pageStyle = extend({}, rawPageStyle)
-      normalizePageStyles(pageStyle, __uniConfig.themeConfig, themeMode)
+      const routeOptions = initRouteOptions(page.$page.path, '')
+      const style = parsePageStyle(routeOptions)
 
       // 最终结果
-      page.$setPageStyle(pageStyle)
+      page.$setPageStyle(style)
     })
   }
 
