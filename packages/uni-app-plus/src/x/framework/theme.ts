@@ -84,17 +84,11 @@ export const onThemeChange = function (themeMode: IThemeMode) {
       const rawPageStyle = __uniRoutes.find((i) =>
         i.path.endsWith(page.route)
       )!.meta
-      const pageStyle = new UTSJSONObject(rawPageStyle)
+      const pageStyle = extend({}, rawPageStyle)
       normalizePageStyles(pageStyle, __uniConfig.themeConfig, themeMode)
 
-      // obj 转 map
-      const style = new Map<string, any | null>()
-      Object.keys(pageStyle).forEach((key) => {
-        style.set(key, pageStyle[key])
-      })
-
       // 最终结果
-      page.$setPageStyle(style)
+      page.$setPageStyle(pageStyle)
     })
   }
 
@@ -151,7 +145,7 @@ export function normalizePageStyles(
     return
   }
 
-  normalizeStyles(pageStyle as Map<string, any>, themeMap)
+  normalizeStyles(pageStyle, themeMap)
 }
 
 // 传递 style 替换当前主题色
@@ -159,8 +153,7 @@ function normalizeStyles(
   style: Record<string, any>,
   themeMap: Record<string, any>
 ) {
-  const styleKeys = Object.keys(style)
-  styleKeys.forEach((key) => {
+  Object.keys(style).forEach((key) => {
     const value = style[key]
     if (isString(value)) {
       const valueAsString = value as string
@@ -173,7 +166,7 @@ function normalizeStyles(
         }
       }
     } else if (isArray(value)) {
-      const valueAsArray = value as Array<Map<string, any>>
+      const valueAsArray = value as Array<Record<string, any>>
       valueAsArray.forEach((item) => {
         normalizeStyles(item, themeMap)
       })
