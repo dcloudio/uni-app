@@ -74,8 +74,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
       let color = ''
 
-      if (props.foregroundColor.length > 0) {
-        color = props.foregroundColor
+      if (props.foreColor.length > 0) {
+        color = props.foreColor
       } else if (props.iconColor.length > 0) {
         color = props.iconColor
       } else {

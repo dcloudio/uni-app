@@ -69,7 +69,8 @@ export const radioProps = {
     type: String,
     default: '#ffffff',
   },
-  foregroundColor: {
+  // 高于 iconColor 和 color
+  foreColor: {
     type: String,
     default: '',
   },
