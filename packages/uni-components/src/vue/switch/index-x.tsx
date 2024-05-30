@@ -56,11 +56,11 @@ const props = {
     type: String,
     default: '',
   },
-  foregroundColor: {
+  foreColor: {
     type: String,
     default: '',
   },
-  activeForegroundColor: {
+  activeForeColor: {
     type: String,
     default: '',
   },
@@ -138,10 +138,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => {
       const {
         activeBackgroundColor,
-        activeForegroundColor,
+        activeForeColor,
         backgroundColor,
         color,
-        foregroundColor,
+        foreColor,
         type,
       } = props
       const booleanAttrs = useBooleanAttr(props, 'disabled')
@@ -159,9 +159,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const thumbStyle: {
         backgroundColor?: string
       } = {}
-      const fgColor = switchChecked.value
-        ? activeForegroundColor
-        : foregroundColor
+      const fgColor = switchChecked.value ? activeForeColor : foreColor
       if (fgColor) {
         thumbStyle['backgroundColor'] = fgColor
       }

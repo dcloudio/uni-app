@@ -57,7 +57,7 @@ const props = {
     default: '#ffffff',
   },
   // 图标颜色,同color,优先级大于iconColor
-  foregroundColor: {
+  foreColor: {
     type: String,
     default: '',
   },
@@ -207,7 +207,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
                   ICON_PATH_SUCCESS_NO_CIRCLE,
                   props.disabled
                     ? '#ADADAD'
-                    : props.foregroundColor || props.iconColor,
+                    : props.foreColor || props.iconColor,
                   18
                 )
               : ''}
