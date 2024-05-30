@@ -150,3 +150,8 @@ export function getPlatformManifestJsonOnce() {
     ? {}
     : parseManifestJsonOnce(process.env.UNI_INPUT_DIR)[platform] || {}
 }
+
+const themeValues = ['dark', 'light', 'auto']
+export function validateThemeValue(value: string) {
+  return themeValues.indexOf(value) !== -1
+}
