@@ -70,7 +70,7 @@ export const checkboxProps = {
     default: '',
   },
   // 图标颜色,同color,优先级大于iconColor
-  foregroundColor: {
+  foreColor: {
     type: String,
     default: '',
   },
