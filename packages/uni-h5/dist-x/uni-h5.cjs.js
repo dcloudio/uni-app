@@ -12690,8 +12690,7 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         uniRuntimeVersion: __uniConfig.compilerVersion,
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
         uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
-        isUniAppX: true,
-        appTheme: theme
+        isUniAppX: true
       }
     );
   }
