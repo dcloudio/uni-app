@@ -99,7 +99,7 @@ export class UniAppConfig extends AppConfig {
     override appid: string = "${manifestJson.appid || ''}"
     override versionName: string = "${manifestJson.versionName || ''}"
     override versionCode: string = "${manifestJson.versionCode || ''}"
-    override uniCompileVersion: string = "${
+    override uniCompilerVersion: string = "${
       process.env.UNI_COMPILER_VERSION || ''
     }"
     ${codes}
