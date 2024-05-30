@@ -92,6 +92,7 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
             uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
             uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
             isUniAppX: true,
+            appTheme: theme,
           }
         : {}
     )

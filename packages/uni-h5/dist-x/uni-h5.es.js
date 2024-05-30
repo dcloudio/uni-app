@@ -21214,7 +21214,8 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
         uniRuntimeVersion: __uniConfig.compilerVersion,
         uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
         uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
-        isUniAppX: true
+        isUniAppX: true,
+        appTheme: theme
       }
     );
   }
@@ -21768,7 +21769,7 @@ const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
           clearTimeout(handle);
           video.onerror = null;
           resolve({
-            size: file ? file.size : 0,
+            size: Math.ceil((file ? file.size : 0) / 1024),
             duration: video.duration || 0,
             width: video.videoWidth || 0,
             height: video.videoHeight || 0
@@ -24146,7 +24147,25 @@ function setProperties(item, props2, propsData) {
     }
   });
 }
-function setTabBar(type, args, resolve) {
+function setTabBar(type, args, resolve, reject) {
+  var _a;
+  let isTabBar = false;
+  const pages = getCurrentPages();
+  if (pages.length) {
+    if (pages[pages.length - 1].$page.meta.isTabBar) {
+      isTabBar = true;
+    }
+  }
+  if (!isTabBar) {
+    return reject(`not TabBar page`);
+  }
+  const { index: index2 } = args;
+  if (typeof index2 === "number") {
+    const tabBarListLength = (_a = __uniConfig == null ? void 0 : __uniConfig.tabBar) == null ? void 0 : _a.list.length;
+    if (!tabBarListLength || index2 >= tabBarListLength) {
+      return reject(`tabbar item not found`);
+    }
+  }
   const tabBar2 = useTabBar();
   switch (type) {
     case API_SHOW_TAB_BAR:
@@ -24156,7 +24175,6 @@ function setTabBar(type, args, resolve) {
       tabBar2.shown = false;
       break;
     case API_SET_TAB_BAR_ITEM:
-      const { index: index2 } = args;
       const tabBarItem = tabBar2.list[index2];
       const oldPagePath = tabBarItem.pagePath;
       setProperties(tabBarItem, setTabBarItemProps, args);
@@ -24172,20 +24190,20 @@ function setTabBar(type, args, resolve) {
       setProperties(tabBar2, setTabBarStyleProps, args);
       break;
     case API_SHOW_TAB_BAR_RED_DOT:
-      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
         badge: "",
         redDot: true
       });
       break;
     case API_SET_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
         badge: args.text,
         redDot: true
       });
       break;
     case API_HIDE_TAB_BAR_RED_DOT:
     case API_REMOVE_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
         badge: "",
         redDot: false
       });
@@ -24195,62 +24213,62 @@ function setTabBar(type, args, resolve) {
 }
 const setTabBarItem = /* @__PURE__ */ defineAsyncApi(
   API_SET_TAB_BAR_ITEM,
-  (args, { resolve }) => {
-    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve, reject);
   },
   SetTabBarItemProtocol,
   SetTabBarItemOptions
 );
 const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(
   API_SET_TAB_BAR_STYLE,
-  (args, { resolve }) => {
-    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve, reject);
   },
   SetTabBarStyleProtocol,
   SetTabBarStyleOptions
 );
 const hideTabBar = /* @__PURE__ */ defineAsyncApi(
   API_HIDE_TAB_BAR,
-  (args, { resolve }) => {
-    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve, reject);
   },
   HideTabBarProtocol
 );
 const showTabBar = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_TAB_BAR,
-  (args, { resolve }) => {
-    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve, reject);
   },
   ShowTabBarProtocol
 );
 const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
   API_HIDE_TAB_BAR_RED_DOT,
-  (args, { resolve }) => {
-    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve, reject);
   },
   HideTabBarRedDotProtocol,
   HideTabBarRedDotOptions
 );
 const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_TAB_BAR_RED_DOT,
-  (args, { resolve }) => {
-    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve, reject);
   },
   ShowTabBarRedDotProtocol,
   ShowTabBarRedDotOptions
 );
 const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(
   API_REMOVE_TAB_BAR_BADGE,
-  (args, { resolve }) => {
-    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve, reject);
   },
   RemoveTabBarBadgeProtocol,
   RemoveTabBarBadgeOptions
 );
 const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
   API_SET_TAB_BAR_BADGE,
-  (args, { resolve }) => {
-    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve, reject);
   },
   SetTabBarBadgeProtocol,
   SetTabBarBadgeOptions
