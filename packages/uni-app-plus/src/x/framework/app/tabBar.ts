@@ -29,7 +29,7 @@ export function getBorderStyle(borderStyle: string): string {
 }
 
 // keep borderStyle aliways black/white
-function fixBorderStyle(tabBarConfig: Map<string, any>) {
+export function fixBorderStyle(tabBarConfig: Map<string, any>) {
   let borderStyle = tabBarConfig.get('borderStyle')
   if (!isString(borderStyle)) {
     borderStyle = 'black'

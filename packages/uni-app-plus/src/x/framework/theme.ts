@@ -1,6 +1,6 @@
 import { extend, isArray, isString } from '@vue/shared'
 import { getAllPages } from '../../service/framework/page/getCurrentPages'
-import { getTabBar } from './app/tabBar'
+import { fixBorderStyle, getTabBar } from './app/tabBar'
 import { parsePageStyle } from './page/register'
 import { initRouteOptions } from '../../service/framework/page/routeOptions'
 
@@ -127,6 +127,7 @@ export const onThemeChange = function (themeMode: IThemeMode) {
         }
       })
       // set TabBarStyle
+      fixBorderStyle(tabBarStyle)
       tabBar.setTabBarStyle(tabBarStyle)
     }
   }
