@@ -1139,11 +1139,12 @@ function init() {
   var tabParent = document.createElement(new NodeData("tabs", "tabs", /* @__PURE__ */ new Map(), /* @__PURE__ */ new Map([["overflow", "hidden"], ["flex", "1"]])));
   document.appendChild(tabParent);
   tabBar0 = document.getRealDomNodeById("tabs");
+  var _tabBarConfig = extend({}, __uniConfig.tabBar);
+  normalizeTabBarStyles(_tabBarConfig, __uniConfig.themeConfig, getAppThemeFallbackOS());
   var tabBarConfig = /* @__PURE__ */ new Map();
-  for (var key in __uniConfig.tabBar) {
-    tabBarConfig.set(key, __uniConfig.tabBar[key]);
+  for (var key in _tabBarConfig) {
+    tabBarConfig.set(key, _tabBarConfig[key]);
   }
-  normalizeTabBarStyles(tabBarConfig, __uniConfig.themeConfig, getAppThemeFallbackOS());
   fixBorderStyle(tabBarConfig);
   tabBar0.initTabBar(tabBarConfig);
   tabBar0.addEventListener("tabBarItemTap", function(event) {
@@ -1332,13 +1333,8 @@ var onThemeChange = function(themeMode) {
   var handlePage = () => {
     var pages2 = getAllPages();
     pages2.forEach((page) => {
-      var rawPageStyle = __uniRoutes.find((i) => i.path.endsWith(page.route)).meta;
-      var pageStyle = new UTSJSONObject(rawPageStyle);
-      normalizePageStyles(pageStyle, __uniConfig.themeConfig, themeMode);
-      var style = /* @__PURE__ */ new Map();
-      Object.keys(pageStyle).forEach((key) => {
-        style.set(key, pageStyle[key]);
-      });
+      var routeOptions = initRouteOptions(page.$page.path, "");
+      var style = parsePageStyle(routeOptions);
       page.$setPageStyle(style);
     });
   };
@@ -1384,8 +1380,7 @@ function normalizePageStyles(pageStyle, themeConfig, themeMode) {
   normalizeStyles(pageStyle, themeMap);
 }
 function normalizeStyles(style, themeMap) {
-  var styleKeys = Object.keys(style);
-  styleKeys.forEach((key) => {
+  Object.keys(style).forEach((key) => {
     var value = style[key];
     if (isString(value)) {
       var valueAsString = value;
@@ -3222,6 +3217,11 @@ var checkboxProps = {
   iconColor: {
     type: String,
     default: ""
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foreColor: {
+    type: String,
+    default: ""
   }
 };
 var styles = {
@@ -3304,7 +3304,14 @@ const checkbox = /* @__PURE__ */ defineBuiltInComponent({
       if (props.disabled) {
         return Object.assign({}, styles["uni-icon"]);
       }
-      var color = props.iconColor.length > 0 ? props.iconColor : props.color;
+      var color = "";
+      if (props.foreColor.length > 0) {
+        color = props.foreColor;
+      } else if (props.iconColor.length > 0) {
+        color = props.iconColor;
+      } else {
+        color = props.color;
+      }
       return Object.assign({}, styles["uni-icon"], {
         color
       });
@@ -3591,6 +3598,11 @@ var radioProps = {
   iconColor: {
     type: String,
     default: "#ffffff"
+  },
+  // 高于 iconColor 和 color
+  foreColor: {
+    type: String,
+    default: ""
   }
 };
 var _style_0$1 = {
@@ -3672,8 +3684,14 @@ const radio = /* @__PURE__ */ defineBuiltInComponent({
       };
     });
     var iconStyle = computed(() => {
+      var color = "";
+      if (props.foreColor.length > 0) {
+        color = props.foreColor;
+      } else if (props.iconColor.length > 0) {
+        color = props.iconColor;
+      }
       return {
-        color: props.disabled ? "#adadad" : props.iconColor
+        color: props.disabled ? "#adadad" : color
       };
     });
     var icon = "";

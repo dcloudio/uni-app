@@ -222,7 +222,7 @@ export function uniDecryptUniModulesPlugin(): Plugin {
     name: 'uni:uni_modules-d',
     enforce: 'pre',
     async configResolved() {
-      if (isX) {
+      if (isX && process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
         const manifest = parseManifestJsonOnce(inputDir)
         await checkEncryptUniModules(inputDir, {
           mode:

@@ -66,7 +66,10 @@ export function initPlugins(
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
 
-  if (process.env.UNI_HBUILDERX_PLUGINS) {
+  if (
+    process.env.UNI_HBUILDERX_PLUGINS &&
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+  ) {
     try {
       require(path.resolve(
         process.env.UNI_HBUILDERX_PLUGINS,

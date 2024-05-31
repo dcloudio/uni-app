@@ -3014,7 +3014,7 @@ const props$p = {
     default: ""
   },
   // 图标颜色,同color,优先级大于iconColor
-  foregroundColor: {
+  foreColor: {
     type: String,
     default: ""
   }
@@ -3095,7 +3095,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -6058,7 +6058,7 @@ const props$i = {
     default: "#ffffff"
   },
   // 图标颜色,同color,优先级大于iconColor
-  foregroundColor: {
+  foreColor: {
     type: String,
     default: ""
   }
@@ -6134,7 +6134,7 @@ const indexX$3 = /* @__PURE__ */ defineBuiltInComponent({
           "uni-radio-input-disabled": props2.disabled
         }],
         "style": radioStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor, 18) : ""], 6), slots.default && slots.default()], 16, ["onClick", "id"]);
     };
   }
 });
@@ -6972,7 +6972,7 @@ const props$f = {
     default: "#ffffff"
   },
   // 优先级高于blockColor
-  foregroundColor: {
+  foreColor: {
     type: String,
     default: ""
   },
@@ -7076,7 +7076,7 @@ function useSliderState(props2) {
     setThumbStyle: vue.computed(() => ({
       width: _getBlockSizeString(),
       height: _getBlockSizeString(),
-      backgroundColor: props2.foregroundColor || props2.blockColor
+      backgroundColor: props2.foreColor || props2.blockColor
     })),
     setValueStyle: vue.computed(() => ({
       color: props2.valueColor
@@ -7802,11 +7802,11 @@ const props$c = {
     type: String,
     default: ""
   },
-  foregroundColor: {
+  foreColor: {
     type: String,
     default: ""
   },
-  activeForegroundColor: {
+  activeForeColor: {
     type: String,
     default: ""
   }
@@ -7844,10 +7844,10 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
     return () => {
       const {
         activeBackgroundColor,
-        activeForegroundColor,
+        activeForeColor,
         backgroundColor,
         color,
-        foregroundColor,
+        foreColor,
         type
       } = props2;
       const booleanAttrs = useBooleanAttr(props2, "disabled");
@@ -7859,7 +7859,7 @@ const indexX$1 = /* @__PURE__ */ defineBuiltInComponent({
         switchInputStyle["borderColor"] = bgColor;
       }
       const thumbStyle = {};
-      const fgColor = switchChecked.value ? activeForegroundColor : foregroundColor;
+      const fgColor = switchChecked.value ? activeForeColor : foreColor;
       if (fgColor) {
         thumbStyle["backgroundColor"] = fgColor;
       }

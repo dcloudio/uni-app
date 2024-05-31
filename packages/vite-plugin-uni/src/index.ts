@@ -207,7 +207,7 @@ function createPlugins(options: VitePluginUniResolvedOptions) {
   } else {
     // 仅在 vue 或 纯原生 App.vue 编译时做 copy
     if (
-      process.env.UNI_COMPILER === 'vue' ||
+      process.env.UNI_COMPILER !== 'nvue' ||
       (process.env.UNI_RENDERER === 'native' &&
         process.env.UNI_RENDERER_NATIVE === 'appService')
     ) {

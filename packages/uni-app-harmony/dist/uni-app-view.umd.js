@@ -13687,7 +13687,7 @@
       default: ""
     },
     // 图标颜色,同color,优先级大于iconColor
-    foregroundColor: {
+    foreColor: {
       type: String,
       default: ""
     }
@@ -13776,7 +13776,7 @@
             "uni-checkbox-input-disabled": props2.disabled
           }],
           "style": checkboxStyle.value
-        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foregroundColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+        }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
       };
     }
   });
