@@ -46,6 +46,7 @@ uni-switch .uni-switch-thumb {
   height: 28px;
   background-color: #fff;
   border-radius: 15px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.06);
   transition-duration: 0.3s;
   transition-property: transform;
   transform: translateX(0px);
