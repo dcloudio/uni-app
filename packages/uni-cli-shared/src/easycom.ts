@@ -224,8 +224,10 @@ function initAutoScanEasycom(
   }
   const is_uni_modules =
     path.basename(path.resolve(dir, '../..')) === 'uni_modules'
-  const is_encrypt_uni_modules =
-    is_uni_modules && fs.existsSync(path.resolve(dir, '../encrypt'))
+  const is_encrypt_uni_modules = // uni_modules模式不需要此逻辑
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules' &&
+    is_uni_modules &&
+    fs.existsSync(path.resolve(dir, '../encrypt'))
   const uni_modules_plugin_id =
     is_encrypt_uni_modules && path.basename(path.resolve(dir, '..'))
   fs.readdirSync(dir).forEach((name) => {
