@@ -4,13 +4,13 @@ module.exports = function (appJson) {
   }
   if (!appJson.plugins['uni-ad']) {
     appJson.plugins['uni-ad'] = {
-      version: '1.2.1',
+      version: '1.3.0',
       provider: 'wxf72d316417b6767f',
     }
   }
   if (!appJson.plugins['coral-adv']) {
     appJson.plugins['coral-adv'] = {
-      version: '1.0.24',
+      version: '1.0.25',
       provider: 'wx0e203209e27b1e66',
     }
   }
