@@ -4,6 +4,7 @@ import fs from 'fs-extra'
 import { sync } from 'fast-glob'
 import type { UTSTargetLanguage } from './uts'
 import { normalizePath } from './utils'
+import { genUTSComponentPublicInstanceIdent } from './easycom'
 
 export type DefineOptions = {
   name?: string
@@ -350,6 +351,7 @@ export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
 }
 
 export function genEncryptEasyComModuleIndex(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
   components: Record<string, '.vue' | '.uvue'>
 ) {
   const imports: string[] = []
@@ -357,14 +359,20 @@ export function genEncryptEasyComModuleIndex(
   Object.keys(components).forEach((component) => {
     const id = capitalize(camelize(component))
 
+    ids.push(id)
+    if (platform === 'app-android') {
+      // 类型
+      ids.push(genUTSComponentPublicInstanceIdent(component))
+    }
     imports.push(
       `import ${id} from './components/${component}/${component}${components[component]}'`
     )
-    ids.push(id)
   })
   return `
 ${imports.join('\n')}
-export { ${ids.join(',')} }
+export { 
+  ${ids.join(',\n  ')} 
+}
 `
 }
 
