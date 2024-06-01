@@ -288,7 +288,7 @@ function normalizePageStyle(
     } else {
       extend(pageStyle, pageStyle[platform])
     }
-    if (['h5', 'app'].includes(platform)) {
+    if (['h5', 'app', 'app-harmony'].includes(platform)) {
       pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
       if (isEnablePullDownRefresh(pageStyle)) {
         pageStyle.enablePullDownRefresh = true

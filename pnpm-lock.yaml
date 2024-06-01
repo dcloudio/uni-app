@@ -1,5 +1,9 @@
 lockfileVersion: '6.0'
 
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
 overrides:
   '@babel/plugin-transform-block-scoping': 7.19.4
 
@@ -454,6 +458,9 @@ importers:
 
   packages/uni-app-harmony:
     dependencies:
+      '@dcloudio/uni-app-vite':
+        specifier: 3.0.0-alpha-4010820240529001
+        version: link:../uni-app-vite
       debug:
         specifier: ^4.3.3
         version: 4.3.4(supports-color@8.1.1)
@@ -11649,7 +11656,3 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
-
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
