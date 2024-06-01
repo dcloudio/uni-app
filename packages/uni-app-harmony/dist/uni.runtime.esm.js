@@ -184,7 +184,7 @@ const toRawType = (value) => {
   return toTypeString(value).slice(8, -1);
 };
 const isPlainObject = (val) => toTypeString(val) === "[object Object]";
-const cacheStringFunction = (fn) => {
+const cacheStringFunction$1 = (fn) => {
   const cache = /* @__PURE__ */ Object.create(null);
   return (str) => {
     const hit = cache[str];
@@ -192,14 +192,14 @@ const cacheStringFunction = (fn) => {
   };
 };
 const camelizeRE = /-(\w)/g;
-const camelize = cacheStringFunction((str) => {
+const camelize = cacheStringFunction$1((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
 });
 const hyphenateRE = /\B([A-Z])/g;
-const hyphenate = cacheStringFunction(
+const hyphenate = cacheStringFunction$1(
   (str) => str.replace(hyphenateRE, "-$1").toLowerCase()
 );
-const capitalize = cacheStringFunction((str) => {
+const capitalize = cacheStringFunction$1((str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 });
 
@@ -734,6 +734,8 @@ function getBaseSystemInfo() {
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
 const I18N_JSON_DELIMITERS = ['%', '%'];
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 // lifecycle
 // App and Page
@@ -767,6 +769,16 @@ function formatLog(module, ...args) {
         .join(' ')}`;
 }
 
+function cache(fn) {
+    const cache = Object.create(null);
+    return (str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    };
+}
+function cacheStringFunction(fn) {
+    return cache(fn);
+}
 function getLen(str = '') {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
 }
@@ -1349,10 +1361,6 @@ function initEnv() {
 const initEnvOnce = once(initEnv);
 function getEnv() {
     return initEnvOnce();
-}
-
-function getRealPath(filepath) {
-    return filepath;
 }
 
 const isObject = (val) => val !== null && typeof val === 'object';
@@ -2181,6 +2189,59 @@ function defineGlobalData(app, defaultGlobalData) {
             options.globalData = newGlobalData;
         },
     });
+}
+
+function getRealPath(filepath) {
+    // 无协议的情况补全 https
+    if (filepath.indexOf('//') === 0) {
+        return 'https:' + filepath;
+    }
+    // 网络资源或base64
+    if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
+        return filepath;
+    }
+    if (isSystemURL(filepath)) {
+        // 鸿蒙平台特性
+        return 'file:/' + normalizeLocalPath(filepath);
+    }
+    // TODO 暂时转换为 resource
+    const wwwPath = normalizeLocalPath('_www').replace(/.+?\/apps\//, 'resource://rawfile/apps/');
+    // 绝对路径转换为本地文件系统路径
+    if (filepath.indexOf('/') === 0) {
+        // 平台绝对路径
+        if (filepath.startsWith('/data/storage/')) {
+            // 鸿蒙平台特性
+            return 'file:/' + filepath;
+        }
+        return wwwPath + filepath;
+    }
+    // 相对资源
+    if (filepath.indexOf('../') === 0 || filepath.indexOf('./') === 0) {
+        // app-view
+        if (typeof __id__ === 'string') {
+            // app-view
+            return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
+        }
+        else {
+            const page = getCurrentPage();
+            if (page) {
+                return wwwPath + getRealRoute(addLeadingSlash(page.route), filepath);
+            }
+        }
+    }
+    return filepath;
+}
+const normalizeLocalPath = cacheStringFunction((filepath) => {
+    return plus.io.convertLocalFileSystemURL(filepath).replace(/\/$/, '');
+});
+function isSystemURL(filepath) {
+    if (filepath.indexOf('_www') === 0 ||
+        filepath.indexOf('_doc') === 0 ||
+        filepath.indexOf('_documents') === 0 ||
+        filepath.indexOf('_downloads') === 0) {
+        return true;
+    }
+    return false;
 }
 
 const enterOptions$1 = /*#__PURE__*/ createLaunchOptions();

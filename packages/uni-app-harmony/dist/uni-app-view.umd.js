@@ -11654,7 +11654,42 @@
   var pako = {};
   assign(pako, deflate, inflate, constants);
   function getRealPath$1(filepath) {
+    if (filepath.indexOf("//") === 0) {
+      return "https:" + filepath;
+    }
+    if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
+      return filepath;
+    }
+    if (isSystemURL$1(filepath)) {
+      return "file:/" + normalizeLocalPath$1(filepath);
+    }
+    var wwwPath = normalizeLocalPath$1("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
+    if (filepath.indexOf("/") === 0) {
+      if (filepath.startsWith("/data/storage/")) {
+        return "file:/" + filepath;
+      }
+      return wwwPath + filepath;
+    }
+    if (filepath.indexOf("../") === 0 || filepath.indexOf("./") === 0) {
+      if (typeof __id__ === "string") {
+        return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
+      } else {
+        var page = getCurrentPage();
+        if (page) {
+          return wwwPath + getRealRoute(addLeadingSlash(page.route), filepath);
+        }
+      }
+    }
     return filepath;
+  }
+  var normalizeLocalPath$1 = cacheStringFunction((filepath) => {
+    return plus.io.convertLocalFileSystemURL(filepath).replace(/\/$/, "");
+  });
+  function isSystemURL$1(filepath) {
+    if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
+      return true;
+    }
+    return false;
   }
   var API_UPX2PX = "upx2px";
   var EPS = 1e-4;
@@ -21318,15 +21353,17 @@
       currentWebview() {
         return extend({
           getStyle: () => {
-            return extend({}, nativeChannel.invokeSync("getStyle"));
+            return extend({}, harmonyChannel.invokeSync("getStyle"));
           }
-        }, nativeChannel.invokeSync("currentWebview"));
+        }, harmonyChannel.invokeSync("currentWebview"));
       },
       postMessageToUniNView(data, id2) {
-        nativeChannel.invokeSync("postMessageToUniNView", {
-          data,
-          id: id2
-        });
+        harmonyChannel.invokeSync("postMessageToUniNView", [data, id2]);
+      }
+    },
+    io: {
+      convertLocalFileSystemURL(filepath) {
+        return harmonyChannel.invokeSync("convertLocalFileSystemURL", [filepath]);
       }
     }
   };
