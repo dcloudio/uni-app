@@ -195,6 +195,7 @@ declare namespace UniNamespace {
     web?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
     'app-plus'?: PagesJsonPageStyle
+    'app-harmony'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
     'mp-baidu'?: PagesJsonPageStyle
     'mp-qq'?: PagesJsonPageStyle
