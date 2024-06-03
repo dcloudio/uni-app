@@ -570,7 +570,7 @@ function findEncryptUniModuleCache(
     ) {
       const declaration = path.resolve(
         uniModuleCacheDir,
-        'utssdk/app-android/index.module.d.uts'
+        'utssdk/app-android/index.d.uts'
       )
       pkg.uni_modules.artifacts.declaration = fs.existsSync(declaration)
         ? declaration
