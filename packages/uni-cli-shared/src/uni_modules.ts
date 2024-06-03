@@ -189,14 +189,16 @@ export function parseInjects(
           fs.existsSync(
             path.resolve(uniModuleRootDir, 'utssdk', 'app-android')
           ) ||
-          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios'))
+          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios')) ||
+          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-harmony'))
       }
     }
     // 其他平台修改source，直接指向目标文件，否则 uts2js 找不到类型信息
     if (
       platform !== 'app' &&
       platform !== 'app-android' &&
-      platform !== 'app-ios'
+      platform !== 'app-ios' &&
+      platform !== 'app-harmony'
     ) {
       if (fs.existsSync(platformIndexFileName)) {
         source = `${source}/utssdk/${platform}/index.uts`
@@ -264,7 +266,9 @@ function parseInject(
       } else {
         const defineOptions = define[d] as DefineOptions
         const p =
-          platform === 'app-android' || platform === 'app-ios'
+          platform === 'app-android' ||
+          platform === 'app-ios' ||
+          platform === 'app-harmony'
             ? 'app'
             : platform
         if (!(p in defineOptions)) {

@@ -22,32 +22,25 @@
       "__APP_VIEW__": "false",
       "__NODE_JS__": "false"
     },
-    "banner": "import { IUniError, UTSObject, UTSJSONObject, string } from './uts'\nimport { defineAsyncApi } from './uni.api'",
+    "banner": "import { IUniError, UTSObject, string } from './uts'\nimport { UniError, UTSJSONObject } from './uni-app-harmony-framework-dev.js'\nimport { defineAsyncApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'\n",
     "wrapper": {
       "name": "initUniExtApi",
       "args": [["APP_ID", "string"]]
     }
+  }, {
+    "input": {
+      "../uni-runtime/src/helpers/api/index.ts": "uni-api-shared.ets"
+    },
+    "alias": {
+      "@dcloudio/uni-runtime": "./uni-app-harmony-framework-dev.js"
+    },
+    "externals": ["./uni-app-harmony-framework-dev.js"],
+    "replacements": {
+      "__PLATFORM__": "'app-harmony'",
+      "__DEV__": "false",
+      "__X__": "true",
+      "__APP_VIEW__": "false",
+      "__NODE_JS__": "false"
+    }
   }
-  // {
-  //   "input": {
-  //     "src/service/index.ts": "uni.runtime.ts"
-  //   },
-  //   "alias": {
-  //     "@vue/shared": "<rootDir>/packages/uni-app-harmony/src/shared",
-  //     "@dcloudio/uni-api": "<rootDir>/packages/uni-api/src",
-  //     "@dcloudio/uni-app-plus": "<rootDir>/packages/uni-app-plus/src",
-  //     "@dcloudio/uni-components": "<rootDir>/packages/uni-components/src",
-  //     "@dcloudio/uni-core": "<rootDir>/packages/uni-core/src",
-  //     "@dcloudio/uni-i18n": "<rootDir>/packages/uni-i18n/src",
-  //     "@dcloudio/uni-platform": "<rootDir>/packages/uni-app-harmony/src/platform",
-  //     "@dcloudio/uni-shared": "<rootDir>/packages/uni-shared/src"
-  //   },
-  //   "replacements": {
-  //     "__PLATFORM__": "'app-harmony'",
-  //     "__DEV__": "false",
-  //     "__X__": "true",
-  //     "__APP_VIEW__": "false",
-  //     "__NODE_JS__": "false"
-  //   }
-  // }
 ]

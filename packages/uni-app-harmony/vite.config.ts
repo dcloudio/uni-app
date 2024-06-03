@@ -178,7 +178,7 @@ export default defineConfig({
 function parseExtApiInjects(uniModulesDir: string) {
   return parseInjects(
     true,
-    'app',
+    'app-harmony',
     'arkts', // javascript|kotlin|swift (不传入)
     '',
     uniModulesDir,
@@ -214,19 +214,25 @@ function initArkTSExtApi() {
     if (Object.keys(injects).length === 0) {
       continue
     }
-    const specifiers: string[] = []
+    const apiSpecifiers: string[] = []
+    const apiTypeSpecifiers: string[] = []
     Object.keys(injects).forEach((key) => {
       const api = injects[key][1]
       const apiType = capitalize(api)
-      specifiers.push(api)
-      specifiers.push(apiType)
+      apiSpecifiers.push(api)
+      apiTypeSpecifiers.push(apiType)
       defineExtApis.push(api)
       uniExtApis.push(`${api}: ${apiType}`)
     })
     importExtApis.push(
-      `import { ${specifiers.join(
+      `import { ${apiSpecifiers.join(
         ', '
       )} } from './${extApi}/utssdk/app-harmony/index.uts'`
+    )
+    importExtApis.push(
+      `import { ${apiTypeSpecifiers.join(
+        ', '
+      )} } from './${extApi}/utssdk/interface.uts'`
     )
     exportExtApis.push(
       `export * from './${extApi}/utssdk/app-harmony/index.uts'`
