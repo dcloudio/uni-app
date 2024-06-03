@@ -179,6 +179,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         })
         if (result) {
           const apis = result.inject_apis
+          const scopedSlots = result.scoped_slots
           const components = getUniModulesExtApiComponents(uniModule)
           const modules = resolveUTSCompiler().parseInjectModules(
             apis,
@@ -197,6 +198,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               apis,
               components,
               modules,
+              scopedSlots,
             })
           )
         }

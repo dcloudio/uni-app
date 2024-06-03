@@ -12,6 +12,7 @@ import {
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
+  parseUniModulesArtifacts,
   parseVueRequest,
   resolveMainPathOnce,
   resolveUTSCompiler,
@@ -187,6 +188,7 @@ export function uniAppPlugin(): UniVitePlugin {
           uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
           autoImports: getUTSEasyComAutoImports(),
           extApiProviders: parseUniExtApiProviders(manifestJson),
+          uniModulesArtifacts: parseUniModulesArtifacts(),
         }
       )
       if (res) {

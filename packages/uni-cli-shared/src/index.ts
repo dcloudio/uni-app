@@ -26,6 +26,7 @@ export * from './utsUtils'
 export {
   parseUniExtApis,
   parseInjects,
+  parseUniModulesArtifacts,
   Define,
   DefineOptions,
   Defines,

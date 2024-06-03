@@ -80,6 +80,12 @@ export type UTSOutputOptions = {
     reactiveAll?: boolean
     uniCloudObjectInfo?: { name: string; methodList: string[] }[]
     autoImports?: Record<string, [[string, string]]>
+    uniModulesArtifacts?: {
+      name: string
+      package: string
+      scopedSlots: string[]
+      declaration: string
+    }[]
   }
   treeshake?: {
     manualPureFunctions?: string[]
@@ -101,6 +107,7 @@ export interface UTSResult {
   chunks?: string[]
   changed?: string[]
   inject_apis?: string[]
+  scoped_slots?: string[]
   time?: number
   error?: Error
 }

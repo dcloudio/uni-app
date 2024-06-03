@@ -74,6 +74,12 @@ export interface CompileAppOptions {
   autoImports?: Record<string, [[string, string]]>
   // service、name、class
   extApiProviders?: [string, string, string][]
+  uniModulesArtifacts?: {
+    name: string
+    package: string
+    scopedSlots: string[]
+    declaration: string
+  }[]
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -151,6 +157,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
+        uniModulesArtifacts: options.uniModulesArtifacts,
       },
     },
   }

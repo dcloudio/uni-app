@@ -540,6 +540,8 @@ interface EncryptPackageJson {
       } & Record<string, any>
       apis: string[]
       components: string[]
+      scopedSlots: string[]
+      declaration: string
     }
   }
 }
@@ -557,12 +559,22 @@ function findEncryptUniModuleCache(
   }
   const uniModuleCacheDir = path.resolve(cacheDir, 'uni_modules', uniModuleId)
   if (fs.existsSync(uniModuleCacheDir)) {
-    const pkg = require(path.resolve(uniModuleCacheDir, 'package.json'))
+    const pkg = require(path.resolve(
+      uniModuleCacheDir,
+      'package.json'
+    )) as EncryptPackageJson
     // 插件版本以及各种环境一致
     if (
       pkg.version === options.version &&
       !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env)
     ) {
+      const declaration = path.resolve(
+        uniModuleCacheDir,
+        'utssdk/app-android/index.module.d.uts'
+      )
+      pkg.uni_modules.artifacts.declaration = fs.existsSync(declaration)
+        ? declaration
+        : ''
       return pkg
     }
     console.log(`插件${uniModuleId} 缓存已过期，需要重新云编译。`)
@@ -758,4 +770,25 @@ export async function checkEncryptUniModules(
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
   )
+}
+
+export function parseUniModulesArtifacts() {
+  const res: {
+    name: string
+    package: string
+    scopedSlots: string[]
+    declaration: string
+  }[] = []
+  Object.keys(encryptUniModules).forEach((uniModuleId) => {
+    const pkg = encryptUniModules[uniModuleId]
+    if (pkg?.uni_modules?.artifacts) {
+      res.push({
+        name: uniModuleId,
+        package: `uts.sdk.modules.${camelize(uniModuleId)}`,
+        scopedSlots: pkg.uni_modules.artifacts.scopedSlots || [],
+        declaration: pkg.uni_modules.artifacts.declaration,
+      })
+    }
+  })
+  return res
 }
