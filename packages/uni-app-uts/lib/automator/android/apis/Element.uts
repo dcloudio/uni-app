@@ -9,7 +9,7 @@ import {
   getElementByIdOrNodeId,
   getElementByNodeIdOrElementId,
   getValidNodes,
-  removeUniPrefix
+  removeUniPrefix,
   // @ts-expect-error
 } from './util.uts'
 // @ts-expect-error
@@ -353,12 +353,14 @@ export const callMethod = (
         : component.$callMethod(params.method)
     // @ts-expect-error
     if (result instanceof Promise<unknown>) {
-      (result as Promise<any>).then((res: any) => {
-        callback({ result: res }, null)
-      }).catch((err) => {
-        const errMsg = err instanceof Error ? err.message : err
-        callback({ result: errMsg }, null)
-      })
+      ; (result as Promise<any>)
+        .then((res: any) => {
+          callback({ result: res }, null)
+        })
+        .catch((err) => {
+          const errMsg = err instanceof Error ? err.message : err
+          callback({ result: errMsg }, null)
+        })
     } else {
       callback({ result }, null)
     }
@@ -377,9 +379,7 @@ export const getData = (params: GetDataParams, callback: Callback): void => {
     callback
   )
   if (component != null) {
-    const data = componentGetData(
-      component,
-    )
+    const data = componentGetData(component)
     callback({ data }, null)
   }
 }
@@ -443,8 +443,33 @@ export const longpress = (
     const y: number = 0
     dom.dispatchEvent(
       'longpress',
+      new TouchEvent(
+        null,
+        'longpress',
       // @ts-expect-error
-      new TouchEvent(null, 'longpress', getTouches([]), getTouches([]))
+        getTouches([
+          {
+            identifier: 1,
+            pageX: 0,
+            pageY: 0,
+            clientX: 0,
+            clientY: 0,
+            screenX: 0,
+            screenY: 0,
+          },
+        ]),
+        getTouches([
+          {
+            identifier: 1,
+            pageX: 0,
+            pageY: 0,
+            clientX: 0,
+            clientY: 0,
+            screenX: 0,
+            screenY: 0,
+          },
+        ])
+      )
     )
     callback({ result: `Element.longpress success` }, null)
   }
@@ -484,11 +509,11 @@ export const handleTouchEvent = (
 type TypeTouch = {
   identifier: number
   pageX: number
-  pageY: number,
-  screenX?: number | null,
-  screenY?: number | null,
-  clientX?: number | null,
-  clientY?: number | null,
+  pageY: number
+  screenX?: number | null
+  screenY?: number | null
+  clientX?: number | null
+  clientY?: number | null
 }
 
 function getTouches(touches: any[]): Touch[] {
@@ -549,11 +574,14 @@ export type TriggerEventParams = {
   pageId: string
   elementId?: string | null
   nodeId?: number | null
-  type: string;
-  detail?: CustomEventDetail | null;
+  type: string
+  detail?: CustomEventDetail | null
 }
 
-export const triggerEvent = (params: TriggerEventParams, callback: Callback) => {
+export const triggerEvent = (
+  params: TriggerEventParams,
+  callback: Callback
+) => {
   const dom = getElementByIdOrNodeId(
     params.pageId,
     params.elementId,
@@ -561,14 +589,15 @@ export const triggerEvent = (params: TriggerEventParams, callback: Callback) => 
     callback
   )
   if (dom != null) {
-    const tagName = dom.tagName.toLocaleLowerCase();
-    const type = params.type;
-    const detail = params.detail;
+    const tagName = dom.tagName.toLocaleLowerCase()
+    const type = params.type
+    const detail = params.detail
     const functionName = `${tagName}.${type}`
     switch (functionName) {
       case 'input.input':
         dom.dispatchEvent(
           type,
+          // @ts-expect-error
           new UniInputEvent(
             type,
             // @ts-expect-error
@@ -580,8 +609,10 @@ export const triggerEvent = (params: TriggerEventParams, callback: Callback) => 
       case 'input.focus':
         dom.dispatchEvent(
           type,
+          // @ts-expect-error
           new UniInputFocusEvent(
             type,
+            // @ts-expect-error
             new InputFocusEventDetail(300, '')
           )
         )
@@ -590,8 +621,10 @@ export const triggerEvent = (params: TriggerEventParams, callback: Callback) => 
       case 'input.blur':
         dom.dispatchEvent(
           type,
+          // @ts-expect-error
           new UniInputBlurEvent(
             type,
+            // @ts-expect-error
             new UniInputBlurEventDetail('', 10)
           )
         )
@@ -600,6 +633,7 @@ export const triggerEvent = (params: TriggerEventParams, callback: Callback) => 
       case 'textarea.input':
         dom.dispatchEvent(
           type,
+          // @ts-expect-error
           new UniInputEvent(
             type,
             // @ts-expect-error
