@@ -1984,9 +1984,9 @@ function getRealPath(filepath) {
     }
     // 相对资源
     if (filepath.indexOf('../') === 0 || filepath.indexOf('./') === 0) {
-        // @ts-expect-error app-view
+        // app-view
         if (typeof __id__ === 'string') {
-            // @ts-expect-error app-view
+            // app-view
             return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
         }
         else {
