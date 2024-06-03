@@ -216,7 +216,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": false
         }
       },
       "closePreviewImage": {
@@ -224,7 +225,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": false
         }
       },
       "getImageInfo": {
@@ -240,7 +242,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": false
         }
       },
       "compressImage": {
@@ -248,7 +251,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       },
       "chooseVideo": {
@@ -264,7 +268,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": false
         }
       },
       "getVideoInfo": {
@@ -280,7 +285,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       }
     }
