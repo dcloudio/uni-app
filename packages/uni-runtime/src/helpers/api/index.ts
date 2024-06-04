@@ -1,9 +1,9 @@
 import {
   defineAsyncApi as originalDefineAsyncApi,
-  // defineOffApi as originalDefineOffApi,
-  // defineOnApi as originalDefineOnApi,
-  // defineSyncApi as originalDefineSyncApi,
-  // defineTaskApi as originalDefineTaskApi,
+  defineOffApi as originalDefineOffApi,
+  defineOnApi as originalDefineOnApi,
+  defineSyncApi as originalDefineSyncApi,
+  defineTaskApi as originalDefineTaskApi,
 } from '@dcloudio/uni-runtime'
 
 type Anything = Object | null | undefined
@@ -44,14 +44,10 @@ function getPropType(type: string | NullType): Anything {
   if (!type) {
     return
   }
-  return TYPE_MAP[type]
+  return TYPE_MAP.get(type)
 }
-export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
-  name: string,
-  fn: (options: T, res: ApiExcutor<K>) => void,
-  protocol: Map<string, ProtocolOptions>,
-  options: ApiOptions<T>
-): Function {
+
+function buildProtocol(protocol: Map<string, ProtocolOptions>) {
   const originalProtocol = {} as Record<string, Object>
   protocol.forEach((value, key) => {
     const protocol = (originalProtocol[key] = {} as Record<string, Anything>)
@@ -60,6 +56,10 @@ export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
     protocol.required = value.required
     protocol.validator = value.validator
   })
+  return originalProtocol
+}
+
+function buildOptions(options: ApiOptions<AsyncMethodOptionLike>) {
   const originalFormatArgs = {} as Record<string, Function>
   if (options.formatArgs) {
     options.formatArgs.forEach((value, key) => {
@@ -71,6 +71,19 @@ export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
   originalOptions.beforeAll = options.beforeAll
   originalOptions.beforeSuccess = options.beforeSuccess
   originalOptions.formatArgs = originalFormatArgs
+  return originalOptions
+}
+
+export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
+  name: string,
+  fn: (options: T, res: ApiExcutor<K>) => void,
+  protocol: Map<string, ProtocolOptions>,
+  options: ApiOptions<T>
+): Function {
+  const originalProtocol = buildProtocol(protocol)
+  const originalOptions = buildOptions(
+    options as ApiOptions<AsyncMethodOptionLike>
+  )
   return originalDefineAsyncApi(
     name,
     // @ts-expect-error
@@ -78,4 +91,64 @@ export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
     originalProtocol,
     originalOptions
   )
+}
+
+export function defineTaskApi<T, K>(
+  name: string,
+  fn: (options: T, res: ApiExcutor<K>) => void,
+  protocol: Map<string, ProtocolOptions>,
+  options: ApiOptions<T>
+): Object {
+  const originalProtocol = buildProtocol(protocol)
+  const originalOptions = buildOptions(
+    options as ApiOptions<AsyncMethodOptionLike>
+  )
+  return originalDefineTaskApi(
+    name,
+    // @ts-expect-error
+    fn,
+    originalProtocol,
+    originalOptions
+  )
+}
+
+export function defineSyncApi<T, K>(
+  name: string,
+  fn: (options: T) => K,
+  protocol: Map<string, ProtocolOptions>,
+  options: ApiOptions<T>
+): Object {
+  const originalProtocol = buildProtocol(protocol)
+  const originalOptions = buildOptions(
+    options as ApiOptions<AsyncMethodOptionLike>
+  )
+  return originalDefineSyncApi(
+    name,
+    fn,
+    // @ts-expect-error
+    originalProtocol,
+    originalOptions
+  )
+}
+
+export function defineOnApi<T>(
+  name: string,
+  fn: () => void,
+  options: ApiOptions<T>
+): Function {
+  const originalOptions = buildOptions(
+    options as ApiOptions<AsyncMethodOptionLike>
+  )
+  return originalDefineOnApi(name, fn, originalOptions)
+}
+
+export function defineOffApi<T>(
+  name: string,
+  fn: () => void,
+  options: ApiOptions<T>
+): Function {
+  const originalOptions = buildOptions(
+    options as ApiOptions<AsyncMethodOptionLike>
+  )
+  return originalDefineOffApi(name, fn, originalOptions)
 }
