@@ -41,14 +41,12 @@ function clearAppThemeChangeCallbackId() {
 export function registerThemeChange(callback: (themeMode: IThemeMode) => void) {
   if (appThemeChangeCallbackId !== -1) {
     if (typeof uni.offAppThemeChange !== 'function') {
-      console.error('uni.offAppThemeChange is not a function')
       return
     }
     uni.offAppThemeChange(appThemeChangeCallbackId)
     clearAppThemeChangeCallbackId()
   }
   if (typeof uni.onAppThemeChange !== 'function') {
-    console.error('uni.onAppThemeChange is not a function')
     return
   }
   appThemeChangeCallbackId = uni.onAppThemeChange(function (
