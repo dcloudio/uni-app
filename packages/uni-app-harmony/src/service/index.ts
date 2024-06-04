@@ -17,6 +17,6 @@ export default {
   __definePage,
   __registerApp,
   UniServiceJSBridge,
-  UTSJSONObject,
-  UniError,
 }
+
+export { UTSJSONObject, UniError }
