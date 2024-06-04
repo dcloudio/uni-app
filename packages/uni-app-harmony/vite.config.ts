@@ -114,6 +114,10 @@ export default defineConfig({
         find: '@dcloudio/uni-platform',
         replacement: resolve('./src/platform/index.ts'),
       },
+      {
+        find: '@dcloudio/uni-uts-v1',
+        replacement: resolve('../uni-uts-v1'),
+      },
     ],
   },
   css: {

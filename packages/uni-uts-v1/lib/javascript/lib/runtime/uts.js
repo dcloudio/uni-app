@@ -656,3 +656,5 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError;
 realGlobal.UTS = UTS;
+
+export { UTSJSONObject$1 as UTSJSONObject, UniError };
