@@ -1,3 +1,4 @@
+import '@dcloudio/uni-uts-v1/lib/javascript/lib/runtime/uts.js'
 export {
   isFunction,
   isString,

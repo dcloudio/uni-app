@@ -12,9 +12,9 @@
       "@dcloudio/uni-i18n": "<rootDir>/packages/uni-i18n/src",
       "@dcloudio/uni-platform": "<rootDir>/packages/uni-app-harmony/src/platform",
       "@dcloudio/uni-shared": "<rootDir>/packages/uni-shared/src",
-      "@dcloudio/uni-runtime": "./uni-app-harmony-framework-dev.js"
+      "@dcloudio/uni-runtime": "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev"
     },
-    "externals": ["./uni-app-harmony-framework-dev.js"],
+    "externals": ["../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev"],
     "replacements": {
       "__PLATFORM__": "'app-harmony'",
       "__DEV__": "false",
@@ -22,7 +22,7 @@
       "__APP_VIEW__": "false",
       "__NODE_JS__": "false"
     },
-    "banner": "import { IUniError, UTSObject, string } from './uts'\nimport { UniError, UTSJSONObject } from './uni-app-harmony-framework-dev.js'\nimport { defineAsyncApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'\n",
+    "banner": "import { IUniError, UTSObject, string } from './uts'\nimport { UniError, UTSJSONObject } from '../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev'\nimport { defineAsyncApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'\n",
     "wrapper": {
       "name": "initUniExtApi",
       "args": [["APP_ID", "string"]]
@@ -32,9 +32,9 @@
       "../uni-runtime/src/helpers/api/index.ts": "uni-api-shared.ets"
     },
     "alias": {
-      "@dcloudio/uni-runtime": "./uni-app-harmony-framework-dev.js"
+      "@dcloudio/uni-runtime": "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev"
     },
-    "externals": ["./uni-app-harmony-framework-dev.js"],
+    "externals": ["../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev"],
     "replacements": {
       "__PLATFORM__": "'app-harmony'",
       "__DEV__": "false",

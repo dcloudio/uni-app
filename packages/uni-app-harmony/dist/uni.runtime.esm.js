@@ -1,163 +1,4 @@
-import picker from '@ohos.file.picker';
-import fs from '@ohos.file.fs';
-import media from '@ohos.multimedia.media';
-import image from '@ohos.multimedia.image';
-import http from '@ohos.net.http';
 import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
-
-async function _getVideoInfo(uri) {
-    const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
-    const avMetadataExtractor = await media.createAVMetadataExtractor();
-    let metadata = null;
-    let size = 0;
-    try {
-        size = (await fs.stat(file.fd)).size;
-        avMetadataExtractor.dataSrc = {
-            fileSize: size,
-            callback: (buffer, length, pos) => {
-                return fs.readSync(file.fd, buffer, {
-                    offset: pos,
-                    length,
-                });
-            },
-        };
-        metadata = await avMetadataExtractor.fetchMetadata();
-    }
-    catch (error) {
-        throw error;
-    }
-    finally {
-        await avMetadataExtractor.release();
-        await fs.close(file);
-    }
-    const videoOrientationArr = [
-        'up',
-        'right',
-        'down',
-        'left',
-    ];
-    return {
-        size: size,
-        duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
-        width: metadata.videoWidth ? Number(metadata.videoWidth) : undefined,
-        height: metadata.videoHeight ? Number(metadata.videoHeight) : undefined,
-        type: metadata.mimeType,
-        orientation: metadata.videoOrientation
-            ? videoOrientationArr[Number(metadata.videoOrientation) / 90]
-            : undefined,
-    };
-}
-async function _getImageInfo(uri) {
-    const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
-    const imageSource = image.createImageSource(file.fd);
-    const imageInfo = await imageSource.getImageInfo();
-    const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-    let orientationNum = 0;
-    if (typeof orientation === 'string') {
-        const matched = orientation.match(/^Unknown value (\d)$/);
-        if (matched && matched[1]) {
-            orientationNum = Number(matched[1]);
-        }
-        else if (/^\d$/.test(orientation)) {
-            orientationNum = Number(orientation);
-        }
-    }
-    else if (typeof orientation === 'number') {
-        orientationNum = orientation;
-    }
-    let orientationStr = 'up';
-    switch (orientationNum) {
-        case 2:
-            orientationStr = 'up-mirrored';
-            break;
-        case 3:
-            orientationStr = 'down';
-            break;
-        case 4:
-            orientationStr = 'down-mirrored';
-            break;
-        case 5:
-            orientationStr = 'left-mirrored';
-            break;
-        case 6:
-            orientationStr = 'right';
-            break;
-        case 7:
-            orientationStr = 'right-mirrored';
-            break;
-        case 8:
-            orientationStr = 'left';
-            break;
-        case 0:
-        case 1:
-        default:
-            orientationStr = 'up';
-            break;
-    }
-    return {
-        path: uri,
-        width: imageInfo.size.width,
-        height: imageInfo.size.height,
-        orientation: orientationStr,
-    };
-}
-/**
- *
- * 注意
- * - 使用系统picker，无需申请权限
- * - 仅支持选图片或视频，不能混选
- *
- * 差异项记录
- * - 鸿蒙的PhotoViewPicker可以选择视频、图片。PhotoViewPicker不支持sizeType参数、maxDuration参数。
- * - PhotoViewPicker进行媒体文件选择时相机按钮无法屏蔽，因此不支持sourceType参数。
- *
- * 关键文档参考：
- * - [用户文件uri介绍](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/user-file-uri-intro-0000001821000049)
- * - [系统能力使用说明](https://developer.huawei.com/consumer/cn/doc/harmonyos-references-V5/syscap-0000001774120846-V5)
- * - [requestPermissions标签](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/module-configuration-file-0000001820879553-V5#ZH-CN_TOPIC_0000001881258481__requestpermissions%E6%A0%87%E7%AD%BE)
- * - [向用户申请授权](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/request-user-authorization-0000001774279718-V5)
- * - [应用/服务签名](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-signing-0000001587684945#section9786111152213)，ohos.permission.READ_IMAGEVIDEO权限需要自助签名方可使用
- * - [AVMetadataExtractor](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-media-0000001821001557#ZH-CN_TOPIC_0000001811157018__avmetadataextractor11)
- */
-async function _chooseMedia(options) {
-    const photoSelectOptions = new picker.PhotoSelectOptions();
-    const mimeType = options.mimeType;
-    photoSelectOptions.MIMEType = mimeType;
-    photoSelectOptions.maxSelectNumber = options.count || 9;
-    const photoPicker = new picker.PhotoViewPicker();
-    const photoSelectResult = await photoPicker.select(photoSelectOptions);
-    const uris = photoSelectResult.photoUris;
-    if (mimeType !== picker.PhotoViewMIMETypes.VIDEO_TYPE) {
-        return {
-            tempFiles: uris.map((uri) => {
-                const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
-                const stat = fs.statSync(file.fd);
-                fs.closeSync(file);
-                return {
-                    fileType: 'image',
-                    tempFilePath: uri,
-                    size: stat.size,
-                };
-            }),
-        };
-    }
-    const tempFiles = [];
-    for (let i = 0; i < uris.length; i++) {
-        const uri = uris[i];
-        const videoInfo = await _getVideoInfo(uri);
-        tempFiles.push({
-            fileType: 'video',
-            tempFilePath: uri,
-            size: videoInfo.size,
-            duration: videoInfo.duration,
-            width: videoInfo.width,
-            height: videoInfo.height,
-        });
-    }
-    return {
-        tempFiles,
-    };
-}
 
 /**
 * @vue/shared v3.4.21
@@ -203,33 +44,6 @@ const capitalize = cacheStringFunction$1((str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 });
 
-const CHOOSE_SIZE_TYPES = ['original', 'compressed'];
-const CHOOSE_SOURCE_TYPES = ['album', 'camera'];
-const HTTP_METHODS = [
-    'GET',
-    'OPTIONS',
-    'HEAD',
-    'POST',
-    'PUT',
-    'DELETE',
-    'TRACE',
-    'CONNECT',
-    'PATCH',
-];
-function elemInArray(str, arr) {
-    if (!str || arr.indexOf(str) === -1) {
-        return arr[0];
-    }
-    return str;
-}
-function elemsInArray(strArr, optionalVal) {
-    if (!isArray(strArr) ||
-        strArr.length === 0 ||
-        strArr.find((val) => optionalVal.indexOf(val) === -1)) {
-        return optionalVal;
-    }
-    return strArr;
-}
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
 }
@@ -707,9 +521,6 @@ function wrapperAsyncApi(name, fn, protocol, options) {
 function defineOnApi(name, fn, options) {
     return wrapperOnApi(name, fn, options);
 }
-function defineTaskApi(name, fn, protocol, options) {
-    return promisify(name, wrapperTaskApi(name, fn, ('production' !== 'production') ? protocol : undefined, options));
-}
 function defineSyncApi(name, fn, protocol, options) {
     return wrapperSyncApi(name, fn, ('production' !== 'production') ? protocol : undefined, options);
 }
@@ -809,8 +620,8 @@ function once(fn, ctx = null) {
     });
 }
 
-const encode$2 = encodeURIComponent;
-function stringifyQuery$1(obj, encodeStr = encode$2) {
+const encode$1 = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode$1) {
     const res = obj
         ? Object.keys(obj)
             .map((key) => {
@@ -1275,6 +1086,7 @@ E.prototype = {
         return this;
     },
 };
+var Emitter = E;
 
 const borderStyles = {
     black: 'rgba(0,0,0,0.4)',
@@ -1326,41 +1138,6 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
         styles[key] = parseStyleItem();
     });
     return styles;
-}
-
-/**
- * 主要文件路径分为如下四种
- * - 安装文件路径（仅能访问rawfile）鸿蒙$rawfile('index.html')对应一个Resource对象，为方便拼接路径，使用`resource://`协议表示
- * - 临时文件路径（temp）   系统api如下载、选择图片产生的压缩文件会存放于此处，应用退出后自动删除
- * - 缓存文件路径（cache）  用于存储图片缓存等，达到一定大小或时间会被系统自动清理
- * - 用户文件路径（files）  持久保存
- *
- * TODO fileManager、原生fs对象？沙箱
- *
- * 参考文档：
- * - [微信小程序文件系统](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/file-system.html)
- * - [鸿蒙应用沙箱目录](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-sandbox-directory-0000001774280086)
- */
-/**
- * 内部使用不暴露给用户
- */
-const env = {
-    // RESOURCE_PATH: 'resource://',
-    // 以下路径均不以`/`结尾
-    USER_DATA_PATH: '',
-    TEMP_PATH: '',
-    CACHE_PATH: '',
-};
-function initEnv() {
-    const context = getContext();
-    env.USER_DATA_PATH = context.filesDir;
-    env.TEMP_PATH = context.tempDir;
-    env.CACHE_PATH = context.cacheDir;
-    return env;
-}
-const initEnvOnce = once(initEnv);
-function getEnv() {
-    return initEnvOnce();
 }
 
 const isObject = (val) => val !== null && typeof val === 'object';
@@ -1838,7 +1615,7 @@ function initPullToRefreshI18n(pullToRefresh) {
 }
 
 function initBridge(subscribeNamespace) {
-    const emitter = new E();
+    const emitter = new Emitter();
     return {
         on(event, callback) {
             return emitter.on(event, callback);
@@ -2314,222 +2091,6 @@ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
     return getLaunchOptions();
 });
 
-const API_CHOOSE_IMAGE = 'chooseImage';
-const ChooseImageOptions = {
-    formatArgs: {
-        count(value, params) {
-            if (!value || value <= 0) {
-                params.count = 9;
-            }
-        },
-        sizeType(sizeType, params) {
-            params.sizeType = elemsInArray(sizeType, CHOOSE_SIZE_TYPES);
-        },
-        sourceType(sourceType, params) {
-            params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
-        },
-        extension(extension, params) {
-            if (extension instanceof Array && extension.length === 0) {
-                return 'param extension should not be empty.';
-            }
-            if (!extension)
-                params.extension = ['*'];
-        },
-    },
-};
-const ChooseImageProtocol = {
-    count: Number,
-    sizeType: [Array, String],
-    sourceType: Array,
-    extension: Array,
-};
-
-const API_CHOOSE_VIDEO = 'chooseVideo';
-const ChooseVideoOptions = {
-    formatArgs: {
-        sourceType(sourceType, params) {
-            params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
-        },
-        compressed: true,
-        maxDuration: 60,
-        camera: 'back',
-        extension(extension, params) {
-            if (extension instanceof Array && extension.length === 0) {
-                return 'param extension should not be empty.';
-            }
-            if (!extension)
-                params.extension = ['*'];
-        },
-    },
-};
-const ChooseVideoProtocol = {
-    sourceType: Array,
-    compressed: Boolean,
-    maxDuration: Number,
-    camera: String,
-    extension: Array,
-};
-
-const API_GET_IMAGE_INFO = 'getImageInfo';
-const GetImageInfoOptions = {
-    formatArgs: {
-        src(src, params) {
-            params.src = getRealPath(src);
-        },
-    },
-};
-const GetImageInfoProtocol = {
-    src: {
-        type: String,
-        required: true,
-    },
-};
-
-const API_GET_VIDEO_INFO = 'getVideoInfo';
-const GetVideoInfoOptions = {
-    formatArgs: {
-        src(src, params) {
-            params.src = getRealPath(src);
-        },
-    },
-};
-const GetVideoInfoProtocol = {
-    src: {
-        type: String,
-        required: true,
-    },
-};
-
-const API_REQUEST = 'request';
-const dataType = {
-    JSON: 'json',
-};
-const RESPONSE_TYPE = ['text', 'arraybuffer'];
-const DEFAULT_RESPONSE_TYPE = 'text';
-const encode$1 = encodeURIComponent;
-function stringifyQuery(url, data) {
-    let str = url.split('#');
-    const hash = str[1] || '';
-    str = str[0].split('?');
-    let query = str[1] || '';
-    url = str[0];
-    const search = query.split('&').filter((item) => item);
-    const params = {};
-    search.forEach((item) => {
-        const part = item.split('=');
-        params[part[0]] = part[1];
-    });
-    for (const key in data) {
-        if (hasOwn$1(data, key)) {
-            let v = data[key];
-            if (typeof v === 'undefined' || v === null) {
-                v = '';
-            }
-            else if (isPlainObject(v)) {
-                v = JSON.stringify(v);
-            }
-            params[encode$1(key)] = encode$1(v);
-        }
-    }
-    query = Object.keys(params)
-        .map((item) => `${item}=${params[item]}`)
-        .join('&');
-    return url + (query ? '?' + query : '') + (hash ? '#' + hash : '');
-}
-const RequestProtocol = {
-    method: String,
-    data: [Object, String, Array, ArrayBuffer],
-    url: {
-        type: String,
-        required: true,
-    },
-    header: Object,
-    dataType: String,
-    responseType: String,
-    withCredentials: Boolean,
-};
-const RequestOptions = {
-    formatArgs: {
-        method(value, params) {
-            params.method = elemInArray((value || '').toUpperCase(), HTTP_METHODS);
-        },
-        data(value, params) {
-            params.data = value || '';
-        },
-        url(value, params) {
-            if (params.method === HTTP_METHODS[0] &&
-                isPlainObject(params.data) &&
-                Object.keys(params.data).length) {
-                // 将 method,data 校验提前,保证 url 校验时,method,data 已被格式化
-                params.url = stringifyQuery(value, params.data);
-            }
-        },
-        header(value, params) {
-            const header = (params.header = value || {});
-            if (params.method !== HTTP_METHODS[0]) {
-                if (!Object.keys(header).find((key) => key.toLowerCase() === 'content-type')) {
-                    header['Content-Type'] = 'application/json';
-                }
-            }
-        },
-        dataType(value, params) {
-            params.dataType = (value || dataType.JSON).toLowerCase();
-        },
-        responseType(value, params) {
-            params.responseType = (value || '').toLowerCase();
-            if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
-                params.responseType = DEFAULT_RESPONSE_TYPE;
-            }
-        },
-    },
-};
-
-const API_DOWNLOAD_FILE = 'downloadFile';
-const DownloadFileOptions = {
-    formatArgs: {
-        header(value, params) {
-            params.header = value || {};
-        },
-    },
-};
-const DownloadFileProtocol = {
-    url: {
-        type: String,
-        required: true,
-    },
-    header: Object,
-    timeout: Number,
-};
-
-const API_UPLOAD_FILE = 'uploadFile';
-const UploadFileOptions = {
-    formatArgs: {
-        filePath(filePath, params) {
-            if (filePath) {
-                params.filePath = getRealPath(filePath);
-            }
-        },
-        header(value, params) {
-            params.header = value || {};
-        },
-        formData(value, params) {
-            params.formData = value || {};
-        },
-    },
-};
-const UploadFileProtocol = {
-    url: {
-        type: String,
-        required: true,
-    },
-    files: Array,
-    filePath: String,
-    name: String,
-    header: Object,
-    formData: Object,
-    timeout: Number,
-};
-
 function encodeQueryString(url) {
     if (!isString(url)) {
         return url;
@@ -2805,417 +2366,6 @@ const SetTabBarBadgeOptions = {
         },
     }, IndexOptions.formatArgs),
 };
-
-const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, function ({ count } = {}, { resolve, reject }) {
-    _chooseMedia({
-        mimeType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
-        count,
-    })
-        .then((res) => {
-        return {
-            tempFilePaths: res.tempFiles.map((file) => file.tempFilePath),
-            tempFiles: res.tempFiles.map((file) => {
-                return {
-                    path: file.tempFilePath,
-                    size: file.size,
-                };
-            }),
-        };
-    })
-        .then(resolve, reject);
-}, ChooseImageProtocol, ChooseImageOptions);
-
-const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, function ({} = {}, { resolve, reject }) {
-    _chooseMedia({
-        mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE,
-    })
-        .then((res) => {
-        const file = res.tempFiles[0];
-        return {
-            tempFilePath: file.tempFilePath,
-            duration: file.duration,
-            size: file.size,
-            width: file.width,
-            height: file.height,
-        };
-    })
-        // TODO 修正chooseVideo的类型
-        // @ts-expect-error tempFile、name 仅H5支持
-        .then(resolve, reject);
-}, ChooseVideoProtocol, ChooseVideoOptions);
-
-// TODO 网络图片
-const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, function ({ src }, { resolve, reject }) {
-    _getImageInfo(src).then(resolve, reject);
-}, GetImageInfoProtocol, GetImageInfoOptions);
-
-const getVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, function ({ src }, { resolve, reject }) {
-    _getVideoInfo(src)
-        .then((res) => {
-        return {
-            size: res.size,
-            duration: res.duration,
-            width: res.width,
-            height: res.height,
-            type: res.type,
-            orientation: res.orientation,
-        };
-    })
-        .then(resolve, reject);
-}, GetVideoInfoProtocol, GetVideoInfoOptions);
-
-// copy from uni-app-plus/src/service/api/network/request.ts
-const cookiesParse = (header) => {
-    let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
-    let cookiesArr = [];
-    if (!cookiesStr) {
-        return [];
-    }
-    if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
-        cookiesStr = cookiesStr.slice(1, -1);
-    }
-    const handleCookiesArr = cookiesStr.split(';');
-    for (let i = 0; i < handleCookiesArr.length; i++) {
-        if (handleCookiesArr[i].indexOf('Expires=') !== -1 ||
-            handleCookiesArr[i].indexOf('expires=') !== -1) {
-            cookiesArr.push(handleCookiesArr[i].replace(',', ''));
-        }
-        else {
-            cookiesArr.push(handleCookiesArr[i]);
-        }
-    }
-    cookiesArr = cookiesArr.join(';').split(',');
-    return cookiesArr;
-};
-class RequestTask {
-    _requestTask;
-    constructor(requestTask) {
-        this._requestTask = requestTask;
-    }
-    abort() {
-        this._requestTask.abort();
-    }
-    onHeadersReceived(callback) {
-        this._requestTask.onHeadersReceived(callback);
-    }
-    offHeadersReceived(callback) {
-        this._requestTask.offHeadersReceived(callback);
-    }
-}
-const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
-    let { header, method, data, dataType, timeout, url, responseType } = args;
-    let contentType;
-    // header
-    const headers = {};
-    for (const name in header) {
-        if (name.toLowerCase() === 'content-type') {
-            contentType = header[name];
-        }
-        headers[name.toLowerCase()] = header[name];
-    }
-    if (!contentType && method === 'POST') {
-        headers['Content-Type'] =
-            'application/x-www-form-urlencoded; charset=UTF-8';
-    }
-    // url data
-    if (method === 'GET' && data && isPlainObject(data)) {
-        url +=
-            '?' +
-                Object.keys(data)
-                    .map((key) => {
-                    return (encodeURIComponent(key) +
-                        '=' +
-                        encodeURIComponent(data[key]));
-                })
-                    .join('&');
-        data = undefined;
-    }
-    else if (method !== 'GET' &&
-        contentType &&
-        contentType.indexOf('application/json') === 0 &&
-        isPlainObject(data)) {
-        data = JSON.stringify(data);
-    }
-    else if (method !== 'GET' &&
-        contentType &&
-        contentType.indexOf('application/x-www-form-urlencoded') === 0 &&
-        isPlainObject(data)) {
-        data = Object.keys(data)
-            .map((key) => {
-            return (encodeURIComponent(key) +
-                '=' +
-                encodeURIComponent(data[key]));
-        })
-            .join('&');
-    }
-    // 其他参数
-    let expectDataType = http.HttpDataType.STRING;
-    if (responseType === 'arraybuffer') {
-        expectDataType = http.HttpDataType.ARRAY_BUFFER;
-    }
-    else if (dataType === 'json') {
-        expectDataType = http.HttpDataType.OBJECT;
-    }
-    else {
-        expectDataType = http.HttpDataType.STRING;
-    }
-    const httpRequest = http.createHttp();
-    const emitter = new E();
-    const requestTask = {
-        abort() {
-            httpRequest.destroy();
-        },
-        onHeadersReceived(callback) {
-            emitter.on('headersReceive', callback);
-        },
-        offHeadersReceived(callback) {
-            emitter.off('headersReceive', callback);
-        },
-    };
-    httpRequest.on('headersReceive', (header) => {
-        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
-        // emitter.emit('headersReceive', header);
-    });
-    httpRequest.request(url, {
-        header: headers,
-        method: (method || 'GET').toUpperCase(), // 仅OPTIONS不支持
-        extraData: data,
-        expectDataType,
-        connectTimeout: timeout, // 不支持仅设置一个timeout
-        readTimeout: timeout,
-    }, (err, res) => {
-        if (err) {
-            /**
-             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
-             * {"code":2300023,"message":"Failed writing received data to disk/application"}
-             */
-            reject(err.message);
-        }
-        else {
-            resolve({
-                data: res.result,
-                statusCode: res.responseCode,
-                header: res.header,
-                cookies: cookiesParse(res.header),
-            });
-        }
-        requestTask.offHeadersReceived();
-        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
-    });
-    return new RequestTask(requestTask);
-}, RequestProtocol, RequestOptions);
-
-class UploadTask {
-    _uploadTask;
-    constructor(uploadTask) {
-        this._uploadTask = uploadTask;
-    }
-    abort() {
-        this._uploadTask.abort();
-    }
-    onProgressUpdate(callback) {
-        this._uploadTask.onProgressUpdate(callback);
-    }
-    offProgressUpdate(callback) {
-        this._uploadTask.offProgressUpdate(callback);
-    }
-    onHeadersReceived(callback) {
-        this._uploadTask.onHeadersReceived(callback);
-    }
-    offHeadersReceived(callback) {
-        this._uploadTask.offHeadersReceived(callback);
-    }
-}
-const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve, reject }) => {
-    let { url, timeout, header, formData, files, filePath, name } = args;
-    // header
-    const headers = {};
-    for (const name in header) {
-        headers[name.toLowerCase()] = header[name];
-    }
-    headers['Content-Type'] = 'multipart/form-data';
-    const multiFormDataList = [];
-    for (const name in formData) {
-        if (hasOwn$1(formData, name)) {
-            multiFormDataList.push({
-                name,
-                contentType: 'text/plain',
-                data: String(formData[name]),
-            });
-        }
-    }
-    if (files && files.length) {
-        for (let i = 0; i < files.length; i++) {
-            const { name, uri } = files[i];
-            multiFormDataList.push({
-                name: name || 'file',
-                contentType: 'application/octet-stream', // TODO 根据文件后缀设置contentType
-                filePath: getRealPath(uri),
-            });
-        }
-    }
-    else {
-        multiFormDataList.push({
-            name: name || 'file',
-            contentType: 'application/octet-stream', // TODO 根据文件后缀设置contentType
-            filePath: getRealPath(filePath),
-        });
-    }
-    const httpRequest = http.createHttp();
-    const emitter = new E();
-    const uploadTask = {
-        abort() {
-            httpRequest.destroy();
-        },
-        onHeadersReceived(callback) {
-            emitter.on('headersReceive', callback);
-        },
-        offHeadersReceived(callback) {
-            emitter.off('headersReceive', callback);
-        },
-        onProgressUpdate(callback) {
-            emitter.on('progress', callback);
-        },
-        offProgressUpdate(callback) {
-            emitter.off('progress', callback);
-        },
-    };
-    httpRequest.on('headersReceive', (header) => {
-        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
-        // emitter.emit('headersReceive', header);
-    });
-    httpRequest.on('dataSendProgress', ({ sendSize, totalSize }) => {
-        emitter.emit('progress', {
-            progress: Math.floor((sendSize / totalSize) * 100),
-            totalBytesSent: sendSize,
-            totalBytesExpectedToSend: totalSize,
-        });
-    });
-    httpRequest.request(url, {
-        header: headers,
-        method: http.RequestMethod.POST,
-        connectTimeout: timeout, // 不支持仅设置一个timeout
-        readTimeout: timeout,
-        multiFormDataList,
-        expectDataType: http.HttpDataType.STRING,
-    }, (err, res) => {
-        if (err) {
-            /**
-             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
-             * {"code":2300023,"message":"Failed writing received data to disk/application"}
-             */
-            reject(err.message);
-        }
-        else {
-            resolve({
-                data: res.result,
-                statusCode: res.responseCode,
-            });
-        }
-        uploadTask.offHeadersReceived();
-        uploadTask.offProgressUpdate();
-        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
-    });
-    return new UploadTask(uploadTask);
-}, UploadFileProtocol, UploadFileOptions);
-
-class DownloadTask {
-    _downloadTask;
-    constructor(downloadTask) {
-        this._downloadTask = downloadTask;
-    }
-    abort() {
-        this._downloadTask.abort();
-    }
-    onProgressUpdate(callback) {
-        this._downloadTask.onProgressUpdate(callback);
-    }
-    offProgressUpdate(callback) {
-        this._downloadTask.offProgressUpdate(callback);
-    }
-    onHeadersReceived(callback) {
-        this._downloadTask.onHeadersReceived(callback);
-    }
-    offHeadersReceived(callback) {
-        this._downloadTask.offHeadersReceived(callback);
-    }
-}
-const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve, reject }) => {
-    let { url, timeout, header } = args;
-    const httpRequest = http.createHttp();
-    const emitter = new E();
-    const downloadTask = {
-        abort() {
-            httpRequest.destroy();
-        },
-        onHeadersReceived(callback) {
-            emitter.on('headersReceive', callback);
-        },
-        offHeadersReceived(callback) {
-            emitter.off('headersReceive', callback);
-        },
-        onProgressUpdate(callback) {
-            emitter.on('progress', callback);
-        },
-        offProgressUpdate(callback) {
-            emitter.off('progress', callback);
-        },
-    };
-    httpRequest.on('headersReceive', (header) => {
-        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
-        // emitter.emit('headersReceive', header);
-    });
-    httpRequest.on('dataReceiveProgress', ({ receiveSize, totalSize }) => {
-        emitter.emit('progress', {
-            progress: Math.floor((receiveSize / totalSize) * 100),
-            totalBytesWritten: receiveSize,
-            totalBytesExpectedToWrite: totalSize,
-        });
-    });
-    const { TEMP_PATH } = getEnv();
-    const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp'; // TODO 正在咨询有无内置mimeType，目前无法根据content-type获取文件后缀
-    const stream = fs.createStreamSync(tempFilePath, 'w+');
-    let writePromise = Promise.resolve(0);
-    async function queueWrite(data) {
-        writePromise = writePromise.then(async (total) => {
-            const length = await stream.write(data);
-            return total + length;
-        });
-        return writePromise;
-    }
-    httpRequest.on('dataReceive', (data) => {
-        queueWrite(data);
-    });
-    httpRequest.requestInStream(url, {
-        header,
-        method: http.RequestMethod.GET,
-        connectTimeout: timeout, // 不支持仅设置一个timeout
-        readTimeout: timeout,
-    }, (err, statusCode) => {
-        // 此回调先于dataEnd回调执行
-        if (err) {
-            /**
-             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
-             * {"code":2300023,"message":"Failed writing received data to disk/application"}
-             */
-            reject(err.message);
-        }
-        else {
-            writePromise.then(() => {
-                stream.flushSync();
-                stream.closeSync();
-                resolve({
-                    tempFilePath,
-                    statusCode,
-                });
-            });
-        }
-        downloadTask.offHeadersReceived();
-        downloadTask.offProgressUpdate();
-        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
-    });
-    return new DownloadTask(downloadTask);
-}, DownloadFileProtocol, DownloadFileOptions);
 
 let config;
 /**
@@ -3854,14 +3004,14 @@ function encode(val) {
     return val;
 }
 function initUniPageUrl(path, query) {
-    const queryString = query ? stringifyQuery$1(query, encode) : '';
+    const queryString = query ? stringifyQuery(query, encode) : '';
     return {
         path: path.slice(1),
         query: queryString ? queryString.slice(1) : queryString,
     };
 }
 function initDebugRefresh(isTab, path, query) {
-    const queryString = query ? stringifyQuery$1(query, encode) : '';
+    const queryString = query ? stringifyQuery(query, encode) : '';
     return {
         isTab,
         arguments: JSON.stringify({
@@ -4791,30 +3941,31 @@ function _switchTab({ url, path, query, }) {
     });
 }
 
+// export * from './media/chooseImage'
+// export * from './media/chooseVideo'
+// export * from './media/getImageInfo'
+// export * from './media/getVideoInfo'
+// export * from './network/request'
+// export * from './network/uploadFile'
+// export * from './network/downloadFile'
+
 var uni$1 = {
   __proto__: null,
-  chooseImage: chooseImage,
-  chooseVideo: chooseVideo,
-  downloadFile: downloadFile,
-  getImageInfo: getImageInfo,
   getLocale: getLocale,
   getSystemInfoSync: getSystemInfoSync,
-  getVideoInfo: getVideoInfo,
   hideTabBar: hideTabBar,
   hideTabBarRedDot: hideTabBarRedDot,
   navigateBack: navigateBack,
   navigateTo: navigateTo,
   onLocaleChange: onLocaleChange,
   removeTabBarBadge: removeTabBarBadge,
-  request: request,
   setLocale: setLocale,
   setTabBarBadge: setTabBarBadge,
   setTabBarItem: setTabBarItem,
   setTabBarStyle: setTabBarStyle,
   showTabBar: showTabBar,
   showTabBarRedDot: showTabBarRedDot,
-  switchTab: switchTab,
-  uploadFile: uploadFile
+  switchTab: switchTab
 };
 
 const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
@@ -5035,7 +4186,15 @@ function initSubscribeHandlers() {
 
 function initGlobalEvent() {
     const plusGlobalEvent = plus.globalEvent;
+    const { emit } = UniServiceJSBridge;
     plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
+    plusGlobalEvent.addEventListener('pause', () => {
+        emit(ON_APP_ENTER_BACKGROUND);
+    });
+    plusGlobalEvent.addEventListener('resume', () => {
+        // TODO options
+        emit(ON_APP_ENTER_FOREGROUND, {});
+    });
     // TODO KeyboardHeightChange
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }
@@ -5116,6 +4275,12 @@ function registerApp(appVm) {
     __uniConfig.ready = true;
 }
 
+const __uniConfig$1 = globalThis.__uniConfig;
+// @ts-expect-error TODO 处理类型冲突
+const UniError = globalThis.UniError;
+// @ts-expect-error TODO 处理类型冲突
+const UTSJSONObject = globalThis.UTSJSONObject;
+
 var index = {
     uni: uni$1,
     getApp: getApp$1,
@@ -5125,4 +4290,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { index as default };
+export { Emitter, UTSJSONObject, UniError, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, extend, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };
