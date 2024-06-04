@@ -71,7 +71,7 @@ export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
   originalOptions.beforeAll = options.beforeAll
   originalOptions.beforeSuccess = options.beforeSuccess
   originalOptions.formatArgs = originalFormatArgs
-  return originalDefineAsyncApi<(options: T) => Promise<K>>(
+  return originalDefineAsyncApi(
     name,
     // @ts-expect-error
     fn,

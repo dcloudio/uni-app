@@ -72,7 +72,7 @@ function defineAsyncApi<T extends AsyncMethodOptionLike, K>(name: string, fn: (o
     originalOptions.beforeAll = options.beforeAll;
     originalOptions.beforeSuccess = options.beforeSuccess;
     originalOptions.formatArgs = originalFormatArgs;
-    return originalDefineAsyncApi<(options: T) => Promise<K>>(name, fn, originalProtocol, originalOptions);
+    return originalDefineAsyncApi(name, fn, originalProtocol, originalOptions);
 }
 export { ErrRes as ErrRes };
 export { ApiExcutor as ApiExcutor };

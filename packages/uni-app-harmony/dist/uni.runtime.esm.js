@@ -4944,8 +4944,6 @@ var index = {
     __definePage: definePage,
     __registerApp: registerApp,
     UniServiceJSBridge: UniServiceJSBridge$1,
-    UTSJSONObject: UTSJSONObject$1,
-    UniError,
 };
 
-export { Emitter, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, extend, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };
+export { Emitter, UTSJSONObject$1 as UTSJSONObject, UniError, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, extend, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };
