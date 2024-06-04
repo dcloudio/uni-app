@@ -48,6 +48,7 @@ const setTabBarStyleProps = [
   'selectedColor',
   'backgroundColor',
   'borderStyle',
+  'borderColor',
   'midButton',
 ]
 const setTabBarBadgeProps = ['badge', 'redDot']
@@ -59,7 +60,10 @@ function setProperties(
 ) {
   props.forEach(function (name) {
     if (hasOwn(propsData, name)) {
+      // if borderColor > borderStyle
       item[name] = propsData[name]
+    } else {
+      item[name] = undefined
     }
   })
 }
@@ -108,6 +112,7 @@ function setTabBar(
       }
       break
     case API_SET_TAB_BAR_STYLE:
+      // 设置 tabBar style
       setProperties(tabBar, setTabBarStyleProps, args)
       break
     case API_SHOW_TAB_BAR_RED_DOT:

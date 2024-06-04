@@ -355,6 +355,7 @@ declare namespace UniNamespace {
     selectedColor: string
     backgroundColor: string
     borderStyle?: 'black' | 'white'
+    borderColor?: string
     iconfontSrc?: string
     list: TabBarItemOptions[]
     blurEffect?: 'none' | 'dark' | 'extralight' | 'light'
