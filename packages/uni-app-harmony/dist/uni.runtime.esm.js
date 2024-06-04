@@ -883,6 +883,17 @@ function findInvokeCallbackByName(name) {
     }
     return false;
 }
+function removeKeepAliveApiCallback(name, callback) {
+    for (const key in invokeCallbacks) {
+        const item = invokeCallbacks[key];
+        if (item.callback === callback && item.name === name) {
+            delete invokeCallbacks[key];
+        }
+    }
+}
+function offKeepAliveApiCallback(name) {
+    UniServiceJSBridge.off('api.' + name);
+}
 function onKeepAliveApiCallback(name) {
     UniServiceJSBridge.on('api.' + name, (res) => {
         for (const key in invokeCallbacks) {
@@ -1142,6 +1153,23 @@ function wrapperOnApi(name, fn, options) {
         }
     };
 }
+function wrapperOffApi(name, fn, options) {
+    return (callback) => {
+        checkCallback(callback);
+        const errMsg = beforeInvokeApi(name, [callback], undefined, options);
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        name = name.replace('off', 'on');
+        removeKeepAliveApiCallback(name, callback);
+        // 是否还存在监听，若已不存在，则移除onMethod监听
+        const hasInvokeOnApi = findInvokeCallbackByName(name);
+        if (!hasInvokeOnApi) {
+            offKeepAliveApiCallback(name);
+            fn();
+        }
+    };
+}
 function parseErrMsg(errMsg) {
     if (!errMsg || isString(errMsg)) {
         return errMsg;
@@ -1179,6 +1207,12 @@ function wrapperAsyncApi(name, fn, protocol, options) {
 }
 function defineOnApi(name, fn, options) {
     return wrapperOnApi(name, fn, options);
+}
+function defineOffApi(name, fn, options) {
+    return wrapperOffApi(name, fn, options);
+}
+function defineTaskApi(name, fn, protocol, options) {
+    return promisify(name, wrapperTaskApi(name, fn, ('production' !== 'production') ? protocol : undefined, options));
 }
 function defineSyncApi(name, fn, protocol, options) {
     return wrapperSyncApi(name, fn, ('production' !== 'production') ? protocol : undefined, options);
@@ -1797,6 +1831,41 @@ function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
         styles[key] = parseStyleItem();
     });
     return styles;
+}
+
+/**
+ * 主要文件路径分为如下四种
+ * - 安装文件路径（仅能访问rawfile）鸿蒙$rawfile('index.html')对应一个Resource对象，为方便拼接路径，使用`resource://`协议表示
+ * - 临时文件路径（temp）   系统api如下载、选择图片产生的压缩文件会存放于此处，应用退出后自动删除
+ * - 缓存文件路径（cache）  用于存储图片缓存等，达到一定大小或时间会被系统自动清理
+ * - 用户文件路径（files）  持久保存
+ *
+ * TODO fileManager、原生fs对象？沙箱
+ *
+ * 参考文档：
+ * - [微信小程序文件系统](https://developers.weixin.qq.com/miniprogram/dev/framework/ability/file-system.html)
+ * - [鸿蒙应用沙箱目录](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/app-sandbox-directory-0000001774280086)
+ */
+/**
+ * 内部使用不暴露给用户
+ */
+const env = {
+    // RESOURCE_PATH: 'resource://',
+    // 以下路径均不以`/`结尾
+    USER_DATA_PATH: '',
+    TEMP_PATH: '',
+    CACHE_PATH: '',
+};
+function initEnv() {
+    const context = getContext();
+    env.USER_DATA_PATH = context.filesDir;
+    env.TEMP_PATH = context.tempDir;
+    env.CACHE_PATH = context.cacheDir;
+    return env;
+}
+const initEnvOnce = once(initEnv);
+function getEnv() {
+    return initEnvOnce();
 }
 
 const isObject = (val) => val !== null && typeof val === 'object';
@@ -4946,4 +5015,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { Emitter, UTSJSONObject$1 as UTSJSONObject, UniError, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, extend, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };
+export { Emitter, UTSJSONObject$1 as UTSJSONObject, UniError, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, extend, getEnv, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };

@@ -226,7 +226,9 @@ function initArkTSExtApi() {
       apiSpecifiers.push(api)
       apiTypeSpecifiers.push(apiType)
       defineExtApis.push(api)
-      uniExtApis.push(`${api}: ${apiType}`)
+      uniExtApis.push(
+        `${api}: ${apiType === 'Request' ? 'Request<Object>' : apiType}`
+      ) // TODO 支持泛型
     })
     importExtApis.push(
       `import { ${apiSpecifiers.join(

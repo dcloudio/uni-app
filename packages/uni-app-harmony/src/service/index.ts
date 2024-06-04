@@ -19,4 +19,5 @@ export default {
   UniServiceJSBridge,
 }
 
+export { getEnv } from '../platform/env.js'
 export { UTSJSONObject, UniError }

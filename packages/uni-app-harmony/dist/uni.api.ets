@@ -1,13 +1,20 @@
-import { IUniError, UTSObject, string } from './uts'
-import { UniError, UTSJSONObject } from '../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev'
-import { defineAsyncApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
+import { IUniError, UTSObject, UniError, UTSJSONObject, string } from './uts'
+import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
 
 import fs from '@ohos.file.fs';
 import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
+import http from '@ohos.net.http';
 import { ReadOptions } from '@ohos.file.fs';
+import fs1 from '@ohos.file.fs';
+import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getRealPath as getRealPath2, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import http1 from '@ohos.net.http';
+import http2 from '@ohos.net.http';
+import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 export function initUniExtApi(APP_ID: string) {
@@ -512,16 +519,713 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
+    type Request<T> = (param: RequestOptions<T>) => RequestTask;
+    class RequestOptions extends UTSObject {
+        url!: string;
+        data: Object | null = null;
+        header: UTSJSONObject | null = null;
+        method: RequestMethod | null = null;
+        timeout: number | null = null;
+        dataType: string | null = null;
+        responseType: string | null = null;
+        sslVerify: boolean | null = null;
+        withCredentials: boolean | null = null;
+        firstIpv4: boolean | null = null;
+        success: RequestSuccessCallback<T> | null = null;
+        fail: RequestFailCallback | null = null;
+        complete: RequestCompleteCallback | null = null;
+    }
+    class RequestSuccess extends UTSObject {
+        data: T | null = null;
+        statusCode!: number;
+        header!: Object;
+        cookies!: Array<string>;
+    }
+    type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
+    type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600009 | 602001;
+    interface RequestFail extends IUniError {
+        errCode: RequestErrorCode;
+    }
+    type RequestSuccessCallback<T> = (option: RequestSuccess<T>) => void;
+    type RequestFailCallback = (option: RequestFail) => void;
+    type RequestCompleteCallback = (option: Object) => void;
+    interface RequestTask {
+        abort(): void;
+    }
+    type UploadFile = (options: UploadFileOptions) => UploadTask;
+    class UploadFileOptionFiles extends UTSObject {
+        name: string | null = null;
+        uri!: string;
+        file: Object | null = null;
+    }
+    class UploadFileSuccess extends UTSObject {
+        data!: string;
+        statusCode!: number;
+    }
+    type UploadFileSuccessCallback = (result: UploadFileSuccess) => void;
+    interface UploadFileFail extends IUniError {
+        errCode: RequestErrorCode;
+    }
+    type UploadFileFailCallback = (result: UploadFileFail) => void;
+    type UploadFileCompleteCallback = (result: Object) => void;
+    class UploadFileOptions extends UTSObject {
+        url!: string;
+        filePath: string | null = null;
+        name: string | null = null;
+        files: (UploadFileOptionFiles[]) | null = null;
+        header: UTSJSONObject | null = null;
+        formData: UTSJSONObject | null = null;
+        timeout: number | null = null;
+        success: UploadFileSuccessCallback | null = null;
+        fail: UploadFileFailCallback | null = null;
+        complete: UploadFileCompleteCallback | null = null;
+    }
+    class OnProgressUpdateResult extends UTSObject {
+        progress!: number;
+        totalBytesSent!: number;
+        totalBytesExpectedToSend!: number;
+    }
+    type UploadFileProgressUpdateCallback = (result: OnProgressUpdateResult) => void;
+    interface UploadTask {
+        abort(): void;
+        onProgressUpdate(callback: UploadFileProgressUpdateCallback): void;
+    }
+    type DownloadFile = (options: DownloadFileOptions) => DownloadTask;
+    class DownloadFileSuccess extends UTSObject {
+        tempFilePath!: string;
+        statusCode!: number;
+    }
+    type DownloadFileSuccessCallback = (result: DownloadFileSuccess) => void;
+    interface DownloadFileFail extends IUniError {
+        errCode: RequestErrorCode;
+    }
+    type DownloadFileFailCallback = (result: DownloadFileFail) => void;
+    type DownloadFileComplete = Object;
+    type DownloadFileCompleteCallback = (result: DownloadFileComplete) => void;
+    class DownloadFileOptions extends UTSObject {
+        url!: string;
+        header: UTSJSONObject | null = null;
+        filePath: string | null = null;
+        timeout: number | null = null;
+        success: DownloadFileSuccessCallback | null = null;
+        fail: DownloadFileFailCallback | null = null;
+        complete: DownloadFileCompleteCallback | null = null;
+    }
+    class OnProgressDownloadResult extends UTSObject {
+        progress!: number;
+        totalBytesWritten!: number;
+        totalBytesExpectedToWrite!: number;
+    }
+    type DownloadFileProgressUpdateCallback = (result: OnProgressDownloadResult) => void;
+    interface DownloadTask {
+        abort(): void;
+        onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
+    }
+    const API_REQUEST = 'request';
+    const RequestApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'data',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'method',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'dataType',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'responseType',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ],
+        [
+            'sslVerify',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'withCredentials',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'firstIpv4',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ]
+    ]);
+    const RequestApiOptions: ApiOptions<RequestOptions<Object>> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: RequestOptions<Object>)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ],
+            [
+                'data',
+                (data: object, params: RequestOptions<Object>)=>{
+                    if (data == null) {
+                        params.data = '';
+                    }
+                }
+            ],
+            [
+                'method',
+                (method: string, params: RequestOptions<Object>)=>{
+                    params.method = (method || 'GET').toUpperCase() as RequestMethod;
+                }
+            ],
+            [
+                'dataType',
+                (dataType: string, params: RequestOptions<Object>)=>{
+                    if (dataType == null) {
+                        params.dataType = 'json';
+                    }
+                }
+            ],
+            [
+                'responseType',
+                (responseType: string, params: RequestOptions<Object>)=>{
+                    if (responseType == null) {
+                        params.responseType = 'text';
+                    }
+                }
+            ],
+            [
+                'timeout',
+                (timeout: number, params: RequestOptions<Object>)=>{
+                    if (timeout == null) {
+                        params.timeout = 60000;
+                    }
+                }
+            ],
+            [
+                'sslVerify',
+                (sslVerify: boolean, params: RequestOptions<Object>)=>{
+                    if (sslVerify == null) {
+                        params.sslVerify = true;
+                    }
+                }
+            ],
+            [
+                'withCredentials',
+                (withCredentials: boolean, params: RequestOptions<Object>)=>{
+                    if (withCredentials == null) {
+                        params.withCredentials = false;
+                    }
+                }
+            ],
+            [
+                'firstIpv4',
+                (firstIpv4: boolean, params: RequestOptions<Object>)=>{
+                    if (firstIpv4 == null) {
+                        params.firstIpv4 = false;
+                    }
+                }
+            ]
+        ])
+    };
+    const API_DOWNLOAD_FILE = 'downloadFile';
+    const DownloadFileApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ]
+    ]);
+    const DownloadFileApiOptions: ApiOptions<DownloadFileOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: DownloadFileOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ]
+        ])
+    };
+    const API_UPLOAD_FILE = 'uploadFile';
+    const UploadFileApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'filePath',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'name',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'formData',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ]
+    ]);
+    const UploadFileApiOptions: ApiOptions<UploadFileOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: UploadFileOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ],
+            [
+                'filePath',
+                (filePath: string, params: UploadFileOptions)=>{
+                    if (filePath == null) {
+                        throw new Error('filePath is required');
+                    }
+                    params.filePath = getRealPath1(filePath);
+                }
+            ],
+            [
+                'name',
+                (name: string, params: UploadFileOptions)=>{
+                    if (name == null) {
+                        params.name = 'file';
+                    }
+                }
+            ]
+        ])
+    };
+    const cookiesParse = (header: Record<string, string>)=>{
+        let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
+        let cookiesArr: string[] = [];
+        if (!cookiesStr) {
+            return [];
+        }
+        if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
+            cookiesStr = cookiesStr.slice(1, -1);
+        }
+        const handleCookiesArr = cookiesStr.split(';');
+        for(let i = 0; i < handleCookiesArr.length; i++){
+            if (handleCookiesArr[i].indexOf('Expires=') !== -1 || handleCookiesArr[i].indexOf('expires=') !== -1) {
+                cookiesArr.push(handleCookiesArr[i].replace(',', ''));
+            } else {
+                cookiesArr.push(handleCookiesArr[i]);
+            }
+        }
+        cookiesArr = cookiesArr.join(';').split(',');
+        return cookiesArr;
+    };
+    interface IRequestTask {
+        abort: Function;
+        onHeadersReceived: Function;
+        offHeadersReceived: Function;
+    }
+    class RequestTask1 implements RequestTask {
+        private _requestTask: IRequestTask;
+        constructor(requestTask: IRequestTask){
+            this._requestTask = requestTask;
+        }
+        abort() {
+            this._requestTask.abort();
+        }
+        onHeadersReceived(callback: Function) {
+            this._requestTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._requestTask.offHeadersReceived(callback);
+        }
+    }
+    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExcutor<RequestSuccess<Object>>)=>{
+        let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
+        let contentType = '';
+        const headers = {} as Record<string, Object>;
+        if (header) {
+            const headerRecord = header as Object as Record<string, string>;
+            const headerKeys = Object.keys(headerRecord);
+            for(let i = 0; i < headerKeys.length; i++){
+                const name = headerKeys[i];
+                if (name.toLowerCase() === 'content-type') {
+                    contentType = headerRecord[name] as string;
+                }
+                headers[name.toLowerCase()] = headerRecord[name];
+            }
+        }
+        if (!contentType && method === 'POST') {
+            headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+        }
+        if (method === 'GET' && data && isPlainObject(data)) {
+            const dataRecord = data as Record<string, Object>;
+            url += '?' + Object.keys(dataRecord).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
+            }).join('&');
+            data = null;
+        } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && isPlainObject(data)) {
+            data = JSON.stringify(data);
+        } else if (method !== 'GET' && contentType && contentType.indexOf('application/x-www-form-urlencoded') === 0 && isPlainObject(data)) {
+            const dataRecord = data as Record<string, Object>;
+            data = Object.keys(dataRecord).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
+            }).join('&');
+        }
+        let expectDataType: http.HttpDataType = http.HttpDataType.STRING;
+        if (responseType === 'arraybuffer') {
+            expectDataType = http.HttpDataType.ARRAY_BUFFER;
+        } else if (dataType === 'json') {
+            expectDataType = http.HttpDataType.OBJECT;
+        } else {
+            expectDataType = http.HttpDataType.STRING;
+        }
+        const httpRequest = http.createHttp();
+        const emitter = new Emitter();
+        const requestTask: IRequestTask = {
+            abort () {
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            }
+        };
+        httpRequest.on('headersReceive', (header: Object)=>{});
+        httpRequest.request(url, {
+            header: headers,
+            method: (method || 'GET').toUpperCase() as http.RequestMethod,
+            extraData: data,
+            expectDataType,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined
+        } as http.HttpRequestOptions, (err, res)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    data: res.result,
+                    statusCode: res.responseCode,
+                    header: res.header,
+                    cookies: cookiesParse(res.header as Record<string, string>)
+                } as RequestSuccess<Object>);
+            }
+            requestTask.offHeadersReceived();
+            httpRequest.destroy();
+        });
+        return new RequestTask1(requestTask);
+    }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
+    interface IUploadTask {
+        abort: Function;
+        onHeadersReceived: Function;
+        offHeadersReceived: Function;
+        onProgressUpdate: Function;
+        offProgressUpdate: Function;
+    }
+    class UploadTask1 implements UploadTask {
+        private _uploadTask: IUploadTask;
+        constructor(uploadTask: IUploadTask){
+            this._uploadTask = uploadTask;
+        }
+        abort() {
+            this._uploadTask.abort();
+        }
+        onProgressUpdate(callback: Function) {
+            this._uploadTask.onProgressUpdate(callback);
+        }
+        offProgressUpdate(callback: Function | null = null) {
+            this._uploadTask.offProgressUpdate(callback);
+        }
+        onHeadersReceived(callback: Function) {
+            this._uploadTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._uploadTask.offHeadersReceived(callback);
+        }
+    }
+    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExcutor<UploadFileSuccess>)=>{
+        let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
+        const headers = {} as Record<string, Object>;
+        if (header) {
+            const headerRecord = header as Object as Record<string, string>;
+            const headerKeys = Object.keys(headerRecord);
+            for(let i = 0; i < headerKeys.length; i++){
+                const name = headerKeys[i];
+                headers[name.toLowerCase()] = headerRecord[name];
+            }
+        }
+        headers['Content-Type'] = 'multipart/form-data';
+        const multiFormDataList = [] as Array<http1.MultiFormData>;
+        if (formData) {
+            const formDataRecord = formData as Object as Record<string, Object>;
+            const formDataKeys = Object.keys(formDataRecord);
+            for(let i = 0; i < formDataKeys.length; i++){
+                const name = formDataKeys[i];
+                multiFormDataList.push({
+                    name,
+                    contentType: 'text/plain',
+                    data: String(formDataRecord[name])
+                } as http1.MultiFormData);
+            }
+        }
+        if (files && files.length) {
+            for(let i = 0; i < files.length; i++){
+                const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
+                multiFormDataList.push({
+                    name: name || 'file',
+                    contentType: 'application/octet-stream',
+                    filePath: getRealPath2(uri!)
+                } as http1.MultiFormData);
+            }
+        } else {
+            multiFormDataList.push({
+                name: name || 'file',
+                contentType: 'application/octet-stream',
+                filePath: getRealPath2(filePath!)
+            } as http1.MultiFormData);
+        }
+        const httpRequest = http1.createHttp();
+        const emitter = new Emitter1();
+        const uploadTask: IUploadTask = {
+            abort () {
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            },
+            onProgressUpdate (callback: Function) {
+                emitter.on('progress', callback);
+            },
+            offProgressUpdate (callback: Function | null = null) {
+                emitter.off('progress', callback);
+            }
+        };
+        httpRequest.on('headersReceive', (header: Object)=>{});
+        httpRequest.on('dataSendProgress', (ref)=>{
+            let sendSize = ref.sendSize, totalSize = ref.totalSize;
+            emitter.emit('progress', {
+                progress: Math.floor((sendSize / totalSize) * 100),
+                totalBytesSent: sendSize,
+                totalBytesExpectedToSend: totalSize
+            } as OnProgressUpdateResult);
+        });
+        httpRequest.request(url, {
+            header: headers,
+            method: http1.RequestMethod.POST,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined,
+            multiFormDataList,
+            expectDataType: http1.HttpDataType.STRING
+        } as http1.HttpRequestOptions, (err, res)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    data: res.result as string,
+                    statusCode: res.responseCode
+                } as UploadFileSuccess);
+            }
+            uploadTask.offHeadersReceived();
+            uploadTask.offProgressUpdate();
+            httpRequest.destroy();
+        });
+        return new UploadTask1(uploadTask);
+    }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
+    interface IDownloadTask {
+        abort: Function;
+        onHeadersReceived: Function;
+        offHeadersReceived: Function;
+        onProgressUpdate: Function;
+        offProgressUpdate: Function;
+    }
+    class DownloadTask1 implements DownloadTask {
+        private _downloadTask: IDownloadTask;
+        constructor(downloadTask: IDownloadTask){
+            this._downloadTask = downloadTask;
+        }
+        abort() {
+            this._downloadTask.abort();
+        }
+        onProgressUpdate(callback: Function) {
+            this._downloadTask.onProgressUpdate(callback);
+        }
+        offProgressUpdate(callback: Function | null = null) {
+            this._downloadTask.offProgressUpdate(callback);
+        }
+        onHeadersReceived(callback: Function) {
+            this._downloadTask.onHeadersReceived(callback);
+        }
+        offHeadersReceived(callback: Function | null = null) {
+            this._downloadTask.offHeadersReceived(callback);
+        }
+    }
+    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExcutor<DownloadFileSuccess>)=>{
+        let url = args.url, timeout = args.timeout, header = args.header;
+        const httpRequest = http2.createHttp();
+        const emitter = new Emitter2();
+        const downloadTask: IDownloadTask = {
+            abort () {
+                httpRequest.destroy();
+            },
+            onHeadersReceived (callback: Function) {
+                emitter.on('headersReceive', callback);
+            },
+            offHeadersReceived (callback: Function | null = null) {
+                emitter.off('headersReceive', callback);
+            },
+            onProgressUpdate (callback: Function) {
+                emitter.on('progress', callback);
+            },
+            offProgressUpdate (callback: Function | null = null) {
+                emitter.off('progress', callback);
+            }
+        };
+        httpRequest.on('headersReceive', (header: Object)=>{});
+        httpRequest.on('dataReceiveProgress', (ref)=>{
+            let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
+            emitter.emit('progress', {
+                progress: Math.floor((receiveSize / totalSize) * 100),
+                totalBytesWritten: receiveSize,
+                totalBytesExpectedToWrite: totalSize
+            } as OnProgressDownloadResult);
+        });
+        const TEMP_PATH = getEnv().TEMP_PATH as string;
+        const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp';
+        const stream = fs1.createStreamSync(tempFilePath, 'w+');
+        let writePromise = Promise.resolve(0);
+        const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
+            writePromise = writePromise.then(async (total)=>{
+                const length = await stream.write(data);
+                return total + length;
+            });
+            return writePromise;
+        };
+        httpRequest.on('dataReceive', (data)=>{
+            queueWrite(data);
+        });
+        httpRequest.requestInStream(url, {
+            header: header ? header : {} as ESObject,
+            method: http2.RequestMethod.GET,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined
+        } as http2.HttpRequestOptions, (err, statusCode)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                writePromise.then(()=>{
+                    stream.flushSync();
+                    stream.closeSync();
+                    exec.resolve({
+                        tempFilePath,
+                        statusCode
+                    } as DownloadFileSuccess);
+                });
+            }
+            downloadTask.offHeadersReceived();
+            downloadTask.offProgressUpdate();
+            httpRequest.destroy();
+        });
+        return new DownloadTask1(downloadTask);
+    }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
     interface UniExtApi {
         chooseImage: ChooseImage;
         getImageInfo: GetImageInfo;
         chooseVideo: ChooseVideo;
         getVideoInfo: GetVideoInfo;
+        request: Request<Object>;
+        uploadFile: UploadFile;
+        downloadFile: DownloadFile;
     }
     return {
         chooseImage,
         getImageInfo,
         chooseVideo,
-        getVideoInfo
+        getVideoInfo,
+        request,
+        uploadFile,
+        downloadFile
     } as UniExtApi;
 }

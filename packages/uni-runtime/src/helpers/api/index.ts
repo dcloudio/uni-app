@@ -93,9 +93,9 @@ export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
   )
 }
 
-export function defineTaskApi<T, K>(
+export function defineTaskApi<T, K, TASK>(
   name: string,
-  fn: (options: T, res: ApiExcutor<K>) => void,
+  fn: (options: T, res: ApiExcutor<K>) => TASK,
   protocol: Map<string, ProtocolOptions>,
   options: ApiOptions<T>
 ): Object {
