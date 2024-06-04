@@ -23,7 +23,7 @@ const BORDER_COLORS = new Map<string, string>([
   ['black', 'rgba(0, 0, 0, 0.33)'],
 ])
 
-export function getBorderStyle(borderStyle: string): string {
+function getBorderStyle(borderStyle: string): string {
   const value = BORDER_COLORS.get(borderStyle)
   return value ?? borderStyle
 }
@@ -34,7 +34,15 @@ export function fixBorderStyle(tabBarConfig: Map<string, any>) {
   if (!isString(borderStyle)) {
     borderStyle = 'black'
   }
-  tabBarConfig.set('borderStyle', getBorderStyle(borderStyle as string))
+
+  let borderColor = getBorderStyle(borderStyle as string)
+  // 同时存在 borderColor>borderStyle，前者没有颜色限制，也不做格式化
+  if (tabBarConfig.has('borderColor')) {
+    borderColor = tabBarConfig.get('borderColor')
+    tabBarConfig.delete('borderColor')
+  }
+
+  tabBarConfig.set('borderStyle', borderColor)
 }
 
 function getTabList() {
