@@ -1367,6 +1367,7 @@ var onThemeChange = function(themeMode) {
           });
         }
       });
+      fixBorderStyle(tabBarStyle);
       tabBar.setTabBarStyle(tabBarStyle);
     }
   };
