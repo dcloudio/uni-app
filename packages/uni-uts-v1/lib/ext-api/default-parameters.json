@@ -64,5 +64,13 @@
       null,
       "null"
     ]
+  },
+  "uni-compass": {
+    "startCompass": [
+      "null"
+    ],
+    "stopCompass": [
+      "null"
+    ]
   }
 }
