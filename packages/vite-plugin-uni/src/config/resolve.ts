@@ -5,6 +5,7 @@ import {
   isWindows,
   normalizePath,
   requireResolve,
+  resolveEncryptUniModule,
   resolveUTSAppModule,
   resolveUTSModule,
   uni_app_x_extensions,
@@ -37,6 +38,14 @@ export const customResolver: ResolverFunction = (updatedId, importer) => {
     return normalizePath(
       requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
     )
+  }
+  const resolveId = resolveEncryptUniModule(
+    updatedId,
+    process.env.UNI_UTS_PLATFORM,
+    process.env.UNI_APP_X === 'true'
+  )
+  if (resolveId) {
+    return resolveId
   }
   return requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
 }

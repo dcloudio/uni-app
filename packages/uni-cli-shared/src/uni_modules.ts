@@ -5,6 +5,7 @@ import { sync } from 'fast-glob'
 import type { UTSTargetLanguage } from './uts'
 import { normalizePath } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
+import { M } from './messages'
 
 export type DefineOptions = {
   name?: string
@@ -665,6 +666,14 @@ export function resolveEncryptUniModule(
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
     if (uniModuleId in encryptUniModules) {
+      if (parts[index + 2]) {
+        console.warn(
+          M['uni_modules.import']
+            .replace('{0}', uniModuleId)
+            .replace('{1}', uniModuleId)
+            .replace('{2}', parts.slice(index + 2).join('/'))
+        )
+      }
       // 原生平台走旧的uts-proxy
       return normalizePath(
         path.join(

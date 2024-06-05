@@ -31,6 +31,7 @@ export {
   DefineOptions,
   Defines,
   getUniExtApiProviderRegisters,
+  resolveEncryptUniModule,
 } from './uni_modules'
 
 export { M } from './messages'
