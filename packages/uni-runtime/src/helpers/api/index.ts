@@ -8,6 +8,7 @@ import {
 
 type Anything = Object | null | undefined
 type NullType = null | undefined
+type FormatArgsValueType = Function | string | number | boolean
 
 export interface ErrRes {
   errMsg?: string | null
@@ -27,7 +28,7 @@ export interface ApiOptions<T> {
   beforeInvoke?: (args: Object) => boolean | void | string
   beforeAll?: (res: Object) => void
   beforeSuccess?: (res: Object, args: T) => void
-  formatArgs?: Map<string, Function>
+  formatArgs?: Map<string, FormatArgsValueType>
 }
 interface AsyncMethodOptionLike {
   success?: Function | null
@@ -47,9 +48,9 @@ function getPropType(type: string | NullType): Anything {
   return TYPE_MAP.get(type)
 }
 
-function buildProtocol(protocol: Map<string, ProtocolOptions>) {
+function buildProtocol(protocol?: Map<string, ProtocolOptions>) {
   const originalProtocol = {} as Record<string, Object>
-  protocol.forEach((value, key) => {
+  protocol?.forEach((value, key) => {
     const protocol = (originalProtocol[key] = {} as Record<string, Anything>)
     protocol.name = value.name
     protocol.type = getPropType(value.type)
@@ -59,26 +60,28 @@ function buildProtocol(protocol: Map<string, ProtocolOptions>) {
   return originalProtocol
 }
 
-function buildOptions(options: ApiOptions<AsyncMethodOptionLike>) {
-  const originalFormatArgs = {} as Record<string, Function>
-  if (options.formatArgs) {
-    options.formatArgs.forEach((value, key) => {
-      originalFormatArgs[key] = value
-    })
-  }
+function buildOptions(options?: ApiOptions<AsyncMethodOptionLike>) {
+  const originalFormatArgs = {} as Record<string, FormatArgsValueType>
   const originalOptions = {} as Record<string, Anything>
-  originalOptions.beforeInvoke = options.beforeInvoke
-  originalOptions.beforeAll = options.beforeAll
-  originalOptions.beforeSuccess = options.beforeSuccess
-  originalOptions.formatArgs = originalFormatArgs
+  if (options) {
+    if (options.formatArgs) {
+      options.formatArgs.forEach((value, key) => {
+        originalFormatArgs[key] = value
+      })
+    }
+    originalOptions.beforeInvoke = options.beforeInvoke
+    originalOptions.beforeAll = options.beforeAll
+    originalOptions.beforeSuccess = options.beforeSuccess
+    originalOptions.formatArgs = originalFormatArgs
+  }
   return originalOptions
 }
 
 export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
   name: string,
   fn: (options: T, res: ApiExcutor<K>) => void,
-  protocol: Map<string, ProtocolOptions>,
-  options: ApiOptions<T>
+  protocol?: Map<string, ProtocolOptions>,
+  options?: ApiOptions<T>
 ): Function {
   const originalProtocol = buildProtocol(protocol)
   const originalOptions = buildOptions(
