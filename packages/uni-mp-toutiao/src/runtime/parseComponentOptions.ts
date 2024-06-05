@@ -29,25 +29,44 @@ export function isPage(mpInstance: MPComponentInstance) {
 
 interface RelationOptions {
   vuePid: string
-  nodeId: string
+  nodeId: number
   webviewId: string
 }
 
 export const instances: Record<string, ComponentPublicInstance> =
   Object.create(null)
 
-export function initRelation(mpInstance: MPComponentInstance, detail: Object) {
+export function initRelation(
+  mpInstance: MPComponentInstance,
+  detail: Record<string, any>
+) {
   // 头条 triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
-  const nodeId = hasOwn(mpInstance, '__nodeId__')
+  const nodeId = (hasOwn(mpInstance, '__nodeId__')
     ? mpInstance.__nodeId__
-    : mpInstance.__nodeid__
+    : mpInstance.__nodeid__) as unknown as number
   const webviewId = mpInstance.__webviewId__ + ''
   instances[webviewId + '_' + nodeId] = mpInstance.$vm!
-  mpInstance.triggerEvent('__l', {
-    vuePid: (detail as any).vuePid,
-    nodeId,
-    webviewId,
-  })
+
+  // 使用 virtualHost 后，头条不支持 triggerEvent，通过主动调用方法抹平差异
+  if (mpInstance?.$vm?.$options?.options?.virtualHost) {
+    nextSetDataTick(mpInstance, () => {
+      handleLink.apply(mpInstance, [
+        {
+          detail: {
+            vuePid: detail.vuePid,
+            nodeId,
+            webviewId,
+          },
+        },
+      ])
+    })
+  } else {
+    mpInstance.triggerEvent('__l', {
+      vuePid: (detail as any).vuePid,
+      nodeId,
+      webviewId,
+    })
+  }
 }
 
 export function handleLink(
