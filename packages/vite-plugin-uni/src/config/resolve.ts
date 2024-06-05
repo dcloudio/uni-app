@@ -34,18 +34,18 @@ export const customResolver: ResolverFunction = (updatedId, importer) => {
   if (utsModuleFile) {
     return isWindows ? normalizePath(utsModuleFile) : utsModuleFile
   }
-  if (isWindows) {
-    return normalizePath(
-      requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
-    )
-  }
   const resolveId = resolveEncryptUniModule(
-    updatedId,
+    normalizePath(updatedId),
     process.env.UNI_UTS_PLATFORM,
     process.env.UNI_APP_X === 'true'
   )
   if (resolveId) {
     return resolveId
+  }
+  if (isWindows) {
+    return normalizePath(
+      requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
+    )
   }
   return requireResolve(updatedId, importer || process.env.UNI_INPUT_DIR)
 }
