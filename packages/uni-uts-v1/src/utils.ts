@@ -788,3 +788,11 @@ function formatExtApiProviderName(service: string, name: string) {
     camelize(name)
   )}Provider`
 }
+
+export function requireUniHelpers() {
+  require(path.resolve(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    'uni_helpers/lib/bytenode'
+  ))
+  return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+}

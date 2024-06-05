@@ -363,7 +363,12 @@ export async function runKotlinDev(
       jarFile,
       resolveSourceMapFile(outputDir, kotlinFile),
       extraJars.concat(depJars),
-      createStderrListener(outputDir, resolveSourceMapPath(), waiting)
+      createStderrListener(
+        outputDir,
+        resolveSourceMapPath(),
+        waiting,
+        hbuilderFormatter
+      )
     )
 
     // 等待 stderrListener 执行完毕
@@ -829,7 +834,8 @@ function createPluginGlob(plugins?: string[]) {
 export function createStderrListener(
   inputDir: string,
   sourceMapDir: string,
-  waiting: { done: Promise<void> | undefined }
+  waiting: { done: Promise<void> | undefined },
+  format: (msg: MessageSourceLocation) => string
 ) {
   return async function stderrListener(data: any) {
     waiting.done = new Promise(async (resolve) => {
@@ -855,7 +861,7 @@ export function createStderrListener(
               inputDir,
               sourceMapDir,
               replaceTabsWithSpace: true,
-              format: hbuilderFormatter,
+              format,
             })
             if (msg) {
               // 异步输出，保证插件编译失败的日志在他之前输出，不能使用process.nextTick

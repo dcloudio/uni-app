@@ -1,10 +1,9 @@
-import path from 'path'
 // import debug from 'debug'
 import { extend, isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { FilterPattern } from '@rollup/pluginutils'
 
-import { COMMON_EXCLUDE } from '@dcloudio/uni-cli-shared'
+import { COMMON_EXCLUDE, requireUniHelpers } from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
@@ -71,14 +70,7 @@ export function initPlugins(
     process.env.UNI_COMPILE_TARGET !== 'uni_modules'
   ) {
     try {
-      require(path.resolve(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        'uni_helpers/lib/bytenode'
-      ))
-      const { V } = require(path.join(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        'uni_helpers'
-      ))
+      const { V } = requireUniHelpers()
       addPlugin(
         plugins,
         V({

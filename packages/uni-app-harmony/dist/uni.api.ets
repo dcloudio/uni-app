@@ -6,15 +6,14 @@ import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
 import http from '@ohos.net.http';
+import { API_UPLOAD_FILE, UploadFileOptions as UploadFileOptions1, UploadFileProtocol, defineTaskApi as defineTaskApi1, hasOwn, getRealPath as getRealPath1, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { ReadOptions } from '@ohos.file.fs';
 import fs1 from '@ohos.file.fs';
-import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath2, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getEnv, Emitter as Emitter2, API_DOWNLOAD_FILE, DownloadFileOptions as DownloadFileOptions1, DownloadFileProtocol, defineTaskApi as defineTaskApi2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
-import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { isPlainObject, API_REQUEST, RequestOptions as RequestOptions1, RequestProtocol, defineTaskApi, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 export function initUniExtApi(APP_ID: string) {
@@ -520,7 +519,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
     type Request<T> = (param: RequestOptions<T>) => RequestTask;
-    class RequestOptions extends UTSObject {
+    class RequestOptions<T> extends UTSObject {
         url!: string;
         data: Object | null = null;
         header: UTSJSONObject | null = null;
@@ -535,7 +534,7 @@ export function initUniExtApi(APP_ID: string) {
         fail: RequestFailCallback | null = null;
         complete: RequestCompleteCallback | null = null;
     }
-    class RequestSuccess extends UTSObject {
+    class RequestSuccess<T> extends UTSObject {
         data: T | null = null;
         statusCode!: number;
         header!: Object;
@@ -621,263 +620,7 @@ export function initUniExtApi(APP_ID: string) {
         abort(): void;
         onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
     }
-    const API_REQUEST = 'request';
-    const RequestApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'url',
-            {
-                type: 'string',
-                required: true
-            }
-        ],
-        [
-            'data',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'header',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'method',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'dataType',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'responseType',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number',
-                required: false
-            }
-        ],
-        [
-            'sslVerify',
-            {
-                type: 'boolean',
-                required: false
-            }
-        ],
-        [
-            'withCredentials',
-            {
-                type: 'boolean',
-                required: false
-            }
-        ],
-        [
-            'firstIpv4',
-            {
-                type: 'boolean',
-                required: false
-            }
-        ]
-    ]);
-    const RequestApiOptions: ApiOptions<RequestOptions<Object>> = {
-        formatArgs: new Map<string, Function>([
-            [
-                'url',
-                (url: string, params: RequestOptions<Object>)=>{
-                    if (url == null) {
-                        throw new Error('url is required');
-                    }
-                }
-            ],
-            [
-                'data',
-                (data: object, params: RequestOptions<Object>)=>{
-                    if (data == null) {
-                        params.data = '';
-                    }
-                }
-            ],
-            [
-                'method',
-                (method: string, params: RequestOptions<Object>)=>{
-                    params.method = (method || 'GET').toUpperCase() as RequestMethod;
-                }
-            ],
-            [
-                'dataType',
-                (dataType: string, params: RequestOptions<Object>)=>{
-                    if (dataType == null) {
-                        params.dataType = 'json';
-                    }
-                }
-            ],
-            [
-                'responseType',
-                (responseType: string, params: RequestOptions<Object>)=>{
-                    if (responseType == null) {
-                        params.responseType = 'text';
-                    }
-                }
-            ],
-            [
-                'timeout',
-                (timeout: number, params: RequestOptions<Object>)=>{
-                    if (timeout == null) {
-                        params.timeout = 60000;
-                    }
-                }
-            ],
-            [
-                'sslVerify',
-                (sslVerify: boolean, params: RequestOptions<Object>)=>{
-                    if (sslVerify == null) {
-                        params.sslVerify = true;
-                    }
-                }
-            ],
-            [
-                'withCredentials',
-                (withCredentials: boolean, params: RequestOptions<Object>)=>{
-                    if (withCredentials == null) {
-                        params.withCredentials = false;
-                    }
-                }
-            ],
-            [
-                'firstIpv4',
-                (firstIpv4: boolean, params: RequestOptions<Object>)=>{
-                    if (firstIpv4 == null) {
-                        params.firstIpv4 = false;
-                    }
-                }
-            ]
-        ])
-    };
-    const API_DOWNLOAD_FILE = 'downloadFile';
-    const DownloadFileApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'url',
-            {
-                type: 'string',
-                required: true
-            }
-        ],
-        [
-            'header',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number',
-                required: false
-            }
-        ]
-    ]);
-    const DownloadFileApiOptions: ApiOptions<DownloadFileOptions> = {
-        formatArgs: new Map<string, Function>([
-            [
-                'url',
-                (url: string, params: DownloadFileOptions)=>{
-                    if (url == null) {
-                        throw new Error('url is required');
-                    }
-                }
-            ]
-        ])
-    };
-    const API_UPLOAD_FILE = 'uploadFile';
-    const UploadFileApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'url',
-            {
-                type: 'string',
-                required: true
-            }
-        ],
-        [
-            'filePath',
-            {
-                type: 'string',
-                required: true
-            }
-        ],
-        [
-            'name',
-            {
-                type: 'string',
-                required: false
-            }
-        ],
-        [
-            'header',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'formData',
-            {
-                type: 'object',
-                required: false
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number',
-                required: false
-            }
-        ]
-    ]);
-    const UploadFileApiOptions: ApiOptions<UploadFileOptions> = {
-        formatArgs: new Map<string, Function>([
-            [
-                'url',
-                (url: string, params: UploadFileOptions)=>{
-                    if (url == null) {
-                        throw new Error('url is required');
-                    }
-                }
-            ],
-            [
-                'filePath',
-                (filePath: string, params: UploadFileOptions)=>{
-                    if (filePath == null) {
-                        throw new Error('filePath is required');
-                    }
-                    params.filePath = getRealPath1(filePath);
-                }
-            ],
-            [
-                'name',
-                (name: string, params: UploadFileOptions)=>{
-                    if (name == null) {
-                        params.name = 'file';
-                    }
-                }
-            ]
-        ])
-    };
+    type API_TYPE_REQUEST = (options: RequestOptions<Object>) => RequestTask;
     const cookiesParse = (header: Record<string, string>)=>{
         let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
         let cookiesArr: string[] = [];
@@ -918,36 +661,30 @@ export function initUniExtApi(APP_ID: string) {
             this._requestTask.offHeadersReceived(callback);
         }
     }
-    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExcutor<RequestSuccess<Object>>)=>{
+    const request = defineTaskApi<API_TYPE_REQUEST>(API_REQUEST, (args, ref)=>{
+        let resolve = ref.resolve, reject = ref.reject;
         let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
-        let contentType = '';
+        let contentType;
         const headers = {} as Record<string, Object>;
-        if (header) {
-            const headerRecord = header as Object as Record<string, string>;
-            const headerKeys = Object.keys(headerRecord);
-            for(let i = 0; i < headerKeys.length; i++){
-                const name = headerKeys[i];
-                if (name.toLowerCase() === 'content-type') {
-                    contentType = headerRecord[name] as string;
-                }
-                headers[name.toLowerCase()] = headerRecord[name];
+        for(const name in header){
+            if (name.toLowerCase() === 'content-type') {
+                contentType = header[name];
             }
+            headers[name.toLowerCase()] = header[name];
         }
         if (!contentType && method === 'POST') {
             headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
         }
         if (method === 'GET' && data && isPlainObject(data)) {
-            const dataRecord = data as Record<string, Object>;
-            url += '?' + Object.keys(dataRecord).map((key)=>{
-                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
+            url += '?' + Object.keys(data).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }).join('&');
-            data = null;
+            data = undefined;
         } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && isPlainObject(data)) {
             data = JSON.stringify(data);
         } else if (method !== 'GET' && contentType && contentType.indexOf('application/x-www-form-urlencoded') === 0 && isPlainObject(data)) {
-            const dataRecord = data as Record<string, Object>;
-            data = Object.keys(dataRecord).map((key)=>{
-                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
+            data = Object.keys(data).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
             }).join('&');
         }
         let expectDataType: http.HttpDataType = http.HttpDataType.STRING;
@@ -960,7 +697,7 @@ export function initUniExtApi(APP_ID: string) {
         }
         const httpRequest = http.createHttp();
         const emitter = new Emitter();
-        const requestTask: IRequestTask = {
+        const requestTask = {
             abort () {
                 httpRequest.destroy();
             },
@@ -970,31 +707,32 @@ export function initUniExtApi(APP_ID: string) {
             offHeadersReceived (callback: Function | null = null) {
                 emitter.off('headersReceive', callback);
             }
-        };
+        } as UTSJSONObject;
         httpRequest.on('headersReceive', (header: Object)=>{});
         httpRequest.request(url, {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
             extraData: data,
             expectDataType,
-            connectTimeout: timeout ? timeout : undefined,
-            readTimeout: timeout ? timeout : undefined
-        } as http.HttpRequestOptions, (err, res)=>{
+            connectTimeout: timeout,
+            readTimeout: timeout
+        } as UTSJSONObject, (err, res)=>{
             if (err) {
-                exec.reject(err.message);
+                reject(err.message);
             } else {
-                exec.resolve({
+                resolve({
                     data: res.result,
                     statusCode: res.responseCode,
                     header: res.header,
-                    cookies: cookiesParse(res.header as Record<string, string>)
-                } as RequestSuccess<Object>);
+                    cookies: cookiesParse(res.header as Record<string, Object>)
+                } as UTSJSONObject);
             }
             requestTask.offHeadersReceived();
             httpRequest.destroy();
         });
         return new RequestTask1(requestTask);
-    }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
+    }, RequestProtocol, RequestOptions1);
+    type API_TYPE_UPLOAD_FILE = (options: UploadFileOptions) => UploadTask;
     interface IUploadTask {
         abort: Function;
         onHeadersReceived: Function;
@@ -1023,29 +761,22 @@ export function initUniExtApi(APP_ID: string) {
             this._uploadTask.offHeadersReceived(callback);
         }
     }
-    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExcutor<UploadFileSuccess>)=>{
+    const uploadFile = defineTaskApi1<API_TYPE_UPLOAD_FILE>(API_UPLOAD_FILE, (args, ref)=>{
+        let resolve = ref.resolve, reject = ref.reject;
         let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
         const headers = {} as Record<string, Object>;
-        if (header) {
-            const headerRecord = header as Object as Record<string, string>;
-            const headerKeys = Object.keys(headerRecord);
-            for(let i = 0; i < headerKeys.length; i++){
-                const name = headerKeys[i];
-                headers[name.toLowerCase()] = headerRecord[name];
-            }
+        for(const name in header){
+            headers[name.toLowerCase()] = header[name];
         }
         headers['Content-Type'] = 'multipart/form-data';
         const multiFormDataList = [] as Array<http1.MultiFormData>;
-        if (formData) {
-            const formDataRecord = formData as Object as Record<string, Object>;
-            const formDataKeys = Object.keys(formDataRecord);
-            for(let i = 0; i < formDataKeys.length; i++){
-                const name = formDataKeys[i];
+        for(const name in formData){
+            if (hasOwn(formData, name)) {
                 multiFormDataList.push({
                     name,
                     contentType: 'text/plain',
-                    data: String(formDataRecord[name])
-                } as http1.MultiFormData);
+                    data: String(formData[name])
+                } as UTSJSONObject);
             }
         }
         if (files && files.length) {
@@ -1054,15 +785,15 @@ export function initUniExtApi(APP_ID: string) {
                 multiFormDataList.push({
                     name: name || 'file',
                     contentType: 'application/octet-stream',
-                    filePath: getRealPath2(uri!)
-                } as http1.MultiFormData);
+                    filePath: getRealPath1(uri!)
+                } as UTSJSONObject);
             }
         } else {
             multiFormDataList.push({
                 name: name || 'file',
                 contentType: 'application/octet-stream',
-                filePath: getRealPath2(filePath!)
-            } as http1.MultiFormData);
+                filePath: getRealPath1(filePath!)
+            } as UTSJSONObject);
         }
         const httpRequest = http1.createHttp();
         const emitter = new Emitter1();
@@ -1090,30 +821,31 @@ export function initUniExtApi(APP_ID: string) {
                 progress: Math.floor((sendSize / totalSize) * 100),
                 totalBytesSent: sendSize,
                 totalBytesExpectedToSend: totalSize
-            } as OnProgressUpdateResult);
+            } as UTSJSONObject);
         });
         httpRequest.request(url, {
             header: headers,
             method: http1.RequestMethod.POST,
-            connectTimeout: timeout ? timeout : undefined,
-            readTimeout: timeout ? timeout : undefined,
+            connectTimeout: timeout,
+            readTimeout: timeout,
             multiFormDataList,
             expectDataType: http1.HttpDataType.STRING
-        } as http1.HttpRequestOptions, (err, res)=>{
+        } as UTSJSONObject, (err, res)=>{
             if (err) {
-                exec.reject(err.message);
+                reject(err.message);
             } else {
-                exec.resolve({
+                resolve({
                     data: res.result as string,
                     statusCode: res.responseCode
-                } as UploadFileSuccess);
+                } as UTSJSONObject);
             }
             uploadTask.offHeadersReceived();
             uploadTask.offProgressUpdate();
             httpRequest.destroy();
         });
         return new UploadTask1(uploadTask);
-    }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
+    }, UploadFileProtocol, UploadFileOptions1);
+    type API_TYPE_DOWNLOAD_FILE = (options: DownloadFileOptions) => DownloadTask;
     interface IDownloadTask {
         abort: Function;
         onHeadersReceived: Function;
@@ -1142,7 +874,8 @@ export function initUniExtApi(APP_ID: string) {
             this._downloadTask.offHeadersReceived(callback);
         }
     }
-    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExcutor<DownloadFileSuccess>)=>{
+    const downloadFile = defineTaskApi2<API_TYPE_DOWNLOAD_FILE>(API_DOWNLOAD_FILE, (args, ref)=>{
+        let resolve = ref.resolve, reject = ref.reject;
         let url = args.url, timeout = args.timeout, header = args.header;
         const httpRequest = http2.createHttp();
         const emitter = new Emitter2();
@@ -1170,9 +903,9 @@ export function initUniExtApi(APP_ID: string) {
                 progress: Math.floor((receiveSize / totalSize) * 100),
                 totalBytesWritten: receiveSize,
                 totalBytesExpectedToWrite: totalSize
-            } as OnProgressDownloadResult);
+            } as UTSJSONObject);
         });
-        const TEMP_PATH = getEnv().TEMP_PATH as string;
+        const TEMP_PATH = getEnv().TEMP_PATH;
         const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp';
         const stream = fs1.createStreamSync(tempFilePath, 'w+');
         let writePromise = Promise.resolve(0);
@@ -1187,21 +920,21 @@ export function initUniExtApi(APP_ID: string) {
             queueWrite(data);
         });
         httpRequest.requestInStream(url, {
-            header: header ? header : {} as ESObject,
+            header,
             method: http2.RequestMethod.GET,
-            connectTimeout: timeout ? timeout : undefined,
-            readTimeout: timeout ? timeout : undefined
-        } as http2.HttpRequestOptions, (err, statusCode)=>{
+            connectTimeout: timeout,
+            readTimeout: timeout
+        } as UTSJSONObject, (err, statusCode)=>{
             if (err) {
-                exec.reject(err.message);
+                reject(err.message);
             } else {
                 writePromise.then(()=>{
                     stream.flushSync();
                     stream.closeSync();
-                    exec.resolve({
+                    resolve({
                         tempFilePath,
                         statusCode
-                    } as DownloadFileSuccess);
+                    } as UTSJSONObject);
                 });
             }
             downloadTask.offHeadersReceived();
@@ -1209,7 +942,7 @@ export function initUniExtApi(APP_ID: string) {
             httpRequest.destroy();
         });
         return new DownloadTask1(downloadTask);
-    }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    }, DownloadFileProtocol, DownloadFileOptions1);
     interface UniExtApi {
         chooseImage: ChooseImage;
         getImageInfo: GetImageInfo;

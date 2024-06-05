@@ -11,11 +11,12 @@ import {
   resolveDexFile,
   resolveJarPath,
 } from './kotlin'
-import { getCompilerServer } from './utils'
+import { getCompilerServer, requireUniHelpers } from './utils'
 import { restoreDex } from './manifest'
 import { sync } from 'fast-glob'
 import { resolveDexCacheFile } from './manifest/dex'
 import type { CompileResult } from './index'
+import { hbuilderFormatter } from './stacktrace/kotlin'
 
 export function isEncrypt(pluginDir: string) {
   return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
@@ -195,10 +196,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
   }
   // development
   if (process.env.UNI_HBUILDERX_PLUGINS) {
-    const { DUM } = require(path.join(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'uni_helpers'
-    ))
+    const { DUM } = requireUniHelpers()
 
     const ktFiles: Record<string, string> = sync('**/*.kt', {
       absolute: false,
@@ -242,7 +240,21 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       jarFile,
       '',
       depJars,
-      createStderrListener(outputDir, resolveSourceMapPath(), waiting)
+      createStderrListener(outputDir, resolveSourceMapPath(), waiting, (m) => {
+        if (m.file) {
+          const file = normalizePath(m.file)
+          if (file.startsWith(outputPluginDir)) {
+            // 过滤部分插件的非错误信息
+            if (m.type !== 'error') {
+              return ''
+            } else {
+              // 移除完整路径
+              m.file = pluginDir
+            }
+          }
+        }
+        return hbuilderFormatter(m)
+      })
     )
     // 等待 stderrListener 执行完毕
     if (waiting.done) {

@@ -211,3 +211,11 @@ export function enableSourceMap() {
     process.env.UNI_COMPILE_TARGET !== 'uni_modules'
   )
 }
+
+export function requireUniHelpers() {
+  require(path.resolve(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    'uni_helpers/lib/bytenode'
+  ))
+  return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+}

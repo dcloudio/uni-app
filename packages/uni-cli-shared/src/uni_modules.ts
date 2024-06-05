@@ -3,7 +3,7 @@ import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
 import type { UTSTargetLanguage } from './uts'
-import { normalizePath } from './utils'
+import { normalizePath, requireUniHelpers } from './utils'
 import { genUTSComponentPublicInstanceIdent } from './easycom'
 import { M } from './messages'
 
@@ -720,14 +720,15 @@ export async function checkEncryptUniModules(
   )
   if (zipFile) {
     const downloadFile = path.resolve(cacheDir, 'uni_modules.download.zip')
-    const { C, D, R, U } = require(path.join(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'uni_helpers'
-    ))
+    const { C, D, R, U } = requireUniHelpers()
     try {
       const isLogin = await C()
+      const tips =
+        process.env.UNI_UTS_PLATFORM !== 'app-android'
+          ? '（此过程耗时较长）'
+          : ''
       console.log(
-        `正在云编译插件${isLogin ? '' : '（请先登录）'}：${modules.join(
+        `正在云编译插件${isLogin ? '' : '（请先登录）'}${tips}：${modules.join(
           ','
         )}...`
       )
@@ -769,10 +770,7 @@ export async function checkEncryptUniModules(
   } else {
     // android 平台需要在这里初始化
     if (params.platform === 'app-android') {
-      const { R } = require(path.join(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        'uni_helpers'
-      ))
+      const { R } = requireUniHelpers()
       R({
         dir: process.env.UNI_INPUT_DIR,
         cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
