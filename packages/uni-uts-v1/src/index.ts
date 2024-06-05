@@ -83,6 +83,7 @@ export interface CompileResult {
   meta?: any
   dir: string
   inject_apis: string[]
+  scoped_slots: string[]
 }
 
 function createResult(
@@ -91,6 +92,7 @@ function createResult(
   code: string,
   deps: string[],
   inject_apis: string[],
+  scoped_slots: string[],
   meta: unknown
 ): CompileResult {
   return {
@@ -99,6 +101,7 @@ function createResult(
     deps,
     encrypt: false,
     inject_apis,
+    scoped_slots,
     meta,
   }
 }
@@ -170,6 +173,7 @@ export async function compile(
   const env = initCheckOptionsEnv()
   const deps: string[] = []
   const inject_apis: string[] = []
+  const scoped_slots: string[] = []
 
   const meta = {
     exports: {},
@@ -205,7 +209,7 @@ export async function compile(
   if (process.env.NODE_ENV !== 'development' || isCompileUniModules) {
     // uts 插件 wgt 模式，本地资源模式不需要编译
     if (process.env.UNI_APP_PRODUCTION_TYPE === 'WGT') {
-      return createResult(outputPluginDir, errMsg, code, deps, [], meta)
+      return createResult(outputPluginDir, errMsg, code, deps, [], [], meta)
     }
     // 生产模式 支持同时生成 android 和 ios 的 uts 插件
     if (
@@ -242,6 +246,9 @@ export async function compile(
         if (result) {
           if (result.inject_apis) {
             inject_apis.push(...result.inject_apis)
+          }
+          if (result.scoped_slots) {
+            scoped_slots.push(...result.scoped_slots)
           }
         }
         if (!isCompileUniModules && cacheDir) {
@@ -292,6 +299,9 @@ export async function compile(
           if (result.inject_apis) {
             inject_apis.push(...result.inject_apis)
           }
+          if (result.scoped_slots) {
+            scoped_slots.push(...result.scoped_slots)
+          }
         }
         if (!isCompileUniModules && cacheDir) {
           storeSourceMap(
@@ -322,7 +332,7 @@ export async function compile(
     if (utsPlatform === 'app-ios') {
       if (isWindows) {
         process.env.UNI_UTS_ERRORS = `iOS手机在windows上使用标准基座真机运行无法使用uts插件，如需使用uts插件请提交云端打包自定义基座`
-        return createResult(outputPluginDir, errMsg, code, deps, [], meta)
+        return createResult(outputPluginDir, errMsg, code, deps, [], [], meta)
       }
     }
     if (utsPlatform === 'app-android' || utsPlatform === 'app-ios') {
@@ -399,6 +409,7 @@ export async function compile(
             errMsg,
             code,
             res.files.map((name) => join(pluginDir, name)),
+            [],
             [],
             meta
           )
@@ -529,5 +540,13 @@ export async function compile(
       }
     }
   }
-  return createResult(outputPluginDir, errMsg, code, deps, inject_apis, meta)
+  return createResult(
+    outputPluginDir,
+    errMsg,
+    code,
+    deps,
+    inject_apis,
+    scoped_slots,
+    meta
+  )
 }

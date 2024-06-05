@@ -16,6 +16,7 @@ import { cleanUrl } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
 import { resolveUTSCompiler } from '../uts'
 import { normalizePath } from '../utils'
+import { getUTSEasyComAutoImports } from '../easycom'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -77,7 +78,10 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         resolve: {
           alias: initEncryptUniModulesAlias(),
         },
-        build: initEncryptUniModulesBuildOptions(process.env.UNI_INPUT_DIR),
+        build: initEncryptUniModulesBuildOptions(
+          process.env.UNI_UTS_PLATFORM,
+          process.env.UNI_INPUT_DIR
+        ),
       }
     },
     configResolved(config) {
@@ -170,10 +174,12 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           uni_modules: [],
           transform: {
             uvueClassNamePrefix: 'Gen',
+            autoImports: getUTSEasyComAutoImports(),
           },
         })
         if (result) {
           const apis = result.inject_apis
+          const scopedSlots = result.scoped_slots
           const components = getUniModulesExtApiComponents(uniModule)
           const modules = resolveUTSCompiler().parseInjectModules(
             apis,
@@ -192,6 +198,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               apis,
               components,
               modules,
+              scopedSlots,
             })
           )
         }
@@ -256,7 +263,10 @@ function hasIndexFile(uniModuleDir: string) {
   return fs.readdirSync(uniModuleDir).some((file) => indexFiles.includes(file))
 }
 
-function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
+function initEncryptUniModulesBuildOptions(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string
+): BuildOptions {
   const modules = parseUniModulesWithComponents(inputDir)
   const moduleNames = Object.keys(modules)
   if (!moduleNames.length) {
@@ -273,7 +283,7 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
     }
     // easyCom
     if (modules[module] && Object.keys(modules[module]).length) {
-      codes.push(genEncryptEasyComModuleIndex(modules[module]))
+      codes.push(genEncryptEasyComModuleIndex(platform, modules[module]))
     }
     if (codes.length) {
       fs.writeFileSync(indexEncryptFile, codes.join(`\n`))

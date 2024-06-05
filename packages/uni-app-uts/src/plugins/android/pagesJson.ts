@@ -26,7 +26,8 @@ export function uniAppPagesPlugin(): Plugin {
   let launchPage = 'null'
   let conditionUrl = ''
   let uniIdRouter = 'new Map()'
-  let themeConfig = 'new Map()'
+  let themeConfig = ''
+  const codes: string[] = []
   return {
     name: 'uni:app-pages',
     apply: 'build',
@@ -109,8 +110,12 @@ export function uniAppPagesPlugin(): Plugin {
         }
         launchPage = stringifyLaunchPage(pagesJson.pages[0])
 
+        codes.length = 0
         // theme.json
         themeConfig = readThemeJSONFileAsStringifyMap()
+        if (themeConfig) {
+          codes.push(`__uniConfig.themeConfig = ${themeConfig}`)
+        }
         return {
           code: `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
           export default 'pages.json'`,
@@ -142,7 +147,7 @@ function defineAppConfig(){
   __uniConfig.tabBar = __uniTabBar as Map<string, any> | null
   __uniConfig.conditionUrl = '${conditionUrl}'
   __uniConfig.uniIdRouter = ${uniIdRouter}
-  __uniConfig.themeConfig = ${themeConfig}
+  ${codes.join('\n  ')}
   __uniConfig.ready = true
 }
 `
@@ -178,9 +183,8 @@ function stringifyPageStyle(pageStyle: UniApp.PagesJsonPageStyle) {
 
 function readThemeJSONFileAsStringifyMap() {
   const themeJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'theme.json')
-  let content = '{}'
   if (fs.existsSync(themeJsonPath)) {
-    content = fs.readFileSync(themeJsonPath, 'utf8')
+    return stringifyMap(JSON.parse(fs.readFileSync(themeJsonPath, 'utf8')))
   }
-  return stringifyMap(JSON.parse(content))
+  return ''
 }

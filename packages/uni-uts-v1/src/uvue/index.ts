@@ -33,7 +33,10 @@ import {
   resolveUniAppXSourceMapPath,
   shouldAutoImportUniCloud,
 } from '../utils'
-import type { KotlinManifestCache } from '../stacktrace/kotlin'
+import {
+  type KotlinManifestCache,
+  hbuilderFormatter,
+} from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [
@@ -74,6 +77,12 @@ export interface CompileAppOptions {
   autoImports?: Record<string, [[string, string]]>
   // service、name、class
   extApiProviders?: [string, string, string][]
+  uniModulesArtifacts?: {
+    name: string
+    package: string
+    scopedSlots: string[]
+    declaration: string
+  }[]
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -151,6 +160,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
+        uniModulesArtifacts: options.uniModulesArtifacts,
       },
     },
   }
@@ -346,7 +356,8 @@ async function runKotlinDev(
       const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
       const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
       const waiting = { done: undefined }
-      const options = {
+
+      const compileOptions = {
         version: 'v2',
         pageCount,
         kotlinc: resolveKotlincArgs(
@@ -370,12 +381,13 @@ async function runKotlinDev(
         stderrListener: createStderrListener(
           kotlinSrcOutDir,
           resolveUniAppXSourceMapPath(kotlinRootOutDir),
-          waiting
+          waiting,
+          hbuilderFormatter
         ),
       }
       result.kotlinc = true
-      // console.log('DEX编译参数:', options)
-      const { code, msg, data } = await compileDex(options, inputDir)
+      // console.log('DEX编译参数:', compileOptions)
+      const { code, msg, data } = await compileDex(compileOptions, inputDir)
       // 等待 stderrListener 执行完毕
       if (waiting.done) {
         await waiting.done

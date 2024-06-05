@@ -18,6 +18,7 @@ const DEFAULT_KEYS = [
   'APP_VUE',
   'APP_ANDROID',
   'APP_IOS',
+  'APP_HARMONY',
   'H5',
   'MP',
   'MP_360',

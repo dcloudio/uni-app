@@ -11,10 +11,12 @@ import {
   resolveDexFile,
   resolveJarPath,
 } from './kotlin'
-import { getCompilerServer } from './utils'
+import { getCompilerServer, requireUniHelpers } from './utils'
 import { restoreDex } from './manifest'
 import { sync } from 'fast-glob'
 import { resolveDexCacheFile } from './manifest/dex'
+import type { CompileResult } from './index'
+import { hbuilderFormatter } from './stacktrace/kotlin'
 
 export function isEncrypt(pluginDir: string) {
   return fs.existsSync(path.resolve(pluginDir, 'encrypt'))
@@ -39,7 +41,10 @@ module.exports = uni.requireUTSPlugin('${normalizePath(pluginRelativeDir)}')
 `
 }
 
-export async function compileEncrypt(pluginDir: string, isX = false) {
+export async function compileEncrypt(
+  pluginDir: string,
+  isX = false
+): Promise<CompileResult> {
   if (isX && !fs.existsSync(path.resolve(pluginDir, 'utssdk'))) {
     return compileEncryptByUniHelpers(pluginDir)
   }
@@ -69,6 +74,7 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
       deps: [] as string[],
       encrypt: true,
       inject_apis: [],
+      scoped_slots: [],
       meta: { commonjs: { isCommonJS: true } },
     }
   }
@@ -101,6 +107,7 @@ export async function compileEncrypt(pluginDir: string, isX = false) {
     deps: [] as string[],
     encrypt: true,
     inject_apis: [],
+    scoped_slots: [],
     meta: { commonjs: { isCommonJS: true } },
   }
 }
@@ -144,6 +151,7 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       deps: [] as string[],
       encrypt: true,
       inject_apis: [],
+      scoped_slots: [],
     }
   }
 
@@ -172,23 +180,23 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       )
       // 需要把 kt 文件放到 app-android/src 下
     }
-    const inject_apis = pkg.uni_modules?.artifacts?.apis || []
+    const artifacts = pkg.uni_modules?.artifacts
+    const inject_apis = artifacts?.apis || []
+    const scoped_slots = artifacts?.scoped_slots || []
     addInjectApis(inject_apis)
-    addInjectComponents(pkg.uni_modules?.artifacts?.components || [])
+    addInjectComponents(artifacts?.components || [])
     return {
       dir: outputPluginDir,
       code: 'export default {}',
       deps: [] as string[],
       encrypt: true,
       inject_apis,
+      scoped_slots,
     }
   }
   // development
   if (process.env.UNI_HBUILDERX_PLUGINS) {
-    const { DUM } = require(path.join(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'uni_helpers'
-    ))
+    const { DUM } = requireUniHelpers()
 
     const ktFiles: Record<string, string> = sync('**/*.kt', {
       absolute: false,
@@ -232,7 +240,21 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
       jarFile,
       '',
       depJars,
-      createStderrListener(outputDir, resolveSourceMapPath(), waiting)
+      createStderrListener(outputDir, resolveSourceMapPath(), waiting, (m) => {
+        if (m.file) {
+          const file = normalizePath(m.file)
+          if (file.startsWith(outputPluginDir)) {
+            // 过滤部分插件的非错误信息
+            if (m.type !== 'error') {
+              return ''
+            } else {
+              // 移除完整路径
+              m.file = pluginDir
+            }
+          }
+        }
+        return hbuilderFormatter(m)
+      })
     )
     // 等待 stderrListener 执行完毕
     if (waiting.done) {
@@ -264,5 +286,6 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     deps: [] as string[],
     encrypt: true,
     inject_apis: [],
+    scoped_slots: [],
   }
 }

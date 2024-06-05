@@ -261,7 +261,7 @@ async function buildArkTS(target, buildJson) {
         vars[key] = replacements[key]
       }
     })
-    console.log(vars, envs)
+    // console.log(vars, envs)
     for (const input of inputs) {
       const buildOptions = {
         input: {
@@ -305,10 +305,10 @@ async function buildArkTS(target, buildJson) {
           wrapperFunctionArgs: options.wrapper?.args
         },
       }
-      console.log(buildOptions)
+      // console.log(buildOptions)
       await bundleArkTS(buildOptions).then((res) => {
         console.log('bundle: ' + (Date.now() - start) + 'ms')
-        console.log(JSON.stringify(res))
+        // console.log(JSON.stringify(res))
         if (options.banner) {
           const filePath = path.resolve(buildOptions.output.outDir, buildOptions.output.outFilename)
           fs.writeFileSync(filePath, options.banner + '\n' + fs.readFileSync(filePath, 'utf8'))

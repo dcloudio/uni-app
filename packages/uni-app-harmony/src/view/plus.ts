@@ -1,4 +1,4 @@
-/// <reference path="./nativeChannel.d.ts" />
+/// <reference path="./harmonyChannel.d.ts" />
 import { extend } from '@vue/shared'
 
 export default {
@@ -7,17 +7,19 @@ export default {
       return extend(
         {
           getStyle: () => {
-            return extend({}, nativeChannel.invokeSync('getStyle'))
+            return extend({}, harmonyChannel.invokeSync('getStyle'))
           },
         },
-        nativeChannel.invokeSync('currentWebview')
+        harmonyChannel.invokeSync('currentWebview')
       )
     },
     postMessageToUniNView(data: any, id: string) {
-      nativeChannel.invokeSync('postMessageToUniNView', {
-        data,
-        id,
-      })
+      harmonyChannel.invokeSync('postMessageToUniNView', [data, id])
+    },
+  },
+  io: {
+    convertLocalFileSystemURL(filepath: string) {
+      return harmonyChannel.invokeSync('convertLocalFileSystemURL', [filepath])
     },
   },
 }

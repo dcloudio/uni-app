@@ -1,163 +1,663 @@
-import picker from '@ohos.file.picker';
-import fs from '@ohos.file.fs';
-import media from '@ohos.multimedia.media';
-import image from '@ohos.multimedia.image';
-import http from '@ohos.net.http';
 import { ref, injectHook, createVNode, render, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
-async function _getVideoInfo(uri) {
-    const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
-    const avMetadataExtractor = await media.createAVMetadataExtractor();
-    let metadata = null;
-    let size = 0;
-    try {
-        size = (await fs.stat(file.fd)).size;
-        avMetadataExtractor.dataSrc = {
-            fileSize: size,
-            callback: (buffer, length, pos) => {
-                return fs.readSync(file.fd, buffer, {
-                    offset: pos,
-                    length,
-                });
-            },
-        };
-        metadata = await avMetadataExtractor.fetchMetadata();
+function arrayPop(array) {
+    if (array.length === 0) {
+        return null;
     }
-    catch (error) {
-        throw error;
-    }
-    finally {
-        await avMetadataExtractor.release();
-        await fs.close(file);
-    }
-    const videoOrientationArr = [
-        'up',
-        'right',
-        'down',
-        'left',
-    ];
-    return {
-        size: size,
-        duration: metadata.duration ? Number(metadata.duration) / 1000 : undefined,
-        width: metadata.videoWidth ? Number(metadata.videoWidth) : undefined,
-        height: metadata.videoHeight ? Number(metadata.videoHeight) : undefined,
-        type: metadata.mimeType,
-        orientation: metadata.videoOrientation
-            ? videoOrientationArr[Number(metadata.videoOrientation) / 90]
-            : undefined,
-    };
+    return array.pop();
 }
-async function _getImageInfo(uri) {
-    const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
-    const imageSource = image.createImageSource(file.fd);
-    const imageInfo = await imageSource.getImageInfo();
-    const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
-    let orientationNum = 0;
-    if (typeof orientation === 'string') {
-        const matched = orientation.match(/^Unknown value (\d)$/);
-        if (matched && matched[1]) {
-            orientationNum = Number(matched[1]);
-        }
-        else if (/^\d$/.test(orientation)) {
-            orientationNum = Number(orientation);
-        }
+function arrayShift(array) {
+    if (array.length === 0) {
+        return null;
     }
-    else if (typeof orientation === 'number') {
-        orientationNum = orientation;
-    }
-    let orientationStr = 'up';
-    switch (orientationNum) {
-        case 2:
-            orientationStr = 'up-mirrored';
-            break;
-        case 3:
-            orientationStr = 'down';
-            break;
-        case 4:
-            orientationStr = 'down-mirrored';
-            break;
-        case 5:
-            orientationStr = 'left-mirrored';
-            break;
-        case 6:
-            orientationStr = 'right';
-            break;
-        case 7:
-            orientationStr = 'right-mirrored';
-            break;
-        case 8:
-            orientationStr = 'left';
-            break;
-        case 0:
-        case 1:
-        default:
-            orientationStr = 'up';
-            break;
-    }
-    return {
-        path: uri,
-        width: imageInfo.size.width,
-        height: imageInfo.size.height,
-        orientation: orientationStr,
-    };
+    return array.shift();
 }
+function arrayFind(array, predicate) {
+    const index = array.findIndex(predicate);
+    if (index < 0) {
+        return null;
+    }
+    return array[index];
+}
+function arrayFindLast(array, predicate) {
+    const index = array.findLastIndex(predicate);
+    if (index < 0) {
+        return null;
+    }
+    return array[index];
+}
+function arrayAt(array, index) {
+    if (index < -array.length || index >= array.length) {
+        return null;
+    }
+    return array.at(index);
+}
+
 /**
- *
- * 注意
- * - 使用系统picker，无需申请权限
- * - 仅支持选图片或视频，不能混选
- *
- * 差异项记录
- * - 鸿蒙的PhotoViewPicker可以选择视频、图片。PhotoViewPicker不支持sizeType参数、maxDuration参数。
- * - PhotoViewPicker进行媒体文件选择时相机按钮无法屏蔽，因此不支持sourceType参数。
- *
- * 关键文档参考：
- * - [用户文件uri介绍](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/user-file-uri-intro-0000001821000049)
- * - [系统能力使用说明](https://developer.huawei.com/consumer/cn/doc/harmonyos-references-V5/syscap-0000001774120846-V5)
- * - [requestPermissions标签](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/module-configuration-file-0000001820879553-V5#ZH-CN_TOPIC_0000001881258481__requestpermissions%E6%A0%87%E7%AD%BE)
- * - [向用户申请授权](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides-V5/request-user-authorization-0000001774279718-V5)
- * - [应用/服务签名](https://developer.huawei.com/consumer/cn/doc/harmonyos-guides/ide-signing-0000001587684945#section9786111152213)，ohos.permission.READ_IMAGEVIDEO权限需要自助签名方可使用
- * - [AVMetadataExtractor](https://developer.huawei.com/consumer/cn/doc/harmonyos-references/js-apis-media-0000001821001557#ZH-CN_TOPIC_0000001811157018__avmetadataextractor11)
+ * copy from @uts/shared
  */
-async function _chooseMedia(options) {
-    const photoSelectOptions = new picker.PhotoSelectOptions();
-    const mimeType = options.mimeType;
-    photoSelectOptions.MIMEType = mimeType;
-    photoSelectOptions.maxSelectNumber = options.count || 9;
-    const photoPicker = new picker.PhotoViewPicker();
-    const photoSelectResult = await photoPicker.select(photoSelectOptions);
-    const uris = photoSelectResult.photoUris;
-    if (mimeType !== picker.PhotoViewMIMETypes.VIDEO_TYPE) {
+var IDENTIFIER;
+(function (IDENTIFIER) {
+    IDENTIFIER["UTSJSONObject"] = "UTSJSONObject";
+    IDENTIFIER["JSON"] = "JSON";
+    IDENTIFIER["UTS"] = "UTS";
+    IDENTIFIER["DEFINE_COMPONENT"] = "defineComponent";
+    IDENTIFIER["VUE"] = "vue";
+    IDENTIFIER["GLOBAL_THIS"] = "globalThis";
+    IDENTIFIER["UTS_TYPE"] = "UTSType";
+    IDENTIFIER["UTS_METADATA"] = "$UTSMetadata$";
+    IDENTIFIER["TEMP_UTS_METADATA"] = "$TempUTSMetadata$";
+    IDENTIFIER["JSON_FIELD"] = "JSON_FIELD";
+})(IDENTIFIER || (IDENTIFIER = {}));
+var UTS_CLASS_METADATA_KIND;
+(function (UTS_CLASS_METADATA_KIND) {
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["CLASS"] = 0] = "CLASS";
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["INTERFACE"] = 1] = "INTERFACE";
+    UTS_CLASS_METADATA_KIND[UTS_CLASS_METADATA_KIND["TYPE"] = 2] = "TYPE";
+})(UTS_CLASS_METADATA_KIND || (UTS_CLASS_METADATA_KIND = {}));
+
+function getType$1(val) {
+    return Object.prototype.toString.call(val).slice(8, -1).toLowerCase();
+}
+function isPlainObject$1(val) {
+    if (val == null || typeof val !== 'object') {
+        return false;
+    }
+    const proto = Object.getPrototypeOf(val);
+    return proto === Object.prototype || proto === null;
+}
+
+// TODO 实现UTSError
+class UTSError extends Error {
+    constructor(message) {
+        super(message);
+    }
+}
+
+function isUTSMetadata(metadata) {
+    return !!(metadata &&
+        metadata.kind in UTS_CLASS_METADATA_KIND &&
+        metadata.interfaces);
+}
+function isNativeType(proto) {
+    return !proto || proto === Object.prototype;
+}
+const utsMetadataKey = IDENTIFIER.UTS_METADATA;
+/**
+ * 处理复杂的继承关系。
+ * 例如：
+ * class A extends abstract class B，abstract class B implements interface C
+ * new A() instanceof C -> true
+ */
+function getParentTypeList(type) {
+    const metadata = utsMetadataKey in type ? type[utsMetadataKey] : {};
+    let interfaces = [];
+    if (!isUTSMetadata(metadata)) {
+        interfaces = [];
+    }
+    else {
+        interfaces = metadata.interfaces || [];
+    }
+    const proto = Object.getPrototypeOf(type);
+    if (!isNativeType(proto)) {
+        interfaces.push(proto.constructor);
+    }
+    return interfaces;
+}
+function isImplementationOf(leftType, rightType, visited = []) {
+    if (isNativeType(leftType)) {
+        return false;
+    }
+    if (leftType === rightType) {
+        return true;
+    }
+    visited.push(leftType);
+    const parentTypeList = getParentTypeList(leftType);
+    return parentTypeList.some((parentType) => {
+        if (visited.includes(parentType)) {
+            return false;
+        }
+        return isImplementationOf(parentType, rightType, visited);
+    });
+}
+function isInstanceOf(value, type) {
+    const isNativeInstanceofType = value instanceof type;
+    if (isNativeInstanceofType || typeof value !== 'object') {
+        return isNativeInstanceofType;
+    }
+    const proto = Object.getPrototypeOf(value).constructor;
+    return isImplementationOf(proto, type);
+}
+function isBaseType(type) {
+    return type === Number || type === String || type === Boolean;
+}
+function isUnknownType(type) {
+    return type === 'Unknown';
+}
+function isAnyType(type) {
+    return type === 'Any';
+}
+function isUTSType(type) {
+    return type && type.prototype && type.prototype instanceof UTSType;
+}
+function normalizeGenericValue(value, genericType, isJSONParse = false) {
+    return value == null
+        ? null
+        : isBaseType(genericType) ||
+            isUnknownType(genericType) ||
+            isAnyType(genericType)
+            ? value
+            : genericType === Array
+                ? new Array(...value)
+                : new genericType(value, undefined, isJSONParse);
+}
+class UTSType {
+    static get$UTSMetadata$(...args) {
         return {
-            tempFiles: uris.map((uri) => {
-                const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
-                const stat = fs.statSync(file.fd);
-                fs.closeSync(file);
-                return {
-                    fileType: 'image',
-                    tempFilePath: uri,
-                    size: stat.size,
-                };
-            }),
+            kind: UTS_CLASS_METADATA_KIND.TYPE,
+            interfaces: [],
+            fields: {},
         };
     }
-    const tempFiles = [];
-    for (let i = 0; i < uris.length; i++) {
-        const uri = uris[i];
-        const videoInfo = await _getVideoInfo(uri);
-        tempFiles.push({
-            fileType: 'video',
-            tempFilePath: uri,
-            size: videoInfo.size,
-            duration: videoInfo.duration,
-            width: videoInfo.width,
-            height: videoInfo.height,
+    get $UTSMetadata$() {
+        return UTSType.get$UTSMetadata$();
+    }
+    // TODO 缓存withGenerics结果
+    static withGenerics(parent, generics, isJSONParse = false) {
+        // 仅JSON.parse uni.request内报错，其他地方不报错
+        // generic类型为UTSType子类或Array或基础类型，否则报错
+        if (isJSONParse) {
+            const illegalGeneric = generics.find((item) => !(item === Array ||
+                isBaseType(item) ||
+                isUnknownType(item) ||
+                isAnyType(item) ||
+                item === UTSJSONObject ||
+                (item.prototype && item.prototype instanceof UTSType)));
+            if (illegalGeneric) {
+                throw new Error('Generic is not UTSType or Array or UTSJSONObject or base type, generic: ' +
+                    illegalGeneric);
+            }
+        }
+        if (parent === Array) {
+            // 不带泛型的Array有一部分不会进入这里，需要在构造type时处理
+            return class UTSArray extends UTSType {
+                constructor(options, isJSONParse = false) {
+                    if (!Array.isArray(options)) {
+                        throw new UTSError(`Failed to contruct type, ${options} is not an array`);
+                    }
+                    super();
+                    // @ts-ignore
+                    return options.map((item) => {
+                        return normalizeGenericValue(item, generics[0], isJSONParse);
+                    });
+                }
+            };
+        }
+        else if (parent === Map || parent === WeakMap) {
+            return class UTSMap extends UTSType {
+                constructor(options, isJSONParse = false) {
+                    if (options == null || typeof options !== 'object') {
+                        throw new UTSError(`Failed to contruct type, ${options} is not an object`);
+                    }
+                    super();
+                    const obj = new parent();
+                    for (const key in options) {
+                        obj.set(normalizeGenericValue(key, generics[0], isJSONParse), normalizeGenericValue(options[key], generics[1], isJSONParse));
+                    }
+                    return obj;
+                }
+            };
+        }
+        else if (isUTSType(parent)) {
+            return class VirtualClassWithGenerics extends parent {
+                static get$UTSMetadata$() {
+                    return parent.get$UTSMetadata$(...generics);
+                }
+                constructor(options, metadata = VirtualClassWithGenerics.get$UTSMetadata$(), isJSONParse = false) {
+                    // @ts-ignore
+                    super(options, metadata, isJSONParse);
+                }
+            };
+        }
+        else {
+            return parent;
+        }
+    }
+    constructor() { }
+    static initProps(options, metadata, isJSONParse = false) {
+        const obj = {};
+        if (!metadata.fields) {
+            return obj;
+        }
+        for (const key in metadata.fields) {
+            const { type, optional, jsonField } = metadata.fields[key];
+            const realKey = isJSONParse ? jsonField || key : key;
+            if (options[realKey] == null) {
+                if (optional) {
+                    obj[key] = null;
+                    continue;
+                }
+                else {
+                    throw new UTSError(`Failed to contruct type, missing required property: ${key}`);
+                }
+            }
+            if (isUTSType(type)) {
+                // 带有泛型的数组会走此分支
+                // @ts-ignore
+                obj[key] = new type(options[realKey], undefined, isJSONParse);
+            }
+            else if (type === Array) {
+                // 不带泛型的数组会走此分支
+                if (!Array.isArray(options[realKey])) {
+                    throw new UTSError(`Failed to contruct type, property ${key} is not an array`);
+                }
+                obj[key] = options[realKey].map((item) => {
+                    return item == null ? null : item;
+                });
+            }
+            else {
+                obj[key] = options[realKey];
+            }
+        }
+        return obj;
+    }
+}
+
+const OriginalJSON = JSON;
+function parseObjectOrArray(object, utsType) {
+    const objectType = getType$1(object);
+    if (object === null || (objectType !== 'object' && objectType !== 'array')) {
+        return object;
+    }
+    if (utsType || utsType === UTSJSONObject) {
+        try {
+            return new utsType(object, undefined, true);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    }
+    if (objectType === 'array') {
+        return object.map((value) => {
+            return parseObjectOrArray(value);
         });
     }
-    return {
-        tempFiles,
-    };
+    else if (objectType === 'object') {
+        return new UTSJSONObject(object);
+    }
+    return object;
 }
+const UTSJSON = {
+    parse: (text, reviver, utsType) => {
+        // @ts-ignore
+        if (reviver && (isUTSType(reviver) || reviver === UTSJSONObject)) {
+            utsType = reviver;
+            reviver = undefined;
+        }
+        try {
+            const parseResult = OriginalJSON.parse(text, reviver);
+            return parseObjectOrArray(parseResult, utsType);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    parseArray(text, utsType) {
+        try {
+            const parseResult = OriginalJSON.parse(text);
+            if (Array.isArray(parseResult)) {
+                return parseObjectOrArray(parseResult, utsType ? UTSType.withGenerics(Array, [utsType], true) : undefined);
+            }
+            return null;
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    parseObject(text, utsType) {
+        try {
+            const parseResult = OriginalJSON.parse(text);
+            if (Array.isArray(parseResult)) {
+                return null;
+            }
+            return parseObjectOrArray(parseResult, utsType);
+        }
+        catch (error) {
+            console.error(error);
+            return null;
+        }
+    },
+    stringify: (value) => {
+        return OriginalJSON.stringify(value);
+    },
+};
+
+function mapGet(map, key) {
+    if (!map.has(key)) {
+        return null;
+    }
+    return map.get(key);
+}
+
+function stringCodePointAt(str, pos) {
+    if (pos < 0 || pos >= str.length) {
+        return null;
+    }
+    return str.codePointAt(pos);
+}
+function stringAt(str, pos) {
+    if (pos < -str.length || pos >= str.length) {
+        return null;
+    }
+    return str.at(pos);
+}
+
+function weakMapGet(map, key) {
+    if (!map.has(key)) {
+        return null;
+    }
+    return map.get(key);
+}
+
+const UTS = {
+    arrayAt,
+    arrayFind,
+    arrayFindLast,
+    arrayPop,
+    arrayShift,
+    isInstanceOf,
+    UTSType,
+    mapGet,
+    stringAt,
+    stringCodePointAt,
+    weakMapGet,
+    JSON: UTSJSON,
+};
+
+class UniError extends Error {
+    constructor(errSubject, errCode, errMsg) {
+        let options = {};
+        const argsLength = Array.from(arguments).length;
+        switch (argsLength) {
+            case 0:
+                errSubject = '';
+                errMsg = '';
+                errCode = 0;
+                break;
+            case 1:
+                errMsg = errSubject;
+                errSubject = '';
+                errCode = 0;
+                break;
+            case 2:
+                errMsg = errSubject;
+                options = errCode;
+                errCode = options.errCode || 0;
+                errSubject = options.errSubject || '';
+                break;
+        }
+        super(errMsg);
+        this.name = 'UniError';
+        this.errSubject = errSubject;
+        this.errCode = errCode;
+        this.errMsg = errMsg;
+        if (options.data) {
+            this.data = options.data;
+        }
+        if (options.cause) {
+            this.cause = options.cause;
+        }
+    }
+    set errMsg(msg) {
+        this.message = msg;
+    }
+    get errMsg() {
+        return this.message;
+    }
+    toString() {
+        return this.errMsg;
+    }
+    toJSON() {
+        return {
+            errSubject: this.errSubject,
+            errCode: this.errCode,
+            errMsg: this.errMsg,
+            data: this.data,
+            cause: this.cause && typeof this.cause.toJSON === 'function'
+                ? this.cause.toJSON()
+                : this.cause,
+        };
+    }
+}
+
+function initUTSJSONObjectProperties(obj) {
+    const propertyList = [
+        '_resolveKeyPath',
+        '_getValue',
+        'toJSON',
+        'get',
+        'set',
+        'getAny',
+        'getString',
+        'getNumber',
+        'getBoolean',
+        'getJSON',
+        'getArray',
+        'toMap',
+        'forEach',
+    ];
+    const propertyDescriptorMap = {};
+    for (let i = 0; i < propertyList.length; i++) {
+        const property = propertyList[i];
+        propertyDescriptorMap[property] = {
+            enumerable: false,
+            value: obj[property],
+        };
+    }
+    Object.defineProperties(obj, propertyDescriptorMap);
+}
+let UTSJSONObject$1 = class UTSJSONObject {
+    constructor(content = {}) {
+        for (const key in content) {
+            if (Object.prototype.hasOwnProperty.call(content, key)) {
+                const value = content[key];
+                if (isPlainObject$1(value)) {
+                    this[key] = new UTSJSONObject(value);
+                }
+                else if (getType$1(value) === 'array') {
+                    this[key] = value.map((item) => {
+                        if (isPlainObject$1(item)) {
+                            return new UTSJSONObject(item);
+                        }
+                        else {
+                            return item;
+                        }
+                    });
+                }
+                else {
+                    this[key] = value;
+                }
+            }
+        }
+        initUTSJSONObjectProperties(this);
+    }
+    _resolveKeyPath(keyPath) {
+        // 非法keyPath不抛出错误，直接返回空数组
+        let token = '';
+        const keyPathArr = [];
+        let inOpenParentheses = false;
+        for (let i = 0; i < keyPath.length; i++) {
+            const word = keyPath[i];
+            switch (word) {
+                case '.':
+                    if (token.length > 0) {
+                        keyPathArr.push(token);
+                        token = '';
+                    }
+                    break;
+                case '[': {
+                    inOpenParentheses = true;
+                    if (token.length > 0) {
+                        keyPathArr.push(token);
+                        token = '';
+                    }
+                    break;
+                }
+                case ']':
+                    if (inOpenParentheses) {
+                        if (token.length > 0) {
+                            const tokenFirstChar = token[0];
+                            const tokenLastChar = token[token.length - 1];
+                            if ((tokenFirstChar === '"' && tokenLastChar === '"') ||
+                                (tokenFirstChar === "'" && tokenLastChar === "'") ||
+                                (tokenFirstChar === '`' && tokenLastChar === '`')) {
+                                if (token.length > 2) {
+                                    token = token.slice(1, -1);
+                                }
+                                else {
+                                    return [];
+                                }
+                            }
+                            else if (!/^\d+$/.test(token)) {
+                                return [];
+                            }
+                            keyPathArr.push(token);
+                            token = '';
+                        }
+                        else {
+                            return [];
+                        }
+                        inOpenParentheses = false;
+                    }
+                    else {
+                        return [];
+                    }
+                    break;
+                default:
+                    token += word;
+                    break;
+            }
+            if (i === keyPath.length - 1) {
+                if (token.length > 0) {
+                    keyPathArr.push(token);
+                    token = '';
+                }
+            }
+        }
+        return keyPathArr;
+    }
+    _getValue(keyPath) {
+        const keyPathArr = this._resolveKeyPath(keyPath);
+        if (keyPathArr.length === 0) {
+            return null;
+        }
+        let value = this;
+        for (let i = 0; i < keyPathArr.length; i++) {
+            const key = keyPathArr[i];
+            if (value instanceof Object) {
+                value = value[key];
+            }
+            else {
+                return null;
+            }
+        }
+        return value;
+    }
+    get(key) {
+        return this._getValue(key);
+    }
+    set(key, value) {
+        this[key] = value;
+    }
+    getAny(key) {
+        return this._getValue(key);
+    }
+    getString(key) {
+        const value = this._getValue(key);
+        if (typeof value === 'string') {
+            return value;
+        }
+        else {
+            return null;
+        }
+    }
+    getNumber(key) {
+        const value = this._getValue(key);
+        if (typeof value === 'number') {
+            return value;
+        }
+        else {
+            return null;
+        }
+    }
+    getBoolean(key) {
+        const boolean = this._getValue(key);
+        if (typeof boolean === 'boolean') {
+            return boolean;
+        }
+        else {
+            return null;
+        }
+    }
+    getJSON(key) {
+        let value = this._getValue(key);
+        if (value instanceof Object) {
+            return new UTSJSONObject(value);
+        }
+        else {
+            return null;
+        }
+    }
+    getArray(key) {
+        let value = this._getValue(key);
+        if (value instanceof Array) {
+            return value;
+        }
+        else {
+            return null;
+        }
+    }
+    toMap() {
+        let map = new Map();
+        for (let key in this) {
+            map.set(key, this[key]);
+        }
+        return map;
+    }
+    forEach(callback) {
+        for (let key in this) {
+            callback(this[key], key);
+        }
+    }
+};
+
+// @ts-nocheck
+function getGlobal() {
+    // cross-platform
+    if (typeof globalThis !== 'undefined') {
+        return globalThis;
+    }
+    // worker
+    if (typeof self !== 'undefined') {
+        return self;
+    }
+    // browser
+    if (typeof window !== 'undefined') {
+        return window;
+    }
+    // nodejs
+    if (typeof global !== 'undefined') {
+        return global;
+    }
+    throw new Error('unable to locate global object');
+}
+const realGlobal = getGlobal();
+realGlobal.UTSJSONObject = UTSJSONObject$1;
+realGlobal.UniError = UniError;
+realGlobal.UTS = UTS;
 
 /**
 * @vue/shared v3.4.21
@@ -184,7 +684,7 @@ const toRawType = (value) => {
   return toTypeString(value).slice(8, -1);
 };
 const isPlainObject = (val) => toTypeString(val) === "[object Object]";
-const cacheStringFunction = (fn) => {
+const cacheStringFunction$1 = (fn) => {
   const cache = /* @__PURE__ */ Object.create(null);
   return (str) => {
     const hit = cache[str];
@@ -192,44 +692,17 @@ const cacheStringFunction = (fn) => {
   };
 };
 const camelizeRE = /-(\w)/g;
-const camelize = cacheStringFunction((str) => {
+const camelize = cacheStringFunction$1((str) => {
   return str.replace(camelizeRE, (_, c) => c ? c.toUpperCase() : "");
 });
 const hyphenateRE = /\B([A-Z])/g;
-const hyphenate = cacheStringFunction(
+const hyphenate = cacheStringFunction$1(
   (str) => str.replace(hyphenateRE, "-$1").toLowerCase()
 );
-const capitalize = cacheStringFunction((str) => {
+const capitalize = cacheStringFunction$1((str) => {
   return str.charAt(0).toUpperCase() + str.slice(1);
 });
 
-const CHOOSE_SIZE_TYPES = ['original', 'compressed'];
-const CHOOSE_SOURCE_TYPES = ['album', 'camera'];
-const HTTP_METHODS = [
-    'GET',
-    'OPTIONS',
-    'HEAD',
-    'POST',
-    'PUT',
-    'DELETE',
-    'TRACE',
-    'CONNECT',
-    'PATCH',
-];
-function elemInArray(str, arr) {
-    if (!str || arr.indexOf(str) === -1) {
-        return arr[0];
-    }
-    return str;
-}
-function elemsInArray(strArr, optionalVal) {
-    if (!isArray(strArr) ||
-        strArr.length === 0 ||
-        strArr.find((val) => optionalVal.indexOf(val) === -1)) {
-        return optionalVal;
-    }
-    return strArr;
-}
 function validateProtocolFail(name, msg) {
     console.warn(`${name}: ${msg}`);
 }
@@ -409,6 +882,17 @@ function findInvokeCallbackByName(name) {
         }
     }
     return false;
+}
+function removeKeepAliveApiCallback(name, callback) {
+    for (const key in invokeCallbacks) {
+        const item = invokeCallbacks[key];
+        if (item.callback === callback && item.name === name) {
+            delete invokeCallbacks[key];
+        }
+    }
+}
+function offKeepAliveApiCallback(name) {
+    UniServiceJSBridge.off('api.' + name);
 }
 function onKeepAliveApiCallback(name) {
     UniServiceJSBridge.on('api.' + name, (res) => {
@@ -669,6 +1153,23 @@ function wrapperOnApi(name, fn, options) {
         }
     };
 }
+function wrapperOffApi(name, fn, options) {
+    return (callback) => {
+        checkCallback(callback);
+        const errMsg = beforeInvokeApi(name, [callback], undefined, options);
+        if (errMsg) {
+            throw new Error(errMsg);
+        }
+        name = name.replace('off', 'on');
+        removeKeepAliveApiCallback(name, callback);
+        // 是否还存在监听，若已不存在，则移除onMethod监听
+        const hasInvokeOnApi = findInvokeCallbackByName(name);
+        if (!hasInvokeOnApi) {
+            offKeepAliveApiCallback(name);
+            fn();
+        }
+    };
+}
 function parseErrMsg(errMsg) {
     if (!errMsg || isString(errMsg)) {
         return errMsg;
@@ -707,6 +1208,9 @@ function wrapperAsyncApi(name, fn, protocol, options) {
 function defineOnApi(name, fn, options) {
     return wrapperOnApi(name, fn, options);
 }
+function defineOffApi(name, fn, options) {
+    return wrapperOffApi(name, fn, options);
+}
 function defineTaskApi(name, fn, protocol, options) {
     return promisify(name, wrapperTaskApi(name, fn, ('production' !== 'production') ? protocol : undefined, options));
 }
@@ -734,6 +1238,8 @@ function getBaseSystemInfo() {
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
 const I18N_JSON_DELIMITERS = ['%', '%'];
+const SCHEME_RE = /^([a-z-]+:)?\/\//i;
+const DATA_RE = /^data:.*,.*/;
 const WEB_INVOKE_APPSERVICE = 'WEB_INVOKE_APPSERVICE';
 // lifecycle
 // App and Page
@@ -767,6 +1273,16 @@ function formatLog(module, ...args) {
         .join(' ')}`;
 }
 
+function cache(fn) {
+    const cache = Object.create(null);
+    return (str) => {
+        const hit = cache[str];
+        return hit || (cache[str] = fn(str));
+    };
+}
+function cacheStringFunction(fn) {
+    return cache(fn);
+}
 function getLen(str = '') {
     return ('' + str).replace(/[^\x00-\xff]/g, '**').length;
 }
@@ -797,8 +1313,8 @@ function once(fn, ctx = null) {
     });
 }
 
-const encode$2 = encodeURIComponent;
-function stringifyQuery$1(obj, encodeStr = encode$2) {
+const encode$1 = encodeURIComponent;
+function stringifyQuery(obj, encodeStr = encode$1) {
     const res = obj
         ? Object.keys(obj)
             .map((key) => {
@@ -1263,6 +1779,7 @@ E.prototype = {
         return this;
     },
 };
+var Emitter = E;
 
 const borderStyles = {
     black: 'rgba(0,0,0,0.4)',
@@ -1349,10 +1866,6 @@ function initEnv() {
 const initEnvOnce = once(initEnv);
 function getEnv() {
     return initEnvOnce();
-}
-
-function getRealPath(filepath) {
-    return filepath;
 }
 
 const isObject = (val) => val !== null && typeof val === 'object';
@@ -1830,7 +2343,7 @@ function initPullToRefreshI18n(pullToRefresh) {
 }
 
 function initBridge(subscribeNamespace) {
-    const emitter = new E();
+    const emitter = new Emitter();
     return {
         on(event, callback) {
             return emitter.on(event, callback);
@@ -2183,6 +2696,59 @@ function defineGlobalData(app, defaultGlobalData) {
     });
 }
 
+function getRealPath(filepath) {
+    // 无协议的情况补全 https
+    if (filepath.indexOf('//') === 0) {
+        return 'https:' + filepath;
+    }
+    // 网络资源或base64
+    if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
+        return filepath;
+    }
+    if (isSystemURL(filepath)) {
+        // 鸿蒙平台特性
+        return 'file:/' + normalizeLocalPath(filepath);
+    }
+    // TODO 暂时转换为 resource
+    const wwwPath = normalizeLocalPath('_www').replace(/.+?\/apps\//, 'resource://rawfile/apps/');
+    // 绝对路径转换为本地文件系统路径
+    if (filepath.indexOf('/') === 0) {
+        // 平台绝对路径
+        if (filepath.startsWith('/data/storage/')) {
+            // 鸿蒙平台特性
+            return 'file:/' + filepath;
+        }
+        return wwwPath + filepath;
+    }
+    // 相对资源
+    if (filepath.indexOf('../') === 0 || filepath.indexOf('./') === 0) {
+        // app-view
+        if (typeof __id__ === 'string') {
+            // app-view
+            return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
+        }
+        else {
+            const page = getCurrentPage();
+            if (page) {
+                return wwwPath + getRealRoute(addLeadingSlash(page.route), filepath);
+            }
+        }
+    }
+    return filepath;
+}
+const normalizeLocalPath = cacheStringFunction((filepath) => {
+    return plus.io.convertLocalFileSystemURL(filepath).replace(/\/$/, '');
+});
+function isSystemURL(filepath) {
+    if (filepath.indexOf('_www') === 0 ||
+        filepath.indexOf('_doc') === 0 ||
+        filepath.indexOf('_documents') === 0 ||
+        filepath.indexOf('_downloads') === 0) {
+        return true;
+    }
+    return false;
+}
+
 const enterOptions$1 = /*#__PURE__*/ createLaunchOptions();
 const launchOptions$1 = /*#__PURE__*/ createLaunchOptions();
 function getLaunchOptions() {
@@ -2252,222 +2818,6 @@ const API_GET_LAUNCH_OPTIONS_SYNC = 'getLaunchOptionsSync';
 defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
     return getLaunchOptions();
 });
-
-const API_CHOOSE_IMAGE = 'chooseImage';
-const ChooseImageOptions = {
-    formatArgs: {
-        count(value, params) {
-            if (!value || value <= 0) {
-                params.count = 9;
-            }
-        },
-        sizeType(sizeType, params) {
-            params.sizeType = elemsInArray(sizeType, CHOOSE_SIZE_TYPES);
-        },
-        sourceType(sourceType, params) {
-            params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
-        },
-        extension(extension, params) {
-            if (extension instanceof Array && extension.length === 0) {
-                return 'param extension should not be empty.';
-            }
-            if (!extension)
-                params.extension = ['*'];
-        },
-    },
-};
-const ChooseImageProtocol = {
-    count: Number,
-    sizeType: [Array, String],
-    sourceType: Array,
-    extension: Array,
-};
-
-const API_CHOOSE_VIDEO = 'chooseVideo';
-const ChooseVideoOptions = {
-    formatArgs: {
-        sourceType(sourceType, params) {
-            params.sourceType = elemsInArray(sourceType, CHOOSE_SOURCE_TYPES);
-        },
-        compressed: true,
-        maxDuration: 60,
-        camera: 'back',
-        extension(extension, params) {
-            if (extension instanceof Array && extension.length === 0) {
-                return 'param extension should not be empty.';
-            }
-            if (!extension)
-                params.extension = ['*'];
-        },
-    },
-};
-const ChooseVideoProtocol = {
-    sourceType: Array,
-    compressed: Boolean,
-    maxDuration: Number,
-    camera: String,
-    extension: Array,
-};
-
-const API_GET_IMAGE_INFO = 'getImageInfo';
-const GetImageInfoOptions = {
-    formatArgs: {
-        src(src, params) {
-            params.src = getRealPath(src);
-        },
-    },
-};
-const GetImageInfoProtocol = {
-    src: {
-        type: String,
-        required: true,
-    },
-};
-
-const API_GET_VIDEO_INFO = 'getVideoInfo';
-const GetVideoInfoOptions = {
-    formatArgs: {
-        src(src, params) {
-            params.src = getRealPath(src);
-        },
-    },
-};
-const GetVideoInfoProtocol = {
-    src: {
-        type: String,
-        required: true,
-    },
-};
-
-const API_REQUEST = 'request';
-const dataType = {
-    JSON: 'json',
-};
-const RESPONSE_TYPE = ['text', 'arraybuffer'];
-const DEFAULT_RESPONSE_TYPE = 'text';
-const encode$1 = encodeURIComponent;
-function stringifyQuery(url, data) {
-    let str = url.split('#');
-    const hash = str[1] || '';
-    str = str[0].split('?');
-    let query = str[1] || '';
-    url = str[0];
-    const search = query.split('&').filter((item) => item);
-    const params = {};
-    search.forEach((item) => {
-        const part = item.split('=');
-        params[part[0]] = part[1];
-    });
-    for (const key in data) {
-        if (hasOwn$1(data, key)) {
-            let v = data[key];
-            if (typeof v === 'undefined' || v === null) {
-                v = '';
-            }
-            else if (isPlainObject(v)) {
-                v = JSON.stringify(v);
-            }
-            params[encode$1(key)] = encode$1(v);
-        }
-    }
-    query = Object.keys(params)
-        .map((item) => `${item}=${params[item]}`)
-        .join('&');
-    return url + (query ? '?' + query : '') + (hash ? '#' + hash : '');
-}
-const RequestProtocol = {
-    method: String,
-    data: [Object, String, Array, ArrayBuffer],
-    url: {
-        type: String,
-        required: true,
-    },
-    header: Object,
-    dataType: String,
-    responseType: String,
-    withCredentials: Boolean,
-};
-const RequestOptions = {
-    formatArgs: {
-        method(value, params) {
-            params.method = elemInArray((value || '').toUpperCase(), HTTP_METHODS);
-        },
-        data(value, params) {
-            params.data = value || '';
-        },
-        url(value, params) {
-            if (params.method === HTTP_METHODS[0] &&
-                isPlainObject(params.data) &&
-                Object.keys(params.data).length) {
-                // 将 method,data 校验提前,保证 url 校验时,method,data 已被格式化
-                params.url = stringifyQuery(value, params.data);
-            }
-        },
-        header(value, params) {
-            const header = (params.header = value || {});
-            if (params.method !== HTTP_METHODS[0]) {
-                if (!Object.keys(header).find((key) => key.toLowerCase() === 'content-type')) {
-                    header['Content-Type'] = 'application/json';
-                }
-            }
-        },
-        dataType(value, params) {
-            params.dataType = (value || dataType.JSON).toLowerCase();
-        },
-        responseType(value, params) {
-            params.responseType = (value || '').toLowerCase();
-            if (RESPONSE_TYPE.indexOf(params.responseType) === -1) {
-                params.responseType = DEFAULT_RESPONSE_TYPE;
-            }
-        },
-    },
-};
-
-const API_DOWNLOAD_FILE = 'downloadFile';
-const DownloadFileOptions = {
-    formatArgs: {
-        header(value, params) {
-            params.header = value || {};
-        },
-    },
-};
-const DownloadFileProtocol = {
-    url: {
-        type: String,
-        required: true,
-    },
-    header: Object,
-    timeout: Number,
-};
-
-const API_UPLOAD_FILE = 'uploadFile';
-const UploadFileOptions = {
-    formatArgs: {
-        filePath(filePath, params) {
-            if (filePath) {
-                params.filePath = getRealPath(filePath);
-            }
-        },
-        header(value, params) {
-            params.header = value || {};
-        },
-        formData(value, params) {
-            params.formData = value || {};
-        },
-    },
-};
-const UploadFileProtocol = {
-    url: {
-        type: String,
-        required: true,
-    },
-    files: Array,
-    filePath: String,
-    name: String,
-    header: Object,
-    formData: Object,
-    timeout: Number,
-};
 
 function encodeQueryString(url) {
     if (!isString(url)) {
@@ -2744,417 +3094,6 @@ const SetTabBarBadgeOptions = {
         },
     }, IndexOptions.formatArgs),
 };
-
-const chooseImage = defineAsyncApi(API_CHOOSE_IMAGE, function ({ count } = {}, { resolve, reject }) {
-    _chooseMedia({
-        mimeType: picker.PhotoViewMIMETypes.IMAGE_TYPE,
-        count,
-    })
-        .then((res) => {
-        return {
-            tempFilePaths: res.tempFiles.map((file) => file.tempFilePath),
-            tempFiles: res.tempFiles.map((file) => {
-                return {
-                    path: file.tempFilePath,
-                    size: file.size,
-                };
-            }),
-        };
-    })
-        .then(resolve, reject);
-}, ChooseImageProtocol, ChooseImageOptions);
-
-const chooseVideo = defineAsyncApi(API_CHOOSE_VIDEO, function ({} = {}, { resolve, reject }) {
-    _chooseMedia({
-        mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE,
-    })
-        .then((res) => {
-        const file = res.tempFiles[0];
-        return {
-            tempFilePath: file.tempFilePath,
-            duration: file.duration,
-            size: file.size,
-            width: file.width,
-            height: file.height,
-        };
-    })
-        // TODO 修正chooseVideo的类型
-        // @ts-expect-error tempFile、name 仅H5支持
-        .then(resolve, reject);
-}, ChooseVideoProtocol, ChooseVideoOptions);
-
-// TODO 网络图片
-const getImageInfo = defineAsyncApi(API_GET_IMAGE_INFO, function ({ src }, { resolve, reject }) {
-    _getImageInfo(src).then(resolve, reject);
-}, GetImageInfoProtocol, GetImageInfoOptions);
-
-const getVideoInfo = defineAsyncApi(API_GET_VIDEO_INFO, function ({ src }, { resolve, reject }) {
-    _getVideoInfo(src)
-        .then((res) => {
-        return {
-            size: res.size,
-            duration: res.duration,
-            width: res.width,
-            height: res.height,
-            type: res.type,
-            orientation: res.orientation,
-        };
-    })
-        .then(resolve, reject);
-}, GetVideoInfoProtocol, GetVideoInfoOptions);
-
-// copy from uni-app-plus/src/service/api/network/request.ts
-const cookiesParse = (header) => {
-    let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
-    let cookiesArr = [];
-    if (!cookiesStr) {
-        return [];
-    }
-    if (cookiesStr[0] === '[' && cookiesStr[cookiesStr.length - 1] === ']') {
-        cookiesStr = cookiesStr.slice(1, -1);
-    }
-    const handleCookiesArr = cookiesStr.split(';');
-    for (let i = 0; i < handleCookiesArr.length; i++) {
-        if (handleCookiesArr[i].indexOf('Expires=') !== -1 ||
-            handleCookiesArr[i].indexOf('expires=') !== -1) {
-            cookiesArr.push(handleCookiesArr[i].replace(',', ''));
-        }
-        else {
-            cookiesArr.push(handleCookiesArr[i]);
-        }
-    }
-    cookiesArr = cookiesArr.join(';').split(',');
-    return cookiesArr;
-};
-class RequestTask {
-    _requestTask;
-    constructor(requestTask) {
-        this._requestTask = requestTask;
-    }
-    abort() {
-        this._requestTask.abort();
-    }
-    onHeadersReceived(callback) {
-        this._requestTask.onHeadersReceived(callback);
-    }
-    offHeadersReceived(callback) {
-        this._requestTask.offHeadersReceived(callback);
-    }
-}
-const request = defineTaskApi(API_REQUEST, (args, { resolve, reject }) => {
-    let { header, method, data, dataType, timeout, url, responseType } = args;
-    let contentType;
-    // header
-    const headers = {};
-    for (const name in header) {
-        if (name.toLowerCase() === 'content-type') {
-            contentType = header[name];
-        }
-        headers[name.toLowerCase()] = header[name];
-    }
-    if (!contentType && method === 'POST') {
-        headers['Content-Type'] =
-            'application/x-www-form-urlencoded; charset=UTF-8';
-    }
-    // url data
-    if (method === 'GET' && data && isPlainObject(data)) {
-        url +=
-            '?' +
-                Object.keys(data)
-                    .map((key) => {
-                    return (encodeURIComponent(key) +
-                        '=' +
-                        encodeURIComponent(data[key]));
-                })
-                    .join('&');
-        data = undefined;
-    }
-    else if (method !== 'GET' &&
-        contentType &&
-        contentType.indexOf('application/json') === 0 &&
-        isPlainObject(data)) {
-        data = JSON.stringify(data);
-    }
-    else if (method !== 'GET' &&
-        contentType &&
-        contentType.indexOf('application/x-www-form-urlencoded') === 0 &&
-        isPlainObject(data)) {
-        data = Object.keys(data)
-            .map((key) => {
-            return (encodeURIComponent(key) +
-                '=' +
-                encodeURIComponent(data[key]));
-        })
-            .join('&');
-    }
-    // 其他参数
-    let expectDataType = http.HttpDataType.STRING;
-    if (responseType === 'arraybuffer') {
-        expectDataType = http.HttpDataType.ARRAY_BUFFER;
-    }
-    else if (dataType === 'json') {
-        expectDataType = http.HttpDataType.OBJECT;
-    }
-    else {
-        expectDataType = http.HttpDataType.STRING;
-    }
-    const httpRequest = http.createHttp();
-    const emitter = new E();
-    const requestTask = {
-        abort() {
-            httpRequest.destroy();
-        },
-        onHeadersReceived(callback) {
-            emitter.on('headersReceive', callback);
-        },
-        offHeadersReceived(callback) {
-            emitter.off('headersReceive', callback);
-        },
-    };
-    httpRequest.on('headersReceive', (header) => {
-        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
-        // emitter.emit('headersReceive', header);
-    });
-    httpRequest.request(url, {
-        header: headers,
-        method: (method || 'GET').toUpperCase(), // 仅OPTIONS不支持
-        extraData: data,
-        expectDataType,
-        connectTimeout: timeout, // 不支持仅设置一个timeout
-        readTimeout: timeout,
-    }, (err, res) => {
-        if (err) {
-            /**
-             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
-             * {"code":2300023,"message":"Failed writing received data to disk/application"}
-             */
-            reject(err.message);
-        }
-        else {
-            resolve({
-                data: res.result,
-                statusCode: res.responseCode,
-                header: res.header,
-                cookies: cookiesParse(res.header),
-            });
-        }
-        requestTask.offHeadersReceived();
-        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
-    });
-    return new RequestTask(requestTask);
-}, RequestProtocol, RequestOptions);
-
-class UploadTask {
-    _uploadTask;
-    constructor(uploadTask) {
-        this._uploadTask = uploadTask;
-    }
-    abort() {
-        this._uploadTask.abort();
-    }
-    onProgressUpdate(callback) {
-        this._uploadTask.onProgressUpdate(callback);
-    }
-    offProgressUpdate(callback) {
-        this._uploadTask.offProgressUpdate(callback);
-    }
-    onHeadersReceived(callback) {
-        this._uploadTask.onHeadersReceived(callback);
-    }
-    offHeadersReceived(callback) {
-        this._uploadTask.offHeadersReceived(callback);
-    }
-}
-const uploadFile = defineTaskApi(API_UPLOAD_FILE, (args, { resolve, reject }) => {
-    let { url, timeout, header, formData, files, filePath, name } = args;
-    // header
-    const headers = {};
-    for (const name in header) {
-        headers[name.toLowerCase()] = header[name];
-    }
-    headers['Content-Type'] = 'multipart/form-data';
-    const multiFormDataList = [];
-    for (const name in formData) {
-        if (hasOwn$1(formData, name)) {
-            multiFormDataList.push({
-                name,
-                contentType: 'text/plain',
-                data: String(formData[name]),
-            });
-        }
-    }
-    if (files && files.length) {
-        for (let i = 0; i < files.length; i++) {
-            const { name, uri } = files[i];
-            multiFormDataList.push({
-                name: name || 'file',
-                contentType: 'application/octet-stream', // TODO 根据文件后缀设置contentType
-                filePath: getRealPath(uri),
-            });
-        }
-    }
-    else {
-        multiFormDataList.push({
-            name: name || 'file',
-            contentType: 'application/octet-stream', // TODO 根据文件后缀设置contentType
-            filePath: getRealPath(filePath),
-        });
-    }
-    const httpRequest = http.createHttp();
-    const emitter = new E();
-    const uploadTask = {
-        abort() {
-            httpRequest.destroy();
-        },
-        onHeadersReceived(callback) {
-            emitter.on('headersReceive', callback);
-        },
-        offHeadersReceived(callback) {
-            emitter.off('headersReceive', callback);
-        },
-        onProgressUpdate(callback) {
-            emitter.on('progress', callback);
-        },
-        offProgressUpdate(callback) {
-            emitter.off('progress', callback);
-        },
-    };
-    httpRequest.on('headersReceive', (header) => {
-        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
-        // emitter.emit('headersReceive', header);
-    });
-    httpRequest.on('dataSendProgress', ({ sendSize, totalSize }) => {
-        emitter.emit('progress', {
-            progress: Math.floor((sendSize / totalSize) * 100),
-            totalBytesSent: sendSize,
-            totalBytesExpectedToSend: totalSize,
-        });
-    });
-    httpRequest.request(url, {
-        header: headers,
-        method: http.RequestMethod.POST,
-        connectTimeout: timeout, // 不支持仅设置一个timeout
-        readTimeout: timeout,
-        multiFormDataList,
-        expectDataType: http.HttpDataType.STRING,
-    }, (err, res) => {
-        if (err) {
-            /**
-             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
-             * {"code":2300023,"message":"Failed writing received data to disk/application"}
-             */
-            reject(err.message);
-        }
-        else {
-            resolve({
-                data: res.result,
-                statusCode: res.responseCode,
-            });
-        }
-        uploadTask.offHeadersReceived();
-        uploadTask.offProgressUpdate();
-        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
-    });
-    return new UploadTask(uploadTask);
-}, UploadFileProtocol, UploadFileOptions);
-
-class DownloadTask {
-    _downloadTask;
-    constructor(downloadTask) {
-        this._downloadTask = downloadTask;
-    }
-    abort() {
-        this._downloadTask.abort();
-    }
-    onProgressUpdate(callback) {
-        this._downloadTask.onProgressUpdate(callback);
-    }
-    offProgressUpdate(callback) {
-        this._downloadTask.offProgressUpdate(callback);
-    }
-    onHeadersReceived(callback) {
-        this._downloadTask.onHeadersReceived(callback);
-    }
-    offHeadersReceived(callback) {
-        this._downloadTask.offHeadersReceived(callback);
-    }
-}
-const downloadFile = defineTaskApi(API_DOWNLOAD_FILE, (args, { resolve, reject }) => {
-    let { url, timeout, header } = args;
-    const httpRequest = http.createHttp();
-    const emitter = new E();
-    const downloadTask = {
-        abort() {
-            httpRequest.destroy();
-        },
-        onHeadersReceived(callback) {
-            emitter.on('headersReceive', callback);
-        },
-        offHeadersReceived(callback) {
-            emitter.off('headersReceive', callback);
-        },
-        onProgressUpdate(callback) {
-            emitter.on('progress', callback);
-        },
-        offProgressUpdate(callback) {
-            emitter.off('progress', callback);
-        },
-    };
-    httpRequest.on('headersReceive', (header) => {
-        // TODO headersReceive在重定向时会多次触发，这点与微信不同，暂不支持回调给用户
-        // emitter.emit('headersReceive', header);
-    });
-    httpRequest.on('dataReceiveProgress', ({ receiveSize, totalSize }) => {
-        emitter.emit('progress', {
-            progress: Math.floor((receiveSize / totalSize) * 100),
-            totalBytesWritten: receiveSize,
-            totalBytesExpectedToWrite: totalSize,
-        });
-    });
-    const { TEMP_PATH } = getEnv();
-    const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp'; // TODO 正在咨询有无内置mimeType，目前无法根据content-type获取文件后缀
-    const stream = fs.createStreamSync(tempFilePath, 'w+');
-    let writePromise = Promise.resolve(0);
-    async function queueWrite(data) {
-        writePromise = writePromise.then(async (total) => {
-            const length = await stream.write(data);
-            return total + length;
-        });
-        return writePromise;
-    }
-    httpRequest.on('dataReceive', (data) => {
-        queueWrite(data);
-    });
-    httpRequest.requestInStream(url, {
-        header,
-        method: http.RequestMethod.GET,
-        connectTimeout: timeout, // 不支持仅设置一个timeout
-        readTimeout: timeout,
-    }, (err, statusCode) => {
-        // 此回调先于dataEnd回调执行
-        if (err) {
-            /**
-             * TODO abort后此处收到如下错误，待确认是否直接将此错误码转为abort错误
-             * {"code":2300023,"message":"Failed writing received data to disk/application"}
-             */
-            reject(err.message);
-        }
-        else {
-            writePromise.then(() => {
-                stream.flushSync();
-                stream.closeSync();
-                resolve({
-                    tempFilePath,
-                    statusCode,
-                });
-            });
-        }
-        downloadTask.offHeadersReceived();
-        downloadTask.offProgressUpdate();
-        httpRequest.destroy(); // 调用完毕后必须调用destroy方法
-    });
-    return new DownloadTask(downloadTask);
-}, DownloadFileProtocol, DownloadFileOptions);
 
 let config;
 /**
@@ -3793,14 +3732,14 @@ function encode(val) {
     return val;
 }
 function initUniPageUrl(path, query) {
-    const queryString = query ? stringifyQuery$1(query, encode) : '';
+    const queryString = query ? stringifyQuery(query, encode) : '';
     return {
         path: path.slice(1),
         query: queryString ? queryString.slice(1) : queryString,
     };
 }
 function initDebugRefresh(isTab, path, query) {
-    const queryString = query ? stringifyQuery$1(query, encode) : '';
+    const queryString = query ? stringifyQuery(query, encode) : '';
     return {
         isTab,
         arguments: JSON.stringify({
@@ -4730,30 +4669,31 @@ function _switchTab({ url, path, query, }) {
     });
 }
 
+// export * from './media/chooseImage'
+// export * from './media/chooseVideo'
+// export * from './media/getImageInfo'
+// export * from './media/getVideoInfo'
+// export * from './network/request'
+// export * from './network/uploadFile'
+// export * from './network/downloadFile'
+
 var uni$1 = {
-  __proto__: null,
-  chooseImage: chooseImage,
-  chooseVideo: chooseVideo,
-  downloadFile: downloadFile,
-  getImageInfo: getImageInfo,
-  getLocale: getLocale,
-  getSystemInfoSync: getSystemInfoSync,
-  getVideoInfo: getVideoInfo,
-  hideTabBar: hideTabBar,
-  hideTabBarRedDot: hideTabBarRedDot,
-  navigateBack: navigateBack,
-  navigateTo: navigateTo,
-  onLocaleChange: onLocaleChange,
-  removeTabBarBadge: removeTabBarBadge,
-  request: request,
-  setLocale: setLocale,
-  setTabBarBadge: setTabBarBadge,
-  setTabBarItem: setTabBarItem,
-  setTabBarStyle: setTabBarStyle,
-  showTabBar: showTabBar,
-  showTabBarRedDot: showTabBarRedDot,
-  switchTab: switchTab,
-  uploadFile: uploadFile
+    __proto__: null,
+    getLocale: getLocale,
+    getSystemInfoSync: getSystemInfoSync,
+    hideTabBar: hideTabBar,
+    hideTabBarRedDot: hideTabBarRedDot,
+    navigateBack: navigateBack,
+    navigateTo: navigateTo,
+    onLocaleChange: onLocaleChange,
+    removeTabBarBadge: removeTabBarBadge,
+    setLocale: setLocale,
+    setTabBarBadge: setTabBarBadge,
+    setTabBarItem: setTabBarItem,
+    setTabBarStyle: setTabBarStyle,
+    showTabBar: showTabBar,
+    showTabBarRedDot: showTabBarRedDot,
+    switchTab: switchTab
 };
 
 const UniServiceJSBridge$1 = /*#__PURE__*/ extend(ServiceJSBridge, {
@@ -4974,7 +4914,15 @@ function initSubscribeHandlers() {
 
 function initGlobalEvent() {
     const plusGlobalEvent = plus.globalEvent;
+    const { emit } = UniServiceJSBridge;
     plus.key.addEventListener(EVENT_BACKBUTTON, backbuttonListener);
+    plusGlobalEvent.addEventListener('pause', () => {
+        emit(ON_APP_ENTER_BACKGROUND);
+    });
+    plusGlobalEvent.addEventListener('resume', () => {
+        // TODO options
+        emit(ON_APP_ENTER_FOREGROUND, {});
+    });
     // TODO KeyboardHeightChange
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }
@@ -5055,6 +5003,9 @@ function registerApp(appVm) {
     __uniConfig.ready = true;
 }
 
+const __uniConfig$1 = globalThis.__uniConfig;
+
+// TODO 使用@dcloudio进行引用
 var index = {
     uni: uni$1,
     getApp: getApp$1,
@@ -5064,4 +5015,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { index as default };
+export { Emitter, UTSJSONObject$1 as UTSJSONObject, UniError, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, extend, getEnv, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };

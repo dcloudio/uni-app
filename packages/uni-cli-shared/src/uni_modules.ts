@@ -3,7 +3,9 @@ import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
 import type { UTSTargetLanguage } from './uts'
-import { normalizePath } from './utils'
+import { normalizePath, requireUniHelpers } from './utils'
+import { genUTSComponentPublicInstanceIdent } from './easycom'
+import { M } from './messages'
 
 export type DefineOptions = {
   name?: string
@@ -188,14 +190,16 @@ export function parseInjects(
           fs.existsSync(
             path.resolve(uniModuleRootDir, 'utssdk', 'app-android')
           ) ||
-          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios'))
+          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios')) ||
+          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-harmony'))
       }
     }
     // 其他平台修改source，直接指向目标文件，否则 uts2js 找不到类型信息
     if (
       platform !== 'app' &&
       platform !== 'app-android' &&
-      platform !== 'app-ios'
+      platform !== 'app-ios' &&
+      platform !== 'app-harmony'
     ) {
       if (fs.existsSync(platformIndexFileName)) {
         source = `${source}/utssdk/${platform}/index.uts`
@@ -263,7 +267,9 @@ function parseInject(
       } else {
         const defineOptions = define[d] as DefineOptions
         const p =
-          platform === 'app-android' || platform === 'app-ios'
+          platform === 'app-android' ||
+          platform === 'app-ios' ||
+          platform === 'app-harmony'
             ? 'app'
             : platform
         if (!(p in defineOptions)) {
@@ -350,6 +356,7 @@ export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
 }
 
 export function genEncryptEasyComModuleIndex(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
   components: Record<string, '.vue' | '.uvue'>
 ) {
   const imports: string[] = []
@@ -357,14 +364,20 @@ export function genEncryptEasyComModuleIndex(
   Object.keys(components).forEach((component) => {
     const id = capitalize(camelize(component))
 
+    ids.push(id)
+    if (platform === 'app-android') {
+      // 类型
+      ids.push(genUTSComponentPublicInstanceIdent(component))
+    }
     imports.push(
       `import ${id} from './components/${component}/${component}${components[component]}'`
     )
-    ids.push(id)
   })
   return `
 ${imports.join('\n')}
-export { ${ids.join(',')} }
+export { 
+  ${ids.join(',\n  ')} 
+}
 `
 }
 
@@ -532,6 +545,8 @@ interface EncryptPackageJson {
       } & Record<string, any>
       apis: string[]
       components: string[]
+      scopedSlots: string[]
+      declaration: string
     }
   }
 }
@@ -549,12 +564,22 @@ function findEncryptUniModuleCache(
   }
   const uniModuleCacheDir = path.resolve(cacheDir, 'uni_modules', uniModuleId)
   if (fs.existsSync(uniModuleCacheDir)) {
-    const pkg = require(path.resolve(uniModuleCacheDir, 'package.json'))
+    const pkg = require(path.resolve(
+      uniModuleCacheDir,
+      'package.json'
+    )) as EncryptPackageJson
     // 插件版本以及各种环境一致
     if (
       pkg.version === options.version &&
       !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env)
     ) {
+      const declaration = path.resolve(
+        uniModuleCacheDir,
+        'utssdk/app-android/index.d.uts'
+      )
+      pkg.uni_modules.artifacts.declaration = fs.existsSync(declaration)
+        ? declaration
+        : ''
       return pkg
     }
     console.log(`插件${uniModuleId} 缓存已过期，需要重新云编译。`)
@@ -641,6 +666,14 @@ export function resolveEncryptUniModule(
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
     if (uniModuleId in encryptUniModules) {
+      if (parts[index + 2]) {
+        console.warn(
+          M['uni_modules.import']
+            .replace('{0}', uniModuleId)
+            .replace('{1}', uniModuleId)
+            .replace('{2}', parts.slice(index + 2).join('/'))
+        )
+      }
       // 原生平台走旧的uts-proxy
       return normalizePath(
         path.join(
@@ -687,14 +720,15 @@ export async function checkEncryptUniModules(
   )
   if (zipFile) {
     const downloadFile = path.resolve(cacheDir, 'uni_modules.download.zip')
-    const { C, D, R, U } = require(path.join(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'uni_helpers'
-    ))
+    const { C, D, R, U } = requireUniHelpers()
     try {
       const isLogin = await C()
+      const tips =
+        process.env.UNI_UTS_PLATFORM !== 'app-android'
+          ? '（此过程耗时较长）'
+          : ''
       console.log(
-        `正在云编译插件${isLogin ? '' : '（请先登录）'}：${modules.join(
+        `正在云编译插件${isLogin ? '' : '（请先登录）'}${tips}：${modules.join(
           ','
         )}...`
       )
@@ -736,10 +770,7 @@ export async function checkEncryptUniModules(
   } else {
     // android 平台需要在这里初始化
     if (params.platform === 'app-android') {
-      const { R } = require(path.join(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        'uni_helpers'
-      ))
+      const { R } = requireUniHelpers()
       R({
         dir: process.env.UNI_INPUT_DIR,
         cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
@@ -750,4 +781,25 @@ export async function checkEncryptUniModules(
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
   )
+}
+
+export function parseUniModulesArtifacts() {
+  const res: {
+    name: string
+    package: string
+    scopedSlots: string[]
+    declaration: string
+  }[] = []
+  Object.keys(encryptUniModules).forEach((uniModuleId) => {
+    const pkg = encryptUniModules[uniModuleId]
+    if (pkg?.uni_modules?.artifacts) {
+      res.push({
+        name: uniModuleId,
+        package: `uts.sdk.modules.${camelize(uniModuleId)}`,
+        scopedSlots: pkg.uni_modules.artifacts.scopedSlots || [],
+        declaration: pkg.uni_modules.artifacts.declaration,
+      })
+    }
+  })
+  return res
 }

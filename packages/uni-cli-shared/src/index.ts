@@ -26,10 +26,12 @@ export * from './utsUtils'
 export {
   parseUniExtApis,
   parseInjects,
+  parseUniModulesArtifacts,
   Define,
   DefineOptions,
   Defines,
   getUniExtApiProviderRegisters,
+  resolveEncryptUniModule,
 } from './uni_modules'
 
 export { M } from './messages'
