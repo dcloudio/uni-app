@@ -15,3 +15,27 @@ class Test implements ITest {
 export function createTest(): ITest {
   return new Test()
 }
+
+interface A10 {
+  test0(): void
+}
+interface A11 extends A10 {
+  test1(): void
+}
+interface A12 extends A11 {
+  test2(): void
+}
+class A13 implements A12 {
+  test0() {
+    console.log('test0')
+  }
+  test1() {
+    console.log('test1')
+  }
+  test2() {
+    console.log('test2')
+  }
+}
+export function testA3(): A12 {
+  return new A13()
+}
