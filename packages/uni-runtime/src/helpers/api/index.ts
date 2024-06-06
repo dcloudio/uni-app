@@ -15,7 +15,7 @@ export interface ErrRes {
   errCode?: number | null
 }
 export interface ApiExcutor<K> {
-  resolve: (res: K | void) => void
+  resolve: (res?: K | void) => void
   reject: (errMsg?: string, errRes?: ErrRes) => void
 }
 export interface ProtocolOptions {

@@ -55,7 +55,12 @@ export function uniAppPlugin(): UniVitePlugin {
     }
   }
   emptyOutDir()
-
+  function emptyUVueDir() {
+    if (fs.existsSync(tempOutputDir)) {
+      emptyDir(tempOutputDir)
+    }
+  }
+  emptyUVueDir()
   return {
     name: 'uni:app-uts',
     apply: 'build',

@@ -26,12 +26,7 @@ export function getAppThemeFallbackOS(): IThemeMode {
 }
 
 // 监听主题 id，用来 off
-let osThemeChangeCallbackId = -1
 let appThemeChangeCallbackId = -1
-
-function clearOsThemeChangeCallbackId() {
-  osThemeChangeCallbackId = -1
-}
 
 function clearAppThemeChangeCallbackId() {
   appThemeChangeCallbackId = -1
@@ -41,38 +36,19 @@ function clearAppThemeChangeCallbackId() {
 export function registerThemeChange(callback: (themeMode: IThemeMode) => void) {
   if (appThemeChangeCallbackId !== -1) {
     if (typeof uni.offAppThemeChange !== 'function') {
-      console.error('uni.offAppThemeChange is not a function')
       return
     }
     uni.offAppThemeChange(appThemeChangeCallbackId)
     clearAppThemeChangeCallbackId()
   }
   if (typeof uni.onAppThemeChange !== 'function') {
-    console.error('uni.onAppThemeChange is not a function')
     return
   }
   appThemeChangeCallbackId = uni.onAppThemeChange(function (
     res1: UTSJSONObject
   ) {
-    const appThemeMode = res1['appTheme'] as IThemeMode & 'auto'
-    if (appThemeMode !== APP_THEME_AUTO) {
-      callback(appThemeMode)
-    } else {
-      callback(getAppThemeFallbackOS())
-    }
-  })
-
-  if (osThemeChangeCallbackId !== -1) {
-    uni.offOsThemeChange(osThemeChangeCallbackId)
-    clearOsThemeChangeCallbackId()
-  }
-  osThemeChangeCallbackId = uni.onOsThemeChange(function (res2: UTSJSONObject) {
-    const appTheme = uni.getAppBaseInfo().appTheme as IThemeMode & 'auto'
-    const currentOsTheme = res2['osTheme'] as IThemeMode
-
-    if (appTheme === APP_THEME_AUTO) {
-      callback(currentOsTheme)
-    }
+    const appThemeMode = res1['appTheme'] as IThemeMode
+    callback(appThemeMode)
   })
 }
 

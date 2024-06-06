@@ -1263,6 +1263,14 @@ const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
 const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
 
+function isComponentInternalInstance(vm) {
+    return !!vm.appContext;
+}
+function resolveComponentInstance(instance) {
+    return (instance &&
+        (isComponentInternalInstance(instance) ? instance.proxy : instance));
+}
+
 let lastLogTime = 0;
 function formatLog(module, ...args) {
     const now = Date.now();
@@ -2398,6 +2406,19 @@ function rpx2pxWithReplace(str) {
     });
 }
 
+function getPageIdByVm(instance) {
+    const vm = resolveComponentInstance(instance);
+    if (vm.$page) {
+        return vm.$page.id;
+    }
+    if (!vm.$) {
+        return;
+    }
+    const rootProxy = vm.$.root.proxy;
+    if (rootProxy && rootProxy.$page) {
+        return rootProxy.$page.id;
+    }
+}
 function getCurrentPage() {
     const pages = getCurrentPages();
     const len = pages.length;
@@ -5015,4 +5036,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { Emitter, UTSJSONObject$1 as UTSJSONObject, UniError, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, extend, getEnv, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };
+export { Emitter, UTSJSONObject$1 as UTSJSONObject, UniError, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };
