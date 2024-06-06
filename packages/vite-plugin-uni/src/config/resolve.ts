@@ -78,5 +78,6 @@ export function createResolve(
     ] as Alias[],
     extensions:
       process.env.UNI_APP_X === 'true' ? uni_app_x_extensions : extensions,
+    preserveSymlinks: true,
   }
 }
