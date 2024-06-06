@@ -115,11 +115,11 @@ export function defineTaskApi<T, K, TASK>(
   )
 }
 
-export function defineSyncApi<T, K>(
+export function defineSyncApi<K>(
   name: string,
-  fn: (options: T) => K,
-  protocol: Map<string, ProtocolOptions>,
-  options: ApiOptions<T>
+  fn: Function, // devEco内将参数类型定义为(...args: Object[]) => Object时，(key: string) => Object类型的function无法赋值给此参数。
+  protocol?: Map<string, ProtocolOptions>,
+  options?: ApiOptions<Object>
 ): Object {
   const originalProtocol = buildProtocol(protocol)
   const originalOptions = buildOptions(
@@ -127,8 +127,8 @@ export function defineSyncApi<T, K>(
   )
   return originalDefineSyncApi(
     name,
-    fn,
     // @ts-expect-error
+    fn,
     originalProtocol,
     originalOptions
   )
