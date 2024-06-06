@@ -51,6 +51,7 @@ export function uniCopyPlugin({
       src: assets,
       dest: outputDir,
       watchOptions: {
+        followSymlinks: false, // 不设置为false的话，如果uni_modules软链了，会拷贝所有的不匹配文件
         ignored(path: string) {
           const normalizedPath = normalizePath(path)
           if (

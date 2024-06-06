@@ -109,6 +109,10 @@ export function getInjectComponents() {
   return [...pluginInjectComponents]
 }
 
+function isAppIOS(filename: string) {
+  return normalizePath(filename).includes('/utssdk/app-ios/')
+}
+
 export async function runKotlinProd(
   filename: string,
   {
@@ -127,7 +131,7 @@ export async function runKotlinProd(
   }: RunProdOptions
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
-  if (filename.includes('app-ios')) {
+  if (isAppIOS(filename)) {
     return
   }
   const inputDir = process.env.UNI_INPUT_DIR
@@ -267,7 +271,7 @@ export async function runKotlinDev(
   }: RunDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
-  if (filename.includes('app-ios')) {
+  if (isAppIOS(filename)) {
     return
   }
   const inputDir = process.env.UNI_INPUT_DIR

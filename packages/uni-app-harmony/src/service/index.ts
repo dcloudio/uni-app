@@ -18,6 +18,6 @@ export default {
   __registerApp,
   UniServiceJSBridge,
 }
-
+export { UniServiceJSBridge } from './bridge'
 export { getEnv } from '../platform/env.js'
 export { UTSJSONObject, UniError }

@@ -7,7 +7,7 @@ import { UniViewJSBridge } from './bridge'
 import * as uni from './api'
 import { initSubscribeHandlers } from './framework/subscriber'
 import { $ } from './framework/dom/page'
-import { initViewMethods } from '@dcloudio/uni-app-plus/view/framework/viewMethods'
+import { initViewMethods } from './framework/viewMethods'
 import {
   normalizeStyleName,
   normalizeStyleValue,

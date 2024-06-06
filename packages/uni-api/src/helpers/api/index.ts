@@ -26,6 +26,7 @@ function formatApiArgs<T extends ApiLike>(
   const params = args[0]
   if (
     !options ||
+    !options.formatArgs ||
     (!isPlainObject(options.formatArgs) && isPlainObject(params))
   ) {
     return

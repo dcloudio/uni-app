@@ -6,14 +6,16 @@ import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
 import http from '@ohos.net.http';
-import { API_UPLOAD_FILE, UploadFileOptions as UploadFileOptions1, UploadFileProtocol, defineTaskApi as defineTaskApi1, hasOwn, getRealPath as getRealPath1, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { ReadOptions } from '@ohos.file.fs';
+import dataPreferences from '@ohos.data.preferences';
 import fs1 from '@ohos.file.fs';
-import { getEnv, Emitter as Emitter2, API_DOWNLOAD_FILE, DownloadFileOptions as DownloadFileOptions1, DownloadFileProtocol, defineTaskApi as defineTaskApi2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getRealPath as getRealPath2, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
-import { isPlainObject, API_REQUEST, RequestOptions as RequestOptions1, RequestProtocol, defineTaskApi, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 export function initUniExtApi(APP_ID: string) {
@@ -620,7 +622,263 @@ export function initUniExtApi(APP_ID: string) {
         abort(): void;
         onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
     }
-    type API_TYPE_REQUEST = (options: RequestOptions<Object>) => RequestTask;
+    const API_REQUEST = 'request';
+    const RequestApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'data',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'method',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'dataType',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'responseType',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ],
+        [
+            'sslVerify',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'withCredentials',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'firstIpv4',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ]
+    ]);
+    const RequestApiOptions: ApiOptions<RequestOptions<Object>> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: RequestOptions<Object>)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ],
+            [
+                'data',
+                (data: object, params: RequestOptions<Object>)=>{
+                    if (data == null) {
+                        params.data = '';
+                    }
+                }
+            ],
+            [
+                'method',
+                (method: string, params: RequestOptions<Object>)=>{
+                    params.method = (method || 'GET').toUpperCase() as RequestMethod;
+                }
+            ],
+            [
+                'dataType',
+                (dataType: string, params: RequestOptions<Object>)=>{
+                    if (dataType == null) {
+                        params.dataType = 'json';
+                    }
+                }
+            ],
+            [
+                'responseType',
+                (responseType: string, params: RequestOptions<Object>)=>{
+                    if (responseType == null) {
+                        params.responseType = 'text';
+                    }
+                }
+            ],
+            [
+                'timeout',
+                (timeout: number, params: RequestOptions<Object>)=>{
+                    if (timeout == null) {
+                        params.timeout = 60000;
+                    }
+                }
+            ],
+            [
+                'sslVerify',
+                (sslVerify: boolean, params: RequestOptions<Object>)=>{
+                    if (sslVerify == null) {
+                        params.sslVerify = true;
+                    }
+                }
+            ],
+            [
+                'withCredentials',
+                (withCredentials: boolean, params: RequestOptions<Object>)=>{
+                    if (withCredentials == null) {
+                        params.withCredentials = false;
+                    }
+                }
+            ],
+            [
+                'firstIpv4',
+                (firstIpv4: boolean, params: RequestOptions<Object>)=>{
+                    if (firstIpv4 == null) {
+                        params.firstIpv4 = false;
+                    }
+                }
+            ]
+        ])
+    };
+    const API_DOWNLOAD_FILE = 'downloadFile';
+    const DownloadFileApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ]
+    ]);
+    const DownloadFileApiOptions: ApiOptions<DownloadFileOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: DownloadFileOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ]
+        ])
+    };
+    const API_UPLOAD_FILE = 'uploadFile';
+    const UploadFileApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'filePath',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'name',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'formData',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number',
+                required: false
+            }
+        ]
+    ]);
+    const UploadFileApiOptions: ApiOptions<UploadFileOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: UploadFileOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ],
+            [
+                'filePath',
+                (filePath: string, params: UploadFileOptions)=>{
+                    if (filePath == null) {
+                        throw new Error('filePath is required');
+                    }
+                    params.filePath = getRealPath1(filePath);
+                }
+            ],
+            [
+                'name',
+                (name: string, params: UploadFileOptions)=>{
+                    if (name == null) {
+                        params.name = 'file';
+                    }
+                }
+            ]
+        ])
+    };
     const cookiesParse = (header: Record<string, string>)=>{
         let cookiesStr = header['Set-Cookie'] || header['set-cookie'];
         let cookiesArr: string[] = [];
@@ -661,30 +919,36 @@ export function initUniExtApi(APP_ID: string) {
             this._requestTask.offHeadersReceived(callback);
         }
     }
-    const request = defineTaskApi<API_TYPE_REQUEST>(API_REQUEST, (args, ref)=>{
-        let resolve = ref.resolve, reject = ref.reject;
+    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExcutor<RequestSuccess<Object>>)=>{
         let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
-        let contentType;
+        let contentType = '';
         const headers = {} as Record<string, Object>;
-        for(const name in header){
-            if (name.toLowerCase() === 'content-type') {
-                contentType = header[name];
+        if (header) {
+            const headerRecord = header as Object as Record<string, string>;
+            const headerKeys = Object.keys(headerRecord);
+            for(let i = 0; i < headerKeys.length; i++){
+                const name = headerKeys[i];
+                if (name.toLowerCase() === 'content-type') {
+                    contentType = headerRecord[name] as string;
+                }
+                headers[name.toLowerCase()] = headerRecord[name];
             }
-            headers[name.toLowerCase()] = header[name];
         }
         if (!contentType && method === 'POST') {
             headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
         }
         if (method === 'GET' && data && isPlainObject(data)) {
-            url += '?' + Object.keys(data).map((key)=>{
-                return (encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+            const dataRecord = data as Record<string, Object>;
+            url += '?' + Object.keys(dataRecord).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
             }).join('&');
-            data = undefined;
+            data = null;
         } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && isPlainObject(data)) {
             data = JSON.stringify(data);
         } else if (method !== 'GET' && contentType && contentType.indexOf('application/x-www-form-urlencoded') === 0 && isPlainObject(data)) {
-            data = Object.keys(data).map((key)=>{
-                return (encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+            const dataRecord = data as Record<string, Object>;
+            data = Object.keys(dataRecord).map((key)=>{
+                return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
             }).join('&');
         }
         let expectDataType: http.HttpDataType = http.HttpDataType.STRING;
@@ -697,7 +961,7 @@ export function initUniExtApi(APP_ID: string) {
         }
         const httpRequest = http.createHttp();
         const emitter = new Emitter();
-        const requestTask = {
+        const requestTask: IRequestTask = {
             abort () {
                 httpRequest.destroy();
             },
@@ -707,32 +971,31 @@ export function initUniExtApi(APP_ID: string) {
             offHeadersReceived (callback: Function | null = null) {
                 emitter.off('headersReceive', callback);
             }
-        } as UTSJSONObject;
+        };
         httpRequest.on('headersReceive', (header: Object)=>{});
         httpRequest.request(url, {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
             extraData: data,
             expectDataType,
-            connectTimeout: timeout,
-            readTimeout: timeout
-        } as UTSJSONObject, (err, res)=>{
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined
+        } as http.HttpRequestOptions, (err, res)=>{
             if (err) {
-                reject(err.message);
+                exec.reject(err.message);
             } else {
-                resolve({
+                exec.resolve({
                     data: res.result,
                     statusCode: res.responseCode,
                     header: res.header,
-                    cookies: cookiesParse(res.header as Record<string, Object>)
-                } as UTSJSONObject);
+                    cookies: cookiesParse(res.header as Record<string, string>)
+                } as RequestSuccess<Object>);
             }
             requestTask.offHeadersReceived();
             httpRequest.destroy();
         });
         return new RequestTask1(requestTask);
-    }, RequestProtocol, RequestOptions1);
-    type API_TYPE_UPLOAD_FILE = (options: UploadFileOptions) => UploadTask;
+    }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
     interface IUploadTask {
         abort: Function;
         onHeadersReceived: Function;
@@ -761,22 +1024,29 @@ export function initUniExtApi(APP_ID: string) {
             this._uploadTask.offHeadersReceived(callback);
         }
     }
-    const uploadFile = defineTaskApi1<API_TYPE_UPLOAD_FILE>(API_UPLOAD_FILE, (args, ref)=>{
-        let resolve = ref.resolve, reject = ref.reject;
+    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExcutor<UploadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
         const headers = {} as Record<string, Object>;
-        for(const name in header){
-            headers[name.toLowerCase()] = header[name];
+        if (header) {
+            const headerRecord = header as Object as Record<string, string>;
+            const headerKeys = Object.keys(headerRecord);
+            for(let i = 0; i < headerKeys.length; i++){
+                const name = headerKeys[i];
+                headers[name.toLowerCase()] = headerRecord[name];
+            }
         }
         headers['Content-Type'] = 'multipart/form-data';
         const multiFormDataList = [] as Array<http1.MultiFormData>;
-        for(const name in formData){
-            if (hasOwn(formData, name)) {
+        if (formData) {
+            const formDataRecord = formData as Object as Record<string, Object>;
+            const formDataKeys = Object.keys(formDataRecord);
+            for(let i = 0; i < formDataKeys.length; i++){
+                const name = formDataKeys[i];
                 multiFormDataList.push({
                     name,
                     contentType: 'text/plain',
-                    data: String(formData[name])
-                } as UTSJSONObject);
+                    data: String(formDataRecord[name])
+                } as http1.MultiFormData);
             }
         }
         if (files && files.length) {
@@ -785,15 +1055,15 @@ export function initUniExtApi(APP_ID: string) {
                 multiFormDataList.push({
                     name: name || 'file',
                     contentType: 'application/octet-stream',
-                    filePath: getRealPath1(uri!)
-                } as UTSJSONObject);
+                    filePath: getRealPath2(uri!)
+                } as http1.MultiFormData);
             }
         } else {
             multiFormDataList.push({
                 name: name || 'file',
                 contentType: 'application/octet-stream',
-                filePath: getRealPath1(filePath!)
-            } as UTSJSONObject);
+                filePath: getRealPath2(filePath!)
+            } as http1.MultiFormData);
         }
         const httpRequest = http1.createHttp();
         const emitter = new Emitter1();
@@ -821,31 +1091,30 @@ export function initUniExtApi(APP_ID: string) {
                 progress: Math.floor((sendSize / totalSize) * 100),
                 totalBytesSent: sendSize,
                 totalBytesExpectedToSend: totalSize
-            } as UTSJSONObject);
+            } as OnProgressUpdateResult);
         });
         httpRequest.request(url, {
             header: headers,
             method: http1.RequestMethod.POST,
-            connectTimeout: timeout,
-            readTimeout: timeout,
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined,
             multiFormDataList,
             expectDataType: http1.HttpDataType.STRING
-        } as UTSJSONObject, (err, res)=>{
+        } as http1.HttpRequestOptions, (err, res)=>{
             if (err) {
-                reject(err.message);
+                exec.reject(err.message);
             } else {
-                resolve({
+                exec.resolve({
                     data: res.result as string,
                     statusCode: res.responseCode
-                } as UTSJSONObject);
+                } as UploadFileSuccess);
             }
             uploadTask.offHeadersReceived();
             uploadTask.offProgressUpdate();
             httpRequest.destroy();
         });
         return new UploadTask1(uploadTask);
-    }, UploadFileProtocol, UploadFileOptions1);
-    type API_TYPE_DOWNLOAD_FILE = (options: DownloadFileOptions) => DownloadTask;
+    }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
     interface IDownloadTask {
         abort: Function;
         onHeadersReceived: Function;
@@ -874,8 +1143,7 @@ export function initUniExtApi(APP_ID: string) {
             this._downloadTask.offHeadersReceived(callback);
         }
     }
-    const downloadFile = defineTaskApi2<API_TYPE_DOWNLOAD_FILE>(API_DOWNLOAD_FILE, (args, ref)=>{
-        let resolve = ref.resolve, reject = ref.reject;
+    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExcutor<DownloadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header;
         const httpRequest = http2.createHttp();
         const emitter = new Emitter2();
@@ -903,9 +1171,9 @@ export function initUniExtApi(APP_ID: string) {
                 progress: Math.floor((receiveSize / totalSize) * 100),
                 totalBytesWritten: receiveSize,
                 totalBytesExpectedToWrite: totalSize
-            } as UTSJSONObject);
+            } as OnProgressDownloadResult);
         });
-        const TEMP_PATH = getEnv().TEMP_PATH;
+        const TEMP_PATH = getEnv().TEMP_PATH as string;
         const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp';
         const stream = fs1.createStreamSync(tempFilePath, 'w+');
         let writePromise = Promise.resolve(0);
@@ -920,21 +1188,21 @@ export function initUniExtApi(APP_ID: string) {
             queueWrite(data);
         });
         httpRequest.requestInStream(url, {
-            header,
+            header: header ? header : {} as ESObject,
             method: http2.RequestMethod.GET,
-            connectTimeout: timeout,
-            readTimeout: timeout
-        } as UTSJSONObject, (err, statusCode)=>{
+            connectTimeout: timeout ? timeout : undefined,
+            readTimeout: timeout ? timeout : undefined
+        } as http2.HttpRequestOptions, (err, statusCode)=>{
             if (err) {
-                reject(err.message);
+                exec.reject(err.message);
             } else {
                 writePromise.then(()=>{
                     stream.flushSync();
                     stream.closeSync();
-                    resolve({
+                    exec.resolve({
                         tempFilePath,
                         statusCode
-                    } as UTSJSONObject);
+                    } as DownloadFileSuccess);
                 });
             }
             downloadTask.offHeadersReceived();
@@ -942,7 +1210,179 @@ export function initUniExtApi(APP_ID: string) {
             httpRequest.destroy();
         });
         return new DownloadTask1(downloadTask);
-    }, DownloadFileProtocol, DownloadFileOptions1);
+    }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    class SetStorageSuccess extends UTSObject {
+    }
+    type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
+    type SetStorageFailCallback = (res: UniError) => void;
+    type SetStorageCompleteCallback = (res: Object) => void;
+    class SetStorageOptions extends UTSObject {
+        key!: string;
+        data!: Object;
+        success: SetStorageSuccessCallback | null = null;
+        fail: SetStorageFailCallback | null = null;
+        complete: SetStorageCompleteCallback | null = null;
+    }
+    type SetStorage = (options: SetStorageOptions) => void;
+    type SetStorageSync = (key: string, data: Object) => void;
+    class GetStorageSuccess extends UTSObject {
+        data: Object | null = null;
+    }
+    type GetStorageSuccessCallback = (res: GetStorageSuccess) => void;
+    type GetStorageFailCallback = (res: UniError) => void;
+    type GetStorageCompleteCallback = (res: Object) => void;
+    class GetStorageOptions extends UTSObject {
+        key!: string;
+        success: GetStorageSuccessCallback | null = null;
+        fail: GetStorageFailCallback | null = null;
+        complete: GetStorageCompleteCallback | null = null;
+    }
+    type GetStorage = (options: GetStorageOptions) => void;
+    type GetStorageSync = (key: string) => Object | null;
+    class GetStorageInfoSuccess extends UTSObject {
+        keys!: Array<string>;
+        currentSize!: number;
+        limitSize!: number;
+    }
+    type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void;
+    type GetStorageInfoFailCallback = (res: UniError) => void;
+    type GetStorageInfoCompleteCallback = (res: Object) => void;
+    class GetStorageInfoOptions extends UTSObject {
+        success: GetStorageInfoSuccessCallback | null = null;
+        fail: GetStorageInfoFailCallback | null = null;
+        complete: GetStorageInfoCompleteCallback | null = null;
+    }
+    type GetStorageInfo = (options: GetStorageInfoOptions) => void;
+    type GetStorageInfoSync = () => GetStorageInfoSuccess;
+    class RemoveStorageSuccess extends UTSObject {
+    }
+    type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void;
+    type RemoveStorageFailCallback = (res: UniError) => void;
+    type RemoveStorageCompleteCallback = (res: Object) => void;
+    class RemoveStorageOptions extends UTSObject {
+        key!: string;
+        success: RemoveStorageSuccessCallback | null = null;
+        fail: RemoveStorageFailCallback | null = null;
+        complete: RemoveStorageCompleteCallback | null = null;
+    }
+    type RemoveStorage = (options: RemoveStorageOptions) => void;
+    type RemoveStorageSync = (key: string) => void;
+    class ClearStorageSuccess extends UTSObject {
+    }
+    type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void;
+    type ClearStorageFailCallback = (res: UniError) => void;
+    type ClearStorageCompleteCallback = (res: Object) => void;
+    class ClearStorageOptions extends UTSObject {
+        success: ClearStorageSuccessCallback | null = null;
+        fail: ClearStorageFailCallback | null = null;
+        complete: ClearStorageCompleteCallback | null = null;
+    }
+    type ClearStorage = (option?: ClearStorageOptions | null) => void;
+    type ClearStorageSync = () => void;
+    const API_GET_STORAGE = 'getStorage';
+    const API_GET_STORAGE_SYNC = 'getStorageSync';
+    const API_SET_STORAGE = 'setStorage';
+    const API_SET_STORAGE_SYNC = 'setStorageSync';
+    const API_REMOVE_STORAGE = 'removeStorage';
+    const API_REMOVE_STORAGE_SYNC = 'removeStorageSync';
+    const API_CLEAR_STORAGE = 'clearStorage';
+    const API_CLEAR_STORAGE_SYNC = 'clearStorageSync';
+    const API_GET_STORAGE_INFO = 'getStorageInfo';
+    const API_GET_STORAGE_INFO_SYNC = 'getStorageInfoSync';
+    const parseStorageValue = (value: string): Object =>{
+        try {
+            return JSON.parse(value).data;
+        } catch (e) {
+            return value;
+        }
+    };
+    const stringifyStorageValue = (value: Object): string =>{
+        return JSON.stringify({
+            type: typeof value,
+            data: value
+        } as ESObject);
+    };
+    let store: dataPreferences.Preferences | null = null;
+    const createStore = (): dataPreferences.Preferences =>{
+        if (store) {
+            return store;
+        }
+        store = dataPreferences.getPreferencesSync(getContext(), {
+            name: `storage.${APP_ID}`
+        } as dataPreferences.Options);
+        return store;
+    };
+    const getStorageSync = defineSyncApi<Object>(API_GET_STORAGE_SYNC, (key: string)=>{
+        const storeValue = createStore().getSync(key, '');
+        if (!storeValue) {
+            return '';
+        }
+        return parseStorageValue(storeValue as string);
+    }) as GetStorageSync;
+    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExcutor<GetStorageSuccess>)=>{
+        createStore().get(args.key, '').then((storeValue)=>{
+            if (!storeValue) {
+                return exec.reject('data not found');
+            }
+            let value: Object;
+            try {
+                value = parseStorageValue(storeValue as string);
+            } catch (error) {
+                exec.reject('data parse error');
+                return;
+            }
+            exec.resolve({
+                data: value
+            } as GetStorageSuccess);
+        });
+    }) as GetStorage;
+    const setStorageSync = defineSyncApi<void>(API_SET_STORAGE_SYNC, (key: string, value: Object)=>{
+        createStore().putSync(key, stringifyStorageValue(value));
+    }) as SetStorageSync;
+    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExcutor<SetStorageSuccess>)=>{
+        createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
+            exec.resolve({} as ESObject);
+        }, (error: Error)=>{
+            exec.reject(error.message);
+        });
+    }) as SetStorage;
+    const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string)=>{
+        createStore().deleteSync(key);
+    }) as RemoveStorageSync;
+    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExcutor<RemoveStorageSuccess>)=>{
+        createStore().delete(args.key).then(()=>{
+            exec.resolve({} as ESObject);
+        }, (error: Error)=>{
+            exec.reject(error.message);
+        });
+    }) as RemoveStorage;
+    const clearStorageSync = defineSyncApi<void>(API_CLEAR_STORAGE_SYNC, ()=>{
+        createStore().clearSync();
+    }) as ClearStorageSync;
+    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExcutor<ClearStorageSuccess>)=>{
+        createStore().clear().then(()=>{
+            exec.resolve({} as ESObject);
+        }, (error: Error)=>{
+            exec.reject(error.message);
+        });
+    }) as ClearStorage;
+    const getStorageInfoSync = defineSyncApi<GetStorageInfoSuccess>(API_GET_STORAGE_INFO_SYNC, ()=>{
+        const allData = createStore().getAllSync();
+        return {
+            keys: Object.keys(allData),
+            currentSize: 0,
+            limitSize: 0
+        } as GetStorageInfoSuccess;
+    }) as GetStorageInfoSync;
+    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExcutor<GetStorageInfoSuccess>)=>{
+        createStore().getAll().then((allData)=>{
+            exec.resolve({
+                keys: Object.keys(allData),
+                currentSize: 0,
+                limitSize: 0
+            } as GetStorageInfoSuccess);
+        });
+    }) as GetStorageInfo;
     interface UniExtApi {
         chooseImage: ChooseImage;
         getImageInfo: GetImageInfo;
@@ -951,6 +1391,16 @@ export function initUniExtApi(APP_ID: string) {
         request: Request<Object>;
         uploadFile: UploadFile;
         downloadFile: DownloadFile;
+        setStorage: SetStorage;
+        setStorageSync: SetStorageSync;
+        getStorage: GetStorage;
+        getStorageSync: GetStorageSync;
+        getStorageInfo: GetStorageInfo;
+        getStorageInfoSync: GetStorageInfoSync;
+        removeStorage: RemoveStorage;
+        removeStorageSync: RemoveStorageSync;
+        clearStorage: ClearStorage;
+        clearStorageSync: ClearStorageSync;
     }
     return {
         chooseImage,
@@ -959,6 +1409,16 @@ export function initUniExtApi(APP_ID: string) {
         getVideoInfo,
         request,
         uploadFile,
-        downloadFile
+        downloadFile,
+        setStorage,
+        setStorageSync,
+        getStorage,
+        getStorageSync,
+        getStorageInfo,
+        getStorageInfoSync,
+        removeStorage,
+        removeStorageSync,
+        clearStorage,
+        clearStorageSync
     } as UniExtApi;
 }
