@@ -1288,45 +1288,24 @@ function getAppThemeFallbackOS() {
   }
   return fallbackOSTheme;
 }
-var osThemeChangeCallbackId = -1;
 var appThemeChangeCallbackId = -1;
-function clearOsThemeChangeCallbackId() {
-  osThemeChangeCallbackId = -1;
-}
 function clearAppThemeChangeCallbackId() {
   appThemeChangeCallbackId = -1;
 }
 function registerThemeChange(callback) {
   if (appThemeChangeCallbackId !== -1) {
     if (typeof uni.offAppThemeChange !== "function") {
-      console.error("uni.offAppThemeChange is not a function");
       return;
     }
     uni.offAppThemeChange(appThemeChangeCallbackId);
     clearAppThemeChangeCallbackId();
   }
   if (typeof uni.onAppThemeChange !== "function") {
-    console.error("uni.onAppThemeChange is not a function");
     return;
   }
   appThemeChangeCallbackId = uni.onAppThemeChange(function(res1) {
     var appThemeMode = res1["appTheme"];
-    if (appThemeMode !== APP_THEME_AUTO) {
-      callback(appThemeMode);
-    } else {
-      callback(getAppThemeFallbackOS());
-    }
-  });
-  if (osThemeChangeCallbackId !== -1) {
-    uni.offOsThemeChange(osThemeChangeCallbackId);
-    clearOsThemeChangeCallbackId();
-  }
-  osThemeChangeCallbackId = uni.onOsThemeChange(function(res2) {
-    var appTheme = uni.getAppBaseInfo().appTheme;
-    var currentOsTheme = res2["osTheme"];
-    if (appTheme === APP_THEME_AUTO) {
-      callback(currentOsTheme);
-    }
+    callback(appThemeMode);
   });
 }
 var onThemeChange = function(themeMode) {
