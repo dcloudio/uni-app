@@ -1497,3 +1497,17 @@ uni-web-view {
   top: 0;
   bottom: 0;
 }
+uni-canvas {
+  width: 300px;
+  height: 150px;
+  display: block;
+  position: relative;
+}
+
+uni-canvas > .uni-canvas-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
