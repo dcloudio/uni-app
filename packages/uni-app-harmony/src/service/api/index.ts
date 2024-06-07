@@ -10,4 +10,11 @@ export * from './device/index'
 export { navigateTo } from './route/navigateTo'
 export { navigateBack } from './route/navigateBack'
 export { switchTab } from './route/switchTab'
-export { setLocale, getLocale, onLocaleChange } from '@dcloudio/uni-api'
+export {
+  setLocale,
+  getLocale,
+  onLocaleChange,
+  createIntersectionObserver,
+  createCanvasContext,
+  createSelectorQuery,
+} from '@dcloudio/uni-api'

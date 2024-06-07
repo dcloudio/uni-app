@@ -6,7 +6,7 @@ export {
   extend,
   isArray,
 } from '@vue/shared'
-
+export type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 // export * from './helpers/api'
 export {
   defineAsyncApi,
@@ -15,8 +15,8 @@ export {
   defineOnApi,
   defineOffApi,
 } from '@dcloudio/uni-api'
-export { Emitter } from '@dcloudio/uni-shared'
-export { getRealPath } from '@dcloudio/uni-platform'
+export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared'
+export { getRealPath, requestComponentInfo } from '@dcloudio/uni-platform'
 export {
   getCurrentPage,
   getCurrentPageId,
