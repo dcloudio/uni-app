@@ -182,7 +182,8 @@ Please run \`${colors.cyan(
 }
 
 export function isAppVue(filename: string) {
-  return filename.endsWith('App.vue') || filename.endsWith('App.uvue')
+  const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
+  return appVue === normalizePath(filename)
 }
 
 export function resolveAppVue(inputDir: string) {
