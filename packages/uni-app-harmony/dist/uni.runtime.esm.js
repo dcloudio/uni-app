@@ -1083,6 +1083,7 @@ function promisify(name, fn) {
 function formatApiArgs(args, options) {
     const params = args[0];
     if (!options ||
+        !options.formatArgs ||
         (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
         return;
     }
@@ -5036,4 +5037,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { Emitter, UTSJSONObject$1 as UTSJSONObject, UniError, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };
+export { Emitter, UTSJSONObject$1 as UTSJSONObject, UniError, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString };

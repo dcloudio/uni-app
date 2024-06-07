@@ -7505,7 +7505,7 @@
   }
   function formatApiArgs(args, options) {
     var params = args[0];
-    if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+    if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
       return;
     }
     var formatArgs = options.formatArgs;
@@ -13619,7 +13619,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$e = {
+  var props$f = {
     name: {
       type: String,
       default: ""
@@ -13627,7 +13627,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$e,
+    props: props$f,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -13680,7 +13680,7 @@
     }
     return getFieldsValue;
   }
-  var props$d = {
+  var props$e = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -13729,7 +13729,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$d,
+    props: props$e,
     setup(props2, _ref) {
       var {
         slots
@@ -13914,7 +13914,7 @@
       });
     }
   }
-  var props$c = {
+  var props$d = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -14220,7 +14220,7 @@
       };
     }
   });
-  var props$b = {
+  var props$c = {
     src: {
       type: String,
       default: ""
@@ -14259,7 +14259,7 @@
   };
   const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$b,
+    props: props$c,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -14591,7 +14591,7 @@
     return valueStr.slice(0, maxlength);
   }
   var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
-  var props$a = /* @__PURE__ */ extend({}, {
+  var props$b = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -14678,7 +14678,7 @@
       type: String,
       default: ""
     }
-  }, props$c);
+  }, props$d);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -14918,7 +14918,7 @@
       trigger: trigger2
     };
   }
-  var props$9 = /* @__PURE__ */ extend({}, props$a, {
+  var props$a = /* @__PURE__ */ extend({}, props$b, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -14947,7 +14947,7 @@
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$9,
+    props: props$a,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
       var {
@@ -17870,7 +17870,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$8 = {
+  var props$9 = {
     name: {
       type: String,
       default: ""
@@ -17878,7 +17878,7 @@
   };
   const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$8,
+    props: props$9,
     // emits: ['change'],
     setup(props2, _ref) {
       var {
@@ -17963,7 +17963,7 @@
     }
     return fields;
   }
-  var props$7 = {
+  var props$8 = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -18007,7 +18007,7 @@
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$7,
+    props: props$8,
     setup(props2, _ref) {
       var {
         slots
@@ -18364,7 +18364,7 @@
     });
     return results.children;
   }
-  var props$6 = {
+  var props$7 = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -18377,7 +18377,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$6,
+    props: props$7,
     emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
     setup(props2, _ref) {
       var {
@@ -18513,7 +18513,7 @@
     }
   });
   var passiveOptions = /* @__PURE__ */ passive(true);
-  var props$5 = {
+  var props$6 = {
     direction: {
       type: [String],
       default: "vertical"
@@ -18584,7 +18584,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$5,
+    props: props$6,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
       var {
@@ -19031,7 +19031,7 @@
       _scrollLeftChanged
     };
   }
-  var props$4 = {
+  var props$5 = {
     name: {
       type: String,
       default: ""
@@ -19087,7 +19087,7 @@
   };
   const Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$4,
+    props: props$5,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -19259,7 +19259,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  var props$3 = {
+  var props$4 = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -19760,7 +19760,7 @@
   }
   const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$3,
+    props: props$4,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
       var {
@@ -19871,7 +19871,7 @@
       };
     }
   });
-  var props$2 = {
+  var props$3 = {
     itemId: {
       type: String,
       default: ""
@@ -19879,7 +19879,7 @@
   };
   const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$2,
+    props: props$3,
     setup(props2, _ref) {
       var {
         slots
@@ -19929,7 +19929,7 @@
       };
     }
   });
-  var props$1 = {
+  var props$2 = {
     name: {
       type: String,
       default: ""
@@ -19957,7 +19957,7 @@
   };
   const Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$1,
+    props: props$2,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -20133,7 +20133,7 @@
     }
     return obj;
   }
-  var props = /* @__PURE__ */ extend({}, props$a, {
+  var props$1 = /* @__PURE__ */ extend({}, props$b, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -20158,7 +20158,7 @@
   }
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props,
+    props: props$1,
     emits: ["confirm", "linechange", ...emit],
     setup(props2, _ref) {
       var {
@@ -20831,6 +20831,39 @@
       super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
     }
   }
+  var props = {
+    src: {
+      type: String,
+      default: ""
+    },
+    updateTitle: {
+      type: Boolean,
+      default: true
+    },
+    webviewStyles: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  };
+  const WebView = /* @__PURE__ */ defineBuiltInComponent({
+    name: "WebView",
+    props,
+    setup(props2) {
+      return () => createVNode("uni-web-view", null, [createVNode("embed", {
+        "id": "webview",
+        "type": "native/webview",
+        "src": getRealPath$1(props2.src),
+        "style": "width:100%;height:100%"
+      }, null, 8, ["src"])]);
+    }
+  });
+  class UniWebView extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-web-view", WebView, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
@@ -20859,17 +20892,9 @@
     "SWIPER-ITEM": UniSwiperItem,
     "MOVABLE-AREA": UniMovableArea,
     "MOVABLE-VIEW": UniMovableView,
-    ICON: UniIcon
+    ICON: UniIcon,
+    "WEB-VIEW": UniWebView
   };
-  function pageScrollTo(_ref2, publish) {
-    var {
-      scrollTop,
-      selector,
-      duration
-    } = _ref2;
-    scrollTo(selector || scrollTop || 0, duration);
-    publish();
-  }
   function createElement(id2, tag, parentNodeId, refNodeId) {
     var nodeJson = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};
     var element;
@@ -20991,6 +21016,15 @@
       }
     };
     requestAnimationFrame(() => document.addEventListener("scroll", createScrollListener(opts)));
+  }
+  function pageScrollTo(_ref2, publish) {
+    var {
+      scrollTop,
+      selector,
+      duration
+    } = _ref2;
+    scrollTo(selector || scrollTop || 0, duration);
+    publish();
   }
   function onVdSync(actions) {
     var firstAction = actions[0];
@@ -21317,6 +21351,9 @@
         for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
           args[_key] = arguments[_key];
         }
+        onPageReady(() => {
+          fn.apply(null, args);
+        });
       };
     });
     registerViewMethod(pageId, "requestComponentInfo", (args, publish) => {

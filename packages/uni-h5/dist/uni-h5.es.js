@@ -3043,7 +3043,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
