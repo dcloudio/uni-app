@@ -1,4 +1,4 @@
-import { camelize, isString } from '@vue/shared'
+import { camelize } from '@vue/shared'
 import {
   BindingTypes,
   type CompoundExpressionNode,
@@ -16,6 +16,10 @@ import {
   isSimpleIdentifier,
   isStaticExp,
 } from '@vue/compiler-core'
+import { stringifyExpression } from './transformExpression'
+import { walk } from 'estree-walker'
+import type { Node } from '@babel/types'
+import { parseExpression } from '@babel/parser'
 import { isCompoundExpressionNode } from '@dcloudio/uni-cli-shared'
 
 import type { DirectiveTransform } from '../transform'
@@ -60,18 +64,19 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
       const parts = rawExp.split(AS)
       rawExp = parts[0].trim()
       expType = parts[1].trim()
-      let len = exp.children.length - 1
-      exp.children = exp.children.filter((child, index) => {
-        if (
-          isString(child) &&
-          (child.includes(AS) ||
-            (index === 0 && child === '(') ||
-            (index === len && child === ')'))
-        ) {
-          return false
-        }
-        return true
+      const source = stringifyExpression(exp)
+      const ast = parseExpression(source, {
+        plugins: context.expressionPlugins,
       })
+      let str = ''
+      walk(ast, {
+        enter(node: Node) {
+          if (node.type === 'TSAsExpression') {
+            str = source.slice(node.expression.start!, node.expression.end!)
+          }
+        },
+      })
+      exp.children = [createSimpleExpression(str)]
     }
   }
 
