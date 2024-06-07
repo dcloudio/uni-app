@@ -18,3 +18,5 @@ export {
   createCanvasContext,
   createSelectorQuery,
 } from '@dcloudio/uni-api'
+export { redirectTo } from './route/redirectTo'
+export { reLaunch } from './route/reLaunch'
