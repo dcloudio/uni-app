@@ -29,7 +29,6 @@ export default /*#__PURE__*/ defineSystemComponent({
     const visibleList = ref<UniApp.TabBarItemOptions[]>([])
     const _tabBar = useTabBar()!
     const tabBar = useTheme(_tabBar, () => {
-      // todo
       const tabBarStyle = parseTheme(_tabBar)
       tabBar.backgroundColor = tabBarStyle.backgroundColor
       tabBar.borderStyle = tabBarStyle.borderStyle
