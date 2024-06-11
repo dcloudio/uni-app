@@ -1,6 +1,7 @@
 import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
 import type {
+  AssetURLOptions,
   SFCStyleCompileOptions,
   TemplateCompiler,
 } from '@vue/compiler-sfc'
@@ -128,15 +129,33 @@ export function initPluginVueOptions(
   if (!compilerOptions.nodeTransforms) {
     compilerOptions.nodeTransforms = []
   }
-  if (options.platform === 'h5' || options.platform === 'web') {
-    templateOptions.transformAssetUrls = createUniVueTransformAssetUrls(
+  // 合并 transformAssetUrls
+
+  // 内置配置
+  const builtInTransformAssetUrls: AssetURLOptions =
+    createUniVueTransformAssetUrls(
       isExternalUrl(options.base) ? options.base : ''
     )
-  } else {
-    // 替换内置的 transformAssetUrls 逻辑
+  templateOptions.transformAssetUrls = builtInTransformAssetUrls
+
+  // 用户传递配置 eg: transformAssetUrls.tags = {'my-image': ['src']}
+  // docs: https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue
+  const userOptionsTransformAssetUrls = templateOptions.transformAssetUrls
+  if (
+    typeof userOptionsTransformAssetUrls !== 'boolean' &&
+    !!userOptionsTransformAssetUrls?.tags &&
+    !Array.isArray(userOptionsTransformAssetUrls.tags)
+  ) {
     templateOptions.transformAssetUrls = {
-      tags: {},
+      ...builtInTransformAssetUrls,
+      ...userOptionsTransformAssetUrls,
+      tags: {
+        ...builtInTransformAssetUrls.tags,
+        ...userOptionsTransformAssetUrls.tags,
+      },
     }
+  }
+  if (options.platform !== 'h5' && options.platform !== 'web') {
     compilerOptions.nodeTransforms.push(...getBaseNodeTransforms(options.base))
   }
 
