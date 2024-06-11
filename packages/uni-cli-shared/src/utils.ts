@@ -181,9 +181,14 @@ Please run \`${colors.cyan(
   )}\` and try again.`
 }
 
+/**
+ * 根据路径判断是否为 App.(u?)vue
+ * @param {string} filename 相对、绝对路径
+ * @returns
+ */
 export function isAppVue(filename: string) {
-  const appVue = resolveAppVue(process.env.UNI_INPUT_DIR)
-  return appVue === normalizePath(filename)
+  const _filePath = normalizePath(filename)
+  return /(\/|\\)app\.(u?)vue$/.test(_filePath.toLowerCase())
 }
 
 export function resolveAppVue(inputDir: string) {
