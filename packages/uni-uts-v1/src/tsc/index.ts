@@ -1,2 +1,2 @@
 export { uts2js } from './javascript'
-export { uts2kotlin } from './kotlin'
+export { runUTS2KotlinDev } from './kotlin'

@@ -26,6 +26,7 @@ import {
   getUniCloudSpaceList,
   parseImports,
   parseUTSRelativeFilename,
+  tscOutDir,
   uvueOutDir,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
@@ -33,6 +34,7 @@ import {
   configResolved,
   createUniOptions,
   getExtApiComponents,
+  normalizeEmitAssetFileName,
   updateManifestModules,
 } from '../utils'
 import { genClassName } from '../..'
@@ -44,7 +46,9 @@ export function uniAppPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const mainUTS = resolveMainPathOnce(inputDir)
-  const tempOutputDir = uvueOutDir()
+  const uvueOutputDir = uvueOutDir()
+  const tscOutputDir = tscOutDir()
+
   const manifestJson = parseManifestJsonOnce(inputDir)
   // 预留一个口子，方便切换测试
   const split = manifestJson['uni-app-x']?.split
@@ -56,11 +60,17 @@ export function uniAppPlugin(): UniVitePlugin {
   }
   emptyOutDir()
   function emptyUVueDir() {
-    if (fs.existsSync(tempOutputDir)) {
-      emptyDir(tempOutputDir)
+    if (fs.existsSync(uvueOutputDir)) {
+      emptyDir(uvueOutputDir)
     }
   }
   emptyUVueDir()
+  function emptyTscDir() {
+    if (fs.existsSync(tscOutputDir)) {
+      emptyDir(tscOutputDir)
+    }
+  }
+  emptyTscDir()
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -69,7 +79,8 @@ export function uniAppPlugin(): UniVitePlugin {
       return {
         base: '/', // 强制 base
         build: {
-          outDir: tempOutputDir,
+          outDir:
+            process.env.UNI_APP_X_TSC === 'true' ? tscOutDir() : uvueOutDir(),
           lib: {
             // 必须使用 lib 模式
             fileName: 'output',
@@ -119,9 +130,6 @@ export function uniAppPlugin(): UniVitePlugin {
       configResolved(config, true)
     },
     async transform(code, id) {
-      if (process.env.UNI_APP_X_TSC === 'true') {
-        return
-      }
       const { filename } = parseVueRequest(id)
       if (!filename.endsWith('.uts') && !filename.endsWith('.ts')) {
         return
@@ -133,7 +141,9 @@ export function uniAppPlugin(): UniVitePlugin {
         const fileName = path.relative(inputDir, id)
         this.emitFile({
           type: 'asset',
-          fileName: normalizeFilename(fileName, isMainUTS),
+          fileName: normalizeEmitAssetFileName(
+            normalizeFilename(fileName, isMainUTS)
+          ),
           source: normalizeCode(code, isMainUTS),
         })
       }
@@ -170,32 +180,36 @@ export function uniAppPlugin(): UniVitePlugin {
       } else {
         process.env.UNI_APP_X_UNICLOUD_OBJECT = 'false'
       }
-      const res = await resolveUTSCompiler().compileApp(
-        path.join(tempOutputDir, 'main.uts'),
-        {
-          pageCount,
-          uniCloudObjectInfo,
-          split: split !== false,
-          disableSplitManifest: process.env.NODE_ENV !== 'development',
-          inputDir: tempOutputDir,
-          outputDir: outputDir,
-          package:
-            'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
-          sourceMap:
-            process.env.NODE_ENV === 'development' &&
-            process.env.UNI_COMPILE_TARGET !== 'uni_modules',
-          uni_modules: [...utsPlugins],
-          extApis: parseUniExtApiNamespacesOnce(
-            process.env.UNI_UTS_PLATFORM,
-            process.env.UNI_UTS_TARGET_LANGUAGE
-          ),
-          extApiComponents: [...getExtApiComponents()],
-          uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-          autoImports: getUTSEasyComAutoImports(),
-          extApiProviders: parseUniExtApiProviders(manifestJson),
-          uniModulesArtifacts: parseUniModulesArtifacts(),
-        }
-      )
+      const { compileApp, runUTS2KotlinDev } = resolveUTSCompiler()
+      if (process.env.UNI_APP_X_TSC === 'true') {
+        await runUTS2KotlinDev({
+          inputDir: tscOutputDir,
+          outputDir: uvueOutputDir,
+        })
+      }
+      const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
+        pageCount,
+        uniCloudObjectInfo,
+        split: split !== false,
+        disableSplitManifest: process.env.NODE_ENV !== 'development',
+        inputDir: uvueOutputDir,
+        outputDir: outputDir,
+        package:
+          'uni.' + (manifestJson.appid || DEFAULT_APPID).replace(/_/g, ''),
+        sourceMap:
+          process.env.NODE_ENV === 'development' &&
+          process.env.UNI_COMPILE_TARGET !== 'uni_modules',
+        uni_modules: [...utsPlugins],
+        extApis: parseUniExtApiNamespacesOnce(
+          process.env.UNI_UTS_PLATFORM,
+          process.env.UNI_UTS_TARGET_LANGUAGE
+        ),
+        extApiComponents: [...getExtApiComponents()],
+        uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
+        autoImports: getUTSEasyComAutoImports(),
+        extApiProviders: parseUniExtApiProviders(manifestJson),
+        uniModulesArtifacts: parseUniModulesArtifacts(),
+      })
       if (res) {
         if (process.env.NODE_ENV === 'development') {
           const files: string[] = []
@@ -274,7 +288,7 @@ function checkUTSEasyComAutoImports(
         const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
         ctx.emitFile({
           type: 'asset',
-          fileName: relativeFileName,
+          fileName: normalizeEmitAssetFileName(relativeFileName),
           source: `function ${className}Render(): any | null { return null }
 const ${className}Styles = []`,
         })

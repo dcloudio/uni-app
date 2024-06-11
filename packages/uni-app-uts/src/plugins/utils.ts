@@ -225,3 +225,12 @@ export function addExtApiComponents(components: string[]) {
 export function getExtApiComponents() {
   return extApiComponents
 }
+
+export function normalizeEmitAssetFileName(fileName: string) {
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    if (['.uts', '.uvue', '.vue'].includes(path.extname(fileName))) {
+      return fileName + '.ts'
+    }
+  }
+  return fileName
+}

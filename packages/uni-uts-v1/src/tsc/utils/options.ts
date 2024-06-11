@@ -50,7 +50,7 @@ export function createBasicUtsOptions(
         '../../../lib/tsconfig/cloud/tsconfig.json'
       )
     } else {
-      options.tsconfig = path.resolve(inputDir, '../tsconfig.json')
+      options.tsconfig = path.resolve(process.cwd(), 'tsconfig.json')
     }
   }
   if (!options.typescript) {

@@ -28,7 +28,7 @@ import type { ResolvedOptions } from './index'
 import { createResolveError, parseImports, wrapResolve } from '../../utils'
 import { genTemplateCode } from '../code/template'
 import { resolveGenTemplateCodeOptions } from './template'
-import { addExtApiComponents } from '../../../utils'
+import { addExtApiComponents, normalizeEmitAssetFileName } from '../../../utils'
 
 export async function transformMain(
   code: string,
@@ -189,7 +189,9 @@ export default {}
   if (resolvedMap && pluginContext) {
     pluginContext.emitFile({
       type: 'asset',
-      fileName: removeExt(relativeFilename) + '.map',
+      fileName: normalizeEmitAssetFileName(
+        removeExt(relativeFilename) + '.map'
+      ),
       source: JSON.stringify(resolvedMap),
     })
   }
@@ -216,7 +218,7 @@ export default {}
     )
     pluginContext?.emitFile({
       type: 'asset',
-      fileName: relativeFilename,
+      fileName: normalizeEmitAssetFileName(relativeFilename),
       source: utsCode,
     })
   }
