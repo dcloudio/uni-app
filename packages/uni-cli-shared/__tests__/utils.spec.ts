@@ -1,4 +1,5 @@
 import { isAppVue, normalizeIdentifier } from '../src/utils'
+
 describe('test: packages/uni-cli-shared/src/utils.ts', () => {
   test('test:normalizeIdentifier', () => {
     // 根据 path 返回合法 js 变量
@@ -27,31 +28,16 @@ describe('test: packages/uni-cli-shared/src/utils.ts', () => {
       '_2pagesIndex6Index'
     )
   })
-  test('test:isAppVue', () => {
-    // define env.UNI_INPUT_DIR
-    process.env.UNI_INPUT_DIR = 'UNI_INPUT_DIR'
-    // mock path.resolve() 结果
-    const path = require('path')
-    const fs = require('fs')
-    path.resolve = jest.fn().mockReturnValue('UNI_INPUT_DIR/App.uvue')
 
-    // 判断 .uvue
-    fs.existsSync = jest.fn().mockReturnValue(true)
-    expect(isAppVue('UNI_INPUT_DIR/App.uvue')).toBe(true)
-    expect(isAppVue('UNI_INPUT_DIR/pages/index/index.uvue')).toBe(false)
-    expect(isAppVue('UNI_INPUT_DIR/pages/index/indexApp.uvue')).toBe(false)
-
-    path.resolve = jest.fn().mockReturnValue('UNI_INPUT_DIR/App.vue')
-
-    // 判断 .vue
-    fs.existsSync = jest.fn().mockReturnValue(false)
-    expect(isAppVue('UNI_INPUT_DIR/App.vue')).toBe(true)
-    expect(isAppVue('UNI_INPUT_DIR/pages/index/index.vue')).toBe(false)
-    expect(isAppVue('UNI_INPUT_DIR/pages/index/indexApp.vue')).toBe(false)
-
-    // 清理
-    process.env.UNI_INPUT_DIR = ''
-    path.resolve.mockClear()
-    fs.existsSync.mockClear()
+  test('test: isAppVue', () => {
+    expect(isAppVue('/xx/xx/app.vue')).toBe(true)
+    expect(isAppVue('/xx/xx/app.uvue')).toBe(true)
+    expect(isAppVue('/xx/xx/App.uvue')).toBe(true)
+    expect(isAppVue('/xx/xx/App.vue')).toBe(true)
+    expect(isAppVue('/xx/xx/App.vue')).toBe(true)
+    expect(isAppVue('./xx/xx/App.vue')).toBe(true)
+    expect(isAppVue('./xx/xx/App.vue')).toBe(true)
+    const filePath = 'D:\\user\\file\\app.vue'
+    expect(isAppVue(filePath)).toBe(true)
   })
 })
