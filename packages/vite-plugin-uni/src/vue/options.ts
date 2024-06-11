@@ -136,11 +136,12 @@ export function initPluginVueOptions(
     createUniVueTransformAssetUrls(
       isExternalUrl(options.base) ? options.base : ''
     )
-  templateOptions.transformAssetUrls = builtInTransformAssetUrls
 
   // 用户传递配置 eg: transformAssetUrls.tags = {'my-image': ['src']}
   // docs: https://github.com/vitejs/vite-plugin-vue/tree/main/packages/plugin-vue
   const userOptionsTransformAssetUrls = templateOptions.transformAssetUrls
+
+  templateOptions.transformAssetUrls = builtInTransformAssetUrls
   if (
     typeof userOptionsTransformAssetUrls !== 'boolean' &&
     !!userOptionsTransformAssetUrls?.tags &&
