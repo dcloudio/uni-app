@@ -1,5 +1,11 @@
 import Button, { UniButtonElement } from './button/index'
+//#if _X_
+// @ts-expect-error
+import Canvas, { UniCanvasElement } from './canvas/index-x'
+//#else
+// @ts-expect-error
 import Canvas, { UniCanvasElement } from './canvas/index'
+//#endif
 import Checkbox, { UniCheckboxElement } from './checkbox/index'
 import CheckboxGroup, { UniCheckboxGroupElement } from './checkbox-group/index'
 import Editor, { UniEditorElement } from './editor/index'
