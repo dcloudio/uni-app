@@ -26,7 +26,7 @@ export const parseManifestJsonOnce = once(parseManifestJson)
 export const parseRpx2UnitOnce = once(
   (inputDir: string, platform: UniApp.PLATFORM = 'h5') => {
     const rpx2unit =
-      platform === 'h5' || platform === 'app'
+      platform === 'h5' || platform === 'app' || platform === 'app-harmony'
         ? defaultRpx2Unit
         : defaultMiniProgramRpx2Unit
     const platformOptions = parseManifestJsonOnce(inputDir)[platform]
