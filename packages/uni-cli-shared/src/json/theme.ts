@@ -1,7 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { parseJson } from './json'
-import { normalizeStyles, once } from '@dcloudio/uni-shared'
+import { addLeadingSlash, normalizeStyles, once } from '@dcloudio/uni-shared'
 
 export function hasThemeJson(themeLocation: string) {
   if (!fs.existsSync(themeLocation)) {
@@ -22,9 +22,92 @@ export const parseThemeJson = (themeLocation: string = 'theme.json') => {
   return parseJson(jsonStr, true) as UniApp.ThemeJson
 }
 
+const SCHEME_RE = /^([a-z-]+:)?\/\//i
+const DATA_RE = /^data:.*,.*/
+function normalizeFilepath(filepath: string) {
+  if (
+    !(SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) &&
+    filepath.indexOf('/') !== 0
+  ) {
+    return addLeadingSlash(filepath)
+  }
+  return filepath
+}
+
+const parseThemeJsonIconPath = (
+  themeConfig: UniApp.ThemeJson,
+  curPathThemeJsonKey: string
+) => {
+  if (themeConfig.light?.[curPathThemeJsonKey]) {
+    themeConfig.light[curPathThemeJsonKey] = normalizeFilepath(
+      themeConfig.light[curPathThemeJsonKey]
+    )
+  }
+  if (themeConfig.dark?.[curPathThemeJsonKey]) {
+    themeConfig.dark[curPathThemeJsonKey] = normalizeFilepath(
+      themeConfig.dark[curPathThemeJsonKey]
+    )
+  }
+}
+
+function normalizeUniConfigThemeJsonIconPath(
+  themeConfig: UniApp.ThemeJson,
+  pagesJson: UniApp.PagesJson
+) {
+  // 处理 tabbar 下 list -> item -> iconPath、selectedIconPath; midButton -> backgroundImage 路径 / 不开头的情况
+  const tabBar = pagesJson.tabBar
+  if (tabBar) {
+    tabBar.list.forEach((item) => {
+      if (item.iconPath && item.iconPath.indexOf('@') === 0) {
+        parseThemeJsonIconPath(themeConfig, item.iconPath.replace(/^@/, ''))
+      }
+
+      if (item.selectedIconPath && item.selectedIconPath.indexOf('@') === 0) {
+        parseThemeJsonIconPath(
+          themeConfig,
+          item.selectedIconPath.replace(/^@/, '')
+        )
+      }
+    })
+
+    const midButtonBackgroundImage = tabBar.midButton?.backgroundImage
+    if (
+      midButtonBackgroundImage &&
+      midButtonBackgroundImage.indexOf('@') === 0
+    ) {
+      parseThemeJsonIconPath(
+        themeConfig,
+        midButtonBackgroundImage.replace(/^@/, '')
+      )
+    }
+  }
+
+  return themeConfig
+}
+
+const getPagesJson = (inputDir: string) => {
+  const pagesFilename = path.join(inputDir, 'pages.json')
+  if (!fs.existsSync(pagesFilename)) {
+    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      return {
+        pages: [],
+        globalStyle: { navigationBar: {} },
+      } as UniApp.PagesJson
+    }
+  }
+  const jsonStr = fs.readFileSync(pagesFilename, 'utf8')
+  return parseJson(jsonStr, true) as UniApp.PagesJson
+}
+
 export const normalizeThemeConfigOnce = once(
-  (manifestJsonPlatform: Record<string, any> = {}) =>
-    parseThemeJson(manifestJsonPlatform.themeLocation)
+  (manifestJsonPlatform: Record<string, any> = {}) => {
+    const themeConfig = parseThemeJson(manifestJsonPlatform.themeLocation)
+    normalizeUniConfigThemeJsonIconPath(
+      themeConfig,
+      getPagesJson(process.env.UNI_INPUT_DIR)
+    )
+    return themeConfig
+  }
 )
 
 export function initTheme<T extends object>(
