@@ -97,7 +97,7 @@ export function getComponentVmByNodeId(
   // @ts-expect-error
   function getComponentChild(parent: ComponentPublicInstance) {
     // @ts-expect-error
-    if (parent.$.uid.toInt() == nodeId.toInt()) {
+    if (typeof parent.$.uid === 'Double' && parent.$.uid.toInt() == nodeId.toInt()) {
       component = parent
       return
     }
