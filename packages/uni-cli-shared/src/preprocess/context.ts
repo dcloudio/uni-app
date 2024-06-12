@@ -84,9 +84,17 @@ export function initPreContext(
     uvueContext.UNI_APP_X = true
   }
 
-  if (platform === 'app' || platform === 'app-plus') {
+  if (
+    platform === 'app' ||
+    platform === 'app-plus' ||
+    platform === 'app-harmony'
+  ) {
     defaultContext.APP = true
-    defaultContext.APP_PLUS = isX ? false : true
+    if (platform === 'app-harmony') {
+      defaultContext.APP_HARMONY = true
+    } else {
+      defaultContext.APP_PLUS = isX ? false : true
+    }
 
     vueContext.APP_VUE = true
 
