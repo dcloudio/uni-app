@@ -22,7 +22,7 @@
       "__APP_VIEW__": "false",
       "__NODE_JS__": "false"
     },
-    "banner": "import { IUniError, UTSObject, UniError, UTSJSONObject, string, AsyncApiSuccessResult, AsyncApiResult } from './uts'\nimport { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'\n",
+    "banner": "import { IUniError, UTSObject, UniError, UTSJSONObject, string, AsyncApiSuccessResult, AsyncApiResult, ComponentPublicInstance, ComponentInternalInstance } from './uts'\nimport { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'\n",
     "wrapper": {
       "name": "initUniExtApi",
       "args": [["APP_ID", "string"]]

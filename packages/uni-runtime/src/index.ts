@@ -16,7 +16,12 @@ export {
   defineOffApi,
 } from '@dcloudio/uni-api'
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared'
-export { getRealPath, requestComponentInfo } from '@dcloudio/uni-platform'
+export {
+  getRealPath,
+  requestComponentInfo,
+  addIntersectionObserver,
+  removeIntersectionObserver,
+} from '@dcloudio/uni-platform'
 export {
   getCurrentPage,
   getCurrentPageId,
