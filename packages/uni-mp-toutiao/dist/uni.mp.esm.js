@@ -1012,17 +1012,34 @@ function isPage(mpInstance) {
 }
 const instances = Object.create(null);
 function initRelation(mpInstance, detail) {
+    var _a, _b, _c;
     // 头条 triggerEvent 后，接收事件时机特别晚，已经到了 ready 之后
-    const nodeId = hasOwn(mpInstance, '__nodeId__')
+    const nodeId = (hasOwn(mpInstance, '__nodeId__')
         ? mpInstance.__nodeId__
-        : mpInstance.__nodeid__;
+        : mpInstance.__nodeid__);
     const webviewId = mpInstance.__webviewId__ + '';
     instances[webviewId + '_' + nodeId] = mpInstance.$vm;
-    mpInstance.triggerEvent('__l', {
-        vuePid: detail.vuePid,
-        nodeId,
-        webviewId,
-    });
+    // 使用 virtualHost 后，头条不支持 triggerEvent，通过主动调用方法抹平差异
+    if ((_c = (_b = (_a = mpInstance === null || mpInstance === void 0 ? void 0 : mpInstance.$vm) === null || _a === void 0 ? void 0 : _a.$options) === null || _b === void 0 ? void 0 : _b.options) === null || _c === void 0 ? void 0 : _c.virtualHost) {
+        nextSetDataTick(mpInstance, () => {
+            handleLink.apply(mpInstance, [
+                {
+                    detail: {
+                        vuePid: detail.vuePid,
+                        nodeId,
+                        webviewId,
+                    },
+                },
+            ]);
+        });
+    }
+    else {
+        mpInstance.triggerEvent('__l', {
+            vuePid: detail.vuePid,
+            nodeId,
+            webviewId,
+        });
+    }
 }
 function handleLink({ detail: { vuePid, nodeId, webviewId }, }) {
     const vm = instances[webviewId + '_' + nodeId];

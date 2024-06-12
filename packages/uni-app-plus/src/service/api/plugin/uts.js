@@ -234,7 +234,7 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction('method', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -266,7 +266,7 @@ function initUTSProxyClass(options) {
                                 moduleName,
                                 moduleType,
                                 id: instance.__instanceId,
-                                type: 'property',
+                                type: 'getter',
                                 name: name,
                                 errMsg,
                             });
@@ -280,7 +280,7 @@ function initUTSProxyClass(options) {
                         if (!target[setter]) {
                             const param = setters[name];
                             if (param) {
-                                target[setter] = initProxyFunction('property', false, extend({
+                                target[setter] = initProxyFunction('setter', false, extend({
                                     name: name,
                                     params: [param],
                                 }, baseOptions), instance.__instanceId, proxy);
@@ -317,7 +317,7 @@ function initUTSProxyClass(options) {
                 return invokePropGetter(extend({
                     name: name,
                     companion: true,
-                    type: 'property',
+                    type: 'getter',
                 }, baseOptions));
             }
             return Reflect.get(target, name, receiver);
@@ -329,7 +329,7 @@ function initUTSProxyClass(options) {
                 if (!staticPropSetterCache[setter]) {
                     const param = staticSetters[name];
                     if (param) {
-                        staticPropSetterCache[setter] = initProxyFunction('property', false, extend({
+                        staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
                             name: name,
                             params: [param],
                         }, baseOptions), 0);

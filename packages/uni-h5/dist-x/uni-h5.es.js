@@ -4670,6 +4670,81 @@ class CanvasContext {
       fontFamily: "sans-serif"
     };
   }
+  setFillStyle(color) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setStrokeStyle(color) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setShadow(offsetX, offsetY, blur, color) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  addColorStop(stop, color) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setLineWidth(lineWidth) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setLineCap(lineCap) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setLineJoin(lineJoin) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setLineDash(pattern, offset) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setMiterLimit(miterLimit) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  fillRect(x, y, width, height) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  strokeRect(x, y, width, height) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  clearRect(x, y, width, height) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  fill() {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  stroke() {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  scale(scaleWidth, scaleHeight) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  rotate(rotate) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  translate(x, y) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setFontSize(fontSize) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  fillText(text2, x, y, maxWidth2) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setTextAlign(align2) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setTextBaseline(textBaseline) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  drawImage(imageResource, dx, dy, dWidth, dHeigt, sx, sy, sWidth, sHeight) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setGlobalAlpha(alpha) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  strokeText(text2, x, y, maxWidth2) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setTransform(scaleX, skewX, skewY, scaleY, translateX, translateY) {
+    console.log("initCanvasContextProperty implemented.");
+  }
   draw(reserve = false, callback) {
     var actions = [...this.actions];
     this.actions = [];
@@ -24136,6 +24211,7 @@ const setTabBarStyleProps = [
   "selectedColor",
   "backgroundColor",
   "borderStyle",
+  "borderColor",
   "midButton"
 ];
 const setTabBarBadgeProps = ["badge", "redDot"];
@@ -24143,6 +24219,8 @@ function setProperties(item, props2, propsData) {
   props2.forEach(function(name) {
     if (hasOwn(propsData, name)) {
       item[name] = propsData[name];
+    } else {
+      item[name] = void 0;
     }
   });
 }
@@ -24425,8 +24503,14 @@ function useTabBarStyle(tabBar2) {
   });
   const borderStyle = computed(() => {
     const {
-      borderStyle: borderStyle2
+      borderStyle: borderStyle2,
+      borderColor
     } = tabBar2;
+    if (borderColor && isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
     return {
       backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
     };
