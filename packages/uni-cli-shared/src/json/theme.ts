@@ -88,12 +88,10 @@ function normalizeUniConfigThemeJsonIconPath(
 const getPagesJson = (inputDir: string) => {
   const pagesFilename = path.join(inputDir, 'pages.json')
   if (!fs.existsSync(pagesFilename)) {
-    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
-      return {
-        pages: [],
-        globalStyle: { navigationBar: {} },
-      } as UniApp.PagesJson
-    }
+    return {
+      pages: [],
+      globalStyle: { navigationBar: {} },
+    } as UniApp.PagesJson
   }
   const jsonStr = fs.readFileSync(pagesFilename, 'utf8')
   return parseJson(jsonStr, true) as UniApp.PagesJson
@@ -102,10 +100,12 @@ const getPagesJson = (inputDir: string) => {
 export const normalizeThemeConfigOnce = once(
   (manifestJsonPlatform: Record<string, any> = {}) => {
     const themeConfig = parseThemeJson(manifestJsonPlatform.themeLocation)
-    normalizeUniConfigThemeJsonIconPath(
-      themeConfig,
-      getPagesJson(process.env.UNI_INPUT_DIR)
-    )
+    if (process.env.UNI_INPUT_DIR) {
+      normalizeUniConfigThemeJsonIconPath(
+        themeConfig,
+        getPagesJson(process.env.UNI_INPUT_DIR)
+      )
+    }
     return themeConfig
   }
 )
