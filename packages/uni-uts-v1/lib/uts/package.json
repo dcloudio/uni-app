@@ -1,0 +1,7 @@
+{
+  "private": true,
+  "name": "@uts/uts",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js"
+}
