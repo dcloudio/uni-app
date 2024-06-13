@@ -15,6 +15,12 @@ export {
   getLocale,
   onLocaleChange,
   createCanvasContext,
+  createSelectorQuery,
 } from '@dcloudio/uni-api'
+export {
+  pageScrollTo,
+  setNavigationBarColor,
+  setNavigationBarTitle,
+} from '@dcloudio/uni-app-plus/service/api'
 export { redirectTo } from './route/redirectTo'
 export { reLaunch } from './route/reLaunch'

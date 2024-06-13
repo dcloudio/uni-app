@@ -15617,19 +15617,24 @@
       default: ""
     }
   });
-  function resolveDigitDecimalPoint(event, cache2, state, input) {
+  function resolveDigitDecimalPoint(isDigit, event, cache2, state, input) {
     if (event.data === ".") {
-      {
-        if (cache2.value.slice(-1) === ".") {
-          state.value = input.value = cache2.value = cache2.value.slice(0, -1);
-          return false;
-        } else if (cache2.value.includes(".")) {
-          state.value = input.value = cache2.value;
+      if (isDigit) {
+        {
+          if (cache2.value.slice(-1) === ".") {
+            state.value = input.value = cache2.value = cache2.value.slice(0, -1);
+            return false;
+          } else if (cache2.value.includes(".")) {
+            state.value = input.value = cache2.value;
+            return false;
+          }
+        }
+        if (cache2.value) {
+          cache2.value += ".";
           return false;
         }
-      }
-      if (cache2.value) {
-        cache2.value += ".";
+      } else {
+        state.value = input.value = cache2.value = cache2.value.slice(0, -1);
         return false;
       }
     }
@@ -15697,13 +15702,13 @@
               input.addEventListener("blur", resetCache);
               return false;
             }
-            var res = resolveDigitDecimalPoint(event, cache2, state2, input);
+            var res = resolveDigitDecimalPoint(props2.type === "digit", event, cache2, state2, input);
             if (typeof res === "boolean")
               return res;
             cache2.value = state2.value = input.value = cache2.value === "-" ? "" : cache2.value;
             return false;
           } else {
-            var _res = resolveDigitDecimalPoint(event, cache2, state2, input);
+            var _res = resolveDigitDecimalPoint(props2.type === "digit", event, cache2, state2, input);
             if (typeof _res === "boolean")
               return _res;
             cache2.value = input.value;
