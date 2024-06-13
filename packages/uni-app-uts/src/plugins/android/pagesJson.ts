@@ -140,7 +140,6 @@ ${routes.map((route) => `__uniRoutes.push(${route})`).join('\n')}
 }
 const __uniTabBar: Map<string, any | null> | null = ${tabBar}
 const __uniLaunchPage: Map<string, any | null> = ${launchPage}
-@Suppress("UNCHECKED_CAST")
 function defineAppConfig(){
   __uniConfig.entryPagePath = '/${imports[0]}'
   __uniConfig.globalStyle = ${globalStyle}

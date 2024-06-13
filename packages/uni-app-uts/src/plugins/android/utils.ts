@@ -248,7 +248,7 @@ export function parseUTSImportFilename(filename: string) {
   }
   return normalizePath(
     path.join(
-      uvueOutDir(),
+      process.env.UNI_APP_X_TSC === 'true' ? tscOutDir() : uvueOutDir(),
       normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, filename))
     )
   )

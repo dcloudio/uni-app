@@ -225,3 +225,12 @@ export function requireUniHelpers() {
   ))
   return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
 }
+
+export function normalizeEmitAssetFileName(fileName: string) {
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    if (path.extname(fileName) !== '.ts') {
+      return fileName + '.ts'
+    }
+  }
+  return fileName
+}

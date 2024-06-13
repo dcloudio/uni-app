@@ -16,6 +16,7 @@ import {
   createRollupError,
   genUTSClassName,
   genUTSComponentPublicInstanceImported,
+  normalizeEmitAssetFileName,
   offsetToStartAndEnd,
   parseUTSComponent,
   removeExt,
@@ -28,7 +29,7 @@ import type { ResolvedOptions } from './index'
 import { createResolveError, parseImports, wrapResolve } from '../../utils'
 import { genTemplateCode } from '../code/template'
 import { resolveGenTemplateCodeOptions } from './template'
-import { addExtApiComponents, normalizeEmitAssetFileName } from '../../../utils'
+import { addExtApiComponents } from '../../../utils'
 
 export async function transformMain(
   code: string,
@@ -189,9 +190,7 @@ export default {}
   if (resolvedMap && pluginContext) {
     pluginContext.emitFile({
       type: 'asset',
-      fileName: normalizeEmitAssetFileName(
-        removeExt(relativeFilename) + '.map'
-      ),
+      fileName: removeExt(relativeFilename) + '.map',
       source: JSON.stringify(resolvedMap),
     })
   }
@@ -211,7 +210,8 @@ export default {}
               pluginContext.resolve,
               resolvedMap,
               // 仅需要再解析script中的import，template上边已经加入了
-              (source) => source.includes('/.uvue/')
+              (source) =>
+                source.includes('/.uvue/') || source.includes('/.tsc/')
             )
           : undefined
       )

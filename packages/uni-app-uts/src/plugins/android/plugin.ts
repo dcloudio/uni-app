@@ -9,6 +9,7 @@ import {
   emptyDir,
   getUTSEasyComAutoImports,
   getUniExtApiProviderRegisters,
+  normalizeEmitAssetFileName,
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
@@ -34,7 +35,6 @@ import {
   configResolved,
   createUniOptions,
   getExtApiComponents,
-  normalizeEmitAssetFileName,
   updateManifestModules,
 } from '../utils'
 import { genClassName } from '../..'

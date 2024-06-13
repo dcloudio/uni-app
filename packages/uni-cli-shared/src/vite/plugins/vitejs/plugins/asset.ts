@@ -15,7 +15,10 @@ import type { Plugin } from '../plugin'
 import type { ResolvedConfig } from '../config'
 import { cleanUrl, normalizePath } from '../utils'
 import { withSourcemap } from '../../../../vite/utils/utils'
-import { normalizeNodeModules } from '../../../../utils'
+import {
+  normalizeEmitAssetFileName,
+  normalizeNodeModules,
+} from '../../../../utils'
 import { getIsStaticFile } from './static'
 
 export const assetUrlRE = /__VITE_ASSET__([a-z\d]{8})__(?:\$_(.*?)__)?/g
@@ -107,8 +110,8 @@ export function assetPlugin(
       if (options?.isAndroidX) {
         this.emitFile({
           type: 'asset',
-          fileName: normalizeNodeModules(
-            path.relative(process.env.UNI_INPUT_DIR, id) + '.uts'
+          fileName: normalizeEmitAssetFileName(
+            normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, id))
           ),
           source: `export default ${JSON.stringify(parseAssets(config, url))}`,
         })
