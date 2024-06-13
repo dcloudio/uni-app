@@ -6,12 +6,9 @@ import type {
 import { parseUrl } from '@dcloudio/uni-shared'
 import tabBar from '../../framework/app/tabBar'
 import { registerPage } from '../../framework/page/register'
-import { getAllPages, removePage } from '../../framework/page/getCurrentPages'
-import { type RouteOptions, navigate } from './utils'
+import { getAllPages } from '../../framework/page/getCurrentPages'
+import { type RouteOptions, closePage, navigate } from './utils'
 import { showWebview } from '@dcloudio/uni-app-plus/service/api/route/webview'
-import { closeWebview } from './webview'
-// TODO 优化引用方式
-import router from '@ohos.router'
 
 interface ReLaunchOptions extends RouteOptions {}
 
@@ -43,10 +40,6 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
     if (routeOptions.meta.isTabBar) {
       tabBar.switchTab(path.slice(1))
     }
-    pages.reverse().forEach((page) => {
-      removePage(page)
-      closeWebview(page.$getAppWebview!(), 'none', undefined, true)
-    })
 
     showWebview(
       registerPage({
@@ -58,7 +51,7 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
       'none',
       0,
       () => {
-        router.clear()
+        pages.forEach((page) => closePage(page, 'none'))
         resolve(undefined)
       }
     )

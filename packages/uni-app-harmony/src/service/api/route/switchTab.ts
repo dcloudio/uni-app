@@ -84,14 +84,11 @@ function _switchTab({
         }
       })
       removePage(currentPage)
-      // 延迟执行避免iOS应用退出
-      setTimeout(() => {
-        if (currentPage!.$page.openType === 'redirectTo') {
-          closeWebview(currentPage!.$getAppWebview!(), ANI_CLOSE, ANI_DURATION)
-        } else {
-          closeWebview(currentPage!.$getAppWebview!(), 'auto')
-        }
-      }, 100)
+      if (currentPage!.$page.openType === 'redirectTo') {
+        closeWebview(currentPage!.$getAppWebview!(), ANI_CLOSE, ANI_DURATION)
+      } else {
+        closeWebview(currentPage!.$getAppWebview!(), 'auto')
+      }
     } else {
       callOnHide = true
     }
