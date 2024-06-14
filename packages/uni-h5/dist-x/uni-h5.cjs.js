@@ -1615,13 +1615,21 @@ const props$r = {
   disableScroll: {
     type: [Boolean, String],
     default: false
-  },
-  hidpi: {
-    type: Boolean,
-    default: true
   }
 };
 class UniCanvasElement extends UniElement {
+  get width() {
+    return this.querySelector("canvas").width;
+  }
+  set width(value) {
+    this.querySelector("canvas").width = value;
+  }
+  get height() {
+    return this.querySelector("canvas").height;
+  }
+  set height(value) {
+    this.querySelector("canvas").height = value;
+  }
   getContext(contextId, options) {
     return this.querySelector("canvas").getContext(contextId, options);
   }

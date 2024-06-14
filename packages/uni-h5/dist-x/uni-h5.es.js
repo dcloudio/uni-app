@@ -3023,13 +3023,21 @@ const props$y = {
   disableScroll: {
     type: [Boolean, String],
     default: false
-  },
-  hidpi: {
-    type: Boolean,
-    default: true
   }
 };
 class UniCanvasElement extends UniElement {
+  get width() {
+    return this.querySelector("canvas").width;
+  }
+  set width(value) {
+    this.querySelector("canvas").width = value;
+  }
+  get height() {
+    return this.querySelector("canvas").height;
+  }
+  set height(value) {
+    this.querySelector("canvas").height = value;
+  }
   getContext(contextId, options) {
     return this.querySelector("canvas").getContext(contextId, options);
   }
@@ -3051,9 +3059,6 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
     onMounted(() => {
       const rootElement = rootRef.value;
       rootElement.attachVmProps(props2);
-      if (props2.hidpi) {
-        useHidpi(canvas);
-      }
     });
     return () => {
       return createVNode("uni-canvas", {
@@ -3065,21 +3070,6 @@ const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-function useHidpi(canvasRef) {
-  const devicePixelRatio = window.devicePixelRatio || 1;
-  canvasRef.value.width = canvasRef.value.offsetWidth * devicePixelRatio;
-  canvasRef.value.height = canvasRef.value.offsetHeight * devicePixelRatio;
-  if (devicePixelRatio == 1) {
-    return;
-  }
-  const context = canvasRef.value.getContext("2d");
-  context.scale(devicePixelRatio, devicePixelRatio);
-  const hookResetFunction = context.reset;
-  context.reset = function(...args) {
-    hookResetFunction.apply(context, args);
-    context.scale(devicePixelRatio, devicePixelRatio);
-  };
-}
 const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
 const props$x = {
   name: {

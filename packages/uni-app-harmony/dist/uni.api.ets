@@ -36,7 +36,6 @@ import { plus } from "../../../resources/rawfile/uni-app/uni-app-harmony-framewo
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { weex } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import harmonyWindowType from '@ohos.window';
 export function initUniExtApi(APP_ID: string) {
     type SetClipboardData = (options: SetClipboardDataOptions) => void;
     class SetClipboardDataSuccess extends UTSObject {
@@ -240,7 +239,7 @@ export function initUniExtApi(APP_ID: string) {
         return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
     });
     class GetAppBaseInfoOptions extends UTSObject {
-        filter: Array<string> | null = null;
+        filter!: Array<string>;
     }
     class GetAppBaseInfoResult extends UTSObject {
         appId: string | null = null;
@@ -319,11 +318,11 @@ export function initUniExtApi(APP_ID: string) {
         deviceId: string | null = null;
         model: string | null = null;
         deviceModel: string | null = null;
-        deviceType: string | null = null;
+        deviceType: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' | null = null;
         deviceOrientation: string | null = null;
-        devicePixelRatio: string | null = null;
+        devicePixelRatio: number | null = null;
         system: string | null = null;
-        platform: string | null = null;
+        platform: 'ios' | 'android' | 'mac' | 'windows' | 'linux' | null = null;
         isRoot: boolean | null = null;
         isSimulator: boolean | null = null;
         isUSBDebugging: boolean | null = null;

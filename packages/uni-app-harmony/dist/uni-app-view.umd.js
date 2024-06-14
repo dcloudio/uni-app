@@ -7557,13 +7557,14 @@
     return wrapperSyncApi(name, fn, void 0, options);
   }
   function getBaseSystemInfo() {
-    var plus2 = weex.requireModule("plus");
+    if (typeof __SYSTEM_INFO__ !== "undefined") {
+      return window.__SYSTEM_INFO__;
+    }
     return {
       platform: "harmony",
       pixelRatio: vp2px(1),
-      windowWidth: lpx2px(720),
+      windowWidth: lpx2px(720)
       // TODO designWidth可配置
-      language: plus2.getLanguage()
     };
   }
   var common = {};

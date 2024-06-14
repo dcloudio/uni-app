@@ -1227,12 +1227,14 @@ function defineAsyncApi(name, fn, protocol, options) {
  * @returns
  */
 function getBaseSystemInfo() {
-    const plus = weex.requireModule('plus');
+    // @ts-expect-error view 层
+    if (typeof __SYSTEM_INFO__ !== 'undefined') {
+        return window.__SYSTEM_INFO__;
+    }
     return {
         platform: 'harmony',
         pixelRatio: vp2px(1),
         windowWidth: lpx2px(720), // TODO designWidth可配置
-        language: plus.getLanguage(),
     };
 }
 
@@ -11268,6 +11270,15 @@ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
     return getLaunchOptions();
 });
 
+const API_CAN_I_USE = 'canIUse';
+const CanIUseProtocol = [
+    {
+        name: 'schema',
+        type: String,
+        required: true,
+    },
+];
+
 function encodeQueryString(url) {
     if (!isString(url)) {
         return url;
@@ -11893,10 +11904,12 @@ const hideTabBarRedDot = defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, ({ index }, { 
     resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
 
-function getSystemInfoSync() {
-    // TODO: implement
-    return getBaseSystemInfo();
-}
+const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
+    if (hasOwn$1(uni, schema)) {
+        return true;
+    }
+    return false;
+}, CanIUseProtocol);
 
 const VD_SYNC = 'vdSync';
 const ON_WEBVIEW_READY = 'onWebviewReady';
@@ -12987,6 +13000,90 @@ function back(delta, animationType, animationDuration) {
     });
 }
 
+const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
+    const { path, query } = parseUrl(url);
+    navigate(path, () => {
+        _redirectTo({
+            url,
+            path,
+            query,
+        })
+            .then(resolve)
+            .catch(reject);
+    }, false);
+}, RedirectToProtocol, RedirectToOptions);
+function _redirectTo({ url, path, query, }) {
+    // TODO exists
+    //   if (exists === 'back') {
+    //     const existsPageIndex = findExistsPageIndex(url)
+    //     if (existsPageIndex !== -1) {
+    //       const delta = len - existsPageIndex
+    //       if (delta > 0) {
+    //         navigateBack({
+    //           delta,
+    //         })
+    //         invoke(callbackId, {
+    //           errMsg: 'redirectTo:ok',
+    //         })
+    //         return
+    //       }
+    //     }
+    //   }
+    const lastPage = getCurrentPage();
+    lastPage && removePage(lastPage);
+    return new Promise((resolve) => {
+        // TODO 目前redirectTo => back + pushUrl，如存在闪白问题需考虑优化此处
+        if (lastPage) {
+            const webview = lastPage.$getAppWebview();
+            webview.close('none');
+        }
+        showWebview(registerPage({
+            url,
+            path,
+            query,
+            openType: 'redirectTo',
+        }), 'none', 0, () => {
+            resolve(undefined);
+        });
+        // TODO setStatusBarStyle()
+    });
+}
+
+const $reLaunch = ({ url }, { resolve, reject }) => {
+    const { path, query } = parseUrl(url);
+    navigate(path, () => {
+        _reLaunch({
+            url,
+            path,
+            query,
+        })
+            .then(resolve)
+            .catch(reject);
+    }, false);
+};
+function _reLaunch({ url, path, query }) {
+    return new Promise((resolve) => {
+        // 获取目前所有页面
+        const pages = getAllPages().slice(0);
+        const routeOptions = __uniRoutes.find((route) => route.path === path);
+        if (routeOptions.meta.isTabBar) {
+            tabBarInstance.switchTab(path.slice(1));
+        }
+        showWebview(registerPage({
+            url,
+            path,
+            query,
+            openType: 'reLaunch',
+        }), 'none', 0, () => {
+            pages.forEach((page) => closePage(page, 'none'));
+            resolve(undefined);
+        });
+        // TODO setStatusBarStyle()
+    });
+}
+
+const reLaunch = defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+
 const $switchTab = (args, { resolve, reject }) => {
     const { url } = args;
     const { path, query } = parseUrl(url);
@@ -13154,89 +13251,17 @@ const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __
     }
 }, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 
-const redirectTo = defineAsyncApi(API_REDIRECT_TO, ({ url }, { resolve, reject }) => {
-    const { path, query } = parseUrl(url);
-    navigate(path, () => {
-        _redirectTo({
-            url,
-            path,
-            query,
-        })
-            .then(resolve)
-            .catch(reject);
-    }, false);
-}, RedirectToProtocol, RedirectToOptions);
-function _redirectTo({ url, path, query, }) {
-    // TODO exists
-    //   if (exists === 'back') {
-    //     const existsPageIndex = findExistsPageIndex(url)
-    //     if (existsPageIndex !== -1) {
-    //       const delta = len - existsPageIndex
-    //       if (delta > 0) {
-    //         navigateBack({
-    //           delta,
-    //         })
-    //         invoke(callbackId, {
-    //           errMsg: 'redirectTo:ok',
-    //         })
-    //         return
-    //       }
-    //     }
-    //   }
-    const lastPage = getCurrentPage();
-    lastPage && removePage(lastPage);
-    return new Promise((resolve) => {
-        // TODO 目前redirectTo => back + pushUrl，如存在闪白问题需考虑优化此处
-        if (lastPage) {
-            const webview = lastPage.$getAppWebview();
-            webview.close('none');
-        }
-        showWebview(registerPage({
-            url,
-            path,
-            query,
-            openType: 'redirectTo',
-        }), 'none', 0, () => {
-            resolve(undefined);
-        });
-        // TODO setStatusBarStyle()
-    });
+const pluginDefines = {};
+function registerUTSPlugin(name, define) {
+    pluginDefines[name] = define;
 }
-
-const $reLaunch = ({ url }, { resolve, reject }) => {
-    const { path, query } = parseUrl(url);
-    navigate(path, () => {
-        _reLaunch({
-            url,
-            path,
-            query,
-        })
-            .then(resolve)
-            .catch(reject);
-    }, false);
-};
-function _reLaunch({ url, path, query }) {
-    return new Promise((resolve) => {
-        // 获取目前所有页面
-        const pages = getAllPages().slice(0);
-        const routeOptions = __uniRoutes.find((route) => route.path === path);
-        if (routeOptions.meta.isTabBar) {
-            tabBarInstance.switchTab(path.slice(1));
-        }
-        showWebview(registerPage({
-            url,
-            path,
-            query,
-            openType: 'reLaunch',
-        }), 'none', 0, () => {
-            pages.forEach((page) => closePage(page, 'none'));
-            resolve(undefined);
-        });
-        // TODO setStatusBarStyle()
-    });
+function requireUTSPlugin(name) {
+    const define = pluginDefines[name];
+    if (!define) {
+        console.error(`${name} is not found`);
+    }
+    return define;
 }
-
-const reLaunch = defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 
 // export * from './media/chooseImage'
 // export * from './media/chooseVideo'
@@ -13248,10 +13273,10 @@ const reLaunch = defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLa
 
 var uni$1 = {
     __proto__: null,
+    canIUse: canIUse,
     createCanvasContext: createCanvasContext,
     createSelectorQuery: createSelectorQuery,
     getLocale: getLocale,
-    getSystemInfoSync: getSystemInfoSync,
     hideTabBar: hideTabBar,
     hideTabBarRedDot: hideTabBarRedDot,
     navigateBack: navigateBack,
@@ -13260,7 +13285,9 @@ var uni$1 = {
     pageScrollTo: pageScrollTo,
     reLaunch: reLaunch,
     redirectTo: redirectTo,
+    registerUTSPlugin: registerUTSPlugin,
     removeTabBarBadge: removeTabBarBadge,
+    requireUTSPlugin: requireUTSPlugin,
     setLocale: setLocale,
     setNavigationBarColor: setNavigationBarColor,
     setNavigationBarTitle: setNavigationBarTitle,
