@@ -1,15 +1,27 @@
 import { IUniError, UTSObject, UniError, UTSJSONObject, string, AsyncApiSuccessResult, AsyncApiResult, ComponentPublicInstance, ComponentInternalInstance } from './uts'
 import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
 
+import bundleManager from '@ohos.bundle.bundleManager';
+import deviceInfo from '@ohos.deviceInfo';
+import display from '@ohos.display';
 import fs from '@ohos.file.fs';
 import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
 import http from '@ohos.net.http';
 import promptAction from '@ohos.promptAction';
+import { BusinessError as BusinessError1 } from '@ohos.base';
 import { BusinessError } from '@ohos.base';
+import I18n from '@ohos.i18n';
+import I18n1 from '@ohos.i18n';
+import I18n2 from '@ohos.i18n';
 import { ReadOptions } from '@ohos.file.fs';
+import { UTSHarmony as UTSHarmony1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony2, getCurrentPage } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony3 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import dataPreferences from '@ohos.data.preferences';
+import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
 import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
@@ -20,9 +32,91 @@ import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
+import { plus } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { weex } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import harmonyWindowType from '@ohos.window';
 export function initUniExtApi(APP_ID: string) {
+    type SetClipboardData = (options: SetClipboardDataOptions) => void;
+    class SetClipboardDataSuccess extends UTSObject {
+    }
+    type SetClipboardDataSuccessCallback = (result: SetClipboardDataSuccess) => void;
+    type SetClipboardDataFail = UniError;
+    type SetClipboardDataFailCallback = (result: SetClipboardDataFail) => void;
+    type SetClipboardDataComplete = Object;
+    type SetClipboardDataCompleteCallback = (result: SetClipboardDataComplete) => void;
+    class SetClipboardDataOptions extends UTSObject {
+        data!: string;
+        showToast: boolean | null = null;
+        success: SetClipboardDataSuccessCallback | null = null;
+        fail: SetClipboardDataFailCallback | null = null;
+        complete: SetClipboardDataCompleteCallback | null = null;
+    }
+    type GetClipboardData = (options: GetClipboardDataOptions) => void;
+    class GetClipboardDataSuccess extends UTSObject {
+        data!: string;
+    }
+    type GetClipboardDataSuccessCallback = (result: GetClipboardDataSuccess) => void;
+    type GetClipboardDataFail = UniError;
+    type GetClipboardDataFailCallback = (result: GetClipboardDataFail) => void;
+    type GetClipboardDataComplete = Object;
+    type GetClipboardDataCompleteCallback = (result: GetClipboardDataComplete) => void;
+    class GetClipboardDataOptions extends UTSObject {
+        success: GetClipboardDataSuccessCallback | null = null;
+        fail: GetClipboardDataFailCallback | null = null;
+        complete: GetClipboardDataCompleteCallback | null = null;
+    }
+    const API_GET_CLIPBOARD_DATA = 'getClipboardData';
+    const API_SET_CLIPBOARD_DATA = 'setClipboardData';
+    const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
+        formatArgs: new Map<string, boolean>([
+            [
+                'showToast',
+                true
+            ]
+        ])
+    };
+    const SetClipboardDataProtocol = new Map<string, ProtocolOptions>([
+        [
+            'data',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'showToast',
+            {
+                type: 'boolean'
+            }
+        ]
+    ]);
+    interface ClipboardModuleGetStringOptions {
+        result: string;
+        data: string;
+    }
+    interface ClipboardModule {
+        getString(callback: (ret: ClipboardModuleGetStringOptions) => void): void;
+        setString(data: string): void;
+    }
+    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExcutor<GetClipboardDataSuccess>)=>{
+        const clipboard: ClipboardModule = weex.requireModule('clipboard');
+        clipboard.getString((ret)=>{
+            if (ret.result === 'success') {
+                res.resolve({
+                    data: ret.data
+                } as GetClipboardDataSuccess);
+            } else {
+                res.reject('getClipboardData:fail');
+            }
+        });
+    }) as GetClipboardData;
+    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExcutor<SetClipboardDataSuccess>)=>{
+        const clipboard: ClipboardModule = weex.requireModule('clipboard');
+        clipboard.setString(options.data);
+        res.resolve();
+    }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
     type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
     interface CreateIntersectionObserverOptions {
         thresholds?: (Object[]) | null;
@@ -145,6 +239,403 @@ export function initUniExtApi(APP_ID: string) {
         }
         return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
     });
+    class GetAppBaseInfoOptions extends UTSObject {
+        filter: Array<string> | null = null;
+    }
+    class GetAppBaseInfoResult extends UTSObject {
+        appId: string | null = null;
+        appName: string | null = null;
+        appVersion: string | null = null;
+        appVersionCode: string | null = null;
+        appLanguage: string | null = null;
+        language: string | null = null;
+        version: string | null = null;
+        appWgtVersion: string | null = null;
+        hostLanguage: string | null = null;
+        hostVersion: string | null = null;
+        hostName: string | null = null;
+        hostPackageName: string | null = null;
+        hostSDKVersion: string | null = null;
+        hostTheme: string | null = null;
+        isUniAppX: boolean | null = null;
+        uniCompileVersion: string | null = null;
+        uniCompilerVersion: string | null = null;
+        uniPlatform: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei' | null = null;
+        uniRuntimeVersion: string | null = null;
+        uniCompileVersionCode: number | null = null;
+        uniCompilerVersionCode: number | null = null;
+        uniRuntimeVersionCode: number | null = null;
+        packageName: string | null = null;
+        bundleId: string | null = null;
+        signature: string | null = null;
+        appTheme: 'light' | 'dark' | 'auto' | null = null;
+    }
+    type GetAppBaseInfo = (options?: GetAppBaseInfoOptions | null) => GetAppBaseInfoResult;
+    const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
+    const getBundleInfoOnce = ()=>{
+        let bundleInfo: bundleManager.BundleInfo | null = null;
+        return (): bundleManager.BundleInfo =>{
+            if (bundleInfo) {
+                return bundleInfo;
+            }
+            bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
+            return bundleInfo;
+        };
+    };
+    const getBundleInfo = getBundleInfoOnce();
+    interface IAppBaseInfoAppVersion {
+        name: string;
+        code: string;
+    }
+    const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
+        const appLanguage = I18n.System.getAppPreferredLanguage();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
+        return {
+            appId: UTSHarmony.getAppId() as string,
+            appLanguage,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
+            appVersion: appVersion.name,
+            appVersionCode: appVersion.code,
+            appWgtVersion: appVersion.name,
+            hostLanguage: I18n.System.getSystemLanguage(),
+            isUniAppX: UTSHarmony.isUniAppX() as boolean,
+            packageName: getBundleInfo().name,
+            uniCompilerVersion: uniCompilerVersion,
+            uniCompilerVersionCode: parseFloat(uniCompilerVersion),
+            uniRuntimeVersion: uniRuntimeVersion,
+            uniRuntimeVersionCode: parseFloat(uniRuntimeVersion),
+            uniPlatform: 'app'
+        } as GetAppBaseInfoResult;
+    }) as GetAppBaseInfo;
+    class GetDeviceInfoOptions extends UTSObject {
+        filter!: Array<string>;
+    }
+    class GetDeviceInfoResult extends UTSObject {
+        brand: string | null = null;
+        deviceBrand: string | null = null;
+        deviceId: string | null = null;
+        model: string | null = null;
+        deviceModel: string | null = null;
+        deviceType: string | null = null;
+        deviceOrientation: string | null = null;
+        devicePixelRatio: string | null = null;
+        system: string | null = null;
+        platform: string | null = null;
+        isRoot: boolean | null = null;
+        isSimulator: boolean | null = null;
+        isUSBDebugging: boolean | null = null;
+        osName: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux' | null = null;
+        osVersion: string | null = null;
+        osLanguage: string | null = null;
+        osTheme: 'light' | 'dark' | null = null;
+        osAndroidAPILevel: number | null = null;
+        romName: string | null = null;
+        romVersion: string | null = null;
+    }
+    type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
+    const API_GET_DEVICE_INFO = 'getDeviceInfo';
+    const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
+        return {
+            deviceBrand: deviceInfo.brand,
+            deviceId: '',
+            deviceModel: deviceInfo.productModel,
+            deviceOrientation: 'portrait',
+            devicePixelRatio: vp2px(1) + '',
+            deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
+            osLanguage: I18n1.System.getSystemLanguage(),
+            osTheme: UTSHarmony1.getOsTheme() as string,
+            osVersion: deviceInfo.buildVersion + '',
+            osName: 'harmony',
+            platform: 'app',
+            romName: deviceInfo.distributionOSName,
+            romVersion: deviceInfo.distributionOSVersion,
+            system: deviceInfo.osFullName
+        } as GetDeviceInfoResult;
+    }) as GetDeviceInfo;
+    type GetSystemInfo = (options: GetSystemInfoOptions) => void;
+    type GetSystemInfoSync = () => GetSystemInfoResult;
+    type GetWindowInfo = () => GetWindowInfoResult;
+    class SafeArea extends UTSObject {
+        left!: number;
+        right!: number;
+        top!: number;
+        bottom!: number;
+        width!: number;
+        height!: number;
+    }
+    class SafeAreaInsets extends UTSObject {
+        left!: number;
+        right!: number;
+        top!: number;
+        bottom!: number;
+    }
+    class GetSystemInfoResult extends UTSObject {
+        SDKVersion!: string;
+        appId!: string;
+        appLanguage!: string;
+        appName!: string;
+        appVersion!: string;
+        appVersionCode!: string;
+        appWgtVersion: string | null = null;
+        brand!: string;
+        browserName!: string;
+        browserVersion!: string;
+        deviceId!: string;
+        deviceBrand!: string;
+        deviceModel!: string;
+        deviceType!: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance';
+        devicePixelRatio!: number;
+        deviceOrientation!: 'portrait' | 'landscape';
+        language!: string;
+        model: string | null = null;
+        osName!: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux';
+        osVersion!: string;
+        osLanguage!: string;
+        osTheme: 'light' | 'dark' | null = null;
+        pixelRatio!: number;
+        platform!: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux';
+        screenWidth!: number;
+        screenHeight!: number;
+        statusBarHeight!: number;
+        system!: string;
+        safeArea!: SafeArea;
+        safeAreaInsets!: SafeAreaInsets;
+        ua!: string;
+        uniCompileVersion!: string;
+        uniCompilerVersion!: string;
+        uniPlatform!: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei';
+        uniRuntimeVersion!: string;
+        uniCompileVersionCode!: number;
+        uniCompilerVersionCode!: number;
+        uniRuntimeVersionCode!: number;
+        version!: string;
+        romName!: string;
+        romVersion!: string;
+        windowWidth!: number;
+        windowHeight!: number;
+        windowTop!: number;
+        windowBottom!: number;
+        osAndroidAPILevel: number | null = null;
+        appTheme: 'light' | 'dark' | 'auto' | null = null;
+    }
+    type GetSystemInfoSuccessCallback = (result: GetSystemInfoResult) => void;
+    type GetSystemInfoFail = UniError;
+    type GetSystemInfoFailCallback = (result: GetSystemInfoFail) => void;
+    type GetSystemInfoComplete = Object;
+    type GetSystemInfoCompleteCallback = (result: GetSystemInfoComplete) => void;
+    class GetSystemInfoOptions extends UTSObject {
+        success: GetSystemInfoSuccessCallback | null = null;
+        fail: GetSystemInfoFailCallback | null = null;
+        complete: GetSystemInfoCompleteCallback | null = null;
+    }
+    class GetWindowInfoResult extends UTSObject {
+        pixelRatio!: number;
+        screenWidth!: number;
+        screenHeight!: number;
+        windowWidth!: number;
+        windowHeight!: number;
+        statusBarHeight!: number;
+        windowTop!: number;
+        windowBottom!: number;
+        safeArea!: SafeArea;
+        safeAreaInsets!: SafeAreaInsets;
+        screenTop!: number;
+    }
+    const API_GET_SYSTEM_INFO = 'getSystemInfo';
+    const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
+    const API_GET_WINDOW_INFO = 'getWindowInfo';
+    const parseDeviceType = (deviceType: string): 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' =>{
+        switch(deviceType){
+            case 'phone':
+                return 'phone';
+            case 'tablet':
+                return 'pad';
+            case '2in1':
+                return 'pc';
+            case 'tv':
+                return 'tv';
+            case 'car':
+                return 'car';
+            case 'wearable':
+                return 'watch';
+            default:
+                return 'undefined';
+        }
+    };
+    const internalGetWindowInfo = (): GetWindowInfoResult =>{
+        const pixelRatio = vp2px(1);
+        const avoidArea: harmonyWindowType.AvoidArea = UTSHarmony2.getAvoidArea();
+        const defaultDisplay = display.getDefaultDisplaySync();
+        const currentPage: ESObject = getCurrentPage();
+        const navigationBarHeight = currentPage.$page.meta.navigationBar.type === 'default' ? 56 : 0;
+        const tabBarHeight = currentPage.$.__isTabBar ? 50 : 0;
+        const screenWidth = px2vp(defaultDisplay.width);
+        const screenHeight = px2vp(defaultDisplay.height);
+        const safeAreaTopSize = px2vp(avoidArea.topRect.top + avoidArea.topRect.height) + navigationBarHeight;
+        const safeAreaBottomSize = px2vp(avoidArea.bottomRect.height) + tabBarHeight;
+        const safeAreaLeftSize = px2vp(avoidArea.leftRect.left + avoidArea.leftRect.width);
+        const safeAreaRightSize = px2vp(avoidArea.rightRect.width);
+        const safeAreaInsets: SafeAreaInsets = {
+            top: safeAreaTopSize,
+            right: safeAreaRightSize,
+            bottom: safeAreaBottomSize,
+            left: safeAreaLeftSize
+        };
+        const safeArea: SafeArea = {
+            top: safeAreaInsets.top,
+            right: screenWidth - safeAreaRightSize,
+            bottom: screenHeight - safeAreaBottomSize,
+            left: safeAreaInsets.left,
+            width: screenWidth - safeAreaLeftSize - safeAreaRightSize,
+            height: screenHeight - safeAreaTopSize - safeAreaBottomSize
+        };
+        return {
+            pixelRatio,
+            screenTop: 0,
+            screenWidth,
+            screenHeight,
+            windowTop: 0,
+            windowBottom: 0,
+            windowWidth: safeArea.width,
+            windowHeight: safeArea.height,
+            safeAreaInsets,
+            safeArea,
+            statusBarHeight: safeAreaTopSize
+        };
+    };
+    const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
+        return internalGetWindowInfo();
+    }) as GetWindowInfo;
+    interface ISystemInfoAppVersion {
+        name: string;
+        code: string;
+    }
+    const internalGetSystemInfo = (): GetSystemInfoResult =>{
+        const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
+        const appLanguage = I18n2.System.getAppPreferredLanguage();
+        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
+        const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
+        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
+        const windowInfo = internalGetWindowInfo();
+        const pixelRatio = windowInfo.pixelRatio;
+        const safeArea = windowInfo.safeArea;
+        const safeAreaInsets = windowInfo.safeAreaInsets;
+        const screenHeight = windowInfo.screenHeight;
+        const screenWidth = windowInfo.screenWidth;
+        const statusBarHeight = windowInfo.statusBarHeight;
+        const windowBottom = windowInfo.windowBottom;
+        const windowHeight = windowInfo.windowHeight;
+        const windowTop = windowInfo.windowTop;
+        const windowWidth = windowInfo.windowWidth;
+        return {
+            appId: UTSHarmony2.getAppId() as string,
+            appLanguage,
+            appName: UTSHarmony2.getAppName() as string,
+            appTheme: UTSHarmony2.getAppTheme() as string,
+            appVersion: appVersion.name,
+            appVersionCode: appVersion.code,
+            appWgtVersion: appVersion.name,
+            uniCompilerVersion: uniCompilerVersion,
+            uniCompilerVersionCode: uniCompilerVersionCode,
+            uniRuntimeVersion: uniRuntimeVersion,
+            uniRuntimeVersionCode: parseFloat(uniRuntimeVersion),
+            uniPlatform: 'app',
+            deviceBrand: deviceInfo1.brand,
+            deviceId: '',
+            deviceModel: deviceInfo1.productModel,
+            deviceOrientation: 'portrait',
+            devicePixelRatio: vp2px(1),
+            deviceType: parseDeviceType(deviceInfo1.deviceType),
+            osLanguage: I18n2.System.getSystemLanguage(),
+            osTheme: UTSHarmony2.getOsTheme() as string,
+            osVersion: deviceInfo1.buildVersion + '',
+            osName: 'harmony',
+            romName: deviceInfo1.distributionOSName,
+            romVersion: deviceInfo1.distributionOSVersion,
+            system: deviceInfo1.osFullName,
+            pixelRatio,
+            safeArea,
+            safeAreaInsets,
+            screenHeight,
+            screenWidth,
+            statusBarHeight,
+            windowBottom,
+            windowHeight,
+            windowTop,
+            windowWidth,
+            SDKVersion: '',
+            browserName: '',
+            browserVersion: '',
+            ua: '',
+            language: appLanguage,
+            brand: deviceInfo1.brand,
+            model: '',
+            platform: 'harmony',
+            uniCompileVersion: uniCompilerVersion,
+            uniCompileVersionCode: uniCompilerVersionCode,
+            version: ''
+        } as GetSystemInfoResult;
+    };
+    const getSystemInfoSync: GetSystemInfoSync = defineSyncApi<GetSystemInfoResult>(API_GET_SYSTEM_INFO_SYNC, (): GetSystemInfoResult =>{
+        return internalGetSystemInfo();
+    }) as GetSystemInfoSync;
+    const getSystemInfo: GetSystemInfo = defineAsyncApi<GetSystemInfoOptions, GetSystemInfoResult>(API_GET_SYSTEM_INFO, (options: GetSystemInfoOptions, exec: ApiExcutor<GetSystemInfoResult>)=>{
+        try {
+            exec.resolve(internalGetSystemInfo());
+        } catch (error) {
+            exec.reject((error as Error).message);
+        }
+    }) as GetSystemInfo;
+    type MakePhoneCall = (options: MakePhoneCallOptions) => void;
+    class MakePhoneCallSuccess extends UTSObject {
+    }
+    class UniError1 extends UTSObject {
+        errSubject!: string;
+        errCode!: number;
+        errMsg!: string;
+        data: object | null = null;
+        cause: Object | null = null;
+    }
+    type MakePhoneCallSuccessCallback = (result: MakePhoneCallSuccess) => void;
+    type MakePhoneCallFail = UniError1;
+    type MakePhoneCallFailCallback = (result: MakePhoneCallFail) => void;
+    type MakePhoneCallComplete = Object;
+    type MakePhoneCallCompleteCallback = (result: MakePhoneCallComplete) => void;
+    class MakePhoneCallOptions extends UTSObject {
+        phoneNumber!: string;
+        success: MakePhoneCallSuccessCallback | null = null;
+        fail: MakePhoneCallFailCallback | null = null;
+        complete: MakePhoneCallCompleteCallback | null = null;
+    }
+    const API_MAKE_PHONE_CALL = 'makePhoneCall';
+    const MakePhoneCallProtocol = new Map<string, ProtocolOptions>([
+        [
+            'phoneNumber',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const isPromise = (res: Object)=>{
+        if ((typeof res === "object" || typeof res === "function") && typeof (res as Promise<void>).then === "function") {
+            return true;
+        }
+        return false;
+    };
+    const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExcutor<MakePhoneCallSuccess>)=>{
+        const dialRes = plus.device.dial(options.phoneNumber) as Object as Promise<void>;
+        if (isPromise(dialRes)) {
+            dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
+                res.reject(err.message);
+            });
+        } else {
+            res.resolve();
+        }
+    }, MakePhoneCallProtocol) as MakePhoneCall;
     type MediaOrientation = 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
     type MediaErrorCode = 1101001 | 1101002 | 1101003 | 1101004 | 1101005 | 1101006 | 1101007 | 1101008 | 1101009 | 1101010;
     interface IMediaError extends IUniError {
@@ -1589,7 +2080,7 @@ export function initUniExtApi(APP_ID: string) {
             } as promptAction.ShowToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError).message;
+            let message = (error as BusinessError1).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -1682,6 +2173,28 @@ export function initUniExtApi(APP_ID: string) {
     const hideLoading: HideLoading = ()=>defineAsyncApi(API_HIDE_LOADING, (options: Object, res: ApiExcutor<Object>)=>{
             res.reject('hideLoading is not supported on HarmonyOS');
         });
+    type Rpx2px = (number: number) => number;
+    const API_RPX2PX = 'rpx2px';
+    const EPS = 1e-4;
+    const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
+        const windowStage: harmonyWindowType.WindowStage = UTSHarmony3.getWindowStage();
+        const mainWindow: harmonyWindowType.Window = windowStage.getMainWindowSync();
+        const windowWidthInPx: number = mainWindow.getWindowProperties().windowRect.width;
+        const windowWidthInVp: number = px2vp(windowWidthInPx);
+        let result = (number / 750) * windowWidthInVp;
+        if (result < 0) {
+            result = -result;
+        }
+        result = Math.floor(result + EPS);
+        if (result == 0) {
+            if (windowWidthInPx == windowWidthInVp) {
+                result = 1;
+            } else {
+                result = 0.5;
+            }
+        }
+        return number < 0 ? -result : result;
+    }) as Rpx2px;
     class SetStorageSuccess extends UTSObject {
     }
     type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
@@ -1855,7 +2368,15 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as GetStorageInfo;
     interface UniExtApi {
+        getClipboardData: GetClipboardData;
+        setClipboardData: SetClipboardData;
         createIntersectionObserver: CreateIntersectionObserver;
+        getAppBaseInfo: GetAppBaseInfo;
+        getDeviceInfo: GetDeviceInfo;
+        getSystemInfo: GetSystemInfo;
+        getSystemInfoSync: GetSystemInfoSync;
+        getWindowInfo: GetWindowInfo;
+        makePhoneCall: MakePhoneCall;
         chooseImage: ChooseImage;
         getImageInfo: GetImageInfo;
         chooseVideo: ChooseVideo;
@@ -1869,6 +2390,7 @@ export function initUniExtApi(APP_ID: string) {
         hideLoading: HideLoading;
         showModal: ShowModal;
         showActionSheet: ShowActionSheet;
+        rpx2px: Rpx2px;
         setStorage: SetStorage;
         setStorageSync: SetStorageSync;
         getStorage: GetStorage;
@@ -1881,7 +2403,15 @@ export function initUniExtApi(APP_ID: string) {
         clearStorageSync: ClearStorageSync;
     }
     return {
+        getClipboardData,
+        setClipboardData,
         createIntersectionObserver,
+        getAppBaseInfo,
+        getDeviceInfo,
+        getSystemInfo,
+        getSystemInfoSync,
+        getWindowInfo,
+        makePhoneCall,
         chooseImage,
         getImageInfo,
         chooseVideo,
@@ -1895,6 +2425,7 @@ export function initUniExtApi(APP_ID: string) {
         hideLoading,
         showModal,
         showActionSheet,
+        rpx2px,
         setStorage,
         setStorageSync,
         getStorage,
