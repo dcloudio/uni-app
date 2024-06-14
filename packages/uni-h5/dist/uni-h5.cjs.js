@@ -1428,7 +1428,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
+  if (!options || !options.formatArgs || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -11753,8 +11753,14 @@ function useTabBarStyle(tabBar2) {
   });
   const borderStyle = vue.computed(() => {
     const {
-      borderStyle: borderStyle2
+      borderStyle: borderStyle2,
+      borderColor
     } = tabBar2;
+    if (borderColor && shared.isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
     return {
       backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
     };

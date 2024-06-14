@@ -16,6 +16,7 @@ import {
   createRollupError,
   genUTSClassName,
   genUTSComponentPublicInstanceImported,
+  normalizeEmitAssetFileName,
   offsetToStartAndEnd,
   parseUTSComponent,
   removeExt,
@@ -209,14 +210,15 @@ export default {}
               pluginContext.resolve,
               resolvedMap,
               // 仅需要再解析script中的import，template上边已经加入了
-              (source) => source.includes('/.uvue/')
+              (source) =>
+                source.includes('/.uvue/') || source.includes('/.tsc/')
             )
           : undefined
       )
     )
     pluginContext?.emitFile({
       type: 'asset',
-      fileName: relativeFilename,
+      fileName: normalizeEmitAssetFileName(relativeFilename),
       source: utsCode,
     })
   }

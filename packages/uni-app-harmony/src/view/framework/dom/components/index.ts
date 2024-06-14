@@ -26,6 +26,8 @@ import { UniSwiperItem } from '@dcloudio/uni-app-plus/view/framework/dom/compone
 import { UniMovableArea } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniMovableArea'
 import { UniMovableView } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniMovableView'
 import { UniIcon } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniIcon'
+import { UniWebView } from './UniWebView'
+import { UniCanvas } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniCanvas'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -56,4 +58,6 @@ export const BuiltInComponents = {
   'MOVABLE-AREA': UniMovableArea,
   'MOVABLE-VIEW': UniMovableView,
   ICON: UniIcon,
+  'WEB-VIEW': UniWebView,
+  CANVAS: UniCanvas,
 }

@@ -1,10 +1,8 @@
-import path from 'path'
 import {
   parseUniExtApiNamespacesOnce,
-  resolveUTSCompiler,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesPlugin,
-  uniUTSUniModulesPlugin,
+  uniUTSAppUniModulesPlugin,
   uniViteSfcSrcImportPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniPrePlugin } from './pre'
@@ -15,8 +13,6 @@ import { uniAppManifestPlugin } from './manifestJson'
 import { uniAppPagesPlugin } from './pagesJson'
 import { uniAppUVuePlugin } from './uvue'
 import { uniCloudPlugin } from './unicloud'
-import { parseImports, parseUTSRelativeFilename } from './utils'
-import { enableSourceMap } from '@dcloudio/uni-cli-shared'
 
 export function init() {
   return [
@@ -25,7 +21,7 @@ export function init() {
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
       ? []
       : [
-          uniUTSUniModulesPlugin({
+          uniUTSAppUniModulesPlugin({
             x: true,
             isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
             extApis: parseUniExtApiNamespacesOnce(
@@ -49,25 +45,5 @@ export function init() {
     uniViteSfcSrcImportPlugin({ onlyVue: false }),
     uniAppUVuePlugin(),
     uniCloudPlugin(),
-    ...(process.env.UNI_APP_X_TSC === 'true'
-      ? [
-          // 必须在 uvue 处理之后
-          resolveUTSCompiler().uts2kotlin({
-            cacheRoot: path.resolve(
-              process.env.UNI_APP_X_CACHE_DIR,
-              '.uts/cache'
-            ),
-            inputDir: process.env.UNI_INPUT_DIR,
-            sourcemap: enableSourceMap(),
-            fileName(fileName) {
-              const name = parseUTSRelativeFilename(fileName)
-              return name === 'main.uts' ? 'index.uts' : name
-            },
-            jsCode(code) {
-              return parseImports(code)
-            },
-          }),
-        ]
-      : []),
   ]
 }

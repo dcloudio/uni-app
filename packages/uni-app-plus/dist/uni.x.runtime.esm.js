@@ -368,7 +368,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   var params = args[0];
-  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
     return;
   }
   var formatArgs = options.formatArgs;
@@ -1115,7 +1115,12 @@ function fixBorderStyle(tabBarConfig) {
   if (!isString(borderStyle)) {
     borderStyle = "black";
   }
-  tabBarConfig.set("borderStyle", getBorderStyle(borderStyle));
+  var borderColor = getBorderStyle(borderStyle);
+  if (tabBarConfig.has("borderColor") && isString(tabBarConfig.get("borderColor"))) {
+    borderColor = tabBarConfig.get("borderColor");
+    tabBarConfig.delete("borderColor");
+  }
+  tabBarConfig.set("borderStyle", borderColor);
 }
 function getTabList() {
   var tabConfig = __uniConfig.tabBar ? /* @__PURE__ */ new Map() : null;
@@ -1889,10 +1894,7 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
     reject("tabBar is not exist");
     return;
   }
-  var style = /* @__PURE__ */ new Map([["color", options.color], ["selectedColor", options.selectedColor], ["backgroundColor", options.backgroundColor], ["backgroundImage", options.backgroundImage], ["backgroundRepeat", options.backgroundRepeat]]);
-  if (isString(options.borderStyle)) {
-    style.set("borderStyle", getBorderStyle(options.borderStyle));
-  }
+  var style = /* @__PURE__ */ new Map([["color", options.color], ["selectedColor", options.selectedColor], ["backgroundColor", options.backgroundColor], ["backgroundImage", options.backgroundImage], ["backgroundRepeat", options.backgroundRepeat], ["borderStyle", options.borderStyle], ["borderColor", options.borderColor]]);
   if (!!options.midButton) {
     var midButtonOptions = options.midButton;
     var midButton = /* @__PURE__ */ new Map([["width", midButtonOptions.width], ["height", midButtonOptions.height], ["iconPath", midButtonOptions.iconPath], ["text", midButtonOptions.text], ["iconPath", midButtonOptions.iconPath], ["iconWidth", midButtonOptions.iconWidth], ["backgroundImage", midButtonOptions.backgroundImage]]);
@@ -1903,6 +1905,7 @@ var setTabBarStyle = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_STYLE, (opti
     }
     style.set("midButton", midButton);
   }
+  fixBorderStyle(style);
   tabBar.setTabBarStyle(style);
   resolve();
 }, SetTabBarStyleProtocol, SetTabBarStyleOptions);
@@ -2546,7 +2549,7 @@ function initUTSProxyClass(options) {
         for (var _len2 = arguments.length, params = new Array(_len2), _key2 = 0; _key2 < _len2; _key2++) {
           params[_key2] = arguments[_key2];
         }
-        this.__instanceId = initProxyFunction("method", false, extend({
+        this.__instanceId = initProxyFunction("constructor", false, extend({
           name: "constructor",
           params: constructorParams
         }, baseOptions), 0).apply(null, params);
@@ -2580,7 +2583,7 @@ function initUTSProxyClass(options) {
                 moduleName,
                 moduleType,
                 id: instance.__instanceId,
-                type: "property",
+                type: "getter",
                 name,
                 errMsg
               });
@@ -2594,7 +2597,7 @@ function initUTSProxyClass(options) {
             if (!target[setter]) {
               var param = setters[name];
               if (param) {
-                target[setter] = initProxyFunction("property", false, extend({
+                target[setter] = initProxyFunction("setter", false, extend({
                   name,
                   params: [param]
                 }, baseOptions), instance.__instanceId, proxy2);
@@ -2634,7 +2637,7 @@ function initUTSProxyClass(options) {
         return invokePropGetter(extend({
           name,
           companion: true,
-          type: "property"
+          type: "getter"
         }, baseOptions));
       }
       return Reflect.get(target, name, receiver);
@@ -2645,7 +2648,7 @@ function initUTSProxyClass(options) {
         if (!staticPropSetterCache[setter]) {
           var param = staticSetters[name];
           if (param) {
-            staticPropSetterCache[setter] = initProxyFunction("property", false, extend({
+            staticPropSetterCache[setter] = initProxyFunction("setter", false, extend({
               name,
               params: [param]
             }, baseOptions), 0);

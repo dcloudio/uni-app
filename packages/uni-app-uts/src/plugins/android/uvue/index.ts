@@ -67,12 +67,6 @@ export function uniAppUVuePlugin(): Plugin {
       }
       if (!query.vue) {
         // main request
-        // if (process.env.UNI_APP_X_TSC === 'true') {
-        //   return {
-        //     code: uts,
-        //     map: sourceMap as SourceMapInput,
-        //   }
-        // }
         return transformMain(code, filename, options, this, isAppVue(filename))
       } else {
         // sub block request

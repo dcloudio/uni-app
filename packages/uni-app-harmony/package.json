@@ -4,8 +4,7 @@
   "description": "@dcloudio/uni-app-harmony",
   "files": [
     "dist",
-    "lib",
-    "style"
+    "types"
   ],
   "sideEffects": [
     "lib/automator.js"

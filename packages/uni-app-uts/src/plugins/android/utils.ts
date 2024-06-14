@@ -24,7 +24,8 @@ export const UVUE_CLASS_NAME_PREFIX = 'Gen'
 
 export const DEFAULT_APPID = '__UNI__uniappx'
 
-export const ENTRY_FILENAME = 'main.uts'
+export const ENTRY_FILENAME = () =>
+  process.env.UNI_APP_X_TSC === 'true' ? 'main.uts.ts' : 'main.uts'
 
 export function wrapResolve(
   resolve: PluginContext['resolve']
@@ -199,6 +200,10 @@ export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
 }
 
+export function tscOutDir() {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc')
+}
+
 export function isVue(filename: string) {
   return filename.endsWith('.vue') || filename.endsWith('.uvue')
 }
@@ -243,7 +248,7 @@ export function parseUTSImportFilename(filename: string) {
   }
   return normalizePath(
     path.join(
-      uvueOutDir(),
+      process.env.UNI_APP_X_TSC === 'true' ? tscOutDir() : uvueOutDir(),
       normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, filename))
     )
   )

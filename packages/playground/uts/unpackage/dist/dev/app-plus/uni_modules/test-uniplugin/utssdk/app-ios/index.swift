@@ -49,7 +49,7 @@ public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
         "errMsg": "getBatteryInfo:ok",
         "level": UIDevice.current.batteryLevel * 100,
         "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
-    ]);
+    ], UTSSourceMapPosition("res", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 19, 9));
     if (options.success != nil) {
         options.success!(res);
     }

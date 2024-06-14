@@ -45,8 +45,8 @@ interface UniUTSPluginOptions {
 export const utsPlugins = new Set<string>()
 
 let uniExtApiCompiler = async () => {}
-
-export function uniUTSUniModulesPlugin(
+// 该插件仅限app-android、app-ios、app-harmony
+export function uniUTSAppUniModulesPlugin(
   options: UniUTSPluginOptions = {}
 ): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -79,6 +79,12 @@ export function uniUTSUniModulesPlugin(
       for (const dep of deps) {
         await compilePlugin(path.resolve(inputDir, 'uni_modules', dep))
       }
+    }
+
+    if (process.env.UNI_PLATFORM === 'app-harmony') {
+      return compiler.compileArkTS(pluginDir, {
+        isX: !!options.x,
+      })
     }
 
     return compiler.compile(pluginDir, {
@@ -127,6 +133,7 @@ export function uniUTSUniModulesPlugin(
         return
       }
       const module = resolveUTSAppModule(
+        process.env.UNI_UTS_PLATFORM,
         id,
         importer ? path.dirname(importer) : inputDir,
         options.x !== true

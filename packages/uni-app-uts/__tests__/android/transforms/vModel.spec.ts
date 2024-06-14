@@ -37,6 +37,7 @@ function parseWithVModel(template: string, options: CompilerOptions = {}) {
         trackSlotScopes,
       ],
       directiveTransforms: { model: transformModel },
+      expressionPlugins: ['typescript'],
     })
   )
 
@@ -141,6 +142,13 @@ foo
       `createVNode(_component_my_input, utsMapOf({
   modelValue: _ctx.obj.str,
   \"onUpdate:modelValue\": ($event: string) => {(_ctx.obj.str) = $event}
+}), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
+    )
+    assert(
+      `<my-input v-model="(obj['t'+i] as string)" />`,
+      `createVNode(_component_my_input, utsMapOf({
+  modelValue: _ctx.obj['t'+_ctx.i],
+  \"onUpdate:modelValue\": ($event: string) => {(_ctx.obj['t'+_ctx.i]) = $event}
 }), null, 8 /* PROPS */, [\"modelValue\", \"onUpdate:modelValue\"])`
     )
   })
@@ -611,6 +619,27 @@ foo
     expect(vnodeCall.dynamicProps).toBe(
       `["foo", "onUpdate:foo", "bar", "onUpdate:bar"]`
     )
+  })
+
+  test('complex expression', () => {
+    const root = parseWithVModel(`<Comp v-model="values['t'+i] as string" />`, {
+      prefixIdentifiers: true,
+      bindingMetadata: {
+        values: BindingTypes.SETUP_CONST,
+      },
+    })
+    const vnodeCall = (root.children[0] as ComponentNode)
+      .codegenNode as VNodeCall
+    // props
+    expect(vnodeCall.props).toMatchObject({
+      properties: [
+        {
+          key: { content: `modelValue` },
+          value: { children: [{ content: `_ctx.values['t'+_ctx.i]` }] },
+        },
+        { key: { content: `onUpdate:modelValue` } },
+      ],
+    })
   })
 
   describe('errors', () => {

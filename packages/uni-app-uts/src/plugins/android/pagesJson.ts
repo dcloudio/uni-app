@@ -124,8 +124,8 @@ export function uniAppPagesPlugin(): Plugin {
       }
     },
     generateBundle(_, bundle) {
-      if (bundle[ENTRY_FILENAME]) {
-        const asset = bundle[ENTRY_FILENAME] as OutputAsset
+      if (bundle[ENTRY_FILENAME()]) {
+        const asset = bundle[ENTRY_FILENAME()] as OutputAsset
         asset.source =
           asset.source +
           `
@@ -140,7 +140,6 @@ ${routes.map((route) => `__uniRoutes.push(${route})`).join('\n')}
 }
 const __uniTabBar: Map<string, any | null> | null = ${tabBar}
 const __uniLaunchPage: Map<string, any | null> = ${launchPage}
-@Suppress("UNCHECKED_CAST")
 function defineAppConfig(){
   __uniConfig.entryPagePath = '/${imports[0]}'
   __uniConfig.globalStyle = ${globalStyle}

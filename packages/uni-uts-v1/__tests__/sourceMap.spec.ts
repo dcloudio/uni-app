@@ -183,7 +183,7 @@ describe('uts:sourceMap', () => {
     const filename = resolve(
       outputDir,
       uniModulesPluginDir,
-      'utssdk/app-ios/src/index.kt'
+      'utssdk/app-ios/index.swift'
     )
     const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',

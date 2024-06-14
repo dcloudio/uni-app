@@ -6,8 +6,23 @@
 // export * from './network/uploadFile'
 // export * from './network/downloadFile'
 export * from './ui/index'
-export * from './device/index'
+export { canIUse } from './base/canIUse'
+// export * from './device/index'
 export { navigateTo } from './route/navigateTo'
 export { navigateBack } from './route/navigateBack'
+export { redirectTo } from './route/redirectTo'
+export { reLaunch } from './route/reLaunch'
 export { switchTab } from './route/switchTab'
-export { setLocale, getLocale, onLocaleChange } from '@dcloudio/uni-api'
+export {
+  setLocale,
+  getLocale,
+  onLocaleChange,
+  createCanvasContext,
+  createSelectorQuery,
+} from '@dcloudio/uni-api'
+export {
+  pageScrollTo,
+  setNavigationBarColor,
+  setNavigationBarTitle,
+} from '@dcloudio/uni-app-plus/service/api'
+export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'

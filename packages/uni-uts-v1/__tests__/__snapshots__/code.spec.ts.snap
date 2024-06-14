@@ -359,5 +359,7 @@ const cls = /*#__PURE__*/ initUTSIndexClassName(name, is_uni_modules)
 
 registerUTSInterface('ITestOptions',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'ITestByJsProxy', is_uni_modules) }, {"methods":{},"props":["name"],"setters":{"name":{"name":"name","type":"string"}}} ))
 export const createTest = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'createTestByJs', params: [], return: {"type":"interface","options":"ITestOptions"}})
+registerUTSInterface('A12Options',Object.assign({ moduleName, moduleType, errMsg, package: pkg, class: initUTSClassName(name, 'A12ByJsProxy', is_uni_modules) }, {"methods":{"test2ByJs":{"async":false,"params":[],"return":{}},"test1ByJs":{"async":false,"params":[],"return":{}},"test0ByJs":{"async":false,"params":[],"return":{}}},"props":[],"setters":{}} ))
+export const testA3 = /*#__PURE__*/ initUTSProxyFunction(false, { moduleName, moduleType, errMsg, main: true, package: pkg, class: cls, name: 'testA3ByJs', params: [], return: {"type":"interface","options":"A12Options"}})
 "
 `;

@@ -220,7 +220,15 @@ export function matchEasycom(tag: string) {
   return source
 }
 
-const isDir = (path: string) => fs.lstatSync(path).isDirectory()
+const isDir = (path: string) => {
+  const stat = fs.lstatSync(path)
+  if (stat.isDirectory()) {
+    return true
+  } else if (stat.isSymbolicLink()) {
+    return fs.lstatSync(fs.realpathSync(path)).isDirectory()
+  }
+  return false
+}
 
 function initAutoScanEasycom(
   dir: string,

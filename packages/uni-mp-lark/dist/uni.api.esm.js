@@ -353,6 +353,7 @@ function promisify$1(name, fn) {
 function formatApiArgs(args, options) {
     const params = args[0];
     if (!options ||
+        !options.formatArgs ||
         (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
         return;
     }

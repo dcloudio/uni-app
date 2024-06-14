@@ -1047,48 +1047,6 @@ function getRouteOptions(path, alias = false) {
   }
   return __uniRoutes.find((route) => route.path === path);
 }
-function findUniTarget(target) {
-  while (target && target.tagName.indexOf("UNI-") !== 0) {
-    target = target.parentElement;
-  }
-  return target;
-}
-function createNativeEvent(evt, htmlElement = false) {
-  const { type, timeStamp, target, currentTarget } = evt;
-  let realTarget, realCurrentTarget;
-  realTarget = uniShared.normalizeTarget(
-    htmlElement ? target : findUniTarget(target)
-  );
-  realCurrentTarget = uniShared.normalizeTarget(currentTarget);
-  const event = {
-    type,
-    timeStamp,
-    target: realTarget,
-    detail: {},
-    currentTarget: realCurrentTarget
-  };
-  if (evt._stopped) {
-    event._stopped = true;
-  }
-  if (evt.type.startsWith("touch")) {
-    event.touches = evt.touches;
-    event.changedTouches = evt.changedTouches;
-  }
-  {
-    wrapperEvent(event, evt);
-  }
-  return event;
-}
-function wrapperEvent(event, evt) {
-  shared.extend(event, {
-    preventDefault() {
-      return evt.preventDefault();
-    },
-    stopPropagation() {
-      return evt.stopPropagation();
-    }
-  });
-}
 const invokeOnCallback = (name, res) => UniServiceJSBridge.emit("api." + name, res);
 let invokeViewMethodId = 1;
 function publishViewMethodName(pageId) {
@@ -1302,11 +1260,6 @@ function useCustomEvent(ref, emit2) {
     }
   };
 }
-function useNativeEvent(emit2) {
-  return (name, evt) => {
-    emit2(name, createNativeEvent(evt));
-  };
-}
 function normalizeCustomEvent(name, domEvt, el, detail) {
   let target;
   target = uniShared.normalizeTarget(el);
@@ -1426,8 +1379,52 @@ function useBooleanAttr(props2, keys) {
     return res;
   }, /* @__PURE__ */ Object.create(null));
 }
+function transformRpx(value) {
+  if (/(-?(?:\d+\.)?\d+)[ur]px/gi.test(value)) {
+    return value.replace(/(-?(?:\d+\.)?\d+)[ur]px/gi, (text, num) => {
+      return `${uni.upx2px(parseFloat(num))}px`;
+    });
+  }
+  return value;
+}
+class UniElement extends HTMLElement {
+  constructor() {
+    super();
+    this._props = {};
+    this.__isUniElement = true;
+  }
+  attachVmProps(props2) {
+    this._props = props2;
+  }
+  getAttribute(qualifiedName) {
+    const name = shared.camelize(qualifiedName);
+    return name in this._props ? this._props[name] + "" : super.getAttribute(qualifiedName) || null;
+  }
+  get style() {
+    const originalStyle = super.style;
+    if (originalStyle.__patchRpx__) {
+      return originalStyle;
+    }
+    originalStyle.__patchRpx__ = true;
+    const originalSetProperty = originalStyle.setProperty.bind(originalStyle);
+    super.style.setProperty = function(property, value, priority) {
+      return originalSetProperty(
+        property,
+        value ? transformRpx(value + "") : value,
+        priority || void 0
+      );
+    };
+    return super.style;
+  }
+  get tagName() {
+    return super.tagName.replace(/^UNI-/, "");
+  }
+  get nodeName() {
+    return super.nodeName.replace(/^UNI-/, "");
+  }
+}
 const uniFormKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniForm" : "uf");
-const index$C = /* @__PURE__ */ defineBuiltInComponent({
+const index$B = /* @__PURE__ */ defineBuiltInComponent({
   name: "Form",
   emits: ["submit", "reset"],
   setup(_props, {
@@ -1487,7 +1484,7 @@ function useProvideLabel() {
   });
   return handlers;
 }
-const index$B = /* @__PURE__ */ defineBuiltInComponent({
+const index$A = /* @__PURE__ */ defineBuiltInComponent({
   name: "Label",
   props: labelProps,
   setup(props2, {
@@ -1563,7 +1560,7 @@ const buttonProps = {
     default: false
   }
 };
-const index$A = /* @__PURE__ */ defineBuiltInComponent({
+const index$z = /* @__PURE__ */ defineBuiltInComponent({
   name: "Button",
   props: buttonProps,
   setup(props2, {
@@ -1614,6 +1611,316 @@ const index$A = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const props$r = {
+  disableScroll: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+class UniCanvasElement extends UniElement {
+  get width() {
+    return this.querySelector("canvas").width;
+  }
+  set width(value) {
+    this.querySelector("canvas").width = value;
+  }
+  get height() {
+    return this.querySelector("canvas").height;
+  }
+  set height(value) {
+    this.querySelector("canvas").height = value;
+  }
+  getContext(contextId, options) {
+    return this.querySelector("canvas").getContext(contextId, options);
+  }
+}
+const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
+  inheritAttrs: true,
+  name: "Canvas",
+  compatConfig: {
+    MODE: 3
+  },
+  props: props$r,
+  rootElement: {
+    name: "uni-canvas",
+    class: UniCanvasElement
+  },
+  setup(props2, {}) {
+    const rootRef = vue.ref(null);
+    const canvas = vue.ref(null);
+    return () => {
+      return vue.createVNode("uni-canvas", {
+        "ref": rootRef
+      }, [vue.createVNode("canvas", {
+        "ref": canvas,
+        "class": "uni-canvas-canvas"
+      }, null, 512)], 512);
+    };
+  }
+});
+const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
+const props$q = {
+  name: {
+    type: String,
+    default: ""
+  }
+};
+const index$y = /* @__PURE__ */ defineBuiltInComponent({
+  name: "CheckboxGroup",
+  props: props$q,
+  emits: ["change"],
+  setup(props2, {
+    emit: emit2,
+    slots
+  }) {
+    const rootRef = vue.ref(null);
+    const trigger = useCustomEvent(rootRef, emit2);
+    useProvideCheckGroup(props2, trigger);
+    return () => {
+      return vue.createVNode("uni-checkbox-group", {
+        "ref": rootRef
+      }, [slots.default && slots.default()], 512);
+    };
+  }
+});
+function useProvideCheckGroup(props2, trigger) {
+  const fields2 = [];
+  const getFieldsValue = () => fields2.reduce((res, field) => {
+    if (field.value.checkboxChecked) {
+      res.push(field.value.value);
+    }
+    return res;
+  }, new Array());
+  vue.provide(uniCheckGroupKey, {
+    addField(field) {
+      fields2.push(field);
+    },
+    removeField(field) {
+      fields2.splice(fields2.indexOf(field), 1);
+    },
+    checkboxChange($event) {
+      trigger("change", $event, {
+        value: getFieldsValue()
+      });
+    }
+  });
+  const uniForm = vue.inject(uniFormKey, false);
+  if (uniForm) {
+    uniForm.addField({
+      submit: () => {
+        let data = ["", null];
+        if (props2.name !== "") {
+          data[0] = props2.name;
+          data[1] = getFieldsValue();
+        }
+        return data;
+      }
+    });
+  }
+  return getFieldsValue;
+}
+const props$p = {
+  checked: {
+    type: [Boolean, String],
+    default: false
+  },
+  id: {
+    type: String,
+    default: ""
+  },
+  disabled: {
+    type: [Boolean, String],
+    default: false
+  },
+  value: {
+    type: String,
+    default: ""
+  },
+  color: {
+    type: String,
+    default: "#007aff"
+  },
+  backgroundColor: {
+    type: String,
+    default: ""
+  },
+  borderColor: {
+    type: String,
+    default: ""
+  },
+  activeBackgroundColor: {
+    type: String,
+    default: ""
+  },
+  activeBorderColor: {
+    type: String,
+    default: ""
+  },
+  iconColor: {
+    type: String,
+    default: ""
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foreColor: {
+    type: String,
+    default: ""
+  }
+};
+const index$x = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Checkbox",
+  props: props$p,
+  setup(props2, {
+    slots
+  }) {
+    const rootRef = vue.ref(null);
+    const checkboxChecked = vue.ref(props2.checked);
+    const checkboxCheckedBool = vue.computed(() => {
+      return checkboxChecked.value === "true" || checkboxChecked.value === true;
+    });
+    const checkboxValue = vue.ref(props2.value);
+    function getCheckBoxStyle(checked) {
+      if (props2.disabled) {
+        return {
+          backgroundColor: "#E1E1E1",
+          borderColor: "#D1D1D1"
+        };
+      }
+      const style = {};
+      if (checked) {
+        if (props2.activeBorderColor)
+          style.borderColor = props2.activeBorderColor;
+        if (props2.activeBackgroundColor)
+          style.backgroundColor = props2.activeBackgroundColor;
+      } else {
+        if (props2.borderColor)
+          style.borderColor = props2.borderColor;
+        if (props2.backgroundColor)
+          style.backgroundColor = props2.backgroundColor;
+      }
+      return style;
+    }
+    const checkboxStyle = vue.computed(() => {
+      return getCheckBoxStyle(checkboxCheckedBool.value);
+    });
+    vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
+      checkboxChecked.value = newChecked;
+      checkboxValue.value = newModelValue;
+    });
+    const reset = () => {
+      checkboxChecked.value = false;
+    };
+    const {
+      uniCheckGroup,
+      uniLabel
+    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
+    const _onClick = ($event) => {
+      if (props2.disabled) {
+        return;
+      }
+      checkboxChecked.value = !checkboxChecked.value;
+      uniCheckGroup && uniCheckGroup.checkboxChange($event);
+      $event.stopPropagation();
+    };
+    if (!!uniLabel) {
+      uniLabel.addHandler(_onClick);
+    }
+    return () => {
+      const booleanAttrs = useBooleanAttr(props2, "disabled");
+      let realCheckValue;
+      realCheckValue = checkboxChecked.value;
+      return vue.createVNode("uni-checkbox", vue.mergeProps(booleanAttrs, {
+        "id": props2.id,
+        "onClick": _onClick,
+        "ref": rootRef
+      }), [vue.createVNode("div", {
+        "class": "uni-checkbox-wrapper",
+        "style": {
+          "--HOVER-BD-COLOR": props2.activeBorderColor
+        }
+      }, [vue.createVNode("div", {
+        "class": ["uni-checkbox-input", {
+          "uni-checkbox-input-disabled": props2.disabled
+        }],
+        "style": checkboxStyle.value
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+    };
+  }
+});
+function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
+  const field = vue.computed(() => ({
+    checkboxChecked: Boolean(checkboxChecked.value),
+    value: checkboxValue.value
+  }));
+  const formField = {
+    reset
+  };
+  const uniCheckGroup = vue.inject(uniCheckGroupKey, false);
+  if (!!uniCheckGroup) {
+    uniCheckGroup.addField(field);
+  }
+  const uniForm = vue.inject(uniFormKey, false);
+  if (!!uniForm) {
+    uniForm.addField(formField);
+  }
+  const uniLabel = vue.inject(uniLabelKey, false);
+  return {
+    uniCheckGroup,
+    uniForm,
+    uniLabel
+  };
+}
+let resetTimer;
+function iosHideKeyboard() {
+}
+const props$o = {
+  cursorSpacing: {
+    type: [Number, String],
+    default: 0
+  },
+  showConfirmBar: {
+    type: [Boolean, String],
+    default: "auto"
+  },
+  adjustPosition: {
+    type: [Boolean, String],
+    default: true
+  },
+  autoBlur: {
+    type: [Boolean, String],
+    default: false
+  }
+};
+const emit$1 = ["keyboardheightchange"];
+function useKeyboard$1(props2, elRef, trigger) {
+  function initKeyboard(el) {
+    const isApple = vue.computed(
+      () => String(navigator.vendor).indexOf("Apple") === 0
+    );
+    el.addEventListener("focus", () => {
+      clearTimeout(resetTimer);
+      document.addEventListener("click", iosHideKeyboard, false);
+    });
+    const onKeyboardHide = () => {
+      document.removeEventListener("click", iosHideKeyboard, false);
+      if (isApple.value) {
+        document.documentElement.scrollTo(
+          document.documentElement.scrollLeft,
+          document.documentElement.scrollTop
+        );
+      }
+    };
+    el.addEventListener("blur", () => {
+      if (isApple.value) {
+        el.blur();
+      }
+      onKeyboardHide();
+    });
+  }
+  vue.watch(
+    () => elRef.value,
+    (el) => el && initKeyboard(el)
+  );
+}
 function addBase(filePath) {
   const { base: baseUrl } = __uniConfig.router;
   if (uniShared.addLeadingSlash(filePath).indexOf(baseUrl) === 0) {
@@ -2012,7 +2319,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
+  if (!options || !options.formatArgs || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -2261,919 +2568,6 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
-function saveImage(base64, dirname, callback) {
-  callback(null, base64);
-}
-const files = {};
-function urlToFile(url, local) {
-  const file = files[url];
-  if (file) {
-    return Promise.resolve(file);
-  }
-  if (/^data:[a-z-]+\/[a-z-]+;base64,/.test(url)) {
-    return Promise.resolve(base64ToFile(url));
-  }
-  if (local) {
-    return Promise.reject(new Error("not find"));
-  }
-  return new Promise((resolve, reject) => {
-    const xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
-    xhr.responseType = "blob";
-    xhr.onload = function() {
-      resolve(this.response);
-    };
-    xhr.onerror = reject;
-    xhr.send();
-  });
-}
-function base64ToFile(base64) {
-  const base64Array = base64.split(",");
-  const res = base64Array[0].match(/:(.*?);/);
-  const type = res ? res[1] : "";
-  const str = atob(base64Array[1]);
-  let n = str.length;
-  const array = new Uint8Array(n);
-  while (n--) {
-    array[n] = str.charCodeAt(n);
-  }
-  return blobToFile(array, type);
-}
-function getExtname(type) {
-  const extname = type.split("/")[1];
-  return extname ? `.${extname}` : "";
-}
-function blobToFile(blob, type) {
-  let file;
-  if (blob instanceof File) {
-    file = blob;
-  } else {
-    type = type || blob.type || "";
-    const filename = `${Date.now()}${getExtname(type)}`;
-    try {
-      file = new File([blob], filename, { type });
-    } catch (error) {
-      blob = blob instanceof Blob ? blob : new Blob([blob], { type });
-      file = blob;
-      file.name = file.name || filename;
-    }
-  }
-  return file;
-}
-function fileToUrl(file) {
-  for (const key in files) {
-    if (shared.hasOwn(files, key)) {
-      const oldFile = files[key];
-      if (oldFile === file) {
-        return key;
-      }
-    }
-  }
-  var url = (window.URL || window.webkitURL).createObjectURL(file);
-  files[url] = file;
-  return url;
-}
-function getSameOriginUrl(url) {
-  const a = document.createElement("a");
-  a.href = url;
-  if (a.origin === location.origin) {
-    return Promise.resolve(url);
-  }
-  return urlToFile(url).then(fileToUrl);
-}
-const inflateRaw = (...args) => {
-};
-const deflateRaw = (...args) => {
-};
-const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
-  name: "ResizeSensor",
-  props: {
-    initial: {
-      type: Boolean,
-      default: false
-    }
-  },
-  emits: ["resize"],
-  setup(props2, {
-    emit: emit2
-  }) {
-    const rootRef = vue.ref(null);
-    const reset = useResizeSensorReset(rootRef);
-    const update = useResizeSensorUpdate(rootRef, emit2, reset);
-    return () => vue.createVNode("uni-resize-sensor", {
-      "ref": rootRef,
-      "onAnimationstartOnce": update
-    }, [vue.createVNode("div", {
-      "onScroll": update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
-      "onScroll": update
-    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
-  }
-});
-function useResizeSensorUpdate(rootRef, emit2, reset) {
-  const size = vue.reactive({
-    width: -1,
-    height: -1
-  });
-  vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
-  return () => {
-    const rootEl = rootRef.value;
-    if (!rootEl)
-      return;
-    size.width = rootEl.offsetWidth;
-    size.height = rootEl.offsetHeight;
-    reset();
-  };
-}
-function useResizeSensorReset(rootRef) {
-  return () => {
-    const {
-      firstElementChild,
-      lastElementChild
-    } = rootRef.value;
-    firstElementChild.scrollLeft = 1e5;
-    firstElementChild.scrollTop = 1e5;
-    lastElementChild.scrollLeft = 1e5;
-    lastElementChild.scrollTop = 1e5;
-  };
-}
-const pixelRatio = 1;
-function wrapper(canvas, hidpi = true) {
-  const pixel_ratio = hidpi ? pixelRatio : 1;
-  canvas.width = canvas.offsetWidth * pixel_ratio;
-  canvas.height = canvas.offsetHeight * pixel_ratio;
-  canvas.getContext("2d").__hidpi__ = hidpi;
-}
-const initHidpiOnce = /* @__PURE__ */ uniShared.once(() => {
-  return void 0;
-});
-function $getRealPath(src) {
-  return src ? getRealPath(src) : src;
-}
-function resolveColor(color) {
-  color = color.slice(0);
-  color[3] = color[3] / 255;
-  return "rgba(" + color.join(",") + ")";
-}
-function processTouches(rect, touches) {
-  Array.from(touches).forEach((touch) => {
-    touch.x = touch.clientX - rect.left;
-    touch.y = touch.clientY - rect.top;
-  });
-}
-let tempCanvas;
-function getTempCanvas(width = 0, height = 0) {
-  if (!tempCanvas) {
-    tempCanvas = document.createElement("canvas");
-  }
-  tempCanvas.width = width;
-  tempCanvas.height = height;
-  return tempCanvas;
-}
-const props$r = {
-  canvasId: {
-    type: String,
-    default: ""
-  },
-  disableScroll: {
-    type: [Boolean, String],
-    default: false
-  },
-  hidpi: {
-    type: Boolean,
-    default: true
-  }
-};
-const index$z = /* @__PURE__ */ defineBuiltInComponent({
-  inheritAttrs: false,
-  name: "Canvas",
-  compatConfig: {
-    MODE: 3
-  },
-  props: props$r,
-  computed: {
-    id() {
-      return this.canvasId;
-    }
-  },
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    initHidpiOnce();
-    const rootRef = vue.ref(null);
-    const canvas = vue.ref(null);
-    const sensor = vue.ref(null);
-    const actionsWaiting = vue.ref(false);
-    const trigger = useNativeEvent(emit2);
-    const {
-      $attrs,
-      $excludeAttrs,
-      $listeners
-    } = useAttrs({
-      excludeListeners: true
-    });
-    const {
-      _listeners
-    } = useListeners(props2, $listeners, trigger);
-    const {
-      _handleSubscribe,
-      _resize
-    } = useMethods(props2, canvas, actionsWaiting);
-    useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId));
-    return () => {
-      const {
-        canvasId,
-        disableScroll
-      } = props2;
-      return vue.createVNode("uni-canvas", vue.mergeProps({
-        "ref": rootRef,
-        "canvas-id": canvasId,
-        "disable-scroll": disableScroll
-      }, $attrs.value, $excludeAttrs.value, _listeners.value), [vue.createVNode("canvas", {
-        "ref": canvas,
-        "class": "uni-canvas-canvas",
-        "width": "300",
-        "height": "150"
-      }, null, 512), vue.createVNode("div", {
-        "style": "position: absolute;top: 0;left: 0;width: 100%;height: 100%;overflow: hidden;"
-      }, [slots.default && slots.default()]), vue.createVNode(ResizeSensor, {
-        "ref": sensor,
-        "onResize": _resize
-      }, null, 8, ["onResize"])], 16, ["canvas-id", "disable-scroll"]);
-    };
-  }
-});
-function useListeners(props2, Listeners, trigger) {
-  const _listeners = vue.computed(() => {
-    let events = ["onTouchstart", "onTouchmove", "onTouchend"];
-    let _$listeners = Listeners.value;
-    let $listeners = shared.extend({}, (() => {
-      let obj = {};
-      for (const key in _$listeners) {
-        if (shared.hasOwn(_$listeners, key)) {
-          const event = _$listeners[key];
-          obj[key] = event;
-        }
-      }
-      return obj;
-    })());
-    events.forEach((event) => {
-      let existing = $listeners[event];
-      let eventHandler = [];
-      if (existing) {
-        eventHandler.push(withWebEvent(($event) => {
-          const rect = $event.currentTarget.getBoundingClientRect();
-          processTouches(rect, $event.touches);
-          processTouches(rect, $event.changedTouches);
-          trigger(event.replace("on", "").toLocaleLowerCase(), $event);
-        }));
-      }
-      if (props2.disableScroll && event === "onTouchmove") {
-        eventHandler.push(onEventPrevent);
-      }
-      $listeners[event] = eventHandler;
-    });
-    return $listeners;
-  });
-  return {
-    _listeners
-  };
-}
-function useMethods(props2, canvasRef, actionsWaiting) {
-  let _actionsDefer = [];
-  let _images = {};
-  const _pixelRatio = vue.computed(() => props2.hidpi ? pixelRatio : 1);
-  function _resize(size) {
-    let canvas = canvasRef.value;
-    var hasChanged = !size || canvas.width !== Math.floor(size.width * _pixelRatio.value) || canvas.height !== Math.floor(size.height * _pixelRatio.value);
-    if (!hasChanged)
-      return;
-    if (canvas.width > 0 && canvas.height > 0) {
-      let context = canvas.getContext("2d");
-      let imageData = context.getImageData(0, 0, canvas.width, canvas.height);
-      wrapper(canvas, props2.hidpi);
-      context.putImageData(imageData, 0, 0);
-    } else {
-      wrapper(canvas, props2.hidpi);
-    }
-  }
-  function actionsChanged({
-    actions,
-    reserve
-  }, resolve) {
-    if (!actions) {
-      return;
-    }
-    if (actionsWaiting.value) {
-      _actionsDefer.push([actions, reserve]);
-      return;
-    }
-    let canvas = canvasRef.value;
-    let c2d = canvas.getContext("2d");
-    if (!reserve) {
-      c2d.fillStyle = "#000000";
-      c2d.strokeStyle = "#000000";
-      c2d.shadowColor = "#000000";
-      c2d.shadowBlur = 0;
-      c2d.shadowOffsetX = 0;
-      c2d.shadowOffsetY = 0;
-      c2d.setTransform(1, 0, 0, 1, 0, 0);
-      c2d.clearRect(0, 0, canvas.width, canvas.height);
-    }
-    preloadImage(actions);
-    for (let index2 = 0; index2 < actions.length; index2++) {
-      const action = actions[index2];
-      let method = action.method;
-      const data = action.data;
-      const actionType = data[0];
-      if (/^set/.test(method) && method !== "setTransform") {
-        const method1 = method[3].toLowerCase() + method.slice(4);
-        let color;
-        if (method1 === "fillStyle" || method1 === "strokeStyle") {
-          if (actionType === "normal") {
-            color = resolveColor(data[1]);
-          } else if (actionType === "linear") {
-            const LinearGradient = c2d.createLinearGradient(...data[1]);
-            data[2].forEach(function(data2) {
-              const offset = data2[0];
-              const color2 = resolveColor(data2[1]);
-              LinearGradient.addColorStop(offset, color2);
-            });
-            color = LinearGradient;
-          } else if (actionType === "radial") {
-            let _data = data[1];
-            const x = _data[0];
-            const y = _data[1];
-            const r = _data[2];
-            const LinearGradient = c2d.createRadialGradient(x, y, 0, x, y, r);
-            data[2].forEach(function(data2) {
-              const offset = data2[0];
-              const color2 = resolveColor(data2[1]);
-              LinearGradient.addColorStop(offset, color2);
-            });
-            color = LinearGradient;
-          } else if (actionType === "pattern") {
-            const loaded = checkImageLoaded(data[1], actions.slice(index2 + 1), resolve, function(image) {
-              if (image) {
-                c2d[method1] = c2d.createPattern(image, data[2]);
-              }
-            });
-            if (!loaded) {
-              break;
-            }
-            continue;
-          }
-          c2d[method1] = color;
-        } else if (method1 === "globalAlpha") {
-          c2d[method1] = Number(actionType) / 255;
-        } else if (method1 === "shadow") {
-          let shadowArray = ["shadowOffsetX", "shadowOffsetY", "shadowBlur", "shadowColor"];
-          data.forEach(function(color_, method_) {
-            c2d[shadowArray[method_]] = shadowArray[method_] === "shadowColor" ? resolveColor(color_) : color_;
-          });
-        } else if (method1 === "fontSize") {
-          const font = c2d.__font__ || c2d.font;
-          c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, actionType + "px");
-        } else if (method1 === "lineDash") {
-          c2d.setLineDash(actionType);
-          c2d.lineDashOffset = data[1] || 0;
-        } else if (method1 === "textBaseline") {
-          if (actionType === "normal") {
-            data[0] = "alphabetic";
-          }
-          c2d[method1] = actionType;
-        } else if (method1 === "font") {
-          c2d.__font__ = c2d.font = actionType;
-        } else {
-          c2d[method1] = actionType;
-        }
-      } else if (method === "fillPath" || method === "strokePath") {
-        method = method.replace(/Path/, "");
-        c2d.beginPath();
-        data.forEach(function(data_) {
-          c2d[data_.method].apply(c2d, data_.data);
-        });
-        c2d[method]();
-      } else if (method === "fillText") {
-        c2d.fillText.apply(c2d, data);
-      } else if (method === "drawImage") {
-        let drawImage = function() {
-          let dataArray = [...data];
-          let url = dataArray[0];
-          let otherData = dataArray.slice(1);
-          _images = _images || {};
-          if (!checkImageLoaded(url, actions.slice(index2 + 1), resolve, function(image) {
-            if (image) {
-              c2d.drawImage.apply(
-                c2d,
-                // @ts-ignore
-                [image].concat(
-                  // @ts-ignore
-                  [...otherData.slice(4, 8)],
-                  [...otherData.slice(0, 4)]
-                )
-              );
-            }
-          }))
-            return "break";
-        }();
-        if (drawImage === "break") {
-          break;
-        }
-      } else {
-        if (method === "clip") {
-          data.forEach(function(data_) {
-            c2d[data_.method].apply(c2d, data_.data);
-          });
-          c2d.clip();
-        } else {
-          c2d[method].apply(c2d, data);
-        }
-      }
-    }
-    if (!actionsWaiting.value) {
-      resolve({
-        errMsg: "drawCanvas:ok"
-      });
-    }
-  }
-  function preloadImage(actions) {
-    actions.forEach(function(action) {
-      let method = action.method;
-      let data = action.data;
-      let src = "";
-      if (method === "drawImage") {
-        src = data[0];
-        src = $getRealPath(src);
-        data[0] = src;
-      } else if (method === "setFillStyle" && data[0] === "pattern") {
-        src = data[1];
-        src = $getRealPath(src);
-        data[1] = src;
-      }
-      if (src && !_images[src]) {
-        loadImage();
-      }
-      function loadImage() {
-        const image = _images[src] = new Image();
-        image.onload = function() {
-          image.ready = true;
-        };
-        getSameOriginUrl(src).then((src2) => {
-          image.src = src2;
-        }).catch(() => {
-          image.src = src;
-        });
-      }
-    });
-  }
-  function checkImageLoaded(src, actions, resolve, fn) {
-    let image = _images[src];
-    if (image.ready) {
-      fn(image);
-      return true;
-    } else {
-      _actionsDefer.unshift([actions, true]);
-      actionsWaiting.value = true;
-      image.onload = function() {
-        image.ready = true;
-        fn(image);
-        actionsWaiting.value = false;
-        let actions2 = _actionsDefer.slice(0);
-        _actionsDefer = [];
-        for (let action = actions2.shift(); action; ) {
-          actionsChanged({
-            actions: action[0],
-            reserve: action[1]
-          }, resolve);
-          action = actions2.shift();
-        }
-      };
-      return false;
-    }
-  }
-  function getImageData({
-    x = 0,
-    y = 0,
-    width,
-    height,
-    destWidth,
-    destHeight,
-    hidpi = true,
-    dataType: dataType2,
-    quality = 1,
-    type = "png"
-  }, resolve) {
-    const canvas = canvasRef.value;
-    let data;
-    const maxWidth = canvas.offsetWidth - x;
-    width = width ? Math.min(width, maxWidth) : maxWidth;
-    const maxHeight = canvas.offsetHeight - y;
-    height = height ? Math.min(height, maxHeight) : maxHeight;
-    if (!hidpi) {
-      if (!destWidth && !destHeight) {
-        destWidth = Math.round(width * _pixelRatio.value);
-        destHeight = Math.round(height * _pixelRatio.value);
-      } else if (!destWidth) {
-        destWidth = Math.round(width / height * destHeight);
-      } else if (!destHeight) {
-        destHeight = Math.round(height / width * destWidth);
-      }
-    } else {
-      destWidth = width;
-      destHeight = height;
-    }
-    const newCanvas = getTempCanvas(destWidth, destHeight);
-    const context = newCanvas.getContext("2d");
-    if (type === "jpeg" || type === "jpg") {
-      type = "jpeg";
-      context.fillStyle = "#fff";
-      context.fillRect(0, 0, destWidth, destHeight);
-    }
-    context.__hidpi__ = true;
-    context.drawImageByCanvas(canvas, x, y, width, height, 0, 0, destWidth, destHeight, false);
-    let result;
-    try {
-      let compressed;
-      if (dataType2 === "base64") {
-        data = newCanvas.toDataURL(`image/${type}`, quality);
-      } else {
-        const imgData = context.getImageData(0, 0, destWidth, destHeight);
-        if (false)
-          ;
-        else {
-          data = Array.prototype.slice.call(imgData.data);
-        }
-      }
-      result = {
-        data,
-        compressed,
-        width: destWidth,
-        height: destHeight
-      };
-    } catch (error) {
-      result = {
-        errMsg: `canvasGetImageData:fail ${error}`
-      };
-    }
-    newCanvas.height = newCanvas.width = 0;
-    context.__hidpi__ = false;
-    if (!resolve) {
-      return result;
-    } else {
-      resolve(result);
-    }
-  }
-  function putImageData({
-    data,
-    x,
-    y,
-    width,
-    height,
-    compressed
-  }, resolve) {
-    try {
-      if (false)
-        ;
-      if (!height) {
-        height = Math.round(data.length / 4 / width);
-      }
-      const canvas = getTempCanvas(width, height);
-      const context = canvas.getContext("2d");
-      context.putImageData(new ImageData(new Uint8ClampedArray(data), width, height), 0, 0);
-      canvasRef.value.getContext("2d").drawImage(canvas, x, y, width, height);
-      canvas.height = canvas.width = 0;
-    } catch (error) {
-      resolve({
-        errMsg: "canvasPutImageData:fail"
-      });
-      return;
-    }
-    resolve({
-      errMsg: "canvasPutImageData:ok"
-    });
-  }
-  function toTempFilePath({
-    x = 0,
-    y = 0,
-    width,
-    height,
-    destWidth,
-    destHeight,
-    fileType,
-    quality,
-    dirname
-  }, resolve) {
-    const res = getImageData({
-      x,
-      y,
-      width,
-      height,
-      destWidth,
-      destHeight,
-      hidpi: false,
-      dataType: "base64",
-      type: fileType,
-      quality
-    });
-    if (!res.data || !res.data.length) {
-      resolve({
-        errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
-      });
-      return;
-    }
-    saveImage(res.data, dirname, (error, tempFilePath) => {
-      let errMsg = `toTempFilePath:${error ? "fail" : "ok"}`;
-      if (error) {
-        errMsg += ` ${error.message}`;
-      }
-      resolve({
-        errMsg,
-        tempFilePath
-      });
-    });
-  }
-  const methods = {
-    actionsChanged,
-    getImageData,
-    putImageData,
-    toTempFilePath
-  };
-  function _handleSubscribe(type, data, resolve) {
-    let method = methods[type];
-    if (type.indexOf("_") !== 0 && shared.isFunction(method)) {
-      method(data, resolve);
-    }
-  }
-  return shared.extend(methods, {
-    _resize,
-    _handleSubscribe
-  });
-}
-const uniCheckGroupKey = PolySymbol(process.env.NODE_ENV !== "production" ? "uniCheckGroup" : "ucg");
-const props$q = {
-  name: {
-    type: String,
-    default: ""
-  }
-};
-const index$y = /* @__PURE__ */ defineBuiltInComponent({
-  name: "CheckboxGroup",
-  props: props$q,
-  emits: ["change"],
-  setup(props2, {
-    emit: emit2,
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    const trigger = useCustomEvent(rootRef, emit2);
-    useProvideCheckGroup(props2, trigger);
-    return () => {
-      return vue.createVNode("uni-checkbox-group", {
-        "ref": rootRef
-      }, [slots.default && slots.default()], 512);
-    };
-  }
-});
-function useProvideCheckGroup(props2, trigger) {
-  const fields2 = [];
-  const getFieldsValue = () => fields2.reduce((res, field) => {
-    if (field.value.checkboxChecked) {
-      res.push(field.value.value);
-    }
-    return res;
-  }, new Array());
-  vue.provide(uniCheckGroupKey, {
-    addField(field) {
-      fields2.push(field);
-    },
-    removeField(field) {
-      fields2.splice(fields2.indexOf(field), 1);
-    },
-    checkboxChange($event) {
-      trigger("change", $event, {
-        value: getFieldsValue()
-      });
-    }
-  });
-  const uniForm = vue.inject(uniFormKey, false);
-  if (uniForm) {
-    uniForm.addField({
-      submit: () => {
-        let data = ["", null];
-        if (props2.name !== "") {
-          data[0] = props2.name;
-          data[1] = getFieldsValue();
-        }
-        return data;
-      }
-    });
-  }
-  return getFieldsValue;
-}
-const props$p = {
-  checked: {
-    type: [Boolean, String],
-    default: false
-  },
-  id: {
-    type: String,
-    default: ""
-  },
-  disabled: {
-    type: [Boolean, String],
-    default: false
-  },
-  value: {
-    type: String,
-    default: ""
-  },
-  color: {
-    type: String,
-    default: "#007aff"
-  },
-  backgroundColor: {
-    type: String,
-    default: ""
-  },
-  borderColor: {
-    type: String,
-    default: ""
-  },
-  activeBackgroundColor: {
-    type: String,
-    default: ""
-  },
-  activeBorderColor: {
-    type: String,
-    default: ""
-  },
-  iconColor: {
-    type: String,
-    default: ""
-  },
-  // 图标颜色,同color,优先级大于iconColor
-  foreColor: {
-    type: String,
-    default: ""
-  }
-};
-const index$x = /* @__PURE__ */ defineBuiltInComponent({
-  name: "Checkbox",
-  props: props$p,
-  setup(props2, {
-    slots
-  }) {
-    const rootRef = vue.ref(null);
-    const checkboxChecked = vue.ref(props2.checked);
-    const checkboxCheckedBool = vue.computed(() => {
-      return checkboxChecked.value === "true" || checkboxChecked.value === true;
-    });
-    const checkboxValue = vue.ref(props2.value);
-    function getCheckBoxStyle(checked) {
-      if (props2.disabled) {
-        return {
-          backgroundColor: "#E1E1E1",
-          borderColor: "#D1D1D1"
-        };
-      }
-      const style = {};
-      if (checked) {
-        if (props2.activeBorderColor)
-          style.borderColor = props2.activeBorderColor;
-        if (props2.activeBackgroundColor)
-          style.backgroundColor = props2.activeBackgroundColor;
-      } else {
-        if (props2.borderColor)
-          style.borderColor = props2.borderColor;
-        if (props2.backgroundColor)
-          style.backgroundColor = props2.backgroundColor;
-      }
-      return style;
-    }
-    const checkboxStyle = vue.computed(() => {
-      return getCheckBoxStyle(checkboxCheckedBool.value);
-    });
-    vue.watch([() => props2.checked, () => props2.value], ([newChecked, newModelValue]) => {
-      checkboxChecked.value = newChecked;
-      checkboxValue.value = newModelValue;
-    });
-    const reset = () => {
-      checkboxChecked.value = false;
-    };
-    const {
-      uniCheckGroup,
-      uniLabel
-    } = useCheckboxInject(checkboxChecked, checkboxValue, reset);
-    const _onClick = ($event) => {
-      if (props2.disabled) {
-        return;
-      }
-      checkboxChecked.value = !checkboxChecked.value;
-      uniCheckGroup && uniCheckGroup.checkboxChange($event);
-      $event.stopPropagation();
-    };
-    if (!!uniLabel) {
-      uniLabel.addHandler(_onClick);
-    }
-    return () => {
-      const booleanAttrs = useBooleanAttr(props2, "disabled");
-      let realCheckValue;
-      realCheckValue = checkboxChecked.value;
-      return vue.createVNode("uni-checkbox", vue.mergeProps(booleanAttrs, {
-        "id": props2.id,
-        "onClick": _onClick,
-        "ref": rootRef
-      }), [vue.createVNode("div", {
-        "class": "uni-checkbox-wrapper",
-        "style": {
-          "--HOVER-BD-COLOR": props2.activeBorderColor
-        }
-      }, [vue.createVNode("div", {
-        "class": ["uni-checkbox-input", {
-          "uni-checkbox-input-disabled": props2.disabled
-        }],
-        "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
-    };
-  }
-});
-function useCheckboxInject(checkboxChecked, checkboxValue, reset) {
-  const field = vue.computed(() => ({
-    checkboxChecked: Boolean(checkboxChecked.value),
-    value: checkboxValue.value
-  }));
-  const formField = {
-    reset
-  };
-  const uniCheckGroup = vue.inject(uniCheckGroupKey, false);
-  if (!!uniCheckGroup) {
-    uniCheckGroup.addField(field);
-  }
-  const uniForm = vue.inject(uniFormKey, false);
-  if (!!uniForm) {
-    uniForm.addField(formField);
-  }
-  const uniLabel = vue.inject(uniLabelKey, false);
-  return {
-    uniCheckGroup,
-    uniForm,
-    uniLabel
-  };
-}
-let resetTimer;
-function iosHideKeyboard() {
-}
-const props$o = {
-  cursorSpacing: {
-    type: [Number, String],
-    default: 0
-  },
-  showConfirmBar: {
-    type: [Boolean, String],
-    default: "auto"
-  },
-  adjustPosition: {
-    type: [Boolean, String],
-    default: true
-  },
-  autoBlur: {
-    type: [Boolean, String],
-    default: false
-  }
-};
-const emit$1 = ["keyboardheightchange"];
-function useKeyboard$1(props2, elRef, trigger) {
-  function initKeyboard(el) {
-    const isApple = vue.computed(
-      () => String(navigator.vendor).indexOf("Apple") === 0
-    );
-    el.addEventListener("focus", () => {
-      clearTimeout(resetTimer);
-      document.addEventListener("click", iosHideKeyboard, false);
-    });
-    const onKeyboardHide = () => {
-      document.removeEventListener("click", iosHideKeyboard, false);
-      if (isApple.value) {
-        document.documentElement.scrollTo(
-          document.documentElement.scrollLeft,
-          document.documentElement.scrollTop
-        );
-      }
-    };
-    el.addEventListener("blur", () => {
-      if (isApple.value) {
-        el.blur();
-      }
-      onKeyboardHide();
-    });
-  }
-  vue.watch(
-    () => elRef.value,
-    (el) => el && initKeyboard(el)
-  );
-}
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -3448,6 +2842,58 @@ const index$v = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
+  name: "ResizeSensor",
+  props: {
+    initial: {
+      type: Boolean,
+      default: false
+    }
+  },
+  emits: ["resize"],
+  setup(props2, {
+    emit: emit2
+  }) {
+    const rootRef = vue.ref(null);
+    const reset = useResizeSensorReset(rootRef);
+    const update = useResizeSensorUpdate(rootRef, emit2, reset);
+    return () => vue.createVNode("uni-resize-sensor", {
+      "ref": rootRef,
+      "onAnimationstartOnce": update
+    }, [vue.createVNode("div", {
+      "onScroll": update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"]), vue.createVNode("div", {
+      "onScroll": update
+    }, [vue.createVNode("div", null, null)], 40, ["onScroll"])], 40, ["onAnimationstartOnce"]);
+  }
+});
+function useResizeSensorUpdate(rootRef, emit2, reset) {
+  const size = vue.reactive({
+    width: -1,
+    height: -1
+  });
+  vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
+  return () => {
+    const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
+    size.width = rootEl.offsetWidth;
+    size.height = rootEl.offsetHeight;
+    reset();
+  };
+}
+function useResizeSensorReset(rootRef) {
+  return () => {
+    const {
+      firstElementChild,
+      lastElementChild
+    } = rootRef.value;
+    firstElementChild.scrollLeft = 1e5;
+    firstElementChild.scrollTop = 1e5;
+    lastElementChild.scrollLeft = 1e5;
+    lastElementChild.scrollTop = 1e5;
+  };
+}
 const props$m = {
   src: {
     type: String,
@@ -8041,7 +7487,7 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
     vue.watch(() => heightRef.value, (height) => {
       const el = rootRef.value;
       const lineEl = lineRef.value;
-      const wrapper2 = wrapperRef.value;
+      const wrapper = wrapperRef.value;
       let lineHeight = parseFloat(getComputedStyle(el).lineHeight);
       if (isNaN(lineHeight)) {
         lineHeight = lineEl.offsetHeight;
@@ -8054,18 +7500,18 @@ const index$j = /* @__PURE__ */ defineBuiltInComponent({
       });
       if (props2.autoHeight) {
         el.style.height = "auto";
-        wrapper2.style.height = height + "px";
+        wrapper.style.height = height + "px";
       }
     });
     vue.watch(() => props2.autoHeight, (autoHeight) => {
       const el = rootRef.value;
-      const wrapper2 = wrapperRef.value;
+      const wrapper = wrapperRef.value;
       if (autoHeight) {
         el.style.height = "auto";
-        wrapper2.style.height = heightRef.value + "px";
+        wrapper.style.height = heightRef.value + "px";
       } else {
         el.style.height = "";
-        wrapper2.style.height = "";
+        wrapper.style.height = "";
       }
     });
     function onResize({
@@ -12968,8 +12414,14 @@ function useTabBarStyle(tabBar2) {
   });
   const borderStyle = vue.computed(() => {
     const {
-      borderStyle: borderStyle2
+      borderStyle: borderStyle2,
+      borderColor
     } = tabBar2;
+    if (borderColor && shared.isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
     return {
       backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
     };
@@ -13972,19 +13424,19 @@ exports.AdContentPage = index$5;
 exports.AdDraw = index$4;
 exports.AsyncErrorComponent = AsyncErrorComponent;
 exports.AsyncLoadingComponent = AsyncLoadingComponent;
-exports.Button = index$A;
+exports.Button = index$z;
 exports.Camera = index$3;
-exports.Canvas = index$z;
+exports.Canvas = indexX$4;
 exports.Checkbox = index$x;
 exports.CheckboxGroup = index$y;
 exports.CoverImage = index$8;
 exports.CoverView = index$9;
 exports.Editor = index$w;
-exports.Form = index$C;
+exports.Form = index$B;
 exports.Icon = index$v;
 exports.Image = index$u;
 exports.Input = Input;
-exports.Label = index$B;
+exports.Label = index$A;
 exports.LayoutComponent = LayoutComponent;
 exports.ListItem = index$g;
 exports.ListView = index$h;

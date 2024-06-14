@@ -27,6 +27,7 @@ import type {
   TsType,
   TsTypeAliasDeclaration,
   TsTypeAnnotation,
+  TsTypeElement,
   VariableDeclaration,
   VariableDeclarationKind,
 } from '../types/types'
@@ -1057,6 +1058,27 @@ function genFunctionDeclaration(
   )
 }
 
+function parseInterfaceBody(
+  types: Types,
+  decl: TsInterfaceDeclaration
+): TsTypeElement[] {
+  const elements = decl.body.body.slice()
+  decl.extends.forEach((extend) => {
+    if (
+      extend.expression.type === 'Identifier' &&
+      types.interface[extend.expression.value]
+    ) {
+      elements.push(
+        ...parseInterfaceBody(
+          types,
+          types.interface[extend.expression.value].decl
+        )
+      )
+    }
+  })
+  return elements
+}
+
 function genInterfaceDeclaration(
   types: Types,
   decl: TsInterfaceDeclaration,
@@ -1066,7 +1088,9 @@ function genInterfaceDeclaration(
   const methods: ProxyClass['options']['methods'] = {}
   const props: string[] = []
   const setters: Record<string, Parameter> = {}
-  decl.body.body.forEach((item) => {
+  const elements = parseInterfaceBody(types, decl)
+
+  elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
       if (item.key.type === 'Identifier') {
         let returnOptions = {}

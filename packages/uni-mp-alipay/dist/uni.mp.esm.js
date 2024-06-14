@@ -382,7 +382,7 @@ function initDefaultProps(options, isBehavior = false) {
     }
     if (options.behaviors) {
         // wx://form-field
-        if (options.behaviors.includes('__GLOBAL__://form-field')) {
+        if (options.behaviors.includes('my' + '://form-field')) {
             if (!options.properties || !options.properties.name) {
                 properties.name = {
                     type: null,
@@ -489,7 +489,8 @@ function initBehaviors(vueOptions) {
     const behaviors = [];
     if (isArray(vueBehaviors)) {
         vueBehaviors.forEach((behavior) => {
-            behaviors.push(behavior.replace('uni://', '__GLOBAL__://'));
+            // 这里的 global 应该是个变量
+            behaviors.push(behavior.replace('uni://', 'my' + '://'));
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');

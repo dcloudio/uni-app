@@ -8,8 +8,8 @@ import {
   uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
-  uniUTSUniModulesPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniAppIOSPlugin } from './plugin'
@@ -23,7 +23,7 @@ export function init() {
   return [
     uniDecryptUniModulesPlugin(),
     uniHBuilderXConsolePlugin('uni.__log__'),
-    uniUTSUniModulesPlugin({
+    uniUTSAppUniModulesPlugin({
       x: true,
       isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
       extApis: parseUniExtApiNamespacesOnce(

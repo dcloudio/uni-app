@@ -597,7 +597,6 @@ export const triggerEvent = (
       case 'input.input':
         dom.dispatchEvent(
           type,
-          // @ts-expect-error
           new UniInputEvent(
             type,
             // @ts-expect-error
@@ -609,10 +608,8 @@ export const triggerEvent = (
       case 'input.focus':
         dom.dispatchEvent(
           type,
-          // @ts-expect-error
           new UniInputFocusEvent(
             type,
-            // @ts-expect-error
             new InputFocusEventDetail(300, '')
           )
         )
@@ -621,10 +618,8 @@ export const triggerEvent = (
       case 'input.blur':
         dom.dispatchEvent(
           type,
-          // @ts-expect-error
           new UniInputBlurEvent(
             type,
-            // @ts-expect-error
             new UniInputBlurEventDetail('', 10)
           )
         )
@@ -633,7 +628,6 @@ export const triggerEvent = (
       case 'textarea.input':
         dom.dispatchEvent(
           type,
-          // @ts-expect-error
           new UniInputEvent(
             type,
             // @ts-expect-error
