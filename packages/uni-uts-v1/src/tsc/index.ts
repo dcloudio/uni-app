@@ -18,3 +18,7 @@ export function emitDeclaration(
     ...options,
   })
 }
+
+export function getTypeScript() {
+  return require('../../lib/typescript')
+}
