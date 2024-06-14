@@ -322,7 +322,7 @@ export function initUniExtApi(APP_ID: string) {
         deviceOrientation: string | null = null;
         devicePixelRatio: number | null = null;
         system: string | null = null;
-        platform: 'ios' | 'android' | 'mac' | 'windows' | 'linux' | null = null;
+        platform: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux' | null = null;
         isRoot: boolean | null = null;
         isSimulator: boolean | null = null;
         isUSBDebugging: boolean | null = null;
@@ -342,13 +342,13 @@ export function initUniExtApi(APP_ID: string) {
             deviceId: '',
             deviceModel: deviceInfo.productModel,
             deviceOrientation: 'portrait',
-            devicePixelRatio: vp2px(1) + '',
+            devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
             osTheme: UTSHarmony1.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmony',
-            platform: 'app',
+            platform: 'harmony',
             romName: deviceInfo.distributionOSName,
             romVersion: deviceInfo.distributionOSVersion,
             system: deviceInfo.osFullName
