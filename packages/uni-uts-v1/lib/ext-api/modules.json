@@ -11,6 +11,28 @@
       }
     }
   },
+  "uni-clipboard": {
+    "uni": {
+      "getClipboardData": {
+        "name": "getClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "setClipboardData": {
+        "name": "setClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-createIntersectionObserver": {
     "uni": {
       "createIntersectionObserver": {
@@ -210,6 +232,19 @@
           "js": true,
           "kotlin": true,
           "swift": false
+        }
+      }
+    }
+  },
+  "uni-makePhoneCall": {
+    "uni": {
+      "makePhoneCall": {
+        "name": "makePhoneCall",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -482,7 +517,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
