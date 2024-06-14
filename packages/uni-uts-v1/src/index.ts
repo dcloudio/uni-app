@@ -44,6 +44,8 @@ import { uvueOutDir } from './uvue/index'
 
 export * from './tsc'
 
+export { compileArkTS } from './arkts'
+
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,
   generateCodeFrameWithSwiftStacktrace,

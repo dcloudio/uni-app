@@ -1,6 +1,6 @@
 import {
   parseUniExtApiNamespacesOnce,
-  uniUTSUniModulesPlugin,
+  uniUTSAppUniModulesPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { initVuePlugins } from './vue'
 import { initNVuePlugins } from './nvue'
@@ -11,7 +11,7 @@ export default () => {
       renderer: process.env.UNI_RENDERER,
       appService: process.env.UNI_RENDERER_NATIVE === 'appService',
     }),
-    uniUTSUniModulesPlugin({
+    uniUTSAppUniModulesPlugin({
       x: false,
       isSingleThread: false,
       extApis: parseUniExtApiNamespacesOnce(

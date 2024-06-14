@@ -27,7 +27,7 @@ export type UTSInputOptions = UTSParseOptions & {
   fileContent?: string
   fileAppendContent?: string
   paths: Record<string, string>
-  externals?: Record<string, string>
+  externals?: string[]
   uniModules?: string[]
   globals?: {
     envs?: Record<string, string>
@@ -37,6 +37,7 @@ export type UTSInputOptions = UTSParseOptions & {
     tsx?: boolean
     noEarlyErrors?: boolean
     allowComplexUnionType?: boolean
+    allowTsLitType?: boolean
   }
 }
 

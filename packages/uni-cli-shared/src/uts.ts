@@ -37,6 +37,7 @@ function once<T extends (...args: any[]) => any>(
  * @returns
  */
 export function resolveUTSAppModule(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
   id: string,
   importer: string,
   includeUTSSDK = true
@@ -66,6 +67,12 @@ export function resolveUTSAppModule(
         return path.resolve(id, basedir, p)
       }
       const extname = ['.uts']
+      if (platform === 'app-harmony') {
+        if (resolveUTSFile(resolvePlatformDir(platform), extname)) {
+          return id
+        }
+        return
+      }
       if (resolveUTSFile(resolvePlatformDir('app-android'), extname)) {
         return id
       }
@@ -84,9 +91,10 @@ export function resolveUTSModule(
 ) {
   if (
     process.env.UNI_PLATFORM === 'app' ||
-    process.env.UNI_PLATFORM === 'app-plus'
+    process.env.UNI_PLATFORM === 'app-plus' ||
+    process.env.UNI_PLATFORM === 'app-harmony'
   ) {
-    return resolveUTSAppModule(id, importer)
+    return resolveUTSAppModule(process.env.UNI_UTS_PLATFORM, id, importer)
   }
   id = path.resolve(importer, id)
   if (id.includes('uni_modules') || (includeUTSSDK && id.includes('utssdk'))) {

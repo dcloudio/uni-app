@@ -141,16 +141,12 @@ export function initEnv(
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
     const projectPath = manifestJson['app-harmony']?.projectPath
     if (projectPath) {
-      if (projectPath.endsWith('www')) {
-        // 直接指定了www目录
-        process.env.UNI_OUTPUT_DIR = path.resolve(path.resolve(projectPath))
-      } else {
-        // 指定了鸿蒙项目根目录
-        process.env.UNI_OUTPUT_DIR = path.resolve(
-          path.resolve(projectPath),
-          `entry/src/main/resources/rawfile/apps/HBuilder/www`
-        )
-      }
+      process.env.UNI_APP_HARMONY_PROJECT_PATH = path.resolve(projectPath)
+      // 指定了鸿蒙项目根目录
+      process.env.UNI_OUTPUT_DIR = path.resolve(
+        process.env.UNI_APP_HARMONY_PROJECT_PATH,
+        `entry/src/main/resources/rawfile/apps/HBuilder/www`
+      )
     }
   }
 

@@ -2,7 +2,7 @@ import {
   parseUniExtApiNamespacesOnce,
   uniDecryptUniModulesPlugin,
   uniEncryptUniModulesPlugin,
-  uniUTSUniModulesPlugin,
+  uniUTSAppUniModulesPlugin,
   uniViteSfcSrcImportPlugin,
 } from '@dcloudio/uni-cli-shared'
 import { uniPrePlugin } from './pre'
@@ -21,7 +21,7 @@ export function init() {
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
       ? []
       : [
-          uniUTSUniModulesPlugin({
+          uniUTSAppUniModulesPlugin({
             x: true,
             isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
             extApis: parseUniExtApiNamespacesOnce(

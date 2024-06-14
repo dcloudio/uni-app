@@ -68,6 +68,8 @@ declare namespace NodeJS {
     UNI_MODULES_ENCRYPT_CACHE_DIR?: string
 
     UNI_APP_PACK_TYPE?: 'release' | 'debug'
+
+    UNI_APP_HARMONY_PROJECT_PATH?: string
   }
 }
 
