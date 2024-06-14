@@ -299,6 +299,8 @@ function initUTSPlatform(options: CliOptions) {
     process.env.UNI_UTS_TARGET_LANGUAGE = 'kotlin'
   } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
     process.env.UNI_UTS_TARGET_LANGUAGE = 'swift'
+  } else if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+    process.env.UNI_UTS_TARGET_LANGUAGE = 'arkts'
   }
 }
 

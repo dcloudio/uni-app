@@ -65,8 +65,13 @@ export async function compileArkTS(
     input: {
       root: inputDir,
       filename,
-      paths: {},
-      externals: [],
+      paths: {
+        '@dcloudio/uni-runtime':
+          '../../../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev',
+      },
+      externals: [
+        '../../../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev',
+      ],
       parseOptions: {
         tsx: true,
         noEarlyErrors: true,
