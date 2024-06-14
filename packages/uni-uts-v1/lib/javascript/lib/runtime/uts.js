@@ -632,25 +632,14 @@ let UTSJSONObject$1 = class UTSJSONObject {
     }
 };
 
-// @ts-nocheck
 function getGlobal() {
-    // cross-platform
-    if (typeof globalThis !== 'undefined') {
-        return globalThis;
+    const g = new Function('return this')()
+
+    if (typeof globalThis === 'undefined') {
+      // @ts-expect-error any global
+      g.globalThis = g
     }
-    // worker
-    if (typeof self !== 'undefined') {
-        return self;
-    }
-    // browser
-    if (typeof window !== 'undefined') {
-        return window;
-    }
-    // nodejs
-    if (typeof global !== 'undefined') {
-        return global;
-    }
-    throw new Error('unable to locate global object');
+    return g
 }
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
