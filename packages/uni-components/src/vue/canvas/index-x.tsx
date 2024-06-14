@@ -1,4 +1,4 @@
-import { type Ref, onMounted, ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { UniElement } from '../../helpers/UniElement'
 
@@ -7,13 +7,23 @@ const props = {
     type: [Boolean, String],
     default: false,
   },
-  hidpi: {
-    type: Boolean,
-    default: true,
-  },
 }
 
 export class UniCanvasElement extends UniElement {
+  get width() {
+    return this.querySelector('canvas')!.width
+  }
+  set width(value) {
+    this.querySelector('canvas')!.width = value
+  }
+
+  get height() {
+    return this.querySelector('canvas')!.height
+  }
+  set height(value) {
+    this.querySelector('canvas')!.height = value
+  }
+
   getContext(contextId, options): CanvasRenderingContext2D {
     return this.querySelector('canvas')!.getContext(
       contextId,
@@ -40,10 +50,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     onMounted(() => {
       const rootElement = rootRef.value as UniCanvasElement
       rootElement.attachVmProps(props)
-
-      if (props.hidpi) {
-        useHidpi(canvas)
-      }
     })
 
     return () => {
@@ -55,23 +61,3 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
   },
 })
-
-function useHidpi(canvasRef: Ref<HTMLCanvasElement | null>) {
-  const devicePixelRatio = window.devicePixelRatio || 1
-  canvasRef.value!.width = canvasRef.value!.offsetWidth * devicePixelRatio
-  canvasRef.value!.height = canvasRef.value!.offsetHeight * devicePixelRatio
-
-  if (devicePixelRatio == 1) {
-    return
-  }
-
-  const context = canvasRef.value!.getContext('2d')!
-  context.scale(devicePixelRatio, devicePixelRatio)
-
-  // 调用后 reset 方法高清逻辑将失效，需要再次 scale
-  const hookResetFunction = context.reset
-  context.reset = function (...args) {
-    hookResetFunction.apply(context, args)
-    context.scale(devicePixelRatio, devicePixelRatio)
-  }
-}
