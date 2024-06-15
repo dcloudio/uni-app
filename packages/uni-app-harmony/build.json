@@ -9,6 +9,7 @@
     "replacements": {
       "process.env.NODE_ENV": "'production'",
       "__X__": "false",
+      "__PLUS__": "false",
       "__PLATFORM__": "'app'",
       "__APP_VIEW__": "false",
       "__VUE_OPTIONS_API__": "true",
