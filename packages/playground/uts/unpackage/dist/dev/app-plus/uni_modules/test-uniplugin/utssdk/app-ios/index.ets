@@ -1,13 +1,13 @@
-import { CLLocationManager, CLAuthorizationStatus } from 'CoreLocation';
-import { UIDevice } from 'UIKit';
 type ShowToast = (msg: string) => void;
-class GetBatteryInfoOptions extends UTSObject {
-    name!: string;
-    pwd!: number;
-    success: ((res: UTSJSONObject) => void) | null = null;
-    fail: ((res: UTSJSONObject) => void) | null = null;
-    complete: ((res: UTSJSONObject) => void) | null = null;
-}
+import { UIDevice } from 'UIKit';
+import { CLLocationManager, CLAuthorizationStatus } from 'CoreLocation';
+type GetBatteryInfoOptions = {
+    name: string;
+    pwd: number;
+    success?: (res: UTSJSONObject) => void;
+    fail?: (res: UTSJSONObject) => void;
+    complete?: (res: UTSJSONObject) => void;
+};
 function getBatteryInfo(options: GetBatteryInfoOptions) {
     new UIAlertController(title = title, message = message, preferredStyle = UIAlertController.Style.alert);
     const res = {
