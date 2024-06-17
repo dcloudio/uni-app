@@ -6,10 +6,11 @@ import type { CompileResult } from '.'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
+  isExtApi?: boolean
 }
 export async function compileArkTS(
   pluginDir: string,
-  _: ArkTSCompilerOptions
+  { isExtApi }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
     console.error('manifest.json -> app-harmony -> projectPath is required')
@@ -28,13 +29,49 @@ export async function compileArkTS(
     projectPath,
     pluginId
   )
+  const globals = [
+    'IUniError',
+    'IUTSObject',
+    'UniError',
+    'UTSObject',
+    'UTSJSONObject',
+    'string',
+    'ComponentPublicInstance',
+    'ComponentInternalInstance',
+  ]
+  const banners: string[] = [
+    `import { ${globals.join(', ')} } from '../../../../uni-app/lib/uts'`,
+  ]
+  if (isExtApi) {
+    const globals = [
+      'defineAsyncApi',
+      'defineSyncApi',
+      'defineTaskApi',
+      'defineOnApi',
+      'defineOffApi',
+      'ApiExcutor',
+      'ProtocolOptions',
+      'ApiOptions',
+      'ErrRes',
+    ]
+    banners.push(
+      `import { ${globals.join(
+        ', '
+      )} } from '../../../../uni-app/lib/uni-api-shared'`
+    )
+  }
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input: {
       root: inputDir,
       filename,
-      paths: {},
-      externals: [],
+      paths: {
+        '@dcloudio/uni-runtime':
+          '../../../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev',
+      },
+      externals: [
+        '../../../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev',
+      ],
       parseOptions: {
         tsx: true,
         noEarlyErrors: true,
@@ -55,6 +92,8 @@ export async function compileArkTS(
       treeshake: {
         noSideEffects: true,
       },
+      banner: banners.join('\n'),
+      // footer:''
     },
   }
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
@@ -65,7 +104,7 @@ export async function compileArkTS(
     }
   }
   return {
-    code: requireUTSPluginCode(pluginId),
+    code: requireUTSPluginCode(pluginId, !!isExtApi),
     deps,
     encrypt: true,
     dir: outputUniModuleDir,
@@ -74,7 +113,10 @@ export async function compileArkTS(
   }
 }
 
-function requireUTSPluginCode(pluginId: string) {
+function requireUTSPluginCode(pluginId: string, isExtApi: boolean) {
+  if (isExtApi) {
+    return `export default uni`
+  }
   return `export default uni.requireUTSPlugin('uni_modules/${pluginId}')`
 }
 

@@ -123,6 +123,34 @@ export function parseUniExtApis(
   return injects
 }
 
+export function parseUniExtApi(
+  pluginDir: string,
+  pluginId: string,
+  vite = true,
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  language: UTSTargetLanguage = 'javascript'
+) {
+  const pkgPath = path.resolve(pluginDir, 'package.json')
+  if (!fs.existsSync(pkgPath)) {
+    return
+  }
+  let exports: Exports | undefined
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+  if (pkg && pkg.uni_modules && pkg.uni_modules['uni-ext-api']) {
+    exports = pkg.uni_modules['uni-ext-api']
+  }
+  if (exports) {
+    return parseInjects(
+      vite,
+      platform,
+      language,
+      `@/uni_modules/${pluginId}`,
+      pluginDir,
+      exports
+    )
+  }
+}
+
 type Inject = string | string[]
 export type Injects = {
   [name: string]:

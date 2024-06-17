@@ -45,6 +45,8 @@ export type UTSOutputOptions = {
   outDir: string
   outFilename?: string
   package: string
+  banner?: string
+  footer?: string
   imports?: string[]
   sourceMap?: boolean | string
   inlineSourcesContent?: boolean

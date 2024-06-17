@@ -10057,15 +10057,17 @@ class CanvasContext {
             return new Pattern(image, repetition);
         }
     }
-    measureText(text) {
+    measureText(text, callback) {
         const font = this.state.font;
         let width = 0;
         {
-            const webview = plus.webview
-                .all()
-                .find((webview) => webview.getURL().endsWith('www/__uniappview.html'));
-            if (webview) {
-                width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`));
+            {
+                const webview = plus.webview
+                    .all()
+                    .find((webview) => webview.getURL().endsWith('www/__uniappview.html'));
+                if (webview) {
+                    width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`));
+                }
             }
         }
         return new TextMetrics(width);

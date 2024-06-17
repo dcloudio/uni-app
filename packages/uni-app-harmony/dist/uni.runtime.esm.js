@@ -10075,12 +10075,6 @@ var methods3 = [
     'setTextBaseline',
     'setLineDash',
 ];
-function measureText(text, font) {
-    const canvas = document.createElement('canvas');
-    const c2d = canvas.getContext('2d');
-    c2d.font = font;
-    return c2d.measureText(text).width || 0;
-}
 //#endregion
 //#region checkColor
 const predefinedColor = {
@@ -10445,15 +10439,25 @@ class CanvasContext {
             return new Pattern(image, repetition);
         }
     }
-    measureText(text) {
+    measureText(text, callback) {
         const font = this.state.font;
         let width = 0;
         {
-            const webview = plus.webview
-                .all()
-                .find((webview) => webview.getURL().endsWith('www/__uniappview.html'));
-            if (webview) {
-                width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`));
+            {
+                if (typeof callback === 'function') {
+                    const webview = plus.webview.getLaunchWebview();
+                    // @ts-expect-error evalJSASync 后新增，和 plus 签名不匹配，暂时忽略 ts 报错
+                    if (webview && typeof webview.evalJSASync === 'function') {
+                        webview.evalJSASync(`(function measureText(text, font) {
+  const canvas = document.createElement('canvas')
+  const c2d = canvas.getContext('2d')
+  c2d.font = font
+  return c2d.measureText(text).width || 0
+})(${JSON.stringify(text)},${JSON.stringify(font)})`).then((res) => {
+                            callback(new TextMetrics(parseFloat(res)));
+                        });
+                    }
+                }
             }
         }
         return new TextMetrics(width);

@@ -543,23 +543,44 @@ export class CanvasContext implements UniApp.CanvasContext {
     }
   }
 
-  measureText(text: string) {
+  measureText(text: string, callback?: Callback) {
     const font = this.state.font
     let width = 0
     if (__PLATFORM__ === 'h5') {
       width = measureText(text, font)
     } else {
-      const webview = plus.webview
-        .all()
-        .find((webview) => webview.getURL().endsWith('www/__uniappview.html'))
-      if (webview) {
-        width = Number(
-          (webview as any).evalJSSync(
-            `(${measureText.toString()})(${JSON.stringify(
-              text
-            )},${JSON.stringify(font)})`
+      if (__PLUS__ === false) {
+        if (typeof callback === 'function') {
+          const webview = plus.webview.getLaunchWebview()
+          // @ts-expect-error evalJSASync 后新增，和 plus 签名不匹配，暂时忽略 ts 报错
+          if (webview && typeof webview.evalJSASync === 'function') {
+            ;(
+              (webview as any).evalJSASync(
+                `(function measureText(text, font) {
+  const canvas = document.createElement('canvas')
+  const c2d = canvas.getContext('2d')
+  c2d.font = font
+  return c2d.measureText(text).width || 0
+})(${JSON.stringify(text)},${JSON.stringify(font)})`
+              ) as Promise<string>
+            ).then((res) => {
+              callback(new TextMetrics(parseFloat(res)))
+            })
+          }
+        }
+      } else {
+        const webview = plus.webview
+          .all()
+          .find((webview) => webview.getURL().endsWith('www/__uniappview.html'))
+        if (webview) {
+          width = Number(
+            (webview as any).evalJSSync(
+              `(${measureText.toString()})(${JSON.stringify(
+                text
+              )},${JSON.stringify(font)})`
+            )
           )
-        )
+        }
       }
     }
     return new TextMetrics(width)
