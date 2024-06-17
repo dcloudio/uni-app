@@ -60,10 +60,7 @@ function setProperties(
 ) {
   props.forEach(function (name) {
     if (hasOwn(propsData, name)) {
-      // if borderColor > borderStyle
       item[name] = propsData[name]
-    } else {
-      item[name] = undefined
     }
   })
 }
