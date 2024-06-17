@@ -1,5 +1,5 @@
-import { IUniError, UTSObject, UniError, UTSJSONObject, string, AsyncApiSuccessResult, AsyncApiResult, ComponentPublicInstance, ComponentInternalInstance } from './uts'
-import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
+import { IUniError, UTSObject, UniError, UTSJSONObject, string, ComponentPublicInstance, ComponentInternalInstance } from './uts'
+import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, AsyncApiSuccessResult, AsyncApiResult, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
 
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
@@ -33,6 +33,7 @@ import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "../../../resour
 import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath2, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import harmonyWindow from '@ohos.window';
 import harmonyWindow1 from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
@@ -607,14 +608,14 @@ export function initUniExtApi(APP_ID: string) {
     };
     const internalGetWindowInfo = (): GetWindowInfoResult =>{
         const pixelRatio = vp2px(1);
-        const windowStage: harmonyWindow1.WindowStage = UTSHarmony3.getWindowStage();
-        let topRect: harmonyWindow1.Rect = {
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony3.getWindowStage();
+        let topRect: harmonyWindow.Rect = {
             top: 0,
             left: 0,
             width: 0,
             height: 136
         };
-        let bottomRect: harmonyWindow1.Rect = {
+        let bottomRect: harmonyWindow.Rect = {
             top: 0,
             left: 0,
             width: 0,
@@ -622,8 +623,8 @@ export function initUniExtApi(APP_ID: string) {
         };
         if (windowStage) {
             const mainWindow = windowStage.getMainWindowSync();
-            topRect = mainWindow.getWindowAvoidArea(harmonyWindow1.AvoidAreaType.TYPE_SYSTEM).topRect;
-            bottomRect = mainWindow.getWindowAvoidArea(harmonyWindow1.AvoidAreaType.TYPE_NAVIGATION_INDICATOR).bottomRect;
+            topRect = mainWindow.getWindowAvoidArea(harmonyWindow.AvoidAreaType.TYPE_SYSTEM).topRect;
+            bottomRect = mainWindow.getWindowAvoidArea(harmonyWindow.AvoidAreaType.TYPE_NAVIGATION_INDICATOR).bottomRect;
         }
         const defaultDisplay = display.getDefaultDisplaySync();
         const currentPage: ESObject = getCurrentPage();
@@ -2618,11 +2619,11 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony6.getWindowStage();
+        const windowStage: harmonyWindow1.WindowStage = UTSHarmony6.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
-            const mainWindow: harmonyWindow.Window = windowStage.getMainWindowSync();
+            const mainWindow: harmonyWindow1.Window = windowStage.getMainWindowSync();
             windowWidthInPx = mainWindow.getWindowProperties().windowRect.width;
             windowWidthInVp = px2vp(windowWidthInPx);
         }
