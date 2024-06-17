@@ -27,6 +27,8 @@ import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/
 import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath2, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import harmonyWindowType from '@ohos.window';
+import harmonyWindowType1 from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
@@ -466,30 +468,48 @@ export function initUniExtApi(APP_ID: string) {
     };
     const internalGetWindowInfo = (): GetWindowInfoResult =>{
         const pixelRatio = vp2px(1);
-        const avoidArea: harmonyWindowType.AvoidArea = UTSHarmony2.getAvoidArea();
+        const windowStage: harmonyWindowType.WindowStage = UTSHarmony2.getWindowStage();
+        let topRect: harmonyWindowType.Rect = {
+            top: 0,
+            left: 0,
+            width: 0,
+            height: 136
+        };
+        let bottomRect: harmonyWindowType.Rect = {
+            top: 0,
+            left: 0,
+            width: 0,
+            height: 98
+        };
+        if (windowStage) {
+            const mainWindow = windowStage.getMainWindowSync();
+            topRect = mainWindow.getWindowAvoidArea(harmonyWindowType.AvoidAreaType.TYPE_SYSTEM).topRect;
+            bottomRect = mainWindow.getWindowAvoidArea(harmonyWindowType.AvoidAreaType.TYPE_NAVIGATION_INDICATOR).bottomRect;
+        }
         const defaultDisplay = display.getDefaultDisplaySync();
         const currentPage: ESObject = getCurrentPage();
-        const navigationBarHeight = currentPage.$page.meta.navigationBar.type === 'default' ? 56 : 0;
-        const tabBarHeight = currentPage.$.__isTabBar ? 50 : 0;
+        const navigationBarHeight = currentPage && currentPage.$page.meta.navigationBar.type === 'default' ? 58 : 0;
+        const tabBarHeight = currentPage && currentPage.$.__isTabBar ? 50 : 0;
         const screenWidth = px2vp(defaultDisplay.width);
         const screenHeight = px2vp(defaultDisplay.height);
-        const safeAreaTopSize = px2vp(avoidArea.topRect.top + avoidArea.topRect.height) + navigationBarHeight;
-        const safeAreaBottomSize = px2vp(avoidArea.bottomRect.height) + tabBarHeight;
-        const safeAreaLeftSize = px2vp(avoidArea.leftRect.left + avoidArea.leftRect.width);
-        const safeAreaRightSize = px2vp(avoidArea.rightRect.width);
+        const statusBarHeight = px2vp(topRect.top + topRect.height);
+        const safeAreaTopSize = statusBarHeight + navigationBarHeight;
+        const safeAreaBottomSize = px2vp(bottomRect.height) + tabBarHeight;
         const safeAreaInsets: SafeAreaInsets = {
-            top: safeAreaTopSize,
-            right: safeAreaRightSize,
-            bottom: safeAreaBottomSize,
-            left: safeAreaLeftSize
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0
         };
+        const windowWidth = screenWidth - 0 - 0;
+        const windowHeight = screenHeight - safeAreaTopSize - safeAreaBottomSize;
         const safeArea: SafeArea = {
-            top: safeAreaInsets.top,
-            right: screenWidth - safeAreaRightSize,
-            bottom: screenHeight - safeAreaBottomSize,
-            left: safeAreaInsets.left,
-            width: screenWidth - safeAreaLeftSize - safeAreaRightSize,
-            height: screenHeight - safeAreaTopSize - safeAreaBottomSize
+            top: 0,
+            right: windowWidth,
+            bottom: windowHeight,
+            left: 0,
+            width: windowWidth,
+            height: windowHeight
         };
         return {
             pixelRatio,
@@ -502,7 +522,7 @@ export function initUniExtApi(APP_ID: string) {
             windowHeight: safeArea.height,
             safeAreaInsets,
             safeArea,
-            statusBarHeight: safeAreaTopSize
+            statusBarHeight
         };
     };
     const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
@@ -2175,11 +2195,17 @@ export function initUniExtApi(APP_ID: string) {
     type Rpx2px = (number: number) => number;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
+    const test = (type: harmonyWindowType1.AvoidAreaType)=>{};
+    test(harmonyWindowType1.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindowType.WindowStage = UTSHarmony3.getWindowStage();
-        const mainWindow: harmonyWindowType.Window = windowStage.getMainWindowSync();
-        const windowWidthInPx: number = mainWindow.getWindowProperties().windowRect.width;
-        const windowWidthInVp: number = px2vp(windowWidthInPx);
+        const windowStage: harmonyWindowType1.WindowStage = UTSHarmony3.getWindowStage();
+        let windowWidthInVp: number = 384;
+        let windowWidthInPx: number = 1344;
+        if (windowStage) {
+            const mainWindow: harmonyWindowType1.Window = windowStage.getMainWindowSync();
+            windowWidthInPx = mainWindow.getWindowProperties().windowRect.width;
+            windowWidthInVp = px2vp(windowWidthInPx);
+        }
         let result = (number / 750) * windowWidthInVp;
         if (result < 0) {
             result = -result;

@@ -10453,7 +10453,7 @@ class CanvasContext {
   const c2d = canvas.getContext('2d')
   c2d.font = font
   return c2d.measureText(text).width || 0
-})(${JSON.stringify(text)},${JSON.stringify(font)})`).then(res => {
+})(${JSON.stringify(text)},${JSON.stringify(font)})`).then((res) => {
                             callback(new TextMetrics(parseFloat(res)));
                         });
                     }
