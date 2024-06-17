@@ -10,6 +10,10 @@ type Anything = Object | null | undefined
 type NullType = null | undefined
 type FormatArgsValueType = Function | string | number | boolean
 
+export interface AsyncApiSuccessResult {}
+
+export interface AsyncApiResult {}
+
 export interface ErrRes {
   errMsg?: string | null
   errCode?: number | null
