@@ -5,10 +5,7 @@ import DCloudUTSExtAPI;
 public typealias ShowToast = (_ msg: String) -> Void;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
-public class GetBatteryInfoOptions : NSObject, UTSObject, IUTSSourceMap {
-    public func __$getOriginalPosition() -> UTSSourceMapPosition? {
-        return UTSSourceMapPosition("GetBatteryInfoOptions", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 5, 6);
-    }
+public class GetBatteryInfoOptions : NSObject, UTSObject {
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: ((_ res: UTSJSONObject) -> Void)?;
@@ -52,7 +49,7 @@ public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
         "errMsg": "getBatteryInfo:ok",
         "level": UIDevice.current.batteryLevel * 100,
         "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
-    ], UTSSourceMapPosition("res", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 19, 9));
+    ]);
     if (options.success != nil) {
         options.success!(res);
     }
@@ -75,17 +72,11 @@ public func test1(_ callback:@escaping () -> Void) -> String {
 }
 @objc(UTSSDKModulesTestUniPluginTest1)
 @objcMembers
-public class Test1 : NSObject, IUTSSourceMap {
-    public func __$getOriginalPosition() -> UTSSourceMapPosition? {
-        return UTSSourceMapPosition("Test1", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 59, 7);
-    }
+public class Test1 : NSObject {
 }
 @objc(UTSSDKModulesTestUniPluginTest)
 @objcMembers
-public class Test : NSObject, IUTSSourceMap {
-    public func __$getOriginalPosition() -> UTSSourceMapPosition? {
-        return UTSSourceMapPosition("Test", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 60, 14);
-    }
+public class Test : NSObject {
     override public init(){
         Test1();
     }

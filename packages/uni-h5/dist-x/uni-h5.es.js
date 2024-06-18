@@ -5137,7 +5137,7 @@ class CanvasContext {
       return new Pattern(image2, repetition);
     }
   }
-  measureText(text2) {
+  measureText(text2, callback) {
     const font2 = this.state.font;
     let width = 0;
     {
@@ -23705,8 +23705,6 @@ function setProperties(item, props2, propsData) {
   props2.forEach(function(name) {
     if (hasOwn(propsData, name)) {
       item[name] = propsData[name];
-    } else {
-      item[name] = void 0;
     }
   });
 }
