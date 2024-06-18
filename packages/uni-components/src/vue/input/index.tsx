@@ -35,18 +35,30 @@ function resolveDigitDecimalPoint(
 ) {
   if ((event as InputEvent).data === '.') {
     // 解决可重复输入小数点的问题
-    if (__PLATFORM__ === 'app') {
-      if (cache.value.slice(-1) === '.') {
-        state.value = input.value = cache.value = cache.value.slice(0, -1)
-        return false
-      } else if (cache.value.includes('.')) {
-        state.value = input.value = cache.value
-        return false
-      }
+    if (cache.value.slice(-1) === '.') {
+      state.value = input.value = cache.value = cache.value.slice(0, -1)
+      return false
+    } else if (cache.value.includes('.')) {
+      state.value = input.value = cache.value
+      return false
     }
-    if (cache.value) {
+    if (cache.value && !cache.value.includes('.')) {
       cache.value += '.'
       return false
+    }
+  } else if ((event as InputEvent).inputType === 'deleteContentBackward') {
+    // ios 16 无法删除小数
+    if (
+      (__PLATFORM__ === 'app' &&
+        plus.os.name === 'iOS' &&
+        plus.os.version &&
+        parseInt(plus.os.version) === 16) ||
+      (__PLATFORM__ === 'h5' && navigator.userAgent.includes('iPhone OS 16'))
+    ) {
+      if (cache.value.slice(-2, -1) === '.') {
+        cache.value = state.value = input.value = cache.value.slice(0, -2)
+        return true
+      }
     }
   }
 }
