@@ -227,18 +227,35 @@ export default {
     },
     _resolveDigitDecimalPoint ($event) {
       if ($event.data === '.') {
-        if (__PLATFORM__ === 'app-plus') {
-          if (this.cachedValue.slice(-1) === '.') {
-            this.valueSync = $event.target.value = this.cachedValue = this.cachedValue.slice(0, -1)
-            return false
-          } else if (this.cachedValue.includes('.')) {
-            this.valueSync = $event.target.value = this.cachedValue
-            return false
-          }
+        if (this.cachedValue.slice(-1) === '.') {
+          this.valueSync = $event.target.value = this.cachedValue = this.cachedValue.slice(0, -1)
+          return false
+        } else if (this.cachedValue.includes('.')) {
+          this.valueSync = $event.target.value = this.cachedValue
+          return false
         }
-        if (this.cachedValue) {
+        if (this.cachedValue && !this.cachedValue.includes('.')) {
           this.cachedValue += '.'
           return false
+        }
+      } else if ($event.inputType === 'deleteContentBackward') {
+      // ios 16 无法删除小数
+        if (
+          (
+            __PLATFORM__ === 'app' &&
+            plus.os.name === 'iOS' &&
+            plus.os.version &&
+            parseInt(plus.os.version) === 16
+          ) ||
+          (
+            __PLATFORM__ === 'h5' &&
+            navigator.userAgent.includes('iPhone OS 16')
+          )
+        ) {
+          if (this.cachedValue.slice(-2, -1) === '.') {
+            this.cachedValue = this.valueSync = $event.target.value = this.cachedValue.slice(0, -2)
+            return true
+          }
         }
       }
     },
@@ -279,17 +296,21 @@ export default {
             $event.target.addEventListener('blur', clearCachedValue)
             return
           }
-          // 处理小数点
+          // 处理小数点，返回 true 则触发 input 事件
           const res = this._resolveDigitDecimalPoint($event)
-          if (typeof res === 'boolean') return res
+          if (res !== true) {
+            if (typeof res === 'boolean') return res
 
-          this.cachedValue = this.valueSync = $event.target.value = this.cachedValue === '-' ? '' : this.cachedValue
-          // 输入非法字符不触发 input 事件
-          return
+            this.cachedValue = this.valueSync = $event.target.value = this.cachedValue === '-' ? '' : this.cachedValue
+            // 输入非法字符不触发 input 事件
+            return
+          }
         } else {
           // 处理小数点
           const res = this._resolveDigitDecimalPoint($event)
-          if (typeof res === 'boolean') return res
+          if (res !== true) {
+            if (typeof res === 'boolean') return res
+          }
 
           this.cachedValue = this.valueSync
         }
