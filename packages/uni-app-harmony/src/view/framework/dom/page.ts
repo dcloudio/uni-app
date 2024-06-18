@@ -111,8 +111,7 @@ export function onPageCreate({
   }
 
   if (nvueFlexDirection) {
-    document.body.setAttribute('nvue', '')
-    document.body.setAttribute(`nvue-dir-${nvueFlexDirection}`, '')
+    initPageNVueCss(nvueFlexDirection)
   }
 
   if (css) {
@@ -208,4 +207,54 @@ export function pageScrollTo(
 ) {
   scrollTo(selector! || scrollTop! || 0, duration!)
   publish()
+}
+
+function initPageNVueCss(nvueFlexDirection: string) {
+  const element = document.createElement('style')
+  element.innerHTML = nvueCss(nvueFlexDirection)
+  document.head.appendChild(element)
+}
+
+function nvueCss(nvueFlexDirection: string) {
+  return `
+uni-view,
+uni-label,
+uni-swiper-item,
+uni-scroll-view {
+  display: flex;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+uni-button {
+  margin: 0;
+}
+
+uni-view,
+uni-label,
+uni-swiper-item {
+  flex-direction: ${nvueFlexDirection};
+}
+
+uni-view,
+uni-image,
+uni-input,
+uni-scroll-view,
+uni-swiper,
+uni-swiper-item,
+uni-text,
+uni-textarea,
+uni-video {
+  position: relative;
+  border: 0px solid #000000;
+  box-sizing: border-box;
+}
+
+uni-swiper-item {
+  position: absolute;
+}
+`
 }
