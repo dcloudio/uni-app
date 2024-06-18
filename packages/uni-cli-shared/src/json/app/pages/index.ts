@@ -3,8 +3,11 @@ import { defineNVuePageCode, definePageCode } from './definePage'
 import { normalizeAppUniConfig } from './uniConfig'
 import { normalizeAppUniRoutes } from './uniRoutes'
 
-export function normalizeAppPagesJson(pagesJson: Record<string, any>) {
-  return definePageCode(pagesJson)
+export function normalizeAppPagesJson(
+  pagesJson: Record<string, any>,
+  platform: UniApp.PLATFORM = 'app'
+) {
+  return definePageCode(pagesJson, platform)
 }
 
 export function normalizeAppNVuePagesJson(pagesJson: Record<string, any>) {

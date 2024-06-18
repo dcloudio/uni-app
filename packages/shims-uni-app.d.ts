@@ -250,6 +250,8 @@ declare namespace UniNamespace {
     leftWindow?: boolean
     rightWindow?: boolean
     eventChannel?: any
+    // 目前 app-harmony 专用
+    isNVueStyle?: boolean
   }
 
   interface PagesJsonPageOptions {
