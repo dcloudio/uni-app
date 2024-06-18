@@ -89,5 +89,9 @@ function initPageOptions({ meta }: UniApp.UniRoute): PageNodeOptions {
     windowTop: 0,
     // TODO tabBar.cover
     windowBottom: 0,
+    nvueFlexDirection:
+      meta.isNVueStyle && __uniConfig.nvue
+        ? __uniConfig.nvue['flex-direction']
+        : undefined,
   }
 }

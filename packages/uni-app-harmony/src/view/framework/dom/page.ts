@@ -93,6 +93,7 @@ export function onPageCreate({
   statusbarHeight,
   windowTop,
   windowBottom,
+  nvueFlexDirection,
 }: PageCreateData) {
   initPageInfo(route)
   initSystemInfo(platform, pixelRatio, windowWidth)
@@ -107,6 +108,11 @@ export function onPageCreate({
 
   if (disableScroll) {
     document.addEventListener('touchmove', disableScrollListener)
+  }
+
+  if (nvueFlexDirection) {
+    document.body.setAttribute('nvue', '')
+    document.body.setAttribute(`nvue-dir-${nvueFlexDirection}`, '')
   }
 
   if (css) {
