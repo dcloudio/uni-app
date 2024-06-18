@@ -25,7 +25,7 @@ const BORDER_COLORS = new Map<string, string>([
 
 function getBorderStyle(borderStyle: string): string {
   const value = BORDER_COLORS.get(borderStyle)
-  return value ?? borderStyle
+  return value || (BORDER_COLORS.get('black') as string)
 }
 
 // keep borderStyle aliways black/white
