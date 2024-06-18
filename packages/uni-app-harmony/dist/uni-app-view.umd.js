@@ -21716,8 +21716,7 @@
       document.addEventListener("touchmove", disableScrollListener);
     }
     if (nvueFlexDirection) {
-      document.body.setAttribute("nvue", "");
-      document.body.setAttribute("nvue-dir-".concat(nvueFlexDirection), "");
+      initPageNVueCss(nvueFlexDirection);
     }
     if (css) {
       initPageCss(route);
@@ -21786,6 +21785,14 @@
     } = _ref2;
     scrollTo(selector || scrollTop || 0, duration);
     publish();
+  }
+  function initPageNVueCss(nvueFlexDirection) {
+    var element = document.createElement("style");
+    element.innerHTML = nvueCss(nvueFlexDirection);
+    document.head.appendChild(element);
+  }
+  function nvueCss(nvueFlexDirection) {
+    return "\nuni-view,\nuni-label,\nuni-swiper-item,\nuni-scroll-view {\n  display: flex;\n  flex-shrink: 0;\n  flex-grow: 0;\n  flex-basis: auto;\n  align-items: stretch;\n  align-content: flex-start;\n}\n\nuni-button {\n  margin: 0;\n}\n\nuni-view,\nuni-label,\nuni-swiper-item {\n  flex-direction: ".concat(nvueFlexDirection, ";\n}\n\nuni-view,\nuni-image,\nuni-input,\nuni-scroll-view,\nuni-swiper,\nuni-swiper-item,\nuni-text,\nuni-textarea,\nuni-video {\n  position: relative;\n  border: 0px solid #000000;\n  box-sizing: border-box;\n}\n\nuni-swiper-item {\n  position: absolute;\n}\n");
   }
   function onVdSync(actions) {
     var firstAction = actions[0];
