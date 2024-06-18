@@ -4,6 +4,7 @@ import { extend } from '@vue/shared'
 import { isInHBuilderX, isUTSCloudCompiler } from '../../shared'
 
 export interface UTS2JavaScriptBaseOptions {
+  cwd: string
   check: boolean
   noCache: boolean
   tsconfig: string
@@ -18,6 +19,7 @@ export function createBasicUtsOptions(
   const isInHBuilderXBool = isInHBuilderX()
   const isUTSCloudCompilerBool = isUTSCloudCompiler()
   const options: UTS2JavaScriptBaseOptions = {
+    cwd: inputDir,
     check: isWeb,
     noCache:
       // modules 模式不使用缓存
