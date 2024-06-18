@@ -11659,8 +11659,38 @@
   var pako = {};
   assign(pako, deflate, inflate, constants);
   var pako_1 = pako;
+  var index$1 = 0;
   function saveImage(dataURL, dirname, callback) {
-    throw new Error("TODO: Implement");
+    var id2 = "".concat(Date.now()).concat(index$1++);
+    var array = dataURL.split(",");
+    var scheme = array[0];
+    var base64 = array[1];
+    var format = (scheme.match(/data:image\/(\S+?);/) || ["", "png"])[1].replace("jpeg", "jpg");
+    var fileName = "".concat(id2, ".").concat(format);
+    var tempFilePath = "".concat(dirname, "/").concat(fileName);
+    var i2 = dirname.indexOf("/");
+    var basePath = dirname.substring(0, i2);
+    var dirPath = dirname.substring(i2 + 1);
+    plus.io.resolveLocalFileSystemURL(basePath, function(entry) {
+      entry.getDirectory(dirPath, {
+        create: true,
+        exclusive: false
+      }, function(entry2) {
+        entry2.getFile(fileName, {
+          create: true,
+          exclusive: false
+        }, function(entry3) {
+          entry3.createWriter(function(writer) {
+            writer.onwrite = function() {
+              callback(null, tempFilePath);
+            };
+            writer.onerror = callback;
+            writer.seek(0);
+            writer.writeAsBinary(base64);
+          }, callback);
+        }, callback);
+      }, callback);
+    }, callback);
   }
   function getSameOriginUrl(url) {
     var a2 = document.createElement("a");
@@ -14054,9 +14084,9 @@
               if (image) {
                 c2d.drawImage.apply(
                   c2d,
-                  // @ts-ignore
+                  // @ts-expect-error
                   [image].concat(
-                    // @ts-ignore
+                    // @ts-expect-error
                     [...otherData.slice(4, 8)],
                     [...otherData.slice(0, 4)]
                   )
@@ -14289,7 +14319,16 @@
         });
         return;
       }
-      saveImage(res.data);
+      saveImage(res.data, dirname, (error, tempFilePath) => {
+        var errMsg = "toTempFilePath:".concat(error ? "fail" : "ok");
+        if (error) {
+          errMsg += " ".concat(error.message);
+        }
+        resolve({
+          errMsg,
+          tempFilePath
+        });
+      });
     }
     var methods = {
       actionsChanged,

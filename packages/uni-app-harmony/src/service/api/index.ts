@@ -19,6 +19,9 @@ export {
   onLocaleChange,
   createCanvasContext,
   createSelectorQuery,
+  canvasGetImageData,
+  canvasPutImageData,
+  canvasToTempFilePath,
 } from '@dcloudio/uni-api'
 export {
   pageScrollTo,

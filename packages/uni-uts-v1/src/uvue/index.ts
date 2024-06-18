@@ -104,6 +104,19 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     imports.push('io.dcloud.unicloud.*')
   }
 
+  // 暂不增加，因为跟 io.dcloud.uniapp.extapi.* 有冲突，导致不能确认是哪个
+  // if (extApis) {
+  //   Object.keys(extApis).forEach((key) => {
+  //     let extApiPackage = extApis[key][0]
+  //     if (extApiPackage) {
+  //       extApiPackage += '.*'
+  //       if (!imports.includes(extApiPackage)) {
+  //         imports.push(extApiPackage)
+  //       }
+  //     }
+  //   })
+  // }
+
   const input: UTSInputOptions = {
     root: inputDir,
     filename: entry,

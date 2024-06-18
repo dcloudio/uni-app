@@ -2,6 +2,10 @@ import { defineAsyncApi as originalDefineAsyncApi, defineOffApi as originalDefin
 type Anything = Object | null | undefined;
 type NullType = null | undefined;
 type FormatArgsValueType = Function | string | number | boolean;
+interface AsyncApiSuccessResult {
+}
+interface AsyncApiResult {
+}
 interface ErrRes {
     errMsg?: string | null;
     errCode?: number | null;
@@ -103,6 +107,8 @@ function defineOffApi<T>(name: string, fn: () => void, options: ApiOptions<T>): 
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineOffApi(name, fn, originalOptions);
 }
+export { AsyncApiSuccessResult as AsyncApiSuccessResult };
+export { AsyncApiResult as AsyncApiResult };
 export { ErrRes as ErrRes };
 export { ApiExcutor as ApiExcutor };
 export { ProtocolOptions as ProtocolOptions };

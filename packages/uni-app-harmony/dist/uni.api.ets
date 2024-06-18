@@ -1,5 +1,5 @@
-import { IUniError, UTSObject, UniError, UTSJSONObject, string, AsyncApiSuccessResult, AsyncApiResult, ComponentPublicInstance, ComponentInternalInstance } from './uts'
-import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
+import { IUniError, UTSObject, UniError, UTSJSONObject, string, ComponentPublicInstance, ComponentInternalInstance } from './uts'
+import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, AsyncApiSuccessResult, AsyncApiResult, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
 
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
@@ -17,27 +17,28 @@ import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony2, getCurrentPage } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony3 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony3, getCurrentPage } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony4 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony5 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { UTSHarmony } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
 import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath2, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import harmonyWindowType from '@ohos.window';
-import harmonyWindowType1 from '@ohos.window';
+import harmonyWindow from '@ohos.window';
+import harmonyWindow1 from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
-import { plus } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { weex } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 export function initUniExtApi(APP_ID: string) {
     type SetClipboardData = (options: SetClipboardDataOptions) => void;
     class SetClipboardDataSuccess extends UTSObject {
@@ -102,7 +103,7 @@ export function initUniExtApi(APP_ID: string) {
         setString(data: string): void;
     }
     const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExcutor<GetClipboardDataSuccess>)=>{
-        const clipboard: ClipboardModule = weex.requireModule('clipboard');
+        const clipboard: ClipboardModule = UTSHarmony.clipboard;
         clipboard.getString((ret)=>{
             if (ret.result === 'success') {
                 res.resolve({
@@ -114,7 +115,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as GetClipboardData;
     const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExcutor<SetClipboardDataSuccess>)=>{
-        const clipboard: ClipboardModule = weex.requireModule('clipboard');
+        const clipboard: ClipboardModule = UTSHarmony.clipboard;
         clipboard.setString(options.data);
         res.resolve();
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
@@ -289,20 +290,20 @@ export function initUniExtApi(APP_ID: string) {
         code: string;
     }
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony1.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony1.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony1.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony.getAppId() as string,
+            appId: UTSHarmony1.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony.getAppName() as string,
-            appTheme: UTSHarmony.getAppTheme() as string,
+            appName: UTSHarmony1.getAppName() as string,
+            appTheme: UTSHarmony1.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony1.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -347,7 +348,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony1.getOsTheme() as string,
+            osTheme: UTSHarmony2.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmony',
             platform: 'harmony',
@@ -468,14 +469,14 @@ export function initUniExtApi(APP_ID: string) {
     };
     const internalGetWindowInfo = (): GetWindowInfoResult =>{
         const pixelRatio = vp2px(1);
-        const windowStage: harmonyWindowType.WindowStage = UTSHarmony2.getWindowStage();
-        let topRect: harmonyWindowType.Rect = {
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony3.getWindowStage();
+        let topRect: harmonyWindow.Rect = {
             top: 0,
             left: 0,
             width: 0,
             height: 136
         };
-        let bottomRect: harmonyWindowType.Rect = {
+        let bottomRect: harmonyWindow.Rect = {
             top: 0,
             left: 0,
             width: 0,
@@ -483,8 +484,8 @@ export function initUniExtApi(APP_ID: string) {
         };
         if (windowStage) {
             const mainWindow = windowStage.getMainWindowSync();
-            topRect = mainWindow.getWindowAvoidArea(harmonyWindowType.AvoidAreaType.TYPE_SYSTEM).topRect;
-            bottomRect = mainWindow.getWindowAvoidArea(harmonyWindowType.AvoidAreaType.TYPE_NAVIGATION_INDICATOR).bottomRect;
+            topRect = mainWindow.getWindowAvoidArea(harmonyWindow.AvoidAreaType.TYPE_SYSTEM).topRect;
+            bottomRect = mainWindow.getWindowAvoidArea(harmonyWindow.AvoidAreaType.TYPE_NAVIGATION_INDICATOR).bottomRect;
         }
         const defaultDisplay = display.getDefaultDisplaySync();
         const currentPage: ESObject = getCurrentPage();
@@ -533,11 +534,11 @@ export function initUniExtApi(APP_ID: string) {
         code: string;
     }
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony3.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo();
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -550,10 +551,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony2.getAppId() as string,
+            appId: UTSHarmony3.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony2.getAppName() as string,
-            appTheme: UTSHarmony2.getAppTheme() as string,
+            appName: UTSHarmony3.getAppName() as string,
+            appTheme: UTSHarmony3.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -569,7 +570,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony2.getOsTheme() as string,
+            osTheme: UTSHarmony3.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmony',
             romName: deviceInfo1.distributionOSName,
@@ -611,15 +612,8 @@ export function initUniExtApi(APP_ID: string) {
     type MakePhoneCall = (options: MakePhoneCallOptions) => void;
     class MakePhoneCallSuccess extends UTSObject {
     }
-    class UniError1 extends UTSObject {
-        errSubject!: string;
-        errCode!: number;
-        errMsg!: string;
-        data: object | null = null;
-        cause: Object | null = null;
-    }
     type MakePhoneCallSuccessCallback = (result: MakePhoneCallSuccess) => void;
-    type MakePhoneCallFail = UniError1;
+    type MakePhoneCallFail = UniError;
     type MakePhoneCallFailCallback = (result: MakePhoneCallFail) => void;
     type MakePhoneCallComplete = Object;
     type MakePhoneCallCompleteCallback = (result: MakePhoneCallComplete) => void;
@@ -646,7 +640,7 @@ export function initUniExtApi(APP_ID: string) {
         return false;
     };
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExcutor<MakePhoneCallSuccess>)=>{
-        const dialRes = plus.device.dial(options.phoneNumber) as Object as Promise<void>;
+        const dialRes = UTSHarmony4.device.dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
             dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
                 res.reject(err.message);
@@ -687,6 +681,49 @@ export function initUniExtApi(APP_ID: string) {
         complete: (ChooseImageCompleteCallback) | null = null;
     }
     type ChooseImage = (options: ChooseImageOptions) => void;
+    class PreviewImageSuccess extends UTSObject {
+        errSubject!: string;
+        errMsg!: string;
+    }
+    class LongPressActionsSuccessData extends UTSObject {
+        tapIndex!: number;
+        index!: number;
+    }
+    class LongPressActionsOptions extends UTSObject {
+        itemList!: string[];
+        itemColor: string | null = null;
+        success: ((result: LongPressActionsSuccessData) => void) | null = null;
+        fail: ((result: Object) => void) | null = null;
+        complete: ((result: Object) => void) | null = null;
+    }
+    type PreviewImageFail = IMediaError;
+    type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
+    type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
+    type PreviewImageCompleteCallback = ChooseImageCompleteCallback;
+    class PreviewImageOptions extends UTSObject {
+        current: Object | null = null;
+        urls!: Array<string.ImageURIString>;
+        indicator: string | null = null;
+        loop: boolean | null = null;
+        longPressActions: LongPressActionsOptions | null = null;
+        success: (PreviewImageSuccessCallback) | null = null;
+        fail: (PreviewImageFailCallback) | null = null;
+        complete: (PreviewImageCompleteCallback) | null = null;
+    }
+    type PreviewImage = (options: PreviewImageOptions) => void;
+    type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
+    class ClosePreviewImageSuccess extends UTSObject {
+        errMsg!: string;
+    }
+    type ClosePreviewImageFail = IMediaError;
+    type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void;
+    type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void;
+    type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback;
+    class ClosePreviewImageOptions extends UTSObject {
+        success: (ClosePreviewImageSuccessCallback) | null = null;
+        fail: (ClosePreviewImageFailCallback) | null = null;
+        complete: (ClosePreviewImageCompleteCallback) | null = null;
+    }
     type GetImageInfo = (options: GetImageInfoOptions) => void;
     class GetImageInfoSuccess extends UTSObject {
         width!: number;
@@ -1095,6 +1132,34 @@ export function initUniExtApi(APP_ID: string) {
             ]
         ])
     };
+    const API_PREVIEW_IMAGE = 'previewImage';
+    const PreviewImageApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'urls',
+            {
+                type: 'array',
+                required: true
+            }
+        ],
+        [
+            'current',
+            {
+                type: 'string',
+                required: false
+            }
+        ]
+    ]);
+    const PreviewImageApiOptions: ApiOptions<PreviewImageOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'urls',
+                (urls: string[], params: PreviewImageOptions)=>{
+                    params.urls = urls.map((url)=>getRealPath(url) as string);
+                }
+            ]
+        ])
+    };
+    const API_CLOSE_PREVIEW_IMAGE = 'closePreviewImage';
     interface TempFileItem {
         path: string;
         size: number;
@@ -1156,6 +1221,23 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
+    const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExcutor<PreviewImageSuccess>)=>{
+        interface Page {
+            $getAppWebview: Function;
+        }
+        const currentPage = getCurrentPage1() as Page;
+        getOSRuntime().previewImage(options, currentPage.$getAppWebview().page as Object);
+        exec.resolve({
+            errSubject: 'uni-previewImage',
+            errMsg: ''
+        } as PreviewImageSuccess);
+    }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
+    const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExcutor<ClosePreviewImageSuccess>)=>{
+        getOSRuntime().closePreviewImage();
+        exec.resolve({
+            errMsg: ''
+        } as ClosePreviewImageSuccess);
+    }) as ClosePreviewImage;
     type Request<T> = (param: RequestOptions<T>) => RequestTask;
     class RequestOptions<T> extends UTSObject {
         url!: string;
@@ -2195,14 +2277,12 @@ export function initUniExtApi(APP_ID: string) {
     type Rpx2px = (number: number) => number;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
-    const test = (type: harmonyWindowType1.AvoidAreaType)=>{};
-    test(harmonyWindowType1.AvoidAreaType.TYPE_NAVIGATION_INDICATOR);
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindowType1.WindowStage = UTSHarmony3.getWindowStage();
+        const windowStage: harmonyWindow1.WindowStage = UTSHarmony5.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
-            const mainWindow: harmonyWindowType1.Window = windowStage.getMainWindowSync();
+            const mainWindow: harmonyWindow1.Window = windowStage.getMainWindowSync();
             windowWidthInPx = mainWindow.getWindowProperties().windowRect.width;
             windowWidthInVp = px2vp(windowWidthInPx);
         }
@@ -2347,9 +2427,11 @@ export function initUniExtApi(APP_ID: string) {
     }) as GetStorage;
     const setStorageSync = defineSyncApi<void>(API_SET_STORAGE_SYNC, (key: string, value: Object)=>{
         createStore().putSync(key, stringifyStorageValue(value));
+        createStore().flush();
     }) as SetStorageSync;
     const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExcutor<SetStorageSuccess>)=>{
         createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
+            createStore().flush();
             exec.resolve({} as ESObject);
         }, (error: Error)=>{
             exec.reject(error.message);
@@ -2357,9 +2439,11 @@ export function initUniExtApi(APP_ID: string) {
     }) as SetStorage;
     const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string)=>{
         createStore().deleteSync(key);
+        createStore().flush();
     }) as RemoveStorageSync;
     const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExcutor<RemoveStorageSuccess>)=>{
         createStore().delete(args.key).then(()=>{
+            createStore().flush();
             exec.resolve({} as ESObject);
         }, (error: Error)=>{
             exec.reject(error.message);
@@ -2367,9 +2451,11 @@ export function initUniExtApi(APP_ID: string) {
     }) as RemoveStorage;
     const clearStorageSync = defineSyncApi<void>(API_CLEAR_STORAGE_SYNC, ()=>{
         createStore().clearSync();
+        createStore().flush();
     }) as ClearStorageSync;
     const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExcutor<ClearStorageSuccess>)=>{
         createStore().clear().then(()=>{
+            createStore().flush();
             exec.resolve({} as ESObject);
         }, (error: Error)=>{
             exec.reject(error.message);
@@ -2403,6 +2489,8 @@ export function initUniExtApi(APP_ID: string) {
         getWindowInfo: GetWindowInfo;
         makePhoneCall: MakePhoneCall;
         chooseImage: ChooseImage;
+        previewImage: PreviewImage;
+        closePreviewImage: ClosePreviewImage;
         getImageInfo: GetImageInfo;
         chooseVideo: ChooseVideo;
         getVideoInfo: GetVideoInfo;
@@ -2438,6 +2526,8 @@ export function initUniExtApi(APP_ID: string) {
         getWindowInfo,
         makePhoneCall,
         chooseImage,
+        previewImage,
+        closePreviewImage,
         getImageInfo,
         chooseVideo,
         getVideoInfo,

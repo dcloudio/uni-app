@@ -44,7 +44,15 @@ export function uniAppVuePlugin(): UniVitePlugin {
         },
         build: {
           rollupOptions: {
-            external: ['vue', '@vue/shared'],
+            external: [
+              'vue',
+              '@vue/shared',
+              /^@ohos\./,
+              /^@kit\./,
+              /^@hms\./,
+              '@ohos/hypium',
+              '@ohos/hamock',
+            ],
             output: {
               name: 'AppService',
               banner: polyfillCode + restoreGlobalCode,

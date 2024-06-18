@@ -6,7 +6,42 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-clipboard": {
+    "uni": {
+      "getClipboardData": {
+        "name": "getClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "setClipboardData": {
+        "name": "setClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-createIntersectionObserver": {
+    "uni": {
+      "createIntersectionObserver": {
+        "name": "createIntersectionObserver",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -201,6 +236,19 @@
       }
     }
   },
+  "uni-makePhoneCall": {
+    "uni": {
+      "makePhoneCall": {
+        "name": "makePhoneCall",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-media": {
     "uni": {
       "chooseImage": {
@@ -208,7 +256,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "previewImage": {
@@ -216,7 +265,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "closePreviewImage": {
@@ -224,7 +274,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getImageInfo": {
@@ -232,7 +283,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": true
         }
       },
       "saveImageToPhotosAlbum": {
@@ -240,7 +292,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": false
         }
       },
       "compressImage": {
@@ -248,7 +301,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       },
       "chooseVideo": {
@@ -256,7 +310,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "saveVideoToPhotosAlbum": {
@@ -264,7 +319,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": false
         }
       },
       "getVideoInfo": {
@@ -272,7 +328,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": true
         }
       },
       "compressVideo": {
@@ -280,7 +337,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       }
     }
@@ -292,7 +350,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "uploadFile": {
@@ -300,7 +359,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "downloadFile": {
@@ -308,7 +368,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -359,7 +420,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "hideToast": {
@@ -455,7 +517,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -595,7 +658,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
