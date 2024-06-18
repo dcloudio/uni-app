@@ -242,7 +242,7 @@ export default {
       // ios 16 无法删除小数
         if (
           (
-            __PLATFORM__ === 'app' &&
+            __PLATFORM__ === 'app-plus' &&
             plus.os.name === 'iOS' &&
             plus.os.version &&
             parseInt(plus.os.version) === 16
