@@ -18,5 +18,14 @@ export {
   getLocale,
   onLocaleChange,
   createCanvasContext,
+  createSelectorQuery,
+  canvasGetImageData,
+  canvasPutImageData,
+  canvasToTempFilePath,
 } from '@dcloudio/uni-api'
+export {
+  pageScrollTo,
+  setNavigationBarColor,
+  setNavigationBarTitle,
+} from '@dcloudio/uni-app-plus/service/api'
 export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'
