@@ -14054,9 +14054,9 @@
               if (image) {
                 c2d.drawImage.apply(
                   c2d,
-                  // @ts-ignore
+                  // @ts-expect-error
                   [image].concat(
-                    // @ts-ignore
+                    // @ts-expect-error
                     [...otherData.slice(4, 8)],
                     [...otherData.slice(0, 4)]
                   )
@@ -15620,20 +15620,19 @@
   });
   function resolveDigitDecimalPoint(event, cache2, state, input) {
     if (event.data === ".") {
-      {
-        if (cache2.value.slice(-1) === ".") {
-          state.value = input.value = cache2.value = cache2.value.slice(0, -1);
-          return false;
-        } else if (cache2.value.includes(".")) {
-          state.value = input.value = cache2.value;
-          return false;
-        }
+      if (cache2.value.slice(-1) === ".") {
+        state.value = input.value = cache2.value = cache2.value.slice(0, -1);
+        return false;
+      } else if (cache2.value.includes(".")) {
+        state.value = input.value = cache2.value;
+        return false;
       }
-      if (cache2.value) {
+      if (cache2.value && !cache2.value.includes(".")) {
         cache2.value += ".";
         return false;
       }
-    }
+    } else if (event.inputType === "deleteContentBackward")
+      ;
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",

@@ -20,11 +20,14 @@ import { UTSHarmony as UTSHarmony1 } from "../../../resources/rawfile/uni-app/un
 import { UTSHarmony as UTSHarmony2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { UTSHarmony as UTSHarmony3, getCurrentPage } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { UTSHarmony as UTSHarmony4 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony5 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony5, getCurrentPage as getCurrentPage2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony6 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { UTSHarmony } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
+import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
@@ -240,6 +243,142 @@ export function initUniExtApi(APP_ID: string) {
             return new ServiceIntersectionObserver(context as ComponentPublicInstance, _options as CreateIntersectionObserverOptions);
         }
         return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
+    });
+    type CreateSelectorQuery = () => SelectorQuery;
+    type SelectorQueryNodeInfoCallback = (result: Object) => void;
+    class NodeField extends UTSObject {
+        id: boolean | null = null;
+        dataset: boolean | null = null;
+        rect: boolean | null = null;
+        size: boolean | null = null;
+        scrollOffset: boolean | null = null;
+        properties: string[] | null = null;
+        computedStyle: string[] | null = null;
+        context: boolean | null = null;
+        node: boolean | null = null;
+    }
+    interface NodesRef {
+        boundingClientRect(callback: SelectorQueryNodeInfoCallback | null): SelectorQuery;
+        boundingClientRect(): SelectorQuery;
+        scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+        fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+        context(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+        node(callback: (result: Object) => void): SelectorQuery;
+    }
+    interface SelectorQuery {
+        in(component: Object | null): SelectorQuery;
+        select(selector: string): NodesRef;
+        selectAll(selector: string): NodesRef;
+        selectViewport(): NodesRef;
+        exec(callback: (result: Array<Object>) => void | null): NodesRef | null;
+        exec(): NodesRef | null;
+    }
+    interface SelectorQueryRequest {
+        component: ComponentPublicInstance | undefined | null;
+        selector: string;
+        single: boolean;
+        fields: NodeField;
+    }
+    class NodesRefImpl implements NodesRef {
+        private _selectorQuery: SelectorQueryImpl;
+        private _component: ComponentPublicInstance | null | undefined;
+        private _selector: string;
+        private _single: boolean;
+        constructor(selectorQuery: SelectorQueryImpl, component: ComponentPublicInstance | null | undefined, selector: string, single: boolean){
+            this._selectorQuery = selectorQuery;
+            this._component = component;
+            this._selector = selector;
+            this._single = single;
+        }
+        boundingClientRect(callback: SelectorQueryNodeInfoCallback | null = null): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, {
+                id: true,
+                dataset: true,
+                rect: true,
+                size: true
+            } as NodeField, callback);
+            return this._selectorQuery;
+        }
+        fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, fields, callback);
+            return this._selectorQuery;
+        }
+        scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, {
+                id: true,
+                dataset: true,
+                scrollOffset: true
+            } as NodeField, callback);
+            return this._selectorQuery;
+        }
+        context(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, {
+                context: true
+            } as NodeField, callback);
+            return this._selectorQuery;
+        }
+        node(callback: (result: Object) => void): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, {
+                node: true
+            } as NodeField, callback);
+            return this._selectorQuery;
+        }
+    }
+    class SelectorQueryImpl implements SelectorQuery {
+        private _page: ComponentPublicInstance;
+        private _queue: Array<SelectorQueryRequest>;
+        private _component?: ComponentPublicInstance = undefined;
+        private _queueCb: Array<SelectorQueryNodeInfoCallback>;
+        private _nodesRef?: NodesRef;
+        constructor(page: ComponentPublicInstance){
+            this._page = page;
+            this._queue = [];
+            this._queueCb = [];
+        }
+        exec(callback: ((result: Array<Object>) => void | null) | null = null): NodesRef | null {
+            requestComponentInfo(this._page, this._queue, (res: Array<Object>)=>{
+                const queueCbs = this._queueCb;
+                res.forEach((result: Object, index: number)=>{
+                    const queueCb = queueCbs[index];
+                    if (isFunction1(queueCb)) {
+                        queueCb(result);
+                    }
+                });
+                if (isFunction1(callback)) {
+                    callback!(res);
+                }
+            });
+            return this._nodesRef as NodesRef;
+        }
+        in(component: ComponentPublicInstance | ComponentInternalInstance | null = null): SelectorQuery {
+            this._component = resolveComponentInstance1(component);
+            return this;
+        }
+        select(selector: string): NodesRef {
+            return this._nodesRef = new NodesRefImpl(this, this._component, selector, true) as NodesRef;
+        }
+        selectAll(selector: string): NodesRef {
+            return this._nodesRef = new NodesRefImpl(this, this._component, selector, false) as NodesRef;
+        }
+        selectViewport(): NodesRef {
+            return this._nodesRef = new NodesRefImpl(this, null, '', true) as NodesRef;
+        }
+        _push(selector: string, component: ComponentPublicInstance | undefined | null, single: boolean, fields: NodeField, callback: SelectorQueryNodeInfoCallback | null = null) {
+            this._queue.push({
+                component,
+                selector,
+                single,
+                fields
+            } as SelectorQueryRequest);
+            callback && this._queueCb.push(callback);
+        }
+    }
+    const createSelectorQuery = defineSyncApi<CreateSelectorQuery>('createSelectorQuery', (context: ComponentInternalInstance | ComponentPublicInstance | null = null)=>{
+        context = resolveComponentInstance1(context);
+        if (context && !getPageIdByVm1(context)) {
+            context = null;
+        }
+        return new SelectorQueryImpl(context || getCurrentPageVm1()!) as SelectorQuery;
     });
     class GetAppBaseInfoOptions extends UTSObject {
         filter!: Array<string>;
@@ -1238,6 +1377,156 @@ export function initUniExtApi(APP_ID: string) {
             errMsg: ''
         } as ClosePreviewImageSuccess);
     }) as ClosePreviewImage;
+    type SetNavigationBarColorErrorCode = 4;
+    interface SetNavigationBarColorFail extends IUniError {
+        errCode: SetNavigationBarColorErrorCode;
+    }
+    class SetNavigationBarColorOptions extends UTSObject {
+        frontColor!: '#ffffff' | '#000000';
+        backgroundColor!: string.ColorString;
+        success: SetNavigationBarColorSuccessCallback | null = null;
+        fail: SetNavigationBarColorFailCallback | null = null;
+        complete: SetNavigationBarColorCompleteCallback | null = null;
+    }
+    type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
+    type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
+    type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
+    type SetNavigationBarColorComplete = AsyncApiResult;
+    type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
+    type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
+    type SetNavigationBarTitleErrorCode = 4;
+    interface SetNavigationBarTitleFail extends IUniError {
+        errCode: SetNavigationBarTitleErrorCode;
+    }
+    class SetNavigationBarTitleOptions extends UTSObject {
+        title!: string;
+        success: SetNavigationBarTitleSuccessCallback | null = null;
+        fail: SetNavigationBarTitleFailCallback | null = null;
+        complete: SetNavigationBarTitleCompleteCallback | null = null;
+    }
+    type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
+    type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
+    type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
+    type SetNavigationBarTitleComplete = AsyncApiResult;
+    type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
+    type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
+    const FRONT_COLORS = [
+        '#ffffff',
+        '#000000'
+    ];
+    const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
+    const SetNavigationBarColorProtocol = new Map<string, ProtocolOptions>([
+        [
+            'frontColor',
+            {
+                type: 'string',
+                required: true,
+                validator (frontColor: Object) {
+                    if (FRONT_COLORS.indexOf(frontColor as string) === -1) {
+                        return `invalid frontColor "${frontColor}"`;
+                    }
+                    return;
+                }
+            }
+        ],
+        [
+            'backgroundColor',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
+    const SetNavigationBarTitleProtocol = new Map<string, ProtocolOptions>([
+        [
+            'title',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    interface TitleNView {
+        titleText: string;
+        autoBackButton?: boolean;
+    }
+    interface BackButton {
+        color?: string;
+    }
+    interface PlusWebviewWebviewTitleNViewStyles {
+        backgroundColor?: string;
+        titleColor?: string;
+        titleNView?: TitleNView;
+        backButton?: BackButton;
+    }
+    interface Webview {
+        getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
+        setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
+    }
+    interface $page {
+        statusBarStyle: 'dark' | 'light';
+    }
+    interface Page {
+        $getAppWebview: () => Webview | null;
+        $page: $page;
+    }
+    const getWebview = (page: Page): Webview | null =>{
+        const webview = page.$getAppWebview();
+        return webview;
+    };
+    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExcutor<SetNavigationBarColorSuccess>)=>{
+        const page = getCurrentPage2() as Page;
+        if (!page) {
+            return res.reject(`getCurrentPages is empty`);
+        }
+        const webview = getWebview(page);
+        if (webview) {
+            const styles: PlusWebviewWebviewTitleNViewStyles = {};
+            if (options.frontColor) {
+                styles.titleColor = options.frontColor;
+            }
+            if (options.backgroundColor) {
+                styles.backgroundColor = options.backgroundColor;
+            }
+            const statusBarStyle = options.frontColor === '#000000' ? 'dark' : 'light';
+            UTSHarmony5.navigator.setStatusBarStyle(statusBarStyle);
+            page.$page.statusBarStyle = statusBarStyle;
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                if (style.titleNView.autoBackButton) {
+                    styles.backButton = styles.backButton || {};
+                    styles.backButton.color = options.frontColor;
+                }
+                webview.setStyle({
+                    titleNView: styles as TitleNView
+                } as PlusWebviewWebviewTitleNViewStyles);
+            }
+            res.resolve();
+        } else {
+            res.reject();
+        }
+    }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
+    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExcutor<SetNavigationBarTitleSuccess>)=>{
+        const page = getCurrentPage2() as Page;
+        if (!page) {
+            return res.reject(`getCurrentPages is empty`);
+        }
+        const webview = getWebview(page);
+        if (webview) {
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                webview.setStyle({
+                    titleNView: {
+                        titleText: options.title
+                    } as TitleNView
+                } as PlusWebviewWebviewTitleNViewStyles);
+            }
+            res.resolve();
+        } else {
+            res.reject();
+        }
+    }, SetNavigationBarTitleProtocol) as SetNavigationBarTitle;
     type Request<T> = (param: RequestOptions<T>) => RequestTask;
     class RequestOptions<T> extends UTSObject {
         url!: string;
@@ -1666,7 +1955,7 @@ export function initUniExtApi(APP_ID: string) {
         if (responseType === 'arraybuffer') {
             expectDataType = http.HttpDataType.ARRAY_BUFFER;
         } else if (dataType === 'json') {
-            expectDataType = http.HttpDataType.OBJECT;
+            expectDataType = http.HttpDataType.STRING;
         } else {
             expectDataType = http.HttpDataType.STRING;
         }
@@ -1695,8 +1984,14 @@ export function initUniExtApi(APP_ID: string) {
             if (err) {
                 exec.reject(err.message);
             } else {
+                let data = res.result;
+                if (dataType === 'json' && typeof data === 'string') {
+                    try {
+                        data = JSON.parse(data);
+                    } catch (e) {}
+                }
                 exec.resolve({
-                    data: res.result,
+                    data,
                     statusCode: res.responseCode,
                     header: res.header,
                     cookies: cookiesParse(res.header as Record<string, string>)
@@ -1922,6 +2217,58 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    type PageScrollToErrorCode = 4;
+    interface PageScrollToFail extends IUniError {
+        errCode: PageScrollToErrorCode;
+    }
+    type PageScrollToSuccess = AsyncApiSuccessResult;
+    type PageScrollToSuccessCallback = (result: PageScrollToSuccess) => void;
+    type PageScrollToFailCallback = (result: PageScrollToFail) => void;
+    type PageScrollToComplete = AsyncApiResult;
+    type PageScrollToCompleteCallback = (result: PageScrollToComplete) => void;
+    class PageScrollToOptions extends UTSObject {
+        scrollTop: number | null = null;
+        selector: string | null = null;
+        offsetTop: number | null = null;
+        duration: number | null = null;
+        success: PageScrollToSuccessCallback | null = null;
+        fail: PageScrollToFailCallback | null = null;
+        complete: PageScrollToCompleteCallback | null = null;
+    }
+    type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
+    const API_PAGE_SCROLL_TO = 'pageScrollTo';
+    const PageScrollToProtocol = new Map<string, ProtocolOptions>([
+        [
+            'scrollTo',
+            {
+                type: 'number'
+            }
+        ],
+        [
+            'selector',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'duration',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const PageScrollToApiOptions: ApiOptions<PageScrollToOptions> = {
+        formatArgs: new Map<string, number>([
+            [
+                'duration',
+                300
+            ]
+        ])
+    };
+    const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExcutor<PageScrollToSuccess>)=>{
+        const pageId = getPageIdByVm2(getCurrentPageVm2()!)! as number;
+        UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
+    }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
     type PromptErrorCode = 1 | 1001;
     interface IPromptError extends IUniError {
         errCode: PromptErrorCode;
@@ -2278,7 +2625,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow1.WindowStage = UTSHarmony5.getWindowStage();
+        const windowStage: harmonyWindow1.WindowStage = UTSHarmony6.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -2482,6 +2829,7 @@ export function initUniExtApi(APP_ID: string) {
         getClipboardData: GetClipboardData;
         setClipboardData: SetClipboardData;
         createIntersectionObserver: CreateIntersectionObserver;
+        createSelectorQuery: CreateSelectorQuery;
         getAppBaseInfo: GetAppBaseInfo;
         getDeviceInfo: GetDeviceInfo;
         getSystemInfo: GetSystemInfo;
@@ -2494,9 +2842,12 @@ export function initUniExtApi(APP_ID: string) {
         getImageInfo: GetImageInfo;
         chooseVideo: ChooseVideo;
         getVideoInfo: GetVideoInfo;
+        setNavigationBarColor: SetNavigationBarColor;
+        setNavigationBarTitle: SetNavigationBarTitle;
         request: Request<Object>;
         uploadFile: UploadFile;
         downloadFile: DownloadFile;
+        pageScrollTo: PageScrollTo;
         showToast: ShowToast;
         hideToast: HideToast;
         showLoading: ShowLoading;
@@ -2519,6 +2870,7 @@ export function initUniExtApi(APP_ID: string) {
         getClipboardData,
         setClipboardData,
         createIntersectionObserver,
+        createSelectorQuery,
         getAppBaseInfo,
         getDeviceInfo,
         getSystemInfo,
@@ -2531,9 +2883,12 @@ export function initUniExtApi(APP_ID: string) {
         getImageInfo,
         chooseVideo,
         getVideoInfo,
+        setNavigationBarColor,
+        setNavigationBarTitle,
         request,
         uploadFile,
         downloadFile,
+        pageScrollTo,
         showToast,
         hideToast,
         showLoading,

@@ -8081,27 +8081,6 @@ function once(fn, ctx = null) {
         return res;
     });
 }
-function callOptions(options, data) {
-    options = options || {};
-    if (isString(data)) {
-        data = {
-            errMsg: data,
-        };
-    }
-    if (/:ok$/.test(data.errMsg)) {
-        if (isFunction(options.success)) {
-            options.success(data);
-        }
-    }
-    else {
-        if (isFunction(options.fail)) {
-            options.fail(data);
-        }
-    }
-    if (isFunction(options.complete)) {
-        options.complete(data);
-    }
-}
 
 const encode$1 = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode$1) {
@@ -9769,9 +9748,6 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
     return extend({}, launchOptions$1);
 }
 
-function operateVideoPlayer(videoId, pageId, type, data) {
-    // TODO: Implement
-}
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
@@ -9784,19 +9760,6 @@ function getEnterOptions() {
     return extend({}, enterOptions);
 }
 
-const validator = [
-    {
-        name: 'id',
-        type: String,
-        required: true,
-    },
-];
-/* export const API_CREATE_AUDIO_CONTEXT = 'createAudioContext'
-export type API_TYPE_CREATE_AUDIO_CONTEXT = typeof uni.createAudioContext
-export const CreateAudioContextProtocol = validator */
-const API_CREATE_VIDEO_CONTEXT = 'createVideoContext';
-const API_CREATE_MAP_CONTEXT = 'createMapContext';
-const CreateMapContextProtocol = validator;
 const API_CREATE_CANVAS_CONTEXT = 'createCanvasContext';
 const CreateCanvasContextProtocol = [
     {
@@ -9809,131 +9772,6 @@ const CreateCanvasContextProtocol = [
         type: Object,
     },
 ];
-validator.concat({
-    name: 'componentInstance',
-    type: Object,
-});
-
-class VideoContext {
-    id;
-    pageId;
-    constructor(id, pageId) {
-        this.id = id;
-        this.pageId = pageId;
-    }
-    play() {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    pause() {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    stop() {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    seek(position) {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    sendDanmu(args) {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    playbackRate(rate) {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    requestFullScreen(args = {}) {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    exitFullScreen() {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    showStatusBar() {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-    hideStatusBar() {
-        operateVideoPlayer(this.id, this.pageId);
-    }
-}
-defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context) => {
-    if (context) {
-        return new VideoContext(id, getPageIdByVm(context));
-    }
-    return new VideoContext(id, getPageIdByVm(getCurrentPageVm()));
-});
-
-const operateMapWrap = (id, pageId, type, options) => {
-};
-class MapContext {
-    id;
-    pageId;
-    constructor(id, pageId) {
-        this.id = id;
-        this.pageId = pageId;
-    }
-    getCenterLocation(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    moveToLocation(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    getScale(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    getRegion(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    includePoints(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    translateMarker(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    $getAppMap() {
-        {
-            return plus.maps.getMapById(this.pageId + '-map-' + this.id);
-        }
-    }
-    addCustomLayer(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    removeCustomLayer(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    addGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    removeGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    updateGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    initMarkerCluster(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    addMarkers(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    removeMarkers(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    moveAlong(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    setLocMarkerIcon(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    openMapApp(options) {
-        operateMapWrap(this.id, this.pageId);
-    }
-    on(name, callback) {
-        operateMapWrap(this.id, this.pageId);
-    }
-}
-defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
-    if (context) {
-        return new MapContext(id, getPageIdByVm(context));
-    }
-    return new MapContext(id, getPageIdByVm(getCurrentPageVm()));
-}, CreateMapContextProtocol);
 
 function getInt(name, defaultValue) {
     return function (value, params) {
@@ -10931,7 +10769,7 @@ const createCanvasContext = defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, 
         UniServiceJSBridge.emit(ON_ERROR, 'createCanvasContext:fail');
     }
 }, CreateCanvasContextProtocol);
-const canvasGetImageData = defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
+defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
     const pageId = getPageIdByVm(getCurrentPageVm());
     if (!pageId) {
         reject();
@@ -10959,7 +10797,7 @@ const canvasGetImageData = defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId
         height,
     }, callback);
 }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
-const canvasPutImageData = defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
+defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
     var pageId = getPageIdByVm(getCurrentPageVm());
     if (!pageId) {
         reject();
@@ -10989,13 +10827,17 @@ const canvasPutImageData = defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId
     }
     operate();
 }, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
-const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x = 0, y = 0, width, height, destWidth, destHeight, canvasId, fileType, quality, }, { resolve, reject }) => {
+defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x = 0, y = 0, width, height, destWidth, destHeight, canvasId, fileType, quality, }, { resolve, reject }) => {
     var pageId = getPageIdByVm(getCurrentPageVm());
     if (!pageId) {
         reject();
         return;
     }
-    const dirname = `${TEMP_PATH}/canvas`;
+    let _TEMP_PATH = TEMP_PATH;
+    {
+        typeof getEnv !== 'undefined' && (_TEMP_PATH = getEnv().TEMP_PATH);
+    }
+    let dirname = `${_TEMP_PATH}/canvas`;
     operateCanvas(canvasId, pageId, 'toTempFilePath', {
         x,
         y,
@@ -11014,206 +10856,6 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
         resolve(res);
     });
 }, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
-
-// let eventReady = false
-let index$1 = 0;
-let optionsCache = {};
-function operateEditor(componentId, pageId, type, options) {
-    const data = { options };
-    const needCallOptions = options &&
-        ('success' in options || 'fail' in options || 'complete' in options);
-    if (needCallOptions) {
-        const callbackId = String(index$1++);
-        data.callbackId = callbackId;
-        optionsCache[callbackId] = options;
-    }
-    UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
-        type,
-        data,
-    }, pageId, ({ callbackId, data }) => {
-        if (needCallOptions) {
-            callOptions(optionsCache[callbackId], data);
-            delete optionsCache[callbackId];
-        }
-    });
-}
-class EditorContext {
-    id;
-    pageId;
-    constructor(id, pageId) {
-        this.id = id;
-        this.pageId = pageId;
-    }
-    format(name, value) {
-        this._exec('format', {
-            name,
-            value,
-        });
-    }
-    insertDivider() {
-        this._exec('insertDivider');
-    }
-    insertImage(options) {
-        this._exec('insertImage', options);
-    }
-    insertText(options) {
-        this._exec('insertText', options);
-    }
-    setContents(options) {
-        this._exec('setContents', options);
-    }
-    getContents(options) {
-        this._exec('getContents', options);
-    }
-    clear(options) {
-        this._exec('clear', options);
-    }
-    removeFormat(options) {
-        this._exec('removeFormat', options);
-    }
-    undo(options) {
-        this._exec('undo', options);
-    }
-    redo(options) {
-        this._exec('redo', options);
-    }
-    blur(options) {
-        this._exec('blur', options);
-    }
-    getSelectionText(options) {
-        this._exec('getSelectionText', options);
-    }
-    scrollIntoView(options) {
-        this._exec('scrollIntoView', options);
-    }
-    _exec(method, options) {
-        operateEditor(this.id, this.pageId, method, options);
-    }
-}
-
-const ContextClasss = {
-    canvas: CanvasContext,
-    map: MapContext,
-    video: VideoContext,
-    editor: EditorContext,
-};
-function convertContext(result) {
-    if (result && result.contextInfo) {
-        const { id, type, page } = result.contextInfo;
-        const ContextClass = ContextClasss[type];
-        result.context = new ContextClass(id, page);
-        delete result.contextInfo;
-    }
-}
-class NodesRef {
-    _selectorQuery;
-    _component;
-    _selector;
-    _single;
-    constructor(selectorQuery, component, selector, single) {
-        this._selectorQuery = selectorQuery;
-        this._component = component;
-        this._selector = selector;
-        this._single = single;
-    }
-    boundingClientRect(callback) {
-        this._selectorQuery._push(this._selector, this._component, this._single, {
-            id: true,
-            dataset: true,
-            rect: true,
-            size: true,
-        }, callback);
-        return this._selectorQuery;
-    }
-    fields(fields, callback) {
-        this._selectorQuery._push(this._selector, this._component, this._single, fields, callback);
-        return this._selectorQuery;
-    }
-    scrollOffset(callback) {
-        this._selectorQuery._push(this._selector, this._component, this._single, {
-            id: true,
-            dataset: true,
-            scrollOffset: true,
-        }, callback);
-        return this._selectorQuery;
-    }
-    context(callback) {
-        this._selectorQuery._push(this._selector, this._component, this._single, {
-            context: true,
-        }, callback);
-        return this._selectorQuery;
-    }
-    node(callback) {
-        this._selectorQuery._push(this._selector, this._component, this._single, {
-            node: true,
-        }, callback);
-        return this._selectorQuery;
-    }
-}
-class SelectorQuery {
-    _page;
-    _queue;
-    _component = undefined;
-    _queueCb;
-    _nodesRef;
-    constructor(page) {
-        this._page = page;
-        this._queue = [];
-        this._queueCb = [];
-    }
-    exec(callback) {
-        requestComponentInfo(this._page, this._queue, (res) => {
-            const queueCbs = this._queueCb;
-            res.forEach((result, index) => {
-                if (isArray(result)) {
-                    result.forEach(convertContext);
-                }
-                else {
-                    convertContext(result);
-                }
-                const queueCb = queueCbs[index];
-                if (isFunction(queueCb)) {
-                    queueCb.call(this, result);
-                }
-            });
-            // isFn(callback) &&
-            if (isFunction(callback)) {
-                callback.call(this, res);
-            }
-        });
-        // TODO
-        return this._nodesRef;
-    }
-    in(component) {
-        this._component = resolveComponentInstance(component);
-        return this;
-    }
-    select(selector) {
-        return (this._nodesRef = new NodesRef(this, this._component, selector, true));
-    }
-    selectAll(selector) {
-        return (this._nodesRef = new NodesRef(this, this._component, selector, false));
-    }
-    selectViewport() {
-        return (this._nodesRef = new NodesRef(this, null, '', true));
-    }
-    _push(selector, component, single, fields, callback) {
-        this._queue.push({
-            component,
-            selector,
-            single,
-            fields,
-        });
-        this._queueCb.push(callback);
-    }
-}
-const createSelectorQuery = defineSyncApi('createSelectorQuery', (context) => {
-    context = resolveComponentInstance(context);
-    if (context && !getPageIdByVm(context)) {
-        context = null;
-    }
-    return new SelectorQuery(context || getCurrentPageVm());
-});
 
 const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
 
@@ -11467,59 +11109,6 @@ function createNormalizeUrl(type) {
         }
     };
 }
-
-const FRONT_COLORS = ['#ffffff', '#000000'];
-const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
-const SetNavigationBarColorOptions = {
-    formatArgs: {
-        animation(animation, params) {
-            if (!animation) {
-                animation = { duration: 0, timingFunc: 'linear' };
-            }
-            params.animation = {
-                duration: animation.duration || 0,
-                timingFunc: animation.timingFunc || 'linear',
-            };
-        },
-    },
-};
-const SetNavigationBarColorProtocol = {
-    frontColor: {
-        type: String,
-        required: true,
-        validator(frontColor) {
-            if (FRONT_COLORS.indexOf(frontColor) === -1) {
-                return `invalid frontColor "${frontColor}"`;
-            }
-        },
-    },
-    backgroundColor: {
-        type: String,
-        required: true,
-    },
-    animation: Object,
-};
-const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
-const SetNavigationBarTitleProtocol = {
-    title: {
-        type: String,
-        required: true,
-    },
-};
-const API_SHOW_NAVIGATION_BAR_LOADING = 'showNavigationBarLoading';
-const API_HIDE_NAVIGATION_BAR_LOADING = 'hideNavigationBarLoading';
-
-const API_PAGE_SCROLL_TO = 'pageScrollTo';
-const PageScrollToProtocol = {
-    scrollTop: Number,
-    selector: String,
-    duration: Number,
-};
-const PageScrollToOptions = {
-    formatArgs: {
-        duration: 300,
-    },
-};
 
 const IndexProtocol = {
     index: {
@@ -12189,20 +11778,6 @@ function initDebugRefresh(isTab, path, query) {
             query: queryString ? queryString.slice(1) : queryString,
         }),
     };
-}
-
-function getCurrentWebview() {
-    const page = getCurrentPage();
-    if (page) {
-        return page.$getAppWebview();
-    }
-    return null;
-}
-function getWebview(page) {
-    if (page) {
-        return page.$getAppWebview();
-    }
-    return getCurrentWebview();
 }
 
 const downgrade = 'Harmony' === 'Android' ;
@@ -13187,77 +12762,6 @@ function _switchTab({ url, path, query, }) {
     });
 }
 
-const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) => {
-    const pageId = getPageIdByVm(getCurrentPageVm());
-    UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, resolve);
-}, PageScrollToProtocol, PageScrollToOptions);
-
-const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, ({ __page__, title }, { resolve, reject }) => {
-    const webview = getWebview(__page__);
-    if (webview) {
-        const style = webview.getStyle();
-        if (style && style.titleNView) {
-            webview.setStyle({
-                titleNView: {
-                    titleText: title,
-                },
-            });
-        }
-        resolve();
-    }
-    else {
-        reject();
-    }
-}, SetNavigationBarTitleProtocol);
-defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
-    plus.nativeUI.showWaiting('', {
-        modal: false,
-    });
-    resolve();
-});
-defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
-    plus.nativeUI.closeWaiting();
-    resolve();
-});
-function setPageStatusBarStyle(statusBarStyle) {
-    const pages = getCurrentPages();
-    if (!pages.length) {
-        return;
-    }
-    // 框架内部页面跳转会从这里获取style配置
-    pages[pages.length - 1].$page.statusBarStyle = statusBarStyle;
-}
-const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __page__, frontColor, backgroundColor }, { resolve, reject }) => {
-    const webview = getWebview(__page__);
-    if (webview) {
-        const styles = {};
-        if (frontColor) {
-            styles.titleColor = frontColor;
-        }
-        if (backgroundColor) {
-            styles.backgroundColor = backgroundColor;
-        }
-        const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light';
-        plus.navigator.setStatusBarStyle(statusBarStyle);
-        // 用户调用api时同时改变当前页配置，这样在系统调用设置时，可以避免覆盖用户设置
-        setPageStatusBarStyle(statusBarStyle);
-        const style = webview.getStyle();
-        if (style && style.titleNView) {
-            if (style.titleNView.autoBackButton) {
-                styles.backButton = styles.backButton || {};
-                styles.backButton.color = frontColor;
-            }
-            webview.setStyle({
-                titleNView: styles,
-            });
-        }
-        resolve();
-    }
-    else {
-        reject();
-    }
-}, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
-
 const pluginDefines = {};
 function registerUTSPlugin(name, define) {
     pluginDefines[name] = define;
@@ -13281,26 +12785,19 @@ function requireUTSPlugin(name) {
 var uni$1 = {
     __proto__: null,
     canIUse: canIUse,
-    canvasGetImageData: canvasGetImageData,
-    canvasPutImageData: canvasPutImageData,
-    canvasToTempFilePath: canvasToTempFilePath,
     createCanvasContext: createCanvasContext,
-    createSelectorQuery: createSelectorQuery,
     getLocale: getLocale,
     hideTabBar: hideTabBar,
     hideTabBarRedDot: hideTabBarRedDot,
     navigateBack: navigateBack,
     navigateTo: navigateTo,
     onLocaleChange: onLocaleChange,
-    pageScrollTo: pageScrollTo,
     reLaunch: reLaunch,
     redirectTo: redirectTo,
     registerUTSPlugin: registerUTSPlugin,
     removeTabBarBadge: removeTabBarBadge,
     requireUTSPlugin: requireUTSPlugin,
     setLocale: setLocale,
-    setNavigationBarColor: setNavigationBarColor,
-    setNavigationBarTitle: setNavigationBarTitle,
     setTabBarBadge: setTabBarBadge,
     setTabBarItem: setTabBarItem,
     setTabBarStyle: setTabBarStyle,
