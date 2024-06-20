@@ -22,7 +22,7 @@ const env = {
   // RESOURCE_PATH: 'resource://',
   // 以下路径均不以`/`结尾
   USER_DATA_PATH: '',
-  TEMP_PATH: '',
+  TEMP_PATH: '', // 示例值 /data/storage/el2/base/haps/entry/temp
   CACHE_PATH: '',
 }
 

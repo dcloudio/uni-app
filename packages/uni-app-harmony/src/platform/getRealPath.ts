@@ -31,7 +31,7 @@ export function getRealPath(filepath: string) {
     // 平台绝对路径
     if (filepath.startsWith('/data/storage/')) {
       // 鸿蒙平台特性
-      return 'file:/' + filepath
+      return 'file://' + filepath
     }
     return wwwPath + filepath
   }
