@@ -8153,7 +8153,11 @@ function initLaunchOptions({
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
-const getEnv = () => ({ TEMP_PATH, CACHE_PATH: "", USER_DATA_PATH: "" });
+const getEnv = () => ({
+  TEMP_PATH,
+  CACHE_PATH: "",
+  USER_DATA_PATH: ""
+});
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;

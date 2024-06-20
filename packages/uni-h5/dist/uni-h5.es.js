@@ -7128,7 +7128,11 @@ const inflateRaw = (...args) => {
 };
 const deflateRaw = (...args) => {
 };
-const getEnv = () => ({ TEMP_PATH, CACHE_PATH: "", USER_DATA_PATH: "" });
+const getEnv = () => ({
+  TEMP_PATH,
+  CACHE_PATH: "",
+  USER_DATA_PATH: ""
+});
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
