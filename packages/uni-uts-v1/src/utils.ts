@@ -36,6 +36,7 @@ interface ToOptions {
   isX: boolean
   isSingleThread: boolean
   isPlugin: boolean
+  isExtApi?: boolean
   isModule?: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
@@ -52,6 +53,7 @@ export interface RunOptions {
   isPlugin: boolean
   isSingleThread: boolean
   isX: boolean
+  isExtApi?: boolean
   sourceMap: boolean
   transform?: UTSOutputOptions['transform']
   uniModules: string[]
