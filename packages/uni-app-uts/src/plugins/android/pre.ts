@@ -26,6 +26,7 @@ export function uniPrePlugin(options: UniPrePluginOptions = {}): Plugin {
   const preHtmlFile = preUVueHtml
   return {
     name: 'uni:pre-android',
+    enforce: 'pre',
     transform(code, id) {
       if (!filter(id)) {
         return

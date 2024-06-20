@@ -227,9 +227,16 @@ export function requireUniHelpers() {
 }
 
 export function normalizeEmitAssetFileName(fileName: string) {
+  const extname = path.extname(fileName)
+
   if (process.env.UNI_APP_X_TSC === 'true') {
-    if (path.extname(fileName) !== '.ts') {
+    if (extname !== '.ts') {
       return fileName + '.ts'
+    }
+  } else {
+    // logo.png、pages.json 等
+    if (!['.ts', '.uts', '.uvue', '.vue'].includes(extname)) {
+      fileName = fileName + '.uts'
     }
   }
   return fileName

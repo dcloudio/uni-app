@@ -132,6 +132,16 @@ export function uniAppPlugin(): UniVitePlugin {
     async transform(code, id) {
       const { filename } = parseVueRequest(id)
       if (!filename.endsWith('.uts') && !filename.endsWith('.ts')) {
+        if (filename.endsWith('.json')) {
+          const fileName = path.relative(inputDir, id)
+          this.emitFile({
+            type: 'asset',
+            fileName: normalizeEmitAssetFileName(
+              normalizeFilename(fileName, false)
+            ),
+            source: code,
+          })
+        }
         return
       }
       // 仅处理 uts 文件
