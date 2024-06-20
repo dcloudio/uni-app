@@ -1,5 +1,7 @@
 import { extend, hyphenate } from '@vue/shared'
 import {
+  type ComputedRef,
+  type ExtractPropTypes,
   type HTMLAttributes,
   type Ref,
   computed,
@@ -31,35 +33,68 @@ function resolveDigitDecimalPoint(
   event: InputEvent,
   cache: Ref<string>,
   state: State,
-  input: HTMLInputElement
+  input: HTMLInputElement,
+  resetCache?: ResetCache
 ) {
-  if ((event as InputEvent).data === '.') {
-    // 解决可重复输入小数点的问题
-    if (cache.value.slice(-1) === '.') {
-      state.value = input.value = cache.value = cache.value.slice(0, -1)
-      return false
-    } else if (cache.value.includes('.')) {
-      state.value = input.value = cache.value
-      return false
-    }
-    if (cache.value && !cache.value.includes('.')) {
-      cache.value += '.'
-      return false
-    }
-  } else if ((event as InputEvent).inputType === 'deleteContentBackward') {
-    // ios 16 无法删除小数
-    if (
-      (__PLATFORM__ === 'app' &&
-        plus.os.name === 'iOS' &&
-        plus.os.version &&
-        parseInt(plus.os.version) === 16) ||
-      (__PLATFORM__ === 'h5' && navigator.userAgent.includes('iPhone OS 16'))
-    ) {
-      if (cache.value.slice(-2, -1) === '.') {
-        cache.value = state.value = input.value = cache.value.slice(0, -2)
-        return true
+  if (cache.value) {
+    if ((event as InputEvent).data === '.') {
+      // 解决可重复输入小数点的问题
+      if (cache.value.slice(-1) === '.') {
+        state.value = input.value = cache.value = cache.value.slice(0, -1)
+        return false
+      }
+      if (cache.value && !cache.value.includes('.')) {
+        cache.value += '.'
+        if (resetCache) {
+          resetCache.fn = () => {
+            state.value = input.value = cache.value = cache.value.slice(0, -1)
+            input.removeEventListener('blur', resetCache.fn!)
+          }
+          input.addEventListener('blur', resetCache.fn)
+        }
+        return false
+      }
+    } else if ((event as InputEvent).inputType === 'deleteContentBackward') {
+      // ios 16 无法删除小数
+      if (
+        (__PLATFORM__ === 'app' &&
+          plus.os.name === 'iOS' &&
+          plus.os.version &&
+          parseInt(plus.os.version) === 16) ||
+        (__PLATFORM__ === 'h5' && navigator.userAgent.includes('iPhone OS 16'))
+      ) {
+        if (cache.value.slice(-2, -1) === '.') {
+          cache.value = state.value = input.value = cache.value.slice(0, -2)
+          return true
+        }
       }
     }
+  }
+}
+
+type Props = ExtractPropTypes<typeof props>
+type ResetCache = { fn: (() => void) | null }
+function useCache(props: Props, type: ComputedRef<string>) {
+  if (type.value === 'number') {
+    const value = props.modelValue ?? props.value
+    const cache = ref(
+      typeof value !== 'undefined' ? value.toLocaleString() : ''
+    )
+    watch(
+      () => props.modelValue,
+      (value) => {
+        cache.value = typeof value !== 'undefined' ? value.toLocaleString() : ''
+      }
+    )
+    watch(
+      () => props.value,
+      (value) => {
+        cache.value = typeof value !== 'undefined' ? value.toLocaleString() : ''
+      }
+    )
+    return cache
+  } else {
+    return ref('')
   }
 }
 
@@ -116,8 +151,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           : 0
       return AUTOCOMPLETES[index]
     })
-    let cache = ref('')
-    let resetCache: (() => void) | null
+    let cache = useCache(props, type)
+    let resetCache: ResetCache = { fn: null }
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
       useField(props, rootRef, emit, (event, state) => {
@@ -125,9 +160,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
         if (type.value === 'number') {
           // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
-          if (resetCache) {
-            input.removeEventListener('blur', resetCache)
-            resetCache = null
+          if (resetCache.fn) {
+            input.removeEventListener('blur', resetCache.fn)
+            resetCache.fn = null
           }
           if (input.validity && !input.validity.valid) {
             if (
@@ -138,10 +173,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ) {
               cache.value = '-'
               state.value = ''
-              resetCache = () => {
+              resetCache.fn = () => {
                 cache.value = input.value = ''
               }
-              input.addEventListener('blur', resetCache)
+              input.addEventListener('blur', resetCache.fn)
               return false
             }
             // 处理小数点
@@ -149,7 +184,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               event as InputEvent,
               cache,
               state,
-              input
+              input,
+              resetCache
             )
             if (typeof res === 'boolean') return res
             cache.value =
@@ -164,7 +200,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
               event as InputEvent,
               cache,
               state,
-              input
+              input,
+              resetCache
             )
             if (typeof res === 'boolean') return res
 

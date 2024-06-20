@@ -3544,12 +3544,47 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
-function resolveDigitDecimalPoint(event, cache, state, input) {
-  if (event.data === ".") {
-    if (cache.value) {
-      cache.value += ".";
-      return false;
+function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
+  if (cache.value) {
+    if (event.data === ".") {
+      if (cache.value.slice(-1) === ".") {
+        state.value = input.value = cache.value = cache.value.slice(0, -1);
+        return false;
+      }
+      if (cache.value && !cache.value.includes(".")) {
+        cache.value += ".";
+        if (resetCache) {
+          resetCache.fn = () => {
+            state.value = input.value = cache.value = cache.value.slice(0, -1);
+            input.removeEventListener("blur", resetCache.fn);
+          };
+          input.addEventListener("blur", resetCache.fn);
+        }
+        return false;
+      }
+    } else if (event.inputType === "deleteContentBackward") {
+      if (navigator.userAgent.includes("iPhone OS 16")) {
+        if (cache.value.slice(-2, -1) === ".") {
+          cache.value = state.value = input.value = cache.value.slice(0, -2);
+          return true;
+        }
+      }
     }
+  }
+}
+function useCache(props2, type) {
+  if (type.value === "number") {
+    const value = props2.modelValue ?? props2.value;
+    const cache = vue.ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    vue.watch(() => props2.modelValue, (value2) => {
+      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+    });
+    vue.watch(() => props2.value, (value2) => {
+      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+    });
+    return cache;
+  } else {
+    return vue.ref("");
   }
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -3588,8 +3623,10 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
-    let cache = vue.ref("");
-    let resetCache;
+    let cache = useCache(props2, type);
+    let resetCache = {
+      fn: null
+    };
     const rootRef = vue.ref(null);
     const {
       fieldRef,
@@ -3600,27 +3637,27 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     } = useField(props2, rootRef, emit2, (event, state2) => {
       const input = event.target;
       if (type.value === "number") {
-        if (resetCache) {
-          input.removeEventListener("blur", resetCache);
-          resetCache = null;
+        if (resetCache.fn) {
+          input.removeEventListener("blur", resetCache.fn);
+          resetCache.fn = null;
         }
         if (input.validity && !input.validity.valid) {
           if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state2.value = "";
-            resetCache = () => {
+            resetCache.fn = () => {
               cache.value = input.value = "";
             };
-            input.addEventListener("blur", resetCache);
+            input.addEventListener("blur", resetCache.fn);
             return false;
           }
-          const res = resolveDigitDecimalPoint(event, cache);
+          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
           if (typeof res === "boolean")
             return res;
           cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
-          const res = resolveDigitDecimalPoint(event, cache);
+          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
           if (typeof res === "boolean")
             return res;
           cache.value = input.value;
