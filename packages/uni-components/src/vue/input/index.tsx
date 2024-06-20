@@ -37,6 +37,7 @@ function resolveDigitDecimalPoint(
   resetCache?: ResetCache
 ) {
   if (cache.value) {
+    // TODO 苹果智能标点：safari（webview） 上连续输入两次 . 后，在第三次输入 . 时，会触发两次 deleteContentBackward（删除） 的输入外加一次 insertText 为 …（三个点） 的输入
     if ((event as InputEvent).data === '.') {
       // 解决可重复输入小数点的问题
       if (cache.value.slice(-1) === '.') {
