@@ -11659,8 +11659,18 @@
   var pako = {};
   assign(pako, deflate, inflate, constants);
   var pako_1 = pako;
+  var BASE64_TO_TEMP_FILE_PATH = "base64ToTempFilePath";
   function saveImage(dataURL, dirname, callback) {
-    throw new Error("TODO: Implement");
+    UniViewJSBridge.invokeServiceMethod(BASE64_TO_TEMP_FILE_PATH, {
+      dataURL,
+      dirname
+    }, (res) => {
+      if (res.message) {
+        callback(res);
+      } else if (res.tempFilePath) {
+        callback(null, res.tempFilePath);
+      }
+    });
   }
   function getSameOriginUrl(url) {
     var a2 = document.createElement("a");
@@ -11683,7 +11693,7 @@
     var wwwPath = normalizeLocalPath$1("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
     if (filepath.indexOf("/") === 0) {
       if (filepath.startsWith("/data/storage/")) {
-        return "file:/" + filepath;
+        return "file://" + filepath;
       }
       return wwwPath + filepath;
     }
@@ -14178,6 +14188,9 @@
           destWidth = Math.round(width * _pixelRatio.value);
           destHeight = Math.round(height * _pixelRatio.value);
         } else if (!destWidth) {
+          if (!destHeight) {
+            destHeight = Math.round(height * _pixelRatio.value);
+          }
           destWidth = Math.round(width / height * destHeight);
         } else if (!destHeight) {
           destHeight = Math.round(height / width * destWidth);
@@ -14283,13 +14296,22 @@
         type: fileType,
         quality
       });
-      if (!res.data || !res.data.length) {
+      if (res.errMsg) {
         resolve({
           errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
         });
         return;
       }
-      saveImage(res.data);
+      saveImage(res.data, dirname, (error, tempFilePath) => {
+        var errMsg = "toTempFilePath:".concat(error ? "fail" : "ok");
+        if (error) {
+          errMsg += " ".concat(error.message);
+        }
+        resolve({
+          errMsg,
+          tempFilePath
+        });
+      });
     }
     var methods = {
       actionsChanged,
@@ -15618,21 +15640,43 @@
       default: ""
     }
   });
-  function resolveDigitDecimalPoint(event, cache2, state, input) {
-    if (event.data === ".") {
-      if (cache2.value.slice(-1) === ".") {
-        state.value = input.value = cache2.value = cache2.value.slice(0, -1);
-        return false;
-      } else if (cache2.value.includes(".")) {
-        state.value = input.value = cache2.value;
-        return false;
-      }
-      if (cache2.value && !cache2.value.includes(".")) {
-        cache2.value += ".";
-        return false;
-      }
-    } else if (event.inputType === "deleteContentBackward")
-      ;
+  function resolveDigitDecimalPoint(event, cache2, state, input, resetCache) {
+    if (cache2.value) {
+      if (event.data === ".") {
+        if (cache2.value.slice(-1) === ".") {
+          state.value = input.value = cache2.value = cache2.value.slice(0, -1);
+          return false;
+        }
+        if (cache2.value && !cache2.value.includes(".")) {
+          cache2.value += ".";
+          if (resetCache) {
+            resetCache.fn = () => {
+              state.value = input.value = cache2.value = cache2.value.slice(0, -1);
+              input.removeEventListener("blur", resetCache.fn);
+            };
+            input.addEventListener("blur", resetCache.fn);
+          }
+          return false;
+        }
+      } else if (event.inputType === "deleteContentBackward")
+        ;
+    }
+  }
+  function useCache(props2, type) {
+    if (type.value === "number") {
+      var _props2$modelValue;
+      var value = (_props2$modelValue = props2.modelValue) !== null && _props2$modelValue !== void 0 ? _props2$modelValue : props2.value;
+      var cache2 = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+      watch(() => props2.modelValue, (value2) => {
+        cache2.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      });
+      watch(() => props2.value, (value2) => {
+        cache2.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      });
+      return cache2;
+    } else {
+      return ref("");
+    }
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
@@ -15671,8 +15715,10 @@
         var index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
         return AUTOCOMPLETES[index2];
       });
-      var cache2 = ref("");
-      var resetCache;
+      var cache2 = useCache(props2, type);
+      var resetCache = {
+        fn: null
+      };
       var rootRef = ref(null);
       var {
         fieldRef,
@@ -15683,27 +15729,27 @@
       } = useField(props2, rootRef, emit2, (event, state2) => {
         var input = event.target;
         if (type.value === "number") {
-          if (resetCache) {
-            input.removeEventListener("blur", resetCache);
-            resetCache = null;
+          if (resetCache.fn) {
+            input.removeEventListener("blur", resetCache.fn);
+            resetCache.fn = null;
           }
           if (input.validity && !input.validity.valid) {
             if ((!cache2.value || !input.value) && event.data === "-" || cache2.value[0] === "-" && event.inputType === "deleteContentBackward") {
               cache2.value = "-";
               state2.value = "";
-              resetCache = () => {
+              resetCache.fn = () => {
                 cache2.value = input.value = "";
               };
-              input.addEventListener("blur", resetCache);
+              input.addEventListener("blur", resetCache.fn);
               return false;
             }
-            var res = resolveDigitDecimalPoint(event, cache2, state2, input);
+            var res = resolveDigitDecimalPoint(event, cache2, state2, input, resetCache);
             if (typeof res === "boolean")
               return res;
             cache2.value = state2.value = input.value = cache2.value === "-" ? "" : cache2.value;
             return false;
           } else {
-            var _res = resolveDigitDecimalPoint(event, cache2, state2, input);
+            var _res = resolveDigitDecimalPoint(event, cache2, state2, input, resetCache);
             if (typeof _res === "boolean")
               return _res;
             cache2.value = input.value;

@@ -1,10 +1,12 @@
 import { IUniError, UTSObject, UniError, UTSJSONObject, string, ComponentPublicInstance, ComponentInternalInstance } from './uts'
-import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, AsyncApiSuccessResult, AsyncApiResult, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
+import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, AsyncApiSuccessResult, AsyncApiResult, ApiExecutor, ProtocolOptions, ApiOptions, ApiError } from './uni-api-shared'
 
+import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
 import display from '@ohos.display';
 import fs from '@ohos.file.fs';
+import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
@@ -27,11 +29,14 @@ import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByV
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
+import fs2 from '@ohos.file.fs';
+import fs3 from '@ohos.file.fs';
 import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath2, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getRealPath as getRealPath2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getRealPath as getRealPath3, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import harmonyWindow from '@ohos.window';
 import harmonyWindow1 from '@ohos.window';
@@ -40,6 +45,7 @@ import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
+import picker3 from '@ohos.file.picker';
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 export function initUniExtApi(APP_ID: string) {
@@ -105,7 +111,7 @@ export function initUniExtApi(APP_ID: string) {
         getString(callback: (ret: ClipboardModuleGetStringOptions) => void): void;
         setString(data: string): void;
     }
-    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExcutor<GetClipboardDataSuccess>)=>{
+    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
         const clipboard: ClipboardModule = UTSHarmony.clipboard;
         clipboard.getString((ret)=>{
             if (ret.result === 'success') {
@@ -117,7 +123,7 @@ export function initUniExtApi(APP_ID: string) {
             }
         });
     }) as GetClipboardData;
-    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExcutor<SetClipboardDataSuccess>)=>{
+    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>)=>{
         const clipboard: ClipboardModule = UTSHarmony.clipboard;
         clipboard.setString(options.data);
         res.resolve();
@@ -741,7 +747,7 @@ export function initUniExtApi(APP_ID: string) {
     const getSystemInfoSync: GetSystemInfoSync = defineSyncApi<GetSystemInfoResult>(API_GET_SYSTEM_INFO_SYNC, (): GetSystemInfoResult =>{
         return internalGetSystemInfo();
     }) as GetSystemInfoSync;
-    const getSystemInfo: GetSystemInfo = defineAsyncApi<GetSystemInfoOptions, GetSystemInfoResult>(API_GET_SYSTEM_INFO, (options: GetSystemInfoOptions, exec: ApiExcutor<GetSystemInfoResult>)=>{
+    const getSystemInfo: GetSystemInfo = defineAsyncApi<GetSystemInfoOptions, GetSystemInfoResult>(API_GET_SYSTEM_INFO, (options: GetSystemInfoOptions, exec: ApiExecutor<GetSystemInfoResult>)=>{
         try {
             exec.resolve(internalGetSystemInfo());
         } catch (error) {
@@ -778,7 +784,7 @@ export function initUniExtApi(APP_ID: string) {
         }
         return false;
     };
-    const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExcutor<MakePhoneCallSuccess>)=>{
+    const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = UTSHarmony4.device.dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
             dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
@@ -881,6 +887,20 @@ export function initUniExtApi(APP_ID: string) {
         fail: (GetImageInfoFailCallback) | null = null;
         complete: (GetImageInfoCompleteCallback) | null = null;
     }
+    type SaveImageToPhotosAlbum = (options: SaveImageToPhotosAlbumOptions) => void;
+    class SaveImageToPhotosAlbumSuccess extends UTSObject {
+        path!: string;
+    }
+    type SaveImageToPhotosAlbumFail = IMediaError;
+    type SaveImageToPhotosAlbumSuccessCallback = (callback: SaveImageToPhotosAlbumSuccess) => void;
+    type SaveImageToPhotosAlbumFailCallback = (callback: SaveImageToPhotosAlbumFail) => void;
+    type SaveImageToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+    class SaveImageToPhotosAlbumOptions extends UTSObject {
+        filePath!: string.ImageURIString;
+        success: (SaveImageToPhotosAlbumSuccessCallback) | null = null;
+        fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
+        complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
+    }
     class ChooseVideoSuccess extends UTSObject {
         tempFilePath!: string;
         duration!: number;
@@ -924,6 +944,19 @@ export function initUniExtApi(APP_ID: string) {
         complete: (GetVideoInfoCompleteCallback) | null = null;
     }
     type GetVideoInfo = (options: GetVideoInfoOptions) => void;
+    class SaveVideoToPhotosAlbumSuccess extends UTSObject {
+    }
+    type SaveVideoToPhotosAlbumFail = IMediaError;
+    type SaveVideoToPhotosAlbumSuccessCallback = (callback: SaveVideoToPhotosAlbumSuccess) => void;
+    type SaveVideoToPhotosAlbumFailCallback = (callback: SaveVideoToPhotosAlbumFail) => void;
+    type SaveVideoToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+    class SaveVideoToPhotosAlbumOptions extends UTSObject {
+        filePath!: string.VideoURIString;
+        success: (SaveVideoToPhotosAlbumSuccessCallback) | null = null;
+        fail: (SaveVideoToPhotosAlbumFailCallback) | null = null;
+        complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
+    }
+    type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
     interface MediaFile {
         fileType: 'video' | 'image';
         tempFilePath: string;
@@ -1299,15 +1332,86 @@ export function initUniExtApi(APP_ID: string) {
         ])
     };
     const API_CLOSE_PREVIEW_IMAGE = 'closePreviewImage';
+    const API_SAVE_IMAGE_TO_PHOTOS_ALBUM = 'saveImageToPhotosAlbum';
+    const SaveImageToPhotosAlbumApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'filePath',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const API_SAVE_VIDEO_TO_PHOTOS_ALBUM = 'saveVideoToPhotosAlbum';
+    const SaveVideoToPhotosAlbumApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'filePath',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const MediaUniErrors: Map<number, string> = new Map([
+        [
+            1101001,
+            'user cancel'
+        ],
+        [
+            1101002,
+            'fail parameter error: parameter.urls should have at least 1 item'
+        ],
+        [
+            1101003,
+            "file not find"
+        ],
+        [
+            1101004,
+            "Failed to load resource"
+        ],
+        [
+            1101005,
+            "No Permission"
+        ],
+        [
+            1101006,
+            "save error"
+        ],
+        [
+            1101007,
+            "crop error"
+        ],
+        [
+            1101008,
+            'camera error'
+        ],
+        [
+            1101009,
+            "image output failed"
+        ],
+        [
+            1101010,
+            "unexpect error:"
+        ]
+    ]);
     interface TempFileItem {
         path: string;
         size: number;
     }
-    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExcutor<ChooseImageSuccess>)=>{
+    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         _chooseMedia({
             mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
             count: options.count!
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
+            const tempFiles = chooseMediaRes.tempFiles;
+            if (tempFiles.length === 0) {
+                const errMsg = MediaUniErrors.get(1101001) as string;
+                res.reject(errMsg, {
+                    errCode: 1101001,
+                    errMsg
+                } as ApiError);
+                return;
+            }
             res.resolve({
                 errMsg: '',
                 errSubject: 'uni-chooseImage',
@@ -1323,11 +1427,19 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
-    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (options: ChooseVideoOptions, res: ApiExcutor<ChooseVideoSuccess>)=>{
+    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         _chooseMedia({
             mimeType: picker2.PhotoViewMIMETypes.VIDEO_TYPE
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const file = chooseMediaRes.tempFiles[0];
+            if (!file) {
+                const errMsg = MediaUniErrors.get(1101001) as string;
+                res.reject(errMsg, {
+                    errCode: 1101001,
+                    errMsg
+                } as ApiError);
+                return;
+            }
             res.resolve({
                 tempFilePath: file.tempFilePath,
                 duration: file.duration,
@@ -1339,14 +1451,14 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
-    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (options: GetImageInfoOptions, res: ApiExcutor<GetImageInfoSuccess>)=>{
+    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
         _getImageInfo(options.src).then((getImageInfoRes)=>{
             res.resolve(getImageInfoRes);
         }, (err: Error)=>{
             res.reject(err.message);
         });
     }, GetImageInfoApiProtocol, GetImageInfoApiOptions) as GetImageInfo;
-    const getVideoInfo: GetVideoInfo = defineAsyncApi<GetVideoInfoOptions, GetVideoInfoSuccess>(API_GET_VIDEO_INFO, (options: GetVideoInfoOptions, res: ApiExcutor<GetVideoInfoSuccess>)=>{
+    const getVideoInfo: GetVideoInfo = defineAsyncApi<GetVideoInfoOptions, GetVideoInfoSuccess>(API_GET_VIDEO_INFO, (options: GetVideoInfoOptions, res: ApiExecutor<GetVideoInfoSuccess>)=>{
         _getVideoInfo(options.src).then((getVideInfoRes)=>{
             res.resolve({
                 size: getVideInfoRes.size,
@@ -1360,7 +1472,7 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
-    const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExcutor<PreviewImageSuccess>)=>{
+    const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
         interface Page {
             $getAppWebview: Function;
         }
@@ -1371,12 +1483,78 @@ export function initUniExtApi(APP_ID: string) {
             errMsg: ''
         } as PreviewImageSuccess);
     }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
-    const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExcutor<ClosePreviewImageSuccess>)=>{
+    const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>)=>{
         getOSRuntime().closePreviewImage();
         exec.resolve({
             errMsg: ''
         } as ClosePreviewImageSuccess);
     }) as ClosePreviewImage;
+    const requestPermission = async (): Promise<boolean> =>{
+        const context = getContext();
+        let atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
+        const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
+            'ohos.permission.WRITE_IMAGEVIDEO'
+        ]);
+        const isGranted = permissionRequestResult.authResults[0] === 0;
+        return isGranted;
+    };
+    const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
+        const realPath = getRealPath1(fromUri) as string;
+        const context = getContext();
+        const fileName = realPath.split('/').pop() || '' + Date.now() + (type === 'image' ? '.png' : '.mp4');
+        let photoSaveOptions = new picker3.PhotoSaveOptions();
+        photoSaveOptions.newFileNames = [
+            fileName
+        ];
+        let photoPicker = new picker3.PhotoViewPicker();
+        const photoSaveResult = await photoPicker.save(photoSaveOptions);
+        const destUri = photoSaveResult[0];
+        const tempFile = fs1.openSync(realPath, fs1.OpenMode.READ_ONLY);
+        const destFile = fs1.openSync(destUri, fs1.OpenMode.WRITE_ONLY);
+        await fs1.copyFile(tempFile.fd, destFile.fd);
+        fs1.closeSync(tempFile);
+        fs1.closeSync(destFile);
+        let phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
+        let assetChangeRequest: photoAccessHelper.MediaAssetChangeRequest = photoAccessHelper.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
+        await phAccessHelper.applyChanges(assetChangeRequest);
+        return destUri;
+    };
+    const saveImageToPhotosAlbum: SaveImageToPhotosAlbum = defineAsyncApi<SaveImageToPhotosAlbumOptions, SaveImageToPhotosAlbumSuccess>(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (options: SaveImageToPhotosAlbumOptions, res: ApiExecutor<SaveImageToPhotosAlbumSuccess>)=>{
+        requestPermission().then((isGranted)=>{
+            if (!isGranted) {
+                const errMsg = MediaUniErrors.get(1101005);
+                res.reject(errMsg, {
+                    errCode: 1101005,
+                    errMsg
+                } as ApiError);
+                return;
+            }
+            saveMediaToAlbum(options.filePath, 'image').then((uri)=>{
+                res.resolve({
+                    path: uri
+                } as SaveImageToPhotosAlbumSuccess);
+            }, (err: Error)=>{
+                res.reject(err.message);
+            });
+        });
+    }, SaveImageToPhotosAlbumApiProtocol) as SaveImageToPhotosAlbum;
+    const saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum = defineAsyncApi<SaveVideoToPhotosAlbumOptions, SaveVideoToPhotosAlbumSuccess>(API_SAVE_VIDEO_TO_PHOTOS_ALBUM, (options: SaveVideoToPhotosAlbumOptions, res: ApiExecutor<SaveVideoToPhotosAlbumSuccess>)=>{
+        requestPermission().then((isGranted)=>{
+            if (!isGranted) {
+                const errMsg = MediaUniErrors.get(1101005);
+                res.reject(errMsg, {
+                    errCode: 1101005,
+                    errMsg
+                } as ApiError);
+                return;
+            }
+            saveMediaToAlbum(options.filePath, 'video').then((uri)=>{
+                res.resolve({} as SaveVideoToPhotosAlbumSuccess);
+            }, (err: Error)=>{
+                res.reject(err.message);
+            });
+        });
+    }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
     type SetNavigationBarColorErrorCode = 4;
     interface SetNavigationBarColorFail extends IUniError {
         errCode: SetNavigationBarColorErrorCode;
@@ -1475,7 +1653,7 @@ export function initUniExtApi(APP_ID: string) {
         const webview = page.$getAppWebview();
         return webview;
     };
-    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExcutor<SetNavigationBarColorSuccess>)=>{
+    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExecutor<SetNavigationBarColorSuccess>)=>{
         const page = getCurrentPage2() as Page;
         if (!page) {
             return res.reject(`getCurrentPages is empty`);
@@ -1507,7 +1685,7 @@ export function initUniExtApi(APP_ID: string) {
             res.reject();
         }
     }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
-    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExcutor<SetNavigationBarTitleSuccess>)=>{
+    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
         const page = getCurrentPage2() as Page;
         if (!page) {
             return res.reject(`getCurrentPages is empty`);
@@ -1873,7 +2051,7 @@ export function initUniExtApi(APP_ID: string) {
                     if (filePath == null) {
                         throw new Error('filePath is required');
                     }
-                    params.filePath = getRealPath1(filePath);
+                    params.filePath = getRealPath2(filePath);
                 }
             ],
             [
@@ -1919,7 +2097,7 @@ export function initUniExtApi(APP_ID: string) {
             this._requestTask.offHeadersReceived(callback);
         }
     }
-    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExcutor<RequestSuccess<Object>>)=>{
+    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>)=>{
         let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
         let contentType = '';
         const headers = {} as Record<string, Object>;
@@ -2002,6 +2180,493 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new RequestTask1(requestTask);
     }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
+    const extToContentType: Record<string, string> = {
+        "3g2": "video/3gpp2",
+        "3gp": "video/3gpp",
+        "3gpp": "video/3gpp",
+        "3mf": "model/3mf",
+        "aac": "audio/aac",
+        "ac": "application/pkix-attr-cert",
+        "adp": "audio/adpcm",
+        "adts": "audio/aac",
+        "ai": "application/postscript",
+        "aml": "application/automationml-aml+xml",
+        "amlx": "application/automationml-amlx+zip",
+        "amr": "audio/amr",
+        "apng": "image/apng",
+        "appcache": "text/cache-manifest",
+        "appinstaller": "application/appinstaller",
+        "appx": "application/appx",
+        "appxbundle": "application/appxbundle",
+        "asc": "application/pgp-keys",
+        "atom": "application/atom+xml",
+        "atomcat": "application/atomcat+xml",
+        "atomdeleted": "application/atomdeleted+xml",
+        "atomsvc": "application/atomsvc+xml",
+        "au": "audio/basic",
+        "avci": "image/avci",
+        "avcs": "image/avcs",
+        "avif": "image/avif",
+        "aw": "application/applixware",
+        "bdoc": "application/bdoc",
+        "bin": "application/octet-stream",
+        "bmp": "image/bmp",
+        "bpk": "application/octet-stream",
+        "btf": "image/prs.btif",
+        "btif": "image/prs.btif",
+        "buffer": "application/octet-stream",
+        "ccxml": "application/ccxml+xml",
+        "cdfx": "application/cdfx+xml",
+        "cdmia": "application/cdmi-capability",
+        "cdmic": "application/cdmi-container",
+        "cdmid": "application/cdmi-domain",
+        "cdmio": "application/cdmi-object",
+        "cdmiq": "application/cdmi-queue",
+        "cer": "application/pkix-cert",
+        "cgm": "image/cgm",
+        "cjs": "application/node",
+        "class": "application/java-vm",
+        "coffee": "text/coffeescript",
+        "conf": "text/plain",
+        "cpl": "application/cpl+xml",
+        "cpt": "application/mac-compactpro",
+        "crl": "application/pkix-crl",
+        "css": "text/css",
+        "csv": "text/csv",
+        "cu": "application/cu-seeme",
+        "cwl": "application/cwl",
+        "cww": "application/prs.cww",
+        "davmount": "application/davmount+xml",
+        "dbk": "application/docbook+xml",
+        "deb": "application/octet-stream",
+        "def": "text/plain",
+        "deploy": "application/octet-stream",
+        "dib": "image/bmp",
+        "disposition-notification": "message/disposition-notification",
+        "dist": "application/octet-stream",
+        "distz": "application/octet-stream",
+        "dll": "application/octet-stream",
+        "dmg": "application/octet-stream",
+        "dms": "application/octet-stream",
+        "doc": "application/msword",
+        "dot": "application/msword",
+        "dpx": "image/dpx",
+        "drle": "image/dicom-rle",
+        "dsc": "text/prs.lines.tag",
+        "dssc": "application/dssc+der",
+        "dtd": "application/xml-dtd",
+        "dump": "application/octet-stream",
+        "dwd": "application/atsc-dwd+xml",
+        "ear": "application/java-archive",
+        "ecma": "application/ecmascript",
+        "elc": "application/octet-stream",
+        "emf": "image/emf",
+        "eml": "message/rfc822",
+        "emma": "application/emma+xml",
+        "emotionml": "application/emotionml+xml",
+        "eps": "application/postscript",
+        "epub": "application/epub+zip",
+        "exe": "application/octet-stream",
+        "exi": "application/exi",
+        "exp": "application/express",
+        "exr": "image/aces",
+        "ez": "application/andrew-inset",
+        "fdf": "application/fdf",
+        "fdt": "application/fdt+xml",
+        "fits": "image/fits",
+        "g3": "image/g3fax",
+        "gbr": "application/rpki-ghostbusters",
+        "geojson": "application/geo+json",
+        "gif": "image/gif",
+        "glb": "model/gltf-binary",
+        "gltf": "model/gltf+json",
+        "gml": "application/gml+xml",
+        "gpx": "application/gpx+xml",
+        "gram": "application/srgs",
+        "grxml": "application/srgs+xml",
+        "gxf": "application/gxf",
+        "gz": "application/gzip",
+        "h261": "video/h261",
+        "h263": "video/h263",
+        "h264": "video/h264",
+        "heic": "image/heic",
+        "heics": "image/heic-sequence",
+        "heif": "image/heif",
+        "heifs": "image/heif-sequence",
+        "hej2": "image/hej2k",
+        "held": "application/atsc-held+xml",
+        "hjson": "application/hjson",
+        "hlp": "application/winhlp",
+        "hqx": "application/mac-binhex40",
+        "hsj2": "image/hsj2",
+        "htm": "text/html",
+        "html": "text/html",
+        "ics": "text/calendar",
+        "ief": "image/ief",
+        "ifb": "text/calendar",
+        "iges": "model/iges",
+        "igs": "model/iges",
+        "img": "application/octet-stream",
+        "in": "text/plain",
+        "ini": "text/plain",
+        "ink": "application/inkml+xml",
+        "inkml": "application/inkml+xml",
+        "ipfix": "application/ipfix",
+        "iso": "application/octet-stream",
+        "its": "application/its+xml",
+        "jade": "text/jade",
+        "jar": "application/java-archive",
+        "jhc": "image/jphc",
+        "jls": "image/jls",
+        "jp2": "image/jp2",
+        "jpe": "image/jpeg",
+        "jpeg": "image/jpeg",
+        "jpf": "image/jpx",
+        "jpg": "image/jpeg",
+        "jpg2": "image/jp2",
+        "jpgm": "image/jpm",
+        "jpgv": "video/jpeg",
+        "jph": "image/jph",
+        "jpm": "image/jpm",
+        "jpx": "image/jpx",
+        "js": "text/javascript",
+        "json": "application/json",
+        "json5": "application/json5",
+        "jsonld": "application/ld+json",
+        "jsonml": "application/jsonml+json",
+        "jsx": "text/jsx",
+        "jt": "model/jt",
+        "jxr": "image/jxr",
+        "jxra": "image/jxra",
+        "jxrs": "image/jxrs",
+        "jxs": "image/jxs",
+        "jxsc": "image/jxsc",
+        "jxsi": "image/jxsi",
+        "jxss": "image/jxss",
+        "kar": "audio/midi",
+        "ktx": "image/ktx",
+        "ktx2": "image/ktx2",
+        "less": "text/less",
+        "lgr": "application/lgr+xml",
+        "list": "text/plain",
+        "litcoffee": "text/coffeescript",
+        "log": "text/plain",
+        "lostxml": "application/lost+xml",
+        "lrf": "application/octet-stream",
+        "m1v": "video/mpeg",
+        "m21": "application/mp21",
+        "m2a": "audio/mpeg",
+        "m2v": "video/mpeg",
+        "m3a": "audio/mpeg",
+        "m4a": "audio/mp4",
+        "m4p": "application/mp4",
+        "m4s": "video/iso.segment",
+        "ma": "application/mathematica",
+        "mads": "application/mads+xml",
+        "maei": "application/mmt-aei+xml",
+        "man": "text/troff",
+        "manifest": "text/cache-manifest",
+        "map": "application/json",
+        "mar": "application/octet-stream",
+        "markdown": "text/markdown",
+        "mathml": "application/mathml+xml",
+        "mb": "application/mathematica",
+        "mbox": "application/mbox",
+        "md": "text/markdown",
+        "mdx": "text/mdx",
+        "me": "text/troff",
+        "mesh": "model/mesh",
+        "meta4": "application/metalink4+xml",
+        "metalink": "application/metalink+xml",
+        "mets": "application/mets+xml",
+        "mft": "application/rpki-manifest",
+        "mid": "audio/midi",
+        "midi": "audio/midi",
+        "mime": "message/rfc822",
+        "mj2": "video/mj2",
+        "mjp2": "video/mj2",
+        "mjs": "text/javascript",
+        "mml": "text/mathml",
+        "mods": "application/mods+xml",
+        "mov": "video/quicktime",
+        "mp2": "audio/mpeg",
+        "mp21": "application/mp21",
+        "mp2a": "audio/mpeg",
+        "mp3": "audio/mpeg",
+        "mp4": "video/mp4",
+        "mp4a": "audio/mp4",
+        "mp4s": "application/mp4",
+        "mp4v": "video/mp4",
+        "mpd": "application/dash+xml",
+        "mpe": "video/mpeg",
+        "mpeg": "video/mpeg",
+        "mpf": "application/media-policy-dataset+xml",
+        "mpg": "video/mpeg",
+        "mpg4": "video/mp4",
+        "mpga": "audio/mpeg",
+        "mpp": "application/dash-patch+xml",
+        "mrc": "application/marc",
+        "mrcx": "application/marcxml+xml",
+        "ms": "text/troff",
+        "mscml": "application/mediaservercontrol+xml",
+        "msh": "model/mesh",
+        "msi": "application/octet-stream",
+        "msix": "application/msix",
+        "msixbundle": "application/msixbundle",
+        "msm": "application/octet-stream",
+        "msp": "application/octet-stream",
+        "mtl": "model/mtl",
+        "musd": "application/mmt-usd+xml",
+        "mxf": "application/mxf",
+        "mxmf": "audio/mobile-xmf",
+        "mxml": "application/xv+xml",
+        "n3": "text/n3",
+        "nb": "application/mathematica",
+        "nq": "application/n-quads",
+        "nt": "application/n-triples",
+        "obj": "model/obj",
+        "oda": "application/oda",
+        "oga": "audio/ogg",
+        "ogg": "audio/ogg",
+        "ogv": "video/ogg",
+        "ogx": "application/ogg",
+        "omdoc": "application/omdoc+xml",
+        "onepkg": "application/onenote",
+        "onetmp": "application/onenote",
+        "onetoc": "application/onenote",
+        "onetoc2": "application/onenote",
+        "opf": "application/oebps-package+xml",
+        "opus": "audio/ogg",
+        "otf": "font/otf",
+        "owl": "application/rdf+xml",
+        "oxps": "application/oxps",
+        "p10": "application/pkcs10",
+        "p7c": "application/pkcs7-mime",
+        "p7m": "application/pkcs7-mime",
+        "p7s": "application/pkcs7-signature",
+        "p8": "application/pkcs8",
+        "pdf": "application/pdf",
+        "pfr": "application/font-tdpfr",
+        "pgp": "application/pgp-encrypted",
+        "pkg": "application/octet-stream",
+        "pki": "application/pkixcmp",
+        "pkipath": "application/pkix-pkipath",
+        "pls": "application/pls+xml",
+        "png": "image/png",
+        "prc": "model/prc",
+        "prf": "application/pics-rules",
+        "provx": "application/provenance+xml",
+        "ps": "application/postscript",
+        "pskcxml": "application/pskc+xml",
+        "pti": "image/prs.pti",
+        "qt": "video/quicktime",
+        "raml": "application/raml+yaml",
+        "rapd": "application/route-apd+xml",
+        "rdf": "application/rdf+xml",
+        "relo": "application/p2p-overlay+xml",
+        "rif": "application/reginfo+xml",
+        "rl": "application/resource-lists+xml",
+        "rld": "application/resource-lists-diff+xml",
+        "rmi": "audio/midi",
+        "rnc": "application/relax-ng-compact-syntax",
+        "rng": "application/xml",
+        "roa": "application/rpki-roa",
+        "roff": "text/troff",
+        "rq": "application/sparql-query",
+        "rs": "application/rls-services+xml",
+        "rsat": "application/atsc-rsat+xml",
+        "rsd": "application/rsd+xml",
+        "rsheet": "application/urc-ressheet+xml",
+        "rss": "application/rss+xml",
+        "rtf": "text/rtf",
+        "rtx": "text/richtext",
+        "rusd": "application/route-usd+xml",
+        "s3m": "audio/s3m",
+        "sbml": "application/sbml+xml",
+        "scq": "application/scvp-cv-request",
+        "scs": "application/scvp-cv-response",
+        "sdp": "application/sdp",
+        "senmlx": "application/senml+xml",
+        "sensmlx": "application/sensml+xml",
+        "ser": "application/java-serialized-object",
+        "setpay": "application/set-payment-initiation",
+        "setreg": "application/set-registration-initiation",
+        "sgi": "image/sgi",
+        "sgm": "text/sgml",
+        "sgml": "text/sgml",
+        "shex": "text/shex",
+        "shf": "application/shf+xml",
+        "shtml": "text/html",
+        "sieve": "application/sieve",
+        "sig": "application/pgp-signature",
+        "sil": "audio/silk",
+        "silo": "model/mesh",
+        "siv": "application/sieve",
+        "slim": "text/slim",
+        "slm": "text/slim",
+        "sls": "application/route-s-tsid+xml",
+        "smi": "application/smil+xml",
+        "smil": "application/smil+xml",
+        "snd": "audio/basic",
+        "so": "application/octet-stream",
+        "spdx": "text/spdx",
+        "spp": "application/scvp-vp-response",
+        "spq": "application/scvp-vp-request",
+        "spx": "audio/ogg",
+        "sql": "application/sql",
+        "sru": "application/sru+xml",
+        "srx": "application/sparql-results+xml",
+        "ssdl": "application/ssdl+xml",
+        "ssml": "application/ssml+xml",
+        "stk": "application/hyperstudio",
+        "stl": "model/stl",
+        "stpx": "model/step+xml",
+        "stpxz": "model/step-xml+zip",
+        "stpz": "model/step+zip",
+        "styl": "text/stylus",
+        "stylus": "text/stylus",
+        "svg": "image/svg+xml",
+        "svgz": "image/svg+xml",
+        "swidtag": "application/swid+xml",
+        "t": "text/troff",
+        "t38": "image/t38",
+        "td": "application/urc-targetdesc+xml",
+        "tei": "application/tei+xml",
+        "teicorpus": "application/tei+xml",
+        "text": "text/plain",
+        "tfi": "application/thraud+xml",
+        "tfx": "image/tiff-fx",
+        "tif": "image/tiff",
+        "tiff": "image/tiff",
+        "toml": "application/toml",
+        "tr": "text/troff",
+        "trig": "application/trig",
+        "ts": "video/mp2t",
+        "tsd": "application/timestamped-data",
+        "tsv": "text/tab-separated-values",
+        "ttc": "font/collection",
+        "ttf": "font/ttf",
+        "ttl": "text/turtle",
+        "ttml": "application/ttml+xml",
+        "txt": "text/plain",
+        "u3d": "model/u3d",
+        "u8dsn": "message/global-delivery-status",
+        "u8hdr": "message/global-headers",
+        "u8mdn": "message/global-disposition-notification",
+        "u8msg": "message/global",
+        "ubj": "application/ubjson",
+        "uri": "text/uri-list",
+        "uris": "text/uri-list",
+        "urls": "text/uri-list",
+        "vcard": "text/vcard",
+        "vrml": "model/vrml",
+        "vtt": "text/vtt",
+        "vxml": "application/voicexml+xml",
+        "war": "application/java-archive",
+        "wasm": "application/wasm",
+        "wav": "audio/wav",
+        "weba": "audio/webm",
+        "webm": "video/webm",
+        "webmanifest": "application/manifest+json",
+        "webp": "image/webp",
+        "wgsl": "text/wgsl",
+        "wgt": "application/widget",
+        "wif": "application/watcherinfo+xml",
+        "wmf": "image/wmf",
+        "woff": "font/woff",
+        "woff2": "font/woff2",
+        "wrl": "model/vrml",
+        "wsdl": "application/wsdl+xml",
+        "wspolicy": "application/wspolicy+xml",
+        "x3d": "model/x3d+xml",
+        "x3db": "model/x3d+fastinfoset",
+        "x3dbz": "model/x3d+binary",
+        "x3dv": "model/x3d-vrml",
+        "x3dvz": "model/x3d+vrml",
+        "x3dz": "model/x3d+xml",
+        "xaml": "application/xaml+xml",
+        "xav": "application/xcap-att+xml",
+        "xca": "application/xcap-caps+xml",
+        "xcs": "application/calendar+xml",
+        "xdf": "application/xcap-diff+xml",
+        "xdssc": "application/dssc+xml",
+        "xel": "application/xcap-el+xml",
+        "xenc": "application/xenc+xml",
+        "xer": "application/patch-ops-error+xml",
+        "xfdf": "application/xfdf",
+        "xht": "application/xhtml+xml",
+        "xhtml": "application/xhtml+xml",
+        "xhvml": "application/xv+xml",
+        "xlf": "application/xliff+xml",
+        "xm": "audio/xm",
+        "xml": "text/xml",
+        "xns": "application/xcap-ns+xml",
+        "xop": "application/xop+xml",
+        "xpl": "application/xproc+xml",
+        "xsd": "application/xml",
+        "xsf": "application/prs.xsf+xml",
+        "xsl": "application/xml",
+        "xslt": "application/xml",
+        "xspf": "application/xspf+xml",
+        "xvm": "application/xv+xml",
+        "xvml": "application/xv+xml",
+        "yaml": "text/yaml",
+        "yang": "application/yang",
+        "yin": "application/yin+xml",
+        "yml": "text/yaml",
+        "zip": "application/zip",
+        "ico": "image/x-icon",
+        "cur": "image/x-icon",
+        "avis": "image/avis",
+        "m4v": "video/mp4",
+        "f4v": "video/mp4",
+        "f4p": "video/mp4",
+        "flac": "audio/flac",
+        "f4a": "audio/mp4",
+        "f4b": "audio/mp4",
+        "eot": "application/vnd.ms-fontobject",
+        "topojson": "application/json",
+        "webapp": "application/x-web-app-manifest+json",
+        "safariextz": "application/octet-stream",
+        "bbaw": "application/x-bb-appworld",
+        "crx": "application/x-chrome-extension",
+        "oex": "application/x-opera-extension",
+        "xpi": "application/x-xpinstall",
+        "vcf": "text/vcard",
+        "xloc": "text/vnd.rim.location.xloc",
+        "htc": "text/x-component"
+    };
+    const contentTypeToExt: Record<string, string> = {};
+    let contentTypeToExtInited = false;
+    const initContentTypeToExtOnce = ()=>{
+        if (contentTypeToExtInited) {
+            return;
+        }
+        const exts = Object.keys(extToContentType);
+        for(let i = 0; i < exts.length; i++){
+            const ext = exts[i];
+            const contentType = extToContentType[ext] as string;
+            if (!contentTypeToExt[contentType]) {
+                contentTypeToExt[contentType] = ext;
+            }
+        }
+        contentTypeToExtInited = true;
+    };
+    const lookupExt = (contentType: string): string | undefined =>{
+        initContentTypeToExtOnce();
+        return contentTypeToExt[contentType.split(';')[0].trim().toLowerCase()];
+    };
+    const lookupContentTypeWithUri = (uri: string): string | undefined =>{
+        const uriArr = uri.split('.');
+        if (uriArr.length <= 1) {
+            return undefined;
+        }
+        const ext = uriArr.pop() as string;
+        return lookupContentType(ext);
+    };
+    const lookupContentType = (ext: string): string | undefined =>{
+        return extToContentType[ext.trim().toLowerCase()];
+    };
     interface IUploadTask {
         abort: Function;
         onHeadersReceived: Function;
@@ -2030,7 +2695,16 @@ export function initUniExtApi(APP_ID: string) {
             this._uploadTask.offHeadersReceived(callback);
         }
     }
-    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExcutor<UploadFileSuccess>)=>{
+    const readFile = (filePath: string): ArrayBuffer =>{
+        const readFilePath = getRealPath3(filePath) as string;
+        const file = fs2.openSync(readFilePath, fs2.OpenMode.READ_ONLY);
+        const stat = fs2.statSync(file.fd);
+        const data = new ArrayBuffer(stat.size);
+        fs2.readSync(file.fd, data);
+        fs2.closeSync(file.fd);
+        return data;
+    };
+    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
         const headers = {} as Record<string, Object>;
         if (header) {
@@ -2055,21 +2729,32 @@ export function initUniExtApi(APP_ID: string) {
                 } as http1.MultiFormData);
             }
         }
-        if (files && files.length) {
-            for(let i = 0; i < files.length; i++){
-                const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
+        try {
+            if (files && files.length) {
+                for(let i = 0; i < files.length; i++){
+                    const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
+                    multiFormDataList.push({
+                        name: name || 'file',
+                        contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
+                        data: readFile(uri!)
+                    } as http1.MultiFormData);
+                }
+            } else if (filePath) {
                 multiFormDataList.push({
                     name: name || 'file',
-                    contentType: 'application/octet-stream',
-                    filePath: getRealPath2(uri!)
+                    contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
+                    data: readFile(filePath!)
                 } as http1.MultiFormData);
             }
-        } else {
-            multiFormDataList.push({
-                name: name || 'file',
-                contentType: 'application/octet-stream',
-                filePath: getRealPath2(filePath!)
-            } as http1.MultiFormData);
+        } catch (error) {
+            exec.reject((error as Error).message);
+            return new UploadTask1({
+                abort: ()=>{},
+                onHeadersReceived: (callback: Function)=>{},
+                offHeadersReceived: (callback: Function)=>{},
+                onProgressUpdate: (callback: Function)=>{},
+                offProgressUpdate: (callback: Function)=>{}
+            } as IUploadTask);
         }
         const httpRequest = http1.createHttp();
         const emitter = new Emitter1();
@@ -2090,7 +2775,7 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('progress', callback);
             }
         };
-        httpRequest.on('headersReceive', (header: Object)=>{});
+        httpRequest.on('headersReceive', (headers: Object)=>{});
         httpRequest.on('dataSendProgress', (ref)=>{
             let sendSize = ref.sendSize, totalSize = ref.totalSize;
             emitter.emit('progress', {
@@ -2128,6 +2813,20 @@ export function initUniExtApi(APP_ID: string) {
         onProgressUpdate: Function;
         offProgressUpdate: Function;
     }
+    const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string =>{
+        const contentDispositionFileNameMatches = contentDisposition.match(/filename="(.*)"/);
+        const contentDispositionFileName = contentDispositionFileNameMatches ? contentDispositionFileNameMatches[1] : '';
+        const contentDispositionExt = contentDispositionFileName ? contentDispositionFileName.split('.').pop() : '';
+        if (contentDispositionExt) {
+            return contentDispositionExt;
+        }
+        const contentTypeExt = lookupExt(contentType);
+        if (contentTypeExt) {
+            return contentTypeExt;
+        }
+        const urlExt = url.split('?')[0].split('/').pop()?.split('.')[1];
+        return urlExt || '';
+    };
     class DownloadTask1 implements DownloadTask {
         private _downloadTask: IDownloadTask;
         constructor(downloadTask: IDownloadTask){
@@ -2149,7 +2848,7 @@ export function initUniExtApi(APP_ID: string) {
             this._downloadTask.offHeadersReceived(callback);
         }
     }
-    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExcutor<DownloadFileSuccess>)=>{
+    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header;
         const httpRequest = http2.createHttp();
         const emitter = new Emitter2();
@@ -2170,7 +2869,13 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('progress', callback);
             }
         };
-        httpRequest.on('headersReceive', (header: Object)=>{});
+        let responseContentType = '';
+        let responseContentDisposition = '';
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string>;
+            responseContentType = realHeaders['content-type'] || realHeaders['Content-Type'] || '';
+            responseContentDisposition = realHeaders['content-disposition'] || realHeaders['Content-Disposition'] || '';
+        });
         httpRequest.on('dataReceiveProgress', (ref)=>{
             let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
             emitter.emit('progress', {
@@ -2180,8 +2885,12 @@ export function initUniExtApi(APP_ID: string) {
             } as OnProgressDownloadResult);
         });
         const TEMP_PATH = getEnv().TEMP_PATH as string;
-        const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp';
-        const stream = fs1.createStreamSync(tempFilePath, 'w+');
+        const downloadPath = TEMP_PATH + '/download';
+        if (!fs3.accessSync(downloadPath)) {
+            fs3.mkdirSync(downloadPath);
+        }
+        let stream: fs3.Stream;
+        let tempFilePath = '';
         let writePromise = Promise.resolve(0);
         const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
             writePromise = writePromise.then(async (total)=>{
@@ -2191,6 +2900,9 @@ export function initUniExtApi(APP_ID: string) {
             return writePromise;
         };
         httpRequest.on('dataReceive', (data)=>{
+            const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
+            tempFilePath = downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
+            stream = fs3.createStreamSync(tempFilePath, 'w+');
             queueWrite(data);
         });
         httpRequest.requestInStream(url, {
@@ -2206,7 +2918,7 @@ export function initUniExtApi(APP_ID: string) {
                     stream.flushSync();
                     stream.closeSync();
                     exec.resolve({
-                        tempFilePath,
+                        tempFilePath: 'file://' + tempFilePath,
                         statusCode
                     } as DownloadFileSuccess);
                 });
@@ -2265,7 +2977,7 @@ export function initUniExtApi(APP_ID: string) {
             ]
         ])
     };
-    const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExcutor<PageScrollToSuccess>)=>{
+    const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExecutor<PageScrollToSuccess>)=>{
         const pageId = getPageIdByVm2(getCurrentPageVm2()!)! as number;
         UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
     }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
@@ -2520,7 +3232,7 @@ export function initUniExtApi(APP_ID: string) {
         ])
     };
     const API_HIDE_LOADING = 'hideLoading';
-    const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExcutor<ShowToastSuccess>)=>{
+    const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>)=>{
         try {
             promptAction.showToast({
                 message: options.title,
@@ -2532,10 +3244,10 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
-    const hideToast: HideToast = defineAsyncApi(API_HIDE_TOAST, (_, res: ApiExcutor<Object>)=>{
+    const hideToast: HideToast = defineAsyncApi(API_HIDE_TOAST, (_, res: ApiExecutor<Object>)=>{
         res.reject('hideToast is not supported on HarmonyOS');
     }) as HideToast;
-    const showModal: ShowModal = defineAsyncApi<ShowModalOptions, ShowModalSuccess>(API_SHOW_MODAL, async (args: ShowModalOptions, res: ApiExcutor<ShowModalSuccess>)=>{
+    const showModal: ShowModal = defineAsyncApi<ShowModalOptions, ShowModalSuccess>(API_SHOW_MODAL, async (args: ShowModalOptions, res: ApiExecutor<ShowModalSuccess>)=>{
         const modalRes = await new Promise<ShowModalSuccess>((resolve, reject)=>{
             const confirmButton: AlertDialogButtonOptions = {
                 value: args.confirmText ?? '确定',
@@ -2582,7 +3294,7 @@ export function initUniExtApi(APP_ID: string) {
         modalRes.content = null;
         res.resolve(modalRes as ShowModalSuccess);
     }, ShowModalProtocol, ShowModalApiOptions) as ShowModal;
-    const showActionSheet: ShowActionSheet = defineAsyncApi<ShowActionSheetOptions, ShowActionSheetSuccess>(API_SHOW_ACTION_SHEET, async (options: ShowActionSheetOptions, res: ApiExcutor<ShowActionSheetSuccess>)=>{
+    const showActionSheet: ShowActionSheet = defineAsyncApi<ShowActionSheetOptions, ShowActionSheetSuccess>(API_SHOW_ACTION_SHEET, async (options: ShowActionSheetOptions, res: ApiExecutor<ShowActionSheetSuccess>)=>{
         const actionItemList = options.itemList.filter(Boolean);
         if (actionItemList.length === 0) {
             return;
@@ -2615,10 +3327,10 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(e.message);
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
-    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, res: ApiExcutor<ShowLoadingSuccess>)=>{
+    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, res: ApiExecutor<ShowLoadingSuccess>)=>{
         res.reject('showLoading is not supported on HarmonyOS');
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
-    const hideLoading: HideLoading = ()=>defineAsyncApi(API_HIDE_LOADING, (options: Object, res: ApiExcutor<Object>)=>{
+    const hideLoading: HideLoading = ()=>defineAsyncApi(API_HIDE_LOADING, (options: Object, res: ApiExecutor<Object>)=>{
             res.reject('hideLoading is not supported on HarmonyOS');
         });
     type Rpx2px = (number: number) => number;
@@ -2755,7 +3467,7 @@ export function initUniExtApi(APP_ID: string) {
         }
         return parseStorageValue(storeValue as string);
     }) as GetStorageSync;
-    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExcutor<GetStorageSuccess>)=>{
+    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExecutor<GetStorageSuccess>)=>{
         createStore().get(args.key, '').then((storeValue)=>{
             if (!storeValue) {
                 return exec.reject('data not found');
@@ -2776,7 +3488,7 @@ export function initUniExtApi(APP_ID: string) {
         createStore().putSync(key, stringifyStorageValue(value));
         createStore().flush();
     }) as SetStorageSync;
-    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExcutor<SetStorageSuccess>)=>{
+    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>)=>{
         createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
             createStore().flush();
             exec.resolve({} as ESObject);
@@ -2788,7 +3500,7 @@ export function initUniExtApi(APP_ID: string) {
         createStore().deleteSync(key);
         createStore().flush();
     }) as RemoveStorageSync;
-    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExcutor<RemoveStorageSuccess>)=>{
+    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExecutor<RemoveStorageSuccess>)=>{
         createStore().delete(args.key).then(()=>{
             createStore().flush();
             exec.resolve({} as ESObject);
@@ -2800,7 +3512,7 @@ export function initUniExtApi(APP_ID: string) {
         createStore().clearSync();
         createStore().flush();
     }) as ClearStorageSync;
-    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExcutor<ClearStorageSuccess>)=>{
+    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExecutor<ClearStorageSuccess>)=>{
         createStore().clear().then(()=>{
             createStore().flush();
             exec.resolve({} as ESObject);
@@ -2816,7 +3528,7 @@ export function initUniExtApi(APP_ID: string) {
             limitSize: 0
         } as GetStorageInfoSuccess;
     }) as GetStorageInfoSync;
-    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExcutor<GetStorageInfoSuccess>)=>{
+    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExecutor<GetStorageInfoSuccess>)=>{
         createStore().getAll().then((allData)=>{
             exec.resolve({
                 keys: Object.keys(allData),
@@ -2840,7 +3552,9 @@ export function initUniExtApi(APP_ID: string) {
         previewImage: PreviewImage;
         closePreviewImage: ClosePreviewImage;
         getImageInfo: GetImageInfo;
+        saveImageToPhotosAlbum: SaveImageToPhotosAlbum;
         chooseVideo: ChooseVideo;
+        saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
         getVideoInfo: GetVideoInfo;
         setNavigationBarColor: SetNavigationBarColor;
         setNavigationBarTitle: SetNavigationBarTitle;
@@ -2881,7 +3595,9 @@ export function initUniExtApi(APP_ID: string) {
         previewImage,
         closePreviewImage,
         getImageInfo,
+        saveImageToPhotosAlbum,
         chooseVideo,
+        saveVideoToPhotosAlbum,
         getVideoInfo,
         setNavigationBarColor,
         setNavigationBarTitle,

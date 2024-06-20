@@ -9931,6 +9931,11 @@ class TextMetrics {
         this.width = width;
     }
 }
+//#endregion
+const getTempPath = () => {
+    let _TEMP_PATH = TEMP_PATH;
+    return _TEMP_PATH;
+};
 class CanvasContext {
     constructor(id, pageId) {
         this.id = id;
@@ -10609,7 +10614,7 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
         reject();
         return;
     }
-    const dirname = `${TEMP_PATH}/canvas`;
+    let dirname = `${getTempPath()}/canvas`;
     operateCanvas(canvasId, pageId, 'toTempFilePath', {
         x,
         y,

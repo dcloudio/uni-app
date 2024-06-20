@@ -1,4 +1,6 @@
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import fs from '@ohos.file.fs';
+import buffer from '@ohos.buffer';
 
 function arrayPop(array) {
     if (array.length === 0) {
@@ -7996,6 +7998,8 @@ assign(pako, deflate, inflate, constants);
 
 var pako_1 = pako;
 
+const BASE64_TO_TEMP_FILE_PATH = "base64ToTempFilePath";
+
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
 const I18N_JSON_DELIMITERS = ['%', '%'];
@@ -8634,7 +8638,7 @@ const env = {
     // RESOURCE_PATH: 'resource://',
     // 以下路径均不以`/`结尾
     USER_DATA_PATH: '',
-    TEMP_PATH: '',
+    TEMP_PATH: '', // 示例值 /data/storage/el2/base/haps/entry/temp
     CACHE_PATH: '',
 };
 function initEnv() {
@@ -9510,7 +9514,7 @@ function getRealPath(filepath) {
         // 平台绝对路径
         if (filepath.startsWith('/data/storage/')) {
             // 鸿蒙平台特性
-            return 'file:/' + filepath;
+            return 'file://' + filepath;
         }
         return wwwPath + filepath;
     }
@@ -10144,6 +10148,14 @@ class TextMetrics {
         this.width = width;
     }
 }
+//#endregion
+const getTempPath = () => {
+    let _TEMP_PATH = TEMP_PATH;
+    {
+        typeof getEnv !== 'undefined' && (_TEMP_PATH = getEnv().TEMP_PATH);
+    }
+    return _TEMP_PATH;
+};
 class CanvasContext {
     id;
     pageId;
@@ -10827,17 +10839,13 @@ defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height
     }
     operate();
 }, CanvasPutImageDataProtocol, CanvasPutImageDataOptions);
-defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x = 0, y = 0, width, height, destWidth, destHeight, canvasId, fileType, quality, }, { resolve, reject }) => {
+const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x = 0, y = 0, width, height, destWidth, destHeight, canvasId, fileType, quality, }, { resolve, reject }) => {
     var pageId = getPageIdByVm(getCurrentPageVm());
     if (!pageId) {
         reject();
         return;
     }
-    let _TEMP_PATH = TEMP_PATH;
-    {
-        typeof getEnv !== 'undefined' && (_TEMP_PATH = getEnv().TEMP_PATH);
-    }
-    let dirname = `${_TEMP_PATH}/canvas`;
+    let dirname = `${getTempPath()}/canvas`;
     operateCanvas(canvasId, pageId, 'toTempFilePath', {
         x,
         y,
@@ -12785,6 +12793,7 @@ function requireUTSPlugin(name) {
 var uni$1 = {
     __proto__: null,
     canIUse: canIUse,
+    canvasToTempFilePath: canvasToTempFilePath,
     createCanvasContext: createCanvasContext,
     getLocale: getLocale,
     hideTabBar: hideTabBar,
@@ -12999,6 +13008,46 @@ function onMessage(pageId, arg) {
         }));
 }
 
+let index$1 = 0;
+function subscribeBase64ToTempFilePath() {
+    registerServiceMethod(BASE64_TO_TEMP_FILE_PATH, (args, resolve) => {
+        const { dataURL, dirname } = args;
+        const id = `${Date.now()}_${index$1++}`;
+        const array = dataURL.split(',');
+        const scheme = array[0];
+        const base64 = array[1];
+        const format = (scheme.match(/data:image\/(\S+?);/) || [
+            '',
+            'png',
+        ])[1].replace('jpeg', 'jpg');
+        const fileName = `${id}.${format}`;
+        const tempFilePath = `${dirname}/${fileName}`;
+        try {
+            if (!fs.accessSync(dirname)) {
+                fs.mkdirSync(dirname);
+            }
+        }
+        catch (error) {
+            resolve(error);
+            return;
+        }
+        fs.createStream(tempFilePath, 'w', (err, stream) => {
+            if (err) {
+                stream.closeSync();
+                return resolve(err);
+            }
+            stream.write(buffer.from(base64, 'base64').buffer, (err) => {
+                if (err) {
+                    stream.closeSync();
+                    return resolve(err);
+                }
+                stream.closeSync();
+                return resolve({ tempFilePath: `file://${tempFilePath}` });
+            });
+        });
+    });
+}
+
 function initSubscribeHandlers() {
     const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
     onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
@@ -13014,6 +13063,7 @@ function initSubscribeHandlers() {
     subscribeNavigator();
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
+    subscribeBase64ToTempFilePath();
     // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
     const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
     if (routeOptions) {

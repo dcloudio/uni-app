@@ -2117,62 +2117,114 @@ class SelectorQueryImpl {
     this._queueCb.push(callback);
   }
 }
-function getNodeInfo(node) {
-  var _node$getAttribute;
-  var rect = node.getBoundingClientRect();
-  var nodeInfo = {
-    id: (_node$getAttribute = node.getAttribute("id")) === null || _node$getAttribute === void 0 ? void 0 : _node$getAttribute.toString(),
-    dataset: null,
-    left: rect.left,
-    top: rect.top,
-    right: rect.right,
-    bottom: rect.bottom,
-    width: rect.width,
-    height: rect.height
-  };
-  return nodeInfo;
-}
-function querySelf(element, selector) {
-  if (element == null || selector.length < 2) {
+class QuerySelectorHelper {
+  constructor(element, vnode) {
+    this._element = element;
+    this._commentStartVNode = vnode;
+  }
+  static queryElement(element, selector, all, vnode) {
+    return new QuerySelectorHelper(element, vnode).query(selector, all);
+  }
+  query(selector, all) {
+    if (this._element.nodeName == "#comment") {
+      return this.queryFragment(this._element, selector, all);
+    } else {
+      return all ? this.querySelectorAll(this._element, selector) : this.querySelector(this._element, selector);
+    }
+  }
+  queryFragment(el, selector, all) {
+    var current = el.nextSibling;
+    if (current == null) {
+      return null;
+    }
+    if (all) {
+      var result1 = [];
+      while (true) {
+        var queryResult = this.querySelectorAll(current, selector);
+        if (queryResult != null) {
+          result1.push(...queryResult);
+        }
+        current = current.nextSibling;
+        if (current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result1;
+    } else {
+      var result2 = null;
+      while (true) {
+        result2 = this.querySelector(current, selector);
+        current = current.nextSibling;
+        if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result2;
+    }
+  }
+  querySelector(element, selector) {
+    var element2 = this.querySelf(element, selector);
+    if (element2 == null) {
+      element2 = element.querySelector(selector);
+    }
+    if (element2 != null) {
+      return this.getNodeInfo(element2);
+    }
     return null;
   }
-  var selectorType = selector.charAt(0);
-  var selectorName = selector.slice(1);
-  if (selectorType == "." && Array.from(element.classList).includes(selectorName)) {
-    return element;
+  querySelectorAll(element, selector) {
+    var nodesInfoArray = [];
+    var element2 = this.querySelf(element, selector);
+    if (element2 != null) {
+      nodesInfoArray.push(this.getNodeInfo(element));
+    }
+    var findNodes = element.querySelectorAll(selector);
+    findNodes === null || findNodes === void 0 || findNodes.forEach((el) => {
+      nodesInfoArray.push(this.getNodeInfo(el));
+    });
+    return nodesInfoArray;
   }
-  if (selectorType == "#" && element.getAttribute("id") == selectorName) {
-    return element;
+  querySelf(element, selector) {
+    if (element == null || selector.length < 2) {
+      return null;
+    }
+    var selectorType = selector.charAt(0);
+    var selectorName = selector.slice(1);
+    if (selectorType == "." && element.classList.includes(selectorName)) {
+      return element;
+    }
+    if (selectorType == "#" && element.getAttribute("id") == selectorName) {
+      return element;
+    }
+    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
+      return element;
+    }
+    return null;
   }
-  if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
-    return element;
+  getNodeInfo(element) {
+    var _element$getAttribute;
+    var rect = element.getBoundingClientRect();
+    var nodeInfo = {
+      id: (_element$getAttribute = element.getAttribute("id")) === null || _element$getAttribute === void 0 ? void 0 : _element$getAttribute.toString(),
+      dataset: null,
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height
+    };
+    return nodeInfo;
   }
-  return null;
 }
 function requestComponentInfo(vueComponent, queue2, callback) {
   var result = [];
   var el = vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$el;
   if (el != null) {
     queue2.forEach((item) => {
-      if (item.single) {
-        var element = querySelf(el, item.selector);
-        if (element == null) {
-          element = el.querySelector(item.selector);
-        }
-        if (element != null) {
-          result.push(getNodeInfo(element));
-        }
-      } else {
-        var nodesInfo = [];
-        var _element = querySelf(el, item.selector);
-        if (_element != null) {
-          nodesInfo.push(getNodeInfo(_element));
-        }
-        var findNodes = el.querySelectorAll(item.selector);
-        findNodes === null || findNodes === void 0 || findNodes.forEach((node) => {
-          nodesInfo.push(getNodeInfo(node));
-        });
-        result.push(nodesInfo);
+      var queryResult = QuerySelectorHelper.queryElement(el, item.selector, !item.single, vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$.subTree);
+      if (queryResult != null) {
+        result.push(queryResult);
       }
     });
   }

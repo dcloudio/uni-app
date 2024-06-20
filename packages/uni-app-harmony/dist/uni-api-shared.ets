@@ -6,13 +6,13 @@ interface AsyncApiSuccessResult {
 }
 interface AsyncApiResult {
 }
-interface ErrRes {
+interface ApiError {
     errMsg?: string | null;
     errCode?: number | null;
 }
-interface ApiExcutor<K> {
+interface ApiExecutor<K> {
     resolve: (res?: K | void) => void;
-    reject: (errMsg?: string, errRes?: ErrRes) => void;
+    reject: (errMsg?: string, errRes?: ApiError) => void;
 }
 interface ProtocolOptions {
     name?: string | null;
@@ -84,12 +84,12 @@ function buildOptions(options: ApiOptions<AsyncMethodOptionLike> | null = null) 
     }
     return originalOptions;
 }
-function defineAsyncApi<T extends AsyncMethodOptionLike, K>(name: string, fn: (options: T, res: ApiExcutor<K>) => void, protocol: Map<string, ProtocolOptions> | null = null, options: ApiOptions<T> | null = null): Function {
+function defineAsyncApi<T extends AsyncMethodOptionLike, K>(name: string, fn: (options: T, res: ApiExecutor<K>) => void, protocol: Map<string, ProtocolOptions> | null = null, options: ApiOptions<T> | null = null): Function {
     const originalProtocol = buildProtocol(protocol);
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineAsyncApi(name, fn, originalProtocol, originalOptions);
 }
-function defineTaskApi<T, K, TASK>(name: string, fn: (options: T, res: ApiExcutor<K>) => TASK, protocol: Map<string, ProtocolOptions>, options: ApiOptions<T>): Object {
+function defineTaskApi<T, K, TASK>(name: string, fn: (options: T, res: ApiExecutor<K>) => TASK, protocol: Map<string, ProtocolOptions>, options: ApiOptions<T>): Object {
     const originalProtocol = buildProtocol(protocol);
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineTaskApi(name, fn, originalProtocol, originalOptions);
@@ -109,8 +109,8 @@ function defineOffApi<T>(name: string, fn: () => void, options: ApiOptions<T>): 
 }
 export { AsyncApiSuccessResult as AsyncApiSuccessResult };
 export { AsyncApiResult as AsyncApiResult };
-export { ErrRes as ErrRes };
-export { ApiExcutor as ApiExcutor };
+export { ApiError as ApiError };
+export { ApiExecutor as ApiExecutor };
 export { ProtocolOptions as ProtocolOptions };
 export { ApiOptions as ApiOptions };
 export { defineAsyncApi as defineAsyncApi };

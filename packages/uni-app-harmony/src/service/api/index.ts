@@ -18,8 +18,6 @@ export {
   getLocale,
   onLocaleChange,
   createCanvasContext,
-  /* canvasGetImageData,
-  canvasPutImageData,
-  canvasToTempFilePath, */
+  canvasToTempFilePath,
 } from '@dcloudio/uni-api'
 export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'
