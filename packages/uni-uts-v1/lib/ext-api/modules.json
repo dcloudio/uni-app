@@ -245,7 +245,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "compressImage": {
@@ -272,7 +272,7 @@
           "js": false,
           "kotlin": true,
           "swift": true,
-          "arkts": false
+          "arkts": true
         }
       },
       "getVideoInfo": {
