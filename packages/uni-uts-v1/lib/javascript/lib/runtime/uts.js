@@ -650,7 +650,17 @@ function getGlobal() {
     if (typeof global !== 'undefined') {
         return global;
     }
-    throw new Error('unable to locate global object');
+    function g() {
+        return this
+    }
+
+    if (typeof g() !== 'undefined') {
+        return g()
+    }
+
+    return (function () {
+        return new Function('return this')()
+    })()
 }
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
