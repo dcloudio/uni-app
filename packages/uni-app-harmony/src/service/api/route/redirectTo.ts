@@ -63,11 +63,6 @@ function _redirectTo({
   lastPage && removePage(lastPage)
 
   return new Promise((resolve) => {
-    // TODO 目前redirectTo => back + pushUrl，如存在闪白问题需考虑优化此处
-    if (lastPage) {
-      const webview = (lastPage as ComponentPublicInstance).$getAppWebview!()
-      webview.close('none')
-    }
     showWebview(
       registerPage({
         url,
@@ -78,6 +73,11 @@ function _redirectTo({
       'none',
       0,
       () => {
+        if (lastPage) {
+          const webview = (lastPage as ComponentPublicInstance)
+            .$getAppWebview!()
+          webview.close('none')
+        }
         resolve(undefined)
       }
     )
