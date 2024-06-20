@@ -14,13 +14,13 @@ export interface AsyncApiSuccessResult {}
 
 export interface AsyncApiResult {}
 
-export interface ErrRes {
+export interface ApiError {
   errMsg?: string | null
   errCode?: number | null
 }
-export interface ApiExcutor<K> {
+export interface ApiExecutor<K> {
   resolve: (res?: K | void) => void
-  reject: (errMsg?: string, errRes?: ErrRes) => void
+  reject: (errMsg?: string, errRes?: ApiError) => void
 }
 export interface ProtocolOptions {
   name?: string | null
@@ -83,7 +83,7 @@ function buildOptions(options?: ApiOptions<AsyncMethodOptionLike>) {
 
 export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
   name: string,
-  fn: (options: T, res: ApiExcutor<K>) => void,
+  fn: (options: T, res: ApiExecutor<K>) => void,
   protocol?: Map<string, ProtocolOptions>,
   options?: ApiOptions<T>
 ): Function {
@@ -102,7 +102,7 @@ export function defineAsyncApi<T extends AsyncMethodOptionLike, K>(
 
 export function defineTaskApi<T, K, TASK>(
   name: string,
-  fn: (options: T, res: ApiExcutor<K>) => TASK,
+  fn: (options: T, res: ApiExecutor<K>) => TASK,
   protocol: Map<string, ProtocolOptions>,
   options: ApiOptions<T>
 ): Object {
