@@ -59,6 +59,7 @@ export type UTSOutputOptions = {
   isSingleThread?: boolean
   isPlugin?: boolean
   isModule?: boolean
+  isExtApi?: boolean
   split?: boolean
   disableSplitManifest?: boolean
   removeImports?: boolean

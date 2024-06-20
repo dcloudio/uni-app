@@ -233,6 +233,7 @@ export async function compile(
           isX,
           isSingleThread,
           isPlugin,
+          isExtApi,
           isModule: !!indexModuleFilename,
           extApis,
           transform,
@@ -291,6 +292,7 @@ export async function compile(
           isX,
           isSingleThread,
           isPlugin: true, // iOS 目前仅有 plugin 模式
+          isExtApi,
           extApis,
           transform,
           sourceMap: !!sourceMap,
@@ -451,6 +453,7 @@ export async function compile(
           isX,
           isSingleThread,
           isPlugin,
+          isExtApi,
           cacheDir,
           pluginRelativeDir,
           is_uni_modules: pkg.is_uni_modules,
