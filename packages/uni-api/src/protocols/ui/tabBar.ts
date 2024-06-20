@@ -66,6 +66,11 @@ export const SetTabBarStyleOptions: ApiOptions<API_TYPE_SET_TAB_BAR_STYLE> = {
   beforeInvoke: IndexOptions.beforeInvoke,
   formatArgs: {
     backgroundImage(value, params) {
+      // TODO 修复 x-app-iOS 路径转换问题，最小化影响范围
+      if (__PLATFORM__ === 'app' && __X__ && !__NODE_JS__) {
+        params.backgroundImage = value
+        return
+      }
       if (value && !GRADIENT_RE.test(value)) {
         params.backgroundImage = getRealPath(value)
       }
