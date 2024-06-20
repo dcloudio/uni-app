@@ -7,7 +7,7 @@ import {
   type Program,
   type Statement,
   type StringLiteral,
-  assertExportDefaultDeclaration,
+  type ExportDefaultDeclaration,
   isBlockStatement,
   isCallExpression,
   isExportDefaultDeclaration,
@@ -206,9 +206,7 @@ function parseVueComponentName(filename: string) {
   // 获取默认导出定义
   const exportDefaultDecliaration = ast.body.find((node) =>
     isExportDefaultDeclaration(node)
-  )
-
-  assertExportDefaultDeclaration(exportDefaultDecliaration)
+  ) as ExportDefaultDeclaration | undefined
 
   if (!exportDefaultDecliaration) return name
 
