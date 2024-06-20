@@ -13,16 +13,21 @@ declare const uni: any
 
 // 获取 appTheme > osTheme
 export function getAppThemeFallbackOS(): IThemeMode {
-  let fallbackOSTheme
+  let fallbackOSTheme: IThemeMode = 'light'
 
-  const appTheme = uni.getAppBaseInfo().appTheme as IThemeMode & 'auto'
+  try {
+    const appTheme = uni.getAppBaseInfo().appTheme as IThemeMode & 'auto'
 
-  fallbackOSTheme = appTheme
-  if (appTheme === APP_THEME_AUTO) {
-    const osTheme = uni.getDeviceInfo().osTheme as IThemeMode
-    fallbackOSTheme = osTheme
+    fallbackOSTheme = appTheme
+    if (appTheme === APP_THEME_AUTO) {
+      const osTheme = uni.getDeviceInfo().osTheme as IThemeMode
+      fallbackOSTheme = osTheme
+    }
+    return fallbackOSTheme
+  } catch (e) {
+    console.error(e)
+    return fallbackOSTheme
   }
-  return fallbackOSTheme
 }
 
 // 监听主题 id，用来 off
