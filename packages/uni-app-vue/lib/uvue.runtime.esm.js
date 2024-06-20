@@ -8527,7 +8527,7 @@ function parseStyleSheet({
   root
 }) {
   const component = type;
-  if (!component.__styles) {
+  {
     const __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
