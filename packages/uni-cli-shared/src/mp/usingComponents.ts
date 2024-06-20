@@ -1,4 +1,5 @@
 import {
+  type ExportDefaultDeclaration,
   type IfStatement,
   type ImportDeclaration,
   type Node,
@@ -7,7 +8,6 @@ import {
   type Program,
   type Statement,
   type StringLiteral,
-  type ExportDefaultDeclaration,
   isBlockStatement,
   isCallExpression,
   isExportDefaultDeclaration,
