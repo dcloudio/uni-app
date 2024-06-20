@@ -21,6 +21,7 @@ import {
 import type { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
 import { isInHBuilderX } from './hbx'
+import { parseManifestJsonOnce } from './json'
 
 // 专为 uts.ts 服务
 export { camelize, capitalize, isArray } from '@vue/shared'
@@ -233,4 +234,15 @@ export function normalizeEmitAssetFileName(fileName: string) {
     }
   }
   return fileName
+}
+
+export function createIdent() {
+  if (process.env.UNI_INPUT_DIR) {
+    const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+    const id = (manifestJson.appid || '').replace('__UNI__', '')
+    if (id) {
+      return Buffer.from(Buffer.from(id).toString('base64')).toString('hex')
+    }
+  }
+  return ''
 }
