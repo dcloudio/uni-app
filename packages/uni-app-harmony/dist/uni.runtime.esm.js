@@ -7998,7 +7998,7 @@ assign(pako, deflate, inflate, constants);
 
 var pako_1 = pako;
 
-const BASE64_TO_TEMP_FILE_PATH = "base64ToTempFilePath";
+const BASE64_TO_TEMP_FILE_PATH = 'base64ToTempFilePath';
 
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
@@ -10781,7 +10781,7 @@ const createCanvasContext = defineSyncApi(API_CREATE_CANVAS_CONTEXT, (canvasId, 
         UniServiceJSBridge.emit(ON_ERROR, 'createCanvasContext:fail');
     }
 }, CreateCanvasContextProtocol);
-defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
+const canvasGetImageData = defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { resolve, reject }) => {
     const pageId = getPageIdByVm(getCurrentPageVm());
     if (!pageId) {
         reject();
@@ -10809,7 +10809,7 @@ defineAsyncApi(API_CANVAS_GET_IMAGE_DATA, ({ canvasId, x, y, width, height }, { 
         height,
     }, callback);
 }, CanvasGetImageDataProtocol, CanvasGetImageDataOptions);
-defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
+const canvasPutImageData = defineAsyncApi(API_CANVAS_PUT_IMAGE_DATA, ({ canvasId, data, x, y, width, height }, { resolve, reject }) => {
     var pageId = getPageIdByVm(getCurrentPageVm());
     if (!pageId) {
         reject();
@@ -12793,6 +12793,8 @@ function requireUTSPlugin(name) {
 var uni$1 = {
     __proto__: null,
     canIUse: canIUse,
+    canvasGetImageData: canvasGetImageData,
+    canvasPutImageData: canvasPutImageData,
     canvasToTempFilePath: canvasToTempFilePath,
     createCanvasContext: createCanvasContext,
     getLocale: getLocale,

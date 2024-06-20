@@ -36,7 +36,8 @@ import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/
 import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath3, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getRealPath as getRealPath3 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getRealPath as getRealPath4, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import harmonyWindow from '@ohos.window';
 import harmonyWindow1 from '@ohos.window';
@@ -848,6 +849,7 @@ export function initUniExtApi(APP_ID: string) {
     class PreviewImageOptions extends UTSObject {
         current: Object | null = null;
         urls!: Array<string.ImageURIString>;
+        showmenu: boolean | null = null;
         indicator: string | null = null;
         loop: boolean | null = null;
         longPressActions: LongPressActionsOptions | null = null;
@@ -1472,12 +1474,21 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
+    interface IPreviewImageOptions {
+        urls: string[];
+        current: string;
+        showmenu: boolean;
+    }
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
         interface Page {
             $getAppWebview: Function;
         }
         const currentPage = getCurrentPage1() as Page;
-        getOSRuntime().previewImage(options, currentPage.$getAppWebview().page as Object);
+        getOSRuntime().previewImage({
+            urls: options.urls.map((url)=>getRealPath1(url) as string),
+            current: options.current || '',
+            showmenu: options.showmenu === false ? false : true
+        } as IPreviewImageOptions, currentPage.$getAppWebview().page as Object);
         exec.resolve({
             errSubject: 'uni-previewImage',
             errMsg: ''
@@ -1499,7 +1510,7 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
-        const realPath = getRealPath1(fromUri) as string;
+        const realPath = getRealPath2(fromUri) as string;
         const context = getContext();
         const fileName = realPath.split('/').pop() || '' + Date.now() + (type === 'image' ? '.png' : '.mp4');
         let photoSaveOptions = new picker3.PhotoSaveOptions();
@@ -2051,7 +2062,7 @@ export function initUniExtApi(APP_ID: string) {
                     if (filePath == null) {
                         throw new Error('filePath is required');
                     }
-                    params.filePath = getRealPath2(filePath);
+                    params.filePath = getRealPath3(filePath);
                 }
             ],
             [
@@ -2696,7 +2707,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     const readFile = (filePath: string): ArrayBuffer =>{
-        const readFilePath = getRealPath3(filePath) as string;
+        const readFilePath = getRealPath4(filePath) as string;
         const file = fs2.openSync(readFilePath, fs2.OpenMode.READ_ONLY);
         const stat = fs2.statSync(file.fd);
         const data = new ArrayBuffer(stat.size);
