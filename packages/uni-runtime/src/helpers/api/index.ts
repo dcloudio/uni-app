@@ -159,3 +159,10 @@ export function defineOffApi<T>(
   )
   return originalDefineOffApi(name, fn, originalOptions)
 }
+
+export {
+  UniProvider,
+  getUniProvider,
+  getUniProviders,
+  registerUniProvider,
+} from './provider'
