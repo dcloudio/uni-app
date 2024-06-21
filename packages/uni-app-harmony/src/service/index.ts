@@ -1,8 +1,3 @@
-// TODO 使用@dcloudio进行引用
-import {
-  UTSJSONObject,
-  UniError,
-} from '../../../uni-uts-v1/lib/javascript/lib/runtime/uts.js'
 import * as uni from './api/index'
 import { UniServiceJSBridge } from './bridge'
 import { registerApp as __registerApp, getApp } from './framework/app'
@@ -20,4 +15,3 @@ export default {
 }
 export { UniServiceJSBridge } from './bridge'
 export { getEnv } from '../platform/env.js'
-export { UTSJSONObject, UniError }
