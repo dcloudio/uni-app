@@ -7,7 +7,7 @@ export {
   isArray,
 } from '@vue/shared'
 export type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
-// export * from './helpers/api'
+export * from './utils/index'
 export {
   defineAsyncApi,
   defineSyncApi,
