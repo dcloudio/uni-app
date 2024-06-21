@@ -452,6 +452,14 @@
           "swift": false
         }
       },
+      "getPushChannelManager": {
+        "name": "getPushChannelManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
       "createPushMessage": {
         "name": "createPushMessage",
         "app": {
