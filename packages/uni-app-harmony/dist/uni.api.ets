@@ -38,6 +38,7 @@ import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/
 import { getRealPath as getRealPath2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath as getRealPath3, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getResourceStr } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
 import harmonyWindow from '@ohos.window';
 import harmonyWindow1 from '@ohos.window';
 import http1 from '@ohos.net.http';
@@ -848,6 +849,7 @@ export function initUniExtApi(APP_ID: string) {
     class PreviewImageOptions extends UTSObject {
         current: Object | null = null;
         urls!: Array<string.ImageURIString>;
+        showmenu: boolean | null = null;
         indicator: string | null = null;
         loop: boolean | null = null;
         longPressActions: LongPressActionsOptions | null = null;
@@ -1472,12 +1474,21 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
+    interface IPreviewImageOptions {
+        urls: string[];
+        current: string;
+        showmenu: boolean;
+    }
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
         interface Page {
             $getAppWebview: Function;
         }
         const currentPage = getCurrentPage1() as Page;
-        getOSRuntime().previewImage(options, currentPage.$getAppWebview().page as Object);
+        getOSRuntime().previewImage({
+            urls: options.urls.map((url)=>getRealPath1(url) as string),
+            current: options.current || '',
+            showmenu: options.showmenu === false ? false : true
+        } as IPreviewImageOptions, currentPage.$getAppWebview().page as Object);
         exec.resolve({
             errSubject: 'uni-previewImage',
             errMsg: ''
@@ -1491,31 +1502,55 @@ export function initUniExtApi(APP_ID: string) {
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
         const context = getContext();
-        let atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
+        const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
         ]);
         const isGranted = permissionRequestResult.authResults[0] === 0;
         return isGranted;
     };
-    const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
-        const realPath = getRealPath1(fromUri) as string;
+    const saveResource = async (src: Resource, dest: string)=>{
         const context = getContext();
-        const fileName = realPath.split('/').pop() || '' + Date.now() + (type === 'image' ? '.png' : '.mp4');
-        let photoSaveOptions = new picker3.PhotoSaveOptions();
+        const resourceManager = context.resourceManager;
+        const srcPath: string = src.params?.[0] as string;
+        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
+        const content = await resourceManager.getRawFileContent(srcPath);
+        await fs1.write(destFile.fd, content.buffer);
+        await fs1.close(destFile);
+    };
+    const saveUri = async (src: string, dest: string)=>{
+        const srcFile = fs1.openSync(src, fs1.OpenMode.READ_ONLY);
+        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
+        await fs1.copyFile(srcFile.fd, destFile.fd);
+        await fs1.close(srcFile);
+        await fs1.close(destFile);
+    };
+    const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
+        const realPath = getResourceStr(fromUri) as string | Resource;
+        const context = getContext();
+        let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
+        const isResource = typeof realPath !== 'string';
+        if (isResource) {
+            if (typeof realPath.params?.[0] === 'string') {
+                fileName = realPath.params?.[0].split('/').pop() || fileName;
+            }
+        } else {
+            fileName = realPath.split('/').pop() || fileName;
+        }
+        const photoSaveOptions = new picker3.PhotoSaveOptions();
         photoSaveOptions.newFileNames = [
             fileName
         ];
-        let photoPicker = new picker3.PhotoViewPicker();
+        const photoPicker = new picker3.PhotoViewPicker();
         const photoSaveResult = await photoPicker.save(photoSaveOptions);
         const destUri = photoSaveResult[0];
-        const tempFile = fs1.openSync(realPath, fs1.OpenMode.READ_ONLY);
-        const destFile = fs1.openSync(destUri, fs1.OpenMode.WRITE_ONLY);
-        await fs1.copyFile(tempFile.fd, destFile.fd);
-        fs1.closeSync(tempFile);
-        fs1.closeSync(destFile);
-        let phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
-        let assetChangeRequest: photoAccessHelper.MediaAssetChangeRequest = photoAccessHelper.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
+        if (isResource) {
+            await saveResource(realPath as Resource, destUri);
+        } else {
+            await saveUri(realPath as string, destUri);
+        }
+        const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
+        const assetChangeRequest: photoAccessHelper.MediaAssetChangeRequest = photoAccessHelper.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
         await phAccessHelper.applyChanges(assetChangeRequest);
         return destUri;
     };
