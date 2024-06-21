@@ -2313,6 +2313,16 @@ function getProxy() {
           return nativeChannel.invokeSync("APP-SERVICE", args, callback);
         },
         invokeAsync(args, callback) {
+          if (
+            // 硬编码
+            args.moduleName === "uni-ad" && ["showByJs", "loadByJs"].includes(args.name)
+          ) {
+            var res = nativeChannel.invokeSync("APP-SERVICE", args, callback);
+            callback(extend(res, {
+              params: [res.params]
+            }));
+            return res;
+          }
           return nativeChannel.invokeAsync("APP-SERVICE", args, callback);
         }
       };
