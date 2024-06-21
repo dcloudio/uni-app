@@ -93,6 +93,7 @@ export function uniUTSAppUniModulesPlugin(
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,
+      isExtApi,
       extApis: options.extApis,
       sourceMap: enableSourceMap(),
       uni_modules: deps,
