@@ -49,10 +49,15 @@ export async function compileArkTS(
       'defineTaskApi',
       'defineOnApi',
       'defineOffApi',
+      'getUniProvider',
+      'getUniProviders',
+      'AsyncApiSuccessResult',
+      'AsyncApiResult',
       'ApiExecutor',
       'ProtocolOptions',
       'ApiOptions',
       'ApiError',
+      'UniProvider',
     ]
     banners.push(
       `import { ${globals.join(
