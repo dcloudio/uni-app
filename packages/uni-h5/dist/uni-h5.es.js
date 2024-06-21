@@ -3969,13 +3969,6 @@ class TextMetrics {
     this.width = width;
   }
 }
-const getTempPath = () => {
-  let _TEMP_PATH = TEMP_PATH;
-  if (!__PLUS__) {
-    typeof getEnv !== "undefined" && (_TEMP_PATH = getEnv().TEMP_PATH);
-  }
-  return _TEMP_PATH;
-};
 class CanvasContext {
   constructor(id2, pageId) {
     this.id = id2;
@@ -4647,7 +4640,7 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(
       reject();
       return;
     }
-    let dirname = `${getTempPath()}/canvas`;
+    const dirname = `${TEMP_PATH}/canvas`;
     operateCanvas(
       canvasId,
       pageId,
@@ -7128,7 +7121,6 @@ const inflateRaw = (...args) => {
 };
 const deflateRaw = (...args) => {
 };
-const getEnv = () => ({ TEMP_PATH, CACHE_PATH: "", USER_DATA_PATH: "" });
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
@@ -7615,9 +7607,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
             if (image2) {
               c2d.drawImage.apply(
                 c2d,
-                // @ts-expect-error
+                // @ts-ignore
                 [image2].concat(
-                  // @ts-expect-error
+                  // @ts-ignore
                   [...otherData.slice(4, 8)],
                   [...otherData.slice(0, 4)]
                 )
@@ -7724,9 +7716,6 @@ function useMethods(props2, canvasRef, actionsWaiting) {
         destWidth = Math.round(width * _pixelRatio.value);
         destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
-        if (!destHeight) {
-          destHeight = Math.round(height * _pixelRatio.value);
-        }
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {
         destHeight = Math.round(height / width * destWidth);
@@ -7828,7 +7817,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
       type: fileType,
       quality
     });
-    if (res.errMsg) {
+    if (!res.data || !res.data.length) {
       resolve({
         errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
       });

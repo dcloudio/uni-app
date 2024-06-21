@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, SCHEME_RE, DATA_RE, cacheStringFunction, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
 function getCurrentPage() {
@@ -459,44 +459,6 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
   return promisify(name, wrapperAsyncApi(name, fn, void 0, options));
 }
-function getRealPath$1(filepath) {
-  if (filepath.indexOf("//") === 0) {
-    return "https:" + filepath;
-  }
-  if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
-    return filepath;
-  }
-  if (isSystemURL(filepath)) {
-    return "file://" + normalizeLocalPath(filepath);
-  }
-  var wwwPath = "file://" + normalizeLocalPath("_www");
-  if (filepath.indexOf("/") === 0) {
-    if (filepath.startsWith("/storage/") || filepath.startsWith("/sdcard/") || filepath.includes("/Containers/Data/Application/")) {
-      return "file://" + filepath;
-    }
-    return wwwPath + filepath;
-  }
-  if (filepath.indexOf("../") === 0 || filepath.indexOf("./") === 0) {
-    if (typeof __id__ === "string") {
-      return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
-    } else {
-      var page = getCurrentPage();
-      if (page) {
-        return wwwPath + getRealRoute(addLeadingSlash(page.route), filepath);
-      }
-    }
-  }
-  return filepath;
-}
-var normalizeLocalPath = cacheStringFunction((filepath) => {
-  return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
-});
-function isSystemURL(filepath) {
-  if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
-    return true;
-  }
-  return false;
-}
 var vueApp;
 function getVueApp() {
   return vueApp;
@@ -926,13 +888,13 @@ var SetTabBarStyleProtocol = {
   backgroundRepeat: String,
   borderStyle: String
 };
-var GRADIENT_RE = /^(linear|radial)-gradient\(.+?\);?$/;
 var SetTabBarStyleOptions = {
   beforeInvoke: IndexOptions.beforeInvoke,
   formatArgs: {
     backgroundImage(value, params) {
-      if (value && !GRADIENT_RE.test(value)) {
-        params.backgroundImage = getRealPath$1(value);
+      {
+        params.backgroundImage = value;
+        return;
       }
     },
     borderStyle(value, params) {

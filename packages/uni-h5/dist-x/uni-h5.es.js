@@ -5008,13 +5008,6 @@ class TextMetrics {
     this.width = width;
   }
 }
-const getTempPath = () => {
-  let _TEMP_PATH = TEMP_PATH;
-  if (!__PLUS__) {
-    typeof getEnv !== "undefined" && (_TEMP_PATH = getEnv().TEMP_PATH);
-  }
-  return _TEMP_PATH;
-};
 class CanvasContext {
   constructor(id2, pageId) {
     this.id = id2;
@@ -5686,7 +5679,7 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(
       reject();
       return;
     }
-    let dirname = `${getTempPath()}/canvas`;
+    const dirname = `${TEMP_PATH}/canvas`;
     operateCanvas(
       canvasId,
       pageId,
@@ -8153,7 +8146,6 @@ function initLaunchOptions({
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
-const getEnv = () => ({ TEMP_PATH, CACHE_PATH: "", USER_DATA_PATH: "" });
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;

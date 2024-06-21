@@ -562,6 +562,7 @@ export declare interface PageNodeOptions {
     statusbarHeight: number;
     windowTop: number;
     windowBottom: number;
+    nvueFlexDirection?: string;
 }
 
 /**

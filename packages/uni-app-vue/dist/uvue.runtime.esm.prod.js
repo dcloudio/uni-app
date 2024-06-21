@@ -7688,7 +7688,7 @@ function parseStyleSheet(_ref23) {
     root
   } = _ref23;
   var component = type;
-  if (!component.__styles) {
+  {
     var __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray$1(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
