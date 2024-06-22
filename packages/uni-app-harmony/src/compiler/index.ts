@@ -1,2 +1,3 @@
 import appVite from '@dcloudio/uni-app-vite'
-export default [appVite]
+import { uniAppHarmonyPlugin } from './plugin'
+export default [appVite, uniAppHarmonyPlugin]

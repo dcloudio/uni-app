@@ -51,18 +51,31 @@ export function getUniExtApiPlugins() {
   })
 }
 
+export function formatExtApiProviderName(service: string, name: string) {
+  if (service === 'oauth') {
+    service = 'OAuth'
+  }
+  return `Uni${capitalize(camelize(service))}${capitalize(
+    camelize(name)
+  )}Provider`
+}
+
 export function getUniExtApiProviderRegisters() {
-  const result: { name: string; service: string; class: string }[] = []
+  const result: {
+    name: string
+    plugin: string
+    service: string
+    class: string
+  }[] = []
   extApiProviders.forEach((provider) => {
     if (provider.name && provider.service) {
       result.push({
         name: provider.name,
+        plugin: provider.plugin,
         service: provider.service,
-        class: `uts.sdk.modules.${camelize(provider.plugin)}.${capitalize(
-          camelize(
-            'uni-' + provider.service + '-' + provider.name + '-provider'
-          )
-        )}`,
+        class: `uts.sdk.modules.${camelize(
+          provider.plugin
+        )}.${formatExtApiProviderName(provider.service, provider.name)}`,
       })
     }
   })

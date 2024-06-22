@@ -24,6 +24,7 @@ export * from './platform'
 export * from './utsUtils'
 
 export {
+  parseUniExtApi,
   parseUniExtApis,
   parseInjects,
   parseUniModulesArtifacts,
@@ -32,6 +33,7 @@ export {
   Defines,
   getUniExtApiProviderRegisters,
   resolveEncryptUniModule,
+  formatExtApiProviderName,
 } from './uni_modules'
 
 export { M } from './messages'
