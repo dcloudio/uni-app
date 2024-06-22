@@ -57,7 +57,9 @@ const scrollBehavior: RouterOptions['scrollBehavior'] = (
       // tabbar 跳 tabbar
       const position = getTabBarScrollPosition(to.meta.tabBarIndex)
       if (position) {
-        window.scrollTo(position.x, position.y)
+        if (typeof window.scrollTo === 'function') {
+          window.scrollTo(position.x, position.y)
+        }
 
         return position
       }
