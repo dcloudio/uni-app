@@ -22,19 +22,53 @@ export function initRouter(app: App) {
     uni.hideLoading()
   })
   //#endif
+
+  //#if !_X_
+  router.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      // tabbar 跳 tabbar
+      saveTabBarScrollPosition(from.meta.tabBarIndex)
+    }
+  })
+  //#endif
   ;(app as any).router = router // 挂在app上，方便ssr获取
   app.use(router)
 }
 
+// from router-guard
+let positionStore = Object.create(null)
+export function getTabBarScrollPosition(id) {
+  return positionStore[id]
+}
+function saveTabBarScrollPosition(id) {
+  positionStore[id] = {
+    x: window.pageXOffset,
+    y: window.pageYOffset,
+  }
+}
+
 const scrollBehavior: RouterOptions['scrollBehavior'] = (
-  _to,
-  _from,
+  to,
+  from,
   savedPosition
 ) => {
   if (savedPosition) {
     return savedPosition
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      // tabbar 跳 tabbar
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex)
+      if (position) {
+        window.scrollTo(position.x, position.y)
+
+        return position
+      }
+    }
+    return {
+      x: 0,
+      y: 0,
+    }
   }
-  // TODO tabBar?
 }
 
 function createRouterOptions(): RouterOptions {
