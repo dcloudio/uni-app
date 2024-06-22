@@ -39,9 +39,11 @@ export function getTabBarScrollPosition(id) {
   return positionStore[id]
 }
 function saveTabBarScrollPosition(id) {
-  positionStore[id] = {
-    x: window.pageXOffset,
-    y: window.pageYOffset,
+  if (typeof window !== 'undefined') {
+    positionStore[id] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset,
+    }
   }
 }
 
@@ -57,16 +59,12 @@ const scrollBehavior: RouterOptions['scrollBehavior'] = (
       // tabbar 跳 tabbar
       const position = getTabBarScrollPosition(to.meta.tabBarIndex)
       if (position) {
-        if (typeof window.scrollTo === 'function') {
-          window.scrollTo(position.x, position.y)
-        }
-
         return position
       }
     }
     return {
-      x: 0,
-      y: 0,
+      left: 0,
+      top: 0,
     }
   }
 }
