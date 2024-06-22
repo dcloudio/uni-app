@@ -39,6 +39,6 @@
     "output": {
       "format": "cjs"
     },
-    "external": ["@dcloudio/uni-app-vite"]
+    "external": ["@dcloudio/uni-app-vite", "@dcloudio/uni-cli-shared"]
   }
 ]

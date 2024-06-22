@@ -64,6 +64,7 @@ export type UTSOutputOptions = {
   disableSplitManifest?: boolean
   removeImports?: boolean
   dropImports?: string[]
+  returnExportIdent?: boolean
   uniAppX?: {
     uvueOutDir: string
   }
@@ -112,6 +113,7 @@ export interface UTSResult {
   changed?: string[]
   inject_apis?: string[]
   scoped_slots?: string[]
+  exports?: string[]
   time?: number
   error?: Error
 }

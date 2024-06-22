@@ -4,9 +4,9 @@ import type { OutputBundle, PluginContext } from 'rollup'
 import {
   type UniVitePlugin,
   buildUniExtApis,
-  camelize,
-  capitalize,
   emptyDir,
+  formatExtApiProviderName,
+  getCurrentCompiledUTSPlugins,
   getUTSEasyComAutoImports,
   getUniExtApiProviderRegisters,
   normalizeEmitAssetFileName,
@@ -17,7 +17,6 @@ import {
   parseVueRequest,
   resolveMainPathOnce,
   resolveUTSCompiler,
-  utsPlugins,
 } from '@dcloudio/uni-cli-shared'
 import {
   DEFAULT_APPID,
@@ -199,7 +198,7 @@ export function uniAppPlugin(): UniVitePlugin {
         sourceMap:
           process.env.NODE_ENV === 'development' &&
           process.env.UNI_COMPILE_TARGET !== 'uni_modules',
-        uni_modules: [...utsPlugins],
+        uni_modules: [...getCurrentCompiledUTSPlugins()],
         extApis: parseUniExtApiNamespacesOnce(
           process.env.UNI_UTS_PLATFORM,
           process.env.UNI_UTS_TARGET_LANGUAGE
@@ -323,13 +322,7 @@ function parseUniExtApiProviders(
               providers.push([
                 systemProvider.service,
                 providerName,
-                `Uni${capitalize(
-                  camelize(
-                    systemProvider.service === 'oauth'
-                      ? 'OAuth'
-                      : systemProvider.service
-                  )
-                )}${capitalize(camelize(providerName))}Provider`,
+                formatExtApiProviderName(systemProvider.service, providerName),
               ])
             }
           }
