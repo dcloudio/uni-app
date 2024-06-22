@@ -23,14 +23,12 @@ export function initRouter(app: App) {
   })
   //#endif
 
-  //#if !_X_
   router.beforeEach((to, from) => {
     if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
       // tabbar 跳 tabbar
       saveTabBarScrollPosition(from.meta.tabBarIndex)
     }
   })
-  //#endif
   ;(app as any).router = router // 挂在app上，方便ssr获取
   app.use(router)
 }
