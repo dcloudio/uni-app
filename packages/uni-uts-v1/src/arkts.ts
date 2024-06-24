@@ -40,7 +40,7 @@ export async function compileArkTS(
     'ComponentInternalInstance',
   ]
   const banners: string[] = [
-    `import { ${globals.join(', ')} } from '../../../../uni-app/lib/uts'`,
+    `import { ${globals.join(', ')} } from '@dcloudio/uni-app-ohos-runtime'`,
   ]
   if (isExtApi) {
     const globals = [
@@ -60,9 +60,7 @@ export async function compileArkTS(
       'UniProvider',
     ]
     banners.push(
-      `import { ${globals.join(
-        ', '
-      )} } from '../../../../uni-app/lib/uni-api-shared'`
+      `import { ${globals.join(', ')} } from '@dcloudio/uni-app-ohos-runtime'`
     )
   }
   const buildOptions: UTSBundleOptions = {
