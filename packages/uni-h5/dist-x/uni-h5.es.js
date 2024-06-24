@@ -18088,12 +18088,40 @@ function initRouter(app) {
     uni.hideToast();
     uni.hideLoading();
   });
+  router.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      saveTabBarScrollPosition(from.meta.tabBarIndex);
+    }
+  });
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
+let positionStore = /* @__PURE__ */ Object.create(null);
+function getTabBarScrollPosition(id2) {
+  return positionStore[id2];
+}
+function saveTabBarScrollPosition(id2) {
+  if (typeof window !== "undefined") {
+    positionStore[id2] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset
+    };
+  }
+}
+const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     return savedPosition;
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
+      if (position) {
+        return position;
+      }
+    }
+    return {
+      left: 0,
+      top: 0
+    };
   }
 };
 function createRouterOptions() {
