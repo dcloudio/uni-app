@@ -29,18 +29,17 @@ export async function compileArkTS(
     projectPath,
     pluginId
   )
-  const globals = [
+  const utsGlobals = ['IUTSObject', 'UTSObject', 'UTSJSONObject']
+  const uniAppGlobals = [
     'IUniError',
-    'IUTSObject',
     'UniError',
-    'UTSObject',
-    'UTSJSONObject',
     'string',
     'ComponentPublicInstance',
     'ComponentInternalInstance',
   ]
   const banners: string[] = [
-    `import { ${globals.join(', ')} } from '@dcloudio/uni-app-ohos-runtime'`,
+    `import { ${utsGlobals.join(', ')} } from '@dcloudio/uts-harmony'`,
+    `import { ${uniAppGlobals.join(', ')} } from '@dcloudio/uni-app-harmony'`,
   ]
   if (isExtApi) {
     const globals = [
@@ -60,7 +59,7 @@ export async function compileArkTS(
       'UniProvider',
     ]
     banners.push(
-      `import { ${globals.join(', ')} } from '@dcloudio/uni-app-ohos-runtime'`
+      `import { ${globals.join(', ')} } from '@dcloudio/uni-app-harmony'`
     )
   }
   const buildOptions: UTSBundleOptions = {
@@ -69,12 +68,9 @@ export async function compileArkTS(
       root: inputDir,
       filename,
       paths: {
-        '@dcloudio/uni-runtime':
-          '../../../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev',
+        '@dcloudio/uni-runtime': '@dcloudio/uni-app-harmony-framework',
       },
-      externals: [
-        '../../../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev',
-      ],
+      externals: ['@dcloudio/uni-app-harmony-framework'],
       parseOptions: {
         tsx: true,
         noEarlyErrors: true,
