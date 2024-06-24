@@ -576,7 +576,15 @@ function getGlobal() {
   if (typeof global !== "undefined") {
     return global;
   }
-  throw new Error("unable to locate global object");
+  function g2() {
+    return this;
+  }
+  if (typeof g2() !== "undefined") {
+    return g2();
+  }
+  return function() {
+    return new Function("return this")();
+  }();
 }
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
@@ -8639,12 +8647,40 @@ function pruneRouteCache(key) {
 }
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
+  router.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      saveTabBarScrollPosition(from.meta.tabBarIndex);
+    }
+  });
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
+let positionStore = /* @__PURE__ */ Object.create(null);
+function getTabBarScrollPosition(id) {
+  return positionStore[id];
+}
+function saveTabBarScrollPosition(id) {
+  if (typeof window !== "undefined") {
+    positionStore[id] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset
+    };
+  }
+}
+const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     return savedPosition;
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
+      if (position) {
+        return position;
+      }
+    }
+    return {
+      left: 0,
+      top: 0
+    };
   }
 };
 function createRouterOptions() {
@@ -12460,7 +12496,7 @@ function useTabBarStyle(tabBar2) {
       };
     }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
     };
   });
   const placeholderStyle = vue.computed(() => {

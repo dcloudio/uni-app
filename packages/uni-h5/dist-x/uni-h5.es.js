@@ -581,7 +581,15 @@ function getGlobal() {
   if (typeof window !== "undefined") {
     return window;
   }
-  throw new Error("unable to locate global object");
+  function g2() {
+    return this;
+  }
+  if (typeof g2() !== "undefined") {
+    return g2();
+  }
+  return function() {
+    return new Function("return this")();
+  }();
 }
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
@@ -3590,6 +3598,121 @@ function matches(element, selectors) {
   };
   return matches2.call(element, selectors);
 }
+class QuerySelectorHelper {
+  constructor(element, vnode) {
+    this._element = element;
+    this._commentStartVNode = vnode;
+  }
+  static queryElement(element, selector, all, vnode) {
+    return new QuerySelectorHelper(element, vnode).query(selector, all);
+  }
+  query(selector, all) {
+    const isFragment = (
+      // @ts-expect-error
+      this._element.nodeType === 3 || this._element.nodeType === 8
+    );
+    if (isFragment) {
+      return this.queryFragment(this._element, selector, all);
+    } else {
+      return all ? this.querySelectorAll(this._element, selector) : this.querySelector(this._element, selector);
+    }
+  }
+  queryFragment(el, selector, all) {
+    let current = el.nextSibling;
+    if (current == null) {
+      return null;
+    }
+    let depth = 65535;
+    if (all) {
+      const result1 = [];
+      while (depth > 0) {
+        depth--;
+        if (current.nodeName && current.nodeName == "#comment") {
+          current = current.nextSibling;
+          continue;
+        }
+        const queryResult = this.querySelectorAll(current, selector);
+        if (queryResult != null) {
+          result1.push(...queryResult);
+        }
+        current = current.nextSibling;
+        if (current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result1;
+    } else {
+      let result2 = null;
+      while (depth > 0) {
+        depth--;
+        if (current.nodeName && current.nodeName == "#comment") {
+          current = current.nextSibling;
+          continue;
+        }
+        result2 = this.querySelector(current, selector);
+        current = current.nextSibling;
+        if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result2;
+    }
+  }
+  querySelector(element, selector) {
+    let element2 = this.querySelf(element, selector);
+    if (element2 == null) {
+      element2 = element.querySelector(selector);
+    }
+    if (element2 != null) {
+      return this.getNodeInfo(element2);
+    }
+    return null;
+  }
+  querySelectorAll(element, selector) {
+    const nodesInfoArray = [];
+    const element2 = this.querySelf(element, selector);
+    if (element2 != null) {
+      nodesInfoArray.push(this.getNodeInfo(element));
+    }
+    const findNodes = element.querySelectorAll(selector);
+    findNodes == null ? void 0 : findNodes.forEach((el) => {
+      nodesInfoArray.push(this.getNodeInfo(el));
+    });
+    return nodesInfoArray;
+  }
+  querySelf(element, selector) {
+    if (element == null || selector.length < 2) {
+      return null;
+    }
+    const selectorType2 = selector.charAt(0);
+    const selectorName = selector.slice(1);
+    if (selectorType2 == "." && element.classList.contains(selectorName)) {
+      return element;
+    }
+    if (selectorType2 == "#" && element.getAttribute("id") == selectorName) {
+      return element;
+    }
+    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
+      return element;
+    }
+    return null;
+  }
+  getNodeInfo(element) {
+    var _a;
+    const rect = element.getBoundingClientRect();
+    const nodeInfo = {
+      id: (_a = element.getAttribute("id")) == null ? void 0 : _a.toString(),
+      dataset: null,
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height
+    };
+    return nodeInfo;
+  }
+}
 function getNodesInfo(pageVm, component, selector, single, fields2) {
   const selfElement = findElm(component, pageVm);
   const parentElement = selfElement.parentElement;
@@ -3598,6 +3721,13 @@ function getNodesInfo(pageVm, component, selector, single, fields2) {
   }
   const { nodeType } = selfElement;
   const maybeFragment = nodeType === 3 || nodeType === 8;
+  if (maybeFragment)
+    return QuerySelectorHelper.queryElement(
+      selfElement,
+      selector,
+      !single,
+      component == null ? void 0 : component.$.subTree
+    );
   if (single) {
     const node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
     if (node) {
@@ -18100,12 +18230,40 @@ function initRouter(app) {
     uni.hideToast();
     uni.hideLoading();
   });
+  router.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      saveTabBarScrollPosition(from.meta.tabBarIndex);
+    }
+  });
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
+let positionStore = /* @__PURE__ */ Object.create(null);
+function getTabBarScrollPosition(id2) {
+  return positionStore[id2];
+}
+function saveTabBarScrollPosition(id2) {
+  if (typeof window !== "undefined") {
+    positionStore[id2] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset
+    };
+  }
+}
+const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     return savedPosition;
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
+      if (position) {
+        return position;
+      }
+    }
+    return {
+      left: 0,
+      top: 0
+    };
   }
 };
 function createRouterOptions() {
@@ -24045,7 +24203,7 @@ function useTabBarStyle(tabBar2) {
       };
     }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
     };
   });
   const placeholderStyle = computed(() => {

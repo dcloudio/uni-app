@@ -1,6 +1,3 @@
-import { IUniError, UTSObject, UniError, UTSJSONObject, string, ComponentPublicInstance, ComponentInternalInstance } from './uts'
-import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, AsyncApiSuccessResult, AsyncApiResult, ApiExecutor, ProtocolOptions, ApiOptions, ApiError } from './uni-api-shared'
-
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
@@ -18,67 +15,933 @@ import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony as UTSHarmony1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony3, getCurrentPage } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony4 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony5, getCurrentPage as getCurrentPage2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony6 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3, getCurrentPage } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony5, getCurrentPage as getCurrentPage2 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
+import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
+import { UniError, ComponentPublicInstance, UniProvider, IUniError, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ComponentInternalInstance, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
+import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
-import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath3, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getResourceStr } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath3, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr } from "@dcloudio/uni-app-harmony-framework";
 import harmonyWindow from '@ohos.window';
 import harmonyWindow1 from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
-import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { isPlainObject, Emitter } from "@dcloudio/uni-app-harmony-framework";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
 import promptAction1 from '@ohos.promptAction';
-import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+export type SetClipboardData = (options: SetClipboardDataOptions) => void;
+export class SetClipboardDataSuccess extends UTSObject {
+}
+type SetClipboardDataSuccessCallback = (result: SetClipboardDataSuccess) => void;
+type SetClipboardDataFail = UniError;
+type SetClipboardDataFailCallback = (result: SetClipboardDataFail) => void;
+type SetClipboardDataComplete = Object;
+type SetClipboardDataCompleteCallback = (result: SetClipboardDataComplete) => void;
+export class SetClipboardDataOptions extends UTSObject {
+    data!: string;
+    showToast: boolean | null = null;
+    success: SetClipboardDataSuccessCallback | null = null;
+    fail: SetClipboardDataFailCallback | null = null;
+    complete: SetClipboardDataCompleteCallback | null = null;
+}
+export type GetClipboardData = (options: GetClipboardDataOptions) => void;
+export class GetClipboardDataSuccess extends UTSObject {
+    data!: string;
+}
+type GetClipboardDataSuccessCallback = (result: GetClipboardDataSuccess) => void;
+type GetClipboardDataFail = UniError;
+type GetClipboardDataFailCallback = (result: GetClipboardDataFail) => void;
+type GetClipboardDataComplete = Object;
+type GetClipboardDataCompleteCallback = (result: GetClipboardDataComplete) => void;
+export class GetClipboardDataOptions extends UTSObject {
+    success: GetClipboardDataSuccessCallback | null = null;
+    fail: GetClipboardDataFailCallback | null = null;
+    complete: GetClipboardDataCompleteCallback | null = null;
+}
+interface ClipboardModuleGetStringOptions {
+    result: string;
+    data: string;
+}
+interface ClipboardModule {
+    getString(callback: (ret: ClipboardModuleGetStringOptions) => void): void;
+    setString(data: string): void;
+}
+export type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
+export interface CreateIntersectionObserverOptions {
+    thresholds?: (Object[]) | null;
+    initialRatio?: number | null;
+    observeAll?: boolean | null;
+}
+class ObserveNodeRect extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+}
+class ObserveResult extends UTSObject {
+    intersectionRatio!: number;
+    intersectionRect!: Object;
+    boundingClientRect!: ObserveNodeRect;
+    relativeRect!: ObserveNodeRect;
+    time!: number;
+}
+export type ObserveCallback = (result: ObserveResult) => void;
+interface IntersectionObserver {
+    relativeTo(selector: string, margins?: Object): IntersectionObserver;
+    relativeToViewport(margins?: Object): IntersectionObserver;
+    observe(targetSelector: string, callback: ObserveCallback): void;
+    disconnect(): void;
+}
+interface AddIntersectionObserverArgs {
+    reqId: number;
+    component: ComponentPublicInstance;
+    options: ServiceIntersectionObserverOptions;
+    callback: ObserveCallback;
+}
+interface RemoveIntersectionObserverArgs {
+    reqId: number;
+    component: ComponentPublicInstance;
+}
+interface RequestComponentObserverOptions {
+    selector?: string;
+    rootMargin?: string;
+    relativeToSelector?: string;
+}
+interface ServiceIntersectionObserverOptions extends CreateIntersectionObserverOptions, RequestComponentObserverOptions {
+}
+interface Margins {
+    bottom?: number;
+    left?: number;
+    right?: number;
+    top?: number;
+}
+export type CreateSelectorQuery = () => SelectorQuery;
+export type SelectorQueryNodeInfoCallback = (result: Object) => void;
+export class NodeField extends UTSObject {
+    id: boolean | null = null;
+    dataset: boolean | null = null;
+    rect: boolean | null = null;
+    size: boolean | null = null;
+    scrollOffset: boolean | null = null;
+    properties: string[] | null = null;
+    computedStyle: string[] | null = null;
+    context: boolean | null = null;
+    node: boolean | null = null;
+}
+export interface NodesRef {
+    boundingClientRect(callback: SelectorQueryNodeInfoCallback | null): SelectorQuery;
+    boundingClientRect(): SelectorQuery;
+    scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+    fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+    context(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+    node(callback: (result: Object) => void): SelectorQuery;
+}
+export interface SelectorQuery {
+    in(component: Object | null): SelectorQuery;
+    select(selector: string): NodesRef;
+    selectAll(selector: string): NodesRef;
+    selectViewport(): NodesRef;
+    exec(callback: (result: Array<Object>) => void | null): NodesRef | null;
+    exec(): NodesRef | null;
+}
+interface SelectorQueryRequest {
+    component: ComponentPublicInstance | undefined | null;
+    selector: string;
+    single: boolean;
+    fields: NodeField;
+}
+class GetAppBaseInfoOptions extends UTSObject {
+    filter!: Array<string>;
+}
+export class GetAppBaseInfoResult extends UTSObject {
+    appId: string | null = null;
+    appName: string | null = null;
+    appVersion: string | null = null;
+    appVersionCode: string | null = null;
+    appLanguage: string | null = null;
+    language: string | null = null;
+    version: string | null = null;
+    appWgtVersion: string | null = null;
+    hostLanguage: string | null = null;
+    hostVersion: string | null = null;
+    hostName: string | null = null;
+    hostPackageName: string | null = null;
+    hostSDKVersion: string | null = null;
+    hostTheme: string | null = null;
+    isUniAppX: boolean | null = null;
+    uniCompileVersion: string | null = null;
+    uniCompilerVersion: string | null = null;
+    uniPlatform: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei' | null = null;
+    uniRuntimeVersion: string | null = null;
+    uniCompileVersionCode: number | null = null;
+    uniCompilerVersionCode: number | null = null;
+    uniRuntimeVersionCode: number | null = null;
+    packageName: string | null = null;
+    bundleId: string | null = null;
+    signature: string | null = null;
+    appTheme: 'light' | 'dark' | 'auto' | null = null;
+}
+export type GetAppBaseInfo = (options?: GetAppBaseInfoOptions | null) => GetAppBaseInfoResult;
+interface IAppBaseInfoAppVersion {
+    name: string;
+    code: string;
+}
+class GetDeviceInfoOptions extends UTSObject {
+    filter!: Array<string>;
+}
+export class GetDeviceInfoResult extends UTSObject {
+    brand: string | null = null;
+    deviceBrand: string | null = null;
+    deviceId: string | null = null;
+    model: string | null = null;
+    deviceModel: string | null = null;
+    deviceType: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' | null = null;
+    deviceOrientation: string | null = null;
+    devicePixelRatio: number | null = null;
+    system: string | null = null;
+    platform: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux' | null = null;
+    isRoot: boolean | null = null;
+    isSimulator: boolean | null = null;
+    isUSBDebugging: boolean | null = null;
+    osName: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux' | null = null;
+    osVersion: string | null = null;
+    osLanguage: string | null = null;
+    osTheme: 'light' | 'dark' | null = null;
+    osAndroidAPILevel: number | null = null;
+    romName: string | null = null;
+    romVersion: string | null = null;
+}
+export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
+class GetProviderSuccess extends UTSObject {
+    service!: 'payment';
+    provider!: string[];
+    providers!: UniProvider[];
+    errMsg!: string;
+}
+type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
+type GetProviderFail = UniError;
+type GetProviderFailCallback = (result: GetProviderFail) => void;
+type GetProviderComplete = Object;
+type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
+class GetProviderOptions extends UTSObject {
+    service!: 'payment';
+    success: GetProviderSuccessCallback | null = null;
+    fail: GetProviderFailCallback | null = null;
+    complete: GetProviderCompleteCallback | null = null;
+}
+type GetProvider = (options: GetProviderOptions) => void;
+export type GetSystemInfo = (options: GetSystemInfoOptions) => void;
+export type GetSystemInfoSync = () => GetSystemInfoResult;
+export type GetWindowInfo = () => GetWindowInfoResult;
+export class SafeArea extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+    width!: number;
+    height!: number;
+}
+export class SafeAreaInsets extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+}
+export class GetSystemInfoResult extends UTSObject {
+    SDKVersion!: string;
+    appId!: string;
+    appLanguage!: string;
+    appName!: string;
+    appVersion!: string;
+    appVersionCode!: string;
+    appWgtVersion: string | null = null;
+    brand!: string;
+    browserName!: string;
+    browserVersion!: string;
+    deviceId!: string;
+    deviceBrand!: string;
+    deviceModel!: string;
+    deviceType!: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance';
+    devicePixelRatio!: number;
+    deviceOrientation!: 'portrait' | 'landscape';
+    language!: string;
+    model: string | null = null;
+    osName!: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux';
+    osVersion!: string;
+    osLanguage!: string;
+    osTheme: 'light' | 'dark' | null = null;
+    pixelRatio!: number;
+    platform!: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux';
+    screenWidth!: number;
+    screenHeight!: number;
+    statusBarHeight!: number;
+    system!: string;
+    safeArea!: SafeArea;
+    safeAreaInsets!: SafeAreaInsets;
+    ua!: string;
+    uniCompileVersion!: string;
+    uniCompilerVersion!: string;
+    uniPlatform!: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei';
+    uniRuntimeVersion!: string;
+    uniCompileVersionCode!: number;
+    uniCompilerVersionCode!: number;
+    uniRuntimeVersionCode!: number;
+    version!: string;
+    romName!: string;
+    romVersion!: string;
+    windowWidth!: number;
+    windowHeight!: number;
+    windowTop!: number;
+    windowBottom!: number;
+    osAndroidAPILevel: number | null = null;
+    appTheme: 'light' | 'dark' | 'auto' | null = null;
+}
+type GetSystemInfoSuccessCallback = (result: GetSystemInfoResult) => void;
+type GetSystemInfoFail = UniError;
+type GetSystemInfoFailCallback = (result: GetSystemInfoFail) => void;
+type GetSystemInfoComplete = Object;
+type GetSystemInfoCompleteCallback = (result: GetSystemInfoComplete) => void;
+export class GetSystemInfoOptions extends UTSObject {
+    success: GetSystemInfoSuccessCallback | null = null;
+    fail: GetSystemInfoFailCallback | null = null;
+    complete: GetSystemInfoCompleteCallback | null = null;
+}
+export class GetWindowInfoResult extends UTSObject {
+    pixelRatio!: number;
+    screenWidth!: number;
+    screenHeight!: number;
+    windowWidth!: number;
+    windowHeight!: number;
+    statusBarHeight!: number;
+    windowTop!: number;
+    windowBottom!: number;
+    safeArea!: SafeArea;
+    safeAreaInsets!: SafeAreaInsets;
+    screenTop!: number;
+}
+interface ISystemInfoAppVersion {
+    name: string;
+    code: string;
+}
+export type MakePhoneCall = (options: MakePhoneCallOptions) => void;
+export class MakePhoneCallSuccess extends UTSObject {
+}
+type MakePhoneCallSuccessCallback = (result: MakePhoneCallSuccess) => void;
+type MakePhoneCallFail = UniError;
+type MakePhoneCallFailCallback = (result: MakePhoneCallFail) => void;
+type MakePhoneCallComplete = Object;
+type MakePhoneCallCompleteCallback = (result: MakePhoneCallComplete) => void;
+export class MakePhoneCallOptions extends UTSObject {
+    phoneNumber!: string;
+    success: MakePhoneCallSuccessCallback | null = null;
+    fail: MakePhoneCallFailCallback | null = null;
+    complete: MakePhoneCallCompleteCallback | null = null;
+}
+type MediaOrientation = 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
+type MediaErrorCode = 1101001 | 1101002 | 1101003 | 1101004 | 1101005 | 1101006 | 1101007 | 1101008 | 1101009 | 1101010;
+interface IMediaError extends IUniError {
+    errCode: MediaErrorCode;
+}
+export class ChooseImageSuccess extends UTSObject {
+    errSubject!: string;
+    errMsg!: string;
+    tempFilePaths!: Array<string>;
+    tempFiles!: Object;
+}
+type ChooseImageFail = IMediaError;
+type ChooseImageSuccessCallback = (callback: ChooseImageSuccess) => void;
+type ChooseImageFailCallback = (callback: ChooseImageFail) => void;
+type ChooseImageCompleteCallback = (callback: Object) => void;
+class ChooseImageCropOptions extends UTSObject {
+    width!: number;
+    height!: number;
+    quality: (number) | null = null;
+    resize: (boolean) | null = null;
+}
+export class ChooseImageOptions extends UTSObject {
+    count: (number) | null = null;
+    sizeType: (string[]) | null = null;
+    sourceType: (string[]) | null = null;
+    extension: (string[]) | null = null;
+    crop: (ChooseImageCropOptions) | null = null;
+    success: (ChooseImageSuccessCallback) | null = null;
+    fail: (ChooseImageFailCallback) | null = null;
+    complete: (ChooseImageCompleteCallback) | null = null;
+}
+export type ChooseImage = (options: ChooseImageOptions) => void;
+export class PreviewImageSuccess extends UTSObject {
+    errSubject!: string;
+    errMsg!: string;
+}
+class LongPressActionsSuccessData extends UTSObject {
+    tapIndex!: number;
+    index!: number;
+}
+class LongPressActionsOptions extends UTSObject {
+    itemList!: string[];
+    itemColor: string | null = null;
+    success: ((result: LongPressActionsSuccessData) => void) | null = null;
+    fail: ((result: Object) => void) | null = null;
+    complete: ((result: Object) => void) | null = null;
+}
+type PreviewImageFail = IMediaError;
+type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
+type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
+type PreviewImageCompleteCallback = ChooseImageCompleteCallback;
+export class PreviewImageOptions extends UTSObject {
+    current: Object | null = null;
+    urls!: Array<string.ImageURIString>;
+    showmenu: boolean | null = null;
+    indicator: string | null = null;
+    loop: boolean | null = null;
+    longPressActions: LongPressActionsOptions | null = null;
+    success: (PreviewImageSuccessCallback) | null = null;
+    fail: (PreviewImageFailCallback) | null = null;
+    complete: (PreviewImageCompleteCallback) | null = null;
+}
+export type PreviewImage = (options: PreviewImageOptions) => void;
+export type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
+export class ClosePreviewImageSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ClosePreviewImageFail = IMediaError;
+type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void;
+type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void;
+type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback;
+export class ClosePreviewImageOptions extends UTSObject {
+    success: (ClosePreviewImageSuccessCallback) | null = null;
+    fail: (ClosePreviewImageFailCallback) | null = null;
+    complete: (ClosePreviewImageCompleteCallback) | null = null;
+}
+export type GetImageInfo = (options: GetImageInfoOptions) => void;
+export class GetImageInfoSuccess extends UTSObject {
+    width!: number;
+    height!: number;
+    path!: string;
+    orientation: MediaOrientation | null = null;
+    type: string | null = null;
+}
+type GetImageInfoFail = IMediaError;
+type GetImageInfoSuccessCallback = (callback: GetImageInfoSuccess) => void;
+type GetImageInfoFailCallback = (callback: GetImageInfoFail) => void;
+type GetImageInfoCompleteCallback = ChooseImageCompleteCallback;
+export class GetImageInfoOptions extends UTSObject {
+    src!: string.ImageURIString;
+    success: (GetImageInfoSuccessCallback) | null = null;
+    fail: (GetImageInfoFailCallback) | null = null;
+    complete: (GetImageInfoCompleteCallback) | null = null;
+}
+export type SaveImageToPhotosAlbum = (options: SaveImageToPhotosAlbumOptions) => void;
+export class SaveImageToPhotosAlbumSuccess extends UTSObject {
+    path!: string;
+}
+type SaveImageToPhotosAlbumFail = IMediaError;
+type SaveImageToPhotosAlbumSuccessCallback = (callback: SaveImageToPhotosAlbumSuccess) => void;
+type SaveImageToPhotosAlbumFailCallback = (callback: SaveImageToPhotosAlbumFail) => void;
+type SaveImageToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+export class SaveImageToPhotosAlbumOptions extends UTSObject {
+    filePath!: string.ImageURIString;
+    success: (SaveImageToPhotosAlbumSuccessCallback) | null = null;
+    fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
+    complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
+}
+export class ChooseVideoSuccess extends UTSObject {
+    tempFilePath!: string;
+    duration!: number;
+    size!: number;
+    height!: number;
+    width!: number;
+}
+type ChooseVideoFail = IMediaError;
+type ChooseVideoSuccessCallback = (callback: ChooseVideoSuccess) => void;
+type ChooseVideoFailCallback = (callback: ChooseVideoFail) => void;
+type ChooseVideoCompleteCallback = ChooseImageCompleteCallback;
+export class ChooseVideoOptions extends UTSObject {
+    sourceType: (string[]) | null = null;
+    compressed: boolean | null = true;
+    maxDuration: number | null = null;
+    camera: string | null = null;
+    extension: (string[]) | null = null;
+    success: (ChooseVideoSuccessCallback) | null = null;
+    fail: (ChooseVideoFailCallback) | null = null;
+    complete: (ChooseVideoCompleteCallback) | null = null;
+}
+export type ChooseVideo = (options: ChooseVideoOptions) => void;
+export class GetVideoInfoSuccess extends UTSObject {
+    orientation: MediaOrientation | null = null;
+    type: string | null = null;
+    duration!: number;
+    size!: number;
+    height!: number;
+    width!: number;
+    fps: number | null = null;
+    bitrate: number | null = null;
+}
+type GetVideoInfoFail = IMediaError;
+type GetVideoInfoSuccessCallback = (callback: GetVideoInfoSuccess) => void;
+type GetVideoInfoFailCallback = (callback: GetVideoInfoFail) => void;
+type GetVideoInfoCompleteCallback = ChooseImageCompleteCallback;
+export class GetVideoInfoOptions extends UTSObject {
+    src!: string.VideoURIString;
+    success: (GetVideoInfoSuccessCallback) | null = null;
+    fail: (GetVideoInfoFailCallback) | null = null;
+    complete: (GetVideoInfoCompleteCallback) | null = null;
+}
+export type GetVideoInfo = (options: GetVideoInfoOptions) => void;
+export class SaveVideoToPhotosAlbumSuccess extends UTSObject {
+}
+type SaveVideoToPhotosAlbumFail = IMediaError;
+type SaveVideoToPhotosAlbumSuccessCallback = (callback: SaveVideoToPhotosAlbumSuccess) => void;
+type SaveVideoToPhotosAlbumFailCallback = (callback: SaveVideoToPhotosAlbumFail) => void;
+type SaveVideoToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+export class SaveVideoToPhotosAlbumOptions extends UTSObject {
+    filePath!: string.VideoURIString;
+    success: (SaveVideoToPhotosAlbumSuccessCallback) | null = null;
+    fail: (SaveVideoToPhotosAlbumFailCallback) | null = null;
+    complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
+}
+export type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
+interface MediaFile {
+    fileType: 'video' | 'image';
+    tempFilePath: string;
+    size: number;
+    width?: number;
+    height?: number;
+    duration?: number;
+    thumbTempFilePath?: string;
+}
+interface ChooseMediaOptions {
+    mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE | picker.PhotoViewMIMETypes.IMAGE_TYPE;
+    count?: number;
+}
+interface chooseMediaSuccessCallbackResult {
+    tempFiles: MediaFile[];
+}
+interface TempFileItem {
+    path: string;
+    size: number;
+}
+interface IPreviewImageOptions {
+    urls: string[];
+    current: string;
+    showmenu: boolean;
+}
+type SetNavigationBarColorErrorCode = 4;
+interface SetNavigationBarColorFail extends IUniError {
+    errCode: SetNavigationBarColorErrorCode;
+}
+export class SetNavigationBarColorOptions extends UTSObject {
+    frontColor!: '#ffffff' | '#000000';
+    backgroundColor!: string.ColorString;
+    success: SetNavigationBarColorSuccessCallback | null = null;
+    fail: SetNavigationBarColorFailCallback | null = null;
+    complete: SetNavigationBarColorCompleteCallback | null = null;
+}
+export type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
+type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
+type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
+type SetNavigationBarColorComplete = AsyncApiResult;
+type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
+export type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
+type SetNavigationBarTitleErrorCode = 4;
+interface SetNavigationBarTitleFail extends IUniError {
+    errCode: SetNavigationBarTitleErrorCode;
+}
+export class SetNavigationBarTitleOptions extends UTSObject {
+    title!: string;
+    success: SetNavigationBarTitleSuccessCallback | null = null;
+    fail: SetNavigationBarTitleFailCallback | null = null;
+    complete: SetNavigationBarTitleCompleteCallback | null = null;
+}
+export type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
+type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
+type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
+type SetNavigationBarTitleComplete = AsyncApiResult;
+type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
+export type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
+interface TitleNView {
+    titleText: string;
+    autoBackButton?: boolean;
+}
+interface BackButton {
+    color?: string;
+}
+interface PlusWebviewWebviewTitleNViewStyles {
+    backgroundColor?: string;
+    titleColor?: string;
+    titleNView?: TitleNView;
+    backButton?: BackButton;
+}
+interface Webview {
+    getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
+    setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
+}
+interface $page {
+    statusBarStyle: 'dark' | 'light';
+}
+interface Page {
+    $getAppWebview: () => Webview | null;
+    $page: $page;
+}
+export type Request<T> = (param: RequestOptions<T>) => RequestTask;
+export class RequestOptions<T> extends UTSObject {
+    url!: string;
+    data: Object | null = null;
+    header: UTSJSONObject | null = null;
+    method: RequestMethod | null = null;
+    timeout: number | null = null;
+    dataType: string | null = null;
+    responseType: string | null = null;
+    sslVerify: boolean | null = null;
+    withCredentials: boolean | null = null;
+    firstIpv4: boolean | null = null;
+    success: RequestSuccessCallback<T> | null = null;
+    fail: RequestFailCallback | null = null;
+    complete: RequestCompleteCallback | null = null;
+}
+export class RequestSuccess<T> extends UTSObject {
+    data: T | null = null;
+    statusCode!: number;
+    header!: Object;
+    cookies!: Array<string>;
+}
+type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
+type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600009 | 602001;
+interface RequestFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type RequestSuccessCallback<T> = (option: RequestSuccess<T>) => void;
+type RequestFailCallback = (option: RequestFail) => void;
+type RequestCompleteCallback = (option: Object) => void;
+export interface RequestTask {
+    abort(): void;
+}
+export type UploadFile = (options: UploadFileOptions) => UploadTask;
+class UploadFileOptionFiles extends UTSObject {
+    name: string | null = null;
+    uri!: string;
+    file: Object | null = null;
+}
+export class UploadFileSuccess extends UTSObject {
+    data!: string;
+    statusCode!: number;
+}
+type UploadFileSuccessCallback = (result: UploadFileSuccess) => void;
+interface UploadFileFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type UploadFileFailCallback = (result: UploadFileFail) => void;
+type UploadFileCompleteCallback = (result: Object) => void;
+export class UploadFileOptions extends UTSObject {
+    url!: string;
+    filePath: string | null = null;
+    name: string | null = null;
+    files: (UploadFileOptionFiles[]) | null = null;
+    header: UTSJSONObject | null = null;
+    formData: UTSJSONObject | null = null;
+    timeout: number | null = null;
+    success: UploadFileSuccessCallback | null = null;
+    fail: UploadFileFailCallback | null = null;
+    complete: UploadFileCompleteCallback | null = null;
+}
+export class OnProgressUpdateResult extends UTSObject {
+    progress!: number;
+    totalBytesSent!: number;
+    totalBytesExpectedToSend!: number;
+}
+type UploadFileProgressUpdateCallback = (result: OnProgressUpdateResult) => void;
+export interface UploadTask {
+    abort(): void;
+    onProgressUpdate(callback: UploadFileProgressUpdateCallback): void;
+}
+export type DownloadFile = (options: DownloadFileOptions) => DownloadTask;
+export class DownloadFileSuccess extends UTSObject {
+    tempFilePath!: string;
+    statusCode!: number;
+}
+type DownloadFileSuccessCallback = (result: DownloadFileSuccess) => void;
+interface DownloadFileFail extends IUniError {
+    errCode: RequestErrorCode;
+}
+type DownloadFileFailCallback = (result: DownloadFileFail) => void;
+type DownloadFileComplete = Object;
+type DownloadFileCompleteCallback = (result: DownloadFileComplete) => void;
+export class DownloadFileOptions extends UTSObject {
+    url!: string;
+    header: UTSJSONObject | null = null;
+    filePath: string | null = null;
+    timeout: number | null = null;
+    success: DownloadFileSuccessCallback | null = null;
+    fail: DownloadFileFailCallback | null = null;
+    complete: DownloadFileCompleteCallback | null = null;
+}
+export class OnProgressDownloadResult extends UTSObject {
+    progress!: number;
+    totalBytesWritten!: number;
+    totalBytesExpectedToWrite!: number;
+}
+type DownloadFileProgressUpdateCallback = (result: OnProgressDownloadResult) => void;
+export interface DownloadTask {
+    abort(): void;
+    onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
+}
+interface IRequestTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+}
+interface IUploadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+interface IDownloadTask {
+    abort: Function;
+    onHeadersReceived: Function;
+    offHeadersReceived: Function;
+    onProgressUpdate: Function;
+    offProgressUpdate: Function;
+}
+type PageScrollToErrorCode = 4;
+interface PageScrollToFail extends IUniError {
+    errCode: PageScrollToErrorCode;
+}
+export type PageScrollToSuccess = AsyncApiSuccessResult;
+type PageScrollToSuccessCallback = (result: PageScrollToSuccess) => void;
+type PageScrollToFailCallback = (result: PageScrollToFail) => void;
+type PageScrollToComplete = AsyncApiResult;
+type PageScrollToCompleteCallback = (result: PageScrollToComplete) => void;
+export class PageScrollToOptions extends UTSObject {
+    scrollTop: number | null = null;
+    selector: string | null = null;
+    offsetTop: number | null = null;
+    duration: number | null = null;
+    success: PageScrollToSuccessCallback | null = null;
+    fail: PageScrollToFailCallback | null = null;
+    complete: PageScrollToCompleteCallback | null = null;
+}
+export type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
+type PromptErrorCode = 1 | 1001;
+interface IPromptError extends IUniError {
+    errCode: PromptErrorCode;
+}
+class ShowToastSuccess extends UTSObject {
+}
+type ShowToastFail = IPromptError;
+type ShowToastSuccessCallback = (res: ShowToastSuccess) => void;
+type ShowToastFailCallback = (res: ShowToastFail) => void;
+type ShowToastCompleteCallback = (res: Object) => void;
+class ShowToastOptions extends UTSObject {
+    title!: string;
+    icon: "success" | "error" | "fail" | "exception" | "loading" | "none" | null = null;
+    image: string.ImageURIString | null = null;
+    mask: boolean | null = null;
+    duration: number | null = null;
+    position: "top" | "center" | "bottom" | null = null;
+    success: ShowToastSuccessCallback | null = null;
+    fail: ShowToastFailCallback | null = null;
+    complete: ShowToastCompleteCallback | null = null;
+}
+type ShowToast = (options: ShowToastOptions) => void;
+type HideToast = () => void;
+class ShowLoadingSuccess extends UTSObject {
+}
+type ShowLoadingFail = IPromptError;
+type ShowLoadingSuccessCallback = (res: ShowLoadingSuccess) => void;
+type ShowLoadingFailCallback = (res: ShowLoadingFail) => void;
+type ShowLoadingCompleteCallback = (res: Object) => void;
+class ShowLoadingOptions extends UTSObject {
+    title!: string;
+    mask: boolean | null = null;
+    success: ShowLoadingSuccessCallback | null = null;
+    fail: ShowLoadingFailCallback | null = null;
+    complete: ShowLoadingCompleteCallback | null = null;
+}
+type ShowLoading = (options: ShowLoadingOptions) => void;
+type HideLoading = () => void;
+class ShowModalSuccess extends UTSObject {
+    confirm!: boolean;
+    cancel!: boolean;
+    content: string | null = null;
+}
+type ShowModalFail = IPromptError;
+type ShowModalSuccessCallback = (res: ShowModalSuccess) => void;
+type ShowModalFailCallback = (res: ShowModalFail) => void;
+type ShowModalCompleteCallback = (res: Object) => void;
+class ShowModalOptions extends UTSObject {
+    title: string | null = null;
+    content: string | null = null;
+    showCancel: boolean | null = true;
+    cancelText: string | null = null;
+    cancelColor: string.ColorString | null = null;
+    confirmText: string | null = null;
+    confirmColor: string.ColorString | null = null;
+    editable: boolean | null = false;
+    placeholderText: string | null = null;
+    success: ShowModalSuccessCallback | null = null;
+    fail: ShowModalFailCallback | null = null;
+    complete: ShowModalCompleteCallback | null = null;
+}
+type ShowModal = (options: ShowModalOptions) => void;
+class ShowActionSheetSuccess extends UTSObject {
+    tapIndex: number | null = null;
+}
+class Popover extends UTSObject {
+    top!: number;
+    left!: number;
+    width!: number;
+    height!: number;
+}
+type ShowActionSheetFail = IPromptError;
+type ShowActionSheetSuccessCallback = (res: ShowActionSheetSuccess) => void;
+type ShowActionSheetFailCallback = (res: ShowActionSheetFail) => void;
+type ShowActionSheetCompleteCallback = (res: Object) => void;
+class ShowActionSheetOptions extends UTSObject {
+    title: string | null = null;
+    alertText: string | null = null;
+    itemList!: string[];
+    itemColor: string.ColorString | null = null;
+    popover: Popover | null = null;
+    success: ShowActionSheetSuccessCallback | null = null;
+    fail: ShowActionSheetFailCallback | null = null;
+    complete: ShowActionSheetCompleteCallback | null = null;
+}
+type ShowActionSheet = (options: ShowActionSheetOptions) => void;
+export type Rpx2px = (number: number) => number;
+export class SetStorageSuccess extends UTSObject {
+}
+type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
+type SetStorageFailCallback = (res: UniError) => void;
+type SetStorageCompleteCallback = (res: Object) => void;
+export class SetStorageOptions extends UTSObject {
+    key!: string;
+    data!: Object;
+    success: SetStorageSuccessCallback | null = null;
+    fail: SetStorageFailCallback | null = null;
+    complete: SetStorageCompleteCallback | null = null;
+}
+export type SetStorage = (options: SetStorageOptions) => void;
+export type SetStorageSync = (key: string, data: Object) => void;
+export class GetStorageSuccess extends UTSObject {
+    data: Object | null = null;
+}
+type GetStorageSuccessCallback = (res: GetStorageSuccess) => void;
+type GetStorageFailCallback = (res: UniError) => void;
+type GetStorageCompleteCallback = (res: Object) => void;
+export class GetStorageOptions extends UTSObject {
+    key!: string;
+    success: GetStorageSuccessCallback | null = null;
+    fail: GetStorageFailCallback | null = null;
+    complete: GetStorageCompleteCallback | null = null;
+}
+export type GetStorage = (options: GetStorageOptions) => void;
+export type GetStorageSync = (key: string) => Object | null;
+export class GetStorageInfoSuccess extends UTSObject {
+    keys!: Array<string>;
+    currentSize!: number;
+    limitSize!: number;
+}
+type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void;
+type GetStorageInfoFailCallback = (res: UniError) => void;
+type GetStorageInfoCompleteCallback = (res: Object) => void;
+export class GetStorageInfoOptions extends UTSObject {
+    success: GetStorageInfoSuccessCallback | null = null;
+    fail: GetStorageInfoFailCallback | null = null;
+    complete: GetStorageInfoCompleteCallback | null = null;
+}
+export type GetStorageInfo = (options: GetStorageInfoOptions) => void;
+export type GetStorageInfoSync = () => GetStorageInfoSuccess;
+export class RemoveStorageSuccess extends UTSObject {
+}
+type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void;
+type RemoveStorageFailCallback = (res: UniError) => void;
+type RemoveStorageCompleteCallback = (res: Object) => void;
+export class RemoveStorageOptions extends UTSObject {
+    key!: string;
+    success: RemoveStorageSuccessCallback | null = null;
+    fail: RemoveStorageFailCallback | null = null;
+    complete: RemoveStorageCompleteCallback | null = null;
+}
+export type RemoveStorage = (options: RemoveStorageOptions) => void;
+export type RemoveStorageSync = (key: string) => void;
+export class ClearStorageSuccess extends UTSObject {
+}
+type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void;
+type ClearStorageFailCallback = (res: UniError) => void;
+type ClearStorageCompleteCallback = (res: Object) => void;
+export class ClearStorageOptions extends UTSObject {
+    success: ClearStorageSuccessCallback | null = null;
+    fail: ClearStorageFailCallback | null = null;
+    complete: ClearStorageCompleteCallback | null = null;
+}
+export type ClearStorage = (option?: ClearStorageOptions | null) => void;
+export type ClearStorageSync = () => void;
+interface UniExtApi {
+    getClipboardData: GetClipboardData;
+    setClipboardData: SetClipboardData;
+    createIntersectionObserver: CreateIntersectionObserver;
+    createSelectorQuery: CreateSelectorQuery;
+    getAppBaseInfo: GetAppBaseInfo;
+    getDeviceInfo: GetDeviceInfo;
+    getProvider: GetProvider;
+    getSystemInfo: GetSystemInfo;
+    getSystemInfoSync: GetSystemInfoSync;
+    getWindowInfo: GetWindowInfo;
+    makePhoneCall: MakePhoneCall;
+    chooseImage: ChooseImage;
+    previewImage: PreviewImage;
+    closePreviewImage: ClosePreviewImage;
+    getImageInfo: GetImageInfo;
+    saveImageToPhotosAlbum: SaveImageToPhotosAlbum;
+    chooseVideo: ChooseVideo;
+    saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
+    getVideoInfo: GetVideoInfo;
+    setNavigationBarColor: SetNavigationBarColor;
+    setNavigationBarTitle: SetNavigationBarTitle;
+    request: Request<Object>;
+    uploadFile: UploadFile;
+    downloadFile: DownloadFile;
+    pageScrollTo: PageScrollTo;
+    showToast: ShowToast;
+    hideToast: HideToast;
+    showLoading: ShowLoading;
+    hideLoading: HideLoading;
+    showModal: ShowModal;
+    showActionSheet: ShowActionSheet;
+    rpx2px: Rpx2px;
+    setStorage: SetStorage;
+    setStorageSync: SetStorageSync;
+    getStorage: GetStorage;
+    getStorageSync: GetStorageSync;
+    getStorageInfo: GetStorageInfo;
+    getStorageInfoSync: GetStorageInfoSync;
+    removeStorage: RemoveStorage;
+    removeStorageSync: RemoveStorageSync;
+    clearStorage: ClearStorage;
+    clearStorageSync: ClearStorageSync;
+}
 export function initUniExtApi(APP_ID: string) {
-    type SetClipboardData = (options: SetClipboardDataOptions) => void;
-    class SetClipboardDataSuccess extends UTSObject {
-    }
-    type SetClipboardDataSuccessCallback = (result: SetClipboardDataSuccess) => void;
-    type SetClipboardDataFail = UniError;
-    type SetClipboardDataFailCallback = (result: SetClipboardDataFail) => void;
-    type SetClipboardDataComplete = Object;
-    type SetClipboardDataCompleteCallback = (result: SetClipboardDataComplete) => void;
-    class SetClipboardDataOptions extends UTSObject {
-        data!: string;
-        showToast: boolean | null = null;
-        success: SetClipboardDataSuccessCallback | null = null;
-        fail: SetClipboardDataFailCallback | null = null;
-        complete: SetClipboardDataCompleteCallback | null = null;
-    }
-    type GetClipboardData = (options: GetClipboardDataOptions) => void;
-    class GetClipboardDataSuccess extends UTSObject {
-        data!: string;
-    }
-    type GetClipboardDataSuccessCallback = (result: GetClipboardDataSuccess) => void;
-    type GetClipboardDataFail = UniError;
-    type GetClipboardDataFailCallback = (result: GetClipboardDataFail) => void;
-    type GetClipboardDataComplete = Object;
-    type GetClipboardDataCompleteCallback = (result: GetClipboardDataComplete) => void;
-    class GetClipboardDataOptions extends UTSObject {
-        success: GetClipboardDataSuccessCallback | null = null;
-        fail: GetClipboardDataFailCallback | null = null;
-        complete: GetClipboardDataCompleteCallback | null = null;
-    }
     const API_GET_CLIPBOARD_DATA = 'getClipboardData';
     const API_SET_CLIPBOARD_DATA = 'setClipboardData';
     const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
@@ -104,14 +967,6 @@ export function initUniExtApi(APP_ID: string) {
             }
         ]
     ]);
-    interface ClipboardModuleGetStringOptions {
-        result: string;
-        data: string;
-    }
-    interface ClipboardModule {
-        getString(callback: (ret: ClipboardModuleGetStringOptions) => void): void;
-        setString(data: string): void;
-    }
     const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
         const clipboard: ClipboardModule = UTSHarmony.clipboard;
         clipboard.getString((ret)=>{
@@ -129,55 +984,6 @@ export function initUniExtApi(APP_ID: string) {
         clipboard.setString(options.data);
         res.resolve();
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
-    type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
-    interface CreateIntersectionObserverOptions {
-        thresholds?: (Object[]) | null;
-        initialRatio?: number | null;
-        observeAll?: boolean | null;
-    }
-    class ObserveNodeRect extends UTSObject {
-        left!: number;
-        right!: number;
-        top!: number;
-        bottom!: number;
-    }
-    class ObserveResult extends UTSObject {
-        intersectionRatio!: number;
-        intersectionRect!: Object;
-        boundingClientRect!: ObserveNodeRect;
-        relativeRect!: ObserveNodeRect;
-        time!: number;
-    }
-    type ObserveCallback = (result: ObserveResult) => void;
-    interface IntersectionObserver {
-        relativeTo(selector: string, margins?: Object): IntersectionObserver;
-        relativeToViewport(margins?: Object): IntersectionObserver;
-        observe(targetSelector: string, callback: ObserveCallback): void;
-        disconnect(): void;
-    }
-    interface AddIntersectionObserverArgs {
-        reqId: number;
-        component: ComponentPublicInstance;
-        options: ServiceIntersectionObserverOptions;
-        callback: ObserveCallback;
-    }
-    interface RemoveIntersectionObserverArgs {
-        reqId: number;
-        component: ComponentPublicInstance;
-    }
-    interface RequestComponentObserverOptions {
-        selector?: string;
-        rootMargin?: string;
-        relativeToSelector?: string;
-    }
-    interface ServiceIntersectionObserverOptions extends CreateIntersectionObserverOptions, RequestComponentObserverOptions {
-    }
-    interface Margins {
-        bottom?: number;
-        left?: number;
-        right?: number;
-        top?: number;
-    }
     const defaultOptions = {
         thresholds: [
             0
@@ -251,41 +1057,6 @@ export function initUniExtApi(APP_ID: string) {
         }
         return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
     });
-    type CreateSelectorQuery = () => SelectorQuery;
-    type SelectorQueryNodeInfoCallback = (result: Object) => void;
-    class NodeField extends UTSObject {
-        id: boolean | null = null;
-        dataset: boolean | null = null;
-        rect: boolean | null = null;
-        size: boolean | null = null;
-        scrollOffset: boolean | null = null;
-        properties: string[] | null = null;
-        computedStyle: string[] | null = null;
-        context: boolean | null = null;
-        node: boolean | null = null;
-    }
-    interface NodesRef {
-        boundingClientRect(callback: SelectorQueryNodeInfoCallback | null): SelectorQuery;
-        boundingClientRect(): SelectorQuery;
-        scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-        fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-        context(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-        node(callback: (result: Object) => void): SelectorQuery;
-    }
-    interface SelectorQuery {
-        in(component: Object | null): SelectorQuery;
-        select(selector: string): NodesRef;
-        selectAll(selector: string): NodesRef;
-        selectViewport(): NodesRef;
-        exec(callback: (result: Array<Object>) => void | null): NodesRef | null;
-        exec(): NodesRef | null;
-    }
-    interface SelectorQueryRequest {
-        component: ComponentPublicInstance | undefined | null;
-        selector: string;
-        single: boolean;
-        fields: NodeField;
-    }
     class NodesRefImpl implements NodesRef {
         private _selectorQuery: SelectorQueryImpl;
         private _component: ComponentPublicInstance | null | undefined;
@@ -387,38 +1158,6 @@ export function initUniExtApi(APP_ID: string) {
         }
         return new SelectorQueryImpl(context || getCurrentPageVm1()!) as SelectorQuery;
     });
-    class GetAppBaseInfoOptions extends UTSObject {
-        filter!: Array<string>;
-    }
-    class GetAppBaseInfoResult extends UTSObject {
-        appId: string | null = null;
-        appName: string | null = null;
-        appVersion: string | null = null;
-        appVersionCode: string | null = null;
-        appLanguage: string | null = null;
-        language: string | null = null;
-        version: string | null = null;
-        appWgtVersion: string | null = null;
-        hostLanguage: string | null = null;
-        hostVersion: string | null = null;
-        hostName: string | null = null;
-        hostPackageName: string | null = null;
-        hostSDKVersion: string | null = null;
-        hostTheme: string | null = null;
-        isUniAppX: boolean | null = null;
-        uniCompileVersion: string | null = null;
-        uniCompilerVersion: string | null = null;
-        uniPlatform: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei' | null = null;
-        uniRuntimeVersion: string | null = null;
-        uniCompileVersionCode: number | null = null;
-        uniCompilerVersionCode: number | null = null;
-        uniRuntimeVersionCode: number | null = null;
-        packageName: string | null = null;
-        bundleId: string | null = null;
-        signature: string | null = null;
-        appTheme: 'light' | 'dark' | 'auto' | null = null;
-    }
-    type GetAppBaseInfo = (options?: GetAppBaseInfoOptions | null) => GetAppBaseInfoResult;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
     const getBundleInfoOnce = ()=>{
         let bundleInfo: bundleManager.BundleInfo | null = null;
@@ -431,10 +1170,6 @@ export function initUniExtApi(APP_ID: string) {
         };
     };
     const getBundleInfo = getBundleInfoOnce();
-    interface IAppBaseInfoAppVersion {
-        name: string;
-        code: string;
-    }
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
         const appVersion: IAppBaseInfoAppVersion = UTSHarmony1.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
@@ -458,32 +1193,6 @@ export function initUniExtApi(APP_ID: string) {
             uniPlatform: 'app'
         } as GetAppBaseInfoResult;
     }) as GetAppBaseInfo;
-    class GetDeviceInfoOptions extends UTSObject {
-        filter!: Array<string>;
-    }
-    class GetDeviceInfoResult extends UTSObject {
-        brand: string | null = null;
-        deviceBrand: string | null = null;
-        deviceId: string | null = null;
-        model: string | null = null;
-        deviceModel: string | null = null;
-        deviceType: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance' | null = null;
-        deviceOrientation: string | null = null;
-        devicePixelRatio: number | null = null;
-        system: string | null = null;
-        platform: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux' | null = null;
-        isRoot: boolean | null = null;
-        isSimulator: boolean | null = null;
-        isUSBDebugging: boolean | null = null;
-        osName: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux' | null = null;
-        osVersion: string | null = null;
-        osLanguage: string | null = null;
-        osTheme: 'light' | 'dark' | null = null;
-        osAndroidAPILevel: number | null = null;
-        romName: string | null = null;
-        romVersion: string | null = null;
-    }
-    type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
     const API_GET_DEVICE_INFO = 'getDeviceInfo';
     const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
         return {
@@ -503,95 +1212,32 @@ export function initUniExtApi(APP_ID: string) {
             system: deviceInfo.osFullName
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
-    type GetSystemInfo = (options: GetSystemInfoOptions) => void;
-    type GetSystemInfoSync = () => GetSystemInfoResult;
-    type GetWindowInfo = () => GetWindowInfoResult;
-    class SafeArea extends UTSObject {
-        left!: number;
-        right!: number;
-        top!: number;
-        bottom!: number;
-        width!: number;
-        height!: number;
-    }
-    class SafeAreaInsets extends UTSObject {
-        left!: number;
-        right!: number;
-        top!: number;
-        bottom!: number;
-    }
-    class GetSystemInfoResult extends UTSObject {
-        SDKVersion!: string;
-        appId!: string;
-        appLanguage!: string;
-        appName!: string;
-        appVersion!: string;
-        appVersionCode!: string;
-        appWgtVersion: string | null = null;
-        brand!: string;
-        browserName!: string;
-        browserVersion!: string;
-        deviceId!: string;
-        deviceBrand!: string;
-        deviceModel!: string;
-        deviceType!: 'phone' | 'pad' | 'tv' | 'watch' | 'pc' | 'undefined' | 'car' | 'vr' | 'appliance';
-        devicePixelRatio!: number;
-        deviceOrientation!: 'portrait' | 'landscape';
-        language!: string;
-        model: string | null = null;
-        osName!: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux';
-        osVersion!: string;
-        osLanguage!: string;
-        osTheme: 'light' | 'dark' | null = null;
-        pixelRatio!: number;
-        platform!: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux';
-        screenWidth!: number;
-        screenHeight!: number;
-        statusBarHeight!: number;
-        system!: string;
-        safeArea!: SafeArea;
-        safeAreaInsets!: SafeAreaInsets;
-        ua!: string;
-        uniCompileVersion!: string;
-        uniCompilerVersion!: string;
-        uniPlatform!: 'app' | 'web' | 'mp-weixin' | 'mp-alipay' | 'mp-baidu' | 'mp-toutiao' | 'mp-lark' | 'mp-qq' | 'mp-kuaishou' | 'mp-jd' | 'mp-360' | 'quickapp-webview' | 'quickapp-webview-union' | 'quickapp-webview-huawei';
-        uniRuntimeVersion!: string;
-        uniCompileVersionCode!: number;
-        uniCompilerVersionCode!: number;
-        uniRuntimeVersionCode!: number;
-        version!: string;
-        romName!: string;
-        romVersion!: string;
-        windowWidth!: number;
-        windowHeight!: number;
-        windowTop!: number;
-        windowBottom!: number;
-        osAndroidAPILevel: number | null = null;
-        appTheme: 'light' | 'dark' | 'auto' | null = null;
-    }
-    type GetSystemInfoSuccessCallback = (result: GetSystemInfoResult) => void;
-    type GetSystemInfoFail = UniError;
-    type GetSystemInfoFailCallback = (result: GetSystemInfoFail) => void;
-    type GetSystemInfoComplete = Object;
-    type GetSystemInfoCompleteCallback = (result: GetSystemInfoComplete) => void;
-    class GetSystemInfoOptions extends UTSObject {
-        success: GetSystemInfoSuccessCallback | null = null;
-        fail: GetSystemInfoFailCallback | null = null;
-        complete: GetSystemInfoCompleteCallback | null = null;
-    }
-    class GetWindowInfoResult extends UTSObject {
-        pixelRatio!: number;
-        screenWidth!: number;
-        screenHeight!: number;
-        windowWidth!: number;
-        windowHeight!: number;
-        statusBarHeight!: number;
-        windowTop!: number;
-        windowBottom!: number;
-        safeArea!: SafeArea;
-        safeAreaInsets!: SafeAreaInsets;
-        screenTop!: number;
-    }
+    const SupportedProviderServiceList = [
+        'oauth',
+        'share',
+        'payment',
+        'push',
+        'location'
+    ];
+    const getProvider: GetProvider = (options: GetProviderOptions): void =>{
+        if (!SupportedProviderServiceList.includes(options.service)) {
+            const uniError = new UniError('uni-getProvider', -1, 'Parameter service invalid.');
+            options.fail?.(uniError);
+            options.complete?.(uniError);
+        } else {
+            const providers = getUniProviders(options.service);
+            const result = {
+                service: options.service,
+                provider: providers.map((provider): string =>{
+                    return provider.id;
+                }),
+                providers,
+                errMsg: 'GetProvider:ok'
+            } as GetProviderSuccess;
+            options.success?.(result);
+            options.complete?.(result);
+        }
+    };
     const API_GET_SYSTEM_INFO = 'getSystemInfo';
     const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
     const API_GET_WINDOW_INFO = 'getWindowInfo';
@@ -675,10 +1321,6 @@ export function initUniExtApi(APP_ID: string) {
     const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
         return internalGetWindowInfo();
     }) as GetWindowInfo;
-    interface ISystemInfoAppVersion {
-        name: string;
-        code: string;
-    }
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
         const appVersion: ISystemInfoAppVersion = UTSHarmony3.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
@@ -755,20 +1397,6 @@ export function initUniExtApi(APP_ID: string) {
             exec.reject((error as Error).message);
         }
     }) as GetSystemInfo;
-    type MakePhoneCall = (options: MakePhoneCallOptions) => void;
-    class MakePhoneCallSuccess extends UTSObject {
-    }
-    type MakePhoneCallSuccessCallback = (result: MakePhoneCallSuccess) => void;
-    type MakePhoneCallFail = UniError;
-    type MakePhoneCallFailCallback = (result: MakePhoneCallFail) => void;
-    type MakePhoneCallComplete = Object;
-    type MakePhoneCallCompleteCallback = (result: MakePhoneCallComplete) => void;
-    class MakePhoneCallOptions extends UTSObject {
-        phoneNumber!: string;
-        success: MakePhoneCallSuccessCallback | null = null;
-        fail: MakePhoneCallFailCallback | null = null;
-        complete: MakePhoneCallCompleteCallback | null = null;
-    }
     const API_MAKE_PHONE_CALL = 'makePhoneCall';
     const MakePhoneCallProtocol = new Map<string, ProtocolOptions>([
         [
@@ -795,186 +1423,6 @@ export function initUniExtApi(APP_ID: string) {
             res.resolve();
         }
     }, MakePhoneCallProtocol) as MakePhoneCall;
-    type MediaOrientation = 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
-    type MediaErrorCode = 1101001 | 1101002 | 1101003 | 1101004 | 1101005 | 1101006 | 1101007 | 1101008 | 1101009 | 1101010;
-    interface IMediaError extends IUniError {
-        errCode: MediaErrorCode;
-    }
-    class ChooseImageSuccess extends UTSObject {
-        errSubject!: string;
-        errMsg!: string;
-        tempFilePaths!: Array<string>;
-        tempFiles!: Object;
-    }
-    type ChooseImageFail = IMediaError;
-    type ChooseImageSuccessCallback = (callback: ChooseImageSuccess) => void;
-    type ChooseImageFailCallback = (callback: ChooseImageFail) => void;
-    type ChooseImageCompleteCallback = (callback: Object) => void;
-    class ChooseImageCropOptions extends UTSObject {
-        width!: number;
-        height!: number;
-        quality: (number) | null = null;
-        resize: (boolean) | null = null;
-    }
-    class ChooseImageOptions extends UTSObject {
-        count: (number) | null = null;
-        sizeType: (string[]) | null = null;
-        sourceType: (string[]) | null = null;
-        extension: (string[]) | null = null;
-        crop: (ChooseImageCropOptions) | null = null;
-        success: (ChooseImageSuccessCallback) | null = null;
-        fail: (ChooseImageFailCallback) | null = null;
-        complete: (ChooseImageCompleteCallback) | null = null;
-    }
-    type ChooseImage = (options: ChooseImageOptions) => void;
-    class PreviewImageSuccess extends UTSObject {
-        errSubject!: string;
-        errMsg!: string;
-    }
-    class LongPressActionsSuccessData extends UTSObject {
-        tapIndex!: number;
-        index!: number;
-    }
-    class LongPressActionsOptions extends UTSObject {
-        itemList!: string[];
-        itemColor: string | null = null;
-        success: ((result: LongPressActionsSuccessData) => void) | null = null;
-        fail: ((result: Object) => void) | null = null;
-        complete: ((result: Object) => void) | null = null;
-    }
-    type PreviewImageFail = IMediaError;
-    type PreviewImageSuccessCallback = (callback: PreviewImageSuccess) => void;
-    type PreviewImageFailCallback = (callback: PreviewImageFail) => void;
-    type PreviewImageCompleteCallback = ChooseImageCompleteCallback;
-    class PreviewImageOptions extends UTSObject {
-        current: Object | null = null;
-        urls!: Array<string.ImageURIString>;
-        showmenu: boolean | null = null;
-        indicator: string | null = null;
-        loop: boolean | null = null;
-        longPressActions: LongPressActionsOptions | null = null;
-        success: (PreviewImageSuccessCallback) | null = null;
-        fail: (PreviewImageFailCallback) | null = null;
-        complete: (PreviewImageCompleteCallback) | null = null;
-    }
-    type PreviewImage = (options: PreviewImageOptions) => void;
-    type ClosePreviewImage = (options: ClosePreviewImageOptions) => void;
-    class ClosePreviewImageSuccess extends UTSObject {
-        errMsg!: string;
-    }
-    type ClosePreviewImageFail = IMediaError;
-    type ClosePreviewImageSuccessCallback = (callback: ClosePreviewImageSuccess) => void;
-    type ClosePreviewImageFailCallback = (callback: ClosePreviewImageFail) => void;
-    type ClosePreviewImageCompleteCallback = ChooseImageCompleteCallback;
-    class ClosePreviewImageOptions extends UTSObject {
-        success: (ClosePreviewImageSuccessCallback) | null = null;
-        fail: (ClosePreviewImageFailCallback) | null = null;
-        complete: (ClosePreviewImageCompleteCallback) | null = null;
-    }
-    type GetImageInfo = (options: GetImageInfoOptions) => void;
-    class GetImageInfoSuccess extends UTSObject {
-        width!: number;
-        height!: number;
-        path!: string;
-        orientation: MediaOrientation | null = null;
-        type: string | null = null;
-    }
-    type GetImageInfoFail = IMediaError;
-    type GetImageInfoSuccessCallback = (callback: GetImageInfoSuccess) => void;
-    type GetImageInfoFailCallback = (callback: GetImageInfoFail) => void;
-    type GetImageInfoCompleteCallback = ChooseImageCompleteCallback;
-    class GetImageInfoOptions extends UTSObject {
-        src!: string.ImageURIString;
-        success: (GetImageInfoSuccessCallback) | null = null;
-        fail: (GetImageInfoFailCallback) | null = null;
-        complete: (GetImageInfoCompleteCallback) | null = null;
-    }
-    type SaveImageToPhotosAlbum = (options: SaveImageToPhotosAlbumOptions) => void;
-    class SaveImageToPhotosAlbumSuccess extends UTSObject {
-        path!: string;
-    }
-    type SaveImageToPhotosAlbumFail = IMediaError;
-    type SaveImageToPhotosAlbumSuccessCallback = (callback: SaveImageToPhotosAlbumSuccess) => void;
-    type SaveImageToPhotosAlbumFailCallback = (callback: SaveImageToPhotosAlbumFail) => void;
-    type SaveImageToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
-    class SaveImageToPhotosAlbumOptions extends UTSObject {
-        filePath!: string.ImageURIString;
-        success: (SaveImageToPhotosAlbumSuccessCallback) | null = null;
-        fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
-        complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
-    }
-    class ChooseVideoSuccess extends UTSObject {
-        tempFilePath!: string;
-        duration!: number;
-        size!: number;
-        height!: number;
-        width!: number;
-    }
-    type ChooseVideoFail = IMediaError;
-    type ChooseVideoSuccessCallback = (callback: ChooseVideoSuccess) => void;
-    type ChooseVideoFailCallback = (callback: ChooseVideoFail) => void;
-    type ChooseVideoCompleteCallback = ChooseImageCompleteCallback;
-    class ChooseVideoOptions extends UTSObject {
-        sourceType: (string[]) | null = null;
-        compressed: boolean | null = true;
-        maxDuration: number | null = null;
-        camera: string | null = null;
-        extension: (string[]) | null = null;
-        success: (ChooseVideoSuccessCallback) | null = null;
-        fail: (ChooseVideoFailCallback) | null = null;
-        complete: (ChooseVideoCompleteCallback) | null = null;
-    }
-    type ChooseVideo = (options: ChooseVideoOptions) => void;
-    class GetVideoInfoSuccess extends UTSObject {
-        orientation: MediaOrientation | null = null;
-        type: string | null = null;
-        duration!: number;
-        size!: number;
-        height!: number;
-        width!: number;
-        fps: number | null = null;
-        bitrate: number | null = null;
-    }
-    type GetVideoInfoFail = IMediaError;
-    type GetVideoInfoSuccessCallback = (callback: GetVideoInfoSuccess) => void;
-    type GetVideoInfoFailCallback = (callback: GetVideoInfoFail) => void;
-    type GetVideoInfoCompleteCallback = ChooseImageCompleteCallback;
-    class GetVideoInfoOptions extends UTSObject {
-        src!: string.VideoURIString;
-        success: (GetVideoInfoSuccessCallback) | null = null;
-        fail: (GetVideoInfoFailCallback) | null = null;
-        complete: (GetVideoInfoCompleteCallback) | null = null;
-    }
-    type GetVideoInfo = (options: GetVideoInfoOptions) => void;
-    class SaveVideoToPhotosAlbumSuccess extends UTSObject {
-    }
-    type SaveVideoToPhotosAlbumFail = IMediaError;
-    type SaveVideoToPhotosAlbumSuccessCallback = (callback: SaveVideoToPhotosAlbumSuccess) => void;
-    type SaveVideoToPhotosAlbumFailCallback = (callback: SaveVideoToPhotosAlbumFail) => void;
-    type SaveVideoToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
-    class SaveVideoToPhotosAlbumOptions extends UTSObject {
-        filePath!: string.VideoURIString;
-        success: (SaveVideoToPhotosAlbumSuccessCallback) | null = null;
-        fail: (SaveVideoToPhotosAlbumFailCallback) | null = null;
-        complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
-    }
-    type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
-    interface MediaFile {
-        fileType: 'video' | 'image';
-        tempFilePath: string;
-        size: number;
-        width?: number;
-        height?: number;
-        duration?: number;
-        thumbTempFilePath?: string;
-    }
-    interface ChooseMediaOptions {
-        mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE | picker.PhotoViewMIMETypes.IMAGE_TYPE;
-        count?: number;
-    }
-    interface chooseMediaSuccessCallbackResult {
-        tempFiles: MediaFile[];
-    }
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
         const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
         const avMetadataExtractor = await media.createAVMetadataExtractor();
@@ -1396,10 +1844,6 @@ export function initUniExtApi(APP_ID: string) {
             "unexpect error:"
         ]
     ]);
-    interface TempFileItem {
-        path: string;
-        size: number;
-    }
     const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         _chooseMedia({
             mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
@@ -1474,11 +1918,6 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
-    interface IPreviewImageOptions {
-        urls: string[];
-        current: string;
-        showmenu: boolean;
-    }
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
         interface Page {
             $getAppWebview: Function;
@@ -1590,39 +2029,6 @@ export function initUniExtApi(APP_ID: string) {
             });
         });
     }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
-    type SetNavigationBarColorErrorCode = 4;
-    interface SetNavigationBarColorFail extends IUniError {
-        errCode: SetNavigationBarColorErrorCode;
-    }
-    class SetNavigationBarColorOptions extends UTSObject {
-        frontColor!: '#ffffff' | '#000000';
-        backgroundColor!: string.ColorString;
-        success: SetNavigationBarColorSuccessCallback | null = null;
-        fail: SetNavigationBarColorFailCallback | null = null;
-        complete: SetNavigationBarColorCompleteCallback | null = null;
-    }
-    type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
-    type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
-    type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
-    type SetNavigationBarColorComplete = AsyncApiResult;
-    type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
-    type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
-    type SetNavigationBarTitleErrorCode = 4;
-    interface SetNavigationBarTitleFail extends IUniError {
-        errCode: SetNavigationBarTitleErrorCode;
-    }
-    class SetNavigationBarTitleOptions extends UTSObject {
-        title!: string;
-        success: SetNavigationBarTitleSuccessCallback | null = null;
-        fail: SetNavigationBarTitleFailCallback | null = null;
-        complete: SetNavigationBarTitleCompleteCallback | null = null;
-    }
-    type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
-    type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
-    type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
-    type SetNavigationBarTitleComplete = AsyncApiResult;
-    type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
-    type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
     const FRONT_COLORS = [
         '#ffffff',
         '#000000'
@@ -1660,30 +2066,6 @@ export function initUniExtApi(APP_ID: string) {
             }
         ]
     ]);
-    interface TitleNView {
-        titleText: string;
-        autoBackButton?: boolean;
-    }
-    interface BackButton {
-        color?: string;
-    }
-    interface PlusWebviewWebviewTitleNViewStyles {
-        backgroundColor?: string;
-        titleColor?: string;
-        titleNView?: TitleNView;
-        backButton?: BackButton;
-    }
-    interface Webview {
-        getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
-        setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
-    }
-    interface $page {
-        statusBarStyle: 'dark' | 'light';
-    }
-    interface Page {
-        $getAppWebview: () => Webview | null;
-        $page: $page;
-    }
     const getWebview = (page: Page): Webview | null =>{
         const webview = page.$getAppWebview();
         return webview;
@@ -1740,108 +2122,6 @@ export function initUniExtApi(APP_ID: string) {
             res.reject();
         }
     }, SetNavigationBarTitleProtocol) as SetNavigationBarTitle;
-    type Request<T> = (param: RequestOptions<T>) => RequestTask;
-    class RequestOptions<T> extends UTSObject {
-        url!: string;
-        data: Object | null = null;
-        header: UTSJSONObject | null = null;
-        method: RequestMethod | null = null;
-        timeout: number | null = null;
-        dataType: string | null = null;
-        responseType: string | null = null;
-        sslVerify: boolean | null = null;
-        withCredentials: boolean | null = null;
-        firstIpv4: boolean | null = null;
-        success: RequestSuccessCallback<T> | null = null;
-        fail: RequestFailCallback | null = null;
-        complete: RequestCompleteCallback | null = null;
-    }
-    class RequestSuccess<T> extends UTSObject {
-        data: T | null = null;
-        statusCode!: number;
-        header!: Object;
-        cookies!: Array<string>;
-    }
-    type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
-    type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600009 | 602001;
-    interface RequestFail extends IUniError {
-        errCode: RequestErrorCode;
-    }
-    type RequestSuccessCallback<T> = (option: RequestSuccess<T>) => void;
-    type RequestFailCallback = (option: RequestFail) => void;
-    type RequestCompleteCallback = (option: Object) => void;
-    interface RequestTask {
-        abort(): void;
-    }
-    type UploadFile = (options: UploadFileOptions) => UploadTask;
-    class UploadFileOptionFiles extends UTSObject {
-        name: string | null = null;
-        uri!: string;
-        file: Object | null = null;
-    }
-    class UploadFileSuccess extends UTSObject {
-        data!: string;
-        statusCode!: number;
-    }
-    type UploadFileSuccessCallback = (result: UploadFileSuccess) => void;
-    interface UploadFileFail extends IUniError {
-        errCode: RequestErrorCode;
-    }
-    type UploadFileFailCallback = (result: UploadFileFail) => void;
-    type UploadFileCompleteCallback = (result: Object) => void;
-    class UploadFileOptions extends UTSObject {
-        url!: string;
-        filePath: string | null = null;
-        name: string | null = null;
-        files: (UploadFileOptionFiles[]) | null = null;
-        header: UTSJSONObject | null = null;
-        formData: UTSJSONObject | null = null;
-        timeout: number | null = null;
-        success: UploadFileSuccessCallback | null = null;
-        fail: UploadFileFailCallback | null = null;
-        complete: UploadFileCompleteCallback | null = null;
-    }
-    class OnProgressUpdateResult extends UTSObject {
-        progress!: number;
-        totalBytesSent!: number;
-        totalBytesExpectedToSend!: number;
-    }
-    type UploadFileProgressUpdateCallback = (result: OnProgressUpdateResult) => void;
-    interface UploadTask {
-        abort(): void;
-        onProgressUpdate(callback: UploadFileProgressUpdateCallback): void;
-    }
-    type DownloadFile = (options: DownloadFileOptions) => DownloadTask;
-    class DownloadFileSuccess extends UTSObject {
-        tempFilePath!: string;
-        statusCode!: number;
-    }
-    type DownloadFileSuccessCallback = (result: DownloadFileSuccess) => void;
-    interface DownloadFileFail extends IUniError {
-        errCode: RequestErrorCode;
-    }
-    type DownloadFileFailCallback = (result: DownloadFileFail) => void;
-    type DownloadFileComplete = Object;
-    type DownloadFileCompleteCallback = (result: DownloadFileComplete) => void;
-    class DownloadFileOptions extends UTSObject {
-        url!: string;
-        header: UTSJSONObject | null = null;
-        filePath: string | null = null;
-        timeout: number | null = null;
-        success: DownloadFileSuccessCallback | null = null;
-        fail: DownloadFileFailCallback | null = null;
-        complete: DownloadFileCompleteCallback | null = null;
-    }
-    class OnProgressDownloadResult extends UTSObject {
-        progress!: number;
-        totalBytesWritten!: number;
-        totalBytesExpectedToWrite!: number;
-    }
-    type DownloadFileProgressUpdateCallback = (result: OnProgressDownloadResult) => void;
-    interface DownloadTask {
-        abort(): void;
-        onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
-    }
     const API_REQUEST = 'request';
     const RequestApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -2112,11 +2392,6 @@ export function initUniExtApi(APP_ID: string) {
         cookiesArr = cookiesArr.join(';').split(',');
         return cookiesArr;
     };
-    interface IRequestTask {
-        abort: Function;
-        onHeadersReceived: Function;
-        offHeadersReceived: Function;
-    }
     class RequestTask1 implements RequestTask {
         private _requestTask: IRequestTask;
         constructor(requestTask: IRequestTask){
@@ -2702,13 +2977,6 @@ export function initUniExtApi(APP_ID: string) {
     const lookupContentType = (ext: string): string | undefined =>{
         return extToContentType[ext.trim().toLowerCase()];
     };
-    interface IUploadTask {
-        abort: Function;
-        onHeadersReceived: Function;
-        offHeadersReceived: Function;
-        onProgressUpdate: Function;
-        offProgressUpdate: Function;
-    }
     class UploadTask1 implements UploadTask {
         private _uploadTask: IUploadTask;
         constructor(uploadTask: IUploadTask){
@@ -2841,13 +3109,6 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new UploadTask1(uploadTask);
     }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
-    interface IDownloadTask {
-        abort: Function;
-        onHeadersReceived: Function;
-        offHeadersReceived: Function;
-        onProgressUpdate: Function;
-        offProgressUpdate: Function;
-    }
     const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string =>{
         const contentDispositionFileNameMatches = contentDisposition.match(/filename="(.*)"/);
         const contentDispositionFileName = contentDispositionFileNameMatches ? contentDispositionFileNameMatches[1] : '';
@@ -2964,25 +3225,6 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
-    type PageScrollToErrorCode = 4;
-    interface PageScrollToFail extends IUniError {
-        errCode: PageScrollToErrorCode;
-    }
-    type PageScrollToSuccess = AsyncApiSuccessResult;
-    type PageScrollToSuccessCallback = (result: PageScrollToSuccess) => void;
-    type PageScrollToFailCallback = (result: PageScrollToFail) => void;
-    type PageScrollToComplete = AsyncApiResult;
-    type PageScrollToCompleteCallback = (result: PageScrollToComplete) => void;
-    class PageScrollToOptions extends UTSObject {
-        scrollTop: number | null = null;
-        selector: string | null = null;
-        offsetTop: number | null = null;
-        duration: number | null = null;
-        success: PageScrollToSuccessCallback | null = null;
-        fail: PageScrollToFailCallback | null = null;
-        complete: PageScrollToCompleteCallback | null = null;
-    }
-    type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
     const API_PAGE_SCROLL_TO = 'pageScrollTo';
     const PageScrollToProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3016,92 +3258,6 @@ export function initUniExtApi(APP_ID: string) {
         const pageId = getPageIdByVm2(getCurrentPageVm2()!)! as number;
         UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
     }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
-    type PromptErrorCode = 1 | 1001;
-    interface IPromptError extends IUniError {
-        errCode: PromptErrorCode;
-    }
-    class ShowToastSuccess extends UTSObject {
-    }
-    type ShowToastFail = IPromptError;
-    type ShowToastSuccessCallback = (res: ShowToastSuccess) => void;
-    type ShowToastFailCallback = (res: ShowToastFail) => void;
-    type ShowToastCompleteCallback = (res: Object) => void;
-    class ShowToastOptions extends UTSObject {
-        title!: string;
-        icon: "success" | "error" | "fail" | "exception" | "loading" | "none" | null = null;
-        image: string.ImageURIString | null = null;
-        mask: boolean | null = null;
-        duration: number | null = null;
-        position: "top" | "center" | "bottom" | null = null;
-        success: ShowToastSuccessCallback | null = null;
-        fail: ShowToastFailCallback | null = null;
-        complete: ShowToastCompleteCallback | null = null;
-    }
-    type ShowToast = (options: ShowToastOptions) => void;
-    type HideToast = () => void;
-    class ShowLoadingSuccess extends UTSObject {
-    }
-    type ShowLoadingFail = IPromptError;
-    type ShowLoadingSuccessCallback = (res: ShowLoadingSuccess) => void;
-    type ShowLoadingFailCallback = (res: ShowLoadingFail) => void;
-    type ShowLoadingCompleteCallback = (res: Object) => void;
-    class ShowLoadingOptions extends UTSObject {
-        title!: string;
-        mask: boolean | null = null;
-        success: ShowLoadingSuccessCallback | null = null;
-        fail: ShowLoadingFailCallback | null = null;
-        complete: ShowLoadingCompleteCallback | null = null;
-    }
-    type ShowLoading = (options: ShowLoadingOptions) => void;
-    type HideLoading = () => void;
-    class ShowModalSuccess extends UTSObject {
-        confirm!: boolean;
-        cancel!: boolean;
-        content: string | null = null;
-    }
-    type ShowModalFail = IPromptError;
-    type ShowModalSuccessCallback = (res: ShowModalSuccess) => void;
-    type ShowModalFailCallback = (res: ShowModalFail) => void;
-    type ShowModalCompleteCallback = (res: Object) => void;
-    class ShowModalOptions extends UTSObject {
-        title: string | null = null;
-        content: string | null = null;
-        showCancel: boolean | null = true;
-        cancelText: string | null = null;
-        cancelColor: string.ColorString | null = null;
-        confirmText: string | null = null;
-        confirmColor: string.ColorString | null = null;
-        editable: boolean | null = false;
-        placeholderText: string | null = null;
-        success: ShowModalSuccessCallback | null = null;
-        fail: ShowModalFailCallback | null = null;
-        complete: ShowModalCompleteCallback | null = null;
-    }
-    type ShowModal = (options: ShowModalOptions) => void;
-    class ShowActionSheetSuccess extends UTSObject {
-        tapIndex: number | null = null;
-    }
-    class Popover extends UTSObject {
-        top!: number;
-        left!: number;
-        width!: number;
-        height!: number;
-    }
-    type ShowActionSheetFail = IPromptError;
-    type ShowActionSheetSuccessCallback = (res: ShowActionSheetSuccess) => void;
-    type ShowActionSheetFailCallback = (res: ShowActionSheetFail) => void;
-    type ShowActionSheetCompleteCallback = (res: Object) => void;
-    class ShowActionSheetOptions extends UTSObject {
-        title: string | null = null;
-        alertText: string | null = null;
-        itemList!: string[];
-        itemColor: string.ColorString | null = null;
-        popover: Popover | null = null;
-        success: ShowActionSheetSuccessCallback | null = null;
-        fail: ShowActionSheetFailCallback | null = null;
-        complete: ShowActionSheetCompleteCallback | null = null;
-    }
-    type ShowActionSheet = (options: ShowActionSheetOptions) => void;
     const API_SHOW_TOAST = 'showToast';
     const ShowToastProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3368,7 +3524,6 @@ export function initUniExtApi(APP_ID: string) {
     const hideLoading: HideLoading = ()=>defineAsyncApi(API_HIDE_LOADING, (options: Object, res: ApiExecutor<Object>)=>{
             res.reject('hideLoading is not supported on HarmonyOS');
         });
-    type Rpx2px = (number: number) => number;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
@@ -3394,74 +3549,6 @@ export function initUniExtApi(APP_ID: string) {
         }
         return number < 0 ? -result : result;
     }) as Rpx2px;
-    class SetStorageSuccess extends UTSObject {
-    }
-    type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
-    type SetStorageFailCallback = (res: UniError) => void;
-    type SetStorageCompleteCallback = (res: Object) => void;
-    class SetStorageOptions extends UTSObject {
-        key!: string;
-        data!: Object;
-        success: SetStorageSuccessCallback | null = null;
-        fail: SetStorageFailCallback | null = null;
-        complete: SetStorageCompleteCallback | null = null;
-    }
-    type SetStorage = (options: SetStorageOptions) => void;
-    type SetStorageSync = (key: string, data: Object) => void;
-    class GetStorageSuccess extends UTSObject {
-        data: Object | null = null;
-    }
-    type GetStorageSuccessCallback = (res: GetStorageSuccess) => void;
-    type GetStorageFailCallback = (res: UniError) => void;
-    type GetStorageCompleteCallback = (res: Object) => void;
-    class GetStorageOptions extends UTSObject {
-        key!: string;
-        success: GetStorageSuccessCallback | null = null;
-        fail: GetStorageFailCallback | null = null;
-        complete: GetStorageCompleteCallback | null = null;
-    }
-    type GetStorage = (options: GetStorageOptions) => void;
-    type GetStorageSync = (key: string) => Object | null;
-    class GetStorageInfoSuccess extends UTSObject {
-        keys!: Array<string>;
-        currentSize!: number;
-        limitSize!: number;
-    }
-    type GetStorageInfoSuccessCallback = (res: GetStorageInfoSuccess) => void;
-    type GetStorageInfoFailCallback = (res: UniError) => void;
-    type GetStorageInfoCompleteCallback = (res: Object) => void;
-    class GetStorageInfoOptions extends UTSObject {
-        success: GetStorageInfoSuccessCallback | null = null;
-        fail: GetStorageInfoFailCallback | null = null;
-        complete: GetStorageInfoCompleteCallback | null = null;
-    }
-    type GetStorageInfo = (options: GetStorageInfoOptions) => void;
-    type GetStorageInfoSync = () => GetStorageInfoSuccess;
-    class RemoveStorageSuccess extends UTSObject {
-    }
-    type RemoveStorageSuccessCallback = (res: RemoveStorageSuccess) => void;
-    type RemoveStorageFailCallback = (res: UniError) => void;
-    type RemoveStorageCompleteCallback = (res: Object) => void;
-    class RemoveStorageOptions extends UTSObject {
-        key!: string;
-        success: RemoveStorageSuccessCallback | null = null;
-        fail: RemoveStorageFailCallback | null = null;
-        complete: RemoveStorageCompleteCallback | null = null;
-    }
-    type RemoveStorage = (options: RemoveStorageOptions) => void;
-    type RemoveStorageSync = (key: string) => void;
-    class ClearStorageSuccess extends UTSObject {
-    }
-    type ClearStorageSuccessCallback = (res: ClearStorageSuccess) => void;
-    type ClearStorageFailCallback = (res: UniError) => void;
-    type ClearStorageCompleteCallback = (res: Object) => void;
-    class ClearStorageOptions extends UTSObject {
-        success: ClearStorageSuccessCallback | null = null;
-        fail: ClearStorageFailCallback | null = null;
-        complete: ClearStorageCompleteCallback | null = null;
-    }
-    type ClearStorage = (option?: ClearStorageOptions | null) => void;
-    type ClearStorageSync = () => void;
     const API_GET_STORAGE = 'getStorage';
     const API_GET_STORAGE_SYNC = 'getStorageSync';
     const API_SET_STORAGE = 'setStorage';
@@ -3572,49 +3659,6 @@ export function initUniExtApi(APP_ID: string) {
             } as GetStorageInfoSuccess);
         });
     }) as GetStorageInfo;
-    interface UniExtApi {
-        getClipboardData: GetClipboardData;
-        setClipboardData: SetClipboardData;
-        createIntersectionObserver: CreateIntersectionObserver;
-        createSelectorQuery: CreateSelectorQuery;
-        getAppBaseInfo: GetAppBaseInfo;
-        getDeviceInfo: GetDeviceInfo;
-        getSystemInfo: GetSystemInfo;
-        getSystemInfoSync: GetSystemInfoSync;
-        getWindowInfo: GetWindowInfo;
-        makePhoneCall: MakePhoneCall;
-        chooseImage: ChooseImage;
-        previewImage: PreviewImage;
-        closePreviewImage: ClosePreviewImage;
-        getImageInfo: GetImageInfo;
-        saveImageToPhotosAlbum: SaveImageToPhotosAlbum;
-        chooseVideo: ChooseVideo;
-        saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
-        getVideoInfo: GetVideoInfo;
-        setNavigationBarColor: SetNavigationBarColor;
-        setNavigationBarTitle: SetNavigationBarTitle;
-        request: Request<Object>;
-        uploadFile: UploadFile;
-        downloadFile: DownloadFile;
-        pageScrollTo: PageScrollTo;
-        showToast: ShowToast;
-        hideToast: HideToast;
-        showLoading: ShowLoading;
-        hideLoading: HideLoading;
-        showModal: ShowModal;
-        showActionSheet: ShowActionSheet;
-        rpx2px: Rpx2px;
-        setStorage: SetStorage;
-        setStorageSync: SetStorageSync;
-        getStorage: GetStorage;
-        getStorageSync: GetStorageSync;
-        getStorageInfo: GetStorageInfo;
-        getStorageInfoSync: GetStorageInfoSync;
-        removeStorage: RemoveStorage;
-        removeStorageSync: RemoveStorageSync;
-        clearStorage: ClearStorage;
-        clearStorageSync: ClearStorageSync;
-    }
     return {
         getClipboardData,
         setClipboardData,
@@ -3622,6 +3666,7 @@ export function initUniExtApi(APP_ID: string) {
         createSelectorQuery,
         getAppBaseInfo,
         getDeviceInfo,
+        getProvider,
         getSystemInfo,
         getSystemInfoSync,
         getWindowInfo,

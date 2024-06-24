@@ -1,4 +1,25 @@
-import { defineAsyncApi as originalDefineAsyncApi, defineOffApi as originalDefineOffApi, defineOnApi as originalDefineOnApi, defineSyncApi as originalDefineSyncApi, defineTaskApi as originalDefineTaskApi } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { defineAsyncApi as originalDefineAsyncApi, defineOffApi as originalDefineOffApi, defineOnApi as originalDefineOnApi, defineSyncApi as originalDefineSyncApi, defineTaskApi as originalDefineTaskApi } from "@dcloudio/uni-app-harmony-framework";
+interface UniProvider {
+    id: string;
+    description: string;
+}
+const providers: Map<String, Map<String, UniProvider>> = new Map();
+function getUniProvider<T extends UniProvider>(service: string, providerName: String): T | null {
+    return providers.get(service)?.get(providerName) as T | null;
+}
+function getUniProviders(service: string): UniProvider[] {
+    const result: UniProvider[] = [];
+    providers.get(service)?.forEach((provider)=>{
+        result.push(provider);
+    });
+    return result;
+}
+function registerUniProvider<T extends UniProvider>(service: string, providerName: string, provider: T) {
+    if (!providers.has(service)) {
+        providers.set(service, new Map());
+    }
+    providers.get(service)?.set(providerName, provider);
+}
 type Anything = Object | null | undefined;
 type NullType = null | undefined;
 type FormatArgsValueType = Function | string | number | boolean;
@@ -107,6 +128,7 @@ function defineOffApi<T>(name: string, fn: () => void, options: ApiOptions<T>): 
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineOffApi(name, fn, originalOptions);
 }
+export { UniProvider as UniProvider, getUniProvider as getUniProvider, getUniProviders as getUniProviders, registerUniProvider as registerUniProvider };
 export { AsyncApiSuccessResult as AsyncApiSuccessResult };
 export { AsyncApiResult as AsyncApiResult };
 export { ApiError as ApiError };

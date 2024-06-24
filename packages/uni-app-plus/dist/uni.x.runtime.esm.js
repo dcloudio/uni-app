@@ -1070,7 +1070,7 @@ var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
-  return value !== null && value !== void 0 ? value : borderStyle;
+  return value || BORDER_COLORS.get("black");
 }
 function fixBorderStyle(tabBarConfig) {
   var borderStyle = tabBarConfig.get("borderStyle");
@@ -2370,6 +2370,16 @@ function getProxy() {
           return nativeChannel.invokeSync("APP-SERVICE", args, callback);
         },
         invokeAsync(args, callback) {
+          if (
+            // 硬编码
+            args.moduleName === "uni-ad" && ["showByJs", "loadByJs"].includes(args.name)
+          ) {
+            var res = nativeChannel.invokeSync("APP-SERVICE", args, callback);
+            callback(extend(res, {
+              params: [res.params]
+            }));
+            return res;
+          }
           return nativeChannel.invokeAsync("APP-SERVICE", args, callback);
         }
       };
