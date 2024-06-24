@@ -7,7 +7,6 @@ import {
   createRollupError,
   // initAutoImportOptions,
   normalizeNodeModules,
-  normalizePath,
   offsetToStartAndEnd,
   parseUniExtApiNamespacesJsOnce,
 } from '@dcloudio/uni-cli-shared'
@@ -246,11 +245,9 @@ export function parseUTSImportFilename(filename: string) {
   if (!path.isAbsolute(filename)) {
     return filename
   }
-  return normalizePath(
-    path.join(
-      process.env.UNI_APP_X_TSC === 'true' ? tscOutDir() : uvueOutDir(),
-      normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, filename))
-    )
+  return (
+    '@/' +
+    normalizeNodeModules(path.relative(process.env.UNI_INPUT_DIR, filename))
   )
 }
 
