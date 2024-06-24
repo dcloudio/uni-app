@@ -93,10 +93,13 @@ export function uniAppUVuePlugin(): Plugin {
         if (
           file &&
           file.type === 'asset' &&
-          isVue(file.fileName) &&
+          isVueFile(file.fileName) &&
           isString(file.source)
         ) {
-          const fileName = normalizePath(file.fileName)
+          let fileName = normalizePath(file.fileName)
+          if (process.env.UNI_APP_X_TSC === 'true') {
+            fileName = fileName.replace('.ts', '')
+          }
           const classNameComment = `/*${genUTSClassName(
             fileName,
             options.classNamePrefix
@@ -120,4 +123,13 @@ export function uniAppUVuePlugin(): Plugin {
       })
     },
   }
+}
+
+function isVueFile(filename: string) {
+  return (
+    filename.endsWith('.uvue') ||
+    filename.endsWith('.vue') ||
+    filename.endsWith('.uvue.ts') ||
+    filename.endsWith('.vue.ts')
+  )
 }
