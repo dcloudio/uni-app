@@ -85,6 +85,7 @@ export type UTSOutputOptions = {
     reactiveAll?: boolean
     uniCloudObjectInfo?: { name: string; methodList: string[] }[]
     autoImports?: Record<string, [string, string?][]>
+    autoImportExternals?: Record<string, [string, string?][]>
     uniModulesArtifacts?: {
       name: string
       package: string

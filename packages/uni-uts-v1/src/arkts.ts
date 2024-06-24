@@ -8,6 +8,36 @@ interface ArkTSCompilerOptions {
   isX?: boolean
   isExtApi?: boolean
 }
+
+export function getArkTSAutoImports(): Record<
+  string,
+  [string, (string | undefined)?][]
+> {
+  return {
+    '@dcloudio/uts-harmony': [['IUTSObject'], ['UTSObject'], ['UTSJSONObject']],
+    '@dcloudio/uni-app-harmony': [
+      ['defineAsyncApi'],
+      ['defineSyncApi'],
+      ['defineTaskApi'],
+      ['defineOnApi'],
+      ['defineOffApi'],
+      ['getUniProvider'],
+      ['getUniProviders'],
+      ['string'],
+      ['AsyncApiSuccessResult'],
+      ['AsyncApiResult'],
+      ['ApiExecutor'],
+      ['ComponentInternalInstance'],
+      ['ComponentPublicInstance'],
+      ['IUniError'],
+      ['ProtocolOptions'],
+      ['ApiOptions'],
+      ['ApiError'],
+      ['UniError'],
+      ['UniProvider'],
+    ],
+  }
+}
 export async function compileArkTS(
   pluginDir: string,
   { isExtApi }: ArkTSCompilerOptions
@@ -29,39 +59,7 @@ export async function compileArkTS(
     projectPath,
     pluginId
   )
-  const utsGlobals = ['IUTSObject', 'UTSObject', 'UTSJSONObject']
-  const uniAppGlobals = [
-    'IUniError',
-    'UniError',
-    'string',
-    'ComponentPublicInstance',
-    'ComponentInternalInstance',
-  ]
-  const banners: string[] = [
-    `import { ${utsGlobals.join(', ')} } from '@dcloudio/uts-harmony'`,
-    `import { ${uniAppGlobals.join(', ')} } from '@dcloudio/uni-app-harmony'`,
-  ]
-  if (isExtApi) {
-    const globals = [
-      'defineAsyncApi',
-      'defineSyncApi',
-      'defineTaskApi',
-      'defineOnApi',
-      'defineOffApi',
-      'getUniProvider',
-      'getUniProviders',
-      'AsyncApiSuccessResult',
-      'AsyncApiResult',
-      'ApiExecutor',
-      'ProtocolOptions',
-      'ApiOptions',
-      'ApiError',
-      'UniProvider',
-    ]
-    banners.push(
-      `import { ${globals.join(', ')} } from '@dcloudio/uni-app-harmony'`
-    )
-  }
+
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input: {
@@ -70,7 +68,6 @@ export async function compileArkTS(
       paths: {
         '@dcloudio/uni-runtime': '@dcloudio/uni-app-harmony-framework',
       },
-      externals: ['@dcloudio/uni-app-harmony-framework'],
       parseOptions: {
         tsx: true,
         noEarlyErrors: true,
@@ -87,12 +84,12 @@ export async function compileArkTS(
       extname: '.ets',
       logFilename: false,
       isPlugin: true,
-      transform: {},
+      transform: {
+        autoImportExternals: getArkTSAutoImports(),
+      },
       treeshake: {
         noSideEffects: true,
       },
-      banner: banners.join('\n'),
-      // footer:''
     },
   }
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
