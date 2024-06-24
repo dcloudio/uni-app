@@ -12,9 +12,9 @@
       "@dcloudio/uni-i18n": "<rootDir>/packages/uni-i18n/src",
       "@dcloudio/uni-platform": "<rootDir>/packages/uni-app-harmony/src/platform",
       "@dcloudio/uni-shared": "<rootDir>/packages/uni-shared/src",
-      "@dcloudio/uni-runtime": "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev"
+      "@dcloudio/uni-runtime": "@dcloudio/uni-app-harmony-framework"
     },
-    "externals": ["../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev"],
+    "externals": ["@dcloudio/uni-app-harmony-framework"],
     "replacements": {
       "__PLATFORM__": "'app-harmony'",
       "__DEV__": "false",
@@ -22,7 +22,7 @@
       "__APP_VIEW__": "false",
       "__NODE_JS__": "false"
     },
-    "banner": "import { IUniError, UTSObject, UniError, UTSJSONObject, string, ComponentPublicInstance, ComponentInternalInstance, defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, getUniProvider, getUniProviders, AsyncApiSuccessResult, AsyncApiResult, ApiExecutor, ProtocolOptions, ApiOptions, ApiError, UniProvider } from '@dcloudio/uni-app-ohos-runtime'",
+    "banner": "import { IUTSObject, UTSObject, UTSJSONObject } from '@dcloudio/uts-harmony'\nimport { IUniError, UniError, string, ComponentPublicInstance, ComponentInternalInstance, defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, getUniProvider, getUniProviders, AsyncApiSuccessResult, AsyncApiResult, ApiExecutor, ProtocolOptions, ApiOptions, ApiError, UniProvider } from '@dcloudio/uni-app-harmony'\n",
     "wrapper": {
       "name": "initUniExtApi",
       "args": [["APP_ID", "string"]]
@@ -32,9 +32,9 @@
       "../uni-runtime/src/helpers/api/index.ts": "uni-api-shared.ets"
     },
     "alias": {
-      "@dcloudio/uni-runtime": "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev"
+      "@dcloudio/uni-runtime": "@dcloudio/uni-app-harmony-framework"
     },
-    "externals": ["../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev"],
+    "externals": ["@dcloudio/uni-app-harmony-framework"],
     "replacements": {
       "__PLATFORM__": "'app-harmony'",
       "__DEV__": "false",
