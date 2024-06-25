@@ -41,15 +41,10 @@ export function createBasicUtsOptions(
   options.tsconfigOverride.compilerOptions.sourceMap =
     process.env.NODE_ENV === 'development'
   if (!options.tsconfig) {
-    if (isInHBuilderXBool) {
+    if (isInHBuilderXBool || isUTSCloudCompilerBool) {
       options.tsconfig = path.resolve(
         __dirname,
-        '../../../lib/tsconfig/hbuilderx/tsconfig.json'
-      )
-    } else if (isUTSCloudCompilerBool) {
-      options.tsconfig = path.resolve(
-        __dirname,
-        '../../../lib/tsconfig/cloud/tsconfig.json'
+        '../../../lib/tsconfig/tsconfig.json'
       )
     } else {
       options.tsconfig = path.resolve(process.cwd(), 'tsconfig.json')
