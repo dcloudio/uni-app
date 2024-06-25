@@ -5,8 +5,7 @@ import {
   SetTabBarStyleProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import { getBorderStyle, getTabBar } from '../../framework/app/tabBar'
-import { isString } from '@vue/shared'
+import { fixBorderStyle, getTabBar } from '../../framework/app/tabBar'
 
 export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
   API_SET_TAB_BAR_STYLE,
@@ -22,10 +21,10 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
       ['backgroundColor', options.backgroundColor],
       ['backgroundImage', options.backgroundImage],
       ['backgroundRepeat', options.backgroundRepeat],
+      ['borderStyle', options.borderStyle],
+      ['borderColor', options.borderColor],
     ])
-    if (isString(options.borderStyle)) {
-      style.set('borderStyle', getBorderStyle(options.borderStyle as string))
-    }
+
     if (!!options.midButton) {
       const midButtonOptions = options.midButton!
       const midButton: Map<string, any> = new Map<string, any>([
@@ -50,6 +49,8 @@ export const setTabBarStyle = defineAsyncApi<API_TYPE_SET_TAB_BAR_STYLE>(
       }
       style.set('midButton', midButton)
     }
+
+    fixBorderStyle(style)
     tabBar!.setTabBarStyle(style)
     resolve()
   },

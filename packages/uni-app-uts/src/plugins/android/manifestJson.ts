@@ -7,6 +7,7 @@ import {
   parseJson,
   parseUniXFlexDirection,
   parseUniXSplashScreen,
+  validateThemeValue,
 } from '@dcloudio/uni-cli-shared'
 import { ENTRY_FILENAME, stringifyMap } from './utils'
 import { isManifest, normalizeManifestJson } from '../utils'
@@ -50,8 +51,8 @@ export function uniAppManifestPlugin(): Plugin {
       }
     },
     generateBundle(_, bundle) {
-      if (bundle[ENTRY_FILENAME]) {
-        const asset = bundle[ENTRY_FILENAME] as OutputAsset
+      if (bundle[ENTRY_FILENAME()]) {
+        const asset = bundle[ENTRY_FILENAME()] as OutputAsset
         const singleThreadCode =
           manifestJson?.['uni-app-x']?.['singleThread'] === false
             ? `override singleThread = false`
@@ -66,32 +67,36 @@ export function uniAppManifestPlugin(): Plugin {
                 splashScreen
               )}`
             : ''
-        const darkMode =
-          typeof manifestJson.app?.darkmode === 'boolean'
-            ? manifestJson.app?.darkmode
-            : manifestJson.darkmode
-        const darkModeCode = darkMode
-          ? `override darkmode: boolean = ${darkMode}`
+
+        const hasAppDefaultAppTheme = validateThemeValue(
+          manifestJson.app?.defaultAppTheme
+        )
+        const hasDefaultAppTheme = validateThemeValue(
+          manifestJson.defaultAppTheme
+        )
+        const defaultAppThemeCode = hasAppDefaultAppTheme
+          ? `override defaultAppTheme: string = "${manifestJson.app.defaultAppTheme}"`
+          : hasDefaultAppTheme
+          ? `override defaultAppTheme: string = "${manifestJson.defaultAppTheme}"`
           : ''
 
         const codes = [
           singleThreadCode,
           flexDirCode,
           splashScreenCode,
-          darkModeCode,
+          defaultAppThemeCode,
         ]
           .filter(Boolean)
           .join('\n')
         asset.source =
           asset.source +
           `
-import { AppConfig } from "io.dcloud.uniapp.appframe"
-export class UniAppConfig extends AppConfig {
+export class UniAppConfig extends io.dcloud.uniapp.appframe.AppConfig {
     override name: string = "${manifestJson.name || ''}"
     override appid: string = "${manifestJson.appid || ''}"
     override versionName: string = "${manifestJson.versionName || ''}"
     override versionCode: string = "${manifestJson.versionCode || ''}"
-    override uniCompileVersion: string = "${
+    override uniCompilerVersion: string = "${
       process.env.UNI_COMPILER_VERSION || ''
     }"
     ${codes}

@@ -50,7 +50,6 @@ export function genRuntimeSlots(ctx: ScriptCompileContext): string | undefined {
   if (!ctx.slotsRuntimeDecl) {
     return
   }
-  debugger
   const slots: string[] = []
   ctx.slotsRuntimeDecl.members.forEach((member) => {
     if (

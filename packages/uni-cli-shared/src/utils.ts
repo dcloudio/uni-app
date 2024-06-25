@@ -21,6 +21,7 @@ import {
 import type { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
 import { isInHBuilderX } from './hbx'
+import { parseManifestJsonOnce } from './json'
 
 // 专为 uts.ts 服务
 export { camelize, capitalize, isArray } from '@vue/shared'
@@ -181,8 +182,14 @@ Please run \`${colors.cyan(
   )}\` and try again.`
 }
 
+/**
+ * 根据路径判断是否为 App.(u?)vue
+ * @param {string} filename 相对、绝对路径
+ * @returns
+ */
 export function isAppVue(filename: string) {
-  return filename.endsWith('App.vue') || filename.endsWith('App.uvue')
+  const _filePath = normalizePath(filename)
+  return /(\/|\\)app\.(u?)vue$/.test(_filePath.toLowerCase())
 }
 
 export function resolveAppVue(inputDir: string) {
@@ -210,4 +217,47 @@ export function enableSourceMap() {
     process.env.NODE_ENV === 'development' &&
     process.env.UNI_COMPILE_TARGET !== 'uni_modules'
   )
+}
+
+export function requireUniHelpers() {
+  require(path.resolve(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    'uni_helpers/lib/bytenode'
+  ))
+  return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+}
+
+export function normalizeEmitAssetFileName(fileName: string) {
+  const extname = path.extname(fileName)
+
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    if (extname !== '.ts') {
+      return fileName + '.ts'
+    }
+  } else {
+    // logo.png、pages.json 等
+    if (!['.ts', '.uts', '.uvue', '.vue'].includes(extname)) {
+      fileName = fileName + '.uts'
+    }
+  }
+  return fileName
+}
+
+function createIdent() {
+  if (process.env.UNI_INPUT_DIR) {
+    const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+    const id = (manifestJson.appid || '').replace('__UNI__', '')
+    if (id) {
+      return Buffer.from(Buffer.from(id).toString('base64')).toString('hex')
+    }
+  }
+  return ''
+}
+
+export function createShadowImageUrl(cdn: number, type: string = 'grey') {
+  const ident = createIdent()
+  const identStr = ident ? `${ident}/` : ''
+  return `https://cdn${
+    (cdn || 0) + (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
+  }.dcloud.net.cn/${identStr}img/shadow-${type}.png`
 }

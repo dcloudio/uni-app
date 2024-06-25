@@ -12,9 +12,11 @@ import {
   initCheckEnv,
   parseUniModulesWithComponents,
 } from '../uni_modules'
-import { cleanUrl, normalizePath } from './plugins/vitejs/utils'
+import { cleanUrl } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
 import { resolveUTSCompiler } from '../uts'
+import { normalizePath } from '../utils'
+import { getUTSEasyComAutoImports } from '../easycom'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -34,6 +36,38 @@ export function createEncryptCssUrlReplacer(
   }
 }
 
+// 处理静态资源加载（目前仅限非app-android）
+export function uniEncryptUniModulesAssetsPlugin(): Plugin {
+  let resolvedConfig: ResolvedConfig
+  return {
+    name: 'uni:encrypt-uni-modules-assets',
+    enforce: 'pre',
+    configResolved(config) {
+      resolvedConfig = config
+    },
+    resolveId(id, importer) {
+      if (resolvedConfig.assetsInclude(cleanUrl(id))) {
+        id = normalizePath(id)
+        if (importer && (id.startsWith('./') || id.startsWith('../'))) {
+          id = normalizePath(path.resolve(path.dirname(importer), id))
+        }
+        if (path.isAbsolute(id)) {
+          id = '@/' + path.relative(process.env.UNI_INPUT_DIR, id)
+        }
+        return `\0${id}`
+      }
+    },
+    load(id) {
+      if (resolvedConfig.assetsInclude(cleanUrl(id))) {
+        return {
+          code: `export default ${JSON.stringify(id.replace(/\0/g, ''))}`,
+          moduleSideEffects: false,
+        }
+      }
+    },
+  }
+}
+
 export function uniEncryptUniModulesPlugin(): Plugin {
   let resolvedConfig: ResolvedConfig
   return {
@@ -44,7 +78,10 @@ export function uniEncryptUniModulesPlugin(): Plugin {
         resolve: {
           alias: initEncryptUniModulesAlias(),
         },
-        build: initEncryptUniModulesBuildOptions(process.env.UNI_INPUT_DIR),
+        build: initEncryptUniModulesBuildOptions(
+          process.env.UNI_UTS_PLATFORM,
+          process.env.UNI_INPUT_DIR
+        ),
       }
     },
     configResolved(config) {
@@ -53,9 +90,28 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       config.build.rollupOptions.external = createExternal(config)
       resolvedConfig = config
     },
-    resolveId(id) {
-      if (resolvedConfig.assetsInclude(cleanUrl(id))) {
-        return `\0${id}`
+    resolveId(id, importer) {
+      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+        if (resolvedConfig.assetsInclude(cleanUrl(id))) {
+          id = normalizePath(id)
+          if (importer && (id.startsWith('./') || id.startsWith('../'))) {
+            id = normalizePath(path.resolve(path.dirname(importer), id))
+          }
+          if (path.isAbsolute(id)) {
+            id = '@/' + path.relative(process.env.UNI_INPUT_DIR, id)
+          }
+          return `\0${id}`
+        }
+      }
+    },
+    load(id) {
+      if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
+        if (resolvedConfig.assetsInclude(cleanUrl(id))) {
+          return {
+            code: `export default ${JSON.stringify(id.replace(/\0/g, ''))}`,
+            moduleSideEffects: false,
+          }
+        }
       }
     },
     generateBundle(_, bundle) {
@@ -118,10 +174,12 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           uni_modules: [],
           transform: {
             uvueClassNamePrefix: 'Gen',
+            autoImports: getUTSEasyComAutoImports(),
           },
         })
         if (result) {
           const apis = result.inject_apis
+          const scopedSlots = result.scoped_slots
           const components = getUniModulesExtApiComponents(uniModule)
           const modules = resolveUTSCompiler().parseInjectModules(
             apis,
@@ -140,6 +198,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               apis,
               components,
               modules,
+              scopedSlots,
             })
           )
         }
@@ -154,13 +213,6 @@ function uvueOutDir() {
 
 function createExternal(config: ResolvedConfig) {
   return function external(source) {
-    if (
-      // android 平台需要编译 assets 资源
-      process.env.UNI_UTS_PLATFORM !== 'app-android' &&
-      config.assetsInclude(cleanUrl(source))
-    ) {
-      return true
-    }
     if (
       [
         'vue',
@@ -182,6 +234,17 @@ function createExternal(config: ResolvedConfig) {
     if (source.startsWith('@/uni_modules/')) {
       return true
     }
+    // 相对目录
+    if (source.startsWith('@/') || source.startsWith('.')) {
+      return false
+    }
+    if (path.isAbsolute(source)) {
+      return false
+    }
+    // android 系统库，三方库，iOS 的库呢？一般不包含.
+    if (source.includes('.')) {
+      return true
+    }
     return false
   }
 }
@@ -200,7 +263,10 @@ function hasIndexFile(uniModuleDir: string) {
   return fs.readdirSync(uniModuleDir).some((file) => indexFiles.includes(file))
 }
 
-function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
+function initEncryptUniModulesBuildOptions(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  inputDir: string
+): BuildOptions {
   const modules = parseUniModulesWithComponents(inputDir)
   const moduleNames = Object.keys(modules)
   if (!moduleNames.length) {
@@ -209,19 +275,15 @@ function initEncryptUniModulesBuildOptions(inputDir: string): BuildOptions {
   // 生成入口文件
   const input: { [entryAlias: string]: string } = {}
   moduleNames.forEach((module) => {
-    const indexEncryptFile = path.resolve(
-      inputDir,
-      'uni_modules',
-      module,
-      'index.module.uts'
-    )
+    const moduleDir = path.resolve(inputDir, 'uni_modules', module)
+    const indexEncryptFile = path.resolve(moduleDir, 'index.module.uts')
     const codes: string[] = []
-    if (hasIndexFile(path.resolve(inputDir, 'uni_modules', module))) {
+    if (hasIndexFile(moduleDir)) {
       codes.push(`export * from './index'`)
     }
     // easyCom
-    if (modules[module].length) {
-      codes.push(genEncryptEasyComModuleIndex(modules[module]))
+    if (modules[module] && Object.keys(modules[module]).length) {
+      codes.push(genEncryptEasyComModuleIndex(platform, modules[module]))
     }
     if (codes.length) {
       fs.writeFileSync(indexEncryptFile, codes.join(`\n`))

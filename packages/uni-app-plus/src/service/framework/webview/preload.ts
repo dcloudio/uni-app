@@ -8,7 +8,7 @@ export let preloadWebview: PlusWebviewWebviewObject & {
 }
 
 export function setPreloadWebview(webview: PlusWebviewWebviewObject) {
-  preloadWebview = webview
+  return (preloadWebview = webview)
 }
 
 export function getPreloadWebview() {

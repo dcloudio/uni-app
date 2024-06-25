@@ -6,6 +6,7 @@ import {
   resolveUTSCompiler,
   uniCssScopedPlugin,
   uniDecryptUniModulesPlugin,
+  uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
 } from '@dcloudio/uni-cli-shared'
@@ -59,7 +60,7 @@ export default [
   uniRenderjsPlugin(),
   uniH5Plugin(),
   ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
-    ? [uniEncryptUniModulesPlugin()]
+    ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
     : []),
   uniPostVuePlugin(),
   uniPostSourceMapPlugin(),

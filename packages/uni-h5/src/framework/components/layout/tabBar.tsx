@@ -1,5 +1,5 @@
 import { type Ref, computed, onMounted, ref, watch, watchEffect } from 'vue'
-import { extend } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { type RouteLocationNormalizedLoaded, useRoute } from 'vue-router'
 import { invokeHook, updatePageCssVar } from '@dcloudio/uni-core'
 import {
@@ -46,6 +46,7 @@ export default /*#__PURE__*/ defineSystemComponent({
     useVisibleList(tabBar, visibleList)
     useTabBarCssVar(tabBar)
     const onSwitchTab = useSwitchTab(useRoute(), tabBar, visibleList)
+    // 修改 borderStyle
     const { style, borderStyle, placeholderStyle } = useTabBarStyle(tabBar)
 
     onMounted(() => {
@@ -177,10 +178,17 @@ const BLUR_EFFECT_COLORS = {
   extralight: BLUR_EFFECT_COLOR_LIGHT,
 }
 
+// 和微信保持一致
 const BORDER_COLORS = {
   white: 'rgba(255, 255, 255, 0.33)',
   black: 'rgba(0, 0, 0, 0.33)',
 }
+
+/**
+ * useTabBarStyle
+ * @param tabBar
+ * @returns
+ */
 function useTabBarStyle(tabBar: UniApp.TabBarOptions) {
   const style = computed(() => {
     let backgroundColor = tabBar.backgroundColor
@@ -196,9 +204,15 @@ function useTabBarStyle(tabBar: UniApp.TabBarOptions) {
     }
   })
   const borderStyle = computed(() => {
-    const { borderStyle } = tabBar
+    const { borderStyle, borderColor } = tabBar
+    // borderColor > borderStyle
+    if (borderColor && isString(borderColor)) {
+      return {
+        backgroundColor: borderColor,
+      }
+    }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle!] || borderStyle,
+      backgroundColor: BORDER_COLORS[borderStyle!] || BORDER_COLORS['black'],
     }
   })
   const placeholderStyle = computed(() => {

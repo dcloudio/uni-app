@@ -5,10 +5,11 @@ import {
   resolveUTSCompiler,
   uniDecryptUniModulesPlugin,
   uniEasycomPlugin,
+  uniEncryptUniModulesAssetsPlugin,
   uniEncryptUniModulesPlugin,
   uniHBuilderXConsolePlugin,
+  uniUTSAppUniModulesPlugin,
   uniUTSUVueJavaScriptPlugin,
-  uniUTSUniModulesPlugin,
 } from '@dcloudio/uni-cli-shared'
 
 import { uniAppIOSPlugin } from './plugin'
@@ -22,7 +23,7 @@ export function init() {
   return [
     uniDecryptUniModulesPlugin(),
     uniHBuilderXConsolePlugin('uni.__log__'),
-    uniUTSUniModulesPlugin({
+    uniUTSAppUniModulesPlugin({
       x: true,
       isSingleThread: process.env.UNI_APP_X_SINGLE_THREAD !== 'false',
       extApis: parseUniExtApiNamespacesOnce(
@@ -33,7 +34,7 @@ export function init() {
     uniEasycomPlugin({ exclude: UNI_EASYCOM_EXCLUDE }),
     uniAppIOSPlugin(),
     ...(process.env.UNI_COMPILE_TARGET === 'uni_modules'
-      ? [uniEncryptUniModulesPlugin()]
+      ? [uniEncryptUniModulesAssetsPlugin(), uniEncryptUniModulesPlugin()]
       : [uniAppIOSMainPlugin(), uniAppManifestPlugin(), uniAppPagesPlugin()]),
     uniUTSUVueJavaScriptPlugin(),
     resolveUTSCompiler().uts2js({

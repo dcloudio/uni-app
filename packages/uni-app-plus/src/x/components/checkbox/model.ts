@@ -8,6 +8,9 @@ export class UniCheckboxElement extends UniElementImpl {
     super(data, pageNode)
   }
 
+  override tagName = 'CHECKBOX'
+  override nodeName = this.tagName
+
   override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)
     if (value != null) {
@@ -63,6 +66,11 @@ export const checkboxProps = {
   },
   // 图标颜色,同color,优先级大于color
   iconColor: {
+    type: String,
+    default: '',
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foreColor: {
     type: String,
     default: '',
   },

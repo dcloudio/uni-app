@@ -22,7 +22,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   //#endif
   setup(props, { slots }) {
     const rootRef = ref<HTMLElement | null>(null)
-    if (__PLATFORM__ === 'app') {
+    if (__PLATFORM__ === 'app' && __PLUS__) {
       initI18nButtonMsgsOnce()
     }
     const uniForm = inject<UniFormCtx>(
@@ -30,7 +30,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       false as unknown as UniFormCtx
     )
     const { hovering, binding } = useHover(props)
-    const { t } = useI18n()
+    const { t } = /*#__PURE__*/ useI18n()
     const onClick = withWebEvent((e: Event, isLabelClick: boolean) => {
       if (props.disabled) {
         return e.stopImmediatePropagation()
@@ -50,7 +50,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         }
         return
       }
-      if (__PLATFORM__ === 'app' && props.openType === 'feedback') {
+      if (__PLATFORM__ === 'app' && __PLUS__ && props.openType === 'feedback') {
         openFeedback(
           t('uni.button.feedback.title'),
           t('uni.button.feedback.send')

@@ -109,7 +109,7 @@ var source = {
  */
 const transformOn = uniCliShared.createTransformOn(uniMpCompiler.transformOn, {
     match: (name, node, context) => {
-        if (name === 'getphonenumber')
+        if (name === 'getphonenumber' || name === 'getuserextendinfo')
             return true;
         if (name === 'input' && (node.tag === 'input' || node.tag === 'textarea')) {
             return true;

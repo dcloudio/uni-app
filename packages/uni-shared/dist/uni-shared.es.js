@@ -1415,11 +1415,7 @@ function isRootImmediateHook(name) {
     const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
     return PAGE_SYNC_HOOKS.indexOf(name) > -1;
 }
-// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
-function isRootImmediateHookX(name) {
-    const PAGE_SYNC_HOOKS = [ON_LOAD];
-    return PAGE_SYNC_HOOKS.indexOf(name) > -1;
-}
+// isRootImmediateHookX deprecated
 function isRootHook(name) {
     return PAGE_HOOKS.indexOf(name) > -1;
 }
@@ -1564,39 +1560,41 @@ function normalizeTabBarStyles(borderStyle) {
 function normalizeTitleColor(titleColor) {
     return titleColor === 'black' ? '#000000' : '#ffffff';
 }
+function resolveStringStyleItem(modeStyle, styleItem, key) {
+    if (isString(styleItem) && styleItem.startsWith('@')) {
+        const _key = styleItem.replace('@', '');
+        let _styleItem = modeStyle[_key] || styleItem;
+        switch (key) {
+            case 'titleColor':
+                _styleItem = normalizeTitleColor(_styleItem);
+                break;
+            case 'borderStyle':
+                _styleItem = normalizeTabBarStyles(_styleItem);
+                break;
+        }
+        return _styleItem;
+    }
+    return styleItem;
+}
 function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
-    if (!modeStyle) {
+    if (typeof modeStyle === 'undefined')
         return pageStyle;
-    }
     Object.keys(pageStyle).forEach((key) => {
-        let styleItem = pageStyle[key] // Object Array String
-        ;
-        styles[key] = (() => {
-            if (isPlainObject(styleItem)) {
+        const styleItem = pageStyle[key]; // Object Array String
+        const parseStyleItem = () => {
+            if (isPlainObject(styleItem))
                 return normalizeStyles(styleItem, themeConfig, mode);
-            }
-            else if (isArray(styleItem)) {
-                return styleItem.map((item) => isPlainObject(item)
-                    ? normalizeStyles(item, themeConfig, mode)
-                    : item);
-            }
-            else if (isString(styleItem) && styleItem.startsWith('@')) {
-                const _key = styleItem.replace('@', '');
-                let _styleItem = modeStyle[_key] || styleItem;
-                switch (key) {
-                    case 'titleColor':
-                        _styleItem = normalizeTitleColor(_styleItem);
-                        break;
-                    case 'borderStyle':
-                        _styleItem = normalizeTabBarStyles(_styleItem);
-                        break;
-                }
-                return _styleItem;
-            }
-            return styleItem;
-        })();
+            if (isArray(styleItem))
+                return styleItem.map((item) => {
+                    if (typeof item === 'object')
+                        return normalizeStyles(item, themeConfig, mode);
+                    return resolveStringStyleItem(modeStyle, item);
+                });
+            return resolveStringStyleItem(modeStyle, styleItem, key);
+        };
+        styles[key] = parseStyleItem();
     });
     return styles;
 }
@@ -1607,4 +1605,4 @@ function getEnvLocale() {
     return (lang && lang.replace(/[.:].*/, '')) || 'en';
 }
 
-export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_EXIT, ON_HIDE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UVUE_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueNativeTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isH5CustomElement, isH5NativeTag, isMiniProgramNativeTag, isRootHook, isRootImmediateHook, isRootImmediateHookX, isUniLifecycleHook, isUniXElement, normalizeClass, normalizeDataset, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, sortObject, stringifyQuery, updateElementStyle };
+export { ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_CREATE, ACTION_TYPE_EVENT, ACTION_TYPE_INSERT, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_REMOVE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ATTR_CHANGE_PREFIX, ATTR_CLASS, ATTR_INNER_HTML, ATTR_STYLE, ATTR_TEXT_CONTENT, ATTR_V_OWNER_ID, ATTR_V_RENDERJS, ATTR_V_SHOW, BACKGROUND_COLOR, BUILT_IN_TAGS, BUILT_IN_TAG_NAMES, COMPONENT_NAME_PREFIX, COMPONENT_PREFIX, COMPONENT_SELECTOR_PREFIX, DATA_RE, E$1 as Emitter, EventChannel, EventModifierFlags, I18N_JSON_DELIMITERS, JSON_PROTOCOL, LINEFEED, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, NAVBAR_HEIGHT, NODE_TYPE_COMMENT, NODE_TYPE_ELEMENT, NODE_TYPE_PAGE, NODE_TYPE_TEXT, NVUE_BUILT_IN_TAGS, NVUE_U_BUILT_IN_TAGS, OFF_THEME_CHANGE, ON_ADD_TO_FAVORITES, ON_APP_ENTER_BACKGROUND, ON_APP_ENTER_FOREGROUND, ON_BACK_PRESS, ON_ERROR, ON_EXIT, ON_HIDE, ON_INIT, ON_KEYBOARD_HEIGHT_CHANGE, ON_LAUNCH, ON_LOAD, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_CHANGE, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_PAGE_NOT_FOUND, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_REACH_BOTTOM_DISTANCE, ON_READY, ON_RESIZE, ON_SAVE_EXIT_STATE, ON_SHARE_APP_MESSAGE, ON_SHARE_TIMELINE, ON_SHOW, ON_TAB_ITEM_TAP, ON_THEME_CHANGE, ON_UNHANDLE_REJECTION, ON_UNLOAD, ON_WEB_INVOKE_APP_SERVICE, ON_WXS_INVOKE_CALL_METHOD, PLUS_RE, PRIMARY_COLOR, RENDERJS_MODULES, RESPONSIVE_MIN_WIDTH, SCHEME_RE, SELECTED_COLOR, SLOT_DEFAULT_NAME, TABBAR_HEIGHT, TAGS, UNI_SSR, UNI_SSR_DATA, UNI_SSR_GLOBAL_DATA, UNI_SSR_STORE, UNI_SSR_TITLE, UNI_STORAGE_LOCALE, UNI_UI_CONFLICT_TAGS, UVUE_BUILT_IN_TAGS, UVUE_IOS_BUILT_IN_TAGS, UVUE_WEB_BUILT_IN_TAGS, UniBaseNode, UniCommentNode, UniElement, UniEvent, UniInputElement, UniLifecycleHooks, UniNode, UniTextAreaElement, UniTextNode, WEB_INVOKE_APPSERVICE, WXS_MODULES, WXS_PROTOCOL, addFont, addLeadingSlash, borderStyles, cache, cacheStringFunction, callOptions, createIsCustomElement, createRpx2Unit, createUniEvent, customizeEvent, debounce, decode, decodedQuery, defaultMiniProgramRpx2Unit, defaultNVueRpx2Unit, defaultRpx2Unit, dynamicSlotName, forcePatchProp, formatDateTime, formatLog, getCustomDataset, getEnvLocale, getLen, getValueByDataPath, initCustomDatasetOnce, invokeArrayFns, invokeCreateErrorHandler, invokeCreateVueAppHook, isAppIOSUVueNativeTag, isAppNVueNativeTag, isAppNativeTag, isAppUVueNativeTag, isBuiltInComponent, isComponentInternalInstance, isComponentTag, isH5CustomElement, isH5NativeTag, isMiniProgramNativeTag, isRootHook, isRootImmediateHook, isUniLifecycleHook, isUniXElement, normalizeClass, normalizeDataset, normalizeEventType, normalizeProps, normalizeStyle, normalizeStyles, normalizeTabBarStyles, normalizeTarget, normalizeTitleColor, onCreateVueApp, once, parseEventName, parseNVueDataset, parseQuery, parseUrl, passive, plusReady, removeLeadingSlash, resolveComponentInstance, resolveOwnerEl, resolveOwnerVm, sanitise, scrollTo, sortObject, stringifyQuery, updateElementStyle };

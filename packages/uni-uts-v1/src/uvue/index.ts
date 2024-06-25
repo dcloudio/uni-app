@@ -33,8 +33,12 @@ import {
   resolveUniAppXSourceMapPath,
   shouldAutoImportUniCloud,
 } from '../utils'
-import type { KotlinManifestCache } from '../stacktrace/kotlin'
+import {
+  type KotlinManifestCache,
+  hbuilderFormatter,
+} from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
+import { capitalize } from '@vue/shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -71,9 +75,15 @@ export interface CompileAppOptions {
   pageCount: number
   extApiComponents: string[]
   uvueClassNamePrefix?: string
-  autoImports?: Record<string, [[string, string]]>
+  autoImports?: Record<string, [string, string?][]>
   // service、name、class
   extApiProviders?: [string, string, string][]
+  uniModulesArtifacts?: {
+    name: string
+    package: string
+    scopedSlots: string[]
+    declaration: string
+  }[]
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -88,11 +98,33 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     sourceMap,
     uni_modules,
     extApis,
-    autoImports,
+    autoImports = {},
   } = options
 
   if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
+  }
+
+  if (extApis) {
+    // 导入固定的类型
+    Object.keys(extApis).forEach((api) => {
+      const packageName = extApis[api][0]
+      const prefix = capitalize(api)
+      if (!autoImports[packageName]) {
+        autoImports[packageName] = []
+      }
+      ;[
+        'Options',
+        'SuccessCallback',
+        'Result',
+        'FailCallback',
+        'Fail',
+        'CompleteCallback',
+        'Complete',
+      ].forEach((importName) => {
+        autoImports[packageName].push([prefix + importName])
+      })
+    })
   }
 
   const input: UTSInputOptions = {
@@ -151,6 +183,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
+        uniModulesArtifacts: options.uniModulesArtifacts,
       },
     },
   }
@@ -346,7 +379,8 @@ async function runKotlinDev(
       const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
       const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
       const waiting = { done: undefined }
-      const options = {
+
+      const compileOptions = {
         version: 'v2',
         pageCount,
         kotlinc: resolveKotlincArgs(
@@ -370,12 +404,13 @@ async function runKotlinDev(
         stderrListener: createStderrListener(
           kotlinSrcOutDir,
           resolveUniAppXSourceMapPath(kotlinRootOutDir),
-          waiting
+          waiting,
+          hbuilderFormatter
         ),
       }
       result.kotlinc = true
-      // console.log('DEX编译参数:', options)
-      const { code, msg, data } = await compileDex(options, inputDir)
+      // console.log('DEX编译参数:', compileOptions)
+      const { code, msg, data } = await compileDex(compileOptions, inputDir)
       // 等待 stderrListener 执行完毕
       if (waiting.done) {
         await waiting.done

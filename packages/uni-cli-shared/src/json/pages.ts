@@ -184,6 +184,15 @@ function normalizePages(
 ) {
   pages.forEach((page) => {
     page.style = normalizePageStyle(page.path, page.style!, platform)
+    if (platform === 'app-harmony') {
+      // 鸿蒙下强制 isNVue 为 false，增加额外的 isNVueStyle 来标记样式处理
+      // 因为已有的代码里太多根据 isNVue 来处理的逻辑，这些逻辑在鸿蒙都不适用
+      // 鸿蒙仅需要将 nvue 当做 vue，并补充 css 即可
+      if (page.style.isNVue) {
+        page.style.isNVue = false
+        ;(page.style as any).isNVueStyle = true
+      }
+    }
   })
   if (platform !== 'app') {
     return
@@ -288,7 +297,7 @@ function normalizePageStyle(
     } else {
       extend(pageStyle, pageStyle[platform])
     }
-    if (['h5', 'app'].includes(platform)) {
+    if (['h5', 'app', 'app-harmony'].includes(platform)) {
       pageStyle.navigationBar = normalizeNavigationBar(pageStyle)
       if (isEnablePullDownRefresh(pageStyle)) {
         pageStyle.enablePullDownRefresh = true

@@ -162,6 +162,8 @@ interface ProxyClassOptions extends ModuleOptions {
   errMsg?: string
 }
 
+type InvokeType = 'getter' | 'setter' | 'method' | 'constructor'
+
 interface InvokeInstanceArgs extends ModuleOptions {
   id: number
   /**
@@ -171,7 +173,7 @@ interface InvokeInstanceArgs extends ModuleOptions {
   /**
    * 属性|方法
    */
-  type: 'property' | 'method'
+  type: InvokeType
   /**
    * 执行方法时的真实参数列表
    */
@@ -201,7 +203,7 @@ interface InvokeStaticArgs extends ModuleOptions {
   /**
    * 属性|方法
    */
-  type: 'property' | 'method'
+  type: InvokeType
   /**
    * 执行方法时的真实参数列表
    */
@@ -223,12 +225,14 @@ interface InvokeStaticArgs extends ModuleOptions {
 type InvokeArgs = InvokeInstanceArgs | InvokeStaticArgs
 
 interface InvokeCallbackReturnRes {
+  // 异步 API return 的返回值
   type: 'return'
   params?: unknown[]
   errMsg?: string
   errStackTrace?: string
 }
 interface InvokeCallbackParamsRes {
+  // 异步 API callback 的返回值
   type: 'params'
   id: number
   name: string
@@ -258,6 +262,24 @@ function getProxy(): {
           return nativeChannel.invokeSync('APP-SERVICE', args, callback)
         },
         invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
+          if (
+            // 硬编码
+            args.moduleName === 'uni-ad' &&
+            ['showByJs', 'loadByJs'].includes(args.name)
+          ) {
+            // @ts-expect-error
+            const res: InvokeSyncRes = nativeChannel.invokeSync(
+              'APP-SERVICE',
+              args,
+              callback
+            )
+            callback(
+              extend(res, {
+                params: [res.params],
+              })
+            )
+            return res
+          }
           // @ts-expect-error
           return nativeChannel.invokeAsync('APP-SERVICE', args, callback)
         },
@@ -339,7 +361,7 @@ function invokePropGetter(args: InvokeArgs) {
 }
 
 function initProxyFunction(
-  type: 'method' | 'property',
+  type: InvokeType,
   async: boolean,
   {
     moduleName,
@@ -527,7 +549,7 @@ export function initUTSProxyClass(
       if (!isProxyInterface) {
         // 初始化未指定时，每次都要创建instanceId
         this.__instanceId = initProxyFunction(
-          'method',
+          'constructor',
           false,
           extend(
             { name: 'constructor', params: constructorParams },
@@ -572,7 +594,7 @@ export function initUTSProxyClass(
                 moduleName,
                 moduleType,
                 id: instance.__instanceId,
-                type: 'property',
+                type: 'getter',
                 name: name as string,
                 errMsg,
               })
@@ -587,7 +609,7 @@ export function initUTSProxyClass(
               const param = setters[name as string]
               if (param) {
                 target[setter] = initProxyFunction(
-                  'property',
+                  'setter',
                   false,
                   extend(
                     {
@@ -640,10 +662,10 @@ export function initUTSProxyClass(
             {
               name: name as string,
               companion: true,
-              type: 'property' as const,
+              type: 'getter',
             },
             baseOptions
-          )
+          ) as InvokeStaticArgs
         )
       }
       return Reflect.get(target, name, receiver)
@@ -656,7 +678,7 @@ export function initUTSProxyClass(
           const param = staticSetters[name as string]
           if (param) {
             staticPropSetterCache[setter] = initProxyFunction(
-              'property',
+              'setter',
               false,
               extend(
                 {

@@ -1,3 +1,4 @@
+import fs from 'fs-extra'
 import path from 'path'
 
 import { defineConfig } from 'vite'
@@ -8,8 +9,9 @@ import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
 import babel from '@rollup/plugin-babel'
 
-import { cssTarget } from '@dcloudio/uni-cli-shared'
+import { capitalize, cssTarget, parseInjects } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
+import { resolveExtApiTempDir } from '../../scripts/ext-api'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -70,6 +72,9 @@ export default defineConfig({
     __IMPORT_META_ENV_BASE_URL__: JSON.stringify(''),
     'process.env.NODE_ENV': JSON.stringify('production'),
     __X__: false,
+    __PLUS__: false,
+    'plus.os.name': "'Harmony'",
+    'plus.os.version': "''",
   },
   resolve: {
     alias: [
@@ -109,6 +114,10 @@ export default defineConfig({
         find: '@dcloudio/uni-platform',
         replacement: resolve('./src/platform/index.ts'),
       },
+      {
+        find: '@dcloudio/uni-uts-v1',
+        replacement: resolve('../uni-uts-v1'),
+      },
     ],
   },
   css: {
@@ -138,7 +147,8 @@ export default defineConfig({
   build: {
     target: 'es2015',
     cssTarget,
-    minify: 'terser',
+    // 暂不压缩
+    minify: false,
     cssCodeSplit: false,
     lib: {
       name: 'uni-app-view',
@@ -168,3 +178,85 @@ export default defineConfig({
     },
   },
 })
+
+function parseExtApiInjects(uniModulesDir: string) {
+  return parseInjects(
+    true,
+    'app-harmony',
+    'arkts', // javascript|kotlin|swift (不传入)
+    '',
+    uniModulesDir,
+    require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
+      'uni-ext-api'
+    ] || {}
+  )
+}
+
+initArkTSExtApi()
+
+function initArkTSExtApi() {
+  if (!process.env.UNI_APP_EXT_API_DIR) {
+    return
+  }
+  // 遍历所有 ext-api，查找已实现 app-harmony 的 ext-api
+  const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR)
+  const extApiTempDir = resolveExtApiTempDir('uni-app-harmony')
+  const importExtApis: string[] = []
+  const exportExtApis: string[] = []
+  const defineExtApis: string[] = []
+  const uniExtApis: string[] = []
+  for (const extApi of fs.readdirSync(extApiDir)) {
+    const extApiPath = path.resolve(extApiDir, extApi)
+    if (
+      !fs.existsSync(
+        path.resolve(extApiPath, 'utssdk', 'app-harmony', 'index.uts')
+      )
+    ) {
+      continue
+    }
+    const injects = parseExtApiInjects(extApiPath)
+    if (Object.keys(injects).length === 0) {
+      continue
+    }
+    const apiSpecifiers: string[] = []
+    const apiTypeSpecifiers: string[] = []
+    Object.keys(injects).forEach((key) => {
+      const api = injects[key][1]
+      const apiType = capitalize(api)
+      apiSpecifiers.push(api)
+      apiTypeSpecifiers.push(apiType)
+      defineExtApis.push(api)
+      uniExtApis.push(
+        `${api}: ${apiType === 'Request' ? 'Request<Object>' : apiType}`
+      ) // TODO 支持泛型
+    })
+    importExtApis.push(
+      `import { ${apiSpecifiers.join(
+        ', '
+      )} } from './${extApi}/utssdk/app-harmony/index.uts'`
+    )
+    importExtApis.push(
+      `import { ${apiTypeSpecifiers.join(
+        ', '
+      )} } from './${extApi}/utssdk/interface.uts'`
+    )
+    exportExtApis.push(
+      `export * from './${extApi}/utssdk/app-harmony/index.uts'`
+    )
+    fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
+  }
+
+  // 生成 ext-api/index.ts
+  const extApiIndex = path.resolve(extApiTempDir, 'index.uts')
+  fs.writeFileSync(
+    extApiIndex,
+    `${importExtApis.join('\n')}
+${exportExtApis.join('\n')}
+interface UniExtApi {
+  ${uniExtApis.join(',\n  ')}
+}
+export default {
+  ${defineExtApis.join(',\n  ')}
+} as UniExtApi`
+  )
+}

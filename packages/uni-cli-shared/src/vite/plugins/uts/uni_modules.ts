@@ -42,11 +42,15 @@ interface UniUTSPluginOptions {
   isSingleThread?: boolean
 }
 
-export const utsPlugins = new Set<string>()
+const utsPlugins = new Set<string>()
+
+export function getCurrentCompiledUTSPlugins() {
+  return utsPlugins
+}
 
 let uniExtApiCompiler = async () => {}
-
-export function uniUTSUniModulesPlugin(
+// 该插件仅限app-android、app-ios、app-harmony
+export function uniUTSAppUniModulesPlugin(
   options: UniUTSPluginOptions = {}
 ): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -56,7 +60,7 @@ export function uniUTSUniModulesPlugin(
     utsPlugins.add(path.basename(pluginDir))
 
     const pkgJson = require(path.join(pluginDir, 'package.json'))
-
+    const isExtApi = !!pkgJson.uni_modules?.['uni-ext-api']
     const extApiProvider = resolveExtApiProvider(pkgJson)
     // 如果是 provider 扩展，需要判断 provider 的宿主插件是否在本地，在的话，自动导入该宿主插件包名
     let uniExtApiProviderServicePlugin = ''
@@ -81,10 +85,18 @@ export function uniUTSUniModulesPlugin(
       }
     }
 
+    if (process.env.UNI_PLATFORM === 'app-harmony') {
+      return compiler.compileArkTS(pluginDir, {
+        isX: !!options.x,
+        isExtApi,
+      })
+    }
+
     return compiler.compile(pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
       isPlugin: true,
+      isExtApi,
       extApis: options.extApis,
       sourceMap: enableSourceMap(),
       uni_modules: deps,
@@ -122,7 +134,12 @@ export function uniUTSUniModulesPlugin(
       if (isUTSProxy(id) || isUniHelpers(id)) {
         return id
       }
+      // 加密插件缓存目录的css文件
+      if (id.endsWith('.css')) {
+        return
+      }
       const module = resolveUTSAppModule(
+        process.env.UNI_UTS_PLATFORM,
         id,
         importer ? path.dirname(importer) : inputDir,
         options.x !== true
@@ -186,7 +203,6 @@ export function uniUTSUniModulesPlugin(
         }
       }
     },
-    async generateBundle() {},
   }
 }
 
@@ -218,13 +234,16 @@ export function uniDecryptUniModulesPlugin(): Plugin {
     name: 'uni:uni_modules-d',
     enforce: 'pre',
     async configResolved() {
-      if (isX) {
+      if (isX && process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
         const manifest = parseManifestJsonOnce(inputDir)
         await checkEncryptUniModules(inputDir, {
           mode:
             process.env.NODE_ENV !== 'development'
               ? 'production'
               : 'development',
+          packType:
+            process.env.UNI_APP_PACK_TYPE ||
+            (process.env.NODE_ENV !== 'development' ? 'release' : 'debug'),
           compilerVersion: process.env.UNI_COMPILER_VERSION,
           appid: manifest.appid,
           appname: manifest.name,
@@ -237,7 +256,11 @@ export function uniDecryptUniModulesPlugin(): Plugin {
       if (isUTSProxy(id) || isUniHelpers(id)) {
         return id
       }
-      if (isX && process.env.UNI_COMPILE_TARGET !== 'uni_modules') {
+      if (
+        isX &&
+        process.env.UNI_COMPILE_TARGET !== 'uni_modules' &&
+        !id.endsWith('.css')
+      ) {
         const resolvedId = resolveEncryptUniModule(
           id,
           process.env.UNI_UTS_PLATFORM,

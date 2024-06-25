@@ -5,6 +5,7 @@ import {
   isWindows,
   normalizePath,
   requireResolve,
+  resolveEncryptUniModule,
   resolveUTSAppModule,
   resolveUTSModule,
   uni_app_x_extensions,
@@ -12,7 +13,7 @@ import {
 import type { VitePluginUniResolvedOptions } from '..'
 
 function resolveUTSModuleProxyFile(id: string, importer: string) {
-  const file = resolveUTSAppModule(id, importer)
+  const file = resolveUTSAppModule(process.env.UNI_UTS_PLATFORM, id, importer)
   if (file) {
     // app-js 会返回完整路径，不需要 uts-proxy
     if (file.endsWith('.uts')) {
@@ -27,11 +28,20 @@ export const customResolver: ResolverFunction = (updatedId, importer) => {
     ? path.dirname(importer)
     : process.env.UNI_INPUT_DIR
   const utsModuleFile =
-    process.env.UNI_PLATFORM === 'app'
+    process.env.UNI_PLATFORM === 'app' ||
+    process.env.UNI_PLATFORM === 'app-harmony'
       ? resolveUTSModuleProxyFile(updatedId, utsImporter)
       : resolveUTSModule(updatedId, utsImporter)
   if (utsModuleFile) {
     return isWindows ? normalizePath(utsModuleFile) : utsModuleFile
+  }
+  const resolveId = resolveEncryptUniModule(
+    normalizePath(updatedId),
+    process.env.UNI_UTS_PLATFORM,
+    process.env.UNI_APP_X === 'true'
+  )
+  if (resolveId) {
+    return resolveId
   }
   if (isWindows) {
     return normalizePath(
@@ -69,5 +79,6 @@ export function createResolve(
     ] as Alias[],
     extensions:
       process.env.UNI_APP_X === 'true' ? uni_app_x_extensions : extensions,
+    preserveSymlinks: true,
   }
 }

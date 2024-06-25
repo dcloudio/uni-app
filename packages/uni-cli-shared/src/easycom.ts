@@ -157,8 +157,20 @@ function initEasycom({
         if (path.isAbsolute(source) && source.startsWith(rootDir)) {
           source = '@/' + normalizePath(path.relative(rootDir, source))
         }
+        let imported = ''
+        // 加密插件easycom类型导入
+        if (source.includes('?uts-proxy')) {
+          const moduleId = path.basename(source.split('?uts-proxy')[0])
+          source = `uts.sdk.modules.${camelize(moduleId)}`
+          imported = genUTSComponentPublicInstanceImported(
+            rootDir,
+            `@/uni_modules/${moduleId}/components/${tagName}/${tagName}`
+          )
+        } else {
+          imported = genUTSComponentPublicInstanceImported(rootDir, source)
+        }
         addUTSEasyComAutoImports(source, [
-          genUTSComponentPublicInstanceImported(rootDir, source),
+          imported,
           genUTSComponentPublicInstanceIdent(tagName),
         ])
       })
@@ -208,7 +220,15 @@ export function matchEasycom(tag: string) {
   return source
 }
 
-const isDir = (path: string) => fs.lstatSync(path).isDirectory()
+const isDir = (path: string) => {
+  const stat = fs.lstatSync(path)
+  if (stat.isDirectory()) {
+    return true
+  } else if (stat.isSymbolicLink()) {
+    return fs.lstatSync(fs.realpathSync(path)).isDirectory()
+  }
+  return false
+}
 
 function initAutoScanEasycom(
   dir: string,
@@ -224,8 +244,10 @@ function initAutoScanEasycom(
   }
   const is_uni_modules =
     path.basename(path.resolve(dir, '../..')) === 'uni_modules'
-  const is_encrypt_uni_modules =
-    is_uni_modules && fs.existsSync(path.resolve(dir, '../encrypt'))
+  const is_encrypt_uni_modules = // uni_modules模式不需要此逻辑
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules' &&
+    is_uni_modules &&
+    fs.existsSync(path.resolve(dir, '../encrypt'))
   const uni_modules_plugin_id =
     is_encrypt_uni_modules && path.basename(path.resolve(dir, '..'))
   fs.readdirSync(dir).forEach((name) => {

@@ -36,29 +36,24 @@ uni-switch[disabled] .uni-switch-input {
   transition: background-color 0.1s, border 0.1s;
 }
 
-.uni-switch-input:after {
-  content: ' ';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 28px;
-  height: 28px;
-  border-radius: 15px;
-  background-color: #ffffff;
-  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.06);
-  transition: transform 0.3s;
-}
-
 .uni-switch-input.uni-switch-input-checked {
   border-color: #007aff;
   background-color: #007aff;
 }
 
-.uni-switch-input.uni-switch-input-checked:before {
-  transform: scale(0);
+uni-switch .uni-switch-thumb {
+  width: 28px;
+  height: 28px;
+  background-color: #fff;
+  border-radius: 15px;
+  box-shadow: 0 2px 3px rgba(0, 0, 0, 0.06);
+  transition-duration: 0.3s;
+  transition-property: transform;
+  transform: translateX(0px);
+  overflow: visible;
 }
 
-.uni-switch-input.uni-switch-input-checked:after {
+uni-switch .uni-switch-thumb-checked {
   transform: translateX(20px);
 }
 

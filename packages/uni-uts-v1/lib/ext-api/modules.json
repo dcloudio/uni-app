@@ -6,7 +6,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -208,7 +208,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "previewImage": {
@@ -216,7 +217,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "closePreviewImage": {
@@ -224,7 +226,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getImageInfo": {
@@ -232,7 +235,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": true
         }
       },
       "saveImageToPhotosAlbum": {
@@ -240,7 +244,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "compressImage": {
@@ -248,7 +253,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       },
       "chooseVideo": {
@@ -256,7 +262,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "saveVideoToPhotosAlbum": {
@@ -264,7 +271,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "getVideoInfo": {
@@ -272,7 +280,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": true
         }
       },
       "compressVideo": {
@@ -280,7 +289,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       }
     }
@@ -292,7 +302,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "uploadFile": {
@@ -300,7 +311,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "downloadFile": {
@@ -308,7 +320,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -359,7 +372,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       },
       "hideToast": {
@@ -411,7 +425,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "onPushMessage": {
@@ -419,7 +433,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "offPushMessage": {
@@ -427,11 +441,19 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getChannelManager": {
         "name": "getChannelManager",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "getPushChannelManager": {
+        "name": "getPushChannelManager",
         "app": {
           "js": false,
           "kotlin": true,
@@ -443,7 +465,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -455,7 +477,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -544,6 +567,50 @@
       }
     }
   },
+  "uni-theme": {
+    "uni": {
+      "onOsThemeChange": {
+        "name": "onOsThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "offOsThemeChange": {
+        "name": "offOsThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "setAppTheme": {
+        "name": "setAppTheme",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "onAppThemeChange": {
+        "name": "onAppThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "offAppThemeChange": {
+        "name": "offAppThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
   "uni-verify": {
     "uni": {
       "getUniverifyManager": {
@@ -551,7 +618,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }

@@ -1245,7 +1245,6 @@
       "unixTags": [
         "view",
         "scroll-view",
-        "list-view",
         "list-item",
         "swiper-item",
         "navigator"
@@ -1496,7 +1495,6 @@
       "unixTags": [
         "view",
         "scroll-view",
-        "list-view",
         "list-item",
         "swiper-item",
         "navigator"

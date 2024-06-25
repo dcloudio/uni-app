@@ -118,7 +118,8 @@ export function initBehaviors(vueOptions: ComponentOptions): string[] {
   const behaviors: string[] = []
   if (isArray(vueBehaviors)) {
     vueBehaviors.forEach((behavior) => {
-      behaviors.push(behavior.replace('uni://', '__GLOBAL__://'))
+      // 这里的 global 应该是个变量
+      behaviors.push(behavior.replace('uni://', '__GLOBAL__' + '://'))
       if (behavior === 'uni://form-field') {
         if (isArray(vueProps)) {
           vueProps.push('name')

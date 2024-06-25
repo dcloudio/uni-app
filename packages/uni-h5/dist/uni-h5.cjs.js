@@ -3,8 +3,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
 const uniShared = require("@dcloudio/uni-shared");
-const uniI18n = require("@dcloudio/uni-i18n");
 const vueRouter = require("vue-router");
+const uniI18n = require("@dcloudio/uni-i18n");
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -998,7 +998,6 @@ const index$A = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
-    useI18n();
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -1263,7 +1262,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -1280,7 +1279,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
     shared.isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       shared.isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -1429,7 +1428,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
+  if (!options || !options.formatArgs || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -1476,7 +1475,7 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
   if (!errMsg || shared.isString(errMsg)) {
     return errMsg;
   }
@@ -1495,7 +1494,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg2), errRes)
+      reject: (errMsg2, errRes) => invokeFail(id, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -2081,9 +2080,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
             if (image) {
               c2d.drawImage.apply(
                 c2d,
-                // @ts-ignore
+                // @ts-expect-error
                 [image].concat(
-                  // @ts-ignore
+                  // @ts-expect-error
                   [...otherData.slice(4, 8)],
                   [...otherData.slice(0, 4)]
                 )
@@ -2190,6 +2189,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
         destWidth = Math.round(width * _pixelRatio.value);
         destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
+        if (!destHeight) {
+          destHeight = Math.round(height * _pixelRatio.value);
+        }
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {
         destHeight = Math.round(height / width * destWidth);
@@ -2291,7 +2293,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
       type: fileType,
       quality
     });
-    if (!res.data || !res.data.length) {
+    if (res.errMsg) {
       resolve({
         errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
       });
@@ -2426,6 +2428,11 @@ const props$o = {
   iconColor: {
     type: String,
     default: ""
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foreColor: {
+    type: String,
+    default: ""
   }
 };
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
@@ -2504,7 +2511,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -2912,12 +2919,9 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [vue.createVNode("div", {
         "style": state.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? (
-        // @ts-ignore
-        vue.createVNode(ResizeSensor, {
-          "onResize": fixSize
-        }, null, 8, ["onResize"])
-      ) : vue.createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? vue.createVNode(ResizeSensor, {
+        "onResize": fixSize
+      }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
     };
   }
 });
@@ -3513,12 +3517,47 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
     default: ""
   }
 });
-function resolveDigitDecimalPoint(event, cache, state, input) {
-  if (event.data === ".") {
-    if (cache.value) {
-      cache.value += ".";
-      return false;
+function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
+  if (cache.value) {
+    if (event.data === ".") {
+      if (cache.value.slice(-1) === ".") {
+        state.value = input.value = cache.value = cache.value.slice(0, -1);
+        return false;
+      }
+      if (cache.value && !cache.value.includes(".")) {
+        cache.value += ".";
+        if (resetCache) {
+          resetCache.fn = () => {
+            state.value = input.value = cache.value = cache.value.slice(0, -1);
+            input.removeEventListener("blur", resetCache.fn);
+          };
+          input.addEventListener("blur", resetCache.fn);
+        }
+        return false;
+      }
+    } else if (event.inputType === "deleteContentBackward") {
+      if (navigator.userAgent.includes("iPhone OS 16")) {
+        if (cache.value.slice(-2, -1) === ".") {
+          cache.value = state.value = input.value = cache.value.slice(0, -2);
+          return true;
+        }
+      }
     }
+  }
+}
+function useCache(props2, type) {
+  if (type.value === "number") {
+    const value = props2.modelValue ?? props2.value;
+    const cache = vue.ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    vue.watch(() => props2.modelValue, (value2) => {
+      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+    });
+    vue.watch(() => props2.value, (value2) => {
+      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+    });
+    return cache;
+  } else {
+    return vue.ref("");
   }
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -3557,8 +3596,10 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
-    let cache = vue.ref("");
-    let resetCache;
+    let cache = useCache(props2, type);
+    let resetCache = {
+      fn: null
+    };
     const rootRef = vue.ref(null);
     const {
       fieldRef,
@@ -3569,27 +3610,27 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     } = useField(props2, rootRef, emit2, (event, state2) => {
       const input = event.target;
       if (type.value === "number") {
-        if (resetCache) {
-          input.removeEventListener("blur", resetCache);
-          resetCache = null;
+        if (resetCache.fn) {
+          input.removeEventListener("blur", resetCache.fn);
+          resetCache.fn = null;
         }
         if (input.validity && !input.validity.valid) {
           if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state2.value = "";
-            resetCache = () => {
+            resetCache.fn = () => {
               cache.value = input.value = "";
             };
-            input.addEventListener("blur", resetCache);
+            input.addEventListener("blur", resetCache.fn);
             return false;
           }
-          const res = resolveDigitDecimalPoint(event, cache);
+          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
           if (typeof res === "boolean")
             return res;
           cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
-          const res = resolveDigitDecimalPoint(event, cache);
+          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
           if (typeof res === "boolean")
             return res;
           cache.value = input.value;
@@ -6061,7 +6102,9 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     } = useScrollViewState(props2);
     const {
       realScrollX,
-      realScrollY
+      realScrollY,
+      _scrollLeftChanged,
+      _scrollTopChanged
     } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = vue.computed(() => {
       let style = "";
@@ -6317,7 +6360,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   });
   return {
     realScrollX,
-    realScrollY
+    realScrollY,
+    _scrollTopChanged,
+    _scrollLeftChanged
   };
 }
 const props$e = {
@@ -7944,12 +7989,40 @@ function pruneRouteCache(key) {
 }
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
+  router.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      saveTabBarScrollPosition(from.meta.tabBarIndex);
+    }
+  });
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
+let positionStore = /* @__PURE__ */ Object.create(null);
+function getTabBarScrollPosition(id) {
+  return positionStore[id];
+}
+function saveTabBarScrollPosition(id) {
+  if (typeof window !== "undefined") {
+    positionStore[id] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset
+    };
+  }
+}
+const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     return savedPosition;
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
+      if (position) {
+        return position;
+      }
+    }
+    return {
+      left: 0,
+      top: 0
+    };
   }
 };
 function createRouterOptions() {
@@ -11591,9 +11664,9 @@ function parseTheme(pageStyle) {
   return __uniConfig.darkmode ? parsedStyle : pageStyle;
 }
 function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactived = vue.isReactive(pageStyle);
-  const reactivePageStyle = isReactived ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactived) {
+  const isReactivity = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
     vue.watch(pageStyle, (value) => {
       const _pageStyle = parseTheme(value);
       for (const key in _pageStyle) {
@@ -11748,10 +11821,16 @@ function useTabBarStyle(tabBar2) {
   });
   const borderStyle = vue.computed(() => {
     const {
-      borderStyle: borderStyle2
+      borderStyle: borderStyle2,
+      borderColor
     } = tabBar2;
+    if (borderColor && shared.isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
     };
   });
   const placeholderStyle = vue.computed(() => {

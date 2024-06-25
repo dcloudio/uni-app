@@ -34,6 +34,7 @@ declare var __DEV__: boolean
 declare var __TEST__: boolean
 declare var __NODE_JS__: boolean
 declare var __APP_VIEW__: boolean
+declare var __PLUS__: boolean
 
 // Feature flags
 declare var __VUE_OPTIONS_API__: boolean
@@ -71,6 +72,8 @@ declare var __uniRoutes: UniApp.UniRoutes
 declare var __uniConfig: UniApp.UniConfig
 declare var UniViewJSBridge: UniApp.UniViewJSBridge
 declare var UniServiceJSBridge: UniApp.UniServiceJSBridge
+// app view
+declare var __id__: string
 // TODO X 引入真实类型
 declare class UTSJSONObject {
   constructor(obj: Record<string, any>)

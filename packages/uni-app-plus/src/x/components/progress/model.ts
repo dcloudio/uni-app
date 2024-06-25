@@ -10,7 +10,7 @@ class UniProgressActiveendEventDetail {
     this.curPercent = value
   }
 }
-export class UniProgressActiveendEvent extends CustomEvent<UniProgressActiveendEventDetail> {
+export class UniProgressActiveendEvent extends UniCustomEvent<UniProgressActiveendEventDetail> {
   constructor(value: number) {
     super('activeend', {
       detail: new UniProgressActiveendEventDetail(value),
@@ -21,6 +21,9 @@ export class UniProgressElement extends UniElementImpl {
   constructor(data: INodeData, pageNode: PageNode) {
     super(data, pageNode)
   }
+
+  override tagName = 'PROGRESS'
+  override nodeName = this.tagName
 
   override getAnyAttribute(key: string): string {
     const value = this._getAttribute(key)

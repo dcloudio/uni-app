@@ -33,11 +33,11 @@ export function useTheme<T extends Object>(
   pageStyle: T,
   onThemeChangeCallback?: OnThemeChangeCallback
 ) {
-  const isReactived = isReactive(pageStyle)
-  const reactivePageStyle = isReactived
+  const isReactivity = isReactive(pageStyle)
+  const reactivePageStyle = isReactivity
     ? reactive(parseTheme(pageStyle))
     : parseTheme(pageStyle)
-  if (__uniConfig.darkmode && isReactived) {
+  if (__uniConfig.darkmode && isReactivity) {
     watch(pageStyle, (value) => {
       const _pageStyle = parseTheme(value)
       for (const key in _pageStyle) {

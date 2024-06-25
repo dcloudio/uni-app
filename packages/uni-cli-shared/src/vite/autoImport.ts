@@ -5,12 +5,14 @@ export type AutoImportOptions = Options
 const uniPreset = {
   from: '@dcloudio/uni-app',
   imports: [
+    // ssr
+    'ssrRef',
+    'shallowSsrRef',
     // uni-app lifecycle
     // App and Page
     'onShow',
     'onHide',
     // App
-    'onAppShow',
     'onLaunch',
     'onError',
     'onThemeChange',
@@ -38,6 +40,10 @@ const uniPreset = {
 const uniH5Preset = {
   from: '@dcloudio/uni-h5',
   imports: [
+    'onAppShow',
+    'onAppHide',
+    'offAppHide',
+    'offAppShow',
     'UniElement',
     'UniElementImpl',
     'UniButtonElement',

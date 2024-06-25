@@ -31,6 +31,8 @@ export interface PageNodeOptions {
   statusbarHeight: number
   windowTop: number
   windowBottom: number
+  // 仅限 app-harmony 使用
+  nvueFlexDirection?: string
 }
 
 export interface PageCreateData extends PageNodeOptions {}

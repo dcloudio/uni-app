@@ -109,6 +109,10 @@ export function getInjectComponents() {
   return [...pluginInjectComponents]
 }
 
+function isAppIOS(filename: string) {
+  return normalizePath(filename).includes('/utssdk/app-ios/')
+}
+
 export async function runKotlinProd(
   filename: string,
   {
@@ -119,6 +123,7 @@ export async function runKotlinProd(
     isModule,
     isX,
     isSingleThread,
+    isExtApi,
     hookClass,
     extApis,
     transform,
@@ -127,7 +132,7 @@ export async function runKotlinProd(
   }: RunProdOptions
 ) {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
-  if (filename.includes('app-ios')) {
+  if (isAppIOS(filename)) {
     return
   }
   const inputDir = process.env.UNI_INPUT_DIR
@@ -141,6 +146,7 @@ export async function runKotlinProd(
     isSingleThread,
     isPlugin,
     isModule,
+    isExtApi,
     extApis,
     transform,
     uniModules,
@@ -257,6 +263,7 @@ export async function runKotlinDev(
     isX,
     isSingleThread,
     isPlugin,
+    isExtApi,
     cacheDir,
     pluginRelativeDir,
     is_uni_modules,
@@ -267,7 +274,7 @@ export async function runKotlinDev(
   }: RunDevOptions
 ): Promise<RunKotlinDevResult | undefined> {
   // 文件有可能是 app-ios 里边的，因为编译到 android 时，为了保证不报错，可能会去读取 ios 下的 uts
-  if (filename.includes('app-ios')) {
+  if (isAppIOS(filename)) {
     return
   }
   const inputDir = process.env.UNI_INPUT_DIR
@@ -280,6 +287,7 @@ export async function runKotlinDev(
     isX,
     isSingleThread,
     isPlugin,
+    isExtApi,
     extApis,
     transform,
     uniModules,
@@ -363,7 +371,12 @@ export async function runKotlinDev(
       jarFile,
       resolveSourceMapFile(outputDir, kotlinFile),
       extraJars.concat(depJars),
-      createStderrListener(outputDir, resolveSourceMapPath(), waiting)
+      createStderrListener(
+        outputDir,
+        resolveSourceMapPath(),
+        waiting,
+        hbuilderFormatter
+      )
     )
 
     // 等待 stderrListener 执行完毕
@@ -558,6 +571,7 @@ export async function compile(
     isSingleThread,
     isPlugin,
     isModule,
+    isExtApi,
     extApis,
     transform,
     uniModules,
@@ -625,6 +639,7 @@ export async function compile(
       isSingleThread,
       isPlugin,
       isModule,
+      isExtApi,
       outDir: outputDir,
       package: pluginPackage,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,
@@ -829,7 +844,8 @@ function createPluginGlob(plugins?: string[]) {
 export function createStderrListener(
   inputDir: string,
   sourceMapDir: string,
-  waiting: { done: Promise<void> | undefined }
+  waiting: { done: Promise<void> | undefined },
+  format: (msg: MessageSourceLocation) => string
 ) {
   return async function stderrListener(data: any) {
     waiting.done = new Promise(async (resolve) => {
@@ -855,7 +871,7 @@ export function createStderrListener(
               inputDir,
               sourceMapDir,
               replaceTabsWithSpace: true,
-              format: hbuilderFormatter,
+              format,
             })
             if (msg) {
               // 异步输出，保证插件编译失败的日志在他之前输出，不能使用process.nextTick

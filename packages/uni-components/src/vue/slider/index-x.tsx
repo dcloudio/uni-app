@@ -64,7 +64,7 @@ const props = {
     default: '#ffffff',
   },
   // 优先级高于blockColor
-  foregroundColor: {
+  foreColor: {
     type: String,
     default: '',
   },
@@ -259,7 +259,7 @@ function useSliderState(props: SliderProps) {
     setThumbStyle: computed(() => ({
       width: _getBlockSizeString(),
       height: _getBlockSizeString(),
-      backgroundColor: props.foregroundColor || props.blockColor,
+      backgroundColor: props.foreColor || props.blockColor,
     })),
     setValueStyle: computed(() => ({
       color: props.valueColor,

@@ -1,18 +1,18 @@
-import { ref, computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 
 import { PRIMARY_COLOR } from '@dcloudio/uni-shared'
 import {
-  rpx2px,
-  createSvgIconVNode,
-  ICON_PATH_WARN,
-  ICON_PATH_INFO,
-  ICON_PATH_CLEAR,
   ICON_PATH_CANCEL,
+  ICON_PATH_CLEAR,
+  ICON_PATH_DOWNLOAD,
+  ICON_PATH_INFO,
   ICON_PATH_SEARCH,
   ICON_PATH_SUCCESS,
-  ICON_PATH_WAITING,
-  ICON_PATH_DOWNLOAD,
   ICON_PATH_SUCCESS_NO_CIRCLE,
+  ICON_PATH_WAITING,
+  ICON_PATH_WARN,
+  createSvgIconVNode,
+  rpx2px,
 } from '@dcloudio/uni-core'
 
 import { defineBuiltInComponent } from '../../helpers/component'

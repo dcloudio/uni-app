@@ -136,17 +136,18 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     const { state, scrollTopNumber, scrollLeftNumber } =
       useScrollViewState(props)
-    const { realScrollX, realScrollY } = useScrollViewLoader(
-      props,
-      state,
-      scrollTopNumber,
-      scrollLeftNumber,
-      trigger,
-      rootRef,
-      main,
-      content,
-      emit as SetupContext['emit']
-    )
+    const { realScrollX, realScrollY, _scrollLeftChanged, _scrollTopChanged } =
+      useScrollViewLoader(
+        props,
+        state,
+        scrollTopNumber,
+        scrollLeftNumber,
+        trigger,
+        rootRef,
+        main,
+        content,
+        emit as SetupContext['emit']
+      )
 
     const mainStyle = computed(() => {
       let style = ''
@@ -186,7 +187,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             return main.value!.scrollLeft
           },
           set(val) {
-            main.value!.scrollLeft = val
+            _scrollLeftChanged(val)
           },
         },
         scrollTop: {
@@ -194,7 +195,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             return main.value!.scrollTop
           },
           set(val) {
-            main.value!.scrollTop = val
+            _scrollTopChanged(val)
           },
         },
         scrollBy: {
@@ -732,5 +733,7 @@ function useScrollViewLoader(
   return {
     realScrollX,
     realScrollY,
+    _scrollTopChanged,
+    _scrollLeftChanged,
   }
 }

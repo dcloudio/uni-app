@@ -2,8 +2,8 @@ import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, o
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, normalizeTarget, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, LINEFEED, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, ON_REACH_BOTTOM_DISTANCE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, ON_THEME_CHANGE, updateElementStyle, sortObject, OFF_THEME_CHANGE, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
-import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 import { useRoute, createRouter, createWebHistory, createWebHashHistory, useRouter, isNavigationFailure, RouterView } from "vue-router";
+import { initVueI18n, isI18nStr, LOCALE_EN, LOCALE_ES, LOCALE_FR, LOCALE_ZH_HANS, LOCALE_ZH_HANT } from "@dcloudio/uni-i18n";
 const isEnableLocale = /* @__PURE__ */ once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -2308,7 +2308,6 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
-    useI18n();
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -2354,6 +2353,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
+const TEMP_PATH = "";
 function findElem(vm) {
   return vm.$el;
 }
@@ -2878,7 +2878,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -2895,7 +2895,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
     isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -3044,7 +3044,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
+  if (!options || !options.formatArgs || !isPlainObject(options.formatArgs) && isPlainObject(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -3129,7 +3129,7 @@ function wrapperOffApi(name, fn, options) {
     }
   };
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
   if (!errMsg || isString(errMsg)) {
     return errMsg;
   }
@@ -3148,7 +3148,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id2, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id2, name, normalizeErrMsg(errMsg2), errRes)
+      reject: (errMsg2, errRes) => invokeFail(id2, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -3969,6 +3969,13 @@ class TextMetrics {
     this.width = width;
   }
 }
+const getTempPath = () => {
+  let _TEMP_PATH = TEMP_PATH;
+  if (!__PLUS__) {
+    typeof getEnv !== "undefined" && (_TEMP_PATH = getEnv().TEMP_PATH);
+  }
+  return _TEMP_PATH;
+};
 class CanvasContext {
   constructor(id2, pageId) {
     this.id = id2;
@@ -3989,6 +3996,81 @@ class CanvasContext {
       fontStyle: "normal",
       fontFamily: "sans-serif"
     };
+  }
+  setFillStyle(color) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setStrokeStyle(color) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setShadow(offsetX, offsetY, blur, color) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  addColorStop(stop, color) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setLineWidth(lineWidth) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setLineCap(lineCap) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setLineJoin(lineJoin) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setLineDash(pattern, offset) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setMiterLimit(miterLimit) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  fillRect(x, y, width, height) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  strokeRect(x, y, width, height) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  clearRect(x, y, width, height) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  fill() {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  stroke() {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  scale(scaleWidth, scaleHeight) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  rotate(rotate) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  translate(x, y) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setFontSize(fontSize) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  fillText(text2, x, y, maxWidth2) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setTextAlign(align2) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setTextBaseline(textBaseline) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  drawImage(imageResource, dx, dy, dWidth, dHeigt, sx, sy, sWidth, sHeight) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setGlobalAlpha(alpha) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  strokeText(text2, x, y, maxWidth2) {
+    console.log("initCanvasContextProperty implemented.");
+  }
+  setTransform(scaleX, skewX, skewY, scaleY, translateX, translateY) {
+    console.log("initCanvasContextProperty implemented.");
   }
   draw(reserve = false, callback) {
     var actions = [...this.actions];
@@ -4024,7 +4106,7 @@ class CanvasContext {
       return new Pattern(image2, repetition);
     }
   }
-  measureText(text2) {
+  measureText(text2, callback) {
     const font2 = this.state.font;
     let width = 0;
     {
@@ -4565,7 +4647,7 @@ const canvasToTempFilePath = /* @__PURE__ */ defineAsyncApi(
       reject();
       return;
     }
-    const dirname = `${TEMP_PATH}/canvas`;
+    let dirname = `${getTempPath()}/canvas`;
     operateCanvas(
       canvasId,
       pageId,
@@ -6936,7 +7018,6 @@ function removeMediaQueryObserver({ reqId, component }, _pageId) {
 function saveImage(base64, dirname, callback) {
   callback(null, base64);
 }
-const TEMP_PATH = "";
 const files = {};
 function urlToFile(url, local) {
   const file = files[url];
@@ -7047,6 +7128,11 @@ const inflateRaw = (...args) => {
 };
 const deflateRaw = (...args) => {
 };
+const getEnv = () => ({
+  TEMP_PATH,
+  CACHE_PATH: "",
+  USER_DATA_PATH: ""
+});
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
@@ -7533,9 +7619,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
             if (image2) {
               c2d.drawImage.apply(
                 c2d,
-                // @ts-ignore
+                // @ts-expect-error
                 [image2].concat(
-                  // @ts-ignore
+                  // @ts-expect-error
                   [...otherData.slice(4, 8)],
                   [...otherData.slice(0, 4)]
                 )
@@ -7642,6 +7728,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
         destWidth = Math.round(width * _pixelRatio.value);
         destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
+        if (!destHeight) {
+          destHeight = Math.round(height * _pixelRatio.value);
+        }
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {
         destHeight = Math.round(height / width * destWidth);
@@ -7743,7 +7832,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
       type: fileType,
       quality
     });
-    if (!res.data || !res.data.length) {
+    if (res.errMsg) {
       resolve({
         errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
       });
@@ -7878,6 +7967,11 @@ const props$v = {
   iconColor: {
     type: String,
     default: ""
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foreColor: {
+    type: String,
+    default: ""
   }
 };
 const index$t = /* @__PURE__ */ defineBuiltInComponent({
@@ -7962,7 +8056,7 @@ const index$t = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -9010,12 +9104,9 @@ const index$q = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [createVNode("div", {
         "style": state2.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? (
-        // @ts-ignore
-        createVNode(ResizeSensor, {
-          "onResize": fixSize
-        }, null, 8, ["onResize"])
-      ) : createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? createVNode(ResizeSensor, {
+        "onResize": fixSize
+      }, null, 8, ["onResize"]) : createVNode("span", null, null)], 512);
     };
   }
 });
@@ -9689,12 +9780,47 @@ const props$q = /* @__PURE__ */ extend({}, props$r, {
     default: ""
   }
 });
-function resolveDigitDecimalPoint(event, cache, state2, input) {
-  if (event.data === ".") {
-    if (cache.value) {
-      cache.value += ".";
-      return false;
+function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
+  if (cache.value) {
+    if (event.data === ".") {
+      if (cache.value.slice(-1) === ".") {
+        state2.value = input.value = cache.value = cache.value.slice(0, -1);
+        return false;
+      }
+      if (cache.value && !cache.value.includes(".")) {
+        cache.value += ".";
+        if (resetCache) {
+          resetCache.fn = () => {
+            state2.value = input.value = cache.value = cache.value.slice(0, -1);
+            input.removeEventListener("blur", resetCache.fn);
+          };
+          input.addEventListener("blur", resetCache.fn);
+        }
+        return false;
+      }
+    } else if (event.inputType === "deleteContentBackward") {
+      if (navigator.userAgent.includes("iPhone OS 16")) {
+        if (cache.value.slice(-2, -1) === ".") {
+          cache.value = state2.value = input.value = cache.value.slice(0, -2);
+          return true;
+        }
+      }
     }
+  }
+}
+function useCache(props2, type) {
+  if (type.value === "number") {
+    const value = props2.modelValue ?? props2.value;
+    const cache = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    watch(() => props2.modelValue, (value2) => {
+      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+    });
+    watch(() => props2.value, (value2) => {
+      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+    });
+    return cache;
+  } else {
+    return ref("");
   }
 }
 const Input = /* @__PURE__ */ defineBuiltInComponent({
@@ -9733,8 +9859,10 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
-    let cache = ref("");
-    let resetCache;
+    let cache = useCache(props2, type);
+    let resetCache = {
+      fn: null
+    };
     const rootRef = ref(null);
     const {
       fieldRef,
@@ -9745,27 +9873,27 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     } = useField(props2, rootRef, emit2, (event, state22) => {
       const input = event.target;
       if (type.value === "number") {
-        if (resetCache) {
-          input.removeEventListener("blur", resetCache);
-          resetCache = null;
+        if (resetCache.fn) {
+          input.removeEventListener("blur", resetCache.fn);
+          resetCache.fn = null;
         }
         if (input.validity && !input.validity.valid) {
           if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state22.value = "";
-            resetCache = () => {
+            resetCache.fn = () => {
               cache.value = input.value = "";
             };
-            input.addEventListener("blur", resetCache);
+            input.addEventListener("blur", resetCache.fn);
             return false;
           }
-          const res = resolveDigitDecimalPoint(event, cache);
+          const res = resolveDigitDecimalPoint(event, cache, state22, input, resetCache);
           if (typeof res === "boolean")
             return res;
           cache.value = state22.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
-          const res = resolveDigitDecimalPoint(event, cache);
+          const res = resolveDigitDecimalPoint(event, cache, state22, input, resetCache);
           if (typeof res === "boolean")
             return res;
           cache.value = input.value;
@@ -13346,7 +13474,9 @@ const ScrollView = /* @__PURE__ */ defineBuiltInComponent({
     } = useScrollViewState(props2);
     const {
       realScrollX,
-      realScrollY
+      realScrollY,
+      _scrollLeftChanged,
+      _scrollTopChanged
     } = useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = computed(() => {
       let style = "";
@@ -13759,7 +13889,9 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
   });
   return {
     realScrollX,
-    realScrollY
+    realScrollY,
+    _scrollTopChanged,
+    _scrollLeftChanged
   };
 }
 const props$l = {
@@ -15773,12 +15905,40 @@ function createOnPageScroll(pageId, onPageScroll, navigationBarTransparent) {
 }
 function initRouter(app) {
   const router = createRouter(createRouterOptions());
+  router.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      saveTabBarScrollPosition(from.meta.tabBarIndex);
+    }
+  });
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
+let positionStore = /* @__PURE__ */ Object.create(null);
+function getTabBarScrollPosition(id2) {
+  return positionStore[id2];
+}
+function saveTabBarScrollPosition(id2) {
+  if (typeof window !== "undefined") {
+    positionStore[id2] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset
+    };
+  }
+}
+const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     return savedPosition;
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
+      if (position) {
+        return position;
+      }
+    }
+    return {
+      left: 0,
+      top: 0
+    };
   }
 };
 function createRouterOptions() {
@@ -19243,7 +19403,7 @@ const getVideoInfo = /* @__PURE__ */ defineAsyncApi(
           clearTimeout(handle);
           video.onerror = null;
           resolve({
-            size: file ? file.size : 0,
+            size: Math.ceil((file ? file.size : 0) / 1024),
             duration: video.duration || 0,
             width: video.videoWidth || 0,
             height: video.videoHeight || 0
@@ -21353,9 +21513,9 @@ function parseTheme(pageStyle) {
   return __uniConfig.darkmode ? parsedStyle : pageStyle;
 }
 function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactived = isReactive(pageStyle);
-  const reactivePageStyle = isReactived ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactived) {
+  const isReactivity = isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
     watch(pageStyle, (value) => {
       const _pageStyle = parseTheme(value);
       for (const key in _pageStyle) {
@@ -22284,6 +22444,7 @@ const setTabBarStyleProps = [
   "selectedColor",
   "backgroundColor",
   "borderStyle",
+  "borderColor",
   "midButton"
 ];
 const setTabBarBadgeProps = ["badge", "redDot"];
@@ -22294,7 +22455,25 @@ function setProperties(item, props2, propsData) {
     }
   });
 }
-function setTabBar(type, args, resolve) {
+function setTabBar(type, args, resolve, reject) {
+  var _a;
+  let isTabBar = false;
+  const pages = getCurrentPages();
+  if (pages.length) {
+    if (pages[pages.length - 1].$page.meta.isTabBar) {
+      isTabBar = true;
+    }
+  }
+  if (!isTabBar) {
+    return reject(`not TabBar page`);
+  }
+  const { index: index2 } = args;
+  if (typeof index2 === "number") {
+    const tabBarListLength = (_a = __uniConfig == null ? void 0 : __uniConfig.tabBar) == null ? void 0 : _a.list.length;
+    if (!tabBarListLength || index2 >= tabBarListLength) {
+      return reject(`tabbar item not found`);
+    }
+  }
   const tabBar2 = useTabBar();
   switch (type) {
     case API_SHOW_TAB_BAR:
@@ -22304,7 +22483,6 @@ function setTabBar(type, args, resolve) {
       tabBar2.shown = false;
       break;
     case API_SET_TAB_BAR_ITEM:
-      const { index: index2 } = args;
       const tabBarItem = tabBar2.list[index2];
       const oldPagePath = tabBarItem.pagePath;
       setProperties(tabBarItem, setTabBarItemProps, args);
@@ -22320,20 +22498,20 @@ function setTabBar(type, args, resolve) {
       setProperties(tabBar2, setTabBarStyleProps, args);
       break;
     case API_SHOW_TAB_BAR_RED_DOT:
-      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
         badge: "",
         redDot: true
       });
       break;
     case API_SET_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
         badge: args.text,
         redDot: true
       });
       break;
     case API_HIDE_TAB_BAR_RED_DOT:
     case API_REMOVE_TAB_BAR_BADGE:
-      setProperties(tabBar2.list[args.index], setTabBarBadgeProps, {
+      setProperties(tabBar2.list[index2], setTabBarBadgeProps, {
         badge: "",
         redDot: false
       });
@@ -22343,62 +22521,62 @@ function setTabBar(type, args, resolve) {
 }
 const setTabBarItem = /* @__PURE__ */ defineAsyncApi(
   API_SET_TAB_BAR_ITEM,
-  (args, { resolve }) => {
-    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_ITEM, args, resolve, reject);
   },
   SetTabBarItemProtocol,
   SetTabBarItemOptions
 );
 const setTabBarStyle = /* @__PURE__ */ defineAsyncApi(
   API_SET_TAB_BAR_STYLE,
-  (args, { resolve }) => {
-    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_STYLE, args, resolve, reject);
   },
   SetTabBarStyleProtocol,
   SetTabBarStyleOptions
 );
 const hideTabBar = /* @__PURE__ */ defineAsyncApi(
   API_HIDE_TAB_BAR,
-  (args, { resolve }) => {
-    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_HIDE_TAB_BAR, args ? args : {}, resolve, reject);
   },
   HideTabBarProtocol
 );
 const showTabBar = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_TAB_BAR,
-  (args, { resolve }) => {
-    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SHOW_TAB_BAR, args ? args : {}, resolve, reject);
   },
   ShowTabBarProtocol
 );
 const hideTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
   API_HIDE_TAB_BAR_RED_DOT,
-  (args, { resolve }) => {
-    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_HIDE_TAB_BAR_RED_DOT, args, resolve, reject);
   },
   HideTabBarRedDotProtocol,
   HideTabBarRedDotOptions
 );
 const showTabBarRedDot = /* @__PURE__ */ defineAsyncApi(
   API_SHOW_TAB_BAR_RED_DOT,
-  (args, { resolve }) => {
-    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SHOW_TAB_BAR_RED_DOT, args, resolve, reject);
   },
   ShowTabBarRedDotProtocol,
   ShowTabBarRedDotOptions
 );
 const removeTabBarBadge = /* @__PURE__ */ defineAsyncApi(
   API_REMOVE_TAB_BAR_BADGE,
-  (args, { resolve }) => {
-    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_REMOVE_TAB_BAR_BADGE, args, resolve, reject);
   },
   RemoveTabBarBadgeProtocol,
   RemoveTabBarBadgeOptions
 );
 const setTabBarBadge = /* @__PURE__ */ defineAsyncApi(
   API_SET_TAB_BAR_BADGE,
-  (args, { resolve }) => {
-    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve);
+  (args, { resolve, reject }) => {
+    setTabBar(API_SET_TAB_BAR_BADGE, args, resolve, reject);
   },
   SetTabBarBadgeProtocol,
   SetTabBarBadgeOptions
@@ -22556,10 +22734,16 @@ function useTabBarStyle(tabBar2) {
   });
   const borderStyle = computed(() => {
     const {
-      borderStyle: borderStyle2
+      borderStyle: borderStyle2,
+      borderColor
     } = tabBar2;
+    if (borderColor && isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
     };
   });
   const placeholderStyle = computed(() => {

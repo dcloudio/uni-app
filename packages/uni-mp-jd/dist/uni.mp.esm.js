@@ -1,5 +1,5 @@
-import { isArray, isFunction, hasOwn, extend, isPlainObject } from '@vue/shared';
 import { SLOT_DEFAULT_NAME, EventChannel, invokeArrayFns, MINI_PROGRAM_PAGE_RUNTIME_HOOKS, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_RESIZE, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_ADD_TO_FAVORITES, isUniLifecycleHook, ON_READY, once, ON_LAUNCH, ON_ERROR, ON_THEME_CHANGE, ON_PAGE_NOT_FOUND, ON_UNHANDLE_REJECTION, customizeEvent, addLeadingSlash, stringifyQuery } from '@dcloudio/uni-shared';
+import { isArray, isFunction, hasOwn, extend, isPlainObject } from '@vue/shared';
 import { ref, nextTick, findComponentPropsData, toRaw, updateProps, hasQueueJob, invalidateJob, getExposeProxy, pruneComponentPropsCache } from 'vue';
 import { normalizeLocale, LOCALE_EN } from '@dcloudio/uni-i18n';
 
@@ -428,7 +428,7 @@ function initDefaultProps(options, isBehavior = false) {
     }
     if (options.behaviors) {
         // wx://form-field
-        if (options.behaviors.includes('__GLOBAL__://form-field')) {
+        if (options.behaviors.includes('jd' + '://form-field')) {
             if (!options.properties || !options.properties.name) {
                 properties.name = {
                     type: null,
@@ -607,7 +607,8 @@ function initBehaviors(vueOptions) {
     const behaviors = [];
     if (isArray(vueBehaviors)) {
         vueBehaviors.forEach((behavior) => {
-            behaviors.push(behavior.replace('uni://', '__GLOBAL__://'));
+            // 这里的 global 应该是个变量
+            behaviors.push(behavior.replace('uni://', 'jd' + '://'));
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
@@ -891,13 +892,21 @@ var parseOptions = extend({}, baseParseOptions, {
 
 const createComponent = initCreateComponent(parseOptions);
 const createPage = initCreatePage(parseOptions);
-// 重写 Object.getPrototypeOf 方法。JD 小程序使用该方法获取值
+// 重写 Object.getPrototypeOf、Object.prototype.hasOwnProperty 方法
+// jd 会从原型链上拿值，导致后追加的属性无法被拿到
 const OriginalGetPrototypeOf = Object.getPrototypeOf;
 Object.getPrototypeOf = function (obj) {
-    if (hasOwn(obj, '$vm')) {
+    if ('$vm' in obj) {
         return obj;
     }
     return OriginalGetPrototypeOf.call(this, obj);
+};
+const OriginalHasOwnProperty = Object.prototype.hasOwnProperty;
+Object.prototype.hasOwnProperty = function (key) {
+    if ('$vm' in this && key in this) {
+        return true;
+    }
+    return OriginalHasOwnProperty.call(this, key);
 };
 jd.EventChannel = EventChannel;
 jd.createApp = global.createApp = createApp;

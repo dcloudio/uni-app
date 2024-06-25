@@ -1,2 +1,24 @@
+import type { CompilerOptions, EmitResult } from 'typescript'
+
 export { uts2js } from './javascript'
-export { uts2kotlin } from './kotlin'
+export { runUTS2KotlinDev } from './kotlin'
+
+export interface UTSEmitDeclarationOptions {
+  typescript?: typeof import('typescript')
+  inputDir: string
+  rootFiles: string[]
+  compilerOptions?: CompilerOptions
+}
+
+export function emitDeclaration(
+  options: UTSEmitDeclarationOptions
+): EmitResult {
+  return require('../../lib/uts').emitDeclaration({
+    typescript: require('../../lib/typescript'),
+    ...options,
+  })
+}
+
+export function getTypeScript() {
+  return require('../../lib/typescript')
+}

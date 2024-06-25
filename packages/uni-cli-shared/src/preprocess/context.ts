@@ -18,6 +18,7 @@ const DEFAULT_KEYS = [
   'APP_VUE',
   'APP_ANDROID',
   'APP_IOS',
+  'APP_HARMONY',
   'H5',
   'MP',
   'MP_360',
@@ -83,9 +84,17 @@ export function initPreContext(
     uvueContext.UNI_APP_X = true
   }
 
-  if (platform === 'app' || platform === 'app-plus') {
+  if (
+    platform === 'app' ||
+    platform === 'app-plus' ||
+    platform === 'app-harmony'
+  ) {
     defaultContext.APP = true
-    defaultContext.APP_PLUS = isX ? false : true
+    if (platform === 'app-harmony') {
+      defaultContext.APP_HARMONY = true
+    } else {
+      defaultContext.APP_PLUS = isX ? false : true
+    }
 
     vueContext.APP_VUE = true
 

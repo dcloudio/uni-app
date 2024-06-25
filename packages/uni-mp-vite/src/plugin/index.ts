@@ -158,6 +158,12 @@ export function uniMiniProgramPlugin(
     },
     configResolved(config) {
       resolvedConfig = config
+
+      const plugin = config.plugins.find((p) => p.name === 'vite:vue')
+      if (plugin?.api?.options) {
+        plugin.api.options.devToolsEnabled = false
+      }
+
       return (createConfigResolved(options) as Function)(config)
     },
     generateBundle() {

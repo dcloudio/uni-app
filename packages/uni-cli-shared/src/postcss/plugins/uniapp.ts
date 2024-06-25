@@ -127,6 +127,7 @@ function rewriteUniAppTags(tag: string) {
 const transforms: Record<string, RewriteTag | undefined> = {
   h5: rewriteUniH5Tags,
   app: rewriteUniAppTags,
+  'app-harmony': rewriteUniAppTags,
   'mp-baidu': rewriteBaiduTags,
 }
 

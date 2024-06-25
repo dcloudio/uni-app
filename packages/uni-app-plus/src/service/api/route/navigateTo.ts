@@ -16,10 +16,9 @@ import { registerPage } from '../../framework/page'
 import { getWebviewId } from '../../framework/webview/utils'
 import { setStatusBarStyle } from '../../statusBar'
 
-export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
-  args,
-  { resolve, reject }
-) => {
+export const $navigateTo: DefineAsyncApiFn<
+  API_TYPE_NAVIGATE_TO
+> = /*#__PURE__*/ (args, { resolve, reject }) => {
   const { url, events, animationType, animationDuration } = args
   const { path, query } = parseUrl(url)
   const [aniType, aniDuration] = initAnimation(
@@ -45,7 +44,7 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   )
 }
 
-export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
+export const navigateTo = /*#__PURE__*/ defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   API_NAVIGATE_TO,
   $navigateTo,
   NavigateToProtocol,
@@ -82,7 +81,7 @@ function _navigateTo({
   })
 }
 
-function initAnimation(
+export function initAnimation(
   path: string,
   animationType?: string,
   animationDuration?: number

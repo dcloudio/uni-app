@@ -27,7 +27,7 @@ import { type PreloadWebviewObject, preloadWebviews } from './preLoad'
 import { navigateFinish } from '../../api/route/utils'
 import { initScope } from './setup'
 
-interface RegisterPageOptions {
+export interface RegisterPageOptions {
   url: string
   path: string
   query: Record<string, string>

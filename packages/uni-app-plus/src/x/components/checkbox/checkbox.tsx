@@ -1,14 +1,14 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import {
-  onMounted,
-  getCurrentInstance,
-  computed,
-  ref,
-  watchEffect,
-  StyleValue,
-  watch,
+  type StyleValue,
   camelize,
+  computed,
+  getCurrentInstance,
+  onMounted,
+  ref,
+  watch,
+  watchEffect,
 } from 'vue'
 
 import { $dispatch } from '../../utils'
@@ -72,7 +72,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         return Object.assign({}, styles['uni-icon'])
       }
 
-      const color = props.iconColor.length > 0 ? props.iconColor : props.color
+      let color = ''
+
+      if (props.foreColor.length > 0) {
+        color = props.foreColor
+      } else if (props.iconColor.length > 0) {
+        color = props.iconColor
+      } else {
+        color = props.color
+      }
+
       return Object.assign({}, styles['uni-icon'], { color })
     })
 

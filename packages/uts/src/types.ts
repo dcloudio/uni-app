@@ -27,9 +27,17 @@ export type UTSInputOptions = UTSParseOptions & {
   fileContent?: string
   fileAppendContent?: string
   paths: Record<string, string>
+  externals?: string[]
   uniModules?: string[]
   globals?: {
     envs?: Record<string, string>
+    vars?: Record<string, string>
+  }
+  parseOptions?: {
+    tsx?: boolean
+    noEarlyErrors?: boolean
+    allowComplexUnionType?: boolean
+    allowTsLitType?: boolean
   }
 }
 
@@ -37,6 +45,8 @@ export type UTSOutputOptions = {
   outDir: string
   outFilename?: string
   package: string
+  banner?: string
+  footer?: string
   imports?: string[]
   sourceMap?: boolean | string
   inlineSourcesContent?: boolean
@@ -49,10 +59,12 @@ export type UTSOutputOptions = {
   isSingleThread?: boolean
   isPlugin?: boolean
   isModule?: boolean
+  isExtApi?: boolean
   split?: boolean
   disableSplitManifest?: boolean
   removeImports?: boolean
   dropImports?: string[]
+  returnExportIdent?: boolean
   uniAppX?: {
     uvueOutDir: string
   }
@@ -72,8 +84,21 @@ export type UTSOutputOptions = {
     reactiveObjects?: string[]
     reactiveAll?: boolean
     uniCloudObjectInfo?: { name: string; methodList: string[] }[]
-    autoImports?: Record<string, [[string, string]]>
+    autoImports?: Record<string, [string, string?][]>
+    autoImportExternals?: Record<string, [string, string?][]>
+    uniModulesArtifacts?: {
+      name: string
+      package: string
+      scopedSlots: string[]
+      declaration: string
+    }[]
   }
+  treeshake?: {
+    manualPureFunctions?: string[]
+    noSideEffects?: boolean
+  }
+  wrapperFunctionName?: string
+  wrapperFunctionArgs?: [string, string][]
 }
 export interface UTSOptions {
   mode?: string
@@ -88,6 +113,8 @@ export interface UTSResult {
   chunks?: string[]
   changed?: string[]
   inject_apis?: string[]
+  scoped_slots?: string[]
+  exports?: string[]
   time?: number
   error?: Error
 }

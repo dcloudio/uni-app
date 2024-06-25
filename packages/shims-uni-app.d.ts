@@ -32,6 +32,7 @@ declare namespace UniNamespace {
     | 'navigateBack'
     | 'preloadPage'
     | 'launch'
+    | ''
   interface LayoutWindowOptions {
     matchMedia?: {
       minWidth?: number
@@ -194,6 +195,7 @@ declare namespace UniNamespace {
     web?: PagesJsonPageStyle
     app?: PagesJsonPageStyle
     'app-plus'?: PagesJsonPageStyle
+    'app-harmony'?: PagesJsonPageStyle
     'mp-alipay'?: PagesJsonPageStyle
     'mp-baidu'?: PagesJsonPageStyle
     'mp-qq'?: PagesJsonPageStyle
@@ -248,6 +250,8 @@ declare namespace UniNamespace {
     leftWindow?: boolean
     rightWindow?: boolean
     eventChannel?: any
+    // 目前 app-harmony 专用
+    isNVueStyle?: boolean
   }
 
   interface PagesJsonPageOptions {
@@ -305,6 +309,7 @@ declare namespace UniNamespace {
       needLogin?: string[]
       resToLogin?: boolean
     }
+    themeConfig?: Record<string, any>
   }
 
   interface ThemeJson {
@@ -352,6 +357,7 @@ declare namespace UniNamespace {
     selectedColor: string
     backgroundColor: string
     borderStyle?: 'black' | 'white'
+    borderColor?: string
     iconfontSrc?: string
     list: TabBarItemOptions[]
     blurEffect?: 'none' | 'dark' | 'extralight' | 'light'

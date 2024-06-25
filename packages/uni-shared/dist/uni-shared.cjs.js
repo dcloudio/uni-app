@@ -1417,11 +1417,7 @@ function isRootImmediateHook(name) {
     const PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
     return PAGE_SYNC_HOOKS.indexOf(name) > -1;
 }
-// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
-function isRootImmediateHookX(name) {
-    const PAGE_SYNC_HOOKS = [ON_LOAD];
-    return PAGE_SYNC_HOOKS.indexOf(name) > -1;
-}
+// isRootImmediateHookX deprecated
 function isRootHook(name) {
     return PAGE_HOOKS.indexOf(name) > -1;
 }
@@ -1566,39 +1562,41 @@ function normalizeTabBarStyles(borderStyle) {
 function normalizeTitleColor(titleColor) {
     return titleColor === 'black' ? '#000000' : '#ffffff';
 }
+function resolveStringStyleItem(modeStyle, styleItem, key) {
+    if (shared.isString(styleItem) && styleItem.startsWith('@')) {
+        const _key = styleItem.replace('@', '');
+        let _styleItem = modeStyle[_key] || styleItem;
+        switch (key) {
+            case 'titleColor':
+                _styleItem = normalizeTitleColor(_styleItem);
+                break;
+            case 'borderStyle':
+                _styleItem = normalizeTabBarStyles(_styleItem);
+                break;
+        }
+        return _styleItem;
+    }
+    return styleItem;
+}
 function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
-    if (!modeStyle) {
+    if (typeof modeStyle === 'undefined')
         return pageStyle;
-    }
     Object.keys(pageStyle).forEach((key) => {
-        let styleItem = pageStyle[key] // Object Array String
-        ;
-        styles[key] = (() => {
-            if (shared.isPlainObject(styleItem)) {
+        const styleItem = pageStyle[key]; // Object Array String
+        const parseStyleItem = () => {
+            if (shared.isPlainObject(styleItem))
                 return normalizeStyles(styleItem, themeConfig, mode);
-            }
-            else if (shared.isArray(styleItem)) {
-                return styleItem.map((item) => shared.isPlainObject(item)
-                    ? normalizeStyles(item, themeConfig, mode)
-                    : item);
-            }
-            else if (shared.isString(styleItem) && styleItem.startsWith('@')) {
-                const _key = styleItem.replace('@', '');
-                let _styleItem = modeStyle[_key] || styleItem;
-                switch (key) {
-                    case 'titleColor':
-                        _styleItem = normalizeTitleColor(_styleItem);
-                        break;
-                    case 'borderStyle':
-                        _styleItem = normalizeTabBarStyles(_styleItem);
-                        break;
-                }
-                return _styleItem;
-            }
-            return styleItem;
-        })();
+            if (shared.isArray(styleItem))
+                return styleItem.map((item) => {
+                    if (typeof item === 'object')
+                        return normalizeStyles(item, themeConfig, mode);
+                    return resolveStringStyleItem(modeStyle, item);
+                });
+            return resolveStringStyleItem(modeStyle, styleItem, key);
+        };
+        styles[key] = parseStyleItem();
     });
     return styles;
 }
@@ -1757,7 +1755,6 @@ exports.isH5NativeTag = isH5NativeTag;
 exports.isMiniProgramNativeTag = isMiniProgramNativeTag;
 exports.isRootHook = isRootHook;
 exports.isRootImmediateHook = isRootImmediateHook;
-exports.isRootImmediateHookX = isRootImmediateHookX;
 exports.isUniLifecycleHook = isUniLifecycleHook;
 exports.isUniXElement = isUniXElement;
 exports.normalizeClass = normalizeClass;

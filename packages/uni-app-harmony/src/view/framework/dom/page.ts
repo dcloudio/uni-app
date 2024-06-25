@@ -16,23 +16,8 @@ import {
 import { UniElement } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniElement'
 import { UniNode } from '@dcloudio/uni-app-plus/view/framework/dom/elements/UniNode'
 import { BuiltInComponents } from './components'
-
-const elements = new Map<number, UniNode>()
-
-export function $(id: number) {
-  return elements.get(id) as UniElement<any>
-}
-
-export function getElement(id: number) {
-  return elements.get(id)
-}
-
-export function removeElement(id: number) {
-  if (__DEV__) {
-    console.log(formatLog('Remove', id, elements.size - 1))
-  }
-  return elements.delete(id)
-}
+export { $ } from '@dcloudio/uni-app-plus/view/framework/dom/store'
+import { setElement } from '@dcloudio/uni-app-plus/view/framework/dom/page'
 
 export function createElement(
   id: number,
@@ -64,7 +49,7 @@ export function createElement(
       )
     }
   }
-  elements.set(id, element)
+  setElement(id, element)
   return element
 }
 
@@ -108,6 +93,7 @@ export function onPageCreate({
   statusbarHeight,
   windowTop,
   windowBottom,
+  nvueFlexDirection,
 }: PageCreateData) {
   initPageInfo(route)
   initSystemInfo(platform, pixelRatio, windowWidth)
@@ -122,6 +108,10 @@ export function onPageCreate({
 
   if (disableScroll) {
     document.addEventListener('touchmove', disableScrollListener)
+  }
+
+  if (nvueFlexDirection) {
+    initPageNVueCss(nvueFlexDirection)
   }
 
   if (css) {
@@ -217,4 +207,54 @@ export function pageScrollTo(
 ) {
   scrollTo(selector! || scrollTop! || 0, duration!)
   publish()
+}
+
+function initPageNVueCss(nvueFlexDirection: string) {
+  const element = document.createElement('style')
+  element.innerHTML = nvueCss(nvueFlexDirection)
+  document.head.appendChild(element)
+}
+
+function nvueCss(nvueFlexDirection: string) {
+  return `
+uni-view,
+uni-label,
+uni-swiper-item,
+uni-scroll-view {
+  display: flex;
+  flex-shrink: 0;
+  flex-grow: 0;
+  flex-basis: auto;
+  align-items: stretch;
+  align-content: flex-start;
+}
+
+uni-button {
+  margin: 0;
+}
+
+uni-view,
+uni-label,
+uni-swiper-item {
+  flex-direction: ${nvueFlexDirection};
+}
+
+uni-view,
+uni-image,
+uni-input,
+uni-scroll-view,
+uni-swiper,
+uni-swiper-item,
+uni-text,
+uni-textarea,
+uni-video {
+  position: relative;
+  border: 0px solid #000000;
+  box-sizing: border-box;
+}
+
+uni-swiper-item {
+  position: absolute;
+}
+`
 }

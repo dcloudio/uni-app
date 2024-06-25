@@ -1,21 +1,30 @@
 import type { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 import { formatLog } from '@dcloudio/uni-shared'
-import { defineGlobalData, initService } from '@dcloudio/uni-core'
+import { defineGlobalData, initAppVm, initService } from '@dcloudio/uni-core'
 import { initVueApp } from '@dcloudio/uni-app-plus/service/framework/app/vueApp'
 import { initSubscribeHandlers } from './subscriber'
 import { initGlobalEvent } from './initGlobalEvent'
 import { initAppLaunch } from './initAppLaunch'
+import { initTabBar } from './initTabBar'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
 
-function initAppVm(appVm: ComponentPublicInstance) {
-  appVm.$vm = appVm
-  appVm.$mpType = 'app'
-  // TODO useI18n
+export function getApp({ allowDefault = false } = {}) {
+  if (appCtx) {
+    // 真实的 App 已初始化
+    return appCtx
+  }
+  if (allowDefault) {
+    // 返回默认实现
+    return defaultApp
+  }
+  console.error(
+    '[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.'
+  )
 }
 
 export function registerApp(appVm: ComponentPublicInstance) {
@@ -35,6 +44,8 @@ export function registerApp(appVm: ComponentPublicInstance) {
   defineGlobalData(appCtx, defaultApp.globalData)
 
   initService()
+
+  initTabBar()
 
   initGlobalEvent()
 

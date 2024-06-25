@@ -8,7 +8,7 @@ import type {
   SelectorQueryNodeInfoCallback,
 } from '@dcloudio/uni-app-x/types/uni'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import type { ComponentPublicInstance } from 'vue'
+import type { ComponentPublicInstance, VNode } from 'vue'
 
 function isVueComponent(comp: any) {
   const has$instance = typeof comp.$ === 'object'
@@ -174,42 +174,131 @@ class SelectorQueryImpl implements SelectorQuery {
   }
 }
 
-function getNodeInfo(node: Element): NodeInfo {
-  const rect = node.getBoundingClientRect()
-  const nodeInfo = {
-    id: node.getAttribute('id')?.toString(),
-    dataset: null,
-    left: rect.left,
-    top: rect.top,
-    right: rect.right,
-    bottom: rect.bottom,
-    width: rect.width,
-    height: rect.height,
-  } as NodeInfo
-  return nodeInfo
-}
+class QuerySelectorHelper {
+  _element: UniElement
+  _commentStartVNode: VNode | undefined
 
-function querySelf(element: Element | null, selector: string): Element | null {
-  if (element == null || selector.length < 2) {
+  constructor(element: UniElement, vnode: VNode | undefined) {
+    this._element = element
+    this._commentStartVNode = vnode
+  }
+
+  static queryElement(
+    element: UniElement,
+    selector: string,
+    all: boolean,
+    vnode: VNode | undefined
+  ): any | null {
+    return new QuerySelectorHelper(element, vnode).query(selector, all)
+  }
+
+  query(selector: string, all: boolean): any | null {
+    if (this._element.nodeName == '#comment') {
+      return this.queryFragment(this._element, selector, all)
+    } else {
+      return all
+        ? this.querySelectorAll(this._element, selector)
+        : this.querySelector(this._element, selector)
+    }
+  }
+
+  queryFragment(el: UniElement, selector: string, all: boolean): any | null {
+    let current = el.nextSibling
+    if (current == null) {
+      return null
+    }
+
+    if (all) {
+      const result1: Array<NodeInfo> = []
+      while (true) {
+        const queryResult = this.querySelectorAll(current!, selector)
+        if (queryResult != null) {
+          result1.push(...queryResult)
+        }
+        current = current.nextSibling
+        if (current == null || this._commentStartVNode!.anchor == current) {
+          break
+        }
+      }
+      return result1
+    } else {
+      let result2: NodeInfo | null = null
+      while (true) {
+        result2 = this.querySelector(current!, selector)
+        current = current.nextSibling
+        if (
+          result2 != null ||
+          current == null ||
+          this._commentStartVNode!.anchor == current
+        ) {
+          break
+        }
+      }
+      return result2
+    }
+  }
+
+  querySelector(element: UniElement, selector: string): NodeInfo | null {
+    let element2 = this.querySelf(element, selector)
+    if (element2 == null) {
+      element2 = element.querySelector(selector)
+    }
+    if (element2 != null) {
+      return this.getNodeInfo(element2)
+    }
     return null
   }
 
-  const selectorType = selector.charAt(0)
-  const selectorName = selector.slice(1)
-  if (
-    selectorType == '.' &&
-    Array.from(element!.classList).includes(selectorName)
-  ) {
-    return element
-  }
-  if (selectorType == '#' && element!.getAttribute('id') == selectorName) {
-    return element
-  }
-  if (selector.toUpperCase() == element!.nodeName!.toUpperCase()) {
-    return element
+  querySelectorAll(
+    element: UniElement,
+    selector: string
+  ): Array<NodeInfo> | null {
+    const nodesInfoArray: Array<NodeInfo> = []
+    const element2 = this.querySelf(element, selector)
+    if (element2 != null) {
+      nodesInfoArray.push(this.getNodeInfo(element))
+    }
+    const findNodes = element.querySelectorAll(selector)
+    findNodes?.forEach((el: UniElement) => {
+      nodesInfoArray.push(this.getNodeInfo(el))
+    })
+    return nodesInfoArray
   }
 
-  return null
+  querySelf(element: UniElement | null, selector: string): UniElement | null {
+    if (element == null || selector.length < 2) {
+      return null
+    }
+
+    const selectorType = selector.charAt(0)
+    const selectorName = selector.slice(1)
+    if (selectorType == '.' && element.classList.includes(selectorName)) {
+      return element
+    }
+    if (selectorType == '#' && element.getAttribute('id') == selectorName) {
+      return element
+    }
+    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
+      return element
+    }
+
+    return null
+  }
+
+  getNodeInfo(element: UniElement): NodeInfo {
+    const rect = element.getBoundingClientRect()
+    const nodeInfo = {
+      id: element.getAttribute('id')?.toString(),
+      dataset: null,
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height,
+    } as NodeInfo
+    return nodeInfo
+  }
 }
 
 function requestComponentInfo(
@@ -221,27 +310,14 @@ function requestComponentInfo(
   const el = vueComponent?.$el
   if (el != null) {
     queue.forEach((item: SelectorQueryRequest) => {
-      if (item.single) {
-        let element = querySelf(el, item.selector)
-        if (element == null) {
-          element = el.querySelector(item.selector)
-        }
-        if (element != null) {
-          result.push(getNodeInfo(element))
-        }
-      } else {
-        const nodesInfo: Array<NodeInfo> = []
-
-        const element = querySelf(el, item.selector)
-        if (element != null) {
-          nodesInfo.push(getNodeInfo(element))
-        }
-
-        const findNodes = el.querySelectorAll(item.selector)
-        findNodes?.forEach((node: Element) => {
-          nodesInfo.push(getNodeInfo(node))
-        })
-        result.push(nodesInfo)
+      const queryResult = QuerySelectorHelper.queryElement(
+        el,
+        item.selector,
+        !item.single,
+        vueComponent?.$.subTree
+      )
+      if (queryResult != null) {
+        result.push(queryResult)
       }
     })
   }

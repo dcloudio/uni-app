@@ -98,6 +98,7 @@ export function processExpression(
   }
 
   const { inline, bindingMetadata } = context
+
   const rewriteIdentifier = (raw: string, parent?: Node, id?: Identifier) => {
     const type = hasOwn(bindingMetadata, raw) && bindingMetadata[raw]
     if (inline) {
@@ -111,11 +112,7 @@ export function processExpression(
       const isDestructureAssignment =
         parent && isInDestructureAssignment(parent, parentStack)
 
-      if (
-        type === BindingTypes.SETUP_CONST ||
-        type === BindingTypes.SETUP_REACTIVE_CONST ||
-        localVars[raw]
-      ) {
+      if (isConst(type) || localVars[raw]) {
         return raw
       } else if (type === BindingTypes.SETUP_REF) {
         return `${raw}.value`
@@ -180,7 +177,10 @@ export function processExpression(
         return genPropsAccessExp(bindingMetadata.__propsAliases![raw])
       }
     } else {
-      if (type && type.startsWith('setup')) {
+      if (
+        (type && type.startsWith('setup')) ||
+        type === BindingTypes.LITERAL_CONST
+      ) {
         // setup bindings in non-inline mode
         return `$setup.${raw}`
       } else if (type === BindingTypes.PROPS_ALIASED) {
@@ -215,7 +215,7 @@ export function processExpression(
     ) {
       // const bindings exposed from setup can be skipped for patching but
       // cannot be hoisted to module scope
-      if (bindingMetadata[node.content] === BindingTypes.SETUP_CONST) {
+      if (isConst(bindingMetadata[node.content])) {
         node.constType = ConstantTypes.CAN_SKIP_PATCH
       }
       node.content = rewriteIdentifier(rawExp)
@@ -373,4 +373,12 @@ export function isBuiltInIdentifier(id: string | ExpressionNode) {
     id = id.content
   }
   return builtInIdentifiers.includes(id)
+}
+
+function isConst(type: unknown) {
+  return (
+    type === BindingTypes.SETUP_CONST ||
+    type === BindingTypes.LITERAL_CONST ||
+    type === BindingTypes.SETUP_REACTIVE_CONST
+  )
 }

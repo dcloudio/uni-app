@@ -1,5 +1,11 @@
 import Button, { UniButtonElement } from './button/index'
+//#if _X_
+// @ts-expect-error
+import Canvas, { UniCanvasElement } from './canvas/index-x'
+//#else
+// @ts-expect-error
 import Canvas, { UniCanvasElement } from './canvas/index'
+//#endif
 import Checkbox, { UniCheckboxElement } from './checkbox/index'
 import CheckboxGroup, { UniCheckboxGroupElement } from './checkbox-group/index'
 import Editor, { UniEditorElement } from './editor/index'
@@ -36,7 +42,13 @@ import Slider from './slider/index'
 //#endif
 import Swiper, { UniSwiperElement } from './swiper/index'
 import SwiperItem, { UniSwiperItemElement } from './swiper-item/index'
-import Switch, { UniSwitchElement } from './switch/index'
+//#if _X_
+// @ts-expect-error
+import Switch, { UniSwitchElement } from './switch/index-x'
+//#else
+// @ts-expect-error
+import Switch from './switch/index'
+//#endif
 import Text, { UniTextElement } from './text/index'
 import Textarea, { UniTextareaElement } from './textarea/index'
 import View, { UniViewElement } from './view/index'

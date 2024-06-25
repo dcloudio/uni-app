@@ -26,6 +26,8 @@ export function uniAppPagesPlugin(): Plugin {
   let launchPage = 'null'
   let conditionUrl = ''
   let uniIdRouter = 'new Map()'
+  let themeConfig = ''
+  const codes: string[] = []
   return {
     name: 'uni:app-pages',
     apply: 'build',
@@ -42,6 +44,7 @@ export function uniAppPagesPlugin(): Plugin {
     transform(code, id) {
       if (isPages(id)) {
         this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'pages.json'))
+        this.addWatchFile(path.resolve(process.env.UNI_INPUT_DIR, 'theme.json'))
         let pagesJson: UniApp.PagesJson = {
           pages: [],
           globalStyle: {
@@ -80,13 +83,13 @@ export function uniAppPagesPlugin(): Plugin {
           routes.push(
             `{ path: "${
               page.path
-            }", component: ${className}Class, meta: { isQuit: ${isQuit} } as PageMeta, style: ${stringifyPageStyle(
+            }", component: ${className}Class, meta: { isQuit: ${isQuit} } as UniPageMeta, style: ${stringifyPageStyle(
               page.style
             )}${
               page.needLogin === undefined
                 ? ''
                 : ', needLogin: ' + page.needLogin
-            } } as PageRoute`
+            } } as UniPageRoute`
           )
         })
         if (pagesJson.globalStyle) {
@@ -106,6 +109,13 @@ export function uniAppPagesPlugin(): Plugin {
           uniIdRouter = stringifyMap(pagesJson.uniIdRouter)
         }
         launchPage = stringifyLaunchPage(pagesJson.pages[0])
+
+        codes.length = 0
+        // theme.json
+        themeConfig = readThemeJSONFileAsStringifyMap()
+        if (themeConfig) {
+          codes.push(`__uniConfig.themeConfig = ${themeConfig}`)
+        }
         return {
           code: `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
           export default 'pages.json'`,
@@ -114,8 +124,8 @@ export function uniAppPagesPlugin(): Plugin {
       }
     },
     generateBundle(_, bundle) {
-      if (bundle[ENTRY_FILENAME]) {
-        const asset = bundle[ENTRY_FILENAME] as OutputAsset
+      if (bundle[ENTRY_FILENAME()]) {
+        const asset = bundle[ENTRY_FILENAME()] as OutputAsset
         asset.source =
           asset.source +
           `
@@ -130,13 +140,13 @@ ${routes.map((route) => `__uniRoutes.push(${route})`).join('\n')}
 }
 const __uniTabBar: Map<string, any | null> | null = ${tabBar}
 const __uniLaunchPage: Map<string, any | null> = ${launchPage}
-@Suppress("UNCHECKED_CAST")
 function defineAppConfig(){
   __uniConfig.entryPagePath = '/${imports[0]}'
   __uniConfig.globalStyle = ${globalStyle}
   __uniConfig.tabBar = __uniTabBar as Map<string, any> | null
   __uniConfig.conditionUrl = '${conditionUrl}'
   __uniConfig.uniIdRouter = ${uniIdRouter}
+  ${codes.join('\n  ')}
   __uniConfig.ready = true
 }
 `
@@ -157,4 +167,23 @@ function stringifyLaunchPage(launchPage: UniApp.PagesJsonPageOptions) {
 
 function stringifyPageStyle(pageStyle: UniApp.PagesJsonPageStyle) {
   return stringifyMap(pageStyle)
+}
+
+// function readUniSassAsStringifyMap() {
+//   const uniScssPath = path.resolve(process.env.UNI_INPUT_DIR, 'uni.scss')
+//   let result = {}
+//   if (fs.existsSync(uniScssPath)) {
+//     const content = fs.readFileSync(uniScssPath, 'utf8')
+//     const parser = new ThemeSassParser()
+//     result = parser.parse(content)
+//   }
+//   return stringifyMap(result)
+// }
+
+function readThemeJSONFileAsStringifyMap() {
+  const themeJsonPath = path.resolve(process.env.UNI_INPUT_DIR, 'theme.json')
+  if (fs.existsSync(themeJsonPath)) {
+    return stringifyMap(JSON.parse(fs.readFileSync(themeJsonPath, 'utf8')))
+  }
+  return ''
 }

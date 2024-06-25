@@ -1,7 +1,4 @@
-import type {
-  ComponentPropsOptions,
-  ComponentPublicInstance,
-} from '@vue/runtime-core'
+import type { ComponentPropsOptions, ComponentPublicInstance } from 'vue'
 import { extend, isArray, isFunction, isPlainObject } from '@vue/shared'
 import type { MPComponentInstance, MPComponentOptions } from './component'
 // @ts-expect-error
@@ -58,7 +55,7 @@ function initDefaultProps(
   }
   if (options.behaviors) {
     // wx://form-field
-    if (options.behaviors.includes('__GLOBAL__://form-field')) {
+    if (options.behaviors.includes('__GLOBAL__' + '://form-field')) {
       if (!options.properties || !options.properties.name) {
         properties.name = {
           type: null,

@@ -51,9 +51,18 @@ function getChildren(root: VNode): VNode[] {
   return children
 }
 
+const ChildType = ['ListItem', 'StickySection', 'StickyHeader']
+
 function walk(vnode: VNode, children: VNode[]) {
-  if (vnode.component) {
+  if (
+    vnode.component &&
+    vnode.component.type &&
+    vnode.component.type.name &&
+    ChildType.includes(vnode.component.type.name)
+  ) {
     children.push(vnode)
+  } else if (vnode.component) {
+    walk(vnode.component.subTree, children)
   } else if (vnode.shapeFlag & 16 /* ShapeFlags.ARRAY_CHILDREN */) {
     const vnodes = vnode.children as VNode[]
     for (let i = 0; i < vnodes.length; i++) {
@@ -335,7 +344,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
     // 列表整体刷新，谨慎使用
     function forceRearrange() {
-      traverseAllItems((child) => {
+      traverseAllItems(visibleVNode!, (child) => {
         const exposed = child.component!.exposed
         if (exposed?.__listViewChildStatus.seen.value) {
           exposed.__listViewChildStatus.seen.value = false
@@ -353,8 +362,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       forceRearrange()
     }
 
-    function traverseAllItems(callback: (child: VNode) => void) {
-      traverseListView(visibleVNode!, (child) => {
+    function traverseAllItems(
+      visibleVNode: VNode,
+      callback: (child: VNode) => void
+    ) {
+      traverseListView(visibleVNode, (child) => {
         const childType = child.component?.type.name
         if (childType === 'StickySection') {
           traverseStickySection(child, function () {
@@ -365,6 +377,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           })
         } else if (childType === 'ListItem') {
           callback(child)
+        } else if (childType === 'StickyHeader') {
+          // do nothing
+        } else if (child.component && child.component.subTree) {
+          traverseAllItems(child.component.subTree, callback)
         }
       })
     }

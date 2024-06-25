@@ -3,7 +3,9 @@ import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
 import type { UTSTargetLanguage } from './uts'
-import { normalizePath } from './utils'
+import { normalizePath, requireUniHelpers } from './utils'
+import { genUTSComponentPublicInstanceIdent } from './easycom'
+import { M } from './messages'
 
 export type DefineOptions = {
   name?: string
@@ -49,18 +51,31 @@ export function getUniExtApiPlugins() {
   })
 }
 
+export function formatExtApiProviderName(service: string, name: string) {
+  if (service === 'oauth') {
+    service = 'OAuth'
+  }
+  return `Uni${capitalize(camelize(service))}${capitalize(
+    camelize(name)
+  )}Provider`
+}
+
 export function getUniExtApiProviderRegisters() {
-  const result: { name: string; service: string; class: string }[] = []
+  const result: {
+    name: string
+    plugin: string
+    service: string
+    class: string
+  }[] = []
   extApiProviders.forEach((provider) => {
     if (provider.name && provider.service) {
       result.push({
         name: provider.name,
+        plugin: provider.plugin,
         service: provider.service,
-        class: `uts.sdk.modules.${camelize(provider.plugin)}.${capitalize(
-          camelize(
-            'uni-' + provider.service + '-' + provider.name + '-provider'
-          )
-        )}`,
+        class: `uts.sdk.modules.${camelize(
+          provider.plugin
+        )}.${formatExtApiProviderName(provider.service, provider.name)}`,
       })
     }
   })
@@ -119,6 +134,34 @@ export function parseUniExtApis(
     } catch (e) {}
   })
   return injects
+}
+
+export function parseUniExtApi(
+  pluginDir: string,
+  pluginId: string,
+  vite = true,
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  language: UTSTargetLanguage = 'javascript'
+) {
+  const pkgPath = path.resolve(pluginDir, 'package.json')
+  if (!fs.existsSync(pkgPath)) {
+    return
+  }
+  let exports: Exports | undefined
+  const pkg = JSON.parse(fs.readFileSync(pkgPath, 'utf8'))
+  if (pkg && pkg.uni_modules && pkg.uni_modules['uni-ext-api']) {
+    exports = pkg.uni_modules['uni-ext-api']
+  }
+  if (exports) {
+    return parseInjects(
+      vite,
+      platform,
+      language,
+      `@/uni_modules/${pluginId}`,
+      pluginDir,
+      exports
+    )
+  }
 }
 
 type Inject = string | string[]
@@ -188,14 +231,16 @@ export function parseInjects(
           fs.existsSync(
             path.resolve(uniModuleRootDir, 'utssdk', 'app-android')
           ) ||
-          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios'))
+          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-ios')) ||
+          fs.existsSync(path.resolve(uniModuleRootDir, 'utssdk', 'app-harmony'))
       }
     }
     // 其他平台修改source，直接指向目标文件，否则 uts2js 找不到类型信息
     if (
       platform !== 'app' &&
       platform !== 'app-android' &&
-      platform !== 'app-ios'
+      platform !== 'app-ios' &&
+      platform !== 'app-harmony'
     ) {
       if (fs.existsSync(platformIndexFileName)) {
         source = `${source}/utssdk/${platform}/index.uts`
@@ -263,7 +308,9 @@ function parseInject(
       } else {
         const defineOptions = define[d] as DefineOptions
         const p =
-          platform === 'app-android' || platform === 'app-ios'
+          platform === 'app-android' ||
+          platform === 'app-ios' ||
+          platform === 'app-harmony'
             ? 'app'
             : platform
         if (!(p in defineOptions)) {
@@ -280,18 +327,10 @@ function parseInject(
                   process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE === 'js' &&
                   source.includes('app-js')
                 if (!skipCheck) {
-                  if (language === 'javascript') {
-                    if (appOptions.js === false) {
-                      return
-                    }
-                  } else if (language === 'kotlin') {
-                    if (appOptions.kotlin === false) {
-                      return
-                    }
-                  } else if (language === 'swift') {
-                    if (appOptions.swift === false) {
-                      return
-                    }
+                  const targetLanguage =
+                    language === 'javascript' ? 'js' : language
+                  if (targetLanguage && appOptions[targetLanguage] === false) {
+                    return
                   }
                 }
               }
@@ -357,26 +396,36 @@ export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
   })
 }
 
-export function genEncryptEasyComModuleIndex(components: string[]) {
+export function genEncryptEasyComModuleIndex(
+  platform: typeof process.env.UNI_UTS_PLATFORM,
+  components: Record<string, '.vue' | '.uvue'>
+) {
   const imports: string[] = []
   const ids: string[] = []
-  components.forEach((component) => {
+  Object.keys(components).forEach((component) => {
     const id = capitalize(camelize(component))
-    imports.push(
-      `import ${id} from './components/${component}/${component}.vue'`
-    )
+
     ids.push(id)
+    if (platform === 'app-android') {
+      // 类型
+      ids.push(genUTSComponentPublicInstanceIdent(component))
+    }
+    imports.push(
+      `import ${id} from './components/${component}/${component}${components[component]}'`
+    )
   })
   return `
 ${imports.join('\n')}
-export { ${ids.join(',')} }
+export { 
+  ${ids.join(',\n  ')} 
+}
 `
 }
 
 // 目前该函数仅在云端使用（目前仅限iOS/web），云端编译时，提交上来的uni_modules是过滤好的
 export function parseUniModulesWithComponents(inputDir: string) {
   const modulesDir = path.resolve(inputDir, 'uni_modules')
-  const uniModules: Record<string, string[]> = {}
+  const uniModules: Record<string, Record<string, '.vue' | '.uvue'>> = {}
   if (fs.existsSync(modulesDir)) {
     fs.readdirSync(modulesDir).forEach((uniModuleDir) => {
       if (
@@ -409,7 +458,7 @@ export function parseEasyComComponents(
     pluginId,
     'components'
   )
-  const components: string[] = []
+  const components: Record<string, '.vue' | '.uvue'> = {}
   if (fs.existsSync(componentsDir)) {
     fs.readdirSync(componentsDir).forEach((componentDir) => {
       const componentFile = path.resolve(
@@ -417,23 +466,22 @@ export function parseEasyComComponents(
         componentDir,
         componentDir
       )
-      if (
-        ['.vue', '.uvue'].some((extname) => {
-          const filename = componentFile + extname
-          // 探测 filename 是否是二进制文件
-          if (fs.existsSync(filename)) {
-            if (detectBinary) {
-              // 延迟require，这个是新增的依赖，无法及时同步到内部测试版本HBuilderX中，导致报错，所以延迟require吧
-              if (require('isbinaryfile').isBinaryFileSync(filename)) {
-                return true
-              }
-            } else {
+      const extname = ['.vue', '.uvue'].find((extname) => {
+        const filename = componentFile + extname
+        // 探测 filename 是否是二进制文件
+        if (fs.existsSync(filename)) {
+          if (detectBinary) {
+            // 延迟require，这个是新增的依赖，无法及时同步到内部测试版本HBuilderX中，导致报错，所以延迟require吧
+            if (require('isbinaryfile').isBinaryFileSync(filename)) {
               return true
             }
+          } else {
+            return true
           }
-        })
-      ) {
-        components.push(componentDir)
+        }
+      })
+      if (extname) {
+        components[componentDir] = extname as '.vue' | '.uvue'
       }
     })
   }
@@ -538,6 +586,8 @@ interface EncryptPackageJson {
       } & Record<string, any>
       apis: string[]
       components: string[]
+      scopedSlots: string[]
+      declaration: string
     }
   }
 }
@@ -555,12 +605,22 @@ function findEncryptUniModuleCache(
   }
   const uniModuleCacheDir = path.resolve(cacheDir, 'uni_modules', uniModuleId)
   if (fs.existsSync(uniModuleCacheDir)) {
-    const pkg = require(path.resolve(uniModuleCacheDir, 'package.json'))
+    const pkg = require(path.resolve(
+      uniModuleCacheDir,
+      'package.json'
+    )) as EncryptPackageJson
     // 插件版本以及各种环境一致
     if (
       pkg.version === options.version &&
       !isEnvExpired(pkg.uni_modules?.artifacts?.env || {}, options.env)
     ) {
+      const declaration = path.resolve(
+        uniModuleCacheDir,
+        'utssdk/app-android/index.d.uts'
+      )
+      pkg.uni_modules.artifacts.declaration = fs.existsSync(declaration)
+        ? declaration
+        : ''
       return pkg
     }
     console.log(`插件${uniModuleId} 缓存已过期，需要重新云编译。`)
@@ -647,6 +707,14 @@ export function resolveEncryptUniModule(
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
     if (uniModuleId in encryptUniModules) {
+      if (parts[index + 2]) {
+        console.warn(
+          M['uni_modules.import']
+            .replace('{0}', uniModuleId)
+            .replace('{1}', uniModuleId)
+            .replace('{2}', parts.slice(index + 2).join('/'))
+        )
+      }
       // 原生平台走旧的uts-proxy
       return normalizePath(
         path.join(
@@ -664,6 +732,7 @@ export async function checkEncryptUniModules(
   inputDir: string,
   params: {
     mode: 'development' | 'production'
+    packType: 'debug' | 'release'
     compilerVersion: string // hxVersion
     appid: string
     appname: string
@@ -692,14 +761,15 @@ export async function checkEncryptUniModules(
   )
   if (zipFile) {
     const downloadFile = path.resolve(cacheDir, 'uni_modules.download.zip')
-    const { C, D, R, U } = require(path.join(
-      process.env.UNI_HBUILDERX_PLUGINS,
-      'uni_helpers'
-    ))
+    const { C, D, R, U } = requireUniHelpers()
     try {
       const isLogin = await C()
+      const tips =
+        process.env.UNI_UTS_PLATFORM !== 'app-android'
+          ? '（此过程耗时较长）'
+          : ''
       console.log(
-        `正在云编译插件${isLogin ? '' : '（请先登录）'}：${modules.join(
+        `正在云编译插件${isLogin ? '' : '（请先登录）'}${tips}：${modules.join(
           ','
         )}...`
       )
@@ -741,10 +811,7 @@ export async function checkEncryptUniModules(
   } else {
     // android 平台需要在这里初始化
     if (params.platform === 'app-android') {
-      const { R } = require(path.join(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        'uni_helpers'
-      ))
+      const { R } = requireUniHelpers()
       R({
         dir: process.env.UNI_INPUT_DIR,
         cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
@@ -755,4 +822,25 @@ export async function checkEncryptUniModules(
     inputDir,
     process.env.UNI_MODULES_ENCRYPT_CACHE_DIR
   )
+}
+
+export function parseUniModulesArtifacts() {
+  const res: {
+    name: string
+    package: string
+    scopedSlots: string[]
+    declaration: string
+  }[] = []
+  Object.keys(encryptUniModules).forEach((uniModuleId) => {
+    const pkg = encryptUniModules[uniModuleId]
+    if (pkg?.uni_modules?.artifacts) {
+      res.push({
+        name: uniModuleId,
+        package: `uts.sdk.modules.${camelize(uniModuleId)}`,
+        scopedSlots: pkg.uni_modules.artifacts.scopedSlots || [],
+        declaration: pkg.uni_modules.artifacts.declaration,
+      })
+    }
+  })
+  return res
 }

@@ -219,30 +219,6 @@ uni-page-head {
   background-size: 100% 100%;
 }
 
-.uni-page-head-shadow-grey::after {
-  background-image: url('https://cdn.dcloud.net.cn/img/shadow-grey.png');
-}
-
-.uni-page-head-shadow-blue::after {
-  background-image: url('https://cdn.dcloud.net.cn/img/shadow-blue.png');
-}
-
-.uni-page-head-shadow-green::after {
-  background-image: url('https://cdn.dcloud.net.cn/img/shadow-green.png');
-}
-
-.uni-page-head-shadow-orange::after {
-  background-image: url('https://cdn.dcloud.net.cn/img/shadow-orange.png');
-}
-
-.uni-page-head-shadow-red::after {
-  background-image: url('https://cdn.dcloud.net.cn/img/shadow-red.png');
-}
-
-.uni-page-head-shadow-yellow::after {
-  background-image: url('https://cdn.dcloud.net.cn/img/shadow-yellow.png');
-}
-
 uni-page-head[uni-page-head-type='default'] ~ uni-page-wrapper {
   height: calc(100% - 44px);
   height: calc(100% - 44px - constant(safe-area-inset-top));

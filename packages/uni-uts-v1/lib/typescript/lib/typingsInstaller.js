@@ -1863,7 +1863,7 @@ var prereleasePartRegExp = /^(?:0|[1-9]\d*|[a-z-][a-z0-9-]*)$/i;
 var buildRegExp = /^[a-z0-9-]+(?:\.[a-z0-9-]+)*$/i;
 var buildPartRegExp = /^[a-z0-9-]+$/i;
 var numericIdentifierRegExp = /^(0|[1-9]\d*)$/;
-var _Version = class {
+var _Version = class _Version {
   constructor(major, minor = 0, patch = 0, prerelease = "", build = "") {
     if (typeof major === "string") {
       const result = Debug.checkDefined(tryParseComponents(major), "Invalid version");
@@ -1927,8 +1927,8 @@ var _Version = class {
     return result;
   }
 };
+_Version.zero = new _Version(0, 0, 0, ["0"]);
 var Version = _Version;
-Version.zero = new _Version(0, 0, 0, ["0"]);
 function tryParseComponents(text) {
   const match = versionRegExp.exec(text);
   if (!match)
@@ -1975,14 +1975,14 @@ function comparePrereleaseIdentifiers(left, right) {
   }
   return compareValues(left.length, right.length);
 }
-var VersionRange = class {
+var VersionRange = class _VersionRange {
   constructor(spec) {
     this._alternatives = spec ? Debug.checkDefined(parseRange(spec), "Invalid range spec.") : emptyArray;
   }
   static tryParse(text) {
     const sets = parseRange(text);
     if (sets) {
-      const range = new VersionRange("");
+      const range = new _VersionRange("");
       range._alternatives = sets;
       return range;
     }
@@ -28180,7 +28180,7 @@ function tryFile(fileName, onlyRecordFailures, state) {
 }
 function tryFileLookup(fileName, onlyRecordFailures, state) {
   var _a, _b, _c;
-  if ((_a = globalThis.__utsHacker__) == null ? void 0 : _a.tryFileLookup) {
+  if (state && !state.isConfigLookup && ((_a = globalThis.__utsHacker__) == null ? void 0 : _a.tryFileLookup)) {
     const result = (_b = globalThis.__utsHacker__) == null ? void 0 : _b.tryFileLookup(fileName);
     if (result) {
       return result;
