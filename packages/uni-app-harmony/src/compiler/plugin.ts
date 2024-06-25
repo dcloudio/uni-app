@@ -9,15 +9,89 @@ import {
   parseUniExtApi,
   resolveUTSCompiler,
 } from '@dcloudio/uni-cli-shared'
+import type { OutputChunk } from 'rollup'
+
+const commondGlobals: Record<string, string> = {
+  vue: 'Vue',
+  '@vue/shared': 'uni.VueShared',
+}
+
+const harmonyGlobals: (string | RegExp)[] = [
+  /^@ohos\./,
+  /^@kit\./,
+  /^@hms\./,
+  '@ohos/hypium',
+  '@ohos/hamock',
+]
+
+function isHarmoneyGlobal(id: string) {
+  return harmonyGlobals.some((harmonyGlobal) =>
+    typeof harmonyGlobal === 'string'
+      ? harmonyGlobal === id
+      : harmonyGlobal.test(id)
+  )
+}
+
+function generateHarmonyImportSpecifier(id: string) {
+  return id.replace(/([@\.])/g, function (_, $1) {
+    switch ($1) {
+      case '.':
+        return '_'
+      case '/':
+        return '__'
+      default:
+        return ''
+    }
+  })
+}
+
+function generateHarmonyImportExternalCode(hamonyPackageNames: string[]) {
+  return hamonyPackageNames
+    .filter((hamonyPackageName) => isHarmoneyGlobal(hamonyPackageName))
+    .map(
+      (hamonyPackageName) =>
+        `import ${generateHarmonyImportSpecifier(
+          hamonyPackageName
+        )} from '${hamonyPackageName}';`
+    )
+}
+
 export function uniAppHarmonyPlugin(): UniVitePlugin {
   return {
     name: 'uni:app-harmony',
     apply: 'build',
-    async generateBundle() {
+    config() {
+      return {
+        build: {
+          rollupOptions: {
+            external: [...Object.keys(commondGlobals), ...harmonyGlobals],
+            output: {
+              globals: function (id: string) {
+                return (
+                  commondGlobals[id] ||
+                  (isHarmoneyGlobal(id)
+                    ? generateHarmonyImportSpecifier(id)
+                    : '')
+                )
+              },
+            },
+          },
+        },
+      }
+    },
+    async generateBundle(_, bundle) {
       genAppHarmonyIndex(
         process.env.UNI_INPUT_DIR,
         getCurrentCompiledUTSPlugins()
       )
+      for (const key in bundle) {
+        const serviceBundle = bundle[key] as OutputChunk
+        if (serviceBundle.code) {
+          serviceBundle.code =
+            generateHarmonyImportExternalCode(serviceBundle.imports) +
+            serviceBundle.code
+        }
+      }
     },
     async writeBundle() {
       if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
