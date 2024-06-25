@@ -3,8 +3,10 @@ import path from 'path'
 import { type Plugin, type ResolvedConfig, normalizePath } from 'vite'
 
 import {
+  H5_FRAMEWORK_STYLE_PATH,
   buildInCssSet,
   createEncryptCssUrlReplacer,
+  createShadowImageUrl,
   cssPostPlugin,
   getAssetHash,
   injectAssetPlugin,
@@ -60,6 +62,26 @@ export function uniCssPlugin(): Plugin {
           })
         )
         injectAssetPlugin(config)
+      }
+    },
+    transform(code, id) {
+      if (normalizePath(id).endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')) {
+        const url = createShadowImageUrl(0, 'grey')
+        return {
+          code:
+            code +
+            `
+@keyframes shadow-preload {
+  0% {
+    background-image: url(${url});
+  }
+  100% {
+    background-image: url(${url});
+  }
+}
+`,
+          map: { mappings: '' },
+        }
       }
     },
     async generateBundle() {
