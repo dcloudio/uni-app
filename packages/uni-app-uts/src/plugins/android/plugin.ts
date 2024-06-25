@@ -293,7 +293,11 @@ function checkUTSEasyComAutoImports(
         fileName = fileName.slice(2)
       }
       const relativeFileName = parseUTSRelativeFilename(fileName, inputDir)
-      if (!bundle[relativeFileName]) {
+      if (
+        !bundle[relativeFileName] &&
+        // tsc 模式带ts后缀
+        !bundle[relativeFileName + '.ts']
+      ) {
         const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
         ctx.emitFile({
           type: 'asset',
