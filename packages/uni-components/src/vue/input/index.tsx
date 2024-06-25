@@ -77,7 +77,8 @@ type Props = ExtractPropTypes<typeof props>
 type ResetCache = { fn: (() => void) | null }
 function useCache(props: Props, type: ComputedRef<string>) {
   if (type.value === 'number') {
-    const value = props.modelValue ?? props.value
+    const value =
+      typeof props.modelValue === 'undefined' ? props.value : props.modelValue
     const cache = ref(
       typeof value !== 'undefined' ? value.toLocaleString() : ''
     )
