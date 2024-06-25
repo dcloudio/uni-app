@@ -1,5 +1,8 @@
 const fs = require('fs')
 const path = require('path')
+const {
+  getManifestJson
+} = require('./manifest')
 
 const {
   isInHBuilderX,
@@ -17,10 +20,12 @@ function getShadowCss () {
   if (process.env.UNI_PLATFORM === 'h5') {
     tagName = 'body'
   }
-  const cdn = getShadowCdn()
-  return `${tagName}::after{position:fixed;content:'';left:-1000px;top:-1000px;-webkit-animation:shadow-preload .1s;-webkit-animation-delay:3s;animation:shadow-preload .1s;animation-delay:3s}@-webkit-keyframes shadow-preload{0%{background-image:url(${cdn}/img/shadow-grey.png)}100%{background-image:url(${cdn}/img/shadow-grey.png)}}@keyframes shadow-preload{0%{background-image:url(${cdn}/img/shadow-grey.png)}100%{background-image:url(${cdn}/img/shadow-grey.png)}}`
+  const url = createShadowImageUrl(getShadowCdn(), 'grey')
+  return `${tagName}::after{position:fixed;content:'';left:-1000px;top:-1000px;-webkit-animation:shadow-preload .1s;-webkit-animation-delay:3s;animation:shadow-preload .1s;animation-delay:3s}@-webkit-keyframes shadow-preload{0%{background-image:url(${url})}100%{background-image:url(${url})}}@keyframes shadow-preload{0%{background-image:url(${url})}100%{background-image:url(${url})}}`
 }
 const cdns = {
+  h5: '',
+  web: '',
   'mp-weixin': 1,
   'mp-alipay': 2,
   'mp-baidu': 3,
@@ -37,8 +42,27 @@ const cdns = {
 }
 
 function getShadowCdn () {
-  const index = cdns[process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM] || ''
-  return `https://cdn${index}.dcloud.net.cn`
+  return cdns[process.env.UNI_SUB_PLATFORM || process.env.UNI_PLATFORM] || ''
+}
+
+let appid
+function createIdent () {
+  if (process.env.UNI_INPUT_DIR) {
+    if (typeof appid === 'undefined') {
+      appid = getManifestJson().appid || ''
+    }
+    const id = appid.replace('__UNI__', '')
+    if (id) {
+      return Buffer.from(Buffer.from(id).toString('base64')).toString('hex')
+    }
+  }
+  return ''
+}
+
+function createShadowImageUrl (cdn, type = 'grey') {
+  const ident = createIdent()
+  const identStr = ident ? `${ident}/` : ''
+  return `https://cdn${cdn || ''}.dcloud.net.cn/${identStr}img/shadow-${type}.png`
 }
 
 // 解决 vue-cli-service lint 时 UNI_PLATFORM 不存在
@@ -145,6 +169,7 @@ module.exports = {
       discardDuplicates: false // 条件编译会导致重复
     }
   },
+  createShadowImageUrl,
   getShadowCss,
   getShadowTemplate (colorType = 'grey') {
     let tagName = 'cover-image'
@@ -152,7 +177,7 @@ module.exports = {
       .UNI_PLATFORM === 'mp-xhs') {
       tagName = 'image'
     }
-    return `<${tagName} src="${getShadowCdn()}/img/shadow-${colorType}.png" style="z-index:998;position:fixed;left:0;top:0;width:100%;height:3px;"/>`
+    return `<${tagName} src="${createShadowImageUrl(getShadowCdn(), colorType)}" style="z-index:998;position:fixed;left:0;top:0;width:100%;height:3px;"/>`
   },
   getPlatformScss () {
     return SCSS
