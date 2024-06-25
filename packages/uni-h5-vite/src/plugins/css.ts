@@ -65,7 +65,8 @@ export function uniCssPlugin(): Plugin {
       }
     },
     transform(code, id) {
-      if (normalizePath(id).endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')) {
+      id = normalizePath(id)
+      if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')) {
         const url = createShadowImageUrl(0, 'grey')
         return {
           code:
@@ -79,6 +80,38 @@ export function uniCssPlugin(): Plugin {
     background-image: url(${url});
   }
 }
+`,
+          map: { mappings: '' },
+        }
+      } else if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'pageHead.css')) {
+        return {
+          code:
+            code +
+            `
+.uni-page-head-shadow-grey::after {
+  background-image: url('${createShadowImageUrl(0, 'grey')}');
+}
+
+.uni-page-head-shadow-blue::after {
+  background-image: url('${createShadowImageUrl(0, 'blue')}');
+}
+
+.uni-page-head-shadow-green::after {
+  background-image: url('${createShadowImageUrl(0, 'green')}');
+}
+
+.uni-page-head-shadow-orange::after {
+  background-image: url('${createShadowImageUrl(0, 'orange')}');
+}
+
+.uni-page-head-shadow-red::after {
+  background-image: url('${createShadowImageUrl(0, 'red')}');
+}
+
+.uni-page-head-shadow-yellow::after {
+  background-image: url('${createShadowImageUrl(0, 'yellow')}');
+}
+            
 `,
           map: { mappings: '' },
         }
