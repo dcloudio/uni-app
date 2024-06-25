@@ -236,7 +236,7 @@ export function normalizeEmitAssetFileName(fileName: string) {
   return fileName
 }
 
-export function createIdent() {
+function createIdent() {
   if (process.env.UNI_INPUT_DIR) {
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
     const id = (manifestJson.appid || '').replace('__UNI__', '')
@@ -245,4 +245,12 @@ export function createIdent() {
     }
   }
   return ''
+}
+
+export function createShadowImageUrl(cdn: number, type: string = 'grey') {
+  const ident = createIdent()
+  const identStr = ident ? `${ident}/` : ''
+  return `https://cdn${
+    (cdn || 0) + (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
+  }.dcloud.net.cn/${identStr}img/shadow-${type}.png`
 }

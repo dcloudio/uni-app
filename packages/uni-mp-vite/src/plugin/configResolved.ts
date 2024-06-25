@@ -4,7 +4,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 import type { EmittedAsset } from 'rollup'
 import {
   createEncryptCssUrlReplacer,
-  createIdent,
+  createShadowImageUrl,
   cssPostPlugin,
   injectAssetPlugin,
   injectCssPlugin,
@@ -28,10 +28,9 @@ import {
 const debugNVueCss = debug('uni:nvue-css')
 const cssVars = `page{--status-bar-height:25px;--top-window-height:0px;--window-top:0px;--window-bottom:0px;--window-left:0px;--window-right:0px;--window-magin:0px}`
 
-const genShadowCss = (cdn: string) => {
-  const ident = createIdent()
-  const identStr = ident ? `${ident}/` : ''
-  return `page::after{position:fixed;content:'';left:-1000px;top:-1000px;-webkit-animation:shadow-preload .1s;-webkit-animation-delay:3s;animation:shadow-preload .1s;animation-delay:3s}@-webkit-keyframes shadow-preload{0%{background-image:url(${cdn}/${identStr}img/shadow-grey.png)}100%{background-image:url(${cdn}/${identStr}img/shadow-grey.png)}}@keyframes shadow-preload{0%{background-image:url(${cdn}/${identStr}img/shadow-grey.png)}100%{background-image:url(${cdn}/${identStr}img/shadow-grey.png)}}`
+const genShadowCss = (cdn: number) => {
+  const url = createShadowImageUrl(cdn, 'grey')
+  return `page::after{position:fixed;content:'';left:-1000px;top:-1000px;-webkit-animation:shadow-preload .1s;-webkit-animation-delay:3s;animation:shadow-preload .1s;animation-delay:3s}@-webkit-keyframes shadow-preload{0%{background-image:url(${url})}100%{background-image:url(${url})}}@keyframes shadow-preload{0%{background-image:url(${url})}100%{background-image:url(${url})}}`
 }
 
 const genComponentCustomHiddenCss = (name: string) =>
@@ -103,12 +102,7 @@ export function createConfigResolved({
             if (config.isProduction) {
               return (
                 cssCode +
-                genShadowCss(
-                  `https://cdn${
-                    (cdn || 0) +
-                      (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
-                  }.dcloud.net.cn`
-                ) +
+                genShadowCss(cdn || 0) +
                 cssVars +
                 componentCustomHiddenCss
               )
