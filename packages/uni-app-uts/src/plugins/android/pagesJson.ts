@@ -83,13 +83,13 @@ export function uniAppPagesPlugin(): Plugin {
           routes.push(
             `{ path: "${
               page.path
-            }", component: ${className}Class, meta: { isQuit: ${isQuit} } as PageMeta, style: ${stringifyPageStyle(
+            }", component: ${className}Class, meta: { isQuit: ${isQuit} } as UniPageMeta, style: ${stringifyPageStyle(
               page.style
             )}${
               page.needLogin === undefined
                 ? ''
                 : ', needLogin: ' + page.needLogin
-            } } as PageRoute`
+            } } as UniPageRoute`
           )
         })
         if (pagesJson.globalStyle) {
