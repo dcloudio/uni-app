@@ -457,26 +457,36 @@ function initUTSJSONObjectProperties(obj) {
     }
     Object.defineProperties(obj, propertyDescriptorMap);
 }
+function setUTSJSONObjectValue(obj, key, value) {
+    if (isPlainObject(value)) {
+        obj[key] = new UTSJSONObject$1(value);
+    }
+    else if (getType(value) === 'array') {
+        obj[key] = value.map((item) => {
+            if (isPlainObject(item)) {
+                return new UTSJSONObject$1(item);
+            }
+            else {
+                return item;
+            }
+        });
+    }
+    else {
+        obj[key] = value;
+    }
+}
 let UTSJSONObject$1 = class UTSJSONObject {
     constructor(content = {}) {
-        for (const key in content) {
-            if (Object.prototype.hasOwnProperty.call(content, key)) {
-                const value = content[key];
-                if (isPlainObject(value)) {
-                    this[key] = new UTSJSONObject(value);
-                }
-                else if (getType(value) === 'array') {
-                    this[key] = value.map((item) => {
-                        if (isPlainObject(item)) {
-                            return new UTSJSONObject(item);
-                        }
-                        else {
-                            return item;
-                        }
-                    });
-                }
-                else {
-                    this[key] = value;
+        if (content instanceof Map) {
+            content.forEach((value, key) => {
+                setUTSJSONObjectValue(this, key, value);
+            });
+        }
+        else {
+            for (const key in content) {
+                if (Object.prototype.hasOwnProperty.call(content, key)) {
+                    const value = content[key];
+                    setUTSJSONObjectValue(this, key, value);
                 }
             }
         }
@@ -634,7 +644,6 @@ let UTSJSONObject$1 = class UTSJSONObject {
 
 // @ts-nocheck
 function getGlobal() {
-    // cross-platform
     if (typeof globalThis !== 'undefined') {
         return globalThis;
     }
@@ -651,16 +660,14 @@ function getGlobal() {
         return global;
     }
     function g() {
-        return this
+        return this;
     }
-
     if (typeof g() !== 'undefined') {
-        return g()
+        return g();
     }
-
     return (function () {
-        return new Function('return this')()
-    })()
+        return new Function('return this')();
+    })();
 }
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
