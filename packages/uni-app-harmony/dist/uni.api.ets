@@ -1,4 +1,6 @@
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
+import Want from '@ohos.app.ability.Want';
+import common from '@ohos.app.ability.common';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
 import display from '@ohos.display';
@@ -16,20 +18,21 @@ import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony3, getCurrentPage } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony5, getCurrentPage as getCurrentPage2 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2, getCurrentPage } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, ComponentPublicInstance, UniProvider, IUniError, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ComponentInternalInstance, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
 import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
+import bundleManager1 from '@ohos.bundle.bundleManager';
+import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import dataPreferences from '@ohos.data.preferences';
+import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
+import { getCurrentPage as getCurrentPage2, navigator } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "@dcloudio/uni-app-harmony-framework";
@@ -81,10 +84,6 @@ interface ClipboardModuleGetStringOptions {
     result: string;
     data: string;
 }
-interface ClipboardModule {
-    getString(callback: (ret: ClipboardModuleGetStringOptions) => void): void;
-    setString(data: string): void;
-}
 export type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
 export interface CreateIntersectionObserverOptions {
     thresholds?: (Object[]) | null;
@@ -105,7 +104,7 @@ class ObserveResult extends UTSObject {
     time!: number;
 }
 export type ObserveCallback = (result: ObserveResult) => void;
-interface IntersectionObserver {
+export interface IntersectionObserver {
     relativeTo(selector: string, margins?: Object): IntersectionObserver;
     relativeToViewport(margins?: Object): IntersectionObserver;
     observe(targetSelector: string, callback: ObserveCallback): void;
@@ -723,6 +722,24 @@ interface IDownloadTask {
     onProgressUpdate: Function;
     offProgressUpdate: Function;
 }
+export type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
+export class OpenAppAuthorizeSettingSuccess extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingSuccessCallback = (result: OpenAppAuthorizeSettingSuccess) => void;
+class OpenAppAuthorizeSettingFail extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingFailCallback = (result: OpenAppAuthorizeSettingFail) => void;
+class OpenAppAuthorizeSettingComplete extends UTSObject {
+    errMsg!: string;
+}
+type OpenAppAuthorizeSettingCompleteCallback = (result: OpenAppAuthorizeSettingComplete) => void;
+export class OpenAppAuthorizeSettingOptions extends UTSObject {
+    success: OpenAppAuthorizeSettingSuccessCallback | null = null;
+    fail: OpenAppAuthorizeSettingFailCallback | null = null;
+    complete: OpenAppAuthorizeSettingCompleteCallback | null = null;
+}
 type PageScrollToErrorCode = 4;
 interface PageScrollToFail extends IUniError {
     errCode: PageScrollToErrorCode;
@@ -922,6 +939,7 @@ interface UniExtApi {
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
+    openAppAuthorizeSetting: OpenAppAuthorizeSetting;
     pageScrollTo: PageScrollTo;
     showToast: ShowToast;
     hideToast: HideToast;
@@ -968,8 +986,7 @@ export function initUniExtApi(APP_ID: string) {
         ]
     ]);
     const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
-        const clipboard: ClipboardModule = UTSHarmony.clipboard;
-        clipboard.getString((ret)=>{
+        clipboard.getString((ret: ClipboardModuleGetStringOptions)=>{
             if (ret.result === 'success') {
                 res.resolve({
                     data: ret.data
@@ -980,7 +997,6 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as GetClipboardData;
     const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>)=>{
-        const clipboard: ClipboardModule = UTSHarmony.clipboard;
         clipboard.setString(options.data);
         res.resolve();
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
@@ -1045,7 +1061,7 @@ export function initUniExtApi(APP_ID: string) {
             } as RemoveIntersectionObserverArgs, this._pageId);
         }
     }
-    const createIntersectionObserver = defineSyncApi<CreateIntersectionObserver>('createIntersectionObserver', (context: ComponentPublicInstance | null, options: CreateIntersectionObserverOptions | null = null)=>{
+    const createIntersectionObserver = defineSyncApi<IntersectionObserver>('createIntersectionObserver', (context: ComponentPublicInstance | null, options: CreateIntersectionObserverOptions | null = null)=>{
         let _options: ComponentPublicInstance | CreateIntersectionObserverOptions | null = options;
         context = resolveComponentInstance(context);
         if (context && !getPageIdByVm(context)) {
@@ -1056,7 +1072,7 @@ export function initUniExtApi(APP_ID: string) {
             return new ServiceIntersectionObserver(context as ComponentPublicInstance, _options as CreateIntersectionObserverOptions);
         }
         return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
-    });
+    }) as CreateIntersectionObserver;
     class NodesRefImpl implements NodesRef {
         private _selectorQuery: SelectorQueryImpl;
         private _component: ComponentPublicInstance | null | undefined;
@@ -1151,13 +1167,13 @@ export function initUniExtApi(APP_ID: string) {
             callback && this._queueCb.push(callback);
         }
     }
-    const createSelectorQuery = defineSyncApi<CreateSelectorQuery>('createSelectorQuery', (context: ComponentInternalInstance | ComponentPublicInstance | null = null)=>{
+    const createSelectorQuery = defineSyncApi<SelectorQuery>('createSelectorQuery', (context: ComponentInternalInstance | ComponentPublicInstance | null = null)=>{
         context = resolveComponentInstance1(context);
         if (context && !getPageIdByVm1(context)) {
             context = null;
         }
         return new SelectorQueryImpl(context || getCurrentPageVm1()!) as SelectorQuery;
-    });
+    }) as CreateSelectorQuery;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
     const getBundleInfoOnce = ()=>{
         let bundleInfo: bundleManager.BundleInfo | null = null;
@@ -1171,20 +1187,20 @@ export function initUniExtApi(APP_ID: string) {
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony1.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony1.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony1.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony1.getAppId() as string,
+            appId: UTSHarmony.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony1.getAppName() as string,
-            appTheme: UTSHarmony1.getAppTheme() as string,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony1.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -1203,7 +1219,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony2.getOsTheme() as string,
+            osTheme: UTSHarmony1.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmony',
             platform: 'harmony',
@@ -1261,7 +1277,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const internalGetWindowInfo = (): GetWindowInfoResult =>{
         const pixelRatio = vp2px(1);
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony3.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony2.getWindowStage();
         let topRect: harmonyWindow.Rect = {
             top: 0,
             left: 0,
@@ -1322,11 +1338,11 @@ export function initUniExtApi(APP_ID: string) {
         return internalGetWindowInfo();
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony3.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo();
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -1339,10 +1355,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony3.getAppId() as string,
+            appId: UTSHarmony2.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony3.getAppName() as string,
-            appTheme: UTSHarmony3.getAppTheme() as string,
+            appName: UTSHarmony2.getAppName() as string,
+            appTheme: UTSHarmony2.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -1358,7 +1374,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony3.getOsTheme() as string,
+            osTheme: UTSHarmony2.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmony',
             romName: deviceInfo1.distributionOSName,
@@ -1414,7 +1430,7 @@ export function initUniExtApi(APP_ID: string) {
         return false;
     };
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
-        const dialRes = UTSHarmony4.device.dial(options.phoneNumber) as Object as Promise<void>;
+        const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
             dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
                 res.reject(err.message);
@@ -2085,7 +2101,7 @@ export function initUniExtApi(APP_ID: string) {
                 styles.backgroundColor = options.backgroundColor;
             }
             const statusBarStyle = options.frontColor === '#000000' ? 'dark' : 'light';
-            UTSHarmony5.navigator.setStatusBarStyle(statusBarStyle);
+            navigator.setStatusBarStyle(statusBarStyle);
             page.$page.statusBarStyle = statusBarStyle;
             const style = webview.getStyle();
             if (style && style.titleNView) {
@@ -3225,6 +3241,25 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
+    const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
+        const want: Want = {
+            bundleName: 'com.huawei.hmos.settings',
+            abilityName: 'com.huawei.hmos.settings.MainAbility',
+            uri: 'application_info_entry',
+            parameters: {
+                pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
+            }
+        } as Want;
+        const context = getContext() as common.UIAbilityContext;
+        context.startAbility(want).then(()=>{
+            exec.resolve({
+                errMsg: ''
+            } as OpenAppAuthorizeSettingSuccess);
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as OpenAppAuthorizeSetting;
     const API_PAGE_SCROLL_TO = 'pageScrollTo';
     const PageScrollToProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3527,7 +3562,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow1.WindowStage = UTSHarmony6.getWindowStage();
+        const windowStage: harmonyWindow1.WindowStage = UTSHarmony3.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -3684,6 +3719,7 @@ export function initUniExtApi(APP_ID: string) {
         request,
         uploadFile,
         downloadFile,
+        openAppAuthorizeSetting,
         pageScrollTo,
         showToast,
         hideToast,

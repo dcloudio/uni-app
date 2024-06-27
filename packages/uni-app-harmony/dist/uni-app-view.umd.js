@@ -1462,6 +1462,31 @@
     }
     return i18n;
   }
+  function normalizeMessages(module, keys, values) {
+    return keys.reduce((res, name, index2) => {
+      res[module + name] = values[index2];
+      return res;
+    }, {});
+  }
+  var initI18nVideoMsgsOnce = /* @__PURE__ */ once(() => {
+    var name = "uni.video.";
+    var keys = ["danmu", "volume"];
+    {
+      useI18n().add(LOCALE_EN, normalizeMessages(name, keys, ["Danmu", "Volume"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ES, normalizeMessages(name, keys, ["Danmu", "Volumen"]), false);
+    }
+    {
+      useI18n().add(LOCALE_FR, normalizeMessages(name, keys, ["Danmu", "Le Volume"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANS, normalizeMessages(name, keys, ["弹幕", "音量"]), false);
+    }
+    {
+      useI18n().add(LOCALE_ZH_HANT, normalizeMessages(name, keys, ["彈幕", "音量"]), false);
+    }
+  });
   function initBridge(subscribeNamespace) {
     var emitter = new E$1();
     return {
@@ -3512,6 +3537,38 @@
   function onErrorCaptured(hook) {
     var target = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : currentInstance;
     injectHook("ec", hook, target);
+  }
+  function renderList(source, renderItem, cache2, index2) {
+    var ret;
+    var cached = cache2 && cache2[index2];
+    if (isArray(source) || isString(source)) {
+      ret = new Array(source.length);
+      for (var i2 = 0, l = source.length; i2 < l; i2++) {
+        ret[i2] = renderItem(source[i2], i2, void 0, cached && cached[i2]);
+      }
+    } else if (typeof source === "number") {
+      ret = new Array(source);
+      for (var _i2 = 0; _i2 < source; _i2++) {
+        ret[_i2] = renderItem(_i2 + 1, _i2, void 0, cached && cached[_i2]);
+      }
+    } else if (isObject$1(source)) {
+      if (source[Symbol.iterator]) {
+        ret = Array.from(source, (item, i3) => renderItem(item, i3, void 0, cached && cached[i3]));
+      } else {
+        var keys = Object.keys(source);
+        ret = new Array(keys.length);
+        for (var _i3 = 0, _l = keys.length; _i3 < _l; _i3++) {
+          var key2 = keys[_i3];
+          ret[_i3] = renderItem(source[key2], key2, _i3, cached && cached[_i3]);
+        }
+      }
+    } else {
+      ret = [];
+    }
+    if (cache2) {
+      cache2[index2] = ret;
+    }
+    return ret;
   }
   var getPublicInstance = (i2) => {
     if (!i2)
@@ -13822,7 +13879,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$g = {
+  var props$h = {
     canvasId: {
       type: String,
       default: ""
@@ -13842,7 +13899,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$g,
+    props: props$h,
     computed: {
       id() {
         return this.canvasId;
@@ -14331,7 +14388,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$f = {
+  var props$g = {
     name: {
       type: String,
       default: ""
@@ -14339,7 +14396,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$f,
+    props: props$g,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -14392,7 +14449,7 @@
     }
     return getFieldsValue;
   }
-  var props$e = {
+  var props$f = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -14441,7 +14498,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$e,
+    props: props$f,
     setup(props2, _ref) {
       var {
         slots
@@ -14626,7 +14683,7 @@
       });
     }
   }
-  var props$d = {
+  var props$e = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -14932,7 +14989,7 @@
       };
     }
   });
-  var props$c = {
+  var props$d = {
     src: {
       type: String,
       default: ""
@@ -14971,7 +15028,7 @@
   };
   const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$c,
+    props: props$d,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -15303,7 +15360,7 @@
     return valueStr.slice(0, maxlength);
   }
   var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
-  var props$b = /* @__PURE__ */ extend({}, {
+  var props$c = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -15390,7 +15447,7 @@
       type: String,
       default: ""
     }
-  }, props$d);
+  }, props$e);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -15630,7 +15687,7 @@
       trigger: trigger2
     };
   }
-  var props$a = /* @__PURE__ */ extend({}, props$b, {
+  var props$b = /* @__PURE__ */ extend({}, props$c, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -15664,8 +15721,7 @@
   }
   function useCache(props2, type) {
     if (type.value === "number") {
-      var _props2$modelValue;
-      var value = (_props2$modelValue = props2.modelValue) !== null && _props2$modelValue !== void 0 ? _props2$modelValue : props2.value;
+      var value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
       var cache2 = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
       watch(() => props2.modelValue, (value2) => {
         cache2.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
@@ -15680,7 +15736,7 @@
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$a,
+    props: props$b,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
       var {
@@ -18605,7 +18661,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$9 = {
+  var props$a = {
     name: {
       type: String,
       default: ""
@@ -18613,7 +18669,7 @@
   };
   const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$9,
+    props: props$a,
     // emits: ['change'],
     setup(props2, _ref) {
       var {
@@ -18698,7 +18754,7 @@
     }
     return fields;
   }
-  var props$8 = {
+  var props$9 = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -18742,7 +18798,7 @@
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$8,
+    props: props$9,
     setup(props2, _ref) {
       var {
         slots
@@ -19099,7 +19155,7 @@
     });
     return results.children;
   }
-  var props$7 = {
+  var props$8 = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -19112,7 +19168,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$7,
+    props: props$8,
     emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
     setup(props2, _ref) {
       var {
@@ -19248,7 +19304,7 @@
     }
   });
   var passiveOptions = /* @__PURE__ */ passive(true);
-  var props$6 = {
+  var props$7 = {
     direction: {
       type: [String],
       default: "vertical"
@@ -19319,7 +19375,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$6,
+    props: props$7,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
       var {
@@ -19766,7 +19822,7 @@
       _scrollLeftChanged
     };
   }
-  var props$5 = {
+  var props$6 = {
     name: {
       type: String,
       default: ""
@@ -19822,7 +19878,7 @@
   };
   const Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$5,
+    props: props$6,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -19994,7 +20050,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  var props$4 = {
+  var props$5 = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -20495,7 +20551,7 @@
   }
   const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$4,
+    props: props$5,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
       var {
@@ -20606,7 +20662,7 @@
       };
     }
   });
-  var props$3 = {
+  var props$4 = {
     itemId: {
       type: String,
       default: ""
@@ -20614,7 +20670,7 @@
   };
   const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$3,
+    props: props$4,
     setup(props2, _ref) {
       var {
         slots
@@ -20664,7 +20720,7 @@
       };
     }
   });
-  var props$2 = {
+  var props$3 = {
     name: {
       type: String,
       default: ""
@@ -20692,7 +20748,7 @@
   };
   const Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$2,
+    props: props$3,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -20868,7 +20924,7 @@
     }
     return obj;
   }
-  var props$1 = /* @__PURE__ */ extend({}, props$b, {
+  var props$2 = /* @__PURE__ */ extend({}, props$c, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -20893,7 +20949,7 @@
   }
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$1,
+    props: props$2,
     emits: ["confirm", "linechange", ...emit],
     setup(props2, _ref) {
       var {
@@ -21626,7 +21682,7 @@
       super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
     }
   }
-  var props = {
+  var props$1 = {
     src: {
       type: String,
       default: ""
@@ -21644,7 +21700,7 @@
   };
   const WebView = /* @__PURE__ */ defineBuiltInComponent({
     name: "WebView",
-    props,
+    props: props$1,
     setup(props2) {
       return () => createVNode("uni-web-view", null, [createVNode("embed", {
         "id": "webview",
@@ -21662,6 +21718,874 @@
   class UniCanvas extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-canvas", Canvas, parentNodeId, refNodeId, nodeJson, "uni-canvas > div");
+    }
+  }
+  function formatTime(val) {
+    val = val > 0 && val < Infinity ? val : 0;
+    var h2 = Math.floor(val / 3600);
+    var m = Math.floor(val % 3600 / 60);
+    var s = Math.floor(val % 3600 % 60);
+    var hStr = (h2 < 10 ? "0" : "") + h2;
+    var mStr = (m < 10 ? "0" : "") + m;
+    var sStr = (s < 10 ? "0" : "") + s;
+    var str = mStr + ":" + sStr;
+    if (hStr !== "00") {
+      str = hStr + ":" + str;
+    }
+    return str;
+  }
+  function useGesture(props2, videoRef, fullscreenState) {
+    var state = reactive({
+      gestureType: "none",
+      volumeOld: 0,
+      volumeNew: 0,
+      currentTimeOld: 0,
+      currentTimeNew: 0
+    });
+    var touchStartOrigin = {
+      x: 0,
+      y: 0
+    };
+    function onTouchstart(event) {
+      var toucher = event.targetTouches[0];
+      touchStartOrigin.x = toucher.pageX;
+      touchStartOrigin.y = toucher.pageY;
+      state.gestureType = "none";
+      state.volumeOld = 0;
+      state.currentTimeOld = state.currentTimeNew = 0;
+    }
+    function onTouchmove(event) {
+      function stop() {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      if (fullscreenState.fullscreen) {
+        stop();
+      }
+      var gestureType = state.gestureType;
+      if (gestureType === "stop") {
+        return;
+      }
+      var toucher = event.targetTouches[0];
+      var pageX = toucher.pageX;
+      var pageY = toucher.pageY;
+      var origin = touchStartOrigin;
+      var video = videoRef.value;
+      if (gestureType === "progress") {
+        changeProgress(pageX - origin.x);
+      } else if (gestureType === "volume") {
+        changeVolume(pageY - origin.y);
+      }
+      if (gestureType !== "none") {
+        return;
+      }
+      if (Math.abs(pageX - origin.x) > Math.abs(pageY - origin.y)) {
+        if (!props2.enableProgressGesture) {
+          state.gestureType = "stop";
+          return;
+        }
+        state.gestureType = "progress";
+        state.currentTimeOld = state.currentTimeNew = video.currentTime;
+        if (!fullscreenState.fullscreen) {
+          stop();
+        }
+      } else {
+        if (!props2.pageGesture) {
+          state.gestureType = "stop";
+          return;
+        }
+        state.gestureType = "volume";
+        state.volumeOld = video.volume;
+        if (!fullscreenState.fullscreen) {
+          stop();
+        }
+      }
+    }
+    function onTouchend(event) {
+      var video = videoRef.value;
+      if (state.gestureType !== "none" && state.gestureType !== "stop") {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      if (state.gestureType === "progress" && state.currentTimeOld !== state.currentTimeNew) {
+        video.currentTime = state.currentTimeNew;
+      }
+      state.gestureType = "none";
+    }
+    function changeProgress(x) {
+      var video = videoRef.value;
+      var duration = video.duration;
+      var currentTimeNew = x / 600 * duration + state.currentTimeOld;
+      if (currentTimeNew < 0) {
+        currentTimeNew = 0;
+      } else if (currentTimeNew > duration) {
+        currentTimeNew = duration;
+      }
+      state.currentTimeNew = currentTimeNew;
+    }
+    function changeVolume(y) {
+      var video = videoRef.value;
+      var valueOld = state.volumeOld;
+      var value;
+      if (typeof valueOld === "number") {
+        value = valueOld - y / 200;
+        if (value < 0) {
+          value = 0;
+        } else if (value > 1) {
+          value = 1;
+        }
+        video.volume = value;
+        state.volumeNew = value;
+      }
+    }
+    return {
+      state,
+      onTouchstart,
+      onTouchmove,
+      onTouchend
+    };
+  }
+  function useFullscreen(trigger2, containerRef, videoRef, userActionState, rootRef) {
+    var state = reactive({
+      fullscreen: false
+    });
+    var isSafari = /^Apple/.test(navigator.vendor);
+    function onFullscreenChange($event, webkit) {
+      if (webkit && document.fullscreenEnabled) {
+        return;
+      }
+      emitFullscreenChange(!!(document.fullscreenElement || document.webkitFullscreenElement));
+    }
+    function emitFullscreenChange(val) {
+      state.fullscreen = val;
+      trigger2("fullscreenchange", {}, {
+        fullScreen: val,
+        direction: "vertical"
+      });
+    }
+    function toggleFullscreen(val) {
+      var root = rootRef.value;
+      var container = containerRef.value;
+      var video = videoRef.value;
+      var mockFullScreen;
+      if (val) {
+        if ((document.fullscreenEnabled || document.webkitFullscreenEnabled) && (!isSafari || userActionState.userAction)) {
+          container[document.fullscreenEnabled ? "requestFullscreen" : "webkitRequestFullscreen"]();
+        } else if (video.webkitEnterFullScreen) {
+          video.webkitEnterFullScreen();
+        } else {
+          mockFullScreen = true;
+          container.remove();
+          container.classList.add("uni-video-type-fullscreen");
+          document.body.appendChild(container);
+        }
+      } else {
+        if (document.fullscreenEnabled || document.webkitFullscreenEnabled) {
+          if (document.fullscreenElement) {
+            document.exitFullscreen();
+          } else if (document.webkitFullscreenElement) {
+            document.webkitExitFullscreen();
+          }
+        } else if (video.webkitExitFullScreen) {
+          video.webkitExitFullScreen();
+        } else {
+          mockFullScreen = true;
+          container.remove();
+          container.classList.remove("uni-video-type-fullscreen");
+          root.appendChild(container);
+        }
+      }
+      if (mockFullScreen) {
+        emitFullscreenChange(val);
+      }
+    }
+    function requestFullScreen() {
+      toggleFullscreen(true);
+    }
+    function exitFullScreen() {
+      toggleFullscreen(false);
+    }
+    onBeforeUnmount(exitFullScreen);
+    return {
+      state,
+      onFullscreenChange,
+      emitFullscreenChange,
+      toggleFullscreen,
+      requestFullScreen,
+      exitFullScreen
+    };
+  }
+  function useVideo(props2, attrs2, trigger2) {
+    var videoRef = ref(null);
+    var src = computed(() => getRealPath$1(props2.src));
+    var muted = computed(() => props2.muted === "true" || props2.muted === true);
+    var state = reactive({
+      start: false,
+      src,
+      playing: false,
+      currentTime: 0,
+      duration: 0,
+      progress: 0,
+      buffered: 0,
+      muted
+    });
+    watch(() => src.value, () => {
+      state.playing = false;
+      state.currentTime = 0;
+    });
+    watch(() => state.buffered, (buffered) => {
+      trigger2("progress", {}, {
+        buffered
+      });
+    });
+    watch(() => muted.value, (muted2) => {
+      var video = videoRef.value;
+      video.muted = muted2;
+    });
+    function onDurationChange(_ref) {
+      var {
+        target
+      } = _ref;
+      state.duration = target.duration;
+    }
+    function onLoadedMetadata($event) {
+      var initialTime = Number(props2.initialTime) || 0;
+      var video = $event.target;
+      if (initialTime > 0) {
+        video.currentTime = initialTime;
+      }
+      trigger2("loadedmetadata", $event, {
+        width: video.videoWidth,
+        height: video.videoHeight,
+        duration: video.duration
+      });
+      onProgress($event);
+    }
+    function onProgress($event) {
+      var video = $event.target;
+      var buffered = video.buffered;
+      if (buffered.length) {
+        state.buffered = buffered.end(buffered.length - 1) / video.duration * 100;
+      }
+    }
+    function onWaiting($event) {
+      trigger2("waiting", $event, {});
+    }
+    function onVideoError($event) {
+      state.playing = false;
+      trigger2("error", $event, {});
+    }
+    function onPlay($event) {
+      state.start = true;
+      state.playing = true;
+      trigger2("play", $event, {});
+    }
+    function onPause($event) {
+      state.playing = false;
+      trigger2("pause", $event, {});
+    }
+    function onEnded($event) {
+      state.playing = false;
+      trigger2("ended", $event, {});
+    }
+    function onTimeUpdate($event) {
+      var video = $event.target;
+      var currentTime = state.currentTime = video.currentTime;
+      trigger2("timeupdate", $event, {
+        currentTime,
+        duration: video.duration
+      });
+    }
+    function toggle() {
+      var video = videoRef.value;
+      if (state.playing) {
+        video.pause();
+      } else {
+        video.play();
+      }
+    }
+    function play() {
+      var video = videoRef.value;
+      state.start = true;
+      video.play();
+    }
+    function pause() {
+      var video = videoRef.value;
+      video.pause();
+    }
+    function seek(position) {
+      var video = videoRef.value;
+      position = Number(position);
+      if (typeof position === "number" && !isNaN(position)) {
+        video.currentTime = position;
+      }
+    }
+    function stop() {
+      seek(0);
+      pause();
+    }
+    function playbackRate(rate) {
+      var video = videoRef.value;
+      video.playbackRate = rate;
+    }
+    return {
+      videoRef,
+      state,
+      play,
+      pause,
+      stop,
+      seek,
+      playbackRate,
+      toggle,
+      onDurationChange,
+      onLoadedMetadata,
+      onProgress,
+      onWaiting,
+      onVideoError,
+      onPlay,
+      onPause,
+      onEnded,
+      onTimeUpdate
+    };
+  }
+  function useControls(props2, videoState, seek) {
+    var progressRef = ref(null);
+    var ballRef = ref(null);
+    var centerPlayBtnShow = computed(() => props2.showCenterPlayBtn && !videoState.start);
+    var controlsVisible = ref(true);
+    var controlsShow = computed(() => !centerPlayBtnShow.value && props2.controls && controlsVisible.value);
+    var state = reactive({
+      touching: false,
+      controlsTouching: false,
+      centerPlayBtnShow,
+      controlsShow,
+      controlsVisible
+    });
+    function clickProgress(event) {
+      var $progress = progressRef.value;
+      var element = event.target;
+      var x = event.offsetX;
+      while (element && element !== $progress) {
+        x += element.offsetLeft;
+        element = element.parentNode;
+      }
+      var w = $progress.offsetWidth;
+      var progress = 0;
+      if (x >= 0 && x <= w) {
+        progress = x / w;
+        seek(videoState.duration * progress);
+      }
+    }
+    function toggleControls() {
+      state.controlsVisible = !state.controlsVisible;
+    }
+    var hideTiming;
+    function autoHideStart() {
+      hideTiming = setTimeout(() => {
+        state.controlsVisible = false;
+      }, 3e3);
+    }
+    function autoHideEnd() {
+      if (hideTiming) {
+        clearTimeout(hideTiming);
+        hideTiming = null;
+      }
+    }
+    onBeforeUnmount(() => {
+      if (hideTiming) {
+        clearTimeout(hideTiming);
+      }
+    });
+    watch(() => state.controlsShow && videoState.playing && !state.controlsTouching, (val) => {
+      if (val) {
+        autoHideStart();
+      } else {
+        autoHideEnd();
+      }
+    });
+    watch([() => videoState.currentTime, () => {
+      props2.duration;
+    }], function updateProgress() {
+      if (!state.touching) {
+        videoState.progress = videoState.currentTime / videoState.duration * 100;
+      }
+    });
+    onMounted(() => {
+      var passiveOptions2 = passive(false);
+      var originX;
+      var originY;
+      var moveOnce = true;
+      var originProgress;
+      var ball = ballRef.value;
+      function touchmove2(event) {
+        var toucher = event.targetTouches[0];
+        var pageX = toucher.pageX;
+        var pageY = toucher.pageY;
+        if (moveOnce && Math.abs(pageX - originX) < Math.abs(pageY - originY)) {
+          touchend(event);
+          return;
+        }
+        moveOnce = false;
+        var progressEl = progressRef.value;
+        var w = progressEl.offsetWidth;
+        var progress = originProgress + (pageX - originX) / w * 100;
+        if (progress < 0) {
+          progress = 0;
+        } else if (progress > 100) {
+          progress = 100;
+        }
+        videoState.progress = progress;
+        event.preventDefault();
+        event.stopPropagation();
+      }
+      function touchend(event) {
+        state.controlsTouching = false;
+        if (state.touching) {
+          ball.removeEventListener("touchmove", touchmove2, passiveOptions2);
+          if (!moveOnce) {
+            event.preventDefault();
+            event.stopPropagation();
+            seek(videoState.duration * videoState.progress / 100);
+          }
+          state.touching = false;
+        }
+      }
+      ball.addEventListener("touchstart", (event) => {
+        state.controlsTouching = true;
+        var toucher = event.targetTouches[0];
+        originX = toucher.pageX;
+        originY = toucher.pageY;
+        originProgress = videoState.progress;
+        moveOnce = true;
+        state.touching = true;
+        ball.addEventListener("touchmove", touchmove2, passiveOptions2);
+      });
+      ball.addEventListener("touchend", touchend);
+      ball.addEventListener("touchcancel", touchend);
+    });
+    return {
+      state,
+      progressRef,
+      ballRef,
+      clickProgress,
+      toggleControls,
+      autoHideStart,
+      autoHideEnd
+    };
+  }
+  function useDanmu(props2, videoState) {
+    var danmuRef = ref(null);
+    var state = reactive({
+      enable: Boolean(props2.enableDanmu)
+    });
+    var danmuIndex = {
+      time: 0,
+      index: -1
+    };
+    var danmuList = isArray(props2.danmuList) ? JSON.parse(JSON.stringify(props2.danmuList)) : [];
+    danmuList.sort(function(a2, b) {
+      return (a2.time || 0) - (b.time || 0);
+    });
+    function toggleDanmu() {
+      state.enable = !state.enable;
+    }
+    function updateDanmu(event) {
+      var video = event.target;
+      var currentTime = video.currentTime;
+      var oldDanmuIndex = danmuIndex;
+      var newDanmuIndex = {
+        time: currentTime,
+        index: oldDanmuIndex.index
+      };
+      if (currentTime > oldDanmuIndex.time) {
+        for (var index2 = oldDanmuIndex.index + 1; index2 < danmuList.length; index2++) {
+          var element = danmuList[index2];
+          if (currentTime >= (element.time || 0)) {
+            newDanmuIndex.index = index2;
+            if (videoState.playing && state.enable) {
+              playDanmu(element);
+            }
+          } else {
+            break;
+          }
+        }
+      } else if (currentTime < oldDanmuIndex.time) {
+        for (var _index = oldDanmuIndex.index - 1; _index > -1; _index--) {
+          var _element = danmuList[_index];
+          if (currentTime <= (_element.time || 0)) {
+            newDanmuIndex.index = _index - 1;
+          } else {
+            break;
+          }
+        }
+      }
+      danmuIndex = newDanmuIndex;
+    }
+    function playDanmu(danmu) {
+      var p2 = document.createElement("p");
+      p2.className = "uni-video-danmu-item";
+      p2.innerText = danmu.text;
+      var style = "bottom: ".concat(Math.random() * 100, "%;color: ").concat(danmu.color, ";");
+      p2.setAttribute("style", style);
+      var danmuEl = danmuRef.value;
+      danmuEl.appendChild(p2);
+      setTimeout(function() {
+        style += "left: 0;-webkit-transform: translateX(-100%);transform: translateX(-100%);";
+        p2.setAttribute("style", style);
+        setTimeout(function() {
+          p2.remove();
+        }, 4e3);
+      }, 17);
+    }
+    function sendDanmu(danmu) {
+      danmuList.splice(danmuIndex.index + 1, 0, {
+        text: String(danmu.text),
+        color: danmu.color,
+        time: videoState.currentTime || 0
+      });
+    }
+    return {
+      state,
+      danmuRef,
+      updateDanmu,
+      toggleDanmu,
+      sendDanmu
+    };
+  }
+  function useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen) {
+    var methods = {
+      play,
+      stop,
+      pause,
+      seek,
+      sendDanmu,
+      playbackRate,
+      requestFullScreen,
+      exitFullScreen
+    };
+    var id2 = useContextInfo();
+    useSubscribe((type, data) => {
+      var options;
+      switch (type) {
+        case "seek":
+          options = data.position;
+          break;
+        case "sendDanmu":
+          options = data;
+          break;
+        case "playbackRate":
+          options = data.rate;
+          break;
+      }
+      if (type in methods) {
+        methods[type](options);
+      }
+    }, id2, true);
+  }
+  var props = {
+    id: {
+      type: String,
+      default: ""
+    },
+    src: {
+      type: String,
+      default: ""
+    },
+    duration: {
+      type: [Number, String],
+      default: ""
+    },
+    controls: {
+      type: [Boolean, String],
+      default: true
+    },
+    danmuList: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    danmuBtn: {
+      type: [Boolean, String],
+      default: false
+    },
+    enableDanmu: {
+      type: [Boolean, String],
+      default: false
+    },
+    autoplay: {
+      type: [Boolean, String],
+      default: false
+    },
+    loop: {
+      type: [Boolean, String],
+      default: false
+    },
+    muted: {
+      type: [Boolean, String],
+      default: false
+    },
+    objectFit: {
+      type: String,
+      default: "contain"
+    },
+    poster: {
+      type: String,
+      default: ""
+    },
+    direction: {
+      type: [String, Number],
+      default: ""
+    },
+    showProgress: {
+      type: Boolean,
+      default: true
+    },
+    initialTime: {
+      type: [String, Number],
+      default: 0
+    },
+    showFullscreenBtn: {
+      type: [Boolean, String],
+      default: true
+    },
+    pageGesture: {
+      type: [Boolean, String],
+      default: false
+    },
+    enableProgressGesture: {
+      type: [Boolean, String],
+      default: true
+    },
+    showPlayBtn: {
+      type: [Boolean, String],
+      default: true
+    },
+    showCenterPlayBtn: {
+      type: [Boolean, String],
+      default: true
+    }
+  };
+  const Video = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Video",
+    props,
+    emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
+    setup(props2, _ref2) {
+      var {
+        emit: emit2,
+        attrs: attrs2,
+        slots
+      } = _ref2;
+      var rootRef = ref(null);
+      var containerRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      var {
+        state: userActionState
+      } = useUserAction();
+      var {
+        $attrs: videoAttrs
+      } = useAttrs({
+        excludeListeners: true
+      });
+      var {
+        t: t2
+      } = useI18n();
+      initI18nVideoMsgsOnce();
+      var {
+        videoRef,
+        state: videoState,
+        play,
+        pause,
+        stop,
+        seek,
+        playbackRate,
+        toggle,
+        onDurationChange,
+        onLoadedMetadata,
+        onProgress,
+        onWaiting,
+        onVideoError,
+        onPlay,
+        onPause,
+        onEnded,
+        onTimeUpdate
+      } = useVideo(props2, attrs2, trigger2);
+      var {
+        state: danmuState,
+        danmuRef,
+        updateDanmu,
+        toggleDanmu,
+        sendDanmu
+      } = useDanmu(props2, videoState);
+      var {
+        state: fullscreenState,
+        onFullscreenChange,
+        emitFullscreenChange,
+        toggleFullscreen,
+        requestFullScreen,
+        exitFullScreen
+      } = useFullscreen(trigger2, containerRef, videoRef, userActionState, rootRef);
+      var {
+        state: gestureState,
+        onTouchstart,
+        onTouchend,
+        onTouchmove
+      } = useGesture(props2, videoRef, fullscreenState);
+      var {
+        state: controlsState,
+        progressRef,
+        ballRef,
+        clickProgress,
+        toggleControls
+      } = useControls(props2, videoState, seek);
+      useContext(play, pause, stop, seek, sendDanmu, playbackRate, requestFullScreen, exitFullScreen);
+      return () => {
+        return createVNode("uni-video", {
+          "ref": rootRef,
+          "id": props2.id,
+          "onClick": toggleControls
+        }, [createVNode("div", {
+          "ref": containerRef,
+          "class": "uni-video-container",
+          "onTouchstart": onTouchstart,
+          "onTouchend": onTouchend,
+          "onTouchmove": onTouchmove,
+          "onFullscreenchange": withModifiers(onFullscreenChange, ["stop"]),
+          "onWebkitfullscreenchange": withModifiers(($event) => onFullscreenChange($event, true), ["stop"])
+        }, [createVNode("video", mergeProps({
+          "ref": videoRef,
+          "style": {
+            "object-fit": props2.objectFit
+          },
+          "muted": !!props2.muted,
+          "loop": !!props2.loop,
+          "src": videoState.src,
+          "poster": props2.poster,
+          "autoplay": !!props2.autoplay
+        }, videoAttrs.value, {
+          "class": "uni-video-video",
+          "webkit-playsinline": true,
+          "playsinline": true,
+          "onDurationchange": onDurationChange,
+          "onLoadedmetadata": onLoadedMetadata,
+          "onProgress": onProgress,
+          "onWaiting": onWaiting,
+          "onError": onVideoError,
+          "onPlay": onPlay,
+          "onPause": onPause,
+          "onEnded": onEnded,
+          "onTimeupdate": (event) => {
+            onTimeUpdate(event);
+            updateDanmu(event);
+          },
+          "onWebkitbeginfullscreen": () => emitFullscreenChange(true),
+          "onX5videoenterfullscreen": () => emitFullscreenChange(true),
+          "onWebkitendfullscreen": () => emitFullscreenChange(false),
+          "onX5videoexitfullscreen": () => emitFullscreenChange(false)
+        }), null, 16, ["muted", "loop", "src", "poster", "autoplay", "webkit-playsinline", "playsinline", "onDurationchange", "onLoadedmetadata", "onProgress", "onWaiting", "onError", "onPlay", "onPause", "onEnded", "onTimeupdate", "onWebkitbeginfullscreen", "onX5videoenterfullscreen", "onWebkitendfullscreen", "onX5videoexitfullscreen"]), withDirectives(createVNode("div", {
+          "class": "uni-video-bar uni-video-bar-full",
+          "onClick": withModifiers(() => {
+          }, ["stop"])
+        }, [createVNode("div", {
+          "class": "uni-video-controls"
+        }, [withDirectives(createVNode("div", {
+          "class": {
+            "uni-video-control-button": true,
+            "uni-video-control-button-play": !videoState.playing,
+            "uni-video-control-button-pause": videoState.playing
+          },
+          "onClick": withModifiers(toggle, ["stop"])
+        }, null, 10, ["onClick"]), [[vShow, props2.showPlayBtn]]), withDirectives(createVNode("div", {
+          "class": "uni-video-current-time"
+        }, [formatTime(videoState.currentTime)], 512), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+          "ref": progressRef,
+          "class": "uni-video-progress-container",
+          "onClick": withModifiers(clickProgress, ["stop"])
+        }, [createVNode("div", {
+          "class": "uni-video-progress"
+        }, [createVNode("div", {
+          "style": {
+            width: videoState.buffered + "%"
+          },
+          "class": "uni-video-progress-buffered"
+        }, null, 4), createVNode("div", {
+          "ref": ballRef,
+          "style": {
+            left: videoState.progress + "%"
+          },
+          "class": "uni-video-ball"
+        }, [createVNode("div", {
+          "class": "uni-video-inner"
+        }, null)], 4)])], 8, ["onClick"]), [[vShow, props2.showProgress]]), withDirectives(createVNode("div", {
+          "class": "uni-video-duration"
+        }, [formatTime(Number(props2.duration) || videoState.duration)], 512), [[vShow, props2.showProgress]])]), withDirectives(createVNode("div", {
+          "class": {
+            "uni-video-danmu-button": true,
+            "uni-video-danmu-button-active": danmuState.enable
+          },
+          "onClick": withModifiers(toggleDanmu, ["stop"])
+        }, [t2("uni.video.danmu")], 10, ["onClick"]), [[vShow, props2.danmuBtn]]), withDirectives(createVNode("div", {
+          "class": {
+            "uni-video-fullscreen": true,
+            "uni-video-type-fullscreen": fullscreenState.fullscreen
+          },
+          "onClick": withModifiers(() => toggleFullscreen(!fullscreenState.fullscreen), ["stop"])
+        }, null, 10, ["onClick"]), [[vShow, props2.showFullscreenBtn]])], 8, ["onClick"]), [[vShow, controlsState.controlsShow]]), withDirectives(createVNode("div", {
+          "ref": danmuRef,
+          "style": "z-index: 0;",
+          "class": "uni-video-danmu"
+        }, null, 512), [[vShow, videoState.start && danmuState.enable]]), controlsState.centerPlayBtnShow && createVNode("div", {
+          "class": "uni-video-cover",
+          "onClick": withModifiers(() => {
+          }, ["stop"])
+        }, [createVNode("div", {
+          "class": "uni-video-cover-play-button",
+          "onClick": withModifiers(play, ["stop"])
+        }, null, 8, ["onClick"]), createVNode("p", {
+          "class": "uni-video-cover-duration"
+        }, [formatTime(Number(props2.duration) || videoState.duration)])], 8, ["onClick"]), createVNode("div", {
+          "class": {
+            "uni-video-toast": true,
+            "uni-video-toast-volume": gestureState.gestureType === "volume"
+          }
+        }, [createVNode("div", {
+          "class": "uni-video-toast-title"
+        }, [t2("uni.video.volume")]), createVNode("svg", {
+          "class": "uni-video-toast-icon",
+          "width": "200px",
+          "height": "200px",
+          "viewBox": "0 0 1024 1024",
+          "version": "1.1",
+          "xmlns": "http://www.w3.org/2000/svg"
+        }, [createVNode("path", {
+          "d": "M475.400704 201.19552l0 621.674496q0 14.856192-10.856448 25.71264t-25.71264 10.856448-25.71264-10.856448l-190.273536-190.273536-149.704704 0q-14.856192 0-25.71264-10.856448t-10.856448-25.71264l0-219.414528q0-14.856192 10.856448-25.71264t25.71264-10.856448l149.704704 0 190.273536-190.273536q10.856448-10.856448 25.71264-10.856448t25.71264 10.856448 10.856448 25.71264zm219.414528 310.837248q0 43.425792-24.28416 80.851968t-64.2816 53.425152q-5.71392 2.85696-14.2848 2.85696-14.856192 0-25.71264-10.570752t-10.856448-25.998336q0-11.999232 6.856704-20.284416t16.570368-14.2848 19.427328-13.142016 16.570368-20.284416 6.856704-32.569344-6.856704-32.569344-16.570368-20.284416-19.427328-13.142016-16.570368-14.2848-6.856704-20.284416q0-15.427584 10.856448-25.998336t25.71264-10.570752q8.57088 0 14.2848 2.85696 39.99744 15.427584 64.2816 53.139456t24.28416 81.137664zm146.276352 0q0 87.422976-48.56832 161.41824t-128.5632 107.707392q-7.428096 2.85696-14.2848 2.85696-15.427584 0-26.284032-10.856448t-10.856448-25.71264q0-22.284288 22.284288-33.712128 31.997952-16.570368 43.425792-25.141248 42.283008-30.855168 65.995776-77.423616t23.712768-99.136512-23.712768-99.136512-65.995776-77.423616q-11.42784-8.57088-43.425792-25.141248-22.284288-11.42784-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 79.99488 33.712128 128.5632 107.707392t48.56832 161.41824zm146.276352 0q0 131.42016-72.566784 241.41312t-193.130496 161.989632q-7.428096 2.85696-14.856192 2.85696-14.856192 0-25.71264-10.856448t-10.856448-25.71264q0-20.570112 22.284288-33.712128 3.999744-2.285568 12.85632-5.999616t12.85632-5.999616q26.284032-14.2848 46.854144-29.140992 70.281216-51.996672 109.707264-129.705984t39.426048-165.132288-39.426048-165.132288-109.707264-129.705984q-20.570112-14.856192-46.854144-29.140992-3.999744-2.285568-12.85632-5.999616t-12.85632-5.999616q-22.284288-13.142016-22.284288-33.712128 0-14.856192 10.856448-25.71264t25.71264-10.856448q7.428096 0 14.856192 2.85696 120.563712 51.996672 193.130496 161.989632t72.566784 241.41312z"
+        }, null)]), createVNode("div", {
+          "class": "uni-video-toast-value"
+        }, [createVNode("div", {
+          "style": {
+            width: gestureState.volumeNew * 100 + "%"
+          },
+          "class": "uni-video-toast-value-content"
+        }, [createVNode("div", {
+          "class": "uni-video-toast-volume-grids"
+        }, [renderList(10, () => createVNode("div", {
+          "class": "uni-video-toast-volume-grids-item"
+        }, null))])], 4)])], 2), createVNode("div", {
+          "class": {
+            "uni-video-toast": true,
+            "uni-video-toast-progress": gestureState.gestureType === "progress"
+          }
+        }, [createVNode("div", {
+          "class": "uni-video-toast-title"
+        }, [formatTime(gestureState.currentTimeNew), " / ", formatTime(videoState.duration)])], 2), createVNode("div", {
+          "class": "uni-video-slots"
+        }, [slots.default && slots.default()])], 40, ["onTouchstart", "onTouchend", "onTouchmove", "onFullscreenchange", "onWebkitfullscreenchange"])], 8, ["id", "onClick"]);
+      };
+    }
+  });
+  class UniVideo extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson);
     }
   }
   var BuiltInComponents = {
@@ -21694,7 +22618,8 @@
     "MOVABLE-VIEW": UniMovableView,
     ICON: UniIcon,
     "WEB-VIEW": UniWebView,
-    CANVAS: UniCanvas
+    CANVAS: UniCanvas,
+    VIDEO: UniVideo
   };
   function createElement(id2, tag, parentNodeId, refNodeId) {
     var nodeJson = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};

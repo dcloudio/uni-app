@@ -11,12 +11,70 @@ var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
 var fs__default = /*#__PURE__*/_interopDefault(fs);
 
+const commondGlobals = {
+    vue: 'Vue',
+    '@vue/shared': 'uni.VueShared',
+};
+const harmonyGlobals = [
+    /^@ohos\./,
+    /^@kit\./,
+    /^@hms\./,
+    '@ohos/hypium',
+    '@ohos/hamock',
+];
+function isHarmoneyGlobal(id) {
+    return harmonyGlobals.some((harmonyGlobal) => typeof harmonyGlobal === 'string'
+        ? harmonyGlobal === id
+        : harmonyGlobal.test(id));
+}
+function generateHarmonyImportSpecifier(id) {
+    return id.replace(/([@\.])/g, function (_, $1) {
+        switch ($1) {
+            case '.':
+                return '_';
+            case '/':
+                return '__';
+            default:
+                return '';
+        }
+    });
+}
+function generateHarmonyImportExternalCode(hamonyPackageNames) {
+    return hamonyPackageNames
+        .filter((hamonyPackageName) => isHarmoneyGlobal(hamonyPackageName))
+        .map((hamonyPackageName) => `import ${generateHarmonyImportSpecifier(hamonyPackageName)} from '${hamonyPackageName}';`);
+}
 function uniAppHarmonyPlugin() {
     return {
         name: 'uni:app-harmony',
         apply: 'build',
-        async generateBundle() {
+        config() {
+            return {
+                build: {
+                    rollupOptions: {
+                        external: [...Object.keys(commondGlobals), ...harmonyGlobals],
+                        output: {
+                            globals: function (id) {
+                                return (commondGlobals[id] ||
+                                    (isHarmoneyGlobal(id)
+                                        ? generateHarmonyImportSpecifier(id)
+                                        : ''));
+                            },
+                        },
+                    },
+                },
+            };
+        },
+        async generateBundle(_, bundle) {
             genAppHarmonyIndex(process.env.UNI_INPUT_DIR, uniCliShared.getCurrentCompiledUTSPlugins());
+            for (const key in bundle) {
+                const serviceBundle = bundle[key];
+                if (serviceBundle.code) {
+                    serviceBundle.code =
+                        generateHarmonyImportExternalCode(serviceBundle.imports) +
+                            serviceBundle.code;
+                }
+            }
         },
         async writeBundle() {
             if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {

@@ -9105,6 +9105,18 @@ function getEnterOptions() {
     return extend({}, enterOptions);
 }
 
+function operateVideoPlayer(videoId, pageId, type, data) {
+    UniServiceJSBridge.invokeViewMethod('video.' + videoId, {
+        videoId,
+        type,
+        data,
+    }, pageId);
+}
+
+/* export const API_CREATE_AUDIO_CONTEXT = 'createAudioContext'
+export type API_TYPE_CREATE_AUDIO_CONTEXT = typeof uni.createAudioContext
+export const CreateAudioContextProtocol = validator */
+const API_CREATE_VIDEO_CONTEXT = 'createVideoContext';
 const API_CREATE_CANVAS_CONTEXT = 'createCanvasContext';
 const CreateCanvasContextProtocol = [
     {
@@ -9117,6 +9129,59 @@ const CreateCanvasContextProtocol = [
         type: Object,
     },
 ];
+
+const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0];
+class VideoContext {
+    id;
+    pageId;
+    constructor(id, pageId) {
+        this.id = id;
+        this.pageId = pageId;
+    }
+    play() {
+        operateVideoPlayer(this.id, this.pageId, 'play');
+    }
+    pause() {
+        operateVideoPlayer(this.id, this.pageId, 'pause');
+    }
+    stop() {
+        operateVideoPlayer(this.id, this.pageId, 'stop');
+    }
+    seek(position) {
+        operateVideoPlayer(this.id, this.pageId, 'seek', {
+            position,
+        });
+    }
+    sendDanmu(args) {
+        operateVideoPlayer(this.id, this.pageId, 'sendDanmu', args);
+    }
+    playbackRate(rate) {
+        if (!~RATES.indexOf(rate)) {
+            rate = 1.0;
+        }
+        operateVideoPlayer(this.id, this.pageId, 'playbackRate', {
+            rate,
+        });
+    }
+    requestFullScreen(args = {}) {
+        operateVideoPlayer(this.id, this.pageId, 'requestFullScreen', args);
+    }
+    exitFullScreen() {
+        operateVideoPlayer(this.id, this.pageId, 'exitFullScreen');
+    }
+    showStatusBar() {
+        operateVideoPlayer(this.id, this.pageId, 'showStatusBar');
+    }
+    hideStatusBar() {
+        operateVideoPlayer(this.id, this.pageId, 'hideStatusBar');
+    }
+}
+const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context) => {
+    if (context) {
+        return new VideoContext(id, getPageIdByVm(context));
+    }
+    return new VideoContext(id, getPageIdByVm(getCurrentPageVm()));
+});
 
 function getInt(name, defaultValue) {
     return function (value, params) {
@@ -12138,6 +12203,7 @@ var uni$1 = {
   canvasPutImageData: canvasPutImageData,
   canvasToTempFilePath: canvasToTempFilePath,
   createCanvasContext: createCanvasContext,
+  createVideoContext: createVideoContext,
   getLocale: getLocale,
   hideTabBar: hideTabBar,
   hideTabBarRedDot: hideTabBarRedDot,

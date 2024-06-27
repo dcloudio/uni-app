@@ -103,6 +103,14 @@ export default defineConfig({
         replacement: resolve('../uni-app-plus/src'),
       },
       {
+        find: '@dcloudio/uni-h5/style',
+        replacement: resolve('../uni-h5/style'),
+      },
+      {
+        find: '@dcloudio/uni-h5',
+        replacement: resolve('../uni-h5/src'),
+      },
+      {
         find: '@dcloudio/uni-components/style',
         replacement: resolve('../uni-components/style'),
       },
