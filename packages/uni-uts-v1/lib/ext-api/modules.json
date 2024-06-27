@@ -467,6 +467,14 @@
           "kotlin": true,
           "swift": true
         }
+      },
+      "setAppBadgeNumber": {
+        "name": "setAppBadgeNumber",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
       }
     }
   },
