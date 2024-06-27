@@ -53,6 +53,12 @@
       "null"
     ]
   },
+  "uni-push": {
+    "setAppBadgeNumber": [
+      null,
+      "null"
+    ]
+  },
   "uni-video": {
     "createVideoContext": [
       null,
