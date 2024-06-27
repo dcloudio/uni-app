@@ -22,6 +22,7 @@ export {
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
+  createVideoContext,
 } from '@dcloudio/uni-api'
 export {
   pageScrollTo,

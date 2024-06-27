@@ -685,7 +685,7 @@ var common = {};
 	  }
 	};
 
-	exports.setTyped(TYPED_OK); 
+	exports.setTyped(TYPED_OK);
 } (common));
 
 var deflate$4 = {};
@@ -9324,7 +9324,7 @@ const CanvasGetImageDataProtocol = {
 //#region putImageData
 const API_CANVAS_PUT_IMAGE_DATA = 'canvasPutImageData';
 const CanvasPutImageDataOptions = CanvasGetImageDataOptions;
-const CanvasPutImageDataProtocol = 
+const CanvasPutImageDataProtocol =
 /*#__PURE__*/ extend({
     data: {
         type: Uint8ClampedArray,
@@ -10685,9 +10685,9 @@ const API_SWITCH_TAB = 'switchTab';
 const API_NAVIGATE_BACK = 'navigateBack';
 const API_PRELOAD_PAGE = 'preloadPage';
 const API_UN_PRELOAD_PAGE = 'unPreloadPage';
-const NavigateToProtocol = 
+const NavigateToProtocol =
 /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
-const NavigateBackProtocol = 
+const NavigateBackProtocol =
 /*#__PURE__*/ extend({
     delta: {
         type: Number,
@@ -10696,13 +10696,13 @@ const NavigateBackProtocol =
 const RedirectToProtocol = BaseRouteProtocol;
 const ReLaunchProtocol = BaseRouteProtocol;
 const SwitchTabProtocol = BaseRouteProtocol;
-const NavigateToOptions = 
+const NavigateToOptions =
 /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
-const RedirectToOptions = 
+const RedirectToOptions =
 /*#__PURE__*/ createRouteOptions(API_REDIRECT_TO);
-const ReLaunchOptions = 
+const ReLaunchOptions =
 /*#__PURE__*/ createRouteOptions(API_RE_LAUNCH);
-const SwitchTabOptions = 
+const SwitchTabOptions =
 /*#__PURE__*/ createRouteOptions(API_SWITCH_TAB);
 const NavigateBackOptions = {
     formatArgs: {
@@ -10884,7 +10884,7 @@ const IndexOptions = {
     },
 };
 const API_SET_TAB_BAR_ITEM = 'setTabBarItem';
-const SetTabBarItemProtocol = 
+const SetTabBarItemProtocol =
 /*#__PURE__*/ extend({
     text: String,
     iconPath: String,
@@ -10942,7 +10942,7 @@ const API_REMOVE_TAB_BAR_BADGE = 'removeTabBarBadge';
 const RemoveTabBarBadgeProtocol = IndexProtocol;
 const RemoveTabBarBadgeOptions = IndexOptions;
 const API_SET_TAB_BAR_BADGE = 'setTabBarBadge';
-const SetTabBarBadgeProtocol = 
+const SetTabBarBadgeProtocol =
 /*#__PURE__*/ extend({
     text: {
         type: String,
@@ -11563,7 +11563,7 @@ function getPreloadWebview() {
 function createPreloadWebview() {
     if (!preloadWebview || preloadWebview.__uniapp_route) {
         // 不存在，或已被使用
-        preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()), 
+        preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()),
         // @ts-expect-error
         { contentAdjust: false });
         if (('production' !== 'production')) {
@@ -12183,7 +12183,7 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
     initWebview(webview, path, query, routeOptions.meta);
     const route = path.slice(1);
     webview.__uniapp_route = route;
-    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 
+    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel,
     // TODO theme
     'light');
     const id = parseInt(webview.id);

@@ -4,6 +4,8 @@ import { IUniError, UniError, string, ComponentPublicInstance, ComponentInternal
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import Want from '@ohos.app.ability.Want';
 import common from '@ohos.app.ability.common';
+import Want from '@ohos.app.ability.Want';
+import common from '@ohos.app.ability.common';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
@@ -27,7 +29,10 @@ import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
+import bundleManager1 from '@ohos.bundle.bundleManager';
+import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import dataPreferences from '@ohos.data.preferences';
+import { device } from "@dcloudio/uni-app-harmony-framework";
 import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
@@ -237,6 +242,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     const createIntersectionObserver = defineSyncApi<IntersectionObserver>('createIntersectionObserver', (context: ComponentPublicInstance | null, options: CreateIntersectionObserverOptions | null = null)=>{
+    const createIntersectionObserver = defineSyncApi<IntersectionObserver>('createIntersectionObserver', (context: ComponentPublicInstance | null, options: CreateIntersectionObserverOptions | null = null)=>{
         let _options: ComponentPublicInstance | CreateIntersectionObserverOptions | null = options;
         context = resolveComponentInstance(context);
         if (context && !getPageIdByVm(context)) {
@@ -378,6 +384,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     const createSelectorQuery = defineSyncApi<SelectorQuery>('createSelectorQuery', (context: ComponentInternalInstance | ComponentPublicInstance | null = null)=>{
+    const createSelectorQuery = defineSyncApi<SelectorQuery>('createSelectorQuery', (context: ComponentInternalInstance | ComponentPublicInstance | null = null)=>{
         context = resolveComponentInstance1(context);
         if (context && !getPageIdByVm1(context)) {
             context = null;
@@ -434,18 +441,25 @@ export function initUniExtApi(APP_ID: string) {
     }
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
         const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
         const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion();
         const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
         return {
             appId: UTSHarmony.getAppId() as string,
+            appId: UTSHarmony.getAppId() as string,
             appLanguage,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
             appName: UTSHarmony.getAppName() as string,
             appTheme: UTSHarmony.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
+            isUniAppX: UTSHarmony.isUniAppX() as boolean,
             isUniAppX: UTSHarmony.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
@@ -491,6 +505,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
+            osTheme: UTSHarmony1.getOsTheme() as string,
             osTheme: UTSHarmony1.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmonyos',
@@ -663,7 +678,9 @@ export function initUniExtApi(APP_ID: string) {
     }
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
         const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
+        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
         const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
         const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
@@ -680,7 +697,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowWidth = windowInfo.windowWidth;
         return {
             appId: UTSHarmony2.getAppId() as string,
+            appId: UTSHarmony2.getAppId() as string,
             appLanguage,
+            appName: UTSHarmony2.getAppName() as string,
+            appTheme: UTSHarmony2.getAppTheme() as string,
             appName: UTSHarmony2.getAppName() as string,
             appTheme: UTSHarmony2.getAppTheme() as string,
             appVersion: appVersion.name,
@@ -698,6 +718,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
+            osTheme: UTSHarmony2.getOsTheme() as string,
             osTheme: UTSHarmony2.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
@@ -768,6 +789,7 @@ export function initUniExtApi(APP_ID: string) {
         return false;
     };
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
+        const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
         const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
             dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
@@ -1685,6 +1707,7 @@ export function initUniExtApi(APP_ID: string) {
                 styles.backgroundColor = options.backgroundColor;
             }
             const statusBarStyle = options.frontColor === '#000000' ? 'dark' : 'light';
+            navigator.setStatusBarStyle(statusBarStyle);
             navigator.setStatusBarStyle(statusBarStyle);
             page.$page.statusBarStyle = statusBarStyle;
             const style = webview.getStyle();
@@ -3830,6 +3853,7 @@ export function initUniExtApi(APP_ID: string) {
         request,
         uploadFile,
         downloadFile,
+        openAppAuthorizeSetting,
         openAppAuthorizeSetting,
         pageScrollTo,
         showToast,

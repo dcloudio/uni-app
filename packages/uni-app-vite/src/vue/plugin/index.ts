@@ -80,6 +80,12 @@ export function uniAppVuePlugin(): UniVitePlugin {
           },
           chunkCssCode(filename, cssCode) {
             if (filename === 'app.css') {
+              if (process.env.UNI_PLATFORM === 'app-harmony') {
+                appCss = fs.readFileSync(
+                  resolveBuiltIn('@dcloudio/uni-app-harmony/dist/style.css'),
+                  'utf8'
+                )
+              }
               if (!appCss) {
                 appCss = fs.readFileSync(
                   resolveBuiltIn('@dcloudio/uni-app-plus/dist/style.css'),
