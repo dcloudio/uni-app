@@ -46,6 +46,7 @@ function getShadowCdn () {
 }
 
 let appid
+
 function createIdent () {
   if (process.env.UNI_INPUT_DIR) {
     if (typeof appid === 'undefined') {
@@ -60,8 +61,11 @@ function createIdent () {
 }
 
 function createShadowImageUrl (cdn, type = 'grey') {
-  const ident = createIdent()
-  const identStr = ident ? `${ident}/` : ''
+  let identStr = ''
+  if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'web') {
+    const ident = createIdent()
+    identStr = ident ? `${ident}/` : ''
+  }
   return `https://cdn${cdn || ''}.dcloud.net.cn/${identStr}img/shadow-${type}.png`
 }
 
