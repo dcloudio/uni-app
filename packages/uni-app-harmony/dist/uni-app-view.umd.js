@@ -7561,7 +7561,7 @@
       return window.__SYSTEM_INFO__;
     }
     return {
-      platform: "harmony",
+      platform: "harmonyos",
       pixelRatio: vp2px(1),
       windowWidth: lpx2px(720)
       // TODO designWidth可配置

@@ -468,11 +468,11 @@ export function initUniExtApi(APP_ID: string) {
         deviceOrientation: string | null = null;
         devicePixelRatio: number | null = null;
         system: string | null = null;
-        platform: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux' | null = null;
+        platform: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux' | null = null;
         isRoot: boolean | null = null;
         isSimulator: boolean | null = null;
         isUSBDebugging: boolean | null = null;
-        osName: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux' | null = null;
+        osName: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux' | null = null;
         osVersion: string | null = null;
         osLanguage: string | null = null;
         osTheme: 'light' | 'dark' | null = null;
@@ -493,8 +493,8 @@ export function initUniExtApi(APP_ID: string) {
             osLanguage: I18n1.System.getSystemLanguage(),
             osTheme: UTSHarmony1.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
-            osName: 'harmony',
-            platform: 'harmony',
+            osName: 'harmonyos',
+            platform: 'harmonyos',
             romName: deviceInfo.distributionOSName,
             romVersion: deviceInfo.distributionOSVersion,
             system: deviceInfo.osFullName
@@ -580,12 +580,12 @@ export function initUniExtApi(APP_ID: string) {
         deviceOrientation!: 'portrait' | 'landscape';
         language!: string;
         model: string | null = null;
-        osName!: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux';
+        osName!: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux';
         osVersion!: string;
         osLanguage!: string;
         osTheme: 'light' | 'dark' | null = null;
         pixelRatio!: number;
-        platform!: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux';
+        platform!: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux';
         screenWidth!: number;
         screenHeight!: number;
         statusBarHeight!: number;
@@ -667,7 +667,7 @@ export function initUniExtApi(APP_ID: string) {
         const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
         const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
-        const windowInfo = internalGetWindowInfo();
+        const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
         const safeAreaInsets = windowInfo.safeAreaInsets;
@@ -700,7 +700,7 @@ export function initUniExtApi(APP_ID: string) {
             osLanguage: I18n2.System.getSystemLanguage(),
             osTheme: UTSHarmony2.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
-            osName: 'harmony',
+            osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
             romVersion: deviceInfo1.distributionOSVersion,
             system: deviceInfo1.osFullName,
@@ -721,7 +721,7 @@ export function initUniExtApi(APP_ID: string) {
             language: appLanguage,
             brand: deviceInfo1.brand,
             model: '',
-            platform: 'harmony',
+            platform: 'harmonyos',
             uniCompileVersion: uniCompilerVersion,
             uniCompileVersionCode: uniCompilerVersionCode,
             version: ''
