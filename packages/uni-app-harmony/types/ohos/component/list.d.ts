@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Declare scroll status
  *
  * @enum { number }
@@ -246,6 +250,53 @@ declare enum ListItemAlign {
     End
 }
 /**
+ * Declare list item group area
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
+declare enum ListItemGroupArea {
+    /**
+     * List item group area is none
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    NONE = 0,
+    /**
+     * List item group area is list item
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    IN_LIST_ITEM_AREA = 1,
+    /**
+     * List item group area is header
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    IN_HEADER_AREA = 2,
+    /**
+     * List item group area is footer
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    IN_FOOTER_AREA = 3
+}
+/**
  * Declare item group sticky style.
  *
  * @enum { number }
@@ -437,6 +488,15 @@ declare enum ScrollSnapAlign {
  * @crossplatform
  * @since 11
  */
+/**
+ * Defines the close swipe action options.
+ *
+ * @interface CloseSwipeActionOptions
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare interface CloseSwipeActionOptions {
     /**
      * Called after collapse animation completed.
@@ -446,13 +506,80 @@ declare interface CloseSwipeActionOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Called after collapse animation completed.
+     *
+     * @type { ?function }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     onFinish?: () => void;
 }
+/**
+ * Defines the visible list content info.
+ *
+ * @interface VisibleListContentInfo
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
+declare interface VisibleListContentInfo {
+    /**
+     * Index number of a child in the list.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    index: number;
+    /**
+     * Area of the ListItemGroup.
+     *
+     * @type { ?ListItemGroupArea }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    itemGroupArea?: ListItemGroupArea;
+    /**
+     * Index number of a ListItem in ListItemGroup.
+     *
+     * @type { ?number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    itemIndexInGroup?: number;
+}
+/**
+ * Callback of scroll visible content, using in onScrollVisibleContentChange.
+ *
+ * @typedef {function} OnScrollVisibleContentChangeCallback
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
+declare type OnScrollVisibleContentChangeCallback = (start: VisibleListContentInfo, end: VisibleListContentInfo) => void;
 /**
  * @extends Scroller
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @crossplatform
  * @since 11
+ */
+/**
+ * @extends Scroller
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  */
 declare class ListScroller extends Scroller {
     /**
@@ -461,11 +588,30 @@ declare class ListScroller extends Scroller {
      * @param { number } index - Index of the ListItemGroup in List.
      * @param { number } indexInGroup - Index of the ListItem in ListItemGroup.
      * @returns { RectResult } Returns the size and position.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @throws { BusinessError } 100004 - Controller not bound to component.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Gets the size and position of a ListItem in a ListItemGroup.
+     *
+     * @param { number } index - Index of the ListItemGroup in List.
+     * @param { number } indexInGroup - Index of the ListItem in ListItemGroup.
+     * @returns { RectResult } Returns the size and position.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
+     * @throws { BusinessError } 100004 - Controller not bound to component.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     getItemRectInGroup(index: number, indexInGroup: number): RectResult;
     /**
@@ -475,22 +621,59 @@ declare class ListScroller extends Scroller {
      * @param { number } indexInGroup - Index of the ListItem in ListItemGroup.
      * @param { boolean } smooth - If true, scroll to index item with animation. If false, scroll to index item without animation.
      * @param { ScrollAlign } align - Sets the alignment mode of a specified index.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @throws { BusinessError } 100004 - Controller not bound to component.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Called when sliding to the specified index in specified ListItemGroup.
+     *
+     * @param { number } index - Index of the ListItemGroup in List.
+     * @param { number } indexInGroup - Index of the ListItem in ListItemGroup.
+     * @param { boolean } smooth - If true, scroll to index item with animation. If false, scroll to index item without animation.
+     * @param { ScrollAlign } align - Sets the alignment mode of a specified index.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
+     * @throws { BusinessError } 100004 - Controller not bound to component.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     scrollToItemInGroup(index: number, indexInGroup: number, smooth?: boolean, align?: ScrollAlign): void;
     /**
      * Collapse all listItem.
      *
      * @param { CloseSwipeActionOptions } options - Options of close Swipe items.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @throws { BusinessError } 100004 - Controller not bound to component.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Collapse all listItem.
+     *
+     * @param { CloseSwipeActionOptions } options - Options of close Swipe items.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
+     * @throws { BusinessError } 100004 - Controller not bound to component.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     closeAllSwipeActions(options?: CloseSwipeActionOptions): void;
 }
@@ -783,12 +966,31 @@ declare class ListAttribute extends ScrollableCommonMethod<ListAttribute> {
      */
     edgeEffect(value: EdgeEffect, options?: EdgeEffectOptions): ListAttribute;
     /**
+     * Called when setting whether to enable fading Edge effect.
+     *
+     * @param { Optional<boolean> } value - Whether to turn on the edge fade effect
+     * @returns { ListAttribute } the attribute of the list.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    fadingEdge(value: Optional<boolean>): ListAttribute;
+    /**
      * Called when need to decide contentStartOffset the list will show.
      * @param { number } value - the value Of startOffset.
      * @returns { ListAttribute } the attribute of the list.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Called when need to decide contentStartOffset the list will show.
+     * @param { number } value - the value Of startOffset.
+     * @returns { ListAttribute } the attribute of the list.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     contentStartOffset(value: number): ListAttribute;
     /**
@@ -798,6 +1000,15 @@ declare class ListAttribute extends ScrollableCommonMethod<ListAttribute> {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Called when need to decide contentEndOffset the list will show.
+     * @param { number } value - the value Of endOffset.
+     * @returns { ListAttribute } the attribute of the list.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     contentEndOffset(value: number): ListAttribute;
     /**
@@ -1081,6 +1292,17 @@ declare class ListAttribute extends ScrollableCommonMethod<ListAttribute> {
      */
     friction(value: number | Resource): ListAttribute;
     /**
+     * Set children main size for List.
+     *
+     * @param { ChildrenMainSize } value - children main size for List
+     * @returns { ListAttribute } the attribute of the list.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    childrenMainSize(value: ChildrenMainSize): ListAttribute;
+    /**
      * Called when the offset and status callback of the slide are set.
      *
      * @param { function } event
@@ -1116,6 +1338,8 @@ declare class ListAttribute extends ScrollableCommonMethod<ListAttribute> {
      * @crossplatform
      * @atomicservice
      * @since 11
+     * @deprecated since 12
+     * @useinstead common.ScrollableCommonMethod#onDidScroll
      * @form
      */
     onScroll(event: (scrollOffset: number, scrollState: ScrollState) => void): ListAttribute;
@@ -1158,6 +1382,16 @@ declare class ListAttribute extends ScrollableCommonMethod<ListAttribute> {
      * @form
      */
     onScrollIndex(event: (start: number, end: number, center: number) => void): ListAttribute;
+    /**
+     * Called when the list visible content changes.
+     *
+     * @param { OnScrollVisibleContentChangeCallback } handler - Callback of Scroll Visible.
+     * @returns { ListAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onScrollVisibleContentChange(handler: OnScrollVisibleContentChangeCallback): ListAttribute;
     /**
      * Called when the list begins to arrive.
      *

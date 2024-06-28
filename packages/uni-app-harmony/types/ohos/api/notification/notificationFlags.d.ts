@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file Some states and flags for notifications
+ * @kit NotificationKit
+ */
+/**
  * The status of the notification flag.
  *
  * @enum { number }

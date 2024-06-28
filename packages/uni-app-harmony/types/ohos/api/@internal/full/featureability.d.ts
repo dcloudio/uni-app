@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * @typedef Result
  * @syscap SystemCapability.ArkUI.ArkUI.Lite
  * @since 5

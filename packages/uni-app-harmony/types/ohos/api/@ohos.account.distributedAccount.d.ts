@@ -69,7 +69,8 @@ declare namespace distributedAccount {
          * @permission ohos.permission.MANAGE_DISTRIBUTED_ACCOUNTS or ohos.permission.GET_DISTRIBUTED_ACCOUNTS or ohos.permission.DISTRIBUTED_DATASYNC
          * @param { AsyncCallback<DistributedInfo> } callback - Asynchronous callback interface.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -81,7 +82,6 @@ declare namespace distributedAccount {
          * @permission ohos.permission.MANAGE_DISTRIBUTED_ACCOUNTS or ohos.permission.GET_DISTRIBUTED_ACCOUNTS or ohos.permission.DISTRIBUTED_DATASYNC
          * @returns { Promise<DistributedInfo> } The distributed information of the current OS account.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
          * @throws { BusinessError } 12300001 - System service exception.
          * @syscap SystemCapability.Account.OsAccount
          * @since 9
@@ -118,7 +118,8 @@ declare namespace distributedAccount {
          * @param { DistributedInfo } accountInfo - Indicates the information of the OS account used for a distributed system.
          * @param { AsyncCallback<void> } callback - Asynchronous callback interface.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid accountInfo.
          * @throws { BusinessError } 12300003 - Account not found.
@@ -133,7 +134,8 @@ declare namespace distributedAccount {
          * @param { DistributedInfo } accountInfo - Indicates the information of the OS account used for a distributed system.
          * @returns { Promise<void> } The promise returned by the function.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameter types.
          * @throws { BusinessError } 12300001 - System service exception.
          * @throws { BusinessError } 12300002 - Invalid accountInfo.
          * @throws { BusinessError } 12300003 - Account not found.

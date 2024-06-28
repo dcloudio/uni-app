@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit AbilityKit
+ */
 import Want from '../@ohos.app.ability.Want';
 import wantAgent from '../@ohos.wantAgent';
 import type abilityWantAgent from '../@ohos.app.ability.wantAgent';

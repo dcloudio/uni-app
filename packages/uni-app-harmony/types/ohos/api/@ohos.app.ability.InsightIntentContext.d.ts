@@ -34,7 +34,8 @@ export default class InsightIntentContext {
      *
      * @param { Want } want - Indicates the ability to start.
      * @param { AsyncCallback<void> } callback - The callback of startAbility.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000001 - The specified ability does not exist.
      * @throws { BusinessError } 16000004 - Can not start invisible component.
      * @throws { BusinessError } 16000005 - The specified process does not have the permission.
@@ -62,7 +63,8 @@ export default class InsightIntentContext {
      *
      * @param { Want } want - Indicates the ability to start.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000001 - The specified ability does not exist.
      * @throws { BusinessError } 16000004 - Can not start invisible component.
      * @throws { BusinessError } 16000005 - The specified process does not have the permission.

@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit AbilityKit
+ */
+/**
  * Indicates the return result of the data to be manipulated.
  *
  * @typedef DataAbilityResult

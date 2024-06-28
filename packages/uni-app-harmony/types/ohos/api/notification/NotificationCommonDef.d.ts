@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file Some common definitions
+ * @kit NotificationKit
+ */
+/**
  * Describes a BundleOption.
  *
  * @typedef BundleOption

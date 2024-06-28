@@ -65,7 +65,9 @@ declare class LightWeightMap<K, V> {
      *
      * @param { LightWeightMap<K, V> } map - map map the Map object to compare
      * @returns { boolean } the boolean type
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @throws { BusinessError } 10200011 - The hasAll method cannot be bound.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
@@ -75,7 +77,9 @@ declare class LightWeightMap<K, V> {
      *
      * @param { LightWeightMap<K, V> } map - map map the Map object to compare
      * @returns { boolean } the boolean type
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @throws { BusinessError } 10200011 - The hasAll method cannot be bound.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
@@ -128,7 +132,9 @@ declare class LightWeightMap<K, V> {
      *
      * @param { number } minimumCapacity - minimumCapacity minimumCapacity Minimum capacity to be reserved
      * @throws { BusinessError } 10200011 - The increaseCapacityTo method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -138,7 +144,9 @@ declare class LightWeightMap<K, V> {
      *
      * @param { number } minimumCapacity - minimumCapacity minimumCapacity Minimum capacity to be reserved
      * @throws { BusinessError } 10200011 - The increaseCapacityTo method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -250,7 +258,10 @@ declare class LightWeightMap<K, V> {
      * @returns { K } the key of key-value pairs
      * @throws { BusinessError } 10200011 - The getKeyAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -261,7 +272,10 @@ declare class LightWeightMap<K, V> {
      * @returns { K } the key of key-value pairs
      * @throws { BusinessError } 10200011 - The getKeyAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -290,7 +304,9 @@ declare class LightWeightMap<K, V> {
      *
      * @param { LightWeightMap<K, V> } map - map map the Map object to add members
      * @throws { BusinessError } 10200011 - The setAll method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -299,7 +315,9 @@ declare class LightWeightMap<K, V> {
      *
      * @param { LightWeightMap<K, V> } map - map map the Map object to add members
      * @throws { BusinessError } 10200011 - The setAll method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -353,7 +371,9 @@ declare class LightWeightMap<K, V> {
      * @param { number } index - index index Target subscript for search
      * @returns { boolean } the boolean type(Is there a delete value)
      * @throws { BusinessError } 10200011 - The removeAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -363,7 +383,9 @@ declare class LightWeightMap<K, V> {
      * @param { number } index - index index Target subscript for search
      * @returns { boolean } the boolean type(Is there a delete value)
      * @throws { BusinessError } 10200011 - The removeAt method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -395,7 +417,10 @@ declare class LightWeightMap<K, V> {
      * @returns { boolean } the boolean type(Is there a value corresponding to the subscript)
      * @throws { BusinessError } 10200011 - The setValueAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -407,7 +432,10 @@ declare class LightWeightMap<K, V> {
      * @returns { boolean } the boolean type(Is there a value corresponding to the subscript)
      * @throws { BusinessError } 10200011 - The setValueAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -424,7 +452,9 @@ declare class LightWeightMap<K, V> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -439,7 +469,9 @@ declare class LightWeightMap<K, V> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -491,7 +523,10 @@ declare class LightWeightMap<K, V> {
      * @returns { V } the value of key-value pairs
      * @throws { BusinessError } 10200011 - The getValueAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -502,7 +537,10 @@ declare class LightWeightMap<K, V> {
      * @returns { V } the value of key-value pairs
      * @throws { BusinessError } 10200011 - The getValueAt method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10

@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file The data of the commonEvent
+ * @kit BasicServicesKit
+ */
+/**
  * the data of the commonEvent
  *
  * @typedef CommonEventData

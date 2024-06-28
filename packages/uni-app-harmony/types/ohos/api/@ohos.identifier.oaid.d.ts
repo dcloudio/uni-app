@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 /**
- * @file
+ * @file Provides the capability to manage OAID
  * @kit AdsKit
  */
 import type { AsyncCallback } from './@ohos.base';

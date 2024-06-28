@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License"),
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -57,13 +57,14 @@ declare namespace notificationManager {
      *
      * @param { NotificationRequest } request - notification request
      * @param { AsyncCallback<void> } callback - The callback of publish.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600004 - Notification is not enabled.
-     * @throws { BusinessError } 1600005 - Notification slot is not enabled.
-     * @throws { BusinessError } 1600009 - Over max number notifications per second.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600005 - Notification slot disabled.
+     * @throws { BusinessError } 1600009 - The notification sending frequency reaches the upper limit.
      * @throws { BusinessError } 1600012 - No memory space.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
@@ -75,21 +76,47 @@ declare namespace notificationManager {
      *
      * @param { NotificationRequest } request - notification request
      * @param { AsyncCallback<void> } callback - The callback of publish.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600004 - Notification is not enabled.
-     * @throws { BusinessError } 1600005 - Notification slot is not enabled.
-     * @throws { BusinessError } 1600007 - The notification is not exist.
-     * @throws { BusinessError } 1600009 - Over max number notifications per second.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600005 - Notification slot disabled.
+     * @throws { BusinessError } 1600007 - The notification does not exist.
+     * @throws { BusinessError } 1600009 - The notification sending frequency reaches the upper limit.
      * @throws { BusinessError } 1600012 - No memory space.
-     * @throws { BusinessError } 1600014 - No relevant right.
+     * @throws { BusinessError } 1600014 - No permission.
      * @throws { BusinessError } 1600015 - The current notification status does not support duplicate configurations.
      * @throws { BusinessError } 1600016 - The notification version for this update is too low.
-     * @throws { BusinessError } 2300007 - Network is unreachable.
+     * @throws { BusinessError } 2300007 - Network unreachable.
      * @syscap SystemCapability.Notification.Notification
      * @since 11
+     */
+    /**
+     * Publishes a notification.
+     * <p>If a notification with the same ID has been published by the current application and has not been deleted,
+     * this method will update the notification.
+     *
+     * @param { NotificationRequest } request - notification request
+     * @param { AsyncCallback<void> } callback - The callback of publish.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600005 - Notification slot disabled.
+     * @throws { BusinessError } 1600007 - The notification does not exist.
+     * @throws { BusinessError } 1600009 - The notification sending frequency reaches the upper limit.
+     * @throws { BusinessError } 1600012 - No memory space.
+     * @throws { BusinessError } 1600014 - No permission.
+     * @throws { BusinessError } 1600015 - The current notification status does not support duplicate configurations.
+     * @throws { BusinessError } 1600016 - The notification version for this update is too low.
+     * @throws { BusinessError } 2300007 - Network unreachable.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function publish(request: NotificationRequest, callback: AsyncCallback<void>): void;
     /**
@@ -99,13 +126,14 @@ declare namespace notificationManager {
      *
      * @param { NotificationRequest } request - notification request
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600004 - Notification is not enabled.
-     * @throws { BusinessError } 1600005 - Notification slot is not enabled.
-     * @throws { BusinessError } 1600009 - Over max number notifications per second.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600005 - Notification slot disabled.
+     * @throws { BusinessError } 1600009 - The notification sending frequency reaches the upper limit.
      * @throws { BusinessError } 1600012 - No memory space.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
@@ -117,21 +145,47 @@ declare namespace notificationManager {
      *
      * @param { NotificationRequest } request - notification request
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600004 - Notification is not enabled.
-     * @throws { BusinessError } 1600005 - Notification slot is not enabled.
-     * @throws { BusinessError } 1600007 - The notification is not exist.
-     * @throws { BusinessError } 1600009 - Over max number notifications per second.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600005 - Notification slot disabled.
+     * @throws { BusinessError } 1600007 - The notification does not exist.
+     * @throws { BusinessError } 1600009 - The notification sending frequency reaches the upper limit.
      * @throws { BusinessError } 1600012 - No memory space.
-     * @throws { BusinessError } 1600014 - No relevant right.
+     * @throws { BusinessError } 1600014 - No permission.
      * @throws { BusinessError } 1600015 - The current notification status does not support duplicate configurations.
      * @throws { BusinessError } 1600016 - The notification version for this update is too low.
-     * @throws { BusinessError } 2300007 - Network is unreachable.
+     * @throws { BusinessError } 2300007 - Network unreachable.
      * @syscap SystemCapability.Notification.Notification
      * @since 11
+     */
+    /**
+     * Publishes a notification.
+     * <p>If a notification with the same ID has been published by the current application and has not been deleted,
+     * this method will update the notification.
+     *
+     * @param { NotificationRequest } request - notification request
+     * @returns { Promise<void> } The promise returned by the function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600005 - Notification slot disabled.
+     * @throws { BusinessError } 1600007 - The notification does not exist.
+     * @throws { BusinessError } 1600009 - The notification sending frequency reaches the upper limit.
+     * @throws { BusinessError } 1600012 - No memory space.
+     * @throws { BusinessError } 1600014 - No permission.
+     * @throws { BusinessError } 1600015 - The current notification status does not support duplicate configurations.
+     * @throws { BusinessError } 1600016 - The notification version for this update is too low.
+     * @throws { BusinessError } 2300007 - Network unreachable.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function publish(request: NotificationRequest): Promise<void>;
     /**
@@ -139,13 +193,29 @@ declare namespace notificationManager {
      *
      * @param { number } id - ID of the notification to cancel, which must be unique in the application.
      * @param { AsyncCallback<void> } callback - The callback of cancel.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600007 - The notification is not exist.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600007 - The notification does not exist.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
+     */
+    /**
+     * Cancel a notification with the specified ID.
+     *
+     * @param { number } id - ID of the notification to cancel, which must be unique in the application.
+     * @param { AsyncCallback<void> } callback - The callback of cancel.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600007 - The notification does not exist.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function cancel(id: number, callback: AsyncCallback<void>): void;
     /**
@@ -154,11 +224,12 @@ declare namespace notificationManager {
      * @param { number } id - ID of the notification to cancel, which must be unique in the application.
      * @param { string } label - Label of the notification to cancel.
      * @param { AsyncCallback<void> } callback - The callback of cancel.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600007 - The notification is not exist.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600007 - The notification does not exist.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -169,11 +240,12 @@ declare namespace notificationManager {
      * @param { number } id - ID of the notification to cancel, which must be unique in the application.
      * @param { string } [label] - Label of the notification to cancel.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600007 - The notification is not exist.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600007 - The notification does not exist.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -182,24 +254,52 @@ declare namespace notificationManager {
      * Cancel all notifications of the current application.
      *
      * @param { AsyncCallback<void> } callback - The callback of cancelAll.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
+     */
+    /**
+     * Cancel all notifications of the current application.
+     *
+     * @param { AsyncCallback<void> } callback - The callback of cancelAll.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function cancelAll(callback: AsyncCallback<void>): void;
     /**
      * Cancel all notifications of the current application.
      *
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
+     */
+    /**
+     * Cancel all notifications of the current application.
+     *
+     * @returns { Promise<void> } The promise returned by the function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function cancelAll(): Promise<void>;
     /**
@@ -207,10 +307,11 @@ declare namespace notificationManager {
      *
      * @param { SlotType } type - Slot type to add.
      * @param { AsyncCallback<void> } callback - The callback of addSlot.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @throws { BusinessError } 1600012 - No memory space.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
@@ -221,10 +322,11 @@ declare namespace notificationManager {
      *
      * @param { SlotType } type - Slot type to add.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @throws { BusinessError } 1600012 - No memory space.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
@@ -235,10 +337,11 @@ declare namespace notificationManager {
      *
      * @param { SlotType } slotType - Type of the notification slot to obtain.
      * @param { AsyncCallback<NotificationSlot> } callback - The callback is used to return the NotificationSlot.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -248,10 +351,11 @@ declare namespace notificationManager {
      *
      * @param { SlotType } slotType - Type of the notification slot to obtain.
      * @returns { Promise<NotificationSlot> } Returns the NotificationSlot.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -261,10 +365,11 @@ declare namespace notificationManager {
      *
      * @param { AsyncCallback<Array<NotificationSlot>> } callback - The callback is used to return all notification slots
      *                                                              of this application.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -273,10 +378,11 @@ declare namespace notificationManager {
      * Obtains all NotificationSlot objects created by the current application.
      *
      * @returns { Promise<Array<NotificationSlot>> } Returns all notification slots of this application.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -286,10 +392,11 @@ declare namespace notificationManager {
      *
      * @param { SlotType } slotType - Type of the NotificationSlot to remove.
      * @param { AsyncCallback<void> } callback - The callback of removeSlot.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -299,10 +406,11 @@ declare namespace notificationManager {
      *
      * @param { SlotType } slotType - Type of the NotificationSlot to remove.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -311,10 +419,11 @@ declare namespace notificationManager {
      * Removes all NotificationSlot objects created by the current application.
      *
      * @param { AsyncCallback<void> } callback - The callback of removeAllSlots.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -323,10 +432,11 @@ declare namespace notificationManager {
      * Removes all NotificationSlot objects created by the current application.
      *
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -338,10 +448,11 @@ declare namespace notificationManager {
      * @param { AsyncCallback<boolean> } callback - The callback of isNotificationEnabled.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 202 - Not system application to call the interface.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @systemapi
      * @since 9
@@ -350,14 +461,30 @@ declare namespace notificationManager {
      * Checks whether this application allows to publish notifications.
      *
      * @param { AsyncCallback<boolean> } callback - The callback of isNotificationEnabled.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600008 - The user is not exist.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600008 - The user does not exist.
      * @throws { BusinessError } 17700001 - The specified bundle name was not found.
      * @syscap SystemCapability.Notification.Notification
      * @since 11
+     */
+    /**
+     * Checks whether this application allows to publish notifications.
+     *
+     * @param { AsyncCallback<boolean> } callback - The callback of isNotificationEnabled.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600008 - The user does not exist.
+     * @throws { BusinessError } 17700001 - The specified bundle name was not found.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function isNotificationEnabled(callback: AsyncCallback<boolean>): void;
     /**
@@ -367,10 +494,11 @@ declare namespace notificationManager {
      * @returns { Promise<boolean> } The promise returned by the function.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 202 - Not system application to call the interface.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @systemapi
      * @since 9
@@ -379,24 +507,41 @@ declare namespace notificationManager {
      * Checks whether this application allows to publish notifications.
      *
      * @returns { Promise<boolean> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600008 - The user is not exist.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600008 - The user does not exist.
      * @throws { BusinessError } 17700001 - The specified bundle name was not found.
      * @syscap SystemCapability.Notification.Notification
      * @since 11
+     */
+    /**
+     * Checks whether this application allows to publish notifications.
+     *
+     * @returns { Promise<boolean> } The promise returned by the function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600008 - The user does not exist.
+     * @throws { BusinessError } 17700001 - The specified bundle name was not found.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function isNotificationEnabled(): Promise<boolean>;
     /**
      * Obtains the number of all active notifications.
      *
      * @param { AsyncCallback<number> } callback - The callback of getActiveNotificationCount.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -405,10 +550,11 @@ declare namespace notificationManager {
      * Obtains the number of all active notifications.
      *
      * @returns { Promise<number> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -417,10 +563,11 @@ declare namespace notificationManager {
      * Obtains an array of active notifications.
      *
      * @param { AsyncCallback<Array<NotificationRequest>> } callback - The callback of getActiveNotifications.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -429,10 +576,11 @@ declare namespace notificationManager {
      * Obtains an array of active notifications.
      *
      * @returns { Promise<Array<NotificationRequest>> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -442,10 +590,11 @@ declare namespace notificationManager {
      *
      * @param { string } groupName - The name of the group.
      * @param { AsyncCallback<void> } callback - The callback of cancelGroup.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -455,10 +604,11 @@ declare namespace notificationManager {
      *
      * @param { string } groupName - The name of the group.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -468,10 +618,11 @@ declare namespace notificationManager {
      *
      * @param { string } templateName - Name of template to be Obtained.
      * @param { AsyncCallback<boolean> } callback - The callback is used to return whether the template is supported.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -481,10 +632,11 @@ declare namespace notificationManager {
      *
      * @param { string } templateName - Name of template to be Obtained.
      * @returns { Promise<boolean> } Returns whether the template is supported.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -493,10 +645,11 @@ declare namespace notificationManager {
      * Request permission to send notification.
      *
      * @param { AsyncCallback<void> } callback - The callback of requestEnableNotification.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -504,14 +657,30 @@ declare namespace notificationManager {
      * Request permission to send notification.
      *
      * @param { AsyncCallback<void> } callback - The callback of requestEnableNotification.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600004 - Notification is not enabled.
-     * @throws { BusinessError } 1600013 - Enable Notification Dialog has been popping already.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600013 - A notification dialog box is already displayed.
      * @syscap SystemCapability.Notification.Notification
      * @since 11
+     */
+    /**
+     * Request permission to send notification.
+     *
+     * @param { AsyncCallback<void> } callback - The callback of requestEnableNotification.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600013 - A notification dialog box is already displayed.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function requestEnableNotification(callback: AsyncCallback<void>): void;
     /**
@@ -519,10 +688,11 @@ declare namespace notificationManager {
      *
      * @param { UIAbilityContext } context - The context indicates the ability context you want to bind;
      * @param { AsyncCallback<void> } callback - The callback of requestEnableNotification.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @StageModelOnly
      * @since 10
@@ -532,12 +702,13 @@ declare namespace notificationManager {
      *
      * @param { UIAbilityContext } context - The context indicates the ability context you want to bind;
      * @param { AsyncCallback<void> } callback - The callback of requestEnableNotification.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600004 - Notification is not enabled.
-     * @throws { BusinessError } 1600013 - Enable Notification Dialog has been popping already.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600013 - A notification dialog box is already displayed.
      * @syscap SystemCapability.Notification.Notification
      * @StageModelOnly
      * @since 11
@@ -547,10 +718,11 @@ declare namespace notificationManager {
      * Request permission to send notification.
      *
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
@@ -558,14 +730,30 @@ declare namespace notificationManager {
      * Request permission to send notification.
      *
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600004 - Notification is not enabled.
-     * @throws { BusinessError } 1600013 - Enable Notification Dialog has been popping already.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600013 - A notification dialog box is already displayed.
      * @syscap SystemCapability.Notification.Notification
      * @since 11
+     */
+    /**
+     * Request permission to send notification.
+     *
+     * @returns { Promise<void> } The promise returned by the function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600013 - A notification dialog box is already displayed.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function requestEnableNotification(): Promise<void>;
     /**
@@ -573,10 +761,11 @@ declare namespace notificationManager {
      *
      * @param { UIAbilityContext } context - The context indicates the ability context you want to bind;
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @syscap SystemCapability.Notification.Notification
      * @StageModelOnly
      * @since 10
@@ -586,12 +775,13 @@ declare namespace notificationManager {
      *
      * @param { UIAbilityContext } context - The context indicates the ability context you want to bind;
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
-     * @throws { BusinessError } 1600004 - Notification is not enabled.
-     * @throws { BusinessError } 1600013 - Enable Notification Dialog has been popping already.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600004 - Notification disabled.
+     * @throws { BusinessError } 1600013 - A notification dialog box is already displayed.
      * @syscap SystemCapability.Notification.Notification
      * @StageModelOnly
      * @since 11
@@ -602,10 +792,11 @@ declare namespace notificationManager {
      *
      * @param { AsyncCallback<boolean> } callback - The callback is used to return whether the distributed
      *                                              notification is supported.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @throws { BusinessError } 1600010 - Distributed operation failed.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
@@ -615,10 +806,11 @@ declare namespace notificationManager {
      * Obtains whether the device supports distributed notification.
      *
      * @returns { Promise<boolean> } Returns whether the distributed notification is supported.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @throws { BusinessError } 1600010 - Distributed operation failed.
      * @syscap SystemCapability.Notification.Notification
      * @since 9
@@ -629,13 +821,29 @@ declare namespace notificationManager {
      *
      * @param { number } badgeNumber - Badge number.
      * @param { AsyncCallback<void> } callback - callback - The callback of setBadgeNumber..
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @throws { BusinessError } 1600012 - No memory space.
      * @syscap SystemCapability.Notification.Notification
      * @since 10
+     */
+    /**
+     * Set badge number.
+     *
+     * @param { number } badgeNumber - Badge number.
+     * @param { AsyncCallback<void> } callback - callback - The callback of setBadgeNumber..
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600012 - No memory space.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function setBadgeNumber(badgeNumber: number, callback: AsyncCallback<void>): void;
     /**
@@ -643,13 +851,29 @@ declare namespace notificationManager {
      *
      * @param { number } badgeNumber - Badge number.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 1600001 - Internal error.
      * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
-     * @throws { BusinessError } 1600003 - Failed to connect service.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
      * @throws { BusinessError } 1600012 - No memory space.
      * @syscap SystemCapability.Notification.Notification
      * @since 10
+     */
+    /**
+     * Set badge number.
+     *
+     * @param { number } badgeNumber - Badge number.
+     * @returns { Promise<void> } The promise returned by the function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @throws { BusinessError } 1600012 - No memory space.
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     function setBadgeNumber(badgeNumber: number): Promise<void>;
     /**

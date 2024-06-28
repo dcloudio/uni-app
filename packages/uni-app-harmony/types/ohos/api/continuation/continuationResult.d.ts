@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit AbilityKit
+ */
+/**
  * Indicates the description of transfer results for continuation.
  *
  * @typedef ContinuationResult

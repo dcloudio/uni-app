@@ -13,12 +13,26 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * common enum of the checkbox shape
  *
  * @enum { number }
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @crossplatform
  * @since 11
+ * @form
+ */
+/**
+ * common enum of the checkbox shape
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  * @form
  */
 declare enum CheckBoxShape {
@@ -30,6 +44,15 @@ declare enum CheckBoxShape {
      * @since 11
      * @form
      */
+    /**
+     * Circle.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     * @form
+     */
     CIRCLE = 0,
     /**
      * Rounded Square.
@@ -37,6 +60,15 @@ declare enum CheckBoxShape {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     * @form
+     */
+    /**
+     * Rounded Square.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      * @form
      */
     ROUNDED_SQUARE = 1
@@ -484,6 +516,14 @@ declare enum ColoringStrategy {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Use the average color strategy. Get the average color of the background. Only applies to shadow.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     AVERAGE = 'average',
     /**
      * Use the primary color strategy. Get the color that dominate the background color. Only applies to shadow.
@@ -491,6 +531,14 @@ declare enum ColoringStrategy {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Use the primary color strategy. Get the color that dominate the background color. Only applies to shadow.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     PRIMARY = 'primary'
 }
@@ -5278,7 +5326,15 @@ declare enum ImageSize {
      * @since 11
      * @form
      */
-    Contain
+    Contain,
+    /**
+     * Zoom in or out without maintaining the aspect ratio so that the image fills the display boundary.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    FILL = 3
 }
 /**
  * GradientDirection enumeration description
@@ -7132,6 +7188,15 @@ declare enum Placement {
  * @crossplatform
  * @since 11
  */
+/**
+ * ArrowPointPosition enumeration description
+ *
+ * @enum { string }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare enum ArrowPointPosition {
     /**
      * Target start position
@@ -7139,6 +7204,14 @@ declare enum ArrowPointPosition {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Target start position
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     START = 'Start',
     /**
@@ -7148,6 +7221,14 @@ declare enum ArrowPointPosition {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Target center position
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     CENTER = 'Center',
     /**
      * Target end position
@@ -7155,6 +7236,14 @@ declare enum ArrowPointPosition {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Target end position
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     END = 'End'
 }
@@ -7266,8 +7355,9 @@ declare enum CopyOptions {
      *
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
-     * @since 11
      * @form
+     * @since 11
+     * @deprecated since 12
      */
     CROSS_DEVICE = 3
 }
@@ -7759,7 +7849,47 @@ declare enum FunctionKey {
      * @atomicservice
      * @since 11
      */
-    F12
+    F12,
+    /**
+     * Tab key.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    TAB,
+    /**
+     * Up arrow key.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DPAD_UP,
+    /**
+     * Down arrow key.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DPAD_DOWN,
+    /**
+     * Left arrow key.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DPAD_LEFT,
+    /**
+     * Right arrow key.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DPAD_RIGHT
 }
 /**
  * The alignment of ImageSpan
@@ -8061,7 +8191,15 @@ declare enum XComponentType {
      * @atomicservice
      * @since 11
      */
-    TEXTURE
+    TEXTURE,
+    /**
+     * Node type.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @atomicservice
+     * @since 12
+     */
+    NODE
 }
 /**
  * Nested scroll nested mode
@@ -8140,6 +8278,71 @@ declare enum NestedScrollMode {
      * @since 11
      */
     PARALLEL
+}
+/**
+ * The possible source of scroll event
+ * @enum { number } ScrollSource
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare enum ScrollSource {
+    /**
+     * Drag events.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DRAG = 0,
+    /**
+     * Fling after the drag has ended with velocity.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    FLING,
+    /**
+     * Over scroll with EdgeEffect.Spring.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    EDGE_EFFECT,
+    /**
+     * Other user input except drag, such as mouse wheel, key event.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    OTHER_USER_INPUT,
+    /**
+     * Drag events of scroll bar.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    SCROLL_BAR,
+    /**
+     * Fling after the drag on scroll bar has ended with velocity.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    SCROLL_BAR_FLING,
+    /**
+     * Member methods of Scroller without animation.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    SCROLLER,
+    /**
+     * Member methods of Scroller with animation.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    SCROLLER_ANIMATION
 }
 /**
  * Enum of RenderFit
@@ -8541,12 +8744,58 @@ declare enum WordBreak {
     BREAK_WORD = 2
 }
 /**
+ * Enum of line break strategy
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare enum LineBreakStrategy {
+    /**
+     * By default. Display as many characters as possible on each line until no more characters
+     * can be displayed on that line, and do not automatically add hyphens under this strategy
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    GREEDY = 0,
+    /**
+     * High quality folding. Optimize the layout of the entire text's line breaks and automatically
+     * add hyphens if necessary.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    HIGH_QUALITY = 1,
+    /**
+     * Balanced folding. We will try our best to ensure that the width of each line in a paragraph
+     * is the same, and if necessary, we will add conjunction
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    BALANCED = 2
+}
+/**
  * Enum of ellipsisMode
  *
  * @enum { number }
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @crossplatform
  * @since 11
+ */
+/**
+ * Enum of ellipsisMode
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  */
 declare enum EllipsisMode {
     /**
@@ -8556,6 +8805,14 @@ declare enum EllipsisMode {
      * @crossplatform
      * @since 11
      */
+    /**
+     * The ellipsis is in the head.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     START = 0,
     /**
      * The ellipsis is in the middle.
@@ -8563,6 +8820,14 @@ declare enum EllipsisMode {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * The ellipsis is in the middle.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     CENTER = 1,
     /**
@@ -8572,6 +8837,14 @@ declare enum EllipsisMode {
      * @crossplatform
      * @since 11
      */
+    /**
+     * The ellipsis is at the end.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     END = 2
 }
 /**
@@ -8580,6 +8853,14 @@ declare enum EllipsisMode {
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @crossplatform
  * @since 11
+ */
+/**
+ * A type which can be undefined
+ *
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  */
 declare type Nullable<T> = T | undefined;
 declare module 'CommonEnums' {
@@ -8596,6 +8877,15 @@ declare module 'CommonEnums' {
  * @crossplatform
  * @since 11
  */
+/**
+ * Decide whether the width of select menu fit the trigger or content
+ *
+ * @enum { string }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare enum OptionWidthMode {
     /**
      * The menu width fit the content.
@@ -8604,6 +8894,14 @@ declare enum OptionWidthMode {
      * @crossplatform
      * @since 11
      */
+    /**
+     * The menu width fit the content.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     FIT_CONTENT = 'fit_content',
     /**
      * The menu width fit the trigger.
@@ -8611,6 +8909,14 @@ declare enum OptionWidthMode {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * The menu width fit the trigger.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     FIT_TRIGGER = 'fit_trigger'
 }
@@ -8622,6 +8928,15 @@ declare enum OptionWidthMode {
  * @crossplatform
  * @since 11
  */
+/**
+ * Enumerates the fold status.
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare enum FoldStatus {
     /**
      * Fold Status Unknown.
@@ -8629,6 +8944,14 @@ declare enum FoldStatus {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Fold Status Unknown.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     FOLD_STATUS_UNKNOWN = 0,
     /**
@@ -8638,6 +8961,14 @@ declare enum FoldStatus {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Fold Status Expanded.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     FOLD_STATUS_EXPANDED = 1,
     /**
      * Fold Status Folded.
@@ -8645,6 +8976,14 @@ declare enum FoldStatus {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Fold Status Folded.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     FOLD_STATUS_FOLDED = 2,
     /**
@@ -8654,5 +8993,148 @@ declare enum FoldStatus {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Fold Status Half Folded.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     FOLD_STATUS_HALF_FOLDED = 3
+}
+/**
+ * Enumerates the app rotation.
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @since 12
+ */
+declare enum AppRotation {
+    /**
+     * App does not rotate to display vertically.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    ROTATION_0 = 0,
+    /**
+     * App rotates 90 degrees clockwise to display horizontally.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    ROTATION_90 = 1,
+    /**
+     * App rotates 180 degrees clockwise to display vertically in reverse.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    ROTATION_180 = 2,
+    /**
+     * App rotates 270 degrees clockwise to display horizontally in reverse.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    ROTATION_270 = 3
+}
+/**
+ * Enum of EmbeddedType
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @since 12
+ */
+declare enum EmbeddedType {
+    /**
+     * The EmbeddedComponent show the UI in EmbeddedUIExtensionAbility.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    EMBEDDED_UI_EXTENSION = 0
+}
+/**
+ * Marquee scrolling strategy after text update
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare enum MarqueeUpdateStrategy {
+    /**
+     * Reset scroll position and restart scroll.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DEFAULT = 0,
+    /**
+     * Preserve scroll position, just change to new text
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    PRESERVE_POSITION = 1
+}
+/**
+ * Type of text decoration line style.
+ *
+ * @enum {number}
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare enum TextDecorationStyle {
+    /**
+     * Solid line.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    SOLID = 0,
+    /**
+     * Double lines.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DOUBLE = 1,
+    /**
+     * Dotted line.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DOTTED = 2,
+    /**
+     * Dashed line.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DASHED = 3,
+    /**
+     * Wavy line.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    WAVY = 4
+}
+declare module 'borderStyle' {
+    module 'borderStyle' {
+        // @ts-ignore
+        export type { BorderStyle };
+    }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -193,6 +193,130 @@ export declare class SelectOptions {
     onSelect?: (index: number, value?: string) => void;
 }
 /**
+ * The symbol rendering strategy.
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
+declare enum SymbolRenderingStrategy {
+    /**
+     * The single rendering strategy.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    SINGLE = 0,
+    /**
+     * The multiple color rendering strategy.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    MULTIPLE_COLOR = 1,
+    /**
+     * The multiple opacity rendering strategy.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    MULTIPLE_OPACITY = 2
+}
+/**
+ * The symbol effect strategy.
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
+declare enum SymbolEffectStrategy {
+    /**
+     * There is no effect strategy.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    NONE = 0,
+    /**
+     * The scale effect strategy.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    SCALE = 1,
+    /**
+     * The hierarchical effect strategy.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    HIERARCHICAL = 2
+}
+/**
+ * Declare type SymbolOptions
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @atomicservice
+ * @since 12
+ */
+export declare class SymbolOptions {
+    /**
+     * The size of symbol icon.
+     * @type { ?(number | string | Resource) }.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @atomicservice
+     * @since 12
+     */
+    fontSize?: number | string | Resource;
+    /**
+     * The color of symbol icon.
+     * @type { ?(Array<ResourceColor>) }.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @atomicservice
+     * @since 12
+     */
+    fontColor?: Array<ResourceColor>;
+    /**
+     * The fontWeight of symbol icon.
+     * @type { ?(number | FontWeight | string) }.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @atomicservice
+     * @since 12
+     */
+    fontWeight?: number | FontWeight | string;
+    /**
+     * The effect strategy of symbol icon.
+     * @type { ?(SymbolEffectStrategy) }.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @atomicservice
+     * @since 12
+     */
+    effectStrategy?: SymbolEffectStrategy;
+    /**
+     * The rendering strategy of symbol icon.
+     * @type { ?(SymbolRenderingStrategy) }.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @atomicservice
+     * @since 12
+     */
+    renderingStrategy?: SymbolRenderingStrategy;
+}
+/**
  * Declare struct SubHeader
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @since 10
@@ -220,6 +344,13 @@ export declare struct SubHeader {
      */
     @Prop
     icon?: ResourceStr;
+    /**
+     * Attributes of Symbol icon.
+     * @type { SymbolOptions}.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    iconSymbolOptions?: SymbolOptions;
     /**
      * The first line text of content area.
      * @type { ResourceStr }.
@@ -293,4 +424,11 @@ export declare struct SubHeader {
      * @since 11
      */
     operationItem?: Array<OperationOption>;
+    /**
+     * Attributes of Symbol icons in operation area.
+     * @type { Array<SymbolOptions> }.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    operationSymbolOptions?: Array<SymbolOptions>;
 }

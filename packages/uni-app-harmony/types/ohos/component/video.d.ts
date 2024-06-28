@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Seek mode.
  *
  * @enum { number }
@@ -598,6 +602,13 @@ declare class VideoController {
      * @since 11
      */
     setCurrentTime(value: number, seekMode: SeekMode);
+    /**
+     * Provide the reset method of video playback.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    reset(): void;
 }
 /**
  * Defines the video interface.
@@ -1155,6 +1166,34 @@ declare class VideoAttribute extends CommonMethod<VideoAttribute> {
      * @since 11
      */
     onError(event: () => void): VideoAttribute;
+    /**
+     * Called when the video is stopped.
+     *
+     * @param { Callback<void> } event
+     * @returns { VideoAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onStop(event: Callback<void>): VideoAttribute;
+    /**
+     * Enable image analyzer.
+     *
+     * @param { boolean } enable
+     * @returns { VideoAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    enableAnalyzer(enable: boolean): VideoAttribute;
+    /**
+     * Set image analyzer with config.
+     *
+     * @param { ImageAnalyzerConfig } config
+     * @returns { VideoAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    analyzerConfig(config: ImageAnalyzerConfig): VideoAttribute;
 }
 /**
  * Defines Video Component.

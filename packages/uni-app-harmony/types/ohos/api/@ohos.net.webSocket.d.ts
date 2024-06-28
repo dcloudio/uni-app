@@ -17,6 +17,7 @@
  * @kit NetworkKit
  */
 import type { AsyncCallback, ErrorCallback, Callback } from './@ohos.base';
+import type connection from './@ohos.net.connection';
 /**
  * Provides WebSocket APIs.
  * @namespace webSocket
@@ -39,6 +40,12 @@ import type { AsyncCallback, ErrorCallback, Callback } from './@ohos.base';
  * @since 11
  */
 declare namespace webSocket {
+    /**
+     * @typedef HttpProxy
+     * @syscap SystemCapability.Communication.NetManager.Core
+     * @since 12
+     */
+    type HttpProxy = connection.HttpProxy;
     /**
      * Creates a web socket connection.
      * @returns { WebSocket } the WebSocket of the createWebSocket.
@@ -119,7 +126,30 @@ declare namespace webSocket {
          * @since 11
          */
         clientCert?: ClientCert;
+        /**
+         * HTTP proxy configuration. Use 'system' if this filed is not set.
+         * @type {?ProxyConfiguration}
+         * @syscap SystemCapability.Communication.NetStack
+         * @since 12
+         */
+        proxy?: ProxyConfiguration;
+        /**
+         * Self defined protocol.
+         * @type {?string}
+         * @syscap SystemCapability.Communication.NetStack
+         * @since 12
+         */
+        protocol?: string;
     }
+    /**
+     * HTTP proxy configuration.
+     * system: means that use system proxy configuration.
+     * no-proxy: means do not use proxy.
+     * object of @type {connection.HttpProxy} means providing custom proxy settings
+     * @syscap SystemCapability.Communication.NetStack
+     * @since 12
+     */
+    export type ProxyConfiguration = 'system' | 'no-proxy' | HttpProxy;
     /**
      * The clientCert field of the client certificate, which includes three attributes:
      * client certificate (certPath) and only support PEM format, certificate private key (keyPath),
@@ -267,6 +297,14 @@ declare namespace webSocket {
          */
         reason: string;
     }
+    /**
+     * HTTP response headers.
+     * @syscap SystemCapability.Communication.NetStack
+     * @since 12
+     */
+    export type ResponseHeaders = {
+        [k: string]: string | string[] | undefined;
+    };
     /**
      * <p>Defines a WebSocket object. Before invoking WebSocket APIs,
      * you need to call webSocket.createWebSocket to create a WebSocket object.</p>
@@ -795,6 +833,22 @@ declare namespace webSocket {
          * @since 11
          */
         off(type: 'dataEnd', callback?: Callback<void>): void;
+        /**
+         * Registers an observer for HTTP Response Header events.
+         * @param { 'headerReceive'} type - Indicates Event name.
+         * @param { Callback<ResponseHeaders> } callback - the callback used to return the result.
+         * @syscap SystemCapability.Communication.NetStack
+         * @since 12
+         */
+        on(type: 'headerReceive', callback: Callback<ResponseHeaders>): void;
+        /**
+         * Unregisters the observer for HTTP Response Header events.
+         * @param { 'headerReceive' } type - Indicates Event name.
+         * @param { Callback<ResponseHeaders> } [callback] - the callback used to return the result.
+         * @syscap SystemCapability.Communication.NetStack
+         * @since 12
+         */
+        off(type: 'headerReceive', callback?: Callback<ResponseHeaders>): void;
     }
 }
 export default webSocket;

@@ -31,6 +31,15 @@
  * @atomicservice
  * @since 11
  */
+/**
+ * The definition of ConfigurationConstant.
+ *
+ * @namespace ConfigurationConstant
+ * @syscap SystemCapability.Ability.AbilityBase
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare namespace ConfigurationConstant {
     /**
      * Color mode

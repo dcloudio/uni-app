@@ -86,7 +86,8 @@ declare namespace radio {
      * <li>{@code RadioTechnology#RADIO_TECHNOLOGY_NR}
      * </ul>
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -153,7 +154,8 @@ declare namespace radio {
      * <li>{@code RadioTechnology#RADIO_TECHNOLOGY_NR}
      * </ul>
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -170,7 +172,8 @@ declare namespace radio {
      * ranging from 0 to the maximum card slot index number supported by the device.
      * @param { AsyncCallback<NetworkState> } callback - Indicates the callback for getting network registration state.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -187,7 +190,8 @@ declare namespace radio {
      * ranging from 0 to the maximum card slot index number supported by the device.
      * @returns { Promise<NetworkState> } Returns the NetworkState object.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -202,7 +206,8 @@ declare namespace radio {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @param { AsyncCallback<NetworkState> } callback - Indicates the callback for getting network registration state.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -223,7 +228,8 @@ declare namespace radio {
      * <li>{@link NetworkSelectionMode#NETWORK_SELECTION_AUTOMATIC}
      * <li>{@link NetworkSelectionMode#NETWORK_SELECTION_MANUAL}
      * <ul>
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -244,7 +250,8 @@ declare namespace radio {
      * <li>{@link NetworkSelectionMode#NETWORK_SELECTION_AUTOMATIC}
      * <li>{@link NetworkSelectionMode#NETWORK_SELECTION_MANUAL}
      * <ul>
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -260,7 +267,8 @@ declare namespace radio {
      * ranging from 0 to the maximum card slot index number supported by the device.
      * @param { AsyncCallback<string> } callback - Indicates the callback for getting the country code
      * defined in ISO 3166-2; returns an empty string if the device is not registered with any network.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -276,7 +284,8 @@ declare namespace radio {
      * ranging from 0 to the maximum card slot index number supported by the device.
      * @returns { Promise<string> } Returns the country code defined in ISO 3166-2.
      * Returns an empty string if the device is not registered with any network.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -303,7 +312,8 @@ declare namespace radio {
      *
      * @param { AsyncCallback<number> } callback - Indicates the callback for getting the index number of
      * the primary card slot.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -332,7 +342,8 @@ declare namespace radio {
      * index number supported by the device.
      * @param { AsyncCallback<Array<SignalInformation>> } callback - Indicates the callback for getting
      * the instance list of the child classes derived from {@link SignalInformation}.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -348,7 +359,8 @@ declare namespace radio {
      * index number supported by the device.
      * @returns { Promise<Array<SignalInformation>> } Returns the callback for getting the instance list of
      * the child classes derived from {@link SignalInformation}.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -417,7 +429,8 @@ declare namespace radio {
      * @param { AsyncCallback<boolean> } callback - Returns {@code true} If the radio service is enabled.
      * Returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -434,7 +447,8 @@ declare namespace radio {
      * ranging from 0 to the maximum card slot index number supported by the device.
      * @returns { Promise<boolean> } Returns {@code true} If the radio service is enabled; returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -450,7 +464,8 @@ declare namespace radio {
      * @param { AsyncCallback<boolean> } callback - Returns {@code true} If the radio service is enabled.
      * Returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -465,7 +480,8 @@ declare namespace radio {
      * @param { number } slotId - Indicates the card slot index number,
      * ranging from 0 to the maximum card slot index number supported by the device.
      * @param { AsyncCallback<string> } callback - Indicates the callback for getting the operator name.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -480,7 +496,8 @@ declare namespace radio {
      * @param { number } slotId - Indicates the card slot index number,
      * ranging from 0 to the maximum card slot index number supported by the device.
      * @returns { Promise<string> } Returns the operator name.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.

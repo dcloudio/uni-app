@@ -51,7 +51,8 @@ declare namespace runningLock {
          * @permission ohos.permission.RUNNING_LOCK
          * @param { number } timeout Indicates the lock duration (ms). After the lock duration times out,
          * the lock is automatically released and the system hibernates if no other {@link RunningLock} is set.
-         * @throws { BusinessError } 401 - If the timeout is not valid.
+         * timeout parameter must be of type number.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types;
          * @throws { BusinessError } 4900101 - If connecting to the service failed.
          * @syscap SystemCapability.PowerManager.PowerManager.Core
          * @since 9
@@ -156,8 +157,10 @@ declare namespace runningLock {
      * Checks whether the specified {@link RunningLockType} is supported.
      *
      * @param { RunningLockType } type Indicates the specified {@link RunningLockType}.
+     * the RunningLockType type is an enumeration class.
      * @returns { boolean } Whether the specified {@link RunningLockType} is supported.
-     * @throws { BusinessError } 401 - If the type is not valid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types;
+     * 2. Parameter verification failed.
      * @throws { BusinessError } 4900101 - If connecting to the service failed.
      * @syscap SystemCapability.PowerManager.PowerManager.Core
      * @since 9
@@ -203,9 +206,12 @@ declare namespace runningLock {
      * @permission ohos.permission.RUNNING_LOCK
      * @param { string } name Indicates the {@link RunningLock} name. A recommended name consists of the package or
      * class name and a suffix.
+     * name parameter must be of type string.
      * @param { RunningLockType } type Indicates the {@link RunningLockType}.
+     * the RunningLockType type is an enumeration class.
      * @param { AsyncCallback<RunningLock> } callback Indicates the callback of {@link RunningLock} object.
-     * @throws { BusinessError } 401 - If the name, type or callback is not valid.
+     * AsyncCallback encapsulates a class of RunningLock type
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Parameter verification failed.
      * @syscap SystemCapability.PowerManager.PowerManager.Core
      * @since 9
      */
@@ -218,9 +224,11 @@ declare namespace runningLock {
      * @permission ohos.permission.RUNNING_LOCK
      * @param { string } name Indicates the {@link RunningLock} name. A recommended name consists of the package or
      * class name and a suffix.
+     * name parameter must be of type string.
      * @param { RunningLockType } type Indicates the {@link RunningLockType}.
+     * the RunningLockType type is an enumeration class.
      * @returns { Promise<RunningLock> } The {@link RunningLock} object.
-     * @throws { BusinessError } 401 - If the name or type is not valid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Parameter verification failed.
      * @syscap SystemCapability.PowerManager.PowerManager.Core
      * @since 9
      */

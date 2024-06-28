@@ -23,6 +23,14 @@
  * @crossplatform
  * @since 11
  */
+/**
+* Control margin status of  ExceptionPrompt.
+* @enum { number }
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 export declare enum MarginType {
     /**
      * Default margin of MarginType，Margin 1: references ohos_id_card_margin_start, margin 2: references ohos_id_card_margin_end.
@@ -30,6 +38,13 @@ export declare enum MarginType {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Default margin of MarginType，Margin 1: references ohos_id_card_margin_start, margin 2: references ohos_id_card_margin_end.
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     DEFAULT_MARGIN = 0,
     /**
      * Margins can be adapted of MarginType，Margin 1: references ohos_id_max_padding_start, margin 2: references ohos_id_max_padding_end.
@@ -37,6 +52,13 @@ export declare enum MarginType {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Margins can be adapted of MarginType，Margin 1: references ohos_id_max_padding_start, margin 2: references ohos_id_max_padding_end.
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     FIT_MARGIN = 1
 }
 /**
@@ -46,6 +68,14 @@ export declare enum MarginType {
  * @crossplatform
  * @since 11
  */
+/**
+* Configuration parameter of ExceptionPrompt.
+* @interface PromptOptions
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 export interface PromptOptions {
     /**
      * Icon of PromptOptions.
@@ -54,6 +84,14 @@ export interface PromptOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Icon of PromptOptions.
+    * @type { ?ResourceStr }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     icon?: ResourceStr;
     /**
      * Tip text of PromptOptions.
@@ -62,6 +100,14 @@ export interface PromptOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Tip text of PromptOptions.
+    * @type { ?ResourceStr }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     tip?: ResourceStr;
     /**
      * Margin Type  of ExceptionPrompt.
@@ -70,6 +116,14 @@ export interface PromptOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Margin Type  of ExceptionPrompt.
+    * @type { MarginType }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     marginType: MarginType;
     /**
      * Right icon button text of PromptOptions.
@@ -78,6 +132,14 @@ export interface PromptOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Right icon button text of PromptOptions.
+    * @type { ?ResourceStr }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     actionText?: ResourceStr;
     /**
      * Distance from the top of PromptOptions.
@@ -86,6 +148,14 @@ export interface PromptOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Distance from the top of PromptOptions.
+    * @type { Dimension }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     marginTop: Dimension;
     /**
      * Control concealment of PromptOptions.
@@ -94,6 +164,14 @@ export interface PromptOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Control concealment of PromptOptions.
+    * @type { boolean }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     isShown?: boolean;
 }
 /**
@@ -102,6 +180,13 @@ export interface PromptOptions {
  * @crossplatform
  * @since 11
  */
+/**
+* Declare struct ExceptionPrompt higher-order component.
+* @syscap SystemCapability.ArkUI.ArkUI.Full
+* @crossplatform
+* @atomicservice
+* @since 12
+*/
 @Component
 export declare struct ExceptionPrompt {
     /**
@@ -111,6 +196,14 @@ export declare struct ExceptionPrompt {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Configuration information of ExceptionPrompt.
+    * @type { PromptOptions }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     @Prop
     options: PromptOptions;
     /**
@@ -120,6 +213,14 @@ export declare struct ExceptionPrompt {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Callback when clicking the text on the left.
+    * @type { ?function }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     onTipClick?: () => void;
     /**
      * Callback when click the icon button.
@@ -128,6 +229,14 @@ export declare struct ExceptionPrompt {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Callback when click the icon button.
+    * @type { ?function }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     onActionTextClick?: () => void;
     /**
      * The build function is a member function that must return an ArkTS component type (Element) to represent the component to be rendered as a user interface.
@@ -136,5 +245,13 @@ export declare struct ExceptionPrompt {
      * @crossplatform
      * @since 11
      */
+    /**
+    * The build function is a member function that must return an ArkTS component type (Element) to represent the component to be rendered as a user interface.
+    * @type { function }
+    * @syscap SystemCapability.ArkUI.ArkUI.Full
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     build(): void;
 }

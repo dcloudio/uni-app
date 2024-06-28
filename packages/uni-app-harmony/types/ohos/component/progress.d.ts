@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Defines the option of Progress.
  *
  * @interface ProgressOptions
@@ -1453,6 +1457,55 @@ declare class ProgressAttribute<Type extends keyof ProgressStyleMap = keyof Prog
      * @form
      */
     style(value: Style): ProgressAttribute<Type>;
+    /**
+     * Set the contentModifier of progress.
+     *
+     * @param { ContentModifier<ProgressConfiguration> } modifier - The contentModifier of progress.
+     * @returns { ProgressAttribute<Type> } the attribute of the progress.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    contentModifier(modifier: ContentModifier<ProgressConfiguration>): ProgressAttribute<Type>;
+    /**
+     * Sets if mark to privacy sensitive.
+     *
+     * @param { Optional<boolean> } isPrivacySensitiveMode - indicates if mark to privacy sensitive.
+     * @returns { ProgressAttribute<Type> } the attribute of the progress.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    privacySensitive(isPrivacySensitiveMode: Optional<boolean>): ProgressAttribute<Type>;
+}
+/**
+ * ProgressConfiguration used by progress contentModifier
+ *
+ * @interface ProgressConfiguration
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface ProgressConfiguration extends CommonConfiguration<ProgressConfiguration> {
+    /**
+     * The value of Progress.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    value: number;
+    /**
+     * The total of Progress.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    total: number;
 }
 /**
  * Defines Progress Component.

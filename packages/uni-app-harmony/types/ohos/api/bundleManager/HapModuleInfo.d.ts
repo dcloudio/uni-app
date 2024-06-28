@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit AbilityKit
+ */
 import { AbilityInfo } from './AbilityInfo';
 import { ExtensionAbilityInfo } from './ExtensionAbilityInfo';
 import { Metadata } from './Metadata';
@@ -413,6 +417,35 @@ export interface HapModuleInfo {
      * @since 11
      */
     readonly fileContextMenuConfig: string;
+    /**
+     * Indicates the router information of the module
+     *
+     * @type { Array<RouterItem> }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    readonly routerMap: Array<RouterItem>;
+    /**
+     * Indicates native library path.
+     *
+     * @type { string }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @since 12
+     */
+    readonly nativeLibraryPath: string;
+    /**
+  * Indicates the code path
+  *
+  * @type { string }
+  * @readonly
+  * @syscap SystemCapability.BundleManager.BundleFramework.Core
+  * @atomicservice
+  * @since 12
+  */
+    readonly codePath: string;
 }
 /**
  * Indicates the dependency
@@ -511,4 +544,84 @@ export interface PreloadItem {
      * @since 11
      */
     readonly moduleName: string;
+}
+/**
+ * Indicates the router item
+ *
+ * @typedef RouterItem
+ * @syscap SystemCapability.BundleManager.BundleFramework.Core
+ * @atomicservice
+ * @since 12
+ */
+export interface RouterItem {
+    /**
+     * Indicates the name of the module to which the current page belongs
+     *
+     * @type { string }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    readonly name: string;
+    /**
+     * Indicates the file path of the current page within the module
+     *
+     * @type { string }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    readonly pageSourceFile: string;
+    /**
+     * Indicates the name of the function @Builder decorated
+     *
+     * @type { string }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    readonly buildFunction: string;
+    /**
+     * Indicates the custom data
+     *
+     * @type { Array<DataItem> }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    readonly data: Array<DataItem>;
+}
+/**
+ * Indicates the data item defined in router item
+ *
+ * @typedef DataItem
+ * @syscap SystemCapability.BundleManager.BundleFramework.Core
+ * @atomicservice
+ * @since 12
+ */
+export interface DataItem {
+    /**
+     * Indicates the key of the custom data item
+     *
+     * @type { string }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    readonly key: string;
+    /**
+     * Indicates the value of the custom data item
+     *
+     * @type { string }
+     * @readonly
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    readonly value: string;
 }

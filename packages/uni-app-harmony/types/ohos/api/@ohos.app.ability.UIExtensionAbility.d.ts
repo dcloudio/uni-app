@@ -16,6 +16,7 @@
  * @file
  * @kit AbilityKit
  */
+import AbilityConstant from './@ohos.app.ability.AbilityConstant';
 import ExtensionAbility from './@ohos.app.ability.ExtensionAbility';
 import type UIExtensionContentSession from './@ohos.app.ability.UIExtensionContentSession';
 import type UIExtensionContext from './application/UIExtensionContext';
@@ -45,7 +46,15 @@ export default class UIExtensionAbility extends ExtensionAbility {
      * @StageModelOnly
      * @since 10
      */
-    onCreate(): void;
+    /**
+    * Called back when an UI extension is started for initialization.
+    *
+    * @param { AbilityConstant.LaunchParam } launchParam - Indicates the LaunchParam information about UIExtensionAbility.
+    * @syscap SystemCapability.Ability.AbilityRuntime.Core
+    * @StageModelOnly
+    * @since 12
+    */
+    onCreate(launchParam: AbilityConstant.LaunchParam): void;
     /**
      * Called back when an UI extension session is created.
      *

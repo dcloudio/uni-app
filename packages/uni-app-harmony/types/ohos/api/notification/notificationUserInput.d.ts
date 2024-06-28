@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file Describes a NotificationUserInput instance
+ * @kit NotificationKit
+ */
+/**
  * Describes a NotificationUserInput instance.
  *
  * @typedef NotificationUserInput

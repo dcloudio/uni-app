@@ -45,11 +45,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @param { AsyncCallback<LocalServiceInfo> } callback - the callback of addLocalService.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204003 - Callback duplicated.
-     * @throws { BusinessError } 2204008 - Service instance duplicated.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204008 - Failed to delete the service instance.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @since 10
      */
@@ -59,11 +59,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @param { AsyncCallback<LocalServiceInfo> } callback - the callback of addLocalService.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204003 - Callback duplicated.
-     * @throws { BusinessError } 2204008 - Service instance duplicated.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204008 - Failed to delete the service instance.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @atomicservice
      * @since 11
@@ -75,11 +75,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @returns { Promise<LocalServiceInfo> } The promise returned by the function.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204003 - Callback duplicated.
-     * @throws { BusinessError } 2204008 - Service instance duplicated.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204008 - Failed to delete the service instance.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @since 10
      */
@@ -89,11 +89,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @returns { Promise<LocalServiceInfo> } The promise returned by the function.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204003 - Callback duplicated.
-     * @throws { BusinessError } 2204008 - Service instance duplicated.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204008 - Failed to delete the service instance.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @atomicservice
      * @since 11
@@ -105,11 +105,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @param { AsyncCallback<LocalServiceInfo> } callback - the callback of removeLocalService.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204002 - Callback not found.
-     * @throws { BusinessError } 2204008 - Service instance not found.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204008 - Failed to delete the service instance.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @since 10
      */
@@ -119,11 +119,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @param { AsyncCallback<LocalServiceInfo> } callback - the callback of removeLocalService.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204002 - Callback not found.
-     * @throws { BusinessError } 2204008 - Service instance not found.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204008 - Failed to delete the service instance.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @atomicservice
      * @since 11
@@ -135,11 +135,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @returns { Promise<LocalServiceInfo> } The promise returned by the function.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204002 - Callback not found.
-     * @throws { BusinessError } 2204008 - Service instance not found.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204008 - Failed to delete the service instance.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @since 10
      */
@@ -149,11 +149,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @returns { Promise<LocalServiceInfo> } The promise returned by the function.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204002 - Callback not found.
-     * @throws { BusinessError } 2204008 - Service instance not found.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204008 - Failed to delete the service instance.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @atomicservice
      * @since 11
@@ -185,11 +185,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @param { AsyncCallback<LocalServiceInfo> } callback - the callback of resolveLocalService.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204003 - Callback duplicated.
      * @throws { BusinessError } 2204006 - Request timeout.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @since 10
      */
@@ -199,11 +199,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @param { AsyncCallback<LocalServiceInfo> } callback - the callback of resolveLocalService.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204003 - Callback duplicated.
      * @throws { BusinessError } 2204006 - Request timeout.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @atomicservice
      * @since 11
@@ -215,11 +215,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @returns { Promise<LocalServiceInfo> } The promise returned by the function.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204003 - Callback duplicated.
      * @throws { BusinessError } 2204006 - Request timeout.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @since 10
      */
@@ -229,11 +229,11 @@ declare namespace mdns {
      * @param { LocalServiceInfo } serviceInfo - Information about the mDNS service. {@link LocalServiceInfo}
      * @returns { Promise<LocalServiceInfo> } The promise returned by the function.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @throws { BusinessError } 2204003 - Callback duplicated.
      * @throws { BusinessError } 2204006 - Request timeout.
-     * @throws { BusinessError } 2204010 - Send packet failed.
+     * @throws { BusinessError } 2204010 - Failed to send the message.
      * @syscap SystemCapability.Communication.NetManager.MDNS
      * @atomicservice
      * @since 11

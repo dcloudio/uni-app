@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -88,14 +88,21 @@ declare namespace defaultAppManager {
          * @syscap SystemCapability.BundleManager.BundleFramework.DefaultApp
          * @since 9
          */
-        PPT = 'PPT Viewer'
+        PPT = 'PPT Viewer',
+        /**
+         * Default email identifier.
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.DefaultApp
+         * @since 12
+         */
+        EMAIL = 'Email'
     }
     /**
      * Query whether the caller is default application based on type.
      *
      * @param { string } type - Application type or a file type that conforms to media type format.
      * @param { AsyncCallback<boolean> } callback - The callback of querying default application result.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @syscap SystemCapability.BundleManager.BundleFramework.DefaultApp
      * @since 9
@@ -106,7 +113,7 @@ declare namespace defaultAppManager {
      *
      * @param { string } type - Application type or a file type that conforms to media type format.
      * @returns { Promise<boolean> } Return true if caller is default application; return false otherwise.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @syscap SystemCapability.BundleManager.BundleFramework.DefaultApp
      * @since 9
@@ -117,7 +124,7 @@ declare namespace defaultAppManager {
      *
      * @param { string } type - Application type or a file type that conforms to media type format.
      * @returns { boolean } Return true if caller is default application; return false otherwise.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @syscap SystemCapability.BundleManager.BundleFramework.DefaultApp
      * @since 10

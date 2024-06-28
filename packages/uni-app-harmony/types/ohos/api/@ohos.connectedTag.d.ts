@@ -146,7 +146,10 @@ declare namespace connectedTag {
      * @param { number[] } data Indicates the NDEF data to send, which is a byte array.
      * @returns { Promise<void> } The void.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - The parameter check failed. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 3200101 - Connected NFC tag running state is abnormal in service.
      * @syscap SystemCapability.Communication.ConnectedTag
@@ -160,7 +163,10 @@ declare namespace connectedTag {
      * @param { number[] } data Indicates the NDEF data to send, which is a byte array.
      * @param { AsyncCallback<void> } callback
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - The parameter check failed. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 3200101 - Connected NFC tag running state is abnormal in service.
      * @syscap SystemCapability.Communication.ConnectedTag

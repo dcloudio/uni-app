@@ -659,7 +659,7 @@ declare namespace rdb {
          *
          * @param { string } field - Indicates the column name in the database table.
          * @returns { RdbPredicates } - The {@link RdbPredicates} self.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
          * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
          * @since 7
          * @deprecated since 9

@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Enumerates the layout direction of the icon and text.
  *
  * @enum { number }

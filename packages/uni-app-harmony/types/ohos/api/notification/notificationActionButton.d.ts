@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file Describes an action button displayed in a notification
+ * @kit NotificationKit
+ */
 import { NotificationUserInput } from './notificationUserInput';
 import { WantAgent } from '../@ohos.wantAgent';
 /**
