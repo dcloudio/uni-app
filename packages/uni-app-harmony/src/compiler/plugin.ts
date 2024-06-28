@@ -20,6 +20,8 @@ const harmonyGlobals: (string | RegExp)[] = [
   /^@ohos\./,
   /^@kit\./,
   /^@hms\./,
+  /^@arkts\./,
+  /^@system\./,
   '@ohos/hypium',
   '@ohos/hamock',
 ]
