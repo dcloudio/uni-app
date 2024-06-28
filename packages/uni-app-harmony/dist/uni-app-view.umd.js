@@ -11683,7 +11683,7 @@
     var wwwPath = normalizeLocalPath$1("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
     if (filepath.indexOf("/") === 0) {
       if (filepath.startsWith("/data/storage/")) {
-        return "file:/" + filepath;
+        return "file://" + filepath;
       }
       return wwwPath + filepath;
     }
@@ -15642,8 +15642,7 @@
   }
   function useCache(props2, type) {
     if (type.value === "number") {
-      var _props2$modelValue;
-      var value = (_props2$modelValue = props2.modelValue) !== null && _props2$modelValue !== void 0 ? _props2$modelValue : props2.value;
+      var value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
       var cache2 = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
       watch(() => props2.modelValue, (value2) => {
         cache2.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";

@@ -1,4 +1,25 @@
-import { defineAsyncApi as originalDefineAsyncApi, defineOffApi as originalDefineOffApi, defineOnApi as originalDefineOnApi, defineSyncApi as originalDefineSyncApi, defineTaskApi as originalDefineTaskApi } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { defineAsyncApi as originalDefineAsyncApi, defineOffApi as originalDefineOffApi, defineOnApi as originalDefineOnApi, defineSyncApi as originalDefineSyncApi, defineTaskApi as originalDefineTaskApi } from "@dcloudio/uni-app-harmony-framework";
+interface UniProvider {
+    id: string;
+    description: string;
+}
+const providers: Map<String, Map<String, UniProvider>> = new Map();
+function getUniProvider<T extends UniProvider>(service: string, providerName: String): T | null {
+    return providers.get(service)?.get(providerName) as T | null;
+}
+function getUniProviders(service: string): UniProvider[] {
+    const result: UniProvider[] = [];
+    providers.get(service)?.forEach((provider)=>{
+        result.push(provider);
+    });
+    return result;
+}
+function registerUniProvider<T extends UniProvider>(service: string, providerName: string, provider: T) {
+    if (!providers.has(service)) {
+        providers.set(service, new Map());
+    }
+    providers.get(service)?.set(providerName, provider);
+}
 type Anything = Object | null | undefined;
 type NullType = null | undefined;
 type FormatArgsValueType = Function | string | number | boolean;
@@ -6,13 +27,13 @@ interface AsyncApiSuccessResult {
 }
 interface AsyncApiResult {
 }
-interface ErrRes {
+interface ApiError {
     errMsg?: string | null;
     errCode?: number | null;
 }
-interface ApiExcutor<K> {
+interface ApiExecutor<K> {
     resolve: (res?: K | void) => void;
-    reject: (errMsg?: string, errRes?: ErrRes) => void;
+    reject: (errMsg?: string, errRes?: ApiError) => void;
 }
 interface ProtocolOptions {
     name?: string | null;
@@ -84,12 +105,12 @@ function buildOptions(options: ApiOptions<AsyncMethodOptionLike> | null = null) 
     }
     return originalOptions;
 }
-function defineAsyncApi<T extends AsyncMethodOptionLike, K>(name: string, fn: (options: T, res: ApiExcutor<K>) => void, protocol: Map<string, ProtocolOptions> | null = null, options: ApiOptions<T> | null = null): Function {
+function defineAsyncApi<T extends AsyncMethodOptionLike, K>(name: string, fn: (options: T, res: ApiExecutor<K>) => void, protocol: Map<string, ProtocolOptions> | null = null, options: ApiOptions<T> | null = null): Function {
     const originalProtocol = buildProtocol(protocol);
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineAsyncApi(name, fn, originalProtocol, originalOptions);
 }
-function defineTaskApi<T, K, TASK>(name: string, fn: (options: T, res: ApiExcutor<K>) => TASK, protocol: Map<string, ProtocolOptions>, options: ApiOptions<T>): Object {
+function defineTaskApi<T, K, TASK>(name: string, fn: (options: T, res: ApiExecutor<K>) => TASK, protocol: Map<string, ProtocolOptions>, options: ApiOptions<T>): Object {
     const originalProtocol = buildProtocol(protocol);
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineTaskApi(name, fn, originalProtocol, originalOptions);
@@ -107,10 +128,11 @@ function defineOffApi<T>(name: string, fn: () => void, options: ApiOptions<T>): 
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineOffApi(name, fn, originalOptions);
 }
+export { UniProvider as UniProvider, getUniProvider as getUniProvider, getUniProviders as getUniProviders, registerUniProvider as registerUniProvider };
 export { AsyncApiSuccessResult as AsyncApiSuccessResult };
 export { AsyncApiResult as AsyncApiResult };
-export { ErrRes as ErrRes };
-export { ApiExcutor as ApiExcutor };
+export { ApiError as ApiError };
+export { ApiExecutor as ApiExecutor };
 export { ProtocolOptions as ProtocolOptions };
 export { ApiOptions as ApiOptions };
 export { defineAsyncApi as defineAsyncApi };

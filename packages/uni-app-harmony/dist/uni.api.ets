@@ -1,14 +1,18 @@
-import { IUniError, UTSObject, UniError, UTSJSONObject, string, ComponentPublicInstance, ComponentInternalInstance } from './uts'
-import { defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, AsyncApiSuccessResult, AsyncApiResult, ApiExcutor, ProtocolOptions, ApiOptions, ErrRes } from './uni-api-shared'
+import { IUTSObject, UTSObject, UTSJSONObject } from '@dcloudio/uts-harmony'
+import { IUniError, UniError, string, ComponentPublicInstance, ComponentInternalInstance, defineAsyncApi, defineSyncApi, defineTaskApi, defineOnApi, defineOffApi, getUniProvider, getUniProviders, AsyncApiSuccessResult, AsyncApiResult, ApiExecutor, ProtocolOptions, ApiOptions, ApiError, UniProvider } from '@dcloudio/uni-app-harmony'
 
+import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
+import Want from '@ohos.app.ability.Want';
+import common from '@ohos.app.ability.common';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
-import display from '@ohos.display';
 import fs from '@ohos.file.fs';
+import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
 import http from '@ohos.net.http';
+import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
 import { BusinessError as BusinessError1 } from '@ohos.base';
 import { BusinessError } from '@ohos.base';
@@ -16,29 +20,38 @@ import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony as UTSHarmony1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony3, getCurrentPage } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony4 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony as UTSHarmony5 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { UTSHarmony } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2, getWindowInfo as internalGetWindowInfo } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
+import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
+import bundleManager1 from '@ohos.bundle.bundleManager';
+import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import dataPreferences from '@ohos.data.preferences';
+import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
-import { getEnv, Emitter as Emitter2 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath as getRealPath2, Emitter as Emitter1 } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
-import { getRealPath } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import fs2 from '@ohos.file.fs';
+import fs3 from '@ohos.file.fs';
+import { getCurrentPage as getCurrentPage1, navigator } from "@dcloudio/uni-app-harmony-framework";
+import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime, getCurrentPage } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath3, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr } from "@dcloudio/uni-app-harmony-framework";
 import harmonyWindow from '@ohos.window';
-import harmonyWindow1 from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
-import { isPlainObject, Emitter } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { isPlainObject, Emitter } from "@dcloudio/uni-app-harmony-framework";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
+import picker3 from '@ohos.file.picker';
 import promptAction1 from '@ohos.promptAction';
-import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "../../../resources/rawfile/uni-app/uni-app-harmony-framework-dev";
+import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+export type Rpx2px = (number: number) => number;
 export function initUniExtApi(APP_ID: string) {
     type SetClipboardData = (options: SetClipboardDataOptions) => void;
     class SetClipboardDataSuccess extends UTSObject {
@@ -98,13 +111,8 @@ export function initUniExtApi(APP_ID: string) {
         result: string;
         data: string;
     }
-    interface ClipboardModule {
-        getString(callback: (ret: ClipboardModuleGetStringOptions) => void): void;
-        setString(data: string): void;
-    }
-    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExcutor<GetClipboardDataSuccess>)=>{
-        const clipboard: ClipboardModule = UTSHarmony.clipboard;
-        clipboard.getString((ret)=>{
+    const getClipboardData: GetClipboardData = defineAsyncApi<GetClipboardDataOptions, GetClipboardDataSuccess>(API_GET_CLIPBOARD_DATA, (_: GetClipboardDataOptions, res: ApiExecutor<GetClipboardDataSuccess>)=>{
+        clipboard.getString((ret: ClipboardModuleGetStringOptions)=>{
             if (ret.result === 'success') {
                 res.resolve({
                     data: ret.data
@@ -114,8 +122,7 @@ export function initUniExtApi(APP_ID: string) {
             }
         });
     }) as GetClipboardData;
-    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExcutor<SetClipboardDataSuccess>)=>{
-        const clipboard: ClipboardModule = UTSHarmony.clipboard;
+    const setClipboardData: SetClipboardData = defineAsyncApi<SetClipboardDataOptions, SetClipboardDataSuccess>(API_SET_CLIPBOARD_DATA, (options: SetClipboardDataOptions, res: ApiExecutor<SetClipboardDataSuccess>)=>{
         clipboard.setString(options.data);
         res.resolve();
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
@@ -229,7 +236,7 @@ export function initUniExtApi(APP_ID: string) {
             } as RemoveIntersectionObserverArgs, this._pageId);
         }
     }
-    const createIntersectionObserver = defineSyncApi<CreateIntersectionObserver>('createIntersectionObserver', (context: ComponentPublicInstance | null, options: CreateIntersectionObserverOptions | null = null)=>{
+    const createIntersectionObserver = defineSyncApi<IntersectionObserver>('createIntersectionObserver', (context: ComponentPublicInstance | null, options: CreateIntersectionObserverOptions | null = null)=>{
         let _options: ComponentPublicInstance | CreateIntersectionObserverOptions | null = options;
         context = resolveComponentInstance(context);
         if (context && !getPageIdByVm(context)) {
@@ -240,7 +247,143 @@ export function initUniExtApi(APP_ID: string) {
             return new ServiceIntersectionObserver(context as ComponentPublicInstance, _options as CreateIntersectionObserverOptions);
         }
         return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
-    });
+    }) as CreateIntersectionObserver;
+    type CreateSelectorQuery = () => SelectorQuery;
+    type SelectorQueryNodeInfoCallback = (result: Object) => void;
+    class NodeField extends UTSObject {
+        id: boolean | null = null;
+        dataset: boolean | null = null;
+        rect: boolean | null = null;
+        size: boolean | null = null;
+        scrollOffset: boolean | null = null;
+        properties: string[] | null = null;
+        computedStyle: string[] | null = null;
+        context: boolean | null = null;
+        node: boolean | null = null;
+    }
+    interface NodesRef {
+        boundingClientRect(callback: SelectorQueryNodeInfoCallback | null): SelectorQuery;
+        boundingClientRect(): SelectorQuery;
+        scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+        fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+        context(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
+        node(callback: (result: Object) => void): SelectorQuery;
+    }
+    interface SelectorQuery {
+        in(component: Object | null): SelectorQuery;
+        select(selector: string): NodesRef;
+        selectAll(selector: string): NodesRef;
+        selectViewport(): NodesRef;
+        exec(callback: (result: Array<Object>) => void | null): NodesRef | null;
+        exec(): NodesRef | null;
+    }
+    interface SelectorQueryRequest {
+        component: ComponentPublicInstance | undefined | null;
+        selector: string;
+        single: boolean;
+        fields: NodeField;
+    }
+    class NodesRefImpl implements NodesRef {
+        private _selectorQuery: SelectorQueryImpl;
+        private _component: ComponentPublicInstance | null | undefined;
+        private _selector: string;
+        private _single: boolean;
+        constructor(selectorQuery: SelectorQueryImpl, component: ComponentPublicInstance | null | undefined, selector: string, single: boolean){
+            this._selectorQuery = selectorQuery;
+            this._component = component;
+            this._selector = selector;
+            this._single = single;
+        }
+        boundingClientRect(callback: SelectorQueryNodeInfoCallback | null = null): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, {
+                id: true,
+                dataset: true,
+                rect: true,
+                size: true
+            } as NodeField, callback);
+            return this._selectorQuery;
+        }
+        fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, fields, callback);
+            return this._selectorQuery;
+        }
+        scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, {
+                id: true,
+                dataset: true,
+                scrollOffset: true
+            } as NodeField, callback);
+            return this._selectorQuery;
+        }
+        context(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, {
+                context: true
+            } as NodeField, callback);
+            return this._selectorQuery;
+        }
+        node(callback: (result: Object) => void): SelectorQuery {
+            this._selectorQuery._push(this._selector, this._component, this._single, {
+                node: true
+            } as NodeField, callback);
+            return this._selectorQuery;
+        }
+    }
+    class SelectorQueryImpl implements SelectorQuery {
+        private _page: ComponentPublicInstance;
+        private _queue: Array<SelectorQueryRequest>;
+        private _component?: ComponentPublicInstance = undefined;
+        private _queueCb: Array<SelectorQueryNodeInfoCallback>;
+        private _nodesRef?: NodesRef;
+        constructor(page: ComponentPublicInstance){
+            this._page = page;
+            this._queue = [];
+            this._queueCb = [];
+        }
+        exec(callback: ((result: Array<Object>) => void | null) | null = null): NodesRef | null {
+            requestComponentInfo(this._page, this._queue, (res: Array<Object>)=>{
+                const queueCbs = this._queueCb;
+                res.forEach((result: Object, index: number)=>{
+                    const queueCb = queueCbs[index];
+                    if (isFunction1(queueCb)) {
+                        queueCb(result);
+                    }
+                });
+                if (isFunction1(callback)) {
+                    callback!(res);
+                }
+            });
+            return this._nodesRef as NodesRef;
+        }
+        in(component: ComponentPublicInstance | ComponentInternalInstance | null = null): SelectorQuery {
+            this._component = resolveComponentInstance1(component);
+            return this;
+        }
+        select(selector: string): NodesRef {
+            return this._nodesRef = new NodesRefImpl(this, this._component, selector, true) as NodesRef;
+        }
+        selectAll(selector: string): NodesRef {
+            return this._nodesRef = new NodesRefImpl(this, this._component, selector, false) as NodesRef;
+        }
+        selectViewport(): NodesRef {
+            return this._nodesRef = new NodesRefImpl(this, null, '', true) as NodesRef;
+        }
+        _push(selector: string, component: ComponentPublicInstance | undefined | null, single: boolean, fields: NodeField, callback: SelectorQueryNodeInfoCallback | null = null) {
+            this._queue.push({
+                component,
+                selector,
+                single,
+                fields
+            } as SelectorQueryRequest);
+            callback && this._queueCb.push(callback);
+        }
+    }
+    const createSelectorQuery = defineSyncApi<SelectorQuery>('createSelectorQuery', (context: ComponentInternalInstance | ComponentPublicInstance | null = null)=>{
+        context = resolveComponentInstance1(context);
+        if (context && !getPageIdByVm1(context)) {
+            context = null;
+        }
+        return new SelectorQueryImpl(context || getCurrentPageVm1()!) as SelectorQuery;
+    }) as CreateSelectorQuery;
     class GetAppBaseInfoOptions extends UTSObject {
         filter!: Array<string>;
     }
@@ -290,20 +433,20 @@ export function initUniExtApi(APP_ID: string) {
         code: string;
     }
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony1.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony1.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony1.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony1.getAppId() as string,
+            appId: UTSHarmony.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony1.getAppName() as string,
-            appTheme: UTSHarmony1.getAppTheme() as string,
+            appName: UTSHarmony.getAppName() as string,
+            appTheme: UTSHarmony.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony1.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -348,7 +491,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony2.getOsTheme() as string,
+            osTheme: UTSHarmony1.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmony',
             platform: 'harmony',
@@ -357,6 +500,50 @@ export function initUniExtApi(APP_ID: string) {
             system: deviceInfo.osFullName
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
+    class GetProviderSuccess extends UTSObject {
+        service!: 'payment';
+        provider!: string[];
+        providers!: UniProvider[];
+        errMsg!: string;
+    }
+    type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
+    type GetProviderFail = UniError;
+    type GetProviderFailCallback = (result: GetProviderFail) => void;
+    type GetProviderComplete = Object;
+    type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
+    class GetProviderOptions extends UTSObject {
+        service!: 'payment';
+        success: GetProviderSuccessCallback | null = null;
+        fail: GetProviderFailCallback | null = null;
+        complete: GetProviderCompleteCallback | null = null;
+    }
+    type GetProvider = (options: GetProviderOptions) => void;
+    const SupportedProviderServiceList = [
+        'oauth',
+        'share',
+        'payment',
+        'push',
+        'location'
+    ];
+    const getProvider: GetProvider = (options: GetProviderOptions): void =>{
+        if (!SupportedProviderServiceList.includes(options.service)) {
+            const uniError = new UniError('uni-getProvider', -1, 'Parameter service invalid.');
+            options.fail?.(uniError);
+            options.complete?.(uniError);
+        } else {
+            const providers = getUniProviders(options.service);
+            const result = {
+                service: options.service,
+                provider: providers.map((provider): string =>{
+                    return provider.id;
+                }),
+                providers,
+                errMsg: 'GetProvider:ok'
+            } as GetProviderSuccess;
+            options.success?.(result);
+            options.complete?.(result);
+        }
+    };
     type GetSystemInfo = (options: GetSystemInfoOptions) => void;
     type GetSystemInfoSync = () => GetSystemInfoResult;
     type GetWindowInfo = () => GetWindowInfoResult;
@@ -467,78 +654,19 @@ export function initUniExtApi(APP_ID: string) {
                 return 'undefined';
         }
     };
-    const internalGetWindowInfo = (): GetWindowInfoResult =>{
-        const pixelRatio = vp2px(1);
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony3.getWindowStage();
-        let topRect: harmonyWindow.Rect = {
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 136
-        };
-        let bottomRect: harmonyWindow.Rect = {
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 98
-        };
-        if (windowStage) {
-            const mainWindow = windowStage.getMainWindowSync();
-            topRect = mainWindow.getWindowAvoidArea(harmonyWindow.AvoidAreaType.TYPE_SYSTEM).topRect;
-            bottomRect = mainWindow.getWindowAvoidArea(harmonyWindow.AvoidAreaType.TYPE_NAVIGATION_INDICATOR).bottomRect;
-        }
-        const defaultDisplay = display.getDefaultDisplaySync();
-        const currentPage: ESObject = getCurrentPage();
-        const navigationBarHeight = currentPage && currentPage.$page.meta.navigationBar.type === 'default' ? 58 : 0;
-        const tabBarHeight = currentPage && currentPage.$.__isTabBar ? 50 : 0;
-        const screenWidth = px2vp(defaultDisplay.width);
-        const screenHeight = px2vp(defaultDisplay.height);
-        const statusBarHeight = px2vp(topRect.top + topRect.height);
-        const safeAreaTopSize = statusBarHeight + navigationBarHeight;
-        const safeAreaBottomSize = px2vp(bottomRect.height) + tabBarHeight;
-        const safeAreaInsets: SafeAreaInsets = {
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0
-        };
-        const windowWidth = screenWidth - 0 - 0;
-        const windowHeight = screenHeight - safeAreaTopSize - safeAreaBottomSize;
-        const safeArea: SafeArea = {
-            top: 0,
-            right: windowWidth,
-            bottom: windowHeight,
-            left: 0,
-            width: windowWidth,
-            height: windowHeight
-        };
-        return {
-            pixelRatio,
-            screenTop: 0,
-            screenWidth,
-            screenHeight,
-            windowTop: 0,
-            windowBottom: 0,
-            windowWidth: safeArea.width,
-            windowHeight: safeArea.height,
-            safeAreaInsets,
-            safeArea,
-            statusBarHeight
-        };
-    };
     const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
-        return internalGetWindowInfo();
+        return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     interface ISystemInfoAppVersion {
         name: string;
         code: string;
     }
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony3.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo();
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -551,10 +679,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony3.getAppId() as string,
+            appId: UTSHarmony2.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony3.getAppName() as string,
-            appTheme: UTSHarmony3.getAppTheme() as string,
+            appName: UTSHarmony2.getAppName() as string,
+            appTheme: UTSHarmony2.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -570,7 +698,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony3.getOsTheme() as string,
+            osTheme: UTSHarmony2.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmony',
             romName: deviceInfo1.distributionOSName,
@@ -602,7 +730,7 @@ export function initUniExtApi(APP_ID: string) {
     const getSystemInfoSync: GetSystemInfoSync = defineSyncApi<GetSystemInfoResult>(API_GET_SYSTEM_INFO_SYNC, (): GetSystemInfoResult =>{
         return internalGetSystemInfo();
     }) as GetSystemInfoSync;
-    const getSystemInfo: GetSystemInfo = defineAsyncApi<GetSystemInfoOptions, GetSystemInfoResult>(API_GET_SYSTEM_INFO, (options: GetSystemInfoOptions, exec: ApiExcutor<GetSystemInfoResult>)=>{
+    const getSystemInfo: GetSystemInfo = defineAsyncApi<GetSystemInfoOptions, GetSystemInfoResult>(API_GET_SYSTEM_INFO, (options: GetSystemInfoOptions, exec: ApiExecutor<GetSystemInfoResult>)=>{
         try {
             exec.resolve(internalGetSystemInfo());
         } catch (error) {
@@ -639,8 +767,8 @@ export function initUniExtApi(APP_ID: string) {
         }
         return false;
     };
-    const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExcutor<MakePhoneCallSuccess>)=>{
-        const dialRes = UTSHarmony4.device.dial(options.phoneNumber) as Object as Promise<void>;
+    const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
+        const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
             dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
                 res.reject(err.message);
@@ -703,6 +831,7 @@ export function initUniExtApi(APP_ID: string) {
     class PreviewImageOptions extends UTSObject {
         current: Object | null = null;
         urls!: Array<string.ImageURIString>;
+        showmenu: boolean | null = null;
         indicator: string | null = null;
         loop: boolean | null = null;
         longPressActions: LongPressActionsOptions | null = null;
@@ -741,6 +870,20 @@ export function initUniExtApi(APP_ID: string) {
         success: (GetImageInfoSuccessCallback) | null = null;
         fail: (GetImageInfoFailCallback) | null = null;
         complete: (GetImageInfoCompleteCallback) | null = null;
+    }
+    type SaveImageToPhotosAlbum = (options: SaveImageToPhotosAlbumOptions) => void;
+    class SaveImageToPhotosAlbumSuccess extends UTSObject {
+        path!: string;
+    }
+    type SaveImageToPhotosAlbumFail = IMediaError;
+    type SaveImageToPhotosAlbumSuccessCallback = (callback: SaveImageToPhotosAlbumSuccess) => void;
+    type SaveImageToPhotosAlbumFailCallback = (callback: SaveImageToPhotosAlbumFail) => void;
+    type SaveImageToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+    class SaveImageToPhotosAlbumOptions extends UTSObject {
+        filePath!: string.ImageURIString;
+        success: (SaveImageToPhotosAlbumSuccessCallback) | null = null;
+        fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
+        complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
     }
     class ChooseVideoSuccess extends UTSObject {
         tempFilePath!: string;
@@ -785,6 +928,19 @@ export function initUniExtApi(APP_ID: string) {
         complete: (GetVideoInfoCompleteCallback) | null = null;
     }
     type GetVideoInfo = (options: GetVideoInfoOptions) => void;
+    class SaveVideoToPhotosAlbumSuccess extends UTSObject {
+    }
+    type SaveVideoToPhotosAlbumFail = IMediaError;
+    type SaveVideoToPhotosAlbumSuccessCallback = (callback: SaveVideoToPhotosAlbumSuccess) => void;
+    type SaveVideoToPhotosAlbumFailCallback = (callback: SaveVideoToPhotosAlbumFail) => void;
+    type SaveVideoToPhotosAlbumCompleteCallback = ChooseImageCompleteCallback;
+    class SaveVideoToPhotosAlbumOptions extends UTSObject {
+        filePath!: string.VideoURIString;
+        success: (SaveVideoToPhotosAlbumSuccessCallback) | null = null;
+        fail: (SaveVideoToPhotosAlbumFailCallback) | null = null;
+        complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
+    }
+    type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
     interface MediaFile {
         fileType: 'video' | 'image';
         tempFilePath: string;
@@ -1160,15 +1316,86 @@ export function initUniExtApi(APP_ID: string) {
         ])
     };
     const API_CLOSE_PREVIEW_IMAGE = 'closePreviewImage';
+    const API_SAVE_IMAGE_TO_PHOTOS_ALBUM = 'saveImageToPhotosAlbum';
+    const SaveImageToPhotosAlbumApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'filePath',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const API_SAVE_VIDEO_TO_PHOTOS_ALBUM = 'saveVideoToPhotosAlbum';
+    const SaveVideoToPhotosAlbumApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'filePath',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const MediaUniErrors: Map<number, string> = new Map([
+        [
+            1101001,
+            'user cancel'
+        ],
+        [
+            1101002,
+            'fail parameter error: parameter.urls should have at least 1 item'
+        ],
+        [
+            1101003,
+            "file not find"
+        ],
+        [
+            1101004,
+            "Failed to load resource"
+        ],
+        [
+            1101005,
+            "No Permission"
+        ],
+        [
+            1101006,
+            "save error"
+        ],
+        [
+            1101007,
+            "crop error"
+        ],
+        [
+            1101008,
+            'camera error'
+        ],
+        [
+            1101009,
+            "image output failed"
+        ],
+        [
+            1101010,
+            "unexpect error:"
+        ]
+    ]);
     interface TempFileItem {
         path: string;
         size: number;
     }
-    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExcutor<ChooseImageSuccess>)=>{
+    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         _chooseMedia({
             mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
             count: options.count!
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
+            const tempFiles = chooseMediaRes.tempFiles;
+            if (tempFiles.length === 0) {
+                const errMsg = MediaUniErrors.get(1101001) as string;
+                res.reject(errMsg, {
+                    errCode: 1101001,
+                    errMsg
+                } as ApiError);
+                return;
+            }
             res.resolve({
                 errMsg: '',
                 errSubject: 'uni-chooseImage',
@@ -1184,11 +1411,19 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
-    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (options: ChooseVideoOptions, res: ApiExcutor<ChooseVideoSuccess>)=>{
+    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         _chooseMedia({
             mimeType: picker2.PhotoViewMIMETypes.VIDEO_TYPE
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const file = chooseMediaRes.tempFiles[0];
+            if (!file) {
+                const errMsg = MediaUniErrors.get(1101001) as string;
+                res.reject(errMsg, {
+                    errCode: 1101001,
+                    errMsg
+                } as ApiError);
+                return;
+            }
             res.resolve({
                 tempFilePath: file.tempFilePath,
                 duration: file.duration,
@@ -1200,14 +1435,14 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
-    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (options: GetImageInfoOptions, res: ApiExcutor<GetImageInfoSuccess>)=>{
+    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
         _getImageInfo(options.src).then((getImageInfoRes)=>{
             res.resolve(getImageInfoRes);
         }, (err: Error)=>{
             res.reject(err.message);
         });
     }, GetImageInfoApiProtocol, GetImageInfoApiOptions) as GetImageInfo;
-    const getVideoInfo: GetVideoInfo = defineAsyncApi<GetVideoInfoOptions, GetVideoInfoSuccess>(API_GET_VIDEO_INFO, (options: GetVideoInfoOptions, res: ApiExcutor<GetVideoInfoSuccess>)=>{
+    const getVideoInfo: GetVideoInfo = defineAsyncApi<GetVideoInfoOptions, GetVideoInfoSuccess>(API_GET_VIDEO_INFO, (options: GetVideoInfoOptions, res: ApiExecutor<GetVideoInfoSuccess>)=>{
         _getVideoInfo(options.src).then((getVideInfoRes)=>{
             res.resolve({
                 size: getVideInfoRes.size,
@@ -1221,23 +1456,272 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(err.message);
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
-    const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExcutor<PreviewImageSuccess>)=>{
+    interface IPreviewImageOptions {
+        urls: string[];
+        current: string;
+        showmenu: boolean;
+    }
+    const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
         interface Page {
             $getAppWebview: Function;
         }
-        const currentPage = getCurrentPage1() as Page;
-        getOSRuntime().previewImage(options, currentPage.$getAppWebview().page as Object);
+        const currentPage = getCurrentPage() as Page;
+        getOSRuntime().previewImage({
+            urls: options.urls.map((url)=>getRealPath1(url) as string),
+            current: options.current || '',
+            showmenu: options.showmenu === false ? false : true
+        } as IPreviewImageOptions, currentPage.$getAppWebview().page as Object);
         exec.resolve({
             errSubject: 'uni-previewImage',
             errMsg: ''
         } as PreviewImageSuccess);
     }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
-    const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExcutor<ClosePreviewImageSuccess>)=>{
+    const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>)=>{
         getOSRuntime().closePreviewImage();
         exec.resolve({
             errMsg: ''
         } as ClosePreviewImageSuccess);
     }) as ClosePreviewImage;
+    const requestPermission = async (): Promise<boolean> =>{
+        const context = getContext();
+        const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
+        const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
+            'ohos.permission.WRITE_IMAGEVIDEO'
+        ]);
+        const isGranted = permissionRequestResult.authResults[0] === 0;
+        return isGranted;
+    };
+    const saveResource = async (src: Resource, dest: string)=>{
+        const context = getContext();
+        const resourceManager = context.resourceManager;
+        const srcPath: string = src.params?.[0] as string;
+        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
+        const content = await resourceManager.getRawFileContent(srcPath);
+        await fs1.write(destFile.fd, content.buffer);
+        await fs1.close(destFile);
+    };
+    const saveUri = async (src: string, dest: string)=>{
+        const srcFile = fs1.openSync(src, fs1.OpenMode.READ_ONLY);
+        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
+        await fs1.copyFile(srcFile.fd, destFile.fd);
+        await fs1.close(srcFile);
+        await fs1.close(destFile);
+    };
+    const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
+        const realPath = getResourceStr(fromUri) as string | Resource;
+        const context = getContext();
+        let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
+        const isResource = typeof realPath !== 'string';
+        if (isResource) {
+            if (typeof realPath.params?.[0] === 'string') {
+                fileName = realPath.params?.[0].split('/').pop() || fileName;
+            }
+        } else {
+            fileName = realPath.split('/').pop() || fileName;
+        }
+        const photoSaveOptions = new picker3.PhotoSaveOptions();
+        photoSaveOptions.newFileNames = [
+            fileName
+        ];
+        const photoPicker = new picker3.PhotoViewPicker();
+        const photoSaveResult = await photoPicker.save(photoSaveOptions);
+        const destUri = photoSaveResult[0];
+        if (isResource) {
+            await saveResource(realPath as Resource, destUri);
+        } else {
+            await saveUri(realPath as string, destUri);
+        }
+        const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
+        const assetChangeRequest: photoAccessHelper.MediaAssetChangeRequest = photoAccessHelper.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
+        await phAccessHelper.applyChanges(assetChangeRequest);
+        return destUri;
+    };
+    const saveImageToPhotosAlbum: SaveImageToPhotosAlbum = defineAsyncApi<SaveImageToPhotosAlbumOptions, SaveImageToPhotosAlbumSuccess>(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (options: SaveImageToPhotosAlbumOptions, res: ApiExecutor<SaveImageToPhotosAlbumSuccess>)=>{
+        requestPermission().then((isGranted)=>{
+            if (!isGranted) {
+                const errMsg = MediaUniErrors.get(1101005);
+                res.reject(errMsg, {
+                    errCode: 1101005,
+                    errMsg
+                } as ApiError);
+                return;
+            }
+            saveMediaToAlbum(options.filePath, 'image').then((uri)=>{
+                res.resolve({
+                    path: uri
+                } as SaveImageToPhotosAlbumSuccess);
+            }, (err: Error)=>{
+                res.reject(err.message);
+            });
+        });
+    }, SaveImageToPhotosAlbumApiProtocol) as SaveImageToPhotosAlbum;
+    const saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum = defineAsyncApi<SaveVideoToPhotosAlbumOptions, SaveVideoToPhotosAlbumSuccess>(API_SAVE_VIDEO_TO_PHOTOS_ALBUM, (options: SaveVideoToPhotosAlbumOptions, res: ApiExecutor<SaveVideoToPhotosAlbumSuccess>)=>{
+        requestPermission().then((isGranted)=>{
+            if (!isGranted) {
+                const errMsg = MediaUniErrors.get(1101005);
+                res.reject(errMsg, {
+                    errCode: 1101005,
+                    errMsg
+                } as ApiError);
+                return;
+            }
+            saveMediaToAlbum(options.filePath, 'video').then((uri)=>{
+                res.resolve({} as SaveVideoToPhotosAlbumSuccess);
+            }, (err: Error)=>{
+                res.reject(err.message);
+            });
+        });
+    }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
+    type SetNavigationBarColorErrorCode = 4;
+    interface SetNavigationBarColorFail extends IUniError {
+        errCode: SetNavigationBarColorErrorCode;
+    }
+    class SetNavigationBarColorOptions extends UTSObject {
+        frontColor!: '#ffffff' | '#000000';
+        backgroundColor!: string.ColorString;
+        success: SetNavigationBarColorSuccessCallback | null = null;
+        fail: SetNavigationBarColorFailCallback | null = null;
+        complete: SetNavigationBarColorCompleteCallback | null = null;
+    }
+    type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
+    type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
+    type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
+    type SetNavigationBarColorComplete = AsyncApiResult;
+    type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
+    type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
+    type SetNavigationBarTitleErrorCode = 4;
+    interface SetNavigationBarTitleFail extends IUniError {
+        errCode: SetNavigationBarTitleErrorCode;
+    }
+    class SetNavigationBarTitleOptions extends UTSObject {
+        title!: string;
+        success: SetNavigationBarTitleSuccessCallback | null = null;
+        fail: SetNavigationBarTitleFailCallback | null = null;
+        complete: SetNavigationBarTitleCompleteCallback | null = null;
+    }
+    type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
+    type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
+    type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
+    type SetNavigationBarTitleComplete = AsyncApiResult;
+    type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
+    type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
+    const FRONT_COLORS = [
+        '#ffffff',
+        '#000000'
+    ];
+    const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
+    const SetNavigationBarColorProtocol = new Map<string, ProtocolOptions>([
+        [
+            'frontColor',
+            {
+                type: 'string',
+                required: true,
+                validator (frontColor: Object) {
+                    if (FRONT_COLORS.indexOf(frontColor as string) === -1) {
+                        return `invalid frontColor "${frontColor}"`;
+                    }
+                    return;
+                }
+            }
+        ],
+        [
+            'backgroundColor',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
+    const SetNavigationBarTitleProtocol = new Map<string, ProtocolOptions>([
+        [
+            'title',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    interface TitleNView {
+        titleText: string;
+        autoBackButton?: boolean;
+    }
+    interface BackButton {
+        color?: string;
+    }
+    interface PlusWebviewWebviewTitleNViewStyles {
+        backgroundColor?: string;
+        titleColor?: string;
+        titleNView?: TitleNView;
+        backButton?: BackButton;
+    }
+    interface Webview {
+        getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
+        setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
+    }
+    interface $page {
+        statusBarStyle: 'dark' | 'light';
+    }
+    interface Page {
+        $getAppWebview: () => Webview | null;
+        $page: $page;
+    }
+    const getWebview = (page: Page): Webview | null =>{
+        const webview = page.$getAppWebview();
+        return webview;
+    };
+    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExecutor<SetNavigationBarColorSuccess>)=>{
+        const page = getCurrentPage1() as Page;
+        if (!page) {
+            return res.reject(`getCurrentPages is empty`);
+        }
+        const webview = getWebview(page);
+        if (webview) {
+            const styles: PlusWebviewWebviewTitleNViewStyles = {};
+            if (options.frontColor) {
+                styles.titleColor = options.frontColor;
+            }
+            if (options.backgroundColor) {
+                styles.backgroundColor = options.backgroundColor;
+            }
+            const statusBarStyle = options.frontColor === '#000000' ? 'dark' : 'light';
+            navigator.setStatusBarStyle(statusBarStyle);
+            page.$page.statusBarStyle = statusBarStyle;
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                if (style.titleNView.autoBackButton) {
+                    styles.backButton = styles.backButton || {};
+                    styles.backButton.color = options.frontColor;
+                }
+                webview.setStyle({
+                    titleNView: styles as TitleNView
+                } as PlusWebviewWebviewTitleNViewStyles);
+            }
+            res.resolve();
+        } else {
+            res.reject();
+        }
+    }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
+    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
+        const page = getCurrentPage1() as Page;
+        if (!page) {
+            return res.reject(`getCurrentPages is empty`);
+        }
+        const webview = getWebview(page);
+        if (webview) {
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                webview.setStyle({
+                    titleNView: {
+                        titleText: options.title
+                    } as TitleNView
+                } as PlusWebviewWebviewTitleNViewStyles);
+            }
+            res.resolve();
+        } else {
+            res.reject();
+        }
+    }, SetNavigationBarTitleProtocol) as SetNavigationBarTitle;
     type Request<T> = (param: RequestOptions<T>) => RequestTask;
     class RequestOptions<T> extends UTSObject {
         url!: string;
@@ -1584,7 +2068,7 @@ export function initUniExtApi(APP_ID: string) {
                     if (filePath == null) {
                         throw new Error('filePath is required');
                     }
-                    params.filePath = getRealPath1(filePath);
+                    params.filePath = getRealPath2(filePath);
                 }
             ],
             [
@@ -1630,7 +2114,7 @@ export function initUniExtApi(APP_ID: string) {
             this._requestTask.offHeadersReceived(callback);
         }
     }
-    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExcutor<RequestSuccess<Object>>)=>{
+    const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>)=>{
         let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
         let contentType = '';
         const headers = {} as Record<string, Object>;
@@ -1666,7 +2150,7 @@ export function initUniExtApi(APP_ID: string) {
         if (responseType === 'arraybuffer') {
             expectDataType = http.HttpDataType.ARRAY_BUFFER;
         } else if (dataType === 'json') {
-            expectDataType = http.HttpDataType.OBJECT;
+            expectDataType = http.HttpDataType.STRING;
         } else {
             expectDataType = http.HttpDataType.STRING;
         }
@@ -1695,8 +2179,14 @@ export function initUniExtApi(APP_ID: string) {
             if (err) {
                 exec.reject(err.message);
             } else {
+                let data = res.result;
+                if (dataType === 'json' && typeof data === 'string') {
+                    try {
+                        data = JSON.parse(data);
+                    } catch (e) {}
+                }
                 exec.resolve({
-                    data: res.result,
+                    data,
                     statusCode: res.responseCode,
                     header: res.header,
                     cookies: cookiesParse(res.header as Record<string, string>)
@@ -1707,6 +2197,493 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new RequestTask1(requestTask);
     }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
+    const extToContentType: Record<string, string> = {
+        "3g2": "video/3gpp2",
+        "3gp": "video/3gpp",
+        "3gpp": "video/3gpp",
+        "3mf": "model/3mf",
+        "aac": "audio/aac",
+        "ac": "application/pkix-attr-cert",
+        "adp": "audio/adpcm",
+        "adts": "audio/aac",
+        "ai": "application/postscript",
+        "aml": "application/automationml-aml+xml",
+        "amlx": "application/automationml-amlx+zip",
+        "amr": "audio/amr",
+        "apng": "image/apng",
+        "appcache": "text/cache-manifest",
+        "appinstaller": "application/appinstaller",
+        "appx": "application/appx",
+        "appxbundle": "application/appxbundle",
+        "asc": "application/pgp-keys",
+        "atom": "application/atom+xml",
+        "atomcat": "application/atomcat+xml",
+        "atomdeleted": "application/atomdeleted+xml",
+        "atomsvc": "application/atomsvc+xml",
+        "au": "audio/basic",
+        "avci": "image/avci",
+        "avcs": "image/avcs",
+        "avif": "image/avif",
+        "aw": "application/applixware",
+        "bdoc": "application/bdoc",
+        "bin": "application/octet-stream",
+        "bmp": "image/bmp",
+        "bpk": "application/octet-stream",
+        "btf": "image/prs.btif",
+        "btif": "image/prs.btif",
+        "buffer": "application/octet-stream",
+        "ccxml": "application/ccxml+xml",
+        "cdfx": "application/cdfx+xml",
+        "cdmia": "application/cdmi-capability",
+        "cdmic": "application/cdmi-container",
+        "cdmid": "application/cdmi-domain",
+        "cdmio": "application/cdmi-object",
+        "cdmiq": "application/cdmi-queue",
+        "cer": "application/pkix-cert",
+        "cgm": "image/cgm",
+        "cjs": "application/node",
+        "class": "application/java-vm",
+        "coffee": "text/coffeescript",
+        "conf": "text/plain",
+        "cpl": "application/cpl+xml",
+        "cpt": "application/mac-compactpro",
+        "crl": "application/pkix-crl",
+        "css": "text/css",
+        "csv": "text/csv",
+        "cu": "application/cu-seeme",
+        "cwl": "application/cwl",
+        "cww": "application/prs.cww",
+        "davmount": "application/davmount+xml",
+        "dbk": "application/docbook+xml",
+        "deb": "application/octet-stream",
+        "def": "text/plain",
+        "deploy": "application/octet-stream",
+        "dib": "image/bmp",
+        "disposition-notification": "message/disposition-notification",
+        "dist": "application/octet-stream",
+        "distz": "application/octet-stream",
+        "dll": "application/octet-stream",
+        "dmg": "application/octet-stream",
+        "dms": "application/octet-stream",
+        "doc": "application/msword",
+        "dot": "application/msword",
+        "dpx": "image/dpx",
+        "drle": "image/dicom-rle",
+        "dsc": "text/prs.lines.tag",
+        "dssc": "application/dssc+der",
+        "dtd": "application/xml-dtd",
+        "dump": "application/octet-stream",
+        "dwd": "application/atsc-dwd+xml",
+        "ear": "application/java-archive",
+        "ecma": "application/ecmascript",
+        "elc": "application/octet-stream",
+        "emf": "image/emf",
+        "eml": "message/rfc822",
+        "emma": "application/emma+xml",
+        "emotionml": "application/emotionml+xml",
+        "eps": "application/postscript",
+        "epub": "application/epub+zip",
+        "exe": "application/octet-stream",
+        "exi": "application/exi",
+        "exp": "application/express",
+        "exr": "image/aces",
+        "ez": "application/andrew-inset",
+        "fdf": "application/fdf",
+        "fdt": "application/fdt+xml",
+        "fits": "image/fits",
+        "g3": "image/g3fax",
+        "gbr": "application/rpki-ghostbusters",
+        "geojson": "application/geo+json",
+        "gif": "image/gif",
+        "glb": "model/gltf-binary",
+        "gltf": "model/gltf+json",
+        "gml": "application/gml+xml",
+        "gpx": "application/gpx+xml",
+        "gram": "application/srgs",
+        "grxml": "application/srgs+xml",
+        "gxf": "application/gxf",
+        "gz": "application/gzip",
+        "h261": "video/h261",
+        "h263": "video/h263",
+        "h264": "video/h264",
+        "heic": "image/heic",
+        "heics": "image/heic-sequence",
+        "heif": "image/heif",
+        "heifs": "image/heif-sequence",
+        "hej2": "image/hej2k",
+        "held": "application/atsc-held+xml",
+        "hjson": "application/hjson",
+        "hlp": "application/winhlp",
+        "hqx": "application/mac-binhex40",
+        "hsj2": "image/hsj2",
+        "htm": "text/html",
+        "html": "text/html",
+        "ics": "text/calendar",
+        "ief": "image/ief",
+        "ifb": "text/calendar",
+        "iges": "model/iges",
+        "igs": "model/iges",
+        "img": "application/octet-stream",
+        "in": "text/plain",
+        "ini": "text/plain",
+        "ink": "application/inkml+xml",
+        "inkml": "application/inkml+xml",
+        "ipfix": "application/ipfix",
+        "iso": "application/octet-stream",
+        "its": "application/its+xml",
+        "jade": "text/jade",
+        "jar": "application/java-archive",
+        "jhc": "image/jphc",
+        "jls": "image/jls",
+        "jp2": "image/jp2",
+        "jpe": "image/jpeg",
+        "jpeg": "image/jpeg",
+        "jpf": "image/jpx",
+        "jpg": "image/jpeg",
+        "jpg2": "image/jp2",
+        "jpgm": "image/jpm",
+        "jpgv": "video/jpeg",
+        "jph": "image/jph",
+        "jpm": "image/jpm",
+        "jpx": "image/jpx",
+        "js": "text/javascript",
+        "json": "application/json",
+        "json5": "application/json5",
+        "jsonld": "application/ld+json",
+        "jsonml": "application/jsonml+json",
+        "jsx": "text/jsx",
+        "jt": "model/jt",
+        "jxr": "image/jxr",
+        "jxra": "image/jxra",
+        "jxrs": "image/jxrs",
+        "jxs": "image/jxs",
+        "jxsc": "image/jxsc",
+        "jxsi": "image/jxsi",
+        "jxss": "image/jxss",
+        "kar": "audio/midi",
+        "ktx": "image/ktx",
+        "ktx2": "image/ktx2",
+        "less": "text/less",
+        "lgr": "application/lgr+xml",
+        "list": "text/plain",
+        "litcoffee": "text/coffeescript",
+        "log": "text/plain",
+        "lostxml": "application/lost+xml",
+        "lrf": "application/octet-stream",
+        "m1v": "video/mpeg",
+        "m21": "application/mp21",
+        "m2a": "audio/mpeg",
+        "m2v": "video/mpeg",
+        "m3a": "audio/mpeg",
+        "m4a": "audio/mp4",
+        "m4p": "application/mp4",
+        "m4s": "video/iso.segment",
+        "ma": "application/mathematica",
+        "mads": "application/mads+xml",
+        "maei": "application/mmt-aei+xml",
+        "man": "text/troff",
+        "manifest": "text/cache-manifest",
+        "map": "application/json",
+        "mar": "application/octet-stream",
+        "markdown": "text/markdown",
+        "mathml": "application/mathml+xml",
+        "mb": "application/mathematica",
+        "mbox": "application/mbox",
+        "md": "text/markdown",
+        "mdx": "text/mdx",
+        "me": "text/troff",
+        "mesh": "model/mesh",
+        "meta4": "application/metalink4+xml",
+        "metalink": "application/metalink+xml",
+        "mets": "application/mets+xml",
+        "mft": "application/rpki-manifest",
+        "mid": "audio/midi",
+        "midi": "audio/midi",
+        "mime": "message/rfc822",
+        "mj2": "video/mj2",
+        "mjp2": "video/mj2",
+        "mjs": "text/javascript",
+        "mml": "text/mathml",
+        "mods": "application/mods+xml",
+        "mov": "video/quicktime",
+        "mp2": "audio/mpeg",
+        "mp21": "application/mp21",
+        "mp2a": "audio/mpeg",
+        "mp3": "audio/mpeg",
+        "mp4": "video/mp4",
+        "mp4a": "audio/mp4",
+        "mp4s": "application/mp4",
+        "mp4v": "video/mp4",
+        "mpd": "application/dash+xml",
+        "mpe": "video/mpeg",
+        "mpeg": "video/mpeg",
+        "mpf": "application/media-policy-dataset+xml",
+        "mpg": "video/mpeg",
+        "mpg4": "video/mp4",
+        "mpga": "audio/mpeg",
+        "mpp": "application/dash-patch+xml",
+        "mrc": "application/marc",
+        "mrcx": "application/marcxml+xml",
+        "ms": "text/troff",
+        "mscml": "application/mediaservercontrol+xml",
+        "msh": "model/mesh",
+        "msi": "application/octet-stream",
+        "msix": "application/msix",
+        "msixbundle": "application/msixbundle",
+        "msm": "application/octet-stream",
+        "msp": "application/octet-stream",
+        "mtl": "model/mtl",
+        "musd": "application/mmt-usd+xml",
+        "mxf": "application/mxf",
+        "mxmf": "audio/mobile-xmf",
+        "mxml": "application/xv+xml",
+        "n3": "text/n3",
+        "nb": "application/mathematica",
+        "nq": "application/n-quads",
+        "nt": "application/n-triples",
+        "obj": "model/obj",
+        "oda": "application/oda",
+        "oga": "audio/ogg",
+        "ogg": "audio/ogg",
+        "ogv": "video/ogg",
+        "ogx": "application/ogg",
+        "omdoc": "application/omdoc+xml",
+        "onepkg": "application/onenote",
+        "onetmp": "application/onenote",
+        "onetoc": "application/onenote",
+        "onetoc2": "application/onenote",
+        "opf": "application/oebps-package+xml",
+        "opus": "audio/ogg",
+        "otf": "font/otf",
+        "owl": "application/rdf+xml",
+        "oxps": "application/oxps",
+        "p10": "application/pkcs10",
+        "p7c": "application/pkcs7-mime",
+        "p7m": "application/pkcs7-mime",
+        "p7s": "application/pkcs7-signature",
+        "p8": "application/pkcs8",
+        "pdf": "application/pdf",
+        "pfr": "application/font-tdpfr",
+        "pgp": "application/pgp-encrypted",
+        "pkg": "application/octet-stream",
+        "pki": "application/pkixcmp",
+        "pkipath": "application/pkix-pkipath",
+        "pls": "application/pls+xml",
+        "png": "image/png",
+        "prc": "model/prc",
+        "prf": "application/pics-rules",
+        "provx": "application/provenance+xml",
+        "ps": "application/postscript",
+        "pskcxml": "application/pskc+xml",
+        "pti": "image/prs.pti",
+        "qt": "video/quicktime",
+        "raml": "application/raml+yaml",
+        "rapd": "application/route-apd+xml",
+        "rdf": "application/rdf+xml",
+        "relo": "application/p2p-overlay+xml",
+        "rif": "application/reginfo+xml",
+        "rl": "application/resource-lists+xml",
+        "rld": "application/resource-lists-diff+xml",
+        "rmi": "audio/midi",
+        "rnc": "application/relax-ng-compact-syntax",
+        "rng": "application/xml",
+        "roa": "application/rpki-roa",
+        "roff": "text/troff",
+        "rq": "application/sparql-query",
+        "rs": "application/rls-services+xml",
+        "rsat": "application/atsc-rsat+xml",
+        "rsd": "application/rsd+xml",
+        "rsheet": "application/urc-ressheet+xml",
+        "rss": "application/rss+xml",
+        "rtf": "text/rtf",
+        "rtx": "text/richtext",
+        "rusd": "application/route-usd+xml",
+        "s3m": "audio/s3m",
+        "sbml": "application/sbml+xml",
+        "scq": "application/scvp-cv-request",
+        "scs": "application/scvp-cv-response",
+        "sdp": "application/sdp",
+        "senmlx": "application/senml+xml",
+        "sensmlx": "application/sensml+xml",
+        "ser": "application/java-serialized-object",
+        "setpay": "application/set-payment-initiation",
+        "setreg": "application/set-registration-initiation",
+        "sgi": "image/sgi",
+        "sgm": "text/sgml",
+        "sgml": "text/sgml",
+        "shex": "text/shex",
+        "shf": "application/shf+xml",
+        "shtml": "text/html",
+        "sieve": "application/sieve",
+        "sig": "application/pgp-signature",
+        "sil": "audio/silk",
+        "silo": "model/mesh",
+        "siv": "application/sieve",
+        "slim": "text/slim",
+        "slm": "text/slim",
+        "sls": "application/route-s-tsid+xml",
+        "smi": "application/smil+xml",
+        "smil": "application/smil+xml",
+        "snd": "audio/basic",
+        "so": "application/octet-stream",
+        "spdx": "text/spdx",
+        "spp": "application/scvp-vp-response",
+        "spq": "application/scvp-vp-request",
+        "spx": "audio/ogg",
+        "sql": "application/sql",
+        "sru": "application/sru+xml",
+        "srx": "application/sparql-results+xml",
+        "ssdl": "application/ssdl+xml",
+        "ssml": "application/ssml+xml",
+        "stk": "application/hyperstudio",
+        "stl": "model/stl",
+        "stpx": "model/step+xml",
+        "stpxz": "model/step-xml+zip",
+        "stpz": "model/step+zip",
+        "styl": "text/stylus",
+        "stylus": "text/stylus",
+        "svg": "image/svg+xml",
+        "svgz": "image/svg+xml",
+        "swidtag": "application/swid+xml",
+        "t": "text/troff",
+        "t38": "image/t38",
+        "td": "application/urc-targetdesc+xml",
+        "tei": "application/tei+xml",
+        "teicorpus": "application/tei+xml",
+        "text": "text/plain",
+        "tfi": "application/thraud+xml",
+        "tfx": "image/tiff-fx",
+        "tif": "image/tiff",
+        "tiff": "image/tiff",
+        "toml": "application/toml",
+        "tr": "text/troff",
+        "trig": "application/trig",
+        "ts": "video/mp2t",
+        "tsd": "application/timestamped-data",
+        "tsv": "text/tab-separated-values",
+        "ttc": "font/collection",
+        "ttf": "font/ttf",
+        "ttl": "text/turtle",
+        "ttml": "application/ttml+xml",
+        "txt": "text/plain",
+        "u3d": "model/u3d",
+        "u8dsn": "message/global-delivery-status",
+        "u8hdr": "message/global-headers",
+        "u8mdn": "message/global-disposition-notification",
+        "u8msg": "message/global",
+        "ubj": "application/ubjson",
+        "uri": "text/uri-list",
+        "uris": "text/uri-list",
+        "urls": "text/uri-list",
+        "vcard": "text/vcard",
+        "vrml": "model/vrml",
+        "vtt": "text/vtt",
+        "vxml": "application/voicexml+xml",
+        "war": "application/java-archive",
+        "wasm": "application/wasm",
+        "wav": "audio/wav",
+        "weba": "audio/webm",
+        "webm": "video/webm",
+        "webmanifest": "application/manifest+json",
+        "webp": "image/webp",
+        "wgsl": "text/wgsl",
+        "wgt": "application/widget",
+        "wif": "application/watcherinfo+xml",
+        "wmf": "image/wmf",
+        "woff": "font/woff",
+        "woff2": "font/woff2",
+        "wrl": "model/vrml",
+        "wsdl": "application/wsdl+xml",
+        "wspolicy": "application/wspolicy+xml",
+        "x3d": "model/x3d+xml",
+        "x3db": "model/x3d+fastinfoset",
+        "x3dbz": "model/x3d+binary",
+        "x3dv": "model/x3d-vrml",
+        "x3dvz": "model/x3d+vrml",
+        "x3dz": "model/x3d+xml",
+        "xaml": "application/xaml+xml",
+        "xav": "application/xcap-att+xml",
+        "xca": "application/xcap-caps+xml",
+        "xcs": "application/calendar+xml",
+        "xdf": "application/xcap-diff+xml",
+        "xdssc": "application/dssc+xml",
+        "xel": "application/xcap-el+xml",
+        "xenc": "application/xenc+xml",
+        "xer": "application/patch-ops-error+xml",
+        "xfdf": "application/xfdf",
+        "xht": "application/xhtml+xml",
+        "xhtml": "application/xhtml+xml",
+        "xhvml": "application/xv+xml",
+        "xlf": "application/xliff+xml",
+        "xm": "audio/xm",
+        "xml": "text/xml",
+        "xns": "application/xcap-ns+xml",
+        "xop": "application/xop+xml",
+        "xpl": "application/xproc+xml",
+        "xsd": "application/xml",
+        "xsf": "application/prs.xsf+xml",
+        "xsl": "application/xml",
+        "xslt": "application/xml",
+        "xspf": "application/xspf+xml",
+        "xvm": "application/xv+xml",
+        "xvml": "application/xv+xml",
+        "yaml": "text/yaml",
+        "yang": "application/yang",
+        "yin": "application/yin+xml",
+        "yml": "text/yaml",
+        "zip": "application/zip",
+        "ico": "image/x-icon",
+        "cur": "image/x-icon",
+        "avis": "image/avis",
+        "m4v": "video/mp4",
+        "f4v": "video/mp4",
+        "f4p": "video/mp4",
+        "flac": "audio/flac",
+        "f4a": "audio/mp4",
+        "f4b": "audio/mp4",
+        "eot": "application/vnd.ms-fontobject",
+        "topojson": "application/json",
+        "webapp": "application/x-web-app-manifest+json",
+        "safariextz": "application/octet-stream",
+        "bbaw": "application/x-bb-appworld",
+        "crx": "application/x-chrome-extension",
+        "oex": "application/x-opera-extension",
+        "xpi": "application/x-xpinstall",
+        "vcf": "text/vcard",
+        "xloc": "text/vnd.rim.location.xloc",
+        "htc": "text/x-component"
+    };
+    const contentTypeToExt: Record<string, string> = {};
+    let contentTypeToExtInited = false;
+    const initContentTypeToExtOnce = ()=>{
+        if (contentTypeToExtInited) {
+            return;
+        }
+        const exts = Object.keys(extToContentType);
+        for(let i = 0; i < exts.length; i++){
+            const ext = exts[i];
+            const contentType = extToContentType[ext] as string;
+            if (!contentTypeToExt[contentType]) {
+                contentTypeToExt[contentType] = ext;
+            }
+        }
+        contentTypeToExtInited = true;
+    };
+    const lookupExt = (contentType: string): string | undefined =>{
+        initContentTypeToExtOnce();
+        return contentTypeToExt[contentType.split(';')[0].trim().toLowerCase()];
+    };
+    const lookupContentTypeWithUri = (uri: string): string | undefined =>{
+        const uriArr = uri.split('.');
+        if (uriArr.length <= 1) {
+            return undefined;
+        }
+        const ext = uriArr.pop() as string;
+        return lookupContentType(ext);
+    };
+    const lookupContentType = (ext: string): string | undefined =>{
+        return extToContentType[ext.trim().toLowerCase()];
+    };
     interface IUploadTask {
         abort: Function;
         onHeadersReceived: Function;
@@ -1735,7 +2712,16 @@ export function initUniExtApi(APP_ID: string) {
             this._uploadTask.offHeadersReceived(callback);
         }
     }
-    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExcutor<UploadFileSuccess>)=>{
+    const readFile = (filePath: string): ArrayBuffer =>{
+        const readFilePath = getRealPath3(filePath) as string;
+        const file = fs2.openSync(readFilePath, fs2.OpenMode.READ_ONLY);
+        const stat = fs2.statSync(file.fd);
+        const data = new ArrayBuffer(stat.size);
+        fs2.readSync(file.fd, data);
+        fs2.closeSync(file.fd);
+        return data;
+    };
+    const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
         const headers = {} as Record<string, Object>;
         if (header) {
@@ -1760,21 +2746,32 @@ export function initUniExtApi(APP_ID: string) {
                 } as http1.MultiFormData);
             }
         }
-        if (files && files.length) {
-            for(let i = 0; i < files.length; i++){
-                const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
+        try {
+            if (files && files.length) {
+                for(let i = 0; i < files.length; i++){
+                    const _files_i = files[i], name = _files_i.name, uri = _files_i.uri;
+                    multiFormDataList.push({
+                        name: name || 'file',
+                        contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
+                        data: readFile(uri!)
+                    } as http1.MultiFormData);
+                }
+            } else if (filePath) {
                 multiFormDataList.push({
                     name: name || 'file',
-                    contentType: 'application/octet-stream',
-                    filePath: getRealPath2(uri!)
+                    contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
+                    data: readFile(filePath!)
                 } as http1.MultiFormData);
             }
-        } else {
-            multiFormDataList.push({
-                name: name || 'file',
-                contentType: 'application/octet-stream',
-                filePath: getRealPath2(filePath!)
-            } as http1.MultiFormData);
+        } catch (error) {
+            exec.reject((error as Error).message);
+            return new UploadTask1({
+                abort: ()=>{},
+                onHeadersReceived: (callback: Function)=>{},
+                offHeadersReceived: (callback: Function)=>{},
+                onProgressUpdate: (callback: Function)=>{},
+                offProgressUpdate: (callback: Function)=>{}
+            } as IUploadTask);
         }
         const httpRequest = http1.createHttp();
         const emitter = new Emitter1();
@@ -1795,7 +2792,7 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('progress', callback);
             }
         };
-        httpRequest.on('headersReceive', (header: Object)=>{});
+        httpRequest.on('headersReceive', (headers: Object)=>{});
         httpRequest.on('dataSendProgress', (ref)=>{
             let sendSize = ref.sendSize, totalSize = ref.totalSize;
             emitter.emit('progress', {
@@ -1833,6 +2830,20 @@ export function initUniExtApi(APP_ID: string) {
         onProgressUpdate: Function;
         offProgressUpdate: Function;
     }
+    const getPossibleExt = (contentType: string, contentDisposition: string, url: string): string =>{
+        const contentDispositionFileNameMatches = contentDisposition.match(/filename="(.*)"/);
+        const contentDispositionFileName = contentDispositionFileNameMatches ? contentDispositionFileNameMatches[1] : '';
+        const contentDispositionExt = contentDispositionFileName ? contentDispositionFileName.split('.').pop() : '';
+        if (contentDispositionExt) {
+            return contentDispositionExt;
+        }
+        const contentTypeExt = lookupExt(contentType);
+        if (contentTypeExt) {
+            return contentTypeExt;
+        }
+        const urlExt = url.split('?')[0].split('/').pop()?.split('.')[1];
+        return urlExt || '';
+    };
     class DownloadTask1 implements DownloadTask {
         private _downloadTask: IDownloadTask;
         constructor(downloadTask: IDownloadTask){
@@ -1854,7 +2865,7 @@ export function initUniExtApi(APP_ID: string) {
             this._downloadTask.offHeadersReceived(callback);
         }
     }
-    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExcutor<DownloadFileSuccess>)=>{
+    const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header;
         const httpRequest = http2.createHttp();
         const emitter = new Emitter2();
@@ -1875,7 +2886,13 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('progress', callback);
             }
         };
-        httpRequest.on('headersReceive', (header: Object)=>{});
+        let responseContentType = '';
+        let responseContentDisposition = '';
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string>;
+            responseContentType = realHeaders['content-type'] || realHeaders['Content-Type'] || '';
+            responseContentDisposition = realHeaders['content-disposition'] || realHeaders['Content-Disposition'] || '';
+        });
         httpRequest.on('dataReceiveProgress', (ref)=>{
             let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
             emitter.emit('progress', {
@@ -1885,8 +2902,12 @@ export function initUniExtApi(APP_ID: string) {
             } as OnProgressDownloadResult);
         });
         const TEMP_PATH = getEnv().TEMP_PATH as string;
-        const tempFilePath = TEMP_PATH + '/download/' + Date.now() + '.tmp';
-        const stream = fs1.createStreamSync(tempFilePath, 'w+');
+        const downloadPath = TEMP_PATH + '/download';
+        if (!fs3.accessSync(downloadPath)) {
+            fs3.mkdirSync(downloadPath);
+        }
+        let stream: fs3.Stream;
+        let tempFilePath = '';
         let writePromise = Promise.resolve(0);
         const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
             writePromise = writePromise.then(async (total)=>{
@@ -1896,6 +2917,9 @@ export function initUniExtApi(APP_ID: string) {
             return writePromise;
         };
         httpRequest.on('dataReceive', (data)=>{
+            const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
+            tempFilePath = downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
+            stream = fs3.createStreamSync(tempFilePath, 'w+');
             queueWrite(data);
         });
         httpRequest.requestInStream(url, {
@@ -1911,7 +2935,7 @@ export function initUniExtApi(APP_ID: string) {
                     stream.flushSync();
                     stream.closeSync();
                     exec.resolve({
-                        tempFilePath,
+                        tempFilePath: 'file://' + tempFilePath,
                         statusCode
                     } as DownloadFileSuccess);
                 });
@@ -1922,6 +2946,95 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
+    class OpenAppAuthorizeSettingSuccess extends UTSObject {
+        errMsg!: string;
+    }
+    type OpenAppAuthorizeSettingSuccessCallback = (result: OpenAppAuthorizeSettingSuccess) => void;
+    class OpenAppAuthorizeSettingFail extends UTSObject {
+        errMsg!: string;
+    }
+    type OpenAppAuthorizeSettingFailCallback = (result: OpenAppAuthorizeSettingFail) => void;
+    class OpenAppAuthorizeSettingComplete extends UTSObject {
+        errMsg!: string;
+    }
+    type OpenAppAuthorizeSettingCompleteCallback = (result: OpenAppAuthorizeSettingComplete) => void;
+    class OpenAppAuthorizeSettingOptions extends UTSObject {
+        success: OpenAppAuthorizeSettingSuccessCallback | null = null;
+        fail: OpenAppAuthorizeSettingFailCallback | null = null;
+        complete: OpenAppAuthorizeSettingCompleteCallback | null = null;
+    }
+    const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
+    const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
+        const want: Want = {
+            bundleName: 'com.huawei.hmos.settings',
+            abilityName: 'com.huawei.hmos.settings.MainAbility',
+            uri: 'application_info_entry',
+            parameters: {
+                pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
+            }
+        } as Want;
+        const context = getContext() as common.UIAbilityContext;
+        context.startAbility(want).then(()=>{
+            exec.resolve({
+                errMsg: ''
+            } as OpenAppAuthorizeSettingSuccess);
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as OpenAppAuthorizeSetting;
+    type PageScrollToErrorCode = 4;
+    interface PageScrollToFail extends IUniError {
+        errCode: PageScrollToErrorCode;
+    }
+    type PageScrollToSuccess = AsyncApiSuccessResult;
+    type PageScrollToSuccessCallback = (result: PageScrollToSuccess) => void;
+    type PageScrollToFailCallback = (result: PageScrollToFail) => void;
+    type PageScrollToComplete = AsyncApiResult;
+    type PageScrollToCompleteCallback = (result: PageScrollToComplete) => void;
+    class PageScrollToOptions extends UTSObject {
+        scrollTop: number | null = null;
+        selector: string | null = null;
+        offsetTop: number | null = null;
+        duration: number | null = null;
+        success: PageScrollToSuccessCallback | null = null;
+        fail: PageScrollToFailCallback | null = null;
+        complete: PageScrollToCompleteCallback | null = null;
+    }
+    type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
+    const API_PAGE_SCROLL_TO = 'pageScrollTo';
+    const PageScrollToProtocol = new Map<string, ProtocolOptions>([
+        [
+            'scrollTo',
+            {
+                type: 'number'
+            }
+        ],
+        [
+            'selector',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'duration',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const PageScrollToApiOptions: ApiOptions<PageScrollToOptions> = {
+        formatArgs: new Map<string, number>([
+            [
+                'duration',
+                300
+            ]
+        ])
+    };
+    const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExecutor<PageScrollToSuccess>)=>{
+        const pageId = getPageIdByVm2(getCurrentPageVm2()!)! as number;
+        UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
+    }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
     type PromptErrorCode = 1 | 1001;
     interface IPromptError extends IUniError {
         errCode: PromptErrorCode;
@@ -2173,7 +3286,7 @@ export function initUniExtApi(APP_ID: string) {
         ])
     };
     const API_HIDE_LOADING = 'hideLoading';
-    const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExcutor<ShowToastSuccess>)=>{
+    const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>)=>{
         try {
             promptAction.showToast({
                 message: options.title,
@@ -2185,10 +3298,10 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
-    const hideToast: HideToast = defineAsyncApi(API_HIDE_TOAST, (_, res: ApiExcutor<Object>)=>{
+    const hideToast: HideToast = defineAsyncApi(API_HIDE_TOAST, (_, res: ApiExecutor<Object>)=>{
         res.reject('hideToast is not supported on HarmonyOS');
     }) as HideToast;
-    const showModal: ShowModal = defineAsyncApi<ShowModalOptions, ShowModalSuccess>(API_SHOW_MODAL, async (args: ShowModalOptions, res: ApiExcutor<ShowModalSuccess>)=>{
+    const showModal: ShowModal = defineAsyncApi<ShowModalOptions, ShowModalSuccess>(API_SHOW_MODAL, async (args: ShowModalOptions, res: ApiExecutor<ShowModalSuccess>)=>{
         const modalRes = await new Promise<ShowModalSuccess>((resolve, reject)=>{
             const confirmButton: AlertDialogButtonOptions = {
                 value: args.confirmText ?? '确定',
@@ -2235,7 +3348,7 @@ export function initUniExtApi(APP_ID: string) {
         modalRes.content = null;
         res.resolve(modalRes as ShowModalSuccess);
     }, ShowModalProtocol, ShowModalApiOptions) as ShowModal;
-    const showActionSheet: ShowActionSheet = defineAsyncApi<ShowActionSheetOptions, ShowActionSheetSuccess>(API_SHOW_ACTION_SHEET, async (options: ShowActionSheetOptions, res: ApiExcutor<ShowActionSheetSuccess>)=>{
+    const showActionSheet: ShowActionSheet = defineAsyncApi<ShowActionSheetOptions, ShowActionSheetSuccess>(API_SHOW_ACTION_SHEET, async (options: ShowActionSheetOptions, res: ApiExecutor<ShowActionSheetSuccess>)=>{
         const actionItemList = options.itemList.filter(Boolean);
         if (actionItemList.length === 0) {
             return;
@@ -2268,21 +3381,20 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(e.message);
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
-    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, res: ApiExcutor<ShowLoadingSuccess>)=>{
+    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, res: ApiExecutor<ShowLoadingSuccess>)=>{
         res.reject('showLoading is not supported on HarmonyOS');
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
-    const hideLoading: HideLoading = ()=>defineAsyncApi(API_HIDE_LOADING, (options: Object, res: ApiExcutor<Object>)=>{
+    const hideLoading: HideLoading = ()=>defineAsyncApi(API_HIDE_LOADING, (options: Object, res: ApiExecutor<Object>)=>{
             res.reject('hideLoading is not supported on HarmonyOS');
         });
-    type Rpx2px = (number: number) => number;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow1.WindowStage = UTSHarmony5.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony3.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
-            const mainWindow: harmonyWindow1.Window = windowStage.getMainWindowSync();
+            const mainWindow: harmonyWindow.Window = windowStage.getMainWindowSync();
             windowWidthInPx = mainWindow.getWindowProperties().windowRect.width;
             windowWidthInVp = px2vp(windowWidthInPx);
         }
@@ -2408,7 +3520,7 @@ export function initUniExtApi(APP_ID: string) {
         }
         return parseStorageValue(storeValue as string);
     }) as GetStorageSync;
-    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExcutor<GetStorageSuccess>)=>{
+    const getStorage = defineAsyncApi<GetStorageOptions, GetStorageSuccess>(API_GET_STORAGE, (args: GetStorageOptions, exec: ApiExecutor<GetStorageSuccess>)=>{
         createStore().get(args.key, '').then((storeValue)=>{
             if (!storeValue) {
                 return exec.reject('data not found');
@@ -2429,7 +3541,7 @@ export function initUniExtApi(APP_ID: string) {
         createStore().putSync(key, stringifyStorageValue(value));
         createStore().flush();
     }) as SetStorageSync;
-    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExcutor<SetStorageSuccess>)=>{
+    const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>)=>{
         createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
             createStore().flush();
             exec.resolve({} as ESObject);
@@ -2441,7 +3553,7 @@ export function initUniExtApi(APP_ID: string) {
         createStore().deleteSync(key);
         createStore().flush();
     }) as RemoveStorageSync;
-    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExcutor<RemoveStorageSuccess>)=>{
+    const removeStorage = defineAsyncApi<RemoveStorageOptions, RemoveStorageSuccess>(API_REMOVE_STORAGE, (args: RemoveStorageOptions, exec: ApiExecutor<RemoveStorageSuccess>)=>{
         createStore().delete(args.key).then(()=>{
             createStore().flush();
             exec.resolve({} as ESObject);
@@ -2453,7 +3565,7 @@ export function initUniExtApi(APP_ID: string) {
         createStore().clearSync();
         createStore().flush();
     }) as ClearStorageSync;
-    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExcutor<ClearStorageSuccess>)=>{
+    const clearStorage = defineAsyncApi<ClearStorageOptions, ClearStorageSuccess>(API_CLEAR_STORAGE, (args: ClearStorageOptions, exec: ApiExecutor<ClearStorageSuccess>)=>{
         createStore().clear().then(()=>{
             createStore().flush();
             exec.resolve({} as ESObject);
@@ -2469,7 +3581,7 @@ export function initUniExtApi(APP_ID: string) {
             limitSize: 0
         } as GetStorageInfoSuccess;
     }) as GetStorageInfoSync;
-    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExcutor<GetStorageInfoSuccess>)=>{
+    const getStorageInfo = defineAsyncApi<GetStorageInfoOptions, GetStorageInfoSuccess>(API_GET_STORAGE_INFO, (args: GetStorageInfoOptions, exec: ApiExecutor<GetStorageInfoSuccess>)=>{
         createStore().getAll().then((allData)=>{
             exec.resolve({
                 keys: Object.keys(allData),
@@ -2478,12 +3590,183 @@ export function initUniExtApi(APP_ID: string) {
             } as GetStorageInfoSuccess);
         });
     }) as GetStorageInfo;
+    type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
+    class ConnectSocketSuccess extends UTSObject {
+        errMsg!: string;
+    }
+    type ConnectSocketSuccessCallback = (result: ConnectSocketSuccess) => void;
+    type ConnectSocketErrorCode = 600009;
+    interface ConnectSocketFail extends IUniError {
+        errCode: ConnectSocketErrorCode;
+    }
+    type ConnectSocketFailCallback = (result: ConnectSocketFail) => void;
+    type ConnectSocketComplete = Object;
+    type ConnectSocketCompleteCallback = (result: ConnectSocketComplete) => void;
+    class ConnectSocketOptions extends UTSObject {
+        url!: string;
+        header: UTSJSONObject | null = null;
+        protocols: (string[]) | null = null;
+        success: ConnectSocketSuccessCallback | null = null;
+        fail: ConnectSocketFailCallback | null = null;
+        complete: ConnectSocketCompleteCallback | null = null;
+    }
+    class GeneralCallbackResult extends UTSObject {
+        errMsg!: string;
+    }
+    type SendSocketMessageErrorCode = 10001 | 10002 | 602001;
+    interface SendSocketMessageFail extends IUniError {
+        errCode: SendSocketMessageErrorCode;
+    }
+    class SendSocketMessageOptions extends UTSObject {
+        data!: Object;
+        success: ((result: GeneralCallbackResult) => void) | null = null;
+        fail: ((result: SendSocketMessageFail) => void) | null = null;
+        complete: ((result: Object) => void) | null = null;
+    }
+    class CloseSocketOptions extends UTSObject {
+        code: number | null = null;
+        reason: string | null = null;
+        success: ((result: GeneralCallbackResult) => void) | null = null;
+        fail: ((result: GeneralCallbackResult) => void) | null = null;
+        complete: ((result: GeneralCallbackResult) => void) | null = null;
+    }
+    class OnSocketOpenCallbackResult extends UTSObject {
+        header!: Object;
+    }
+    class OnSocketMessageCallbackResult extends UTSObject {
+        data!: Object;
+    }
+    interface SocketTask {
+        send(options: SendSocketMessageOptions): void;
+        close(options: CloseSocketOptions): void;
+        onOpen(callback: (result: OnSocketOpenCallbackResult) => void): void;
+        onClose(callback: (result: Object) => void): void;
+        onError(callback: (result: GeneralCallbackResult) => void): void;
+        onMessage(callback: (result: OnSocketMessageCallbackResult) => void): void;
+    }
+    class OnSocketErrorCallbackResult extends UTSObject {
+        errMsg!: string;
+    }
+    const API_CONNECT_SOCKET = 'connectSocket';
+    const ConnectSocketApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'protocols',
+            {
+                type: 'string[]',
+                required: false
+            }
+        ]
+    ]);
+    const ConnectSocketApiOptions: ApiOptions<ConnectSocketOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: ConnectSocketOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ]
+        ])
+    };
+    const tryExec = (fn: Function | null | undefined, ...args: Object[])=>{
+        if (!fn) {
+            return;
+        }
+        try {
+            fn(...args);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    class SocketTask1 implements SocketTask {
+        private _ws: webSocket.WebSocket;
+        constructor(ws: webSocket.WebSocket){
+            this._ws = ws;
+        }
+        send(options: SendSocketMessageOptions) {
+            this._ws.send(options.data as string | ArrayBuffer).then((success: boolean)=>{
+                if (success) {
+                    tryExec(options.success, {} as GeneralCallbackResult);
+                } else {
+                    tryExec(options.fail, new UniError('send message failed'));
+                }
+            }, (err: Error)=>{
+                tryExec(options.fail, new UniError(err.message));
+            });
+        }
+        close(options: CloseSocketOptions | null = null) {
+            this._ws.close({
+                code: typeof options?.code === 'number' ? options.code : 1000,
+                reason: typeof options?.reason === 'string' ? options.reason : ''
+            } as webSocket.WebSocketCloseOptions).then((success: boolean)=>{
+                if (success) {
+                    this._ws.off('open');
+                    this._ws.off('message');
+                    this._ws.off('close');
+                    this._ws.off('error');
+                    tryExec(options?.success, {} as GeneralCallbackResult);
+                } else {
+                    tryExec(options?.fail, new UniError('close socket failed'));
+                }
+            }, (err: Error)=>{
+                tryExec(options?.fail, new UniError(err.message));
+            });
+        }
+        onMessage(callback: Function) {
+            this._ws.on('message', (_, data)=>{
+                callback({
+                    data
+                } as OnSocketMessageCallbackResult);
+            });
+        }
+        onOpen(callback: Function) {
+            this._ws.on('open', (_, data)=>{
+                callback(data);
+            });
+        }
+        onError(callback: Function) {
+            this._ws.on('error', (error)=>{
+                callback({
+                    errMsg: error.message
+                } as OnSocketErrorCallbackResult);
+            });
+        }
+        onClose(callback: Function) {
+            this._ws.on('close', (_, data)=>{
+                callback(data);
+            });
+        }
+    }
+    const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
+        const ws = webSocket.createWebSocket();
+        ws.connect(args.url, {
+            header: args.header ? args.header as Object : undefined
+        } as webSocket.WebSocketRequestOptions);
+        return new SocketTask1(ws);
+    }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
     interface UniExtApi {
         getClipboardData: GetClipboardData;
         setClipboardData: SetClipboardData;
         createIntersectionObserver: CreateIntersectionObserver;
+        createSelectorQuery: CreateSelectorQuery;
         getAppBaseInfo: GetAppBaseInfo;
         getDeviceInfo: GetDeviceInfo;
+        getProvider: GetProvider;
         getSystemInfo: GetSystemInfo;
         getSystemInfoSync: GetSystemInfoSync;
         getWindowInfo: GetWindowInfo;
@@ -2492,11 +3775,17 @@ export function initUniExtApi(APP_ID: string) {
         previewImage: PreviewImage;
         closePreviewImage: ClosePreviewImage;
         getImageInfo: GetImageInfo;
+        saveImageToPhotosAlbum: SaveImageToPhotosAlbum;
         chooseVideo: ChooseVideo;
+        saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
         getVideoInfo: GetVideoInfo;
+        setNavigationBarColor: SetNavigationBarColor;
+        setNavigationBarTitle: SetNavigationBarTitle;
         request: Request<Object>;
         uploadFile: UploadFile;
         downloadFile: DownloadFile;
+        openAppAuthorizeSetting: OpenAppAuthorizeSetting;
+        pageScrollTo: PageScrollTo;
         showToast: ShowToast;
         hideToast: HideToast;
         showLoading: ShowLoading;
@@ -2514,13 +3803,16 @@ export function initUniExtApi(APP_ID: string) {
         removeStorageSync: RemoveStorageSync;
         clearStorage: ClearStorage;
         clearStorageSync: ClearStorageSync;
+        connectSocket: ConnectSocket;
     }
     return {
         getClipboardData,
         setClipboardData,
         createIntersectionObserver,
+        createSelectorQuery,
         getAppBaseInfo,
         getDeviceInfo,
+        getProvider,
         getSystemInfo,
         getSystemInfoSync,
         getWindowInfo,
@@ -2529,11 +3821,17 @@ export function initUniExtApi(APP_ID: string) {
         previewImage,
         closePreviewImage,
         getImageInfo,
+        saveImageToPhotosAlbum,
         chooseVideo,
+        saveVideoToPhotosAlbum,
         getVideoInfo,
+        setNavigationBarColor,
+        setNavigationBarTitle,
         request,
         uploadFile,
         downloadFile,
+        openAppAuthorizeSetting,
+        pageScrollTo,
         showToast,
         hideToast,
         showLoading,
@@ -2550,6 +3848,7 @@ export function initUniExtApi(APP_ID: string) {
         removeStorage,
         removeStorageSync,
         clearStorage,
-        clearStorageSync
+        clearStorageSync,
+        connectSocket
     } as UniExtApi;
 }
