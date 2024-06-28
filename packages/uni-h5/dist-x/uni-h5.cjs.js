@@ -1633,6 +1633,13 @@ class UniCanvasElement extends UniElement {
   getContext(contextId, options) {
     return this.querySelector("canvas").getContext(contextId, options);
   }
+  toBlob(...args) {
+    const c = this.querySelector("canvas");
+    return c.toBlob.apply(c, args);
+  }
+  toDataURL(type, encoderOptions) {
+    return this.querySelector("canvas").toDataURL(type, encoderOptions);
+  }
 }
 const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
