@@ -30,6 +30,17 @@ export class UniCanvasElement extends UniElement {
       options
     ) as CanvasRenderingContext2D
   }
+
+  toBlob(...args: any[]) {
+    const c = this.querySelector('canvas')!
+    // TODO 缺少类型?
+    // @ts-expect-error
+    return c.toBlob.apply(c, args)
+  }
+
+  toDataURL(type, encoderOptions) {
+    return this.querySelector('canvas')!.toDataURL(type, encoderOptions)
+  }
 }
 
 export default /*#__PURE__*/ defineBuiltInComponent({
