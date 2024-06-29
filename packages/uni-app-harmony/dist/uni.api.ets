@@ -28,12 +28,16 @@ import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByV
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
+import common1 from '@ohos.app.ability.common';
+import common2 from '@ohos.app.ability.common';
 import dataPreferences from '@ohos.data.preferences';
 import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
+import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPage as getCurrentPage1, navigator } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
@@ -42,7 +46,7 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework
 import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath3, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
-import { getResourceStr } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr, getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
 import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
@@ -1986,7 +1990,7 @@ export function initUniExtApi(APP_ID: string) {
         } as ClosePreviewImageSuccess);
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
-        const context = getContext();
+        const context = getAbilityContext() as common.UIAbilityContext;
         const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
@@ -1995,7 +1999,7 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getContext();
+        const context = getAbilityContext() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
@@ -2012,7 +2016,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getContext();
+        const context = getAbilityContext() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -3281,7 +3285,7 @@ export function initUniExtApi(APP_ID: string) {
                 pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getContext() as common.UIAbilityContext;
+        const context = getAbilityContext1() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -3642,7 +3646,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getContext(), {
+        store = dataPreferences.getPreferencesSync(getAbilityContext2() as common2.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
