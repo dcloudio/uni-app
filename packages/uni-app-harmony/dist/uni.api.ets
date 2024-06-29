@@ -1,15 +1,16 @@
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import Want from '@ohos.app.ability.Want';
 import common from '@ohos.app.ability.common';
+import buffer from '@ohos.buffer';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
-import display from '@ohos.display';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
 import http from '@ohos.net.http';
+import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
 import { BusinessError as BusinessError1 } from '@ohos.base';
 import { BusinessError } from '@ohos.base';
@@ -17,32 +18,32 @@ import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony2, getCurrentPage } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony1, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, UniProvider, IUniError, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ComponentInternalInstance, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
+import { UniError, ComponentPublicInstance, UniProvider, IUniError, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, ComponentInternalInstance, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
 import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import dataPreferences from '@ohos.data.preferences';
 import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
+import { encode } from "@dcloudio/uni-app-harmony-framework";
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
-import { getCurrentPage as getCurrentPage2, navigator } from "@dcloudio/uni-app-harmony-framework";
+import { getCurrentPage as getCurrentPage1, navigator } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
-import { getOSRuntime, getCurrentPage as getCurrentPage1 } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime, getCurrentPage } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath3, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
 import { getResourceStr } from "@dcloudio/uni-app-harmony-framework";
 import harmonyWindow from '@ohos.window';
-import harmonyWindow1 from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter } from "@dcloudio/uni-app-harmony-framework";
@@ -51,6 +52,8 @@ import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
+type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
 export class SetClipboardDataSuccess extends UTSObject {
 }
@@ -217,11 +220,11 @@ export class GetDeviceInfoResult extends UTSObject {
     deviceOrientation: string | null = null;
     devicePixelRatio: number | null = null;
     system: string | null = null;
-    platform: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux' | null = null;
+    platform: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux' | null = null;
     isRoot: boolean | null = null;
     isSimulator: boolean | null = null;
     isUSBDebugging: boolean | null = null;
-    osName: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux' | null = null;
+    osName: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux' | null = null;
     osVersion: string | null = null;
     osLanguage: string | null = null;
     osTheme: 'light' | 'dark' | null = null;
@@ -284,12 +287,12 @@ export class GetSystemInfoResult extends UTSObject {
     deviceOrientation!: 'portrait' | 'landscape';
     language!: string;
     model: string | null = null;
-    osName!: 'ios' | 'android' | 'harmony' | 'macos' | 'windows' | 'linux';
+    osName!: 'ios' | 'android' | 'harmonyos' | 'macos' | 'windows' | 'linux';
     osVersion!: string;
     osLanguage!: string;
     osTheme: 'light' | 'dark' | null = null;
     pixelRatio!: number;
-    platform!: 'ios' | 'android' | 'harmony' | 'mac' | 'windows' | 'linux';
+    platform!: 'ios' | 'android' | 'harmonyos' | 'mac' | 'windows' | 'linux';
     screenWidth!: number;
     screenHeight!: number;
     statusBarHeight!: number;
@@ -914,7 +917,66 @@ export class ClearStorageOptions extends UTSObject {
 }
 export type ClearStorage = (option?: ClearStorageOptions | null) => void;
 export type ClearStorageSync = () => void;
+export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
+export class ConnectSocketSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ConnectSocketSuccessCallback = (result: ConnectSocketSuccess) => void;
+type ConnectSocketErrorCode = 600009;
+interface ConnectSocketFail extends IUniError {
+    errCode: ConnectSocketErrorCode;
+}
+type ConnectSocketFailCallback = (result: ConnectSocketFail) => void;
+type ConnectSocketComplete = Object;
+type ConnectSocketCompleteCallback = (result: ConnectSocketComplete) => void;
+export class ConnectSocketOptions extends UTSObject {
+    url!: string;
+    header: UTSJSONObject | null = null;
+    protocols: (string[]) | null = null;
+    success: ConnectSocketSuccessCallback | null = null;
+    fail: ConnectSocketFailCallback | null = null;
+    complete: ConnectSocketCompleteCallback | null = null;
+}
+class GeneralCallbackResult extends UTSObject {
+    errMsg!: string;
+}
+type SendSocketMessageErrorCode = 10001 | 10002 | 602001;
+interface SendSocketMessageFail extends IUniError {
+    errCode: SendSocketMessageErrorCode;
+}
+export class SendSocketMessageOptions extends UTSObject {
+    data!: Object;
+    success: ((result: GeneralCallbackResult) => void) | null = null;
+    fail: ((result: SendSocketMessageFail) => void) | null = null;
+    complete: ((result: Object) => void) | null = null;
+}
+export class CloseSocketOptions extends UTSObject {
+    code: number | null = null;
+    reason: string | null = null;
+    success: ((result: GeneralCallbackResult) => void) | null = null;
+    fail: ((result: GeneralCallbackResult) => void) | null = null;
+    complete: ((result: GeneralCallbackResult) => void) | null = null;
+}
+class OnSocketOpenCallbackResult extends UTSObject {
+    header!: Object;
+}
+export class OnSocketMessageCallbackResult extends UTSObject {
+    data!: Object;
+}
+export interface SocketTask {
+    send(options: SendSocketMessageOptions): void;
+    close(options: CloseSocketOptions): void;
+    onOpen(callback: (result: OnSocketOpenCallbackResult) => void): void;
+    onClose(callback: (result: Object) => void): void;
+    onError(callback: (result: GeneralCallbackResult) => void): void;
+    onMessage(callback: (result: OnSocketMessageCallbackResult) => void): void;
+}
+export class OnSocketErrorCallbackResult extends UTSObject {
+    errMsg!: string;
+}
 interface UniExtApi {
+    arrayBufferToBase64: ArrayBufferToBase64;
+    base64ToArrayBuffer: Base64ToArrayBuffer;
     getClipboardData: GetClipboardData;
     setClipboardData: SetClipboardData;
     createIntersectionObserver: CreateIntersectionObserver;
@@ -958,8 +1020,35 @@ interface UniExtApi {
     removeStorageSync: RemoveStorageSync;
     clearStorage: ClearStorage;
     clearStorageSync: ClearStorageSync;
+    connectSocket: ConnectSocket;
 }
 export function initUniExtApi(APP_ID: string) {
+    const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
+    const ArrayBufferToBase64Protocol = new Map<string, ProtocolOptions>([
+        [
+            'arrayBuffer',
+            {
+                type: 'arrayBuffer',
+                required: true
+            }
+        ]
+    ]);
+    const arrayBufferToBase64: ArrayBufferToBase64 = defineSyncApi<string>(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer: ArrayBuffer): string =>{
+        return encode(arrayBuffer);
+    }, ArrayBufferToBase64Protocol) as ArrayBufferToBase64;
+    const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer';
+    const Base64ToArrayBufferProtocol = new Map<string, ProtocolOptions>([
+        [
+            'base64',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const base64ToArrayBuffer: Base64ToArrayBuffer = defineSyncApi<ArrayBuffer>(API_BASE64_TO_ARRAY_BUFFER, (base64: string)=>{
+        return buffer.from(base64, 'base64').buffer as ArrayBuffer;
+    }, Base64ToArrayBufferProtocol) as Base64ToArrayBuffer;
     const API_GET_CLIPBOARD_DATA = 'getClipboardData';
     const API_SET_CLIPBOARD_DATA = 'setClipboardData';
     const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
@@ -1213,7 +1302,7 @@ export function initUniExtApi(APP_ID: string) {
     const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
         return {
             deviceBrand: deviceInfo.brand,
-            deviceId: '',
+            deviceId: getDeviceId(),
             deviceModel: deviceInfo.productModel,
             deviceOrientation: 'portrait',
             devicePixelRatio: vp2px(1),
@@ -1221,8 +1310,8 @@ export function initUniExtApi(APP_ID: string) {
             osLanguage: I18n1.System.getSystemLanguage(),
             osTheme: UTSHarmony1.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
-            osName: 'harmony',
-            platform: 'harmony',
+            osName: 'harmonyos',
+            platform: 'harmonyos',
             romName: deviceInfo.distributionOSName,
             romVersion: deviceInfo.distributionOSVersion,
             system: deviceInfo.osFullName
@@ -1275,67 +1364,8 @@ export function initUniExtApi(APP_ID: string) {
                 return 'undefined';
         }
     };
-    const internalGetWindowInfo = (): GetWindowInfoResult =>{
-        const pixelRatio = vp2px(1);
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony2.getWindowStage();
-        let topRect: harmonyWindow.Rect = {
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 136
-        };
-        let bottomRect: harmonyWindow.Rect = {
-            top: 0,
-            left: 0,
-            width: 0,
-            height: 98
-        };
-        if (windowStage) {
-            const mainWindow = windowStage.getMainWindowSync();
-            topRect = mainWindow.getWindowAvoidArea(harmonyWindow.AvoidAreaType.TYPE_SYSTEM).topRect;
-            bottomRect = mainWindow.getWindowAvoidArea(harmonyWindow.AvoidAreaType.TYPE_NAVIGATION_INDICATOR).bottomRect;
-        }
-        const defaultDisplay = display.getDefaultDisplaySync();
-        const currentPage: ESObject = getCurrentPage();
-        const navigationBarHeight = currentPage && currentPage.$page.meta.navigationBar.type === 'default' ? 58 : 0;
-        const tabBarHeight = currentPage && currentPage.$.__isTabBar ? 50 : 0;
-        const screenWidth = px2vp(defaultDisplay.width);
-        const screenHeight = px2vp(defaultDisplay.height);
-        const statusBarHeight = px2vp(topRect.top + topRect.height);
-        const safeAreaTopSize = statusBarHeight + navigationBarHeight;
-        const safeAreaBottomSize = px2vp(bottomRect.height) + tabBarHeight;
-        const safeAreaInsets: SafeAreaInsets = {
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0
-        };
-        const windowWidth = screenWidth - 0 - 0;
-        const windowHeight = screenHeight - safeAreaTopSize - safeAreaBottomSize;
-        const safeArea: SafeArea = {
-            top: 0,
-            right: windowWidth,
-            bottom: windowHeight,
-            left: 0,
-            width: windowWidth,
-            height: windowHeight
-        };
-        return {
-            pixelRatio,
-            screenTop: 0,
-            screenWidth,
-            screenHeight,
-            windowTop: 0,
-            windowBottom: 0,
-            windowWidth: safeArea.width,
-            windowHeight: safeArea.height,
-            safeAreaInsets,
-            safeArea,
-            statusBarHeight
-        };
-    };
     const getWindowInfo: GetWindowInfo = defineSyncApi<GetWindowInfoResult>(API_GET_WINDOW_INFO, (): GetWindowInfoResult =>{
-        return internalGetWindowInfo();
+        return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
         const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
@@ -1343,7 +1373,7 @@ export function initUniExtApi(APP_ID: string) {
         const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
         const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
-        const windowInfo = internalGetWindowInfo();
+        const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
         const safeAreaInsets = windowInfo.safeAreaInsets;
@@ -1368,7 +1398,7 @@ export function initUniExtApi(APP_ID: string) {
             uniRuntimeVersionCode: parseFloat(uniRuntimeVersion),
             uniPlatform: 'app',
             deviceBrand: deviceInfo1.brand,
-            deviceId: '',
+            deviceId: getDeviceId1(),
             deviceModel: deviceInfo1.productModel,
             deviceOrientation: 'portrait',
             devicePixelRatio: vp2px(1),
@@ -1376,7 +1406,7 @@ export function initUniExtApi(APP_ID: string) {
             osLanguage: I18n2.System.getSystemLanguage(),
             osTheme: UTSHarmony2.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
-            osName: 'harmony',
+            osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
             romVersion: deviceInfo1.distributionOSVersion,
             system: deviceInfo1.osFullName,
@@ -1397,7 +1427,7 @@ export function initUniExtApi(APP_ID: string) {
             language: appLanguage,
             brand: deviceInfo1.brand,
             model: '',
-            platform: 'harmony',
+            platform: 'harmonyos',
             uniCompileVersion: uniCompilerVersion,
             uniCompileVersionCode: uniCompilerVersionCode,
             version: ''
@@ -1938,7 +1968,7 @@ export function initUniExtApi(APP_ID: string) {
         interface Page {
             $getAppWebview: Function;
         }
-        const currentPage = getCurrentPage1() as Page;
+        const currentPage = getCurrentPage() as Page;
         getOSRuntime().previewImage({
             urls: options.urls.map((url)=>getRealPath1(url) as string),
             current: options.current || '',
@@ -2087,7 +2117,7 @@ export function initUniExtApi(APP_ID: string) {
         return webview;
     };
     const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExecutor<SetNavigationBarColorSuccess>)=>{
-        const page = getCurrentPage2() as Page;
+        const page = getCurrentPage1() as Page;
         if (!page) {
             return res.reject(`getCurrentPages is empty`);
         }
@@ -2119,7 +2149,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
     const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
-        const page = getCurrentPage2() as Page;
+        const page = getCurrentPage1() as Page;
         if (!page) {
             return res.reject(`getCurrentPages is empty`);
         }
@@ -3562,11 +3592,11 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow1.WindowStage = UTSHarmony3.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony3.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
-            const mainWindow: harmonyWindow1.Window = windowStage.getMainWindowSync();
+            const mainWindow: harmonyWindow.Window = windowStage.getMainWindowSync();
             windowWidthInPx = mainWindow.getWindowProperties().windowRect.width;
             windowWidthInVp = px2vp(windowWidthInPx);
         }
@@ -3694,7 +3724,121 @@ export function initUniExtApi(APP_ID: string) {
             } as GetStorageInfoSuccess);
         });
     }) as GetStorageInfo;
+    const API_CONNECT_SOCKET = 'connectSocket';
+    const ConnectSocketApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'url',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'header',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'protocols',
+            {
+                type: 'string[]',
+                required: false
+            }
+        ]
+    ]);
+    const ConnectSocketApiOptions: ApiOptions<ConnectSocketOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'url',
+                (url: string, params: ConnectSocketOptions)=>{
+                    if (url == null) {
+                        throw new Error('url is required');
+                    }
+                }
+            ]
+        ])
+    };
+    const tryExec = (fn: Function | null | undefined, ...args: Object[])=>{
+        if (!fn) {
+            return;
+        }
+        try {
+            fn(...args);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+    class SocketTask1 implements SocketTask {
+        private _ws: webSocket.WebSocket;
+        constructor(ws: webSocket.WebSocket){
+            this._ws = ws;
+        }
+        send(options: SendSocketMessageOptions) {
+            this._ws.send(options.data as string | ArrayBuffer).then((success: boolean)=>{
+                if (success) {
+                    tryExec(options.success, {} as GeneralCallbackResult);
+                } else {
+                    tryExec(options.fail, new UniError('send message failed'));
+                }
+            }, (err: Error)=>{
+                tryExec(options.fail, new UniError(err.message));
+            });
+        }
+        close(options: CloseSocketOptions | null = null) {
+            this._ws.close({
+                code: typeof options?.code === 'number' ? options.code : 1000,
+                reason: typeof options?.reason === 'string' ? options.reason : ''
+            } as webSocket.WebSocketCloseOptions).then((success: boolean)=>{
+                if (success) {
+                    this._ws.off('open');
+                    this._ws.off('message');
+                    this._ws.off('close');
+                    this._ws.off('error');
+                    tryExec(options?.success, {} as GeneralCallbackResult);
+                } else {
+                    tryExec(options?.fail, new UniError('close socket failed'));
+                }
+            }, (err: Error)=>{
+                tryExec(options?.fail, new UniError(err.message));
+            });
+        }
+        onMessage(callback: Function) {
+            this._ws.on('message', (_, data)=>{
+                callback({
+                    data
+                } as OnSocketMessageCallbackResult);
+            });
+        }
+        onOpen(callback: Function) {
+            this._ws.on('open', (_, data)=>{
+                callback(data);
+            });
+        }
+        onError(callback: Function) {
+            this._ws.on('error', (error)=>{
+                callback({
+                    errMsg: error.message
+                } as OnSocketErrorCallbackResult);
+            });
+        }
+        onClose(callback: Function) {
+            this._ws.on('close', (_, data)=>{
+                callback(data);
+            });
+        }
+    }
+    const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
+        const ws = webSocket.createWebSocket();
+        ws.connect(args.url, {
+            header: args.header ? args.header as Object : undefined
+        } as webSocket.WebSocketRequestOptions);
+        return new SocketTask1(ws);
+    }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
     return {
+        arrayBufferToBase64,
+        base64ToArrayBuffer,
         getClipboardData,
         setClipboardData,
         createIntersectionObserver,
@@ -3737,6 +3881,7 @@ export function initUniExtApi(APP_ID: string) {
         removeStorage,
         removeStorageSync,
         clearStorage,
-        clearStorageSync
+        clearStorageSync,
+        connectSocket
     } as UniExtApi;
 }

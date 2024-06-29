@@ -19,6 +19,8 @@ const harmonyGlobals = [
     /^@ohos\./,
     /^@kit\./,
     /^@hms\./,
+    /^@arkts\./,
+    /^@system\./,
     '@ohos/hypium',
     '@ohos/hamock',
 ];
@@ -28,7 +30,7 @@ function isHarmoneyGlobal(id) {
         : harmonyGlobal.test(id));
 }
 function generateHarmonyImportSpecifier(id) {
-    return id.replace(/([@\.])/g, function (_, $1) {
+    return id.replace(/([@\/\.])/g, function (_, $1) {
         switch ($1) {
             case '.':
                 return '_';

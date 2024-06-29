@@ -15,6 +15,7 @@ export {
   defineOnApi,
   defineOffApi,
 } from '@dcloudio/uni-api'
+export { encode } from '@dcloudio/uni-api/src/helpers/base64-arraybuffer'
 export { Emitter, resolveComponentInstance } from '@dcloudio/uni-shared'
 export {
   getRealPath,

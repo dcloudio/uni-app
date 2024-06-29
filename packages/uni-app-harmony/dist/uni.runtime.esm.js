@@ -2,6 +2,39 @@ import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInsta
 import fs from '@ohos.file.fs';
 import buffer from '@ohos.buffer';
 
+/*
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+
+
+var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+function encode$2(arraybuffer) {
+  var bytes = new Uint8Array(arraybuffer),
+    i,
+    len = bytes.length,
+    base64 = '';
+
+  for (i = 0; i < len; i += 3) {
+    base64 += chars[bytes[i] >> 2];
+    base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+    base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+    base64 += chars[bytes[i + 2] & 63];
+  }
+
+  if (len % 3 === 2) {
+    base64 = base64.substring(0, base64.length - 1) + '=';
+  } else if (len % 3 === 1) {
+    base64 = base64.substring(0, base64.length - 2) + '==';
+  }
+
+  return base64
+}
+
 /**
 * @vue/shared v3.4.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
@@ -575,7 +608,7 @@ function getBaseSystemInfo() {
         return window.__SYSTEM_INFO__;
     }
     return {
-        platform: 'harmony',
+        platform: 'harmonyos',
         pixelRatio: vp2px(1),
         windowWidth: lpx2px(720), // TODO designWidth可配置
     };
@@ -12605,4 +12638,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };
+export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, encode$2 as encode, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };
