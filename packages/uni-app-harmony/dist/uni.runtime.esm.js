@@ -685,7 +685,7 @@ var common = {};
 	  }
 	};
 
-	exports.setTyped(TYPED_OK);
+	exports.setTyped(TYPED_OK); 
 } (common));
 
 var deflate$4 = {};
@@ -9110,9 +9110,6 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
     return extend({}, launchOptions$1);
 }
 
-function operateVideoPlayer(videoId, pageId, type, data) {
-    // TODO: Implement
-}
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
@@ -9123,6 +9120,14 @@ function getLaunchOptions() {
 function getEnterOptions() {
     // TODO: Implement
     return extend({}, enterOptions);
+}
+
+function operateVideoPlayer(videoId, pageId, type, data) {
+    UniServiceJSBridge.invokeViewMethod('video.' + videoId, {
+        videoId,
+        type,
+        data,
+    }, pageId);
 }
 
 const validator = [
@@ -9155,6 +9160,7 @@ validator.concat({
     type: Object,
 });
 
+const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0];
 class VideoContext {
     id;
     pageId;
@@ -9163,37 +9169,44 @@ class VideoContext {
         this.pageId = pageId;
     }
     play() {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'play');
     }
     pause() {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'pause');
     }
     stop() {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'stop');
     }
     seek(position) {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'seek', {
+            position,
+        });
     }
     sendDanmu(args) {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'sendDanmu', args);
     }
     playbackRate(rate) {
-        operateVideoPlayer(this.id, this.pageId);
+        if (!~RATES.indexOf(rate)) {
+            rate = 1.0;
+        }
+        operateVideoPlayer(this.id, this.pageId, 'playbackRate', {
+            rate,
+        });
     }
     requestFullScreen(args = {}) {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'requestFullScreen', args);
     }
     exitFullScreen() {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'exitFullScreen');
     }
     showStatusBar() {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'showStatusBar');
     }
     hideStatusBar() {
-        operateVideoPlayer(this.id, this.pageId);
+        operateVideoPlayer(this.id, this.pageId, 'hideStatusBar');
     }
 }
-defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context) => {
+const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context) => {
     if (context) {
         return new VideoContext(id, getPageIdByVm(context));
     }
@@ -9324,7 +9337,7 @@ const CanvasGetImageDataProtocol = {
 //#region putImageData
 const API_CANVAS_PUT_IMAGE_DATA = 'canvasPutImageData';
 const CanvasPutImageDataOptions = CanvasGetImageDataOptions;
-const CanvasPutImageDataProtocol =
+const CanvasPutImageDataProtocol = 
 /*#__PURE__*/ extend({
     data: {
         type: Uint8ClampedArray,
@@ -10685,9 +10698,9 @@ const API_SWITCH_TAB = 'switchTab';
 const API_NAVIGATE_BACK = 'navigateBack';
 const API_PRELOAD_PAGE = 'preloadPage';
 const API_UN_PRELOAD_PAGE = 'unPreloadPage';
-const NavigateToProtocol =
+const NavigateToProtocol = 
 /*#__PURE__*/ extend({}, BaseRouteProtocol, createAnimationProtocol(ANIMATION_IN));
-const NavigateBackProtocol =
+const NavigateBackProtocol = 
 /*#__PURE__*/ extend({
     delta: {
         type: Number,
@@ -10696,13 +10709,13 @@ const NavigateBackProtocol =
 const RedirectToProtocol = BaseRouteProtocol;
 const ReLaunchProtocol = BaseRouteProtocol;
 const SwitchTabProtocol = BaseRouteProtocol;
-const NavigateToOptions =
+const NavigateToOptions = 
 /*#__PURE__*/ createRouteOptions(API_NAVIGATE_TO);
-const RedirectToOptions =
+const RedirectToOptions = 
 /*#__PURE__*/ createRouteOptions(API_REDIRECT_TO);
-const ReLaunchOptions =
+const ReLaunchOptions = 
 /*#__PURE__*/ createRouteOptions(API_RE_LAUNCH);
-const SwitchTabOptions =
+const SwitchTabOptions = 
 /*#__PURE__*/ createRouteOptions(API_SWITCH_TAB);
 const NavigateBackOptions = {
     formatArgs: {
@@ -10884,7 +10897,7 @@ const IndexOptions = {
     },
 };
 const API_SET_TAB_BAR_ITEM = 'setTabBarItem';
-const SetTabBarItemProtocol =
+const SetTabBarItemProtocol = 
 /*#__PURE__*/ extend({
     text: String,
     iconPath: String,
@@ -10942,7 +10955,7 @@ const API_REMOVE_TAB_BAR_BADGE = 'removeTabBarBadge';
 const RemoveTabBarBadgeProtocol = IndexProtocol;
 const RemoveTabBarBadgeOptions = IndexOptions;
 const API_SET_TAB_BAR_BADGE = 'setTabBarBadge';
-const SetTabBarBadgeProtocol =
+const SetTabBarBadgeProtocol = 
 /*#__PURE__*/ extend({
     text: {
         type: String,
@@ -11563,7 +11576,7 @@ function getPreloadWebview() {
 function createPreloadWebview() {
     if (!preloadWebview || preloadWebview.__uniapp_route) {
         // 不存在，或已被使用
-        preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()),
+        preloadWebview = plus.webview.create(VIEW_WEBVIEW_PATH, String(genWebviewId()), 
         // @ts-expect-error
         { contentAdjust: false });
         if (('production' !== 'production')) {
@@ -12183,7 +12196,7 @@ function registerPage({ url, path, query, openType, webview, nvuePageVm, eventCh
     initWebview(webview, path, query, routeOptions.meta);
     const route = path.slice(1);
     webview.__uniapp_route = route;
-    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel,
+    const pageInstance = initPageInternalInstance(openType, url, query, routeOptions.meta, eventChannel, 
     // TODO theme
     'light');
     const id = parseInt(webview.id);
@@ -12627,6 +12640,7 @@ var uni$1 = {
   canvasToTempFilePath: canvasToTempFilePath,
   createCanvasContext: createCanvasContext,
   createSelectorQuery: createSelectorQuery,
+  createVideoContext: createVideoContext,
   getLocale: getLocale,
   hideTabBar: hideTabBar,
   hideTabBarRedDot: hideTabBarRedDot,
