@@ -8527,7 +8527,12 @@ function parseStyleSheet({
   root
 }) {
   const component = type;
-  {
+  const pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */ new Map();
+  }
+  let cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
     const __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
@@ -8544,9 +8549,10 @@ function parseStyleSheet({
     if (isArray(component.styles)) {
       styles.push(...component.styles);
     }
-    component.__styles = useCssStyles(styles);
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
   }
-  return component.__styles;
+  return cache;
 }
 function extend(a, b) {
   b.forEach((value, key) => {
