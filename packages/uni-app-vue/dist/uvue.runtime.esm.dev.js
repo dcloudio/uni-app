@@ -9238,7 +9238,12 @@ function parseStyleSheet(_ref24) {
     root
   } = _ref24;
   var component = type;
-  {
+  var pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */new Map();
+  }
+  var cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
     var __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray$1(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
@@ -9255,9 +9260,10 @@ function parseStyleSheet(_ref24) {
     if (isArray$1(component.styles)) {
       styles.push(...component.styles);
     }
-    component.__styles = useCssStyles(styles);
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
   }
-  return component.__styles;
+  return cache;
 }
 function extend(a, b) {
   b.forEach((value, key) => {
