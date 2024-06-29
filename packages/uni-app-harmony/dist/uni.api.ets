@@ -25,12 +25,12 @@ import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, ComponentPublicInstance, UniProvider, IUniError, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, ComponentInternalInstance, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
 import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
+import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import dataPreferences from '@ohos.data.preferences';
 import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
-import { encode } from "@dcloudio/uni-app-harmony-framework";
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
@@ -1034,7 +1034,7 @@ export function initUniExtApi(APP_ID: string) {
         ]
     ]);
     const arrayBufferToBase64: ArrayBufferToBase64 = defineSyncApi<string>(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer: ArrayBuffer): string =>{
-        return encode(arrayBuffer);
+        return buffer.from(arrayBuffer).toString('base64');
     }, ArrayBufferToBase64Protocol) as ArrayBufferToBase64;
     const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer';
     const Base64ToArrayBufferProtocol = new Map<string, ProtocolOptions>([
@@ -1046,8 +1046,8 @@ export function initUniExtApi(APP_ID: string) {
             }
         ]
     ]);
-    const base64ToArrayBuffer: Base64ToArrayBuffer = defineSyncApi<ArrayBuffer>(API_BASE64_TO_ARRAY_BUFFER, (base64: string)=>{
-        return buffer.from(base64, 'base64').buffer as ArrayBuffer;
+    const base64ToArrayBuffer: Base64ToArrayBuffer = defineSyncApi<ArrayBuffer>(API_BASE64_TO_ARRAY_BUFFER, (base64: string): ArrayBuffer =>{
+        return buffer1.from(base64, 'base64').buffer;
     }, Base64ToArrayBufferProtocol) as Base64ToArrayBuffer;
     const API_GET_CLIPBOARD_DATA = 'getClipboardData';
     const API_SET_CLIPBOARD_DATA = 'setClipboardData';
