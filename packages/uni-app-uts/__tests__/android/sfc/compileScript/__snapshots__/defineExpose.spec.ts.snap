@@ -4,7 +4,7 @@ exports[`<script> after <script setup> the script content not end with \`\\n\` 1
 "import { x } from './x'
   const n = 1
 
-export default {
+export default defineComponent({
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
@@ -14,11 +14,11 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineExpose() 1`] = `
-"export default {
+"export default defineComponent({
   setup(__props: GenAnonymous, { expose: __expose }: SetupContext) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
@@ -29,5 +29,5 @@ __expose({ foo: 123 })
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;

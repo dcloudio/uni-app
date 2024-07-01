@@ -2,7 +2,7 @@
 
 exports[`SFC compile template template with html 1`] = `
 "const msg = ''
-export default {
+export default defineComponent({
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
@@ -15,12 +15,12 @@ function GenAnonymousRender(): any | null {
 }
 }
 
-}"
+})"
 `;
 
 exports[`SFC compile template template with pug 1`] = `
 "const msg = ''
-export default {
+export default defineComponent({
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
@@ -33,5 +33,5 @@ function GenAnonymousRender(): any | null {
 }
 }
 
-}"
+})"
 `;
