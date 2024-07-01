@@ -146,6 +146,22 @@
           "kotlin": true,
           "swift": false
         }
+      },
+      "getProviderIds": {
+        "name": "getProviderIds",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      },
+      "getProviderObject": {
+        "name": "getProviderObject",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
       }
     }
   },
