@@ -5,7 +5,7 @@ import { EXTNAME_JS_RE, EXTNAME_VUE } from '../../constants'
 export interface VueQuery {
   vue?: boolean
   src?: boolean
-  type?: 'script' | 'template' | 'style' | 'custom'
+  type?: 'script' | 'template' | 'style' | 'custom' | 'page'
   index?: number
   lang?: string
   raw?: boolean

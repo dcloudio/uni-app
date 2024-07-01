@@ -64,4 +64,5 @@ export interface ResolvedOptions extends Options {
   targetLanguage?: 'kotlin'
   className?: string
   classNamePrefix?: string
+  componentType: 'app' | 'page' | 'component'
 }

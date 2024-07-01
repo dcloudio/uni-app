@@ -54,6 +54,10 @@ export const DEFAULT_FILENAME = 'anonymous.vue'
 
 export interface SFCScriptCompileOptions {
   /**
+   * 类型
+   */
+  componentType: 'app' | 'page' | 'component'
+  /**
    * 是否同时支持使用 <script> 和 <script setup>
    */
   scriptAndScriptSetup?: boolean
@@ -984,14 +988,16 @@ __ins.emit(event, ...do_not_transform_spread)
   // export default defineComponent({ ...__default__, ... })
   ctx.s.prependLeft(
     startOffset,
-    `\n${genDefaultAs} {${runtimeOptions}\n  ` +
+    `\n${genDefaultAs} ${ctx.helper(
+      `defineComponent`
+    )}({${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}) {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy${options.className ? ` as ${options.className}` : ''};
 const _cache = __ins.renderCache;
 ${exposeCall}`
   )
-  ctx.s.appendRight(endOffset, `}`)
+  ctx.s.appendRight(endOffset, `})`)
 
   // 12. finalize Vue helper imports
   // if (ctx.helperImports.size > 0) {

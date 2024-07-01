@@ -3547,7 +3547,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
 }
 function useCache(props2, type) {
   if (type.value === "number") {
-    const value = props2.modelValue ?? props2.value;
+    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
     const cache = vue.ref(typeof value !== "undefined" ? value.toLocaleString() : "");
     vue.watch(() => props2.modelValue, (value2) => {
       cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";

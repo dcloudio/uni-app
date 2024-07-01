@@ -117,7 +117,9 @@ export function uniAppPagesPlugin(): Plugin {
           codes.push(`__uniConfig.themeConfig = ${themeConfig}`)
         }
         return {
-          code: `${imports.map((p) => `import './${p}.uvue'`).join('\n')}
+          code: `${imports
+            .map((p) => `import './${p}.uvue?type=page'`)
+            .join('\n')}
           export default 'pages.json'`,
           map: null,
         }

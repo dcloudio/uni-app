@@ -67,7 +67,19 @@ export function uniAppUVuePlugin(): Plugin {
       }
       if (!query.vue) {
         // main request
-        return transformMain(code, filename, options, this, isAppVue(filename))
+        return transformMain(
+          code,
+          filename,
+          {
+            ...options,
+            componentType: isAppVue(filename)
+              ? 'app'
+              : query.type === 'page'
+              ? 'page'
+              : 'component',
+          },
+          this
+        )
       } else {
         // sub block request
         const descriptor = query.src

@@ -9810,7 +9810,7 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
 }
 function useCache(props2, type) {
   if (type.value === "number") {
-    const value = props2.modelValue ?? props2.value;
+    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
     const cache = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
     watch(() => props2.modelValue, (value2) => {
       cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
@@ -19149,6 +19149,7 @@ function _setClipboardData(data, resolve, reject) {
   const pasteText = document.getElementById("#clipboard");
   pasteText && pasteText.remove();
   const textarea = document.createElement("textarea");
+  textarea.setAttribute("inputmode", "none");
   textarea.id = "#clipboard";
   textarea.style.position = "fixed";
   textarea.style.top = "-9999px";

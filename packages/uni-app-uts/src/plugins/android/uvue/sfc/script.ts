@@ -63,6 +63,7 @@ export function resolveScript(
     templateOptions: resolveTemplateCompilerOptions(descriptor, options),
     sourceMap: options.sourceMap,
     defineModel: true,
+    componentType: options.componentType,
     // genDefaultAs: scriptIdentifier,
   })
 

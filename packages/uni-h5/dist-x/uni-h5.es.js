@@ -3058,6 +3058,13 @@ class UniCanvasElement extends UniElement {
   getContext(contextId, options) {
     return this.querySelector("canvas").getContext(contextId, options);
   }
+  toBlob(...args) {
+    const c = this.querySelector("canvas");
+    return c.toBlob.apply(c, args);
+  }
+  toDataURL(type, encoderOptions) {
+    return this.querySelector("canvas").toDataURL(type, encoderOptions);
+  }
 }
 const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
@@ -9803,7 +9810,6 @@ const emit = [
   ...emit$1
 ];
 function useBase(props2, rootRef, emit2) {
-  var _a;
   const fieldRef = ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
   const selectionStart = computed(() => {
@@ -9826,7 +9832,13 @@ function useBase(props2, rootRef, emit2) {
   });
   let value = "";
   {
-    value = props2.modelValue !== void 0 ? (_a = getValueString(props2.modelValue, props2.type, maxlength.value)) != null ? _a : getValueString(props2.value, props2.type, maxlength.value) : getValueString(props2.value, props2.type, maxlength.value);
+    const modelValueString = getValueString(
+      props2.modelValue,
+      props2.type,
+      maxlength.value
+    );
+    const valueString = getValueString(props2.value, props2.type, maxlength.value);
+    value = props2.modelValue !== void 0 ? modelValueString !== null && modelValueString !== void 0 ? modelValueString : valueString : valueString;
   }
   const state2 = reactive({
     value,
@@ -10073,7 +10085,7 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
 }
 function useCache(props2, type) {
   if (type.value === "number") {
-    const value = props2.modelValue ?? props2.value;
+    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
     const cache = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
     watch(() => props2.modelValue, (value2) => {
       cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
@@ -21288,6 +21300,7 @@ function _setClipboardData(data, resolve, reject) {
   const pasteText = document.getElementById("#clipboard");
   pasteText && pasteText.remove();
   const textarea = document.createElement("textarea");
+  textarea.setAttribute("inputmode", "none");
   textarea.id = "#clipboard";
   textarea.style.position = "fixed";
   textarea.style.top = "-9999px";

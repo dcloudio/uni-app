@@ -4,6 +4,7 @@ import type { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
 import { hasDebugError, rewriteDebugError } from './rewriteDebugError'
 import { rewriteSourceMap } from './rewriteSourceMap'
+import { rewriteDefaultAST } from '../rewriteDefault'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,
@@ -23,6 +24,17 @@ export function processNormalScript(
     const relativeFilename = ctx.descriptor.relativeFilename
     const startLine = (ctx.descriptor.script!.loc.start.line || 1) - 1
     const startOffset = 0
+
+    rewriteDefaultAST(
+      scriptAst.body,
+      s,
+      ctx.options.componentType === 'app'
+        ? `defineApp`
+        : ctx.options.componentType === 'page'
+        ? `definePage`
+        : `defineComponent`
+    )
+
     if (
       process.env.NODE_ENV === 'development' ||
       process.env.UNI_RUST_TEST === 'true'

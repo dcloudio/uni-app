@@ -29,7 +29,8 @@ export function rewriteDefaultAST(
   as: string
 ): void {
   if (!hasDefaultExport(ast)) {
-    s.append(`\nconst ${as} = {}`)
+    s.append(`\nexport default ${as}({})`)
+    // s.append(`\nconst ${as} = {}`)
     return
   }
 
@@ -47,7 +48,9 @@ export function rewriteDefaultAST(
         s.overwrite(start, node.declaration.id.start!, ` class `)
         s.append(`\nconst ${as} = ${node.declaration.id.name}`)
       } else {
-        s.overwrite(node.start!, node.declaration.start!, `const ${as} = `)
+        s.prependLeft(node.declaration.start!, `${as}(`)
+        s.appendRight(node.declaration.end!, ')')
+        // s.overwrite(node.start!, node.declaration.start!, `const ${as} = `)
       }
     } else if (node.type === 'ExportNamedDeclaration') {
       for (const specifier of node.specifiers) {

@@ -35,8 +35,7 @@ export async function transformMain(
   code: string,
   filename: string,
   options: ResolvedOptions,
-  pluginContext?: TransformPluginContext, // 该 transformMain 方法被vuejs-core使用，编译框架内置组件了，此时不会传入pluginContext
-  isAppVue: boolean = false
+  pluginContext?: TransformPluginContext // 该 transformMain 方法被vuejs-core使用，编译框架内置组件了，此时不会传入pluginContext
 ) {
   if (!options.compiler) {
     options.compiler = require('@vue/compiler-sfc')
@@ -74,7 +73,7 @@ export async function transformMain(
   let templateImportEasyComponentsCode = ''
   let templateImportUTSComponentsCode = ''
 
-  if (!isAppVue) {
+  if (options.componentType !== 'app') {
     // template
     const isInline = !!descriptor.scriptSetup
     const templateResult = genTemplateCode(

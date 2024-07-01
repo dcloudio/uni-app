@@ -11,6 +11,7 @@ export interface UTS2KotlinOptions {
   tsconfig?: string
   rootFiles?: string[]
   compilerOptions?: CompilerOptions
+  normalizeFileName: (str: string) => string
 }
 
 export function runUTS2KotlinDev(options: UTS2KotlinOptions) {
@@ -58,5 +59,6 @@ export function runUTS2KotlinDev(options: UTS2KotlinOptions) {
     compilerOptions: extend(tsconfigOverride.compilerOptions, {
       outDir: options.outputDir,
     }),
+    normalizeFileName: options.normalizeFileName,
   } as Required<UTS2KotlinOptions>)
 }

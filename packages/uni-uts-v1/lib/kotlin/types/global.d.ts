@@ -8,6 +8,15 @@ declare global {
   function utsMapOf(obj: Record<string, any>): Map<string, any | null>
   function utsMapOf<K, V>(obj: Array<Array<any>>): Map<string, any | null>
 
+  declare class UTSSourceMapPosition<
+    name = string,
+    fileName = string,
+    line = number,
+    column = number
+  > {
+    constructor(name: name, fileName: fileName, line: line, column: column) {}
+  }
+
   namespace io {
     namespace dcloud {
       namespace uniapp {

@@ -10,6 +10,7 @@ import {
   getUTSEasyComAutoImports,
   getUniExtApiProviderRegisters,
   normalizeEmitAssetFileName,
+  normalizeNodeModules,
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
@@ -194,6 +195,7 @@ export function uniAppPlugin(): UniVitePlugin {
         await runUTS2KotlinDev({
           inputDir: tscOutputDir,
           outputDir: uvueOutputDir,
+          normalizeFileName: normalizeNodeModules,
         })
       }
       const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
