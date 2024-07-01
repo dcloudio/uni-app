@@ -38,11 +38,12 @@ import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
-import { getCurrentPage as getCurrentPage1, navigator } from "@dcloudio/uni-app-harmony-framework";
+import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
-import { getOSRuntime, getCurrentPage } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath1, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath3, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
@@ -852,6 +853,10 @@ class ShowActionSheetOptions extends UTSObject {
     complete: ShowActionSheetCompleteCallback | null = null;
 }
 type ShowActionSheet = (options: ShowActionSheetOptions) => void;
+interface IShowLoadingOptions {
+    title: string;
+    mask: boolean;
+}
 export type Rpx2px = (number: number) => number;
 export class SetStorageSuccess extends UTSObject {
 }
@@ -1969,25 +1974,25 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
-        interface Page {
-            $getAppWebview: Function;
-        }
-        const currentPage = getCurrentPage() as Page;
-        getOSRuntime().previewImage({
-            urls: options.urls.map((url)=>getRealPath1(url) as string),
-            current: options.current || '',
-            showmenu: options.showmenu === false ? false : true
-        } as IPreviewImageOptions, currentPage.$getAppWebview().page as Object);
-        exec.resolve({
-            errSubject: 'uni-previewImage',
-            errMsg: ''
-        } as PreviewImageSuccess);
+        waitForCurrentNativePage().then((nativePage: Object)=>{
+            getOSRuntime().previewImage({
+                urls: options.urls.map((url)=>getRealPath1(url) as string),
+                current: options.current || '',
+                showmenu: options.showmenu === false ? false : true
+            } as IPreviewImageOptions, nativePage);
+            exec.resolve({
+                errSubject: 'uni-previewImage',
+                errMsg: ''
+            } as PreviewImageSuccess);
+        });
     }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
     const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>)=>{
-        getOSRuntime().closePreviewImage();
-        exec.resolve({
-            errMsg: ''
-        } as ClosePreviewImageSuccess);
+        waitForCurrentNativePage().then((nativePage: Object)=>{
+            getOSRuntime().closePreviewImage();
+            exec.resolve({
+                errMsg: ''
+            } as ClosePreviewImageSuccess);
+        });
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
         const context = getAbilityContext() as common.UIAbilityContext;
@@ -2121,7 +2126,7 @@ export function initUniExtApi(APP_ID: string) {
         return webview;
     };
     const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExecutor<SetNavigationBarColorSuccess>)=>{
-        const page = getCurrentPage1() as Page;
+        const page = getCurrentPage() as Page;
         if (!page) {
             return res.reject(`getCurrentPages is empty`);
         }
@@ -2153,7 +2158,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
     const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
-        const page = getCurrentPage1() as Page;
+        const page = getCurrentPage() as Page;
         if (!page) {
             return res.reject(`getCurrentPages is empty`);
         }
@@ -3587,12 +3592,20 @@ export function initUniExtApi(APP_ID: string) {
             res.reject(e.message);
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
-    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, res: ApiExecutor<ShowLoadingSuccess>)=>{
-        res.reject('showLoading is not supported on HarmonyOS');
-    }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
-    const hideLoading: HideLoading = ()=>defineAsyncApi(API_HIDE_LOADING, (options: Object, res: ApiExecutor<Object>)=>{
-            res.reject('hideLoading is not supported on HarmonyOS');
+    const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
+        waitForCurrentNativePage1().then((nativePage: Object)=>{
+            getOSRuntime1().showLoading({
+                title: options.title || '',
+                mask: options.mask == null ? false : options.mask
+            } as IShowLoadingOptions, nativePage);
+            exec.resolve({} as ShowLoadingSuccess);
         });
+    }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
+    const hideLoading: HideLoading = defineSyncApi<void>(API_HIDE_LOADING, ()=>{
+        waitForCurrentNativePage1().then((nativePage: Object)=>{
+            getOSRuntime1().hideLoading();
+        });
+    }) as HideLoading;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{

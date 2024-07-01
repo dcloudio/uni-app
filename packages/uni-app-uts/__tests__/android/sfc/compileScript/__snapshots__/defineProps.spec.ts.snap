@@ -3,7 +3,7 @@
 exports[`defineProps basic usage 1`] = `
 "const bar = 1
 
-export default {
+export default defineComponent({
   props: {
   foo: String
 },
@@ -17,7 +17,7 @@ const props = __props
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps custom element retains the props type & default value & production mode 1`] = `
@@ -25,7 +25,7 @@ exports[`defineProps custom element retains the props type & default value & pro
           foo?: number;
       }
       
-export default {
+export default defineComponent({
   __name: 'app.ce',
   __props: Props,
   props: {
@@ -41,11 +41,11 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps custom element retains the props type & production mode 1`] = `
-"export default {
+"export default defineComponent({
   __name: 'app.ce',
   props: {
     foo: { type: Number, required: true }
@@ -60,11 +60,11 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps defineProps w/ runtime options 1`] = `
-"export default {
+"export default defineComponent({
   props: { foo: String },
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
@@ -76,11 +76,11 @@ const props = __props
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps destructure without enabling reactive destructure 1`] = `
-"export default {
+"export default defineComponent({
   props: {
     foo: { type: Foo, required: true }
   },
@@ -94,11 +94,11 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps should escape names w/ special symbols 1`] = `
-"export default {
+"export default defineComponent({
   props: {
     "spa ce": { type: Object, required: true },
     "exclamation!mark": { type: Object, required: true },
@@ -139,11 +139,11 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ TS assertion 1`] = `
-"export default {
+"export default defineComponent({
   props: ['foo'],
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
@@ -155,13 +155,13 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ exported interface 1`] = `
 "export interface Props { x?: number }
     
-export default {
+export default defineComponent({
   __props: Props,
   props: {
     x: { type: Number, required: false }
@@ -176,13 +176,13 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ exported interface in normal script 1`] = `
 "export interface Props { x?: number }
     
-export default {
+export default defineComponent({
   __props: Props,
   props: {
     x: { type: Number, required: false }
@@ -197,13 +197,13 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ exported type alias 1`] = `
 "export type Props = { x?: number }
     
-export default {
+export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
@@ -217,7 +217,7 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ extends interface 1`] = `
@@ -229,7 +229,7 @@ exports[`defineProps w/ extends interface 1`] = `
       
       interface Foo { x?: number }
     
-export default {
+export default defineComponent({
   __props: Foo,
   props: {
     z: { type: Number, required: true },
@@ -246,13 +246,13 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ interface 1`] = `
 "interface Props { x?: number }
     
-export default {
+export default defineComponent({
   __props: Props,
   props: {
     x: { type: Number, required: false }
@@ -267,13 +267,13 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ leading code 1`] = `
 "import { x } from './x'
     
-export default {
+export default defineComponent({
   props: {},
   setup(__props: GenAnonymous) {
 const __ins = getCurrentInstance()!;
@@ -284,7 +284,7 @@ const props = __props
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ type 1`] = `
@@ -293,7 +293,7 @@ exports[`defineProps w/ type 1`] = `
     type Alias = number[]
 
     
-export default {
+export default defineComponent({
   props: {
     string: { type: String, required: true },
     number: { type: Number, required: true },
@@ -344,13 +344,13 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ type alias 1`] = `
 "type Props = { x?: number }
     
-export default {
+export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
@@ -364,7 +364,7 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps withDefaults (static) + normal script 1`] = `
@@ -372,7 +372,7 @@ exports[`defineProps withDefaults (static) + normal script 1`] = `
         a?: string;
       }
     
-export default {
+export default defineComponent({
   __props: Props,
   props: {
     a: { type: String, required: false, default: "a" }
@@ -387,11 +387,11 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps withDefaults (static) 1`] = `
-"export default {
+"export default defineComponent({
   props: {
     foo: { type: String, required: false, default: 'hi' },
     bar: { type: Number, required: false },
@@ -411,11 +411,11 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;
 
 exports[`defineProps withDefaults (static) w/ production mode 1`] = `
-"export default {
+"export default defineComponent({
   props: {
     foo: { type: Function as PropType<() => void>, required: true },
     bar: { type: Boolean, required: true },
@@ -432,5 +432,5 @@ const _cache = __ins.renderCache;
 return "INLINE_RENDER"
 }
 
-}"
+})"
 `;

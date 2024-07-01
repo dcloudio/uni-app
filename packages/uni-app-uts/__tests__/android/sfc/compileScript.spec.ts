@@ -1382,7 +1382,7 @@ describe('SFC analyze <script> bindings', () => {
           filename: 'FooBar.vue',
         }
       )
-      expect(content).toMatch(`export default {
+      expect(content).toMatch(`export default defineComponent({
   __name: 'FooBar'`)
       assertCode(content)
     })

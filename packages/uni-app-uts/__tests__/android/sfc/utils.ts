@@ -23,6 +23,7 @@ export function compileSFCScript(
     className,
     inlineTemplate: true,
     scriptAndScriptSetup: true,
+    componentType: 'component',
   })
   if (options?.inlineTemplate) {
     const isInline = !!descriptor.scriptSetup

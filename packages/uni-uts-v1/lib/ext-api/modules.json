@@ -113,7 +113,10 @@
       }
     }
   },
-  "uni-getLocation-system": {
+  "uni-getLocation": {
+    "provider": {
+      "service": "location"
+    },
     "uni": {
       "getLocation": {
         "name": "getLocation",
@@ -123,6 +126,20 @@
           "swift": false
         }
       }
+    }
+  },
+  "uni-getLocation-system": {
+    "provider": {
+      "service": "location",
+      "name": "system",
+      "servicePlugin": "uni-getLocation"
+    }
+  },
+  "uni-getLocation-tencent": {
+    "provider": {
+      "service": "location",
+      "name": "tencent",
+      "servicePlugin": "uni-getLocation"
     }
   },
   "uni-getNetworkType": {

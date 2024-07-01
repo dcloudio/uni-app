@@ -22,7 +22,7 @@ const myEmit = defineEmits(['foo', 'bar'])
       'function myEmit(event: string, ...do_not_transform_spread: Array<any | null>) {'
     )
     // should include context options in default export
-    expect(content).toMatch(`export default {
+    expect(content).toMatch(`export default defineComponent({
   emits: ['foo', 'bar'],`)
   })
 
