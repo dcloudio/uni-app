@@ -57,7 +57,7 @@ export function formatExtApiProviderName(service: string, name: string) {
   }
   return `Uni${capitalize(camelize(service))}${capitalize(
     camelize(name)
-  )}Provider`
+  )}ProviderImpl`
 }
 
 export function getUniExtApiProviderRegisters() {
