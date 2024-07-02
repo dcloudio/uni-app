@@ -14,6 +14,7 @@ import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
 import { BusinessError as BusinessError1 } from '@ohos.base';
 import { BusinessError } from '@ohos.base';
+import { Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
 import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
@@ -57,6 +58,7 @@ import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
 type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
 type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
@@ -857,6 +859,22 @@ interface IShowLoadingOptions {
     title: string;
     mask: boolean;
 }
+type PullDownRefreshErrorCode = 4;
+interface StartPullDownRefreshFail extends IUniError {
+    errCode: PullDownRefreshErrorCode;
+}
+export class StartPullDownRefreshOptions extends UTSObject {
+    success: StartPullDownRefreshSuccessCallback | null = null;
+    fail: StartPullDownRefreshFailCallback | null = null;
+    complete: StartPullDownRefreshCompleteCallback | null = null;
+}
+export type StartPullDownRefreshSuccess = AsyncApiSuccessResult;
+type StartPullDownRefreshSuccessCallback = (result: StartPullDownRefreshSuccess) => void;
+type StartPullDownRefreshFailCallback = (result: StartPullDownRefreshFail) => void;
+type StartPullDownRefreshComplete = AsyncApiResult;
+type StartPullDownRefreshCompleteCallback = (result: StartPullDownRefreshComplete) => void;
+type StartPullDownRefresh = (options: StartPullDownRefreshOptions) => void;
+type StopPullDownRefresh = () => void;
 export type Rpx2px = (number: number) => number;
 export class SetStorageSuccess extends UTSObject {
 }
@@ -980,8 +998,27 @@ export interface SocketTask {
     onError(callback: (result: GeneralCallbackResult) => void): void;
     onMessage(callback: (result: OnSocketMessageCallbackResult) => void): void;
 }
+type OnSocketOpenCallback = (result: OnSocketOpenCallbackResult) => void;
+type OnSocketOpen = (options: OnSocketOpenCallback) => void;
 export class OnSocketErrorCallbackResult extends UTSObject {
     errMsg!: string;
+}
+type OnSocketErrorCallback = (result: OnSocketErrorCallbackResult) => void;
+type OnSocketError = (callback: OnSocketErrorCallback) => void;
+type SendSocketMessage = (options: SendSocketMessageOptions) => void;
+type OnSocketMessageCallback = (result: OnSocketMessageCallbackResult) => void;
+type OnSocketMessage = (callback: OnSocketMessageCallback) => void;
+type CloseSocket = (options: CloseSocketOptions) => void;
+class OnSocketCloseCallbackResult extends UTSObject {
+    code!: number;
+    reason!: string;
+}
+type OnSocketCloseCallback = (result: OnSocketCloseCallbackResult) => void;
+type OnSocketClose = (callback: OnSocketCloseCallback) => void;
+interface IEmitter {
+    on: Function;
+    off: Function;
+    emit: Function;
 }
 interface UniExtApi {
     arrayBufferToBase64: ArrayBufferToBase64;
@@ -1018,6 +1055,8 @@ interface UniExtApi {
     hideLoading: HideLoading;
     showModal: ShowModal;
     showActionSheet: ShowActionSheet;
+    startPullDownRefresh: StartPullDownRefresh;
+    stopPullDownRefresh: StopPullDownRefresh;
     rpx2px: Rpx2px;
     setStorage: SetStorage;
     setStorageSync: SetStorageSync;
@@ -1030,6 +1069,12 @@ interface UniExtApi {
     clearStorage: ClearStorage;
     clearStorageSync: ClearStorageSync;
     connectSocket: ConnectSocket;
+    sendSocketMessage: SendSocketMessage;
+    closeSocket: CloseSocket;
+    onSocketOpen: OnSocketOpen;
+    onSocketMessage: OnSocketMessage;
+    onSocketClose: OnSocketClose;
+    onSocketError: OnSocketError;
 }
 export function initUniExtApi(APP_ID: string) {
     const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
@@ -3606,6 +3651,15 @@ export function initUniExtApi(APP_ID: string) {
             getOSRuntime1().hideLoading();
         });
     }) as HideLoading;
+    const API_START_PULL_DOWN_REFRESH = 'startPullDownRefresh';
+    const API_STOP_PULL_DOWN_REFRESH = 'stopPullDownRefresh';
+    const startPullDownRefresh = defineAsyncApi<StartPullDownRefreshOptions, StartPullDownRefreshSuccess>(API_START_PULL_DOWN_REFRESH, (_, res)=>{
+        internalStartPullDownRefresh();
+        res.resolve();
+    }) as StartPullDownRefresh;
+    const stopPullDownRefresh = defineSyncApi<void>(API_STOP_PULL_DOWN_REFRESH, ()=>{
+        internalStopPullDownRefresh();
+    }) as StopPullDownRefresh;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
@@ -3777,6 +3831,8 @@ export function initUniExtApi(APP_ID: string) {
             ]
         ])
     };
+    const API_SEND_SOCKET_MESSAGE = 'sendSocketMessage';
+    const API_CLOSE_SOCKET = 'closeSocket';
     const tryExec = (fn: Function | null | undefined, ...args: Object[])=>{
         if (!fn) {
             return;
@@ -3787,10 +3843,50 @@ export function initUniExtApi(APP_ID: string) {
             console.error(error);
         }
     };
+    const GlobalWebsocketEvent: IEmitter = new Emitter3() as IEmitter;
     class SocketTask1 implements SocketTask {
         private _ws: webSocket.WebSocket;
+        private _emitter: IEmitter = new Emitter3();
         constructor(ws: webSocket.WebSocket){
             this._ws = ws;
+            this._ws.on('message', (_, data)=>{
+                const message = {
+                    data
+                } as OnSocketMessageCallbackResult;
+                this._emitter.emit('message', message);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('message', message);
+                }
+            });
+            this._ws.on('open', (_, data)=>{
+                this._emitter.emit('open', data);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('open', data);
+                }
+            });
+            this._ws.on('error', (error)=>{
+                const message = {
+                    errMsg: error.message
+                } as OnSocketErrorCallbackResult;
+                this._emitter.emit('error', message);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('error', message);
+                }
+                const index = socketTasks.indexOf(this);
+                if (index >= 0) {
+                    socketTasks.splice(index, 1);
+                }
+            });
+            this._ws.on('close', (_, data)=>{
+                this._emitter.emit('close', data);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('close', data);
+                }
+                const index = socketTasks.indexOf(this);
+                if (index >= 0) {
+                    socketTasks.splice(index, 1);
+                }
+            });
         }
         send(options: SendSocketMessageOptions) {
             this._ws.send(options.data as string | ArrayBuffer).then((success: boolean)=>{
@@ -3820,39 +3916,79 @@ export function initUniExtApi(APP_ID: string) {
             }, (err: Error)=>{
                 tryExec(options?.fail, new UniError(err.message));
             });
+            const index = socketTasks.indexOf(this);
+            if (index >= 0) {
+                socketTasks.splice(index, 1);
+            }
         }
         onMessage(callback: Function) {
-            this._ws.on('message', (_, data)=>{
-                callback({
-                    data
-                } as OnSocketMessageCallbackResult);
-            });
+            this._emitter.on('message', callback);
         }
         onOpen(callback: Function) {
-            this._ws.on('open', (_, data)=>{
-                callback(data);
-            });
+            this._emitter.on('open', callback);
         }
         onError(callback: Function) {
-            this._ws.on('error', (error)=>{
-                callback({
-                    errMsg: error.message
-                } as OnSocketErrorCallbackResult);
-            });
+            this._emitter.on('error', callback);
         }
         onClose(callback: Function) {
-            this._ws.on('close', (_, data)=>{
-                callback(data);
-            });
+            this._emitter.on('close', callback);
         }
     }
+    const socketTasks: SocketTask1[] = [];
     const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
         ws.connect(args.url, {
             header: args.header ? args.header as Object : undefined
         } as webSocket.WebSocketRequestOptions);
-        return new SocketTask1(ws);
+        const task = new SocketTask1(ws);
+        socketTasks.push(task);
+        return task;
     }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
+    const onSocketMessage: OnSocketMessage = (callback: Function)=>{
+        GlobalWebsocketEvent.on('message', callback);
+    };
+    const onSocketOpen: OnSocketOpen = (callback: Function)=>{
+        GlobalWebsocketEvent.on('open', callback);
+    };
+    const onSocketError: OnSocketError = (callback: Function)=>{
+        GlobalWebsocketEvent.on('error', callback);
+    };
+    const onSocketClose: OnSocketClose = (callback: Function)=>{
+        GlobalWebsocketEvent.on('close', callback);
+    };
+    const sendSocketMessage = defineAsyncApi<SendSocketMessageOptions, GeneralCallbackResult>(API_SEND_SOCKET_MESSAGE, (args: SendSocketMessageOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const task = socketTasks[0];
+        if (task) {
+            task.send({
+                data: args.data,
+                success (res) {
+                    exec.resolve(res);
+                },
+                fail (err) {
+                    exec.reject('sendSocketMessage:fail');
+                }
+            } as SendSocketMessageOptions);
+        } else {
+            exec.reject('WebSocket is not connected');
+        }
+    }) as SendSocketMessage;
+    const closeSocket = defineAsyncApi<CloseSocketOptions, GeneralCallbackResult>(API_CLOSE_SOCKET, (args: CloseSocketOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const task = socketTasks[0];
+        if (task) {
+            task.close({
+                code: args.code,
+                reason: args.reason,
+                success (res) {
+                    exec.resolve(res);
+                },
+                fail (err) {
+                    exec.reject('closeSocket:fail');
+                }
+            } as CloseSocketOptions);
+        } else {
+            exec.reject('WebSocket is not connected');
+        }
+    }) as CloseSocket;
     return {
         arrayBufferToBase64,
         base64ToArrayBuffer,
@@ -3888,6 +4024,8 @@ export function initUniExtApi(APP_ID: string) {
         hideLoading,
         showModal,
         showActionSheet,
+        startPullDownRefresh,
+        stopPullDownRefresh,
         rpx2px,
         setStorage,
         setStorageSync,
@@ -3899,6 +4037,12 @@ export function initUniExtApi(APP_ID: string) {
         removeStorageSync,
         clearStorage,
         clearStorageSync,
-        connectSocket
+        connectSocket,
+        sendSocketMessage,
+        closeSocket,
+        onSocketOpen,
+        onSocketMessage,
+        onSocketClose,
+        onSocketError
     } as UniExtApi;
 }
