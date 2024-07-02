@@ -3905,10 +3905,6 @@ export function initUniExtApi(APP_ID: string) {
                 reason: typeof options?.reason === 'string' ? options.reason : ''
             } as webSocket.WebSocketCloseOptions).then((success: boolean)=>{
                 if (success) {
-                    this._ws.off('open');
-                    this._ws.off('message');
-                    this._ws.off('close');
-                    this._ws.off('error');
                     tryExec(options?.success, {} as GeneralCallbackResult);
                 } else {
                     tryExec(options?.fail, new UniError('close socket failed'));
