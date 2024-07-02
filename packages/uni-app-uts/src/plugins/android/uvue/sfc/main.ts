@@ -1,3 +1,4 @@
+import path from 'path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type {
   PluginContext,
@@ -19,7 +20,6 @@ import {
   normalizeEmitAssetFileName,
   offsetToStartAndEnd,
   parseUTSComponent,
-  removeExt,
 } from '@dcloudio/uni-cli-shared'
 import type { BindingMetadata, Position } from '@vue/compiler-core'
 import type { ImportSpecifier } from 'es-module-lexer'
@@ -184,14 +184,18 @@ export default {}
   }
 
   // handle TS transpilation
-  const utsCode = utsOutput.join('\n')
+  let utsCode = utsOutput.join('\n')
 
   if (resolvedMap && pluginContext) {
     pluginContext.emitFile({
       type: 'asset',
-      fileName: removeExt(relativeFilename) + '.map',
+      fileName: normalizeEmitAssetFileName(relativeFilename) + '.map',
       source: JSON.stringify(resolvedMap),
     })
+    utsCode += `
+//# sourceMappingURL=${path.basename(
+      normalizeEmitAssetFileName(relativeFilename)
+    )}.map`
   }
 
   const jsCodes = [
