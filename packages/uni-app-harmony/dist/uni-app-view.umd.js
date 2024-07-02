@@ -1203,8 +1203,8 @@
   function compile$1(tokens, values) {
     var compiled = [];
     var index2 = 0;
-    var mode = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
-    if (mode === "unknown") {
+    var mode2 = Array.isArray(values) ? "list" : isObject(values) ? "named" : "unknown";
+    if (mode2 === "unknown") {
       return compiled;
     }
     while (index2 < tokens.length) {
@@ -1217,7 +1217,7 @@
           compiled.push(values[parseInt(token.value, 10)]);
           break;
         case "named":
-          if (mode === "named") {
+          if (mode2 === "named") {
             compiled.push(values[token.value]);
           }
           break;
@@ -9655,14 +9655,14 @@
       this._dict_set = true;
     }
   }
-  Deflate.prototype.push = function(data, mode) {
+  Deflate.prototype.push = function(data, mode2) {
     var strm = this.strm;
     var chunkSize = this.options.chunkSize;
     var status, _mode;
     if (this.ended) {
       return false;
     }
-    _mode = mode === ~~mode ? mode : mode === true ? Z_FINISH$1 : Z_NO_FLUSH;
+    _mode = mode2 === ~~mode2 ? mode2 : mode2 === true ? Z_FINISH$1 : Z_NO_FLUSH;
     if (typeof data === "string") {
       strm.input = strings$1.string2buf(data);
     } else if (toString$1.call(data) === "[object ArrayBuffer]") {
@@ -11601,7 +11601,7 @@
       }
     }
   }
-  Inflate.prototype.push = function(data, mode) {
+  Inflate.prototype.push = function(data, mode2) {
     var strm = this.strm;
     var chunkSize = this.options.chunkSize;
     var dictionary = this.options.dictionary;
@@ -11611,7 +11611,7 @@
     if (this.ended) {
       return false;
     }
-    _mode = mode === ~~mode ? mode : mode === true ? c.Z_FINISH : c.Z_NO_FLUSH;
+    _mode = mode2 === ~~mode2 ? mode2 : mode2 === true ? c.Z_FINISH : c.Z_NO_FLUSH;
     if (typeof data === "string") {
       strm.input = strings.binstring2buf(data);
     } else if (toString.call(data) === "[object ArrayBuffer]") {
@@ -13404,17 +13404,17 @@
     }
   });
   function provideForm(trigger2) {
-    var fields = [];
+    var fields2 = [];
     provide(uniFormKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       submit(evt) {
         trigger2("submit", evt, {
-          value: fields.reduce((res, field) => {
+          value: fields2.reduce((res, field) => {
             if (field.submit) {
               var [name, value] = field.submit();
               name && (res[name] = value);
@@ -13424,11 +13424,11 @@
         });
       },
       reset(evt) {
-        fields.forEach((field) => field.reset && field.reset());
+        fields2.forEach((field) => field.reset && field.reset());
         trigger2("reset", evt);
       }
     });
-    return fields;
+    return fields2;
   }
   var labelProps = {
     for: {
@@ -13879,7 +13879,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$h = {
+  var props$j = {
     canvasId: {
       type: String,
       default: ""
@@ -13899,7 +13899,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$h,
+    props: props$j,
     computed: {
       id() {
         return this.canvasId;
@@ -14388,7 +14388,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$g = {
+  var props$i = {
     name: {
       type: String,
       default: ""
@@ -14396,7 +14396,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$g,
+    props: props$i,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -14414,8 +14414,8 @@
     }
   });
   function useProvideCheckGroup(props2, trigger2) {
-    var fields = [];
-    var getFieldsValue = () => fields.reduce((res, field) => {
+    var fields2 = [];
+    var getFieldsValue = () => fields2.reduce((res, field) => {
       if (field.value.checkboxChecked) {
         res.push(field.value.value);
       }
@@ -14423,10 +14423,10 @@
     }, new Array());
     provide(uniCheckGroupKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       checkboxChange($event) {
         trigger2("change", $event, {
@@ -14449,7 +14449,7 @@
     }
     return getFieldsValue;
   }
-  var props$f = {
+  var props$h = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -14498,7 +14498,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$f,
+    props: props$h,
     setup(props2, _ref) {
       var {
         slots
@@ -14683,7 +14683,7 @@
       });
     }
   }
-  var props$e = {
+  var props$g = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -14989,7 +14989,7 @@
       };
     }
   });
-  var props$d = {
+  var props$f = {
     src: {
       type: String,
       default: ""
@@ -15028,7 +15028,7 @@
   };
   const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$d,
+    props: props$f,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -15159,9 +15159,9 @@
   function useImageSize(rootRef, props2, state) {
     var fixSize = () => {
       var {
-        mode
+        mode: mode2
       } = props2;
-      var names = FIX_MODES[mode];
+      var names = FIX_MODES[mode2];
       if (!names) {
         return;
       }
@@ -15360,7 +15360,7 @@
     return valueStr.slice(0, maxlength);
   }
   var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
-  var props$c = /* @__PURE__ */ extend({}, {
+  var props$e = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -15447,7 +15447,7 @@
       type: String,
       default: ""
     }
-  }, props$e);
+  }, props$g);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -15687,7 +15687,7 @@
       trigger: trigger2
     };
   }
-  var props$b = /* @__PURE__ */ extend({}, props$c, {
+  var props$d = /* @__PURE__ */ extend({}, props$e, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -15736,7 +15736,7 @@
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$b,
+    props: props$d,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
       var {
@@ -18661,7 +18661,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$a = {
+  var props$c = {
     name: {
       type: String,
       default: ""
@@ -18669,7 +18669,7 @@
   };
   const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$a,
+    props: props$c,
     // emits: ['change'],
     setup(props2, _ref) {
       var {
@@ -18687,23 +18687,23 @@
     }
   });
   function useProvideRadioGroup(props2, trigger2) {
-    var fields = [];
+    var fields2 = [];
     onMounted(() => {
-      _resetRadioGroupValue(fields.length - 1);
+      _resetRadioGroupValue(fields2.length - 1);
     });
     var getFieldsValue = () => {
       var _fields$find;
-      return (_fields$find = fields.find((field) => field.value.radioChecked)) === null || _fields$find === void 0 ? void 0 : _fields$find.value.value;
+      return (_fields$find = fields2.find((field) => field.value.radioChecked)) === null || _fields$find === void 0 ? void 0 : _fields$find.value.value;
     };
     provide(uniRadioGroupKey, {
       addField(field) {
-        fields.push(field);
+        fields2.push(field);
       },
       removeField(field) {
-        fields.splice(fields.indexOf(field), 1);
+        fields2.splice(fields2.indexOf(field), 1);
       },
       radioChange($event, field) {
-        var index2 = fields.indexOf(field);
+        var index2 = fields2.indexOf(field);
         _resetRadioGroupValue(index2, true);
         trigger2("change", $event, {
           value: getFieldsValue()
@@ -18734,27 +18734,27 @@
       };
     }
     function _resetRadioGroupValue(key2, change) {
-      fields.forEach((value, index2) => {
+      fields2.forEach((value, index2) => {
         if (index2 === key2) {
           return;
         }
         if (change) {
-          setFieldChecked(fields[index2], false);
+          setFieldChecked(fields2[index2], false);
         } else {
-          fields.forEach((v2, i2) => {
+          fields2.forEach((v2, i2) => {
             if (index2 >= i2) {
               return;
             }
-            if (fields[i2].value.radioChecked) {
-              setFieldChecked(fields[index2], false);
+            if (fields2[i2].value.radioChecked) {
+              setFieldChecked(fields2[index2], false);
             }
           });
         }
       });
     }
-    return fields;
+    return fields2;
   }
-  var props$9 = {
+  var props$b = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -18798,7 +18798,7 @@
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$9,
+    props: props$b,
     setup(props2, _ref) {
       var {
         slots
@@ -19155,7 +19155,7 @@
     });
     return results.children;
   }
-  var props$8 = {
+  var props$a = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -19168,7 +19168,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$8,
+    props: props$a,
     emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
     setup(props2, _ref) {
       var {
@@ -19304,7 +19304,7 @@
     }
   });
   var passiveOptions = /* @__PURE__ */ passive(true);
-  var props$7 = {
+  var props$9 = {
     direction: {
       type: [String],
       default: "vertical"
@@ -19375,7 +19375,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$7,
+    props: props$9,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
       var {
@@ -19822,7 +19822,7 @@
       _scrollLeftChanged
     };
   }
-  var props$6 = {
+  var props$8 = {
     name: {
       type: String,
       default: ""
@@ -19878,7 +19878,7 @@
   };
   const Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$6,
+    props: props$8,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -20050,7 +20050,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  var props$5 = {
+  var props$7 = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -20551,7 +20551,7 @@
   }
   const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$5,
+    props: props$7,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
       var {
@@ -20662,7 +20662,7 @@
       };
     }
   });
-  var props$4 = {
+  var props$6 = {
     itemId: {
       type: String,
       default: ""
@@ -20670,7 +20670,7 @@
   };
   const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$4,
+    props: props$6,
     setup(props2, _ref) {
       var {
         slots
@@ -20720,7 +20720,7 @@
       };
     }
   });
-  var props$3 = {
+  var props$5 = {
     name: {
       type: String,
       default: ""
@@ -20748,7 +20748,7 @@
   };
   const Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$3,
+    props: props$5,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -20924,7 +20924,7 @@
     }
     return obj;
   }
-  var props$2 = /* @__PURE__ */ extend({}, props$c, {
+  var props$4 = /* @__PURE__ */ extend({}, props$e, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -20949,7 +20949,7 @@
   }
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$2,
+    props: props$4,
     emits: ["confirm", "linechange", ...emit],
     setup(props2, _ref) {
       var {
@@ -21132,13 +21132,13 @@
       removeSubscribe(name || normalizeEvent(vm), pageId);
     });
   }
-  var index = 0;
+  var index$1 = 0;
   function useContextInfo(_id) {
     var page = useCurrentPageId();
     var instance = getCurrentInstance();
     var vm = instance.proxy;
     var type = vm.$options.name.toLowerCase();
-    var id2 = _id || vm.id || "context".concat(index++);
+    var id2 = _id || vm.id || "context".concat(index$1++);
     onMounted(() => {
       var el = vm.$el;
       el.__uniContextInfo = {
@@ -21682,7 +21682,7 @@
       super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
     }
   }
-  var props$1 = {
+  var props$3 = {
     src: {
       type: String,
       default: ""
@@ -21700,10 +21700,9 @@
   };
   const WebView = /* @__PURE__ */ defineBuiltInComponent({
     name: "WebView",
-    props: props$1,
+    props: props$3,
     setup(props2) {
       return () => createVNode("uni-web-view", null, [createVNode("embed", {
-        "id": "webview",
         "type": "native/webview",
         "src": getRealPath$1(props2.src),
         "style": "width:100%;height:100%"
@@ -22282,7 +22281,7 @@
       }
     }, id2, true);
   }
-  var props = {
+  var props$2 = {
     id: {
       type: String,
       default: ""
@@ -22368,7 +22367,7 @@
   };
   const Video = /* @__PURE__ */ defineBuiltInComponent({
     name: "Video",
-    props,
+    props: props$2,
     emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
     setup(props2, _ref2) {
       var {
@@ -22588,6 +22587,173 @@
       super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson);
     }
   }
+  var props$1 = {
+    tag: {
+      type: String,
+      default: ""
+    },
+    options: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  };
+  var index = 0;
+  const Embed = /* @__PURE__ */ defineBuiltInComponent({
+    props: props$1,
+    setup(props2, _ref) {
+      var {
+        expose,
+        attrs: attrs2
+      } = _ref;
+      var clickRef = ref(0);
+      var elId = String(index++);
+      var src = computed(() => {
+        var on = [];
+        var options = Object.assign({}, props2.options, {
+          click: clickRef.value,
+          elId,
+          on
+        });
+        Object.keys(attrs2).forEach((key2) => {
+          if (/^on[A-Z]/.test(key2)) {
+            on.push(key2.slice(2).toLowerCase());
+          }
+        });
+        return "#".concat(encodeURIComponent(JSON.stringify(options)));
+      });
+      function click() {
+        clickRef.value++;
+      }
+      expose({
+        click
+      });
+      return () => createVNode("embed", mergeProps({
+        "el-id": elId,
+        "type": "native/".concat(props2.tag),
+        "src": src.value
+      }, attrs2), null, 16, ["el-id", "src"]);
+    }
+  });
+  var mode = {
+    SELECTOR: "selector",
+    MULTISELECTOR: "multiSelector",
+    TIME: "time",
+    DATE: "date"
+    // 暂不支持城市选择
+    // REGION: 'region'
+  };
+  var fields = {
+    YEAR: "year",
+    MONTH: "month",
+    DAY: "day"
+  };
+  function getDefaultStartValue(props2) {
+    if (props2.mode === mode.TIME) {
+      return "00:00";
+    }
+    if (props2.mode === mode.DATE) {
+      var year = (/* @__PURE__ */ new Date()).getFullYear() - 100;
+      switch (props2.fields) {
+        case fields.YEAR:
+          return year;
+        case fields.MONTH:
+          return year + "-01";
+        default:
+          return year + "-01-01";
+      }
+    }
+    return "";
+  }
+  function getDefaultEndValue(props2) {
+    if (props2.mode === mode.TIME) {
+      return "23:59";
+    }
+    if (props2.mode === mode.DATE) {
+      var year = (/* @__PURE__ */ new Date()).getFullYear() + 100;
+      switch (props2.fields) {
+        case fields.YEAR:
+          return year;
+        case fields.MONTH:
+          return year + "-12";
+        default:
+          return year + "-12-31";
+      }
+    }
+    return "";
+  }
+  var props = {
+    name: {
+      type: String,
+      default: ""
+    },
+    range: {
+      type: Array,
+      default() {
+        return [];
+      }
+    },
+    rangeKey: {
+      type: String,
+      default: ""
+    },
+    value: {
+      type: [Number, String, Array],
+      default: 0
+    },
+    mode: {
+      type: String,
+      default: mode.SELECTOR,
+      validator(val) {
+        return Object.values(mode).indexOf(val) >= 0;
+      }
+    },
+    fields: {
+      type: String,
+      default: ""
+    },
+    start: {
+      type: String,
+      default: getDefaultStartValue
+    },
+    end: {
+      type: String,
+      default: getDefaultEndValue
+    },
+    disabled: {
+      type: [Boolean, String],
+      default: false
+    }
+  };
+  const Picker = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Picker",
+    props,
+    emits: ["change", "cancel", "columnchange"],
+    setup(props2, _ref) {
+      var embedRef = ref(null);
+      function onClick() {
+        embedRef.value.click();
+      }
+      function onCancel(event) {
+        console.log("TODO onCancel:", event);
+      }
+      return () => createVNode("uni-picker", null, [createVNode(Embed, {
+        "ref": embedRef,
+        "tag": "picker",
+        "options": props2,
+        "onCancel": onCancel
+      }, null, 8, ["options", "onCancel"]), createVNode("div", {
+        "onClick": onClick,
+        "class": "uni-picker-slot"
+      }, null, 8, ["onClick"])]);
+    }
+  });
+  class UniPicker extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-picker", Picker, parentNodeId, refNodeId, nodeJson, ".uni-picker-slot");
+    }
+  }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
@@ -22619,7 +22785,8 @@
     ICON: UniIcon,
     "WEB-VIEW": UniWebView,
     CANVAS: UniCanvas,
-    VIDEO: UniVideo
+    VIDEO: UniVideo,
+    PICKER: UniPicker
   };
   function createElement(id2, tag, parentNodeId, refNodeId) {
     var nodeJson = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};
@@ -22832,25 +22999,25 @@
       return window.__$__(vm).$;
     }
   }
-  function getRootInfo(fields) {
+  function getRootInfo(fields2) {
     var info = {};
-    if (fields.id) {
+    if (fields2.id) {
       info.id = "";
     }
-    if (fields.dataset) {
+    if (fields2.dataset) {
       info.dataset = {};
     }
-    if (fields.rect) {
+    if (fields2.rect) {
       info.left = 0;
       info.right = 0;
       info.top = 0;
       info.bottom = 0;
     }
-    if (fields.size) {
+    if (fields2.size) {
       info.width = document.documentElement.clientWidth;
       info.height = document.documentElement.clientHeight;
     }
-    if (fields.scrollOffset) {
+    if (fields2.scrollOffset) {
       var documentElement = document.documentElement;
       var body = document.body;
       info.scrollLeft = documentElement.scrollLeft || body.scrollLeft || 0;
@@ -22860,45 +23027,45 @@
     }
     return info;
   }
-  function getNodeInfo(el, fields) {
+  function getNodeInfo(el, fields2) {
     var info = {};
     var {
       top,
       topWindowHeight
     } = getWindowOffset();
-    if (fields.node) {
+    if (fields2.node) {
       var tagName = el.tagName.split("-")[1];
       if (tagName) {
         info.node = el.querySelector(tagName);
       }
     }
-    if (fields.id) {
+    if (fields2.id) {
       info.id = el.id;
     }
-    if (fields.dataset) {
+    if (fields2.dataset) {
       info.dataset = getCustomDataset(el);
     }
-    if (fields.rect || fields.size) {
+    if (fields2.rect || fields2.size) {
       var rect = el.getBoundingClientRect();
-      if (fields.rect) {
+      if (fields2.rect) {
         info.left = rect.left;
         info.right = rect.right;
         info.top = rect.top - top - topWindowHeight;
         info.bottom = rect.bottom - top - topWindowHeight;
       }
-      if (fields.size) {
+      if (fields2.size) {
         info.width = rect.width;
         info.height = rect.height;
       }
     }
-    if (isArray(fields.properties)) {
-      fields.properties.forEach((prop) => {
+    if (isArray(fields2.properties)) {
+      fields2.properties.forEach((prop) => {
         prop = prop.replace(/-([a-z])/g, function(e2, t2) {
           return t2.toUpperCase();
         });
       });
     }
-    if (fields.scrollOffset) {
+    if (fields2.scrollOffset) {
       if (el.tagName === "UNI-SCROLL-VIEW") {
         var scroll = el.children[0].children[0];
         info.scrollLeft = scroll.scrollLeft;
@@ -22912,13 +23079,13 @@
         info.scrollWidth = 0;
       }
     }
-    if (isArray(fields.computedStyle)) {
+    if (isArray(fields2.computedStyle)) {
       var sytle = getComputedStyle(el);
-      fields.computedStyle.forEach((name) => {
+      fields2.computedStyle.forEach((name) => {
         info[name] = sytle[name];
       });
     }
-    if (fields.context) {
+    if (fields2.context) {
       info.contextInfo = getContextInfo(el);
     }
     return info;
@@ -22941,7 +23108,7 @@
     };
     return matches2.call(element, selectors);
   }
-  function getNodesInfo(pageVm2, component, selector, single, fields) {
+  function getNodesInfo(pageVm2, component, selector, single, fields2) {
     var selfElement = findElm(component, pageVm2);
     var parentElement = selfElement.parentElement;
     if (!parentElement) {
@@ -22954,7 +23121,7 @@
     if (single) {
       var node = maybeFragment ? parentElement.querySelector(selector) : matches(selfElement, selector) ? selfElement : selfElement.querySelector(selector);
       if (node) {
-        return getNodeInfo(node, fields);
+        return getNodeInfo(node, fields2);
       }
       return null;
     } else {
@@ -22962,11 +23129,11 @@
       var nodeList = (maybeFragment ? parentElement : selfElement).querySelectorAll(selector);
       if (nodeList && nodeList.length) {
         [].forEach.call(nodeList, (node2) => {
-          infos.push(getNodeInfo(node2, fields));
+          infos.push(getNodeInfo(node2, fields2));
         });
       }
       if (!maybeFragment && matches(selfElement, selector)) {
-        infos.unshift(getNodeInfo(selfElement, fields));
+        infos.unshift(getNodeInfo(selfElement, fields2));
       }
       return infos;
     }
@@ -22978,12 +23145,12 @@
         component,
         selector,
         single,
-        fields
+        fields: fields2
       } = _ref;
       if (component === null) {
-        result.push(getRootInfo(fields));
+        result.push(getRootInfo(fields2));
       } else {
-        result.push(getNodesInfo(page, component, selector, single, fields));
+        result.push(getNodesInfo(page, component, selector, single, fields2));
       }
     });
     callback(result);

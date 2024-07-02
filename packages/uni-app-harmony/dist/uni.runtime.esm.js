@@ -7363,6 +7363,7 @@ const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
 const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 // navigationBar
 const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
 // framework
@@ -11792,9 +11793,22 @@ function initWebviewStyle(webview, path, query, routeMeta) {
     webview.setStyle(webviewStyle);
 }
 
+const WEBVIEW_LISTENERS = {
+    pullToRefresh: ON_PULL_DOWN_REFRESH,
+};
+function initWebviewEvent(webview) {
+    const id = parseInt(webview.id);
+    Object.keys(WEBVIEW_LISTENERS).forEach((name) => {
+        const hook = WEBVIEW_LISTENERS[name];
+        webview.addEventListener(name, (e) => {
+            invokeHook(id, hook, e);
+        });
+    });
+}
+
 function initWebview(webview, path, query, routeMeta) {
     initWebviewStyle(webview, path, query, routeMeta);
-    // TODO initWebviewEvent(webview)
+    initWebviewEvent(webview);
 }
 
 function createWebview(options) {

@@ -29,6 +29,7 @@ import { UniIcon } from '@dcloudio/uni-app-plus/view/framework/dom/components/Un
 import { UniWebView } from './UniWebView'
 import { UniCanvas } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniCanvas'
 import { UniVideo } from './UniVideo'
+import { UniPicker } from './UniPicker'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -62,4 +63,5 @@ export const BuiltInComponents = {
   'WEB-VIEW': UniWebView,
   CANVAS: UniCanvas,
   VIDEO: UniVideo,
+  PICKER: UniPicker,
 }

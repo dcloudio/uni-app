@@ -25,7 +25,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     return () => (
       <uni-web-view>
         <embed
-          id="webview"
           type="native/webview"
           src={getRealPath(props.src)}
           style="width:100%;height:100%"
