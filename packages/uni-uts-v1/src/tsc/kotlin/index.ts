@@ -1,8 +1,17 @@
+import fs from 'fs-extra'
 import path from 'path'
 import { extend } from '@vue/shared'
 import type { CompilerOptions } from 'typescript'
+import {
+  type RawSourceMap,
+  SourceMapConsumer,
+  SourceMapGenerator,
+} from 'source-map-js'
+// import { sync } from 'fast-glob'
+// import combine from 'combine-source-map'
 import { createBasicUtsOptions } from '../utils/options'
-import { isInHBuilderX } from '../../shared'
+import { isInHBuilderX, normalizePath } from '../../shared'
+// import { uvueOutDir } from '../../uvue'
 
 export interface UTS2KotlinOptions {
   typescript?: typeof import('typescript')
@@ -51,6 +60,16 @@ export function runUTS2KotlinDev(options: UTS2KotlinOptions) {
     vue: vueRuntimeDts,
   })
 
+  type RunDevOptions = Required<
+    UTS2KotlinOptions & {
+      sourceMapCallback?: (
+        id: string,
+        map: string,
+        writeFile: (fileName: string, text: string) => void
+      ) => boolean | undefined
+    }
+  >
+
   return require('../../../lib/kotlin').runDev({
     typescript,
     inputDir: options.inputDir,
@@ -58,7 +77,90 @@ export function runUTS2KotlinDev(options: UTS2KotlinOptions) {
     rootFiles,
     compilerOptions: extend(tsconfigOverride.compilerOptions, {
       outDir: options.outputDir,
+      inlineSources: true,
     }),
     normalizeFileName: options.normalizeFileName,
-  } as Required<UTS2KotlinOptions>)
+    sourceMapCallback: (fileName, text, writeFile) => {
+      const relativeFileName = normalizePath(
+        path.relative(options.outputDir, fileName)
+      )
+
+      if (fileName.endsWith('.uvue.map') || fileName.endsWith('.vue.map')) {
+        const sourceMapFilename = path.resolve(
+          options.inputDir,
+          relativeFileName.replace('.map', '.ts.map')
+        )
+        if (fs.existsSync(sourceMapFilename)) {
+          // 合并sourcemap
+          const sourceMap = fs.readFileSync(sourceMapFilename, 'utf8')
+          text = merge(sourceMap, text)
+        }
+      }
+      writeFile(fileName, normalizeSourceMap(text))
+      return true
+    },
+  } as RunDevOptions)
+}
+
+function merge(oldMapStr: string, newMapStr: string) {
+  if (!oldMapStr) return newMapStr
+  if (!newMapStr) return oldMapStr
+
+  const oldMap = JSON.parse(oldMapStr) as RawSourceMap
+  const newMap = JSON.parse(newMapStr) as RawSourceMap
+  const oldMapConsumer = new SourceMapConsumer(oldMap)
+  const newMapConsumer = new SourceMapConsumer(newMap)
+  const mergedMapGenerator = new SourceMapGenerator(oldMap)
+
+  // iterate on new map and overwrite original position of new map with one of old map
+  newMapConsumer.eachMapping(function (m) {
+    // pass when `originalLine` is null.
+    // It occurs in case that the node does not have origin in original code.
+    if (m.originalLine == null) return
+
+    const origPosInOldMap = oldMapConsumer.originalPositionFor({
+      line: m.originalLine,
+      column: m.originalColumn,
+    })
+
+    if (origPosInOldMap.source == null) return
+
+    mergedMapGenerator.addMapping({
+      original: {
+        line: origPosInOldMap.line,
+        column: origPosInOldMap.column,
+      },
+      generated: {
+        line: m.generatedLine,
+        column: m.generatedColumn,
+      },
+      source: origPosInOldMap.source,
+      name: origPosInOldMap.name,
+    })
+  })
+
+  const maps = [oldMap, newMap]
+  maps.forEach(function (map, index) {
+    map.sources.forEach(function (sourceFile) {
+      const sourceContent = (
+        index === 0 ? oldMapConsumer : newMapConsumer
+      ).sourceContentFor(sourceFile)
+      if (sourceContent != null) {
+        mergedMapGenerator.setSourceContent(sourceFile, sourceContent)
+      }
+    })
+  })
+
+  return mergedMapGenerator.toString()
+}
+
+function normalizeSourceMap(text: string) {
+  const sourceMap = JSON.parse(text) as RawSourceMap
+  sourceMap.sources = sourceMap.sources.map((source) => {
+    const parts = source.split('/.tsc/')
+    source = parts[1] || parts[0]
+    source = source.split('?')[0]
+    return source.replace('.uts.ts', '.uts')
+  })
+  return JSON.stringify(sourceMap)
 }

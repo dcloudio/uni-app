@@ -235,6 +235,10 @@ export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
 }
 
+export function tscOutDir() {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc')
+}
+
 function kotlinSrcDir(kotlinDir: string) {
   return path.resolve(kotlinDir, 'src')
 }
