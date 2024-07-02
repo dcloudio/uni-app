@@ -161,7 +161,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": true
         }
       },
       "getProviderIds": {
@@ -169,7 +170,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       },
       "getProviderObject": {
@@ -177,7 +179,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": false,
+          "arkts": false
         }
       }
     }
@@ -696,7 +699,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       },
       "closeSocket": {
@@ -705,7 +708,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       },
       "onSocketOpen": {
@@ -714,7 +717,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       },
       "onSocketMessage": {
@@ -723,7 +726,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       },
       "onSocketClose": {
@@ -732,7 +735,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       },
       "onSocketError": {
@@ -741,7 +744,7 @@
           "js": false,
           "kotlin": true,
           "swift": false,
-          "arkts": false
+          "arkts": true
         }
       }
     }
