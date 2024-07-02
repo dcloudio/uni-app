@@ -12,13 +12,13 @@
       "null"
     ]
   },
-  "uni-route": {
-    "navigateBack": [
+  "uni-pullDownRefresh": {
+    "startPullDownRefresh": [
       "null"
     ]
   },
-  "uni-pullDownRefresh": {
-    "startPullDownRefresh": [
+  "uni-route": {
+    "navigateBack": [
       "null"
     ]
   },
