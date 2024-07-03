@@ -2880,7 +2880,8 @@ function generateHarmonyImportSpecifier(id) {
 function generateHarmonyImportExternalCode(hamonyPackageNames) {
     return hamonyPackageNames
         .filter((hamonyPackageName) => isHarmoneyGlobal(hamonyPackageName))
-        .map((hamonyPackageName) => `import ${generateHarmonyImportSpecifier(hamonyPackageName)} from '${hamonyPackageName}';`);
+        .map((hamonyPackageName) => `import ${generateHarmonyImportSpecifier(hamonyPackageName)} from '${hamonyPackageName}';`)
+        .join('');
 }
 function uniAppHarmonyPlugin() {
     return {
