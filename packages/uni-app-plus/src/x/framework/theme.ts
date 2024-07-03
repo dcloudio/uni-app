@@ -39,22 +39,20 @@ function clearAppThemeChangeCallbackId() {
 
 // App主题为auto时需要监听OS主题变化
 export function registerThemeChange(callback: (themeMode: IThemeMode) => void) {
-  if (appThemeChangeCallbackId !== -1) {
-    if (typeof uni.offAppThemeChange !== 'function') {
-      return
+  try {
+    if (appThemeChangeCallbackId !== -1) {
+      uni.offAppThemeChange(appThemeChangeCallbackId)
+      clearAppThemeChangeCallbackId()
     }
-    uni.offAppThemeChange(appThemeChangeCallbackId)
-    clearAppThemeChangeCallbackId()
+    appThemeChangeCallbackId = uni.onAppThemeChange(function (
+      res1: UTSJSONObject
+    ) {
+      const appThemeMode = res1['appTheme'] as IThemeMode
+      callback(appThemeMode)
+    })
+  } catch (e) {
+    console.warn('监听 OS 主题变化', e)
   }
-  if (typeof uni.onAppThemeChange !== 'function') {
-    return
-  }
-  appThemeChangeCallbackId = uni.onAppThemeChange(function (
-    res1: UTSJSONObject
-  ) {
-    const appThemeMode = res1['appTheme'] as IThemeMode
-    callback(appThemeMode)
-  })
 }
 
 // 切换主题
