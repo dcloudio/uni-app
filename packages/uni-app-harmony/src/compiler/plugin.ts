@@ -56,6 +56,7 @@ function generateHarmonyImportExternalCode(hamonyPackageNames: string[]) {
           hamonyPackageName
         )} from '${hamonyPackageName}';`
     )
+    .join('')
 }
 
 export function uniAppHarmonyPlugin(): UniVitePlugin {
