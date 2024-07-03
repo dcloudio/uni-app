@@ -1,3 +1,4 @@
+import path from 'path'
 import type { SFCBlock, SFCDescriptor } from '@vue/compiler-sfc'
 import type {
   PluginContext,
@@ -191,10 +192,12 @@ export default {}
       fileName: normalizeEmitAssetFileName(relativeFilename) + '.map',
       source: JSON.stringify(resolvedMap),
     })
-    //     utsCode += `
-    // //# sourceMappingURL=${path.basename(
-    //       normalizeEmitAssetFileName(relativeFilename)
-    //     )}.map`
+    if (process.env.UNI_APP_X_TSC !== 'true') {
+      utsCode += `
+//# sourceMappingURL=${path.basename(
+        normalizeEmitAssetFileName(relativeFilename)
+      )}.map`
+    }
   }
 
   const jsCodes = [
