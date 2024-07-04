@@ -78,6 +78,7 @@ export function runUTS2KotlinDev(options: UTS2KotlinOptions) {
     compilerOptions: extend(tsconfigOverride.compilerOptions, {
       outDir: options.outputDir,
       inlineSources: true,
+      lib: [],
     }),
     normalizeFileName: options.normalizeFileName,
     sourceMapCallback: (fileName, text, writeFile) => {
