@@ -40,6 +40,7 @@ import {
   getImportedName,
   isCallOf,
   isLiteralNode,
+  resolveDefineCode,
   unwrapTSNode,
 } from './script/utils'
 import { analyzeScriptBindings } from './script/analyzeScriptBindings'
@@ -989,7 +990,7 @@ __ins.emit(event, ...do_not_transform_spread)
   ctx.s.prependLeft(
     startOffset,
     `\n${genDefaultAs} ${ctx.helper(
-      `defineComponent`
+      resolveDefineCode(ctx.options.componentType!)
     )}({${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}) {
 const __ins = getCurrentInstance()!;

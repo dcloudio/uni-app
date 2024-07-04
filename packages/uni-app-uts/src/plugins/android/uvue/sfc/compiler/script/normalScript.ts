@@ -5,6 +5,7 @@ import { hasConsole, rewriteConsole } from './rewriteConsole'
 import { hasDebugError, rewriteDebugError } from './rewriteDebugError'
 import { rewriteSourceMap } from './rewriteSourceMap'
 import { rewriteDefaultAST } from '../rewriteDefault'
+import { resolveDefineCode } from './utils'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,
@@ -28,11 +29,7 @@ export function processNormalScript(
     rewriteDefaultAST(
       scriptAst.body,
       s,
-      ctx.options.componentType === 'app'
-        ? `defineApp`
-        : ctx.options.componentType === 'page'
-        ? `definePage`
-        : `defineComponent`
+      resolveDefineCode(ctx.options.componentType!)
     )
 
     if (
