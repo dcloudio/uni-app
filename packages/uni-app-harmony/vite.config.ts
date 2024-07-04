@@ -230,7 +230,8 @@ function initArkTSExtApi() {
     const apiTypeSpecifiers: string[] = []
     Object.keys(injects).forEach((key) => {
       const api = injects[key][1]
-      const apiType = capitalize(api)
+      const apiType =
+        api[0] === '$' ? '$' + capitalize(api.slice(1)) : capitalize(api)
       apiSpecifiers.push(api)
       apiTypeSpecifiers.push(apiType)
       defineExtApis.push(api)
