@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
+import debug from 'debug'
 import { type FSWatcher, type WatchOptions, watch } from 'chokidar'
 import { isArray } from '@vue/shared'
 import { pathToGlob } from './utils'
@@ -8,20 +9,19 @@ export interface FileWatcherOptions {
   src: string | string[]
   dest: string
   transform?: FileTransform
-  verbose?: boolean
 }
+
+const debugWatcher = debug('uni:watcher')
 export class FileWatcher {
   private src: string[]
   private dest: string
   private transform?: FileTransform
-  private verbose?: boolean
   private watcher!: FSWatcher
   private onChange?: () => void
-  constructor({ src, dest, transform, verbose }: FileWatcherOptions) {
+  constructor({ src, dest, transform }: FileWatcherOptions) {
     this.src = !isArray(src) ? [src] : src
     this.dest = dest
     this.transform = transform
-    this.verbose = verbose
   }
   watch(
     watchOptions: WatchOptions & { cwd: string },
@@ -100,7 +100,7 @@ export class FileWatcher {
     type: 'close' | 'copy' | 'remove' | 'add' | 'unwatch',
     msg?: string | unknown
   ) {
-    this.verbose && console.log(type, msg)
+    debugWatcher.enabled && debugWatcher(type, msg)
   }
   from(from: string) {
     return path.join(this.watcher.options.cwd!, from)

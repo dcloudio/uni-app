@@ -10,11 +10,9 @@ export type UniViteCopyPluginTarget = Omit<FileWatcherOptions, 'verbose'> & {
 }
 export interface UniViteCopyPluginOptions {
   targets: UniViteCopyPluginTarget[]
-  verbose: boolean
 }
 export function uniViteCopyPlugin({
   targets,
-  verbose,
 }: UniViteCopyPluginOptions): Plugin {
   let resolvedConfig: ResolvedConfig
   let initialized = false
@@ -46,7 +44,6 @@ export function uniViteCopyPlugin({
                 { setTimeout, clearTimeout }
               )
               new FileWatcher({
-                verbose,
                 ...target,
               }).watch(
                 {

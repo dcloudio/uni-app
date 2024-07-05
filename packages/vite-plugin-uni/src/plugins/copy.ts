@@ -71,7 +71,6 @@ export function uniCopyPlugin({
   )
   return uniViteCopyPlugin({
     targets,
-    verbose: process.env.DEBUG ? true : false,
   })
 }
 
