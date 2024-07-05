@@ -23296,6 +23296,9 @@
         return extend({
           getStyle: () => {
             return extend({}, harmonyChannel.invokeSync("getStyle"));
+          },
+          setSoftinputTemporary(options) {
+            harmonyChannel.invokeSync("setSoftinputTemporary", [options]);
           }
         }, harmonyChannel.invokeSync("currentWebview"));
       },

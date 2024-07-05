@@ -7354,6 +7354,7 @@ const ON_HIDE = 'onHide';
 //App
 const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
+const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 const ON_READY = 'onReady';
@@ -11195,7 +11196,7 @@ function initDebugRefresh(isTab, path, query) {
     };
 }
 
-const downgrade = 'Harmony' === 'Android' ;
+const downgrade = 'HarmonyOS' === 'Android' ;
 const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
 const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
@@ -12506,7 +12507,11 @@ function initGlobalEvent() {
         // TODO options
         emit(ON_APP_ENTER_FOREGROUND, {});
     });
-    // TODO KeyboardHeightChange
+    plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {
+        emit(ON_KEYBOARD_HEIGHT_CHANGE, {
+            height: event.height,
+        });
+    });
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }
 
