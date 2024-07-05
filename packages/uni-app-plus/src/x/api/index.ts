@@ -33,6 +33,8 @@ export { removeInterceptor, addInterceptor } from './base/interceptor'
 export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
 export { env } from './base/env'
 
+export * from './performance'
+
 export {
   initUTSProxyClass,
   initUTSProxyFunction,

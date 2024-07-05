@@ -15,6 +15,7 @@ import { showWebview } from './webview'
 import { registerPage } from '../../framework/page'
 import { getWebviewId } from '../../../service/framework/webview/utils'
 import { setStatusBarStyle } from '../../statusBar'
+import { invokeAfterRouteHooks, invokeBeforeRouteHooks } from './performance'
 
 export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   args,
@@ -60,12 +61,14 @@ function _navigateTo({
   aniType,
   aniDuration,
 }: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
+  invokeBeforeRouteHooks(API_NAVIGATE_TO)
   // 当前页面触发 onHide
   invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
     const noAnimation = aniType === 'none' || aniDuration === 0
     function callback(page: IPage) {
+      invokeAfterRouteHooks(API_NAVIGATE_TO)
       showWebview(page, aniType, aniDuration, () => {
         resolve({ eventChannel })
         setStatusBarStyle()

@@ -8,6 +8,10 @@ import type { ComponentPublicInstance } from 'vue'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { registerPage } from '../page'
 import { getAppThemeFallbackOS, normalizeTabBarStyles } from '../theme'
+import {
+  invokeAfterRouteHooks,
+  invokeBeforeRouteHooks,
+} from '../../api/route/performance'
 
 // 存储 callback
 export let onTabBarMidButtonTapCallback: Function[] = []
@@ -271,9 +275,10 @@ export function switchSelect(
   }
   const currentPage = getCurrentPage() as Page
 
-  // const type = currentPage == null ? 'appLaunch' : 'switchTab'
+  const type = currentPage == null ? 'appLaunch' : 'switchTab'
   // 执行beforeRoute
   // invokeArrayFns(beforeRouteHooks, type)
+  invokeBeforeRouteHooks(type)
 
   const pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback)
   const page = pageInfo.page
@@ -294,4 +299,5 @@ export function switchSelect(
 
   // 执行afterRoute
   // invokeArrayFns(afterRouteHooks, type)
+  invokeAfterRouteHooks(type)
 }
