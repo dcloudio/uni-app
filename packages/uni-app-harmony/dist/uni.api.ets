@@ -14,6 +14,8 @@ import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
 import { BusinessError as BusinessError1 } from '@ohos.base';
 import { BusinessError } from '@ohos.base';
+import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
+import { Emitter } from "@dcloudio/uni-app-harmony-framework";
 import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
@@ -40,23 +42,25 @@ import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmo
 import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath1, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath3, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath3, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
 import { getResourceStr, getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
+import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
 import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
-import { isPlainObject, Emitter } from "@dcloudio/uni-app-harmony-framework";
+import { isPlainObject, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
 type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
 type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
@@ -176,6 +180,19 @@ interface SelectorQueryRequest {
     single: boolean;
     fields: NodeField;
 }
+type $OnCallback = Function;
+type $On = (eventName: string, callback: $OnCallback) => void;
+type $OnceCallback = Function;
+type $Once = (eventName: string, callback: $OnceCallback) => void;
+type $OffCallback = Function;
+type $Off = (eventName: string, callback?: $OffCallback | null) => void;
+type $Emit = (eventName: string, args: Object | null) => void;
+interface IUniEventEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback: Function) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
 class GetAppBaseInfoOptions extends UTSObject {
     filter!: Array<string>;
 }
@@ -256,15 +273,6 @@ class GetProviderOptions extends UTSObject {
     complete: GetProviderCompleteCallback | null = null;
 }
 type GetProvider = (options: GetProviderOptions) => void;
-type GetProviderIds = (options: GetProviderIdsOptions) => string[] | null;
-type GetProviderObject = (options: GetProviderObjectOptions) => UniProvider | null;
-class GetProviderIdsOptions extends UTSObject {
-    service!: 'payment';
-}
-class GetProviderObjectOptions extends UTSObject {
-    service!: 'payment';
-    provider!: string;
-}
 export type GetSystemInfo = (options: GetSystemInfoOptions) => void;
 export type GetSystemInfoSync = () => GetSystemInfoResult;
 export type GetWindowInfo = () => GetWindowInfoResult;
@@ -866,6 +874,22 @@ interface IShowLoadingOptions {
     title: string;
     mask: boolean;
 }
+type PullDownRefreshErrorCode = 4;
+interface StartPullDownRefreshFail extends IUniError {
+    errCode: PullDownRefreshErrorCode;
+}
+export class StartPullDownRefreshOptions extends UTSObject {
+    success: StartPullDownRefreshSuccessCallback | null = null;
+    fail: StartPullDownRefreshFailCallback | null = null;
+    complete: StartPullDownRefreshCompleteCallback | null = null;
+}
+export type StartPullDownRefreshSuccess = AsyncApiSuccessResult;
+type StartPullDownRefreshSuccessCallback = (result: StartPullDownRefreshSuccess) => void;
+type StartPullDownRefreshFailCallback = (result: StartPullDownRefreshFail) => void;
+type StartPullDownRefreshComplete = AsyncApiResult;
+type StartPullDownRefreshCompleteCallback = (result: StartPullDownRefreshComplete) => void;
+type StartPullDownRefresh = (options: StartPullDownRefreshOptions) => void;
+type StopPullDownRefresh = () => void;
 export type Rpx2px = (number: number) => number;
 export class SetStorageSuccess extends UTSObject {
 }
@@ -935,6 +959,151 @@ export class ClearStorageOptions extends UTSObject {
 }
 export type ClearStorage = (option?: ClearStorageOptions | null) => void;
 export type ClearStorageSync = () => void;
+export type SetTabBarBadgeSuccess = AsyncApiSuccessResult;
+type SetTabBarBadgeSuccessCallback = (result: SetTabBarBadgeSuccess) => void;
+type SetTabBarErrorCode = 100 | 200;
+interface SetTabBarFail extends IUniError {
+    errCode: SetTabBarErrorCode;
+}
+type SetTabBarBadgeFail = SetTabBarFail;
+type SetTabBarBadgeFailCallback = (result: SetTabBarBadgeFail) => void;
+type SetTabBarBadgeComplete = AsyncApiResult;
+type SetTabBarBadgeCompleteCallback = (result: SetTabBarBadgeComplete) => void;
+export class SetTabBarBadgeOptions extends UTSObject {
+    index!: number;
+    text!: string;
+    success: SetTabBarBadgeSuccessCallback | null = null;
+    fail: SetTabBarBadgeFailCallback | null = null;
+    complete: SetTabBarBadgeCompleteCallback | null = null;
+}
+export type RemoveTabBarBadgeSuccess = AsyncApiSuccessResult;
+type RemoveTabBarBadgeSuccessCallback = (result: RemoveTabBarBadgeSuccess) => void;
+type RemoveTabBarBadgeFail = SetTabBarFail;
+type RemoveTabBarBadgeFailCallback = (result: RemoveTabBarBadgeFail) => void;
+type RemoveTabBarBadgeComplete = AsyncApiResult;
+type RemoveTabBarBadgeCompleteCallback = (result: RemoveTabBarBadgeComplete) => void;
+export class RemoveTabBarBadgeOptions extends UTSObject {
+    index!: number;
+    success: RemoveTabBarBadgeSuccessCallback | null = null;
+    fail: RemoveTabBarBadgeFailCallback | null = null;
+    complete: RemoveTabBarBadgeCompleteCallback | null = null;
+}
+export type SetTabBarItemSuccess = AsyncApiSuccessResult;
+type SetTabBarItemSuccessCallback = (result: SetTabBarItemSuccess) => void;
+type SetTabBarItemFail = SetTabBarFail;
+type SetTabBarItemFailCallback = (result: SetTabBarItemFail) => void;
+type SetTabBarItemComplete = AsyncApiResult;
+type SetTabBarItemCompleteCallback = (result: SetTabBarItemComplete) => void;
+class SetTabBarItemIconFontOptions extends UTSObject {
+    text!: string;
+    selectedText!: string;
+    fontSize: string | null = null;
+    color: string | null = null;
+    selectedColor: string | null = null;
+}
+export class SetTabBarItemOptions extends UTSObject {
+    index!: number;
+    text: string | null = null;
+    iconPath: string | null = null;
+    selectedIconPath: string | null = null;
+    pagePath: string | null = null;
+    iconfont: SetTabBarItemIconFontOptions | null = null;
+    visible: boolean | null = null;
+    success: SetTabBarItemSuccessCallback | null = null;
+    fail: SetTabBarItemFailCallback | null = null;
+    complete: SetTabBarItemCompleteCallback | null = null;
+}
+class MidButtonIconFont extends UTSObject {
+    text: string | null = null;
+    selectedText: string | null = null;
+    fontSize: string | null = null;
+    color: string | null = null;
+    selectedColor: string | null = null;
+}
+class MidButtonOptions extends UTSObject {
+    width: string | null = null;
+    height: string | null = null;
+    text: string | null = null;
+    iconPath: string | null = null;
+    iconWidth: string | null = null;
+    backgroundImage: string | null = null;
+    iconfont: MidButtonIconFont | null = null;
+}
+export type SetTabBarStyleSuccess = AsyncApiSuccessResult;
+type SetTabBarStyleSuccessCallback = (result: SetTabBarStyleSuccess) => void;
+type SetTabBarStyleFail = SetTabBarFail;
+type SetTabBarStyleFailCallback = (result: SetTabBarStyleFail) => void;
+type SetTabBarStyleComplete = AsyncApiResult;
+type SetTabBarStyleCompleteCallback = (result: SetTabBarStyleComplete) => void;
+export class SetTabBarStyleOptions extends UTSObject {
+    color: string | string.ColorString | null = null;
+    selectedColor: string | string.ColorString | null = null;
+    backgroundColor: string | string.ColorString | null = null;
+    backgroundImage: string | null = null;
+    backgroundRepeat: 'repeat' | 'repeat-x' | 'repeat-y' | 'no-repeat' | null = null;
+    borderColor: string | string.ColorString | null = null;
+    borderStyle: 'black' | 'white' | null = null;
+    midButton: MidButtonOptions | null = null;
+    success: SetTabBarStyleSuccessCallback | null = null;
+    fail: SetTabBarStyleFailCallback | null = null;
+    complete: SetTabBarStyleCompleteCallback | null = null;
+}
+export type HideTabBarSuccess = AsyncApiSuccessResult;
+type HideTabBarSuccessCallback = (result: HideTabBarSuccess) => void;
+type HideTabBarFail = SetTabBarFail;
+type HideTabBarFailCallback = (result: HideTabBarFail) => void;
+type HideTabBarComplete = AsyncApiResult;
+type HideTabBarCompleteCallback = (result: HideTabBarComplete) => void;
+export class HideTabBarOptions extends UTSObject {
+    animation: boolean | null = null;
+    success: HideTabBarSuccessCallback | null = null;
+    fail: HideTabBarFailCallback | null = null;
+    complete: HideTabBarCompleteCallback | null = null;
+}
+export type ShowTabBarSuccess = AsyncApiSuccessResult;
+type ShowTabBarSuccessCallback = (result: ShowTabBarSuccess) => void;
+type ShowTabBarFail = SetTabBarFail;
+type ShowTabBarFailCallback = (result: ShowTabBarFail) => void;
+type ShowTabBarComplete = AsyncApiResult;
+type ShowTabBarCompleteCallback = (result: ShowTabBarComplete) => void;
+export class ShowTabBarOptions extends UTSObject {
+    animation: boolean | null = null;
+    success: ShowTabBarSuccessCallback | null = null;
+    fail: ShowTabBarFailCallback | null = null;
+    complete: ShowTabBarCompleteCallback | null = null;
+}
+export type ShowTabBarRedDotSuccess = AsyncApiSuccessResult;
+type ShowTabBarRedDotSuccessCallback = (result: ShowTabBarRedDotSuccess) => void;
+type ShowTabBarRedDotFail = SetTabBarFail;
+type ShowTabBarRedDotFailCallback = (result: ShowTabBarRedDotFail) => void;
+type ShowTabBarRedDotComplete = AsyncApiResult;
+type ShowTabBarRedDotCompleteCallback = (result: ShowTabBarRedDotComplete) => void;
+export class ShowTabBarRedDotOptions extends UTSObject {
+    index!: number;
+    success: ShowTabBarRedDotSuccessCallback | null = null;
+    fail: ShowTabBarRedDotFailCallback | null = null;
+    complete: ShowTabBarRedDotCompleteCallback | null = null;
+}
+export type HideTabBarRedDotSuccess = AsyncApiSuccessResult;
+type HideTabBarRedDotSuccessCallback = (result: HideTabBarRedDotSuccess) => void;
+type HideTabBarRedDotFail = SetTabBarFail;
+type HideTabBarRedDotFailCallback = (result: HideTabBarRedDotFail) => void;
+type HideTabBarRedDotComplete = AsyncApiResult;
+type HideTabBarRedDotCompleteCallback = (result: HideTabBarRedDotComplete) => void;
+export class HideTabBarRedDotOptions extends UTSObject {
+    index!: number;
+    success: HideTabBarRedDotSuccessCallback | null = null;
+    fail: HideTabBarRedDotFailCallback | null = null;
+    complete: HideTabBarRedDotCompleteCallback | null = null;
+}
+export type SetTabBarBadge = (options: SetTabBarBadgeOptions) => void;
+export type RemoveTabBarBadge = (options: RemoveTabBarBadgeOptions) => void;
+export type SetTabBarItem = (options: SetTabBarItemOptions) => void;
+export type SetTabBarStyle = (options: SetTabBarStyleOptions) => void;
+export type ShowTabBar = (options?: ShowTabBarOptions | null) => void;
+export type HideTabBar = (options?: HideTabBarOptions | null) => void;
+export type ShowTabBarRedDot = (options: ShowTabBarRedDotOptions) => void;
+export type HideTabBarRedDot = (options: HideTabBarRedDotOptions) => void;
 export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
 export class ConnectSocketSuccess extends UTSObject {
     errMsg!: string;
@@ -989,8 +1158,27 @@ export interface SocketTask {
     onError(callback: (result: GeneralCallbackResult) => void): void;
     onMessage(callback: (result: OnSocketMessageCallbackResult) => void): void;
 }
+type OnSocketOpenCallback = (result: OnSocketOpenCallbackResult) => void;
+type OnSocketOpen = (options: OnSocketOpenCallback) => void;
 export class OnSocketErrorCallbackResult extends UTSObject {
     errMsg!: string;
+}
+type OnSocketErrorCallback = (result: OnSocketErrorCallbackResult) => void;
+type OnSocketError = (callback: OnSocketErrorCallback) => void;
+type SendSocketMessage = (options: SendSocketMessageOptions) => void;
+type OnSocketMessageCallback = (result: OnSocketMessageCallbackResult) => void;
+type OnSocketMessage = (callback: OnSocketMessageCallback) => void;
+type CloseSocket = (options: CloseSocketOptions) => void;
+class OnSocketCloseCallbackResult extends UTSObject {
+    code!: number;
+    reason!: string;
+}
+type OnSocketCloseCallback = (result: OnSocketCloseCallbackResult) => void;
+type OnSocketClose = (callback: OnSocketCloseCallback) => void;
+interface IUniWebsocketEmitter {
+    on: Function;
+    off: Function;
+    emit: Function;
 }
 interface UniExtApi {
     arrayBufferToBase64: ArrayBufferToBase64;
@@ -999,11 +1187,13 @@ interface UniExtApi {
     setClipboardData: SetClipboardData;
     createIntersectionObserver: CreateIntersectionObserver;
     createSelectorQuery: CreateSelectorQuery;
+    $on: $On;
+    $once: $Once;
+    $off: $Off;
+    $emit: $Emit;
     getAppBaseInfo: GetAppBaseInfo;
     getDeviceInfo: GetDeviceInfo;
     getProvider: GetProvider;
-    getProviderIds: GetProviderIds;
-    getProviderObject: GetProviderObject;
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
     getWindowInfo: GetWindowInfo;
@@ -1029,6 +1219,8 @@ interface UniExtApi {
     hideLoading: HideLoading;
     showModal: ShowModal;
     showActionSheet: ShowActionSheet;
+    startPullDownRefresh: StartPullDownRefresh;
+    stopPullDownRefresh: StopPullDownRefresh;
     rpx2px: Rpx2px;
     setStorage: SetStorage;
     setStorageSync: SetStorageSync;
@@ -1040,7 +1232,21 @@ interface UniExtApi {
     removeStorageSync: RemoveStorageSync;
     clearStorage: ClearStorage;
     clearStorageSync: ClearStorageSync;
+    showTabBarRedDot: ShowTabBarRedDot;
+    hideTabBarRedDot: HideTabBarRedDot;
+    setTabBarBadge: SetTabBarBadge;
+    removeTabBarBadge: RemoveTabBarBadge;
+    setTabBarItem: SetTabBarItem;
+    setTabBarStyle: SetTabBarStyle;
+    showTabBar: ShowTabBar;
+    hideTabBar: HideTabBar;
     connectSocket: ConnectSocket;
+    sendSocketMessage: SendSocketMessage;
+    closeSocket: CloseSocket;
+    onSocketOpen: OnSocketOpen;
+    onSocketMessage: OnSocketMessage;
+    onSocketClose: OnSocketClose;
+    onSocketError: OnSocketError;
 }
 export function initUniExtApi(APP_ID: string) {
     const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
@@ -1283,6 +1489,23 @@ export function initUniExtApi(APP_ID: string) {
         }
         return new SelectorQueryImpl(context || getCurrentPageVm1()!) as SelectorQuery;
     }) as CreateSelectorQuery;
+    const API_$_ON = '$on';
+    const API_$_ONCE = '$once';
+    const API_$_OFF = '$off';
+    const API_$_EMIT = '$emit';
+    const emitter: IUniEventEmitter = new Emitter() as IUniEventEmitter;
+    const $on: $On = defineSyncApi<void>(API_$_ON, (eventName: string, callback: Function)=>{
+        emitter.on(eventName, callback);
+    }) as $On;
+    const $once: $Once = defineSyncApi<void>(API_$_ONCE, (eventName: string, callback: Function)=>{
+        emitter.once(eventName, callback);
+    }) as $Once;
+    const $off: $Off = defineSyncApi<void>(API_$_OFF, (eventName: string, callback: Function)=>{
+        emitter.off(eventName, callback);
+    }) as $Off;
+    const $emit: $Emit = defineSyncApi<void>(API_$_EMIT, (eventName: string, ...args: (Object | undefined | null)[])=>{
+        emitter.emit(eventName, ...args);
+    }) as $Emit;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
     const getBundleInfoOnce = ()=>{
         let bundleInfo: bundleManager.BundleInfo | null = null;
@@ -1919,8 +2142,7 @@ export function initUniExtApi(APP_ID: string) {
             if (tempFiles.length === 0) {
                 const errMsg = MediaUniErrors.get(1101001) as string;
                 res.reject(errMsg, {
-                    errCode: 1101001,
-                    errMsg
+                    errCode: 1101001
                 } as ApiError);
                 return;
             }
@@ -1947,8 +2169,7 @@ export function initUniExtApi(APP_ID: string) {
             if (!file) {
                 const errMsg = MediaUniErrors.get(1101001) as string;
                 res.reject(errMsg, {
-                    errCode: 1101001,
-                    errMsg
+                    errCode: 1101001
                 } as ApiError);
                 return;
             }
@@ -2064,8 +2285,7 @@ export function initUniExtApi(APP_ID: string) {
             if (!isGranted) {
                 const errMsg = MediaUniErrors.get(1101005);
                 res.reject(errMsg, {
-                    errCode: 1101005,
-                    errMsg
+                    errCode: 1101005
                 } as ApiError);
                 return;
             }
@@ -2083,8 +2303,7 @@ export function initUniExtApi(APP_ID: string) {
             if (!isGranted) {
                 const errMsg = MediaUniErrors.get(1101005);
                 res.reject(errMsg, {
-                    errCode: 1101005,
-                    errMsg
+                    errCode: 1101005
                 } as ApiError);
                 return;
             }
@@ -2489,7 +2708,8 @@ export function initUniExtApi(APP_ID: string) {
             }
         }
         if (!contentType && method === 'POST') {
-            headers['Content-Type'] = 'application/x-www-form-urlencoded; charset=UTF-8';
+            headers['Content-Type'] = 'application/json';
+            contentType = 'application/json';
         }
         if (method === 'GET' && data && isPlainObject(data)) {
             const dataRecord = data as Record<string, Object>;
@@ -2514,7 +2734,7 @@ export function initUniExtApi(APP_ID: string) {
             expectDataType = http.HttpDataType.STRING;
         }
         const httpRequest = http.createHttp();
-        const emitter = new Emitter();
+        const emitter = new Emitter1();
         const requestTask: IRequestTask = {
             abort () {
                 httpRequest.destroy();
@@ -3126,7 +3346,7 @@ export function initUniExtApi(APP_ID: string) {
             } as IUploadTask);
         }
         const httpRequest = http1.createHttp();
-        const emitter = new Emitter1();
+        const emitter = new Emitter2();
         const uploadTask: IUploadTask = {
             abort () {
                 httpRequest.destroy();
@@ -3213,7 +3433,7 @@ export function initUniExtApi(APP_ID: string) {
     const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header;
         const httpRequest = http2.createHttp();
-        const emitter = new Emitter2();
+        const emitter = new Emitter3();
         const downloadTask: IDownloadTask = {
             abort () {
                 httpRequest.destroy();
@@ -3617,6 +3837,15 @@ export function initUniExtApi(APP_ID: string) {
             getOSRuntime1().hideLoading();
         });
     }) as HideLoading;
+    const API_START_PULL_DOWN_REFRESH = 'startPullDownRefresh';
+    const API_STOP_PULL_DOWN_REFRESH = 'stopPullDownRefresh';
+    const startPullDownRefresh = defineAsyncApi<StartPullDownRefreshOptions, StartPullDownRefreshSuccess>(API_START_PULL_DOWN_REFRESH, (_, res)=>{
+        internalStartPullDownRefresh();
+        res.resolve();
+    }) as StartPullDownRefresh;
+    const stopPullDownRefresh = defineSyncApi<void>(API_STOP_PULL_DOWN_REFRESH, ()=>{
+        internalStopPullDownRefresh();
+    }) as StopPullDownRefresh;
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
@@ -3752,6 +3981,238 @@ export function initUniExtApi(APP_ID: string) {
             } as GetStorageInfoSuccess);
         });
     }) as GetStorageInfo;
+    const API_SHOW_TAB_BAR_RED_DOT = 'showTabBarRedDot';
+    const API_HIDE_TAB_BAR_RED_DOT = 'hideTabBarRedDot';
+    const API_SET_TAB_BAR_BADGE = 'setTabBarBadge';
+    const API_REMOVE_TAB_BAR_BADGE = 'removeTabBarBadge';
+    const API_SET_TAB_BAR_ITEM = 'setTabBarItem';
+    const API_SET_TAB_BAR_STYLE = 'setTabBarStyle';
+    const API_SHOW_TAB_BAR = 'showTabBar';
+    const API_HIDE_TAB_BAR = 'hideTabBar';
+    const ShowTabBarRedDotApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ]
+    ]);
+    const HideTabBarRedDotApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ]
+    ]);
+    const SetTabBarBadgeApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ],
+        [
+            'text',
+            {
+                type: 'string',
+                required: true
+            }
+        ]
+    ]);
+    const RemoveTabBarBadgeApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ]
+    ]);
+    const SetTabBarItemApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'index',
+            {
+                type: 'number',
+                required: true
+            }
+        ],
+        [
+            'text',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'iconPath',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'selectedIconPath',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'pagePath',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'visible',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ],
+        [
+            'iconfont',
+            {
+                type: 'object',
+                required: false
+            }
+        ],
+        [
+            'visible',
+            {
+                type: 'boolean',
+                required: false
+            }
+        ]
+    ]);
+    const SetTabBarStyleApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'color',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'selectedColor',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'backgroundColor',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'backgroundImage',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'backgroundRepeat',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'borderStyle',
+            {
+                type: 'string',
+                required: false
+            }
+        ],
+        [
+            'borderColor',
+            {
+                type: 'string',
+                required: false
+            }
+        ]
+    ]);
+    const setTabBarBadge = defineAsyncApi<SetTabBarBadgeOptions, SetTabBarBadgeSuccess>(API_SET_TAB_BAR_BADGE, (options: SetTabBarBadgeOptions, exec: ApiExecutor<SetTabBarBadgeSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar === null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.setTabBarBadge(options);
+        exec.resolve();
+    }, SetTabBarBadgeApiProtocol);
+    const removeTabBarBadge = defineAsyncApi<RemoveTabBarBadgeOptions, RemoveTabBarBadgeSuccess>(API_REMOVE_TAB_BAR_BADGE, (options: RemoveTabBarBadgeOptions, exec: ApiExecutor<RemoveTabBarBadgeSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.removeTabBarBadge(options);
+        exec.resolve();
+    }, RemoveTabBarBadgeApiProtocol);
+    const setTabBarItem = defineAsyncApi<SetTabBarItemOptions, SetTabBarItemSuccess>(API_SET_TAB_BAR_ITEM, (options: SetTabBarItemOptions, res: ApiExecutor<SetTabBarItemSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            res.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.setTabBarItem(options);
+        res.resolve();
+    }, SetTabBarItemApiProtocol);
+    const setTabBarStyle = defineAsyncApi<SetTabBarStyleOptions, SetTabBarStyleSuccess>(API_SET_TAB_BAR_STYLE, (options: SetTabBarStyleOptions, exec: ApiExecutor<SetTabBarStyleSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.setTabBarStyle(options);
+        exec.resolve();
+    }, SetTabBarStyleApiProtocol);
+    const hideTabBar = defineAsyncApi<HideTabBarOptions, HideTabBarSuccess>(API_HIDE_TAB_BAR, (options: HideTabBarOptions | null, exec: ApiExecutor<HideTabBarSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.hideTabBar();
+        exec.resolve();
+    });
+    const showTabBar = defineAsyncApi<ShowTabBarOptions, ShowTabBarSuccess>(API_SHOW_TAB_BAR, (options: ShowTabBarOptions, exec: ApiExecutor<ShowTabBarSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.showTabBar();
+        exec.resolve();
+    });
+    const showTabBarRedDot = defineAsyncApi<ShowTabBarRedDotOptions, ShowTabBarRedDotSuccess>(API_SHOW_TAB_BAR_RED_DOT, (options: ShowTabBarRedDotOptions, exec: ApiExecutor<ShowTabBarRedDotSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.showTabBarRedDot(options);
+        exec.resolve();
+    }, ShowTabBarRedDotApiProtocol);
+    const hideTabBarRedDot = defineAsyncApi<HideTabBarRedDotOptions, HideTabBarRedDotSuccess>(API_HIDE_TAB_BAR_RED_DOT, (options: HideTabBarRedDotOptions, exec: ApiExecutor<HideTabBarRedDotSuccess>)=>{
+        const tabBar = getTabBar();
+        if (tabBar == null) {
+            exec.reject('tabBar is not exist');
+            return;
+        }
+        tabBar!.hideTabBarRedDot(options);
+        exec.resolve();
+    }, HideTabBarRedDotApiProtocol);
     const API_CONNECT_SOCKET = 'connectSocket';
     const ConnectSocketApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3788,6 +4249,8 @@ export function initUniExtApi(APP_ID: string) {
             ]
         ])
     };
+    const API_SEND_SOCKET_MESSAGE = 'sendSocketMessage';
+    const API_CLOSE_SOCKET = 'closeSocket';
     const tryExec = (fn: Function | null | undefined, ...args: Object[])=>{
         if (!fn) {
             return;
@@ -3798,10 +4261,50 @@ export function initUniExtApi(APP_ID: string) {
             console.error(error);
         }
     };
+    const GlobalWebsocketEvent: IUniWebsocketEmitter = new Emitter4() as IUniWebsocketEmitter;
     class SocketTask1 implements SocketTask {
         private _ws: webSocket.WebSocket;
+        private _emitter: IUniWebsocketEmitter = new Emitter4();
         constructor(ws: webSocket.WebSocket){
             this._ws = ws;
+            this._ws.on('message', (_, data)=>{
+                const message = {
+                    data
+                } as OnSocketMessageCallbackResult;
+                this._emitter.emit('message', message);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('message', message);
+                }
+            });
+            this._ws.on('open', (_, data)=>{
+                this._emitter.emit('open', data);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('open', data);
+                }
+            });
+            this._ws.on('error', (error)=>{
+                const message = {
+                    errMsg: error.message
+                } as OnSocketErrorCallbackResult;
+                this._emitter.emit('error', message);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('error', message);
+                }
+                const index = socketTasks.indexOf(this);
+                if (index >= 0) {
+                    socketTasks.splice(index, 1);
+                }
+            });
+            this._ws.on('close', (_, data)=>{
+                this._emitter.emit('close', data);
+                if (this === socketTasks[0]) {
+                    GlobalWebsocketEvent.emit('close', data);
+                }
+                const index = socketTasks.indexOf(this);
+                if (index >= 0) {
+                    socketTasks.splice(index, 1);
+                }
+            });
         }
         send(options: SendSocketMessageOptions) {
             this._ws.send(options.data as string | ArrayBuffer).then((success: boolean)=>{
@@ -3820,10 +4323,6 @@ export function initUniExtApi(APP_ID: string) {
                 reason: typeof options?.reason === 'string' ? options.reason : ''
             } as webSocket.WebSocketCloseOptions).then((success: boolean)=>{
                 if (success) {
-                    this._ws.off('open');
-                    this._ws.off('message');
-                    this._ws.off('close');
-                    this._ws.off('error');
                     tryExec(options?.success, {} as GeneralCallbackResult);
                 } else {
                     tryExec(options?.fail, new UniError('close socket failed'));
@@ -3833,37 +4332,73 @@ export function initUniExtApi(APP_ID: string) {
             });
         }
         onMessage(callback: Function) {
-            this._ws.on('message', (_, data)=>{
-                callback({
-                    data
-                } as OnSocketMessageCallbackResult);
-            });
+            this._emitter.on('message', callback);
         }
         onOpen(callback: Function) {
-            this._ws.on('open', (_, data)=>{
-                callback(data);
-            });
+            this._emitter.on('open', callback);
         }
         onError(callback: Function) {
-            this._ws.on('error', (error)=>{
-                callback({
-                    errMsg: error.message
-                } as OnSocketErrorCallbackResult);
-            });
+            this._emitter.on('error', callback);
         }
         onClose(callback: Function) {
-            this._ws.on('close', (_, data)=>{
-                callback(data);
-            });
+            this._emitter.on('close', callback);
         }
     }
+    const socketTasks: SocketTask1[] = [];
     const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
         ws.connect(args.url, {
             header: args.header ? args.header as Object : undefined
         } as webSocket.WebSocketRequestOptions);
-        return new SocketTask1(ws);
+        const task = new SocketTask1(ws);
+        socketTasks.push(task);
+        return task;
     }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
+    const onSocketMessage: OnSocketMessage = (callback: Function)=>{
+        GlobalWebsocketEvent.on('message', callback);
+    };
+    const onSocketOpen: OnSocketOpen = (callback: Function)=>{
+        GlobalWebsocketEvent.on('open', callback);
+    };
+    const onSocketError: OnSocketError = (callback: Function)=>{
+        GlobalWebsocketEvent.on('error', callback);
+    };
+    const onSocketClose: OnSocketClose = (callback: Function)=>{
+        GlobalWebsocketEvent.on('close', callback);
+    };
+    const sendSocketMessage = defineAsyncApi<SendSocketMessageOptions, GeneralCallbackResult>(API_SEND_SOCKET_MESSAGE, (args: SendSocketMessageOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const task = socketTasks[0];
+        if (task) {
+            task.send({
+                data: args.data,
+                success (res) {
+                    exec.resolve(res);
+                },
+                fail (err) {
+                    exec.reject('sendSocketMessage:fail');
+                }
+            } as SendSocketMessageOptions);
+        } else {
+            exec.reject('WebSocket is not connected');
+        }
+    }) as SendSocketMessage;
+    const closeSocket = defineAsyncApi<CloseSocketOptions, GeneralCallbackResult>(API_CLOSE_SOCKET, (args: CloseSocketOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const task = socketTasks[0];
+        if (task) {
+            task.close({
+                code: args.code,
+                reason: args.reason,
+                success (res) {
+                    exec.resolve(res);
+                },
+                fail (err) {
+                    exec.reject('closeSocket:fail');
+                }
+            } as CloseSocketOptions);
+        } else {
+            exec.reject('WebSocket is not connected');
+        }
+    }) as CloseSocket;
     return {
         arrayBufferToBase64,
         base64ToArrayBuffer,
@@ -3871,11 +4406,13 @@ export function initUniExtApi(APP_ID: string) {
         setClipboardData,
         createIntersectionObserver,
         createSelectorQuery,
+        $on,
+        $once,
+        $off,
+        $emit,
         getAppBaseInfo,
         getDeviceInfo,
         getProvider,
-        getProviderIds,
-        getProviderObject,
         getSystemInfo,
         getSystemInfoSync,
         getWindowInfo,
@@ -3901,6 +4438,8 @@ export function initUniExtApi(APP_ID: string) {
         hideLoading,
         showModal,
         showActionSheet,
+        startPullDownRefresh,
+        stopPullDownRefresh,
         rpx2px,
         setStorage,
         setStorageSync,
@@ -3912,6 +4451,20 @@ export function initUniExtApi(APP_ID: string) {
         removeStorageSync,
         clearStorage,
         clearStorageSync,
-        connectSocket
+        showTabBarRedDot,
+        hideTabBarRedDot,
+        setTabBarBadge,
+        removeTabBarBadge,
+        setTabBarItem,
+        setTabBarStyle,
+        showTabBar,
+        hideTabBar,
+        connectSocket,
+        sendSocketMessage,
+        closeSocket,
+        onSocketOpen,
+        onSocketMessage,
+        onSocketClose,
+        onSocketError
     } as UniExtApi;
 }

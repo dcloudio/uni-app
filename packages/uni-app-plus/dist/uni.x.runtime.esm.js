@@ -1265,20 +1265,18 @@ function clearAppThemeChangeCallbackId() {
   appThemeChangeCallbackId = -1;
 }
 function registerThemeChange(callback) {
-  if (appThemeChangeCallbackId !== -1) {
-    if (typeof uni.offAppThemeChange !== "function") {
-      return;
+  try {
+    if (appThemeChangeCallbackId !== -1) {
+      uni.offAppThemeChange(appThemeChangeCallbackId);
+      clearAppThemeChangeCallbackId();
     }
-    uni.offAppThemeChange(appThemeChangeCallbackId);
-    clearAppThemeChangeCallbackId();
+    appThemeChangeCallbackId = uni.onAppThemeChange(function(res1) {
+      var appThemeMode = res1["appTheme"];
+      callback(appThemeMode);
+    });
+  } catch (e) {
+    console.warn("监听 OS 主题变化", e);
   }
-  if (typeof uni.onAppThemeChange !== "function") {
-    return;
-  }
-  appThemeChangeCallbackId = uni.onAppThemeChange(function(res1) {
-    var appThemeMode = res1["appTheme"];
-    callback(appThemeMode);
-  });
 }
 var onThemeChange = function(themeMode) {
   var handlePage = () => {
