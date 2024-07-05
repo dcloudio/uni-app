@@ -73,7 +73,7 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify('production'),
     __X__: false,
     __PLUS__: false,
-    'plus.os.name': "'Harmony'",
+    'plus.os.name': "'HarmonyOS'",
     'plus.os.version': "''",
   },
   resolve: {
