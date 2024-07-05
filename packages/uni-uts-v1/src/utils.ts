@@ -117,6 +117,29 @@ export function resolvePackage(filename: string) {
   }
 }
 
+export function copyPlatformFiles(
+  utsInputDir: string,
+  utsOutputDir: string,
+  extname: string[]
+) {
+  const files: string[] = []
+  if (fs.existsSync(utsInputDir)) {
+    fs.copySync(utsInputDir, utsOutputDir, {
+      filter(src) {
+        if (fs.statSync(src).isDirectory()) {
+          return true
+        }
+        if (extname.includes(path.extname(src))) {
+          files.push(src)
+          return true
+        }
+        return false
+      },
+    })
+  }
+  return files
+}
+
 export interface UTSPlatformResourceOptions {
   isX: boolean
   pluginId: string
@@ -131,6 +154,7 @@ export interface UTSPlatformResourceOptions {
   provider?: { name: string; service: string; class: string }
   uniModules: string[]
 }
+
 export function genUTSPlatformResource(
   filename: string,
   options: UTSPlatformResourceOptions
@@ -140,11 +164,15 @@ export function genUTSPlatformResource(
   const utsInputDir = resolveUTSPlatformDir(filename, platform)
   const utsOutputDir = resolveUTSPlatformDir(platformFile, platform)
 
+  const extname: string[] = [options.extname]
   // 拷贝所有非uts,vue文件及目录
   if (fs.existsSync(utsInputDir)) {
     fs.copySync(utsInputDir, utsOutputDir, {
       filter(src) {
         if (src.endsWith('config.json')) {
+          return false
+        }
+        if (extname.includes(path.extname(src))) {
           return false
         }
         return !['.uts', '.vue'].includes(path.extname(src))
@@ -196,7 +224,9 @@ export function genUTSPlatformResource(
         overwrite: true,
       }
     )
+    copyPlatformFiles(utsInputDir, path.join(utsOutputDir, 'src'), extname)
   }
+
   if (options.result.chunks) {
     options.result.chunks.forEach((chunk) => {
       const chunkFile = path.resolve(utsOutputDir, chunk)
