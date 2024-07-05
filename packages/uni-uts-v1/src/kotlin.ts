@@ -368,7 +368,7 @@ export async function runKotlinDev(
     const platformFiles = copyPlatformFiles(
       path.resolve(inputDir, pluginRelativeDir, 'utssdk', 'app-android'),
       path.resolve(outputDir, pluginRelativeDir, 'utssdk', 'app-android'),
-      ['.kt']
+      ['.kt', '.java']
     )
 
     kotlinFiles.push(...platformFiles)

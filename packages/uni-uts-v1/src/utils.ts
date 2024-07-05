@@ -164,7 +164,8 @@ export function genUTSPlatformResource(
   const utsInputDir = resolveUTSPlatformDir(filename, platform)
   const utsOutputDir = resolveUTSPlatformDir(platformFile, platform)
 
-  const extname: string[] = [options.extname]
+  const extname: string[] =
+    options.extname === '.kt' ? ['.kt', '.java'] : [options.extname]
   // 拷贝所有非uts,vue文件及目录
   if (fs.existsSync(utsInputDir)) {
     fs.copySync(utsInputDir, utsOutputDir, {
