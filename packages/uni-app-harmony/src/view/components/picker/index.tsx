@@ -1,5 +1,9 @@
 import { type ExtractPropTypes, ref } from 'vue'
-import { defineBuiltInComponent } from '@dcloudio/uni-components'
+import {
+  type EmitEvent,
+  defineBuiltInComponent,
+  useCustomEvent,
+} from '@dcloudio/uni-components'
 import Embed from '../embed'
 
 type Mode = 'selector' | 'multiSelector' | 'time' | 'date'
@@ -103,20 +107,30 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props,
   emits: ['change', 'cancel', 'columnchange'],
   setup(props, { emit }) {
+    const rootRef = ref<HTMLElement | null>(null)
     const embedRef = ref<InstanceType<typeof Embed> | null>(null)
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     function onClick() {
       // @ts-expect-error
       embedRef.value!.click()
     }
     function onCancel(event: CustomEvent<any>) {
-      console.log('TODO onCancel:', event)
+      trigger('cancel', event, event.detail)
+    }
+    function onColumnchange(event: CustomEvent<any>) {
+      trigger('columnchange', event, event.detail)
+    }
+    function onChange(event: CustomEvent<any>) {
+      trigger('change', event, event.detail)
     }
     return () => (
-      <uni-picker>
+      <uni-picker ref={rootRef}>
         <Embed
           ref={embedRef}
           tag="picker"
           options={props}
+          onChange={onChange}
+          onColumnchange={onColumnchange}
           onCancel={onCancel}
         />
         <div onClick={onClick} class="uni-picker-slot"></div>
