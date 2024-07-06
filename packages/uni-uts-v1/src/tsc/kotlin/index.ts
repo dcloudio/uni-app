@@ -1,17 +1,18 @@
 import fs from 'fs-extra'
 import path from 'path'
 import { extend } from '@vue/shared'
-import type { CompilerOptions } from 'typescript'
+import type {
+  CompilerOptions,
+  SemanticDiagnosticsBuilderProgram,
+  WatchOfFilesAndCompilerOptions,
+} from 'typescript'
 import {
   type RawSourceMap,
   SourceMapConsumer,
   SourceMapGenerator,
 } from 'source-map-js'
-// import { sync } from 'fast-glob'
-// import combine from 'combine-source-map'
 import { createBasicUtsOptions } from '../utils/options'
 import { isInHBuilderX, normalizePath } from '../../shared'
-// import { uvueOutDir } from '../../uvue'
 
 export interface UTS2KotlinOptions {
   typescript?: typeof import('typescript')
@@ -23,7 +24,14 @@ export interface UTS2KotlinOptions {
   normalizeFileName: (str: string) => string
 }
 
-export function runUTS2KotlinDev(options: UTS2KotlinOptions) {
+export declare class WatchProgramHelper {
+  watch(timeout?: number): void
+  wait(): Promise<void>
+}
+export function runUTS2KotlinDev(options: UTS2KotlinOptions): {
+  program: WatchOfFilesAndCompilerOptions<SemanticDiagnosticsBuilderProgram>
+  watcher: WatchProgramHelper
+} {
   const { /* check, noCache, */ tsconfig, typescript, tsconfigOverride } =
     createBasicUtsOptions(options.inputDir)
 
@@ -67,6 +75,10 @@ export function runUTS2KotlinDev(options: UTS2KotlinOptions) {
         map: string,
         writeFile: (fileName: string, text: string) => void
       ) => boolean | undefined
+      callback(
+        files: string[],
+        program: SemanticDiagnosticsBuilderProgram
+      ): void
     }
   >
 

@@ -37,7 +37,13 @@ import {
   getExtApiComponents,
   updateManifestModules,
 } from '../utils'
+
 import { genClassName } from '../..'
+
+declare class WatchProgramHelper {
+  watch(timeout?: number): void
+  wait(): Promise<void>
+}
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
@@ -71,6 +77,9 @@ export function uniAppPlugin(): UniVitePlugin {
     }
   }
   emptyTscDir()
+
+  let watcher: WatchProgramHelper
+
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -79,8 +88,10 @@ export function uniAppPlugin(): UniVitePlugin {
       return {
         base: '/', // 强制 base
         build: {
+          // 手动清理
+          emptyOutDir: false,
           outDir:
-            process.env.UNI_APP_X_TSC === 'true' ? tscOutDir() : uvueOutDir(),
+            process.env.UNI_APP_X_TSC === 'true' ? tscOutputDir : uvueOutputDir,
           lib: {
             // 必须使用 lib 模式
             fileName: 'output',
@@ -170,6 +181,11 @@ export function uniAppPlugin(): UniVitePlugin {
       // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
       checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
+    watchChange() {
+      if (process.env.UNI_APP_X_TSC === 'true') {
+        watcher && watcher.watch()
+      }
+    },
     async writeBundle() {
       if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
         return
@@ -192,11 +208,14 @@ export function uniAppPlugin(): UniVitePlugin {
       }
       const { compileApp, runUTS2KotlinDev } = resolveUTSCompiler()
       if (process.env.UNI_APP_X_TSC === 'true') {
-        await runUTS2KotlinDev({
-          inputDir: tscOutputDir,
-          outputDir: uvueOutputDir,
-          normalizeFileName: normalizeNodeModules,
-        })
+        if (!watcher) {
+          watcher = runUTS2KotlinDev({
+            inputDir: tscOutputDir,
+            outputDir: uvueOutputDir,
+            normalizeFileName: normalizeNodeModules,
+          }).watcher
+        }
+        await watcher.wait()
       }
       const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
         pageCount,
