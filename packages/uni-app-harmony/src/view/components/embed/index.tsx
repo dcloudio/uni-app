@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 
 const props = {
@@ -25,7 +25,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const on: string[] = []
       const options = Object.assign({}, props.options, {
         click: clickRef.value,
-        elId,
         on: on,
       })
       Object.keys(attrs).forEach((key) => {
@@ -33,7 +32,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           on.push(key.slice(2).toLowerCase())
         }
       })
-      return `#${encodeURIComponent(JSON.stringify(options))}`
+      return `${elId}#${encodeURIComponent(JSON.stringify(options))}`
+    })
+    const srcValue = src.value
+    watch(src, (srcValue) => {
+      harmonyChannel.invokeSync('onNativeEmbedLifecycleChange', [srcValue])
     })
     function click() {
       clickRef.value++
@@ -45,7 +48,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       <embed
         el-id={elId}
         type={`native/${props.tag}`}
-        src={src.value}
+        src={srcValue}
         {...attrs}
       />
     )
