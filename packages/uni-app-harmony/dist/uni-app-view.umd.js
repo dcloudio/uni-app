@@ -21683,6 +21683,58 @@
     }
   }
   var props$3 = {
+    tag: {
+      type: String,
+      default: ""
+    },
+    options: {
+      type: Object,
+      default() {
+        return {};
+      }
+    }
+  };
+  var index = 0;
+  const Embed = /* @__PURE__ */ defineBuiltInComponent({
+    props: props$3,
+    setup(props2, _ref) {
+      var {
+        expose,
+        attrs: attrs2
+      } = _ref;
+      var clickRef = ref(0);
+      var elId = String(index++);
+      var src = computed(() => {
+        var on = [];
+        var options = Object.assign({}, props2.options, {
+          click: clickRef.value,
+          on
+        });
+        Object.keys(attrs2).forEach((key2) => {
+          if (/^on[A-Z]/.test(key2)) {
+            on.push(key2.slice(2).toLowerCase());
+          }
+        });
+        return "".concat(elId, "#").concat(encodeURIComponent(JSON.stringify(options)));
+      });
+      var srcValue = src.value;
+      watch(src, (srcValue2) => {
+        harmonyChannel.invokeSync("onNativeEmbedLifecycleChange", [srcValue2]);
+      });
+      function click() {
+        clickRef.value++;
+      }
+      expose({
+        click
+      });
+      return () => createVNode("embed", mergeProps({
+        "el-id": elId,
+        "type": "native/".concat(props2.tag),
+        "src": srcValue
+      }, attrs2), null, 16, ["el-id", "src"]);
+    }
+  });
+  var props$2 = {
     src: {
       type: String,
       default: ""
@@ -21700,13 +21752,17 @@
   };
   const WebView = /* @__PURE__ */ defineBuiltInComponent({
     name: "WebView",
-    props: props$3,
+    props: props$2,
     setup(props2) {
-      return () => createVNode("uni-web-view", null, [createVNode("embed", {
-        "type": "native/webview",
-        "src": getRealPath$1(props2.src),
+      return () => createVNode("uni-web-view", null, [createVNode(Embed, {
+        "tag": "webview",
+        "options": {
+          src: getRealPath$1(props2.src),
+          updateTitle: props2.updateTitle,
+          webviewStyles: props2.webviewStyles
+        },
         "style": "width:100%;height:100%"
-      }, null, 8, ["src"])]);
+      }, null, 8, ["options"])]);
     }
   });
   class UniWebView extends UniComponent {
@@ -22281,7 +22337,7 @@
       }
     }, id2, true);
   }
-  var props$2 = {
+  var props$1 = {
     id: {
       type: String,
       default: ""
@@ -22367,7 +22423,7 @@
   };
   const Video = /* @__PURE__ */ defineBuiltInComponent({
     name: "Video",
-    props: props$2,
+    props: props$1,
     emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
     setup(props2, _ref2) {
       var {
@@ -22587,55 +22643,6 @@
       super(id2, "uni-video", Video, parentNodeId, refNodeId, nodeJson);
     }
   }
-  var props$1 = {
-    tag: {
-      type: String,
-      default: ""
-    },
-    options: {
-      type: Object,
-      default() {
-        return {};
-      }
-    }
-  };
-  var index = 0;
-  const Embed = /* @__PURE__ */ defineBuiltInComponent({
-    props: props$1,
-    setup(props2, _ref) {
-      var {
-        expose,
-        attrs: attrs2
-      } = _ref;
-      var clickRef = ref(0);
-      var elId = String(index++);
-      var src = computed(() => {
-        var on = [];
-        var options = Object.assign({}, props2.options, {
-          click: clickRef.value,
-          elId,
-          on
-        });
-        Object.keys(attrs2).forEach((key2) => {
-          if (/^on[A-Z]/.test(key2)) {
-            on.push(key2.slice(2).toLowerCase());
-          }
-        });
-        return "#".concat(encodeURIComponent(JSON.stringify(options)));
-      });
-      function click() {
-        clickRef.value++;
-      }
-      expose({
-        click
-      });
-      return () => createVNode("embed", mergeProps({
-        "el-id": elId,
-        "type": "native/".concat(props2.tag),
-        "src": src.value
-      }, attrs2), null, 16, ["el-id", "src"]);
-    }
-  });
   var mode = {
     SELECTOR: "selector",
     MULTISELECTOR: "multiSelector",
@@ -22731,22 +22738,37 @@
     props,
     emits: ["change", "cancel", "columnchange"],
     setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
       var embedRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
       function onClick() {
         embedRef.value.click();
       }
       function onCancel(event) {
-        console.log("TODO onCancel:", event);
+        trigger2("cancel", event, event.detail);
       }
-      return () => createVNode("uni-picker", null, [createVNode(Embed, {
+      function onColumnchange(event) {
+        trigger2("columnchange", event, event.detail);
+      }
+      function onChange2(event) {
+        trigger2("change", event, event.detail);
+      }
+      return () => createVNode("uni-picker", {
+        "ref": rootRef
+      }, [createVNode(Embed, {
         "ref": embedRef,
         "tag": "picker",
         "options": props2,
+        "onChange": onChange2,
+        "onColumnchange": onColumnchange,
         "onCancel": onCancel
-      }, null, 8, ["options", "onCancel"]), createVNode("div", {
+      }, null, 8, ["options", "onChange", "onColumnchange", "onCancel"]), createVNode("div", {
         "onClick": onClick,
         "class": "uni-picker-slot"
-      }, null, 8, ["onClick"])]);
+      }, null, 8, ["onClick"])], 512);
     }
   });
   class UniPicker extends UniComponent {
