@@ -1,5 +1,6 @@
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import { getRealPath } from '../../../platform/getRealPath'
+import Embed from '../embed'
 
 const props = {
   src: {
@@ -24,9 +25,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   setup(props) {
     return () => (
       <uni-web-view>
-        <embed
-          type="native/webview"
-          src={getRealPath(props.src)}
+        <Embed
+          tag="webview"
+          options={{
+            src: getRealPath(props.src),
+            updateTitle: props.updateTitle,
+            webviewStyles: props.webviewStyles,
+          }}
           style="width:100%;height:100%"
         />
       </uni-web-view>
