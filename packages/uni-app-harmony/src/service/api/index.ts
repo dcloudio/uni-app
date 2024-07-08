@@ -16,6 +16,9 @@ export { redirectTo } from './route/redirectTo'
 export { reLaunch } from './route/reLaunch'
 export { switchTab } from './route/switchTab'
 export {
+  addInterceptor,
+  removeInterceptor,
+  interceptors,
   setLocale,
   getLocale,
   onLocaleChange,
