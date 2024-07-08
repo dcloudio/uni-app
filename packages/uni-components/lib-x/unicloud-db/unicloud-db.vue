@@ -110,7 +110,8 @@
     }
   //#endif
   //#ifdef WEB || APP-IOS
-  export class UniCloudDBElement extends UniElementImpl {
+  const RealUniElementImpl = typeof UniElementImpl === 'undefined' ? class {} : UniElementImpl
+  export class UniCloudDBElement extends RealUniElementImpl {
     constructor(data : INodeData, pageNode : PageNode) {
       super(data, pageNode);
       const TagName = 'UNICLOUD-DB';
@@ -189,7 +190,7 @@
       } as UniCloudDBComponentUpdateOptions)
     }
 
-    onLoadData! : (_ : UniCloudDBComponentLoadDataOptions) => void
+    onLoadData! : (_ : UniCloudDBComponentLoadDataOptions) => Promise<void>
     onLoadMore! : () => void
     onAdd! : (value : UTSJSONObject, options : UniCloudDBComponentAddOptions) => void
     onUpdate!: (id : string, value : UTSJSONObject, options : UniCloudDBComponentUpdateOptions) => void
@@ -287,11 +288,23 @@
       manual: {
         type: Boolean,
         default: false
+      },
+      ssrKey: {
+        type: String,
+        default: ""
       }
     },
     data() {
       return {
+        //#ifdef WEB
+        // TODO 修复类型错误
+        // @ts-ignore
+        dataList: ssrRef([] as Array<UTSJSONObject>) as Array<UTSJSONObject>,
+        //#endif
+        //#ifndef WEB
         dataList: [] as Array<UTSJSONObject>,
+        //#endif
+        // dataList: [] as Array<UTSJSONObject>,
         loading: false,
         hasMore: false,
         isEnded: false,
@@ -308,10 +321,19 @@
       if (!registerFlag) {
         registerFlag = true
         // @ts-ignore
-        customElements.define(
+        typeof customElements !== 'undefined' && customElements.define(
           'uni-cloud-db-element',
           UniCloudDBElement,
         )
+      }
+    },
+    //#endif
+    //#ifdef WEB
+    async serverPrefetch() : Promise<any> {
+      // @ts-ignore
+      if (!this.manual && this.loadtime === 'auto') {
+        // @ts-ignore
+        return this.loadData({})
       }
     },
     //#endif
@@ -358,7 +380,7 @@
         }
       )
 
-      if (!this.manual && this.loadtime == LOAD_MODE_AUTO) {
+      if (!this.manual && this.loadtime == LOAD_MODE_AUTO && this.dataList.length == 0) {
         if (typeof this.collection == 'string') {
           const collectionString = this.collection as string
           if (collectionString.length == 0) {
@@ -393,7 +415,7 @@
       //#endif
     },
     methods: {
-      loadData(options : UniCloudDBComponentLoadDataOptions) {
+      async loadData(options : UniCloudDBComponentLoadDataOptions) : Promise<void> {
         let clear = (options.clear != null && options.clear == true)
         if (clear == true) {
           if (this.pageData == PAGE_MODE_REPLACE) {
@@ -402,7 +424,7 @@
           this.reset()
         }
 
-        this.get(options)
+        await this.get(options)
       },
       loadMore() {
         if (this.isEnded || this.loading) {
@@ -426,7 +448,7 @@
       reset() {
         this.pagination.current = 1
       },
-      get(options? : UniCloudDBComponentLoadDataOptions) {
+      async get(options? : UniCloudDBComponentLoadDataOptions) : Promise<void> {
         let loadAfterClear = false
         if (options != null && options.clear != null && options.clear == true) {
           loadAfterClear = true
@@ -438,7 +460,7 @@
         this.error = null
 
         this.loading = true
-        this.getExec().then((res : UniCloudDBGetResult) => {
+        await this.getExec().then((res : UniCloudDBGetResult) => {
           const data = res.data
           const count = res.count
 
@@ -461,7 +483,10 @@
         }).catch((err : any | null) => {
           this._requestFail(err, null)
           options?.fail?.(err)
-        }).finally(() => {
+        }).then(() => {
+          this.loading = false
+          options?.complete?.()
+        }, () => {
           this.loading = false
           options?.complete?.()
         })
@@ -474,7 +499,9 @@
           this._isShowToast(options.showToast ?? false, options.toastTitle ?? 'add success')
         }).catch((err) => {
           this._requestFail(err, options.fail)
-        }).finally(() => {
+        }).then(() => {
+          this._requestComplete(options.complete, options.needLoading)
+        }, () => {
           this._requestComplete(options.complete, options.needLoading)
         })
       },
@@ -519,7 +546,9 @@
           this._isShowToast(options.showToast ?? false, options.toastTitle ?? 'update success')
         }).catch((err : any | null) => {
           this._requestFail(err, options.fail)
-        }).finally(() => {
+        }).then(() => {
+          this._requestComplete(options.complete, options.needLoading)
+        }, () => {
           this._requestComplete(options.complete, options.needLoading)
         })
       },
@@ -538,7 +567,9 @@
           }
         }).catch((err : any | null) => {
           this._requestFail(err, options.fail)
-        }).finally(() => {
+        }).then(() => {
+          this._requestComplete(options.complete, options.needLoading)
+        }, () => {
           this._requestComplete(options.complete, options.needLoading)
         })
       },

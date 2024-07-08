@@ -1327,11 +1327,11 @@ function normalizeProps(props) {
   return props;
 }
 var PAGE_HOOKS = [ON_INIT, ON_LOAD, ON_SHOW, ON_HIDE, ON_UNLOAD, ON_BACK_PRESS, ON_PAGE_SCROLL, ON_TAB_ITEM_TAP, ON_REACH_BOTTOM, ON_PULL_DOWN_REFRESH, ON_SHARE_TIMELINE, ON_SHARE_APP_MESSAGE, ON_ADD_TO_FAVORITES, ON_SAVE_EXIT_STATE, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED];
-// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
-function isRootImmediateHookX(name) {
-  var PAGE_SYNC_HOOKS = [ON_LOAD];
+function isRootImmediateHook(name) {
+  var PAGE_SYNC_HOOKS = [ON_LOAD, ON_SHOW];
   return PAGE_SYNC_HOOKS.indexOf(name) > -1;
 }
+// isRootImmediateHookX deprecated
 function isRootHook(name) {
   return PAGE_HOOKS.indexOf(name) > -1;
 }
@@ -1879,7 +1879,8 @@ var flushIndex = 0;
 var pendingPostFlushCbs = [];
 var activePostFlushCbs = null;
 var postFlushIndex = 0;
-var resolvedPromise = /* @__PURE__ */PromisePolyfill.resolve();
+var isIOS = ("nativeApp" in getGlobalThis());
+var resolvedPromise = /* @__PURE__ */(isIOS ? PromisePolyfill : Promise).resolve();
 var currentFlushPromise = null;
 function nextTick(fn) {
   var instance = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : getCurrentInstance();
@@ -3786,7 +3787,7 @@ function injectHook(type, hook) {
   if (target) {
     if (isRootHook(type) && target !== target.root) {
       target = target.root;
-      if (isRootImmediateHookX(type)) {
+      if (isRootImmediateHook(type)) {
         var proxy = target.proxy;
         callWithAsyncErrorHandling(hook.bind(proxy), target, type, ON_LOAD === type ? [proxy.$page.options] : []);
       }
@@ -5760,8 +5761,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   var processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
-    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateComment("", container);
-    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateComment("", container);
+    var fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("", container, true);
+    var fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("", container, true);
     var {
       patchFlag,
       dynamicChildren,
@@ -7687,7 +7688,12 @@ function parseStyleSheet(_ref23) {
     root
   } = _ref23;
   var component = type;
-  if (!component.__styles) {
+  var pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */new Map();
+  }
+  var cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
     var __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray$1(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
@@ -7704,9 +7710,10 @@ function parseStyleSheet(_ref23) {
     if (isArray$1(component.styles)) {
       styles.push(...component.styles);
     }
-    component.__styles = useCssStyles(styles);
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
   }
-  return component.__styles;
+  return cache;
 }
 function extend(a, b) {
   b.forEach((value, key) => {
@@ -7820,7 +7827,10 @@ var nodeOps = {
   createElement: (tag, container) => {
     return getDocument().createElement(tag);
   },
-  createText: (text, container) => {
+  createText: (text, container, isAnchor) => {
+    if (isAnchor) {
+      return getDocument().createComment(text);
+    }
     var textNode = getDocument().createElement("text");
     textNode.setAttribute("value", text);
     setExtraIsTextNode(textNode, true);
@@ -7965,8 +7975,8 @@ function parseName(name) {
       options[m[0].toLowerCase()] = true;
     }
   }
-  var event = name[2] === ":" ? name.slice(3) : name.slice(2);
-  return [formatEventName(hyphenate(event)), options];
+  var event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
+  return [formatEventName(event), options];
 }
 function createInvoker(initialValue, instance) {
   var invoker = e => {

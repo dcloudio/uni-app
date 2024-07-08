@@ -12,8 +12,10 @@ import {
   type KotlinCompilerServer,
   type RunKotlinBuildResult,
   type RunKotlinDevResult,
+  addInjectComponents,
   createStderrListener,
   getInjectApis,
+  getInjectComponents,
   getUniModulesCacheJars,
   getUniModulesEncryptCacheJars,
   getUniModulesJars,
@@ -31,7 +33,10 @@ import {
   resolveUniAppXSourceMapPath,
   shouldAutoImportUniCloud,
 } from '../utils'
-import type { KotlinManifestCache } from '../stacktrace/kotlin'
+import {
+  type KotlinManifestCache,
+  hbuilderFormatter,
+} from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
 
 const DEFAULT_IMPORTS = [
@@ -72,6 +77,12 @@ export interface CompileAppOptions {
   autoImports?: Record<string, [[string, string]]>
   // service、name、class
   extApiProviders?: [string, string, string][]
+  uniModulesArtifacts?: {
+    name: string
+    package: string
+    scopedSlots: string[]
+    declaration: string
+  }[]
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -92,6 +103,19 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
   }
+
+  // 暂不增加，因为跟 io.dcloud.uniapp.extapi.* 有冲突，导致不能确认是哪个
+  // if (extApis) {
+  //   Object.keys(extApis).forEach((key) => {
+  //     let extApiPackage = extApis[key][0]
+  //     if (extApiPackage) {
+  //       extApiPackage += '.*'
+  //       if (!imports.includes(extApiPackage)) {
+  //         imports.push(extApiPackage)
+  //       }
+  //     }
+  //   })
+  // }
 
   const input: UTSInputOptions = {
     root: inputDir,
@@ -149,6 +173,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
+        uniModulesArtifacts: options.uniModulesArtifacts,
       },
     },
   }
@@ -344,7 +369,8 @@ async function runKotlinDev(
       const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
       const kotlinClassOutDir = kotlinClassDir(kotlinRootOutDir)
       const waiting = { done: undefined }
-      const options = {
+
+      const compileOptions = {
         version: 'v2',
         pageCount,
         kotlinc: resolveKotlincArgs(
@@ -368,12 +394,13 @@ async function runKotlinDev(
         stderrListener: createStderrListener(
           kotlinSrcOutDir,
           resolveUniAppXSourceMapPath(kotlinRootOutDir),
-          waiting
+          waiting,
+          hbuilderFormatter
         ),
       }
       result.kotlinc = true
-      // console.log('DEX编译参数:', options)
-      const { code, msg, data } = await compileDex(options, inputDir)
+      // console.log('DEX编译参数:', compileOptions)
+      const { code, msg, data } = await compileDex(compileOptions, inputDir)
       // 等待 stderrListener 执行完毕
       if (waiting.done) {
         await waiting.done
@@ -406,10 +433,11 @@ async function runKotlinDev(
 
 async function runKotlinBuild(options: CompileAppOptions, result: UTSResult) {
   ;(result as RunKotlinBuildResult).type = 'kotlin'
+  addInjectComponents(options.extApiComponents)
   ;(result as RunKotlinBuildResult).inject_modules = parseInjectModules(
     (result.inject_apis || []).concat(getInjectApis()),
     options.extApis || {},
-    options.extApiComponents
+    getInjectComponents()
   )
   ;(result as RunKotlinBuildResult).kotlinc = false
   return result as RunKotlinBuildResult

@@ -2,12 +2,16 @@ declare var __WEEX_DEVTOOL__: any
 //#region import
 import {
   API_CREATE_CANVAS_CONTEXT,
+  type API_TYPE_CREATE_CANVAS_CONTEXT,
   CreateCanvasContextProtocol,
 } from '../../protocols/context/context'
 import {
   API_CANVAS_GET_IMAGE_DATA,
   API_CANVAS_PUT_IMAGE_DATA,
   API_CANVAS_TO_TEMP_FILE_PATH,
+  type API_TYPE_CANVAS_GET_IMAGE_DATA,
+  type API_TYPE_CANVAS_PUT_IMAGE_DATA,
+  type API_TYPE_CANVAS_TO_TEMP_FILE_PATH,
   CanvasGetImageDataOptions,
   CanvasGetImageDataProtocol,
   CanvasPutImageDataOptions,
@@ -17,13 +21,6 @@ import {
 } from '../../protocols/context/canvas'
 
 import { defineAsyncApi, defineSyncApi } from '../../helpers/api'
-
-import type {
-  API_TYPE_CANVAS_GET_IMAGE_DATA,
-  API_TYPE_CANVAS_PUT_IMAGE_DATA,
-  API_TYPE_CANVAS_TO_TEMP_FILE_PATH,
-  API_TYPE_CREATE_CANVAS_CONTEXT,
-} from '@dcloudio/uni-api'
 
 import { hasOwn } from '@vue/shared'
 
@@ -395,6 +392,113 @@ export class CanvasContext implements UniApp.CanvasContext {
       fontFamily: 'sans-serif',
     }
   }
+  setFillStyle(color: string | UniNamespace.CanvasGradient): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setStrokeStyle(color: string): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setShadow(
+    offsetX?: number | undefined,
+    offsetY?: number | undefined,
+    blur?: number | undefined,
+    color?: string | undefined
+  ): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  addColorStop(stop: number, color: string): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setLineWidth(lineWidth: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setLineCap(lineCap: 'butt' | 'round' | 'square'): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setLineJoin(lineJoin: 'round' | 'bevel' | 'miter'): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setLineDash(pattern: any[], offset: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setMiterLimit(miterLimit: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  fillRect(x: number, y: number, width: number, height: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  strokeRect(x: number, y: number, width: number, height: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  clearRect(x: number, y: number, width: number, height: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  fill(): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  stroke(): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  scale(scaleWidth: number, scaleHeight: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  rotate(rotate: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  translate(x: number, y: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setFontSize(fontSize: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  fillText(
+    text: string,
+    x: number,
+    y: number,
+    maxWidth?: number | undefined
+  ): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setTextAlign(align: 'left' | 'right' | 'center'): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setTextBaseline(textBaseline: 'normal' | 'top' | 'bottom' | 'middle'): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  drawImage(
+    imageResource: string,
+    dx?: number | undefined,
+    dy?: number | undefined,
+    dWidth?: number | undefined,
+    dHeigt?: number | undefined,
+    sx?: number | undefined,
+    sy?: number | undefined,
+    sWidth?: number | undefined,
+    sHeight?: number | undefined
+  ): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setGlobalAlpha(alpha: number): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  strokeText(
+    text: string,
+    x: number,
+    y: number,
+    maxWidth?: number | undefined
+  ): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
+  setTransform(
+    scaleX: number,
+    skewX: number,
+    skewY: number,
+    scaleY: number,
+    translateX: number,
+    translateY: number
+  ): void {
+    console.log('initCanvasContextProperty implemented.')
+  }
 
   draw(reserve: boolean = false, callback?: Callback) {
     var actions = [...this.actions]
@@ -439,23 +543,44 @@ export class CanvasContext implements UniApp.CanvasContext {
     }
   }
 
-  measureText(text: string) {
+  measureText(text: string, callback?: Callback) {
     const font = this.state.font
     let width = 0
     if (__PLATFORM__ === 'h5') {
       width = measureText(text, font)
     } else {
-      const webview = plus.webview
-        .all()
-        .find((webview) => webview.getURL().endsWith('www/__uniappview.html'))
-      if (webview) {
-        width = Number(
-          (webview as any).evalJSSync(
-            `(${measureText.toString()})(${JSON.stringify(
-              text
-            )},${JSON.stringify(font)})`
+      if (__PLUS__ === false) {
+        if (typeof callback === 'function') {
+          const webview = plus.webview.getLaunchWebview()
+          // @ts-expect-error evalJSASync 后新增，和 plus 签名不匹配，暂时忽略 ts 报错
+          if (webview && typeof webview.evalJSASync === 'function') {
+            ;(
+              (webview as any).evalJSASync(
+                `(function measureText(text, font) {
+  const canvas = document.createElement('canvas')
+  const c2d = canvas.getContext('2d')
+  c2d.font = font
+  return c2d.measureText(text).width || 0
+})(${JSON.stringify(text)},${JSON.stringify(font)})`
+              ) as Promise<string>
+            ).then((res) => {
+              callback(new TextMetrics(parseFloat(res)))
+            })
+          }
+        }
+      } else {
+        const webview = plus.webview
+          .all()
+          .find((webview) => webview.getURL().endsWith('www/__uniappview.html'))
+        if (webview) {
+          width = Number(
+            (webview as any).evalJSSync(
+              `(${measureText.toString()})(${JSON.stringify(
+                text
+              )},${JSON.stringify(font)})`
+            )
           )
-        )
+        }
       }
     }
     return new TextMetrics(width)
@@ -768,32 +893,6 @@ export class CanvasContext implements UniApp.CanvasContext {
       data: [type],
     })
   }
-
-  'setFillStyle': UniApp.CanvasContext['setFillStyle']
-  'setStrokeStyle': UniApp.CanvasContext['setStrokeStyle']
-  'setGlobalAlpha': UniApp.CanvasContext['setGlobalAlpha']
-  'setShadow': UniApp.CanvasContext['setShadow']
-  'addColorStop': UniApp.CanvasContext['addColorStop']
-  'setLineWidth': UniApp.CanvasContext['setLineWidth']
-  'setLineCap': UniApp.CanvasContext['setLineCap']
-  'setLineJoin': UniApp.CanvasContext['setLineJoin']
-  'setLineDash': UniApp.CanvasContext['setLineDash']
-  'setMiterLimit': UniApp.CanvasContext['setMiterLimit']
-  'fillRect': UniApp.CanvasContext['fillRect']
-  'strokeRect': UniApp.CanvasContext['strokeRect']
-  'clearRect': UniApp.CanvasContext['clearRect']
-  'fill': UniApp.CanvasContext['fill']
-  'stroke': UniApp.CanvasContext['stroke']
-  'scale': UniApp.CanvasContext['scale']
-  'rotate': UniApp.CanvasContext['rotate']
-  'translate': UniApp.CanvasContext['translate']
-  'setFontSize': UniApp.CanvasContext['setFontSize']
-  'fillText': UniApp.CanvasContext['fillText']
-  'setTextAlign': UniApp.CanvasContext['setTextAlign']
-  'setTextBaseline': UniApp.CanvasContext['setTextBaseline']
-  'drawImage': UniApp.CanvasContext['drawImage']
-  'strokeText': UniApp.CanvasContext['strokeText']
-  'setTransform': UniApp.CanvasContext['setTransform']
 }
 
 const initCanvasContextProperty = /*#__PURE__*/ once(() => {

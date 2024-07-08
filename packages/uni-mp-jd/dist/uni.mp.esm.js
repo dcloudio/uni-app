@@ -428,7 +428,7 @@ function initDefaultProps(options, isBehavior = false) {
     }
     if (options.behaviors) {
         // wx://form-field
-        if (options.behaviors.includes('__GLOBAL__://form-field')) {
+        if (options.behaviors.includes('jd' + '://form-field')) {
             if (!options.properties || !options.properties.name) {
                 properties.name = {
                     type: null,
@@ -607,7 +607,8 @@ function initBehaviors(vueOptions) {
     const behaviors = [];
     if (isArray(vueBehaviors)) {
         vueBehaviors.forEach((behavior) => {
-            behaviors.push(behavior.replace('uni://', '__GLOBAL__://'));
+            // 这里的 global 应该是个变量
+            behaviors.push(behavior.replace('uni://', 'jd' + '://'));
             if (behavior === 'uni://form-field') {
                 if (isArray(vueProps)) {
                     vueProps.push('name');
@@ -891,6 +892,22 @@ var parseOptions = extend({}, baseParseOptions, {
 
 const createComponent = initCreateComponent(parseOptions);
 const createPage = initCreatePage(parseOptions);
+// 重写 Object.getPrototypeOf、Object.prototype.hasOwnProperty 方法
+// jd 会从原型链上拿值，导致后追加的属性无法被拿到
+const OriginalGetPrototypeOf = Object.getPrototypeOf;
+Object.getPrototypeOf = function (obj) {
+    if ('$vm' in obj) {
+        return obj;
+    }
+    return OriginalGetPrototypeOf.call(this, obj);
+};
+const OriginalHasOwnProperty = Object.prototype.hasOwnProperty;
+Object.prototype.hasOwnProperty = function (key) {
+    if ('$vm' in this && key in this) {
+        return true;
+    }
+    return OriginalHasOwnProperty.call(this, key);
+};
 jd.EventChannel = EventChannel;
 jd.createApp = global.createApp = createApp;
 jd.createPage = createPage;

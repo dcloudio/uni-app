@@ -183,7 +183,7 @@ describe('uts:sourceMap', () => {
     const filename = resolve(
       outputDir,
       uniModulesPluginDir,
-      'utssdk/app-ios/src/index.kt'
+      'utssdk/app-ios/index.swift'
     )
     const sourceMapFile = resolveUTSPluginSourceMapFile(
       'swift',
@@ -193,7 +193,7 @@ describe('uts:sourceMap', () => {
     )
     const { line, column, source } = await originalPositionFor({
       sourceMapFile,
-      line: 50,
+      line: 48,
       column: 0,
     })
 

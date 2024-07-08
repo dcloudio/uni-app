@@ -10,6 +10,12 @@ import {
 import { parseJson } from './json'
 
 export const parseManifestJson = (inputDir: string) => {
+  const manifestFilename = path.join(inputDir, 'manifest.json')
+  if (!fs.existsSync(manifestFilename)) {
+    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      return {}
+    }
+  }
   return parseJson(
     fs.readFileSync(path.join(inputDir, 'manifest.json'), 'utf8')
   )
@@ -20,7 +26,7 @@ export const parseManifestJsonOnce = once(parseManifestJson)
 export const parseRpx2UnitOnce = once(
   (inputDir: string, platform: UniApp.PLATFORM = 'h5') => {
     const rpx2unit =
-      platform === 'h5' || platform === 'app'
+      platform === 'h5' || platform === 'app' || platform === 'app-harmony'
         ? defaultRpx2Unit
         : defaultMiniProgramRpx2Unit
     const platformOptions = parseManifestJsonOnce(inputDir)[platform]
@@ -143,4 +149,9 @@ export function getPlatformManifestJsonOnce() {
   return !process.env.UNI_INPUT_DIR
     ? {}
     : parseManifestJsonOnce(process.env.UNI_INPUT_DIR)[platform] || {}
+}
+
+const themeValues = ['dark', 'light', 'auto']
+export function validateThemeValue(value: string) {
+  return themeValues.indexOf(value) !== -1
 }

@@ -22,15 +22,19 @@ export function initUVueEnv() {
   if (process.env.UNI_APP_X === 'false') {
     return
   }
-  const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-  const isNVueEnabled = hasOwn(manifestJson, 'uni-app-x')
-  if (!isNVueEnabled) {
-    return
+  // 没有手动指定时，才需要动态读取 manifest.json
+  if (process.env.UNI_APP_X !== 'true') {
+    const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+    const isNVueEnabled = hasOwn(manifestJson, 'uni-app-x')
+    if (!isNVueEnabled) {
+      return
+    }
+    process.env.UNI_APP_X = 'true'
+    if (manifestJson['uni-app-x']?.singleThread === false) {
+      process.env.UNI_APP_X_SINGLE_THREAD = 'false'
+    }
   }
-  process.env.UNI_APP_X = 'true'
-  if (manifestJson['uni-app-x']?.singleThread === false) {
-    process.env.UNI_APP_X_SINGLE_THREAD = 'false'
-  }
+
   if (process.env.UNI_PLATFORM === 'app') {
     process.env.UNI_APP_X_UVUE_SCRIPT_ENGINE = 'native'
     // 如果是app-ios，目前强制使用js引擎

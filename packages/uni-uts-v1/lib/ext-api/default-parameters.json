@@ -12,13 +12,13 @@
       "null"
     ]
   },
-  "uni-route": {
-    "navigateBack": [
+  "uni-pullDownRefresh": {
+    "startPullDownRefresh": [
       "null"
     ]
   },
-  "uni-pullDownRefresh": {
-    "startPullDownRefresh": [
+  "uni-route": {
+    "navigateBack": [
       "null"
     ]
   },
@@ -56,6 +56,20 @@
   "uni-video": {
     "createVideoContext": [
       null,
+      "null"
+    ]
+  },
+  "uni-createMapContext": {
+    "createMapContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-compass": {
+    "startCompass": [
+      "null"
+    ],
+    "stopCompass": [
       "null"
     ]
   }

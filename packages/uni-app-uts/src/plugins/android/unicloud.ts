@@ -24,8 +24,8 @@ export function uniCloudPlugin(): Plugin {
       if (uniCloudSpaceList.length === 0) {
         return
       }
-      if (bundle[ENTRY_FILENAME]) {
-        const asset = bundle[ENTRY_FILENAME] as OutputAsset
+      if (bundle[ENTRY_FILENAME()]) {
+        const asset = bundle[ENTRY_FILENAME()] as OutputAsset
         asset.source =
           asset.source +
           `

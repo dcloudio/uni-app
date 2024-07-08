@@ -84,9 +84,15 @@ export function uniAppCssPlugin(): Plugin {
         },
       })
       // 增加 css plugins
+      // TODO 加密插件
       insertBeforePlugin(
         cssPlugin(config, {
           isAndroidX: true,
+          // android 不处理 css url
+          // createUrlReplacer:
+          //   process.env.UNI_COMPILE_TARGET === 'uni_modules'
+          //     ? createEncryptCssUrlReplacer
+          //     : undefined,
           getDescriptor: (filename) => {
             return getDescriptor(filename, descriptorOptions, false)
           },

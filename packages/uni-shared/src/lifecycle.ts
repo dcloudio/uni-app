@@ -57,12 +57,7 @@ export function isRootImmediateHook(name: string) {
   return PAGE_SYNC_HOOKS.indexOf(name) > -1
 }
 
-// iOS-X 和安卓一致，on_show 不参与判断，避免引入新的运行时判断，导出两份
-export function isRootImmediateHookX(name: string) {
-  const PAGE_SYNC_HOOKS = [ON_LOAD]
-
-  return PAGE_SYNC_HOOKS.indexOf(name) > -1
-}
+// isRootImmediateHookX deprecated
 
 export function isRootHook(name: string) {
   return PAGE_HOOKS.indexOf(name) > -1

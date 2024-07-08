@@ -216,7 +216,44 @@ async function testSwiftComponent() {
   })
 }
 
+async function testArkTS() {
+  const start = Date.now()
+  await bundle(UTSTarget.ARKTS, {
+    input: {
+      root: projectDir,
+      filename: path.resolve(
+        projectDir,
+        'uni_modules/test-uniplugin/utssdk/app-ios/index.uts'
+      ),
+    },
+    output: {
+      outDir,
+      package: '',
+      imports: [],
+      sourceMap,
+      extname: 'ets',
+      logFilename: true,
+      isPlugin: true,
+      transform: {
+      }
+    },
+  }).then((res) => {
+    console.log('bundle: ' + (Date.now() - start) + 'ms')
+    console.log(JSON.stringify(res))
+    console.log(
+      fs.readFileSync(
+        path.resolve(
+          projectDir,
+          'unpackage/dist/dev/app-plus/uni_modules/test-uniplugin/utssdk/app-ios/index.swift'
+        ),
+        'utf8'
+      )
+    )
+  })
+}
+
 async function test() {
+  await testArkTS()
   await testKotlinComponent()
   await testKotlin()
   await testSwiftComponent()

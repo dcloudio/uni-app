@@ -9,5 +9,8 @@ export * from './utils'
 export const buildInCssSet = new Set<string>()
 
 export function isCombineBuiltInCss(config: ResolvedConfig) {
+  if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+    return false
+  }
   return config.command === 'build' && config.build.cssCodeSplit
 }

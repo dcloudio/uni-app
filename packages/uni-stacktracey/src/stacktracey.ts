@@ -259,8 +259,8 @@ function parseItem(
   }
   const filePath =
     (isMP ? e.file && e.file : e.fileShort && e.fileShort) +
-    `${e.line ? ':' + e.line : ''}` +
-    `${e.column ? ':' + e.column : ''}`
+    `${typeof e.line !== 'undefined' ? ':' + e.line : ''}` +
+    `${typeof e.column !== 'undefined' ? ':' + e.column : ''}`
   return [
     'at ' + trimEnd(isMP ? e.callee : e.calleeShort, maxColumnWidths.callee),
     trimStart(filePath || '', maxColumnWidths.file),

@@ -1,28 +1,29 @@
 import {
-  withModifiers,
-  Ref,
-  ref,
-  reactive,
+  type ExtractPropTypes,
+  type Ref,
   computed,
-  watch,
-  onMounted,
-  renderList,
   onBeforeUnmount,
+  onMounted,
+  reactive,
+  ref,
+  renderList,
+  watch,
+  withModifiers,
 } from 'vue'
 import { isArray } from '@vue/shared'
 import { passive } from '@dcloudio/uni-shared'
-import { useI18n, initI18nVideoMsgsOnce } from '@dcloudio/uni-core'
+import { initI18nVideoMsgsOnce, useI18n } from '@dcloudio/uni-core'
 import { getRealPath } from '@dcloudio/uni-platform'
 import {
-  defineBuiltInComponent,
-  useContextInfo,
-  useSubscribe,
-  useCustomEvent,
-  EmitEvent,
-  CustomEventTrigger,
-  useUserAction,
-  useAttrs,
+  type CustomEventTrigger,
+  type EmitEvent,
   UniElement,
+  defineBuiltInComponent,
+  useAttrs,
+  useContextInfo,
+  useCustomEvent,
+  useSubscribe,
+  useUserAction,
 } from '@dcloudio/uni-components'
 
 type UserActionState = ReturnType<typeof useUserAction>['state']
@@ -289,11 +290,7 @@ interface VideoState {
   buffered: number
   muted: boolean
 }
-function useVideo(
-  props: { src: string; initialTime: number | string; muted: boolean | string },
-  attrs: Data,
-  trigger: CustomEventTrigger
-) {
+function useVideo(props: Props, attrs: Data, trigger: CustomEventTrigger) {
   const videoRef: Ref<HTMLVideoElement | null> = ref(null)
   const src = computed(() => getRealPath(props.src))
   const muted = computed(() => props.muted === 'true' || props.muted === true)
@@ -814,6 +811,7 @@ const props = {
   },
 }
 
+type Props = ExtractPropTypes<typeof props>
 // 仅作实现，X项目中不会依据此类生成d.ts
 export class UniVideoElement extends UniElement {}
 
@@ -931,7 +929,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             onTouchstart={onTouchstart}
             onTouchend={onTouchend}
             onTouchmove={onTouchmove}
-            // @ts-ignore
+            // @ts-expect-error
             onFullscreenchange={withModifiers(onFullscreenChange, ['stop'])}
             onWebkitfullscreenchange={withModifiers(
               ($event: Event) => onFullscreenChange($event, true),
@@ -940,7 +938,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           >
             <video
               ref={videoRef}
-              // @ts-ignore
               style={{ 'object-fit': props.objectFit }}
               muted={!!props.muted}
               loop={!!props.loop}

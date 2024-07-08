@@ -1,4 +1,4 @@
-import { isString } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 import { getCurrentPage, invokeHook } from '@dcloudio/uni-core'
 import { getPageManager } from './app'
 import type { Event } from '@dcloudio/uni-app-x/types/native'
@@ -7,7 +7,10 @@ import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import type { ComponentPublicInstance } from 'vue'
 import { ON_HIDE, ON_SHOW } from '@dcloudio/uni-shared'
 import { registerPage } from '../page'
-import { showWebview } from '../../api/route/webview'
+import { getAppThemeFallbackOS, normalizeTabBarStyles } from '../theme'
+
+// 存储 callback
+export let onTabBarMidButtonTapCallback: Function[] = []
 
 type Page = ComponentPublicInstance
 
@@ -20,17 +23,29 @@ const BORDER_COLORS = new Map<string, string>([
   ['black', 'rgba(0, 0, 0, 0.33)'],
 ])
 
-export function getBorderStyle(borderStyle: string): string {
+function getBorderStyle(borderStyle: string): string {
   const value = BORDER_COLORS.get(borderStyle)
   return value ?? borderStyle
 }
 
-function fixBorderStyle(tabBarConfig: Map<string, any>) {
+// keep borderStyle aliways black/white
+export function fixBorderStyle(tabBarConfig: Map<string, any>) {
   let borderStyle = tabBarConfig.get('borderStyle')
   if (!isString(borderStyle)) {
     borderStyle = 'black'
   }
-  tabBarConfig.set('borderStyle', getBorderStyle(borderStyle as string))
+
+  let borderColor = getBorderStyle(borderStyle as string)
+  // 同时存在 borderColor>borderStyle，前者没有颜色限制，也不做格式化
+  if (
+    tabBarConfig.has('borderColor') &&
+    isString(tabBarConfig.get('borderColor'))
+  ) {
+    borderColor = tabBarConfig.get('borderColor')
+    tabBarConfig.delete('borderColor')
+  }
+
+  tabBarConfig.set('borderStyle', borderColor)
 }
 
 function getTabList() {
@@ -76,13 +91,20 @@ function init() {
   )
   document.appendChild(tabParent)
   tabBar0 = document.getRealDomNodeById<ITabsNode>('tabs')
+
+  const _tabBarConfig = extend({}, __uniConfig.tabBar!)
+  // dark mode
+  normalizeTabBarStyles(
+    _tabBarConfig,
+    __uniConfig.themeConfig,
+    getAppThemeFallbackOS()
+  )
+
   const tabBarConfig = new Map<string, any>()
-  for (const key in __uniConfig.tabBar) {
-    tabBarConfig.set(
-      key,
-      __uniConfig.tabBar[key as keyof typeof __uniConfig.tabBar]
-    )
+  for (const key in _tabBarConfig) {
+    tabBarConfig.set(key, _tabBarConfig[key as keyof typeof __uniConfig.tabBar])
   }
+
   fixBorderStyle(tabBarConfig)
   tabBar0!.initTabBar(tabBarConfig)
   tabBar0!.addEventListener('tabBarItemTap', function (event: Event) {
@@ -97,10 +119,13 @@ function init() {
       }
     }
   })
-  // TODO tabBarMidButtonTap
-  // tabBar0!.addEventListener('tabBarMidButtonTap', function (event: Event) {
-  //   invokeOnCallback('onTabBarMidButtonTap', [])
-  // })
+  tabBar0!.addEventListener('tabBarMidButtonTap', function (event: Event) {
+    onTabBarMidButtonTapCallback.forEach((callback) => {
+      if (typeof callback === 'function') {
+        callback()
+      }
+    })
+  })
 
   page.startRender()
   page.show(null)
@@ -168,12 +193,8 @@ function createTab(
   query: Record<string, string>,
   callback?: () => void
 ): Page {
-  showWebview(
-    registerPage({ url: path, path, query, openType: 'switchTab' }),
-    'none',
-    0,
-    callback
-  )
+  registerPage({ url: path, path, query, openType: 'switchTab' })
+  callback?.()
   const page = getCurrentPage() as Page
   tabBar0!.appendItem(page!.$page.id.toString())
   return page
@@ -234,6 +255,9 @@ function getTabPage(
   return new TabPageInfo(page, isFirst)
 }
 
+/**
+ * switchSelect 切换 tab
+ */
 export function switchSelect(
   selected: number,
   path: string,

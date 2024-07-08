@@ -142,31 +142,25 @@ export function initPage(vm: ComponentPublicInstance) {
           case 'navigationStyle':
             pageMeta.navigationBar.style = style[key]
             break
-          case 'disableScroll':
-            pageMeta.disableScroll = style[key]
-            break
-          case 'enablePullDownRefresh':
-            pageMeta.enablePullDownRefresh = style[key]
-            break
-          case 'onReachBottomDistance':
-            pageMeta.onReachBottomDistance = style[key]
-            break
           default:
+            pageMeta[key] = style[key]
             break
         }
       }
     }
-    vm.$getPageStyle = () => ({
-      navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
-      navigationBarTextStyle: pageMeta.navigationBar.titleColor,
-      navigationBarTitleText: pageMeta.navigationBar.titleText,
-      titleImage: pageMeta.navigationBar.titleImage || '',
-      navigationStyle: pageMeta.navigationBar.style || 'default',
-      disableScroll: pageMeta.disableScroll || false,
-      enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
-      onReachBottomDistance:
-        pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
-    })
+    vm.$getPageStyle = () =>
+      new UTSJSONObject({
+        navigationBarBackgroundColor: pageMeta.navigationBar.backgroundColor,
+        navigationBarTextStyle: pageMeta.navigationBar.titleColor,
+        navigationBarTitleText: pageMeta.navigationBar.titleText,
+        titleImage: pageMeta.navigationBar.titleImage || '',
+        navigationStyle: pageMeta.navigationBar.style || 'default',
+        disableScroll: pageMeta.disableScroll || false,
+        enablePullDownRefresh: pageMeta.enablePullDownRefresh || false,
+        onReachBottomDistance:
+          pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
+        backgroundColorContent: pageMeta.backgroundColorContent,
+      })
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
 }

@@ -1,10 +1,9 @@
-import path from 'path'
 // import debug from 'debug'
 import { extend, isString } from '@vue/shared'
 import type { Plugin, ResolvedConfig } from 'vite'
 import type { FilterPattern } from '@rollup/pluginutils'
 
-import { COMMON_EXCLUDE, isInHBuilderX } from '@dcloudio/uni-cli-shared'
+import { COMMON_EXCLUDE, requireUniHelpers } from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
 import { uniPrePlugin } from './pre'
@@ -60,23 +59,27 @@ export function initPlugins(
       config,
       extend({ exclude: [...COMMON_EXCLUDE, /\/@dcloudio\/uni-app/] }, options)
     ),
-    'vite:vue'
+    process.env.UNI_APP_X === 'true' ? 'uts' : 'vite:vue'
   )
 
   addPlugin(plugins, uniJsonPlugin(options), 'vite:json', 'pre')
   addPlugin(plugins, uniStaticPlugin(options, config), 'vite:asset', 'pre')
 
-  if (isInHBuilderX()) {
+  if (
+    process.env.UNI_HBUILDERX_PLUGINS &&
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+  ) {
     try {
-      require(path.resolve(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        'uni_helpers/lib/bytenode'
-      ))
-      const { V } = require(path.join(
-        process.env.UNI_HBUILDERX_PLUGINS,
-        'uni_helpers'
-      ))
-      addPlugin(plugins, V({ dir: process.env.UNI_INPUT_DIR }), 0, 'pre')
+      const { V } = requireUniHelpers()
+      addPlugin(
+        plugins,
+        V({
+          dir: process.env.UNI_INPUT_DIR,
+          cacheDir: process.env.UNI_MODULES_ENCRYPT_CACHE_DIR,
+        }),
+        0,
+        'pre'
+      )
     } catch (e) {}
   }
 

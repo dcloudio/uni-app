@@ -1,4 +1,4 @@
-import { bundleKotlin, bundleSwift } from './api'
+import { bundleArkTS, bundleKotlin, bundleSwift } from './api'
 import { type UTSBundleOptions, type UTSResult, UTSTarget } from './types'
 
 export {
@@ -15,6 +15,7 @@ export type UTSMode = 'dev' | 'build'
 export const UTSTargetExtNames = {
   [UTSTarget.KOTLIN]: 'kt',
   [UTSTarget.SWIFT]: 'swift',
+  [UTSTarget.ARKTS]: 'ets',
 } as const
 export interface ToOptions {
   /**
@@ -56,7 +57,15 @@ export interface ToOptions {
   }
 }
 
-export { parse, toKotlin, toSwift, bundleKotlin, bundleSwift } from './api'
+export {
+  parse,
+  toArkTS,
+  toKotlin,
+  toSwift,
+  bundleArkTS,
+  bundleKotlin,
+  bundleSwift,
+} from './api'
 
 export function bundle(
   target: UTSTarget,
@@ -66,6 +75,8 @@ export function bundle(
     return bundleKotlin(opts)
   } else if (target === UTSTarget.SWIFT) {
     return bundleSwift(opts)
+  } else if (target === UTSTarget.ARKTS) {
+    return bundleArkTS(opts)
   }
   return Promise.resolve({})
 }

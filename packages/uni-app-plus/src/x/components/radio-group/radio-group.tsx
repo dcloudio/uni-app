@@ -1,14 +1,15 @@
 /// <reference types="@dcloudio/uni-app-x/types/native-global" />
 import { defineBuiltInComponent } from '@dcloudio/uni-components'
-import { onMounted, getCurrentInstance, ref, camelize } from 'vue'
+import { camelize, getCurrentInstance, onMounted, ref } from 'vue'
 import {
   RADIOGROUP_NAME,
   RADIOGROUP_ROOT_ELEMENT,
-  RadioInfo,
   RadioProps,
   UniRadioGroupChangeEvent,
   UniRadioGroupElement,
 } from './model'
+import type { RadioInfo } from './model'
+import { initUniCustomEvent } from '../../utils'
 
 /**
  * radio-group 组件
@@ -56,7 +57,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
      */
     const _changeHandler = (data: { name: string; checked: boolean }) => {
       _setValue(data.name)
-      emit('change', new UniRadioGroupChangeEvent(data.name))
+      emit(
+        'change',
+        initUniCustomEvent(
+          uniRadioGroupElementRef.value!,
+          new UniRadioGroupChangeEvent(data.name)
+        )
+      )
     }
 
     /**

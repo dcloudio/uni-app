@@ -1,10 +1,5 @@
 import type { ComponentDescriptorVm } from '@dcloudio/uni-core'
-import {
-  type ComponentInternalInstance,
-  type ComponentPublicInstance,
-  type defineComponent,
-  h,
-} from 'vue'
+import type { ComponentInternalInstance, ComponentPublicInstance } from 'vue'
 import { UniComment } from '../elements/UniComment'
 import { UniTextElement } from '../elements/UniTextElement'
 import { UniTextNode } from '../elements/UniTextNode'
@@ -111,12 +106,3 @@ export const BuiltInComponents = {
   VIDEO: UniVideo,
   'WEB-VIEW': UniWebView,
 } as const
-
-export type WrapperComponent = ReturnType<typeof createWrapper>
-
-export function createWrapper(
-  component: ReturnType<typeof defineComponent>,
-  props: Record<string, any>
-) {
-  return () => h(component, props)
-}

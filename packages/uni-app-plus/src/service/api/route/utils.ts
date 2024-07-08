@@ -22,7 +22,15 @@ interface PendingNavigator {
 
 let pendingNavigator: PendingNavigator | false = false
 
-function setPendingNavigator(path: string, callback: Function, msg: string) {
+export function getPendingNavigator() {
+  return pendingNavigator
+}
+
+export function setPendingNavigator(
+  path: string,
+  callback: Function,
+  msg: string
+) {
   pendingNavigator = {
     path,
     nvue: getRouteMeta(path)!.isNVue,
@@ -80,7 +88,7 @@ export function navigate(
   }
 }
 
-function pendingNavigate() {
+export function pendingNavigate() {
   if (!pendingNavigator) {
     return
   }

@@ -42,6 +42,9 @@ function resolveOptions(options: UTSOptions) {
   output.sourceMap = normalizePath(output.sourceMap)
   output.logFilename = !!output.logFilename
   output.noColor = !!output.noColor
+  if (output.extname && output.extname[0] === '.') {
+    output.extname = output.extname.slice(1)
+  }
 
   return options
 }
@@ -96,6 +99,29 @@ export function bundleSwift(options: UTSBundleOptions): Promise<UTSResult> {
   }
   return bindings
     .bundleSwift(toBuffer(bundleOptions))
+    .then((res: string) => JSON.parse(res))
+}
+
+export function toArkTS(options: UTSOptions): Promise<UTSResult> {
+  const arkTSOptions = resolveOptions(options)
+  if (!arkTSOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .toSwift(toBuffer(arkTSOptions))
+    .then((res: string) => JSON.parse(res))
+    .catch((error: Error) => {
+      return { error }
+    })
+}
+
+export function bundleArkTS(options: UTSBundleOptions): Promise<UTSResult> {
+  const bundleOptions = resolveOptions(options)
+  if (!bundleOptions) {
+    return Promise.resolve({})
+  }
+  return bindings
+    .bundleArkTS(toBuffer(bundleOptions))
     .then((res: string) => JSON.parse(res))
 }
 

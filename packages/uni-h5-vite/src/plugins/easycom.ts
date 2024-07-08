@@ -1,3 +1,4 @@
+import fs from 'fs-extra'
 import path from 'path'
 import type { Plugin } from 'vite'
 import { type FilterPattern, createFilter } from '@rollup/pluginutils'
@@ -15,6 +16,7 @@ import {
   genResolveEasycomCode,
   isCombineBuiltInCss,
   matchEasycom,
+  normalizePath,
   parseVueRequest,
 } from '@dcloudio/uni-cli-shared'
 
@@ -111,6 +113,24 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
             }
             const source = matchEasycom(name)
             if (source) {
+              const isHelpers = source.includes('?uni_helpers')
+              if (isHelpers) {
+                const cssFilename = path.join(
+                  process.env.UNI_MODULES_ENCRYPT_CACHE_DIR!,
+                  path.relative(
+                    process.env.UNI_INPUT_DIR,
+                    source.replace(
+                      '?uni_helpers',
+                      '/components/' + name + '/' + name + '.css'
+                    )
+                  )
+                )
+                if (fs.existsSync(cssFilename)) {
+                  importDeclarations.push(
+                    `import "${normalizePath(cssFilename)}";`
+                  )
+                }
+              }
               // 处理easycom组件优先级
               return genResolveEasycomCode(
                 importDeclarations,
@@ -118,7 +138,8 @@ export function uniEasycomPlugin(options: UniEasycomPluginOptions): Plugin {
                 addImportDeclaration(
                   importDeclarations,
                   `__easycom_${i++}`,
-                  source
+                  source,
+                  isHelpers ? capitalize(camelize(name)) : ''
                 )
               )
             }

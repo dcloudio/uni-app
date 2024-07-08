@@ -23,6 +23,9 @@ export class UniCheckboxGroupElement extends UniFormControlElement<string[]> {
     super(data, pageNode)
   }
 
+  override tagName = 'CHECKBOX-GROUP'
+  override nodeName = this.tagName
+
   override get value(): string[] {
     return this._getValue()
   }
@@ -61,7 +64,7 @@ class UniCheckboxGroupChangeEventDetail {
     this.value = value
   }
 }
-export class UniCheckboxGroupChangeEvent extends CustomEvent<UniCheckboxGroupChangeEventDetail> {
+export class UniCheckboxGroupChangeEvent extends UniCustomEvent<UniCheckboxGroupChangeEventDetail> {
   constructor(value: string[]) {
     super('change', {
       detail: new UniCheckboxGroupChangeEventDetail(value),

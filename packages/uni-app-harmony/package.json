@@ -1,11 +1,10 @@
 {
   "name": "@dcloudio/uni-app-harmony",
-  "version": "3.0.0-4010520240507001",
+  "version": "3.0.0-alpha-4020320240703001",
   "description": "@dcloudio/uni-app-harmony",
   "files": [
     "dist",
-    "lib",
-    "style"
+    "types"
   ],
   "sideEffects": [
     "lib/automator.js"
@@ -20,18 +19,26 @@
     "url": "https://github.com/dcloudio/uni-app/issues"
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
+  "uni-app": {
+    "name": "uni-app-harmony",
+    "apply": [
+      "app-harmony"
+    ],
+    "main": "dist/uni.compiler.js"
+  },
   "dependencies": {
+    "@dcloudio/uni-app-vite": "3.0.0-alpha-4020320240703001",
     "debug": "^4.3.3",
     "fs-extra": "^10.0.0",
     "licia": "^1.29.0",
     "postcss-selector-parser": "^6.0.6"
   },
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-4010520240507001",
-    "@dcloudio/uni-app-plus": "3.0.0-4010520240507001",
-    "@dcloudio/uni-components": "3.0.0-4010520240507001",
-    "@dcloudio/uni-i18n": "3.0.0-4010520240507001",
-    "@dcloudio/uni-shared": "3.0.0-4010520240507001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020320240703001",
+    "@dcloudio/uni-app-plus": "3.0.0-alpha-4020320240703001",
+    "@dcloudio/uni-components": "3.0.0-alpha-4020320240703001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4020320240703001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4020320240703001",
     "@types/pako": "1.0.2",
     "@vue/compiler-sfc": "3.4.21",
     "autoprefixer": "^10.4.18",

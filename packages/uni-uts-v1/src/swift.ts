@@ -1,6 +1,8 @@
 import fs from 'fs-extra'
 import path, { join } from 'path'
 import {
+  type RunDevOptions,
+  type RunProdOptions,
   type ToSwiftOptions,
   genComponentsCode,
   genUTSPlatformResource,
@@ -19,7 +21,6 @@ import { parseJson } from './shared'
 import type {
   UTSBundleOptions,
   UTSInputOptions,
-  UTSOutputOptions,
   UTSResult,
 } from '@dcloudio/uts'
 import { parseUTSSyntaxError } from './stacktrace'
@@ -41,28 +42,19 @@ function parseSwiftPackage(filename: string) {
 
 export async function runSwiftProd(
   filename: string,
-  components: Record<string, string>,
   {
-    pluginId,
+    components,
+    uniModuleId,
     isPlugin,
     isX,
     isSingleThread,
+    isExtApi,
     extApis,
     transform,
     sourceMap,
     hookClass,
     uniModules,
-  }: {
-    pluginId: string
-    isPlugin: boolean
-    isX: boolean
-    isSingleThread: boolean
-    hookClass: string
-    extApis?: Record<string, [string, string]>
-    transform?: UTSOutputOptions['transform']
-    sourceMap?: boolean
-    uniModules: string[]
-  }
+  }: RunProdOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -78,6 +70,7 @@ export async function runSwiftProd(
     isX,
     isSingleThread,
     isPlugin,
+    isExtApi,
     extApis,
     transform,
     uniModules,
@@ -90,7 +83,7 @@ export async function runSwiftProd(
   }
   genUTSPlatformResource(filename, {
     isX,
-    pluginId,
+    pluginId: uniModuleId,
     inputDir,
     outputDir,
     platform: 'app-ios',
@@ -99,7 +92,7 @@ export async function runSwiftProd(
     package: parseSwiftPackage(filename).namespace,
     hookClass,
     result,
-    provider: resolveConfigProvider('app-ios', pluginId, transform),
+    provider: resolveConfigProvider('app-ios', uniModuleId, transform),
     uniModules,
   })
 }
@@ -113,17 +106,6 @@ export type RunSwiftDevResult = UTSResult & {
 
 let isEnvReady = true
 
-interface RunSwiftDevOptions {
-  components: Record<string, string>
-  isX: boolean
-  isSingleThread: boolean
-  isPlugin: boolean
-  extApis?: Record<string, [string, string]>
-  transform?: UTSOutputOptions['transform']
-  sourceMap?: boolean
-  uniModules: string[]
-}
-
 export async function runSwiftDev(
   filename: string,
   {
@@ -131,11 +113,12 @@ export async function runSwiftDev(
     isX,
     isSingleThread,
     isPlugin,
+    isExtApi,
     extApis,
     transform,
     sourceMap,
     uniModules,
-  }: RunSwiftDevOptions
+  }: RunDevOptions
 ) {
   // 文件有可能是 app-android 里边的，因为编译到 ios 时，为了保证不报错，可能会去读取 android 下的 uts
   if (filename.includes('app-android')) {
@@ -169,6 +152,7 @@ export async function runSwiftDev(
     isX,
     isSingleThread,
     isPlugin,
+    isExtApi,
     extApis,
     transform,
     uniModules,
@@ -241,6 +225,7 @@ export async function compile(
     isX,
     isSingleThread,
     isPlugin,
+    isExtApi,
     extApis,
     transform,
     uniModules,
@@ -279,6 +264,7 @@ export async function compile(
       isX,
       isSingleThread,
       isPlugin,
+      isExtApi,
       outDir: outputDir,
       package: namespace,
       sourceMap: sourceMap ? resolveUTSSourceMapPath() : false,

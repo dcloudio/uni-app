@@ -1,10 +1,20 @@
 import { extend, hyphenate } from '@vue/shared'
-import { Ref, ref, computed, watch, onMounted, HTMLAttributes } from 'vue'
+import {
+  type ComputedRef,
+  type ExtractPropTypes,
+  type HTMLAttributes,
+  type Ref,
+  computed,
+  onMounted,
+  ref,
+  watch,
+} from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { UniElement } from '../../helpers/UniElement'
 import {
-  props as fieldProps,
+  type State,
   emit as fieldEmit,
+  props as fieldProps,
   useField,
 } from '../../helpers/useField'
 
@@ -18,6 +28,77 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
     default: '',
   },
 })
+
+function resolveDigitDecimalPoint(
+  event: InputEvent,
+  cache: Ref<string>,
+  state: State,
+  input: HTMLInputElement,
+  resetCache?: ResetCache
+) {
+  if (cache.value) {
+    // TODO 苹果智能标点：safari（webview） 上连续输入两次 . 后，在第三次输入 . 时，会触发两次 deleteContentBackward（删除） 的输入外加一次 insertText 为 …（三个点） 的输入
+    if ((event as InputEvent).data === '.') {
+      // 解决可重复输入小数点的问题
+      if (cache.value.slice(-1) === '.') {
+        state.value = input.value = cache.value = cache.value.slice(0, -1)
+        return false
+      }
+      if (cache.value && !cache.value.includes('.')) {
+        cache.value += '.'
+        if (resetCache) {
+          resetCache.fn = () => {
+            state.value = input.value = cache.value = cache.value.slice(0, -1)
+            input.removeEventListener('blur', resetCache.fn!)
+          }
+          input.addEventListener('blur', resetCache.fn)
+        }
+        return false
+      }
+    } else if ((event as InputEvent).inputType === 'deleteContentBackward') {
+      // ios 16 无法删除小数
+      if (
+        (__PLATFORM__ === 'app' &&
+          plus.os.name === 'iOS' &&
+          plus.os.version &&
+          parseInt(plus.os.version) === 16) ||
+        (__PLATFORM__ === 'h5' && navigator.userAgent.includes('iPhone OS 16'))
+      ) {
+        if (cache.value.slice(-2, -1) === '.') {
+          cache.value = state.value = input.value = cache.value.slice(0, -2)
+          return true
+        }
+      }
+    }
+  }
+}
+
+type Props = ExtractPropTypes<typeof props>
+type ResetCache = { fn: (() => void) | null }
+function useCache(props: Props, type: ComputedRef<string>) {
+  if (type.value === 'number') {
+    const value =
+      typeof props.modelValue === 'undefined' ? props.value : props.modelValue
+    const cache = ref(
+      typeof value !== 'undefined' ? value.toLocaleString() : ''
+    )
+    watch(
+      () => props.modelValue,
+      (value) => {
+        cache.value = typeof value !== 'undefined' ? value.toLocaleString() : ''
+      }
+    )
+    watch(
+      () => props.value,
+      (value) => {
+        cache.value = typeof value !== 'undefined' ? value.toLocaleString() : ''
+      }
+    )
+    return cache
+  } else {
+    return ref('')
+  }
+}
 
 export class UniInputElement extends UniElement {
   focus(options?: FocusOptions | undefined): void {
@@ -72,9 +153,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           : 0
       return AUTOCOMPLETES[index]
     })
-
-    let cache = ref('')
-    let resetCache: (() => void) | null
+    let cache = useCache(props, type)
+    let resetCache: ResetCache = { fn: null }
     const rootRef: Ref<HTMLElement | null> = ref(null)
     const { fieldRef, state, scopedAttrsState, fixDisabledColor, trigger } =
       useField(props, rootRef, emit, (event, state) => {
@@ -82,9 +162,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
 
         if (type.value === 'number') {
           // 数字类型输入错误时无法获取具体的值，自定义校验和纠正。
-          if (resetCache) {
-            input.removeEventListener('blur', resetCache)
-            resetCache = null
+          if (resetCache.fn) {
+            input.removeEventListener('blur', resetCache.fn)
+            resetCache.fn = null
           }
           if (input.validity && !input.validity.valid) {
             if (
@@ -95,37 +175,21 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             ) {
               cache.value = '-'
               state.value = ''
-              resetCache = () => {
+              resetCache.fn = () => {
                 cache.value = input.value = ''
               }
-              input.addEventListener('blur', resetCache)
+              input.addEventListener('blur', resetCache.fn)
               return false
             }
             // 处理小数点
-            if (cache.value) {
-              if (cache.value.indexOf('.') !== -1) {
-                // 删除到小数点时
-                if (
-                  (event as InputEvent).data !== '.' &&
-                  (event as InputEvent).inputType === 'deleteContentBackward'
-                ) {
-                  const dotIndex = cache.value.indexOf('.')
-                  cache.value =
-                    input.value =
-                    state.value =
-                      cache.value.slice(0, dotIndex)
-                  return true
-                }
-              } else if ((event as InputEvent).data === '.') {
-                // 输入小数点时
-                cache.value += '.'
-                resetCache = () => {
-                  cache.value = input.value = cache.value.slice(0, -1)
-                }
-                input.addEventListener('blur', resetCache)
-                return false
-              }
-            }
+            const res = resolveDigitDecimalPoint(
+              event as InputEvent,
+              cache,
+              state,
+              input,
+              resetCache
+            )
+            if (typeof res === 'boolean') return res
             cache.value =
               state.value =
               input.value =
@@ -133,6 +197,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             // 输入非法字符不触发 input 事件
             return false
           } else {
+            // 处理小数点
+            const res = resolveDigitDecimalPoint(
+              event as InputEvent,
+              cache,
+              state,
+              input,
+              resetCache
+            )
+            if (typeof res === 'boolean') return res
+
             cache.value = input.value
           }
 
@@ -150,7 +224,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       () => state.value,
       (value) => {
         if (props.type === 'number' && !(cache.value === '-' && value === '')) {
-          cache.value = value
+          cache.value = value.toString()
         }
       }
     )
@@ -216,12 +290,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           <input
             key="input"
             ref={fieldRef}
-            v-model={state.value}
+            // v-model 会导致 type 为 number 或 digit 时赋值为 number 类型
+            value={state.value}
+            onInput={(event: Event) => {
+              state.value = (event.target as HTMLInputElement).value.toString()
+            }}
             disabled={!!props.disabled}
             type={type.value}
             maxlength={state.maxlength}
             step={step.value}
-            // @ts-ignore
             enterkeyhint={props.confirmType}
             pattern={props.type === 'number' ? '[0-9]*' : undefined}
             class="uni-input-input"
@@ -235,7 +312,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         <uni-input ref={rootRef}>
           <div class="uni-input-wrapper">
             <div
-              v-show={!(state.value.length || cache.value === '-')}
+              v-show={
+                !(
+                  state.value.length ||
+                  cache.value === '-' ||
+                  cache.value.includes('.')
+                )
+              }
               {...scopedAttrsState.attrs}
               style={props.placeholderStyle}
               class={['uni-input-placeholder', props.placeholderClass]}

@@ -1,3 +1,8 @@
 export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
 export { inflateRaw, deflateRaw } from 'pako'
+export { saveImage } from './saveImage'
+export { getSameOriginUrl } from '../helpers/file'
+export { getEnv } from './env'
+export * from './getRealPath'
 export * from './todo'
+export { operateVideoPlayer } from '@dcloudio/uni-h5/service/api/context/operateVideoPlayer'

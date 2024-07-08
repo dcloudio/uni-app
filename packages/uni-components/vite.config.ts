@@ -27,6 +27,7 @@ export default defineConfig({
     __UNI_FEATURE_I18N_FR__: true,
     __UNI_FEATURE_I18N_ZH_HANS__: true,
     __UNI_FEATURE_I18N_ZH_HANT__: true,
+    __PLUS__: true,
   },
   resolve: {
     alias: [

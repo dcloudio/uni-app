@@ -7,14 +7,14 @@ import {
   createWebHistory,
 } from 'vue-router'
 import { getCurrentPages, normalizeRouteKey, removePage } from '../setup/page'
-//#if _X_
+//#if _X_ && !_NODE_JS_
 import { hideActionSheet } from '../../service/api/ui/popup/showActionSheet'
 import { hideModal } from '../../service/api/ui/popup/showModal'
 //#endif
 
 export function initRouter(app: App) {
   const router = createRouter(createRouterOptions())
-  //#if _X_
+  //#if _X_ && !_NODE_JS_
   router.beforeEach((to, from) => {
     hideActionSheet()
     hideModal()
@@ -22,19 +22,51 @@ export function initRouter(app: App) {
     uni.hideLoading()
   })
   //#endif
+
+  router.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      // tabbar 跳 tabbar
+      saveTabBarScrollPosition(from.meta.tabBarIndex)
+    }
+  })
   ;(app as any).router = router // 挂在app上，方便ssr获取
   app.use(router)
 }
 
+// from router-guard
+let positionStore = Object.create(null)
+export function getTabBarScrollPosition(id) {
+  return positionStore[id]
+}
+function saveTabBarScrollPosition(id) {
+  if (typeof window !== 'undefined') {
+    positionStore[id] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset,
+    }
+  }
+}
+
 const scrollBehavior: RouterOptions['scrollBehavior'] = (
-  _to,
-  _from,
+  to,
+  from,
   savedPosition
 ) => {
   if (savedPosition) {
     return savedPosition
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      // tabbar 跳 tabbar
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex)
+      if (position) {
+        return position
+      }
+    }
+    return {
+      left: 0,
+      top: 0,
+    }
   }
-  // TODO tabBar?
 }
 
 function createRouterOptions(): RouterOptions {

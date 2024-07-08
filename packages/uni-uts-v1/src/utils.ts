@@ -30,11 +30,14 @@ import type { ClassMeta } from './code'
 interface ToOptions {
   inputDir: string
   outputDir: string
+  outFilename?: string
   sourceMap: boolean
   components: Record<string, string>
   isX: boolean
   isSingleThread: boolean
   isPlugin: boolean
+  isExtApi?: boolean
+  isModule?: boolean
   extApis?: Record<string, [string, string]>
   transform?: UTSOutputOptions['transform']
   uniModules: string[]
@@ -43,6 +46,31 @@ export type ToKotlinOptions = ToOptions
 export type ToSwiftOptions = ToOptions
 
 export const ERR_MSG_PLACEHOLDER = `___ERR_MSG___`
+
+export interface RunOptions {
+  components: Record<string, string>
+  extApis?: Record<string, [string, string]>
+  isPlugin: boolean
+  isSingleThread: boolean
+  isX: boolean
+  isExtApi?: boolean
+  sourceMap: boolean
+  transform?: UTSOutputOptions['transform']
+  uniModules: string[]
+}
+
+export interface RunProdOptions extends RunOptions {
+  isModule?: boolean
+  hookClass: string
+  uniModuleId: string
+  outFilename?: string
+}
+
+export interface RunDevOptions extends RunOptions {
+  cacheDir: string
+  pluginRelativeDir: string
+  is_uni_modules: boolean
+}
 
 export function resolveUTSSourceMapPath() {
   return resolveSourceMapPath()
@@ -57,13 +85,25 @@ export function getUTSCompiler(): {
   return require('@dcloudio/uts')
 }
 
+function findLastIndex<T>(
+  array: Array<T>,
+  predicate: (value: T, index: number, array: T[]) => unknown
+) {
+  for (let i = array.length - 1; i >= 0; i--) {
+    if (predicate(array[i], i, array)) {
+      return i
+    }
+  }
+  return -1
+}
+
 export function resolvePackage(filename: string) {
   const parts = normalizePath(filename).split('/')
 
   const isUniModules = parts.includes('uni_modules')
   const index = isUniModules
-    ? parts.findIndex((part) => part === 'uni_modules')
-    : parts.findIndex((part) => part === 'utssdk')
+    ? findLastIndex(parts, (part) => part === 'uni_modules')
+    : findLastIndex(parts, (part) => part === 'utssdk')
   if (index > -1) {
     const id = parts[index + 1]
     const name = camelize(prefix(id))
@@ -146,7 +186,7 @@ export function genUTSPlatformResource(
   // 生产模式下，需要将生成的平台文件转移到 src 下
   const srcDir = path.resolve(utsOutputDir, 'src')
   if (!fs.existsSync(srcDir)) {
-    fs.mkdirSync(srcDir)
+    fs.mkdirSync(srcDir, { recursive: true })
   }
   if (fs.existsSync(platformFile)) {
     fs.moveSync(
@@ -743,7 +783,18 @@ export function resolveConfigProvider(
 }
 
 function formatExtApiProviderName(service: string, name: string) {
-  return `UniExtApi${capitalize(camelize(service))}${capitalize(
+  if (service === 'oauth') {
+    service = 'OAuth'
+  }
+  return `Uni${capitalize(camelize(service))}${capitalize(
     camelize(name)
   )}Provider`
+}
+
+export function requireUniHelpers() {
+  require(path.resolve(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    'uni_helpers/lib/bytenode'
+  ))
+  return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
 }

@@ -7,14 +7,14 @@ declare namespace NodeJS {
     NODE_ENV: 'production' | 'development' | 'test'
     UNI_NODE_ENV: 'production' | 'development' | 'test'
     UNI_PLATFORM: UniApp.PLATFORM
-    UNI_APP_PLATFORM: 'android' | 'ios'
+    UNI_APP_PLATFORM: 'android' | 'ios' | 'harmony'
     UNI_SUB_PLATFORM: 'quickapp-webview-huawei' | 'quickapp-webview-union'
     UNI_UTS_PLATFORM: 'app-android' | 'app-ios' | 'web' | UniApp.PLATFORM
 
     UNI_UTS_JS_CODE_FORMAT?: 'cjs' | 'es'
     UNI_UTS_MODULE_TYPE?: 'built-in' | ''
     UNI_UTS_MODULE_PREFIX?: string
-    UNI_UTS_TARGET_LANGUAGE?: 'javascript' | 'kotlin' | 'swift'
+    UNI_UTS_TARGET_LANGUAGE?: 'javascript' | 'kotlin' | 'swift' | 'arkts'
 
     UNI_INPUT_DIR: string
     UNI_OUTPUT_DIR: string
@@ -53,7 +53,7 @@ declare namespace NodeJS {
     __VUE_DEVTOOLS_PORT__: string
 
     UNI_APP_X?: 'true' | 'false'
-    UNI_APP_X_CACHE_DIR?: string
+    UNI_APP_X_CACHE_DIR: string
 
     HX_Version: string
 
@@ -62,6 +62,14 @@ declare namespace NodeJS {
     UNI_APP_X_SINGLE_THREAD?: string
     UNI_APP_X_SETUP?: string
     UNI_APP_X_UVUE_SCRIPT_ENGINE?: 'native' | 'js'
+
+    UNI_COMPILE_TARGET?: 'uni_modules'
+    UNI_COMPILE_CLOUD_DIR?: string
+    UNI_MODULES_ENCRYPT_CACHE_DIR?: string
+
+    UNI_APP_PACK_TYPE?: 'release' | 'debug'
+
+    UNI_APP_HARMONY_PROJECT_PATH?: string
   }
 }
 

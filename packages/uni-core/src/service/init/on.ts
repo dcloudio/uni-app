@@ -5,7 +5,7 @@ import {
   ON_RESIZE,
   ON_SHOW,
 } from '@dcloudio/uni-shared'
-import type { ComponentPublicInstance } from '@vue/runtime-core'
+import type { ComponentPublicInstance } from 'vue'
 import { invokeHook } from '../../helpers/hook'
 import { getCurrentPage } from '../../helpers/page'
 import type { LaunchOptions } from '../utils'

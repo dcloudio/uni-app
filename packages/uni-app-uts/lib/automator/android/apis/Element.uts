@@ -1,18 +1,18 @@
-// @ts-ignore
+// @ts-expect-error
 import type { Callback } from '../index.uts'
 import {
-  getElementById,
-  getElementByNodeIdOrElementId,
-  getComponentVmBySelector,
-  getValidNodes,
-  getComponentVmByNodeId,
   componentGetData,
   componentSetData,
+  getComponentVmByNodeId,
+  getComponentVmBySelector,
+  getElementById,
   getElementByIdOrNodeId,
-  removeUniPrefix
-  // @ts-ignore
+  getElementByNodeIdOrElementId,
+  getValidNodes,
+  removeUniPrefix,
+  // @ts-expect-error
 } from './util.uts'
-// @ts-ignore
+// @ts-expect-error
 import { getChildrenText, toCamelCase } from './util.uts'
 
 export type GetElementParams = {
@@ -49,7 +49,7 @@ export const getElement = (
       callback(result, null)
       return
     }
-    // @ts-ignore
+    // @ts-expect-error
     const list: UTSJSONObject[] = []
     getValidNodes(element, params.selector, list)
     if (list.length > 0) {
@@ -71,7 +71,7 @@ export const getElements = (
     callback
   )
   if (element != null) {
-    // @ts-ignore
+    // @ts-expect-error
     const list: UTSJSONObject[] = []
     getValidNodes(element, removeUniPrefix(params.selector), list, true)
     callback({ elements: list }, null)
@@ -137,7 +137,7 @@ export const getProperties = (
     params.nodeId,
     callback
   )
-  // @ts-ignore
+  // @ts-expect-error
   let component: ComponentPublicInstance | null = null
   if (params.nodeId != null) {
     component = getComponentVmByNodeId(params.pageId, params.nodeId!, callback)
@@ -203,10 +203,9 @@ export const callFunction = (
       case 'input.input':
         element.dispatchEvent(
           'input',
-          // @ts-ignore
           new InputEvent(
             'input',
-            // @ts-ignore
+            // @ts-expect-error
             InputEventDetail(params.args[0] as string, 0, 0)
           )
         )
@@ -215,10 +214,9 @@ export const callFunction = (
       case 'textarea.input':
         element.dispatchEvent(
           'input',
-          // @ts-ignore
           new InputEvent(
             'input',
-            // @ts-ignore
+            // @ts-expect-error
             InputEventDetail(params.args[0] as string, 0, 0)
           )
         )
@@ -311,14 +309,14 @@ export const tap = (params: TapParams, callback: Callback): void => {
   )
   if (dom != null) {
     const num = 0
-    // @ts-ignore
+    // @ts-expect-error
     const _float = num.toFloat()
     dom.dispatchEvent(
       'click',
       new MouseEvent(
         'click',
         _float,
-        // @ts-ignore
+        // @ts-expect-error
         _float,
         _float,
         _float,
@@ -353,14 +351,16 @@ export const callMethod = (
       params.args.length > 0
         ? component.$callMethod(params.method, params.args[0])
         : component.$callMethod(params.method)
-    // @ts-ignore
+    // @ts-expect-error
     if (result instanceof Promise<unknown>) {
-      (result as Promise<any>).then((res: any) => {
-        callback({ result: res }, null)
-      }).catch((err) => {
-        const errMsg = err instanceof Error ? err.message : err
-        callback({ result: errMsg }, null)
-      })
+      ; (result as Promise<any>)
+        .then((res: any) => {
+          callback({ result: res }, null)
+        })
+        .catch((err) => {
+          const errMsg = err instanceof Error ? err.message : err
+          callback({ result: errMsg }, null)
+        })
     } else {
       callback({ result }, null)
     }
@@ -379,9 +379,7 @@ export const getData = (params: GetDataParams, callback: Callback): void => {
     callback
   )
   if (component != null) {
-    const data = componentGetData(
-      component,
-    )
+    const data = componentGetData(component)
     callback({ data }, null)
   }
 }
@@ -445,8 +443,33 @@ export const longpress = (
     const y: number = 0
     dom.dispatchEvent(
       'longpress',
-      // @ts-ignore
-      new TouchEvent(null, 'longpress', getTouches([]), getTouches([]))
+      new TouchEvent(
+        null,
+        'longpress',
+      // @ts-expect-error
+        getTouches([
+          {
+            identifier: 1,
+            pageX: 0,
+            pageY: 0,
+            clientX: 0,
+            clientY: 0,
+            screenX: 0,
+            screenY: 0,
+          },
+        ]),
+        getTouches([
+          {
+            identifier: 1,
+            pageX: 0,
+            pageY: 0,
+            clientX: 0,
+            clientY: 0,
+            screenX: 0,
+            screenY: 0,
+          },
+        ])
+      )
     )
     callback({ result: `Element.longpress success` }, null)
   }
@@ -476,7 +499,7 @@ export const handleTouchEvent = (
     const changedTouches = getTouches(params.changedTouches)
     dom.dispatchEvent(
       eventName,
-      // @ts-ignore
+      // @ts-expect-error
       new TouchEvent(null, eventName, touches, changedTouches)
     )
     callback({ result: `Element.${eventName} success` }, null)
@@ -486,18 +509,18 @@ export const handleTouchEvent = (
 type TypeTouch = {
   identifier: number
   pageX: number
-  pageY: number,
-  screenX?: number | null,
-  screenY?: number | null,
-  clientX?: number | null,
-  clientY?: number | null,
+  pageY: number
+  screenX?: number | null
+  screenY?: number | null
+  clientX?: number | null
+  clientY?: number | null
 }
 
 function getTouches(touches: any[]): Touch[] {
   return touches.map((touch): Touch => {
-    // @ts-ignore
+    // @ts-expect-error
     const touchObj = JSON.parse<TypeTouch>(JSON.stringify(touch))!
-    // @ts-ignore
+    // @ts-expect-error
     const result = Touch()
     result.identifier = touchObj.identifier.toFloat()
     result.pageX = touchObj.pageX.toFloat()
@@ -551,11 +574,14 @@ export type TriggerEventParams = {
   pageId: string
   elementId?: string | null
   nodeId?: number | null
-  type: string;
-  detail: CustomEventDetail;
+  type: string
+  detail?: CustomEventDetail | null
 }
 
-export const triggerEvent = (params: TriggerEventParams, callback: Callback) => {
+export const triggerEvent = (
+  params: TriggerEventParams,
+  callback: Callback
+) => {
   const dom = getElementByIdOrNodeId(
     params.pageId,
     params.elementId,
@@ -563,19 +589,38 @@ export const triggerEvent = (params: TriggerEventParams, callback: Callback) => 
     callback
   )
   if (dom != null) {
-    const tagName = dom.tagName.toLocaleLowerCase();
-    const type = params.type;
-    const detail = params.detail;
+    const tagName = dom.tagName.toLocaleLowerCase()
+    const type = params.type
+    const detail = params.detail
     const functionName = `${tagName}.${type}`
     switch (functionName) {
       case 'input.input':
         dom.dispatchEvent(
           type,
-          // @ts-ignore
           new UniInputEvent(
             type,
             // @ts-expect-error
-            UniInputEventDetail(detail.value!, 0, 0)
+            UniInputEventDetail(detail === null ? '' : detail.value!, 0, 0)
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+      case 'input.focus':
+        dom.dispatchEvent(
+          type,
+          new UniInputFocusEvent(
+            type,
+            new InputFocusEventDetail(300, '')
+          )
+        )
+        callback({ result: `${functionName} success` }, null)
+        break
+      case 'input.blur':
+        dom.dispatchEvent(
+          type,
+          new UniInputBlurEvent(
+            type,
+            new UniInputBlurEventDetail('', 10)
           )
         )
         callback({ result: `${functionName} success` }, null)
@@ -583,11 +628,10 @@ export const triggerEvent = (params: TriggerEventParams, callback: Callback) => 
       case 'textarea.input':
         dom.dispatchEvent(
           type,
-          // @ts-ignore
           new UniInputEvent(
             type,
-            // @ts-ignore
-            UniInputEventDetail(detail.value!, 0, 0)
+            // @ts-expect-error
+            UniInputEventDetail(detail === null ? '' : detail.value!, 0, 0)
           )
         )
         callback({ result: `${functionName} success` }, null)

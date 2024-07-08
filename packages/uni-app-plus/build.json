@@ -29,6 +29,7 @@
     },
     "replacements": {
       "__X__": "false",
+      "__PLUS__": "true",
       "__PLATFORM__": "'app'",
       "__APP_VIEW__": "false",
       "__VUE_OPTIONS_API__": "true",

@@ -6,7 +6,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -58,7 +58,7 @@
       "getFileSystemManager": {
         "name": "getFileSystemManager",
         "app": {
-          "js": false,
+          "js": true,
           "kotlin": true,
           "swift": false
         }
@@ -256,7 +256,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "saveVideoToPhotosAlbum": {
@@ -264,7 +264,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getVideoInfo": {
@@ -411,7 +411,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "onPushMessage": {
@@ -419,7 +419,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "offPushMessage": {
@@ -427,7 +427,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       },
       "getChannelManager": {
@@ -443,7 +443,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -536,6 +536,50 @@
       },
       "clearStorageSync": {
         "name": "clearStorageSync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      }
+    }
+  },
+  "uni-theme": {
+    "uni": {
+      "onOsThemeChange": {
+        "name": "onOsThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "offOsThemeChange": {
+        "name": "offOsThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "setAppTheme": {
+        "name": "setAppTheme",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "onAppThemeChange": {
+        "name": "onAppThemeChange",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true
+        }
+      },
+      "offAppThemeChange": {
+        "name": "offAppThemeChange",
         "app": {
           "js": false,
           "kotlin": true,

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Vite App</title>
+    <!--head-meta-->
+    <!--preload-links-->
+    <script>
+      document.addEventListener('DOMContentLoaded', function () {
+        document.documentElement.style.fontSize =
+          document.documentElement.clientWidth / 23.4375 + 'px'
+      })
+    </script>
+    <!--app-context-->
+  </head>
+  <body>
+    <div id="ssr-log"></div>
+    <div id="app"><!--app-html--></div>
+    <script type="module" src="/src/main"></script>
+  </body>
+</html>

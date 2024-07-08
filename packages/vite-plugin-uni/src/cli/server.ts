@@ -153,14 +153,14 @@ export async function createSSRServer(
           reject(new Error(`Port ${port} is already in use`))
         } else {
           logger.info(`Port ${port} is in use, trying another one...`)
-          app.listen(++port, hostname!, onSuccess).on('error', onError)
+          server = app.listen(++port, hostname!, onSuccess).on('error', onError)
         }
       } else {
         server.off('error', onError)
         reject(e)
       }
     }
-    const server = app.listen(port, hostname!, onSuccess).on('error', onError)
+    let server = app.listen(port, hostname!, onSuccess).on('error', onError)
   })
 }
 

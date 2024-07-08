@@ -1245,7 +1245,6 @@
       "unixTags": [
         "view",
         "scroll-view",
-        "list-view",
         "list-item",
         "swiper-item",
         "navigator"
@@ -1496,7 +1495,6 @@
       "unixTags": [
         "view",
         "scroll-view",
-        "list-view",
         "list-item",
         "swiper-item",
         "navigator"
@@ -2857,7 +2855,7 @@
           "ios": {
             "osVer": "12.0",
             "uniVer": "√",
-            "unixVer": "x"
+            "unixVer": "4.11"
           }
         },
         "web": {
@@ -5911,6 +5909,27 @@
               "unixVer": "4.0"
             }
           }
+        },
+        {
+          "name": "none",
+          "uniPlatform": {
+            "app": {
+              "android": {
+                "osVer": "x",
+                "uniVer": "√",
+                "unixVer": "3.9+"
+              },
+              "ios": {
+                "osVer": "x",
+                "uniVer": "√",
+                "unixVer": "4.11"
+              }
+            },
+            "web": {
+              "uniVer": "√",
+              "unixVer": "4.0"
+            }
+          }
         }
       ],
       "uniPlatform": {
@@ -5947,12 +5966,12 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               }
             },
             "web": {
@@ -5968,12 +5987,12 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "3.9+"
+                "unixVer": "4.13"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               }
             },
             "web": {
@@ -6016,12 +6035,12 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               }
             },
             "web": {
@@ -6037,12 +6056,12 @@
               "android": {
                 "osVer": "5.0",
                 "uniVer": "√",
-                "unixVer": "3.9+"
+                "unixVer": "4.13"
               },
               "ios": {
                 "osVer": "12.0",
                 "uniVer": "√",
-                "unixVer": "4.11"
+                "unixVer": "4.13"
               }
             },
             "web": {

@@ -4,6 +4,7 @@ import { ERR_MSG_PLACEHOLDER } from '../src/utils'
 
 const inputDir = resolve(__dirname, 'examples/uts')
 const pluginDir = resolve(__dirname, 'examples/uts/utssdk/test-uts')
+const uniModuleDir = resolve(__dirname, 'examples/uts/uni_modules/test-uts')
 
 describe('code', () => {
   test('genProxyCode', async () => {
@@ -35,6 +36,22 @@ describe('code', () => {
           format: FORMATS.CJS,
           pluginRelativeDir: 'utssdk/test-uts',
           androidComponents: { TestUTS: '' },
+          inputDir,
+        })
+      ).replace(ERR_MSG_PLACEHOLDER, '')
+    ).toMatchSnapshot()
+  })
+
+  test('genProxyCode uni_modules', async () => {
+    expect(
+      (
+        await genProxyCode(uniModuleDir, {
+          id: 'test-uts',
+          is_uni_modules: true,
+          name: 'test-uts',
+          namespace: 'uts.sdk.testUTS',
+          extname: '.uts',
+          androidComponents: {},
           inputDir,
         })
       ).replace(ERR_MSG_PLACEHOLDER, '')

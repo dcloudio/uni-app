@@ -2,6 +2,8 @@ import { initPropsObserver } from './util'
 
 const MPComponent = Component
 
+declare let Component: WechatMiniprogram.Component.Constructor
+
 Component = function (options: tinyapp.ComponentOptions) {
   // 小程序组件
   const isVueComponent =

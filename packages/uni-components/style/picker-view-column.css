@@ -61,7 +61,7 @@ uni-picker-view-column[hidden] {
 }
 
 .uni-picker-view-content > * {
-  height: 34px;
+  height: var(--picker-view-column-indicator-height);
   overflow: hidden;
 }
 

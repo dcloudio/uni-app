@@ -3,8 +3,8 @@ Object.defineProperty(exports, Symbol.toStringTag, { value: "Module" });
 const vue = require("vue");
 const shared = require("@vue/shared");
 const uniShared = require("@dcloudio/uni-shared");
-const uniI18n = require("@dcloudio/uni-i18n");
 const vueRouter = require("vue-router");
+const uniI18n = require("@dcloudio/uni-i18n");
 const isEnableLocale = /* @__PURE__ */ uniShared.once(
   () => typeof __uniConfig !== "undefined" && __uniConfig.locales && !!Object.keys(__uniConfig.locales).length
 );
@@ -998,7 +998,6 @@ const index$A = /* @__PURE__ */ defineBuiltInComponent({
       hovering,
       binding
     } = useHover(props2);
-    useI18n();
     const onClick = withWebEvent((e2, isLabelClick) => {
       if (props2.disabled) {
         return e2.stopImmediatePropagation();
@@ -1048,7 +1047,7 @@ function addBase(filePath) {
 function getRealPath(filePath) {
   const { base, assets } = __uniConfig.router;
   if (base === "./") {
-    if (filePath.indexOf("./static/") === 0 || assets && filePath.indexOf("./" + assets + "/") === 0) {
+    if (filePath.indexOf("./") === 0 && (filePath.includes("/static/") || filePath.indexOf("./" + (assets || "assets") + "/") === 0)) {
       filePath = filePath.slice(1);
     }
   }
@@ -1263,7 +1262,7 @@ function getApiCallbacks(args) {
   }
   return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
   if (!errMsg || errMsg.indexOf(":fail") === -1) {
     return name + ":ok";
   }
@@ -1280,7 +1279,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
   const callbackId = invokeCallbackId++;
   addInvokeCallback(callbackId, name, (res) => {
     res = res || {};
-    res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+    res.errMsg = normalizeErrMsg(res.errMsg, name);
     shared.isFunction(beforeAll) && beforeAll(res);
     if (res.errMsg === name + ":ok") {
       shared.isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -1429,7 +1428,7 @@ function promisify(name, fn) {
 }
 function formatApiArgs(args, options) {
   const params = args[0];
-  if (!options || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
+  if (!options || !options.formatArgs || !shared.isPlainObject(options.formatArgs) && shared.isPlainObject(params)) {
     return;
   }
   const formatArgs = options.formatArgs;
@@ -1476,12 +1475,12 @@ function beforeInvokeApi(name, args, protocol, options) {
     return errMsg;
   }
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
   if (!errMsg || shared.isString(errMsg)) {
     return errMsg;
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + uniShared.LINEFEED + errMsg.stack);
+    console.error(errMsg.message + "\n" + errMsg.stack);
     return errMsg.message;
   }
   return errMsg;
@@ -1495,7 +1494,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
     }
     return fn(args, {
       resolve: (res) => invokeSuccess(id, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg2), errRes)
+      reject: (errMsg2, errRes) => invokeFail(id, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -1792,6 +1791,8 @@ function useResizeSensorUpdate(rootRef, emit2, reset) {
   vue.watch(() => shared.extend({}, size), (value) => emit2("resize", value));
   return () => {
     const rootEl = rootRef.value;
+    if (!rootEl)
+      return;
     size.width = rootEl.offsetWidth;
     size.height = rootEl.offsetHeight;
     reset();
@@ -2424,6 +2425,11 @@ const props$o = {
   iconColor: {
     type: String,
     default: ""
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foreColor: {
+    type: String,
+    default: ""
   }
 };
 const index$x = /* @__PURE__ */ defineBuiltInComponent({
@@ -2502,7 +2508,7 @@ const index$x = /* @__PURE__ */ defineBuiltInComponent({
           "uni-checkbox-input-disabled": props2.disabled
         }],
         "style": checkboxStyle.value
-      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
+      }, [realCheckValue ? createSvgIconVNode(ICON_PATH_SUCCESS_NO_CIRCLE, props2.disabled ? "#ADADAD" : props2.foreColor || props2.iconColor || props2.color, 22) : ""], 6), slots.default && slots.default()], 4)], 16, ["id", "onClick"]);
     };
   }
 });
@@ -2910,12 +2916,9 @@ const index$u = /* @__PURE__ */ defineBuiltInComponent({
         "ref": rootRef
       }, [vue.createVNode("div", {
         "style": state.modeStyle
-      }, null, 4), FIX_MODES[props2.mode] ? (
-        // @ts-ignore
-        vue.createVNode(ResizeSensor, {
-          "onResize": fixSize
-        }, null, 8, ["onResize"])
-      ) : vue.createVNode("span", null, null)], 512);
+      }, null, 4), FIX_MODES[props2.mode] ? vue.createVNode(ResizeSensor, {
+        "onResize": fixSize
+      }, null, 8, ["onResize"]) : vue.createVNode("span", null, null)], 512);
     };
   }
 });
@@ -3156,7 +3159,7 @@ function getValueString(value, type, maxlength) {
   if (type === "number" && isNaN(Number(value))) {
     value = "";
   }
-  const valueStr = value === null ? "" : String(value);
+  const valueStr = value === null || value === void 0 ? "" : String(value);
   if (maxlength == void 0) {
     return valueStr;
   }
@@ -3180,12 +3183,10 @@ const props$k = /* @__PURE__ */ shared.extend(
       default: ""
     },
     modelValue: {
-      type: [String, Number],
-      default: ""
+      type: [String, Number]
     },
     value: {
-      type: [String, Number],
-      default: ""
+      type: [String, Number]
     },
     disabled: {
       type: [Boolean, String],
@@ -3299,7 +3300,10 @@ function useBase(props2, rootRef, emit2) {
       return isNaN(maxlength2) ? 140 : maxlength2;
     }
   });
-  const value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  let value = "";
+  {
+    value = getValueString(props2.modelValue, props2.type) || getValueString(props2.value, props2.type);
+  }
   const state = vue.reactive({
     value,
     valueOrigin: value,
@@ -3328,13 +3332,16 @@ function useBase(props2, rootRef, emit2) {
   };
 }
 function useValueSync(props2, state, emit2, trigger) {
-  const valueChangeFn = uniShared.debounce(
-    (val) => {
-      state.value = getValueString(val, props2.type);
-    },
-    100,
-    { setTimeout, clearTimeout }
-  );
+  let valueChangeFn = null;
+  {
+    valueChangeFn = uniShared.debounce(
+      (val) => {
+        state.value = getValueString(val, props2.type);
+      },
+      100,
+      { setTimeout, clearTimeout }
+    );
+  }
   vue.watch(() => props2.modelValue, valueChangeFn);
   vue.watch(() => props2.value, valueChangeFn);
   const triggerInputFn = throttle((event, detail) => {
@@ -3507,6 +3514,49 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
     default: ""
   }
 });
+function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
+  if (cache.value) {
+    if (event.data === ".") {
+      if (cache.value.slice(-1) === ".") {
+        state.value = input.value = cache.value = cache.value.slice(0, -1);
+        return false;
+      }
+      if (cache.value && !cache.value.includes(".")) {
+        cache.value += ".";
+        if (resetCache) {
+          resetCache.fn = () => {
+            state.value = input.value = cache.value = cache.value.slice(0, -1);
+            input.removeEventListener("blur", resetCache.fn);
+          };
+          input.addEventListener("blur", resetCache.fn);
+        }
+        return false;
+      }
+    } else if (event.inputType === "deleteContentBackward") {
+      if (navigator.userAgent.includes("iPhone OS 16")) {
+        if (cache.value.slice(-2, -1) === ".") {
+          cache.value = state.value = input.value = cache.value.slice(0, -2);
+          return true;
+        }
+      }
+    }
+  }
+}
+function useCache(props2, type) {
+  if (type.value === "number") {
+    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
+    const cache = vue.ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    vue.watch(() => props2.modelValue, (value2) => {
+      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+    });
+    vue.watch(() => props2.value, (value2) => {
+      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+    });
+    return cache;
+  } else {
+    return vue.ref("");
+  }
+}
 const Input = /* @__PURE__ */ defineBuiltInComponent({
   name: "Input",
   props: props$j,
@@ -3543,8 +3593,10 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       const index2 = camelizeIndex !== -1 ? camelizeIndex : kebabCaseIndex !== -1 ? kebabCaseIndex : 0;
       return AUTOCOMPLETES[index2];
     });
-    let cache = vue.ref("");
-    let resetCache;
+    let cache = useCache(props2, type);
+    let resetCache = {
+      fn: null
+    };
     const rootRef = vue.ref(null);
     const {
       fieldRef,
@@ -3555,39 +3607,29 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     } = useField(props2, rootRef, emit2, (event, state2) => {
       const input = event.target;
       if (type.value === "number") {
-        if (resetCache) {
-          input.removeEventListener("blur", resetCache);
-          resetCache = null;
+        if (resetCache.fn) {
+          input.removeEventListener("blur", resetCache.fn);
+          resetCache.fn = null;
         }
         if (input.validity && !input.validity.valid) {
           if ((!cache.value || !input.value) && event.data === "-" || cache.value[0] === "-" && event.inputType === "deleteContentBackward") {
             cache.value = "-";
             state2.value = "";
-            resetCache = () => {
+            resetCache.fn = () => {
               cache.value = input.value = "";
             };
-            input.addEventListener("blur", resetCache);
+            input.addEventListener("blur", resetCache.fn);
             return false;
           }
-          if (cache.value) {
-            if (cache.value.indexOf(".") !== -1) {
-              if (event.data !== "." && event.inputType === "deleteContentBackward") {
-                const dotIndex = cache.value.indexOf(".");
-                cache.value = input.value = state2.value = cache.value.slice(0, dotIndex);
-                return true;
-              }
-            } else if (event.data === ".") {
-              cache.value += ".";
-              resetCache = () => {
-                cache.value = input.value = cache.value.slice(0, -1);
-              };
-              input.addEventListener("blur", resetCache);
-              return false;
-            }
-          }
+          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
+          if (typeof res === "boolean")
+            return res;
           cache.value = state2.value = input.value = cache.value === "-" ? "" : cache.value;
           return false;
         } else {
+          const res = resolveDigitDecimalPoint(event, cache, state2, input, resetCache);
+          if (typeof res === "boolean")
+            return res;
           cache.value = input.value;
         }
         const maxlength = state2.maxlength;
@@ -3600,7 +3642,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
     });
     vue.watch(() => state.value, (value) => {
       if (props2.type === "number" && !(cache.value === "-" && value === "")) {
-        cache.value = value;
+        cache.value = value.toString();
       }
     });
     const NUMBER_TYPES = ["number", "digit"];
@@ -3638,10 +3680,13 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           caretColor: props2.cursorColor
         } : {},
         "onFocus": (event) => event.target.blur()
-      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.withDirectives(vue.createVNode("input", {
+      }, null, 44, ["value", "readonly", "type", "maxlength", "step", "onFocus"]) : vue.createVNode("input", {
         "key": "input",
         "ref": fieldRef,
-        "onUpdate:modelValue": ($event) => state.value = $event,
+        "value": state.value,
+        "onInput": (event) => {
+          state.value = event.target.value.toString();
+        },
         "disabled": !!props2.disabled,
         "type": type.value,
         "maxlength": state.maxlength,
@@ -3655,7 +3700,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
         "autocomplete": autocomplete.value,
         "onKeyup": onKeyUpEnter,
         "inputmode": props2.inputmode
-      }, null, 44, ["onUpdate:modelValue", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]), [[vue.vModelDynamic, state.value]]);
+      }, null, 44, ["value", "onInput", "disabled", "type", "maxlength", "step", "enterkeyhint", "pattern", "autocomplete", "onKeyup", "inputmode"]);
       return vue.createVNode("uni-input", {
         "ref": rootRef
       }, [vue.createVNode("div", {
@@ -3663,7 +3708,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       }, [vue.withDirectives(vue.createVNode("div", vue.mergeProps(scopedAttrsState.attrs, {
         "style": props2.placeholderStyle,
         "class": ["uni-input-placeholder", props2.placeholderClass]
-      }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || cache.value === "-")]]), props2.confirmType === "search" ? vue.createVNode("form", {
+      }), [props2.placeholder], 16), [[vue.vShow, !(state.value.length || cache.value === "-" || cache.value.includes("."))]]), props2.confirmType === "search" ? vue.createVNode("form", {
         "action": "",
         "onSubmit": (event) => event.preventDefault(),
         "class": "uni-input-form"
@@ -4938,7 +4983,7 @@ const index$r = /* @__PURE__ */ defineBuiltInComponent({
   compatConfig: {
     MODE: 3
   },
-  props: shared.extend({}, navigatorProps, {
+  props: /* @__PURE__ */ shared.extend({}, navigatorProps, {
     renderLink: {
       type: Boolean,
       default: true
@@ -5096,17 +5141,6 @@ const PickerView = /* @__PURE__ */ defineBuiltInComponent({
     };
   }
 });
-let scopedIndex = 0;
-function useScopedClass(indicatorHeightRef) {
-  const className = `uni-picker-view-content-${scopedIndex++}`;
-  function updateStyle() {
-    const style = document.createElement("style");
-    style.innerText = `.uni-picker-view-content.${className}>*{height: ${indicatorHeightRef.value}px;overflow: hidden;}`;
-    document.head.appendChild(style);
-  }
-  vue.watch(() => indicatorHeightRef.value, updateStyle);
-  return className;
-}
 const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
   name: "PickerViewColumn",
   setup(props2, {
@@ -5126,7 +5160,6 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
     const {
       state: scopedAttrsState
     } = useScopedAttrs();
-    const className = useScopedClass(indicatorHeight);
     let scroller;
     const state = vue.reactive({
       current: currentRef.value,
@@ -5196,11 +5229,12 @@ const PickerViewColumn = /* @__PURE__ */ defineBuiltInComponent({
         }) => indicatorHeight.value = height
       }, null, 8, ["onResize"])], 16), vue.createVNode("div", {
         "ref": contentRef,
-        "class": ["uni-picker-view-content", className],
+        "class": ["uni-picker-view-content"],
         "style": {
-          padding
+          padding,
+          "--picker-view-column-indicator-height": `${indicatorHeight.value}px`
         }
-      }, [defaultSlots], 6)], 40, ["onWheel", "onClick"])], 512);
+      }, [defaultSlots], 4)], 40, ["onWheel", "onClick"])], 512);
     };
   }
 });
@@ -6065,7 +6099,9 @@ const index$m = /* @__PURE__ */ defineBuiltInComponent({
     } = useScrollViewState(props2);
     const {
       realScrollX,
-      realScrollY
+      realScrollY,
+      _scrollLeftChanged,
+      _scrollTopChanged
     } = useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, trigger, rootRef, main, content, emit2);
     const mainStyle = vue.computed(() => {
       let style = "";
@@ -6321,7 +6357,9 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
   });
   return {
     realScrollX,
-    realScrollY
+    realScrollY,
+    _scrollTopChanged,
+    _scrollLeftChanged
   };
 }
 const props$e = {
@@ -7542,7 +7580,7 @@ const index$g = /* @__PURE__ */ defineBuiltInComponent({
 });
 const index$f = /* @__PURE__ */ defineBuiltInComponent({
   name: "View",
-  props: shared.extend({}, hoverProps),
+  props: /* @__PURE__ */ shared.extend({}, hoverProps),
   setup(props2, {
     slots
   }) {
@@ -7584,7 +7622,7 @@ function injectLifecycleHook(name, hook, publicThis, instance) {
   }
 }
 function initHooks(options, instance, publicThis) {
-  var _a;
+  var _b;
   const mpType = options.mpType || publicThis.$mpType;
   if (!mpType || mpType === "component") {
     return;
@@ -7610,7 +7648,7 @@ function initHooks(options, instance, publicThis) {
       invokeHook(publicThis, uniShared.ON_LOAD, query);
       delete instance.attrs.__pageQuery;
       if (true) {
-        if (((_a = publicThis.$page) == null ? void 0 : _a.openType) !== "preloadPage") {
+        if (((_b = publicThis.$page) == null ? void 0 : _b.openType) !== "preloadPage") {
           invokeHook(publicThis, uniShared.ON_SHOW);
         }
       }
@@ -7948,12 +7986,40 @@ function pruneRouteCache(key) {
 }
 function initRouter(app) {
   const router = vueRouter.createRouter(createRouterOptions());
+  router.beforeEach((to, from) => {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      saveTabBarScrollPosition(from.meta.tabBarIndex);
+    }
+  });
   app.router = router;
   app.use(router);
 }
-const scrollBehavior = (_to, _from, savedPosition) => {
+let positionStore = /* @__PURE__ */ Object.create(null);
+function getTabBarScrollPosition(id) {
+  return positionStore[id];
+}
+function saveTabBarScrollPosition(id) {
+  if (typeof window !== "undefined") {
+    positionStore[id] = {
+      left: window.pageXOffset,
+      top: window.pageYOffset
+    };
+  }
+}
+const scrollBehavior = (to, from, savedPosition) => {
   if (savedPosition) {
     return savedPosition;
+  } else {
+    if (to && from && to.meta.isTabBar && from.meta.isTabBar) {
+      const position = getTabBarScrollPosition(to.meta.tabBarIndex);
+      if (position) {
+        return position;
+      }
+    }
+    return {
+      left: 0,
+      top: 0
+    };
   }
 };
 function createRouterOptions() {
@@ -11429,20 +11495,25 @@ const getDeviceInfo = /* @__PURE__ */ defineSyncApi(
       platform,
       system,
       deviceOrientation,
-      deviceType
-    } = browserInfo;
-    return {
-      brand,
-      deviceBrand,
-      deviceModel,
-      devicePixelRatio: 1,
-      deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
-      deviceOrientation,
       deviceType,
-      model,
-      platform,
-      system
-    };
+      osname,
+      osversion
+    } = browserInfo;
+    return shared.extend(
+      {
+        brand,
+        deviceBrand,
+        deviceModel,
+        devicePixelRatio: 1,
+        deviceId: Date.now() + "" + Math.floor(Math.random() * 1e7),
+        deviceOrientation,
+        deviceType,
+        model,
+        platform,
+        system
+      },
+      {}
+    );
   }
 );
 const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
@@ -11450,25 +11521,28 @@ const getAppBaseInfo = /* @__PURE__ */ defineSyncApi(
   () => {
     initBrowserInfo();
     const { theme, language, browserName, browserVersion } = browserInfo;
-    return {
-      appId: __uniConfig.appId,
-      appName: __uniConfig.appName,
-      appVersion: __uniConfig.appVersion,
-      appVersionCode: __uniConfig.appVersionCode,
-      appLanguage: getLocale ? getLocale() : language,
-      enableDebug: false,
-      hostSDKVersion: void 0,
-      hostPackageName: void 0,
-      hostFontSizeSetting: void 0,
-      hostName: browserName,
-      hostVersion: browserVersion,
-      hostTheme: theme,
-      hostLanguage: language,
-      language,
-      SDKVersion: "",
-      theme,
-      version: ""
-    };
+    return shared.extend(
+      {
+        appId: __uniConfig.appId,
+        appName: __uniConfig.appName,
+        appVersion: __uniConfig.appVersion,
+        appVersionCode: __uniConfig.appVersionCode,
+        appLanguage: getLocale ? getLocale() : language,
+        enableDebug: false,
+        hostSDKVersion: void 0,
+        hostPackageName: void 0,
+        hostFontSizeSetting: void 0,
+        hostName: browserName,
+        hostVersion: browserVersion,
+        hostTheme: theme,
+        hostLanguage: language,
+        language,
+        SDKVersion: "",
+        theme,
+        version: ""
+      },
+      {}
+    );
   }
 );
 const getSystemInfoSync = /* @__PURE__ */ defineSyncApi(
@@ -11587,9 +11661,9 @@ function parseTheme(pageStyle) {
   return __uniConfig.darkmode ? parsedStyle : pageStyle;
 }
 function useTheme(pageStyle, onThemeChangeCallback) {
-  const isReactived = vue.isReactive(pageStyle);
-  const reactivePageStyle = isReactived ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
-  if (__uniConfig.darkmode && isReactived) {
+  const isReactivity = vue.isReactive(pageStyle);
+  const reactivePageStyle = isReactivity ? vue.reactive(parseTheme(pageStyle)) : parseTheme(pageStyle);
+  if (__uniConfig.darkmode && isReactivity) {
     vue.watch(pageStyle, (value) => {
       const _pageStyle = parseTheme(value);
       for (const key in _pageStyle) {
@@ -11617,6 +11691,7 @@ const TabBar = /* @__PURE__ */ defineSystemComponent({
       tabBar2.color = tabBarStyle.color;
       tabBar2.selectedColor = tabBarStyle.selectedColor;
       tabBar2.blurEffect = tabBarStyle.blurEffect;
+      tabBar2.midButton = tabBarStyle.midButton;
       if (tabBarStyle.list && tabBarStyle.list.length) {
         tabBarStyle.list.forEach((item, index2) => {
           tabBar2.list[index2].iconPath = item.iconPath;
@@ -11743,8 +11818,14 @@ function useTabBarStyle(tabBar2) {
   });
   const borderStyle = vue.computed(() => {
     const {
-      borderStyle: borderStyle2
+      borderStyle: borderStyle2,
+      borderColor
     } = tabBar2;
+    if (borderColor && shared.isString(borderColor)) {
+      return {
+        backgroundColor: borderColor
+      };
+    }
     return {
       backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
     };
@@ -12671,7 +12752,7 @@ function _sfc_render(_ctx, _cache, $props, $setup, $data, $options) {
   ]);
 }
 const PageRefresh = /* @__PURE__ */ _export_sfc(_sfc_main, [["render", _sfc_render]]);
-const PageBody = defineSystemComponent({
+const PageBody = /* @__PURE__ */ defineSystemComponent({
   name: "PageBody",
   setup(props2, ctx) {
     const pageMeta = __UNI_FEATURE_PULL_DOWN_REFRESH__ && usePageMeta();
@@ -12699,7 +12780,7 @@ function createPageRefreshTsx(refreshRef, pageMeta) {
     "ref": refreshRef
   }, null, 512);
 }
-const index = defineSystemComponent({
+const index = /* @__PURE__ */ defineSystemComponent({
   name: "Page",
   setup(_props, ctx) {
     const pageMeta = providePageMeta(getStateId());

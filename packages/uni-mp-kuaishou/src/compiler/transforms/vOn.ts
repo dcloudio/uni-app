@@ -5,7 +5,7 @@ import { transformOn as baseTransformOn } from '@dcloudio/uni-mp-compiler'
  */
 export const transformOn = createTransformOn(baseTransformOn, {
   match: (name, node, context) => {
-    if (name === 'getphonenumber') return true
+    if (name === 'getphonenumber' || name === 'getuserextendinfo') return true
     if (name === 'input' && (node.tag === 'input' || node.tag === 'textarea')) {
       return true
     }

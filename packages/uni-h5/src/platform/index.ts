@@ -1,3 +1,5 @@
+import { TEMP_PATH } from './constants'
+
 export * from './dom'
 export { getBaseSystemInfo } from '../service/api/base/getBaseSystemInfo'
 export { operateVideoPlayer } from '../service/api/context/operateVideoPlayer'
@@ -19,3 +21,13 @@ export { getEnterOptions, getLaunchOptions } from '../framework/setup/utils'
 
 export const inflateRaw = (...args: any[]): any => {}
 export const deflateRaw = (...args: any[]): any => {}
+interface Env {
+  USER_DATA_PATH: string
+  TEMP_PATH: string
+  CACHE_PATH: string
+}
+export const getEnv: (() => Env) | undefined = () => ({
+  TEMP_PATH,
+  CACHE_PATH: '',
+  USER_DATA_PATH: '',
+})

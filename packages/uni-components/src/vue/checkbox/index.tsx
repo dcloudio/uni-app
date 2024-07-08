@@ -1,15 +1,18 @@
-import { onBeforeUnmount, onMounted, watch, inject, ref, computed } from 'vue'
+import { computed, inject, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import type { Ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 import { useListeners } from '../../helpers/useListeners'
 import { useBooleanAttr } from '../../helpers/useBooleanAttr'
 import { UniElement } from '../../helpers/UniElement'
-import { UniCheckGroupCtx, uniCheckGroupKey } from '../checkbox-group'
-import { UniFormCtx, uniFormKey } from '../form'
-import { uniLabelKey, UniLabelCtx } from '../label'
+import { uniCheckGroupKey } from '../checkbox-group'
+import type { UniCheckGroupCtx } from '../checkbox-group'
+import { uniFormKey } from '../form'
+import type { UniFormCtx } from '../form'
+import { uniLabelKey } from '../label'
+import type { UniLabelCtx } from '../label'
 import {
-  createSvgIconVNode,
   ICON_PATH_SUCCESS_NO_CIRCLE,
+  createSvgIconVNode,
 } from '@dcloudio/uni-core'
 
 const props = {
@@ -50,6 +53,11 @@ const props = {
     default: '',
   },
   iconColor: {
+    type: String,
+    default: '',
+  },
+  // 图标颜色,同color,优先级大于iconColor
+  foreColor: {
     type: String,
     default: '',
   },
@@ -193,14 +201,16 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           >
             <div
               class="uni-checkbox-input"
-              // @ts-ignore
+              // @ts-expect-error
               class={{ 'uni-checkbox-input-disabled': props.disabled }}
               style={checkboxStyle.value}
             >
               {realCheckValue
                 ? createSvgIconVNode(
                     ICON_PATH_SUCCESS_NO_CIRCLE,
-                    props.disabled ? '#ADADAD' : props.iconColor || props.color,
+                    props.disabled
+                      ? '#ADADAD'
+                      : props.foreColor || props.iconColor || props.color,
                     22
                   )
                 : ''}

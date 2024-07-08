@@ -42,8 +42,19 @@ export function checkElementNodeTag(
   return !!node && node.type === NodeTypes.ELEMENT && node.tag === tag
 }
 
+/**
+ * 根据 path 返回合法 js 变量
+ * @param str pages.json.page.path
+ * @returns
+ */
 export function normalizeIdentifier(str: string) {
-  return capitalize(camelize(str.replace(/\//g, '-')))
+  let _str = str.replace(/[^a-zA-Z0-9]+/g, '-')
+  _str = capitalize(camelize(_str))
+  // 不允许数字开头，补充 _
+  if (/^\d/.test(_str)) {
+    _str = '_' + _str
+  }
+  return _str
 }
 
 export function normalizePagePath(pagePath: string, platform: UniApp.PLATFORM) {
@@ -170,8 +181,14 @@ Please run \`${colors.cyan(
   )}\` and try again.`
 }
 
+/**
+ * 根据路径判断是否为 App.(u?)vue
+ * @param {string} filename 相对、绝对路径
+ * @returns
+ */
 export function isAppVue(filename: string) {
-  return filename.endsWith('App.vue') || filename.endsWith('App.uvue')
+  const _filePath = normalizePath(filename)
+  return /(\/|\\)app\.(u?)vue$/.test(_filePath.toLowerCase())
 }
 
 export function resolveAppVue(inputDir: string) {
@@ -192,4 +209,28 @@ export function parseImporter(importer: string) {
 
 export function createResolveErrorMsg(source: string, importer: string) {
   return `Could not resolve "${source}" from "${parseImporter(importer)}"`
+}
+
+export function enableSourceMap() {
+  return (
+    process.env.NODE_ENV === 'development' &&
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+  )
+}
+
+export function requireUniHelpers() {
+  require(path.resolve(
+    process.env.UNI_HBUILDERX_PLUGINS,
+    'uni_helpers/lib/bytenode'
+  ))
+  return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+}
+
+export function normalizeEmitAssetFileName(fileName: string) {
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    if (path.extname(fileName) !== '.ts') {
+      return fileName + '.ts'
+    }
+  }
+  return fileName
 }

@@ -1,4 +1,4 @@
-import type { ComponentPublicInstance } from '@vue/runtime-core'
+import type { ComponentPublicInstance } from 'vue'
 import { extend } from '@vue/shared'
 
 export interface LaunchOptions {

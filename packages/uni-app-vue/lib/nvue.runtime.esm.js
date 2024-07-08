@@ -8525,8 +8525,8 @@ function parseName(name) {
       options[m[0].toLowerCase()] = true;
     }
   }
-  const event = name[2] === ":" ? name.slice(3) : name.slice(2);
-  return [formatEventName(hyphenate(event)), options];
+  const event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
+  return [formatEventName(event), options];
 }
 function createInvoker(initialValue, instance) {
   const invoker = (e) => {

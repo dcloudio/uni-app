@@ -12,6 +12,7 @@ import {
 } from 'vue'
 import { _style_picker_view as _style } from './style'
 import { UniPickerViewChangeEvent, UniPickerViewElement } from './model'
+import { initUniCustomEvent } from '../../utils'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerView',
@@ -100,7 +101,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         if (data.valueSync.length > index) {
           data.valueSync[index] = val
         }
-        emit('change', new UniPickerViewChangeEvent([...data.valueSync]))
+        emit(
+          'change',
+          initUniCustomEvent(
+            pickerViewElementRef.value!,
+            new UniPickerViewChangeEvent([...data.valueSync])
+          )
+        )
       }
     }
 

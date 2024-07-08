@@ -34,7 +34,14 @@ import {
   locStub,
   toValidAssetId,
 } from '@vue/compiler-core'
-import { NOOP, isArray, isString, isSymbol } from '@vue/shared'
+import {
+  NOOP,
+  camelize,
+  capitalize,
+  isArray,
+  isString,
+  isSymbol,
+} from '@vue/shared'
 import { type ParserPlugin, parseExpression } from '@babel/parser'
 import {
   isCompoundExpressionNode,
@@ -318,8 +325,17 @@ function genEasyComImports(
     }
     const source = matchEasyCom(id, true)
     if (source) {
-      const componentId = toValidAssetId(id, 'easycom' as 'component')
-      push(`import ${componentId} from '${source}'`)
+      if (source.includes('?uts-proxy')) {
+        push(
+          `import { ${genEncryptUniModuleEasyComClass(
+            id,
+            parseUniModuleId(source)
+          )} } from '${source}';`
+        )
+      } else {
+        const componentId = toValidAssetId(id, 'easycom' as 'component')
+        push(`import ${componentId} from '${source}'`)
+      }
       newline()
     }
   }
@@ -352,12 +368,25 @@ function genAssets(
     if (type === 'component') {
       const source = matchEasyCom(id, false)
       if (source) {
-        const easyComponentId = toValidAssetId(id, 'easycom' as 'component')
+        let importCode = ''
         const componentId = toValidAssetId(id, type)
-        assetCode = `const ${componentId} = ${helper(
-          RESOLVE_EASY_COMPONENT
-        )}(${JSON.stringify(id)},${easyComponentId})`
-        const importCode = `import ${easyComponentId} from '${source}';`
+        // 加密 easyCom
+        if (source.includes('?uts-proxy')) {
+          const easyComponentId = genEncryptUniModuleEasyComClass(
+            id,
+            parseUniModuleId(source)
+          )
+          assetCode = `const ${componentId} = ${helper(
+            RESOLVE_EASY_COMPONENT
+          )}(${JSON.stringify(id)},${easyComponentId})`
+          importCode = `import { ${easyComponentId} } from '${source}';`
+        } else {
+          const easyComponentId = toValidAssetId(id, 'easycom' as 'component')
+          assetCode = `const ${componentId} = ${helper(
+            RESOLVE_EASY_COMPONENT
+          )}(${JSON.stringify(id)},${easyComponentId})`
+          importCode = `import ${easyComponentId} from '${source}';`
+        }
         if (!importEasyComponents.includes(importCode)) {
           importEasyComponents.push(importCode)
           addEasyComponentAutoImports(
@@ -382,6 +411,23 @@ function genAssets(
       newline()
     }
   }
+}
+
+function parseUniModuleId(source: string) {
+  const parts = source.split('/')
+  return parts[parts.length - 1].replace('?uts-proxy', '')
+}
+
+// GenUniModulesTestCom1ComponentsTestCom11TestCom11Class
+function genEncryptUniModuleEasyComClass(
+  componentName: string,
+  uniModuleId: string
+) {
+  return capitalize(
+    camelize(
+      `gen-uni-modules-${uniModuleId}-components-${componentName}-${componentName}-class`
+    )
+  )
 }
 
 function isText(n: string | CodegenNode) {

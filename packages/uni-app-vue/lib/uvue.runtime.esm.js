@@ -3,11 +3,11 @@
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
 * @license MIT
 **/
-import { isString, isFunction, isPromise, isArray, NOOP, getGlobalThis, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
+import { isString, isFunction, isPromise, getGlobalThis, isArray, NOOP, extend as extend$1, EMPTY_OBJ, toHandlerKey, looseToNumber, hyphenate, camelize, isObject, isOn, hasOwn, isModelListener, capitalize, toNumber, hasChanged, remove, isSet, isMap, isPlainObject, isBuiltInDirective, invokeArrayFns, isRegExp, isGloballyAllowed, NO, def, isReservedProp, EMPTY_ARR, toRawType, makeMap, normalizeClass, stringifyStyle, normalizeStyle, isKnownSvgAttr, isBooleanAttr, isKnownHtmlAttr, includeBooleanAttr, isRenderableAttrValue, parseStringStyle } from '@vue/shared';
 export { camelize, capitalize, hyphenate, toDisplayString, toHandlerKey } from '@vue/shared';
 import { pauseTracking, resetTracking, isRef, toRaw, isShallow, isReactive, ReactiveEffect, getCurrentScope, ref, shallowReadonly, track, reactive, shallowReactive, trigger, isProxy, proxyRefs, markRaw, EffectScope, computed as computed$1, customRef, isReadonly } from '@vue/reactivity';
 export { EffectScope, ReactiveEffect, TrackOpTypes, TriggerOpTypes, customRef, effect, effectScope, getCurrentScope, isProxy, isReactive, isReadonly, isRef, isShallow, markRaw, onScopeDispose, proxyRefs, reactive, readonly, ref, shallowReactive, shallowReadonly, shallowRef, stop, toRaw, toRef, toRefs, toValue, triggerRef, unref } from '@vue/reactivity';
-import { isRootHook, isRootImmediateHookX, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
+import { isRootHook, isRootImmediateHook, ON_LOAD, normalizeClass as normalizeClass$1, normalizeStyle as normalizeStyle$1 } from '@dcloudio/uni-shared';
 export { normalizeClass, normalizeProps, normalizeStyle } from '@dcloudio/uni-shared';
 import PromisePolyfill from 'promise-polyfill';
 
@@ -278,7 +278,8 @@ let flushIndex = 0;
 const pendingPostFlushCbs = [];
 let activePostFlushCbs = null;
 let postFlushIndex = 0;
-const resolvedPromise = /* @__PURE__ */ PromisePolyfill.resolve();
+const isIOS = "nativeApp" in getGlobalThis();
+const resolvedPromise = /* @__PURE__ */ (isIOS ? PromisePolyfill : Promise).resolve();
 let currentFlushPromise = null;
 const RECURSION_LIMIT = 100;
 function nextTick(fn, instance = getCurrentInstance()) {
@@ -2858,7 +2859,7 @@ function injectHook(type, hook, target = currentInstance, prepend = false) {
   if (target) {
     if (isRootHook(type) && target !== target.root) {
       target = target.root;
-      if (isRootImmediateHookX(type)) {
+      if (isRootImmediateHook(type)) {
         const proxy = target.proxy;
         callWithAsyncErrorHandling(
           hook.bind(proxy),
@@ -4379,8 +4380,8 @@ function validateProps(rawProps, props, instance) {
   }
 }
 function validateProp(name, value, prop, props, isAbsent) {
-  const { type, required, validator, skipCheck } = prop;
-  if (required && isAbsent) {
+  const { type, required, validator, skipCheck, default: defaultValue } = prop;
+  if (defaultValue == null && required && isAbsent) {
     warn$1('Missing required prop: "' + name + '"');
     return;
   }
@@ -5897,8 +5898,8 @@ function baseCreateRenderer(options, createHydrationFns) {
     }
   };
   const processFragment = (n1, n2, container, anchor, parentComponent, parentSuspense, namespace, slotScopeIds, optimized) => {
-    const fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateComment("", container);
-    const fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateComment("", container);
+    const fragmentStartAnchor = n2.el = n1 ? n1.el : hostCreateText("", container, true);
+    const fragmentEndAnchor = n2.anchor = n1 ? n1.anchor : hostCreateText("", container, true);
     let { patchFlag, dynamicChildren, slotScopeIds: fragmentSlotScopeIds } = n2;
     if (!!(process.env.NODE_ENV !== "production") && // #5523 dev root fragment may inherit directives
     (isHmrUpdating || patchFlag & 2048)) {
@@ -8526,7 +8527,12 @@ function parseStyleSheet({
   root
 }) {
   const component = type;
-  if (!component.__styles) {
+  const pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */ new Map();
+  }
+  let cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
     const __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
@@ -8543,9 +8549,10 @@ function parseStyleSheet({
     if (isArray(component.styles)) {
       styles.push(...component.styles);
     }
-    component.__styles = useCssStyles(styles);
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
   }
-  return component.__styles;
+  return cache;
 }
 function extend(a, b) {
   b.forEach((value, key) => {
@@ -8663,7 +8670,10 @@ const nodeOps = {
   createElement: (tag, container) => {
     return getDocument().createElement(tag);
   },
-  createText: (text, container) => {
+  createText: (text, container, isAnchor) => {
+    if (isAnchor) {
+      return getDocument().createComment(text);
+    }
     const textNode = getDocument().createElement("text");
     textNode.setAttribute("value", text);
     setExtraIsTextNode(textNode, true);
@@ -8808,8 +8818,8 @@ function parseName(name) {
       options[m[0].toLowerCase()] = true;
     }
   }
-  const event = name[2] === ":" ? name.slice(3) : name.slice(2);
-  return [formatEventName(hyphenate(event)), options];
+  const event = name[2] === ":" ? name.slice(3) : hyphenate(name.slice(2));
+  return [formatEventName(event), options];
 }
 function createInvoker(initialValue, instance) {
   const invoker = (e) => {

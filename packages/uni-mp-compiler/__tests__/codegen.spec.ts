@@ -1,3 +1,4 @@
+import { BindingTypes } from '@vue/compiler-core'
 import { assert } from './testUtils'
 
 describe('compiler: codegen', () => {
@@ -89,6 +90,24 @@ return function render(_ctx, _cache) {
       `(_ctx, _cache) => {
   return { a: _t(_ctx.foo), b: _t(_ctx.bar) }
 }`
+    )
+  })
+  test('setup with literal-const', () => {
+    assert(
+      `{{add(count)}}`,
+      `{{a}}`,
+      `import { toDisplayString as _toDisplayString, t as _t } from "vue"
+
+export function render(_ctx, _cache, $props, $setup, $data, $options) {
+  return { a: _t($setup.add($setup.count)) }
+}`,
+      {
+        inline: false,
+        bindingMetadata: {
+          add: BindingTypes.SETUP_CONST,
+          count: BindingTypes.LITERAL_CONST,
+        },
+      }
     )
   })
 })

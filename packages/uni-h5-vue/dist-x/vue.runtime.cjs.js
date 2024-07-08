@@ -5717,8 +5717,8 @@ function validateProps(rawProps, props, instance) {
   }
 }
 function validateProp(name, value, prop, props, isAbsent) {
-  const { type, required, validator, skipCheck } = prop;
-  if (required && isAbsent) {
+  const { type, required, validator, skipCheck, default: defaultValue } = prop;
+  if (defaultValue == null && required && isAbsent) {
     warn$1('Missing required prop: "' + name + '"');
     return;
   }
@@ -6146,7 +6146,7 @@ function createHydrationFunctions(rendererInternals) {
         break;
       default:
         if (shapeFlag & 1) {
-          if ((domType !== 1 /* ELEMENT */ || vnode.type.toLowerCase() !== node.tagName.toLowerCase()) && !isTemplateNode(node)) {
+          if ((domType !== 1 /* ELEMENT */ || vnode.type.toLowerCase() !== node.tagName.toLowerCase()) && (domType !== 1 /* ELEMENT */ || vnode.type.toLowerCase() !== "uni-" + node.tagName.toLowerCase() && vnode.type !== "uni-cloud-db-element" && node.tagName !== "UNICLOUD-DB") && !isTemplateNode(node)) {
             nextNode = onMismatch();
           } else {
             nextNode = hydrateElement(

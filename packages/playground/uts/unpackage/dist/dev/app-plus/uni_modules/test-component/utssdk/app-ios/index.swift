@@ -65,11 +65,11 @@ public class AnimationViewComponent : UTSComponent<UIView> {
         }
         if (animationUrl != nil) {
             LottieAnimation.loadedFrom(url: animationUrl!, closure: {
-            (_ animation: LottieAnimation) -> Void in
+            (animation: LottieAnimation) -> Void in
             if (animation != nil) {
                 self.animationView.animation = animation;
                 self.animationView.play(completion: {
-                (_ isFinish: Bool) -> Void in
+                (isFinish: Bool) -> Void in
                 if (isFinish) {
                     self.fireEvent("bindended");
                 }

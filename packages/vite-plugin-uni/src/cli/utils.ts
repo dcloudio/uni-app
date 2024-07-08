@@ -12,6 +12,7 @@ import {
   initPreContext,
   isInHBuilderX,
   output,
+  parseManifestJsonOnce,
   parseScripts,
 } from '@dcloudio/uni-cli-shared'
 
@@ -92,7 +93,13 @@ export function initEnv(
     if ((options as BuildOptions).watch) {
       process.env.NODE_ENV = 'development'
     } else {
-      process.env.NODE_ENV = 'production'
+      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+        if (!process.env.NODE_ENV) {
+          process.env.NODE_ENV = 'production'
+        }
+      } else {
+        process.env.NODE_ENV = 'production'
+      }
     }
   }
   if (!options.mode) {
@@ -130,6 +137,19 @@ export function initEnv(
 
   process.env.UNI_PLATFORM = options.platform as UniApp.PLATFORM
 
+  if (process.env.UNI_PLATFORM === 'app-harmony') {
+    const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+    const projectPath = manifestJson['app-harmony']?.projectPath
+    if (projectPath) {
+      process.env.UNI_APP_HARMONY_PROJECT_PATH = path.resolve(projectPath)
+      // 指定了鸿蒙项目根目录
+      process.env.UNI_OUTPUT_DIR = path.resolve(
+        process.env.UNI_APP_HARMONY_PROJECT_PATH,
+        `entry/src/main/resources/rawfile/apps/HBuilder/www`
+      )
+    }
+  }
+
   const hasOutputDir = !!process.env.UNI_OUTPUT_DIR
   if (hasOutputDir) {
     ;(options as BuildOptions).outDir = process.env.UNI_OUTPUT_DIR
@@ -156,6 +176,22 @@ export function initEnv(
         path.resolve(process.env.UNI_OUTPUT_DIR, options.subpackage)
     }
   }
+  const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
+
+  process.env.UNI_APP_X_CACHE_DIR =
+    process.env.UNI_APP_X_CACHE_DIR ||
+    path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
+
+  process.env.HX_DEPENDENCIES_DIR =
+    process.env.HX_DEPENDENCIES_DIR ||
+    path.resolve(process.env.UNI_OUTPUT_DIR, '../hx/' + baseOutDir)
+
+  process.env.UNI_MODULES_ENCRYPT_CACHE_DIR = path.resolve(
+    process.env.UNI_APP_X_CACHE_DIR,
+    '.encrypt',
+    process.env.NODE_ENV === 'development' ? 'dev' : 'build',
+    process.env.UNI_UTS_PLATFORM
+  )
 
   initAutomator(options)
 
@@ -263,6 +299,8 @@ function initUTSPlatform(options: CliOptions) {
     process.env.UNI_UTS_TARGET_LANGUAGE = 'kotlin'
   } else if (process.env.UNI_UTS_PLATFORM === 'app-ios') {
     process.env.UNI_UTS_TARGET_LANGUAGE = 'swift'
+  } else if (process.env.UNI_UTS_PLATFORM === 'app-harmony') {
+    process.env.UNI_UTS_TARGET_LANGUAGE = 'arkts'
   }
 }
 

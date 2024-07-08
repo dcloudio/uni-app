@@ -118,13 +118,23 @@ export function resolveComponentsLibPath() {
         dir
       )
     } else {
-      componentsLibPath = path.join(
-        resolveWithSymlinks(
-          '@dcloudio/uni-components/package.json',
-          process.env.UNI_INPUT_DIR
-        ),
-        dir
-      )
+      try {
+        componentsLibPath = path.join(
+          resolveWithSymlinks(
+            '@dcloudio/uni-components/package.json',
+            process.env.UNI_INPUT_DIR
+          ),
+          dir
+        )
+      } catch (e) {
+        componentsLibPath = path.join(
+          resolveWithSymlinks(
+            '@dcloudio/uni-components/package.json',
+            process.cwd()
+          ),
+          dir
+        )
+      }
     }
   }
   return componentsLibPath

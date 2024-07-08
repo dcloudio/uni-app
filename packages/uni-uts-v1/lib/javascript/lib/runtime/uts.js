@@ -138,6 +138,17 @@ function isAnyType(type) {
 function isUTSType(type) {
     return type && type.prototype && type.prototype instanceof UTSType;
 }
+function normalizeGenericValue(value, genericType, isJSONParse = false) {
+    return value == null
+        ? null
+        : isBaseType(genericType) ||
+            isUnknownType(genericType) ||
+            isAnyType(genericType)
+            ? value
+            : genericType === Array
+                ? new Array(...value)
+                : new genericType(value, undefined, isJSONParse);
+}
 class UTSType {
     static get$UTSMetadata$(...args) {
         return {
@@ -175,16 +186,23 @@ class UTSType {
                     super();
                     // @ts-ignore
                     return options.map((item) => {
-                        return item == null
-                            ? null
-                            : isBaseType(generics[0]) ||
-                                isUnknownType(generics[0]) ||
-                                isAnyType(generics[0])
-                                ? item
-                                : generics[0] === Array
-                                    ? new Array(...item)
-                                    : new generics[0](item, undefined, isJSONParse);
+                        return normalizeGenericValue(item, generics[0], isJSONParse);
                     });
+                }
+            };
+        }
+        else if (parent === Map || parent === WeakMap) {
+            return class UTSMap extends UTSType {
+                constructor(options, isJSONParse = false) {
+                    if (options == null || typeof options !== 'object') {
+                        throw new UTSError(`Failed to contruct type, ${options} is not an object`);
+                    }
+                    super();
+                    const obj = new parent();
+                    for (const key in options) {
+                        obj.set(normalizeGenericValue(key, generics[0], isJSONParse), normalizeGenericValue(options[key], generics[1], isJSONParse));
+                    }
+                    return obj;
                 }
             };
         }
@@ -638,3 +656,5 @@ const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
 realGlobal.UniError = UniError;
 realGlobal.UTS = UTS;
+
+export { UTSJSONObject$1 as UTSJSONObject, UniError };

@@ -27,6 +27,7 @@ import type {
   TsType,
   TsTypeAliasDeclaration,
   TsTypeAnnotation,
+  TsTypeElement,
   VariableDeclaration,
   VariableDeclarationKind,
 } from '../types/types'
@@ -699,6 +700,7 @@ interface ProxyInterface {
   options: {
     methods: Record<string, any>
     props: string[]
+    setters: Record<string, Parameter>
   }
 }
 
@@ -724,6 +726,8 @@ interface ProxyClass {
     staticMethods: Record<string, any>
     props: string[]
     staticProps: string[]
+    setters: Record<string, Parameter>
+    staticSetters: Record<string, Parameter>
   }
   isDefault: boolean
   isVar: boolean
@@ -857,6 +861,8 @@ function genProxyClass(
     staticMethods: Record<string, any>
     props: string[]
     staticProps: string[]
+    setters: Record<string, Parameter>
+    staticSetters: Record<string, Parameter>
   },
   isDefault = false,
   isVar = false,
@@ -949,6 +955,16 @@ function resolveIdentifierType(
   return ''
 }
 
+// function request<T>(options : RequestOptions<T>, _t : T.Type) : RequestTask
+function isTDotType(pat: BindingIdentifier) {
+  const typeAnn = pat.typeAnnotation?.typeAnnotation
+  return (
+    typeAnn?.type === 'TsTypeReference' &&
+    typeAnn.typeName.type === 'TsQualifiedName' &&
+    typeAnn.typeName.right.value === 'Type'
+  )
+}
+
 function resolveFunctionParams(
   types: Types,
   params: Param[],
@@ -957,22 +973,25 @@ function resolveFunctionParams(
   const result: Parameter[] = []
   params.forEach(({ pat }) => {
     if (pat.type === 'Identifier') {
-      const param: Parameter = {
-        name: pat.value,
-        type: resolveIdentifierType(
-          types,
-          pat as BindingIdentifier,
-          resolveTypeReferenceName
-        ),
+      if (!isTDotType(pat)) {
+        // ignore T.Type
+        const param: Parameter = {
+          name: pat.value,
+          type: resolveIdentifierType(
+            types,
+            pat as BindingIdentifier,
+            resolveTypeReferenceName
+          ),
+        }
+        // A | null
+        if (
+          (pat as BindingIdentifier).typeAnnotation?.typeAnnotation.type ===
+          'TsUnionType'
+        ) {
+          param.default = 'UTSNull'
+        }
+        result.push(param)
       }
-      // A | null
-      if (
-        (pat as BindingIdentifier).typeAnnotation?.typeAnnotation.type ===
-        'TsUnionType'
-      ) {
-        param.default = 'UTSNull'
-      }
-      result.push(param)
     } else if (pat.type === 'AssignmentPattern') {
       if (pat.left.type === 'Identifier') {
         const param: Parameter = {
@@ -1039,6 +1058,27 @@ function genFunctionDeclaration(
   )
 }
 
+function parseInterfaceBody(
+  types: Types,
+  decl: TsInterfaceDeclaration
+): TsTypeElement[] {
+  const elements = decl.body.body.slice()
+  decl.extends.forEach((extend) => {
+    if (
+      extend.expression.type === 'Identifier' &&
+      types.interface[extend.expression.value]
+    ) {
+      elements.push(
+        ...parseInterfaceBody(
+          types,
+          types.interface[extend.expression.value].decl
+        )
+      )
+    }
+  })
+  return elements
+}
+
 function genInterfaceDeclaration(
   types: Types,
   decl: TsInterfaceDeclaration,
@@ -1047,7 +1087,10 @@ function genInterfaceDeclaration(
   const cls = decl.id.value
   const methods: ProxyClass['options']['methods'] = {}
   const props: string[] = []
-  decl.body.body.forEach((item) => {
+  const setters: Record<string, Parameter> = {}
+  const elements = parseInterfaceBody(types, decl)
+
+  elements.forEach((item) => {
     if (item.type === 'TsMethodSignature') {
       if (item.key.type === 'Identifier') {
         let returnOptions = {}
@@ -1079,6 +1122,18 @@ function genInterfaceDeclaration(
     } else if (item.type === 'TsPropertySignature') {
       if (item.key.type === 'Identifier') {
         props.push(item.key.value)
+        if (item.typeAnnotation) {
+          const params = resolveFunctionParams(
+            types,
+            tsParamsToParams([
+              createBindingIdentifier(item.key.value, item.typeAnnotation),
+            ]),
+            resolveTypeReferenceName
+          )
+          if (params.length) {
+            setters[item.key.value] = params[0]
+          }
+        }
       }
     }
   })
@@ -1088,6 +1143,7 @@ function genInterfaceDeclaration(
     options: {
       methods,
       props,
+      setters,
     },
   }
 }
@@ -1118,6 +1174,8 @@ function genClassDeclaration(
   const staticMethods: ProxyClass['options']['staticMethods'] = {}
   const props: string[] = []
   const staticProps: string[] = []
+  const setters: Record<string, Parameter> = {}
+  const staticSetters: Record<string, Parameter> = {}
   const isHook = decl.implements.some(
     (implement) =>
       implement.expression.type === 'Identifier' &&
@@ -1132,35 +1190,53 @@ function genClassDeclaration(
       )
     } else if (item.type === 'ClassMethod') {
       if (item.key.type === 'Identifier') {
-        let returnOptions = {}
-        if (item.function.returnType) {
-          let returnInterface = parseReturnInterface(
-            types,
-            item.function.returnType.typeAnnotation
-          )
-          if (returnInterface) {
-            returnOptions = {
-              type: 'interface',
-              options: returnInterface,
+        if (item.kind === 'getter' || item.kind === 'setter') {
+          const curProps = item.isStatic ? staticProps : props
+          if (!curProps.includes(item.key.value)) {
+            curProps.push(item.key.value)
+          }
+          if (item.kind === 'setter') {
+            const params = resolveFunctionParams(
+              types,
+              item.function.params,
+              resolveTypeReferenceName
+            )
+            if (params.length) {
+              ;(item.isStatic ? staticSetters : setters)[item.key.value] =
+                params[0]
             }
           }
-        }
-
-        const name = item.key.value
-        const value = {
-          async:
-            item.function.async || isReturnPromise(item.function.returnType),
-          params: resolveFunctionParams(
-            types,
-            item.function.params,
-            resolveTypeReferenceName
-          ),
-          returnOptions,
-        }
-        if (item.isStatic) {
-          staticMethods[name + 'ByJs'] = value
         } else {
-          methods[name + 'ByJs'] = value
+          let returnOptions = {}
+          if (item.function.returnType) {
+            let returnInterface = parseReturnInterface(
+              types,
+              item.function.returnType.typeAnnotation
+            )
+            if (returnInterface) {
+              returnOptions = {
+                type: 'interface',
+                options: returnInterface,
+              }
+            }
+          }
+
+          const name = item.key.value
+          const value = {
+            async:
+              item.function.async || isReturnPromise(item.function.returnType),
+            params: resolveFunctionParams(
+              types,
+              item.function.params,
+              resolveTypeReferenceName
+            ),
+            returnOptions,
+          }
+          if (item.isStatic) {
+            staticMethods[name + 'ByJs'] = value
+          } else {
+            methods[name + 'ByJs'] = value
+          }
         }
       }
     } else if (item.type === 'ClassProperty') {
@@ -1170,12 +1246,33 @@ function genClassDeclaration(
         } else {
           props.push(item.key.value)
         }
+        if (item.typeAnnotation) {
+          const params = resolveFunctionParams(
+            types,
+            tsParamsToParams([
+              createBindingIdentifier(item.key.value, item.typeAnnotation),
+            ]),
+            resolveTypeReferenceName
+          )
+          if (params.length) {
+            ;(item.isStatic ? staticSetters : setters)[item.key.value] =
+              params[0]
+          }
+        }
       }
     }
   })
   return genProxyClass(
     cls,
-    { constructor, methods, staticMethods, props, staticProps },
+    {
+      constructor,
+      methods,
+      staticMethods,
+      props,
+      staticProps,
+      setters,
+      staticSetters,
+    },
     isDefault,
     false,
     isHook
@@ -1251,15 +1348,18 @@ function genVariableDeclaration(
   }
 }
 
-// function createBindingIdentifier(name: string, typeAnnotation?: TsTypeAnnotation): BindingIdentifier {
-//   return {
-//     type: 'Identifier',
-//     value: name,
-//     optional: false,
-//     span: {} as Span,
-//     typeAnnotation
-//   }
-// }
+function createBindingIdentifier(
+  name: string,
+  typeAnnotation?: TsTypeAnnotation
+): BindingIdentifier {
+  return {
+    type: 'Identifier',
+    value: name,
+    optional: false,
+    span: {} as Span,
+    typeAnnotation,
+  }
+}
 
 function createIdentifier(name: string): Identifier {
   return {

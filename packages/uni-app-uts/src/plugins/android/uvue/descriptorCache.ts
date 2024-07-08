@@ -17,8 +17,9 @@ export function getResolvedOptions(): ResolvedOptions {
   return {
     root: process.env.UNI_INPUT_DIR,
     sourceMap:
-      process.env.UNI_APP_SOURCEMAP === 'true' ||
-      process.env.NODE_ENV === 'development',
+      (process.env.UNI_APP_SOURCEMAP === 'true' ||
+        process.env.NODE_ENV === 'development') &&
+      process.env.UNI_COMPILE_TARGET !== 'uni_modules',
     // eslint-disable-next-line no-restricted-globals
     compiler: require('@vue/compiler-sfc'),
     targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE as 'kotlin',

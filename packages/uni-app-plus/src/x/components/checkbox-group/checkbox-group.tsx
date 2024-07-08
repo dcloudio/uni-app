@@ -3,12 +3,13 @@ import { defineBuiltInComponent } from '@dcloudio/uni-components'
 import {
   CHECKBOX_GROUP_NAME,
   CHECKBOX_GROUP_ROOT_ELEMENT,
-  checkboxGroupProps,
-  CheckboxInfo,
   UniCheckboxGroupChangeEvent,
   UniCheckboxGroupElement,
+  checkboxGroupProps,
 } from './model'
-import { getCurrentInstance, onMounted, ref, camelize } from 'vue'
+import type { CheckboxInfo } from './model'
+import { camelize, getCurrentInstance, onMounted, ref } from 'vue'
+import { initUniCustomEvent } from '../../utils'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: CHECKBOX_GROUP_NAME,
@@ -51,7 +52,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           i.checked = info.checked
         }
       })
-      emit('change', new UniCheckboxGroupChangeEvent(_getValue()))
+      emit(
+        'change',
+        initUniCustomEvent(
+          uniCheckboxGroupElementRef.value!,
+          new UniCheckboxGroupChangeEvent(_getValue())
+        )
+      )
     }
 
     const _getValue = () => {

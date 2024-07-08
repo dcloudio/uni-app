@@ -48,7 +48,7 @@ export function uniPagesJsonPlugin(): Plugin {
         return {
           code:
             `import './${MANIFEST_JSON_JS}'\n` +
-            normalizeAppPagesJson(pagesJson),
+            normalizeAppPagesJson(pagesJson, process.env.UNI_PLATFORM),
           map: { mappings: '' },
         }
       },

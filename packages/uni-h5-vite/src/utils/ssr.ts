@@ -44,9 +44,11 @@ const SSR_ALIAS: Record<string, string> = {
   '@dcloudio/uni-i18n': '@dcloudio/uni-i18n',
   '@dcloudio/uni-shared': '@dcloudio/uni-shared',
 }
+const SSR_DIST_X_ALIAS_KEY = ['uni-h5-vue', 'uni-h5']
 export const initSsrAliasOnce = once(() => {
   // 重写 package.json 的读取
   const oldJoin = path.join
+  const oldReadFileSync = fs.readFileSync
   const alias = Object.keys(SSR_ALIAS).reduce((alias, key) => {
     const newKey = oldJoin('node_modules', key, 'package.json')
     if (key.endsWith('vue/server-renderer')) {
@@ -69,6 +71,37 @@ export const initSsrAliasOnce = once(() => {
       }
     }
     return res
+  }
+  if (process.env.UNI_APP_X === 'true') {
+    // @ts-expect-error
+    fs.readFileSync = (...args: any[]) => {
+      // @ts-expect-error
+      const res = oldReadFileSync.apply(fs, args)
+      if (
+        !(
+          args.length === 2 &&
+          typeof args[0] === 'string' &&
+          (args[1] === 'utf-8' || args[1] === 'utf8')
+        )
+      ) {
+        return res
+      }
+      const path = normalizePath(args[0])
+      const shouldRedirectToDistX = SSR_DIST_X_ALIAS_KEY.some((key) =>
+        path.endsWith(key + '/package.json')
+      )
+      if (shouldRedirectToDistX) {
+        const pkgData = JSON.parse(res as string)
+        if (pkgData.module) {
+          pkgData.module = pkgData.module.replace(/dist\//, 'dist-x/')
+        }
+        if (pkgData.main) {
+          pkgData.main = pkgData.main.replace(/dist\//, 'dist-x/')
+        }
+        return JSON.stringify(pkgData, null, 2)
+      }
+      return res
+    }
   }
 })
 

@@ -43,3 +43,12 @@ export function $dispatchParent(
     }
   }
 }
+
+export function initUniCustomEvent<T extends UniEvent>(
+  element: UniElement,
+  e: T
+): T {
+  e.target = element
+  e.currentTarget = element
+  return e
+}

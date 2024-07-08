@@ -19,8 +19,9 @@ import {
 } from '@dcloudio/uni-shared'
 import { UniNode } from '../elements/UniNode'
 import { createInvoker, createWxsEventInvoker } from '../modules/events'
-import { type UniCustomElement, createWrapper } from '.'
-import { $, removeElement } from '../page'
+import type { UniCustomElement } from '.'
+import { createWrapper } from '../createWrapper'
+import { $, removeElement } from '../store'
 import {
   JOB_PRIORITY_REBUILD,
   JOB_PRIORITY_RENDERJS,

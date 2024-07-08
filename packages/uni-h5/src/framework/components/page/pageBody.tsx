@@ -8,7 +8,7 @@ import PageRefresh from './page-refresh/component.vue'
 
 import { usePageRefresh } from './page-refresh'
 
-export default defineSystemComponent({
+export default /*#__PURE__*/ defineSystemComponent({
   name: 'PageBody',
   setup(props, ctx) {
     const pageMeta = (__UNI_FEATURE_PULL_DOWN_REFRESH__ &&

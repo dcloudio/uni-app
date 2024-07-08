@@ -58,7 +58,7 @@ function getValueString(value: any, type: string, maxlength?: number) {
   if (type === 'number' && isNaN(Number(value))) {
     value = ''
   }
-  const valueStr = value === null ? '' : String(value)
+  const valueStr = value === null || value === void 0 ? '' : String(value)
   if (maxlength == void 0) {
     return valueStr
   }
@@ -92,11 +92,9 @@ export const props = /*#__PURE__*/ extend(
     },
     modelValue: {
       type: [String, Number],
-      default: '',
     },
     value: {
       type: [String, Number],
-      default: '',
     },
     disabled: {
       type: [Boolean, String],
@@ -193,7 +191,7 @@ export const emit = [
 
 type Props = ExtractPropTypes<typeof props>
 
-interface State {
+export interface State {
   value: string
   maxlength: number
   focus: boolean | string
@@ -232,18 +230,30 @@ function useBase(
       return isNaN(maxlength) ? 140 : maxlength
     }
   })
-  // #if _X_
-  // @ts-expect-error
-  const value =
-    getValueString(props.modelValue, props.type, maxlength.value) ||
-    getValueString(props.value, props.type, maxlength.value)
-  // #endif
-  // #if !_X_
-  // @ts-expect-error
-  const value =
-    getValueString(props.modelValue, props.type) ||
-    getValueString(props.value, props.type)
-  // #endif
+  let value = ''
+  if (__X__) {
+    // case: 如果 modelValue 和 value 都存在，优先使用 modelValue
+    // case: 如果 modelValue 未设置，读取 value
+
+    const modelValueString = getValueString(
+      props.modelValue,
+      props.type,
+      maxlength.value
+    )
+    const valueString = getValueString(props.value, props.type, maxlength.value)
+
+    // prettier-ignore
+    value =
+      props.modelValue !== void 0
+        ? modelValueString !== null && modelValueString !== void 0
+          ? modelValueString
+          : valueString
+        : valueString
+  } else {
+    value =
+      getValueString(props.modelValue, props.type) ||
+      getValueString(props.value, props.type)
+  }
   const state: State = reactive({
     value,
     valueOrigin: value,
@@ -278,26 +288,27 @@ function useValueSync(
   emit: SetupContext['emit'],
   trigger: CustomEventTrigger
 ) {
-  // #if _X_
-  //@ts-expect-error
-  const valueChangeFn = throttle((val: any) => {
-    state.value = getValueString(val, props.type, state.maxlength)
-  }, 100)
-  // #endif
-  // #if !_X_
-  //@ts-expect-error
-  const valueChangeFn = debounce(
-    (val: any) => {
-      state.value = getValueString(val, props.type)
-    },
-    100,
-    { setTimeout, clearTimeout }
-  )
-  // #endif
-  watch(() => props.modelValue, valueChangeFn)
-  watch(() => props.value, valueChangeFn)
+  let valueChangeFn:
+    | ReturnType<typeof throttle>
+    | ReturnType<typeof debounce>
+    | null = null
+  if (__X__) {
+    valueChangeFn = throttle((val: any) => {
+      state.value = getValueString(val, props.type, state.maxlength)
+    }, 100)
+  } else {
+    valueChangeFn = debounce(
+      (val: any) => {
+        state.value = getValueString(val, props.type)
+      },
+      100,
+      { setTimeout, clearTimeout }
+    )
+  }
+  watch(() => props.modelValue, valueChangeFn!)
+  watch(() => props.value, valueChangeFn!)
   const triggerInputFn = throttle((event: Event, detail: InputEventDetail) => {
-    valueChangeFn.cancel()
+    valueChangeFn!.cancel()
     emit('update:modelValue', detail.value)
     emit('update:value', detail.value)
     trigger('input', event, detail)
@@ -307,14 +318,14 @@ function useValueSync(
     detail: InputEventDetail,
     force: boolean
   ) => {
-    valueChangeFn.cancel()
+    valueChangeFn!.cancel()
     triggerInputFn(event, detail)
     if (force) {
       triggerInputFn.flush()
     }
   }
   onBeforeMount(() => {
-    valueChangeFn.cancel()
+    valueChangeFn!.cancel()
     triggerInputFn.cancel()
   })
   return {

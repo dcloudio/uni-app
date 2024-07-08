@@ -31,22 +31,32 @@ export const getDeviceInfo = defineSyncApi<typeof uni.getDeviceInfo>(
       system,
       deviceOrientation,
       deviceType,
+      osname,
+      osversion,
     } = browserInfo
 
-    return {
-      brand,
-      deviceBrand,
-      deviceModel,
-      devicePixelRatio: __NODE_JS__ ? 1 : window.devicePixelRatio,
-      deviceId: __NODE_JS__
-        ? Date.now() + '' + Math.floor(Math.random() * 1e7)
-        : deviceId(),
-      deviceOrientation,
-      deviceType,
-      model,
-      platform,
-      system,
-    }
+    return extend(
+      {
+        brand,
+        deviceBrand,
+        deviceModel,
+        devicePixelRatio: __NODE_JS__ ? 1 : window.devicePixelRatio,
+        deviceId: __NODE_JS__
+          ? Date.now() + '' + Math.floor(Math.random() * 1e7)
+          : deviceId(),
+        deviceOrientation,
+        deviceType,
+        model,
+        platform,
+        system,
+      },
+      __X__
+        ? {
+            osName: osname ? osname.toLocaleLowerCase() : undefined,
+            osVersion: osversion,
+          }
+        : {}
+    )
   }
 )
 export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
@@ -55,25 +65,36 @@ export const getAppBaseInfo = defineSyncApi<typeof uni.getAppBaseInfo>(
     initBrowserInfo()
     const { theme, language, browserName, browserVersion } = browserInfo
 
-    return {
-      appId: __uniConfig.appId,
-      appName: __uniConfig.appName,
-      appVersion: __uniConfig.appVersion,
-      appVersionCode: __uniConfig.appVersionCode,
-      appLanguage: getLocale ? getLocale() : language,
-      enableDebug: false,
-      hostSDKVersion: undefined,
-      hostPackageName: undefined,
-      hostFontSizeSetting: undefined,
-      hostName: browserName,
-      hostVersion: browserVersion,
-      hostTheme: theme,
-      hostLanguage: language,
-      language,
-      SDKVersion: '',
-      theme,
-      version: '',
-    }
+    return extend(
+      {
+        appId: __uniConfig.appId,
+        appName: __uniConfig.appName,
+        appVersion: __uniConfig.appVersion,
+        appVersionCode: __uniConfig.appVersionCode,
+        appLanguage: getLocale ? getLocale() : language,
+        enableDebug: false,
+        hostSDKVersion: undefined,
+        hostPackageName: undefined,
+        hostFontSizeSetting: undefined,
+        hostName: browserName,
+        hostVersion: browserVersion,
+        hostTheme: theme,
+        hostLanguage: language,
+        language,
+        SDKVersion: '',
+        theme,
+        version: '',
+      },
+      __X__
+        ? {
+            uniCompilerVersion: __uniConfig.compilerVersion,
+            uniRuntimeVersion: __uniConfig.compilerVersion,
+            uniCompilerVersionCode: parseFloat(__uniConfig.compilerVersion),
+            uniRuntimeVersionCode: parseFloat(__uniConfig.compilerVersion),
+            isUniAppX: true,
+          }
+        : {}
+    )
   }
 )
 

@@ -1,4 +1,4 @@
-import type { ComponentInternalInstance } from '@vue/runtime-core'
+import type { ComponentInternalInstance } from 'vue'
 import { extend } from '@vue/shared'
 
 import type { UniElement } from './Element'

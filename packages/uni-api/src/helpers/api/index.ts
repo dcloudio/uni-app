@@ -5,7 +5,7 @@ import {
   isPlainObject,
   isString,
 } from '@vue/shared'
-import { LINEFEED } from '@dcloudio/uni-shared'
+
 import { validateProtocols } from '../protocol'
 import {
   createAsyncApiCallback,
@@ -26,6 +26,7 @@ function formatApiArgs<T extends ApiLike>(
   const params = args[0]
   if (
     !options ||
+    !options.formatArgs ||
     (!isPlainObject(options.formatArgs) && isPlainObject(params))
   ) {
     return
@@ -158,12 +159,12 @@ function wrapperOffApi<T extends ApiLike>(
   }
 }
 
-function normalizeErrMsg(errMsg: string | Error) {
+function parseErrMsg(errMsg?: string | Error) {
   if (!errMsg || isString(errMsg)) {
     return errMsg
   }
   if (errMsg.stack) {
-    console.error(errMsg.message + LINEFEED + errMsg.stack)
+    console.error(errMsg.message + '\n' + errMsg.stack)
     return errMsg.message
   }
   return errMsg as unknown as string
@@ -183,8 +184,8 @@ function wrapperTaskApi<T extends ApiLike>(
     }
     return fn(args, {
       resolve: (res: unknown) => invokeSuccess(id, name, res),
-      reject: (errMsg: string | Error, errRes?: any) =>
-        invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
+      reject: (errMsg?: string | Error, errRes?: any) =>
+        invokeFail(id, name, parseErrMsg(errMsg), errRes),
     })
   }
 }

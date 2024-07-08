@@ -8,7 +8,6 @@ export type createInputOptions = Pick<
 >
 
 const ALL = 'all'
-addInteractListener()
 
 function isWXEnv(): boolean {
   const ua = window.navigator.userAgent.toLowerCase()
@@ -22,6 +21,7 @@ export default function ({
   type,
   extension,
 }: createInputOptions): HTMLInputElement {
+  addInteractListener()
   const inputEl = document.createElement('input')
   inputEl.type = 'file'
 

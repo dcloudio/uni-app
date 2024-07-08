@@ -1,25 +1,31 @@
 import path from 'path'
 
 import { defineConfig } from 'vite'
+
 import jscc from 'rollup-plugin-jscc'
 import strip from '@rollup/plugin-strip'
 import replace from '@rollup/plugin-replace'
 
 import vue from '@vitejs/plugin-vue'
 import vueJsx from '@vitejs/plugin-vue-jsx'
-
+import AutoImport from 'unplugin-auto-import/vite'
 import type { OutputChunk } from 'rollup'
 
-import { stripOptions } from '@dcloudio/uni-cli-shared'
+import { normalizePath, stripOptions } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { genApiJson } from './api'
+import { uts2ts } from '../../scripts/ext-api'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
 }
 
 const FORMAT = process.env.FORMAT as 'es' | 'cjs'
+
 const isX = process.env.UNI_APP_X === 'true'
+// 暂不启用
+const isNewX = isX && !!process.env.UNI_APP_EXT_API_DIR && false
+
 const rollupPlugins = [
   replace({
     values: {
@@ -39,6 +45,7 @@ const rollupPlugins = [
       // 该插件限制了不能以__开头
       _NODE_JS_: FORMAT === 'cjs' ? 1 : 0,
       _X_: isX ? 1 : 0,
+      _NEW_X_: isNewX ? 1 : 0,
     },
   }),
 ]
@@ -56,7 +63,9 @@ if (FORMAT === 'es') {
           '__IMPORT_META_ENV_BASE_URL__',
           'import.meta.env.BASE_URL'
         )
-        genApiJson(esBundle.code)
+        if (!isNewX) {
+          genApiJson(esBundle.code)
+        }
       }
     },
   })
@@ -105,6 +114,7 @@ export default defineConfig({
     ],
   },
   plugins: [
+    ...(isNewX ? [uniExtApi(), uts2ts()] : []),
     vue({
       template: {
         compilerOptions: {
@@ -168,3 +178,26 @@ export default defineConfig({
     },
   },
 })
+
+// if (!process.env.UNI_APP_EXT_API_DIR) {
+//   console.error(`UNI_APP_EXT_API_DIR is not defined`)
+//   process.exit(0)
+// }
+
+function uniExtApi() {
+  const uniApi = normalizePath(path.resolve(__dirname, '../uni-api'))
+  return AutoImport({
+    include: ['**/*.uts.ts'],
+    imports: [
+      {
+        [uniApi]: [
+          'defineOnApi',
+          'defineOffApi',
+          'defineTaskApi',
+          'defineSyncApi',
+          'defineAsyncApi',
+        ],
+      },
+    ],
+  })
+}

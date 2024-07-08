@@ -1,4 +1,4 @@
-import { ref, computed } from 'vue'
+import { computed, ref } from 'vue'
 import { defineBuiltInComponent } from '../../helpers/component'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
@@ -22,7 +22,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     },
     refresherBackground: {
       type: String,
-      default: '#fff',
+      default: __X__ ? 'transparent' : '#fff',
     },
   },
   setup(props, { slots }) {

@@ -1,5 +1,5 @@
 import { isArray, hasOwn as hasOwn$1, isString, isPlainObject, isObject as isObject$1, toRawType, capitalize, makeMap, isFunction, isPromise, extend, remove, toTypeString } from '@vue/shared';
-import { LINEFEED, parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
+import { parseNVueDataset, once, I18N_JSON_DELIMITERS, Emitter, normalizeStyles, addLeadingSlash, resolveComponentInstance, invokeArrayFns, removeLeadingSlash, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, SCHEME_RE, DATA_RE, cacheStringFunction, formatLog, parseQuery, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, PRIMARY_COLOR, getLen, ON_THEME_CHANGE, TABBAR_HEIGHT, NAVBAR_HEIGHT, sortObject, OFF_THEME_CHANGE, ON_KEYBOARD_HEIGHT_CHANGE, normalizeTabBarStyles, ON_NAVIGATION_BAR_BUTTON_TAP, stringifyQuery as stringifyQuery$1, debounce, ON_PULL_DOWN_REFRESH, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_BACK_PRESS, UniNode, NODE_TYPE_PAGE, ACTION_TYPE_PAGE_CREATE, ACTION_TYPE_PAGE_CREATED, ACTION_TYPE_PAGE_SCROLL, ACTION_TYPE_INSERT, ACTION_TYPE_CREATE, ACTION_TYPE_REMOVE, ACTION_TYPE_ADD_EVENT, ACTION_TYPE_ADD_WXS_EVENT, ACTION_TYPE_REMOVE_EVENT, ACTION_TYPE_SET_ATTRIBUTE, ACTION_TYPE_REMOVE_ATTRIBUTE, ACTION_TYPE_SET_TEXT, ON_READY, ON_UNLOAD, EventChannel, ON_REACH_BOTTOM_DISTANCE, parseUrl, onCreateVueApp, ON_TAB_ITEM_TAP, ON_LAUNCH, ACTION_TYPE_EVENT, createUniEvent, ON_WXS_INVOKE_CALL_METHOD, WEB_INVOKE_APPSERVICE } from '@dcloudio/uni-shared';
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
 
 /*
@@ -323,7 +323,7 @@ function getApiCallbacks(args) {
     }
     return apiCallbacks;
 }
-function normalizeErrMsg$1(errMsg, name) {
+function normalizeErrMsg(errMsg, name) {
     if (!errMsg || errMsg.indexOf(':fail') === -1) {
         return name + ':ok';
     }
@@ -340,7 +340,7 @@ function createAsyncApiCallback(name, args = {}, { beforeAll, beforeSuccess } = 
     const callbackId = invokeCallbackId++;
     addInvokeCallback(callbackId, name, (res) => {
         res = res || {};
-        res.errMsg = normalizeErrMsg$1(res.errMsg, name);
+        res.errMsg = normalizeErrMsg(res.errMsg, name);
         isFunction(beforeAll) && beforeAll(res);
         if (res.errMsg === name + ':ok') {
             isFunction(beforeSuccess) && beforeSuccess(res, args);
@@ -485,6 +485,7 @@ function promisify(name, fn) {
 function formatApiArgs(args, options) {
     const params = args[0];
     if (!options ||
+        !options.formatArgs ||
         (!isPlainObject(options.formatArgs) && isPlainObject(params))) {
         return;
     }
@@ -572,12 +573,12 @@ function wrapperOffApi(name, fn, options) {
         }
     };
 }
-function normalizeErrMsg(errMsg) {
+function parseErrMsg(errMsg) {
     if (!errMsg || isString(errMsg)) {
         return errMsg;
     }
     if (errMsg.stack) {
-        console.error(errMsg.message + LINEFEED + errMsg.stack);
+        console.error(errMsg.message + '\n' + errMsg.stack);
         return errMsg.message;
     }
     return errMsg;
@@ -591,7 +592,7 @@ function wrapperTaskApi(name, fn, protocol, options) {
         }
         return fn(args, {
             resolve: (res) => invokeSuccess(id, name, res),
-            reject: (errMsg, errRes) => invokeFail(id, name, normalizeErrMsg(errMsg), errRes),
+            reject: (errMsg, errRes) => invokeFail(id, name, parseErrMsg(errMsg), errRes),
         });
     };
 }
@@ -1001,10 +1002,17 @@ function getDefaultLocale() {
 function initVueI18n(locale, messages = {}, fallbackLocale, watcher) {
     // 兼容旧版本入参
     if (typeof locale !== 'string') {
-        [locale, messages] = [
+        // ;[locale, messages] = [
+        //   messages as unknown as string,
+        //   locale as unknown as LocaleMessages,
+        // ]
+        // 暂不使用数组解构，uts编译器暂未支持。
+        const options = [
             messages,
             locale,
         ];
+        locale = options[0];
+        messages = options[1];
     }
     if (typeof locale !== 'string') {
         // 因为小程序平台，uni-i18n 和 uni 互相引用，导致此时访问 uni 时，为 undefined
@@ -1977,9 +1985,9 @@ function getRealPath(filepath) {
     }
     // 相对资源
     if (filepath.indexOf('../') === 0 || filepath.indexOf('./') === 0) {
-        // @ts-expect-error app-view
+        // app-view
         if (typeof __id__ === 'string') {
-            // @ts-expect-error app-view
+            // app-view
             return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
         }
         else {
@@ -9946,6 +9954,81 @@ class CanvasContext {
             fontFamily: 'sans-serif',
         };
     }
+    setFillStyle(color) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setStrokeStyle(color) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setShadow(offsetX, offsetY, blur, color) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    addColorStop(stop, color) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setLineWidth(lineWidth) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setLineCap(lineCap) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setLineJoin(lineJoin) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setLineDash(pattern, offset) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setMiterLimit(miterLimit) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    fillRect(x, y, width, height) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    strokeRect(x, y, width, height) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    clearRect(x, y, width, height) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    fill() {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    stroke() {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    scale(scaleWidth, scaleHeight) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    rotate(rotate) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    translate(x, y) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setFontSize(fontSize) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    fillText(text, x, y, maxWidth) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setTextAlign(align) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setTextBaseline(textBaseline) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    drawImage(imageResource, dx, dy, dWidth, dHeigt, sx, sy, sWidth, sHeight) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setGlobalAlpha(alpha) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    strokeText(text, x, y, maxWidth) {
+        console.log('initCanvasContextProperty implemented.');
+    }
+    setTransform(scaleX, skewX, skewY, scaleY, translateX, translateY) {
+        console.log('initCanvasContextProperty implemented.');
+    }
     draw(reserve = false, callback) {
         var actions = [...this.actions];
         this.actions = [];
@@ -9974,15 +10057,17 @@ class CanvasContext {
             return new Pattern(image, repetition);
         }
     }
-    measureText(text) {
+    measureText(text, callback) {
         const font = this.state.font;
         let width = 0;
         {
-            const webview = plus.webview
-                .all()
-                .find((webview) => webview.getURL().endsWith('www/__uniappview.html'));
-            if (webview) {
-                width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`));
+            {
+                const webview = plus.webview
+                    .all()
+                    .find((webview) => webview.getURL().endsWith('www/__uniappview.html'));
+                if (webview) {
+                    width = Number(webview.evalJSSync(`(${measureText.toString()})(${JSON.stringify(text)},${JSON.stringify(font)})`));
+                }
             }
         }
         return new TextMetrics(width);
@@ -13262,15 +13347,15 @@ function parseTheme(pageStyle) {
 function useTabBarThemeChange(tabBar, options) {
     if (__uniConfig.darkmode) {
         const fn = () => {
-            const { list = [], color, selectedColor, backgroundColor, borderStyle, } = parseTheme(options);
-            tabBar &&
+            const { list = [], color, selectedColor, backgroundColor, borderStyle, midButton, } = parseTheme(options);
+            if (tabBar) {
                 tabBar.setTabBarStyle({
                     color,
                     selectedColor,
                     backgroundColor,
                     borderStyle,
+                    midButton,
                 });
-            tabBar &&
                 tabBar.setTabBarItems({
                     list: list.map((item) => ({
                         iconPath: item.iconPath,
@@ -13278,6 +13363,7 @@ function useTabBarThemeChange(tabBar, options) {
                         visible: item.visible,
                     })),
                 });
+            }
         };
         // 由于应用首次启动获取不到手机 theme 应用首次启动设置下 tabBar
         fn();
@@ -17351,7 +17437,7 @@ function normalizeArg(arg) {
     return arg;
 }
 function initUTSInstanceMethod(async, opts, instanceId, proxy) {
-    return initProxyFunction(async, opts, instanceId, proxy);
+    return initProxyFunction('method', async, opts, instanceId, proxy);
 }
 function getProxy() {
     if (!proxy) {
@@ -17410,7 +17496,7 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -17420,7 +17506,7 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
             }
         }
         else {
-            console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`);
+            console.error(`${pkg}${cls}.${methodName} ${name} is not found`);
         }
     };
     const baseArgs = instanceId
@@ -17428,7 +17514,8 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
             moduleName,
             moduleType,
             id: instanceId,
-            name: propOrMethod,
+            type,
+            name: methodName,
             method: methodParams,
         }
         : {
@@ -17436,7 +17523,8 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
             moduleType,
             package: pkg,
             class: cls,
-            name: method || propOrMethod,
+            name: method || methodName,
+            type,
             companion,
             method: methodParams,
         };
@@ -17482,7 +17570,7 @@ function initUTSStaticMethod(async, opts) {
             opts.method = 's_' + opts.name;
         }
     }
-    return initProxyFunction(async, opts, 0);
+    return initProxyFunction('method', async, opts, 0);
 }
 const initUTSProxyFunction = initUTSStaticMethod;
 function parseClassMethodName(name, methods) {
@@ -17497,8 +17585,11 @@ function isUndefined(value) {
 function isProxyInterfaceOptions(options) {
     return !isUndefined(options.instanceId);
 }
+function parseClassPropertySetter(name) {
+    return '__$set' + capitalize(name);
+}
 function initUTSProxyClass(options) {
-    const { moduleName, moduleType, package: pkg, class: cls, methods, props, errMsg, } = options;
+    const { moduleName, moduleType, package: pkg, class: cls, methods, props, setters, errMsg, } = options;
     const baseOptions = {
         moduleName,
         moduleType,
@@ -17510,6 +17601,7 @@ function initUTSProxyClass(options) {
     let constructorParams = [];
     let staticMethods = {};
     let staticProps = [];
+    let staticSetters = {};
     let isProxyInterface = false;
     if (isProxyInterfaceOptions(options)) {
         isProxyInterface = true;
@@ -17519,6 +17611,7 @@ function initUTSProxyClass(options) {
         constructorParams = options.constructor.params;
         staticMethods = options.staticMethods;
         staticProps = options.staticProps;
+        staticSetters = options.staticSetters;
     }
     // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
     if (isUTSiOS()) {
@@ -17536,7 +17629,7 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -17568,6 +17661,7 @@ function initUTSProxyClass(options) {
                                 moduleName,
                                 moduleType,
                                 id: instance.__instanceId,
+                                type: 'getter',
                                 name: name,
                                 errMsg,
                             });
@@ -17575,10 +17669,28 @@ function initUTSProxyClass(options) {
                     }
                     return target[name];
                 },
+                set(_, name, newValue) {
+                    if (props.includes(name)) {
+                        const setter = parseClassPropertySetter(name);
+                        if (!target[setter]) {
+                            const param = setters[name];
+                            if (param) {
+                                target[setter] = initProxyFunction('setter', false, extend({
+                                    name: name,
+                                    params: [param],
+                                }, baseOptions), instance.__instanceId, proxy);
+                            }
+                        }
+                        target[parseClassPropertySetter(name)](newValue);
+                        return true;
+                    }
+                    return false;
+                },
             });
             return proxy;
         }
     };
+    const staticPropSetterCache = {};
     const staticMethodCache = {};
     return new Proxy(ProxyClass, {
         get(target, name, receiver) {
@@ -17587,15 +17699,41 @@ function initUTSProxyClass(options) {
                 if (!staticMethodCache[name]) {
                     const { async, params, return: returnOptions } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params, return: returnOptions }, baseOptions));
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
+                        name,
+                        companion: true,
+                        params,
+                        return: returnOptions,
+                    }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
             if (staticProps.includes(name)) {
-                // 静态属性
-                return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
+                return invokePropGetter(extend({
+                    name: name,
+                    companion: true,
+                    type: 'getter',
+                }, baseOptions));
             }
             return Reflect.get(target, name, receiver);
+        },
+        set(_, name, newValue) {
+            if (staticProps.includes(name)) {
+                // 静态属性
+                const setter = parseClassPropertySetter(name);
+                if (!staticPropSetterCache[setter]) {
+                    const param = staticSetters[name];
+                    if (param) {
+                        staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
+                            name: name,
+                            params: [param],
+                        }, baseOptions), 0);
+                    }
+                }
+                staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+                return true;
+            }
+            return false;
         },
     });
 }
@@ -18336,7 +18474,7 @@ function createNVueWebview({ path, query, routeOptions, webviewExtras, }) {
 
 let preloadWebview$1;
 function setPreloadWebview(webview) {
-    preloadWebview$1 = webview;
+    return (preloadWebview$1 = webview);
 }
 function getPreloadWebview() {
     return preloadWebview$1;
@@ -18743,7 +18881,7 @@ function showWebview(webview, animationType, animationDuration, showCallback, de
 function backWebview(webview, callback) {
     const children = webview.children();
     if (!children || !children.length) {
-        // 有子 webview
+        // 无子 webview
         return callback();
     }
     // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
@@ -19482,7 +19620,7 @@ function createNVuePage(pageId, webview, pageInstance) {
     }
 }
 
-const $navigateTo = (args, { resolve, reject }) => {
+const $navigateTo =  (args, { resolve, reject }) => {
     const { url, events, animationType, animationDuration } = args;
     const { path, query } = parseUrl(url);
     const [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
@@ -19499,7 +19637,7 @@ const $navigateTo = (args, { resolve, reject }) => {
             .catch(reject);
     }, args.openType === 'appLaunch');
 };
-const navigateTo = defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
+const navigateTo = /*#__PURE__*/ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     // 当前页面触发 onHide
     invokeHook(ON_HIDE);

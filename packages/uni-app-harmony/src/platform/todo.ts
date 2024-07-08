@@ -1,15 +1,20 @@
 import { extend } from '@vue/shared'
 import type {
-  AddIntersectionObserverArgs,
+  // AddIntersectionObserverArgs,
   AddMediaQueryObserverArgs,
-  RemoveIntersectionObserverArgs,
+  // RemoveIntersectionObserverArgs,
   RemoveMediaQueryObserverArgs,
-  SelectorQueryNodeInfo,
-  SelectorQueryRequest,
+  // SelectorQueryNodeInfo,
+  // SelectorQueryRequest,
   SetPageMetaOptions,
 } from '@dcloudio/uni-api'
 import type { ComponentPublicInstance } from 'vue'
 import { type LaunchOptions, createLaunchOptions } from '@dcloudio/uni-core'
+export {
+  requestComponentInfo,
+  addIntersectionObserver,
+  removeIntersectionObserver,
+} from '@dcloudio/uni-app-plus/platform'
 
 export function operateVideoPlayer(
   videoId: string,
@@ -32,20 +37,6 @@ export function operateMap(
 
 export const TEMP_PATH = '' // TODO 需要从applicationContext获取
 
-export function addIntersectionObserver(
-  { reqId, component, options, callback }: AddIntersectionObserverArgs,
-  _pageId: number
-) {
-  // TODO: Implement
-}
-
-export function removeIntersectionObserver(
-  { reqId, component }: RemoveIntersectionObserverArgs,
-  _pageId: number
-) {
-  // TODO: Implement
-}
-
 export function addMediaQueryObserver(
   { reqId, component, options, callback }: AddMediaQueryObserverArgs,
   _pageId: number
@@ -60,13 +51,6 @@ export function removeMediaQueryObserver(
   // TODO: Implement
 }
 
-export function requestComponentInfo(
-  pageVm: ComponentPublicInstance,
-  reqs: Array<SelectorQueryRequest>,
-  callback: (result: Array<SelectorQueryNodeInfo | null>) => void
-) {
-  // TODO: Implement
-}
 export function setCurrentPageMeta(
   page: ComponentPublicInstance,
   options: SetPageMetaOptions
@@ -85,9 +69,4 @@ export function getLaunchOptions() {
 export function getEnterOptions() {
   // TODO: Implement
   return extend({}, enterOptions)
-}
-
-export function getRealPath(filepath: string) {
-  // TODO: Implement
-  return filepath
 }
