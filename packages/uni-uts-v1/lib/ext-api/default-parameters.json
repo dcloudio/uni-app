@@ -22,6 +22,11 @@
       "null"
     ]
   },
+  "uni-keyboard": {
+    "hideKeyboard": [
+      "null"
+    ]
+  },
   "uni-base": {
     "removeInterceptor": [
       null,
