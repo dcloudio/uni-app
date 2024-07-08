@@ -12,6 +12,12 @@ function makeMap(str, expectsLowerCase) {
   return expectsLowerCase ? (val) => set.has(val.toLowerCase()) : (val) => set.has(val);
 }
 const extend = Object.assign;
+const remove = (arr, el) => {
+  const i = arr.indexOf(el);
+  if (i > -1) {
+    arr.splice(i, 1);
+  }
+};
 const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
 const isArray = Array.isArray;
@@ -7941,7 +7947,7 @@ function resolveStringStyleItem(modeStyle, styleItem, key) {
 function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
-    if (typeof modeStyle === 'undefined')
+    if (typeof modeStyle === 'undefined' || !pageStyle)
         return pageStyle;
     Object.keys(pageStyle).forEach((key) => {
         const styleItem = pageStyle[key]; // Object Array String
@@ -9114,6 +9120,78 @@ function operateVideoPlayer(videoId, pageId, type, data) {
         data,
     }, pageId);
 }
+
+const API_ADD_INTERCEPTOR = 'addInterceptor';
+const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
+const AddInterceptorProtocol = [
+    {
+        name: 'method',
+        type: [String, Object],
+        required: true,
+    },
+];
+const RemoveInterceptorProtocol = AddInterceptorProtocol;
+
+function mergeInterceptorHook(interceptors, interceptor) {
+    Object.keys(interceptor).forEach((hook) => {
+        if (isFunction(interceptor[hook])) {
+            interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
+        }
+    });
+}
+function removeInterceptorHook(interceptors, interceptor) {
+    if (!interceptors || !interceptor) {
+        return;
+    }
+    Object.keys(interceptor).forEach((name) => {
+        const hooks = interceptors[name];
+        const hook = interceptor[name];
+        if (isArray(hooks) && isFunction(hook)) {
+            remove(hooks, hook);
+        }
+    });
+}
+function mergeHook(parentVal, childVal) {
+    const res = childVal
+        ? parentVal
+            ? parentVal.concat(childVal)
+            : isArray(childVal)
+                ? childVal
+                : [childVal]
+        : parentVal;
+    return res ? dedupeHooks(res) : res;
+}
+function dedupeHooks(hooks) {
+    const res = [];
+    for (let i = 0; i < hooks.length; i++) {
+        if (res.indexOf(hooks[i]) === -1) {
+            res.push(hooks[i]);
+        }
+    }
+    return res;
+}
+const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
+    if (isString(method) && isPlainObject(interceptor)) {
+        mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
+    }
+    else if (isPlainObject(method)) {
+        mergeInterceptorHook(globalInterceptors, method);
+    }
+}, AddInterceptorProtocol);
+const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
+    if (isString(method)) {
+        if (isPlainObject(interceptor)) {
+            removeInterceptorHook(scopedInterceptors[method], interceptor);
+        }
+        else {
+            delete scopedInterceptors[method];
+        }
+    }
+    else if (isPlainObject(method)) {
+        removeInterceptorHook(globalInterceptors, method);
+    }
+}, RemoveInterceptorProtocol);
+const interceptors = {};
 
 /* export const API_CREATE_AUDIO_CONTEXT = 'createAudioContext'
 export type API_TYPE_CREATE_AUDIO_CONTEXT = typeof uni.createAudioContext
@@ -10309,6 +10387,20 @@ const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
     return false;
 });
 
+const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
+
+const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
+    UniServiceJSBridge.invokeViewMethod(API_GET_SELECTED_TEXT_RANGE, {}, getCurrentPageId(), (res) => {
+        if (typeof res.end === 'undefined' &&
+            typeof res.start === 'undefined') {
+            reject('no focused');
+        }
+        else {
+            resolve(res);
+        }
+    });
+});
+
 const appHooks = {
     [ON_UNHANDLE_REJECTION]: [],
     [ON_PAGE_NOT_FOUND]: [],
@@ -10525,6 +10617,19 @@ function createNormalizeUrl(type) {
         }
     };
 }
+
+const API_LOAD_FONT_FACE = 'loadFontFace';
+const LoadFontFaceProtocol = {
+    family: {
+        type: String,
+        required: true,
+    },
+    source: {
+        type: String,
+        required: true,
+    },
+    desc: Object,
+};
 
 const IndexProtocol = {
     index: {
@@ -10912,6 +11017,28 @@ const hideTabBarRedDot = defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, ({ index }, { 
     setTabBarBadgeNone(index);
     resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
+
+const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, reject }) => {
+    const pageId = getPageIdByVm(getCurrentPageVm());
+    UniServiceJSBridge.invokeViewMethod(API_LOAD_FONT_FACE, options, pageId, (err) => {
+        if (typeof err === 'string') {
+            reject(err);
+        }
+        else {
+            resolve();
+        }
+    });
+}, LoadFontFaceProtocol);
+
+function onKeyboardHeightChangeCallback(res) {
+    UniServiceJSBridge.invokeOnCallback(ON_KEYBOARD_HEIGHT_CHANGE, res);
+}
+const onKeyboardHeightChange = defineOnApi(ON_KEYBOARD_HEIGHT_CHANGE, () => {
+    UniServiceJSBridge.on(ON_KEYBOARD_HEIGHT_CHANGE, onKeyboardHeightChangeCallback);
+});
+const offKeyboardHeightChange = defineOffApi(ON_KEYBOARD_HEIGHT_CHANGE, () => {
+    UniServiceJSBridge.off(ON_KEYBOARD_HEIGHT_CHANGE, onKeyboardHeightChangeCallback);
+});
 
 const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
     if (hasOwn$1(uni, schema)) {
@@ -12213,6 +12340,7 @@ function requireUTSPlugin(name) {
 
 var uni$1 = {
   __proto__: null,
+  addInterceptor: addInterceptor,
   canIUse: canIUse,
   canvasGetImageData: canvasGetImageData,
   canvasPutImageData: canvasPutImageData,
@@ -12220,14 +12348,20 @@ var uni$1 = {
   createCanvasContext: createCanvasContext,
   createVideoContext: createVideoContext,
   getLocale: getLocale,
+  getSelectedTextRange: getSelectedTextRange,
   hideTabBar: hideTabBar,
   hideTabBarRedDot: hideTabBarRedDot,
+  interceptors: interceptors,
+  loadFontFace: loadFontFace,
   navigateBack: navigateBack,
   navigateTo: navigateTo,
+  offKeyboardHeightChange: offKeyboardHeightChange,
+  onKeyboardHeightChange: onKeyboardHeightChange,
   onLocaleChange: onLocaleChange,
   reLaunch: reLaunch,
   redirectTo: redirectTo,
   registerUTSPlugin: registerUTSPlugin,
+  removeInterceptor: removeInterceptor,
   removeTabBarBadge: removeTabBarBadge,
   requireUTSPlugin: requireUTSPlugin,
   setLocale: setLocale,

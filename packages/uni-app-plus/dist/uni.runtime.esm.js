@@ -16613,7 +16613,7 @@ const stopPullDownRefresh = defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, {
 const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, reject }) => {
     const pageId = getPageIdByVm(getCurrentPageVm());
     UniServiceJSBridge.invokeViewMethod(API_LOAD_FONT_FACE, options, pageId, (err) => {
-        if (err) {
+        if (typeof err === 'string') {
             reject(err);
         }
         else {

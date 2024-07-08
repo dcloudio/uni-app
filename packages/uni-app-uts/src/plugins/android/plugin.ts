@@ -183,7 +183,7 @@ export function uniAppPlugin(): UniVitePlugin {
     },
     watchChange() {
       if (process.env.UNI_APP_X_TSC === 'true') {
-        watcher && watcher.watch()
+        watcher && watcher.watch(3000)
       }
     },
     async writeBundle() {
@@ -211,6 +211,7 @@ export function uniAppPlugin(): UniVitePlugin {
         if (!watcher) {
           watcher = runUTS2KotlinDev({
             inputDir: tscOutputDir,
+            cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
             outputDir: uvueOutputDir,
             normalizeFileName: normalizeNodeModules,
           }).watcher
