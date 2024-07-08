@@ -17,6 +17,7 @@ import { isInHBuilderX, normalizePath } from '../../shared'
 export interface UTS2KotlinOptions {
   typescript?: typeof import('typescript')
   inputDir: string
+  cacheDir: string
   outputDir: string
   tsconfig?: string
   rootFiles?: string[]
@@ -85,6 +86,7 @@ export function runUTS2KotlinDev(options: UTS2KotlinOptions): {
   return require('../../../lib/kotlin').runDev({
     typescript,
     inputDir: options.inputDir,
+    cacheDir: options.cacheDir,
     tsconfig,
     rootFiles,
     compilerOptions: extend(tsconfigOverride.compilerOptions, {
