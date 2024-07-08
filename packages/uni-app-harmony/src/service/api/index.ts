@@ -22,5 +22,6 @@ export {
   canvasPutImageData,
   canvasToTempFilePath,
   createVideoContext,
+  getSelectedTextRange,
 } from '@dcloudio/uni-api'
 export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'
