@@ -15,7 +15,7 @@ export const loadFontFace = defineAsyncApi<API_TYPE_LOAD_FONT_FACE>(
       options,
       pageId,
       (err: string) => {
-        if (err) {
+        if (typeof err === 'string') {
           reject(err)
         } else {
           resolve()
