@@ -23262,6 +23262,13 @@
       source,
       desc
     } = _ref;
+    if (source.startsWith('url("') || source.startsWith("url('")) {
+      source = "url('".concat(getRealPath$1(source.substring(5, source.length - 2)), "')");
+    } else if (source.startsWith("url(")) {
+      source = "url('".concat(getRealPath$1(source.substring(4, source.length - 1)), "')");
+    } else {
+      source = getRealPath$1(source);
+    }
     addFont(family, source, desc).then(() => {
       publish();
     }).catch((err2) => {

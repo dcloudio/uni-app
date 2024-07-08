@@ -7,6 +7,7 @@ import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
+import inputMethod from '@ohos.inputMethod';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
 import http from '@ohos.net.http';
@@ -20,12 +21,13 @@ import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony as UTSHarmony1, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony2, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, UniProvider, IUniError, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, ComponentInternalInstance, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
+import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, ComponentInternalInstance, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
 import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
@@ -193,6 +195,23 @@ interface IUniEventEmitter {
     off: (eventName: string, callback: Function) => void;
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
+class ExitSuccess extends UTSObject {
+    errMsg!: string;
+}
+type ExitErrorCode = 12001 | 12002;
+interface IExitError extends IUniError {
+    errCode: ExitErrorCode;
+}
+type ExitFail = IExitError;
+type ExitSuccessCallback = (res: ExitSuccess) => void;
+type ExitFailCallback = (res: ExitFail) => void;
+type ExitCompleteCallback = (res: Object) => void;
+class ExitOptions extends UTSObject {
+    success: ExitSuccessCallback | null = null;
+    fail: ExitFailCallback | null = null;
+    complete: ExitCompleteCallback | null = null;
+}
+type Exit = (options?: ExitOptions | null) => void;
 class GetAppBaseInfoOptions extends UTSObject {
     filter!: Array<string>;
 }
@@ -366,6 +385,19 @@ interface ISystemInfoAppVersion {
     name: string;
     code: string;
 }
+export class HideKeyboardSuccess extends UTSObject {
+}
+export class HideKeyboardFail extends UTSObject {
+}
+type HideKeyboardSuccessCallback = (res: HideKeyboardSuccess) => void;
+type HideKeyboardFailCallback = (res: HideKeyboardFail) => void;
+type HideKeyboardCompleteCallback = (res: Object) => void;
+export class HideKeyboardOptions extends UTSObject {
+    success: HideKeyboardSuccessCallback | null = null;
+    fail: HideKeyboardFailCallback | null = null;
+    complete: HideKeyboardCompleteCallback | null = null;
+}
+type HideKeyboard = (options?: HideKeyboardOptions | null) => void;
 export type MakePhoneCall = (options: MakePhoneCallOptions) => void;
 export class MakePhoneCallSuccess extends UTSObject {
 }
@@ -1191,12 +1223,14 @@ interface UniExtApi {
     $once: $Once;
     $off: $Off;
     $emit: $Emit;
+    exit: Exit;
     getAppBaseInfo: GetAppBaseInfo;
     getDeviceInfo: GetDeviceInfo;
     getProvider: GetProvider;
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
     getWindowInfo: GetWindowInfo;
+    hideKeyboard: HideKeyboard;
     makePhoneCall: MakePhoneCall;
     chooseImage: ChooseImage;
     previewImage: PreviewImage;
@@ -1506,6 +1540,10 @@ export function initUniExtApi(APP_ID: string) {
     const $emit: $Emit = defineSyncApi<void>(API_$_EMIT, (eventName: string, ...args: (Object | undefined | null)[])=>{
         emitter.emit(eventName, ...args);
     }) as $Emit;
+    const API_EXIT = 'exit';
+    const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
+        UTSHarmony.exit();
+    }) as Exit;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
     const getBundleInfoOnce = ()=>{
         let bundleInfo: bundleManager.BundleInfo | null = null;
@@ -1519,20 +1557,20 @@ export function initUniExtApi(APP_ID: string) {
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony1.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony1.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony1.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony.getAppId() as string,
+            appId: UTSHarmony1.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony.getAppName() as string,
-            appTheme: UTSHarmony.getAppTheme() as string,
+            appName: UTSHarmony1.getAppName() as string,
+            appTheme: UTSHarmony1.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony1.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -1551,7 +1589,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony1.getOsTheme() as string,
+            osTheme: UTSHarmony2.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -1611,11 +1649,11 @@ export function initUniExtApi(APP_ID: string) {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony2.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony3.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -1628,10 +1666,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony2.getAppId() as string,
+            appId: UTSHarmony3.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony2.getAppName() as string,
-            appTheme: UTSHarmony2.getAppTheme() as string,
+            appName: UTSHarmony3.getAppName() as string,
+            appTheme: UTSHarmony3.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -1647,7 +1685,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony2.getOsTheme() as string,
+            osTheme: UTSHarmony3.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -1686,6 +1724,14 @@ export function initUniExtApi(APP_ID: string) {
             exec.reject((error as Error).message);
         }
     }) as GetSystemInfo;
+    const API_HIDE_KEYBOARD = 'hideKeyboard';
+    const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(API_HIDE_KEYBOARD, (options: HideKeyboardOptions, exec: ApiExecutor<HideKeyboardSuccess>)=>{
+        inputMethod.getController().hideTextInput().then(()=>{
+            exec.resolve();
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as HideKeyboard;
     const API_MAKE_PHONE_CALL = 'makePhoneCall';
     const MakePhoneCallProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3849,7 +3895,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony3.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony4.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -4410,12 +4456,14 @@ export function initUniExtApi(APP_ID: string) {
         $once,
         $off,
         $emit,
+        exit,
         getAppBaseInfo,
         getDeviceInfo,
         getProvider,
         getSystemInfo,
         getSystemInfoSync,
         getWindowInfo,
+        hideKeyboard,
         makePhoneCall,
         chooseImage,
         previewImage,

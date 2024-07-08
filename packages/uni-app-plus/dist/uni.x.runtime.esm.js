@@ -1,5 +1,5 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
+import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
 function getCurrentPage() {
   var pages2 = getCurrentPages();
@@ -1063,6 +1063,27 @@ function getRealPath(path) {
   }
   return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
 }
+var beforeRouteHooks = [];
+var afterRouteHooks = [];
+var pageReadyHooks = [];
+function onBeforeRoute(hook) {
+  beforeRouteHooks.push(hook);
+}
+function onAfterRoute(hook) {
+  afterRouteHooks.push(hook);
+}
+function onPageReady(hook) {
+  pageReadyHooks.push(hook);
+}
+function invokeBeforeRouteHooks(type) {
+  invokeArrayFns$1(beforeRouteHooks, type);
+}
+function invokeAfterRouteHooks(type) {
+  invokeArrayFns$1(afterRouteHooks, type);
+}
+function invokePageReadyHooks(page) {
+  invokeArrayFns$1(pageReadyHooks, page);
+}
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
 var selected0 = -1;
@@ -1229,6 +1250,8 @@ function switchSelect(selected, path) {
     init();
   }
   var currentPage = getCurrentPage();
+  var type = currentPage == null ? "appLaunch" : "switchTab";
+  invokeBeforeRouteHooks(type);
   var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
   var page = pageInfo.page;
   if (currentPage !== page) {
@@ -1242,6 +1265,7 @@ function switchSelect(selected, path) {
     invokeHook(page, ON_SHOW);
   }
   selected0 = selected;
+  invokeAfterRouteHooks(type);
 }
 var APP_THEME_AUTO = "auto";
 var THEME_KEY_PREFIX = "@";
@@ -1419,11 +1443,11 @@ function registerPage(_ref, onCreated) {
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = parsePageStyle(routeOptions);
-  var nativePage = getPageManager().createPage(url, id2.toString(), pageStyle);
+  var nativePage2 = getPageManager().createPage(url, id2.toString(), pageStyle);
   if (onCreated) {
-    onCreated(nativePage);
+    onCreated(nativePage2);
   }
-  routeOptions.meta.id = parseInt(nativePage.pageId);
+  routeOptions.meta.id = parseInt(nativePage2.pageId);
   var route = path.slice(1);
   var pageInstance = initPageInternalInstance(
     openType,
@@ -1435,46 +1459,47 @@ function registerPage(_ref, onCreated) {
     "light"
   );
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
         fail(e2) {
           if (e2.errMsg.endsWith("cancel")) {
-            nativePage.show();
+            nativePage2.show();
           }
         }
       });
     });
-    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD);
     });
-    nativePage.addPageEventListener(ON_READY, (_) => {
+    nativePage2.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page);
       invokeHook(page, ON_READY);
     });
-    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
       invokeHook(page, ON_PAGE_SCROLL, arg);
     });
-    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH);
     });
-    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage.addPageEventListener(ON_RESIZE, (_) => {
+    nativePage2.addPageEventListener(ON_RESIZE, (_) => {
       invokeHook(page, ON_RESIZE);
     });
-    nativePage.startRender();
+    nativePage2.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
   } else {
     fn();
   }
-  return nativePage;
+  return nativePage2;
 }
-function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
-  var pageNode = nativePage.document.body;
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage2) {
+  var pageNode = nativePage2.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
   var mountPage = (component2) => app.mountPage(component2, {
@@ -1491,8 +1516,8 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 function setStatusBarStyle() {
   var page = getCurrentPage();
   if (page) {
-    var nativePage = page.$nativePage;
-    nativePage.applyStatusBarStyle();
+    var nativePage2 = page.$nativePage;
+    nativePage2.applyStatusBarStyle();
   }
 }
 var $navigateTo = (args, _ref) => {
@@ -1530,11 +1555,13 @@ function _navigateTo(_ref2) {
     aniType,
     aniDuration
   } = _ref2;
+  invokeBeforeRouteHooks(API_NAVIGATE_TO);
   invokeHook(ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
     var noAnimation = aniType === "none" || aniDuration === 0;
     function callback(page2) {
+      invokeAfterRouteHooks(API_NAVIGATE_TO);
       showWebview(page2, aniType, aniDuration, () => {
         resolve({
           eventChannel
@@ -1724,6 +1751,7 @@ function _redirectTo(_ref3) {
   } = _ref3;
   var lastPage = getCurrentPage();
   return new Promise((resolve) => {
+    invokeAfterRouteHooks(API_REDIRECT_TO);
     showWebview(registerPage({
       url,
       path,
@@ -1736,6 +1764,7 @@ function _redirectTo(_ref3) {
       resolve(void 0);
       setStatusBarStyle();
     });
+    invokeBeforeRouteHooks(API_REDIRECT_TO);
   });
 }
 function removePages(currentPage) {
@@ -2319,6 +2348,345 @@ var env = {
   CACHE_PATH: "unifile://cache/",
   SANDBOX_PATH: "unifile://sandbox/"
 };
+var _PerformanceEntryStatus;
+var APP_LAUNCH = "appLaunch";
+var PERFORMANCE_BUFFER_SIZE = 30;
+var ENTRY_TYPE_RENDER = "render";
+var ENTRY_TYPE_NAVIGATION = "navigation";
+var RENDER_TYPE_FIRST_LAYOUT = "firstLayout";
+var RENDER_TYPE_FIRST_RENDER = "firstRender";
+var AppStartDuration = 1;
+var PageFirstPageRenderDuration = 7;
+var PageFirstPageLayoutDuration = 8;
+class PerformanceEntryStatus {
+  constructor(entryType, name) {
+    this._state = PerformanceEntryStatus.STATE_EMPTY;
+    this._entryData = {
+      entryType,
+      name,
+      duration: 0,
+      startTime: 0
+    };
+  }
+  get state() {
+    return this._state;
+  }
+  set state(state) {
+    this._state = state;
+    if (this._state == PerformanceEntryStatus.STATE_BEFORE) {
+      this.executeBefore();
+    } else if (this._state == PerformanceEntryStatus.STATE_AFTER) {
+      this.executeAfter();
+    } else if (this._state == PerformanceEntryStatus.STATE_READY) {
+      this.executeReady();
+    }
+  }
+  get entryData() {
+    return this._entryData;
+  }
+  executeBefore() {
+    var page = getCurrentPage();
+    if (page != null) {
+      this._entryData.referrerPath = page.route;
+    }
+  }
+  executeAfter() {
+    var page = getCurrentPage();
+    if (page != null) {
+      this._entryData.pageId = parseInt(page.$nativePage.pageId);
+      this._entryData.path = page.route;
+    }
+  }
+  executeReady() {
+  }
+  getCurrentInnerPage() {
+    var currentPage = getCurrentPage();
+    if (currentPage == null) {
+      return null;
+    }
+    return currentPage.$nativePage;
+  }
+}
+_PerformanceEntryStatus = PerformanceEntryStatus;
+_PerformanceEntryStatus.STATE_EMPTY = 0;
+_PerformanceEntryStatus.STATE_BEFORE = 1;
+_PerformanceEntryStatus.STATE_AFTER = 2;
+_PerformanceEntryStatus.STATE_READY = 3;
+class PerformanceEntryStatusLayout extends PerformanceEntryStatus {
+  constructor() {
+    super(ENTRY_TYPE_RENDER, RENDER_TYPE_FIRST_LAYOUT);
+  }
+  executeAfter() {
+    super.executeAfter();
+    this._entryData.startTime = Date.now();
+  }
+  executeReady() {
+    super.executeReady();
+    var innerPage = super.getCurrentInnerPage();
+    if (innerPage != null) {
+      this._entryData.duration = nativePage.getDuration(innerPage.pageId, PageFirstPageLayoutDuration);
+    }
+  }
+}
+class PerformanceEntryStatusRender extends PerformanceEntryStatus {
+  constructor() {
+    super(ENTRY_TYPE_RENDER, RENDER_TYPE_FIRST_RENDER);
+  }
+  executeAfter() {
+    super.executeAfter();
+    this._entryData.startTime = Date.now();
+  }
+  executeReady() {
+    super.executeReady();
+    var innerPage = super.getCurrentInnerPage();
+    if (innerPage != null) {
+      this._entryData.duration = nativePage.getDuration(innerPage.pageId, PageFirstPageRenderDuration);
+    }
+  }
+}
+class PerformanceEntryStatusNavigation extends PerformanceEntryStatus {
+  constructor(name, navigationType) {
+    super(ENTRY_TYPE_NAVIGATION, name);
+    this._entryData.navigationType = navigationType;
+  }
+  executeBefore() {
+    super.executeBefore();
+    this._entryData.startTime = Date.now();
+  }
+  executeReady() {
+    var innerPage = super.getCurrentInnerPage();
+    if (innerPage != null) {
+      this._entryData.duration = Date.now() - this._entryData.startTime;
+      if (this._entryData.name == APP_LAUNCH) {
+        this._entryData.duration += nativePage.getDuration(AppStartDuration);
+      }
+    }
+  }
+}
+class PerformanceEntryQueue extends Array {
+  constructor() {
+    super(...arguments);
+    this._queueSize = PERFORMANCE_BUFFER_SIZE;
+  }
+  get queueSize() {
+    return this._queueSize;
+  }
+  set queueSize(value) {
+    this._queueSize = value;
+    if (this.length > value) {
+      this.dequeue(this.length - value);
+    }
+  }
+  push() {
+    return this.enqueue(...arguments);
+  }
+  enqueue() {
+    if (this.length > this._queueSize - 1) {
+      this.shift();
+    }
+    return super.push(...arguments);
+  }
+  dequeue() {
+    var count = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1;
+    this.splice(0, count);
+  }
+}
+class PerformanceObserverEntryListImpl {
+  constructor() {
+    this._queue = new PerformanceEntryQueue();
+  }
+  push() {
+    this._queue.push(...arguments);
+  }
+  getEntries() {
+    return this._queue;
+  }
+  getEntriesByType(entryType) {
+    return this._queue.filter((entry) => entry.entryType == entryType);
+  }
+  getEntriesByName(name, entryType) {
+    return this._queue.filter((entry) => entry.entryType == entryType && entry.name == name);
+  }
+  clear() {
+    this._queue.length = 0;
+  }
+  get bufferSize() {
+    return this._queue.queueSize;
+  }
+  set bufferSize(size) {
+    this._queue.queueSize = size;
+  }
+}
+class PerformanceObserverImpl {
+  constructor(performance, callback) {
+    this._entryTypes = [];
+    this._callback = null;
+    this._entryList = new PerformanceObserverEntryListImpl();
+    this._owner = performance;
+    this._callback = callback;
+  }
+  observe(options) {
+    if ((options === null || options === void 0 ? void 0 : options.entryTypes) != null) {
+      this._entryTypes.length = 0;
+      this._entryTypes.push(...options.entryTypes);
+    }
+    if (this._entryTypes.length > 0) {
+      this._owner.connect(this);
+    } else {
+      this.disconnect();
+    }
+  }
+  disconnect() {
+    this._entryList.clear();
+    this._owner.disconnect(this);
+  }
+  dispatchCallback() {
+    var _this$_callback;
+    (_this$_callback = this._callback) === null || _this$_callback === void 0 || _this$_callback.call(this, this._entryList);
+  }
+  get entryTypes() {
+    return this._entryTypes;
+  }
+  get entryList() {
+    return this._entryList;
+  }
+}
+class PerformanceProvider {
+  constructor() {
+    this._entryStatus = [];
+  }
+  get entryStatus() {
+    return this._entryStatus;
+  }
+  onBefore(type) {
+    if (type == APP_LAUNCH || type == API_SWITCH_TAB || type == API_NAVIGATE_TO || type == API_REDIRECT_TO || type == API_NAVIGATE_BACK) {
+      this._pushEntryStatus(ENTRY_TYPE_NAVIGATION, this._navigationToName(type), type);
+    }
+    if (type == APP_LAUNCH || type == API_NAVIGATE_TO || type == API_REDIRECT_TO) {
+      this._pushEntryStatus(ENTRY_TYPE_RENDER, RENDER_TYPE_FIRST_LAYOUT, type);
+      this._pushEntryStatus(ENTRY_TYPE_RENDER, RENDER_TYPE_FIRST_RENDER, type);
+    }
+    this._forwardState();
+  }
+  onAfter(type) {
+    this._forwardState();
+  }
+  onReady() {
+    this._forwardState();
+  }
+  removeAllStatus() {
+    this._entryStatus.length = 0;
+  }
+  _pushEntryStatus(entryType, name, navigationType) {
+    var entry = null;
+    if (entryType == ENTRY_TYPE_NAVIGATION) {
+      entry = new PerformanceEntryStatusNavigation(name, navigationType);
+    } else if (entryType == ENTRY_TYPE_RENDER) {
+      if (name == RENDER_TYPE_FIRST_LAYOUT) {
+        entry = new PerformanceEntryStatusLayout();
+      } else if (name == RENDER_TYPE_FIRST_RENDER) {
+        entry = new PerformanceEntryStatusRender();
+      }
+    }
+    if (entry != null) {
+      this._entryStatus.push(entry);
+    }
+  }
+  _forwardState() {
+    this._entryStatus.forEach((entry) => {
+      entry.state += 1;
+    });
+  }
+  _navigationToName(type) {
+    if (type == APP_LAUNCH) {
+      return APP_LAUNCH;
+    }
+    return "route";
+  }
+}
+class PerformanceAllocate {
+  constructor(allEntryList, observerList) {
+    this._allEntryList = allEntryList;
+    this._observerList = observerList;
+  }
+  pushEntryStatus(status) {
+    this.pushAllEntryData(status);
+    this.pushObserverList(status);
+  }
+  pushAllEntryData(status) {
+    status.forEach((entryStatus) => {
+      this._allEntryList.push(entryStatus.entryData);
+    });
+  }
+  pushObserverList(status) {
+    this._observerList.forEach((observer) => {
+      var entryList = observer.entryList;
+      entryList.clear();
+      status.forEach((entryStatus) => {
+        var entryData = entryStatus.entryData;
+        if (observer.entryTypes.includes(entryData.entryType)) {
+          entryList.push(entryData);
+        }
+      });
+      observer.dispatchCallback();
+    });
+  }
+}
+class PerformanceImpl {
+  constructor() {
+    this._allEntryList = new PerformanceObserverEntryListImpl();
+    this._observerList = [];
+    this._provider = new PerformanceProvider();
+    this._allocate = new PerformanceAllocate(this._allEntryList, this._observerList);
+    onBeforeRoute((type) => {
+      this._provider.onBefore(type);
+    });
+    onAfterRoute((type) => {
+      this._provider.onAfter(type);
+      if (type == API_NAVIGATE_BACK) {
+        this.dispatchObserver();
+      }
+    });
+    onPageReady((page) => {
+      this.dispatchObserver();
+    });
+  }
+  dispatchObserver() {
+    this._provider.onReady();
+    this._allocate.pushEntryStatus(this._provider.entryStatus);
+    this._provider.removeAllStatus();
+  }
+  createObserver(callback) {
+    return new PerformanceObserverImpl(this, callback);
+  }
+  connect(observer) {
+    var index2 = this._observerList.indexOf(observer);
+    if (index2 < 0) {
+      this._observerList.push(observer);
+    }
+  }
+  disconnect(observer) {
+    var index2 = this._observerList.indexOf(observer);
+    if (index2 >= 0) {
+      this._observerList.splice(index2, 1);
+    }
+  }
+  getEntries() {
+    return this._allEntryList.getEntries();
+  }
+  getEntriesByType(entryType) {
+    return this._allEntryList.getEntriesByType(entryType);
+  }
+  getEntriesByName(name, entryType) {
+    return this._allEntryList.getEntriesByName(name, entryType);
+  }
+  setBufferSize(size) {
+    this._allEntryList.bufferSize = size;
+  }
+}
+var getPerformance = function() {
+  return new PerformanceImpl();
+};
 var callbackId = 1;
 var proxy;
 var callbacks = {};
@@ -2787,6 +3155,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   env,
   getElementById,
   getLaunchOptionsSync,
+  getPerformance,
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,
