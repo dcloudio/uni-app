@@ -6,6 +6,8 @@
 // export * from './network/uploadFile'
 // export * from './network/downloadFile'
 export * from './ui/index'
+export * from './ui/index'
+export * from './keyboard/keyboard'
 export { canIUse } from './base/canIUse'
 // export * from './device/index'
 export { navigateTo } from './route/navigateTo'
