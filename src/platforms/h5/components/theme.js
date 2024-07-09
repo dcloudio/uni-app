@@ -1,4 +1,4 @@
-import { normallizeStyles } from 'uni-shared'
+import { normalizeStyles } from 'uni-shared'
 import { getTheme } from '../service/api/base/get-browser-info'
 import {
   ON_THEME_CHANGE
@@ -20,7 +20,7 @@ export function parseTheme (pageStyle) {
   let parsedStyle = {}
   if (__uniConfig.darkmode) {
     const theme = getTheme()
-    parsedStyle = normallizeStyles(pageStyle, __uniConfig.themeConfig, theme)
+    parsedStyle = normalizeStyles(pageStyle, __uniConfig.themeConfig, theme)
   }
   return __uniConfig.darkmode ? parsedStyle : pageStyle
 }

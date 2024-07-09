@@ -298,13 +298,13 @@ uni-modal .uni-modal__btn_primary {
 
   uni-modal .uni-modal__btn:active {
     color: rgb(170, 170, 170);
-    background-color: var(--UI-BG-CLOLOR-ACTIVE);
+    background-color: var(--UI-BG-COLOR-ACTIVE);
   }
 
   uni-modal .uni-modal__ft:after,
   uni-modal .uni-modal__btn:after {
-    color: var(--UI-BORDER-CLOLOR-1);
-    border-color: var(--UI-BORDER-CLOLOR-1);
+    color: var(--UI-BORDER-COLOR-1);
+    border-color: var(--UI-BORDER-COLOR-1);
   }
 }
 </style>

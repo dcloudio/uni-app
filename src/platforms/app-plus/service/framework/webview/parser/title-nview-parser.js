@@ -1,4 +1,4 @@
-import { isPlainObject } from 'uni-shared'
+import { isPlainObject, normalizeTitleColor } from 'uni-shared'
 
 import { initNavigationBarI18n } from 'uni-helpers/i18n'
 
@@ -57,8 +57,7 @@ export function parseTitleNView (id, routeOptions) {
     autoBackButton: !routeOptions.meta.isQuit,
     titleText:
       titleImage === '' ? windowOptions.navigationBarTitleText || '' : '',
-    titleColor:
-      windowOptions.navigationBarTextStyle === 'white' ? '#ffffff' : '#000000',
+    titleColor: normalizeTitleColor(windowOptions.navigationBarTextStyle),
     type: titleNViewTypeList[transparentTitle],
     backgroundColor:
       /^#[a-z0-9]{6}$/i.test(navigationBarBackgroundColor) ||

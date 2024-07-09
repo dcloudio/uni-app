@@ -178,7 +178,12 @@ export default {
     },
     valueSync (value) {
       if (this.type === 'number' && !(this.cachedValue === '-' && value === '')) {
-        this.cachedValue = value
+        this.cachedValue = value.toString()
+      }
+    },
+    value (value) {
+      if (this.inputType === 'number' && value) {
+        this.cachedValue = value.toString()
       }
     }
   },
@@ -187,6 +192,10 @@ export default {
       type: 'add',
       vm: this
     })
+    // fix: 给 input 的 value 赋值后，再输入小数点时 cachedValue 没有值导致值清空
+    if (this.inputType === 'number' && typeof this.value !== 'undefined') {
+      this.cachedValue = this.value.toString()
+    }
   },
   mounted () {
     if (this.confirmType === 'search') {
@@ -223,6 +232,49 @@ export default {
       })
       if (!this.confirmHold) {
         input.blur()
+      }
+    },
+    _resolveDigitDecimalPoint ($event, force, deleteContentBackward = true) {
+      // TODO 苹果智能标点：safari（webview） 上连续输入两次 . 后，在第三次输入 . 时，会触发两次 deleteContentBackward（删除） 的输入外加一次 insertText 为 …（三个点） 的输入
+      if (this.cachedValue) {
+        if ($event.data === '.') {
+          // 当 value 以小数点结尾时或者 type 为 number 时，删除小数点
+          if (this.cachedValue.slice(-1) === '.') {
+            this.valueSync = $event.target.value = this.cachedValue = this.cachedValue.slice(0, -1)
+            return false
+          }
+          if (!this.cachedValue.includes('.')) {
+            this.cachedValue += '.'
+            this.__clearCachedValue = () => {
+              this.cachedValue = this.valueSync = $event.target.value = this.cachedValue.slice(0, -1)
+              $event.target.removeEventListener('blur', this.__clearCachedValue)
+            }
+            $event.target.addEventListener('blur', this.__clearCachedValue)
+            return false
+          }
+        } else if ($event.inputType === 'deleteContentBackward') {
+        // ios 16 无法删除小数
+          if (
+            (
+              __PLATFORM__ === 'app-plus' &&
+              plus.os.name === 'iOS' &&
+              plus.os.version &&
+              parseInt(plus.os.version) === 16
+            ) ||
+            (
+              __PLATFORM__ === 'h5' &&
+              navigator.userAgent.includes('iPhone OS 16')
+            )
+          ) {
+            if (this.cachedValue.slice(-2, -1) === '.') {
+              this.cachedValue = this.valueSync = $event.target.value = this.cachedValue.slice(0, -2)
+              this.$triggerInput($event, {
+                value: this.valueSync
+              }, force)
+              return false
+            }
+          }
+        }
       }
     },
     _onInput ($event, force) {
@@ -263,36 +315,17 @@ export default {
             return
           }
           // 处理小数点
-          if (this.cachedValue) {
-            if (this.cachedValue.indexOf('.') !== -1) {
-              // 删除到小数点时
-              if (
-                $event.data !== '.' &&
-                $event.inputType === 'deleteContentBackward'
-              ) {
-                const dotIndex = this.cachedValue.indexOf('.')
-                this.cachedValue =
-                  $event.target.value =
-                  this.valueSync =
-                  this.cachedValue.slice(0, dotIndex)
-                return this.$triggerInput($event, {
-                  value: this.valueSync
-                }, force)
-              }
-            } else if ($event.data === '.') {
-              // 输入小数点时
-              this.cachedValue += '.'
-              this.__clearCachedValue = () => {
-                this.cachedValue = this.valueSync = $event.target.value = this.cachedValue.slice(0, -1)
-              }
-              $event.target.addEventListener('blur', this.__clearCachedValue)
-              return false
-            }
-          }
+          const res = this._resolveDigitDecimalPoint($event, force)
+          if (typeof res === 'boolean') return res
+
           this.cachedValue = this.valueSync = $event.target.value = this.cachedValue === '-' ? '' : this.cachedValue
           // 输入非法字符不触发 input 事件
           return
         } else {
+          // 处理 Safari 在 input 框中是 `1.` 的情况下继续输入 `.` ，会再次触发 input 事件，而 Chrome 不会（但统一处理）
+          const res = this._resolveDigitDecimalPoint($event, force)
+          if (typeof res === 'boolean') return res
+
           this.cachedValue = this.valueSync
         }
       }

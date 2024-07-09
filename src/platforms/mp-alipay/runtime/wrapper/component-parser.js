@@ -82,7 +82,8 @@ function initVm (VueComponent) {
       mpInstance: this
     })
 
-    if (options.parent) { // 父组件已经初始化，直接初始化子，否则放到父组件的 didMount 中处理
+    if (options.parent) {
+      // 父组件已经初始化，直接初始化子，否则放到父组件的 didMount 中处理
       // 初始化 vue 实例
       this.$vm = new VueComponent(options)
       handleRef.call(options.parent.$scope, this)
@@ -119,7 +120,8 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
     data: initData(vueOptions, Vue.prototype),
     props,
     didMount () {
-      if (my.dd) { // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
+      if (my.dd) {
+        // 钉钉小程序底层基础库有 bug,组件嵌套使用时,在 didMount 中无法及时调用 props 中的方法
         setTimeout(() => {
           initVm.call(this, VueComponent)
         }, 4)
@@ -145,6 +147,10 @@ export default function parseComponent (vueComponentOptions, needVueOptions) {
       __w: handleWrap,
       triggerEvent
     }
+  }
+
+  if (vueOptions.options) {
+    componentOptions.options = vueOptions.options
   }
 
   if (isComponent2) {

@@ -9,6 +9,7 @@ const DEFAULT_KEYS = [
   'APP-NVUE',
   'APP-ANDROID',
   'APP-IOS',
+  'APP-HARMONY',
   'WEB'
 ]
 

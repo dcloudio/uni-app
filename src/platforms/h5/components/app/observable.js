@@ -13,6 +13,7 @@ onThemeChange(() => {
   __uniConfig.tabBar.color = tabBarStyle.color
   __uniConfig.tabBar.selectedColor = tabBarStyle.selectedColor
   __uniConfig.tabBar.blurEffect = tabBarStyle.blurEffect
+  __uniConfig.tabBar.midButton = tabBarStyle.midButton
   if (tabBarStyle.list && tabBarStyle.list.length && __uniConfig.tabBar.list.length) {
     tabBarStyle.list.forEach((item, index) => {
       __uniConfig.tabBar.list[index].iconPath = item.iconPath

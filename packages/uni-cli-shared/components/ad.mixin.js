@@ -64,12 +64,7 @@ class AdBase {
         detail: detail
       }
 
-      if (this._retry && code === -5008) {
-        this._loadAd()
-        return
-      }
-
-      if (this._retry && this._retryCount < RETRY_COUNT) {
+      if (code === -5008 && this._retry && this._retryCount < RETRY_COUNT) {
         this._retryCount += 1
         this._loadAd()
         return

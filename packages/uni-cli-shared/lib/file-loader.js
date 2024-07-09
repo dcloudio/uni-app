@@ -7,6 +7,7 @@ const {
 
 let inputDir
 
+const uniModulesStaticRe = /uni_modules\/[^/]+\/static\//
 module.exports = {
   loader: 'file-loader',
   options: {
@@ -18,8 +19,10 @@ module.exports = {
       if (resourcePath.startsWith(inputDir)) {
         const relativePath = normalizePath(path.relative(inputDir,
           resourcePath))
-        if (relativePath.startsWith('static/') || relativePath.includes(
-          '/static/')) {
+        const subPackageStatic = Object.keys(process.UNI_SUBPACKAGES || {}).map(root => normalizePath(path.join(root,
+          'static')) + '/')
+        if (relativePath.startsWith('static/') || uniModulesStaticRe.test(relativePath) ||
+          subPackageStatic.some(s => relativePath.startsWith(s))) {
           return relativePath
         }
       }

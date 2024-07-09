@@ -32,7 +32,7 @@ export function getVideoInfo ({
         clearTimeout(handle)
         video.onerror = null
         invoke(callbackId, Object.assign(result, {
-          size: file.size,
+          size: Math.ceil((file ? file.size : 0) / 1024),
           duration: video.duration || 0,
           width: video.videoWidth || 0,
           height: video.videoHeight || 0,
