@@ -1,5 +1,5 @@
 import { camelize, capitalize, isString } from '@vue/shared'
-import { getRealPath } from '../platform/getRealPath'
+import { getRealPath } from '@dcloudio/uni-platform'
 import { createRpx2Unit, defaultRpx2Unit } from '@dcloudio/uni-shared'
 
 export function normalizeStyleValue(val: string) {

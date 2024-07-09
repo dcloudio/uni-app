@@ -11737,17 +11737,17 @@
     }
     return Promise.resolve(url);
   }
-  function getRealPath$1(filepath) {
+  function getRealPath(filepath) {
     if (filepath.indexOf("//") === 0) {
       return "https:" + filepath;
     }
     if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
       return filepath;
     }
-    if (isSystemURL$1(filepath)) {
-      return "file:/" + normalizeLocalPath$1(filepath);
+    if (isSystemURL(filepath)) {
+      return "file:/" + normalizeLocalPath(filepath);
     }
-    var wwwPath = normalizeLocalPath$1("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
+    var wwwPath = normalizeLocalPath("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
     if (filepath.indexOf("/") === 0) {
       if (filepath.startsWith("/data/storage/")) {
         return "file://" + filepath;
@@ -11766,46 +11766,8 @@
     }
     return filepath;
   }
-  var normalizeLocalPath$1 = cacheStringFunction((filepath) => {
-    return plus.io.convertLocalFileSystemURL(filepath).replace(/\/$/, "");
-  });
-  function isSystemURL$1(filepath) {
-    if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
-      return true;
-    }
-    return false;
-  }
-  function getRealPath(filepath) {
-    if (filepath.indexOf("//") === 0) {
-      return "https:" + filepath;
-    }
-    if (SCHEME_RE.test(filepath) || DATA_RE.test(filepath)) {
-      return filepath;
-    }
-    if (isSystemURL(filepath)) {
-      return "file://" + normalizeLocalPath(filepath);
-    }
-    var wwwPath = "file://" + normalizeLocalPath("_www");
-    if (filepath.indexOf("/") === 0) {
-      if (filepath.startsWith("/storage/") || filepath.startsWith("/sdcard/") || filepath.includes("/Containers/Data/Application/")) {
-        return "file://" + filepath;
-      }
-      return wwwPath + filepath;
-    }
-    if (filepath.indexOf("../") === 0 || filepath.indexOf("./") === 0) {
-      if (typeof __id__ === "string") {
-        return wwwPath + getRealRoute(addLeadingSlash(__id__), filepath);
-      } else {
-        var page = getCurrentPage();
-        if (page) {
-          return wwwPath + getRealRoute(addLeadingSlash(page.route), filepath);
-        }
-      }
-    }
-    return filepath;
-  }
   var normalizeLocalPath = cacheStringFunction((filepath) => {
-    return plus.io.convertLocalFileSystemURL(filepath).replace(/^\/?apps\//, "/android_asset/apps/").replace(/\/$/, "");
+    return plus.io.convertLocalFileSystemURL(filepath).replace(/\/$/, "");
   });
   function isSystemURL(filepath) {
     if (filepath.indexOf("_www") === 0 || filepath.indexOf("_doc") === 0 || filepath.indexOf("_documents") === 0 || filepath.indexOf("_downloads") === 0) {
@@ -13855,7 +13817,7 @@
     return initHidpi();
   });
   function $getRealPath(src) {
-    return src ? getRealPath$1(src) : src;
+    return src ? getRealPath(src) : src;
   }
   function resolveColor(color) {
     color = color.slice(0);
@@ -15068,7 +15030,7 @@
     });
     var state = reactive({
       rootEl: rootRef,
-      src: computed(() => props2.src ? getRealPath$1(props2.src) : ""),
+      src: computed(() => props2.src ? getRealPath(props2.src) : ""),
       origWidth: 0,
       origHeight: 0,
       origStyle: {
@@ -19035,7 +18997,7 @@
       if (hasOwn$1(attrs2, key2)) {
         var value = attrs2[key2];
         if (tagName === "img" && key2 === "src")
-          attrs2[key2] = getRealPath$1(value);
+          attrs2[key2] = getRealPath(value);
       }
     }
   }
@@ -21757,7 +21719,7 @@
       return () => createVNode("uni-web-view", null, [createVNode(Embed, {
         "tag": "webview",
         "options": {
-          src: getRealPath$1(props2.src),
+          src: getRealPath(props2.src),
           updateTitle: props2.updateTitle,
           webviewStyles: props2.webviewStyles
         },
@@ -21972,7 +21934,7 @@
   }
   function useVideo(props2, attrs2, trigger2) {
     var videoRef = ref(null);
-    var src = computed(() => getRealPath$1(props2.src));
+    var src = computed(() => getRealPath(props2.src));
     var muted = computed(() => props2.muted === "true" || props2.muted === true);
     var state = reactive({
       start: false,
@@ -23263,11 +23225,11 @@
       desc
     } = _ref;
     if (source.startsWith('url("') || source.startsWith("url('")) {
-      source = "url('".concat(getRealPath$1(source.substring(5, source.length - 2)), "')");
+      source = "url('".concat(getRealPath(source.substring(5, source.length - 2)), "')");
     } else if (source.startsWith("url(")) {
-      source = "url('".concat(getRealPath$1(source.substring(4, source.length - 1)), "')");
+      source = "url('".concat(getRealPath(source.substring(4, source.length - 1)), "')");
     } else {
-      source = getRealPath$1(source);
+      source = getRealPath(source);
     }
     addFont(family, source, desc).then(() => {
       publish();
