@@ -7434,6 +7434,27 @@ function once(fn, ctx = null) {
         return res;
     });
 }
+function callOptions(options, data) {
+    options = options || {};
+    if (isString(data)) {
+        data = {
+            errMsg: data,
+        };
+    }
+    if (/:ok$/.test(data.errMsg)) {
+        if (isFunction(options.success)) {
+            options.success(data);
+        }
+    }
+    else {
+        if (isFunction(options.fail)) {
+            options.fail(data);
+        }
+    }
+    if (isFunction(options.complete)) {
+        options.complete(data);
+    }
+}
 
 const encode$1 = encodeURIComponent;
 function stringifyQuery(obj, encodeStr = encode$1) {
@@ -9209,10 +9230,19 @@ const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interce
 }, RemoveInterceptorProtocol);
 const interceptors = {};
 
+const validator = [
+    {
+        name: 'id',
+        type: String,
+        required: true,
+    },
+];
 /* export const API_CREATE_AUDIO_CONTEXT = 'createAudioContext'
 export type API_TYPE_CREATE_AUDIO_CONTEXT = typeof uni.createAudioContext
 export const CreateAudioContextProtocol = validator */
 const API_CREATE_VIDEO_CONTEXT = 'createVideoContext';
+const API_CREATE_MAP_CONTEXT = 'createMapContext';
+const CreateMapContextProtocol = validator;
 const API_CREATE_CANVAS_CONTEXT = 'createCanvasContext';
 const CreateCanvasContextProtocol = [
     {
@@ -9225,6 +9255,10 @@ const CreateCanvasContextProtocol = [
         type: Object,
     },
 ];
+validator.concat({
+    name: 'componentInstance',
+    type: Object,
+});
 
 const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0];
 class VideoContext {
@@ -9278,6 +9312,82 @@ const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context)
     }
     return new VideoContext(id, getPageIdByVm(getCurrentPageVm()));
 });
+
+const operateMapWrap = (id, pageId, type, options) => {
+};
+class MapContext {
+    id;
+    pageId;
+    constructor(id, pageId) {
+        this.id = id;
+        this.pageId = pageId;
+    }
+    getCenterLocation(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    moveToLocation(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    getScale(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    getRegion(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    includePoints(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    translateMarker(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    $getAppMap() {
+        {
+            return plus.maps.getMapById(this.pageId + '-map-' + this.id);
+        }
+    }
+    addCustomLayer(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    removeCustomLayer(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    addGroundOverlay(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    removeGroundOverlay(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    updateGroundOverlay(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    initMarkerCluster(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    addMarkers(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    removeMarkers(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    moveAlong(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    setLocMarkerIcon(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    openMapApp(options) {
+        operateMapWrap(this.id, this.pageId);
+    }
+    on(name, callback) {
+        operateMapWrap(this.id, this.pageId);
+    }
+}
+defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
+    if (context) {
+        return new MapContext(id, getPageIdByVm(context));
+    }
+    return new MapContext(id, getPageIdByVm(getCurrentPageVm()));
+}, CreateMapContextProtocol);
 
 function getInt(name, defaultValue) {
     return function (value, params) {
@@ -10366,6 +10476,206 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
         resolve(res);
     });
 }, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
+
+// let eventReady = false
+let index$2 = 0;
+let optionsCache = {};
+function operateEditor(componentId, pageId, type, options) {
+    const data = { options };
+    const needCallOptions = options &&
+        ('success' in options || 'fail' in options || 'complete' in options);
+    if (needCallOptions) {
+        const callbackId = String(index$2++);
+        data.callbackId = callbackId;
+        optionsCache[callbackId] = options;
+    }
+    UniServiceJSBridge.invokeViewMethod(`editor.${componentId}`, {
+        type,
+        data,
+    }, pageId, ({ callbackId, data }) => {
+        if (needCallOptions) {
+            callOptions(optionsCache[callbackId], data);
+            delete optionsCache[callbackId];
+        }
+    });
+}
+class EditorContext {
+    id;
+    pageId;
+    constructor(id, pageId) {
+        this.id = id;
+        this.pageId = pageId;
+    }
+    format(name, value) {
+        this._exec('format', {
+            name,
+            value,
+        });
+    }
+    insertDivider() {
+        this._exec('insertDivider');
+    }
+    insertImage(options) {
+        this._exec('insertImage', options);
+    }
+    insertText(options) {
+        this._exec('insertText', options);
+    }
+    setContents(options) {
+        this._exec('setContents', options);
+    }
+    getContents(options) {
+        this._exec('getContents', options);
+    }
+    clear(options) {
+        this._exec('clear', options);
+    }
+    removeFormat(options) {
+        this._exec('removeFormat', options);
+    }
+    undo(options) {
+        this._exec('undo', options);
+    }
+    redo(options) {
+        this._exec('redo', options);
+    }
+    blur(options) {
+        this._exec('blur', options);
+    }
+    getSelectionText(options) {
+        this._exec('getSelectionText', options);
+    }
+    scrollIntoView(options) {
+        this._exec('scrollIntoView', options);
+    }
+    _exec(method, options) {
+        operateEditor(this.id, this.pageId, method, options);
+    }
+}
+
+const ContextClasss = {
+    canvas: CanvasContext,
+    map: MapContext,
+    video: VideoContext,
+    editor: EditorContext,
+};
+function convertContext(result) {
+    if (result && result.contextInfo) {
+        const { id, type, page } = result.contextInfo;
+        const ContextClass = ContextClasss[type];
+        result.context = new ContextClass(id, page);
+        delete result.contextInfo;
+    }
+}
+class NodesRef {
+    _selectorQuery;
+    _component;
+    _selector;
+    _single;
+    constructor(selectorQuery, component, selector, single) {
+        this._selectorQuery = selectorQuery;
+        this._component = component;
+        this._selector = selector;
+        this._single = single;
+    }
+    boundingClientRect(callback) {
+        this._selectorQuery._push(this._selector, this._component, this._single, {
+            id: true,
+            dataset: true,
+            rect: true,
+            size: true,
+        }, callback);
+        return this._selectorQuery;
+    }
+    fields(fields, callback) {
+        this._selectorQuery._push(this._selector, this._component, this._single, fields, callback);
+        return this._selectorQuery;
+    }
+    scrollOffset(callback) {
+        this._selectorQuery._push(this._selector, this._component, this._single, {
+            id: true,
+            dataset: true,
+            scrollOffset: true,
+        }, callback);
+        return this._selectorQuery;
+    }
+    context(callback) {
+        this._selectorQuery._push(this._selector, this._component, this._single, {
+            context: true,
+        }, callback);
+        return this._selectorQuery;
+    }
+    node(callback) {
+        this._selectorQuery._push(this._selector, this._component, this._single, {
+            node: true,
+        }, callback);
+        return this._selectorQuery;
+    }
+}
+class SelectorQuery {
+    _page;
+    _queue;
+    _component = undefined;
+    _queueCb;
+    _nodesRef;
+    constructor(page) {
+        this._page = page;
+        this._queue = [];
+        this._queueCb = [];
+    }
+    exec(callback) {
+        requestComponentInfo(this._page, this._queue, (res) => {
+            const queueCbs = this._queueCb;
+            res.forEach((result, index) => {
+                if (isArray(result)) {
+                    result.forEach(convertContext);
+                }
+                else {
+                    convertContext(result);
+                }
+                const queueCb = queueCbs[index];
+                if (isFunction(queueCb)) {
+                    queueCb.call(this, result);
+                }
+            });
+            // isFn(callback) &&
+            if (isFunction(callback)) {
+                callback.call(this, res);
+            }
+        });
+        // TODO
+        return this._nodesRef;
+    }
+    in(component) {
+        this._component = resolveComponentInstance(component);
+        return this;
+    }
+    select(selector) {
+        return (this._nodesRef = new NodesRef(this, this._component, selector, true));
+    }
+    selectAll(selector) {
+        return (this._nodesRef = new NodesRef(this, this._component, selector, false));
+    }
+    selectViewport() {
+        return (this._nodesRef = new NodesRef(this, null, '', true));
+    }
+    _push(selector, component, single, fields, callback) {
+        this._queue.push({
+            component,
+            selector,
+            single,
+            fields,
+        });
+        this._queueCb.push(callback);
+    }
+}
+const createSelectorQuery = defineSyncApi('createSelectorQuery', (context) => {
+    context = resolveComponentInstance(context);
+    if (context && !getPageIdByVm(context)) {
+        context = null;
+    }
+    return new SelectorQuery(context || getCurrentPageVm());
+});
 
 const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
 
@@ -12390,6 +12700,7 @@ var uni$1 = {
   canvasPutImageData: canvasPutImageData,
   canvasToTempFilePath: canvasToTempFilePath,
   createCanvasContext: createCanvasContext,
+  createSelectorQuery: createSelectorQuery,
   createVideoContext: createVideoContext,
   getLocale: getLocale,
   getSelectedTextRange: getSelectedTextRange,

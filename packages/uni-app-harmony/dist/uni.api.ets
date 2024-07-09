@@ -27,8 +27,8 @@ import { UTSHarmony as UTSHarmony3, getWindowInfo as internalGetWindowInfo, getD
 import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, ComponentInternalInstance, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
-import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm2, getPageIdByVm as getPageIdByVm2 } from "@dcloudio/uni-app-harmony-framework";
+import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
+import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
@@ -43,7 +43,6 @@ import fs3 from '@ohos.file.fs';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
-import { getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1, isFunction as isFunction1, requestComponentInfo, resolveComponentInstance as resolveComponentInstance1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
@@ -146,41 +145,6 @@ interface Margins {
     left?: number;
     right?: number;
     top?: number;
-}
-export type CreateSelectorQuery = () => SelectorQuery;
-export type SelectorQueryNodeInfoCallback = (result: Object) => void;
-export class NodeField extends UTSObject {
-    id: boolean | null = null;
-    dataset: boolean | null = null;
-    rect: boolean | null = null;
-    size: boolean | null = null;
-    scrollOffset: boolean | null = null;
-    properties: string[] | null = null;
-    computedStyle: string[] | null = null;
-    context: boolean | null = null;
-    node: boolean | null = null;
-}
-export interface NodesRef {
-    boundingClientRect(callback: SelectorQueryNodeInfoCallback | null): SelectorQuery;
-    boundingClientRect(): SelectorQuery;
-    scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-    fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-    context(callback: SelectorQueryNodeInfoCallback): SelectorQuery;
-    node(callback: (result: Object) => void): SelectorQuery;
-}
-export interface SelectorQuery {
-    in(component: Object | null): SelectorQuery;
-    select(selector: string): NodesRef;
-    selectAll(selector: string): NodesRef;
-    selectViewport(): NodesRef;
-    exec(callback: (result: Array<Object>) => void | null): NodesRef | null;
-    exec(): NodesRef | null;
-}
-interface SelectorQueryRequest {
-    component: ComponentPublicInstance | undefined | null;
-    selector: string;
-    single: boolean;
-    fields: NodeField;
 }
 type $OnCallback = Function;
 type $On = (eventName: string, callback: $OnCallback) => void;
@@ -1218,7 +1182,6 @@ interface UniExtApi {
     getClipboardData: GetClipboardData;
     setClipboardData: SetClipboardData;
     createIntersectionObserver: CreateIntersectionObserver;
-    createSelectorQuery: CreateSelectorQuery;
     $on: $On;
     $once: $Once;
     $off: $Off;
@@ -1422,107 +1385,6 @@ export function initUniExtApi(APP_ID: string) {
         }
         return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
     }) as CreateIntersectionObserver;
-    class NodesRefImpl implements NodesRef {
-        private _selectorQuery: SelectorQueryImpl;
-        private _component: ComponentPublicInstance | null | undefined;
-        private _selector: string;
-        private _single: boolean;
-        constructor(selectorQuery: SelectorQueryImpl, component: ComponentPublicInstance | null | undefined, selector: string, single: boolean){
-            this._selectorQuery = selectorQuery;
-            this._component = component;
-            this._selector = selector;
-            this._single = single;
-        }
-        boundingClientRect(callback: SelectorQueryNodeInfoCallback | null = null): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, {
-                id: true,
-                dataset: true,
-                rect: true,
-                size: true
-            } as NodeField, callback);
-            return this._selectorQuery;
-        }
-        fields(fields: NodeField, callback: SelectorQueryNodeInfoCallback): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, fields, callback);
-            return this._selectorQuery;
-        }
-        scrollOffset(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, {
-                id: true,
-                dataset: true,
-                scrollOffset: true
-            } as NodeField, callback);
-            return this._selectorQuery;
-        }
-        context(callback: SelectorQueryNodeInfoCallback): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, {
-                context: true
-            } as NodeField, callback);
-            return this._selectorQuery;
-        }
-        node(callback: (result: Object) => void): SelectorQuery {
-            this._selectorQuery._push(this._selector, this._component, this._single, {
-                node: true
-            } as NodeField, callback);
-            return this._selectorQuery;
-        }
-    }
-    class SelectorQueryImpl implements SelectorQuery {
-        private _page: ComponentPublicInstance;
-        private _queue: Array<SelectorQueryRequest>;
-        private _component?: ComponentPublicInstance = undefined;
-        private _queueCb: Array<SelectorQueryNodeInfoCallback>;
-        private _nodesRef?: NodesRef;
-        constructor(page: ComponentPublicInstance){
-            this._page = page;
-            this._queue = [];
-            this._queueCb = [];
-        }
-        exec(callback: ((result: Array<Object>) => void | null) | null = null): NodesRef | null {
-            requestComponentInfo(this._page, this._queue, (res: Array<Object>)=>{
-                const queueCbs = this._queueCb;
-                res.forEach((result: Object, index: number)=>{
-                    const queueCb = queueCbs[index];
-                    if (isFunction1(queueCb)) {
-                        queueCb(result);
-                    }
-                });
-                if (isFunction1(callback)) {
-                    callback!(res);
-                }
-            });
-            return this._nodesRef as NodesRef;
-        }
-        in(component: ComponentPublicInstance | ComponentInternalInstance | null = null): SelectorQuery {
-            this._component = resolveComponentInstance1(component);
-            return this;
-        }
-        select(selector: string): NodesRef {
-            return this._nodesRef = new NodesRefImpl(this, this._component, selector, true) as NodesRef;
-        }
-        selectAll(selector: string): NodesRef {
-            return this._nodesRef = new NodesRefImpl(this, this._component, selector, false) as NodesRef;
-        }
-        selectViewport(): NodesRef {
-            return this._nodesRef = new NodesRefImpl(this, null, '', true) as NodesRef;
-        }
-        _push(selector: string, component: ComponentPublicInstance | undefined | null, single: boolean, fields: NodeField, callback: SelectorQueryNodeInfoCallback | null = null) {
-            this._queue.push({
-                component,
-                selector,
-                single,
-                fields
-            } as SelectorQueryRequest);
-            callback && this._queueCb.push(callback);
-        }
-    }
-    const createSelectorQuery = defineSyncApi<SelectorQuery>('createSelectorQuery', (context: ComponentInternalInstance | ComponentPublicInstance | null = null)=>{
-        context = resolveComponentInstance1(context);
-        if (context && !getPageIdByVm1(context)) {
-            context = null;
-        }
-        return new SelectorQueryImpl(context || getCurrentPageVm1()!) as SelectorQuery;
-    }) as CreateSelectorQuery;
     const API_$_ON = '$on';
     const API_$_ONCE = '$once';
     const API_$_OFF = '$off';
@@ -3606,7 +3468,7 @@ export function initUniExtApi(APP_ID: string) {
         ])
     };
     const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExecutor<PageScrollToSuccess>)=>{
-        const pageId = getPageIdByVm2(getCurrentPageVm2()!)! as number;
+        const pageId = getPageIdByVm1(getCurrentPageVm1()!)! as number;
         UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
     }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
     const API_SHOW_TOAST = 'showToast';
@@ -4451,7 +4313,6 @@ export function initUniExtApi(APP_ID: string) {
         getClipboardData,
         setClipboardData,
         createIntersectionObserver,
-        createSelectorQuery,
         $on,
         $once,
         $off,

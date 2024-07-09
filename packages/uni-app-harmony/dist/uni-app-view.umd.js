@@ -1167,17 +1167,17 @@
     var [startDelimiter, endDelimiter] = _ref;
     var tokens = [];
     var position = 0;
-    var text = "";
+    var text2 = "";
     while (position < format.length) {
       var char = format[position++];
       if (char === startDelimiter) {
-        if (text) {
+        if (text2) {
           tokens.push({
             type: "text",
-            value: text
+            value: text2
           });
         }
-        text = "";
+        text2 = "";
         var sub = "";
         char = format[position++];
         while (char !== void 0 && char !== endDelimiter) {
@@ -1191,12 +1191,12 @@
           type
         });
       } else {
-        text += char;
+        text2 += char;
       }
     }
-    text && tokens.push({
+    text2 && tokens.push({
       type: "text",
-      value: text
+      value: text2
     });
     return tokens;
   }
@@ -3827,11 +3827,11 @@
     if (created) {
       callHook$1(created, instance, "c");
     }
-    function registerLifecycleHook(register, hook) {
+    function registerLifecycleHook(register2, hook) {
       if (isArray(hook)) {
-        hook.forEach((_hook) => register(_hook.bind(publicThis)));
+        hook.forEach((_hook) => register2(_hook.bind(publicThis)));
       } else if (hook) {
-        register(hook.bind(publicThis));
+        register2(hook.bind(publicThis));
       }
     }
     registerLifecycleHook(onBeforeMount, beforeMount);
@@ -5930,9 +5930,9 @@
     return cloned;
   }
   function createTextVNode() {
-    var text = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : " ";
+    var text2 = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : " ";
     var flag = arguments.length > 1 && arguments[1] !== void 0 ? arguments[1] : 0;
-    return createVNode(Text, null, text, flag);
+    return createVNode(Text, null, text2, flag);
   }
   function normalizeVNode(child) {
     if (child == null || typeof child === "boolean") {
@@ -6373,13 +6373,13 @@
       }
       return el;
     },
-    createText: (text) => doc.createTextNode(text),
-    createComment: (text) => doc.createComment(text),
-    setText: (node, text) => {
-      node.nodeValue = text;
+    createText: (text2) => doc.createTextNode(text2),
+    createComment: (text2) => doc.createComment(text2),
+    setText: (node, text2) => {
+      node.nodeValue = text2;
     },
-    setElementText: (el, text) => {
-      el.textContent = text;
+    setElementText: (el, text2) => {
+      el.textContent = text2;
     },
     parentNode: (node) => node.parentNode,
     nextSibling: (node) => node.nextSibling,
@@ -12747,8 +12747,8 @@
         this.$.textContent = nodeJson.t;
       }
     }
-    setText(text) {
-      this.$.textContent = text;
+    setText(text2) {
+      this.$.textContent = text2;
       this.updateView();
     }
     insert(parentNodeId, refNodeId, nodeJson) {
@@ -13129,7 +13129,7 @@
   }
   function converPx(value) {
     if (/^-?\d+[ur]px$/i.test(value)) {
-      return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
+      return value.replace(/(^-?\d+)[ur]px$/i, (text2, num) => {
         return "".concat(uni.upx2px(parseFloat(num)), "px");
       });
     } else if (/^-?[\d\.]+$/.test(value)) {
@@ -13138,8 +13138,8 @@
     return value || "";
   }
   function converType(type) {
-    return type.replace(/[A-Z]/g, (text) => {
-      return "-".concat(text.toLowerCase());
+    return type.replace(/[A-Z]/g, (text2) => {
+      return "-".concat(text2.toLowerCase());
     }).replace("webkit", "-webkit");
   }
   function getStyle(action) {
@@ -13774,12 +13774,12 @@
           if (args[3] && typeof args[3] === "number") {
             args[3] *= pixelRatio;
           }
-          var font = this.font;
-          this.font = font.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
+          var font2 = this.font;
+          this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
             return m * pixelRatio + u;
           });
           _super.apply(this, args);
-          this.font = font;
+          this.font = font2;
         };
       }(proto2.fillText);
       proto2.strokeText = /* @__PURE__ */ function(_super) {
@@ -13793,12 +13793,12 @@
           if (args[3] && typeof args[3] === "number") {
             args[3] *= pixelRatio;
           }
-          var font = this.font;
-          this.font = font.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
+          var font2 = this.font;
+          this.font = font2.replace(/(\d+\.?\d*)(px|em|rem|pt)/g, function(w, m, u) {
             return m * pixelRatio + u;
           });
           _super.apply(this, args);
-          this.font = font;
+          this.font = font2;
         };
       }(proto2.strokeText);
       proto2.drawImage = /* @__PURE__ */ function(_super) {
@@ -13841,7 +13841,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$j = {
+  var props$k = {
     canvasId: {
       type: String,
       default: ""
@@ -13861,7 +13861,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$j,
+    props: props$k,
     computed: {
       id() {
         return this.canvasId;
@@ -14030,9 +14030,9 @@
               });
               color = _LinearGradient;
             } else if (actionType === "pattern") {
-              var loaded = checkImageLoaded(data[1], actions.slice(index3 + 1), resolve, function(image) {
-                if (image) {
-                  c2d[method1] = c2d.createPattern(image, data[2]);
+              var loaded = checkImageLoaded(data[1], actions.slice(index3 + 1), resolve, function(image2) {
+                if (image2) {
+                  c2d[method1] = c2d.createPattern(image2, data[2]);
                 }
               });
               if (!loaded) {
@@ -14049,8 +14049,8 @@
               c2d[shadowArray[method_]] = shadowArray[method_] === "shadowColor" ? resolveColor(color_) : color_;
             });
           } else if (method1 === "fontSize") {
-            var font = c2d.__font__ || c2d.font;
-            c2d.__font__ = c2d.font = font.replace(/\d+\.?\d*px/, actionType + "px");
+            var font2 = c2d.__font__ || c2d.font;
+            c2d.__font__ = c2d.font = font2.replace(/\d+\.?\d*px/, actionType + "px");
           } else if (method1 === "lineDash") {
             c2d.setLineDash(actionType);
             c2d.lineDashOffset = data[1] || 0;
@@ -14079,12 +14079,12 @@
             var url = dataArray[0];
             var otherData = dataArray.slice(1);
             _images = _images || {};
-            if (!checkImageLoaded(url, actions.slice(index3 + 1), resolve, function(image) {
-              if (image) {
+            if (!checkImageLoaded(url, actions.slice(index3 + 1), resolve, function(image2) {
+              if (image2) {
                 c2d.drawImage.apply(
                   c2d,
                   // @ts-expect-error
-                  [image].concat(
+                  [image2].concat(
                     // @ts-expect-error
                     [...otherData.slice(4, 8)],
                     [...otherData.slice(0, 4)]
@@ -14139,36 +14139,36 @@
           loadImage();
         }
         function loadImage() {
-          var image = _images[src] = new Image();
-          image.onload = function() {
-            image.ready = true;
+          var image2 = _images[src] = new Image();
+          image2.onload = function() {
+            image2.ready = true;
           };
           if (navigator.vendor === "Google Inc.") {
             if (src.indexOf("file://") === 0) {
-              image.crossOrigin = "anonymous";
+              image2.crossOrigin = "anonymous";
             }
-            image.src = src;
+            image2.src = src;
             return;
           }
           getSameOriginUrl(src).then((src2) => {
-            image.src = src2;
+            image2.src = src2;
           }).catch(() => {
-            image.src = src;
+            image2.src = src;
           });
         }
       });
     }
     function checkImageLoaded(src, actions, resolve, fn) {
-      var image = _images[src];
-      if (image.ready) {
-        fn(image);
+      var image2 = _images[src];
+      if (image2.ready) {
+        fn(image2);
         return true;
       } else {
         _actionsDefer.unshift([actions, true]);
         actionsWaiting.value = true;
-        image.onload = function() {
-          image.ready = true;
-          fn(image);
+        image2.onload = function() {
+          image2.ready = true;
+          fn(image2);
           actionsWaiting.value = false;
           var actions2 = _actionsDefer.slice(0);
           _actionsDefer = [];
@@ -14350,7 +14350,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$i = {
+  var props$j = {
     name: {
       type: String,
       default: ""
@@ -14358,7 +14358,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$i,
+    props: props$j,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -14411,7 +14411,7 @@
     }
     return getFieldsValue;
   }
-  var props$h = {
+  var props$i = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -14460,7 +14460,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$h,
+    props: props$i,
     setup(props2, _ref) {
       var {
         slots
@@ -14645,7 +14645,7 @@
       });
     }
   }
-  var props$g = {
+  var props$h = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -14799,17 +14799,17 @@
         }
         if (chars) {
           index2 = html.indexOf("<");
-          var text = index2 < 0 ? html : html.substring(0, index2);
+          var text2 = index2 < 0 ? html : html.substring(0, index2);
           html = index2 < 0 ? "" : html.substring(index2);
           if (handler.chars) {
-            handler.chars(text);
+            handler.chars(text2);
           }
         }
       } else {
-        html = html.replace(new RegExp("([\\s\\S]*?)</" + stack2.last() + "[^>]*>"), function(all, text2) {
-          text2 = text2.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
+        html = html.replace(new RegExp("([\\s\\S]*?)</" + stack2.last() + "[^>]*>"), function(all, text3) {
+          text3 = text3.replace(/<!--([\s\S]*?)-->|<!\[CDATA\[([\s\S]*?)]]>/g, "$1$2");
           if (handler.chars) {
-            handler.chars(text2);
+            handler.chars(text3);
           }
           return "";
         });
@@ -14879,6 +14879,662 @@
     }
     return obj;
   }
+  var scripts = {};
+  function loadScript(globalName, src, callback) {
+    var globalObject = isString(globalName) ? window[globalName] : globalName;
+    if (globalObject) {
+      callback();
+      return;
+    }
+    var callbacks2 = scripts[src];
+    if (!callbacks2) {
+      callbacks2 = scripts[src] = [];
+      var script = document.createElement("script");
+      script.src = src;
+      document.body.appendChild(script);
+      script.onload = function() {
+        callbacks2.forEach((callback2) => callback2());
+        delete scripts[src];
+      };
+    }
+    callbacks2.push(callback);
+  }
+  function divider(Quill) {
+    var BlockEmbed = Quill.import("blots/block/embed");
+    class Divider extends BlockEmbed {
+    }
+    Divider.blotName = "divider";
+    Divider.tagName = "HR";
+    return {
+      "formats/divider": Divider
+    };
+  }
+  function ins(Quill) {
+    var Inline = Quill.import("blots/inline");
+    class Ins extends Inline {
+    }
+    Ins.blotName = "ins";
+    Ins.tagName = "INS";
+    return {
+      "formats/ins": Ins
+    };
+  }
+  function align(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var config = {
+      scope: Scope.BLOCK,
+      whitelist: ["left", "right", "center", "justify"]
+    };
+    var AlignStyle = new Attributor.Style("align", "text-align", config);
+    return {
+      "formats/align": AlignStyle
+    };
+  }
+  function direction(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var config = {
+      scope: Scope.BLOCK,
+      whitelist: ["rtl"]
+    };
+    var DirectionStyle = new Attributor.Style("direction", "direction", config);
+    return {
+      "formats/direction": DirectionStyle
+    };
+  }
+  function list(Quill) {
+    var Parchment = Quill.import("parchment");
+    var Container = Quill.import("blots/container");
+    var ListItem = Quill.import("formats/list/item");
+    class List extends Container {
+      static create(value) {
+        var tagName = value === "ordered" ? "OL" : "UL";
+        var node = super.create(tagName);
+        if (value === "checked" || value === "unchecked") {
+          node.setAttribute("data-checked", value === "checked");
+        }
+        return node;
+      }
+      static formats(domNode) {
+        if (domNode.tagName === "OL")
+          return "ordered";
+        if (domNode.tagName === "UL") {
+          if (domNode.hasAttribute("data-checked")) {
+            return domNode.getAttribute("data-checked") === "true" ? "checked" : "unchecked";
+          } else {
+            return "bullet";
+          }
+        }
+        return void 0;
+      }
+      constructor(domNode) {
+        super(domNode);
+        var listEventHandler = (e2) => {
+          if (e2.target.parentNode !== domNode)
+            return;
+          var format = this.statics.formats(domNode);
+          var blot = Parchment.find(e2.target);
+          if (format === "checked") {
+            blot.format("list", "unchecked");
+          } else if (format === "unchecked") {
+            blot.format("list", "checked");
+          }
+        };
+        domNode.addEventListener("click", listEventHandler);
+      }
+      format(name, value) {
+        if (this.children.length > 0) {
+          this.children.tail.format(name, value);
+        }
+      }
+      formats() {
+        return {
+          [this.statics.blotName]: this.statics.formats(this.domNode)
+        };
+      }
+      insertBefore(blot, ref2) {
+        if (blot instanceof ListItem) {
+          super.insertBefore(blot, ref2);
+        } else {
+          var index2 = ref2 == null ? this.length() : ref2.offset(this);
+          var after = this.split(index2);
+          after.parent.insertBefore(blot, after);
+        }
+      }
+      optimize(context) {
+        super.optimize(context);
+        var next = this.next;
+        if (next != null && next.prev === this && next.statics.blotName === this.statics.blotName && next.domNode.tagName === this.domNode.tagName && next.domNode.getAttribute("data-checked") === this.domNode.getAttribute("data-checked")) {
+          next.moveChildren(this);
+          next.remove();
+        }
+      }
+      replace(target) {
+        if (target.statics.blotName !== this.statics.blotName) {
+          var item = Parchment.create(this.statics.defaultChild);
+          target.moveChildren(item);
+          this.appendChild(item);
+        }
+        super.replace(target);
+      }
+    }
+    List.blotName = "list";
+    List.scope = Parchment.Scope.BLOCK_BLOT;
+    List.tagName = ["OL", "UL"];
+    List.defaultChild = "list-item";
+    List.allowedChildren = [ListItem];
+    return {
+      "formats/list": List
+    };
+  }
+  function background(Quill) {
+    var {
+      Scope
+    } = Quill.import("parchment");
+    var BackgroundStyle = Quill.import("formats/background");
+    var BackgroundColorStyle = new BackgroundStyle.constructor("backgroundColor", "background-color", {
+      scope: Scope.INLINE
+    });
+    return {
+      "formats/backgroundColor": BackgroundColorStyle
+    };
+  }
+  function box(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var config = {
+      scope: Scope.BLOCK
+    };
+    var margin = ["margin", "marginTop", "marginBottom", "marginLeft", "marginRight"];
+    var padding = ["padding", "paddingTop", "paddingBottom", "paddingLeft", "paddingRight"];
+    var result = {};
+    margin.concat(padding).forEach((name) => {
+      result["formats/".concat(name)] = new Attributor.Style(name, hyphenate(name), config);
+    });
+    return result;
+  }
+  function font(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var config = {
+      scope: Scope.INLINE
+    };
+    var font2 = ["font", "fontSize", "fontStyle", "fontVariant", "fontWeight", "fontFamily"];
+    var result = {};
+    font2.forEach((name) => {
+      result["formats/".concat(name)] = new Attributor.Style(name, hyphenate(name), config);
+    });
+    return result;
+  }
+  function text(Quill) {
+    var {
+      Scope,
+      Attributor
+    } = Quill.import("parchment");
+    var text2 = [{
+      name: "lineHeight",
+      scope: Scope.BLOCK
+    }, {
+      name: "letterSpacing",
+      scope: Scope.INLINE
+    }, {
+      name: "textDecoration",
+      scope: Scope.INLINE
+    }, {
+      name: "textIndent",
+      scope: Scope.BLOCK
+    }];
+    var result = {};
+    text2.forEach((_ref) => {
+      var {
+        name,
+        scope
+      } = _ref;
+      result["formats/".concat(name)] = new Attributor.Style(name, hyphenate(name), {
+        scope
+      });
+    });
+    return result;
+  }
+  function image(Quill) {
+    var Image2 = Quill.import("formats/image");
+    var ATTRIBUTES = ["alt", "height", "width", "data-custom", "class", "data-local"];
+    Image2.sanitize = (url) => url ? getRealPath(url) : url;
+    Image2.formats = function formats(domNode) {
+      return ATTRIBUTES.reduce(function(formats2, attribute) {
+        if (domNode.hasAttribute(attribute)) {
+          formats2[attribute] = domNode.getAttribute(attribute);
+        }
+        return formats2;
+      }, {});
+    };
+    var format = Image2.prototype.format;
+    Image2.prototype.format = function(name, value) {
+      if (ATTRIBUTES.indexOf(name) > -1) {
+        if (value) {
+          this.domNode.setAttribute(name, value);
+        } else {
+          this.domNode.removeAttribute(name);
+        }
+      } else {
+        format.call(this, name, value);
+      }
+    };
+  }
+  function link(Quill) {
+    var Link = Quill.import("formats/link");
+    Link.sanitize = (url) => {
+      var anchor = document.createElement("a");
+      anchor.href = url;
+      var protocol = anchor.href.slice(0, anchor.href.indexOf(":"));
+      return Link.PROTOCOL_WHITELIST.concat("file").indexOf(protocol) > -1 ? url : Link.SANITIZED_URL;
+    };
+  }
+  function register(Quill) {
+    var formats = {
+      divider,
+      ins,
+      align,
+      direction,
+      list,
+      background,
+      box,
+      font,
+      text,
+      image,
+      link
+    };
+    var options = {};
+    Object.values(formats).forEach((value) => extend(options, value(Quill)));
+    Quill.register(options, true);
+  }
+  function useQuill(props2, rootRef, trigger2) {
+    var quillReady;
+    var skipMatcher;
+    var quill;
+    watch(() => props2.readOnly, (value) => {
+      if (quillReady) {
+        quill.enable(!value);
+        if (!value) {
+          quill.blur();
+        }
+      }
+    });
+    watch(() => props2.placeholder, (value) => {
+      if (quillReady) {
+        setPlaceHolder(value);
+      }
+    });
+    function html2delta(html) {
+      var tags = ["span", "strong", "b", "ins", "em", "i", "u", "a", "del", "s", "sub", "sup", "img", "div", "p", "h1", "h2", "h3", "h4", "h5", "h6", "hr", "ol", "ul", "li", "br"];
+      var content = "";
+      var disable;
+      HTMLParser(html, {
+        start: function(tag, attrs2, unary) {
+          if (!tags.includes(tag)) {
+            disable = !unary;
+            return;
+          }
+          disable = false;
+          var arrts = attrs2.map((_ref) => {
+            var {
+              name,
+              value
+            } = _ref;
+            return "".concat(name, '="').concat(value, '"');
+          }).join(" ");
+          var start = "<".concat(tag, " ").concat(arrts, " ").concat(unary ? "/" : "", ">");
+          content += start;
+        },
+        end: function(tag) {
+          if (!disable) {
+            content += "</".concat(tag, ">");
+          }
+        },
+        chars: function(text2) {
+          if (!disable) {
+            content += text2;
+          }
+        }
+      });
+      skipMatcher = true;
+      var delta = quill.clipboard.convert(content);
+      skipMatcher = false;
+      return delta;
+    }
+    function getContents() {
+      var html = quill.root.innerHTML;
+      var text2 = quill.getText();
+      var delta = quill.getContents();
+      return {
+        html,
+        text: text2,
+        delta
+      };
+    }
+    function setPlaceHolder(placeholder) {
+      var placeHolderAttrName = "data-placeholder";
+      var QuillRoot = quill.root;
+      QuillRoot.getAttribute(placeHolderAttrName) !== placeholder && QuillRoot.setAttribute(placeHolderAttrName, placeholder);
+    }
+    var oldStatus = {};
+    function updateStatus(range) {
+      var status = range ? quill.getFormat(range) : {};
+      var keys = Object.keys(status);
+      if (keys.length !== Object.keys(oldStatus).length || keys.find((key2) => status[key2] !== oldStatus[key2])) {
+        oldStatus = status;
+        trigger2("statuschange", {}, status);
+      }
+    }
+    function textChangeHandler() {
+      trigger2("input", {}, getContents());
+    }
+    function initQuill(imageResizeModules) {
+      var Quill = window.Quill;
+      register(Quill);
+      var options = {
+        toolbar: false,
+        readOnly: props2.readOnly,
+        placeholder: props2.placeholder
+      };
+      if (imageResizeModules.length) {
+        Quill.register("modules/ImageResize", window.ImageResize.default);
+        options.modules = {
+          ImageResize: {
+            modules: imageResizeModules
+          }
+        };
+      }
+      var rootEl = rootRef.value;
+      quill = new Quill(rootEl, options);
+      var $el = quill.root;
+      var events = ["focus", "blur", "input"];
+      events.forEach((name) => {
+        $el.addEventListener(name, ($event) => {
+          var contents = getContents();
+          if (name === "input") {
+            if (getBaseSystemInfo().platform === "ios") {
+              var regExpContent = (contents.html.match(/<span [\s\S]*>([\s\S]*)<\/span>/) || [])[1];
+              var placeholder = regExpContent && regExpContent.replace(/\s/g, "") ? "" : props2.placeholder;
+              setPlaceHolder(placeholder);
+            }
+            $event.stopPropagation();
+          } else {
+            trigger2(name, $event, contents);
+          }
+        });
+      });
+      quill.on("text-change", textChangeHandler);
+      quill.on("selection-change", updateStatus);
+      quill.on("scroll-optimize", () => {
+        var range = quill.selection.getRange()[0];
+        updateStatus(range);
+      });
+      quill.clipboard.addMatcher(Node.ELEMENT_NODE, (node, delta) => {
+        if (skipMatcher) {
+          return delta;
+        }
+        if (delta.ops) {
+          delta.ops = delta.ops.filter((_ref2) => {
+            var {
+              insert
+            } = _ref2;
+            return isString(insert);
+          }).map((_ref3) => {
+            var {
+              insert
+            } = _ref3;
+            return {
+              insert
+            };
+          });
+        }
+        return delta;
+      });
+      quillReady = true;
+      trigger2("ready", {}, {});
+    }
+    var id2 = useContextInfo();
+    useSubscribe((type, data, resolve) => {
+      var {
+        options,
+        callbackId
+      } = data;
+      var res;
+      var range;
+      var errMsg;
+      if (quillReady) {
+        var Quill = window.Quill;
+        switch (type) {
+          case "format":
+            {
+              var {
+                name = "",
+                value = false
+              } = options;
+              range = quill.getSelection(true);
+              var format = quill.getFormat(range)[name] || false;
+              if (["bold", "italic", "underline", "strike", "ins"].includes(name)) {
+                value = !format;
+              } else if (name === "direction") {
+                value = value === "rtl" && format ? false : value;
+                var align2 = quill.getFormat(range).align;
+                if (value === "rtl" && !align2) {
+                  quill.format("align", "right", "user");
+                } else if (!value && align2 === "right") {
+                  quill.format("align", false, "user");
+                }
+              } else if (name === "indent") {
+                var rtl = quill.getFormat(range).direction === "rtl";
+                value = value === "+1";
+                if (rtl) {
+                  value = !value;
+                }
+                value = value ? "+1" : "-1";
+              } else {
+                if (name === "list") {
+                  value = value === "check" ? "unchecked" : value;
+                  format = format === "checked" ? "unchecked" : format;
+                }
+                value = format && format !== (value || false) || !format && value ? value : !format;
+              }
+              quill.format(name, value, "user");
+            }
+            break;
+          case "insertDivider":
+            range = quill.getSelection(true);
+            quill.insertText(range.index, LINEFEED, "user");
+            quill.insertEmbed(range.index + 1, "divider", true, "user");
+            quill.setSelection(range.index + 2, 0, "silent");
+            break;
+          case "insertImage":
+            {
+              range = quill.getSelection(true);
+              var {
+                src = "",
+                alt = "",
+                width = "",
+                height = "",
+                extClass = "",
+                data: data2 = {}
+              } = options;
+              var path = getRealPath(src);
+              quill.insertEmbed(range.index, "image", path, "silent");
+              var local = /^(file|blob):/.test(path) ? path : false;
+              quill.formatText(range.index, 1, "data-local", local, "silent");
+              quill.formatText(range.index, 1, "alt", alt, "silent");
+              quill.formatText(range.index, 1, "width", width, "silent");
+              quill.formatText(range.index, 1, "height", height, "silent");
+              quill.formatText(range.index, 1, "class", extClass, "silent");
+              quill.formatText(range.index, 1, "data-custom", Object.keys(data2).map((key2) => "".concat(key2, "=").concat(data2[key2])).join("&"), "silent");
+              quill.setSelection(range.index + 1, 0, "silent");
+              quill.scrollIntoView();
+              setTimeout(() => {
+                textChangeHandler();
+              }, 1e3);
+            }
+            break;
+          case "insertText":
+            {
+              range = quill.getSelection(true);
+              var {
+                text: text2 = ""
+              } = options;
+              quill.insertText(range.index, text2, "user");
+              quill.setSelection(range.index + text2.length, 0, "silent");
+            }
+            break;
+          case "setContents":
+            {
+              var {
+                delta,
+                html
+              } = options;
+              if (typeof delta === "object") {
+                quill.setContents(delta, "silent");
+              } else if (isString(html)) {
+                quill.setContents(html2delta(html), "silent");
+              } else {
+                errMsg = "contents is missing";
+              }
+            }
+            break;
+          case "getContents":
+            res = getContents();
+            break;
+          case "clear":
+            quill.setText("");
+            break;
+          case "removeFormat":
+            {
+              range = quill.getSelection(true);
+              var parchment = Quill.import("parchment");
+              if (range.length) {
+                quill.removeFormat(range.index, range.length, "user");
+              } else {
+                Object.keys(quill.getFormat(range)).forEach((key2) => {
+                  if (parchment.query(key2, parchment.Scope.INLINE)) {
+                    quill.format(key2, false);
+                  }
+                });
+              }
+            }
+            break;
+          case "undo":
+            quill.history.undo();
+            break;
+          case "redo":
+            quill.history.redo();
+            break;
+          case "blur":
+            quill.blur();
+            break;
+          case "getSelectionText":
+            range = quill.selection.savedRange;
+            res = {
+              text: ""
+            };
+            if (range && range.length !== 0) {
+              res.text = quill.getText(range.index, range.length);
+            }
+            break;
+          case "scrollIntoView":
+            quill.scrollIntoView();
+            break;
+        }
+        updateStatus(range);
+      } else {
+        errMsg = "not ready";
+      }
+      if (callbackId) {
+        resolve({
+          callbackId,
+          data: extend({}, res, {
+            errMsg: "".concat(type, ":").concat(errMsg ? "fail " + errMsg : "ok")
+          })
+        });
+      }
+    }, id2, true);
+    onMounted(() => {
+      var imageResizeModules = [];
+      if (props2.showImgSize) {
+        imageResizeModules.push("DisplaySize");
+      }
+      if (props2.showImgToolbar) {
+        imageResizeModules.push("Toolbar");
+      }
+      if (props2.showImgResize) {
+        imageResizeModules.push("Resize");
+      }
+      var quillSrc = "./__uniappquill.js";
+      loadScript(window.Quill, quillSrc, () => {
+        if (imageResizeModules.length) {
+          var imageResizeSrc = "./__uniappquillimageresize.js";
+          loadScript(window.ImageResize, imageResizeSrc, () => {
+            initQuill(imageResizeModules);
+          });
+        } else {
+          initQuill(imageResizeModules);
+        }
+      });
+    });
+  }
+  var props$g = /* @__PURE__ */ extend({}, props$h, {
+    id: {
+      type: String,
+      default: ""
+    },
+    readOnly: {
+      type: [Boolean, String],
+      default: false
+    },
+    placeholder: {
+      type: String,
+      default: ""
+    },
+    showImgSize: {
+      type: [Boolean, String],
+      default: false
+    },
+    showImgToolbar: {
+      type: [Boolean, String],
+      default: false
+    },
+    showImgResize: {
+      type: [Boolean, String],
+      default: false
+    }
+  });
+  const Editor = /* @__PURE__ */ defineBuiltInComponent({
+    name: "Editor",
+    props: props$g,
+    emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var rootRef = ref(null);
+      var trigger2 = useCustomEvent(rootRef, emit2);
+      useQuill(props2, rootRef, trigger2);
+      useKeyboard(props2, rootRef, trigger2);
+      return () => {
+        return createVNode("uni-editor", {
+          "ref": rootRef,
+          "id": props2.id,
+          "class": "ql-container"
+        }, null, 8, ["id"]);
+      };
+    }
+  });
   var INFO_COLOR = "#10aeff";
   var WARN_COLOR = "#f76260";
   var GREY_COLOR = "#b2b2b2";
@@ -15409,7 +16065,7 @@
       type: String,
       default: ""
     }
-  }, props$g);
+  }, props$h);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -19086,10 +19742,10 @@
           parent.children.push(node);
         }
       },
-      chars: function(text) {
+      chars: function(text2) {
         var node = {
           type: "text",
-          text
+          text: text2
         };
         if (stacks.length === 0) {
           results.children.push(node);
@@ -19101,10 +19757,10 @@
           parent.children.push(node);
         }
       },
-      comment: function(text) {
+      comment: function(text2) {
         var node = {
           node: "comment",
-          text
+          text: text2
         };
         var parent = stacks[0];
         if (parent) {
@@ -19456,30 +20112,30 @@
       var val = Number(props2.lowerThreshold);
       return isNaN(val) ? 50 : val;
     });
-    function scrollTo2(scrollToValue, direction) {
+    function scrollTo2(scrollToValue, direction2) {
       var container = main.value;
       var transformValue = 0;
       var transform = "";
-      scrollToValue < 0 ? scrollToValue = 0 : direction === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
-      direction === "x" ? transformValue = container.scrollLeft - scrollToValue : direction === "y" && (transformValue = container.scrollTop - scrollToValue);
+      scrollToValue < 0 ? scrollToValue = 0 : direction2 === "x" && scrollToValue > container.scrollWidth - container.offsetWidth ? scrollToValue = container.scrollWidth - container.offsetWidth : direction2 === "y" && scrollToValue > container.scrollHeight - container.offsetHeight && (scrollToValue = container.scrollHeight - container.offsetHeight);
+      direction2 === "x" ? transformValue = container.scrollLeft - scrollToValue : direction2 === "y" && (transformValue = container.scrollTop - scrollToValue);
       if (transformValue === 0)
         return;
       var _content = content.value;
       _content.style.transition = "transform .3s ease-out";
       _content.style.webkitTransition = "-webkit-transform .3s ease-out";
-      if (direction === "x") {
+      if (direction2 === "x") {
         transform = "translateX(" + transformValue + "px) translateZ(0)";
       } else {
-        direction === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
+        direction2 === "y" && (transform = "translateY(" + transformValue + "px) translateZ(0)");
       }
       _content.removeEventListener("transitionend", __transitionEnd);
       _content.removeEventListener("webkitTransitionEnd", __transitionEnd);
-      __transitionEnd = () => _transitionEnd(scrollToValue, direction);
+      __transitionEnd = () => _transitionEnd(scrollToValue, direction2);
       _content.addEventListener("transitionend", __transitionEnd);
       _content.addEventListener("webkitTransitionEnd", __transitionEnd);
-      if (direction === "x") {
+      if (direction2 === "x") {
         container.style.overflowX = "hidden";
-      } else if (direction === "y") {
+      } else if (direction2 === "y") {
         container.style.overflowY = "hidden";
       }
       _content.style.transform = transform;
@@ -19581,16 +20237,16 @@
         }
       }
     }
-    function _transitionEnd(val, direction) {
+    function _transitionEnd(val, direction2) {
       content.value.style.transition = "";
       content.value.style.webkitTransition = "";
       content.value.style.transform = "";
       content.value.style.webkitTransform = "";
       var _main = main.value;
-      if (direction === "x") {
+      if (direction2 === "x") {
         _main.style.overflowX = realScrollX.value ? "auto" : "hidden";
         _main.scrollLeft = val;
-      } else if (direction === "y") {
+      } else if (direction2 === "y") {
         _main.style.overflowY = realScrollY.value ? "auto" : "hidden";
         _main.scrollTop = val;
       }
@@ -20799,14 +21455,14 @@
     emsp: " ",
     nbsp: " "
   };
-  function normalizeText(text, _ref) {
+  function normalizeText(text2, _ref) {
     var {
       space,
       decode
     } = _ref;
     var result = "";
     var isEscape = false;
-    for (var char of text) {
+    for (var char of text2) {
       if (space && SPACE_UNICODE[space] && char === " ") {
         char = SPACE_UNICODE[space];
       }
@@ -20832,8 +21488,8 @@
     }
     return result.replace(/&nbsp;/g, SPACE_UNICODE.nbsp).replace(/&ensp;/g, SPACE_UNICODE.ensp).replace(/&emsp;/g, SPACE_UNICODE.emsp).replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&").replace(/&quot;/g, '"').replace(/&apos;/g, "'");
   }
-  function parseText(text, options) {
-    return normalizeText(text, options).split(LINEFEED);
+  function parseText(text2, options) {
+    return normalizeText(text2, options).split(LINEFEED);
   }
   function ownKeys(e2, r) {
     var t2 = Object.keys(e2);
@@ -21128,8 +21784,8 @@
         this.update();
       }
     }
-    setText(text) {
-      this._text = text;
+    setText(text2) {
+      this._text = text2;
       this.update();
       this.updateView();
     }
@@ -21343,8 +21999,8 @@
         this.addWxsEvents(nodeJson.w);
       }
     }
-    setText(text) {
-      (this.$holder || this.$).textContent = text;
+    setText(text2) {
+      (this.$holder || this.$).textContent = text2;
       this.updateView();
     }
     addWxsEvent(name, wxsEvent, flag) {
@@ -21422,9 +22078,9 @@
       }
       return this._rebuild;
     }
-    setText(text) {
+    setText(text2) {
       queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
-      return super.setText(text);
+      return super.setText(text2);
     }
     appendChild(node) {
       queuePostActionJob(this.getRebuildFn(), JOB_PRIORITY_REBUILD);
@@ -21459,7 +22115,7 @@
     }
     return null;
   }
-  function setHolderText(holder, clazz, text) {
+  function setHolderText(holder, clazz, text2) {
     holder.childNodes.forEach((childNode) => {
       if (childNode instanceof Element) {
         if (childNode.className.indexOf(clazz) === -1) {
@@ -21469,7 +22125,7 @@
         holder.removeChild(childNode);
       }
     });
-    holder.appendChild(document.createTextNode(text));
+    holder.appendChild(document.createTextNode(text2));
   }
   var vModelNames = ["value", "modelValue"];
   function initVModel(props2) {
@@ -21502,8 +22158,8 @@
       this._text = nodeJson.t || "";
       super.init(nodeJson);
     }
-    setText(text) {
-      this._text = text;
+    setText(text2) {
+      this._text = text2;
       this.update();
       this.updateView();
     }
@@ -21551,16 +22207,16 @@
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-checkbox", Checkbox, parentNodeId, refNodeId, nodeJson, ".uni-checkbox-wrapper");
     }
-    setText(text) {
-      setHolderText(this.$holder, "uni-checkbox-input", text);
+    setText(text2) {
+      setHolderText(this.$holder, "uni-checkbox-input", text2);
     }
   }
   class UniRadio extends UniComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-radio", Radio, parentNodeId, refNodeId, nodeJson, ".uni-radio-wrapper");
     }
-    setText(text) {
-      setHolderText(this.$holder, "uni-radio-input", text);
+    setText(text2) {
+      setHolderText(this.$holder, "uni-radio-input", text2);
     }
   }
   class UniRadioGroup extends UniComponent {
@@ -21601,6 +22257,11 @@
       super(id2, "uni-form", Form, parentNodeId, refNodeId, nodeJson, "span");
     }
   }
+  class UniEditor extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-editor", Editor, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   class UniPickerView extends UniContainerComponent {
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-picker-view", PickerView, parentNodeId, refNodeId, nodeJson, ".uni-picker-view-wrapper");
@@ -21615,8 +22276,8 @@
     constructor(id2, parentNodeId, refNodeId, nodeJson) {
       super(id2, "uni-scroll-view", ScrollView, parentNodeId, refNodeId, nodeJson, ".uni-scroll-view-content");
     }
-    setText(text) {
-      setHolderText(this.$holder, "uni-scroll-view-refresher", text);
+    setText(text2) {
+      setHolderText(this.$holder, "uni-scroll-view-refresher", text2);
     }
   }
   class UniSwiper extends UniContainerComponent {
@@ -22758,7 +23419,7 @@
     INPUT: UniInput,
     TEXTAREA: UniTextarea,
     FORM: UniForm,
-    // EDITOR: UniEditor,
+    EDITOR: UniEditor,
     "PICKER-VIEW": UniPickerView,
     "PICKER-VIEW-COLUMN": UniPickerViewColumn,
     "SCROLL-VIEW": UniScrollView,

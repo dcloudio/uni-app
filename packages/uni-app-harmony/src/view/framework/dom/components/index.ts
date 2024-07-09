@@ -17,7 +17,7 @@ import { UniSwitch } from '@dcloudio/uni-app-plus/view/framework/dom/components/
 import { UniInput } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniInput'
 import { UniTextarea } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniTextarea'
 import { UniForm } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniForm'
-// import { UniEditor } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniEditor'
+import { UniEditor } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniEditor'
 import { UniPickerView } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniPickerView'
 import { UniPickerViewColumn } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniPickerViewColumn'
 import { UniScrollView } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniScrollView'
@@ -51,7 +51,7 @@ export const BuiltInComponents = {
   INPUT: UniInput,
   TEXTAREA: UniTextarea,
   FORM: UniForm,
-  // EDITOR: UniEditor,
+  EDITOR: UniEditor,
   'PICKER-VIEW': UniPickerView,
   'PICKER-VIEW-COLUMN': UniPickerViewColumn,
   'SCROLL-VIEW': UniScrollView,

@@ -29,5 +29,6 @@ export {
   createVideoContext,
   getSelectedTextRange,
   onWindowResize,
+  createSelectorQuery,
 } from '@dcloudio/uni-api'
 export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'
