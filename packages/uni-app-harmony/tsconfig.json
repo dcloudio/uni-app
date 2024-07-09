@@ -1,7 +1,6 @@
 {
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "target": "ESNext",
     "paths": {
       "@dcloudio/*": ["packages/*/src"],
       "@dcloudio/uni-app-plus/*": ["packages/uni-app-plus/src/*"],

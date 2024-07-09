@@ -29,6 +29,11 @@ export {
   createVideoContext,
   getSelectedTextRange,
   onWindowResize,
+  createAnimation,
   createSelectorQuery,
+  createIntersectionObserver,
+  createMediaQueryObserver,
+  getLaunchOptionsSync,
+  getEnterOptionsSync,
 } from '@dcloudio/uni-api'
 export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'

@@ -7569,15 +7569,11 @@ function normalizeEventType(type, options) {
     return `on${capitalize(camelize(type))}`;
 }
 class UniEvent {
-    type;
-    bubbles;
-    cancelable;
-    defaultPrevented = false;
-    detail;
-    timeStamp = Date.now();
-    _stop = false;
-    _end = false;
     constructor(type, opts) {
+        this.defaultPrevented = false;
+        this.timeStamp = Date.now();
+        this._stop = false;
+        this._end = false;
         this.type = type;
         this.bubbles = !!opts.bubbles;
         this.cancelable = !!opts.cancelable;
@@ -7605,7 +7601,9 @@ function createUniEvent(evt) {
     return uniEvent;
 }
 class UniEventTarget {
-    listeners = Object.create(null);
+    constructor() {
+        this.listeners = Object.create(null);
+    }
     dispatchEvent(evt) {
         const listeners = this.listeners[evt.type];
         if (!listeners) {
@@ -7683,16 +7681,11 @@ function checkNodeId(node) {
 }
 // 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
 class UniNode extends UniEventTarget {
-    nodeId;
-    nodeType;
-    nodeName;
-    childNodes;
-    pageNode = null;
-    parentNode = null;
-    __vueParentComponent;
-    _text = null;
     constructor(nodeType, nodeName, container) {
         super();
+        this.pageNode = null;
+        this.parentNode = null;
+        this._text = null;
         if (container) {
             const { pageNode } = container;
             if (pageNode) {
@@ -7819,9 +7812,6 @@ function debounce(fn, delay, { clearTimeout, setTimeout }) {
 }
 
 class EventChannel {
-    id;
-    listener;
-    emitCache;
     constructor(id, events) {
         this.id = id;
         this.listener = {};
@@ -8042,7 +8032,6 @@ function getEnv() {
 const isObject = (val) => val !== null && typeof val === 'object';
 const defaultDelimiters = ['{', '}'];
 class BaseFormatter {
-    _caches;
     constructor() {
         this._caches = Object.create(null);
     }
@@ -8178,13 +8167,12 @@ function normalizeLocale(locale, messages) {
     }
 }
 class I18n {
-    locale = LOCALE_EN;
-    fallbackLocale = LOCALE_EN;
-    message = {};
-    messages = {};
-    watchers = [];
-    formater;
     constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
+        this.locale = LOCALE_EN;
+        this.fallbackLocale = LOCALE_EN;
+        this.message = {};
+        this.messages = {};
+        this.watchers = [];
         if (fallbackLocale) {
             this.fallbackLocale = fallbackLocale;
         }
@@ -9139,6 +9127,12 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
+function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
+    // TODO: Implement
+}
+function removeMediaQueryObserver({ reqId, component }, _pageId) {
+    // TODO: Implement
+}
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
 function getLaunchOptions() {
@@ -9262,8 +9256,6 @@ validator.concat({
 
 const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0];
 class VideoContext {
-    id;
-    pageId;
     constructor(id, pageId) {
         this.id = id;
         this.pageId = pageId;
@@ -9316,8 +9308,6 @@ const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context)
 const operateMapWrap = (id, pageId, type, options) => {
 };
 class MapContext {
-    id;
-    pageId;
     constructor(id, pageId) {
         this.id = id;
         this.pageId = pageId;
@@ -9732,9 +9722,6 @@ function checkColor(e) {
 //#endregion
 //#region Class
 class CanvasGradient {
-    type;
-    data;
-    colorStop;
     constructor(type, data) {
         this.type = type;
         this.data = data;
@@ -9745,9 +9732,6 @@ class CanvasGradient {
     }
 }
 class Pattern {
-    type;
-    data;
-    colorStop;
     constructor(image, repetition) {
         this.type = 'pattern';
         this.data = image;
@@ -9755,7 +9739,6 @@ class Pattern {
     }
 }
 class TextMetrics {
-    width;
     constructor(width) {
         this.width = width;
     }
@@ -9769,13 +9752,6 @@ const getTempPath = () => {
     return _TEMP_PATH;
 };
 class CanvasContext {
-    id;
-    pageId;
-    actions;
-    path;
-    subpath;
-    state;
-    drawingState;
     constructor(id, pageId) {
         this.id = id;
         this.pageId = pageId;
@@ -10477,6 +10453,99 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
     });
 }, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
 
+const defaultOptions = {
+    thresholds: [0],
+    initialRatio: 0,
+    observeAll: false,
+};
+const MARGINS = ['top', 'right', 'bottom', 'left'];
+let reqComponentObserverId$1 = 1;
+function normalizeRootMargin(margins = {}) {
+    return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(' ');
+}
+class ServiceIntersectionObserver {
+    constructor(component, options) {
+        this._pageId = getPageIdByVm(component);
+        this._component = component;
+        this._options = extend({}, defaultOptions, options);
+    }
+    relativeTo(selector, margins) {
+        this._options.relativeToSelector = selector;
+        this._options.rootMargin = normalizeRootMargin(margins);
+        return this;
+    }
+    relativeToViewport(margins) {
+        this._options.relativeToSelector = undefined;
+        this._options.rootMargin = normalizeRootMargin(margins);
+        return this;
+    }
+    observe(selector, callback) {
+        if (!isFunction(callback)) {
+            return;
+        }
+        this._options.selector = selector;
+        this._reqId = reqComponentObserverId$1++;
+        addIntersectionObserver({
+            reqId: this._reqId,
+            component: this._component,
+            options: this._options,
+            callback,
+        }, this._pageId);
+    }
+    disconnect() {
+        this._reqId &&
+            removeIntersectionObserver({ reqId: this._reqId, component: this._component }, this._pageId);
+    }
+}
+const createIntersectionObserver = defineSyncApi('createIntersectionObserver', (context, options) => {
+    context = resolveComponentInstance(context);
+    if (context && !getPageIdByVm(context)) {
+        options = context;
+        context = null;
+    }
+    if (context) {
+        return new ServiceIntersectionObserver(context, options);
+    }
+    return new ServiceIntersectionObserver(getCurrentPageVm(), options);
+});
+
+let reqComponentObserverId = 1;
+class ServiceMediaQueryObserver {
+    constructor(component) {
+        this._pageId = component.$page && component.$page.id;
+        this._component = component;
+    }
+    observe(options, callback) {
+        if (!isFunction(callback)) {
+            return;
+        }
+        this._reqId = reqComponentObserverId++;
+        addMediaQueryObserver({
+            reqId: this._reqId,
+            component: this._component,
+            options,
+            callback,
+        }, this._pageId);
+    }
+    disconnect() {
+        this._reqId &&
+            removeMediaQueryObserver({
+                reqId: this._reqId,
+                component: this._component,
+            }, this._pageId);
+    }
+}
+const createMediaQueryObserver = defineSyncApi('createMediaQueryObserver', (context) => {
+    context = resolveComponentInstance(context);
+    if (context && !getPageIdByVm(context)) {
+        context = null;
+    }
+    if (context) {
+        return new ServiceMediaQueryObserver(context);
+    }
+    return new ServiceMediaQueryObserver(getCurrentPageVm());
+});
+
 // let eventReady = false
 let index$2 = 0;
 let optionsCache = {};
@@ -10500,8 +10569,6 @@ function operateEditor(componentId, pageId, type, options) {
     });
 }
 class EditorContext {
-    id;
-    pageId;
     constructor(id, pageId) {
         this.id = id;
         this.pageId = pageId;
@@ -10568,10 +10635,6 @@ function convertContext(result) {
     }
 }
 class NodesRef {
-    _selectorQuery;
-    _component;
-    _selector;
-    _single;
     constructor(selectorQuery, component, selector, single) {
         this._selectorQuery = selectorQuery;
         this._component = component;
@@ -10613,12 +10676,8 @@ class NodesRef {
     }
 }
 class SelectorQuery {
-    _page;
-    _queue;
-    _component = undefined;
-    _queueCb;
-    _nodesRef;
     constructor(page) {
+        this._component = undefined;
         this._page = page;
         this._queue = [];
         this._queueCb = [];
@@ -10676,6 +10735,140 @@ const createSelectorQuery = defineSyncApi('createSelectorQuery', (context) => {
     }
     return new SelectorQuery(context || getCurrentPageVm());
 });
+
+// import { elemInArray } from '../../helpers/protocol'
+const API_CREATE_ANIMATION = 'createAnimation';
+// const timingFunctions: API_TYPE_CREATE_ANIMATION_Timing_Function[] = [
+//   'linear',
+//   'ease',
+//   'ease-in',
+//   'ease-in-out',
+//   'ease-out',
+//   'step-start',
+//   'step-end',
+// ]
+const CreateAnimationOptions = {
+    // 目前参数校验不支持此api校验
+    formatArgs: {
+    /* duration: 400,
+    timingFunction(timingFunction, params) {
+      params.timingFunction = elemInArray(timingFunction, timingFunctions)
+    },
+    delay: 0,
+    transformOrigin: '50% 50% 0', */
+    },
+};
+const CreateAnimationProtocol = {
+    duration: Number,
+    timingFunction: String,
+    delay: Number,
+    transformOrigin: String,
+};
+
+const defaultOption = {
+    duration: 400,
+    timingFunction: 'linear',
+    delay: 0,
+    transformOrigin: '50% 50% 0',
+};
+class MPAnimation {
+    constructor(option) {
+        this.actions = [];
+        this.currentTransform = {};
+        this.currentStepAnimates = [];
+        this.option = extend({}, defaultOption, option);
+    }
+    _getOption(option) {
+        const _option = {
+            transition: extend({}, this.option, option),
+            transformOrigin: '',
+        };
+        _option.transformOrigin = _option.transition.transformOrigin;
+        delete _option.transition.transformOrigin;
+        return _option;
+    }
+    _pushAnimates(type, args) {
+        this.currentStepAnimates.push({
+            type: type,
+            args: args,
+        });
+    }
+    _converType(type) {
+        return type.replace(/[A-Z]/g, (text) => {
+            return `-${text.toLowerCase()}`;
+        });
+    }
+    _getValue(value) {
+        return typeof value === 'number' ? `${value}px` : value;
+    }
+    export() {
+        const actions = this.actions;
+        this.actions = [];
+        return {
+            actions,
+        };
+    }
+    step(option) {
+        this.currentStepAnimates.forEach((animate) => {
+            if (animate.type !== 'style') {
+                this.currentTransform[animate.type] = animate;
+            }
+            else {
+                this.currentTransform[`${animate.type}.${animate.args[0]}`] = animate;
+            }
+        });
+        this.actions.push({
+            animates: Object.values(this.currentTransform),
+            option: this._getOption(option),
+        });
+        this.currentStepAnimates = [];
+        return this;
+    }
+}
+const initAnimationProperty = /*#__PURE__*/ once(() => {
+    const animateTypes1 = [
+        'matrix',
+        'matrix3d',
+        'rotate',
+        'rotate3d',
+        'rotateX',
+        'rotateY',
+        'rotateZ',
+        'scale',
+        'scale3d',
+        'scaleX',
+        'scaleY',
+        'scaleZ',
+        'skew',
+        'skewX',
+        'skewY',
+        'translate',
+        'translate3d',
+        'translateX',
+        'translateY',
+        'translateZ',
+    ];
+    const animateTypes2 = ['opacity', 'backgroundColor'];
+    const animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
+    animateTypes1.concat(animateTypes2, animateTypes3).forEach((type) => {
+        MPAnimation.prototype[type] = function (...args) {
+            if (animateTypes2.concat(animateTypes3).includes(type)) {
+                this._pushAnimates('style', [
+                    this._converType(type),
+                    animateTypes3.includes(type) ? this._getValue(args[0]) : args[0],
+                ]);
+            }
+            else {
+                this._pushAnimates(type, args);
+            }
+            return this;
+        };
+    });
+});
+const createAnimation = defineSyncApi(API_CREATE_ANIMATION, (option) => {
+    initAnimationProperty();
+    return new MPAnimation(option);
+}, CreateAnimationProtocol, CreateAnimationOptions);
 
 const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
 
@@ -10752,11 +10945,11 @@ function injectAppHooks(appInstance) {
     });
 }
 const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
-defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
     return getEnterOptions();
 });
 const API_GET_LAUNCH_OPTIONS_SYNC = 'getLaunchOptionsSync';
-defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
+const getLaunchOptionsSync = defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
     return getLaunchOptions();
 });
 
@@ -11862,22 +12055,14 @@ function navigate(path, callback, isAppLaunch) {
 }
 
 class UniPageNode extends UniNode {
-    pageId;
-    _id = 1;
-    _created = false;
-    _updating = false;
-    options;
-    createAction;
-    createdAction;
-    scrollAction;
-    _createActionMap = new Map();
-    updateActions = [];
-    dicts = [];
-    normalizeDict;
-    isUnmounted;
-    _update;
     constructor(pageId, options, setup = false) {
         super(NODE_TYPE_PAGE, '#page', null);
+        this._id = 1;
+        this._created = false;
+        this._updating = false;
+        this._createActionMap = new Map();
+        this.updateActions = [];
+        this.dicts = [];
         this.nodeId = 0;
         this.pageId = pageId;
         this.pageNode = this;
@@ -12699,9 +12884,14 @@ var uni$1 = {
   canvasGetImageData: canvasGetImageData,
   canvasPutImageData: canvasPutImageData,
   canvasToTempFilePath: canvasToTempFilePath,
+  createAnimation: createAnimation,
   createCanvasContext: createCanvasContext,
+  createIntersectionObserver: createIntersectionObserver,
+  createMediaQueryObserver: createMediaQueryObserver,
   createSelectorQuery: createSelectorQuery,
   createVideoContext: createVideoContext,
+  getEnterOptionsSync: getEnterOptionsSync,
+  getLaunchOptionsSync: getLaunchOptionsSync,
   getLocale: getLocale,
   getSelectedTextRange: getSelectedTextRange,
   hideTabBar: hideTabBar,
