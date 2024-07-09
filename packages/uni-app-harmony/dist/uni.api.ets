@@ -2793,7 +2793,7 @@ export function initUniExtApi(APP_ID: string) {
             }
         };
         httpRequest.on('headersReceive', (header: Object)=>{});
-        httpRequest.request(url, {
+        httpRequest.request(encodeURI(url), {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
             extraData: data,
@@ -3419,7 +3419,7 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToSend: totalSize
             } as OnProgressUpdateResult);
         });
-        httpRequest.request(url, {
+        httpRequest.request(encodeURI(url), {
             header: headers,
             method: http1.RequestMethod.POST,
             connectTimeout: timeout ? timeout : undefined,
@@ -3533,7 +3533,7 @@ export function initUniExtApi(APP_ID: string) {
             stream = fs3.createStreamSync(tempFilePath, 'w+');
             queueWrite(data);
         });
-        httpRequest.requestInStream(url, {
+        httpRequest.requestInStream(encodeURI(url), {
             header: header ? header : {} as ESObject,
             method: http2.RequestMethod.GET,
             connectTimeout: timeout ? timeout : undefined,
@@ -4393,7 +4393,7 @@ export function initUniExtApi(APP_ID: string) {
     const socketTasks: SocketTask1[] = [];
     const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
-        ws.connect(args.url, {
+        ws.connect(encodeURI(args.url), {
             header: args.header ? args.header as Object : undefined
         } as webSocket.WebSocketRequestOptions);
         const task = new SocketTask1(ws);
