@@ -44,7 +44,6 @@ export function runUTS2Kotlin(
   const kotlinTypesPath = path.resolve(__dirname, '../../../lib/kotlin/types')
   const rootFiles: string[] = [
     path.resolve(kotlinTypesPath, 'global.d.ts'),
-    path.resolve(kotlinTypesPath, 'env.d.ts'),
     path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
     //path.resolve(hbxLanguageServicePath, 'uts-types/app-android/index.d.ts'),
     path.resolve(hbxLanguageServicePath, 'common/HBuilderX.d.ts'),
@@ -77,6 +76,7 @@ export function runUTS2Kotlin(
     sourceMap: process.env.NODE_ENV === 'development',
     inlineSources: true,
     noEmitOnError: false,
+    skipLibCheck: true,
     typeRoots: [],
     paths: {
       '@dcloudio/uni-runtime': [
