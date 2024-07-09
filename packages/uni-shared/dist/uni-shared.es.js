@@ -1579,7 +1579,7 @@ function resolveStringStyleItem(modeStyle, styleItem, key) {
 function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
-    if (typeof modeStyle === 'undefined')
+    if (typeof modeStyle === 'undefined' || !pageStyle)
         return pageStyle;
     Object.keys(pageStyle).forEach((key) => {
         const styleItem = pageStyle[key]; // Object Array String
