@@ -1,7 +1,7 @@
 import type { CompilerOptions, EmitResult } from 'typescript'
 
 export { uts2js } from './javascript'
-export { runUTS2KotlinDev } from './kotlin'
+export { runUTS2Kotlin } from './kotlin'
 
 export interface UTSEmitDeclarationOptions {
   typescript?: typeof import('typescript')

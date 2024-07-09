@@ -4,7 +4,6 @@ import { extend } from '@vue/shared'
 import type {
   CompilerOptions,
   SemanticDiagnosticsBuilderProgram,
-  WatchOfFilesAndCompilerOptions,
 } from 'typescript'
 import {
   type RawSourceMap,
@@ -29,9 +28,11 @@ export declare class WatchProgramHelper {
   watch(timeout?: number): void
   wait(): Promise<void>
 }
-export function runUTS2KotlinDev(options: UTS2KotlinOptions): {
-  program: WatchOfFilesAndCompilerOptions<SemanticDiagnosticsBuilderProgram>
-  watcher: WatchProgramHelper
+export function runUTS2Kotlin(
+  mode: 'development' | 'production',
+  options: UTS2KotlinOptions
+): {
+  watcher?: WatchProgramHelper
 } {
   const { /* check, noCache, */ tsconfig, typescript, tsconfigOverride } =
     createBasicUtsOptions(options.inputDir)
@@ -83,7 +84,7 @@ export function runUTS2KotlinDev(options: UTS2KotlinOptions): {
     }
   >
 
-  return require('../../../lib/kotlin').runDev({
+  return require('../../../lib/kotlin').compile(mode, {
     typescript,
     inputDir: options.inputDir,
     cacheDir: options.cacheDir,

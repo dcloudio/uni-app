@@ -78,7 +78,7 @@ export function uniAppPlugin(): UniVitePlugin {
   }
   emptyTscDir()
 
-  let watcher: WatchProgramHelper
+  let watcher: WatchProgramHelper | undefined
 
   return {
     name: 'uni:app-uts',
@@ -206,17 +206,24 @@ export function uniAppPlugin(): UniVitePlugin {
       } else {
         process.env.UNI_APP_X_UNICLOUD_OBJECT = 'false'
       }
-      const { compileApp, runUTS2KotlinDev } = resolveUTSCompiler()
+      const { compileApp, runUTS2Kotlin } = resolveUTSCompiler()
       if (process.env.UNI_APP_X_TSC === 'true') {
         if (!watcher) {
-          watcher = runUTS2KotlinDev({
-            inputDir: tscOutputDir,
-            cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
-            outputDir: uvueOutputDir,
-            normalizeFileName: normalizeNodeModules,
-          }).watcher
+          watcher = runUTS2Kotlin(
+            process.env.NODE_ENV === 'development'
+              ? 'development'
+              : 'production',
+            {
+              inputDir: tscOutputDir,
+              cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
+              outputDir: uvueOutputDir,
+              normalizeFileName: normalizeNodeModules,
+            }
+          ).watcher
         }
-        await watcher.wait()
+        if (watcher) {
+          await watcher.wait()
+        }
       }
       const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
         pageCount,
