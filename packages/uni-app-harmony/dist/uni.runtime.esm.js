@@ -7781,6 +7781,22 @@ const ACTION_TYPE_ADD_WXS_EVENT = 12;
 const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
+/**
+ * 需要手动传入 timer,主要是解决 App 平台的定制 timer
+ */
+function debounce(fn, delay, { clearTimeout, setTimeout }) {
+    let timeout;
+    const newFn = function () {
+        clearTimeout(timeout);
+        const timerFn = () => fn.apply(this, arguments);
+        timeout = setTimeout(timerFn, delay);
+    };
+    newFn.cancel = function () {
+        clearTimeout(timeout);
+    };
+    return newFn;
+}
+
 class EventChannel {
     id;
     listener;
@@ -10353,6 +10369,16 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
 
 const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
 
+const API_ON_WINDOW_RESIZE = 'onWindowResize';
+
+/**
+ * 监听窗口大小变化
+ */
+const onWindowResize = defineOnApi(API_ON_WINDOW_RESIZE, () => {
+    // 生命周期包括onResize，框架直接监听resize
+    // window.addEventListener('resize', onResize)
+});
+
 const API_SET_LOCALE = 'setLocale';
 const API_GET_LOCALE = 'getLocale';
 const API_ON_LOCALE_CHANGE = 'onLocaleChange';
@@ -11370,6 +11396,22 @@ function reLaunchEntryPage() {
     });
 }
 
+function onWebviewResize(webview) {
+    const { emit } = UniServiceJSBridge;
+    const onResize = function ({ width, height, }) {
+        const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
+        const res = {
+            deviceOrientation: landscape ? 'landscape' : 'portrait',
+            size: {
+                windowWidth: Math.ceil(width),
+                windowHeight: Math.ceil(height),
+            },
+        };
+        emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
+    };
+    webview.addEventListener('resize', debounce(onResize, 50, { setTimeout, clearTimeout }));
+}
+
 function onWebviewReady(pageId, callback) {
     UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
 }
@@ -11932,6 +11974,8 @@ function initWebviewEvent(webview) {
             invokeHook(id, hook, e);
         });
     });
+    // TODO onWebviewClose
+    onWebviewResize(webview);
 }
 
 function initWebview(webview, path, query, routeMeta) {
@@ -12358,6 +12402,7 @@ var uni$1 = {
   offKeyboardHeightChange: offKeyboardHeightChange,
   onKeyboardHeightChange: onKeyboardHeightChange,
   onLocaleChange: onLocaleChange,
+  onWindowResize: onWindowResize,
   reLaunch: reLaunch,
   redirectTo: redirectTo,
   registerUTSPlugin: registerUTSPlugin,
