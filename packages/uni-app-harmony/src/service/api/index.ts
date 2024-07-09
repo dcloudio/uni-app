@@ -28,5 +28,6 @@ export {
   canvasToTempFilePath,
   createVideoContext,
   getSelectedTextRange,
+  onWindowResize,
 } from '@dcloudio/uni-api'
 export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'

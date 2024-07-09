@@ -1,5 +1,6 @@
 import { invokeHook } from '@dcloudio/uni-core'
 import { ON_PULL_DOWN_REFRESH } from '@dcloudio/uni-shared'
+import { onWebviewResize } from '@dcloudio/uni-app-plus/service/framework/webview/init/event/resize'
 
 const WEBVIEW_LISTENERS = {
   pullToRefresh: ON_PULL_DOWN_REFRESH,
@@ -13,4 +14,8 @@ export function initWebviewEvent(webview: PlusWebviewWebviewObject) {
       invokeHook(id, hook, e)
     })
   })
+
+  // TODO onWebviewClose
+
+  onWebviewResize(webview)
 }
