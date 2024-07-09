@@ -1,6 +1,5 @@
 import fs from 'fs-extra'
 import path from 'path'
-import { extend } from '@vue/shared'
 import type {
   CompilerOptions,
   SemanticDiagnosticsBuilderProgram,
@@ -10,7 +9,6 @@ import {
   SourceMapConsumer,
   SourceMapGenerator,
 } from 'source-map-js'
-import { createBasicUtsOptions } from '../utils/options'
 import { isInHBuilderX, normalizePath } from '../../shared'
 
 export interface UTS2KotlinOptions {
@@ -18,6 +16,7 @@ export interface UTS2KotlinOptions {
   inputDir: string
   cacheDir: string
   outputDir: string
+  hxLanguageServiceDir?: string
   tsconfig?: string
   rootFiles?: string[]
   compilerOptions?: CompilerOptions
@@ -34,41 +33,68 @@ export function runUTS2Kotlin(
 ): {
   watcher?: WatchProgramHelper
 } {
-  const { /* check, noCache, */ tsconfig, typescript, tsconfigOverride } =
-    createBasicUtsOptions(options.inputDir)
-
-  const kotlinTypesPath = path.resolve(__dirname, '../../../lib/kotlin/types')
-  const rootFiles: string[] = [path.resolve(kotlinTypesPath, 'global.d.ts')]
-
-  ;['env.d.ts', 'shim-uni.d.ts', 'shim-dom.d.ts', 'global.d.ts'].forEach(
-    (file) => {
-      rootFiles.push(path.resolve(__dirname, '../../../lib/tsconfig', file))
-    }
-  )
-  rootFiles.push(path.resolve(options.inputDir, 'main.uts.ts'))
   const pluginPath = isInHBuilderX()
     ? process.env.UNI_HBUILDERX_PLUGINS
     : path.resolve(process.cwd(), '../')
-  const nodeModulesPath = path.resolve(
+
+  const hbxLanguageServicePath = path.resolve(
     pluginPath,
-    'hbuilderx-language-services/builtin-dts/uniappx/node_modules'
+    'hbuilderx-language-services/builtin-dts'
   )
-  const vueRuntimeDts = [
-    path.resolve(nodeModulesPath, '@vue/runtime-core/index.d.ts'),
+  const kotlinTypesPath = path.resolve(__dirname, '../../../lib/kotlin/types')
+  const rootFiles: string[] = [
+    path.resolve(kotlinTypesPath, 'global.d.ts'),
+    path.resolve(kotlinTypesPath, 'env.d.ts'),
+    path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
+    //path.resolve(hbxLanguageServicePath, 'uts-types/app-android/index.d.ts'),
+    path.resolve(hbxLanguageServicePath, 'common/HBuilderX.d.ts'),
+    path.resolve(
+      hbxLanguageServicePath,
+      'uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts'
+    ),
+    path.resolve(
+      hbxLanguageServicePath,
+      'uniappx/node_modules/@vue/global.d.ts'
+    ),
   ]
-  extend(tsconfigOverride.compilerOptions.paths, {
-    '@dcloudio/uni-runtime': [
-      path.resolve(
-        kotlinTypesPath,
-        '@dcloudio/uni-runtime/dist/uni-runtime.d.ts'
-      ),
-    ],
-    '@vue/reactivity': [
-      path.resolve(nodeModulesPath, '@vue/reactivity/dist/reactivity.d.ts'),
-    ],
-    '@vue/runtime-core': vueRuntimeDts,
-    vue: vueRuntimeDts,
-  })
+  rootFiles.push(path.resolve(options.inputDir, 'main.uts.ts'))
+
+  const vueRuntimeDts = [
+    path.resolve(
+      hbxLanguageServicePath,
+      'uniappx/node_modules/@vue/runtime-core/index.d.ts'
+    ),
+  ]
+
+  const typescript = require('../../../lib/typescript')
+  const compilerOptions: CompilerOptions = {
+    rootDir: options.inputDir,
+    baseUrl: options.inputDir,
+    outDir: options.outputDir,
+    noLib: true,
+    noImplicitAny: false,
+    useDefineForClassFields: false,
+    sourceMap: process.env.NODE_ENV === 'development',
+    inlineSources: true,
+    noEmitOnError: false,
+    typeRoots: [],
+    paths: {
+      '@dcloudio/uni-runtime': [
+        path.resolve(
+          kotlinTypesPath,
+          '@dcloudio/uni-runtime/dist/uni-runtime.d.ts'
+        ),
+      ],
+      '@vue/reactivity': [
+        path.resolve(
+          hbxLanguageServicePath,
+          'uniappx/node_modules/@vue/reactivity/dist/reactivity.d.ts'
+        ),
+      ],
+      '@vue/runtime-core': vueRuntimeDts,
+      vue: vueRuntimeDts,
+    },
+  }
 
   type RunDevOptions = Required<
     UTS2KotlinOptions & {
@@ -88,13 +114,9 @@ export function runUTS2Kotlin(
     typescript,
     inputDir: options.inputDir,
     cacheDir: options.cacheDir,
-    tsconfig,
     rootFiles,
-    compilerOptions: extend(tsconfigOverride.compilerOptions, {
-      outDir: options.outputDir,
-      inlineSources: true,
-      lib: [],
-    }),
+    hxLanguageServiceDir: hbxLanguageServicePath,
+    compilerOptions,
     normalizeFileName: options.normalizeFileName,
     sourceMapCallback: (fileName, text, writeFile) => {
       const relativeFileName = normalizePath(

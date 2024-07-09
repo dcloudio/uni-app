@@ -1,14 +1,41 @@
+import { defineComponent as defineComponentOrigin } from '@vue/runtime-core'
 declare global {
-  type UniPageMeta = import('./runtime-types').UniPageMeta
-  type UniPageRoute = import('./runtime-types').UniPageRoute
-  const __uniConfig: import('./runtime-types').UniConfig
+  const defineComponent: typeof defineComponentOrigin
+  const __uniConfig: UniConfig
   const __uniRoutes: UniPageRoute[]
 
-  const padStyleMapOf: import('./runtime-types').PadStyleMapOf
   function utsMapOf(obj: Record<string, any>): Map<string, any | null>
   function utsMapOf<K, V>(obj: Array<Array<any>>): Map<string, any | null>
+  function padStyleMapOf(style: Map<string, any>): Map<string, Map<string, any>>
 
-  declare class UTSSourceMapPosition<
+  type UniPageMeta = {
+    isQuit: boolean
+  }
+
+  type UniPageRoute = {
+    path: string
+    component: any
+    meta: UniPageMeta
+    style: Map<string, any>
+    needLogin?: boolean | null
+  }
+  type UniConfigOnReadyCallback = () => void
+  type UniConfig = {
+    realEntryPagePath: string
+    entryPagePath: string
+    globalStyle: Map<string, any>
+    tabBar: Map<string, any> | null
+    conditionUrl: string
+    uniIdRouter: Map<string, any>
+    themeConfig: Map<string, Map<string, any>>
+    _ready: boolean
+    callbacks: UniConfigOnReadyCallback[]
+    onReady(callback: UniConfigOnReadyCallback): void
+    get ready(): boolean
+    set ready(value: boolean)
+  }
+
+  class UTSSourceMapPosition<
     name = string,
     fileName = string,
     line = number,

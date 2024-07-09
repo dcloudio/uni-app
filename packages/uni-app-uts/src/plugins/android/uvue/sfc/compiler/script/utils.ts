@@ -20,7 +20,7 @@ export function resolveDefineCode(
   return componentType === 'app'
     ? `defineApp`
     : componentType === 'page'
-    ? `definePage`
+    ? `defineComponent` //`definePage`
     : `defineComponent`
 }
 
