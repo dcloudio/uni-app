@@ -26,11 +26,14 @@ export function processNormalScript(
     const startLine = (ctx.descriptor.script!.loc.start.line || 1) - 1
     const startOffset = 0
 
-    rewriteDefaultAST(
-      scriptAst.body,
-      s,
-      resolveDefineCode(ctx.options.componentType!)
-    )
+    if (ctx.options.genDefaultAs) {
+      rewriteDefaultAST(
+        scriptAst.body,
+        s,
+        ctx.options.genDefaultAs,
+        resolveDefineCode(ctx.options.componentType!)
+      )
+    }
 
     if (
       process.env.NODE_ENV === 'development' ||
@@ -55,6 +58,10 @@ export function processNormalScript(
         startLine,
         startOffset,
       })
+    }
+
+    if (ctx.options.genDefaultAs) {
+      s.append(`\nexport default ${ctx.options.genDefaultAs}`)
     }
 
     if (s.hasChanged()) {

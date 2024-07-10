@@ -773,3 +773,51 @@ return "INLINE_RENDER"
 
 })"
 `;
+
+exports[`SFC genDefaultAs <script setup> only 1`] = `
+"const a = 1
+      
+const __sfc__ = defineComponent({
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      
+return "INLINE_RENDER"
+}
+
+})
+export default __sfc__"
+`;
+
+exports[`SFC genDefaultAs <script setup> only w/ ts 1`] = `
+"const a = 1
+      
+const __sfc__ = defineComponent({
+  setup(__props: GenAnonymous) {
+const __ins = getCurrentInstance()!;
+const _ctx = __ins.proxy as GenAnonymous;
+const _cache = __ins.renderCache;
+
+      
+return "INLINE_RENDER"
+}
+
+})
+export default __sfc__"
+`;
+
+exports[`SFC genDefaultAs normal <script> only 1`] = `
+"
+      const __sfc__ = defineComponent({})
+      
+export default __sfc__"
+`;
+
+exports[`SFC genDefaultAs normal <script> w/ cssVars 1`] = `
+"
+      const __sfc__ = defineComponent({})
+      
+export default __sfc__"
+`;

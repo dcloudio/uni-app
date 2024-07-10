@@ -942,6 +942,10 @@ __ins.emit(event, ...do_not_transform_spread)
     ? `const ${options.genDefaultAs} =`
     : `export default`
 
+  if (options.genDefaultAs) {
+    ctx.s.append(`\nexport default ${options.genDefaultAs}`)
+  }
+
   let runtimeOptions = ``
   if (!ctx.hasDefaultExportName && filename && filename !== DEFAULT_FILENAME) {
     const match = filename.match(/([^/\\]+)\.\w+$/)

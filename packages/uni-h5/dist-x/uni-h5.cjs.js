@@ -421,6 +421,18 @@ function setUTSJSONObjectValue(obj, key, value) {
   }
 }
 let UTSJSONObject$1 = class UTSJSONObject2 {
+  static keys(obj) {
+    return Object.keys(obj);
+  }
+  static assign(target, ...sources) {
+    for (let i = 0; i < sources.length; i++) {
+      const source = sources[i];
+      for (let key in source) {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
   constructor(content = {}) {
     if (content instanceof Map) {
       content.forEach((value, key) => {

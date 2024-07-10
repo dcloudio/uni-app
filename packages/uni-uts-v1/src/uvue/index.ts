@@ -181,6 +181,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         uniExtApiProviders: options.extApiProviders,
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
+        uvueGenDefaultAs: '__sfc__',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,

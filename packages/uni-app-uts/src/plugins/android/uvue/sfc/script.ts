@@ -36,7 +36,7 @@ export function isUseInlineTemplate(
   return isProd && !!descriptor.scriptSetup && !descriptor.template?.src
 }
 
-export const scriptIdentifier = `_sfc_main`
+export const scriptIdentifier = `__sfc__`
 
 export function resolveScript(
   descriptor: SFCDescriptor,
@@ -64,7 +64,7 @@ export function resolveScript(
     sourceMap: options.sourceMap,
     defineModel: true,
     componentType: options.componentType,
-    // genDefaultAs: scriptIdentifier,
+    genDefaultAs: scriptIdentifier,
   })
 
   setResolvedScript(descriptor, resolved)
