@@ -20,6 +20,7 @@ export const getLaunchOptionsSync = defineSyncApi<GetLaunchOptionsSync>(
     const app = getNativeApp()
 
     const baseInfo = getLaunchOptions()
+    // @ts-expect-error syntaxdoc
     const schemaInfo = app?.getLaunchOptionsSync?.() ?? {}
     return Object.assign({}, baseInfo, schemaInfo)
   }

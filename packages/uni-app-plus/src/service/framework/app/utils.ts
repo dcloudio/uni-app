@@ -51,6 +51,7 @@ export function initLaunchOptions({
   extend(enterOptions, launchOptions)
 
   const app = getNativeApp()
+  // @ts-expect-error syntaxdoc
   const schemaLink = app?.getLaunchOptionsSync?.() ?? {}
   return extend({}, launchOptions, schemaLink)
 }
