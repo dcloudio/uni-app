@@ -100,7 +100,7 @@ export class UniAppConfig extends io.dcloud.uniapp.appframe.AppConfig {
       process.env.UNI_COMPILER_VERSION || ''
     }"
     ${codes}
-    constructor() {}
+    constructor() { super() }
 }
 `
       }

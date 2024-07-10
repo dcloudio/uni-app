@@ -209,9 +209,10 @@ export const transformFor = createStructuralDirectiveTransform(
 
         if (memo) {
           const loop = createFunctionExpression(
-            createForLoopParams(forNode.parseResult, [
-              createSimpleExpression(`_cached`),
-            ])
+            createForLoopParams(
+              forNode.parseResult,
+              createSimpleExpression(`_cached`)
+            )
           )
           loop.body = createBlockStatement([
             createCompoundExpression([
@@ -238,9 +239,10 @@ export const transformFor = createStructuralDirectiveTransform(
         } else {
           renderExp.arguments.push(
             createFunctionExpression(
-              createForLoopParams(forNode.parseResult, [
-                createSimpleExpression(`_`),
-              ]),
+              createForLoopParams(
+                forNode.parseResult,
+                createSimpleExpression(`_cached`)
+              ),
               childBlock,
               true /* force newline */
             ) as ForIteratorExpression
@@ -285,7 +287,7 @@ export function processFor(
   if (key === undefined) {
     parseResult.key = {
       constType: 2,
-      content: '_',
+      content: '__key',
       isStatic: false,
       loc: value?.loc!,
       type: 4,
@@ -295,7 +297,7 @@ export function processFor(
   if (index === undefined) {
     parseResult.index = {
       constType: 2,
-      content: '_',
+      content: '__index',
       isStatic: false,
       loc: value?.loc!,
       type: 4,
@@ -473,13 +475,14 @@ function createAliasExpression(
   )
 }
 
-export function createForLoopParams(
+function createForLoopParams(
   { value, key, index }: ForParseResult,
-  memoArgs: ExpressionNode[] = []
+  memoArgs: ExpressionNode
 ): ExpressionNode[] {
-  return createParamsList([value, key, index, ...memoArgs])
+  return createParamsList([value, key, index, memoArgs])
 }
 
+const paramNames = ['__value', '__key', '__item', '_cached']
 function createParamsList(
   args: (ExpressionNode | undefined)[]
 ): ExpressionNode[] {
@@ -489,5 +492,5 @@ function createParamsList(
   }
   return args
     .slice(0, i + 1)
-    .map((arg, i) => arg || createSimpleExpression(`_`.repeat(i + 1), false))
+    .map((arg, i) => arg || createSimpleExpression(paramNames[i], false))
 }

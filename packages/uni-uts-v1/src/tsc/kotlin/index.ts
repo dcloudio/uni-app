@@ -9,7 +9,8 @@ import {
   SourceMapConsumer,
   SourceMapGenerator,
 } from 'source-map-js'
-import { isInHBuilderX, normalizePath } from '../../shared'
+import { normalizePath } from '../../shared'
+import { originalPositionForSync } from '../../sourceMap'
 
 export interface UTS2KotlinOptions {
   typescript?: typeof import('typescript')
@@ -33,7 +34,7 @@ export function runUTS2Kotlin(
 ): {
   watcher?: WatchProgramHelper
 } {
-  const pluginPath = isInHBuilderX()
+  const pluginPath = process.env.UNI_HBUILDERX_PLUGINS
     ? process.env.UNI_HBUILDERX_PLUGINS
     : path.resolve(process.cwd(), '../')
 
@@ -43,6 +44,10 @@ export function runUTS2Kotlin(
   )
   const kotlinTypesPath = path.resolve(__dirname, '../../../lib/kotlin/types')
   const rootFiles: string[] = [
+    path.resolve(
+      hbxLanguageServicePath,
+      'uniappx/node_modules/@dcloudio/uni-app-x/types/shim-uts-basic.d.ts'
+    ),
     path.resolve(kotlinTypesPath, 'global.d.ts'),
     path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
     //path.resolve(hbxLanguageServicePath, 'uts-types/app-android/index.d.ts'),
@@ -98,6 +103,7 @@ export function runUTS2Kotlin(
 
   type RunDevOptions = Required<
     UTS2KotlinOptions & {
+      originalPositionForSync?: typeof originalPositionForSync
       sourceMapCallback?: (
         id: string,
         map: string,
@@ -117,6 +123,7 @@ export function runUTS2Kotlin(
     rootFiles,
     hxLanguageServiceDir: hbxLanguageServicePath,
     compilerOptions,
+    originalPositionForSync,
     normalizeFileName: options.normalizeFileName,
     sourceMapCallback: (fileName, text, writeFile) => {
       const relativeFileName = normalizePath(

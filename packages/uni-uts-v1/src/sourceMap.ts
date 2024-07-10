@@ -173,7 +173,7 @@ export function generatedPositionFor({
  * @param generatedPosition
  * @returns
  */
-export function originalPositionFor(
+export async function originalPositionFor(
   generatedPosition: Omit<PositionFor, 'filename'> & { inputDir?: string }
 ): Promise<NullableMappedPosition & { sourceContent?: string }> {
   return resolveSourceMapConsumer(generatedPosition.sourceMapFile).then(
