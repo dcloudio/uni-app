@@ -51,7 +51,7 @@ export function initLaunchOptions({
   extend(enterOptions, launchOptions)
 
   const app = getNativeApp()
-  const schemaLink = app.getLaunchOptionsSync()
+  const schemaLink = app?.getLaunchOptionsSync?.() ?? {}
   return extend({}, launchOptions, schemaLink)
 }
 
