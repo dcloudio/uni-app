@@ -12,6 +12,11 @@
       "null"
     ]
   },
+  "uni-scanCode": {
+    "scanCode": [
+      "null"
+    ]
+  },
   "uni-route": {
     "navigateBack": [
       "null"
