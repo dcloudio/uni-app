@@ -8,6 +8,9 @@
       id="webview"
       style="flex: 1;"
       :webview-styles="webviewStyles"
+      <!-- #ifdef APP-ANDROID -->
+      android-layer-type="software"
+      <!-- #endif -->
       :src="src"
       @message="message"
       @error="error"
