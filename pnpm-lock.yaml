@@ -1,4 +1,4 @@
-lockfileVersion: '6.1'
+lockfileVersion: '6.0'
 
 settings:
   autoInstallPeers: true
@@ -27,8 +27,8 @@ importers:
         specifier: 3.0.0-alpha-4010920240605001
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.13
-        version: 0.7.13
+        specifier: ^0.7.15
+        version: 0.7.15
       '@jest/types':
         specifier: ^29.0.3
         version: 29.6.3
@@ -3064,8 +3064,8 @@ packages:
   /@dcloudio/types@3.4.10:
     resolution: {integrity: sha512-WAD6B3b2kgUQ/NMM8eaYu3KNrz/JFyGcGEhZ2eg6u2pnjxmqU2O+N1vAg9nPzezf3hh7IOCCvvDPSNEIUHd0CQ==}
 
-  /@dcloudio/uni-app-x@0.7.13:
-    resolution: {integrity: sha512-QD4bfezA/+82iek7VlZSpSK05eTo+d2F29GHgEp0YUPR0VZQAhn0EwgwKMHzJ5e47VyPEK3Z9f96MrYO9shoZA==}
+  /@dcloudio/uni-app-x@0.7.15:
+    resolution: {integrity: sha512-wBV+O523MNrP2M28cwn3YWqFVZRtj7KGVSdRKbTgm5k8P6UBZImFWg7LY4hLg/+CtbTV95hQazpTtJEHbwL3Qg==}
     dev: true
 
   /@dcloudio/uni-ui@1.5.5:
