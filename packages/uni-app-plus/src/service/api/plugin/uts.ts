@@ -12,8 +12,21 @@ let callbackId = 1
 let proxy: any
 const callbacks: Record<string, Function> = {}
 
+function isUniElement(obj: any) {
+  // @ts-expect-error
+  return typeof UniElement !== 'undefined' && obj instanceof UniElement
+}
+
 function isComponentPublicInstance(instance: any) {
   return instance && instance.$ && instance.$.proxy === instance
+}
+
+function parseElement(obj: any) {
+  if (isUniElement(obj)) {
+    return obj
+  } else if (isComponentPublicInstance(obj)) {
+    return obj.$el
+  }
 }
 
 function toRaw(observed?: unknown): unknown {
@@ -30,11 +43,10 @@ export function normalizeArg(arg: unknown) {
     callbacks[id] = arg
     return id
   } else if (isPlainObject(arg)) {
-    if (isComponentPublicInstance(arg)) {
+    const el = parseElement(arg)
+    if (el) {
       let nodeId = ''
       let pageId = ''
-      // @ts-expect-error
-      const el = arg.$el
       // 非 x 可能不存在 getNodeId 方法？
       if (el && el.getNodeId) {
         pageId = el.pageId
