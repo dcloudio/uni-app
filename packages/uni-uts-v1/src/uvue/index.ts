@@ -84,6 +84,7 @@ export interface CompileAppOptions {
     scopedSlots: string[]
     declaration: string
   }[]
+  env?: Record<string, unknown>
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -137,6 +138,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     uniModules: uni_modules,
     globals: {
       envs: {
+        ...options.env,
         // 自动化测试
         NODE_ENV: process.env.NODE_ENV,
         UNI_AUTOMATOR_WS_ENDPOINT: process.env.UNI_AUTOMATOR_WS_ENDPOINT || '',

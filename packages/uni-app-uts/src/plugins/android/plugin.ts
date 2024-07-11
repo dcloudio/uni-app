@@ -39,6 +39,8 @@ import {
 } from '../utils'
 
 import { genClassName } from '../..'
+import type { ResolvedConfig } from 'vite'
+import { isString } from '@vue/shared'
 
 declare class WatchProgramHelper {
   watch(timeout?: number): void
@@ -80,6 +82,7 @@ export function uniAppPlugin(): UniVitePlugin {
 
   let watcher: WatchProgramHelper | undefined
 
+  let resolvedConfig: ResolvedConfig
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -139,6 +142,7 @@ export function uniAppPlugin(): UniVitePlugin {
     },
     configResolved(config) {
       configResolved(config, true)
+      resolvedConfig = config
     },
     async transform(code, id) {
       const { filename } = parseVueRequest(id)
@@ -247,6 +251,7 @@ export function uniAppPlugin(): UniVitePlugin {
         autoImports: getUTSEasyComAutoImports(),
         extApiProviders: parseUniExtApiProviders(manifestJson),
         uniModulesArtifacts: parseUniModulesArtifacts(),
+        env: parseProcessEnv(resolvedConfig),
       })
       if (res) {
         if (process.env.NODE_ENV === 'development') {
@@ -377,4 +382,25 @@ function parseUniExtApiProviders(
     providers.push([provider.service, provider.name, provider.class])
   })
   return providers
+}
+
+function parseProcessEnv(resolvedConfig: ResolvedConfig) {
+  const env: Record<string, unknown> = {}
+  const defines = resolvedConfig.define!
+
+  Object.keys(defines).forEach((key) => {
+    if (key.startsWith('process.env.')) {
+      let value = defines[key]
+      if (isString(value)) {
+        try {
+          value = JSON.parse(value)
+        } catch (e: unknown) {}
+      }
+      if (!isString(value)) {
+        value = JSON.stringify(value)
+      }
+      env[key.replace('process.env.', '')] = value
+    }
+  })
+  return env
 }
