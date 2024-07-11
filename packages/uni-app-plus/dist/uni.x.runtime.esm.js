@@ -531,6 +531,16 @@ function removePage(curPage) {
   }
   pages.splice(index2, 1);
 }
+var nativeApp;
+function getNativeApp() {
+  return nativeApp;
+}
+function setNativeApp(app) {
+  nativeApp = app;
+}
+function getPageManager() {
+  return nativeApp.pageManager;
+}
 function backbuttonListener() {
   uni.navigateBack({
     from: "backbutton",
@@ -545,6 +555,7 @@ function getLaunchOptions() {
   return extend({}, launchOptions);
 }
 function initLaunchOptions(_ref2) {
+  var _app$getLaunchOptions, _app$getLaunchOptions2;
   var {
     path,
     query,
@@ -559,7 +570,9 @@ function initLaunchOptions(_ref2) {
     launcher: void 0
   });
   extend(enterOptions, launchOptions);
-  return extend({}, launchOptions);
+  var app = getNativeApp();
+  var schemaLink = (_app$getLaunchOptions = app === null || app === void 0 || (_app$getLaunchOptions2 = app.getLaunchOptionsSync) === null || _app$getLaunchOptions2 === void 0 ? void 0 : _app$getLaunchOptions2.call(app)) !== null && _app$getLaunchOptions !== void 0 ? _app$getLaunchOptions : {};
+  return extend({}, launchOptions, schemaLink);
 }
 var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
@@ -1025,16 +1038,6 @@ function createFactory(component) {
     return setupPage(component);
   };
 }
-var nativeApp;
-function getNativeApp() {
-  return nativeApp;
-}
-function setNativeApp(app) {
-  nativeApp = app;
-}
-function getPageManager() {
-  return nativeApp.pageManager;
-}
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
 function hasLeadingSlash(str) {
@@ -1437,12 +1440,13 @@ function registerPage(_ref, onCreated) {
     openType,
     webview,
     nvuePageVm,
-    eventChannel
+    eventChannel,
+    dialog
   } = _ref;
   var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
-  var pageStyle = parsePageStyle(routeOptions);
+  var pageStyle = dialog ? /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]) : parsePageStyle(routeOptions);
   var nativePage2 = getPageManager().createPage(url, id2.toString(), pageStyle);
   if (onCreated) {
     onCreated(nativePage2);
@@ -1529,7 +1533,8 @@ var $navigateTo = (args, _ref) => {
     url,
     events,
     animationType,
-    animationDuration
+    animationDuration,
+    dialog
   } = args;
   var {
     path,
@@ -1542,7 +1547,8 @@ var $navigateTo = (args, _ref) => {
     query,
     events,
     aniType,
-    aniDuration
+    aniDuration,
+    dialog
   }).then(resolve).catch(reject);
 };
 var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
@@ -1553,12 +1559,16 @@ function _navigateTo(_ref2) {
     query,
     events,
     aniType,
-    aniDuration
+    aniDuration,
+    dialog
   } = _ref2;
   invokeBeforeRouteHooks(API_NAVIGATE_TO);
   invokeHook(ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
+    if (dialog && aniType === "pop-in") {
+      aniType = "none";
+    }
     var noAnimation = aniType === "none" || aniDuration === 0;
     function callback(page2) {
       invokeAfterRouteHooks(API_NAVIGATE_TO);
@@ -1575,7 +1585,8 @@ function _navigateTo(_ref2) {
         path,
         query,
         openType: "navigateTo",
-        eventChannel
+        eventChannel,
+        dialog
       },
       noAnimation ? void 0 : callback,
       // 有动画时延迟创建 vm
@@ -2341,7 +2352,11 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
 });
 var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
 var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
-  return getLaunchOptions();
+  var _app$getLaunchOptions, _app$getLaunchOptions2;
+  var app = getNativeApp();
+  var baseInfo = getLaunchOptions();
+  var schemaInfo = (_app$getLaunchOptions = app === null || app === void 0 || (_app$getLaunchOptions2 = app.getLaunchOptionsSync) === null || _app$getLaunchOptions2 === void 0 ? void 0 : _app$getLaunchOptions2.call(app)) !== null && _app$getLaunchOptions !== void 0 ? _app$getLaunchOptions : {};
+  return Object.assign({}, baseInfo, schemaInfo);
 });
 var env = {
   USER_DATA_PATH: "unifile://usr/",
@@ -3349,8 +3364,8 @@ function registerApp(appVm, nativeApp2) {
   defineGlobalData(appCtx, defaultApp.globalData);
   initService(nativeApp2);
   initGlobalEvent(nativeApp2);
-  initSubscribeHandlers();
   initAppLaunch(appVm);
+  initSubscribeHandlers();
   __uniConfig.ready = true;
 }
 function initApp(app) {
@@ -3493,6 +3508,36 @@ var defineSystemComponent = (options) => {
   };
   return defineComponent(options);
 };
+function _toPrimitive(t, r) {
+  if ("object" != typeof t || !t)
+    return t;
+  var e = t[Symbol.toPrimitive];
+  if (void 0 !== e) {
+    var i = e.call(t, r || "default");
+    if ("object" != typeof i)
+      return i;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return ("string" === r ? String : Number)(t);
+}
+function _toPropertyKey(t) {
+  var i = _toPrimitive(t, "string");
+  return "symbol" == typeof i ? i : i + "";
+}
+function _defineProperty(obj, key, value) {
+  key = _toPropertyKey(key);
+  if (key in obj) {
+    Object.defineProperty(obj, key, {
+      value,
+      enumerable: true,
+      configurable: true,
+      writable: true
+    });
+  } else {
+    obj[key] = value;
+  }
+  return obj;
+}
 function $dispatch(context, componentName, eventName) {
   var _parent;
   var parent = context.$parent;
@@ -5059,11 +5104,57 @@ const pickerViewColumn$1 = /* @__PURE__ */ Object.defineProperty({
   UniPickerViewColumnElement,
   default: pickerViewColumn
 }, Symbol.toStringTag, { value: "Module" });
+class UniObjectElement extends UniElementImpl {
+  constructor(data, pageNode) {
+    super(data, pageNode);
+    _defineProperty(this, "tagName", "OBJECT");
+    _defineProperty(this, "nodeName", this.tagName);
+  }
+}
+const object = /* @__PURE__ */ defineBuiltInComponent({
+  name: "Object",
+  rootElement: {
+    name: "uni-object-element",
+    // @ts-expect-error not web element
+    class: UniObjectElement
+  },
+  props: {},
+  emits: ["load"],
+  setup(_props, _ref) {
+    var {
+      emit,
+      slots
+    } = _ref;
+    var uniObjectElementRef = ref();
+    var instance = getCurrentInstance();
+    onMounted(() => {
+      instance === null || instance === void 0 || instance.$waitNativeRender(() => {
+        setTimeout(() => {
+          emit("load", {
+            id: 999
+          });
+        }, 5e3);
+      });
+    });
+    return () => {
+      var _slots$default;
+      return createVNode("uni-object-element", {
+        "ref": uniObjectElementRef
+      }, [(_slots$default = slots.default) === null || _slots$default === void 0 ? void 0 : _slots$default.call(slots)], 512);
+    };
+  }
+});
+const object$1 = /* @__PURE__ */ Object.defineProperty({
+  __proto__: null,
+  UniObjectElement,
+  default: object
+}, Symbol.toStringTag, { value: "Module" });
 const components = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
   Checkbox: checkbox$1,
   CheckboxGroup: checkboxGroup$1,
   Navigator: navigator$1,
+  Object: object$1,
   PickerView: pickerView$1,
   PickerViewColumn: pickerViewColumn$1,
   Progress: progress$1,

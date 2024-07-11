@@ -37,6 +37,7 @@ export interface RegisterPageOptions {
   webview?: IPage
   nvuePageVm?: ComponentPublicInstance
   eventChannel?: EventChannel
+  dialog?: Map<string, any>
 }
 
 // parsePageStyle
@@ -115,13 +116,19 @@ export function registerPage(
     webview,
     nvuePageVm,
     eventChannel,
+    dialog,
   }: RegisterPageOptions,
   onCreated?: (page: IPage) => void,
   delay = 0
 ) {
   const id = genWebviewId()
   const routeOptions = initRouteOptions(path, openType)
-  const pageStyle = parsePageStyle(routeOptions)
+  const pageStyle = dialog
+    ? new Map([
+        ['navigationStyle', 'custom'],
+        ['backgroundColor', 'transparent'],
+      ])
+    : parsePageStyle(routeOptions)
   const nativePage = getPageManager().createPage(url, id.toString(), pageStyle)
   if (onCreated) {
     onCreated(nativePage)

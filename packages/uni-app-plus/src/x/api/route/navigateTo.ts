@@ -21,7 +21,7 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   args,
   { resolve, reject }
 ) => {
-  const { url, events, animationType, animationDuration } = args
+  const { url, events, animationType, animationDuration, dialog } = args
   const { path, query } = parseUrl(url)
   const [aniType, aniDuration] = initAnimation(
     path,
@@ -35,6 +35,7 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
     events,
     aniType,
     aniDuration,
+    dialog,
   })
     .then(resolve)
     .catch(reject)
@@ -51,6 +52,7 @@ interface NavigateToOptions extends RouteOptions {
   events: Record<string, any>
   aniType: string
   aniDuration: number
+  dialog?: Map<string, any>
 }
 
 function _navigateTo({
@@ -60,12 +62,16 @@ function _navigateTo({
   events,
   aniType,
   aniDuration,
+  dialog,
 }: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
   invokeBeforeRouteHooks(API_NAVIGATE_TO)
   // 当前页面触发 onHide
   invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
+    if (dialog && aniType === 'pop-in') {
+      aniType = 'none'
+    }
     const noAnimation = aniType === 'none' || aniDuration === 0
     function callback(page: IPage) {
       invokeAfterRouteHooks(API_NAVIGATE_TO)
@@ -76,7 +82,7 @@ function _navigateTo({
     }
     // 有动画时先执行 show
     const page = registerPage(
-      { url, path, query, openType: 'navigateTo', eventChannel },
+      { url, path, query, openType: 'navigateTo', eventChannel, dialog },
       noAnimation ? undefined : callback,
       // 有动画时延迟创建 vm
       noAnimation ? 0 : 1

@@ -1,4 +1,4 @@
-lockfileVersion: '6.0'
+lockfileVersion: '6.1'
 
 settings:
   autoInstallPeers: true
@@ -18,8 +18,8 @@ importers:
         specifier: ^7.20.2
         version: 7.24.4(@babel/core@7.24.4)
       '@dcloudio/types':
-        specifier: 3.4.8
-        version: 3.4.8
+        specifier: 3.4.10
+        version: 3.4.10
       '@dcloudio/uni-api':
         specifier: 3.0.0-alpha-4010920240605001
         version: link:packages/uni-api
@@ -432,8 +432,8 @@ importers:
   packages/uni-app:
     dependencies:
       '@dcloudio/types':
-        specifier: ^3.4.8
-        version: 3.4.8
+        specifier: ^3.4.10
+        version: 3.4.10
       '@dcloudio/uni-cloud':
         specifier: 3.0.0-alpha-4010920240605001
         version: link:../uni-cloud
@@ -3061,8 +3061,8 @@ packages:
     resolution: {integrity: sha512-mrCMwcINy1IFjU9VUqLeWBkj404yWs5paLDttBcA+eqUjanuUQbBcTVPqlrGgkyzLXDcV2oDDZRSNxNpXi4kMQ==}
     dev: true
 
-  /@dcloudio/types@3.4.8:
-    resolution: {integrity: sha512-IPXuoghLv7qNPOnRuP7vC5++MdRHhE0U7EMw9ia//uOh69fFXZiRTfoHd51+nzciD6R50gqYhbrCCZIxnxhM9Q==}
+  /@dcloudio/types@3.4.10:
+    resolution: {integrity: sha512-WAD6B3b2kgUQ/NMM8eaYu3KNrz/JFyGcGEhZ2eg6u2pnjxmqU2O+N1vAg9nPzezf3hh7IOCCvvDPSNEIUHd0CQ==}
 
   /@dcloudio/uni-app-x@0.7.13:
     resolution: {integrity: sha512-QD4bfezA/+82iek7VlZSpSK05eTo+d2F29GHgEp0YUPR0VZQAhn0EwgwKMHzJ5e47VyPEK3Z9f96MrYO9shoZA==}

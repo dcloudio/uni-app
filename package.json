@@ -43,7 +43,7 @@
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@babel/preset-env": "^7.20.2",
-    "@dcloudio/types": "3.4.8",
+    "@dcloudio/types": "3.4.10",
     "@dcloudio/uni-api": "3.0.0-alpha-4010920240605001",
     "@dcloudio/uni-app": "3.0.0-alpha-4010920240605001",
     "@dcloudio/uni-app-x": "^0.7.13",

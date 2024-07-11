@@ -2386,6 +2386,11 @@ function getExtName(path) {
     return array.length > 1 ? '.' + array[array.length - 1] : '';
 }
 
+let nativeApp;
+function getNativeApp() {
+    return nativeApp;
+}
+
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
     uni.navigateBack({
@@ -2409,6 +2414,7 @@ function initEnterOptions({ path, query, referrerInfo, }) {
     });
 }
 function initLaunchOptions({ path, query, referrerInfo, }) {
+    var _a, _b;
     extend(launchOptions, {
         path,
         query: query ? parseQuery(query) : {},
@@ -2418,7 +2424,10 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions, launchOptions);
-    return extend({}, launchOptions);
+    const app = getNativeApp();
+    // @ts-expect-error syntaxdoc
+    const schemaLink = (_b = (_a = void 0 ) === null || _a === void 0 ? void 0 : _a.call(app)) !== null && _b !== void 0 ? _b : {};
+    return extend({}, launchOptions, schemaLink);
 }
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');
