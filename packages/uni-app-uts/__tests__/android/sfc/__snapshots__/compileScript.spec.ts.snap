@@ -4,7 +4,7 @@ exports[`SFC analyze <script> bindings auto name inference basic 1`] = `
 "const a = 1
 export default defineComponent({
   __name: 'FooBar',
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -22,7 +22,7 @@ exports[`SFC analyze <script> bindings auto name inference do not overwrite manu
         })
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -39,7 +39,7 @@ exports[`SFC analyze <script> bindings auto name inference do not overwrite manu
         }
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -54,7 +54,7 @@ exports[`SFC analyze <script> bindings defineSlots basic 1`] = `
 "export default defineComponent({
   __name: 'FooBar',
   slots: Object as SlotsType<{default: { times: number; name: string }}>,
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -69,7 +69,7 @@ return "INLINE_RENDER"
 
 exports[`SFC compile <script setup> binding analysis for destructure 1`] = `
 "export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -87,7 +87,7 @@ exports[`SFC compile <script setup> dev mode import usage check TS annotations 1
         const a = 1
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -105,7 +105,7 @@ exports[`SFC compile <script setup> dev mode import usage check attribute expres
         const cond = true
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -122,7 +122,7 @@ exports[`SFC compile <script setup> dev mode import usage check components 1`] =
         const fooBar: FooBar = 1
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -138,7 +138,7 @@ exports[`SFC compile <script setup> dev mode import usage check directive 1`] = 
 "import { vMyDir } from './x'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -154,7 +154,7 @@ exports[`SFC compile <script setup> dev mode import usage check dynamic argument
 "import { FooBar, foo, bar, unused, baz } from './x'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -170,7 +170,7 @@ exports[`SFC compile <script setup> dev mode import usage check js template stri
 "import { VAR, VAR2, VAR3 } from './x'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -186,7 +186,7 @@ exports[`SFC compile <script setup> dev mode import usage check last tag 1`] = `
 "import { FooBaz, Last } from './x'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -202,7 +202,7 @@ exports[`SFC compile <script setup> dev mode import usage check template ref 1`]
 "import { foo, bar, Baz } from './foo'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -218,7 +218,7 @@ exports[`SFC compile <script setup> dev mode import usage check vue interpolatio
 "import { x, y, z, x$y } from './x'
       
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -242,7 +242,7 @@ export default defineComponent({
   emits: {
           foo: () => bar > 1
         },
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -268,7 +268,7 @@ export default defineComponent({
   emits: {
             foo: bar => bar > 1
           },
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -286,7 +286,7 @@ exports[`SFC compile <script setup> imports dedupe between user & helper 1`] = `
 "import { ref } from 'vue'
       
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -303,7 +303,7 @@ exports[`SFC compile <script setup> imports import dedupe between <script> and <
 "import { x } from './x'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -322,7 +322,7 @@ exports[`SFC compile <script setup> imports should allow defineProps/Emit at the
 export default defineComponent({
   props: ['foo'],
   emits: ['bar'],
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -342,7 +342,7 @@ exports[`SFC compile <script setup> imports should extract comment for import or
         import b from 'b'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -359,7 +359,7 @@ exports[`SFC compile <script setup> imports should hoist and expose imports 1`] 
           import 'foo/css'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -375,7 +375,7 @@ exports[`SFC compile <script setup> imports should support module string names s
 "import { "😏" as foo } from './foo'
       
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -394,7 +394,7 @@ exports[`SFC compile <script setup> inlineTemplate mode avoid unref() when neces
         import * as tree from './tree'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -428,7 +428,7 @@ exports[`SFC compile <script setup> inlineTemplate mode referencing scope compon
         import vMyDir from './my-dir'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -454,7 +454,7 @@ exports[`SFC compile <script setup> inlineTemplate mode should work 1`] = `
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -478,7 +478,7 @@ exports[`SFC compile <script setup> inlineTemplate mode template assignment expr
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -538,7 +538,7 @@ exports[`SFC compile <script setup> inlineTemplate mode template destructure ass
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -572,7 +572,7 @@ exports[`SFC compile <script setup> inlineTemplate mode template update expressi
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -614,7 +614,7 @@ exports[`SFC compile <script setup> inlineTemplate mode v-model codegen 1`] = `
 "import { ref } from 'vue'
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -648,7 +648,7 @@ function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
 exports[`SFC compile <script setup> inlineTemplate mode with defineExpose() 1`] = `
 "export default defineComponent({
-  setup(__props: GenAnonymous, { expose: __expose }: SetupContext) {
+  setup(__props: GenAnonymous, { expose: __expose }: SetupContext): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -667,7 +667,7 @@ exports[`SFC compile <script setup> should compile JS syntax 1`] = `
       const b = 2
       
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -690,7 +690,7 @@ exports[`SFC compile <script setup> should expose top level declarations 1`] = `
       
 
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -710,7 +710,7 @@ exports[`SFC compile <script setup> with TypeScript const Enum 1`] = `
 "const enum Foo { A = 123 }
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -727,7 +727,7 @@ exports[`SFC compile <script setup> with TypeScript hoist type declarations 1`] 
         type Bar = {}
       
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -743,7 +743,7 @@ exports[`SFC compile <script setup> with TypeScript runtime Enum 1`] = `
 "enum Foo { A = 123 }
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -761,7 +761,7 @@ exports[`SFC compile <script setup> with TypeScript runtime Enum in normal scrip
           enum B { B = "B" }
         
 export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -778,7 +778,7 @@ exports[`SFC genDefaultAs <script setup> only 1`] = `
 "const a = 1
       
 const __sfc__ = defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -795,7 +795,7 @@ exports[`SFC genDefaultAs <script setup> only w/ ts 1`] = `
 "const a = 1
       
 const __sfc__ = defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;

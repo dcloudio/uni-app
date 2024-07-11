@@ -12,9 +12,11 @@ declare global {
   const __uniConfig: UniConfig
   const __uniRoutes: UniPageRoute[]
 
-  function utsMapOf(obj?: Record<string, any>): Map<string, any | null>
-  function utsMapOf<K, V>(obj?: Array<Array<any>>): Map<string, any | null>
-  function padStyleMapOf(style: Map<string, any>): Map<string, Map<string, any>>
+  // function utsMapOf(obj?: Record<string, any>): Map<string, any | null>
+  // function utsMapOf<K, V>(obj?: Array<Array<any>>): Map<string, any | null>
+  // function padStyleMapOf(style: Map<string, any>): Map<string, Map<string, any>>
+  function utsMapOf(obj?: any): any
+  function padStyleMapOf(style: any): any
 
   type UniPageMeta = {
     isQuit: boolean

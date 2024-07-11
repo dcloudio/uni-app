@@ -3,6 +3,7 @@ import path from 'path'
 import type {
   CompilerOptions,
   SemanticDiagnosticsBuilderProgram,
+  Symbol,
 } from 'typescript'
 import {
   type RawSourceMap,
@@ -24,6 +25,12 @@ export interface UTS2KotlinOptions {
   normalizeFileName: (str: string) => string
 }
 
+export interface TransformOptions {
+  transformArguments?: {
+    shouldTransform(symbol: Symbol): boolean
+  }
+}
+
 export declare class WatchProgramHelper {
   watch(timeout?: number): void
   wait(): Promise<void>
@@ -42,12 +49,15 @@ export function runUTS2Kotlin(
     pluginPath,
     'hbuilderx-language-services/builtin-dts'
   )
+  const commonTypesPath = path.resolve(__dirname, '../../../lib/tsconfig')
   const kotlinTypesPath = path.resolve(__dirname, '../../../lib/kotlin/types')
+
   const rootFiles: string[] = [
     path.resolve(
       hbxLanguageServicePath,
       'uniappx/node_modules/@dcloudio/uni-app-x/types/shim-uts-basic.d.ts'
     ),
+    path.resolve(commonTypesPath, 'global.d.ts'),
     path.resolve(kotlinTypesPath, 'global.d.ts'),
     path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
     //path.resolve(hbxLanguageServicePath, 'uts-types/app-android/index.d.ts'),
@@ -113,6 +123,7 @@ export function runUTS2Kotlin(
         files: string[],
         program: SemanticDiagnosticsBuilderProgram
       ): void
+      transformOptions: TransformOptions
     }
   >
 
@@ -143,6 +154,26 @@ export function runUTS2Kotlin(
       }
       writeFile(fileName, normalizeSourceMap(text))
       return true
+    },
+    transformOptions: {
+      transformArguments: {
+        shouldTransform(symbol) {
+          if (symbol.name === 'data') {
+            const decls = symbol.getDeclarations()
+            // 如果是 vue 中的 data 函数，不补充参数列表
+            if (decls && decls.length) {
+              if (
+                decls.find((d) =>
+                  d.getSourceFile().fileName.includes('runtime-core.d.ts')
+                )
+              ) {
+                return false
+              }
+            }
+          }
+          return true
+        },
+      },
     },
   } as RunDevOptions)
 }

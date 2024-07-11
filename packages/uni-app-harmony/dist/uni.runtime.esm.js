@@ -9104,6 +9104,11 @@ function removeIntersectionObserver({ reqId, component }, _pageId) {
     UniServiceJSBridge.unsubscribe(getEventName(reqId));
 }
 
+let nativeApp;
+function getNativeApp() {
+    return nativeApp;
+}
+
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
     uni.navigateBack({
@@ -9114,6 +9119,7 @@ function backbuttonListener() {
 const enterOptions$1 = /*#__PURE__*/ createLaunchOptions();
 const launchOptions$1 = /*#__PURE__*/ createLaunchOptions();
 function initLaunchOptions({ path, query, referrerInfo, }) {
+    var _a, _b;
     extend(launchOptions$1, {
         path,
         query: query ? parseQuery(query) : {},
@@ -9123,7 +9129,10 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions$1, launchOptions$1);
-    return extend({}, launchOptions$1);
+    const app = getNativeApp();
+    // @ts-expect-error syntaxdoc
+    const schemaLink = (_b = (_a = void 0 ) === null || _a === void 0 ? void 0 : _a.call(app)) !== null && _b !== void 0 ? _b : {};
+    return extend({}, launchOptions$1, schemaLink);
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取

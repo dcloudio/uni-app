@@ -17413,8 +17413,20 @@ function normalizeLog(type, filename, args) {
 let callbackId = 1;
 let proxy;
 const callbacks = {};
+function isUniElement(obj) {
+    // @ts-expect-error
+    return typeof UniElement !== 'undefined' && obj instanceof UniElement;
+}
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
+}
+function parseElement(obj) {
+    if (isUniElement(obj)) {
+        return obj;
+    }
+    else if (isComponentPublicInstance(obj)) {
+        return obj.$el;
+    }
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
@@ -17430,11 +17442,10 @@ function normalizeArg(arg) {
         return id;
     }
     else if (isPlainObject(arg)) {
-        if (isComponentPublicInstance(arg)) {
+        const el = parseElement(arg);
+        if (el) {
             let nodeId = '';
             let pageId = '';
-            // @ts-expect-error
-            const el = arg.$el;
             // 非 x 可能不存在 getNodeId 方法？
             if (el && el.getNodeId) {
                 pageId = el.pageId;

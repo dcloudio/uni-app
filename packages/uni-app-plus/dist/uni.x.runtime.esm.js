@@ -2705,8 +2705,18 @@ var getPerformance = function() {
 var callbackId = 1;
 var proxy;
 var callbacks = {};
+function isUniElement(obj) {
+  return typeof UniElement !== "undefined" && obj instanceof UniElement;
+}
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
+}
+function parseElement(obj) {
+  if (isUniElement(obj)) {
+    return obj;
+  } else if (isComponentPublicInstance(obj)) {
+    return obj.$el;
+  }
 }
 function toRaw(observed) {
   var raw = observed && observed.__v_raw;
@@ -2720,10 +2730,10 @@ function normalizeArg(arg) {
     callbacks[id2] = arg;
     return id2;
   } else if (isPlainObject(arg)) {
-    if (isComponentPublicInstance(arg)) {
+    var el = parseElement(arg);
+    if (el) {
       var nodeId = "";
       var pageId = "";
-      var el = arg.$el;
       if (el && el.getNodeId) {
         pageId = el.pageId;
         nodeId = el.getNodeId();

@@ -112,6 +112,7 @@ const NVUE_BUILT_IN_TAGS = [
     'gcanvas',
 ];
 const UVUE_BUILT_IN_TAGS = [
+    'object',
     'loading-indicator',
     'list-view',
     'list-item',

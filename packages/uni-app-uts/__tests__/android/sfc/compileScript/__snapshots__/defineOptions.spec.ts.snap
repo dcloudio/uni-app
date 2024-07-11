@@ -3,7 +3,7 @@
 exports[`defineOptions() basic usage 1`] = `
 "export default defineComponent({
  name: 'FooApp' ,
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
@@ -18,7 +18,7 @@ return "INLINE_RENDER"
 
 exports[`defineOptions() empty argument 1`] = `
 "export default defineComponent({
-  setup(__props: GenAnonymous) {
+  setup(__props: GenAnonymous): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;

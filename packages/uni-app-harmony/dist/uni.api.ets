@@ -1,6 +1,7 @@
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import Want from '@ohos.app.ability.Want';
 import common from '@ohos.app.ability.common';
+import wantConstant from '@ohos.app.ability.wantConstant';
 import buffer from '@ohos.buffer';
 import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
@@ -29,19 +30,24 @@ import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
 import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
+import Want1 from '@ohos.app.ability.Want';
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
+import common3 from '@ohos.app.ability.common';
 import dataPreferences from '@ohos.data.preferences';
 import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
+import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
@@ -61,6 +67,7 @@ import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
 import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
 type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
 type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
@@ -645,7 +652,7 @@ export class RequestSuccess<T> extends UTSObject {
     cookies!: Array<string>;
 }
 type RequestMethod = "GET" | "POST" | "PUT" | "PATCH" | "DELETE" | "HEAD" | "OPTIONS";
-type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600009 | 602001;
+type RequestErrorCode = 5 | 1000 | 100001 | 100002 | 600003 | 600008 | 600009 | 602001;
 interface RequestFail extends IUniError {
     errCode: RequestErrorCode;
 }
@@ -761,6 +768,22 @@ export class OpenAppAuthorizeSettingOptions extends UTSObject {
     fail: OpenAppAuthorizeSettingFailCallback | null = null;
     complete: OpenAppAuthorizeSettingCompleteCallback | null = null;
 }
+export class OpenDocumentSuccess extends UTSObject {
+}
+export class OpenDocumentFail extends UTSObject {
+}
+type OpenDocumentSuccessCallback = (res: OpenDocumentSuccess) => void;
+type OpenDocumentFailCallback = (res: OpenDocumentFail) => void;
+type OpenDocumentCompleteCallback = (res: Object) => void;
+type OpenDocumentSupportedTypes = 'doc' | 'xls' | 'ppt' | 'pdf' | 'docx' | 'xlsx' | 'pptx';
+export class OpenDocumentOptions extends UTSObject {
+    filePath!: string;
+    fileType: OpenDocumentSupportedTypes | null = null;
+    success: OpenDocumentSuccessCallback | null = null;
+    fail: OpenDocumentFailCallback | null = null;
+    complete: OpenDocumentCompleteCallback | null = null;
+}
+type OpenDocument = (options?: OpenDocumentOptions | null) => void;
 type PageScrollToErrorCode = 4;
 interface PageScrollToFail extends IUniError {
     errCode: PageScrollToErrorCode;
@@ -887,6 +910,24 @@ type StartPullDownRefreshCompleteCallback = (result: StartPullDownRefreshComplet
 type StartPullDownRefresh = (options: StartPullDownRefreshOptions) => void;
 type StopPullDownRefresh = () => void;
 export type Rpx2px = (number: number) => number;
+export class ScanCodeSuccess extends UTSObject {
+    result!: string;
+    scanType!: ScanCodeSupportedTypes;
+}
+export class ScanCodeFail extends UTSObject {
+}
+type ScanCodeSuccessCallback = (res: ScanCodeSuccess) => void;
+type ScanCodeFailCallback = (res: ScanCodeFail) => void;
+type ScanCodeCompleteCallback = (res: Object) => void;
+type ScanCodeSupportedTypes = 'barCode' | 'qrCode' | 'datamatrix' | 'pdf417';
+export class ScanCodeOptions extends UTSObject {
+    onlyFromCamera: boolean | null = null;
+    scanType: ScanCodeSupportedTypes[] | null = null;
+    success: ScanCodeSuccessCallback | null = null;
+    fail: ScanCodeFailCallback | null = null;
+    complete: ScanCodeCompleteCallback | null = null;
+}
+type ScanCode = (options?: ScanCodeOptions | null) => void;
 export class SetStorageSuccess extends UTSObject {
 }
 type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
@@ -1209,6 +1250,7 @@ interface UniExtApi {
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
     openAppAuthorizeSetting: OpenAppAuthorizeSetting;
+    openDocument: OpenDocument;
     pageScrollTo: PageScrollTo;
     showToast: ShowToast;
     hideToast: HideToast;
@@ -1219,6 +1261,7 @@ interface UniExtApi {
     startPullDownRefresh: StartPullDownRefresh;
     stopPullDownRefresh: StopPullDownRefresh;
     rpx2px: Rpx2px;
+    scanCode: ScanCode;
     setStorage: SetStorage;
     setStorageSync: SetStorageSync;
     getStorage: GetStorage;
@@ -2399,14 +2442,6 @@ export function initUniExtApi(APP_ID: string) {
                 }
             ],
             [
-                'data',
-                (data: object, params: RequestOptions<Object>)=>{
-                    if (data == null) {
-                        params.data = '';
-                    }
-                }
-            ],
-            [
                 'method',
                 (method: string, params: RequestOptions<Object>)=>{
                     params.method = (method || 'GET').toUpperCase() as RequestMethod;
@@ -3339,7 +3374,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
-        let url = args.url, timeout = args.timeout, header = args.header;
+        const url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
         const httpRequest = http2.createHttp();
         const emitter = new Emitter3();
         const downloadTask: IDownloadTask = {
@@ -3390,9 +3425,11 @@ export function initUniExtApi(APP_ID: string) {
             return writePromise;
         };
         httpRequest.on('dataReceive', (data)=>{
-            const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
-            tempFilePath = downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
-            stream = fs3.createStreamSync(tempFilePath, 'w+');
+            if (!stream) {
+                const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
+                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
+                stream = fs3.createStreamSync(tempFilePath, 'w+');
+            }
             queueWrite(data);
         });
         httpRequest.requestInStream(encodeURI(url), {
@@ -3438,6 +3475,49 @@ export function initUniExtApi(APP_ID: string) {
             exec.reject(err.message);
         });
     }) as OpenAppAuthorizeSetting;
+    const API_OPEN_DOCUMENT = 'openDocument';
+    const getContentType = (filePath: string, fileType: string | null = null): string | void =>{
+        const suffix = fileType || filePath.split('.').pop();
+        if (!suffix) {
+            return;
+        }
+        switch(suffix){
+            case 'doc':
+            case 'docx':
+                return 'application/msword';
+            case 'xls':
+            case 'xlsx':
+                return 'application/vnd.ms-excel';
+            case 'ppt':
+            case 'pptx':
+                return 'application/vnd.ms-powerpoint';
+            case 'pdf':
+                return 'application/pdf';
+            default:
+                return;
+        }
+    };
+    const openDocument: OpenDocument = defineAsyncApi<OpenDocumentOptions, OpenDocumentSuccess>(API_OPEN_DOCUMENT, (options: OpenDocumentOptions, exec: ApiExecutor<OpenDocumentSuccess>)=>{
+        const filePath = options.filePath;
+        const uri = fileUri.getUriFromPath(filePath.replace(/^file:\/\//, ''));
+        const fileContentType = getContentType(filePath, options.fileType);
+        if (!fileContentType) {
+            exec.reject('file type not supported');
+            return;
+        }
+        const want: Want1 = {
+            flags: wantConstant.Flags.FLAG_AUTH_WRITE_URI_PERMISSION | wantConstant.Flags.FLAG_AUTH_READ_URI_PERMISSION | wantConstant.Flags.FLAG_AUTH_PERSISTABLE_URI_PERMISSION,
+            action: 'ohos.want.action.sendData',
+            uri: uri,
+            type: fileContentType as string
+        };
+        const abilityContext = getAbilityContext2() as common2.UIAbilityContext;
+        abilityContext.startAbility(want).then(()=>{
+            exec.resolve({} as OpenDocumentSuccess);
+        }, (err: Error)=>{
+            exec.reject(err.message);
+        });
+    }) as OpenDocument;
     const API_PAGE_SCROLL_TO = 'pageScrollTo';
     const PageScrollToProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3779,6 +3859,61 @@ export function initUniExtApi(APP_ID: string) {
         }
         return number < 0 ? -result : result;
     }) as Rpx2px;
+    const API_SCAN_CODE = 'scanCode';
+    const supportedScanTypesMap = new Map<ScanCodeSupportedTypes, scanCore.ScanType>([
+        [
+            'barCode',
+            scanCore.ScanType.CODABAR_CODE
+        ],
+        [
+            'qrCode',
+            scanCore.ScanType.QR_CODE
+        ],
+        [
+            'datamatrix',
+            scanCore.ScanType.DATAMATRIX_CODE
+        ],
+        [
+            'pdf417',
+            scanCore.ScanType.PDF417_CODE
+        ]
+    ]);
+    const getUniScanType = (scanType: scanCore.ScanType): ScanCodeSupportedTypes =>{
+        for (const ref of supportedScanTypesMap.entries()){
+            let key = ref[0], value = ref[1];
+            if (value === scanType) {
+                return key;
+            }
+        }
+        return 'qrCode';
+    };
+    const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(API_SCAN_CODE, (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>)=>{
+        let scanTypes: scanCore.ScanType[] = [
+            scanCore.ScanType.ALL
+        ];
+        if (options.scanType && Array.isArray(options.scanType) && options.scanType.length > 0) {
+            scanTypes = options.scanType.filter((type)=>{
+                return supportedScanTypesMap.has(type);
+            }).map((type)=>{
+                return supportedScanTypesMap.get(type)!;
+            });
+        }
+        const scanOptions: scanBarcode.ScanOptions = {
+            scanTypes,
+            enableMultiMode: true,
+            enableAlbum: !options.onlyFromCamera
+        };
+        scanBarcode.startScanForResult(getAbilityContext3()!, scanOptions, (err, data)=>{
+            if (err) {
+                exec.reject(err.message);
+                return;
+            }
+            exec.resolve({
+                result: data.originalValue,
+                scanType: getUniScanType(data.scanType)
+            } as ScanCodeSuccess);
+        });
+    }) as ScanCode;
     const API_GET_STORAGE = 'getStorage';
     const API_GET_STORAGE_SYNC = 'getStorageSync';
     const API_SET_STORAGE = 'setStorage';
@@ -3807,7 +3942,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext2() as common2.UIAbilityContext, {
+        store = dataPreferences.getPreferencesSync(getAbilityContext4() as common3.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
@@ -4340,6 +4475,7 @@ export function initUniExtApi(APP_ID: string) {
         uploadFile,
         downloadFile,
         openAppAuthorizeSetting,
+        openDocument,
         pageScrollTo,
         showToast,
         hideToast,
@@ -4350,6 +4486,7 @@ export function initUniExtApi(APP_ID: string) {
         startPullDownRefresh,
         stopPullDownRefresh,
         rpx2px,
+        scanCode,
         setStorage,
         setStorageSync,
         getStorage,

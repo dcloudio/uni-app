@@ -996,7 +996,7 @@ __ins.emit(event, ...do_not_transform_spread)
     `\n${genDefaultAs} ${ctx.helper(
       resolveDefineCode(ctx.options.componentType!)
     )}({${runtimeOptions}\n  ` +
-      `${hasAwait ? `async ` : ``}setup(${args}) {
+      `${hasAwait ? `async ` : ``}setup(${args}): any | null {
 const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy${options.className ? ` as ${options.className}` : ''};
 const _cache = __ins.renderCache;
