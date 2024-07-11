@@ -40,7 +40,7 @@ import {
 
 import { genClassName } from '../..'
 import type { ResolvedConfig } from 'vite'
-import { isString } from '@vue/shared'
+import { extend, isString } from '@vue/shared'
 
 declare class WatchProgramHelper {
   watch(timeout?: number): void
@@ -386,24 +386,25 @@ function parseUniExtApiProviders(
 
 function parseProcessEnv(resolvedConfig: ResolvedConfig) {
   const env: Record<string, unknown> = {}
-  const defines = {
-    ...resolvedConfig.define!,
-    ...resolvedConfig.env,
-  }
-
-  Object.keys(defines).forEach((key) => {
+  const defines: Record<string, unknown> = {}
+  const userDefines = resolvedConfig.define!
+  Object.keys(userDefines).forEach((key) => {
     if (key.startsWith('process.env.')) {
-      let value = defines[key]
-      if (isString(value)) {
-        try {
-          value = JSON.parse(value)
-        } catch (e: unknown) {}
-      }
-      if (!isString(value)) {
-        value = JSON.stringify(value)
-      }
-      env[key.replace('process.env.', '')] = value
+      defines[key.replace('process.env.', '')] = userDefines[key]
     }
+  })
+  extend(defines, resolvedConfig.env)
+  Object.keys(defines).forEach((key) => {
+    let value = defines[key]
+    if (isString(value)) {
+      try {
+        value = JSON.parse(value)
+      } catch (e: unknown) {}
+    }
+    if (!isString(value)) {
+      value = JSON.stringify(value)
+    }
+    env[key] = value
   })
   return env
 }
