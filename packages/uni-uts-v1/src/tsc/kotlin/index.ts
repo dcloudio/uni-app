@@ -65,8 +65,8 @@ export function runUTS2Kotlin(
 
   const vueRuntimeDts = [
     path.resolve(
-      hbxLanguageServicePath,
-      'uniappx/node_modules/@vue/runtime-core/index.d.ts'
+      pluginPath,
+      'uniapp-cli-vite/node_modules/@vue/runtime-core/dist/runtime-core.d.ts'
     ),
   ]
 

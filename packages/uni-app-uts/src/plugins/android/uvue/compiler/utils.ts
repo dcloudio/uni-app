@@ -21,13 +21,17 @@ export const __COMPAT__ = false
 
 export function genRenderFunctionDecl({
   className = '',
+  genDefaultAs,
 }: // inline = false,
-TemplateCompilerOptions): string {
+TemplateCompilerOptions & { genDefaultAs?: string }): string {
   // if(inline){
   //   return `(): VNode | null =>`
   // }
   // 调整返回值类型为 any | null, 支持 <template>some text</template>
-  return `function ${className}Render(): any | null`
+  const thisCode = genDefaultAs
+    ? `this: InstanceType<typeof ${genDefaultAs}>`
+    : ''
+  return `function ${className}Render(${thisCode}): any | null`
 }
 
 export function rewriteObjectExpression(

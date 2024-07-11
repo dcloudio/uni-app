@@ -209,7 +209,7 @@ const UTS_COMPONENT_ELEMENT_IMPORTS = `/*UTS-COMPONENTS-IMPORTS*/`
 
 export function generate(
   ast: RootNode,
-  options: CodegenOptions = {}
+  options: CodegenOptions & { genDefaultAs?: string } = {}
 ): CodegenResult {
   const context = createCodegenContext(ast, options)
   const { mode, deindent, indent, push, newline } = context

@@ -65,4 +65,5 @@ export interface ResolvedOptions extends Options {
   className?: string
   classNamePrefix?: string
   componentType: 'app' | 'page' | 'component'
+  genDefaultAs?: string
 }

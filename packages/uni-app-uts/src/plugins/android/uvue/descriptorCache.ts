@@ -4,6 +4,7 @@ import { preUVueHtml, preUVueJs } from '@dcloudio/uni-cli-shared'
 import type * as _compiler from '@vue/compiler-sfc'
 import type { CompilerError, SFCDescriptor } from '@vue/compiler-sfc'
 import { parseUTSRelativeFilename } from '../utils'
+import { scriptIdentifier } from './sfc/script'
 
 export interface ResolvedOptions {
   compiler: typeof _compiler
@@ -11,6 +12,7 @@ export interface ResolvedOptions {
   sourceMap: boolean
   targetLanguage?: 'kotlin'
   classNamePrefix?: string
+  genDefaultAs?: string
 }
 
 export function getResolvedOptions(): ResolvedOptions {
@@ -23,6 +25,7 @@ export function getResolvedOptions(): ResolvedOptions {
     // eslint-disable-next-line no-restricted-globals
     compiler: require('@vue/compiler-sfc'),
     targetLanguage: process.env.UNI_UTS_TARGET_LANGUAGE as 'kotlin',
+    genDefaultAs: scriptIdentifier,
   }
 }
 

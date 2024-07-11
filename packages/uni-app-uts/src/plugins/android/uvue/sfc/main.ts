@@ -30,6 +30,7 @@ import { createResolveError, parseImports, wrapResolve } from '../../utils'
 import { genTemplateCode } from '../code/template'
 import { resolveGenTemplateCodeOptions } from './template'
 import { addExtApiComponents } from '../../../utils'
+import { genDefaultScriptCode } from '../code/script'
 
 export async function transformMain(
   code: string,
@@ -129,10 +130,7 @@ export async function transformMain(
   const stylesCode = await genStyleCode(descriptor, pluginContext)
 
   const utsOutput: string[] = [
-    scriptCode ||
-      `
-export default {}
-`,
+    scriptCode || genDefaultScriptCode(options.genDefaultAs),
     templateCode,
     `/*${className}Styles*/\n`,
   ]
@@ -251,13 +249,13 @@ export const ${genUTSComponentPublicInstanceImported(
 
 async function genScriptCode(
   descriptor: SFCDescriptor,
-  options: ResolvedOptions
+  options: ResolvedOptions & { genDefaultAs?: string }
 ): Promise<{
   code: string
   map: RawSourceMap | undefined
   bindingMetadata?: BindingMetadata
 }> {
-  let scriptCode = `export default {}`
+  let scriptCode = genDefaultScriptCode(options.genDefaultAs)
   let map: RawSourceMap | undefined
 
   const script = resolveScript(descriptor, options)

@@ -9,7 +9,7 @@ import { getDescriptor, getResolvedOptions } from '../descriptorCache'
 
 export function genTemplate(
   { template }: SFCDescriptor,
-  options: TemplateCompilerOptions
+  options: TemplateCompilerOptions & { genDefaultAs?: string }
 ) {
   if (!template || !template.content) {
     return {
