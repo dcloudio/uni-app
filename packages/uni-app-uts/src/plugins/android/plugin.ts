@@ -386,7 +386,10 @@ function parseUniExtApiProviders(
 
 function parseProcessEnv(resolvedConfig: ResolvedConfig) {
   const env: Record<string, unknown> = {}
-  const defines = resolvedConfig.define!
+  const defines = {
+    ...resolvedConfig.define!,
+    ...resolvedConfig.env,
+  }
 
   Object.keys(defines).forEach((key) => {
     if (key.startsWith('process.env.')) {
