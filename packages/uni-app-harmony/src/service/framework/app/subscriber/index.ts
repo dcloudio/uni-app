@@ -18,7 +18,7 @@ import {
   type WebInvokeAppService,
   onWebInvokeAppService,
 } from '@dcloudio/uni-app-plus/service/framework/app/subscriber/webInvokeAppService'
-import { subscribeBase64ToTempFilePath } from '../../../api/context/canvs'
+import { subscribeBase64ToTempFilePath } from '../../../api/context/canvas'
 
 export function initSubscribeHandlers() {
   const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge
