@@ -9,7 +9,7 @@ const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode("view", utsMapOf({ class: "test" }))
 }
@@ -27,7 +27,7 @@ const _ctx = __ins.proxy as GenAnonymous;
 const _cache = __ins.renderCache;
 
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode("view", utsMapOf({ class: "test" }))
 }

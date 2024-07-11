@@ -406,7 +406,7 @@ const _cache = __ins.renderCache;
         function fn() {}
         
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode(Fragment, null, [
     createVNode(Foo, null, utsMapOf({
@@ -435,7 +435,7 @@ const _cache = __ins.renderCache;
 
         
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode(Fragment, null, [
     withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
@@ -462,7 +462,7 @@ const _cache = __ins.renderCache;
         const count = ref(0)
         
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("view", null, toDisplayString(count.value), 1 /* TEXT */),
@@ -489,7 +489,7 @@ const _cache = __ins.renderCache;
         let v = ref(1)
         
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("view", utsMapOf({
@@ -549,7 +549,7 @@ const _cache = __ins.renderCache;
         let lett = 1
         
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("view", utsMapOf({
@@ -582,7 +582,7 @@ const _cache = __ins.renderCache;
         let lett = 1
         
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("view", utsMapOf({
@@ -624,7 +624,7 @@ const _cache = __ins.renderCache;
         let lett = 1
         
 return 
-function GenAnonymousRender(): any | null {
+function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("input", utsMapOf({
@@ -656,7 +656,7 @@ const _cache = __ins.renderCache;
         const count = ref(0)
         __expose({ count })
         
-return function GenAnonymousRender(): any | null { return null }
+return function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null { return null }
 }
 
 })"
