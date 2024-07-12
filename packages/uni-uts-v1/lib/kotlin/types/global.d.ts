@@ -30,6 +30,7 @@ declare global {
     needLogin?: boolean | null
   }
   type UniConfigOnReadyCallback = () => void
+
   type UniConfig = {
     realEntryPagePath: string
     entryPagePath: string
@@ -43,6 +44,14 @@ declare global {
     onReady(callback: UniConfigOnReadyCallback): void
     get ready(): boolean
     set ready(value: boolean)
+  }
+
+  interface UTSAndroid {
+    consoleDebugError<T>(obj: T, info: string): T
+  }
+
+  interface IUTSSourceMap {
+    __$getOriginalPosition(): UTSSourceMapPosition | null
   }
 
   class UTSSourceMapPosition<
