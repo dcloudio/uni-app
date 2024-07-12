@@ -160,9 +160,9 @@ export function runUTS2Kotlin(
     transformOptions: {
       transformArguments: {
         shouldTransform(symbol) {
-          if (symbol.name === 'data') {
+          if (symbol.name === 'data' || symbol.name === 'setup') {
             const decls = symbol.getDeclarations()
-            // 如果是 vue 中的 data 函数，不补充参数列表
+            // 如果是 vue 中的 data/setup 函数，不补充参数列表
             if (decls && decls.length) {
               if (
                 decls.find((d) =>
