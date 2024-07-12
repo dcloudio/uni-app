@@ -114,6 +114,19 @@
       }
     }
   },
+  "uni-getElementById": {
+    "uni": {
+      "getElementById": {
+        "name": "getElementById",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-getLocation": {
     "provider": {
       "service": "location"
@@ -692,6 +705,42 @@
     "components": [
       "video"
     ]
+  },
+  "uni-virtualPayment": {
+    "uni": {
+      "requestVirtualPayment": {
+        "name": "requestVirtualPayment",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "restoreCompletedTransactions": {
+        "name": "restoreCompletedTransactions",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "getUnfinishedTransactions": {
+        "name": "getUnfinishedTransactions",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      },
+      "finishedTransaction": {
+        "name": "finishedTransaction",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": true
+        }
+      }
+    }
   },
   "uni-websocket": {
     "uni": {
