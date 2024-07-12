@@ -25,7 +25,7 @@ import { isCompoundExpressionNode } from '@dcloudio/uni-cli-shared'
 import type { DirectiveTransform } from '../transform'
 
 import { ErrorCodes, createCompilerError } from '../errors'
-import { TRY_SET_REF_VALUE } from '../runtimeHelpers'
+import { LOOSE_TO_NUMBER, TRY_SET_REF_VALUE } from '../runtimeHelpers'
 
 const INPUT_TAGS = ['input', 'textarea']
 const AS = ' as '
@@ -143,7 +143,7 @@ export const transformModel: DirectiveTransform = (dir, node, context) => {
     eventValue = `${eventValue}.trim()`
   }
   if (withNumber(dir)) {
-    eventValue = `looseToNumber(${eventValue})`
+    eventValue = `${context.helperString(LOOSE_TO_NUMBER)}(${eventValue})`
   }
 
   let assignmentExp: ExpressionNode
