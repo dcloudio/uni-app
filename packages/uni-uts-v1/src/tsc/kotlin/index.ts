@@ -1,5 +1,6 @@
 import fs from 'fs-extra'
 import path from 'path'
+import { sync } from 'fast-glob'
 import type {
   CompilerOptions,
   SemanticDiagnosticsBuilderProgram,
@@ -60,6 +61,7 @@ export function runUTS2Kotlin(
     path.resolve(commonTypesPath, 'global.d.ts'),
     path.resolve(kotlinTypesPath, 'global.d.ts'),
     path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
+    ...resolvePlatformDeclarationFiles(hbxLanguageServicePath, 'app-android'),
     //path.resolve(hbxLanguageServicePath, 'uts-types/app-android/index.d.ts'),
     path.resolve(hbxLanguageServicePath, 'common/HBuilderX.d.ts'),
     path.resolve(
@@ -239,4 +241,16 @@ function normalizeSourceMap(text: string) {
     return source.replace('.uts.ts', '.uts')
   })
   return JSON.stringify(sourceMap)
+}
+
+function resolvePlatformDeclarationFiles(
+  hbxLanguageServicePath: string,
+  platform: 'app-android' | 'app-ios'
+) {
+  const platformDeclarationDir = path.resolve(
+    hbxLanguageServicePath,
+    'uts-types',
+    platform
+  )
+  return sync([`${platformDeclarationDir}/**/*.d.ts`], { absolute: true })
 }
