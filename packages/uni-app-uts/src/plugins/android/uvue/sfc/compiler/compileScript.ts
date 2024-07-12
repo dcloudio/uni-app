@@ -874,7 +874,7 @@ __ins.emit(event, ...do_not_transform_spread)
   // }
 
   // 9. finalize setup() argument signature
-  let args = `__props: ${options.className}`
+  let args = `__props`
   // inject user assignment of props
   // we use a default __props so that template expressions referencing props
   // can use it directly
@@ -998,7 +998,7 @@ __ins.emit(event, ...do_not_transform_spread)
     )}({${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy${options.className ? ` as ${options.className}` : ''};
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 ${exposeCall}`
   )

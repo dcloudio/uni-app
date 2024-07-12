@@ -3,9 +3,9 @@
 exports[`SFC compile template template with html 1`] = `
 "const msg = ''
 export default defineComponent({
-  setup(__props: GenAnonymous): any | null {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
 return 
@@ -21,9 +21,9 @@ function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
 exports[`SFC compile template template with pug 1`] = `
 "const msg = ''
 export default defineComponent({
-  setup(__props: GenAnonymous): any | null {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
 return 

@@ -8,9 +8,9 @@ exports[`defineModel() basic usage 1`] = `
     "toString": { type: Function },
   },
   emits: ["update:modelValue", "update:count", "update:toString"],
-  setup(__props: GenAnonymous): any | null {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const modelValue = useModel<any>(__ins.props, "modelValue")
@@ -29,9 +29,9 @@ exports[`defineModel() w/ array props 1`] = `
     "count": {},
   }),
   emits: ["update:count"],
-  setup(__props: GenAnonymous): any | null {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
@@ -49,9 +49,9 @@ exports[`defineModel() w/ defineProps and defineEmits 1`] = `
     "modelValue": { default: 0 },
   }),
   emits: /*#__PURE__*/mergeModels(['change'], ["update:modelValue"]),
-  setup(__props: GenAnonymous): any | null {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
@@ -74,9 +74,9 @@ export default defineComponent({
     "hoist": { local },
   },
   emits: ["update:modelValue", "update:bar", "update:hoist"],
-  setup(__props: GenAnonymous): any | null {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const foo = useModel<any>(__ins.props, "modelValue", { local: true })
@@ -103,9 +103,9 @@ exports[`defineModel() w/ types, basic usage 1`] = `
     "any": { type: [Object, Boolean] },
   },
   emits: ["update:modelValue", "update:count", "update:disabled", "update:any"],
-  setup(__props: GenAnonymous): any | null {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const modelValue = useModel<any>(__ins.props, "modelValue")
@@ -129,9 +129,9 @@ exports[`defineModel() w/ types, production mode 1`] = `
     "optional": { required: false },
   },
   emits: ["update:modelValue", "update:fn", "update:fnWithDefault", "update:str", "update:optional"],
-  setup(__props: GenAnonymous): any | null {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const modelValue = useModel<Boolean>(__ins.props, "modelValue")
