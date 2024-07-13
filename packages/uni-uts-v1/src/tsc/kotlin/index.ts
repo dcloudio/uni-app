@@ -62,8 +62,11 @@ export function runUTS2Kotlin(
     path.resolve(kotlinTypesPath, 'global.d.ts'),
     path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
     ...resolvePlatformDeclarationFiles(hbxLanguageServicePath, 'app-android'),
-    //path.resolve(hbxLanguageServicePath, 'uts-types/app-android/index.d.ts'),
-    path.resolve(hbxLanguageServicePath, 'common/HBuilderX.d.ts'),
+    // path.resolve(hbxLanguageServicePath, 'common/HBuilderX.d.ts'),
+    path.resolve(
+      pluginPath,
+      'uniapp-cli-vite/node_modules/@dcloudio/types/hbuilder-x/HBuilderX.d.ts'
+    ),
     path.resolve(
       hbxLanguageServicePath,
       'uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts'
