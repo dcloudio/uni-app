@@ -57,7 +57,7 @@ export async function compileEncrypt(
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))
   const isNative = isX && utsPlatform === 'app-android'
   let code = isNative
-    ? ''
+    ? 'export default {}'
     : isRollup
     ? createRollupCommonjsCode(pluginDir, pluginRelativeDir)
     : createWebpackCommonjsCode(pluginRelativeDir)
