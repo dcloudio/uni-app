@@ -44,6 +44,8 @@ export const BUILT_IN_TAG_NAMES = [
   'video',
   'view',
   'web-view',
+  'location-picker',
+  'location-view',
 ]
 
 export const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)

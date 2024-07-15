@@ -19,6 +19,7 @@ import {
   onWebInvokeAppService,
 } from '@dcloudio/uni-app-plus/service/framework/app/subscriber/webInvokeAppService'
 import { subscribeBase64ToTempFilePath } from '../../../api/context/canvas'
+import { subscribeGetLocation } from '../../../api/location/getLocation'
 
 export function initSubscribeHandlers() {
   const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge
@@ -45,6 +46,7 @@ export function initSubscribeHandlers() {
   subscribe(WEBVIEW_INSERTED, onWebviewInserted)
   subscribe(WEBVIEW_REMOVED, onWebviewRemoved)
   subscribeBase64ToTempFilePath()
+  subscribeGetLocation()
   // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
 
   const routeOptions = getRouteOptions(

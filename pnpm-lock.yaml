@@ -1,9 +1,5 @@
 lockfileVersion: '6.0'
 
-settings:
-  autoInstallPeers: true
-  excludeLinksFromLockfile: false
-
 overrides:
   '@babel/plugin-transform-block-scoping': 7.19.4
 
@@ -474,6 +470,9 @@ importers:
         specifier: ^6.0.6
         version: 6.0.16
     devDependencies:
+      '@amap/amap-jsapi-types':
+        specifier: ^0.0.8
+        version: 0.0.8
       '@dcloudio/uni-app-plus':
         specifier: 3.0.0-alpha-4010920240605001
         version: link:../uni-app-plus
@@ -489,6 +488,9 @@ importers:
       '@dcloudio/uni-shared':
         specifier: 3.0.0-alpha-4010920240605001
         version: link:../uni-shared
+      '@types/google.maps':
+        specifier: ^3.45.6
+        version: 3.55.7
       '@types/pako':
         specifier: 1.0.2
         version: 1.0.2
@@ -11656,3 +11658,7 @@ packages:
     optionalDependencies:
       commander: 9.5.0
     dev: true
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
