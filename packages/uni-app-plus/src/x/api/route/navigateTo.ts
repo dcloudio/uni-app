@@ -61,15 +61,17 @@ function _navigateTo({
   aniType,
   aniDuration,
 }: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
-  invokeBeforeRouteHooks(API_NAVIGATE_TO)
+  const currentPage = getCurrentPage()
+  const currentRouteType = currentPage == null ? 'appLaunch' : API_NAVIGATE_TO
+  invokeBeforeRouteHooks(currentRouteType)
   // 当前页面触发 onHide
   invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
   return new Promise((resolve) => {
     const noAnimation = aniType === 'none' || aniDuration === 0
     function callback(page: IPage) {
-      invokeAfterRouteHooks(API_NAVIGATE_TO)
       showWebview(page, aniType, aniDuration, () => {
+        invokeAfterRouteHooks(currentRouteType)
         resolve({ eventChannel })
         setStatusBarStyle()
       })
