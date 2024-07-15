@@ -1,10 +1,10 @@
 import type { SelectorQueryRequest } from '@dcloudio/uni-api'
 import type {
   CreateSelectorQuery,
-  NodeField,
   NodesRef,
   SelectorQuery,
   SelectorQueryNodeInfoCallback,
+  NodeField as _NodeField,
   NodeInfo as _NodeInfo,
 } from '@dcloudio/uni-app-x/types/uni'
 import { getCurrentPage } from '@dcloudio/uni-core'
@@ -15,6 +15,10 @@ type NodeInfo = Partial<
     node: UniElement
   }
 >
+
+type NodeField = _NodeField & {
+  node?: boolean
+}
 
 function isVueComponent(comp: any) {
   const has$instance = typeof comp.$ === 'object'
