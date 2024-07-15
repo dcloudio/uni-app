@@ -5,15 +5,24 @@ import {
   OpenLocationProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import './LocationViewPage'
+import {
+  ROUTE_LOCATION_VIEW_PAGE,
+  initLocationViewPageOnce,
+} from './LocationViewPage'
 
 export const openLocation = defineAsyncApi<API_TYPE_OPEN_LOCATION>(
   API_OPEN_LOCATION,
   (args, { resolve, reject }) => {
+    initLocationViewPageOnce()
     const { latitude = '', longitude = '' } = args
     uni.navigateTo({
       url:
-        '__uniappopenlocation?latitude=' + latitude + '&longitude=' + longitude,
+        '/' +
+        ROUTE_LOCATION_VIEW_PAGE +
+        '?latitude=' +
+        latitude +
+        '&longitude=' +
+        longitude,
       success: (res) => {
         resolve()
       },

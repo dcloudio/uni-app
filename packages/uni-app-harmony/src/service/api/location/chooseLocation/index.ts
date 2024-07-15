@@ -4,15 +4,21 @@ import {
   ChooseLocationProtocol,
   defineAsyncApi,
 } from '@dcloudio/uni-api'
-import './LoctaionPickerPage'
+import {
+  ROUTE_LOCATION_PICKER_PAGE,
+  initLocationPickerPageOnce,
+} from './LoctaionPickerPage'
 
 export const chooseLocation = defineAsyncApi<API_TYPE_CHOOSE_LOCATION>(
   API_CHOOSE_LOCATION,
   (args, { resolve, reject }) => {
+    initLocationPickerPageOnce()
     const { keyword = '', latitude = '', longitude = '' } = args
     uni.navigateTo({
       url:
-        '__uniappchooseLocation?keyword=' +
+        '/' +
+        ROUTE_LOCATION_PICKER_PAGE +
+        '?keyword=' +
         keyword +
         '&latitude=' +
         latitude +

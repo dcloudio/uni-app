@@ -1,6 +1,7 @@
 import type { UniNodeJSON } from '@dcloudio/uni-shared'
-import '../../../../../style/map.css'
 import LocationPicker from '../../../components/map/LoctaionPicker'
+import '../../../../../style/map.css'
+import '../../../../../style/api/location-picker.css'
 
 import { UniComponent } from '@dcloudio/uni-app-plus/view/framework/dom/components/UniComponent'
 

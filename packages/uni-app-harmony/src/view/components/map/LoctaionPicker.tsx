@@ -10,9 +10,11 @@ import {
   useI18n,
 } from '@dcloudio/uni-core'
 import {
+  type EmitEvent,
   Input,
   ScrollView,
   defineSystemComponent,
+  useCustomEvent,
 } from '@dcloudio/uni-components'
 import {
   ICON_PATH_LOCTAION,
@@ -239,6 +241,8 @@ export default /*#__PURE__*/ defineSystemComponent({
   props,
   emits: ['close'],
   setup(props, { emit }) {
+    const rootRef = ref<HTMLElement | null>(null)
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     initI18nChooseLocationMsgsOnce()
     const { t } = useI18n()
     const state = useState(props)
@@ -267,12 +271,18 @@ export default /*#__PURE__*/ defineSystemComponent({
       search()
     }
 
-    function onChoose() {
-      emit('close', extend({}, listState.selected))
+    function onChoose(e) {
+      const event = new CustomEvent<any>('close', {
+        detail: extend({}, listState.selected),
+      })
+      trigger('close', event, event.detail)
     }
 
-    function onBack() {
-      emit('close')
+    function onBack(e) {
+      const event = new CustomEvent<any>('close', {
+        detail: {},
+      })
+      trigger('close', event, event.detail)
     }
 
     function onRegionChange(event: { detail: { centerLocation: Point } }) {
@@ -286,13 +296,12 @@ export default /*#__PURE__*/ defineSystemComponent({
     function moveToLocation() {
       getLocation({
         type: 'gcj02',
-        success: move,
-        fail: () => {
-          // move({
-          //   latitude: 0,
-          //   longitude: 0,
-          // })
-        },
+        isHighAccuracy: true,
+      }).then(({ latitude, longitude }) => {
+        move({
+          latitude,
+          longitude,
+        })
       })
     }
 
@@ -312,7 +321,7 @@ export default /*#__PURE__*/ defineSystemComponent({
     return () => {
       const content = list.map((item, index) => {
         return (
-          <uni-location-picker
+          <div
             key={index}
             class={{
               'list-item': true,
@@ -330,7 +339,7 @@ export default /*#__PURE__*/ defineSystemComponent({
               {distance(item.distance)}
               {item.address}
             </div>
-          </uni-location-picker>
+          </div>
         )
       })
       if (listState.loading) {
@@ -341,7 +350,7 @@ export default /*#__PURE__*/ defineSystemComponent({
         )
       }
       return (
-        <div class="uni-system-choose-location">
+        <div class="uni-system-choose-location" ref={rootRef}>
           <Map
             latitude={state.latitude}
             longitude={state.longitude}

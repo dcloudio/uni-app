@@ -9,7 +9,8 @@ import { registerServiceMethod } from '@dcloudio/uni-core'
 import geoLocationManager from '@ohos.geoLocationManager'
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl'
 import type common from '@ohos.app.ability.common'
-import { map, mapCommon } from '@kit.MapKit'
+import mapCommon from '@hms.core.map.mapCommon'
+import map from '@hms.core.map.map'
 
 async function requestPermission(permissions: Permission[]): Promise<boolean> {
   const context = getContext() as common.UIAbilityContext
@@ -48,17 +49,23 @@ export const getLocation = defineAsyncApi<API_TYPE_GET_LOCATION>(
         reject('Permission denied')
         return
       }
-      const requestInfo: geoLocationManager.CurrentLocationRequest = {
-        priority: isHighAccuracy
-          ? geoLocationManager.LocationRequestPriority.ACCURACY
-          : geoLocationManager.LocationRequestPriority.UNSET,
-        scenario: geoLocationManager.LocationRequestScenario.UNSET,
-        maxAccuracy: 0,
-        timeoutMs: highAccuracyExpireTime,
+      // const requestInfo: geoLocationManager.CurrentLocationRequest = {
+      //   priority: isHighAccuracy
+      //     ? geoLocationManager.LocationRequestPriority.ACCURACY
+      //     : geoLocationManager.LocationRequestPriority.UNSET,
+      //   scenario: geoLocationManager.LocationRequestScenario.UNSET,
+      //   maxAccuracy: 0,
+      //   timeoutMs: highAccuracyExpireTime,
+      // }
+      const singleLocationRequest: geoLocationManager.SingleLocationRequest = {
+        locatingPriority: isHighAccuracy
+          ? geoLocationManager.LocatingPriority.PRIORITY_ACCURACY
+          : geoLocationManager.LocatingPriority.PRIORITY_LOCATING_SPEED,
+        locatingTimeoutMs: highAccuracyExpireTime || 1000,
       }
       try {
         geoLocationManager.getCurrentLocation(
-          requestInfo,
+          singleLocationRequest,
           (err: Error, location: geoLocationManager.Location): void => {
             if (err) {
               reject(err.message)

@@ -54,6 +54,7 @@ export default /*#__PURE__*/ defineSystemComponent({
       function updateLocation() {
         getLocation({
           type: 'gcj02',
+          isHighAccuracy: true,
         })
           .then((res: Location) => {
             state.latitude = res.latitude

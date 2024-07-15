@@ -20,7 +20,8 @@ import {
 import geoLocationManager from '@ohos.geoLocationManager'
 import abilityAccessCtrl from '@ohos.abilityAccessCtrl'
 import type common from '@ohos.app.ability.common'
-import { map, mapCommon } from '@kit.MapKit'
+import mapCommon from '@hms.core.map.mapCommon'
+import map from '@hms.core.map.map'
 
 async function requestPermission(permissions: Permission[]): Promise<boolean> {
   const context = getContext() as common.UIAbilityContext

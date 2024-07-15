@@ -1,9 +1,10 @@
 // @ts-nocheck
-// TODO 优化此处代码
+// TODO 优化此处代码，此页面无对应的css
 import { definePage } from '@dcloudio/uni-app-plus/service/framework/page/define'
 import { createCommentVNode, createElementBlock, openBlock } from 'vue'
+import { once } from '@dcloudio/uni-shared'
 
-const LocationPickerPage = {
+const LocationViewPage = {
   data() {
     return {
       latitude: 0,
@@ -16,12 +17,7 @@ const LocationPickerPage = {
     this.longitude = e.longitude
     this.loaded = true
   },
-  methods: {
-    onClose(e) {
-      this.channel.emit('close', e)
-      uni.navigateBack()
-    },
-  },
+  methods: {},
   render: function (_ctx, _cache, $props, $setup, $data, $options) {
     return $data.loaded
       ? (openBlock(),
@@ -41,4 +37,18 @@ const LocationPickerPage = {
   },
 }
 
-definePage('__uniappopenlocation', LocationPickerPage)
+export const ROUTE_LOCATION_VIEW_PAGE = '__uniappopenlocation'
+
+export const initLocationViewPageOnce = once(() => {
+  definePage(ROUTE_LOCATION_VIEW_PAGE, LocationViewPage)
+  __uniRoutes.push({
+    meta: {
+      navigationBar: {
+        style: 'custom',
+      },
+      isNVue: false,
+      route: ROUTE_LOCATION_VIEW_PAGE,
+    },
+    path: '/' + ROUTE_LOCATION_VIEW_PAGE,
+  })
+})

@@ -1,6 +1,10 @@
-import { type ExtractPropTypes, reactive, watch } from 'vue'
+import { type ExtractPropTypes, reactive, ref, watch } from 'vue'
 import { ICON_PATH_BACK, createSvgIconVNode } from '@dcloudio/uni-core'
-import { defineSystemComponent } from '@dcloudio/uni-components'
+import {
+  type EmitEvent,
+  defineSystemComponent,
+  useCustomEvent,
+} from '@dcloudio/uni-components'
 import {
   ICON_PATH_LOCTAION,
   ICON_PATH_ORIGIN,
@@ -84,10 +88,13 @@ export default /*#__PURE__*/ defineSystemComponent({
   props,
   emits: ['close'],
   setup(props, { emit }) {
+    const rootRef = ref<HTMLElement | null>(null)
+    const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     const state = useState(props)
 
     getLocation({
       type: 'gcj02',
+      isHighAccuracy: true,
     }).then(({ latitude, longitude }) => {
       state.location.latitude = latitude
       state.location.longitude = longitude
@@ -133,8 +140,9 @@ export default /*#__PURE__*/ defineSystemComponent({
       window.open(url)
     }
 
-    function back() {
-      emit('close')
+    function back(e) {
+      const event = new CustomEvent<any>('close', {} as any)
+      trigger('close', event, event.detail)
     }
 
     function setCenter({ latitude, longitude }: Point) {
@@ -144,7 +152,7 @@ export default /*#__PURE__*/ defineSystemComponent({
 
     return () => {
       return (
-        <div class="uni-system-open-location">
+        <div class="uni-system-open-location" ref={rootRef}>
           <Map
             latitude={state.center.latitude}
             longitude={state.center.longitude}
