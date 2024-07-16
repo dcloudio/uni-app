@@ -1439,13 +1439,12 @@ function registerPage(_ref, onCreated) {
     openType,
     webview,
     nvuePageVm,
-    eventChannel,
-    dialog
+    eventChannel
   } = _ref;
   var delay = arguments.length > 2 && arguments[2] !== void 0 ? arguments[2] : 0;
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
-  var pageStyle = dialog ? /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]) : parsePageStyle(routeOptions);
+  var pageStyle = parsePageStyle(routeOptions);
   var nativePage2 = getPageManager().createPage(url, id2.toString(), pageStyle);
   if (onCreated) {
     onCreated(nativePage2);
@@ -1532,8 +1531,7 @@ var $navigateTo = (args, _ref) => {
     url,
     events,
     animationType,
-    animationDuration,
-    dialog
+    animationDuration
   } = args;
   var {
     path,
@@ -1546,8 +1544,7 @@ var $navigateTo = (args, _ref) => {
     query,
     events,
     aniType,
-    aniDuration,
-    dialog
+    aniDuration
   }).then(resolve).catch(reject);
 };
 var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
@@ -1558,20 +1555,18 @@ function _navigateTo(_ref2) {
     query,
     events,
     aniType,
-    aniDuration,
-    dialog
+    aniDuration
   } = _ref2;
-  invokeBeforeRouteHooks(API_NAVIGATE_TO);
+  var currentPage = getCurrentPage();
+  var currentRouteType = currentPage == null ? "appLaunch" : API_NAVIGATE_TO;
+  invokeBeforeRouteHooks(currentRouteType);
   invokeHook(ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
-    if (dialog && aniType === "pop-in") {
-      aniType = "none";
-    }
     var noAnimation = aniType === "none" || aniDuration === 0;
     function callback(page2) {
-      invokeAfterRouteHooks(API_NAVIGATE_TO);
       showWebview(page2, aniType, aniDuration, () => {
+        invokeAfterRouteHooks(currentRouteType);
         resolve({
           eventChannel
         });
@@ -1584,8 +1579,7 @@ function _navigateTo(_ref2) {
         path,
         query,
         openType: "navigateTo",
-        eventChannel,
-        dialog
+        eventChannel
       },
       noAnimation ? void 0 : callback,
       // 有动画时延迟创建 vm
@@ -2064,7 +2058,13 @@ class NodesRefImpl {
     }, callback);
     return this._selectorQuery;
   }
+  /**
+   * fields({node:true})
+   */
   node(_callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, {
+      node: true
+    }, _callback);
     return this._selectorQuery;
   }
 }
@@ -2122,13 +2122,23 @@ class SelectorQueryImpl {
   }
 }
 class QuerySelectorHelper {
-  constructor(element, vnode) {
+  constructor(element, vnode, fields) {
     this._element = element;
     this._commentStartVNode = vnode;
+    this._fields = fields;
   }
-  static queryElement(element, selector, all, vnode) {
-    return new QuerySelectorHelper(element, vnode).query(selector, all);
+  /**
+   * entry
+   */
+  static queryElement(element, selector, all, vnode, fields) {
+    return new QuerySelectorHelper(element, vnode, fields).query(selector, all);
   }
+  /**
+   * 执行查询
+   * @param selector 选择器
+   * @param all 是否查询所有 selectAll
+   * @returns
+   */
   query(selector, all) {
     if (this._element.nodeName == "#comment") {
       return this.queryFragment(this._element, selector, all);
@@ -2205,8 +2215,24 @@ class QuerySelectorHelper {
     }
     return null;
   }
+  /**
+   * 查询元素信息
+   * @param element
+   * @returns
+   */
   getNodeInfo(element) {
     var _element$getAttribute;
+    if (this._fields.node == true) {
+      var nodeInfo2 = {
+        node: element
+      };
+      if (this._fields.size == true) {
+        var rect2 = element.getBoundingClientRect();
+        nodeInfo2.width = rect2.width;
+        nodeInfo2.height = rect2.height;
+      }
+      return nodeInfo2;
+    }
     var rect = element.getBoundingClientRect();
     var nodeInfo = {
       id: (_element$getAttribute = element.getAttribute("id")) === null || _element$getAttribute === void 0 ? void 0 : _element$getAttribute.toString(),
@@ -2226,7 +2252,7 @@ function requestComponentInfo(vueComponent, queue2, callback) {
   var el = vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$el;
   if (el != null) {
     queue2.forEach((item) => {
-      var queryResult = QuerySelectorHelper.queryElement(el, item.selector, !item.single, vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$.subTree);
+      var queryResult = QuerySelectorHelper.queryElement(el, item.selector, !item.single, vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$.subTree, item.fields);
       if (queryResult != null) {
         result.push(queryResult);
       }
