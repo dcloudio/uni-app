@@ -30,37 +30,51 @@ export type TranslateCoordinateSystemOptions = ({
   skip?: boolean
 }) => void
 
-export function getMapInfo() {
-  if (__uniConfig.bMapKey) {
+let mapInfo: any = null
+
+function parseMapInfo(mapConfig: any) {
+  if (mapConfig.bMapKey) {
     return {
       type: MapType.BMAP,
-      key: __uniConfig.bMapKey,
+      key: mapConfig.bMapKey,
     }
   }
-  if (__uniConfig.qqMapKey) {
+  if (mapConfig.qqMapKey) {
     return {
       type: MapType.QQ,
-      key: __uniConfig.qqMapKey,
+      key: mapConfig.qqMapKey,
     }
   }
-  if (__uniConfig.googleMapKey) {
+  if (mapConfig.googleMapKey) {
     return {
       type: MapType.GOOGLE,
-      key: __uniConfig.googleMapKey,
+      key: mapConfig.googleMapKey,
     }
   }
-  if (__uniConfig.aMapKey) {
+  if (mapConfig.aMapKey) {
     return {
       type: MapType.AMAP,
-      key: __uniConfig.aMapKey,
-      securityJsCode: __uniConfig.aMapSecurityJsCode,
-      serviceHost: __uniConfig.aMapServiceHost,
+      key: mapConfig.aMapKey,
+      securityJsCode: mapConfig.aMapSecurityJsCode,
+      serviceHost: mapConfig.aMapServiceHost,
     }
   }
   return {
     type: MapType.UNKNOWN,
     key: '',
   }
+}
+
+export async function getMapInfo() {
+  if (mapInfo) {
+    return mapInfo
+  }
+  return new Promise((resolve: any) => {
+    UniViewJSBridge.invokeServiceMethod('getMapConfig', {}, (res: any) => {
+      mapInfo = parseMapInfo(res)
+      resolve(mapInfo)
+    })
+  })
 }
 
 let IS_AMAP = false
@@ -70,12 +84,12 @@ export const getIsAMap = () => {
     return IS_AMAP
   } else {
     hasGetIsAMap = true
-    return (IS_AMAP = getMapInfo().type === MapType.AMAP)
+    return (IS_AMAP = mapInfo?.type === MapType.AMAP)
   }
 }
 
 export const getIsBMap = () => {
-  return getMapInfo().type === MapType.BMAP
+  return mapInfo?.type === MapType.BMAP
 }
 
 export function translateCoordinateSystem(
@@ -83,11 +97,10 @@ export function translateCoordinateSystem(
   coords: GeolocationCoordinates,
   skip?: boolean
 ) {
-  const mapInfo = getMapInfo()
   const wgs84Map = [MapType.GOOGLE]
   if (
     (type && type.toUpperCase() === 'WGS84') ||
-    wgs84Map.includes(mapInfo.type) ||
+    wgs84Map.includes(mapInfo?.type) ||
     skip
   ) {
     return Promise.resolve(coords)

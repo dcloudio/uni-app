@@ -35,8 +35,11 @@ interface WindowExt extends Window {
   [key: string]: any
 }
 
-export function loadMaps(libraries: string[], callback: (maps: Maps) => void) {
-  const mapInfo = getMapInfo()
+export async function loadMaps(
+  libraries: string[],
+  callback: (maps: Maps) => void
+) {
+  const mapInfo = await getMapInfo()
   if (!mapInfo.key) {
     console.error('Map key not configured.')
     return
@@ -47,12 +50,12 @@ export function loadMaps(libraries: string[], callback: (maps: Maps) => void) {
     callback(maps)
   } else if (
     (window as WindowExt)[mapInfo.type] &&
-    (window as WindowExt)[mapInfo.type].maps
+    (window as WindowExt)[mapInfo.type as string].maps
   ) {
     maps =
       getIsAMap() || getIsBMap()
         ? (window as WindowExt)[mapInfo.type]
-        : (window as WindowExt)[mapInfo.type].maps
+        : (window as WindowExt)[mapInfo.type as string].maps
     maps.Callout = maps.Callout || createCallout(maps)
     callback(maps)
   } else if (callbacks.length) {
@@ -66,7 +69,7 @@ export function loadMaps(libraries: string[], callback: (maps: Maps) => void) {
       maps =
         getIsAMap() || getIsBMap()
           ? (window as WindowExt)[mapInfo.type]
-          : (window as WindowExt)[mapInfo.type].maps
+          : (window as WindowExt)[mapInfo.type as string].maps
       maps.Callout = createCallout(maps)
       callbacks.forEach((callback) => callback(maps))
       callbacks.length = 0

@@ -215,7 +215,7 @@ export default /*#__PURE__*/ defineSystemComponent({
         }
         const img = new Image()
         let imgHeight = 0
-        img.onload = () => {
+        img.onload = async () => {
           const anchor = option.anchor || {}
           let icon: MarkerImage | Icon
           let w
@@ -388,9 +388,9 @@ export default /*#__PURE__*/ defineSystemComponent({
                   $event.stopPropagation()
                   $event.preventDefault()
                 }
-
+                const mapInfo = await getMapInfo()
                 // The mobile terminal prevent google map callout click trigger map click
-                if (getMapInfo().type === MapType.GOOGLE) {
+                if (mapInfo.type === MapType.GOOGLE) {
                   callout.div!.ontouchstart = function ($event: Event) {
                     $event.stopPropagation()
                   }

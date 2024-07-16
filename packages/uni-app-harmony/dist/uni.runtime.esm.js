@@ -1,4 +1,8 @@
-import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
+import geoLocationManager from '@ohos.geoLocationManager';
+import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
+import mapCommon from '@hms.core.map.mapCommon';
+import map from '@hms.core.map.map';
 import fs from '@ohos.file.fs';
 import buffer from '@ohos.buffer';
 
@@ -9119,7 +9123,6 @@ function backbuttonListener() {
 const enterOptions$1 = /*#__PURE__*/ createLaunchOptions();
 const launchOptions$1 = /*#__PURE__*/ createLaunchOptions();
 function initLaunchOptions({ path, query, referrerInfo, }) {
-    var _a, _b;
     extend(launchOptions$1, {
         path,
         query: query ? parseQuery(query) : {},
@@ -9130,8 +9133,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
     });
     extend(enterOptions$1, launchOptions$1);
     const app = getNativeApp();
-    // @ts-expect-error syntaxdoc
-    const schemaLink = (_b = (_a = void 0 ) === null || _a === void 0 ? void 0 : _a.call(app)) !== null && _b !== void 0 ? _b : {};
+    const schemaLink = app.getLaunchOptionsSync();
     return extend({}, launchOptions$1, schemaLink);
 }
 
@@ -10970,6 +10972,101 @@ const CanIUseProtocol = [
         required: true,
     },
 ];
+
+const API_CHOOSE_LOCATION = 'chooseLocation';
+const ChooseLocationProtocol = {
+    keyword: String,
+    latitude: Number,
+    longitude: Number,
+};
+
+const API_GET_LOCATION = 'getLocation';
+const coordTypes$1 = ['wgs84', 'gcj02'];
+const GetLocationOptions = {
+    formatArgs: {
+        type(value, params) {
+            value = (value || '').toLowerCase();
+            if (coordTypes$1.indexOf(value) === -1) {
+                params.type = coordTypes$1[0];
+            }
+            else {
+                params.type = value;
+            }
+        },
+        altitude(value, params) {
+            params.altitude = value ? value : false;
+        },
+    },
+};
+const GetLocationProtocol = {
+    type: String,
+    altitude: Boolean,
+};
+
+const API_OPEN_LOCATION = 'openLocation';
+const checkProps = (key, value) => {
+    if (value === undefined) {
+        return `${key} should not be empty.`;
+    }
+    if (typeof value !== 'number') {
+        let receivedType = typeof value;
+        receivedType = receivedType[0].toUpperCase() + receivedType.substring(1);
+        return `Expected Number, got ${receivedType} with value ${JSON.stringify(value)}.`;
+    }
+};
+const OpenLocationOptions = {
+    formatArgs: {
+        latitude(value, params) {
+            const checkedInfo = checkProps('latitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.latitude = value;
+        },
+        longitude(value, params) {
+            const checkedInfo = checkProps('longitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.longitude = value;
+        },
+        scale(value, params) {
+            value = Math.floor(value);
+            params.scale = value >= 5 && value <= 18 ? value : 18;
+        },
+    },
+};
+const OpenLocationProtocol = {
+    latitude: Number,
+    longitude: Number,
+    scale: Number,
+    name: String,
+    address: String,
+};
+
+const API_START_LOCATION_UPDATE = 'startLocationUpdate';
+const API_ON_LOCATION_CHANGE = 'onLocationChange';
+const API_STOP_LOCATION_UPDATE = 'stopLocationUpdate';
+const API_OFF_LOCATION_CHANGE = 'offLocationChange';
+const API_OFF_LOCATION_CHANGE_ERROR = 'offLocationChangeError';
+const API_ON_LOCATION_CHANGE_ERROR = 'onLocationChangeError';
+const coordTypes = ['wgs84', 'gcj02'];
+const StartLocationUpdateProtocol = {
+    type: String,
+};
+const StartLocationUpdateOptions = {
+    formatArgs: {
+        type(value, params) {
+            value = (value || '').toLowerCase();
+            if (coordTypes.indexOf(value) === -1) {
+                params.type = coordTypes[1];
+            }
+            else {
+                params.type = value;
+            }
+        },
+    },
+};
 
 function encodeQueryString(url) {
     if (!isString(url)) {
@@ -12866,6 +12963,333 @@ function _switchTab({ url, path, query, }) {
     });
 }
 
+// @ts-nocheck
+// TODO 优化此处代码，此页面无对应的css
+const LocationPickerPage = {
+    data() {
+        return {
+            keyword: '',
+            latitude: 0,
+            longitude: 0,
+            loaded: false,
+            channel: void 0,
+            closed: false,
+        };
+    },
+    onLoad(e) {
+        this.latitude = e.latitude;
+        this.longitude = e.longitude;
+        this.keyword = e.keyword;
+        this.loaded = true;
+        this.channel = this.getOpenerEventChannel();
+    },
+    onUnload() {
+        if (this.closed) {
+            return;
+        }
+        this.channel.emit('close', {});
+    },
+    methods: {
+        onClose(e) {
+            this.closed = true;
+            this.channel.emit('close', e.detail);
+            uni.navigateBack();
+        },
+    },
+    render: function (_ctx, _cache, $props, $setup, $data, $options) {
+        return $data.loaded
+            ? (openBlock(),
+                createElementBlock('location-picker', {
+                    key: 0,
+                    style: { width: '100%', height: '100%' },
+                    latitude: $data.latitude,
+                    longitude: $data.longitude,
+                    keyword: $data.keyword,
+                    onClose: _cache[0] ||
+                        (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
+                }, null, 40, ['latitude', 'longitude', 'keyword']))
+            : createCommentVNode('v-if', true);
+    },
+};
+const ROUTE_LOCATION_PICKER_PAGE = '__uniappchooselocation';
+const initLocationPickerPageOnce = once(() => {
+    definePage(ROUTE_LOCATION_PICKER_PAGE, LocationPickerPage);
+    __uniRoutes.push({
+        meta: {
+            navigationBar: {
+                style: 'custom',
+            },
+            isNVue: false,
+            route: ROUTE_LOCATION_PICKER_PAGE,
+        },
+        path: '/' + ROUTE_LOCATION_PICKER_PAGE,
+    });
+});
+
+const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (args, { resolve, reject }) => {
+    initLocationPickerPageOnce();
+    const { keyword = '', latitude = '', longitude = '' } = args;
+    uni.navigateTo({
+        url: '/' +
+            ROUTE_LOCATION_PICKER_PAGE +
+            '?keyword=' +
+            keyword +
+            '&latitude=' +
+            latitude +
+            '&longitude=' +
+            longitude,
+        events: {
+            close: (res) => {
+                if (res && res.latitude) {
+                    resolve(res);
+                }
+                else {
+                    reject('cancel');
+                }
+            },
+        },
+        fail: (err) => {
+            reject(err.errMsg || 'cancel');
+        },
+    });
+}, ChooseLocationProtocol);
+
+// @ts-nocheck
+// TODO 优化此处代码，此页面无对应的css
+const LocationViewPage = {
+    data() {
+        return {
+            latitude: 0,
+            longitude: 0,
+            loaded: false,
+        };
+    },
+    onLoad(e) {
+        this.latitude = e.latitude;
+        this.longitude = e.longitude;
+        this.loaded = true;
+    },
+    methods: {},
+    render: function (_ctx, _cache, $props, $setup, $data, $options) {
+        return $data.loaded
+            ? (openBlock(),
+                createElementBlock('location-view', {
+                    key: 0,
+                    style: { width: '100%', height: '100%' },
+                    latitude: $data.latitude,
+                    longitude: $data.longitude,
+                }, null, 40, ['latitude', 'longitude']))
+            : createCommentVNode('v-if', true);
+    },
+};
+const ROUTE_LOCATION_VIEW_PAGE = '__uniappopenlocation';
+const initLocationViewPageOnce = once(() => {
+    definePage(ROUTE_LOCATION_VIEW_PAGE, LocationViewPage);
+    __uniRoutes.push({
+        meta: {
+            navigationBar: {
+                style: 'custom',
+            },
+            isNVue: false,
+            route: ROUTE_LOCATION_VIEW_PAGE,
+        },
+        path: '/' + ROUTE_LOCATION_VIEW_PAGE,
+    });
+});
+
+const openLocation = defineAsyncApi(API_OPEN_LOCATION, (args, { resolve, reject }) => {
+    initLocationViewPageOnce();
+    const { latitude = '', longitude = '' } = args;
+    uni.navigateTo({
+        url: '/' +
+            ROUTE_LOCATION_VIEW_PAGE +
+            '?latitude=' +
+            latitude +
+            '&longitude=' +
+            longitude,
+        success: (res) => {
+            resolve();
+        },
+        fail: (err) => {
+            reject(err.errMsg || 'cancel');
+        },
+    });
+}, OpenLocationProtocol, OpenLocationOptions);
+
+async function requestPermission$1(permissions) {
+    const context = getContext();
+    const atManager = abilityAccessCtrl.createAtManager();
+    const permissionRequestResult = await atManager.requestPermissionsFromUser(context, permissions);
+    const isGranted = permissionRequestResult.authResults.every((item) => item === 0);
+    return isGranted;
+}
+const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
+    const permissions = [
+        'ohos.permission.APPROXIMATELY_LOCATION',
+    ];
+    if (isHighAccuracy) {
+        permissions.push('ohos.permission.LOCATION');
+    }
+    requestPermission$1(permissions).then((isGranted) => {
+        if (!isGranted) {
+            reject('Permission denied');
+            return;
+        }
+        // const requestInfo: geoLocationManager.CurrentLocationRequest = {
+        //   priority: isHighAccuracy
+        //     ? geoLocationManager.LocationRequestPriority.ACCURACY
+        //     : geoLocationManager.LocationRequestPriority.UNSET,
+        //   scenario: geoLocationManager.LocationRequestScenario.UNSET,
+        //   maxAccuracy: 0,
+        //   timeoutMs: highAccuracyExpireTime,
+        // }
+        const singleLocationRequest = {
+            locatingPriority: isHighAccuracy
+                ? geoLocationManager.LocatingPriority.PRIORITY_ACCURACY
+                : geoLocationManager.LocatingPriority.PRIORITY_LOCATING_SPEED,
+            locatingTimeoutMs: highAccuracyExpireTime || 1000,
+        };
+        try {
+            geoLocationManager.getCurrentLocation(singleLocationRequest, (err, location) => {
+                if (err) {
+                    reject(err.message);
+                    return;
+                }
+                if (type === 'gcj02') {
+                    map
+                        .convertCoordinate(mapCommon.CoordinateType.WGS84, mapCommon.CoordinateType.GCJ02, {
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                    })
+                        .then((gcj02Posion) => {
+                        resolve({
+                            latitude: gcj02Posion.latitude,
+                            longitude: gcj02Posion.longitude,
+                            speed: location.speed,
+                            accuracy: location.accuracy,
+                            altitude: altitude ? location.altitude : 0,
+                            verticalAccuracy: 0,
+                            horizontalAccuracy: 0,
+                        });
+                    }, (err) => {
+                        reject(err.message);
+                    });
+                    return;
+                }
+                resolve({
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    speed: location.speed,
+                    accuracy: location.accuracy,
+                    altitude: altitude ? location.altitude : 0,
+                    verticalAccuracy: 0,
+                    horizontalAccuracy: 0,
+                });
+            });
+        }
+        catch (err) {
+            reject(err.message);
+        }
+    });
+}, GetLocationProtocol, GetLocationOptions);
+function subscribeGetLocation() {
+    registerServiceMethod(API_GET_LOCATION, (args, resolve) => {
+        getLocation({
+            type: args.type,
+            altitude: args.altitude,
+            highAccuracyExpireTime: args.highAccuracyExpireTime,
+            isHighAccuracy: args.isHighAccuracy,
+            success(res) {
+                resolve({
+                    latitude: res.latitude,
+                    longitude: res.longitude,
+                    speed: res.speed,
+                    accuracy: res.accuracy,
+                    altitude: res.altitude,
+                    verticalAccuracy: res.verticalAccuracy,
+                    horizontalAccuracy: res.horizontalAccuracy,
+                });
+            },
+            fail(err) {
+                resolve({
+                    errMsg: err.errMsg || 'getLocation:fail',
+                });
+            },
+        });
+    });
+}
+
+async function requestPermission(permissions) {
+    const context = getContext();
+    const atManager = abilityAccessCtrl.createAtManager();
+    const permissionRequestResult = await atManager.requestPermissionsFromUser(context, permissions);
+    const isGranted = permissionRequestResult.authResults.every((item) => item === 0);
+    return isGranted;
+}
+let currentWatchType = 'gcj02';
+function locationChangeHandler(location) {
+    if (currentWatchType === 'gcj02') {
+        map
+            .convertCoordinate(mapCommon.CoordinateType.WGS84, mapCommon.CoordinateType.GCJ02, {
+            latitude: location.latitude,
+            longitude: location.longitude,
+        })
+            .then((gcj02Posion) => {
+            UniServiceJSBridge.emit(API_ON_LOCATION_CHANGE, {
+                latitude: gcj02Posion.latitude,
+                longitude: gcj02Posion.longitude,
+                speed: location.speed,
+                accuracy: location.accuracy,
+                altitude: location.altitude,
+                verticalAccuracy: 0,
+                horizontalAccuracy: 0,
+            });
+        });
+        return;
+    }
+    UniServiceJSBridge.emit(API_ON_LOCATION_CHANGE, {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        speed: location.speed,
+        accuracy: location.accuracy,
+        altitude: location.altitude,
+        verticalAccuracy: 0,
+        horizontalAccuracy: 0,
+    });
+}
+const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
+    requestPermission([
+        'ohos.permission.LOCATION',
+        'ohos.permission.APPROXIMATELY_LOCATION',
+    ]).then((isGranted) => {
+        if (isGranted) {
+            reject('Permission denied');
+            return;
+        }
+        currentWatchType = options.type || 'gcj02';
+        const requestInfo = {
+            priority: geoLocationManager.LocationRequestPriority.UNSET,
+            scenario: geoLocationManager.LocationRequestScenario.UNSET,
+        };
+        try {
+            geoLocationManager.on('locationChange', requestInfo, locationChangeHandler);
+        }
+        catch (err) {
+            reject(err.message);
+            return;
+        }
+        resolve();
+    });
+}, StartLocationUpdateProtocol, StartLocationUpdateOptions);
+const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
+    geoLocationManager.off('locationChange', locationChangeHandler);
+    resolve();
+});
+const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
+const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => { });
+const onLocationChangeError = defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { });
+const offLocationChangeError = defineOffApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
+
 const pluginDefines = {};
 function registerUTSPlugin(name, define) {
     pluginDefines[name] = define;
@@ -12878,14 +13302,6 @@ function requireUTSPlugin(name) {
     return define;
 }
 
-// export * from './media/chooseImage'
-// export * from './media/chooseVideo'
-// export * from './media/getImageInfo'
-// export * from './media/getVideoInfo'
-// export * from './network/request'
-// export * from './network/uploadFile'
-// export * from './network/downloadFile'
-
 var uni$1 = {
   __proto__: null,
   addInterceptor: addInterceptor,
@@ -12893,6 +13309,7 @@ var uni$1 = {
   canvasGetImageData: canvasGetImageData,
   canvasPutImageData: canvasPutImageData,
   canvasToTempFilePath: canvasToTempFilePath,
+  chooseLocation: chooseLocation,
   createAnimation: createAnimation,
   createCanvasContext: createCanvasContext,
   createIntersectionObserver: createIntersectionObserver,
@@ -12902,6 +13319,7 @@ var uni$1 = {
   getEnterOptionsSync: getEnterOptionsSync,
   getLaunchOptionsSync: getLaunchOptionsSync,
   getLocale: getLocale,
+  getLocation: getLocation,
   getSelectedTextRange: getSelectedTextRange,
   hideTabBar: hideTabBar,
   hideTabBarRedDot: hideTabBarRedDot,
@@ -12910,9 +13328,14 @@ var uni$1 = {
   navigateBack: navigateBack,
   navigateTo: navigateTo,
   offKeyboardHeightChange: offKeyboardHeightChange,
+  offLocationChange: offLocationChange,
+  offLocationChangeError: offLocationChangeError,
   onKeyboardHeightChange: onKeyboardHeightChange,
   onLocaleChange: onLocaleChange,
+  onLocationChange: onLocationChange,
+  onLocationChangeError: onLocationChangeError,
   onWindowResize: onWindowResize,
+  openLocation: openLocation,
   reLaunch: reLaunch,
   redirectTo: redirectTo,
   registerUTSPlugin: registerUTSPlugin,
@@ -12925,6 +13348,8 @@ var uni$1 = {
   setTabBarStyle: setTabBarStyle,
   showTabBar: showTabBar,
   showTabBarRedDot: showTabBarRedDot,
+  startLocationUpdate: startLocationUpdate,
+  stopLocationUpdate: stopLocationUpdate,
   switchTab: switchTab
 };
 
@@ -13177,6 +13602,7 @@ function initSubscribeHandlers() {
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
     subscribeBase64ToTempFilePath();
+    subscribeGetLocation();
     // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
     const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
     if (routeOptions) {
@@ -13313,4 +13739,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };
+export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, registerServiceMethod, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };

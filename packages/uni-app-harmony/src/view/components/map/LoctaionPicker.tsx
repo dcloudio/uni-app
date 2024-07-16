@@ -114,9 +114,9 @@ function useList(state: State) {
       })
     })
   }
-  function getList() {
+  async function getList() {
     listState.loading = true
-    const mapInfo = getMapInfo()
+    const mapInfo = await getMapInfo()
     if (mapInfo.type === MapType.GOOGLE) {
       if (listState.pageIndex > 1 && listState.nextPage) {
         listState.nextPage()

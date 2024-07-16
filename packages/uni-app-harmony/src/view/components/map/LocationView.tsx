@@ -108,8 +108,8 @@ export default /*#__PURE__*/ defineSystemComponent({
       }
     }
 
-    function nav() {
-      const mapInfo = getMapInfo()
+    async function nav() {
+      const mapInfo = await getMapInfo()
       let url = ''
       if (mapInfo.type === MapType.GOOGLE) {
         const origin: string = state.location.latitude

@@ -58,6 +58,7 @@ import { getRealPath as getRealPath3, Emitter as Emitter2 } from "@dcloudio/uni-
 import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
 import { getResourceStr, getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
 import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
+import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
@@ -2607,6 +2608,24 @@ export function initUniExtApi(APP_ID: string) {
             ]
         ])
     };
+    const needsEncoding = (str: string)=>{
+        const decoded = decodeURIComponent(str);
+        if (decoded !== str) {
+            if (encodeURIComponent(decoded) === str) {
+                return false;
+            }
+        }
+        return encodeURIComponent(decoded) !== decoded;
+    };
+    const parseUrl = (url: string)=>{
+        const urlObj = harmonyUrl.URL.parseURL(url);
+        urlObj.params.forEach((value, key)=>{
+            if (needsEncoding(value)) {
+                urlObj.params.set(key, value);
+            }
+        });
+        return urlObj.toString();
+    };
     const cookiesParse = (header: Record<string, string>)=>{
         let cookiesArr: string[] = [];
         const handleCookiesArr = (header['Set-Cookie'] || header['set-cookie'] || []) as string[];
@@ -2656,9 +2675,10 @@ export function initUniExtApi(APP_ID: string) {
         }
         if (method === 'GET' && data && isPlainObject(data)) {
             const dataRecord = data as Record<string, Object>;
-            url += '?' + Object.keys(dataRecord).map((key)=>{
+            const query = Object.keys(dataRecord).map((key)=>{
                 return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
             }).join('&');
+            url += query ? (url.indexOf('?') > -1 ? '&' : '?') + query : '';
             data = null;
         } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && isPlainObject(data)) {
             data = JSON.stringify(data);
@@ -2690,7 +2710,7 @@ export function initUniExtApi(APP_ID: string) {
             }
         };
         httpRequest.on('headersReceive', (header: Object)=>{});
-        httpRequest.request(encodeURI(url), {
+        httpRequest.request(parseUrl(url), {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
             extraData: data,
@@ -3316,7 +3336,7 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToSend: totalSize
             } as OnProgressUpdateResult);
         });
-        httpRequest.request(encodeURI(url), {
+        httpRequest.request(parseUrl(url), {
             header: headers,
             method: http1.RequestMethod.POST,
             connectTimeout: timeout ? timeout : undefined,
@@ -3432,7 +3452,7 @@ export function initUniExtApi(APP_ID: string) {
             }
             queueWrite(data);
         });
-        httpRequest.requestInStream(encodeURI(url), {
+        httpRequest.requestInStream(parseUrl(url), {
             header: header ? header : {} as ESObject,
             method: http2.RequestMethod.GET,
             connectTimeout: timeout ? timeout : undefined,
@@ -3860,24 +3880,30 @@ export function initUniExtApi(APP_ID: string) {
         return number < 0 ? -result : result;
     }) as Rpx2px;
     const API_SCAN_CODE = 'scanCode';
-    const supportedScanTypesMap = new Map<ScanCodeSupportedTypes, scanCore.ScanType>([
-        [
-            'barCode',
-            scanCore.ScanType.CODABAR_CODE
-        ],
-        [
-            'qrCode',
-            scanCore.ScanType.QR_CODE
-        ],
-        [
-            'datamatrix',
-            scanCore.ScanType.DATAMATRIX_CODE
-        ],
-        [
-            'pdf417',
-            scanCore.ScanType.PDF417_CODE
-        ]
-    ]);
+    let supportedScanTypesMap: Map<ScanCodeSupportedTypes, scanCore.ScanType>;
+    const initScanTypesMapOnce = ()=>{
+        if (supportedScanTypesMap) {
+            return;
+        }
+        supportedScanTypesMap = new Map<ScanCodeSupportedTypes, scanCore.ScanType>([
+            [
+                'barCode',
+                scanCore.ScanType.CODABAR_CODE
+            ],
+            [
+                'qrCode',
+                scanCore.ScanType.QR_CODE
+            ],
+            [
+                'datamatrix',
+                scanCore.ScanType.DATAMATRIX_CODE
+            ],
+            [
+                'pdf417',
+                scanCore.ScanType.PDF417_CODE
+            ]
+        ]);
+    };
     const getUniScanType = (scanType: scanCore.ScanType): ScanCodeSupportedTypes =>{
         for (const ref of supportedScanTypesMap.entries()){
             let key = ref[0], value = ref[1];
@@ -3888,6 +3914,11 @@ export function initUniExtApi(APP_ID: string) {
         return 'qrCode';
     };
     const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(API_SCAN_CODE, (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>)=>{
+        if (!canIUse('SystemCapability.Multimedia.Scan.ScanBarcode')) {
+            exec.reject('not support');
+            return;
+        }
+        initScanTypesMapOnce();
         let scanTypes: scanCore.ScanType[] = [
             scanCore.ScanType.ALL
         ];
