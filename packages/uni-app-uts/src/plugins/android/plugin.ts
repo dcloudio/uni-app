@@ -339,6 +339,7 @@ function checkUTSEasyComAutoImports(
   ctx: PluginContext
 ) {
   const res = getUTSEasyComAutoImports()
+  const uvueOutputDir = uvueOutDir()
   Object.keys(res).forEach((fileName) => {
     if (fileName.endsWith('.vue') || fileName.endsWith('.uvue')) {
       if (fileName.startsWith('@/')) {
@@ -351,12 +352,21 @@ function checkUTSEasyComAutoImports(
         !bundle[relativeFileName + '.ts']
       ) {
         const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
-        ctx.emitFile({
-          type: 'asset',
-          fileName: normalizeEmitAssetFileName(relativeFileName),
-          source: `function ${className}Render(): any | null { return null }
-const ${className}Styles = []`,
-        })
+        const assetFileName = normalizeEmitAssetFileName(relativeFileName)
+        const assetSource = `function ${className}Render(): any | null { return null }
+const ${className}Styles = []`
+        if (process.env.UNI_APP_X_TSC === 'true') {
+          const fileName = path.resolve(uvueOutputDir, assetFileName)
+          if (!fs.existsSync(fileName)) {
+            fs.outputFileSync(fileName, assetSource)
+          }
+        } else {
+          ctx.emitFile({
+            type: 'asset',
+            fileName: assetFileName,
+            source: assetSource,
+          })
+        }
       }
     }
   })
