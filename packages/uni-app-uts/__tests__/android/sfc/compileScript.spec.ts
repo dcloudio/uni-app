@@ -383,7 +383,7 @@ describe('SFC compile <script setup>', () => {
           <FooBar #unused />
           <view :[bar.attrName]="15"></view>
           <view unused="unused"></view>
-          <view #[\`item:\${baz.key}\`]="{ value }"></view>
+          <FooBar #[\`item:\${baz.key}\`]="{ value }"></FooBar>
         </template>
         `)
       // expect(content).toMatch(

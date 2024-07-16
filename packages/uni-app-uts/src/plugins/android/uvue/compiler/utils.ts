@@ -20,18 +20,18 @@ export const __BROWSER__ = false
 export const __COMPAT__ = false
 
 export function genRenderFunctionDecl({
-  className = '',
+  className,
   genDefaultAs,
-}: // inline = false,
-TemplateCompilerOptions & { genDefaultAs?: string }): string {
-  // if(inline){
-  //   return `(): VNode | null =>`
-  // }
+  inline = false,
+}: TemplateCompilerOptions & { genDefaultAs?: string }): string {
+  if (inline) {
+    return `(): any | null =>`
+  }
   // 调整返回值类型为 any | null, 支持 <template>some text</template>
   const thisCode = genDefaultAs
     ? `this: InstanceType<typeof ${genDefaultAs}>`
     : ''
-  return `function ${className}Render(${thisCode}): any | null`
+  return `function ${className || ''}Render(${thisCode}): any | null`
 }
 
 export function rewriteObjectExpression(
@@ -63,12 +63,26 @@ export function rewriteObjectExpression(
 
 export function onCompilerError(error: CompilerError) {}
 
+export function parseSource(fileName: string, rootDir: string) {
+  if (fileName.includes('@dcloudio')) {
+    return fileName
+  }
+  rootDir = normalizePath(rootDir)
+  if (path.isAbsolute(fileName) && fileName.startsWith(rootDir)) {
+    return '@/' + normalizePath(path.relative(rootDir, fileName))
+  }
+  return fileName
+}
+
 export function addEasyComponentAutoImports(
   easyComponentAutoImports: Record<string, [string, string]>,
   rootDir: string,
   tagName: string,
   fileName: string
 ) {
+  if (easyComponentAutoImports[fileName]) {
+    return
+  }
   // 内置easycom，如 unicloud-db
   if (fileName.includes('@dcloudio')) {
     return

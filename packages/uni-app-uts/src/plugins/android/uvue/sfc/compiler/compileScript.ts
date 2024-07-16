@@ -17,7 +17,7 @@ import type {
 } from '@babel/types'
 import { walk } from 'estree-walker'
 import type { RawSourceMap } from 'source-map-js'
-import { processNormalScript } from './script/normalScript'
+import { processNormalScript, processTemplate } from './script/normalScript'
 import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { warnOnce } from './warn'
 import { ScriptCompileContext } from './script/context'
@@ -54,6 +54,7 @@ export const normalScriptDefaultVar = `__default__`
 export const DEFAULT_FILENAME = 'anonymous.vue'
 
 export interface SFCScriptCompileOptions {
+  root: string
   /**
    * 类型
    */
@@ -921,22 +922,22 @@ __ins.emit(event, ...do_not_transform_spread)
 
   // 10. generate return statement
   // 剩余由 rust 编译器处理
-  const returned = `"INLINE_RENDER"`
-
-  // if (!options.inlineTemplate && !__TEST__) {
-  //   // in non-inline mode, the `__isScriptSetup: true` flag is used by
-  //   // componentPublicInstance proxy to allow properties that start with $ or _
-  //   ctx.s.appendRight(
-  //     endOffset,
-  //     `\nconst __returned__ = ${returned}\n` +
-  //       `Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })\n` +
-  //       `return __returned__` +
-  //       `\n}\n\n`
-  //   )
-  // } else {
-  ctx.s.appendRight(endOffset, `\nreturn ${returned}\n}\n\n`)
-  // }
-
+  if (options.componentType !== 'app') {
+    const { code, importsCode, preamble } = processTemplate(sfc, {
+      relativeFilename,
+      bindingMetadata: ctx.bindingMetadata,
+      rootDir: options.root,
+      className: options.className,
+    })
+    if (importsCode) {
+      ctx.s.prepend(importsCode)
+    }
+    if (preamble) {
+      ctx.s.prepend(preamble)
+    }
+    ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n`)
+    // TODO sourceMap
+  }
   // 11. finalize default export
   const genDefaultAs = options.genDefaultAs
     ? `const ${options.genDefaultAs} =`

@@ -1,4 +1,5 @@
 import MagicString from 'magic-string'
+import type { BindingMetadata, SFCDescriptor } from '@vue/compiler-sfc'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import type { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
@@ -6,6 +7,14 @@ import { hasDebugError, rewriteDebugError } from './rewriteDebugError'
 import { rewriteSourceMap } from './rewriteSourceMap'
 import { rewriteDefaultAST } from '../rewriteDefault'
 import { resolveDefineCode } from './utils'
+import { resolveGenTemplateCodeOptions } from '../../template'
+import {
+  addUTSEasyComAutoImports,
+  addUniModulesExtApiComponents,
+  parseUTSComponent,
+} from '@dcloudio/uni-cli-shared'
+import { addExtApiComponents } from '../../../../../utils'
+import { genTemplateCode } from '../../../code/template'
 
 export function processNormalScript(
   ctx: ScriptCompileContext,
@@ -87,4 +96,56 @@ export function processNormalScript(
     // babel syntax
     return script
   }
+}
+
+export function processTemplate(
+  sfc: SFCDescriptor,
+  {
+    relativeFilename,
+    bindingMetadata,
+    className,
+    rootDir,
+  }: {
+    relativeFilename: string
+    bindingMetadata?: BindingMetadata
+    className: string
+    rootDir: string
+  }
+) {
+  const { code, preamble, easyComponentAutoImports, elements, imports, map } =
+    genTemplateCode(
+      sfc,
+      resolveGenTemplateCodeOptions(relativeFilename, sfc.source, sfc, {
+        mode: 'module',
+        inline: !!sfc.scriptSetup,
+        className,
+        rootDir,
+        sourceMap:
+          process.env.NODE_ENV === 'development' &&
+          process.env.UNI_COMPILE_TARGET !== 'uni_modules',
+        bindingMetadata,
+      })
+    )
+  const allImports = [...imports]
+  const importsCode = allImports.length ? allImports.join('\n') + '\n' : ''
+
+  Object.keys(easyComponentAutoImports).forEach((source) => {
+    addUTSEasyComAutoImports(source, easyComponentAutoImports[source])
+  })
+
+  if (process.env.NODE_ENV === 'production') {
+    const components = elements.filter((element) => {
+      // 如果是UTS原生组件，则无需记录摇树
+      if (parseUTSComponent(element, 'kotlin')) {
+        return false
+      }
+      return true
+    })
+    if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+      addUniModulesExtApiComponents(relativeFilename, components)
+    } else {
+      addExtApiComponents(components)
+    }
+  }
+  return { code, map, importsCode, preamble }
 }

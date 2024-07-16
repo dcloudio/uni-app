@@ -57,6 +57,7 @@ export function resolveGenTemplateCodeOptions(
     inMap: descriptor.template?.map,
     preprocessLang: block.lang === 'html' ? undefined : block.lang,
     preprocessOptions,
+    inline: !!descriptor.scriptSetup,
     matchEasyCom: (tag, uts) => {
       const source = matchEasycom(tag)
       if (uts && source) {

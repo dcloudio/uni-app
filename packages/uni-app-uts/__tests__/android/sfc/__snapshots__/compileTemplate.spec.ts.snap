@@ -8,8 +8,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode("view", utsMapOf({ class: "test" }))
 }
@@ -26,8 +25,7 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode("view", utsMapOf({ class: "test" }))
 }

@@ -11,7 +11,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
   
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -26,7 +26,7 @@ const _cache = __ins.renderCache;
 
 __expose({ foo: 123 })
 
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"

@@ -31,7 +31,7 @@ export function assert(
   }
   const res = compile(template, compilerOptions)
   if (typeof expect !== 'undefined') {
-    expect(res.code).toBe(templateCode)
+    expect((res.preamble || '') + res.code).toBe(templateCode)
   }
   return res
 }

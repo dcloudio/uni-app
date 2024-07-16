@@ -2414,7 +2414,6 @@ function initEnterOptions({ path, query, referrerInfo, }) {
     });
 }
 function initLaunchOptions({ path, query, referrerInfo, }) {
-    var _a, _b;
     extend(launchOptions, {
         path,
         query: query ? parseQuery(query) : {},
@@ -2425,8 +2424,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
     });
     extend(enterOptions, launchOptions);
     const app = getNativeApp();
-    // @ts-expect-error syntaxdoc
-    const schemaLink = (_b = (_a = void 0 ) === null || _a === void 0 ? void 0 : _a.call(app)) !== null && _b !== void 0 ? _b : {};
+    const schemaLink = app.getLaunchOptionsSync();
     return extend({}, launchOptions, schemaLink);
 }
 function parseRedirectInfo() {

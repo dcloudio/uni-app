@@ -1,5 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
+import type { ResolvedConfig } from 'vite'
+import { extend, isString } from '@vue/shared'
 import type { OutputBundle, PluginContext } from 'rollup'
 import {
   type UniVitePlugin,
@@ -7,6 +9,7 @@ import {
   emptyDir,
   formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
+  getUTSComponentAutoImports,
   getUTSEasyComAutoImports,
   getUniExtApiProviderRegisters,
   normalizeEmitAssetFileName,
@@ -39,8 +42,6 @@ import {
 } from '../utils'
 
 import { genClassName } from '../..'
-import type { ResolvedConfig } from 'vite'
-import { extend, isString } from '@vue/shared'
 
 declare class WatchProgramHelper {
   watch(timeout?: number): void
@@ -248,7 +249,7 @@ export function uniAppPlugin(): UniVitePlugin {
         ),
         extApiComponents: [...getExtApiComponents()],
         uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-        autoImports: getUTSEasyComAutoImports(),
+        autoImports: initAutoImports(),
         extApiProviders: parseUniExtApiProviders(manifestJson),
         uniModulesArtifacts: parseUniModulesArtifacts(),
         env: parseProcessEnv(resolvedConfig),
@@ -287,6 +288,23 @@ export function uniAppPlugin(): UniVitePlugin {
       }
     },
   }
+}
+
+function initAutoImports() {
+  const easyComponents = getUTSEasyComAutoImports()
+  const utsComponents = getUTSComponentAutoImports()
+  const autoImports: Record<string, [[string, string?]]> = {}
+  Object.keys(easyComponents).forEach((source) => {
+    autoImports[source] = easyComponents[source]
+  })
+  Object.keys(utsComponents).forEach((source) => {
+    if (autoImports[source]) {
+      autoImports[source].push(...utsComponents[source])
+    } else {
+      autoImports[source] = utsComponents[source]
+    }
+  })
+  return autoImports
 }
 
 function normalizeFilename(filename: string, isMain = false) {
