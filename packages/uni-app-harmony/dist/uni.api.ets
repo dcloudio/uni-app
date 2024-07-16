@@ -15,7 +15,8 @@ import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
 import { BusinessError as BusinessError1 } from '@ohos.base';
-import { BusinessError } from '@ohos.base';
+import { BusinessError as BusinessError2 } from '@ohos.base';
+import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
 import I18n from '@ohos.i18n';
@@ -28,8 +29,8 @@ import { UTSHarmony as UTSHarmony3, getWindowInfo as internalGetWindowInfo, getD
 import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
-import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
+import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, defineOnApi, defineOffApi, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
+import { UniServiceJSBridge as UniServiceJSBridge1, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
 import Want1 from '@ohos.app.ability.Want';
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
@@ -63,6 +64,8 @@ import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import network, { NetworkResponse } from '@system.network';
+import { networkinfo, UniServiceJSBridge } from "@dcloudio/uni-app-harmony-framework";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
@@ -246,6 +249,30 @@ export class GetDeviceInfoResult extends UTSObject {
     romVersion: string | null = null;
 }
 export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
+type GetNetworkType = (options: GetNetworkTypeOptions) => void;
+class GetNetworkTypeSuccess extends UTSObject {
+    networkType!: string;
+}
+type GetNetworkTypeSuccessCallback = (result: GetNetworkTypeSuccess) => void;
+type GetNetworkTypeFail = UniError;
+type GetNetworkTypeFailCallback = (result: GetNetworkTypeFail) => void;
+type GetNetworkTypeComplete = Object;
+type GetNetworkTypeCompleteCallback = (result: GetNetworkTypeComplete) => void;
+class GetNetworkTypeOptions extends UTSObject {
+    success: GetNetworkTypeSuccessCallback | null = null;
+    fail: GetNetworkTypeFailCallback | null = null;
+    complete: GetNetworkTypeCompleteCallback | null = null;
+}
+class OnNetworkStatusChangeCallbackResult extends UTSObject {
+    isConnected!: boolean;
+    networkType!: string;
+}
+type OnNetworkStatusChangeCallback = (result: OnNetworkStatusChangeCallbackResult) => void;
+type OnNetworkStatusChange = (callback: OnNetworkStatusChangeCallback) => void;
+type OffNetworkStatusChange = (callback: (result: Object) => void) => void;
+class NetworkSubscribeOptions extends UTSObject {
+    success!: (data: NetworkResponse) => void;
+}
 class GetProviderSuccess extends UTSObject {
     service!: 'payment';
     provider!: string[];
@@ -1231,6 +1258,9 @@ interface UniExtApi {
     exit: Exit;
     getAppBaseInfo: GetAppBaseInfo;
     getDeviceInfo: GetDeviceInfo;
+    getNetworkType: GetNetworkType;
+    onNetworkStatusChange: OnNetworkStatusChange;
+    offNetworkStatusChange: OffNetworkStatusChange;
     getProvider: GetProvider;
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
@@ -1504,6 +1534,61 @@ export function initUniExtApi(APP_ID: string) {
             system: deviceInfo.osFullName
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
+    const API_GET_NETWORK_TYPE = 'getNetworkType';
+    const API_ON_NETWORK_STATUS_CHANGE = 'onNetworkStatusChange';
+    const API_OFF_NETWORK_STATUS_CHANGE = 'offNetworkStatusChange';
+    enum NetworkinfoType {
+        unknown = 0,
+        none = 1,
+        ethernet = 2,
+        wifi = 3,
+        "2g" = 4,
+        "3g" = 5,
+        "4g" = 6,
+        "5g" = 7
+    }
+    const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
+        networkinfo.getCurrentType().then((type: number)=>{
+            res.resolve({
+                networkType: NetworkinfoType[type]
+            } as GetNetworkTypeSuccess);
+        }).catch((err: BusinessError)=>{
+            res.reject(err.message);
+        });
+    }) as GetNetworkType;
+    const invokeOnNetworkStatusChange = (networkType: string)=>{
+        UniServiceJSBridge.invokeOnCallback(API_ON_NETWORK_STATUS_CHANGE, {
+            isConnected: networkType !== 'none',
+            networkType
+        } as OnNetworkStatusChangeCallbackResult);
+    };
+    const NetworkSubscribeSuccess = (data: NetworkResponse)=>{
+        if (data.type === 'none') {
+            networkinfo.getCurrentType().then((type: number)=>{
+                invokeOnNetworkStatusChange(NetworkinfoType[type]);
+            }).catch(()=>{
+                invokeOnNetworkStatusChange('none');
+            });
+        } else {
+            invokeOnNetworkStatusChange(data.type.toLocaleLowerCase());
+        }
+    };
+    const onNetworkStatusChange: OnNetworkStatusChange = defineOnApi<OnNetworkStatusChangeCallbackResult>(API_ON_NETWORK_STATUS_CHANGE, ()=>{
+        let firstInvoke: boolean = true;
+        network.subscribe({
+            success (data: NetworkResponse) {
+                console.log(Date.now());
+                if (firstInvoke) {
+                    firstInvoke = false;
+                } else {
+                    NetworkSubscribeSuccess(data);
+                }
+            }
+        } as NetworkSubscribeOptions);
+    }) as OnNetworkStatusChange;
+    const offNetworkStatusChange: OffNetworkStatusChange = defineOffApi<OffNetworkStatusChange>(API_OFF_NETWORK_STATUS_CHANGE, ()=>{
+        network.unsubscribe();
+    }) as OffNetworkStatusChange;
     const SupportedProviderServiceList = [
         'oauth',
         'share',
@@ -1657,7 +1742,7 @@ export function initUniExtApi(APP_ID: string) {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError1<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -3569,7 +3654,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExecutor<PageScrollToSuccess>)=>{
         const pageId = getPageIdByVm1(getCurrentPageVm1()!)! as number;
-        UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
+        UniServiceJSBridge1.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
     }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
     const API_SHOW_TOAST = 'showToast';
     const ShowToastProtocol = new Map<string, ProtocolOptions>([
@@ -3744,7 +3829,7 @@ export function initUniExtApi(APP_ID: string) {
             } as promptAction.ShowToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError1).message;
+            let message = (error as BusinessError2).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -4486,6 +4571,9 @@ export function initUniExtApi(APP_ID: string) {
         exit,
         getAppBaseInfo,
         getDeviceInfo,
+        getNetworkType,
+        onNetworkStatusChange,
+        offNetworkStatusChange,
         getProvider,
         getSystemInfo,
         getSystemInfoSync,
