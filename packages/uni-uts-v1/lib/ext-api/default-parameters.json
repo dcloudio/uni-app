@@ -57,6 +57,23 @@
       "null"
     ]
   },
+  "uni-file": {
+    "saveFile": [
+      "null"
+    ],
+    "getSavedFileList": [
+      "null"
+    ],
+    "getSavedFileInfo": [
+      "null"
+    ],
+    "removeSavedFile": [
+      "null"
+    ],
+    "getFileInfo": [
+      "null"
+    ]
+  },
   "uni-exit": {
     "exit": [
       "null"
