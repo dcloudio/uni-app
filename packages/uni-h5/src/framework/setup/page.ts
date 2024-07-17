@@ -295,8 +295,8 @@ function updateBodyScopeId(instance: ComponentInternalInstance) {
 }
 
 let curScrollListener: (evt: Event) => any
-// TODO 当动态渲染的组件内监听onPageScroll时
-function initPageScrollListener(
+
+export function initPageScrollListener(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
@@ -310,7 +310,11 @@ function initPageScrollListener(
 
   const { onPageScroll, onReachBottom } = instance
   const navigationBarTransparent = pageMeta.navigationBar.type === 'transparent'
-  if (!onPageScroll && !onReachBottom && !navigationBarTransparent) {
+  if (
+    !onPageScroll?.length &&
+    !onReachBottom?.length &&
+    !navigationBarTransparent
+  ) {
     return
   }
   const opts: CreateScrollListenerOptions = {}
@@ -322,7 +326,7 @@ function initPageScrollListener(
       navigationBarTransparent
     )
   }
-  if (onReachBottom) {
+  if (onReachBottom?.length) {
     opts.onReachBottomDistance =
       pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE
     opts.onReachBottom = () =>
