@@ -204,10 +204,13 @@ export const ${genUTSComponentPublicInstanceImported(
 }
 
 function processJsCodeImport(jsCode: string) {
-  return jsCode.replaceAll(
-    '@/node-modules/@dcloudio/uni-components/lib-x',
-    normalizePath(resolveComponentsLibPath())
-  )
+  if (jsCode.includes('@/node-modules/@dcloudio/uni-components/lib-x')) {
+    return jsCode.replaceAll(
+      '@/node-modules/@dcloudio/uni-components/lib-x',
+      normalizePath(resolveComponentsLibPath())
+    )
+  }
+  return jsCode
 }
 
 async function genScriptCode(

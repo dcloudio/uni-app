@@ -1,11 +1,7 @@
 import fs from 'fs-extra'
 import path from 'path'
 import { sync } from 'fast-glob'
-import type {
-  CompilerOptions,
-  SemanticDiagnosticsBuilderProgram,
-  Symbol,
-} from 'typescript'
+import type tsTypes from 'typescript'
 import {
   type RawSourceMap,
   SourceMapConsumer,
@@ -22,13 +18,16 @@ export interface UTS2KotlinOptions {
   hxLanguageServiceDir?: string
   tsconfig?: string
   rootFiles?: string[]
-  compilerOptions?: CompilerOptions
+  compilerOptions?: tsTypes.CompilerOptions
   normalizeFileName: (str: string) => string
 }
 
 export interface TransformOptions {
   transformArguments?: {
-    shouldTransform(symbol: Symbol): boolean
+    shouldTransform(symbol: tsTypes.Symbol): boolean
+  }
+  transformReturnType?: {
+    shouldTransform(node: tsTypes.Node, type: tsTypes.Type): boolean
   }
 }
 
@@ -36,6 +35,17 @@ export declare class WatchProgramHelper {
   watch(timeout?: number): void
   wait(): Promise<void>
 }
+
+const RETURN_ANY_HOOKS = [
+  'onBeforeMount',
+  'onMounted',
+  'onBeforeUpdate',
+  'onUpdated',
+  'onBeforeUnmount',
+  'onUnmounted',
+  'onServerPrefetch',
+]
+
 export function runUTS2Kotlin(
   mode: 'development' | 'production',
   options: UTS2KotlinOptions
@@ -85,8 +95,8 @@ export function runUTS2Kotlin(
     ),
   ]
 
-  const typescript = require('../../../lib/typescript')
-  const compilerOptions: CompilerOptions = {
+  const ts = require('../../../lib/typescript') as typeof tsTypes
+  const compilerOptions: tsTypes.CompilerOptions = {
     rootDir: options.inputDir,
     baseUrl: options.inputDir,
     outDir: options.outputDir,
@@ -126,14 +136,14 @@ export function runUTS2Kotlin(
       ) => boolean | undefined
       callback(
         files: string[],
-        program: SemanticDiagnosticsBuilderProgram
+        program: tsTypes.SemanticDiagnosticsBuilderProgram
       ): void
       transformOptions: TransformOptions
     }
   >
 
   return require('../../../lib/kotlin').compile(mode, {
-    typescript,
+    typescript: ts,
     inputDir: options.inputDir,
     cacheDir: options.cacheDir,
     rootFiles,
@@ -172,6 +182,19 @@ export function runUTS2Kotlin(
                   d.getSourceFile().fileName.includes('runtime-core.d.ts')
                 )
               ) {
+                return false
+              }
+            }
+          }
+          return true
+        },
+      },
+      transformReturnType: {
+        shouldTransform(node, _type) {
+          if (node.parent && ts.isCallExpression(node.parent)) {
+            const decl = node.parent.expression
+            if (ts.isIdentifier(decl)) {
+              if (RETURN_ANY_HOOKS.includes(decl.text)) {
                 return false
               }
             }

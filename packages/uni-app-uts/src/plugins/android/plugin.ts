@@ -358,7 +358,7 @@ const ${className}Styles = []`
         if (process.env.UNI_APP_X_TSC === 'true') {
           const fileName = path.resolve(uvueOutputDir, assetFileName)
           if (!fs.existsSync(fileName)) {
-            fs.outputFileSync(fileName, assetSource)
+            fs.outputFileSync(fileName.replace(/\.ts$/, ''), assetSource)
           }
         } else {
           ctx.emitFile({

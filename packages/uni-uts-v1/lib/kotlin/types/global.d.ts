@@ -63,6 +63,12 @@ declare global {
     constructor(name: name, fileName: fileName, line: line, column: column) {}
   }
 
+  namespace uts {
+    namespace sdk {
+      namespace modules {}
+    }
+  }
+
   namespace io {
     namespace dcloud {
       namespace uniapp {
@@ -83,6 +89,12 @@ declare global {
         }
       }
     }
+  }
+}
+
+declare module 'vue' {
+  interface ComponentInternalInstance {
+    renderCache: (Function | VNode)[]
   }
 }
 
