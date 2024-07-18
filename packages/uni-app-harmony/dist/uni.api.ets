@@ -19,9 +19,11 @@ import { BusinessError as BusinessError2 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
+import Hash from '@ohos.file.hash';
 import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
+import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony2, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
@@ -45,18 +47,20 @@ import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
+import fs4 from '@ohos.file.fs';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv1, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv, getRealPath } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath1, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath3, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath2, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath4, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
 import { getResourceStr, getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
 import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
 import harmonyUrl from '@ohos.url';
@@ -187,6 +191,87 @@ class ExitOptions extends UTSObject {
     complete: ExitCompleteCallback | null = null;
 }
 type Exit = (options?: ExitOptions | null) => void;
+export class SaveFileSuccess extends UTSObject {
+    savedFilePath!: string;
+}
+type SaveFileSuccessCallback = (res: SaveFileSuccess) => void;
+export class SaveFileFail extends UTSObject {
+}
+type SaveFileFailCallback = (res: SaveFileFail) => void;
+type SaveFileCompleteCallback = (res: Object) => void;
+export class SaveFileOptions extends UTSObject {
+    tempFilePath!: string;
+    success: SaveFileSuccessCallback | null = null;
+    fail: SaveFileFailCallback | null = null;
+    complete: SaveFileCompleteCallback | null = null;
+}
+export class GetFileInfoSuccess extends UTSObject {
+    digest!: string;
+    size!: number;
+}
+type GetFileInfoSuccessCallback = (res: GetFileInfoSuccess) => void;
+export class GetFileInfoFail extends UTSObject {
+}
+type GetFileInfoFailCallback = (res: GetFileInfoFail) => void;
+type GetFileInfoCompleteCallback = (res: Object) => void;
+export class GetFileInfoOptions extends UTSObject {
+    filePath!: string;
+    digestAlgorithm: string | null = null;
+    success: GetFileInfoSuccessCallback | null = null;
+    fail: GetFileInfoFailCallback | null = null;
+    complete: GetFileInfoCompleteCallback | null = null;
+}
+export class GetSavedFileInfoSuccess extends UTSObject {
+    size!: number;
+    createTime!: number;
+}
+type GetSavedFileInfoSuccessCallback = (res: GetSavedFileInfoSuccess) => void;
+export class GetSavedFileInfoFail extends UTSObject {
+}
+type GetSavedFileInfoFailCallback = (res: GetSavedFileInfoFail) => void;
+type GetSavedFileInfoCompleteCallback = (res: Object) => void;
+export class GetSavedFileInfoOptions extends UTSObject {
+    filePath!: string;
+    success: GetSavedFileInfoSuccessCallback | null = null;
+    fail: GetSavedFileInfoFailCallback | null = null;
+    complete: GetSavedFileInfoCompleteCallback | null = null;
+}
+export class RemoveSavedFileSuccess extends UTSObject {
+}
+type RemoveSavedFileSuccessCallback = (res: RemoveSavedFileSuccess) => void;
+export class RemoveSavedFileFail extends UTSObject {
+}
+type RemoveSavedFileFailCallback = (res: RemoveSavedFileFail) => void;
+type RemoveSavedFileCompleteCallback = (res: Object) => void;
+export class RemoveSavedFileOptions extends UTSObject {
+    filePath!: string;
+    success: RemoveSavedFileSuccessCallback | null = null;
+    fail: RemoveSavedFileFailCallback | null = null;
+    complete: RemoveSavedFileCompleteCallback | null = null;
+}
+export class SavedFileListItem extends UTSObject {
+    filePath!: string;
+    size!: number;
+    createTime!: number;
+}
+export class GetSavedFileListSuccess extends UTSObject {
+    fileList!: SavedFileListItem[];
+}
+type GetSavedFileListSuccessCallback = (res: GetSavedFileListSuccess) => void;
+export class GetSavedFileListFail extends UTSObject {
+}
+type GetSavedFileListFailCallback = (res: GetSavedFileListFail) => void;
+type GetSavedFileListCompleteCallback = (res: Object) => void;
+export class GetSavedFileListOptions extends UTSObject {
+    success: GetSavedFileListSuccessCallback | null = null;
+    fail: GetSavedFileListFailCallback | null = null;
+    complete: GetSavedFileListCompleteCallback | null = null;
+}
+export type SaveFile = (options?: SaveFileOptions | null) => void;
+export type GetFileInfo = (options?: GetFileInfoOptions | null) => void;
+export type GetSavedFileInfo = (options?: GetSavedFileInfoOptions | null) => void;
+export type RemoveSavedFile = (options?: RemoveSavedFileOptions | null) => void;
+export type GetSavedFileList = (options?: GetSavedFileListOptions | null) => void;
 class GetAppBaseInfoOptions extends UTSObject {
     filter!: Array<string>;
 }
@@ -633,9 +718,32 @@ type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => v
 type SetNavigationBarTitleComplete = AsyncApiResult;
 type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
 export type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
+export type ShowNavigationBarLoadingSuccess = AsyncApiSuccessResult;
+type ShowNavigationBarLoadingSuccessCallback = (result: ShowNavigationBarLoadingSuccess) => void;
+interface ShowNavigationBarLoadingFail extends IUniError {
+}
+type ShowNavigationBarLoadingFailCallback = (error: ShowNavigationBarLoadingFail) => void;
+export class ShowNavigationBarLoadingOptions extends UTSObject {
+    success: ShowNavigationBarLoadingSuccessCallback | null = null;
+    fail: ShowNavigationBarLoadingFailCallback | null = null;
+    complete: (() => void) | null = null;
+}
+export type ShowNavigationBarLoading = (options?: ShowNavigationBarLoadingOptions | null) => void;
+export type HideNavigationBarLoadingSuccess = AsyncApiSuccessResult;
+type HideNavigationBarLoadingSuccessCallback = (result: HideNavigationBarLoadingSuccess) => void;
+interface HideNavigationBarLoadingFail extends IUniError {
+}
+type HideNavigationBarLoadingFailCallback = (error: HideNavigationBarLoadingFail) => void;
+export class HideNavigationBarLoadingOptions extends UTSObject {
+    success: HideNavigationBarLoadingSuccessCallback | null = null;
+    fail: HideNavigationBarLoadingFailCallback | null = null;
+    complete: (() => void) | null = null;
+}
+export type HideNavigationBarLoading = (options?: HideNavigationBarLoadingOptions | null) => void;
 interface TitleNView {
     titleText: string;
     autoBackButton?: boolean;
+    loading?: boolean;
 }
 interface BackButton {
     color?: string;
@@ -1256,6 +1364,11 @@ interface UniExtApi {
     $off: $Off;
     $emit: $Emit;
     exit: Exit;
+    saveFile: SaveFile;
+    getSavedFileList: GetSavedFileList;
+    getSavedFileInfo: GetSavedFileInfo;
+    removeSavedFile: RemoveSavedFile;
+    getFileInfo: GetFileInfo;
     getAppBaseInfo: GetAppBaseInfo;
     getDeviceInfo: GetDeviceInfo;
     getNetworkType: GetNetworkType;
@@ -1277,6 +1390,8 @@ interface UniExtApi {
     getVideoInfo: GetVideoInfo;
     setNavigationBarColor: SetNavigationBarColor;
     setNavigationBarTitle: SetNavigationBarTitle;
+    showNavigationBarLoading: ShowNavigationBarLoading;
+    hideNavigationBarLoading: HideNavigationBarLoading;
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
@@ -1480,6 +1595,154 @@ export function initUniExtApi(APP_ID: string) {
     const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
         UTSHarmony.exit();
     }) as Exit;
+    const API_SAVE_FILE = 'saveFile';
+    const API_GET_FILE_INFO = 'getFileInfo';
+    const API_GET_SAVED_FILE_INFO = 'getSavedFileInfo';
+    const API_GET_SAVED_FILE_LIST = 'getSavedFileList';
+    const API_REMOVE_SAVED_FILE = 'removeSavedFile';
+    const getSavedDir = (appId: string)=>{
+        return getEnv().USER_DATA_PATH + '/' + appId + '/saved';
+    };
+    let savedIndex: [string, number] = [
+        '0',
+        0
+    ];
+    const getSavedFileName = (filePath: string)=>{
+        const ext = filePath.split('/').pop()?.split('.').slice(1).join('.');
+        let fileName = Date.now() + '';
+        if (savedIndex[0] === fileName) {
+            savedIndex[1]++;
+            if (savedIndex[1] > 0) {
+                fileName += '-' + savedIndex[1];
+            }
+        } else {
+            savedIndex[0] = fileName;
+            savedIndex[1] = 0;
+        }
+        if (ext) {
+            fileName += '.' + ext;
+        }
+        return fileName;
+    };
+    const getFsPath = (filePath: string)=>{
+        filePath = getRealPath(filePath) as string;
+        if (!/^file:/.test(filePath)) {
+            return filePath;
+        }
+        const rawPath = filePath.replace(/^file:\/\//, '');
+        if (rawPath[0] === '/') {
+            return rawPath;
+        }
+        return filePath;
+    };
+    const saveFile: SaveFile = defineAsyncApi<SaveFileOptions, SaveFileSuccess>(API_SAVE_FILE, (options: SaveFileOptions, exec: ApiExecutor<SaveFileSuccess>)=>{
+        const tempFilePath = getRealPath(options.tempFilePath) as string;
+        const savedPath = getSavedDir(APP_ID);
+        if (!fs.accessSync(savedPath)) {
+            fs.mkdirSync(savedPath, true);
+        }
+        let srcFile: fs.File;
+        try {
+            srcFile = fs.openSync(tempFilePath, fs.OpenMode.READ_ONLY);
+        } catch (error) {
+            exec.reject((error as Error).message);
+            return;
+        }
+        const savedFilePath = savedPath + '/' + getSavedFileName(tempFilePath);
+        fs.copyFile(srcFile.fd, savedFilePath, (err)=>{
+            fs.closeSync(srcFile);
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    savedFilePath: 'file://' + savedFilePath
+                } as SaveFileSuccess);
+            }
+        });
+    }) as SaveFile;
+    const getSavedFileList: GetSavedFileList = defineAsyncApi<GetSavedFileListOptions, GetSavedFileListSuccess>(API_GET_SAVED_FILE_LIST, (options: GetSavedFileListOptions, exec: ApiExecutor<GetSavedFileListSuccess>)=>{
+        const savedPath = getSavedDir(APP_ID);
+        if (!fs.accessSync(savedPath)) {
+            exec.resolve({
+                fileList: []
+            } as GetSavedFileListSuccess);
+        }
+        fs.listFile(savedPath, {} as ListFileOptions, (err, fileList)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    fileList: fileList.map((filePath: string)=>{
+                        const fullPath = savedPath + '/' + filePath;
+                        const stat = fs.statSync(fullPath);
+                        if (!stat.isFile()) {
+                            return null;
+                        }
+                        return {
+                            filePath: 'file://' + fullPath,
+                            size: stat.size,
+                            createTime: stat.ctime
+                        } as SavedFileListItem;
+                    }).filter((item)=>!!item)
+                } as GetSavedFileListSuccess);
+            }
+        });
+    }) as GetSavedFileList;
+    const getSavedFileInfo: GetSavedFileInfo = defineAsyncApi<GetSavedFileInfoOptions, GetSavedFileInfoSuccess>(API_GET_SAVED_FILE_INFO, (options: GetSavedFileInfoOptions, exec: ApiExecutor<GetSavedFileInfoSuccess>)=>{
+        const savedFilePath = getFsPath(options.filePath);
+        if (!fs.accessSync(savedFilePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        const stat = fs.statSync(savedFilePath);
+        if (!stat.isFile()) {
+            exec.reject('file not exist');
+        }
+        exec.resolve({
+            size: stat.size,
+            createTime: stat.ctime
+        } as GetSavedFileInfoSuccess);
+    }) as GetSavedFileInfo;
+    const removeSavedFile: RemoveSavedFile = defineAsyncApi<RemoveSavedFileOptions, RemoveSavedFileSuccess>(API_REMOVE_SAVED_FILE, (options: RemoveSavedFileOptions, exec: ApiExecutor<RemoveSavedFileSuccess>)=>{
+        const savedFilePath = getFsPath(options.filePath);
+        if (!fs.accessSync(savedFilePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        fs.unlink(savedFilePath, (err)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve();
+            }
+        });
+    }) as RemoveSavedFile;
+    const SupportedHashAlgorithm = [
+        'md5',
+        'sha1'
+    ];
+    const getFileInfo: GetFileInfo = defineAsyncApi<GetFileInfoOptions, GetFileInfoSuccess>(API_GET_FILE_INFO, (options: GetFileInfoOptions, exec: ApiExecutor<GetFileInfoSuccess>)=>{
+        const filePath = getFsPath(options.filePath);
+        const digestAlgorithm = options.digestAlgorithm && SupportedHashAlgorithm.includes(options.digestAlgorithm) ? options.digestAlgorithm : 'md5';
+        if (!fs.accessSync(filePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        const stat = fs.statSync(filePath);
+        if (!stat.isFile()) {
+            exec.reject('file not exist');
+        }
+        Hash.hash(filePath, digestAlgorithm, (err, hash)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    size: stat.size,
+                    digest: hash
+                } as GetFileInfoSuccess);
+            }
+        });
+    }) as GetFileInfo;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
     const getBundleInfoOnce = ()=>{
         let bundleInfo: bundleManager.BundleInfo | null = null;
@@ -1577,7 +1840,6 @@ export function initUniExtApi(APP_ID: string) {
         let firstInvoke: boolean = true;
         network.subscribe({
             success (data: NetworkResponse) {
-                console.log(Date.now());
                 if (firstInvoke) {
                     firstInvoke = false;
                 } else {
@@ -1750,16 +2012,16 @@ export function initUniExtApi(APP_ID: string) {
         }
     }, MakePhoneCallProtocol) as MakePhoneCall;
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
-        const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
         const avMetadataExtractor = await media.createAVMetadataExtractor();
         let metadata: media.AVMetadata | null = null;
         let size: number = 0;
         try {
-            size = (await fs.stat(file.fd)).size;
+            size = (await fs1.stat(file.fd)).size;
             avMetadataExtractor.dataSrc = {
                 fileSize: size,
                 callback: (buffer: ArrayBuffer, length: number, pos: number | null = null)=>{
-                    return fs.readSync(file.fd, buffer, {
+                    return fs1.readSync(file.fd, buffer, {
                         offset: pos,
                         length
                     } as ReadOptions);
@@ -1770,7 +2032,7 @@ export function initUniExtApi(APP_ID: string) {
             throw error as Error;
         } finally{
             await avMetadataExtractor.release();
-            await fs.close(file);
+            await fs1.close(file);
         }
         const videoOrientationArr = [
             'up',
@@ -1788,7 +2050,7 @@ export function initUniExtApi(APP_ID: string) {
         } as GetVideoInfoSuccess;
     };
     const _getImageInfo = async (uri: string): Promise<GetImageInfoSuccess> =>{
-        const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
         const imageSource = image.createImageSource(file.fd);
         const imageInfo = await imageSource.getImageInfo();
         const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
@@ -1850,9 +2112,9 @@ export function initUniExtApi(APP_ID: string) {
         if (mimeType !== picker.PhotoViewMIMETypes.VIDEO_TYPE) {
             return {
                 tempFiles: uris.map((uri)=>{
-                    const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
-                    const stat = fs.statSync(file.fd);
-                    fs.closeSync(file);
+                    const file = fs1.openSync(uri, fs1.OpenMode.READ_ONLY);
+                    const stat = fs1.statSync(file.fd);
+                    fs1.closeSync(file);
                     return {
                         fileType: 'image',
                         tempFilePath: uri,
@@ -1893,7 +2155,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'src',
                 (src: string, params: GetImageInfoOptions)=>{
-                    params.src = getRealPath(src);
+                    params.src = getRealPath1(src);
                 }
             ]
         ])
@@ -1988,7 +2250,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'src',
                 (src: string, params: GetVideoInfoOptions)=>{
-                    params.src = getRealPath(src);
+                    params.src = getRealPath1(src);
                 }
             ]
         ])
@@ -2102,7 +2364,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'urls',
                 (urls: string[], params: PreviewImageOptions)=>{
-                    params.urls = urls.map((url)=>getRealPath(url) as string);
+                    params.urls = urls.map((url)=>getRealPath1(url) as string);
                 }
             ]
         ])
@@ -2245,7 +2507,7 @@ export function initUniExtApi(APP_ID: string) {
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
         waitForCurrentNativePage().then((nativePage: Object)=>{
             getOSRuntime().previewImage({
-                urls: options.urls.map((url)=>getRealPath1(url) as string),
+                urls: options.urls.map((url)=>getRealPath2(url) as string),
                 current: options.current || '',
                 showmenu: options.showmenu === false ? false : true
             } as IPreviewImageOptions, nativePage);
@@ -2276,17 +2538,17 @@ export function initUniExtApi(APP_ID: string) {
         const context = getAbilityContext() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
-        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
+        const destFile = fs2.openSync(dest, fs2.OpenMode.WRITE_ONLY);
         const content = await resourceManager.getRawFileContent(srcPath);
-        await fs1.write(destFile.fd, content.buffer);
-        await fs1.close(destFile);
+        await fs2.write(destFile.fd, content.buffer);
+        await fs2.close(destFile);
     };
     const saveUri = async (src: string, dest: string)=>{
-        const srcFile = fs1.openSync(src, fs1.OpenMode.READ_ONLY);
-        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
-        await fs1.copyFile(srcFile.fd, destFile.fd);
-        await fs1.close(srcFile);
-        await fs1.close(destFile);
+        const srcFile = fs2.openSync(src, fs2.OpenMode.READ_ONLY);
+        const destFile = fs2.openSync(dest, fs2.OpenMode.WRITE_ONLY);
+        await fs2.copyFile(srcFile.fd, destFile.fd);
+        await fs2.close(srcFile);
+        await fs2.close(destFile);
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
@@ -2392,42 +2654,42 @@ export function initUniExtApi(APP_ID: string) {
         const webview = page.$getAppWebview();
         return webview;
     };
-    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExecutor<SetNavigationBarColorSuccess>)=>{
+    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (args: SetNavigationBarColorOptions, executor: ApiExecutor<SetNavigationBarColorSuccess>)=>{
         const page = getCurrentPage() as Page;
         if (!page) {
-            return res.reject(`getCurrentPages is empty`);
+            return executor.reject(`getCurrentPages is empty`);
         }
         const webview = getWebview(page);
         if (webview) {
             const styles: PlusWebviewWebviewTitleNViewStyles = {};
-            if (options.frontColor) {
-                styles.titleColor = options.frontColor;
+            if (args.frontColor) {
+                styles.titleColor = args.frontColor;
             }
-            if (options.backgroundColor) {
-                styles.backgroundColor = options.backgroundColor;
+            if (args.backgroundColor) {
+                styles.backgroundColor = args.backgroundColor;
             }
-            const statusBarStyle = options.frontColor === '#000000' ? 'dark' : 'light';
+            const statusBarStyle = args.frontColor === '#000000' ? 'dark' : 'light';
             navigator.setStatusBarStyle(statusBarStyle);
             page.$page.statusBarStyle = statusBarStyle;
             const style = webview.getStyle();
             if (style && style.titleNView) {
                 if (style.titleNView.autoBackButton) {
                     styles.backButton = styles.backButton || {};
-                    styles.backButton.color = options.frontColor;
+                    styles.backButton.color = args.frontColor;
                 }
                 webview.setStyle({
                     titleNView: styles as TitleNView
                 } as PlusWebviewWebviewTitleNViewStyles);
             }
-            res.resolve();
+            executor.resolve();
         } else {
-            res.reject();
+            executor.reject();
         }
     }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
-    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
+    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: SetNavigationBarTitleOptions, executor: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
         const page = getCurrentPage() as Page;
         if (!page) {
-            return res.reject(`getCurrentPages is empty`);
+            return executor.reject(`getCurrentPages is empty`);
         }
         const webview = getWebview(page);
         if (webview) {
@@ -2435,13 +2697,53 @@ export function initUniExtApi(APP_ID: string) {
             if (style && style.titleNView) {
                 webview.setStyle({
                     titleNView: {
-                        titleText: options.title
+                        titleText: args.title
                     } as TitleNView
                 } as PlusWebviewWebviewTitleNViewStyles);
             }
-            res.resolve();
+            executor.resolve();
         } else {
-            res.reject();
+            executor.reject();
+        }
+    }, SetNavigationBarTitleProtocol) as SetNavigationBarTitle;
+    const showNavigationBarLoading: ShowNavigationBarLoading = defineAsyncApi<ShowNavigationBarLoadingOptions, ShowNavigationBarLoadingSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: ShowNavigationBarLoadingOptions, executor: ApiExecutor<ShowNavigationBarLoadingSuccess>)=>{
+        const page = getCurrentPage() as Page;
+        if (!page) {
+            return executor.reject(`getCurrentPages is empty`);
+        }
+        const webview = getWebview(page);
+        if (webview) {
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                webview.setStyle({
+                    titleNView: {
+                        loading: true
+                    } as TitleNView
+                } as PlusWebviewWebviewTitleNViewStyles);
+            }
+            executor.resolve();
+        } else {
+            executor.reject();
+        }
+    }, SetNavigationBarTitleProtocol) as ShowNavigationBarLoading;
+    const hideNavigationBarLoading: SetNavigationBarTitle = defineAsyncApi<HideNavigationBarLoadingOptions, HideNavigationBarLoadingSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: HideNavigationBarLoadingOptions, executor: ApiExecutor<HideNavigationBarLoadingSuccess>)=>{
+        const page = getCurrentPage() as Page;
+        if (!page) {
+            return executor.reject(`getCurrentPages is empty`);
+        }
+        const webview = getWebview(page);
+        if (webview) {
+            const style = webview.getStyle();
+            if (style && style.titleNView) {
+                webview.setStyle({
+                    titleNView: {
+                        loading: false
+                    } as TitleNView
+                } as PlusWebviewWebviewTitleNViewStyles);
+            }
+            executor.resolve();
+        } else {
+            executor.reject();
         }
     }, SetNavigationBarTitleProtocol) as SetNavigationBarTitle;
     const API_REQUEST = 'request';
@@ -2680,7 +2982,7 @@ export function initUniExtApi(APP_ID: string) {
                     if (filePath == null) {
                         throw new Error('filePath is required');
                     }
-                    params.filePath = getRealPath2(filePath);
+                    params.filePath = getRealPath3(filePath);
                 }
             ],
             [
@@ -2798,7 +3100,7 @@ export function initUniExtApi(APP_ID: string) {
         httpRequest.request(parseUrl(url), {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
-            extraData: data,
+            extraData: data || undefined,
             expectDataType,
             connectTimeout: timeout ? timeout : undefined,
             readTimeout: timeout ? timeout : undefined
@@ -3333,12 +3635,12 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     const readFile = (filePath: string): ArrayBuffer =>{
-        const readFilePath = getRealPath3(filePath) as string;
-        const file = fs2.openSync(readFilePath, fs2.OpenMode.READ_ONLY);
-        const stat = fs2.statSync(file.fd);
+        const readFilePath = getRealPath4(filePath) as string;
+        const file = fs3.openSync(readFilePath, fs3.OpenMode.READ_ONLY);
+        const stat = fs3.statSync(file.fd);
         const data = new ArrayBuffer(stat.size);
-        fs2.readSync(file.fd, data);
-        fs2.closeSync(file.fd);
+        fs3.readSync(file.fd, data);
+        fs3.closeSync(file.fd);
         return data;
     };
     const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
@@ -3514,12 +3816,12 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToWrite: totalSize
             } as OnProgressDownloadResult);
         });
-        const TEMP_PATH = getEnv().TEMP_PATH as string;
-        const downloadPath = TEMP_PATH + '/download';
-        if (!fs3.accessSync(downloadPath)) {
-            fs3.mkdirSync(downloadPath);
+        const TEMP_PATH = getEnv1().TEMP_PATH as string;
+        const downloadPath = TEMP_PATH + '/' + APP_ID + '/download';
+        if (!fs4.accessSync(downloadPath)) {
+            fs4.mkdirSync(downloadPath, true);
         }
-        let stream: fs3.Stream;
+        let stream: fs4.Stream;
         let tempFilePath = '';
         let writePromise = Promise.resolve(0);
         const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
@@ -3533,7 +3835,7 @@ export function initUniExtApi(APP_ID: string) {
             if (!stream) {
                 const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
                 tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
-                stream = fs3.createStreamSync(tempFilePath, 'w+');
+                stream = fs4.createStreamSync(tempFilePath, 'w+');
             }
             queueWrite(data);
         });
@@ -4569,6 +4871,11 @@ export function initUniExtApi(APP_ID: string) {
         $off,
         $emit,
         exit,
+        saveFile,
+        getSavedFileList,
+        getSavedFileInfo,
+        removeSavedFile,
+        getFileInfo,
         getAppBaseInfo,
         getDeviceInfo,
         getNetworkType,
@@ -4590,6 +4897,8 @@ export function initUniExtApi(APP_ID: string) {
         getVideoInfo,
         setNavigationBarColor,
         setNavigationBarTitle,
+        showNavigationBarLoading,
+        hideNavigationBarLoading,
         request,
         uploadFile,
         downloadFile,

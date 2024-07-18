@@ -16382,12 +16382,12 @@
   function useCache(props2, type) {
     if (type.value === "number") {
       var value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-      var cache2 = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+      var cache2 = ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
       watch(() => props2.modelValue, (value2) => {
-        cache2.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+        cache2.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
       });
       watch(() => props2.value, (value2) => {
-        cache2.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+        cache2.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
       });
       return cache2;
     } else {
