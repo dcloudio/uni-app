@@ -73,8 +73,11 @@ export function createBasicUtsOptions(
 
     extend(options.tsconfigOverride.compilerOptions, {
       paths: {
-        '@dcloudio/*': [
-          path.resolve(pluginPath, 'uniapp-cli-vite/node_modules/@dcloudio/*'),
+        '@dcloudio/uni-app': [
+          path.resolve(
+            __dirname,
+            '../../../lib/tsconfig/types/dcloudio__uni-app'
+          ),
         ],
         '@vue/runtime-core': [
           path.resolve(
