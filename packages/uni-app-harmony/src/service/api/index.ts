@@ -25,6 +25,7 @@ export {
   setLocale,
   getLocale,
   onLocaleChange,
+  createMapContext,
   createCanvasContext,
   canvasGetImageData,
   canvasPutImageData,
