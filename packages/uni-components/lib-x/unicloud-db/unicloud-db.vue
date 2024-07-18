@@ -448,7 +448,7 @@
       reset() {
         this.pagination.current = 1
       },
-      async get(options? : UniCloudDBComponentLoadDataOptions) : Promise<void> {
+      async get(options? : UniCloudDBComponentLoadDataOptions | null) : Promise<void> {
         let loadAfterClear = false
         if (options != null && options.clear != null && options.clear == true) {
           loadAfterClear = true
@@ -599,12 +599,12 @@
           })
         }
       },
-      _requestFail(err ?: any | null, callback ?: FailCallback) {
+      _requestFail(err ?: any | null, callback ?: FailCallback | null) {
         callback?.(err)
         this.error = err as UniCloudError
         this.$emit(EVENT_ERROR, err)
       },
-      _requestComplete(callback ?: CompleteCallback, needLoading ?: boolean | null) {
+      _requestComplete(callback ?: CompleteCallback | null, needLoading ?: boolean | null) {
         callback?.()
         if (needLoading == true) {
           uni.hideLoading()
