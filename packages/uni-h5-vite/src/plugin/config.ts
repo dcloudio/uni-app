@@ -30,13 +30,15 @@ export function createConfig(options: {
 
     const server: ServerOptions = {
       host: true,
-      hmr: {
-        // mac 内置浏览器版本较低不支持 globalThis，而 overlay 使用了 globalThis
-        overlay:
-          os.platform() !== 'win32'
-            ? process.env.UNI_H5_BROWSER !== 'builtin'
-            : true,
-      },
+      hmr: process.env.UNI_AUTOMATOR_WS_ENDPOINT
+        ? false
+        : {
+            // mac 内置浏览器版本较低不支持 globalThis，而 overlay 使用了 globalThis
+            overlay:
+              os.platform() !== 'win32'
+                ? process.env.UNI_H5_BROWSER !== 'builtin'
+                : true,
+          },
       fs: { strict: false },
       watch: {
         ignored: [
