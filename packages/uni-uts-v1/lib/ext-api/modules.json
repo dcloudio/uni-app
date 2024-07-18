@@ -305,7 +305,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -323,7 +323,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       },
@@ -350,7 +350,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -359,7 +359,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
         }
       }
@@ -736,24 +736,8 @@
           "swift": true
         }
       },
-      "restoreCompletedTransactions": {
-        "name": "restoreCompletedTransactions",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": true
-        }
-      },
-      "getUnfinishedTransactions": {
-        "name": "getUnfinishedTransactions",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": true
-        }
-      },
-      "finishedTransaction": {
-        "name": "finishedTransaction",
+      "createVirtualPaymentContext": {
+        "name": "createVirtualPaymentContext",
         "app": {
           "js": false,
           "kotlin": false,
