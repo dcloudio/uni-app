@@ -1,7 +1,6 @@
 import { extend } from '@vue/shared'
 import { parseQuery } from '@dcloudio/uni-shared'
 import { type LaunchOptions, createLaunchOptions } from '@dcloudio/uni-core'
-import { getNativeApp } from '../../../x/framework/app/app'
 
 export const EVENT_BACKBUTTON = 'backbutton'
 
@@ -50,9 +49,7 @@ export function initLaunchOptions({
   })
   extend(enterOptions, launchOptions)
 
-  const app = getNativeApp()
-  const schemaLink = app.getLaunchOptionsSync()
-  return extend({}, launchOptions, schemaLink)
+  return enterOptions
 }
 
 export interface RedirectInfo extends Omit<LaunchOptions, 'query' | 'scene'> {
