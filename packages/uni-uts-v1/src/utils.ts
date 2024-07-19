@@ -704,12 +704,21 @@ export function parseInjectModules(
   return [...modules]
 }
 
+function readExtApiModulesJson() {
+  const json = require('../lib/ext-api/modules.json')
+  if (!json['uni-canvas']) {
+    json['uni-canvas'] = {}
+  }
+  json['uni-canvas']['components'] = ['canvas']
+  return json
+}
+
 export function parseExtApiModules() {
-  return normalizeExtApiModules(require('../lib/ext-api/modules.json'))
+  return normalizeExtApiModules(readExtApiModulesJson())
 }
 
 export function parseExtApiProviders() {
-  const modules = require('../lib/ext-api/modules.json')
+  const modules = readExtApiModulesJson()
   const providers: {
     [name: string]: {
       service: string
