@@ -11,6 +11,67 @@
       }
     }
   },
+  "uni-arrayBufferToBase64": {
+    "uni": {
+      "arrayBufferToBase64": {
+        "name": "arrayBufferToBase64",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-base64ToArrayBuffer": {
+    "uni": {
+      "base64ToArrayBuffer": {
+        "name": "base64ToArrayBuffer",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-clipboard": {
+    "uni": {
+      "getClipboardData": {
+        "name": "getClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "setClipboardData": {
+        "name": "setClipboardData",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-createIntersectionObserver": {
+    "uni": {
+      "createIntersectionObserver": {
+        "name": "createIntersectionObserver",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
@@ -23,6 +84,19 @@
       }
     }
   },
+  "uni-createSelectorQuery": {
+    "uni": {
+      "createSelectorQuery": {
+        "name": "createSelectorQuery",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-createWebviewContext": {
     "uni": {
       "createWebviewContext": {
@@ -31,6 +105,46 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-event": {
+    "uni": {
+      "$on": {
+        "name": "$on",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "$once": {
+        "name": "$once",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "$off": {
+        "name": "$off",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "$emit": {
+        "name": "$emit",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -53,6 +167,55 @@
       "startFacialRecognitionVerify",
       "getFacialRecognitionMetaInfo"
     ]
+  },
+  "uni-file": {
+    "uni": {
+      "saveFile": {
+        "name": "saveFile",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "getSavedFileList": {
+        "name": "getSavedFileList",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "getSavedFileInfo": {
+        "name": "getSavedFileInfo",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "removeSavedFile": {
+        "name": "removeSavedFile",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "getFileInfo": {
+        "name": "getFileInfo",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
   },
   "uni-fileSystemManager": {
     "uni": {
@@ -271,6 +434,32 @@
       }
     }
   },
+  "uni-keyboard": {
+    "uni": {
+      "hideKeyboard": {
+        "name": "hideKeyboard",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-makePhoneCall": {
+    "uni": {
+      "makePhoneCall": {
+        "name": "makePhoneCall",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-media": {
     "uni": {
       "chooseImage": {
@@ -365,6 +554,46 @@
       }
     }
   },
+  "uni-navigationBar": {
+    "uni": {
+      "setNavigationBarColor": {
+        "name": "setNavigationBarColor",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "setNavigationBarTitle": {
+        "name": "setNavigationBarTitle",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "showNavigationBarLoading": {
+        "name": "showNavigationBarLoading",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "hideNavigationBarLoading": {
+        "name": "hideNavigationBarLoading",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-network": {
     "uni": {
       "request": {
@@ -404,6 +633,32 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-openDocument": {
+    "uni": {
+      "openDocument": {
+        "name": "openDocument",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-pageScrollTo": {
+    "uni": {
+      "pageScrollTo": {
+        "name": "pageScrollTo",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -489,6 +744,28 @@
       }
     }
   },
+  "uni-pullDownRefresh": {
+    "uni": {
+      "startPullDownRefresh": {
+        "name": "startPullDownRefresh",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "stopPullDownRefresh": {
+        "name": "stopPullDownRefresh",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
   "uni-push": {
     "uni": {
       "getPushClientId": {
@@ -557,6 +834,19 @@
           "js": false,
           "kotlin": true,
           "swift": true,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-scanCode": {
+    "uni": {
+      "scanCode": {
+        "name": "scanCode",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
           "arkts": true
         }
       }
@@ -652,6 +942,91 @@
           "kotlin": true,
           "swift": true,
           "arkts": true
+        }
+      }
+    }
+  },
+  "uni-tabBar": {
+    "uni": {
+      "showTabBarRedDot": {
+        "name": "showTabBarRedDot",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "hideTabBarRedDot": {
+        "name": "hideTabBarRedDot",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "setTabBarBadge": {
+        "name": "setTabBarBadge",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "removeTabBarBadge": {
+        "name": "removeTabBarBadge",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "setTabBarItem": {
+        "name": "setTabBarItem",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "setTabBarStyle": {
+        "name": "setTabBarStyle",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "showTabBar": {
+        "name": "showTabBar",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "hideTabBar": {
+        "name": "hideTabBar",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "onTabBarMidButtonTap": {
+        "name": "onTabBarMidButtonTap",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": false
         }
       }
     }
