@@ -531,16 +531,6 @@ function removePage(curPage) {
   }
   pages.splice(index2, 1);
 }
-var nativeApp;
-function getNativeApp() {
-  return nativeApp;
-}
-function setNativeApp(app) {
-  nativeApp = app;
-}
-function getPageManager() {
-  return nativeApp.pageManager;
-}
 function backbuttonListener() {
   uni.navigateBack({
     from: "backbutton",
@@ -549,10 +539,10 @@ function backbuttonListener() {
     // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
   });
 }
-var enterOptions = /* @__PURE__ */ createLaunchOptions();
-var launchOptions = /* @__PURE__ */ createLaunchOptions();
+var enterOptions$1 = /* @__PURE__ */ createLaunchOptions();
+var launchOptions$1 = /* @__PURE__ */ createLaunchOptions();
 function getLaunchOptions() {
-  return extend({}, launchOptions);
+  return extend({}, launchOptions$1);
 }
 function initLaunchOptions(_ref2) {
   var {
@@ -560,7 +550,7 @@ function initLaunchOptions(_ref2) {
     query,
     referrerInfo
   } = _ref2;
-  extend(launchOptions, {
+  extend(launchOptions$1, {
     path,
     query: query ? parseQuery(query) : {},
     referrerInfo: referrerInfo || {},
@@ -568,10 +558,8 @@ function initLaunchOptions(_ref2) {
     channel: void 0,
     launcher: void 0
   });
-  extend(enterOptions, launchOptions);
-  var app = getNativeApp();
-  var schemaLink = app.getLaunchOptionsSync();
-  return extend({}, launchOptions, schemaLink);
+  extend(enterOptions$1, launchOptions$1);
+  return enterOptions$1;
 }
 var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
@@ -1036,6 +1024,16 @@ function createFactory(component) {
     }
     return setupPage(component);
   };
+}
+var nativeApp;
+function getNativeApp() {
+  return nativeApp;
+}
+function setNativeApp(app) {
+  nativeApp = app;
+}
+function getPageManager() {
+  return nativeApp.pageManager;
 }
 var ON_BACK_BUTTON = "onBackButton";
 var ON_POP_GESTURE = "onPopGesture";
@@ -2376,11 +2374,30 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
   res.resolve();
 });
 var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
+var launchOptions = {
+  path: "",
+  appScheme: null,
+  appLink: null
+};
+var setLaunchOptionsSync = function(options) {
+  launchOptions = options;
+};
 var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
-  var app = getNativeApp();
   var baseInfo = getLaunchOptions();
-  var schemaInfo = app.getLaunchOptionsSync();
-  return Object.assign({}, baseInfo, schemaInfo);
+  return Object.assign({}, baseInfo, launchOptions);
+});
+var API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
+var enterOptions = {
+  path: "",
+  appScheme: null,
+  appLink: null
+};
+var setEnterOptionsSync = function(options) {
+  enterOptions = options;
+};
+var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+  var baseInfo = getLaunchOptions();
+  return Object.assign({}, baseInfo, enterOptions);
 });
 var env = {
   USER_DATA_PATH: "unifile://usr/",
@@ -3203,6 +3220,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   createSelectorQuery,
   env,
   getElementById,
+  getEnterOptionsSync,
   getLaunchOptionsSync,
   getPerformance,
   hideTabBar,
@@ -3285,8 +3303,13 @@ function initAppLaunch(appVm) {
     query: entryPageQuery,
     referrerInfo
   });
-  invokeHook(appVm, ON_LAUNCH, args);
-  invokeHook(appVm, ON_SHOW, args);
+  var app = getNativeApp();
+  var schemaLink = app.getLaunchOptionsSync();
+  var launchOption = extend({}, args, schemaLink);
+  setLaunchOptionsSync(launchOption);
+  invokeHook(appVm, ON_LAUNCH, launchOption);
+  var showOption = extend({}, launchOption);
+  invokeHook(appVm, ON_SHOW, showOption);
   var appStyle = appVm.$options.styles;
   if (appStyle) {
     loadFontFaceByStyles(appStyle, true);
@@ -3327,10 +3350,14 @@ function initSubscribeHandlers() {
 }
 function initOn(app) {
   app.addEventListener(ON_SHOW, function(event) {
-    var page = getCurrentPage();
-    invokeHook(getApp(), ON_SHOW, {
+    var app2 = getNativeApp();
+    var schemaLink = app2.getLaunchOptionsSync();
+    var showOptions = extend({
       path: __uniConfig.entryPagePath
-    });
+    }, schemaLink);
+    setEnterOptionsSync(showOptions);
+    var page = getCurrentPage();
+    invokeHook(getApp(), ON_SHOW, showOptions);
     if (page) {
       invokeHook(page, ON_SHOW);
     }

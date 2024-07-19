@@ -10098,12 +10098,12 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    const cache = ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
     watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     return cache;
   } else {
@@ -17330,7 +17330,7 @@ function initPageScrollListener(instance2, pageMeta) {
   }
   const { onPageScroll, onReachBottom } = instance2;
   const navigationBarTransparent = pageMeta.navigationBar.type === "transparent";
-  if (!onPageScroll && !onReachBottom && !navigationBarTransparent) {
+  if (!(onPageScroll == null ? void 0 : onPageScroll.length) && !(onReachBottom == null ? void 0 : onReachBottom.length) && !navigationBarTransparent) {
     return;
   }
   const opts = {};
@@ -17342,7 +17342,7 @@ function initPageScrollListener(instance2, pageMeta) {
       navigationBarTransparent
     );
   }
-  if (onReachBottom) {
+  if (onReachBottom == null ? void 0 : onReachBottom.length) {
     opts.onReachBottomDistance = pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE;
     opts.onReachBottom = () => UniViewJSBridge.publishHandler(ON_REACH_BOTTOM, {}, pageId);
   }
@@ -18463,6 +18463,17 @@ function setupPage(comp) {
       instance2.proxy.$page.options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
+      instance2.onReachBottom = reactive([]);
+      instance2.onPageScroll = reactive([]);
+      watch(
+        [instance2.onReachBottom, instance2.onPageScroll],
+        () => {
+          if (instance2.proxy === getCurrentPage()) {
+            initPageScrollListener(instance2, pageMeta);
+          }
+        },
+        { once: true }
+      );
       onBeforeMount(() => {
         onPageShow(instance2, pageMeta);
       });
@@ -27377,7 +27388,9 @@ function usePageRefresh(refreshRef) {
     if (deltaY < 0 && !state2) {
       return;
     }
-    ev.preventDefault();
+    if (ev.cancelable) {
+      ev.preventDefault();
+    }
     if (distance2 === null) {
       offset = deltaY;
       state2 = PULLING;

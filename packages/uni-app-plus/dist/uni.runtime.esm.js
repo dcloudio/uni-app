@@ -2386,11 +2386,6 @@ function getExtName(path) {
     return array.length > 1 ? '.' + array[array.length - 1] : '';
 }
 
-let nativeApp;
-function getNativeApp() {
-    return nativeApp;
-}
-
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
     uni.navigateBack({
@@ -2423,9 +2418,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions, launchOptions);
-    const app = getNativeApp();
-    const schemaLink = app.getLaunchOptionsSync();
-    return extend({}, launchOptions, schemaLink);
+    return enterOptions;
 }
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');

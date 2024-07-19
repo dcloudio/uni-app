@@ -9108,11 +9108,6 @@ function removeIntersectionObserver({ reqId, component }, _pageId) {
     UniServiceJSBridge.unsubscribe(getEventName(reqId));
 }
 
-let nativeApp;
-function getNativeApp() {
-    return nativeApp;
-}
-
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
     uni.navigateBack({
@@ -9132,9 +9127,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions$1, launchOptions$1);
-    const app = getNativeApp();
-    const schemaLink = app.getLaunchOptionsSync();
-    return extend({}, launchOptions$1, schemaLink);
+    return enterOptions$1;
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
@@ -9161,6 +9154,13 @@ function operateVideoPlayer(videoId, pageId, type, data) {
         type,
         data,
     }, pageId);
+}
+
+function operateMap(id, pageId, type, data, operateMapCallback) {
+    UniServiceJSBridge.invokeViewMethod('map.' + id, {
+        type,
+        data,
+    }, pageId, operateMapCallback);
 }
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
@@ -9316,7 +9316,20 @@ const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context)
     return new VideoContext(id, getPageIdByVm(getCurrentPageVm()));
 });
 
+const operateMapCallback = (options, res) => {
+    const errMsg = res.errMsg || '';
+    if (new RegExp('\\:\\s*fail').test(errMsg)) {
+        options.fail && options.fail(res);
+    }
+    else {
+        options.success && options.success(res);
+    }
+    options.complete && options.complete(res);
+};
 const operateMapWrap = (id, pageId, type, options) => {
+    operateMap(id, pageId, type, options, (res) => {
+        options && operateMapCallback(options, res);
+    });
 };
 class MapContext {
     constructor(id, pageId) {
@@ -9324,22 +9337,22 @@ class MapContext {
         this.pageId = pageId;
     }
     getCenterLocation(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getCenterLocation', options);
     }
     moveToLocation(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'moveToLocation', options);
     }
     getScale(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getScale', options);
     }
     getRegion(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getRegion', options);
     }
     includePoints(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'includePoints', options);
     }
     translateMarker(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'translateMarker', options);
     }
     $getAppMap() {
         {
@@ -9347,43 +9360,43 @@ class MapContext {
         }
     }
     addCustomLayer(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addCustomLayer', options);
     }
     removeCustomLayer(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeCustomLayer', options);
     }
     addGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addGroundOverlay', options);
     }
     removeGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeGroundOverlay', options);
     }
     updateGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'updateGroundOverlay', options);
     }
     initMarkerCluster(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'initMarkerCluster', options);
     }
     addMarkers(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addMarkers', options);
     }
     removeMarkers(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeMarkers', options);
     }
     moveAlong(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'moveAlong', options);
     }
     setLocMarkerIcon(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'setLocMarkerIcon', options);
     }
     openMapApp(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'openMapApp', options);
     }
     on(name, callback) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'on', { name, callback });
     }
 }
-defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
+const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
     if (context) {
         return new MapContext(id, getPageIdByVm(context));
     }
@@ -13313,6 +13326,7 @@ var uni$1 = {
   createAnimation: createAnimation,
   createCanvasContext: createCanvasContext,
   createIntersectionObserver: createIntersectionObserver,
+  createMapContext: createMapContext,
   createMediaQueryObserver: createMediaQueryObserver,
   createSelectorQuery: createSelectorQuery,
   createVideoContext: createVideoContext,
