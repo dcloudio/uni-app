@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit BackgroundTasksKit
+ */
 import ExtensionContext from './ExtensionContext';
 /**
  * The context of work scheduler extension. It allows access to

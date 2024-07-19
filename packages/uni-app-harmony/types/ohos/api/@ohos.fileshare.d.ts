@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -76,7 +76,14 @@ declare namespace fileShare {
          * @syscap SystemCapability.FileManagement.AppFileService.FolderAuthorization
          * @since 11
          */
-        INVALID_PATH = 3
+        INVALID_PATH = 3,
+        /**
+         * Indicates that the permission is not persistent.
+         *
+         * @syscap SystemCapability.FileManagement.AppFileService.FolderAuthorization
+         * @since 12
+         */
+        PERMISSION_NOT_PERSISTED = 4
     }
     /**
      * Failed policy result on URI.
@@ -142,7 +149,8 @@ declare namespace fileShare {
      * @param { Array<PolicyInfo> } policies - Policy information to grant permission on URIs.
      * @returns { Promise<void> } the promise returned by the function.
      * @throws { BusinessError } 201 - Permission verification failed, usually the result returned by VerifyAccessToken.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error.Possible causes:1.Mandatory parameters are left unspecified;
+     * <br>2.Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 13900001 - Operation not permitted.
      * @throws { BusinessError } 13900042 - Unknown error
@@ -157,7 +165,8 @@ declare namespace fileShare {
      * @param { Array<PolicyInfo> } policies - Policy information to grant permission on URIs.
      * @returns { Promise<void> } the promise returned by the function.
      * @throws { BusinessError } 201 - Permission verification failed, usually the result returned by VerifyAccessToken.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error.Possible causes:1.Mandatory parameters are left unspecified;
+     * <br>2.Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 13900001 - Operation not permitted.
      * @throws { BusinessError } 13900042 - Unknown error
@@ -172,7 +181,8 @@ declare namespace fileShare {
      * @param { Array<PolicyInfo> } policies - Policy information to grant permission on URIs.
      * @returns { Promise<void> } the promise returned by the function.
      * @throws { BusinessError } 201 - Permission verification failed, usually the result returned by VerifyAccessToken.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error.Possible causes:1.Mandatory parameters are left unspecified;
+     * <br>2.Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 13900001 - Operation not permitted.
      * @throws { BusinessError } 13900042 - Unknown error
@@ -187,7 +197,8 @@ declare namespace fileShare {
      * @param { Array<PolicyInfo> } policies - Policy information to grant permission on URIs.
      * @returns { Promise<void> } the promise returned by the function.
      * @throws { BusinessError } 201 - Permission verification failed, usually the result returned by VerifyAccessToken.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error.Possible causes:1.Mandatory parameters are left unspecified;
+     * <br>2.Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 13900001 - Operation not permitted.
      * @throws { BusinessError } 13900042 - Unknown error
@@ -195,5 +206,20 @@ declare namespace fileShare {
      * @since 11
      */
     function deactivatePermission(policies: Array<PolicyInfo>): Promise<void>;
+    /**
+     * Check persistent permissions for the URI.
+     *
+     * @permission ohos.permission.FILE_ACCESS_PERSIST
+     * @param { Array<PolicyInfo> } policies - Policy information to grant permission on URIs.
+     * @returns { Promise<Array<boolean>> } Returns the persistent state of uri permissions.
+     * @throws { BusinessError } 201 - Permission verification failed, usually the result returned by VerifyAccessToken.
+     * @throws { BusinessError } 401 - Parameter error.Possible causes:1.Mandatory parameters are left unspecified;
+     * <br>2.Incorrect parameter types.
+     * @throws { BusinessError } 801 - Capability not supported.
+     * @throws { BusinessError } 13900042 - Unknown error
+     * @syscap SystemCapability.FileManagement.AppFileService.FolderAuthorization
+     * @since 12
+     */
+    function checkPersistentPermission(policies: Array<PolicyInfo>): Promise<Array<boolean>>;
 }
 export default fileShare;

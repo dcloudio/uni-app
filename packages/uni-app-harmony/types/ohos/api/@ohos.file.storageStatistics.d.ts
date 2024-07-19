@@ -59,7 +59,8 @@ declare namespace storageStatistics {
      * Get the current bundle statistics.
      *
      * @param { AsyncCallback<BundleStats> } callback - callback
-     * @throws { BusinessError } 401 - The input parameter is invalid.
+     * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:Mandatory
+  parameters are left unspecified;
      * @throws { BusinessError } 13600001 - IPC error.
      * @throws { BusinessError } 13900042 - Unknown error.
      * @syscap SystemCapability.FileManagement.StorageService.SpatialStatistics
@@ -70,7 +71,8 @@ declare namespace storageStatistics {
      * Get the current bundle statistics.
      *
      * @returns { Promise<BundleStats> } return Promise
-     * @throws { BusinessError } 401 - The input parameter is invalid.
+     * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:Mandatory
+  parameters are left unspecified;
      * @throws { BusinessError } 13600001 - IPC error.
      * @throws { BusinessError } 13900042 - Unknown error.
      * @syscap SystemCapability.FileManagement.StorageService.SpatialStatistics

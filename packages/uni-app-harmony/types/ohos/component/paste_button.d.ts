@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Enumerates the icon styles.
  *
  * @enum { number }

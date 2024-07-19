@@ -37,6 +37,19 @@ if (
   }
 }
 
+// 临时逻辑
+if (process.env.UNI_INPUT_DIR) {
+  const fs = require('fs')
+  const path = require('path')
+  const tscFile = path.resolve(process.env.UNI_INPUT_DIR, 'TSC')
+  if (fs.existsSync(tscFile)) {
+    const debugFileStat = fs.statSync(tscFile)
+    if (debugFileStat.isFile()) {
+      process.env.UNI_APP_X_TSC = 'true'
+    }
+  }
+}
+
 function initDebug() {
   if (!process.env.DEBUG && process.env.UNI_INPUT_DIR) {
     const fs = require('fs')

@@ -2,36 +2,34 @@
 
 exports[`SFC compile template template with html 1`] = `
 "const msg = ''
-export default {
-  setup(__props: GenAnonymous) {
+export default defineComponent({
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-return 
-function GenAnonymousRender(): any | null {
+return (): any | null => {
 
   return createElementVNode("view", utsMapOf({ class: "test" }))
 }
 }
 
-}"
+})"
 `;
 
 exports[`SFC compile template template with pug 1`] = `
 "const msg = ''
-export default {
-  setup(__props: GenAnonymous) {
+export default defineComponent({
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-return 
-function GenAnonymousRender(): any | null {
+return (): any | null => {
 
   return createElementVNode("view", utsMapOf({ class: "test" }))
 }
 }
 
-}"
+})"
 `;

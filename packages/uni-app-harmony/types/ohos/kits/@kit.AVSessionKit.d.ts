@@ -17,6 +17,6 @@
  * @kit AVSessionKit
  */
 import AVCastPicker from '@ohos.multimedia.avCastPicker';
-import { AVCastPickerState } from '@ohos.multimedia.avCastPickerParam';
+import { AVCastPickerState, AVCastPickerStyle, AVCastPickerColorMode } from '@ohos.multimedia.avCastPickerParam';
 import avSession from '@ohos.multimedia.avsession';
-export { AVCastPicker, AVCastPickerState, avSession };
+export { AVCastPicker, AVCastPickerState, AVCastPickerStyle, AVCastPickerColorMode, avSession };

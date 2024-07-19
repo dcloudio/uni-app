@@ -296,7 +296,7 @@ async function buildArkTS(target, buildJson) {
           logFilename: false,
           isPlugin: true,
           transform: {
-
+            autoImportExternals: options.autoImports || {}
           },
           treeshake: {
             noSideEffects: true

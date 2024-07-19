@@ -127,13 +127,17 @@ export function resolveComponentsLibPath() {
           dir
         )
       } catch (e) {
-        componentsLibPath = path.join(
-          resolveWithSymlinks(
-            '@dcloudio/uni-components/package.json',
-            process.cwd()
-          ),
-          dir
-        )
+        try {
+          componentsLibPath = path.join(
+            resolveWithSymlinks(
+              '@dcloudio/uni-components/package.json',
+              process.cwd()
+            ),
+            dir
+          )
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
   }

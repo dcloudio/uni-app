@@ -34,7 +34,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @param { AsyncCallback<string> } callback - The callback is used to return the bundle name.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
@@ -46,7 +47,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @returns { Promise<string> } Returns the bundle name.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
@@ -58,7 +60,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @param { AsyncCallback<number> } callback - The callback is used to return the UID.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
@@ -70,7 +73,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @returns { Promise<number> } Returns the UID.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
@@ -82,7 +86,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @param { AsyncCallback<void> } callback - The callback of cancel.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
@@ -94,7 +99,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
@@ -107,7 +113,8 @@ declare namespace wantAgent {
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @param { TriggerInfo } triggerInfo - Indicates the information required for triggering a WantAgent.
      * @param { AsyncCallback<CompleteData> } [callback] - The callback is used to return the CompleteData.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
      */
@@ -118,7 +125,8 @@ declare namespace wantAgent {
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @param { WantAgent } otherAgent - Indicates the other WantAgent.
      * @param { AsyncCallback<boolean> } callback - Returns true if the two WantAgents are the same.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
      */
@@ -129,7 +137,8 @@ declare namespace wantAgent {
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @param { WantAgent } otherAgent - Indicates the other WantAgent.
      * @returns { Promise<boolean> } Returns true if the two WantAgents are the same.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
      */
@@ -139,7 +148,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgentInfo } info - Information about the WantAgent object to obtain.
      * @param { AsyncCallback<WantAgent> } callback - The callback is used to return the created WantAgent.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
@@ -151,7 +161,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgentInfo } info - Information about the WantAgent object to obtain.
      * @returns { Promise<WantAgent> } Returns the created WantAgent.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
@@ -163,7 +174,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @param { AsyncCallback<number> } callback - The callback is used to return the OperationType of the WantAgent.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000015 - Service timeout.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.
@@ -176,7 +188,8 @@ declare namespace wantAgent {
      *
      * @param { WantAgent } agent - Indicates the WantAgent.
      * @returns { Promise<number> } Returns the OperationType of the WantAgent.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types.
      * @throws { BusinessError } 16000007 - Service busy, there are concurrent tasks, waiting for retry.
      * @throws { BusinessError } 16000015 - Service timeout.
      * @throws { BusinessError } 16000151 - Invalid wantagent object.

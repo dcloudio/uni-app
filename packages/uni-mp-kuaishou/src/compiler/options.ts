@@ -17,6 +17,15 @@ const directiveTransforms = {
   model: transformModel,
 }
 
+export const customElements = [
+  'playlet',
+  'ad',
+  'follow-service',
+  'payment-list',
+  'web-view',
+  'playlet',
+]
+
 export const compilerOptions: CompilerOptions = {
   nodeTransforms,
   directiveTransforms,
@@ -75,6 +84,7 @@ export const options: UniMiniProgramPluginOptions = {
   template: {
     /* eslint-disable no-restricted-syntax */
     ...miniProgram,
+    customElements,
     filter: undefined,
     extname: '.ksml',
     compilerOptions,

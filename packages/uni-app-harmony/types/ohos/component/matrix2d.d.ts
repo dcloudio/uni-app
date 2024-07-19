@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * 2D transformation matrix, supporting rotation, translation, and scaling of the X-axis and Y-axis
  *
  * @syscap SystemCapability.ArkUI.ArkUI.Full
@@ -504,4 +508,14 @@ declare class Matrix2D {
      * @form
      */
     constructor();
+    /**
+     * Constructs a 2D change matrix object. The default value is the unit matrix.
+     *
+     * @param { LengthMetricsUnit } [unit] - the unit mode
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @form
+     * @since 12
+     */
+    constructor(unit: LengthMetricsUnit);
 }

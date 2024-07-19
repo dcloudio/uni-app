@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 /**
- * @file
+ * @file Defines the auto ad component
  * @kit AdsKit
  */
 import advertising from './@ohos.advertising';
@@ -21,6 +21,12 @@ import advertising from './@ohos.advertising';
  * Defines the auto ad component.
  * @syscap SystemCapability.Advertising.Ads
  * @since 11
+ */
+/**
+ * Defines the auto ad component.
+ * @syscap SystemCapability.Advertising.Ads
+ * @atomicservice
+ * @since 12
  */
 @Component
 declare struct AutoAdComponent {
@@ -30,12 +36,26 @@ declare struct AutoAdComponent {
      * @syscap SystemCapability.Advertising.Ads
      * @since 11
      */
+    /**
+     * The parameters in the request for loading ads.
+     * @type { AdRequestParams }
+     * @syscap SystemCapability.Advertising.Ads
+     * @atomicservice
+     * @since 12
+     */
     adParam: advertising.AdRequestParams;
     /**
      * The ad options of loading ads.
      * @type { AdOptions }
      * @syscap SystemCapability.Advertising.Ads
      * @since 11
+     */
+    /**
+     * The ad options of loading ads.
+     * @type { AdOptions }
+     * @syscap SystemCapability.Advertising.Ads
+     * @atomicservice
+     * @since 12
      */
     adOptions: advertising.AdOptions;
     /**
@@ -44,6 +64,13 @@ declare struct AutoAdComponent {
      * @syscap SystemCapability.Advertising.Ads
      * @since 11
      */
+    /**
+     * The interaction options info for displaying ads.
+     * @type { AdDisplayOptions }
+     * @syscap SystemCapability.Advertising.Ads
+     * @atomicservice
+     * @since 12
+     */
     displayOptions: advertising.AdDisplayOptions;
     /**
      * The interaction listener to be registered that use to show ads.
@@ -51,11 +78,24 @@ declare struct AutoAdComponent {
      * @syscap SystemCapability.Advertising.Ads
      * @since 11
      */
+    /**
+     * The interaction listener to be registered that use to show ads.
+     * @type { AdInteractionListener }
+     * @syscap SystemCapability.Advertising.Ads
+     * @atomicservice
+     * @since 12
+     */
     interactionListener: advertising.AdInteractionListener;
     /**
      * The method to build auto ad component.
      * @syscap SystemCapability.Advertising.Ads
      * @since 11
+     */
+    /**
+     * The method to build auto ad component.
+     * @syscap SystemCapability.Advertising.Ads
+     * @atomicservice
+     * @since 12
      */
     build(): void;
 }

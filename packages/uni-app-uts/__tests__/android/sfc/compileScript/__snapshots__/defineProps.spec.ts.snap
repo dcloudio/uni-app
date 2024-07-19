@@ -3,21 +3,21 @@
 exports[`defineProps basic usage 1`] = `
 "const bar = 1
 
-export default {
+export default defineComponent({
   props: {
   foo: String
 },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
 const props = __props
 
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps custom element retains the props type & default value & production mode 1`] = `
@@ -25,80 +25,80 @@ exports[`defineProps custom element retains the props type & default value & pro
           foo?: number;
       }
       
-export default {
+export default defineComponent({
   __name: 'app.ce',
   __props: Props,
   props: {
     foo: { type: Number, required: false, default: 5.5 }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const props = __props;
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps custom element retains the props type & production mode 1`] = `
-"export default {
+"export default defineComponent({
   __name: 'app.ce',
   props: {
     foo: { type: Number, required: true }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const props = __props
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps defineProps w/ runtime options 1`] = `
-"export default {
+"export default defineComponent({
   props: { foo: String },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
 const props = __props
 
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps destructure without enabling reactive destructure 1`] = `
-"export default {
+"export default defineComponent({
   props: {
     foo: { type: Foo, required: true }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const { foo } = __props
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps should escape names w/ special symbols 1`] = `
-"export default {
+"export default defineComponent({
   props: {
     "spa ce": { type: Object, required: true },
     "exclamation!mark": { type: Object, required: true },
@@ -129,95 +129,95 @@ exports[`defineProps should escape names w/ special symbols 1`] = `
     "til~de": { type: Object, required: true },
     "da-sh": { type: Object, required: true }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
     
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ TS assertion 1`] = `
-"export default {
+"export default defineComponent({
   props: ['foo'],
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ exported interface 1`] = `
 "export interface Props { x?: number }
     
-export default {
+export default defineComponent({
   __props: Props,
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
     
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ exported interface in normal script 1`] = `
 "export interface Props { x?: number }
     
-export default {
+export default defineComponent({
   __props: Props,
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ exported type alias 1`] = `
 "export type Props = { x?: number }
     
-export default {
+export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
     
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ extends interface 1`] = `
@@ -229,62 +229,62 @@ exports[`defineProps w/ extends interface 1`] = `
       
       interface Foo { x?: number }
     
-export default {
+export default defineComponent({
   __props: Foo,
   props: {
     z: { type: Number, required: true },
     y: { type: String, required: true },
     x: { type: Number, required: false }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ interface 1`] = `
 "interface Props { x?: number }
     
-export default {
+export default defineComponent({
   __props: Props,
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
     
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ leading code 1`] = `
 "import { x } from './x'
     
-export default {
+export default defineComponent({
   props: {},
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 const props = __props
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ type 1`] = `
@@ -293,7 +293,7 @@ exports[`defineProps w/ type 1`] = `
     type Alias = number[]
 
     
-export default {
+export default defineComponent({
   props: {
     string: { type: String, required: true },
     number: { type: Number, required: true },
@@ -334,37 +334,37 @@ export default {
     propType: { type: Object as PropType<()=>string>, required: true, skipCheck: true },
     any: { type: Object, required: false }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
     
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps w/ type alias 1`] = `
 "type Props = { x?: number }
     
-export default {
+export default defineComponent({
   props: {
     x: { type: Number, required: false }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
     
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps withDefaults (static) + normal script 1`] = `
@@ -372,26 +372,26 @@ exports[`defineProps withDefaults (static) + normal script 1`] = `
         a?: string;
       }
     
-export default {
+export default defineComponent({
   __props: Props,
   props: {
     a: { type: String, required: false, default: "a" }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const props = __props;
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps withDefaults (static) 1`] = `
-"export default {
+"export default defineComponent({
   props: {
     foo: { type: String, required: false, default: 'hi' },
     bar: { type: Number, required: false },
@@ -401,36 +401,36 @@ exports[`defineProps withDefaults (static) 1`] = `
     quuxx: { type: Promise<string>, required: false, async default() { return await Promise.resolve('hi') } },
     fred: { type: String, required: false, get default() { return 'fred' } }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
     const props = __props
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineProps withDefaults (static) w/ production mode 1`] = `
-"export default {
+"export default defineComponent({
   props: {
     foo: { type: Function as PropType<() => void>, required: true },
     bar: { type: Boolean, required: true },
     baz: { type: [Boolean, Function as PropType<() => void>], required: true, default: true },
     qux: { type: [String, Number], required: true, default: 'hi' }
   },
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
     const props = __props
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;

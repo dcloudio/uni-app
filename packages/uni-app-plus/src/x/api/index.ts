@@ -34,6 +34,8 @@ export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
 export { getEnterOptionsSync } from './base/getEnterOptionsSync'
 export { env } from './base/env'
 
+export * from './performance'
+
 export {
   initUTSProxyClass,
   initUTSProxyFunction,

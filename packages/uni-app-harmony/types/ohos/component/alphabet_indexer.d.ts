@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * indexer align property.
  *
  * @enum { number }
@@ -553,7 +557,6 @@ declare class AlphabetIndexerAttribute extends CommonMethod<AlphabetIndexerAttri
      * which affects the pop-up position of the pop-up window.
      *
      * @param { IndexerAlign } value - indicates the alignment style of Alphabet index.
-     * @param { Length } offset
      * @returns { AlphabetIndexerAttribute }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 7
@@ -563,7 +566,7 @@ declare class AlphabetIndexerAttribute extends CommonMethod<AlphabetIndexerAttri
      * which affects the pop-up position of the pop-up window.
      *
      * @param { IndexerAlign } value - indicates the alignment style of Alphabet index.
-     * @param { Length } offset - indicates the horizontal space between pop-up window and indexer bar.
+     * @param { Length } [offset] - indicates the horizontal space between pop-up window and indexer bar.
      * @returns { AlphabetIndexerAttribute }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
@@ -574,7 +577,7 @@ declare class AlphabetIndexerAttribute extends CommonMethod<AlphabetIndexerAttri
      * which affects the pop-up position of the pop-up window.
      *
      * @param { IndexerAlign } value - indicates the alignment style of Alphabet index.
-     * @param { Length } offset - indicates the horizontal space between pop-up window and indexer bar.
+     * @param { Length } [offset] - indicates the horizontal space between pop-up window and indexer bar.
      * @returns { AlphabetIndexerAttribute }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
@@ -731,7 +734,61 @@ declare class AlphabetIndexerAttribute extends CommonMethod<AlphabetIndexerAttri
      * @crossplatform
      * @since 11
      */
+    /**
+     * Automatically collapses the characters when the indexer bar not high enough to display all characters.
+     *
+     * @param { boolean } value - A boolean value determines whether auto collapses is enabled for indexer bar.
+     * @returns { AlphabetIndexerAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     autoCollapse(value: boolean): AlphabetIndexerAttribute;
+    /**
+     * Set the radius of the item of the pop-up window.
+     *
+     * @param { number } value
+     * @returns { AlphabetIndexerAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    popupItemBorderRadius(value: number): AlphabetIndexerAttribute;
+    /**
+     * Set the radius of the item of the indexer.
+     *
+     * @param { number } value
+     * @returns { AlphabetIndexerAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    itemBorderRadius(value: number): AlphabetIndexerAttribute;
+    /**
+     * Set the background blurStyle of title of the pop-up window.
+     *
+     * @param { BlurStyle } value
+     * @returns { AlphabetIndexerAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    popupBackgroundBlurStyle(value: BlurStyle): AlphabetIndexerAttribute;
+    /**
+     * Set the background color of title of the pop-up window.
+     *
+     * @param { ResourceColor } value
+     * @returns { AlphabetIndexerAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    popupTitleBackground(value: ResourceColor): AlphabetIndexerAttribute;
 }
 /**
  * Defines AlphabetIndexer Component.

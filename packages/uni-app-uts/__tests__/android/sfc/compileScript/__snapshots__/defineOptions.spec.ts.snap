@@ -1,32 +1,32 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`defineOptions() basic usage 1`] = `
-"export default {
+"export default defineComponent({
  name: 'FooApp' ,
-  setup(__props: GenAnonymous) {
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;
 
 exports[`defineOptions() empty argument 1`] = `
-"export default {
-  setup(__props: GenAnonymous) {
+"export default defineComponent({
+  setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy as GenAnonymous;
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
-}"
+})"
 `;

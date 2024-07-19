@@ -383,7 +383,7 @@ describe('SFC compile <script setup>', () => {
           <FooBar #unused />
           <view :[bar.attrName]="15"></view>
           <view unused="unused"></view>
-          <view #[\`item:\${baz.key}\`]="{ value }"></view>
+          <FooBar #[\`item:\${baz.key}\`]="{ value }"></FooBar>
         </template>
         `)
       // expect(content).toMatch(
@@ -1382,7 +1382,7 @@ describe('SFC analyze <script> bindings', () => {
           filename: 'FooBar.vue',
         }
       )
-      expect(content).toMatch(`export default {
+      expect(content).toMatch(`export default defineComponent({
   __name: 'FooBar'`)
       assertCode(content)
     })
@@ -1446,136 +1446,136 @@ defineSlots<{
   })
 })
 
-// describe('SFC genDefaultAs', () => {
-//   test('normal <script> only', () => {
-//     const { content } = compile(
-//       `<script>
-//       export default {}
-//       </script>`,
-//       {
-//         genDefaultAs: '_sfc_',
-//       }
-//     )
-//     expect(content).not.toMatch('export default')
-//     expect(content).toMatch(`const _sfc_ = {}`)
-//     assertCode(content)
-//   })
+describe('SFC genDefaultAs', () => {
+  test('normal <script> only', () => {
+    const { content } = compile(
+      `<script>
+      export default {}
+      </script>`,
+      {
+        genDefaultAs: '__sfc__',
+      }
+    )
+    // expect(content).not.toMatch('export default')
+    expect(content).toMatch(`const __sfc__ = defineComponent({})`)
+    assertCode(content)
+  })
 
-//   test('normal <script> w/ cssVars', () => {
-//     const { content } = compile(
-//       `<script>
-//       export default {}
-//       </script>
-//       <style>
-//       .foo { color: v-bind(x) }
-//       </style>`,
-//       {
-//         genDefaultAs: '_sfc_',
-//       }
-//     )
-//     expect(content).not.toMatch('export default')
-//     expect(content).not.toMatch('__default__')
-//     expect(content).toMatch(`const _sfc_ = {}`)
-//     assertCode(content)
-//   })
+  test('normal <script> w/ cssVars', () => {
+    const { content } = compile(
+      `<script>
+      export default {}
+      </script>
+      <style>
+      .foo { color: v-bind(x) }
+      </style>`,
+      {
+        genDefaultAs: '__sfc__',
+      }
+    )
+    // expect(content).not.toMatch('export default')
+    expect(content).not.toMatch('__default__')
+    expect(content).toMatch(`const __sfc__ = defineComponent({})`)
+    assertCode(content)
+  })
 
-//   test('<script> + <script setup>', () => {
-//     const { content } = compile(
-//       `<script>
-//       export default {}
-//       </script>
-//       <script setup>
-//       const a = 1
-//       </script>`,
-//       {
-//         genDefaultAs: '_sfc_',
-//       }
-//     )
-//     expect(content).not.toMatch('export default')
-//     expect(content).toMatch(
-//       `const _sfc_ = /*#__PURE__*/Object.assign(__default__`
-//     )
-//     assertCode(content)
-//   })
+  // test('<script> + <script setup>', () => {
+  //   const { content } = compile(
+  //     `<script>
+  //     export default {}
+  //     </script>
+  //     <script setup>
+  //     const a = 1
+  //     </script>`,
+  //     {
+  //       genDefaultAs: '__sfc__',
+  //     }
+  //   )
+  //   expect(content).not.toMatch('export default')
+  //   expect(content).toMatch(
+  //     `const __sfc__ = /*#__PURE__*/Object.assign(__default__`
+  //   )
+  //   assertCode(content)
+  // })
 
-//   test('<script> + <script setup>', () => {
-//     const { content } = compile(
-//       `<script>
-//       export default {}
-//       </script>
-//       <script setup>
-//       const a = 1
-//       </script>`,
-//       {
-//         genDefaultAs: '_sfc_',
-//       }
-//     )
-//     expect(content).not.toMatch('export default')
-//     expect(content).toMatch(
-//       `const _sfc_ = /*#__PURE__*/Object.assign(__default__`
-//     )
-//     assertCode(content)
-//   })
+  // test('<script> + <script setup>', () => {
+  //   const { content } = compile(
+  //     `<script>
+  //     export default {}
+  //     </script>
+  //     <script setup>
+  //     const a = 1
+  //     </script>`,
+  //     {
+  //       genDefaultAs: '__sfc__',
+  //     }
+  //   )
+  //   expect(content).not.toMatch('export default')
+  //   expect(content).toMatch(
+  //     `const __sfc__ = /*#__PURE__*/Object.assign(__default__`
+  //   )
+  //   assertCode(content)
+  // })
 
-//   test('<script setup> only', () => {
-//     const { content } = compile(
-//       `<script setup>
-//       const a = 1
-//       </script>`,
-//       {
-//         genDefaultAs: '_sfc_',
-//       }
-//     )
-//     expect(content).not.toMatch('export default')
-//     expect(content).toMatch(`const _sfc_ = {\n  setup`)
-//     assertCode(content)
-//   })
+  test('<script setup> only', () => {
+    const { content } = compile(
+      `<script setup>
+      const a = 1
+      </script>`,
+      {
+        genDefaultAs: '__sfc__',
+      }
+    )
+    // expect(content).not.toMatch('export default')
+    expect(content).toMatch(`const __sfc__ = defineComponent({\n  setup`)
+    assertCode(content)
+  })
 
-//   test('<script setup> only w/ ts', () => {
-//     const { content } = compile(
-//       `<script setup lang="ts">
-//       const a = 1
-//       </script>`,
-//       {
-//         genDefaultAs: '_sfc_',
-//       }
-//     )
-//     expect(content).not.toMatch('export default')
-//     expect(content).toMatch(`const _sfc_ = /*#__PURE__*/_defineComponent(`)
-//     assertCode(content)
-//   })
+  test('<script setup> only w/ ts', () => {
+    const { content } = compile(
+      `<script setup lang="ts">
+      const a = 1
+      </script>`,
+      {
+        genDefaultAs: '__sfc__',
+      }
+    )
+    // expect(content).not.toMatch('export default')
+    expect(content).toMatch(`const __sfc__ = defineComponent(`)
+    assertCode(content)
+  })
 
-//   test('<script> + <script setup> w/ ts', () => {
-//     const { content } = compile(
-//       `<script lang="ts">
-//       export default {}
-//       </script>
-//       <script setup lang="ts">
-//       const a = 1
-//       </script>`,
-//       {
-//         genDefaultAs: '_sfc_',
-//       }
-//     )
-//     expect(content).not.toMatch('export default')
-//     expect(content).toMatch(
-//       `const _sfc_ = /*#__PURE__*/_defineComponent({\n  ...__default__`
-//     )
-//     assertCode(content)
-//   })
+  // test('<script> + <script setup> w/ ts', () => {
+  //   const { content } = compile(
+  //     `<script lang="ts">
+  //     export default {}
+  //     </script>
+  //     <script setup lang="ts">
+  //     const a = 1
+  //     </script>`,
+  //     {
+  //       genDefaultAs: '__sfc__',
+  //     }
+  //   )
+  //   expect(content).not.toMatch('export default')
+  //   expect(content).toMatch(
+  //     `const __sfc__ = /*#__PURE__*/defineComponent({\n  ...__default__`
+  //   )
+  //   assertCode(content)
+  // })
 
-//   test('binding type for edge cases', () => {
-//     const { bindings } = compile(
-//       `<script setup lang="ts">
-//       import { toRef } from 'vue'
-//       const props = defineProps<{foo: string}>()
-//       const foo = toRef(() => props.foo)
-//       </script>`
-//     )
-//     expect(bindings).toStrictEqual({
-//       toRef: BindingTypes.SETUP_CONST,
-//       props: BindingTypes.SETUP_REACTIVE_CONST,
-//       foo: BindingTypes.SETUP_REF,
-//     })
-//   })
-// })
+  test('binding type for edge cases', () => {
+    const { bindings } = compile(
+      `<script setup lang="ts">
+      import { toRef } from 'vue'
+      const props = defineProps<{foo: string}>()
+      const foo = toRef(() => props.foo)
+      </script>`
+    )
+    expect(bindings).toStrictEqual({
+      toRef: BindingTypes.SETUP_CONST,
+      props: BindingTypes.SETUP_REACTIVE_CONST,
+      foo: BindingTypes.SETUP_REF,
+    })
+  })
+})

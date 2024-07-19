@@ -1,6 +1,9 @@
 const BUILT_IN_PLATFORMS = [
   'app',
   'app-plus',
+  'app-harmony',
+  'app-ios',
+  'app-android',
   'h5',
   'web',
   'mp-360',

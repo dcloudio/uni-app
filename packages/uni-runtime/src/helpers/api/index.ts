@@ -124,7 +124,7 @@ export function defineSyncApi<K>(
   fn: Function, // devEco内将参数类型定义为(...args: Object[]) => Object时，(key: string) => Object类型的function无法赋值给此参数。
   protocol?: Map<string, ProtocolOptions>,
   options?: ApiOptions<Object>
-): Object {
+): (...args: any[]) => K {
   const originalProtocol = buildProtocol(protocol)
   const originalOptions = buildOptions(
     options as ApiOptions<AsyncMethodOptionLike>
@@ -141,7 +141,7 @@ export function defineSyncApi<K>(
 export function defineOnApi<T>(
   name: string,
   fn: () => void,
-  options: ApiOptions<T>
+  options?: ApiOptions<T>
 ): Function {
   const originalOptions = buildOptions(
     options as ApiOptions<AsyncMethodOptionLike>
@@ -152,7 +152,7 @@ export function defineOnApi<T>(
 export function defineOffApi<T>(
   name: string,
   fn: () => void,
-  options: ApiOptions<T>
+  options?: ApiOptions<T>
 ): Function {
   const originalOptions = buildOptions(
     options as ApiOptions<AsyncMethodOptionLike>

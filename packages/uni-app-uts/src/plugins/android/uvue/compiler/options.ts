@@ -151,8 +151,8 @@ export interface CodegenResult {
   code: string
   preamble?: string
   easyComponentAutoImports: Record<string, [string, string]>
-  importEasyComponents: string[]
-  importUTSComponents: string[]
+  // importEasyComponents: string[]
+  // importUTSComponents: string[]
   imports: string[]
   elements: string[]
   map?: RawSourceMap

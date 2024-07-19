@@ -2418,7 +2418,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions, launchOptions);
-    return extend({}, launchOptions);
+    return enterOptions;
 }
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');
@@ -9931,6 +9931,11 @@ class TextMetrics {
         this.width = width;
     }
 }
+//#endregion
+const getTempPath = () => {
+    let _TEMP_PATH = TEMP_PATH;
+    return _TEMP_PATH;
+};
 class CanvasContext {
     constructor(id, pageId) {
         this.id = id;
@@ -10609,7 +10614,7 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
         reject();
         return;
     }
-    const dirname = `${TEMP_PATH}/canvas`;
+    let dirname = `${getTempPath()}/canvas`;
     operateCanvas(canvasId, pageId, 'toTempFilePath', {
         x,
         y,
@@ -16608,7 +16613,7 @@ const stopPullDownRefresh = defineAsyncApi(API_STOP_PULL_DOWN_REFRESH, (_args, {
 const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, reject }) => {
     const pageId = getPageIdByVm(getCurrentPageVm());
     UniServiceJSBridge.invokeViewMethod(API_LOAD_FONT_FACE, options, pageId, (err) => {
-        if (err) {
+        if (typeof err === 'string') {
             reject(err);
         }
         else {
@@ -17399,8 +17404,20 @@ function normalizeLog(type, filename, args) {
 let callbackId = 1;
 let proxy;
 const callbacks = {};
+function isUniElement(obj) {
+    // @ts-expect-error
+    return typeof UniElement !== 'undefined' && obj instanceof UniElement;
+}
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
+}
+function parseElement(obj) {
+    if (isUniElement(obj)) {
+        return obj;
+    }
+    else if (isComponentPublicInstance(obj)) {
+        return obj.$el;
+    }
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
@@ -17416,11 +17433,10 @@ function normalizeArg(arg) {
         return id;
     }
     else if (isPlainObject(arg)) {
-        if (isComponentPublicInstance(arg)) {
+        const el = parseElement(arg);
+        if (el) {
             let nodeId = '';
             let pageId = '';
-            // @ts-expect-error
-            const el = arg.$el;
             // 非 x 可能不存在 getNodeId 方法？
             if (el && el.getNodeId) {
                 pageId = el.pageId;

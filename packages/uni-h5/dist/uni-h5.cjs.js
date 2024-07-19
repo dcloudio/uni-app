@@ -2080,9 +2080,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
             if (image) {
               c2d.drawImage.apply(
                 c2d,
-                // @ts-ignore
+                // @ts-expect-error
                 [image].concat(
-                  // @ts-ignore
+                  // @ts-expect-error
                   [...otherData.slice(4, 8)],
                   [...otherData.slice(0, 4)]
                 )
@@ -2189,6 +2189,9 @@ function useMethods(props2, canvasRef, actionsWaiting) {
         destWidth = Math.round(width * _pixelRatio.value);
         destHeight = Math.round(height * _pixelRatio.value);
       } else if (!destWidth) {
+        if (!destHeight) {
+          destHeight = Math.round(height * _pixelRatio.value);
+        }
         destWidth = Math.round(width / height * destHeight);
       } else if (!destHeight) {
         destHeight = Math.round(height / width * destWidth);
@@ -2290,7 +2293,7 @@ function useMethods(props2, canvasRef, actionsWaiting) {
       type: fileType,
       quality
     });
-    if (!res.data || !res.data.length) {
+    if (res.errMsg) {
       resolve({
         errMsg: res.errMsg.replace("canvasPutImageData", "toTempFilePath")
       });
@@ -3545,12 +3548,12 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = vue.ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    const cache = vue.ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
     vue.watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     vue.watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     return cache;
   } else {
@@ -11827,7 +11830,7 @@ function useTabBarStyle(tabBar2) {
       };
     }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
     };
   });
   const placeholderStyle = vue.computed(() => {

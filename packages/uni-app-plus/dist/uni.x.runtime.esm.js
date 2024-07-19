@@ -1,5 +1,5 @@
 import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
-import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
+import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
 function getCurrentPage() {
   var pages2 = getCurrentPages();
@@ -539,10 +539,10 @@ function backbuttonListener() {
     // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
   });
 }
-var enterOptions = /* @__PURE__ */ createLaunchOptions();
-var launchOptions = /* @__PURE__ */ createLaunchOptions();
+var enterOptions$1 = /* @__PURE__ */ createLaunchOptions();
+var launchOptions$1 = /* @__PURE__ */ createLaunchOptions();
 function getLaunchOptions() {
-  return extend({}, launchOptions);
+  return extend({}, launchOptions$1);
 }
 function initLaunchOptions(_ref2) {
   var {
@@ -550,7 +550,7 @@ function initLaunchOptions(_ref2) {
     query,
     referrerInfo
   } = _ref2;
-  extend(launchOptions, {
+  extend(launchOptions$1, {
     path,
     query: query ? parseQuery(query) : {},
     referrerInfo: referrerInfo || {},
@@ -558,8 +558,8 @@ function initLaunchOptions(_ref2) {
     channel: void 0,
     launcher: void 0
   });
-  extend(enterOptions, launchOptions);
-  return extend({}, launchOptions);
+  extend(enterOptions$1, launchOptions$1);
+  return enterOptions$1;
 }
 var API_ADD_INTERCEPTOR = "addInterceptor";
 var API_REMOVE_INTERCEPTOR = "removeInterceptor";
@@ -1063,6 +1063,27 @@ function getRealPath(path) {
   }
   return addLeadingSlash(currentPathArray.concat(resultArray).join("/"));
 }
+var beforeRouteHooks = [];
+var afterRouteHooks = [];
+var pageReadyHooks = [];
+function onBeforeRoute(hook) {
+  beforeRouteHooks.push(hook);
+}
+function onAfterRoute(hook) {
+  afterRouteHooks.push(hook);
+}
+function onPageReady(hook) {
+  pageReadyHooks.push(hook);
+}
+function invokeBeforeRouteHooks(type) {
+  invokeArrayFns$1(beforeRouteHooks, type);
+}
+function invokeAfterRouteHooks(type) {
+  invokeArrayFns$1(afterRouteHooks, type);
+}
+function invokePageReadyHooks(page) {
+  invokeArrayFns$1(pageReadyHooks, page);
+}
 var onTabBarMidButtonTapCallback = [];
 var tabBar0 = null;
 var selected0 = -1;
@@ -1070,7 +1091,7 @@ var tabs = /* @__PURE__ */ new Map();
 var BORDER_COLORS = /* @__PURE__ */ new Map([["white", "rgba(255, 255, 255, 0.33)"], ["black", "rgba(0, 0, 0, 0.33)"]]);
 function getBorderStyle(borderStyle) {
   var value = BORDER_COLORS.get(borderStyle);
-  return value !== null && value !== void 0 ? value : borderStyle;
+  return value || BORDER_COLORS.get("black");
 }
 function fixBorderStyle(tabBarConfig) {
   var borderStyle = tabBarConfig.get("borderStyle");
@@ -1229,6 +1250,8 @@ function switchSelect(selected, path) {
     init();
   }
   var currentPage = getCurrentPage();
+  var type = currentPage == null ? "appLaunch" : "switchTab";
+  invokeBeforeRouteHooks(type);
   var pageInfo = getTabPage(getRealPath(path, true), query, rebuild, callback);
   var page = pageInfo.page;
   if (currentPage !== page) {
@@ -1242,38 +1265,42 @@ function switchSelect(selected, path) {
     invokeHook(page, ON_SHOW);
   }
   selected0 = selected;
+  invokeAfterRouteHooks(type);
 }
 var APP_THEME_AUTO = "auto";
 var THEME_KEY_PREFIX = "@";
 function getAppThemeFallbackOS() {
-  var fallbackOSTheme;
-  var appTheme = uni.getAppBaseInfo().appTheme;
-  fallbackOSTheme = appTheme;
-  if (appTheme === APP_THEME_AUTO) {
-    var osTheme = uni.getDeviceInfo().osTheme;
-    fallbackOSTheme = osTheme;
+  var fallbackOSTheme = "light";
+  try {
+    var appTheme = uni.getAppBaseInfo().appTheme;
+    fallbackOSTheme = appTheme;
+    if (appTheme === APP_THEME_AUTO) {
+      var osTheme = uni.getDeviceInfo().osTheme;
+      fallbackOSTheme = osTheme;
+    }
+    return fallbackOSTheme;
+  } catch (e) {
+    console.error(e);
+    return fallbackOSTheme;
   }
-  return fallbackOSTheme;
 }
 var appThemeChangeCallbackId = -1;
 function clearAppThemeChangeCallbackId() {
   appThemeChangeCallbackId = -1;
 }
 function registerThemeChange(callback) {
-  if (appThemeChangeCallbackId !== -1) {
-    if (typeof uni.offAppThemeChange !== "function") {
-      return;
+  try {
+    if (appThemeChangeCallbackId !== -1) {
+      uni.offAppThemeChange(appThemeChangeCallbackId);
+      clearAppThemeChangeCallbackId();
     }
-    uni.offAppThemeChange(appThemeChangeCallbackId);
-    clearAppThemeChangeCallbackId();
+    appThemeChangeCallbackId = uni.onAppThemeChange(function(res1) {
+      var appThemeMode = res1["appTheme"];
+      callback(appThemeMode);
+    });
+  } catch (e) {
+    console.warn("监听 OS 主题变化", e);
   }
-  if (typeof uni.onAppThemeChange !== "function") {
-    return;
-  }
-  appThemeChangeCallbackId = uni.onAppThemeChange(function(res1) {
-    var appThemeMode = res1["appTheme"];
-    callback(appThemeMode);
-  });
 }
 var onThemeChange = function(themeMode) {
   var handlePage = () => {
@@ -1416,11 +1443,11 @@ function registerPage(_ref, onCreated) {
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = parsePageStyle(routeOptions);
-  var nativePage = getPageManager().createPage(url, id2.toString(), pageStyle);
+  var nativePage2 = getPageManager().createPage(url, id2.toString(), pageStyle);
   if (onCreated) {
-    onCreated(nativePage);
+    onCreated(nativePage2);
   }
-  routeOptions.meta.id = parseInt(nativePage.pageId);
+  routeOptions.meta.id = parseInt(nativePage2.pageId);
   var route = path.slice(1);
   var pageInstance = initPageInternalInstance(
     openType,
@@ -1432,46 +1459,47 @@ function registerPage(_ref, onCreated) {
     "light"
   );
   function fn() {
-    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage);
-    nativePage.addPageEventListener(ON_POP_GESTURE, function(e) {
+    var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
+    nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
         fail(e2) {
           if (e2.errMsg.endsWith("cancel")) {
-            nativePage.show();
+            nativePage2.show();
           }
         }
       });
     });
-    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+    nativePage2.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD);
     });
-    nativePage.addPageEventListener(ON_READY, (_) => {
+    nativePage2.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page);
       invokeHook(page, ON_READY);
     });
-    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+    nativePage2.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
       invokeHook(page, ON_PAGE_SCROLL, arg);
     });
-    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+    nativePage2.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
       invokeHook(page, ON_PULL_DOWN_REFRESH);
     });
-    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+    nativePage2.addPageEventListener(ON_REACH_BOTTOM, (_) => {
       invokeHook(page, ON_REACH_BOTTOM);
     });
-    nativePage.addPageEventListener(ON_RESIZE, (_) => {
+    nativePage2.addPageEventListener(ON_RESIZE, (_) => {
       invokeHook(page, ON_RESIZE);
     });
-    nativePage.startRender();
+    nativePage2.startRender();
   }
   if (delay) {
     setTimeout(fn, delay);
   } else {
     fn();
   }
-  return nativePage;
+  return nativePage2;
 }
-function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage) {
-  var pageNode = nativePage.document.body;
+function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOptions, nativePage2) {
+  var pageNode = nativePage2.document.body;
   var app = getVueApp();
   var component = pagesMap.get(__pagePath)();
   var mountPage = (component2) => app.mountPage(component2, {
@@ -1488,8 +1516,8 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
 function setStatusBarStyle() {
   var page = getCurrentPage();
   if (page) {
-    var nativePage = page.$nativePage;
-    nativePage.applyStatusBarStyle();
+    var nativePage2 = page.$nativePage;
+    nativePage2.applyStatusBarStyle();
   }
 }
 var $navigateTo = (args, _ref) => {
@@ -1527,12 +1555,16 @@ function _navigateTo(_ref2) {
     aniType,
     aniDuration
   } = _ref2;
+  var currentPage = getCurrentPage();
+  var currentRouteType = currentPage == null ? "appLaunch" : API_NAVIGATE_TO;
+  invokeBeforeRouteHooks(currentRouteType);
   invokeHook(ON_HIDE);
   var eventChannel = new EventChannel(getWebviewId() + 1, events);
   return new Promise((resolve) => {
     var noAnimation = aniType === "none" || aniDuration === 0;
     function callback(page2) {
       showWebview(page2, aniType, aniDuration, () => {
+        invokeAfterRouteHooks(currentRouteType);
         resolve({
           eventChannel
         });
@@ -1721,6 +1753,7 @@ function _redirectTo(_ref3) {
   } = _ref3;
   var lastPage = getCurrentPage();
   return new Promise((resolve) => {
+    invokeAfterRouteHooks(API_REDIRECT_TO);
     showWebview(registerPage({
       url,
       path,
@@ -1733,6 +1766,7 @@ function _redirectTo(_ref3) {
       resolve(void 0);
       setStatusBarStyle();
     });
+    invokeBeforeRouteHooks(API_REDIRECT_TO);
   });
 }
 function removePages(currentPage) {
@@ -2022,7 +2056,13 @@ class NodesRefImpl {
     }, callback);
     return this._selectorQuery;
   }
+  /**
+   * fields({node:true})
+   */
   node(_callback) {
+    this._selectorQuery._push(this._selector, this._component, this._single, {
+      node: true
+    }, _callback);
     return this._selectorQuery;
   }
 }
@@ -2079,62 +2119,140 @@ class SelectorQueryImpl {
     this._queueCb.push(callback);
   }
 }
-function getNodeInfo(node) {
-  var _node$getAttribute;
-  var rect = node.getBoundingClientRect();
-  var nodeInfo = {
-    id: (_node$getAttribute = node.getAttribute("id")) === null || _node$getAttribute === void 0 ? void 0 : _node$getAttribute.toString(),
-    dataset: null,
-    left: rect.left,
-    top: rect.top,
-    right: rect.right,
-    bottom: rect.bottom,
-    width: rect.width,
-    height: rect.height
-  };
-  return nodeInfo;
-}
-function querySelf(element, selector) {
-  if (element == null || selector.length < 2) {
+class QuerySelectorHelper {
+  constructor(element, vnode, fields) {
+    this._element = element;
+    this._commentStartVNode = vnode;
+    this._fields = fields;
+  }
+  /**
+   * entry
+   */
+  static queryElement(element, selector, all, vnode, fields) {
+    return new QuerySelectorHelper(element, vnode, fields).query(selector, all);
+  }
+  /**
+   * 执行查询
+   * @param selector 选择器
+   * @param all 是否查询所有 selectAll
+   * @returns
+   */
+  query(selector, all) {
+    if (this._element.nodeName == "#comment") {
+      return this.queryFragment(this._element, selector, all);
+    } else {
+      return all ? this.querySelectorAll(this._element, selector) : this.querySelector(this._element, selector);
+    }
+  }
+  queryFragment(el, selector, all) {
+    var current = el.nextSibling;
+    if (current == null) {
+      return null;
+    }
+    if (all) {
+      var result1 = [];
+      while (true) {
+        var queryResult = this.querySelectorAll(current, selector);
+        if (queryResult != null) {
+          result1.push(...queryResult);
+        }
+        current = current.nextSibling;
+        if (current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result1;
+    } else {
+      var result2 = null;
+      while (true) {
+        result2 = this.querySelector(current, selector);
+        current = current.nextSibling;
+        if (result2 != null || current == null || this._commentStartVNode.anchor == current) {
+          break;
+        }
+      }
+      return result2;
+    }
+  }
+  querySelector(element, selector) {
+    var element2 = this.querySelf(element, selector);
+    if (element2 == null) {
+      element2 = element.querySelector(selector);
+    }
+    if (element2 != null) {
+      return this.getNodeInfo(element2);
+    }
     return null;
   }
-  var selectorType = selector.charAt(0);
-  var selectorName = selector.slice(1);
-  if (selectorType == "." && Array.from(element.classList).includes(selectorName)) {
-    return element;
+  querySelectorAll(element, selector) {
+    var nodesInfoArray = [];
+    var element2 = this.querySelf(element, selector);
+    if (element2 != null) {
+      nodesInfoArray.push(this.getNodeInfo(element));
+    }
+    var findNodes = element.querySelectorAll(selector);
+    findNodes === null || findNodes === void 0 || findNodes.forEach((el) => {
+      nodesInfoArray.push(this.getNodeInfo(el));
+    });
+    return nodesInfoArray;
   }
-  if (selectorType == "#" && element.getAttribute("id") == selectorName) {
-    return element;
+  querySelf(element, selector) {
+    if (element == null || selector.length < 2) {
+      return null;
+    }
+    var selectorType = selector.charAt(0);
+    var selectorName = selector.slice(1);
+    if (selectorType == "." && element.classList.includes(selectorName)) {
+      return element;
+    }
+    if (selectorType == "#" && element.getAttribute("id") == selectorName) {
+      return element;
+    }
+    if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
+      return element;
+    }
+    return null;
   }
-  if (selector.toUpperCase() == element.nodeName.toUpperCase()) {
-    return element;
+  /**
+   * 查询元素信息
+   * @param element
+   * @returns
+   */
+  getNodeInfo(element) {
+    var _element$getAttribute;
+    if (this._fields.node == true) {
+      var nodeInfo2 = {
+        node: element
+      };
+      if (this._fields.size == true) {
+        var rect2 = element.getBoundingClientRect();
+        nodeInfo2.width = rect2.width;
+        nodeInfo2.height = rect2.height;
+      }
+      return nodeInfo2;
+    }
+    var rect = element.getBoundingClientRect();
+    var nodeInfo = {
+      id: (_element$getAttribute = element.getAttribute("id")) === null || _element$getAttribute === void 0 ? void 0 : _element$getAttribute.toString(),
+      dataset: null,
+      left: rect.left,
+      top: rect.top,
+      right: rect.right,
+      bottom: rect.bottom,
+      width: rect.width,
+      height: rect.height
+    };
+    return nodeInfo;
   }
-  return null;
 }
 function requestComponentInfo(vueComponent, queue2, callback) {
   var result = [];
   var el = vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$el;
   if (el != null) {
     queue2.forEach((item) => {
-      if (item.single) {
-        var element = querySelf(el, item.selector);
-        if (element == null) {
-          element = el.querySelector(item.selector);
-        }
-        if (element != null) {
-          result.push(getNodeInfo(element));
-        }
-      } else {
-        var nodesInfo = [];
-        var _element = querySelf(el, item.selector);
-        if (_element != null) {
-          nodesInfo.push(getNodeInfo(_element));
-        }
-        var findNodes = el.querySelectorAll(item.selector);
-        findNodes === null || findNodes === void 0 || findNodes.forEach((node) => {
-          nodesInfo.push(getNodeInfo(node));
-        });
-        result.push(nodesInfo);
+      var queryResult = QuerySelectorHelper.queryElement(el, item.selector, !item.single, vueComponent === null || vueComponent === void 0 ? void 0 : vueComponent.$.subTree, item.fields);
+      if (queryResult != null) {
+        result.push(queryResult);
       }
     });
   }
@@ -2256,19 +2374,390 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
   res.resolve();
 });
 var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
+var launchOptions = {
+  path: "",
+  appScheme: null,
+  appLink: null
+};
+var setLaunchOptionsSync = function(options) {
+  launchOptions = options;
+};
 var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
-  return getLaunchOptions();
+  var baseInfo = getLaunchOptions();
+  return Object.assign({}, baseInfo, launchOptions);
+});
+var API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
+var enterOptions = {
+  path: "",
+  appScheme: null,
+  appLink: null
+};
+var setEnterOptionsSync = function(options) {
+  enterOptions = options;
+};
+var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+  var baseInfo = getLaunchOptions();
+  return Object.assign({}, baseInfo, enterOptions);
 });
 var env = {
   USER_DATA_PATH: "unifile://usr/",
   CACHE_PATH: "unifile://cache/",
   SANDBOX_PATH: "unifile://sandbox/"
 };
+var _PerformanceEntryStatus;
+var APP_LAUNCH = "appLaunch";
+var PERFORMANCE_BUFFER_SIZE = 30;
+var ENTRY_TYPE_RENDER = "render";
+var ENTRY_TYPE_NAVIGATION = "navigation";
+var RENDER_TYPE_FIRST_LAYOUT = "firstLayout";
+var RENDER_TYPE_FIRST_RENDER = "firstRender";
+var AppStartDuration = 1;
+var PageFirstPageRenderDuration = 7;
+var PageFirstPageLayoutDuration = 8;
+class PerformanceEntryStatus {
+  constructor(entryType, name) {
+    this._state = PerformanceEntryStatus.STATE_EMPTY;
+    this._entryData = {
+      entryType,
+      name,
+      duration: 0,
+      startTime: 0
+    };
+  }
+  get state() {
+    return this._state;
+  }
+  set state(state) {
+    this._state = state;
+    if (this._state == PerformanceEntryStatus.STATE_BEFORE) {
+      this.executeBefore();
+    } else if (this._state == PerformanceEntryStatus.STATE_AFTER) {
+      this.executeAfter();
+    } else if (this._state == PerformanceEntryStatus.STATE_READY) {
+      this.executeReady();
+    }
+  }
+  get entryData() {
+    return this._entryData;
+  }
+  executeBefore() {
+    var page = getCurrentPage();
+    if (page != null) {
+      this._entryData.referrerPath = page.route;
+    }
+  }
+  executeAfter() {
+    var page = getCurrentPage();
+    if (page != null) {
+      this._entryData.pageId = parseInt(page.$nativePage.pageId);
+      this._entryData.path = page.route;
+    }
+  }
+  executeReady() {
+  }
+  getCurrentInnerPage() {
+    var currentPage = getCurrentPage();
+    if (currentPage == null) {
+      return null;
+    }
+    return currentPage.$nativePage;
+  }
+}
+_PerformanceEntryStatus = PerformanceEntryStatus;
+_PerformanceEntryStatus.STATE_EMPTY = 0;
+_PerformanceEntryStatus.STATE_BEFORE = 1;
+_PerformanceEntryStatus.STATE_AFTER = 2;
+_PerformanceEntryStatus.STATE_READY = 3;
+class PerformanceEntryStatusLayout extends PerformanceEntryStatus {
+  constructor() {
+    super(ENTRY_TYPE_RENDER, RENDER_TYPE_FIRST_LAYOUT);
+  }
+  executeAfter() {
+    super.executeAfter();
+    this._entryData.startTime = Date.now();
+  }
+  executeReady() {
+    super.executeReady();
+    var innerPage = super.getCurrentInnerPage();
+    if (innerPage != null) {
+      this._entryData.duration = nativePage.getDuration(innerPage.pageId, PageFirstPageLayoutDuration);
+    }
+  }
+}
+class PerformanceEntryStatusRender extends PerformanceEntryStatus {
+  constructor() {
+    super(ENTRY_TYPE_RENDER, RENDER_TYPE_FIRST_RENDER);
+  }
+  executeAfter() {
+    super.executeAfter();
+    this._entryData.startTime = Date.now();
+  }
+  executeReady() {
+    super.executeReady();
+    var innerPage = super.getCurrentInnerPage();
+    if (innerPage != null) {
+      this._entryData.duration = nativePage.getDuration(innerPage.pageId, PageFirstPageRenderDuration);
+    }
+  }
+}
+class PerformanceEntryStatusNavigation extends PerformanceEntryStatus {
+  constructor(name, navigationType) {
+    super(ENTRY_TYPE_NAVIGATION, name);
+    this._entryData.navigationType = navigationType;
+  }
+  executeBefore() {
+    super.executeBefore();
+    this._entryData.startTime = Date.now();
+  }
+  executeReady() {
+    var innerPage = super.getCurrentInnerPage();
+    if (innerPage != null) {
+      this._entryData.duration = Date.now() - this._entryData.startTime;
+      if (this._entryData.name == APP_LAUNCH) {
+        this._entryData.duration += nativePage.getDuration(AppStartDuration);
+      }
+    }
+  }
+}
+class PerformanceEntryQueue extends Array {
+  constructor() {
+    super(...arguments);
+    this._queueSize = PERFORMANCE_BUFFER_SIZE;
+  }
+  get queueSize() {
+    return this._queueSize;
+  }
+  set queueSize(value) {
+    this._queueSize = value;
+    if (this.length > value) {
+      this.dequeue(this.length - value);
+    }
+  }
+  push() {
+    return this.enqueue(...arguments);
+  }
+  enqueue() {
+    if (this.length > this._queueSize - 1) {
+      this.shift();
+    }
+    return super.push(...arguments);
+  }
+  dequeue() {
+    var count = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : 1;
+    this.splice(0, count);
+  }
+}
+class PerformanceObserverEntryListImpl {
+  constructor() {
+    this._queue = new PerformanceEntryQueue();
+  }
+  push() {
+    this._queue.push(...arguments);
+  }
+  getEntries() {
+    return this._queue;
+  }
+  getEntriesByType(entryType) {
+    return this._queue.filter((entry) => entry.entryType == entryType);
+  }
+  getEntriesByName(name, entryType) {
+    return this._queue.filter((entry) => entry.entryType == entryType && entry.name == name);
+  }
+  clear() {
+    this._queue.length = 0;
+  }
+  get bufferSize() {
+    return this._queue.queueSize;
+  }
+  set bufferSize(size) {
+    this._queue.queueSize = size;
+  }
+}
+class PerformanceObserverImpl {
+  constructor(performance, callback) {
+    this._entryTypes = [];
+    this._callback = null;
+    this._entryList = new PerformanceObserverEntryListImpl();
+    this._owner = performance;
+    this._callback = callback;
+  }
+  observe(options) {
+    if ((options === null || options === void 0 ? void 0 : options.entryTypes) != null) {
+      this._entryTypes.length = 0;
+      this._entryTypes.push(...options.entryTypes);
+    }
+    if (this._entryTypes.length > 0) {
+      this._owner.connect(this);
+    } else {
+      this.disconnect();
+    }
+  }
+  disconnect() {
+    this._entryList.clear();
+    this._owner.disconnect(this);
+  }
+  dispatchCallback() {
+    var _this$_callback;
+    (_this$_callback = this._callback) === null || _this$_callback === void 0 || _this$_callback.call(this, this._entryList);
+  }
+  get entryTypes() {
+    return this._entryTypes;
+  }
+  get entryList() {
+    return this._entryList;
+  }
+}
+class PerformanceProvider {
+  constructor() {
+    this._entryStatus = [];
+  }
+  get entryStatus() {
+    return this._entryStatus;
+  }
+  onBefore(type) {
+    if (type == APP_LAUNCH || type == API_SWITCH_TAB || type == API_NAVIGATE_TO || type == API_REDIRECT_TO || type == API_NAVIGATE_BACK) {
+      this._pushEntryStatus(ENTRY_TYPE_NAVIGATION, this._navigationToName(type), type);
+    }
+    if (type == APP_LAUNCH || type == API_NAVIGATE_TO || type == API_REDIRECT_TO) {
+      this._pushEntryStatus(ENTRY_TYPE_RENDER, RENDER_TYPE_FIRST_LAYOUT, type);
+      this._pushEntryStatus(ENTRY_TYPE_RENDER, RENDER_TYPE_FIRST_RENDER, type);
+    }
+    this._forwardState();
+  }
+  onAfter(type) {
+    this._forwardState();
+  }
+  onReady() {
+    this._forwardState();
+  }
+  removeAllStatus() {
+    this._entryStatus.length = 0;
+  }
+  _pushEntryStatus(entryType, name, navigationType) {
+    var entry = null;
+    if (entryType == ENTRY_TYPE_NAVIGATION) {
+      entry = new PerformanceEntryStatusNavigation(name, navigationType);
+    } else if (entryType == ENTRY_TYPE_RENDER) {
+      if (name == RENDER_TYPE_FIRST_LAYOUT) {
+        entry = new PerformanceEntryStatusLayout();
+      } else if (name == RENDER_TYPE_FIRST_RENDER) {
+        entry = new PerformanceEntryStatusRender();
+      }
+    }
+    if (entry != null) {
+      this._entryStatus.push(entry);
+    }
+  }
+  _forwardState() {
+    this._entryStatus.forEach((entry) => {
+      entry.state += 1;
+    });
+  }
+  _navigationToName(type) {
+    if (type == APP_LAUNCH) {
+      return APP_LAUNCH;
+    }
+    return "route";
+  }
+}
+class PerformanceAllocate {
+  constructor(allEntryList, observerList) {
+    this._allEntryList = allEntryList;
+    this._observerList = observerList;
+  }
+  pushEntryStatus(status) {
+    this.pushAllEntryData(status);
+    this.pushObserverList(status);
+  }
+  pushAllEntryData(status) {
+    status.forEach((entryStatus) => {
+      this._allEntryList.push(entryStatus.entryData);
+    });
+  }
+  pushObserverList(status) {
+    this._observerList.forEach((observer) => {
+      var entryList = observer.entryList;
+      entryList.clear();
+      status.forEach((entryStatus) => {
+        var entryData = entryStatus.entryData;
+        if (observer.entryTypes.includes(entryData.entryType)) {
+          entryList.push(entryData);
+        }
+      });
+      observer.dispatchCallback();
+    });
+  }
+}
+class PerformanceImpl {
+  constructor() {
+    this._allEntryList = new PerformanceObserverEntryListImpl();
+    this._observerList = [];
+    this._provider = new PerformanceProvider();
+    this._allocate = new PerformanceAllocate(this._allEntryList, this._observerList);
+    onBeforeRoute((type) => {
+      this._provider.onBefore(type);
+    });
+    onAfterRoute((type) => {
+      this._provider.onAfter(type);
+      if (type == API_NAVIGATE_BACK) {
+        this.dispatchObserver();
+      }
+    });
+    onPageReady((page) => {
+      this.dispatchObserver();
+    });
+  }
+  dispatchObserver() {
+    this._provider.onReady();
+    this._allocate.pushEntryStatus(this._provider.entryStatus);
+    this._provider.removeAllStatus();
+  }
+  createObserver(callback) {
+    return new PerformanceObserverImpl(this, callback);
+  }
+  connect(observer) {
+    var index2 = this._observerList.indexOf(observer);
+    if (index2 < 0) {
+      this._observerList.push(observer);
+    }
+  }
+  disconnect(observer) {
+    var index2 = this._observerList.indexOf(observer);
+    if (index2 >= 0) {
+      this._observerList.splice(index2, 1);
+    }
+  }
+  getEntries() {
+    return this._allEntryList.getEntries();
+  }
+  getEntriesByType(entryType) {
+    return this._allEntryList.getEntriesByType(entryType);
+  }
+  getEntriesByName(name, entryType) {
+    return this._allEntryList.getEntriesByName(name, entryType);
+  }
+  setBufferSize(size) {
+    this._allEntryList.bufferSize = size;
+  }
+}
+var getPerformance = function() {
+  return new PerformanceImpl();
+};
 var callbackId = 1;
 var proxy;
 var callbacks = {};
+function isUniElement(obj) {
+  return typeof UniElement !== "undefined" && obj instanceof UniElement;
+}
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
+}
+function parseElement(obj) {
+  if (isUniElement(obj)) {
+    return obj;
+  } else if (isComponentPublicInstance(obj)) {
+    return obj.$el;
+  }
 }
 function toRaw(observed) {
   var raw = observed && observed.__v_raw;
@@ -2282,10 +2771,10 @@ function normalizeArg(arg) {
     callbacks[id2] = arg;
     return id2;
   } else if (isPlainObject(arg)) {
-    if (isComponentPublicInstance(arg)) {
+    var el = parseElement(arg);
+    if (el) {
       var nodeId = "";
       var pageId = "";
-      var el = arg.$el;
       if (el && el.getNodeId) {
         pageId = el.pageId;
         nodeId = el.getNodeId();
@@ -2731,7 +3220,9 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   createSelectorQuery,
   env,
   getElementById,
+  getEnterOptionsSync,
   getLaunchOptionsSync,
+  getPerformance,
   hideTabBar,
   hideTabBarRedDot,
   initUTSClassName,
@@ -2812,8 +3303,13 @@ function initAppLaunch(appVm) {
     query: entryPageQuery,
     referrerInfo
   });
-  invokeHook(appVm, ON_LAUNCH, args);
-  invokeHook(appVm, ON_SHOW, args);
+  var app = getNativeApp();
+  var schemaLink = app.getLaunchOptionsSync();
+  var launchOption = extend({}, args, schemaLink);
+  setLaunchOptionsSync(launchOption);
+  invokeHook(appVm, ON_LAUNCH, launchOption);
+  var showOption = extend({}, launchOption);
+  invokeHook(appVm, ON_SHOW, showOption);
   var appStyle = appVm.$options.styles;
   if (appStyle) {
     loadFontFaceByStyles(appStyle, true);
@@ -2854,10 +3350,14 @@ function initSubscribeHandlers() {
 }
 function initOn(app) {
   app.addEventListener(ON_SHOW, function(event) {
-    var page = getCurrentPage();
-    invokeHook(getApp(), ON_SHOW, {
+    var app2 = getNativeApp();
+    var schemaLink = app2.getLaunchOptionsSync();
+    var showOptions = extend({
       path: __uniConfig.entryPagePath
-    });
+    }, schemaLink);
+    setEnterOptionsSync(showOptions);
+    var page = getCurrentPage();
+    invokeHook(getApp(), ON_SHOW, showOptions);
     if (page) {
       invokeHook(page, ON_SHOW);
     }
@@ -2925,8 +3425,8 @@ function registerApp(appVm, nativeApp2) {
   defineGlobalData(appCtx, defaultApp.globalData);
   initService(nativeApp2);
   initGlobalEvent(nativeApp2);
-  initSubscribeHandlers();
   initAppLaunch(appVm);
+  initSubscribeHandlers();
   __uniConfig.ready = true;
 }
 function initApp(app) {

@@ -37,6 +37,15 @@
  * @atomicservice
  * @since 11
  */
+/**
+ * Defines the basic callback.
+ * @typedef Callback
+ * @syscap SystemCapability.Base
+ * @crossplatform
+ * @form
+ * @atomicservice
+ * @since 12
+ */
 export interface Callback<T> {
     /**
      * Defines the callback info.
@@ -58,6 +67,15 @@ export interface Callback<T> {
      * @crossplatform
      * @atomicservice
      * @since 11
+     */
+    /**
+     * Defines the callback info.
+     * @param { T } data
+     * @syscap SystemCapability.Base
+     * @crossplatform
+     * @form
+     * @atomicservice
+     * @since 12
      */
     (data: T): void;
 }
@@ -127,6 +145,15 @@ export interface ErrorCallback<T extends Error = BusinessError> {
  * @atomicservice
  * @since 11
  */
+/**
+ * Defines the basic async callback.
+ * @typedef AsyncCallback
+ * @syscap SystemCapability.Base
+ * @crossplatform
+ * @form
+ * @atomicservice
+ * @since 12
+ */
 export interface AsyncCallback<T, E = void> {
     /**
      * Defines the callback data.
@@ -152,6 +179,16 @@ export interface AsyncCallback<T, E = void> {
      * @atomicservice
      * @since 11
      */
+    /**
+     * Defines the callback data.
+     * @param { BusinessError<E> } err
+     * @param { T } data
+     * @syscap SystemCapability.Base
+     * @crossplatform
+     * @form
+     * @atomicservice
+     * @since 12
+     */
     (err: BusinessError<E>, data: T): void;
 }
 /**
@@ -175,6 +212,15 @@ export interface AsyncCallback<T, E = void> {
  * @atomicservice
  * @since 11
  */
+/**
+ * Defines the error interface.
+ * @typedef BusinessError
+ * @syscap SystemCapability.Base
+ * @crossplatform
+ * @form
+ * @atomicservice
+ * @since 12
+ */
 export interface BusinessError<T = void> extends Error {
     /**
      * Defines the basic error code.
@@ -197,6 +243,15 @@ export interface BusinessError<T = void> extends Error {
      * @atomicservice
      * @since 11
      */
+    /**
+     * Defines the basic error code.
+     * @type { number } code
+     * @syscap SystemCapability.Base
+     * @crossplatform
+     * @form
+     * @atomicservice
+     * @since 12
+     */
     code: number;
     /**
      * Defines the additional information for business
@@ -218,6 +273,15 @@ export interface BusinessError<T = void> extends Error {
      * @crossplatform
      * @atomicservice
      * @since 11
+     */
+    /**
+     * Defines the additional information for business
+     * @type { ?T } data
+     * @syscap SystemCapability.Base
+     * @crossplatform
+     * @form
+     * @atomicservice
+     * @since 12
      */
     data?: T;
 }

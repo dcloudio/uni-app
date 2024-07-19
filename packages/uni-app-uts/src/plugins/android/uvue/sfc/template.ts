@@ -12,7 +12,7 @@ import {
   parseUTSComponent,
 } from '@dcloudio/uni-cli-shared'
 
-import { getResolvedScript } from './script'
+import { getResolvedScript, scriptIdentifier } from './script'
 import type { ResolvedOptions } from '.'
 import type { TemplateCompilerOptions } from '../compiler/options'
 import { parseUTSImportFilename } from '../../utils'
@@ -32,10 +32,11 @@ export function resolveGenTemplateCodeOptions(
     preprocessLang?: string
     preprocessOptions?: any
   }
-): TemplateCompilerOptions {
+): TemplateCompilerOptions & { genDefaultAs?: string } {
   const block = descriptor.template
   if (!block) {
     return {
+      genDefaultAs: scriptIdentifier,
       ...options,
       filename: relativeFileName,
     }
@@ -50,11 +51,13 @@ export function resolveGenTemplateCodeOptions(
     }
   }
   return {
+    genDefaultAs: scriptIdentifier,
     ...options,
     filename: relativeFileName,
     inMap: descriptor.template?.map,
     preprocessLang: block.lang === 'html' ? undefined : block.lang,
     preprocessOptions,
+    inline: !!descriptor.scriptSetup,
     matchEasyCom: (tag, uts) => {
       const source = matchEasycom(tag)
       if (uts && source) {

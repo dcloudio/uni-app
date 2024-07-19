@@ -133,6 +133,11 @@ export interface DeviceResponse {
      */
     deviceType: string;
 }
+/**
+ * @interface GetDeviceOptions
+ * @syscap SystemCapability.Startup.SystemInfo.Lite
+ * @since 3
+ */
 export interface GetDeviceOptions {
     /**
      * Called when the device information is obtained.

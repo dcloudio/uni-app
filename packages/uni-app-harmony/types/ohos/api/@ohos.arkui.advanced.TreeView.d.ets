@@ -213,6 +213,12 @@ export declare class TreeListenerManager {
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @since 10
  */
+/**
+ * Declare TreeView Component
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @atomicservice
+ * @since 12
+ */
 @Component
 export declare struct TreeView {
     /**

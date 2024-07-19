@@ -405,23 +405,44 @@ function initUTSJSONObjectProperties(obj) {
   }
   Object.defineProperties(obj, propertyDescriptorMap);
 }
+function setUTSJSONObjectValue(obj, key, value) {
+  if (isPlainObject(value)) {
+    obj[key] = new UTSJSONObject$1(value);
+  } else if (getType$1(value) === "array") {
+    obj[key] = value.map((item) => {
+      if (isPlainObject(item)) {
+        return new UTSJSONObject$1(item);
+      } else {
+        return item;
+      }
+    });
+  } else {
+    obj[key] = value;
+  }
+}
 let UTSJSONObject$1 = class UTSJSONObject2 {
+  static keys(obj) {
+    return Object.keys(obj);
+  }
+  static assign(target, ...sources) {
+    for (let i = 0; i < sources.length; i++) {
+      const source = sources[i];
+      for (let key in source) {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
   constructor(content = {}) {
-    for (const key in content) {
-      if (Object.prototype.hasOwnProperty.call(content, key)) {
-        const value = content[key];
-        if (isPlainObject(value)) {
-          this[key] = new UTSJSONObject2(value);
-        } else if (getType$1(value) === "array") {
-          this[key] = value.map((item) => {
-            if (isPlainObject(item)) {
-              return new UTSJSONObject2(item);
-            } else {
-              return item;
-            }
-          });
-        } else {
-          this[key] = value;
+    if (content instanceof Map) {
+      content.forEach((value, key) => {
+        setUTSJSONObjectValue(this, key, value);
+      });
+    } else {
+      for (const key in content) {
+        if (Object.prototype.hasOwnProperty.call(content, key)) {
+          const value = content[key];
+          setUTSJSONObjectValue(this, key, value);
         }
       }
     }
@@ -576,7 +597,15 @@ function getGlobal() {
   if (typeof global !== "undefined") {
     return global;
   }
-  throw new Error("unable to locate global object");
+  function g2() {
+    return this;
+  }
+  if (typeof g2() !== "undefined") {
+    return g2();
+  }
+  return function() {
+    return new Function("return this")();
+  }();
 }
 const realGlobal = getGlobal();
 realGlobal.UTSJSONObject = UTSJSONObject$1;
@@ -3587,12 +3616,12 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
 function useCache(props2, type) {
   if (type.value === "number") {
     const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
-    const cache = vue.ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    const cache = vue.ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
     vue.watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     vue.watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     return cache;
   } else {
@@ -12500,7 +12529,7 @@ function useTabBarStyle(tabBar2) {
       };
     }
     return {
-      backgroundColor: BORDER_COLORS[borderStyle2] || borderStyle2
+      backgroundColor: BORDER_COLORS[borderStyle2] || BORDER_COLORS["black"]
     };
   });
   const placeholderStyle = vue.computed(() => {

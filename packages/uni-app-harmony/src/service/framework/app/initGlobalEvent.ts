@@ -1,6 +1,7 @@
 import {
   ON_APP_ENTER_BACKGROUND,
   ON_APP_ENTER_FOREGROUND,
+  ON_KEYBOARD_HEIGHT_CHANGE,
 } from '@dcloudio/uni-shared'
 import { subscribePlusMessage } from '@dcloudio/uni-app-plus/service/framework/app/initGlobalEvent'
 import {
@@ -23,7 +24,14 @@ export function initGlobalEvent() {
     emit(ON_APP_ENTER_FOREGROUND, {})
   })
 
-  // TODO KeyboardHeightChange
+  plusGlobalEvent.addEventListener(
+    'KeyboardHeightChange',
+    function (event: { height: number }) {
+      emit(ON_KEYBOARD_HEIGHT_CHANGE, {
+        height: event.height,
+      })
+    }
+  )
 
   plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage)
 }

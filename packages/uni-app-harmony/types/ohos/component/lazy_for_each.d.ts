@@ -13,6 +13,378 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
+ * Defines type to operation data source.
+ *
+ * @enum { string }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare enum DataOperationType {
+    /**
+     * Add data.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    ADD = 'add',
+    /**
+     * Delete data.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    DELETE = 'delete',
+    /**
+     * Exchange data.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    EXCHANGE = 'exchange',
+    /**
+     * Move data.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    MOVE = 'move',
+    /**
+     * Change data.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    CHANGE = 'change',
+    /**
+     * Reload data.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    RELOAD = 'reload'
+}
+/**
+ * Defines add operation.
+ *
+ * @interface DataAddOperation
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface DataAddOperation {
+    /**
+     * How to operate added data.
+     *
+     * @type { DataOperationType.ADD }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    type: DataOperationType.ADD;
+    /**
+     * Index of added data.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    index: number;
+    /**
+     * Count of added data in one operation
+     * Only validate for ADD and DELETE.
+     *
+     * @type { ?number }
+     * @default 1
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    count?: number;
+    /**
+     * Key of added data.
+     *
+     * @type { ?(string | Array<string>) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    key?: string | Array<string>;
+}
+/**
+ * Defines delete operation.
+ *
+ * @interface DataDeleteOperation
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface DataDeleteOperation {
+    /**
+     * How to operate deleted data.
+     *
+     * @type { DataOperationType.DELETE }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    type: DataOperationType.DELETE;
+    /**
+     * Index of deleted data.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    index: number;
+    /**
+     * Count of deleted data in one operation
+     * Only validate for ADD and DELETE.
+     *
+     * @type { ?number }
+     * @default 1
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    count?: number;
+}
+/**
+ * Defines change operation.
+ *
+ * @interface DataChangeOperation
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface DataChangeOperation {
+    /**
+     * How to operate changed data.
+     *
+     * @type { DataOperationType.CHANGE }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    type: DataOperationType.CHANGE;
+    /**
+     * Index of changed data.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    index: number;
+    /**
+     * Key of changed data.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    key?: string;
+}
+/**
+ * Defines position of moved data.
+ *
+ * @interface MoveIndex
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface MoveIndex {
+    /**
+     * Index of moved data.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    from: number;
+    /**
+     * Destination of moved data.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    to: number;
+}
+/**
+ * Defines position of exchange data.
+ *
+ * @interface ExchangeIndex
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface ExchangeIndex {
+    /**
+     * Index of the first exchange data.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    start: number;
+    /**
+     * Index of the second exchange data.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    end: number;
+}
+/**
+ * Defines new key of exchange data.
+ *
+ * @interface ExchangeKey
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface ExchangeKey {
+    /**
+     * Key of the first exchange data.
+     *
+     * @type { string }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    start: string;
+    /**
+     * Key of the second exchange data.
+     *
+     * @type { string }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    end: string;
+}
+/**
+ * Defines move&exchange operation.
+ *
+ * @interface DataMoveOperation
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface DataMoveOperation {
+    /**
+     * How to operate moved data.
+     *
+     * @type { DataOperationType.MOVE }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    type: DataOperationType.MOVE;
+    /**
+     * Index of moved data.
+     *
+     * @type { MoveIndex }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    index: MoveIndex;
+    /**
+     * Key of moved data.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    key?: string;
+}
+/**
+ * Defines exchange operation.
+ *
+ * @interface DataExchangeOperation
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface DataExchangeOperation {
+    /**
+     * How to operate exchange data.
+     *
+     * @type { DataOperationType.EXCHANGE }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    type: DataOperationType.EXCHANGE;
+    /**
+     * Index of exchange data.
+     *
+     * @type { ExchangeIndex }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    index: ExchangeIndex;
+    /**
+     * Key of exchange data.
+     *
+     * @type { ?ExchangeKey }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    key?: ExchangeKey;
+}
+/**
+ * Defines reload operation.
+ *
+ * @interface DataReloadOperation
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+interface DataReloadOperation {
+    /**
+     * How to operate reload data.
+     *
+     * @type { DataOperationType.RELOAD }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    type: DataOperationType.RELOAD;
+}
+/**
+ * All data operation type
+ *
+ * @typedef DataOperation
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare type DataOperation = DataAddOperation | DataDeleteOperation | DataChangeOperation | DataMoveOperation | DataExchangeOperation | DataReloadOperation;
+/**
  * Data Change Listener.
  *
  * @interface DataChangeListener
@@ -203,6 +575,15 @@ declare interface DataChangeListener {
      * @since 11
      */
     onDataChange(index: number): void;
+    /**
+     * Call when multiple data change.
+     *
+     * @param { DataOperation[] } dataOperations
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onDatasetChange(dataOperations: DataOperation[]): void;
 }
 /**
  * Developers need to implement this interface to provide data to LazyForEach component.

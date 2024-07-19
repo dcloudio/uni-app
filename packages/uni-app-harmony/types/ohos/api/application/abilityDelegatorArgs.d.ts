@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit AbilityKit
+ */
+/**
  * Store unit testing-related parameters, including test case names, and test runner name.
  *
  * @typedef AbilityDelegatorArgs

@@ -93,7 +93,10 @@ declare namespace buffer {
      * @param { string | Buffer | number } [fill] - fill [fill=0] A value to pre-fill the new Buffer with
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8']  If `fill` is a string, this is its encoding
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -104,7 +107,10 @@ declare namespace buffer {
      * @param { string | Buffer | number } [fill] - fill [fill=0] A value to pre-fill the new Buffer with
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8']  If `fill` is a string, this is its encoding
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -116,7 +122,10 @@ declare namespace buffer {
      * @param { string | Buffer | number } [fill] - fill [fill=0] A value to pre-fill the new Buffer with
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8']  If `fill` is a string, this is its encoding
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -128,7 +137,10 @@ declare namespace buffer {
      *
      * @param { number } size - size size The desired length of the new Buffer
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -137,7 +149,10 @@ declare namespace buffer {
      *
      * @param { number } size - size size The desired length of the new Buffer
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -147,7 +162,10 @@ declare namespace buffer {
      *
      * @param { number } size - size size The desired length of the new Buffer
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -159,7 +177,10 @@ declare namespace buffer {
      *
      * @param { number } size - size size The desired length of the new Buffer
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -168,7 +189,10 @@ declare namespace buffer {
      *
      * @param { number } size - size size The desired length of the new Buffer
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -178,7 +202,10 @@ declare namespace buffer {
      *
      * @param { number } size - size size The desired length of the new Buffer
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -193,7 +220,9 @@ declare namespace buffer {
      * @param { string | Buffer | TypedArray | DataView | ArrayBuffer | SharedArrayBuffer } string - string string A value to calculate the length of
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If `string` is a string, this is its encoding
      * @returns { number } The number of bytes contained within `string`
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -205,7 +234,9 @@ declare namespace buffer {
      * @param { string | Buffer | TypedArray | DataView | ArrayBuffer | SharedArrayBuffer } string - string string A value to calculate the length of
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If `string` is a string, this is its encoding
      * @returns { number } The number of bytes contained within `string`
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -218,7 +249,9 @@ declare namespace buffer {
      * @param { string | Buffer | TypedArray | DataView | ArrayBuffer | SharedArrayBuffer } string - string string A value to calculate the length of
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If `string` is a string, this is its encoding
      * @returns { number } The number of bytes contained within `string`
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -231,7 +264,10 @@ declare namespace buffer {
      * @param { Buffer[] | Uint8Array[] } list - list list List of `Buffer` or Uint8Array instances to concatenate
      * @param { number } [totalLength] - totalLength totalLength Total length of the `Buffer` instances in `list` when concatenated
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of "length" is out of range. It must be >= 0 and <= uint32 max. Received value is: [length]
      * @syscap SystemCapability.Utils.Lang
      * @since 9
@@ -242,7 +278,10 @@ declare namespace buffer {
      * @param { Buffer[] | Uint8Array[] } list - list list List of `Buffer` or Uint8Array instances to concatenate
      * @param { number } [totalLength] - totalLength totalLength Total length of the `Buffer` instances in `list` when concatenated
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of "length" is out of range. It must be >= 0 and <= uint32 max. Received value is: [length]
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
@@ -254,7 +293,10 @@ declare namespace buffer {
      * @param { Buffer[] | Uint8Array[] } list - list list List of `Buffer` or Uint8Array instances to concatenate
      * @param { number } [totalLength] - totalLength totalLength Total length of the `Buffer` instances in `list` when concatenated
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of "length" is out of range. It must be >= 0 and <= uint32 max. Received value is: [length]
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
@@ -267,7 +309,9 @@ declare namespace buffer {
      *
      * @param { number[] } array - array array an array of bytes in the range 0 – 255
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -276,7 +320,9 @@ declare namespace buffer {
      *
      * @param { number[] } array - array array an array of bytes in the range 0 – 255
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -286,7 +332,9 @@ declare namespace buffer {
      *
      * @param { number[] } array - array array an array of bytes in the range 0 – 255
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -301,7 +349,9 @@ declare namespace buffer {
      * @param { number } [byteOffset] - byteOffset [byteOffset = 0] Index of first byte to expose
      * @param { number } [length] - length [length = arrayBuffer.byteLength - byteOffset] Number of bytes to expose
      * @returns { Buffer } Return a view of the ArrayBuffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @throws { BusinessError } 10200001 - The value of "[byteOffset/length]" is out of range.
      * It must be >= [left range] and <= [right range]. Received value is: [byteOffset/length]
      * @syscap SystemCapability.Utils.Lang
@@ -315,7 +365,9 @@ declare namespace buffer {
      * @param { number } [byteOffset] - byteOffset [byteOffset = 0] Index of first byte to expose
      * @param { number } [length] - length [length = arrayBuffer.byteLength - byteOffset] Number of bytes to expose
      * @returns { Buffer } Return a view of the ArrayBuffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @throws { BusinessError } 10200001 - The value of "[byteOffset/length]" is out of range.
      * It must be >= [left range] and <= [right range]. Received value is: [byteOffset/length]
      * @syscap SystemCapability.Utils.Lang
@@ -330,7 +382,9 @@ declare namespace buffer {
      * @param { number } [byteOffset] - byteOffset [byteOffset = 0] Index of first byte to expose
      * @param { number } [length] - length [length = arrayBuffer.byteLength - byteOffset] Number of bytes to expose
      * @returns { Buffer } Return a view of the ArrayBuffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @throws { BusinessError } 10200001 - The value of "[byteOffset/length]" is out of range.
      * It must be >= [left range] and <= [right range]. Received value is: [byteOffset/length]
      * @syscap SystemCapability.Utils.Lang
@@ -344,7 +398,9 @@ declare namespace buffer {
      *
      * @param { Buffer | Uint8Array } buffer - buffer buffer An existing Buffer or Uint8Array from which to copy data
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -353,7 +409,9 @@ declare namespace buffer {
      *
      * @param { Buffer | Uint8Array } buffer - buffer buffer An existing Buffer or Uint8Array from which to copy data
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -363,7 +421,9 @@ declare namespace buffer {
      *
      * @param { Buffer | Uint8Array } buffer - buffer buffer An existing Buffer or Uint8Array from which to copy data
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -378,7 +438,9 @@ declare namespace buffer {
      * @param { number | string } offsetOrEncoding - offsetOrEncoding offsetOrEncoding A byte-offset or encoding
      * @param { number } length - length length A length
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -390,7 +452,9 @@ declare namespace buffer {
      * @param { number | string } offsetOrEncoding - offsetOrEncoding offsetOrEncoding A byte-offset or encoding
      * @param { number } length - length length A length
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -403,7 +467,9 @@ declare namespace buffer {
      * @param { number | string } offsetOrEncoding - offsetOrEncoding offsetOrEncoding A byte-offset or encoding
      * @param { number } length - length length A length
      * @returns { Buffer } Return a new allocated Buffer
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -417,7 +483,9 @@ declare namespace buffer {
      * @param { String } string - string string  A string to encode
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] The encoding of string
      * @returns { Buffer } Return a new Buffer containing string
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -428,7 +496,9 @@ declare namespace buffer {
      * @param { String } string - string string  A string to encode
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] The encoding of string
      * @returns { Buffer } Return a new Buffer containing string
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -440,7 +510,9 @@ declare namespace buffer {
      * @param { String } string - string string  A string to encode
      * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] The encoding of string
      * @returns { Buffer } Return a new Buffer containing string
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -511,7 +583,9 @@ declare namespace buffer {
      * @returns { -1 | 0 | 1 } 0 is returned if target is the same as buf
      *         1 is returned if target should come before buf when sorted.
      *        -1 is returned if target should come after buf when sorted.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -523,7 +597,9 @@ declare namespace buffer {
      * @returns { -1 | 0 | 1 } 0 is returned if target is the same as buf
      *         1 is returned if target should come before buf when sorted.
      *        -1 is returned if target should come after buf when sorted.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -536,7 +612,9 @@ declare namespace buffer {
      * @returns { -1 | 0 | 1 } 0 is returned if target is the same as buf
      *         1 is returned if target should come before buf when sorted.
      *        -1 is returned if target should come after buf when sorted.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -550,7 +628,9 @@ declare namespace buffer {
      * @param { string } fromEnc - fromEnc fromEnc The current encoding
      * @param { string } toEnc - toEnc toEnc To target encoding
      * @returns { Buffer } Returns a new Buffer instance
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 9
      */
@@ -561,7 +641,9 @@ declare namespace buffer {
      * @param { string } fromEnc - fromEnc fromEnc The current encoding
      * @param { string } toEnc - toEnc toEnc To target encoding
      * @returns { Buffer } Returns a new Buffer instance
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -573,7 +655,9 @@ declare namespace buffer {
      * @param { string } fromEnc - fromEnc fromEnc The current encoding
      * @param { string } toEnc - toEnc toEnc To target encoding
      * @returns { Buffer } Returns a new Buffer instance
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @atomicservice
@@ -686,7 +770,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] The encoding for value if value is a string
          * @returns { Buffer } A reference to buf
          * @throws { BusinessError } 10200001 - The value of "[offset/end]" is out of range. It must be >= 0 and <= [right range]. Received value is: [offset/end]
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Incorrect parameter types;
+         * 2.Parameter verification failed.
          * @syscap SystemCapability.Utils.Lang
          * @since 9
          */
@@ -699,7 +785,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] The encoding for value if value is a string
          * @returns { Buffer } A reference to buf
          * @throws { BusinessError } 10200001 - The value of "[offset/end]" is out of range. It must be >= 0 and <= [right range]. Received value is: [offset/end]
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Incorrect parameter types;
+         * 2.Parameter verification failed.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @since 10
@@ -713,7 +801,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] The encoding for value if value is a string
          * @returns { Buffer } A reference to buf
          * @throws { BusinessError } 10200001 - The value of "[offset/end]" is out of range. It must be >= 0 and <= [right range]. Received value is: [offset/end]
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Incorrect parameter types;
+         * 2.Parameter verification failed.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @atomicservice
@@ -732,7 +822,9 @@ declare namespace buffer {
          * @returns { -1 | 0 | 1 } 0 is returned if target is the same as buf
          *         1 is returned if target should come before buf when sorted.
          *        -1 is returned if target should come after buf when sorted.
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[targetStart/targetEnd/sourceStart/sourceEnd]" is out of range.
          *         It must be >= 0 and <= [right range]. Received value is: [targetStart/targetEnd/sourceStart/sourceEnd]
          * @syscap SystemCapability.Utils.Lang
@@ -750,7 +842,9 @@ declare namespace buffer {
          * @returns { -1 | 0 | 1 } 0 is returned if target is the same as buf
          *         1 is returned if target should come before buf when sorted.
          *        -1 is returned if target should come after buf when sorted.
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[targetStart/targetEnd/sourceStart/sourceEnd]" is out of range.
          *         It must be >= 0 and <= [right range]. Received value is: [targetStart/targetEnd/sourceStart/sourceEnd]
          * @syscap SystemCapability.Utils.Lang
@@ -769,7 +863,9 @@ declare namespace buffer {
          * @returns { -1 | 0 | 1 } 0 is returned if target is the same as buf
          *         1 is returned if target should come before buf when sorted.
          *        -1 is returned if target should come after buf when sorted.
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[targetStart/targetEnd/sourceStart/sourceEnd]" is out of range.
          *         It must be >= 0 and <= [right range]. Received value is: [targetStart/targetEnd/sourceStart/sourceEnd]
          * @syscap SystemCapability.Utils.Lang
@@ -787,7 +883,9 @@ declare namespace buffer {
          * @param { number } [sourceStart] - sourceStart [sourceStart = 0] The offset within buf from which to begin copying
          * @param { number } [sourceEnd] - sourceEnd [sourceEnd = buf.length] The offset within buf at which to stop copying (not inclusive)
          * @returns { number } The number of bytes copied
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[targetStart/sourceStart/sourceEnd]" is out of range. It must be >= 0.
          *                                    Received value is: [targetStart/sourceStart/sourceEnd]
          * @syscap SystemCapability.Utils.Lang
@@ -802,7 +900,9 @@ declare namespace buffer {
          * @param { number } [sourceStart] - sourceStart [sourceStart = 0] The offset within buf from which to begin copying
          * @param { number } [sourceEnd] - sourceEnd [sourceEnd = buf.length] The offset within buf at which to stop copying (not inclusive)
          * @returns { number } The number of bytes copied
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[targetStart/sourceStart/sourceEnd]" is out of range. It must be >= 0.
          *                                    Received value is: [targetStart/sourceStart/sourceEnd]
          * @syscap SystemCapability.Utils.Lang
@@ -818,7 +918,9 @@ declare namespace buffer {
          * @param { number } [sourceStart] - sourceStart [sourceStart = 0] The offset within buf from which to begin copying
          * @param { number } [sourceEnd] - sourceEnd [sourceEnd = buf.length] The offset within buf at which to stop copying (not inclusive)
          * @returns { number } The number of bytes copied
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[targetStart/sourceStart/sourceEnd]" is out of range. It must be >= 0.
          *                                    Received value is: [targetStart/sourceStart/sourceEnd]
          * @syscap SystemCapability.Utils.Lang
@@ -832,7 +934,7 @@ declare namespace buffer {
          *
          * @param { Uint8Array | Buffer } otherBuffer - otherBuffer otherBuffer A Buffer or Uint8Array with which to compare buf
          * @returns { boolean } true or false
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @since 9
          */
@@ -841,7 +943,7 @@ declare namespace buffer {
          *
          * @param { Uint8Array | Buffer } otherBuffer - otherBuffer otherBuffer A Buffer or Uint8Array with which to compare buf
          * @returns { boolean } true or false
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @since 10
@@ -851,7 +953,7 @@ declare namespace buffer {
          *
          * @param { Uint8Array | Buffer } otherBuffer - otherBuffer otherBuffer A Buffer or Uint8Array with which to compare buf
          * @returns { boolean } true or false
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @atomicservice
@@ -865,7 +967,9 @@ declare namespace buffer {
          * @param { number } [byteOffset] - byteOffset [byteOffset = 0] Where to begin searching in buf. If negative, then offset is calculated from the end of buf
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string, this is its encoding
          * @returns { boolean } true or false
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @since 9
          */
@@ -876,7 +980,9 @@ declare namespace buffer {
          * @param { number } [byteOffset] - byteOffset [byteOffset = 0] Where to begin searching in buf. If negative, then offset is calculated from the end of buf
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string, this is its encoding
          * @returns { boolean } true or false
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @since 10
@@ -888,7 +994,9 @@ declare namespace buffer {
          * @param { number } [byteOffset] - byteOffset [byteOffset = 0] Where to begin searching in buf. If negative, then offset is calculated from the end of buf
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string, this is its encoding
          * @returns { boolean } true or false
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @atomicservice
@@ -903,7 +1011,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string,
          * this is the encoding used to determine the binary representation of the string that will be searched for in buf
          * @returns { number } The index of the first occurrence of value in buf, or -1 if buf does not contain value
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @since 9
          */
@@ -915,7 +1025,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string,
          * this is the encoding used to determine the binary representation of the string that will be searched for in buf
          * @returns { number } The index of the first occurrence of value in buf, or -1 if buf does not contain value
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @since 10
@@ -928,7 +1040,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string,
          * this is the encoding used to determine the binary representation of the string that will be searched for in buf
          * @returns { number } The index of the first occurrence of value in buf, or -1 if buf does not contain value
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @atomicservice
@@ -1021,7 +1135,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string,
          * this is the encoding used to determine the binary representation of the string that will be searched for in buf
          * @returns { number } The index of the last occurrence of value in buf, or -1 if buf does not contain value
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @since 9
          */
@@ -1033,7 +1149,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string,
          * this is the encoding used to determine the binary representation of the string that will be searched for in buf
          * @returns { number } The index of the last occurrence of value in buf, or -1 if buf does not contain value
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @since 10
@@ -1046,7 +1164,9 @@ declare namespace buffer {
          * @param { BufferEncoding } [encoding] - encoding [encoding='utf8'] If value is a string,
          * this is the encoding used to determine the binary representation of the string that will be searched for in buf
          * @returns { number } The index of the last occurrence of value in buf, or -1 if buf does not contain value
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @atomicservice
@@ -1058,7 +1178,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a signed, big-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1068,7 +1188,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a signed, big-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1079,7 +1199,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a signed, big-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1092,7 +1212,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a signed, little-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1102,7 +1222,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a signed, little-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1113,7 +1233,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a signed, little-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1126,7 +1246,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a unsigned, big-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1136,7 +1256,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a unsigned, big-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1147,7 +1267,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a unsigned, big-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1160,7 +1280,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a unsigned, little-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1170,7 +1290,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a unsigned, little-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1181,7 +1301,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { bigint } Return a unsigned, little-endian 64-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1194,7 +1314,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } Return a 64-bit, big-endian double
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1204,7 +1324,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } Return a 64-bit, big-endian double
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1215,7 +1335,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } Return a 64-bit, big-endian double
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1228,7 +1348,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } Return a 64-bit, little-endian double
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1238,7 +1358,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } Return a 64-bit, little-endian double
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1249,7 +1369,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } Return a 64-bit, little-endian double
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1262,7 +1382,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a 32-bit, big-endian float
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1272,7 +1392,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a 32-bit, big-endian float
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1283,7 +1403,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a 32-bit, big-endian float
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1296,7 +1416,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a 32-bit, little-endian float
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1306,7 +1426,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a 32-bit, little-endian float
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1317,7 +1437,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a 32-bit, little-endian float
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1330,7 +1450,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 1
          * @returns { number } Return a signed 8-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 1. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1340,7 +1460,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 1
          * @returns { number } Return a signed 8-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 1. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1351,7 +1471,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 1
          * @returns { number } Return a signed 8-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 1. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1364,7 +1484,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } Return a signed, big-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1374,7 +1494,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } Return a signed, big-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1385,7 +1505,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } Return a signed, big-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1398,7 +1518,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } Return a signed, little-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1408,7 +1528,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } Return a signed, little-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1419,7 +1539,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } Return a signed, little-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1432,7 +1552,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a signed, big-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1442,7 +1562,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a signed, big-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1453,7 +1573,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a signed, big-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1466,7 +1586,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a signed, little-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1476,7 +1596,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a signed, little-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1487,7 +1607,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } Return a signed, little-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1502,7 +1622,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1514,7 +1636,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1527,7 +1651,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1542,7 +1668,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1554,7 +1682,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1567,7 +1697,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1580,7 +1712,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 1
          * @returns { number } Reads an unsigned 8-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 1. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1590,7 +1722,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 1
          * @returns { number } Reads an unsigned 8-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 1. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1601,7 +1733,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 1
          * @returns { number } Reads an unsigned 8-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 1. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1614,7 +1746,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } Reads an unsigned, big-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1624,7 +1756,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } Reads an unsigned, big-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1635,7 +1767,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } Reads an unsigned, big-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1648,7 +1780,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } Reads an unsigned, little-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1658,7 +1790,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } Reads an unsigned, little-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1669,7 +1801,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } Reads an unsigned, little-endian 16-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 2. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1682,7 +1814,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } Reads an unsigned, big-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1692,7 +1824,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } Reads an unsigned, big-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1703,7 +1835,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } Reads an unsigned, big-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1716,7 +1848,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } Reads an unsigned, little-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1726,7 +1858,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } Reads an unsigned, little-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1737,7 +1869,7 @@ declare namespace buffer {
          *
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to read. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } Reads an unsigned, little-endian 32-bit integer
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1752,7 +1884,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1764,7 +1898,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1777,7 +1913,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1792,7 +1930,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -1804,7 +1944,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1817,7 +1959,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to read. Must satisfy: 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to read. Must satisfy 0 < byteLength <= 6
          * @returns { number }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -1972,7 +2116,7 @@ declare namespace buffer {
          * @param { number } [start] - start [start = 0] The byte offset to start decoding at
          * @param { number } [end] - end [end = buf.length] The byte offset to stop decoding at (not inclusive)
          * @returns { string }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @since 9
          */
@@ -1983,7 +2127,7 @@ declare namespace buffer {
          * @param { number } [start] - start [start = 0] The byte offset to start decoding at
          * @param { number } [end] - end [end = buf.length] The byte offset to stop decoding at (not inclusive)
          * @returns { string }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @since 10
@@ -1995,7 +2139,7 @@ declare namespace buffer {
          * @param { number } [start] - start [start = 0] The byte offset to start decoding at
          * @param { number } [end] - end [end = buf.length] The byte offset to stop decoding at (not inclusive)
          * @returns { string }
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @atomicservice
@@ -2010,7 +2154,9 @@ declare namespace buffer {
          * @param { number } [length] - length [length = buf.length - offset] Maximum number of bytes to write (written bytes will not exceed buf.length - offset)
          * @param { string } [encoding] - encoding [encoding='utf8'] The character encoding of string.
          * @returns { number } Number of bytes written.
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[offset/length]" is out of range. It must be >= 0 and <= buf.length. Received value is: [offset/length]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2023,7 +2169,9 @@ declare namespace buffer {
          * @param { number } [length] - length [length = buf.length - offset] Maximum number of bytes to write (written bytes will not exceed buf.length - offset)
          * @param { string } [encoding] - encoding [encoding='utf8'] The character encoding of string.
          * @returns { number } Number of bytes written.
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[offset/length]" is out of range. It must be >= 0 and <= buf.length. Received value is: [offset/length]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2037,7 +2185,9 @@ declare namespace buffer {
          * @param { number } [length] - length [length = buf.length - offset] Maximum number of bytes to write (written bytes will not exceed buf.length - offset)
          * @param { string } [encoding] - encoding [encoding='utf8'] The character encoding of string.
          * @returns { number } Number of bytes written.
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[offset/length]" is out of range. It must be >= 0 and <= buf.length. Received value is: [offset/length]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2051,7 +2201,9 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types; 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2062,7 +2214,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2074,7 +2229,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2088,7 +2246,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2099,7 +2260,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2111,7 +2275,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2125,7 +2292,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2136,7 +2306,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2148,7 +2321,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2162,7 +2338,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2173,7 +2352,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2185,7 +2367,10 @@ declare namespace buffer {
          * @param { bigint } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2199,7 +2384,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2210,7 +2397,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2222,7 +2411,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2236,7 +2427,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2247,7 +2440,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2259,7 +2454,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 8
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 8. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2273,7 +2470,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2284,7 +2483,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2296,7 +2497,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2310,7 +2513,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2321,7 +2526,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2333,7 +2540,9 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0]  Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "offset" is out of range. It must be >= 0 and <= buf.length - 4. Received value is: [offset]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2347,7 +2556,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 1
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2358,7 +2570,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 1
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2370,7 +2585,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 1
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2384,7 +2602,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2395,7 +2616,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2407,7 +2631,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2421,7 +2648,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2432,7 +2662,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2444,7 +2677,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2458,7 +2694,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2469,7 +2708,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2481,7 +2723,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2495,7 +2740,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2506,7 +2754,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2518,7 +2769,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy: 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2533,7 +2787,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2545,7 +2801,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2558,7 +2816,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2573,7 +2833,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset  Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2585,7 +2847,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset  Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2598,7 +2862,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset  Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2612,7 +2878,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 1
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2623,7 +2892,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 1
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2635,7 +2907,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 1
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2649,7 +2924,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2660,7 +2938,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2672,7 +2953,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2686,7 +2970,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2697,7 +2984,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2709,7 +2999,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 2
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2723,7 +3016,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2734,7 +3030,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2746,7 +3045,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2760,7 +3062,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2771,7 +3076,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2783,7 +3091,10 @@ declare namespace buffer {
          * @param { number } value - value value Number to be written to buf
          * @param { number } [offset] - offset [offset = 0] Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - 4
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2798,7 +3109,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2810,7 +3123,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2823,7 +3138,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2838,7 +3155,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @since 9
@@ -2850,7 +3169,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2863,7 +3184,9 @@ declare namespace buffer {
          * @param { number } offset - offset offset Number of bytes to skip before starting to write. Must satisfy 0 <= offset <= buf.length - byteLength
          * @param { number } byteLength - byteLength byteLength Number of bytes to write. Must satisfy 0 < byteLength <= 6
          * @returns { number } offset plus the number of bytes written
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @throws { BusinessError } 10200001 - The value of "[param]" is out of range. It must be >= [left range] and <= [right range]. Received value is: [param]
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -2902,7 +3225,9 @@ declare namespace buffer {
          * @param { Object } [options] - options options {endings: string, type: string}
          *                 endings:  One of either 'transparent' or 'native'.
          *                 type: The Blob content-type
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @since 9
          */
@@ -2914,7 +3239,9 @@ declare namespace buffer {
          * @param { Object } [options] - options options {endings: string, type: string}
          *                 endings:  One of either 'transparent' or 'native'.
          *                 type: The Blob content-type
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @since 10
@@ -2927,7 +3254,9 @@ declare namespace buffer {
          * @param { Object } [options] - options options {endings: string, type: string}
          *                 endings:  One of either 'transparent' or 'native'.
          *                 type: The Blob content-type
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @atomicservice

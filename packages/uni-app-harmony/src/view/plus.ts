@@ -9,6 +9,9 @@ export default {
           getStyle: () => {
             return extend({}, harmonyChannel.invokeSync('getStyle'))
           },
+          setSoftinputTemporary(options: any) {
+            harmonyChannel.invokeSync('setSoftinputTemporary', [options])
+          },
         },
         harmonyChannel.invokeSync('currentWebview')
       )

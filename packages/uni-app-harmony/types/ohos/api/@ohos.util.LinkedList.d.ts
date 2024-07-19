@@ -90,7 +90,10 @@ declare class LinkedList<T> {
      * @param { number } index - index index index at which the specified element is to be inserted
      * @param { T } element - element element element to be inserted
      * @throws { BusinessError } 10200011 - The insert method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
@@ -101,7 +104,10 @@ declare class LinkedList<T> {
      * @param { number } index - index index index at which the specified element is to be inserted
      * @param { T } element - element element element to be inserted
      * @throws { BusinessError } 10200011 - The insert method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
@@ -115,7 +121,9 @@ declare class LinkedList<T> {
      * @param { number } index - index index specified position
      * @returns { T } the T type
      * @throws { BusinessError } 10200011 - The get method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -126,7 +134,9 @@ declare class LinkedList<T> {
      * @param { number } index - index index specified position
      * @returns { T } the T type
      * @throws { BusinessError } 10200011 - The get method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -239,7 +249,10 @@ declare class LinkedList<T> {
      * @returns { T } the T type ,returns undefined if linkedlist is empty,If the index is
      * out of bounds (greater than or equal to length or less than 0), throw an exception
      * @throws { BusinessError } 10200011 - The removeByIndex method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
@@ -251,7 +264,10 @@ declare class LinkedList<T> {
      * @returns { T } the T type ,returns undefined if linkedlist is empty,If the index is
      * out of bounds (greater than or equal to length or less than 0), throw an exception
      * @throws { BusinessError } 10200011 - The removeByIndex method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
@@ -408,7 +424,10 @@ declare class LinkedList<T> {
      * @returns { T } the T type ,returns undefined if linkedList is empty
      * @throws { BusinessError } 10200011 - The set method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -420,7 +439,10 @@ declare class LinkedList<T> {
      * @returns { T } the T type ,returns undefined if linkedList is empty
      * @throws { BusinessError } 10200011 - The set method cannot be bound.
      * @throws { BusinessError } 10200001 - The value of index is out of range.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -439,7 +461,9 @@ declare class LinkedList<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -456,7 +480,9 @@ declare class LinkedList<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10

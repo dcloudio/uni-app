@@ -25,16 +25,6 @@ export function operateVideoPlayer(
   // TODO: Implement
 }
 
-export function operateMap(
-  id: string,
-  pageId: number,
-  type: string,
-  data?: unknown,
-  operateMapCallback?: (res: any) => void
-) {
-  // TODO: Implement
-}
-
 export const TEMP_PATH = '' // TODO 需要从applicationContext获取
 
 export function addMediaQueryObserver(

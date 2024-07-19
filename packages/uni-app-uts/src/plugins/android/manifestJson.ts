@@ -91,8 +91,7 @@ export function uniAppManifestPlugin(): Plugin {
         asset.source =
           asset.source +
           `
-import { AppConfig } from "io.dcloud.uniapp.appframe"
-export class UniAppConfig extends AppConfig {
+export class UniAppConfig extends io.dcloud.uniapp.appframe.AppConfig {
     override name: string = "${manifestJson.name || ''}"
     override appid: string = "${manifestJson.appid || ''}"
     override versionName: string = "${manifestJson.versionName || ''}"
@@ -101,7 +100,7 @@ export class UniAppConfig extends AppConfig {
       process.env.UNI_COMPILER_VERSION || ''
     }"
     ${codes}
-    constructor() {}
+    constructor() { super() }
 }
 `
       }

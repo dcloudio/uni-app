@@ -528,34 +528,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @since 6
          */
@@ -567,34 +567,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @crossplatform
          * @since 10
@@ -607,34 +607,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @crossplatform
          * @atomicservice
@@ -650,34 +650,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @since 6
          */
@@ -690,34 +690,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @crossplatform
          * @since 10
@@ -731,34 +731,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @crossplatform
          * @atomicservice
@@ -774,34 +774,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @since 6
          */
@@ -814,34 +814,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @crossplatform
          * @since 10
@@ -855,34 +855,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @crossplatform
          * @atomicservice
@@ -898,34 +898,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @since 10
          */
@@ -939,34 +939,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @since 10
          */
@@ -980,34 +980,34 @@ declare namespace http {
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 2300001 - Unsupported protocol.
-         * @throws { BusinessError } 2300003 - URL using bad/illegal format or missing URL.
-         * @throws { BusinessError } 2300005 - Couldn't resolve proxy name.
-         * @throws { BusinessError } 2300006 - Couldn't resolve host name.
-         * @throws { BusinessError } 2300007 - Couldn't connect to server.
-         * @throws { BusinessError } 2300008 - Weird server reply.
-         * @throws { BusinessError } 2300009 - Access denied to remote resource.
+         * @throws { BusinessError } 2300003 - Invalid URL format or missing URL.
+         * @throws { BusinessError } 2300005 - Failed to resolve the proxy name.
+         * @throws { BusinessError } 2300006 - Failed to resolve the host name.
+         * @throws { BusinessError } 2300007 - Failed to connect to the server.
+         * @throws { BusinessError } 2300008 - Invalid server response.
+         * @throws { BusinessError } 2300009 - Access to the remote resource denied.
          * @throws { BusinessError } 2300016 - Error in the HTTP2 framing layer.
          * @throws { BusinessError } 2300018 - Transferred a partial file.
-         * @throws { BusinessError } 2300023 - Failed writing received data to disk/application.
+         * @throws { BusinessError } 2300023 - Failed to write the received data to the disk or application.
          * @throws { BusinessError } 2300025 - Upload failed.
-         * @throws { BusinessError } 2300026 - Failed to open/read local data from file/application.
+         * @throws { BusinessError } 2300026 - Failed to open or read local data from the file or application.
          * @throws { BusinessError } 2300027 - Out of memory.
-         * @throws { BusinessError } 2300028 - Timeout was reached.
-         * @throws { BusinessError } 2300047 - Number of redirects hit maximum amount.
-         * @throws { BusinessError } 2300052 - Server returned nothing (no headers, no data).
-         * @throws { BusinessError } 2300055 - Failed sending data to the peer.
-         * @throws { BusinessError } 2300056 - Failure when receiving data from the peer.
-         * @throws { BusinessError } 2300058 - Problem with the local SSL certificate.
-         * @throws { BusinessError } 2300059 - Couldn't use specified SSL cipher.
-         * @throws { BusinessError } 2300060 - SSL peer certificate or SSH remote key was not OK.
-         * @throws { BusinessError } 2300061 - Unrecognized or bad HTTP Content or Transfer-Encoding.
+         * @throws { BusinessError } 2300028 - Operation timeout.
+         * @throws { BusinessError } 2300047 - The number of redirections reaches the maximum allowed.
+         * @throws { BusinessError } 2300052 - The server returned nothing (no header or data).
+         * @throws { BusinessError } 2300055 - Failed to send data to the peer.
+         * @throws { BusinessError } 2300056 - Failed to receive data from the peer.
+         * @throws { BusinessError } 2300058 - Local SSL certificate error.
+         * @throws { BusinessError } 2300059 - The specified SSL cipher cannot be used.
+         * @throws { BusinessError } 2300060 - Invalid SSL peer certificate or SSH remote key.
+         * @throws { BusinessError } 2300061 - Invalid HTTP encoding format.
          * @throws { BusinessError } 2300063 - Maximum file size exceeded.
-         * @throws { BusinessError } 2300070 - Disk full or allocation exceeded.
+         * @throws { BusinessError } 2300070 - Remote disk full.
          * @throws { BusinessError } 2300073 - Remote file already exists.
-         * @throws { BusinessError } 2300077 - Problem with the SSL CA cert (path? access rights?).
+         * @throws { BusinessError } 2300077 - The SSL CA certificate does not exist or is unaccessible.
          * @throws { BusinessError } 2300078 - Remote file not found.
-         * @throws { BusinessError } 2300094 - An authentication function returned an error.
-         * @throws { BusinessError } 2300999 - Unknown Other Error.
+         * @throws { BusinessError } 2300094 - Authentication error.
+         * @throws { BusinessError } 2300999 - Unknown error.
          * @syscap SystemCapability.Communication.NetStack
          * @since 10
          */
@@ -1950,6 +1950,14 @@ declare namespace http {
          * @since 11
          */
         UNSUPPORTED_TYPE,
+        /**
+         * The server cannot process the requested data range.
+         * @syscap SystemCapability.Communication.NetStack
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        RANGE_NOT_SATISFIABLE,
         /**
          * Internal server error, unable to complete the request.
          * @syscap SystemCapability.Communication.NetStack

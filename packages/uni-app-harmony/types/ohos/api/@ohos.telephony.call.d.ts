@@ -85,7 +85,8 @@ declare namespace call {
      *
      * @param { string } phoneNumber - Indicates the called number.
      * @param { AsyncCallback<void> } callback - The callback of makeCall.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -98,7 +99,8 @@ declare namespace call {
      *
      * @param { string } phoneNumber - Indicates the called number.
      * @param { AsyncCallback<void> } callback - The callback of makeCall.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -113,7 +115,8 @@ declare namespace call {
      *
      * @param { string } phoneNumber - Indicates the called number.
      * @returns { Promise<void> } The promise returned by the makeCall.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -126,7 +129,8 @@ declare namespace call {
      *
      * @param { string } phoneNumber - Indicates the called number.
      * @returns { Promise<void> } The promise returned by the makeCall.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -220,7 +224,8 @@ declare namespace call {
      * @param { EmergencyNumberOptions } options - Indicates the additional information for emergency numbers.
      * @param { AsyncCallback<boolean> } callback - Indicates the callback for isEmergencyPhoneNumber.
      * Returns {@code true} if the phone number is on the emergency number list. Returns {@code false} otherwise.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -236,7 +241,8 @@ declare namespace call {
      * @param { EmergencyNumberOptions } options - Indicates the additional information for emergency numbers.
      * @returns { Promise<boolean> } Returns {@code true} if the phone number is on the emergency number list.
      * Returns {@code false} otherwise.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -251,7 +257,8 @@ declare namespace call {
      * @param { string } phoneNumber - Indicates the phone number to check.
      * @param { AsyncCallback<boolean> } callback - Indicates the callback for isEmergencyPhoneNumber.
      * Returns {@code true} if the phone number is on the emergency number list. Returns {@code false} otherwise.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -270,7 +277,8 @@ declare namespace call {
      * @param { NumberFormatOptions } options - Indicates the country code option.
      * @param { AsyncCallback<string> } callback - Indicates the callback to obtain a formatted phone number.
      * Returns an empty string if the input phone number is invalid.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -288,7 +296,8 @@ declare namespace call {
      * @param { string } phoneNumber - Indicates the phone number to format.
      * @param { NumberFormatOptions } options - Indicates the country code option.
      * @returns { Promise<string> } Returns the phone number after being formatted.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -306,7 +315,8 @@ declare namespace call {
      * @param { string } phoneNumber - Indicates the phone number to format.
      * @param { AsyncCallback<string> } callback - Indicates the callback to obtain a formatted phone number.
      * Returns an empty string if the input phone number is invalid.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -322,7 +332,8 @@ declare namespace call {
      * @param { string } countryCode - Indicates a two-digit country code defined in ISO 3166-1.
      * @param { AsyncCallback<string> } callback - Returns an E.164 number.
      * Returns an empty string if the input phone number is invalid.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -338,7 +349,8 @@ declare namespace call {
      * @param { string } countryCode - Indicates a two-digit country code defined in ISO 3166-1.
      * @returns { Promise<string> } Returns an E.164 number.
      * Returns an empty string if the input phone number is invalid.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified;
+     * 2. Incorrect parameters types;
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.

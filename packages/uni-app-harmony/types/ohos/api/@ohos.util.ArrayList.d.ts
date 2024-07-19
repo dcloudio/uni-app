@@ -91,7 +91,10 @@ declare class ArrayList<T> {
      * @param { number } index - index index at which the specified element is to be inserted
      * @throws { BusinessError } 10200001 - The value of index is out of range.
      * @throws { BusinessError } 10200011 - The insert method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -104,7 +107,10 @@ declare class ArrayList<T> {
      * @param { number } index - index index at which the specified element is to be inserted
      * @throws { BusinessError } 10200001 - The value of index is out of range.
      * @throws { BusinessError } 10200011 - The insert method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -160,7 +166,10 @@ declare class ArrayList<T> {
      * @returns { T } the T type ,returns undefined if arraylist is empty,If the index is
      * @throws { BusinessError } 10200001 - The value of index is out of range.
      * @throws { BusinessError } 10200011 - The removeByIndex method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -172,7 +181,10 @@ declare class ArrayList<T> {
      * @returns { T } the T type ,returns undefined if arraylist is empty,If the index is
      * @throws { BusinessError } 10200001 - The value of index is out of range.
      * @throws { BusinessError } 10200011 - The removeByIndex method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -231,7 +243,10 @@ declare class ArrayList<T> {
      * @param { number } toIndex - toIndex toIndex the end of the index, excluding the value at that index
      * @throws { BusinessError } 10200001 - The value of fromIndex or toIndex is out of range.
      * @throws { BusinessError } 10200011 - The removeByRange method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -242,7 +257,10 @@ declare class ArrayList<T> {
      * @param { number } toIndex - toIndex toIndex the end of the index, excluding the value at that index
      * @throws { BusinessError } 10200001 - The value of fromIndex or toIndex is out of range.
      * @throws { BusinessError } 10200011 - The removeByRange method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -258,7 +276,9 @@ declare class ArrayList<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The replaceAllElements method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -272,7 +292,9 @@ declare class ArrayList<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The replaceAllElements method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -288,7 +310,9 @@ declare class ArrayList<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -302,7 +326,9 @@ declare class ArrayList<T> {
      * thisArg (Optional) The value to be used as this value for when callbackFn is called.
      * If thisArg is omitted, undefined is used as the this value.
      * @throws { BusinessError } 10200011 - The forEach method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -318,7 +344,9 @@ declare class ArrayList<T> {
      * sorted in ascending order;If it returns secondValue minus firstValue, it returns an arraylist sorted in descending order;
      * If this parameter is empty, it will default to ASCII sorting
      * @throws { BusinessError } 10200011 - The sort method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Incorrect parameter types;
+     * 2.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -332,7 +360,9 @@ declare class ArrayList<T> {
      * sorted in ascending order;If it returns secondValue minus firstValue, it returns an arraylist sorted in descending order;
      * If this parameter is empty, it will default to ASCII sorting
      * @throws { BusinessError } 10200011 - The sort method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Incorrect parameter types;
+     * 2.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -346,7 +376,10 @@ declare class ArrayList<T> {
      * @returns { ArrayList<T> }
      * @throws { BusinessError } 10200001 - The value of fromIndex or toIndex is out of range.
      * @throws { BusinessError } 10200011 - The subArrayList method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -358,7 +391,10 @@ declare class ArrayList<T> {
      * @returns { ArrayList<T> }
      * @throws { BusinessError } 10200001 - The value of fromIndex or toIndex is out of range.
      * @throws { BusinessError } 10200011 - The subArrayList method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types;
+     * 3.Parameter verification failed.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10
@@ -460,7 +496,9 @@ declare class ArrayList<T> {
      *
      * @param { number } newCapacity - newCapacity newCapacity
      * @throws { BusinessError } 10200011 - The increaseCapacityTo method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @since 8
      */
@@ -470,7 +508,9 @@ declare class ArrayList<T> {
      *
      * @param { number } newCapacity - newCapacity newCapacity
      * @throws { BusinessError } 10200011 - The increaseCapacityTo method cannot be bound.
-     * @throws { BusinessError } 401 - The type of parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1.Mandatory parameters are left unspecified;
+     * 2.Incorrect parameter types.
      * @syscap SystemCapability.Utils.Lang
      * @crossplatform
      * @since 10

@@ -15,6 +15,7 @@ import type { ComponentPublicInstance } from 'vue'
 import { setStatusBarStyle } from '../../statusBar'
 import { isTabPage } from '../../framework/app/tabBar'
 import { closePage } from './utils'
+import { invokeAfterRouteHooks, invokeBeforeRouteHooks } from './performance'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -43,6 +44,7 @@ function _redirectTo({
   // 与 uni-app x 安卓一致，后移除页面
 
   return new Promise((resolve) => {
+    invokeAfterRouteHooks(API_REDIRECT_TO)
     showWebview(
       registerPage({
         url,
@@ -63,6 +65,7 @@ function _redirectTo({
         setStatusBarStyle()
       }
     )
+    invokeBeforeRouteHooks(API_REDIRECT_TO)
   })
 }
 

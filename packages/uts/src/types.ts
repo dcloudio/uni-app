@@ -80,11 +80,13 @@ export type UTSOutputOptions = {
     uniExtApiProviders?: [string, string, string][]
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
+    uvueGenDefaultAs?: string
     disableReactiveObject?: boolean
     reactiveObjects?: string[]
     reactiveAll?: boolean
     uniCloudObjectInfo?: { name: string; methodList: string[] }[]
-    autoImports?: Record<string, [[string, string]]>
+    autoImports?: Record<string, [string, string?][]>
+    autoImportExternals?: Record<string, [string, string?][]>
     uniModulesArtifacts?: {
       name: string
       package: string

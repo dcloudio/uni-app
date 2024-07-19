@@ -67,13 +67,23 @@ declare namespace fileUri {
          * @since 11
          */
         getFullDirectoryUri(): string;
+        /**
+         * Check whether the incoming URI is a remote URI
+         *
+         * @returns { boolean } Return true or false
+         * @throws { BusinessError } 13900042 - Unknown error
+         * @syscap SystemCapability.FileManagement.AppFileService
+         * @since 12
+         */
+        isRemoteUri(): boolean;
     }
     /**
      * Get the uri from the path of file in app sandbox
      *
      * @param { string } path the path of file in app sandbox
      * @returns { string } Return the file uri
-     * @throws { BusinessError } 401 - The input parameter is invalid
+     * @throws { BusinessError } 401 - The input parameter is invalidPossible causes:1.Mandatory parameters are left unspecified;
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.FileManagement.AppFileService
      * @since 9
      */

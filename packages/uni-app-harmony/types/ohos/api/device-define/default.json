@@ -3,6 +3,7 @@
     "SystemCapability.ArkUI.ArkUI.Full",
     "SystemCapability.ArkUI.ArkUI.Napi",
     "SystemCapability.ArkUI.ArkUI.Libuv",
+    "SystemCapability.ArkUI.ArkUI.Lite",
     "SystemCapability.ArkUI.UiAppearance",
     "SystemCapability.Base",
     "SystemCapability.BundleManager.BundleFramework",
@@ -70,6 +71,7 @@
     "SystemCapability.Multimedia.AVSession.Core",
     "SystemCapability.Multimedia.AVSession.Manager",
     "SystemCapability.Multimedia.AVSession.AVCast",
+    "SystemCapability.Multimedia.AVSession.ExtendedDisplayCast",
     "SystemCapability.Multimedia.Audio.Core",
     "SystemCapability.Multimedia.Audio.Renderer",
     "SystemCapability.Multimedia.Audio.Capturer",
@@ -85,6 +87,7 @@
     "SystemCapability.Multimedia.Image.ImageSource",
     "SystemCapability.Multimedia.Image.ImagePacker",
     "SystemCapability.Multimedia.Image.ImageReceiver",
+    "SystemCapability.Multimedia.ImageEffect.Core",
     "SystemCapability.Multimedia.MediaLibrary.Core",
     "SystemCapability.Multimedia.MediaLibrary.DistributedCore",
     "SystemCapability.Multimedia.SystemSound.Core",
@@ -204,11 +207,14 @@
     "SystemCapability.ArkUi.Graphics3D",
     "SystemCapability.Graphics.Drawing",
     "SystemCapability.Graphic.Graphic2D.NativeDrawing",
-    "SystemCapability.Resourceschedule.Ffrt.Core",
     "SystemCapability.Developtools.Syscap",
+    "SystemCapability.Resourceschedule.Ffrt.Core",
     "SystemCapability.Graphic.Graphic2D.NativeWindow",
+    "SystemCapability.Graphic.Graphic2D.NativeBuffer",
+    "SystemCapability.Graphic.Graphic2D.NativeImage",
+    "SystemCapability.Graphic.Graphic2D.NativeVsync",
     "SystemCapability.Graphic.Vulkan",
     "SystemCapability.Multimedia.Image.ImageCreator",
-    "SystemCapability.Graphic.Graphic2D.WebGL2"
+    "SystemCapability.Ability.AppStartup"
   ]
 }

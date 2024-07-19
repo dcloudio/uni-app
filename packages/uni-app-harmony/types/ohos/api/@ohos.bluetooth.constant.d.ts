@@ -23,6 +23,14 @@
  * @syscap SystemCapability.Communication.Bluetooth.Core
  * @since 10
  */
+/**
+ * The definition of constant.
+ *
+ * @namespace constant
+ * @syscap SystemCapability.Communication.Bluetooth.Core
+ * @atomicservice
+ * @since 12
+ */
 declare namespace constant {
     /**
      * The enum of profile id.
@@ -68,12 +76,27 @@ declare namespace constant {
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 10
      */
+    /**
+     * The enum of profile connection state.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Communication.Bluetooth.Core
+     * @atomicservice
+     * @since 12
+     */
     export enum ProfileConnectionState {
         /**
          * the current profile is disconnected
          *
          * @syscap SystemCapability.Communication.Bluetooth.Core
          * @since 10
+         */
+        /**
+         * the current profile is disconnected
+         *
+         * @syscap SystemCapability.Communication.Bluetooth.Core
+         * @atomicservice
+         * @since 12
          */
         STATE_DISCONNECTED = 0,
         /**
@@ -82,6 +105,13 @@ declare namespace constant {
          * @syscap SystemCapability.Communication.Bluetooth.Core
          * @since 10
          */
+        /**
+         * the current profile is being connected
+         *
+         * @syscap SystemCapability.Communication.Bluetooth.Core
+         * @atomicservice
+         * @since 12
+         */
         STATE_CONNECTING = 1,
         /**
          * the current profile is connected
@@ -89,12 +119,26 @@ declare namespace constant {
          * @syscap SystemCapability.Communication.Bluetooth.Core
          * @since 10
          */
+        /**
+         * the current profile is connected
+         *
+         * @syscap SystemCapability.Communication.Bluetooth.Core
+         * @atomicservice
+         * @since 12
+         */
         STATE_CONNECTED = 2,
         /**
          * the current profile is being disconnected
          *
          * @syscap SystemCapability.Communication.Bluetooth.Core
          * @since 10
+         */
+        /**
+         * the current profile is being disconnected
+         *
+         * @syscap SystemCapability.Communication.Bluetooth.Core
+         * @atomicservice
+         * @since 12
          */
         STATE_DISCONNECTING = 3
     }

@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit AbilityKit
+ */
+/**
  * @typedef ProcessInfo
  * @syscap SystemCapability.Ability.AbilityRuntime.Core
  * @since 7

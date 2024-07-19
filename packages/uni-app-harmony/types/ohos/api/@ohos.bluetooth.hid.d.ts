@@ -28,6 +28,7 @@ declare namespace hid {
     /**
      * Base interface of profile.
      *
+     * @typedef { baseProfile.BaseProfile } BaseProfile
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 10
      */
@@ -36,7 +37,8 @@ declare namespace hid {
      * create the instance of hid profile.
      *
      * @returns { HidHostProfile } Returns the instance of hid profile.
-     * @throws { BusinessError } 401 - Invalid parameter.
+     * @throws { BusinessError } 401 - Invalid parameter. Possible causes: 1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types. 3. Parameter verification failed.
      * @throws { BusinessError } 801 - Capability not supported.
      * @syscap SystemCapability.Communication.Bluetooth.Core
      * @since 10

@@ -3,8 +3,10 @@ import path from 'path'
 import { type Plugin, type ResolvedConfig, normalizePath } from 'vite'
 
 import {
+  H5_FRAMEWORK_STYLE_PATH,
   buildInCssSet,
   createEncryptCssUrlReplacer,
+  createShadowImageUrl,
   cssPostPlugin,
   getAssetHash,
   injectAssetPlugin,
@@ -60,6 +62,59 @@ export function uniCssPlugin(): Plugin {
           })
         )
         injectAssetPlugin(config)
+      }
+    },
+    transform(code, id) {
+      id = normalizePath(id)
+      if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'shadow.css')) {
+        const url = createShadowImageUrl(0, 'grey')
+        return {
+          code:
+            code +
+            `
+@keyframes shadow-preload {
+  0% {
+    background-image: url(${url});
+  }
+  100% {
+    background-image: url(${url});
+  }
+}
+`,
+          map: { mappings: '' },
+        }
+      } else if (id.endsWith(H5_FRAMEWORK_STYLE_PATH + 'pageHead.css')) {
+        return {
+          code:
+            code +
+            `
+.uni-page-head-shadow-grey::after {
+  background-image: url('${createShadowImageUrl(0, 'grey')}');
+}
+
+.uni-page-head-shadow-blue::after {
+  background-image: url('${createShadowImageUrl(0, 'blue')}');
+}
+
+.uni-page-head-shadow-green::after {
+  background-image: url('${createShadowImageUrl(0, 'green')}');
+}
+
+.uni-page-head-shadow-orange::after {
+  background-image: url('${createShadowImageUrl(0, 'orange')}');
+}
+
+.uni-page-head-shadow-red::after {
+  background-image: url('${createShadowImageUrl(0, 'red')}');
+}
+
+.uni-page-head-shadow-yellow::after {
+  background-image: url('${createShadowImageUrl(0, 'yellow')}');
+}
+            
+`,
+          map: { mappings: '' },
+        }
       }
     },
     async generateBundle() {

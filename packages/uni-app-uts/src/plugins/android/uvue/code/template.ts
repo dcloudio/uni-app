@@ -2,14 +2,17 @@ import fs from 'fs-extra'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
 import { isVueSfcFile, preUVueHtml } from '@dcloudio/uni-cli-shared'
 import { compile } from '../compiler'
-import type { TemplateCompilerOptions } from '../compiler/options'
+import type {
+  CodegenResult,
+  TemplateCompilerOptions,
+} from '../compiler/options'
 import { genRenderFunctionDecl } from '../compiler/utils'
 import type { TransformPluginContext } from 'rollup'
 import { getDescriptor, getResolvedOptions } from '../descriptorCache'
 
 export function genTemplate(
   { template }: SFCDescriptor,
-  options: TemplateCompilerOptions
+  options: TemplateCompilerOptions & { genDefaultAs?: string }
 ) {
   if (!template || !template.content) {
     return {
@@ -18,11 +21,10 @@ export function genTemplate(
           ? genRenderFunctionDecl(options) + ` { return null }`
           : `null`,
       easyComponentAutoImports: {},
-      importEasyComponents: [],
-      importUTSComponents: [],
+      preamble: '',
       elements: [],
       imports: [],
-    }
+    } as CodegenResult
   }
   const { preprocessLang, preprocessOptions } = options
   const preprocessor = preprocessLang

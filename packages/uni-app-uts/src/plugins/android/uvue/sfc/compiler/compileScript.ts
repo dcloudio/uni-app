@@ -17,7 +17,7 @@ import type {
 } from '@babel/types'
 import { walk } from 'estree-walker'
 import type { RawSourceMap } from 'source-map-js'
-import { processNormalScript } from './script/normalScript'
+import { processNormalScript, processTemplate } from './script/normalScript'
 import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { warnOnce } from './warn'
 import { ScriptCompileContext } from './script/context'
@@ -40,6 +40,7 @@ import {
   getImportedName,
   isCallOf,
   isLiteralNode,
+  resolveDefineCode,
   unwrapTSNode,
 } from './script/utils'
 import { analyzeScriptBindings } from './script/analyzeScriptBindings'
@@ -53,6 +54,11 @@ export const normalScriptDefaultVar = `__default__`
 export const DEFAULT_FILENAME = 'anonymous.vue'
 
 export interface SFCScriptCompileOptions {
+  root: string
+  /**
+   * 类型
+   */
+  componentType: 'app' | 'page' | 'component'
   /**
    * 是否同时支持使用 <script> 和 <script setup>
    */
@@ -869,7 +875,7 @@ __ins.emit(event, ...do_not_transform_spread)
   // }
 
   // 9. finalize setup() argument signature
-  let args = `__props: ${options.className}`
+  let args = `__props`
   // inject user assignment of props
   // we use a default __props so that template expressions referencing props
   // can use it directly
@@ -916,26 +922,30 @@ __ins.emit(event, ...do_not_transform_spread)
 
   // 10. generate return statement
   // 剩余由 rust 编译器处理
-  const returned = `"INLINE_RENDER"`
-
-  // if (!options.inlineTemplate && !__TEST__) {
-  //   // in non-inline mode, the `__isScriptSetup: true` flag is used by
-  //   // componentPublicInstance proxy to allow properties that start with $ or _
-  //   ctx.s.appendRight(
-  //     endOffset,
-  //     `\nconst __returned__ = ${returned}\n` +
-  //       `Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })\n` +
-  //       `return __returned__` +
-  //       `\n}\n\n`
-  //   )
-  // } else {
-  ctx.s.appendRight(endOffset, `\nreturn ${returned}\n}\n\n`)
-  // }
-
+  if (options.componentType !== 'app') {
+    const { code, importsCode, preamble } = processTemplate(sfc, {
+      relativeFilename,
+      bindingMetadata: ctx.bindingMetadata,
+      rootDir: options.root,
+      className: options.className,
+    })
+    if (importsCode) {
+      ctx.s.prepend(importsCode)
+    }
+    if (preamble) {
+      ctx.s.prepend(preamble)
+    }
+    ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n`)
+    // TODO sourceMap
+  }
   // 11. finalize default export
   const genDefaultAs = options.genDefaultAs
     ? `const ${options.genDefaultAs} =`
     : `export default`
+
+  if (options.genDefaultAs) {
+    ctx.s.append(`\nexport default ${options.genDefaultAs}`)
+  }
 
   let runtimeOptions = ``
   if (!ctx.hasDefaultExportName && filename && filename !== DEFAULT_FILENAME) {
@@ -984,14 +994,16 @@ __ins.emit(event, ...do_not_transform_spread)
   // export default defineComponent({ ...__default__, ... })
   ctx.s.prependLeft(
     startOffset,
-    `\n${genDefaultAs} {${runtimeOptions}\n  ` +
-      `${hasAwait ? `async ` : ``}setup(${args}) {
+    `\n${genDefaultAs} ${ctx.helper(
+      resolveDefineCode(ctx.options.componentType!)
+    )}({${runtimeOptions}\n  ` +
+      `${hasAwait ? `async ` : ``}setup(${args}): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy${options.className ? ` as ${options.className}` : ''};
+const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 ${exposeCall}`
   )
-  ctx.s.appendRight(endOffset, `}`)
+  ctx.s.appendRight(endOffset, `})`)
 
   // 12. finalize Vue helper imports
   // if (ctx.helperImports.size > 0) {

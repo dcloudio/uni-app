@@ -15,7 +15,6 @@ import {
   parseAssets,
   parseVueRequest,
   preUVueCss,
-  resolveMainPathOnce,
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
@@ -27,7 +26,6 @@ import {
 import { isVue } from './utils'
 
 export function uniAppCssPlugin(): Plugin {
-  const mainUTS = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   let resolvedConfig: ResolvedConfig
   const name = 'uni:app-uvue-css'
   const descriptorOptions: ResolvedOptions = {
@@ -44,9 +42,6 @@ export function uniAppCssPlugin(): Plugin {
         platform: process.env.UNI_PLATFORM,
         includeComponentCss: false,
         chunkCssFilename(id: string) {
-          if (id === mainUTS) {
-            return 'App.style.uts'
-          }
           const { filename } = parseVueRequest(id)
           if (isVue(filename)) {
             return normalizeNodeModules(

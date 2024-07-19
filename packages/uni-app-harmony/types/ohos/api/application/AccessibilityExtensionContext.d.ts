@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file Provides accessibility extension context
+ * @kit AccessibilityKit
+ */
 import type { AsyncCallback } from '../@ohos.base';
 import ExtensionContext from './ExtensionContext';
 import type accessibility from '../@ohos.accessibility';
@@ -272,6 +276,22 @@ declare interface AccessibilityElement {
      */
     performAction(actionName: string, callback: AsyncCallback<void>): void;
     /**
+     * Get the position of cursor in TextInput.
+     *
+     * @param { AsyncCallback<number> } callback Indicates the listener.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    getCursorPosition(callback: AsyncCallback<number>): void;
+    /**
+     * Get the position of cursor in TextInput.
+     *
+     * @returns { Promise<number> }
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    getCursorPosition(): Promise<number>;
+    /**
      * Find elements that match the condition.
      *
      * @param { 'content' } type The type of query condition is content.
@@ -337,6 +357,28 @@ declare interface AccessibilityElement {
      * @since 9
      */
     findElement(type: 'focusDirection', condition: FocusDirection): Promise<AccessibilityElement>;
+    /**
+     * Find elements that match the condition.
+     *
+     * @param { 'textType' } type The type of query condition is text type.
+     * @param { string } condition Indicates the specific content to be queried.
+     * @returns { Promise<Array<AccessibilityElement>> }
+     * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    findElement(type: 'textType', condition: string): Promise<Array<AccessibilityElement>>;
+    /**
+     * Find elements that match the condition.
+     *
+     * @param { 'elementId' } type The type of query condition is element id.
+     * @param { number } condition Indicates the specific content to be queried.
+     * @returns { Promise<AccessibilityElement> }
+     * @throws { BusinessError } 401 - Input parameter error.
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    findElement(type: 'elementId', condition: number): Promise<AccessibilityElement>;
 }
 /**
  * Indicates the possible attributes of the element and the type of the attribute value.
@@ -681,6 +723,34 @@ interface ElementAttributeValues {
      * @since 9
      */
     windowId: number;
+    /**
+     * Indicates the offset.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    offset: number;
+    /**
+     * Indicates the text type.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    textType: string;
+    /**
+     * Indicates the accessibility text of component.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    accessibilityText: string;
+    /**
+     * Indicates the hot area of the element.
+     *
+     * @syscap SystemCapability.BarrierFree.Accessibility.Core
+     * @since 12
+     */
+    hotArea: Rect;
 }
 /**
  * Indicates the direction of the search focus.

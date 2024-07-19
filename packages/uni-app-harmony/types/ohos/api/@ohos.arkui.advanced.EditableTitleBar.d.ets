@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -75,6 +75,13 @@ export declare class EditableTitleBarMenuItem {
     action?: () => void;
 }
 /**
+ * Declaration of the image item .
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+export type EditableTitleBarItem = EditableTitleBarMenuItem;
+/**
  * Declaration of the left icon type.
  * @enum { EditableLeftIconType }.
  * @syscap SystemCapability.ArkUI.ArkUI.Full
@@ -114,6 +121,52 @@ export declare enum EditableLeftIconType {
     Cancel = 1
 }
 /**
+ * Indicates the options of the editable title bar.
+ *
+ * @interface EditableTitleBarOptions
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+export declare interface EditableTitleBarOptions {
+    /**
+     * Background color.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    backgroundColor?: ResourceColor;
+    /**
+     * Background blur style.
+     *
+     * @type { ?BlurStyle }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    backgroundBlurStyle?: BlurStyle;
+    /**
+     * Indicates the types of the safe area.
+     *
+     * @type { ?Array<SafeAreaType> }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    safeAreaTypes?: Array<SafeAreaType>;
+    /**
+     * Indicates the edges of the safe area.
+     *
+     * @type { ?Array<SafeAreaEdge> }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    safeAreaEdges?: Array<SafeAreaEdge>;
+}
+/**
  * Declaration of the editable title bar.
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @since 10
@@ -141,6 +194,14 @@ export declare struct EditableTitleBar {
      */
     leftIconStyle: EditableLeftIconType;
     /**
+     * Image item between the left icon and the title.
+     * @type { ?EditableTitleBarItem }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    imageItem?: EditableTitleBarItem;
+    /**
      * Title of this title bar.
      * @type { ResourceStr }.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
@@ -154,6 +215,23 @@ export declare struct EditableTitleBar {
      * @since 11
      */
     title: ResourceStr;
+    /**
+     * Sub-Title of this title bar.
+     * @type { ?ResourceStr }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    subtitle?: ResourceStr;
+    /**
+     * Whether to required the save icon.
+     * @type { boolean }
+     * @default true
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    isSaveIconRequired: boolean;
     /**
      * Menu items on the right side.
      * @type { ?Array<EditableTitleBarMenuItem> }.
@@ -196,4 +274,13 @@ export declare struct EditableTitleBar {
      * @since 11
      */
     onCancel?: () => void;
+    /**
+     * Indicates the options of titlebar.
+     * @type { EditableTitleBarOptions }
+     * @default {expandSafeAreaTypes: SafeAreaType.SYSTEM, expandSafeAreaEdges: SafeAreaEdge.TOP}
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    options: EditableTitleBarOptions;
 }

@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit AbilityKit
+ */
+/**
  * A object that records the result of shell command executes.
  *
  * @typedef ShellCmdResult

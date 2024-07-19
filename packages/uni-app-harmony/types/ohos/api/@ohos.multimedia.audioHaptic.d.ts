@@ -89,7 +89,9 @@ declare namespace audioHaptic {
          * @param { string } audioUri - Audio file uri.
          * @param { string } hapticUri - Haptic file uri.
          * @returns { Promise<number> } Promise used to return the source id.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         *                                 1.Mandatory parameters are left unspecified;
+         *                                 2.Incorrect parameter types.
          * @syscap SystemCapability.Multimedia.AudioHaptic.Core
          * @since 11
          */
@@ -98,7 +100,9 @@ declare namespace audioHaptic {
          * Unregister source. This method uses a promise to return the result.
          * @param { number } id source id.
          * @returns { Promise<void> } Promise used to return the result.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         *                                 1.Mandatory parameters are left unspecified;
+         *                                 2.Incorrect parameter types.
          * @syscap SystemCapability.Multimedia.AudioHaptic.Core
          * @since 11
          */
@@ -107,7 +111,9 @@ declare namespace audioHaptic {
          * Set the audio latency mode of one source.
          * @param { number } id - Source id.
          * @param { AudioLatencyMode } latencyMode - Audio latency mode.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         *                                 1.Mandatory parameters are left unspecified;
+         *                                 2.Incorrect parameter types.
          * @throws { BusinessError } 5400102 - Operation not allowed.
          * @syscap SystemCapability.Multimedia.AudioHaptic.Core
          * @since 11
@@ -117,7 +123,10 @@ declare namespace audioHaptic {
          * Set the stream usage of one source.
          * @param { number } id - Source id.
          * @param { audio.StreamUsage } usage - Stream usage.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         *                                 1.Mandatory parameters are left unspecified;
+         *                                 2.Incorrect parameter types;
+         *                                 3.Parameter verification failed.
          * @throws { BusinessError } 5400102 - Operation not allowed.
          * @syscap SystemCapability.Multimedia.AudioHaptic.Core
          * @since 11
@@ -131,7 +140,9 @@ declare namespace audioHaptic {
          * @param { AudioHapticPlayerOptions } options - Options when creating audio haptic player.
          * @returns { Promise<AudioHapticPlayer> } Promise used to return the result.
          * @throws { BusinessError } 201 - Permission denied.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         *                                 1.Mandatory parameters are left unspecified;
+         *                                 2.Incorrect parameter types.
          * @throws { BusinessError } 5400102 - Operation not allowed.
          * @throws { BusinessError } 5400103 - I/O error.
          * @throws { BusinessError } 5400106 - Unsupport format.
@@ -171,7 +182,9 @@ declare namespace audioHaptic {
          * Is muted for one AudioHapticType
          * @param { AudioHapticType } type - Indicates the type to query.
          * @returns { boolean } - Is muted.
-         * @throws { BusinessError } 401 - The parameter check failed.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         *                                 1.Mandatory parameters are left unspecified;
+         *                                 2.Parameter verification failed.
          * @syscap SystemCapability.Multimedia.AudioHaptic.Core
          * @since 11
          */

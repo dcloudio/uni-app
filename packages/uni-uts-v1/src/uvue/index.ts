@@ -38,6 +38,7 @@ import {
   hbuilderFormatter,
 } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
+import { capitalize } from '@vue/shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -74,7 +75,7 @@ export interface CompileAppOptions {
   pageCount: number
   extApiComponents: string[]
   uvueClassNamePrefix?: string
-  autoImports?: Record<string, [[string, string]]>
+  autoImports?: Record<string, [string, string?][]>
   // service、name、class
   extApiProviders?: [string, string, string][]
   uniModulesArtifacts?: {
@@ -83,6 +84,7 @@ export interface CompileAppOptions {
     scopedSlots: string[]
     declaration: string
   }[]
+  env?: Record<string, unknown>
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -97,25 +99,34 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     sourceMap,
     uni_modules,
     extApis,
-    autoImports,
+    autoImports = {},
   } = options
 
   if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
   }
 
-  // 暂不增加，因为跟 io.dcloud.uniapp.extapi.* 有冲突，导致不能确认是哪个
-  // if (extApis) {
-  //   Object.keys(extApis).forEach((key) => {
-  //     let extApiPackage = extApis[key][0]
-  //     if (extApiPackage) {
-  //       extApiPackage += '.*'
-  //       if (!imports.includes(extApiPackage)) {
-  //         imports.push(extApiPackage)
-  //       }
-  //     }
-  //   })
-  // }
+  if (extApis) {
+    // 导入固定的类型
+    Object.keys(extApis).forEach((api) => {
+      const packageName = extApis[api][0]
+      const prefix = capitalize(api)
+      if (!autoImports[packageName]) {
+        autoImports[packageName] = []
+      }
+      ;[
+        'Options',
+        'SuccessCallback',
+        'Result',
+        'FailCallback',
+        'Fail',
+        'CompleteCallback',
+        'Complete',
+      ].forEach((importName) => {
+        autoImports[packageName].push([prefix + importName])
+      })
+    })
+  }
 
   const input: UTSInputOptions = {
     root: inputDir,
@@ -127,6 +138,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     uniModules: uni_modules,
     globals: {
       envs: {
+        ...options.env,
         // 自动化测试
         NODE_ENV: process.env.NODE_ENV,
         UNI_AUTOMATOR_WS_ENDPOINT: process.env.UNI_AUTOMATOR_WS_ENDPOINT || '',
@@ -171,6 +183,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         uniExtApiProviders: options.extApiProviders,
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
+        uvueGenDefaultAs: '__sfc__',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
@@ -209,9 +222,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     const useUniCloudApi =
       result.inject_apis &&
       result.inject_apis.find((api) => api.startsWith('uniCloud.'))
-    if (!autoImportUniCloud && useUniCloudApi) {
-      throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
-    } else if (autoImportUniCloud && !useUniCloudApi) {
+    if (autoImportUniCloud && !useUniCloudApi) {
       result.inject_apis = result.inject_apis || []
       result.inject_apis.push('uniCloud.importObject')
     }
@@ -223,6 +234,10 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 
 export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
+}
+
+export function tscOutDir() {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc')
 }
 
 function kotlinSrcDir(kotlinDir: string) {

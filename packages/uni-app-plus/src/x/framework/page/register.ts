@@ -25,6 +25,7 @@ import type { VuePageComponent } from '../../../service/framework/page/define'
 import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
+import { invokePageReadyHooks } from '../../api/route/performance'
 
 type PageNodeOptions = {}
 
@@ -170,6 +171,7 @@ export function registerPage(
       invokeHook(page, ON_UNLOAD)
     })
     nativePage.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page)
       invokeHook(page, ON_READY)
     })
 

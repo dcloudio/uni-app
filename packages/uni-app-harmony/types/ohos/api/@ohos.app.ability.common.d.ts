@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -30,6 +30,7 @@ import { AbilityResult as _AbilityResult } from './ability/abilityResult';
 import type _AbilityStartCallback from './application/AbilityStartCallback';
 import { ConnectOptions as _ConnectOptions } from './ability/connectOptions';
 import type * as _VpnExtensionContext from './application/VpnExtensionContext';
+import type * as _EmbeddableUIAbilityContext from './application/EmbeddableUIAbilityContext';
 /**
  * This module provides application context classes and common data structures.
  *
@@ -234,6 +235,15 @@ declare namespace common {
      * @atomicservice
      * @since 11
      */
+    /**
+     * The event center of a context, support the subscription and publication of events.
+     *
+     * @syscap SystemCapability.Ability.AbilityRuntime.Core
+     * @stagemodelonly
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     export type EventHub = _EventHub.default;
     /**
      * Defines a PacMap object for storing a series of values.
@@ -302,5 +312,14 @@ declare namespace common {
      * @since 11
      */
     export type VpnExtensionContext = _VpnExtensionContext.default;
+    /**
+     * The context of an embeddable UIAbility.
+     *
+     * @syscap SystemCapability.Ability.AbilityRuntime.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 12
+     */
+    export type EmbeddableUIAbilityContext = _EmbeddableUIAbilityContext.default;
 }
 export default common;

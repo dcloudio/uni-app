@@ -41,6 +41,11 @@ export function getApp({ allowDefault = false } = {}) {
   )
 }
 
+/**
+ * registerApp
+ * @param appVm
+ * @param nativeApp
+ */
 export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
   if (__DEV__) {
     console.log(formatLog('registerApp'))
@@ -75,9 +80,10 @@ export function registerApp(appVm: ComponentPublicInstance, nativeApp: IApp) {
   // initTabBar()
   initGlobalEvent(nativeApp)
   // initKeyboardEvent()
-  initSubscribeHandlers()
 
+  // onLaunch 触发时机 在 WebviewReady 之前
   initAppLaunch(appVm)
+  initSubscribeHandlers()
 
   // // 10s后清理临时文件
   // setTimeout(clearTempFile, 10000)

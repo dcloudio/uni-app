@@ -80,18 +80,26 @@ function useCache(props: Props, type: ComputedRef<string>) {
     const value =
       typeof props.modelValue === 'undefined' ? props.value : props.modelValue
     const cache = ref(
-      typeof value !== 'undefined' ? value.toLocaleString() : ''
+      typeof value !== 'undefined' && value !== null
+        ? value.toLocaleString()
+        : ''
     )
     watch(
       () => props.modelValue,
       (value) => {
-        cache.value = typeof value !== 'undefined' ? value.toLocaleString() : ''
+        cache.value =
+          typeof value !== 'undefined' && value !== null
+            ? value.toLocaleString()
+            : ''
       }
     )
     watch(
       () => props.value,
       (value) => {
-        cache.value = typeof value !== 'undefined' ? value.toLocaleString() : ''
+        cache.value =
+          typeof value !== 'undefined' && value !== null
+            ? value.toLocaleString()
+            : ''
       }
     )
     return cache

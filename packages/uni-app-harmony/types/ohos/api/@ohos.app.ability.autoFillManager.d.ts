@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2023-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -22,8 +22,17 @@ import type { UIContext } from './@ohos.arkui.UIContext';
  *
  * @namespace autoFillManager
  * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
- * @StageModelOnly
+ * @stagemodelonly
  * @since 11
+ */
+/**
+ * This module provides the function of auto fill manager.
+ *
+ * @namespace autoFillManager
+ * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
+ * @stagemodelonly
+ * @atomicservice
+ * @since 12
  */
 declare namespace autoFillManager {
     /**
@@ -31,24 +40,49 @@ declare namespace autoFillManager {
      *
      * @interface AutoSaveCallback
      * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 11
+     */
+    /**
+     * Auto save callback.
+     *
+     * @interface AutoSaveCallback
+     * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
+     * @stagemodelonly
+     * @atomicservice
+     * @since 12
      */
     export interface AutoSaveCallback {
         /**
          * Called when auto save request is successfully handled.
          *
          * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
-         * @StageModelOnly
+         * @stagemodelonly
          * @since 11
+         */
+        /**
+         * Called when auto save request is successfully handled.
+         *
+         * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
+         * @stagemodelonly
+         * @atomicservice
+         * @since 12
          */
         onSuccess(): void;
         /**
          * Called when auto save request is failed to be handled.
          *
          * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
-         * @StageModelOnly
+         * @stagemodelonly
          * @since 11
+         */
+        /**
+         * Called when auto save request is failed to be handled.
+         *
+         * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
+         * @stagemodelonly
+         * @atomicservice
+         * @since 12
          */
         onFailure(): void;
     }
@@ -57,11 +91,25 @@ declare namespace autoFillManager {
      *
      * @param { UIContext } context - Indicates the ui context where the save operation will be performed.
      * @param { AutoSaveCallback } [callback] - Indicates the callback that used to receive the result.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - The parameter check failed. Possible causes: 1. Get instance id failed;
+     * <br>2. Parse instance id failed; 3. The second parameter is not of type callback.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 11
+     */
+    /**
+     * Trigger an auto save request.
+     *
+     * @param { UIContext } context - Indicates the ui context where the save operation will be performed.
+     * @param { AutoSaveCallback } [callback] - Indicates the callback that used to receive the result.
+     * @throws { BusinessError } 401 - The parameter check failed. Possible causes: 1. Get instance id failed;
+     * <br>2. Parse instance id failed; 3. The second parameter is not of type callback.
+     * @throws { BusinessError } 16000050 - Internal error.
+     * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
+     * @stagemodelonly
+     * @atomicservice
+     * @since 12
      */
     export function requestAutoSave(context: UIContext, callback?: AutoSaveCallback): void;
 }

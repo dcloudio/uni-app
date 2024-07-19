@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License"),
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -11,6 +11,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+/**
+ * @file Information carried when a notification is sent
+ * @kit NotificationKit
  */
 import notification from '../@ohos.notification';
 import image from '../@ohos.multimedia.image';
@@ -44,6 +48,14 @@ export interface NotificationRequest {
      * @since 7
      */
     id?: number;
+    /**
+     * Globally unique notification message ID defined by application.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.Notification.Notification
+     * @since 12
+     */
+    appMessageId?: string;
     /**
      * Notification slot type.
      *
@@ -260,6 +272,14 @@ export interface NotificationRequest {
      * @since 8
      */
     readonly creatorUserId?: number;
+    /**
+     * Obtain the prompt tone resource path of the notification.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.Notification.Notification
+     * @since 12
+     */
+    sound?: string;
     /**
      * Obtains the unique hash code of a notification in the current application.
      *

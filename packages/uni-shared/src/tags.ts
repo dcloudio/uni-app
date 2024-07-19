@@ -44,6 +44,8 @@ export const BUILT_IN_TAG_NAMES = [
   'video',
   'view',
   'web-view',
+  'location-picker',
+  'location-view',
 ]
 
 export const BUILT_IN_TAGS = BUILT_IN_TAG_NAMES.map((tag) => 'uni-' + tag)
@@ -114,6 +116,7 @@ export const NVUE_BUILT_IN_TAGS = [
 ]
 
 export const UVUE_BUILT_IN_TAGS = [
+  'object',
   'loading-indicator',
   'list-view',
   'list-item',

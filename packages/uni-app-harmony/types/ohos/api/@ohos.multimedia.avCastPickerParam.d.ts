@@ -22,11 +22,24 @@
  * @syscap SystemCapability.Multimedia.AVSession.AVCast
  * @since 11
  */
+/**
+ * Definition of av cast picker state
+ * @enum { number }
+ * @syscap SystemCapability.Multimedia.AVSession.AVCast
+ * @atomicservice
+ * @since 12
+ */
 export declare enum AVCastPickerState {
     /**
      * The picker starts showing.
      * @syscap SystemCapability.Multimedia.AVSession.AVCast
      * @since 11
+     */
+    /**
+     * The picker starts showing.
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
      */
     STATE_APPEARING,
     /**
@@ -34,5 +47,64 @@ export declare enum AVCastPickerState {
      * @syscap SystemCapability.Multimedia.AVSession.AVCast
      * @since 11
      */
+    /**
+     * The picker finishes presenting.
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
     STATE_DISAPPEARING
+}
+/**
+ * Definition of av cast picker style
+ * @enum { number }
+ * @syscap SystemCapability.Multimedia.AVSession.AVCast
+ * @atomicservice
+ * @since 12
+ */
+export declare enum AVCastPickerStyle {
+    /**
+     * The picker shows in a panel style.
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    STYLE_PANEL,
+    /**
+     * The picker shows in a menu style.
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    STYLE_MENU
+}
+/**
+ * Definition of color mode of picker
+ * @enum { number }
+ * @syscap SystemCapability.Multimedia.AVSession.AVCast
+ * @atomicservice
+ * @since 12
+ */
+export declare enum AVCastPickerColorMode {
+    /**
+     * Auto mode which follows the definition of system.
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    AUTO,
+    /**
+     * Dark mode.
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    DARK,
+    /**
+     * Light mode.
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    LIGHT
 }

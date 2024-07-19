@@ -21,6 +21,7 @@ import {
 import type { ParserPlugin } from '@babel/parser'
 import { getPlatformDir } from './platform'
 import { isInHBuilderX } from './hbx'
+import { parseManifestJsonOnce } from './json'
 
 // 专为 uts.ts 服务
 export { camelize, capitalize, isArray } from '@vue/shared'
@@ -227,10 +228,39 @@ export function requireUniHelpers() {
 }
 
 export function normalizeEmitAssetFileName(fileName: string) {
+  const extname = path.extname(fileName)
+
   if (process.env.UNI_APP_X_TSC === 'true') {
-    if (path.extname(fileName) !== '.ts') {
+    if (extname !== '.ts') {
       return fileName + '.ts'
+    }
+  } else {
+    // logo.png、pages.json 等
+    if (!['.ts', '.uts', '.uvue', '.vue'].includes(extname)) {
+      fileName = fileName + '.uts'
     }
   }
   return fileName
+}
+
+function createIdent() {
+  if (process.env.UNI_INPUT_DIR) {
+    const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
+    const id = (manifestJson.appid || '').replace('__UNI__', '')
+    if (id) {
+      return Buffer.from(Buffer.from(id).toString('base64')).toString('hex')
+    }
+  }
+  return ''
+}
+
+export function createShadowImageUrl(cdn: number, type: string = 'grey') {
+  let identStr = ''
+  if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'web') {
+    const ident = createIdent()
+    identStr = ident ? `${ident}/` : ''
+  }
+  return `https://cdn${
+    (cdn || 0) + (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
+  }.dcloud.net.cn/${identStr}img/shadow-${type}.png`
 }

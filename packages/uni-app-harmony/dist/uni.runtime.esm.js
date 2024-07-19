@@ -1,4 +1,10 @@
-import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
+import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
+import geoLocationManager from '@ohos.geoLocationManager';
+import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
+import mapCommon from '@hms.core.map.mapCommon';
+import map from '@hms.core.map.map';
+import fs from '@ohos.file.fs';
+import buffer from '@ohos.buffer';
 
 /**
 * @vue/shared v3.4.21
@@ -10,6 +16,12 @@ function makeMap(str, expectsLowerCase) {
   return expectsLowerCase ? (val) => set.has(val.toLowerCase()) : (val) => set.has(val);
 }
 const extend = Object.assign;
+const remove = (arr, el) => {
+  const i = arr.indexOf(el);
+  if (i > -1) {
+    arr.splice(i, 1);
+  }
+};
 const hasOwnProperty$1 = Object.prototype.hasOwnProperty;
 const hasOwn$1 = (val, key) => hasOwnProperty$1.call(val, key);
 const isArray = Array.isArray;
@@ -7337,6 +7349,8 @@ assign(pako, deflate, inflate, constants);
 
 var pako_1 = pako;
 
+const BASE64_TO_TEMP_FILE_PATH = 'base64ToTempFilePath';
+
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
 const I18N_JSON_DELIMITERS = ['%', '%'];
@@ -7350,6 +7364,7 @@ const ON_HIDE = 'onHide';
 //App
 const ON_LAUNCH = 'onLaunch';
 const ON_ERROR = 'onError';
+const ON_KEYBOARD_HEIGHT_CHANGE = 'onKeyboardHeightChange';
 const ON_PAGE_NOT_FOUND = 'onPageNotFound';
 const ON_UNHANDLE_REJECTION = 'onUnhandledRejection';
 const ON_READY = 'onReady';
@@ -7359,6 +7374,7 @@ const ON_BACK_PRESS = 'onBackPress';
 const ON_PAGE_SCROLL = 'onPageScroll';
 const ON_TAB_ITEM_TAP = 'onTabItemTap';
 const ON_REACH_BOTTOM = 'onReachBottom';
+const ON_PULL_DOWN_REFRESH = 'onPullDownRefresh';
 // navigationBar
 const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
 // framework
@@ -7557,15 +7573,11 @@ function normalizeEventType(type, options) {
     return `on${capitalize(camelize(type))}`;
 }
 class UniEvent {
-    type;
-    bubbles;
-    cancelable;
-    defaultPrevented = false;
-    detail;
-    timeStamp = Date.now();
-    _stop = false;
-    _end = false;
     constructor(type, opts) {
+        this.defaultPrevented = false;
+        this.timeStamp = Date.now();
+        this._stop = false;
+        this._end = false;
         this.type = type;
         this.bubbles = !!opts.bubbles;
         this.cancelable = !!opts.cancelable;
@@ -7593,7 +7605,9 @@ function createUniEvent(evt) {
     return uniEvent;
 }
 class UniEventTarget {
-    listeners = Object.create(null);
+    constructor() {
+        this.listeners = Object.create(null);
+    }
     dispatchEvent(evt) {
         const listeners = this.listeners[evt.type];
         if (!listeners) {
@@ -7671,16 +7685,11 @@ function checkNodeId(node) {
 }
 // 为优化性能，各平台不使用proxy来实现node的操作拦截，而是直接通过pageNode定制
 class UniNode extends UniEventTarget {
-    nodeId;
-    nodeType;
-    nodeName;
-    childNodes;
-    pageNode = null;
-    parentNode = null;
-    __vueParentComponent;
-    _text = null;
     constructor(nodeType, nodeName, container) {
         super();
+        this.pageNode = null;
+        this.parentNode = null;
+        this._text = null;
         if (container) {
             const { pageNode } = container;
             if (pageNode) {
@@ -7790,10 +7799,23 @@ const ACTION_TYPE_ADD_WXS_EVENT = 12;
 const ACTION_TYPE_PAGE_SCROLL = 15;
 const ACTION_TYPE_EVENT = 20;
 
+/**
+ * 需要手动传入 timer,主要是解决 App 平台的定制 timer
+ */
+function debounce(fn, delay, { clearTimeout, setTimeout }) {
+    let timeout;
+    const newFn = function () {
+        clearTimeout(timeout);
+        const timerFn = () => fn.apply(this, arguments);
+        timeout = setTimeout(timerFn, delay);
+    };
+    newFn.cancel = function () {
+        clearTimeout(timeout);
+    };
+    return newFn;
+}
+
 class EventChannel {
-    id;
-    listener;
-    emitCache;
     constructor(id, events) {
         this.id = id;
         this.listener = {};
@@ -7956,7 +7978,7 @@ function resolveStringStyleItem(modeStyle, styleItem, key) {
 function normalizeStyles(pageStyle, themeConfig = {}, mode = 'light') {
     const modeStyle = themeConfig[mode];
     const styles = {};
-    if (typeof modeStyle === 'undefined')
+    if (typeof modeStyle === 'undefined' || !pageStyle)
         return pageStyle;
     Object.keys(pageStyle).forEach((key) => {
         const styleItem = pageStyle[key]; // Object Array String
@@ -8014,7 +8036,6 @@ function getEnv() {
 const isObject = (val) => val !== null && typeof val === 'object';
 const defaultDelimiters = ['{', '}'];
 class BaseFormatter {
-    _caches;
     constructor() {
         this._caches = Object.create(null);
     }
@@ -8150,13 +8171,12 @@ function normalizeLocale(locale, messages) {
     }
 }
 class I18n {
-    locale = LOCALE_EN;
-    fallbackLocale = LOCALE_EN;
-    message = {};
-    messages = {};
-    watchers = [];
-    formater;
     constructor({ locale, fallbackLocale, messages, watcher, formater, }) {
+        this.locale = LOCALE_EN;
+        this.fallbackLocale = LOCALE_EN;
+        this.message = {};
+        this.messages = {};
+        this.watchers = [];
         if (fallbackLocale) {
             this.fallbackLocale = fallbackLocale;
         }
@@ -9107,10 +9127,16 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions$1, launchOptions$1);
-    return extend({}, launchOptions$1);
+    return enterOptions$1;
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
+function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
+    // TODO: Implement
+}
+function removeMediaQueryObserver({ reqId, component }, _pageId) {
+    // TODO: Implement
+}
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
 function getLaunchOptions() {
@@ -9129,6 +9155,85 @@ function operateVideoPlayer(videoId, pageId, type, data) {
         data,
     }, pageId);
 }
+
+function operateMap(id, pageId, type, data, operateMapCallback) {
+    UniServiceJSBridge.invokeViewMethod('map.' + id, {
+        type,
+        data,
+    }, pageId, operateMapCallback);
+}
+
+const API_ADD_INTERCEPTOR = 'addInterceptor';
+const API_REMOVE_INTERCEPTOR = 'removeInterceptor';
+const AddInterceptorProtocol = [
+    {
+        name: 'method',
+        type: [String, Object],
+        required: true,
+    },
+];
+const RemoveInterceptorProtocol = AddInterceptorProtocol;
+
+function mergeInterceptorHook(interceptors, interceptor) {
+    Object.keys(interceptor).forEach((hook) => {
+        if (isFunction(interceptor[hook])) {
+            interceptors[hook] = mergeHook(interceptors[hook], interceptor[hook]);
+        }
+    });
+}
+function removeInterceptorHook(interceptors, interceptor) {
+    if (!interceptors || !interceptor) {
+        return;
+    }
+    Object.keys(interceptor).forEach((name) => {
+        const hooks = interceptors[name];
+        const hook = interceptor[name];
+        if (isArray(hooks) && isFunction(hook)) {
+            remove(hooks, hook);
+        }
+    });
+}
+function mergeHook(parentVal, childVal) {
+    const res = childVal
+        ? parentVal
+            ? parentVal.concat(childVal)
+            : isArray(childVal)
+                ? childVal
+                : [childVal]
+        : parentVal;
+    return res ? dedupeHooks(res) : res;
+}
+function dedupeHooks(hooks) {
+    const res = [];
+    for (let i = 0; i < hooks.length; i++) {
+        if (res.indexOf(hooks[i]) === -1) {
+            res.push(hooks[i]);
+        }
+    }
+    return res;
+}
+const addInterceptor = defineSyncApi(API_ADD_INTERCEPTOR, (method, interceptor) => {
+    if (isString(method) && isPlainObject(interceptor)) {
+        mergeInterceptorHook(scopedInterceptors[method] || (scopedInterceptors[method] = {}), interceptor);
+    }
+    else if (isPlainObject(method)) {
+        mergeInterceptorHook(globalInterceptors, method);
+    }
+}, AddInterceptorProtocol);
+const removeInterceptor = defineSyncApi(API_REMOVE_INTERCEPTOR, (method, interceptor) => {
+    if (isString(method)) {
+        if (isPlainObject(interceptor)) {
+            removeInterceptorHook(scopedInterceptors[method], interceptor);
+        }
+        else {
+            delete scopedInterceptors[method];
+        }
+    }
+    else if (isPlainObject(method)) {
+        removeInterceptorHook(globalInterceptors, method);
+    }
+}, RemoveInterceptorProtocol);
+const interceptors = {};
 
 const validator = [
     {
@@ -9162,8 +9267,6 @@ validator.concat({
 
 const RATES = [0.5, 0.8, 1.0, 1.25, 1.5, 2.0];
 class VideoContext {
-    id;
-    pageId;
     constructor(id, pageId) {
         this.id = id;
         this.pageId = pageId;
@@ -9213,32 +9316,43 @@ const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context)
     return new VideoContext(id, getPageIdByVm(getCurrentPageVm()));
 });
 
+const operateMapCallback = (options, res) => {
+    const errMsg = res.errMsg || '';
+    if (new RegExp('\\:\\s*fail').test(errMsg)) {
+        options.fail && options.fail(res);
+    }
+    else {
+        options.success && options.success(res);
+    }
+    options.complete && options.complete(res);
+};
 const operateMapWrap = (id, pageId, type, options) => {
+    operateMap(id, pageId, type, options, (res) => {
+        options && operateMapCallback(options, res);
+    });
 };
 class MapContext {
-    id;
-    pageId;
     constructor(id, pageId) {
         this.id = id;
         this.pageId = pageId;
     }
     getCenterLocation(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getCenterLocation', options);
     }
     moveToLocation(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'moveToLocation', options);
     }
     getScale(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getScale', options);
     }
     getRegion(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getRegion', options);
     }
     includePoints(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'includePoints', options);
     }
     translateMarker(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'translateMarker', options);
     }
     $getAppMap() {
         {
@@ -9246,43 +9360,43 @@ class MapContext {
         }
     }
     addCustomLayer(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addCustomLayer', options);
     }
     removeCustomLayer(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeCustomLayer', options);
     }
     addGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addGroundOverlay', options);
     }
     removeGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeGroundOverlay', options);
     }
     updateGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'updateGroundOverlay', options);
     }
     initMarkerCluster(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'initMarkerCluster', options);
     }
     addMarkers(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addMarkers', options);
     }
     removeMarkers(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeMarkers', options);
     }
     moveAlong(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'moveAlong', options);
     }
     setLocMarkerIcon(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'setLocMarkerIcon', options);
     }
     openMapApp(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'openMapApp', options);
     }
     on(name, callback) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'on', { name, callback });
     }
 }
-defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
+const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
     if (context) {
         return new MapContext(id, getPageIdByVm(context));
     }
@@ -9632,9 +9746,6 @@ function checkColor(e) {
 //#endregion
 //#region Class
 class CanvasGradient {
-    type;
-    data;
-    colorStop;
     constructor(type, data) {
         this.type = type;
         this.data = data;
@@ -9645,9 +9756,6 @@ class CanvasGradient {
     }
 }
 class Pattern {
-    type;
-    data;
-    colorStop;
     constructor(image, repetition) {
         this.type = 'pattern';
         this.data = image;
@@ -9655,19 +9763,19 @@ class Pattern {
     }
 }
 class TextMetrics {
-    width;
     constructor(width) {
         this.width = width;
     }
 }
+//#endregion
+const getTempPath = () => {
+    let _TEMP_PATH = TEMP_PATH;
+    {
+        typeof getEnv !== 'undefined' && (_TEMP_PATH = getEnv().TEMP_PATH);
+    }
+    return _TEMP_PATH;
+};
 class CanvasContext {
-    id;
-    pageId;
-    actions;
-    path;
-    subpath;
-    state;
-    drawingState;
     constructor(id, pageId) {
         this.id = id;
         this.pageId = pageId;
@@ -10349,7 +10457,7 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
         reject();
         return;
     }
-    const dirname = `${TEMP_PATH}/canvas`;
+    let dirname = `${getTempPath()}/canvas`;
     operateCanvas(canvasId, pageId, 'toTempFilePath', {
         x,
         y,
@@ -10369,15 +10477,108 @@ const canvasToTempFilePath = defineAsyncApi(API_CANVAS_TO_TEMP_FILE_PATH, ({ x =
     });
 }, CanvasToTempFilePathProtocol, CanvasToTempFilePathOptions);
 
+const defaultOptions = {
+    thresholds: [0],
+    initialRatio: 0,
+    observeAll: false,
+};
+const MARGINS = ['top', 'right', 'bottom', 'left'];
+let reqComponentObserverId$1 = 1;
+function normalizeRootMargin(margins = {}) {
+    return MARGINS.map((name) => `${Number(margins[name]) || 0}px`).join(' ');
+}
+class ServiceIntersectionObserver {
+    constructor(component, options) {
+        this._pageId = getPageIdByVm(component);
+        this._component = component;
+        this._options = extend({}, defaultOptions, options);
+    }
+    relativeTo(selector, margins) {
+        this._options.relativeToSelector = selector;
+        this._options.rootMargin = normalizeRootMargin(margins);
+        return this;
+    }
+    relativeToViewport(margins) {
+        this._options.relativeToSelector = undefined;
+        this._options.rootMargin = normalizeRootMargin(margins);
+        return this;
+    }
+    observe(selector, callback) {
+        if (!isFunction(callback)) {
+            return;
+        }
+        this._options.selector = selector;
+        this._reqId = reqComponentObserverId$1++;
+        addIntersectionObserver({
+            reqId: this._reqId,
+            component: this._component,
+            options: this._options,
+            callback,
+        }, this._pageId);
+    }
+    disconnect() {
+        this._reqId &&
+            removeIntersectionObserver({ reqId: this._reqId, component: this._component }, this._pageId);
+    }
+}
+const createIntersectionObserver = defineSyncApi('createIntersectionObserver', (context, options) => {
+    context = resolveComponentInstance(context);
+    if (context && !getPageIdByVm(context)) {
+        options = context;
+        context = null;
+    }
+    if (context) {
+        return new ServiceIntersectionObserver(context, options);
+    }
+    return new ServiceIntersectionObserver(getCurrentPageVm(), options);
+});
+
+let reqComponentObserverId = 1;
+class ServiceMediaQueryObserver {
+    constructor(component) {
+        this._pageId = component.$page && component.$page.id;
+        this._component = component;
+    }
+    observe(options, callback) {
+        if (!isFunction(callback)) {
+            return;
+        }
+        this._reqId = reqComponentObserverId++;
+        addMediaQueryObserver({
+            reqId: this._reqId,
+            component: this._component,
+            options,
+            callback,
+        }, this._pageId);
+    }
+    disconnect() {
+        this._reqId &&
+            removeMediaQueryObserver({
+                reqId: this._reqId,
+                component: this._component,
+            }, this._pageId);
+    }
+}
+const createMediaQueryObserver = defineSyncApi('createMediaQueryObserver', (context) => {
+    context = resolveComponentInstance(context);
+    if (context && !getPageIdByVm(context)) {
+        context = null;
+    }
+    if (context) {
+        return new ServiceMediaQueryObserver(context);
+    }
+    return new ServiceMediaQueryObserver(getCurrentPageVm());
+});
+
 // let eventReady = false
-let index$1 = 0;
+let index$2 = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
     const data = { options };
     const needCallOptions = options &&
         ('success' in options || 'fail' in options || 'complete' in options);
     if (needCallOptions) {
-        const callbackId = String(index$1++);
+        const callbackId = String(index$2++);
         data.callbackId = callbackId;
         optionsCache[callbackId] = options;
     }
@@ -10392,8 +10593,6 @@ function operateEditor(componentId, pageId, type, options) {
     });
 }
 class EditorContext {
-    id;
-    pageId;
     constructor(id, pageId) {
         this.id = id;
         this.pageId = pageId;
@@ -10460,10 +10659,6 @@ function convertContext(result) {
     }
 }
 class NodesRef {
-    _selectorQuery;
-    _component;
-    _selector;
-    _single;
     constructor(selectorQuery, component, selector, single) {
         this._selectorQuery = selectorQuery;
         this._component = component;
@@ -10505,12 +10700,8 @@ class NodesRef {
     }
 }
 class SelectorQuery {
-    _page;
-    _queue;
-    _component = undefined;
-    _queueCb;
-    _nodesRef;
     constructor(page) {
+        this._component = undefined;
         this._page = page;
         this._queue = [];
         this._queueCb = [];
@@ -10569,7 +10760,151 @@ const createSelectorQuery = defineSyncApi('createSelectorQuery', (context) => {
     return new SelectorQuery(context || getCurrentPageVm());
 });
 
+// import { elemInArray } from '../../helpers/protocol'
+const API_CREATE_ANIMATION = 'createAnimation';
+// const timingFunctions: API_TYPE_CREATE_ANIMATION_Timing_Function[] = [
+//   'linear',
+//   'ease',
+//   'ease-in',
+//   'ease-in-out',
+//   'ease-out',
+//   'step-start',
+//   'step-end',
+// ]
+const CreateAnimationOptions = {
+    // 目前参数校验不支持此api校验
+    formatArgs: {
+    /* duration: 400,
+    timingFunction(timingFunction, params) {
+      params.timingFunction = elemInArray(timingFunction, timingFunctions)
+    },
+    delay: 0,
+    transformOrigin: '50% 50% 0', */
+    },
+};
+const CreateAnimationProtocol = {
+    duration: Number,
+    timingFunction: String,
+    delay: Number,
+    transformOrigin: String,
+};
+
+const defaultOption = {
+    duration: 400,
+    timingFunction: 'linear',
+    delay: 0,
+    transformOrigin: '50% 50% 0',
+};
+class MPAnimation {
+    constructor(option) {
+        this.actions = [];
+        this.currentTransform = {};
+        this.currentStepAnimates = [];
+        this.option = extend({}, defaultOption, option);
+    }
+    _getOption(option) {
+        const _option = {
+            transition: extend({}, this.option, option),
+            transformOrigin: '',
+        };
+        _option.transformOrigin = _option.transition.transformOrigin;
+        delete _option.transition.transformOrigin;
+        return _option;
+    }
+    _pushAnimates(type, args) {
+        this.currentStepAnimates.push({
+            type: type,
+            args: args,
+        });
+    }
+    _converType(type) {
+        return type.replace(/[A-Z]/g, (text) => {
+            return `-${text.toLowerCase()}`;
+        });
+    }
+    _getValue(value) {
+        return typeof value === 'number' ? `${value}px` : value;
+    }
+    export() {
+        const actions = this.actions;
+        this.actions = [];
+        return {
+            actions,
+        };
+    }
+    step(option) {
+        this.currentStepAnimates.forEach((animate) => {
+            if (animate.type !== 'style') {
+                this.currentTransform[animate.type] = animate;
+            }
+            else {
+                this.currentTransform[`${animate.type}.${animate.args[0]}`] = animate;
+            }
+        });
+        this.actions.push({
+            animates: Object.values(this.currentTransform),
+            option: this._getOption(option),
+        });
+        this.currentStepAnimates = [];
+        return this;
+    }
+}
+const initAnimationProperty = /*#__PURE__*/ once(() => {
+    const animateTypes1 = [
+        'matrix',
+        'matrix3d',
+        'rotate',
+        'rotate3d',
+        'rotateX',
+        'rotateY',
+        'rotateZ',
+        'scale',
+        'scale3d',
+        'scaleX',
+        'scaleY',
+        'scaleZ',
+        'skew',
+        'skewX',
+        'skewY',
+        'translate',
+        'translate3d',
+        'translateX',
+        'translateY',
+        'translateZ',
+    ];
+    const animateTypes2 = ['opacity', 'backgroundColor'];
+    const animateTypes3 = ['width', 'height', 'left', 'right', 'top', 'bottom'];
+    animateTypes1.concat(animateTypes2, animateTypes3).forEach((type) => {
+        MPAnimation.prototype[type] = function (...args) {
+            if (animateTypes2.concat(animateTypes3).includes(type)) {
+                this._pushAnimates('style', [
+                    this._converType(type),
+                    animateTypes3.includes(type) ? this._getValue(args[0]) : args[0],
+                ]);
+            }
+            else {
+                this._pushAnimates(type, args);
+            }
+            return this;
+        };
+    });
+});
+const createAnimation = defineSyncApi(API_CREATE_ANIMATION, (option) => {
+    initAnimationProperty();
+    return new MPAnimation(option);
+}, CreateAnimationProtocol, CreateAnimationOptions);
+
 const API_ON_TAB_BAR_MID_BUTTON_TAP = 'onTabBarMidButtonTap';
+
+const API_ON_WINDOW_RESIZE = 'onWindowResize';
+
+/**
+ * 监听窗口大小变化
+ */
+const onWindowResize = defineOnApi(API_ON_WINDOW_RESIZE, () => {
+    // 生命周期包括onResize，框架直接监听resize
+    // window.addEventListener('resize', onResize)
+});
 
 const API_SET_LOCALE = 'setLocale';
 const API_GET_LOCALE = 'getLocale';
@@ -10605,6 +10940,20 @@ const setLocale = defineSyncApi(API_SET_LOCALE, (locale) => {
     return false;
 });
 
+const API_GET_SELECTED_TEXT_RANGE = 'getSelectedTextRange';
+
+const getSelectedTextRange = defineAsyncApi(API_GET_SELECTED_TEXT_RANGE, (_, { resolve, reject }) => {
+    UniServiceJSBridge.invokeViewMethod(API_GET_SELECTED_TEXT_RANGE, {}, getCurrentPageId(), (res) => {
+        if (typeof res.end === 'undefined' &&
+            typeof res.start === 'undefined') {
+            reject('no focused');
+        }
+        else {
+            resolve(res);
+        }
+    });
+});
+
 const appHooks = {
     [ON_UNHANDLE_REJECTION]: [],
     [ON_PAGE_NOT_FOUND]: [],
@@ -10620,11 +10969,11 @@ function injectAppHooks(appInstance) {
     });
 }
 const API_GET_ENTER_OPTIONS_SYNC = 'getEnterOptionsSync';
-defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+const getEnterOptionsSync = defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
     return getEnterOptions();
 });
 const API_GET_LAUNCH_OPTIONS_SYNC = 'getLaunchOptionsSync';
-defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
+const getLaunchOptionsSync = defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
     return getLaunchOptions();
 });
 
@@ -10636,6 +10985,101 @@ const CanIUseProtocol = [
         required: true,
     },
 ];
+
+const API_CHOOSE_LOCATION = 'chooseLocation';
+const ChooseLocationProtocol = {
+    keyword: String,
+    latitude: Number,
+    longitude: Number,
+};
+
+const API_GET_LOCATION = 'getLocation';
+const coordTypes$1 = ['wgs84', 'gcj02'];
+const GetLocationOptions = {
+    formatArgs: {
+        type(value, params) {
+            value = (value || '').toLowerCase();
+            if (coordTypes$1.indexOf(value) === -1) {
+                params.type = coordTypes$1[0];
+            }
+            else {
+                params.type = value;
+            }
+        },
+        altitude(value, params) {
+            params.altitude = value ? value : false;
+        },
+    },
+};
+const GetLocationProtocol = {
+    type: String,
+    altitude: Boolean,
+};
+
+const API_OPEN_LOCATION = 'openLocation';
+const checkProps = (key, value) => {
+    if (value === undefined) {
+        return `${key} should not be empty.`;
+    }
+    if (typeof value !== 'number') {
+        let receivedType = typeof value;
+        receivedType = receivedType[0].toUpperCase() + receivedType.substring(1);
+        return `Expected Number, got ${receivedType} with value ${JSON.stringify(value)}.`;
+    }
+};
+const OpenLocationOptions = {
+    formatArgs: {
+        latitude(value, params) {
+            const checkedInfo = checkProps('latitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.latitude = value;
+        },
+        longitude(value, params) {
+            const checkedInfo = checkProps('longitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.longitude = value;
+        },
+        scale(value, params) {
+            value = Math.floor(value);
+            params.scale = value >= 5 && value <= 18 ? value : 18;
+        },
+    },
+};
+const OpenLocationProtocol = {
+    latitude: Number,
+    longitude: Number,
+    scale: Number,
+    name: String,
+    address: String,
+};
+
+const API_START_LOCATION_UPDATE = 'startLocationUpdate';
+const API_ON_LOCATION_CHANGE = 'onLocationChange';
+const API_STOP_LOCATION_UPDATE = 'stopLocationUpdate';
+const API_OFF_LOCATION_CHANGE = 'offLocationChange';
+const API_OFF_LOCATION_CHANGE_ERROR = 'offLocationChangeError';
+const API_ON_LOCATION_CHANGE_ERROR = 'onLocationChangeError';
+const coordTypes = ['wgs84', 'gcj02'];
+const StartLocationUpdateProtocol = {
+    type: String,
+};
+const StartLocationUpdateOptions = {
+    formatArgs: {
+        type(value, params) {
+            value = (value || '').toLowerCase();
+            if (coordTypes.indexOf(value) === -1) {
+                params.type = coordTypes[1];
+            }
+            else {
+                params.type = value;
+            }
+        },
+    },
+};
 
 function encodeQueryString(url) {
     if (!isString(url)) {
@@ -10822,57 +11266,17 @@ function createNormalizeUrl(type) {
     };
 }
 
-const FRONT_COLORS = ['#ffffff', '#000000'];
-const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
-const SetNavigationBarColorOptions = {
-    formatArgs: {
-        animation(animation, params) {
-            if (!animation) {
-                animation = { duration: 0, timingFunc: 'linear' };
-            }
-            params.animation = {
-                duration: animation.duration || 0,
-                timingFunc: animation.timingFunc || 'linear',
-            };
-        },
-    },
-};
-const SetNavigationBarColorProtocol = {
-    frontColor: {
-        type: String,
-        required: true,
-        validator(frontColor) {
-            if (FRONT_COLORS.indexOf(frontColor) === -1) {
-                return `invalid frontColor "${frontColor}"`;
-            }
-        },
-    },
-    backgroundColor: {
+const API_LOAD_FONT_FACE = 'loadFontFace';
+const LoadFontFaceProtocol = {
+    family: {
         type: String,
         required: true,
     },
-    animation: Object,
-};
-const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
-const SetNavigationBarTitleProtocol = {
-    title: {
+    source: {
         type: String,
         required: true,
     },
-};
-const API_SHOW_NAVIGATION_BAR_LOADING = 'showNavigationBarLoading';
-const API_HIDE_NAVIGATION_BAR_LOADING = 'hideNavigationBarLoading';
-
-const API_PAGE_SCROLL_TO = 'pageScrollTo';
-const PageScrollToProtocol = {
-    scrollTop: Number,
-    selector: String,
-    duration: Number,
-};
-const PageScrollToOptions = {
-    formatArgs: {
-        duration: 300,
-    },
+    desc: Object,
 };
 
 const IndexProtocol = {
@@ -11262,6 +11666,28 @@ const hideTabBarRedDot = defineAsyncApi(API_HIDE_TAB_BAR_RED_DOT, ({ index }, { 
     resolve();
 }, HideTabBarRedDotProtocol, HideTabBarRedDotOptions);
 
+const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, reject }) => {
+    const pageId = getPageIdByVm(getCurrentPageVm());
+    UniServiceJSBridge.invokeViewMethod(API_LOAD_FONT_FACE, options, pageId, (err) => {
+        if (typeof err === 'string') {
+            reject(err);
+        }
+        else {
+            resolve();
+        }
+    });
+}, LoadFontFaceProtocol);
+
+function onKeyboardHeightChangeCallback(res) {
+    UniServiceJSBridge.invokeOnCallback(ON_KEYBOARD_HEIGHT_CHANGE, res);
+}
+const onKeyboardHeightChange = defineOnApi(ON_KEYBOARD_HEIGHT_CHANGE, () => {
+    UniServiceJSBridge.on(ON_KEYBOARD_HEIGHT_CHANGE, onKeyboardHeightChangeCallback);
+});
+const offKeyboardHeightChange = defineOffApi(ON_KEYBOARD_HEIGHT_CHANGE, () => {
+    UniServiceJSBridge.off(ON_KEYBOARD_HEIGHT_CHANGE, onKeyboardHeightChangeCallback);
+});
+
 const canIUse = defineSyncApi(API_CAN_I_USE, (schema) => {
     if (hasOwn$1(uni, schema)) {
         return true;
@@ -11545,21 +11971,7 @@ function initDebugRefresh(isTab, path, query) {
     };
 }
 
-function getCurrentWebview() {
-    const page = getCurrentPage();
-    if (page) {
-        return page.$getAppWebview();
-    }
-    return null;
-}
-function getWebview(page) {
-    if (page) {
-        return page.$getAppWebview();
-    }
-    return getCurrentWebview();
-}
-
-const downgrade = 'Harmony' === 'Android' ;
+const downgrade = 'HarmonyOS' === 'Android' ;
 const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
 const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
@@ -11604,6 +12016,22 @@ function reLaunchEntryPage() {
     uni.reLaunch({
         url: addLeadingSlash(__uniConfig.entryPagePath),
     });
+}
+
+function onWebviewResize(webview) {
+    const { emit } = UniServiceJSBridge;
+    const onResize = function ({ width, height, }) {
+        const landscape = Math.abs(plus.navigator.getOrientation()) === 90;
+        const res = {
+            deviceOrientation: landscape ? 'landscape' : 'portrait',
+            size: {
+                windowWidth: Math.ceil(width),
+                windowHeight: Math.ceil(height),
+            },
+        };
+        emit(ON_RESIZE, res, parseInt(webview.id)); // Page lifecycle
+    };
+    webview.addEventListener('resize', debounce(onResize, 50, { setTimeout, clearTimeout }));
 }
 
 function onWebviewReady(pageId, callback) {
@@ -11746,22 +12174,14 @@ function navigate(path, callback, isAppLaunch) {
 }
 
 class UniPageNode extends UniNode {
-    pageId;
-    _id = 1;
-    _created = false;
-    _updating = false;
-    options;
-    createAction;
-    createdAction;
-    scrollAction;
-    _createActionMap = new Map();
-    updateActions = [];
-    dicts = [];
-    normalizeDict;
-    isUnmounted;
-    _update;
     constructor(pageId, options, setup = false) {
         super(NODE_TYPE_PAGE, '#page', null);
+        this._id = 1;
+        this._created = false;
+        this._updating = false;
+        this._createActionMap = new Map();
+        this.updateActions = [];
+        this.dicts = [];
         this.nodeId = 0;
         this.pageId = pageId;
         this.pageNode = this;
@@ -12157,9 +12577,24 @@ function initWebviewStyle(webview, path, query, routeMeta) {
     webview.setStyle(webviewStyle);
 }
 
+const WEBVIEW_LISTENERS = {
+    pullToRefresh: ON_PULL_DOWN_REFRESH,
+};
+function initWebviewEvent(webview) {
+    const id = parseInt(webview.id);
+    Object.keys(WEBVIEW_LISTENERS).forEach((name) => {
+        const hook = WEBVIEW_LISTENERS[name];
+        webview.addEventListener(name, (e) => {
+            invokeHook(id, hook, e);
+        });
+    });
+    // TODO onWebviewClose
+    onWebviewResize(webview);
+}
+
 function initWebview(webview, path, query, routeMeta) {
     initWebviewStyle(webview, path, query, routeMeta);
-    // TODO initWebviewEvent(webview)
+    initWebviewEvent(webview);
 }
 
 function createWebview(options) {
@@ -12541,76 +12976,332 @@ function _switchTab({ url, path, query, }) {
     });
 }
 
-const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) => {
-    const pageId = getPageIdByVm(getCurrentPageVm());
-    UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, resolve);
-}, PageScrollToProtocol, PageScrollToOptions);
+// @ts-nocheck
+// TODO 优化此处代码，此页面无对应的css
+const LocationPickerPage = {
+    data() {
+        return {
+            keyword: '',
+            latitude: 0,
+            longitude: 0,
+            loaded: false,
+            channel: void 0,
+            closed: false,
+        };
+    },
+    onLoad(e) {
+        this.latitude = e.latitude;
+        this.longitude = e.longitude;
+        this.keyword = e.keyword;
+        this.loaded = true;
+        this.channel = this.getOpenerEventChannel();
+    },
+    onUnload() {
+        if (this.closed) {
+            return;
+        }
+        this.channel.emit('close', {});
+    },
+    methods: {
+        onClose(e) {
+            this.closed = true;
+            this.channel.emit('close', e.detail);
+            uni.navigateBack();
+        },
+    },
+    render: function (_ctx, _cache, $props, $setup, $data, $options) {
+        return $data.loaded
+            ? (openBlock(),
+                createElementBlock('location-picker', {
+                    key: 0,
+                    style: { width: '100%', height: '100%' },
+                    latitude: $data.latitude,
+                    longitude: $data.longitude,
+                    keyword: $data.keyword,
+                    onClose: _cache[0] ||
+                        (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
+                }, null, 40, ['latitude', 'longitude', 'keyword']))
+            : createCommentVNode('v-if', true);
+    },
+};
+const ROUTE_LOCATION_PICKER_PAGE = '__uniappchooselocation';
+const initLocationPickerPageOnce = once(() => {
+    definePage(ROUTE_LOCATION_PICKER_PAGE, LocationPickerPage);
+    __uniRoutes.push({
+        meta: {
+            navigationBar: {
+                style: 'custom',
+            },
+            isNVue: false,
+            route: ROUTE_LOCATION_PICKER_PAGE,
+        },
+        path: '/' + ROUTE_LOCATION_PICKER_PAGE,
+    });
+});
 
-const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, ({ __page__, title }, { resolve, reject }) => {
-    const webview = getWebview(__page__);
-    if (webview) {
-        const style = webview.getStyle();
-        if (style && style.titleNView) {
-            webview.setStyle({
-                titleNView: {
-                    titleText: title,
-                },
+const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (args, { resolve, reject }) => {
+    initLocationPickerPageOnce();
+    const { keyword = '', latitude = '', longitude = '' } = args;
+    uni.navigateTo({
+        url: '/' +
+            ROUTE_LOCATION_PICKER_PAGE +
+            '?keyword=' +
+            keyword +
+            '&latitude=' +
+            latitude +
+            '&longitude=' +
+            longitude,
+        events: {
+            close: (res) => {
+                if (res && res.latitude) {
+                    resolve(res);
+                }
+                else {
+                    reject('cancel');
+                }
+            },
+        },
+        fail: (err) => {
+            reject(err.errMsg || 'cancel');
+        },
+    });
+}, ChooseLocationProtocol);
+
+// @ts-nocheck
+// TODO 优化此处代码，此页面无对应的css
+const LocationViewPage = {
+    data() {
+        return {
+            latitude: 0,
+            longitude: 0,
+            loaded: false,
+        };
+    },
+    onLoad(e) {
+        this.latitude = e.latitude;
+        this.longitude = e.longitude;
+        this.loaded = true;
+    },
+    methods: {},
+    render: function (_ctx, _cache, $props, $setup, $data, $options) {
+        return $data.loaded
+            ? (openBlock(),
+                createElementBlock('location-view', {
+                    key: 0,
+                    style: { width: '100%', height: '100%' },
+                    latitude: $data.latitude,
+                    longitude: $data.longitude,
+                }, null, 40, ['latitude', 'longitude']))
+            : createCommentVNode('v-if', true);
+    },
+};
+const ROUTE_LOCATION_VIEW_PAGE = '__uniappopenlocation';
+const initLocationViewPageOnce = once(() => {
+    definePage(ROUTE_LOCATION_VIEW_PAGE, LocationViewPage);
+    __uniRoutes.push({
+        meta: {
+            navigationBar: {
+                style: 'custom',
+            },
+            isNVue: false,
+            route: ROUTE_LOCATION_VIEW_PAGE,
+        },
+        path: '/' + ROUTE_LOCATION_VIEW_PAGE,
+    });
+});
+
+const openLocation = defineAsyncApi(API_OPEN_LOCATION, (args, { resolve, reject }) => {
+    initLocationViewPageOnce();
+    const { latitude = '', longitude = '' } = args;
+    uni.navigateTo({
+        url: '/' +
+            ROUTE_LOCATION_VIEW_PAGE +
+            '?latitude=' +
+            latitude +
+            '&longitude=' +
+            longitude,
+        success: (res) => {
+            resolve();
+        },
+        fail: (err) => {
+            reject(err.errMsg || 'cancel');
+        },
+    });
+}, OpenLocationProtocol, OpenLocationOptions);
+
+async function requestPermission$1(permissions) {
+    const context = getContext();
+    const atManager = abilityAccessCtrl.createAtManager();
+    const permissionRequestResult = await atManager.requestPermissionsFromUser(context, permissions);
+    const isGranted = permissionRequestResult.authResults.every((item) => item === 0);
+    return isGranted;
+}
+const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type, altitude, highAccuracyExpireTime, isHighAccuracy }, { resolve, reject }) => {
+    const permissions = [
+        'ohos.permission.APPROXIMATELY_LOCATION',
+    ];
+    if (isHighAccuracy) {
+        permissions.push('ohos.permission.LOCATION');
+    }
+    requestPermission$1(permissions).then((isGranted) => {
+        if (!isGranted) {
+            reject('Permission denied');
+            return;
+        }
+        // const requestInfo: geoLocationManager.CurrentLocationRequest = {
+        //   priority: isHighAccuracy
+        //     ? geoLocationManager.LocationRequestPriority.ACCURACY
+        //     : geoLocationManager.LocationRequestPriority.UNSET,
+        //   scenario: geoLocationManager.LocationRequestScenario.UNSET,
+        //   maxAccuracy: 0,
+        //   timeoutMs: highAccuracyExpireTime,
+        // }
+        const singleLocationRequest = {
+            locatingPriority: isHighAccuracy
+                ? geoLocationManager.LocatingPriority.PRIORITY_ACCURACY
+                : geoLocationManager.LocatingPriority.PRIORITY_LOCATING_SPEED,
+            locatingTimeoutMs: highAccuracyExpireTime || 1000,
+        };
+        try {
+            geoLocationManager.getCurrentLocation(singleLocationRequest, (err, location) => {
+                if (err) {
+                    reject(err.message);
+                    return;
+                }
+                if (type === 'gcj02') {
+                    map
+                        .convertCoordinate(mapCommon.CoordinateType.WGS84, mapCommon.CoordinateType.GCJ02, {
+                        latitude: location.latitude,
+                        longitude: location.longitude,
+                    })
+                        .then((gcj02Posion) => {
+                        resolve({
+                            latitude: gcj02Posion.latitude,
+                            longitude: gcj02Posion.longitude,
+                            speed: location.speed,
+                            accuracy: location.accuracy,
+                            altitude: altitude ? location.altitude : 0,
+                            verticalAccuracy: 0,
+                            horizontalAccuracy: 0,
+                        });
+                    }, (err) => {
+                        reject(err.message);
+                    });
+                    return;
+                }
+                resolve({
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                    speed: location.speed,
+                    accuracy: location.accuracy,
+                    altitude: altitude ? location.altitude : 0,
+                    verticalAccuracy: 0,
+                    horizontalAccuracy: 0,
+                });
             });
         }
-        resolve();
-    }
-    else {
-        reject();
-    }
-}, SetNavigationBarTitleProtocol);
-defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
-    plus.nativeUI.showWaiting('', {
-        modal: false,
+        catch (err) {
+            reject(err.message);
+        }
     });
-    resolve();
-});
-defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
-    plus.nativeUI.closeWaiting();
-    resolve();
-});
-function setPageStatusBarStyle(statusBarStyle) {
-    const pages = getCurrentPages();
-    if (!pages.length) {
+}, GetLocationProtocol, GetLocationOptions);
+function subscribeGetLocation() {
+    registerServiceMethod(API_GET_LOCATION, (args, resolve) => {
+        getLocation({
+            type: args.type,
+            altitude: args.altitude,
+            highAccuracyExpireTime: args.highAccuracyExpireTime,
+            isHighAccuracy: args.isHighAccuracy,
+            success(res) {
+                resolve({
+                    latitude: res.latitude,
+                    longitude: res.longitude,
+                    speed: res.speed,
+                    accuracy: res.accuracy,
+                    altitude: res.altitude,
+                    verticalAccuracy: res.verticalAccuracy,
+                    horizontalAccuracy: res.horizontalAccuracy,
+                });
+            },
+            fail(err) {
+                resolve({
+                    errMsg: err.errMsg || 'getLocation:fail',
+                });
+            },
+        });
+    });
+}
+
+async function requestPermission(permissions) {
+    const context = getContext();
+    const atManager = abilityAccessCtrl.createAtManager();
+    const permissionRequestResult = await atManager.requestPermissionsFromUser(context, permissions);
+    const isGranted = permissionRequestResult.authResults.every((item) => item === 0);
+    return isGranted;
+}
+let currentWatchType = 'gcj02';
+function locationChangeHandler(location) {
+    if (currentWatchType === 'gcj02') {
+        map
+            .convertCoordinate(mapCommon.CoordinateType.WGS84, mapCommon.CoordinateType.GCJ02, {
+            latitude: location.latitude,
+            longitude: location.longitude,
+        })
+            .then((gcj02Posion) => {
+            UniServiceJSBridge.emit(API_ON_LOCATION_CHANGE, {
+                latitude: gcj02Posion.latitude,
+                longitude: gcj02Posion.longitude,
+                speed: location.speed,
+                accuracy: location.accuracy,
+                altitude: location.altitude,
+                verticalAccuracy: 0,
+                horizontalAccuracy: 0,
+            });
+        });
         return;
     }
-    // 框架内部页面跳转会从这里获取style配置
-    pages[pages.length - 1].$page.statusBarStyle = statusBarStyle;
+    UniServiceJSBridge.emit(API_ON_LOCATION_CHANGE, {
+        latitude: location.latitude,
+        longitude: location.longitude,
+        speed: location.speed,
+        accuracy: location.accuracy,
+        altitude: location.altitude,
+        verticalAccuracy: 0,
+        horizontalAccuracy: 0,
+    });
 }
-const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __page__, frontColor, backgroundColor }, { resolve, reject }) => {
-    const webview = getWebview(__page__);
-    if (webview) {
-        const styles = {};
-        if (frontColor) {
-            styles.titleColor = frontColor;
+const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
+    requestPermission([
+        'ohos.permission.LOCATION',
+        'ohos.permission.APPROXIMATELY_LOCATION',
+    ]).then((isGranted) => {
+        if (isGranted) {
+            reject('Permission denied');
+            return;
         }
-        if (backgroundColor) {
-            styles.backgroundColor = backgroundColor;
+        currentWatchType = options.type || 'gcj02';
+        const requestInfo = {
+            priority: geoLocationManager.LocationRequestPriority.UNSET,
+            scenario: geoLocationManager.LocationRequestScenario.UNSET,
+        };
+        try {
+            geoLocationManager.on('locationChange', requestInfo, locationChangeHandler);
         }
-        const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light';
-        plus.navigator.setStatusBarStyle(statusBarStyle);
-        // 用户调用api时同时改变当前页配置，这样在系统调用设置时，可以避免覆盖用户设置
-        setPageStatusBarStyle(statusBarStyle);
-        const style = webview.getStyle();
-        if (style && style.titleNView) {
-            if (style.titleNView.autoBackButton) {
-                styles.backButton = styles.backButton || {};
-                styles.backButton.color = frontColor;
-            }
-            webview.setStyle({
-                titleNView: styles,
-            });
+        catch (err) {
+            reject(err.message);
+            return;
         }
         resolve();
-    }
-    else {
-        reject();
-    }
-}, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
+    });
+}, StartLocationUpdateProtocol, StartLocationUpdateOptions);
+const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
+    geoLocationManager.off('locationChange', locationChangeHandler);
+    resolve();
+});
+const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
+const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => { });
+const onLocationChangeError = defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { });
+const offLocationChangeError = defineOffApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
 
 const pluginDefines = {};
 function registerUTSPlugin(name, define) {
@@ -12624,43 +13315,55 @@ function requireUTSPlugin(name) {
     return define;
 }
 
-// export * from './media/chooseImage'
-// export * from './media/chooseVideo'
-// export * from './media/getImageInfo'
-// export * from './media/getVideoInfo'
-// export * from './network/request'
-// export * from './network/uploadFile'
-// export * from './network/downloadFile'
-
 var uni$1 = {
   __proto__: null,
+  addInterceptor: addInterceptor,
   canIUse: canIUse,
   canvasGetImageData: canvasGetImageData,
   canvasPutImageData: canvasPutImageData,
   canvasToTempFilePath: canvasToTempFilePath,
+  chooseLocation: chooseLocation,
+  createAnimation: createAnimation,
   createCanvasContext: createCanvasContext,
+  createIntersectionObserver: createIntersectionObserver,
+  createMapContext: createMapContext,
+  createMediaQueryObserver: createMediaQueryObserver,
   createSelectorQuery: createSelectorQuery,
   createVideoContext: createVideoContext,
+  getEnterOptionsSync: getEnterOptionsSync,
+  getLaunchOptionsSync: getLaunchOptionsSync,
   getLocale: getLocale,
+  getLocation: getLocation,
+  getSelectedTextRange: getSelectedTextRange,
   hideTabBar: hideTabBar,
   hideTabBarRedDot: hideTabBarRedDot,
+  interceptors: interceptors,
+  loadFontFace: loadFontFace,
   navigateBack: navigateBack,
   navigateTo: navigateTo,
+  offKeyboardHeightChange: offKeyboardHeightChange,
+  offLocationChange: offLocationChange,
+  offLocationChangeError: offLocationChangeError,
+  onKeyboardHeightChange: onKeyboardHeightChange,
   onLocaleChange: onLocaleChange,
-  pageScrollTo: pageScrollTo,
+  onLocationChange: onLocationChange,
+  onLocationChangeError: onLocationChangeError,
+  onWindowResize: onWindowResize,
+  openLocation: openLocation,
   reLaunch: reLaunch,
   redirectTo: redirectTo,
   registerUTSPlugin: registerUTSPlugin,
+  removeInterceptor: removeInterceptor,
   removeTabBarBadge: removeTabBarBadge,
   requireUTSPlugin: requireUTSPlugin,
   setLocale: setLocale,
-  setNavigationBarColor: setNavigationBarColor,
-  setNavigationBarTitle: setNavigationBarTitle,
   setTabBarBadge: setTabBarBadge,
   setTabBarItem: setTabBarItem,
   setTabBarStyle: setTabBarStyle,
   showTabBar: showTabBar,
   showTabBarRedDot: showTabBarRedDot,
+  startLocationUpdate: startLocationUpdate,
+  stopLocationUpdate: stopLocationUpdate,
   switchTab: switchTab
 };
 
@@ -12857,6 +13560,46 @@ function onMessage(pageId, arg) {
         }));
 }
 
+let index$1 = 0;
+function subscribeBase64ToTempFilePath() {
+    registerServiceMethod(BASE64_TO_TEMP_FILE_PATH, (args, resolve) => {
+        const { dataURL, dirname } = args;
+        const id = `${Date.now()}_${index$1++}`;
+        const array = dataURL.split(',');
+        const scheme = array[0];
+        const base64 = array[1];
+        const format = (scheme.match(/data:image\/(\S+?);/) || [
+            '',
+            'png',
+        ])[1].replace('jpeg', 'jpg');
+        const fileName = `${id}.${format}`;
+        const tempFilePath = `${dirname}/${fileName}`;
+        try {
+            if (!fs.accessSync(dirname)) {
+                fs.mkdirSync(dirname);
+            }
+        }
+        catch (error) {
+            resolve(error);
+            return;
+        }
+        fs.createStream(tempFilePath, 'w', (err, stream) => {
+            if (err) {
+                stream.closeSync();
+                return resolve(err);
+            }
+            stream.write(buffer.from(base64, 'base64').buffer, (err) => {
+                if (err) {
+                    stream.closeSync();
+                    return resolve(err);
+                }
+                stream.closeSync();
+                return resolve({ tempFilePath: `file://${tempFilePath}` });
+            });
+        });
+    });
+}
+
 function initSubscribeHandlers() {
     const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
     onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
@@ -12872,6 +13615,8 @@ function initSubscribeHandlers() {
     subscribeNavigator();
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
+    subscribeBase64ToTempFilePath();
+    subscribeGetLocation();
     // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
     const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
     if (routeOptions) {
@@ -12891,7 +13636,11 @@ function initGlobalEvent() {
         // TODO options
         emit(ON_APP_ENTER_FOREGROUND, {});
     });
-    // TODO KeyboardHeightChange
+    plusGlobalEvent.addEventListener('KeyboardHeightChange', function (event) {
+        emit(ON_KEYBOARD_HEIGHT_CHANGE, {
+            height: event.height,
+        });
+    });
     plusGlobalEvent.addEventListener('plusMessage', subscribePlusMessage);
 }
 
@@ -13004,4 +13753,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };
+export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, registerServiceMethod, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };

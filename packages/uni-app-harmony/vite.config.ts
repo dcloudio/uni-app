@@ -73,7 +73,7 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify('production'),
     __X__: false,
     __PLUS__: false,
-    'plus.os.name': "'Harmony'",
+    'plus.os.name': "'HarmonyOS'",
     'plus.os.version': "''",
   },
   resolve: {
@@ -230,7 +230,8 @@ function initArkTSExtApi() {
     const apiTypeSpecifiers: string[] = []
     Object.keys(injects).forEach((key) => {
       const api = injects[key][1]
-      const apiType = capitalize(api)
+      const apiType =
+        api[0] === '$' ? '$' + capitalize(api.slice(1)) : capitalize(api)
       apiSpecifiers.push(api)
       apiTypeSpecifiers.push(apiType)
       defineExtApis.push(api)

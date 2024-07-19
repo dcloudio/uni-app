@@ -45,11 +45,17 @@ import worker, {
   WorkerEventListener, WorkerEventTarget, WorkerOptions
 } from '@ohos.worker';
 import xml from '@ohos.xml';
+import JSON from '@ohos.util.json';
+import lang from '@arkts.lang';
+import ArkTSUtils from '@arkts.utils';
+import collections from '@arkts.collections';
+import stream from '@ohos.util.stream';
+import Decimal from '@arkts.math.Decimal';
 
 export {
   ArrayList, convertxml, DedicatedWorkerGlobalScope, Deque, ErrorEvent, Event, EventListener,
   EventTarget, HashMap, HashSet, LightWeightMap, LightWeightSet, LinkedList, List, MessageEvent,
   MessageEvents, PlainArray, PostMessageOptions, Queue, Stack, ThreadWorkerGlobalScope, TreeMap,
   TreeSet, Vector, WorkerEventListener, WorkerEventTarget, WorkerOptions, buffer, process, taskpool,
-  uri, url, util, worker, xml
+  uri, url, util, worker, xml, JSON, lang, ArkTSUtils, collections, stream, Decimal
 };

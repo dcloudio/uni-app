@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -11,6 +11,10 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
+ */
+/**
+ * @file
+ * @kit ArkUI
  */
 /**
  * Defines the navigation destination common title.
@@ -172,6 +176,15 @@ declare interface NavDestinationCustomTitle {
  * @crossplatform
  * @since 11
  */
+/**
+ * NavDestination mode.
+ *
+ * @enum { number }
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare enum NavDestinationMode {
     /**
      * Standard mode is default mode of NavDestination.
@@ -180,6 +193,14 @@ declare enum NavDestinationMode {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Standard mode is default mode of NavDestination.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     STANDARD = 0,
     /**
      * Dialog mode is transparent by default and does not affect the life cycle of other NavDestination.
@@ -187,6 +208,14 @@ declare enum NavDestinationMode {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Dialog mode is transparent by default and does not affect the life cycle of other NavDestination.
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     DIALOG = 1
 }
@@ -242,6 +271,43 @@ declare interface NavDestinationInterface {
     (): NavDestinationAttribute;
 }
 /**
+ * Indicates configuration info of destination.
+ *
+ * @interface RouteMapConfig
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface RouteMapConfig {
+    /**
+     * Get destination name.
+     *
+     * @type { string }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    name: string;
+    /**
+     * Get destination builder file position
+     *
+     * @type { string }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    pageSourceFile: string;
+    /**
+     * Indicate the custom data of current destination.
+     *
+     * @type { Object }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    data: Object;
+}
+/**
  * Indicates the context of NavDestination.
  *
  * @interface NavDestinationContext
@@ -271,6 +337,25 @@ declare interface NavDestinationContext {
      * @since 11
      */
     pathStack: NavPathStack;
+    /**
+     * Get the unique id of NavDestination, which is different from common property id of Component.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    navDestinationId?: string;
+    /**
+     * Get configuration of current Destination in module.json
+     *
+     * @returns {RouteMapConfig | undefined}
+     *
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    getConfigInRouteMap(): RouteMapConfig | undefined;
 }
 /**
  * The attribute function of NavDestination
@@ -324,7 +409,18 @@ declare class NavDestinationAttribute extends CommonMethod<NavDestinationAttribu
      * @atomicservice
      * @since 11
      */
-    title(value: string | CustomBuilder | NavDestinationCommonTitle | NavDestinationCustomTitle): NavDestinationAttribute;
+    /**
+     * NavDestination title bar
+     *
+     * @param { string | CustomBuilder | NavDestinationCommonTitle | NavDestinationCustomTitle } value
+     * @param { NavigationTitleOptions } [options] - Indicates the options of titlebar.
+     * @returns { NavDestinationAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    title(value: string | CustomBuilder | NavDestinationCommonTitle | NavDestinationCustomTitle, options?: NavigationTitleOptions): NavDestinationAttribute;
     /**
      * Hide navigation title bar
      *
@@ -422,6 +518,16 @@ declare class NavDestinationAttribute extends CommonMethod<NavDestinationAttribu
      * @crossplatform
      * @since 11
      */
+    /**
+     * Sets the different mode of NavDestination.
+     *
+     * @param { NavDestinationMode } value - NavDestinationMode
+     * @returns { NavDestinationAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     mode(value: NavDestinationMode): NavDestinationAttribute;
     /**
      * Set back button icon.
@@ -432,7 +538,27 @@ declare class NavDestinationAttribute extends CommonMethod<NavDestinationAttribu
      * @crossplatform
      * @since 11
      */
+    /**
+     * Set back button icon.
+     *
+     * @param { ResourceStr | PixelMap } value - Indicates icon of back button.
+     * @returns { NavDestinationAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     backButtonIcon(value: ResourceStr | PixelMap): NavDestinationAttribute;
+    /**
+     * NavDestination title bar's menus
+     *
+     * @param { Array<NavigationMenuItem> | CustomBuilder } value
+     * @returns { NavDestinationAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    menus(value: Array<NavigationMenuItem> | CustomBuilder): NavDestinationAttribute;
     /**
      * Invoked before sub-components of NavDestination are created.
      *
@@ -445,6 +571,46 @@ declare class NavDestinationAttribute extends CommonMethod<NavDestinationAttribu
      * @since 11
      */
     onReady(callback: import('../api/@ohos.base').Callback<NavDestinationContext>): NavDestinationAttribute;
+    /**
+     * Invoked before the navDestination is appeared.
+     *
+     * @param { Callback<void> } callback - Indicates callback before the navDestination is appeared.
+     * @returns { NavDestinationAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onWillAppear(callback: Callback<void>): NavDestinationAttribute;
+    /**
+     * Invoked before the navDestination is disappeared.
+     *
+     * @param { Callback<void> } callback - Indicates callback before the navDestination is disappeared.
+     * @returns { NavDestinationAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onWillDisappear(callback: Callback<void>): NavDestinationAttribute;
+    /**
+     * Invoked before the navDestination is displayed.
+     *
+     * @param { Callback<void> } callback - Indicates callback before the navDestination is displayed.
+     * @returns { NavDestinationAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onWillShow(callback: Callback<void>): NavDestinationAttribute;
+    /**
+     * Invoked before the navDestination is hidden.
+     *
+     * @param { Callback<void> } callback - Indicates callback before the navDestination is hidden.
+     * @returns { NavDestinationAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    onWillHide(callback: Callback<void>): NavDestinationAttribute;
 }
 /**
  * Defines NavDestination Component.

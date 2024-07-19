@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Provides an interface for generating QR codes.
  *
  * @interface QRCodeInterface
@@ -207,6 +211,15 @@ declare class QRCodeAttribute extends CommonMethod<QRCodeAttribute> {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Set the opacity of the QR code content color.
+     * @param { number | Resource } value - indicates the opacity of the QR code content color. The value is between 0 and 1, with a default value of 1.
+     * @returns { QRCodeAttribute } the attribute of the QR code
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     contentOpacity(value: number | Resource): QRCodeAttribute;
 }

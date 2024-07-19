@@ -12,6 +12,11 @@
       "null"
     ]
   },
+  "uni-scanCode": {
+    "scanCode": [
+      "null"
+    ]
+  },
   "uni-route": {
     "navigateBack": [
       "null"
@@ -19,6 +24,24 @@
   },
   "uni-pullDownRefresh": {
     "startPullDownRefresh": [
+      "null"
+    ]
+  },
+  "uni-openDocument": {
+    "openDocument": [
+      "null"
+    ]
+  },
+  "uni-navigationBar": {
+    "showNavigationBarLoading": [
+      "null"
+    ],
+    "hideNavigationBarLoading": [
+      "null"
+    ]
+  },
+  "uni-keyboard": {
+    "hideKeyboard": [
       "null"
     ]
   },
@@ -42,6 +65,23 @@
       "null"
     ]
   },
+  "uni-file": {
+    "saveFile": [
+      "null"
+    ],
+    "getSavedFileList": [
+      "null"
+    ],
+    "getSavedFileInfo": [
+      "null"
+    ],
+    "removeSavedFile": [
+      "null"
+    ],
+    "getFileInfo": [
+      "null"
+    ]
+  },
   "uni-exit": {
     "exit": [
       "null"
@@ -49,6 +89,12 @@
   },
   "uni-createWebviewContext": {
     "createWebviewContext": [
+      null,
+      "null"
+    ]
+  },
+  "uni-push": {
+    "setAppBadgeNumber": [
       null,
       "null"
     ]
@@ -70,6 +116,11 @@
       "null"
     ],
     "stopCompass": [
+      "null"
+    ]
+  },
+  "uni-createMediaQueryObserver": {
+    "createMediaQueryObserver": [
       "null"
     ]
   }

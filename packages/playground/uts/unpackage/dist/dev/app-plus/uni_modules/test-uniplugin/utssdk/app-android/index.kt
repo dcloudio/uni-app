@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME", "UNUSED_ANONYMOUS_PARAMETER")
 package uts.modules.modules.testUniPlugin;
 import android.util.Log;
 import android.view.View;
@@ -17,10 +17,16 @@ fun test() {
 fun login(name: String, pwd: String): UTSJSONObject {
     console.log("login", " at uni_modules/test-uniplugin/utssdk/app-android/login.uts:3");
     test();
-    return object : UTSJSONObject() {
-        var name = name
-        var pwd = pwd
-    };
+    return UTSJSONObject(Map<String, Any?>(utsArrayOf(
+        utsArrayOf(
+            "name",
+            name
+        ),
+        utsArrayOf(
+            "pwd",
+            pwd
+        )
+    )));
 }
 interface IUser {
     fun register(name: String)

@@ -8771,7 +8771,9 @@ function transformAttr(el, key, value, instance) {
     }
     if (opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
-        return [camelized, parseStringStyle(value)];
+        const _style = camelize(value);
+        const sytle2 = parseStringStyle(_style);
+        return [camelized, sytle2];
       }
       return [camelized, normalizeStyle(value)];
     }

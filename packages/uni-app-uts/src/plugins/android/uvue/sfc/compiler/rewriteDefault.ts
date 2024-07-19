@@ -6,6 +6,7 @@ import type { Identifier, Statement } from '@babel/types'
 export function rewriteDefault(
   input: string,
   as: string,
+  define: string,
   parserPlugins?: ParserPlugin[]
 ): string {
   const ast = parse(input, {
@@ -14,7 +15,7 @@ export function rewriteDefault(
   }).program.body
   const s = new MagicString(input)
 
-  rewriteDefaultAST(ast, s, as)
+  rewriteDefaultAST(ast, s, as, define)
 
   return s.toString()
 }
@@ -26,10 +27,11 @@ export function rewriteDefault(
 export function rewriteDefaultAST(
   ast: Statement[],
   s: MagicString,
-  as: string
+  as: string,
+  define: string
 ): void {
   if (!hasDefaultExport(ast)) {
-    s.append(`\nconst ${as} = {}`)
+    s.append(`\nconst ${as} = ${define}({})`)
     return
   }
 
@@ -45,9 +47,14 @@ export function rewriteDefaultAST(
               ].end!
             : node.start!
         s.overwrite(start, node.declaration.id.start!, ` class `)
-        s.append(`\nconst ${as} = ${node.declaration.id.name}`)
+        s.append(`\nconst ${as} = ${define}(${node.declaration.id.name})`)
       } else {
-        s.overwrite(node.start!, node.declaration.start!, `const ${as} = `)
+        s.overwrite(
+          node.start!,
+          node.declaration.start!,
+          `const ${as} = ${define}(`
+        )
+        s.appendRight(node.declaration.end!, ')')
       }
     } else if (node.type === 'ExportNamedDeclaration') {
       for (const specifier of node.specifiers) {
@@ -63,7 +70,7 @@ export function rewriteDefaultAST(
               )
               const end = specifierEnd(s, specifier.local.end!, node.end!)
               s.remove(specifier.start!, end)
-              s.append(`\nconst ${as} = __VUE_DEFAULT__`)
+              s.append(`\nconst ${as} = ${define}(__VUE_DEFAULT___)`)
               continue
             } else {
               s.prepend(
@@ -74,7 +81,7 @@ export function rewriteDefaultAST(
               )
               const end = specifierEnd(s, specifier.exported.end!, node.end!)
               s.remove(specifier.start!, end)
-              s.append(`\nconst ${as} = __VUE_DEFAULT__`)
+              s.append(`\nconst ${as} = ${define}(__VUE_DEFAULT__)`)
               continue
             }
           }

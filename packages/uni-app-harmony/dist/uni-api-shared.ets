@@ -115,16 +115,16 @@ function defineTaskApi<T, K, TASK>(name: string, fn: (options: T, res: ApiExecut
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineTaskApi(name, fn, originalProtocol, originalOptions);
 }
-function defineSyncApi<K>(name: string, fn: Function, protocol: Map<string, ProtocolOptions> | null = null, options: ApiOptions<Object> | null = null): Object {
+function defineSyncApi<K>(name: string, fn: Function, protocol: Map<string, ProtocolOptions> | null = null, options: ApiOptions<Object> | null = null): (...args: Object[]) => K {
     const originalProtocol = buildProtocol(protocol);
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineSyncApi(name, fn, originalProtocol, originalOptions);
 }
-function defineOnApi<T>(name: string, fn: () => void, options: ApiOptions<T>): Function {
+function defineOnApi<T>(name: string, fn: () => void, options: ApiOptions<T> | null = null): Function {
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineOnApi(name, fn, originalOptions);
 }
-function defineOffApi<T>(name: string, fn: () => void, options: ApiOptions<T>): Function {
+function defineOffApi<T>(name: string, fn: () => void, options: ApiOptions<T> | null = null): Function {
     const originalOptions = buildOptions(options as ApiOptions<AsyncMethodOptionLike>);
     return originalDefineOffApi(name, fn, originalOptions);
 }

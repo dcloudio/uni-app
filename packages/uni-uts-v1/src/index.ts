@@ -44,7 +44,11 @@ import { uvueOutDir } from './uvue/index'
 
 export * from './tsc'
 
-export { compileArkTS, resolveAppHarmonyUniModulesRootDir } from './arkts'
+export {
+  compileArkTS,
+  getArkTSAutoImports,
+  resolveAppHarmonyUniModulesRootDir,
+} from './arkts'
 
 export const sourcemap = {
   generateCodeFrameWithKotlinStacktrace,

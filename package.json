@@ -1,6 +1,6 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-4020320240703001",
+  "version": "3.0.0-alpha-4020520240719001",
   "workspaces": [
     "packages/*"
   ],
@@ -43,10 +43,10 @@
   "devDependencies": {
     "@babel/core": "^7.23.3",
     "@babel/preset-env": "^7.20.2",
-    "@dcloudio/types": "3.4.8",
-    "@dcloudio/uni-api": "3.0.0-alpha-4020320240703001",
-    "@dcloudio/uni-app": "3.0.0-alpha-4020320240703001",
-    "@dcloudio/uni-app-x": "^0.7.11",
+    "@dcloudio/types": "3.4.11",
+    "@dcloudio/uni-api": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-app": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-app-x": "^0.7.15",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.34.5",
     "@rollup/plugin-alias": "^4.0.2",
@@ -109,6 +109,6 @@
   "resolutions": {
     "@babel/plugin-transform-block-scoping": "7.19.4"
   },
-  "packageManager": "pnpm@8.2.0",
+  "packageManager": "pnpm@9.5.0",
   "name": "uni-app-next"
 }
