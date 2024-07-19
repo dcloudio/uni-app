@@ -21,6 +21,7 @@ export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 // dom
 export { getElementById } from './dom/getElementById'
 export { createSelectorQuery } from './dom/createSelectorQuery'
+export { createCanvasContextAsync } from './dom/createCanvasContextAsync'
 
 // ui
 export { pageScrollTo } from './ui/pageScrollTo'
