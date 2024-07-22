@@ -459,18 +459,16 @@ const DEFAULT_TAB_BAR: Partial<UniApp.TabBarOptions> = {
   iconWidth: '24px',
   spacing: '3px',
   height: TABBAR_HEIGHT + 'px',
+  list: [],
 }
 
 function normalizeTabBar(
   tabBar: UniApp.TabBarOptions,
   platform: UniApp.PLATFORM
 ) {
-  const { list, midButton } = tabBar
-  if (!list || !list.length) {
-    return
-  }
+  const { midButton } = tabBar
   tabBar = extend({}, DEFAULT_TAB_BAR, tabBar)
-  list.forEach((item) => {
+  tabBar.list.forEach((item) => {
     if (item.iconPath) {
       item.iconPath = normalizeFilepath(item.iconPath)
     }
