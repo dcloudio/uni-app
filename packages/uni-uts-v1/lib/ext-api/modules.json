@@ -24,6 +24,19 @@
       }
     }
   },
+  "uni-canvas": {
+    "uni": {
+      "createCanvasContextAsync": {
+        "name": "createCanvasContextAsync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
