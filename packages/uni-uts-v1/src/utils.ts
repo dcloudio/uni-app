@@ -822,11 +822,15 @@ export function resolveConfigProvider(
   }
 }
 
-function formatExtApiProviderName(service: string, name: string) {
+export function formatUniProviderName(service: string) {
   if (service === 'oauth') {
     service = 'OAuth'
   }
-  return `Uni${capitalize(camelize(service))}${capitalize(
+  return `Uni${capitalize(camelize(service))}Provider`
+}
+
+function formatExtApiProviderName(service: string, name: string) {
+  return `${formatUniProviderName(service)}${capitalize(
     camelize(name)
   )}ProviderImpl`
 }

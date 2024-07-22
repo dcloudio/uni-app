@@ -1,12 +1,17 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { UTSBundleOptions } from '@dcloudio/uts'
-import { getUTSCompiler } from './utils'
+import { formatUniProviderName, getUTSCompiler } from './utils'
 import type { CompileResult } from '.'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
   isExtApi?: boolean
+  transform?: {
+    uniExtApiProviderName?: string
+    uniExtApiProviderService?: string
+    uniExtApiProviderServicePlugin?: string
+  }
 }
 
 export function getArkTSAutoImports(): Record<
@@ -40,7 +45,7 @@ export function getArkTSAutoImports(): Record<
 }
 export async function compileArkTS(
   pluginDir: string,
-  { isExtApi }: ArkTSCompilerOptions
+  { isExtApi, transform }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
   if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
     console.error('manifest.json -> app-harmony -> projectPath is required')
@@ -59,6 +64,13 @@ export async function compileArkTS(
     projectPath,
     pluginId
   )
+
+  const autoImportExternals = getArkTSAutoImports()
+  if (transform && transform.uniExtApiProviderService) {
+    autoImportExternals['@dcloudio/uni-app-harmony'].push([
+      formatUniProviderName(transform.uniExtApiProviderService),
+    ])
+  }
 
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
@@ -85,7 +97,7 @@ export async function compileArkTS(
       logFilename: false,
       isPlugin: true,
       transform: {
-        autoImportExternals: getArkTSAutoImports(),
+        autoImportExternals,
       },
       treeshake: {
         noSideEffects: true,

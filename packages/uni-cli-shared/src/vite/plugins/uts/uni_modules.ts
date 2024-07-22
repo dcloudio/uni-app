@@ -89,6 +89,11 @@ export function uniUTSAppUniModulesPlugin(
       return compiler.compileArkTS(pluginDir, {
         isX: !!options.x,
         isExtApi,
+        transform: {
+          uniExtApiProviderName: extApiProvider?.name,
+          uniExtApiProviderService: extApiProvider?.service,
+          uniExtApiProviderServicePlugin,
+        },
       })
     }
 
