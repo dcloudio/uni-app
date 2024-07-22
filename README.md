@@ -23,7 +23,7 @@
 开发一次，编译到14个平台。依次扫描14个二维码，亲自体验最全面的跨平台效果！
 
 <div align="center">
-  <img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-a90b5f95-90ba-4d30-a6a7-cd4d057327db/cf5727bc-fbe6-4d7e-bd92-e0d16e6f53b0.jpg"/>
+  <img src="https://web-ext-storage.dcloud.net.cn/doc/uni-support-platform-qrcode.jpg"/>
 </div>
 
 *注： 某些平台不能提交简单demo，补充了一些其他功能。*
