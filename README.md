@@ -85,7 +85,8 @@
 ## 更多资料
 
 - 评测：[App跨平台框架VS原生开发深度评测之2023版](https://juejin.cn/post/7317091780826497075)
-- 评测：[深入测试一周，主流多端框架大比武](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
+- 评测：[跨端开发框架深度横评之2020版](https://juejin.cn/post/6844904118901817351)
+- 评测：[深入测试一周，主流多端框架大比武之2019版](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
 - [uni-app x在App端和flutter的比较](https://doc.dcloud.net.cn/uni-app-x/select.html)
 
 ## 贡献指南
