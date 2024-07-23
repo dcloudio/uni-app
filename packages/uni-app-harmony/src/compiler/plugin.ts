@@ -134,6 +134,9 @@ function getRelatedProviders(inputDir: string): IRelatedProvider[] {
   for (const service in sdkConfigs) {
     if (Object.prototype.hasOwnProperty.call(sdkConfigs, service)) {
       const ProviderNameMap = ProviderServiceMap[service]
+      if (!ProviderNameMap) {
+        continue
+      }
       const relatedProviders = sdkConfigs[service]
       for (const name in relatedProviders) {
         if (Object.prototype.hasOwnProperty.call(relatedProviders, name)) {
