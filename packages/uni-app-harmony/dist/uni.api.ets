@@ -4927,8 +4927,9 @@ export function initUniExtApi(APP_ID: string) {
     const socketTasks: SocketTask1[] = [];
     const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
-        ws.connect(encodeURI(args.url), {
-            header: args.header ? args.header as Object : undefined
+        ws.connect(args.url, {
+            header: args.header ? args.header as Object : undefined,
+            protocol: args.protocols ? Array.isArray(args.protocols) ? args.protocols.join(',') : args.protocols : undefined
         } as webSocket.WebSocketRequestOptions);
         const task = new SocketTask1(ws);
         socketTasks.push(task);
