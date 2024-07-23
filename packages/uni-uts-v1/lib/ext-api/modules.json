@@ -11,32 +11,6 @@
       }
     }
   },
-  "uni-cancelAnimationFrame": {
-    "uni": {
-      "cancelAnimationFrame": {
-        "name": "cancelAnimationFrame",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
-  "uni-canvas": {
-    "uni": {
-      "createCanvasContextAsync": {
-        "name": "createCanvasContextAsync",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
@@ -575,19 +549,6 @@
       }
     }
   },
-  "uni-requestAnimationFrame": {
-    "uni": {
-      "requestAnimationFrame": {
-        "name": "requestAnimationFrame",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": false
-        }
-      }
-    }
-  },
   "uni-rpx2px": {
     "uni": {
       "rpx2px": {
@@ -776,8 +737,8 @@
           "swift": true
         }
       },
-      "createVirtualPaymentContext": {
-        "name": "createVirtualPaymentContext",
+      "getVirtualPaymentManager": {
+        "name": "getVirtualPaymentManager",
         "app": {
           "js": false,
           "kotlin": false,
