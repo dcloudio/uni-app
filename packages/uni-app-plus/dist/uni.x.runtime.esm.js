@@ -2011,7 +2011,7 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   }
   return bodyNode.querySelector("#".concat(id2));
 });
-function isVueComponent(comp) {
+function isVueComponent$1(comp) {
   var has$instance = typeof comp.$ === "object";
   var has$el = typeof comp.$el === "object";
   return has$instance && has$el;
@@ -2092,7 +2092,7 @@ class SelectorQueryImpl {
     return this._nodesRef;
   }
   in(component) {
-    if (isVueComponent(component)) {
+    if (isVueComponent$1(component)) {
       this._component = component;
     }
     return this;
@@ -2262,6 +2262,47 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage();
   return new SelectorQueryImpl(instance);
 };
+function isVueComponent(comp) {
+  var has$instance = typeof comp.$ === "object";
+  var has$el = typeof comp.$el === "object";
+  return has$instance && has$el;
+}
+var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
+  var _page$$el;
+  var {
+    resolve,
+    reject
+  } = _ref;
+  var page = getCurrentPage();
+  if (page == null) {
+    return null;
+  }
+  var bodyNode = (_page$$el = page.$el) === null || _page$$el === void 0 ? void 0 : _page$$el.parentNode;
+  if (bodyNode == null) {
+    reject("bodyNode is null");
+    return null;
+  }
+  if (!options.id) {
+    reject("id is null");
+    return null;
+  }
+  var component = null;
+  if (options.component && isVueComponent(options.component)) {
+    component = options.component;
+    var el = component.$el;
+    if (el != null) {
+      bodyNode = el.parentNode;
+    }
+  }
+  var element = bodyNode.querySelector("#".concat(options.id));
+  if (!element) {
+    reject("element is null");
+    return null;
+  }
+  resolve({
+    getContext: element.getContext.bind(element)
+  });
+});
 function queryElementTop(component, selector) {
   var _component$$el;
   var scrollNode = (_component$$el = component.$el) === null || _component$$el === void 0 ? void 0 : _component$$el.querySelector(selector);
@@ -3217,6 +3258,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   $once,
   __log__,
   addInterceptor,
+  createCanvasContextAsync,
   createSelectorQuery,
   env,
   getElementById,
