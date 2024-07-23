@@ -83,7 +83,6 @@ export interface Poi {
 }
 
 function useList(state: State) {
-  const key = __uniConfig.qqMapKey
   const list: Poi[] = reactive([])
   const selectedIndexRef = ref(-1)
   const selectedRef = computed(() => list[selectedIndexRef.value])
@@ -97,11 +96,8 @@ function useList(state: State) {
     selectedIndex: selectedIndexRef,
     selected: selectedRef,
   })
-  const adcodeRef = ref('')
-  const boundaryRef = computed(() =>
-    adcodeRef.value
-      ? `region(${adcodeRef.value},1,${state.latitude},${state.longitude})`
-      : `nearby(${state.latitude},${state.longitude},5000)`
+  const boundaryRef = computed(
+    () => `nearby(${state.latitude},${state.longitude},1000,1)`
   )
   function pushData(array: any[]) {
     array.forEach((item) => {
@@ -160,8 +156,8 @@ function useList(state: State) {
       )
     } else if (mapInfo.type === MapType.QQ) {
       const url = state.searching
-        ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}`
-        : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state.latitude},${state.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`
+        ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${mapInfo.key}&boundary=${boundaryRef.value}&keyword=${state.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}`
+        : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${mapInfo.key}&location=${state.latitude},${state.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`
       // TODO 列表加载失败提示
       getJSONP(
         url,
@@ -174,7 +170,6 @@ function useList(state: State) {
             pushData(res.data)
           } else if ('result' in res) {
             const result = res.result
-            adcodeRef.value = result.ad_info ? result.ad_info.adcode : ''
             if (result.pois) {
               pushData(result.pois)
             }
