@@ -7380,6 +7380,7 @@ const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
 // framework
 const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
+const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
 function isComponentInternalInstance(vm) {
     return !!vm.appContext;
@@ -13600,6 +13601,46 @@ function subscribeBase64ToTempFilePath() {
     });
 }
 
+function onWxsInvokeCallMethod({ nodeId, ownerId, method, args, }, pageId) {
+    const node = findNodeById(nodeId, parseInt(pageId));
+    if (!node) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', nodeId, 'not found'));
+        }
+        return;
+    }
+    const vm = resolveOwnerVm(ownerId, node.__vueParentComponent);
+    if (!vm) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', 'vm not found'));
+        }
+        return;
+    }
+    if (!vm[method]) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', method, ' not found'));
+        }
+        return;
+    }
+    vm[method](args);
+}
+function resolveOwnerVm(ownerId, vm) {
+    if (!vm) {
+        return null;
+    }
+    if (vm.uid === ownerId) {
+        return vm.proxy;
+    }
+    let parent = vm.parent;
+    while (parent) {
+        if (parent.uid === ownerId) {
+            return parent.proxy;
+        }
+        parent = parent.parent;
+    }
+    return vm.proxy;
+}
+
 function initSubscribeHandlers() {
     const { subscribe, subscribeHandler, publishHandler } = UniServiceJSBridge;
     onPlusMessage('subscribeHandler', ({ type, data, pageId }) => {
@@ -13617,7 +13658,7 @@ function initSubscribeHandlers() {
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
     subscribeBase64ToTempFilePath();
     subscribeGetLocation();
-    // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
+    subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod);
     const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
     if (routeOptions) {
         // 防止首页 webview 初始化过早， service 还未开始监听

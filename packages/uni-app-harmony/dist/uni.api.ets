@@ -359,7 +359,7 @@ class NetworkSubscribeOptions extends UTSObject {
     success!: (data: NetworkResponse) => void;
 }
 export class GetProviderSuccess extends UTSObject {
-    service!: 'payment';
+    service!: 'payment' | 'location';
     provider!: string[];
     providers!: UniProvider[];
     errMsg!: string;
@@ -370,7 +370,7 @@ type GetProviderFailCallback = (result: GetProviderFail) => void;
 type GetProviderComplete = Object;
 type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
 export class GetProviderOptions extends UTSObject {
-    service!: 'payment';
+    service!: 'payment' | 'location';
     success: GetProviderSuccessCallback | null = null;
     fail: GetProviderFailCallback | null = null;
     complete: GetProviderCompleteCallback | null = null;
@@ -379,10 +379,10 @@ export type GetProvider = (options: GetProviderOptions) => void;
 export type GetProviderIds = (options: GetProviderIdsOptions) => string[] | null;
 export type GetProviderObject = (options: GetProviderObjectOptions) => UniProvider | null;
 export class GetProviderIdsOptions extends UTSObject {
-    service!: 'payment';
+    service!: 'payment' | 'location';
 }
 export class GetProviderObjectOptions extends UTSObject {
-    service!: 'payment';
+    service!: 'payment' | 'location';
     provider!: string;
 }
 export type GetSystemInfo = (options: GetSystemInfoOptions) => void;
@@ -948,6 +948,9 @@ export class PageScrollToOptions extends UTSObject {
     complete: PageScrollToCompleteCallback | null = null;
 }
 export type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
+export interface UniPaymentProvider extends UniProvider {
+    requestPayment(options: RequestPaymentOptions): void;
+}
 type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700800 | 700801;
 export type RequestPayment = (options: RequestPaymentOptions) => void;
 export class RequestPaymentSuccess extends UTSObject {
@@ -967,9 +970,6 @@ export class RequestPaymentOptions extends UTSObject {
     success: RequestPaymentSuccessCallback | null = null;
     fail: RequestPaymentFailCallback | null = null;
     complete: RequestPaymentCompleteCallback | null = null;
-}
-interface RequestPaymentProvider extends UniProvider {
-    requestPayment(options: RequestPaymentOptions): Promise<void>;
 }
 type PromptErrorCode = 1 | 1001;
 interface IPromptError extends IUniError {
@@ -4017,18 +4017,22 @@ export function initUniExtApi(APP_ID: string) {
     }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
     const API_REQUEST_PAYMENT = 'requestPayment';
     const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
-        const provider = getUniProvider<RequestPaymentProvider>('payment', options.provider);
+        const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
         if (!provider) {
             exec.reject('Provider not found.');
             return;
         }
-        provider.requestPayment(options).then(()=>{
-            exec.resolve({
-                data: null
-            } as RequestPaymentSuccess);
-        }, (error: Error)=>{
-            exec.reject(error.message);
-        });
+        provider.requestPayment({
+            orderInfo: options.orderInfo,
+            success: (result: RequestPaymentSuccess)=>{
+                exec.resolve(result);
+            },
+            fail: (error: RequestPaymentFail)=>{
+                exec.reject(error.errMsg, {
+                    errCode: error.errCode
+                } as ApiError);
+            }
+        } as RequestPaymentOptions);
     }) as RequestPayment;
     const API_SHOW_TOAST = 'showToast';
     const ShowToastProtocol = new Map<string, ProtocolOptions>([
