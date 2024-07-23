@@ -34,6 +34,10 @@ const props = {
   longitude: {
     type: Number,
   },
+  keyword: {
+    type: String,
+    default: '',
+  },
 }
 
 export type Props = ExtractPropTypes<typeof props>
@@ -63,6 +67,10 @@ function useState(props: Props) {
     keyword: '',
     searching: false,
   })
+  if (props.keyword) {
+    state.keyword = props.keyword
+    state.searching = true
+  }
   function updatePosition() {
     if (props.latitude && props.longitude) {
       state.latitude = props.latitude
@@ -83,7 +91,6 @@ export interface Poi {
 }
 
 function useList(state: State) {
-  const key = __uniConfig.qqMapKey
   const list: Poi[] = reactive([])
   const selectedIndexRef = ref(-1)
   const selectedRef = computed(() => list[selectedIndexRef.value])
@@ -97,11 +104,8 @@ function useList(state: State) {
     selectedIndex: selectedIndexRef,
     selected: selectedRef,
   })
-  const adcodeRef = ref('')
-  const boundaryRef = computed(() =>
-    adcodeRef.value
-      ? `region(${adcodeRef.value},1,${state.latitude},${state.longitude})`
-      : `nearby(${state.latitude},${state.longitude},5000)`
+  const boundaryRef = computed(
+    () => `nearby(${state.latitude},${state.longitude},1000,1)`
   )
   function pushData(array: any[]) {
     array.forEach((item) => {
@@ -125,7 +129,7 @@ function useList(state: State) {
       const service = new google.maps.places.PlacesService(
         document.createElement('div')
       )
-      service[state.searching ? 'textSearch' : 'nearbySearch'](
+      service[state.keyword ? 'textSearch' : 'nearbySearch'](
         {
           location: {
             lat: state.latitude,
@@ -159,9 +163,9 @@ function useList(state: State) {
         }
       )
     } else if (mapInfo.type === MapType.QQ) {
-      const url = state.searching
-        ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${key}&boundary=${boundaryRef.value}&keyword=${state.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}`
-        : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${key}&location=${state.latitude},${state.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`
+      const url = state.keyword
+        ? `https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=${mapInfo.key}&boundary=${boundaryRef.value}&keyword=${state.keyword}&page_size=${listState.pageSize}&page_index=${listState.pageIndex}`
+        : `https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=${mapInfo.key}&location=${state.latitude},${state.longitude}&get_poi=1&poi_options=page_size=${listState.pageSize};page_index=${listState.pageIndex}`
       // TODO 列表加载失败提示
       getJSONP(
         url,
@@ -170,11 +174,10 @@ function useList(state: State) {
         },
         (res: any) => {
           listState.loading = false
-          if (state.searching && 'data' in res && res.data.length) {
+          if (state.keyword && 'data' in res && res.data.length) {
             pushData(res.data)
           } else if ('result' in res) {
             const result = res.result
-            adcodeRef.value = result.ad_info ? result.ad_info.adcode : ''
             if (result.pois) {
               pushData(result.pois)
             }
@@ -194,8 +197,8 @@ function useList(state: State) {
           pageSize: 10,
           pageIndex: listState.pageIndex,
         })
-        const keyword = state.searching ? state.keyword : ''
-        const radius = state.searching ? 50000 : 5000
+        const keyword = state.keyword || ''
+        const radius = state.keyword ? 50000 : 5000
         placeSearch.searchNearBy(
           keyword,
           [state.longitude, state.latitude],
@@ -308,10 +311,8 @@ export default /*#__PURE__*/ defineSystemComponent({
     function move({ latitude, longitude }: Point) {
       state.latitude = latitude
       state.longitude = longitude
-      if (!state.searching) {
-        reset()
-        getList()
-      }
+      reset()
+      getList()
     }
 
     if (!state.latitude || !state.longitude) {

@@ -56,7 +56,7 @@ function normalizeUniConfigThemeJsonIconPath(
 ) {
   // 处理 tabbar 下 list -> item -> iconPath、selectedIconPath; midButton -> backgroundImage 路径 / 不开头的情况
   const tabBar = pagesJson.tabBar
-  if (tabBar) {
+  if (tabBar && tabBar.list && tabBar.list.length) {
     tabBar.list.forEach((item) => {
       if (item.iconPath && item.iconPath.indexOf('@') === 0) {
         parseThemeJsonIconPath(themeConfig, item.iconPath.replace(/^@/, ''))

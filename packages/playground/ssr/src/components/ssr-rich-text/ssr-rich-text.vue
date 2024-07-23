@@ -47,7 +47,7 @@ export default {
         },
       ],
       strings:
-        '<div style="text-align:center;"><img src="https://vkceyugu.cdn.bspapp.com/VKCEYUGU-dc-site/ceb770c0-5164-11eb-8a36-ebb87efcf8c0.png"/></div>',
+        '<div style="text-align:center;"><img src="https://qiniu-web-assets.dcloud.net.cn/unidoc/zh/uni.png"/></div>',
     };
   },
 };

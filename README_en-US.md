@@ -81,6 +81,6 @@ In addition to many third-party ui libraries, the official also provides uni-ui,
 
 ## more info
 
-- Evaluation: [Cross-end Development Framework Deep Heng Evaluation 2020 Edition](https://juejin.im/post/5e8e8d5a6fb9a03c6d3d9f42)
+- Evaluation: [App cross-platform framework VS native development depth evaluation 2023 edition](https://juejin.cn/post/7317091780826497075)
 - Evaluation: [In-depth testing for a week, mainstream multi-terminal frameworks compete](https://mp.weixin.qq.com/s/jIDEHfuMnED6HTfNgjsW4w)
-- [Comparison of uni-app on the App side with flutter and react native](https://ask.dcloud.net.cn/article/36083)
+- [Comparison between uni-App x and flutter on app side](https://doc.dcloud.net.cn/uni-app-x/select.html)

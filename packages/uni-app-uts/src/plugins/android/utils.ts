@@ -2,18 +2,17 @@ import fs from 'fs'
 import path from 'path'
 import { type ImportSpecifier, init, parse } from 'es-module-lexer'
 import {
-  // AutoImportOptions,
   createResolveErrorMsg,
   createRollupError,
-  // initAutoImportOptions,
+  getUTSEasyComAutoImports,
   normalizeNodeModules,
   offsetToStartAndEnd,
   parseUniExtApiNamespacesJsOnce,
 } from '@dcloudio/uni-cli-shared'
 import { isArray, isPlainObject, isString } from '@vue/shared'
 
-// import AutoImport from 'unplugin-auto-import/vite'
-// import { once } from '@dcloudio/uni-shared'
+import { type Import, createUnimport } from 'unimport'
+
 import type { /*SourceMapInput, */ PluginContext } from 'rollup'
 import type { Position, SourceLocation } from '@vue/compiler-core'
 
@@ -359,33 +358,106 @@ export function getUniCloudObjectInfo(
   }
 }
 
-// export const initAutoImportOnce = once(initAutoImport)
+export async function transformAutoImport(
+  code: string,
+  id: string,
+  ignore: string[] = []
+) {
+  const { matchedImports } = await detectAutoImports(code, id, ignore)
+  if (matchedImports.length) {
+    return {
+      code: code + '\n' + genAutoImportsCode(matchedImports),
+    }
+  }
+  return { code }
+}
 
-// function initAutoImport(autoImportOptions?: AutoImportOptions) {
-//   const options = initAutoImportOptions(
-//     process.env.UNI_UTS_PLATFORM,
-//     autoImportOptions || {}
-//   )
-//   if ((options.imports as any[]).length === 0) {
-//     return {
-//       transform(code: string, id: string) {
-//         return { code }
-//       },
-//     }
-//   }
-//   const autoImport = AutoImport(options) as {
-//     transform(
-//       code: string,
-//       id: string
-//     ): Promise<{ code: string; map?: SourceMapInput }>
-//   }
-//   const { transform } = autoImport
-//   autoImport.transform = async function (code, id) {
-//     const result = await transform.call(this, code, id)
-//     if (result) {
-//       return result
-//     }
-//     return { code }
-//   }
-//   return autoImport
-// }
+export function genAutoImportsCode(imports: Import[]) {
+  const codes: string[] = []
+  imports.forEach(({ name, as, from }) => {
+    if (as && name !== as) {
+      codes.push(
+        `import { ${name} as ${as} } from "${parseUTSImportFilename(from)}"`
+      )
+    } else {
+      codes.push(`import { ${name}  } from "${parseUTSImportFilename(from)}"`)
+    }
+  })
+  return codes.join('\n')
+}
+
+let detectImports: (
+  code: string,
+  id: string,
+  ignore: string[]
+) => Promise<{ matchedImports: Import[] }>
+
+export function transformUniCloudMixinDataCom(code: string) {
+  // 将 uniCloud.mixinDatacom 替换为 uniCloudMixinDatacom
+  // 然后 autoImport 会自动导入 uniCloudMixinDatacom
+  if (code.includes('uniCloud.mixinDatacom')) {
+    return code.replace(/uniCloud\.mixinDatacom/g, 'uniCloudMixinDatacom')
+  }
+  return code
+}
+
+export function detectAutoImports(
+  code: string,
+  id: string,
+  ignore: string[] = []
+) {
+  // 目前硬编码
+  if (id.includes('index.module.uts')) {
+    return { matchedImports: [] }
+  }
+  if (!detectImports) {
+    detectImports = initAutoImport().detectImports
+  }
+
+  return detectImports(code, id, ignore)
+}
+
+function initAutoImport() {
+  const autoImports = getUTSEasyComAutoImports()
+  const sources = Object.keys(autoImports)
+  if (!sources.length) {
+    return {
+      async detectImports(_code: string, _id: string, _ignore: string[] = []) {
+        return { matchedImports: [] }
+      },
+    }
+  }
+
+  const imports: Import[] = []
+  sources.forEach((source) => {
+    autoImports[source].forEach(([name, as]) => {
+      imports.push({
+        name,
+        as,
+        from: source,
+      })
+    })
+  })
+  const { detectImports } = createUnimport({
+    imports,
+  })
+  return {
+    detectImports: async function (
+      code: string,
+      id: string,
+      ignore: string[] = []
+    ) {
+      // const start = Date.now()
+      const result = await detectImports(code)
+      // console.log('detectImports[' + id + ']耗时:' + (Date.now() - start))
+      return {
+        matchedImports: result.matchedImports.filter((item) => {
+          if (item.as && item.name !== item.as) {
+            return !ignore.includes(item.as)
+          }
+          return !ignore.includes(item.name)
+        }),
+      }
+    },
+  }
+}

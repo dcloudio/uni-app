@@ -30,6 +30,8 @@ import {
   getUniCloudSpaceList,
   parseImports,
   parseUTSRelativeFilename,
+  transformAutoImport,
+  transformUniCloudMixinDataCom,
   tscOutDir,
   uvueOutDir,
 } from './utils'
@@ -149,12 +151,9 @@ export function uniAppPlugin(): UniVitePlugin {
       const { filename } = parseVueRequest(id)
       if (!filename.endsWith('.uts') && !filename.endsWith('.ts')) {
         if (filename.endsWith('.json')) {
-          const fileName = path.relative(inputDir, id)
           this.emitFile({
             type: 'asset',
-            fileName: normalizeEmitAssetFileName(
-              normalizeFilename(fileName, false)
-            ),
+            fileName: normalizeEmitAssetFileName(normalizeFilename(id, false)),
             source: code,
           })
         }
@@ -163,12 +162,14 @@ export function uniAppPlugin(): UniVitePlugin {
       // 仅处理 uts 文件
       // 忽略 uni-app-uts/lib/automator/index.uts
       if (!filename.includes('uni-app-uts')) {
+        code = (
+          await transformAutoImport(transformUniCloudMixinDataCom(code), id)
+        ).code
         const isMainUTS = normalizePath(id) === mainUTS
-        const fileName = path.relative(inputDir, id)
         this.emitFile({
           type: 'asset',
           fileName: normalizeEmitAssetFileName(
-            normalizeFilename(fileName, isMainUTS)
+            normalizeFilename(id, isMainUTS)
           ),
           source: normalizeCode(code, isMainUTS),
         })
@@ -184,7 +185,7 @@ export function uniAppPlugin(): UniVitePlugin {
         return
       }
       // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
-      checkUTSEasyComAutoImports(inputDir, bundle, this)
+      // checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
     watchChange() {
       if (process.env.UNI_APP_X_TSC === 'true') {
@@ -291,12 +292,8 @@ export function uniAppPlugin(): UniVitePlugin {
 }
 
 function initAutoImports() {
-  const easyComponents = getUTSEasyComAutoImports()
   const utsComponents = getUTSComponentAutoImports()
   const autoImports: Record<string, [[string, string?]]> = {}
-  Object.keys(easyComponents).forEach((source) => {
-    autoImports[source] = easyComponents[source]
-  })
   Object.keys(utsComponents).forEach((source) => {
     if (autoImports[source]) {
       autoImports[source].push(...utsComponents[source])
@@ -311,7 +308,7 @@ function normalizeFilename(filename: string, isMain = false) {
   if (isMain) {
     return 'main.uts'
   }
-  return parseUTSRelativeFilename(filename)
+  return parseUTSRelativeFilename(filename, process.env.UNI_INPUT_DIR)
 }
 
 function normalizeCode(code: string, isMain = false) {
@@ -333,7 +330,8 @@ export function main(app: IApp) {
 `
 }
 
-function checkUTSEasyComAutoImports(
+// @ts-expect-error
+function _checkUTSEasyComAutoImports(
   inputDir: string,
   bundle: OutputBundle,
   ctx: PluginContext

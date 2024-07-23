@@ -14,7 +14,7 @@ import {
   createResolveErrorMsg,
   createRollupError,
   genUTSClassName,
-  genUTSComponentPublicInstanceImported,
+  getUTSEasyComAutoImports,
   normalizeEmitAssetFileName,
   normalizePath,
   offsetToStartAndEnd,
@@ -25,7 +25,13 @@ import type { ImportSpecifier } from 'es-module-lexer'
 import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
 import { resolveScript } from './script'
 import type { ResolvedOptions } from './index'
-import { createResolveError, parseImports, wrapResolve } from '../../utils'
+import {
+  createResolveError,
+  detectAutoImports,
+  genAutoImportsCode,
+  parseImports,
+  wrapResolve,
+} from '../../utils'
 import { genDefaultScriptCode } from '../code/script'
 import { processTemplate } from './compiler/script/normalScript'
 
@@ -42,7 +48,13 @@ export async function transformMain(
   const { descriptor, errors } = createDescriptor(filename, code, options)
 
   const relativeFilename = descriptor.relativeFilename
-
+  let easyComInstance = ''
+  if (options.genDefaultAs) {
+    const imports = getUTSEasyComAutoImports()['@/' + relativeFilename]
+    if (imports && imports.length === 1) {
+      easyComInstance = imports[0][1]
+    }
+  }
   if (errors.length) {
     if (pluginContext) {
       errors.forEach((error) =>
@@ -59,7 +71,7 @@ export async function transformMain(
     ...options,
     className,
   }
-  const {
+  let {
     code: scriptCode,
     map: scriptMap,
     bindingMetadata,
@@ -93,6 +105,9 @@ export async function transformMain(
   const utsOutput: string[] = [
     scriptCode || genDefaultScriptCode(options.genDefaultAs),
     templateCode,
+    easyComInstance
+      ? `export type ${easyComInstance} = InstanceType<typeof __sfc__>;`
+      : '',
     `/*${className}Styles*/\n`,
   ]
 
@@ -143,7 +158,24 @@ export async function transformMain(
   }
 
   // handle TS transpilation
-  let utsCode = utsOutput.join('\n')
+  let utsCode = utsOutput.filter(Boolean).join('\n')
+
+  const jsCodes = [templateImportsCode, templatePreambleCode]
+
+  // 处理自动导入(主要是easyCom的组件类型)
+  const { matchedImports } = await detectAutoImports(
+    utsCode,
+    descriptor.filename,
+    easyComInstance ? [easyComInstance] : []
+  )
+  if (matchedImports.length) {
+    const autoImportCode = genAutoImportsCode(matchedImports)
+    if (autoImportCode) {
+      utsCode += '\n' + autoImportCode
+      // 给 script 增加自动导入，让下边的 jsCode 可以 parse 到
+      scriptCode += '\n' + autoImportCode
+    }
+  }
 
   if (resolvedMap && pluginContext) {
     pluginContext.emitFile({
@@ -159,7 +191,6 @@ export async function transformMain(
     }
   }
 
-  const jsCodes = [templateImportsCode, templatePreambleCode]
   if (scriptCode) {
     jsCodes.push(
       await parseImports(
@@ -186,11 +217,8 @@ export async function transformMain(
     jsCodes.push(stylesCode)
   }
   jsCodes.push(`export default "${className}"
-export const ${genUTSComponentPublicInstanceImported(
-    options.root,
-    relativeFilename
-  )} = {}`)
-  const jsCode = jsCodes.filter(Boolean).join('\n')
+${easyComInstance ? `export const ${easyComInstance} = {}` : ''}`)
+  let jsCode = jsCodes.filter(Boolean).join('\n')
   return {
     code: processJsCodeImport(jsCode),
     map: {

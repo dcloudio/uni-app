@@ -7,7 +7,6 @@ import MagicString from 'magic-string'
 import {
   camelize,
   genUTSComponentPublicInstanceIdent,
-  genUTSComponentPublicInstanceImported,
   normalizePath,
 } from '@dcloudio/uni-cli-shared'
 import type { TemplateCompilerOptions } from './options'
@@ -91,21 +90,11 @@ export function addEasyComponentAutoImports(
   if (path.isAbsolute(fileName) && fileName.startsWith(rootDir)) {
     fileName = '@/' + normalizePath(path.relative(rootDir, fileName))
   }
-
-  let imported = ''
   // 加密插件easycom类型导入
   if (fileName.includes('?uts-proxy')) {
     const moduleId = path.basename(fileName.split('?uts-proxy')[0])
     fileName = `uts.sdk.modules.${camelize(moduleId)}`
-    imported = genUTSComponentPublicInstanceImported(
-      rootDir,
-      `@/uni_modules/${moduleId}/components/${tagName}/${tagName}`
-    )
-  } else {
-    imported = genUTSComponentPublicInstanceImported(rootDir, fileName)
   }
-  easyComponentAutoImports[fileName] = [
-    imported,
-    genUTSComponentPublicInstanceIdent(tagName),
-  ]
+  const ident = genUTSComponentPublicInstanceIdent(tagName)
+  easyComponentAutoImports[fileName] = [ident, ident]
 }

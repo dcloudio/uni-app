@@ -9,7 +9,6 @@ import { rewriteDefaultAST } from '../rewriteDefault'
 import { resolveDefineCode } from './utils'
 import { resolveGenTemplateCodeOptions } from '../../template'
 import {
-  addUTSEasyComAutoImports,
   addUniModulesExtApiComponents,
   parseUTSComponent,
 } from '@dcloudio/uni-cli-shared'
@@ -112,26 +111,21 @@ export function processTemplate(
     rootDir: string
   }
 ) {
-  const { code, preamble, easyComponentAutoImports, elements, imports, map } =
-    genTemplateCode(
-      sfc,
-      resolveGenTemplateCodeOptions(relativeFilename, sfc.source, sfc, {
-        mode: 'module',
-        inline: !!sfc.scriptSetup,
-        className,
-        rootDir,
-        sourceMap:
-          process.env.NODE_ENV === 'development' &&
-          process.env.UNI_COMPILE_TARGET !== 'uni_modules',
-        bindingMetadata,
-      })
-    )
+  const { code, preamble, elements, imports, map } = genTemplateCode(
+    sfc,
+    resolveGenTemplateCodeOptions(relativeFilename, sfc.source, sfc, {
+      mode: 'module',
+      inline: !!sfc.scriptSetup,
+      className,
+      rootDir,
+      sourceMap:
+        process.env.NODE_ENV === 'development' &&
+        process.env.UNI_COMPILE_TARGET !== 'uni_modules',
+      bindingMetadata,
+    })
+  )
   const allImports = [...imports]
   const importsCode = allImports.length ? allImports.join('\n') + '\n' : ''
-
-  Object.keys(easyComponentAutoImports).forEach((source) => {
-    addUTSEasyComAutoImports(source, easyComponentAutoImports[source])
-  })
 
   if (process.env.NODE_ENV === 'production') {
     const components = elements.filter((element) => {

@@ -88,6 +88,49 @@ function uniAppHarmonyPlugin() {
         },
     };
 }
+const ProviderServiceMap = {
+    oauth: {},
+    payment: {
+        // alipay: 'alipay',
+        weixin: 'wxpay',
+    },
+};
+/**
+ * 获取manifest.json中勾选的provider
+ */
+function getRelatedProviders(inputDir) {
+    const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
+    const providers = [];
+    const sdkConfigs = manifest?.['app-plus']?.distribute?.sdkConfigs;
+    if (!sdkConfigs) {
+        return providers;
+    }
+    for (const service in sdkConfigs) {
+        if (Object.prototype.hasOwnProperty.call(sdkConfigs, service)) {
+            const ProviderNameMap = ProviderServiceMap[service];
+            if (!ProviderNameMap) {
+                continue;
+            }
+            const relatedProviders = sdkConfigs[service];
+            for (const name in relatedProviders) {
+                if (Object.prototype.hasOwnProperty.call(relatedProviders, name)) {
+                    const providerName = ProviderNameMap[name];
+                    providers.push({
+                        service,
+                        name: providerName || name,
+                    });
+                }
+            }
+        }
+    }
+    return providers;
+}
+const builtInProviders = [
+    {
+        service: 'payment',
+        name: 'alipay',
+    },
+];
 function genAppHarmonyIndex(inputDir, utsPlugins) {
     if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
         return;
@@ -114,17 +157,37 @@ function genAppHarmonyIndex(inputDir, utsPlugins) {
             registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
         }
     });
+    const relatedProviders = getRelatedProviders(inputDir);
     const importProviderCodes = [];
     const registerProviderCodes = [];
     const providers = uniCliShared.getUniExtApiProviderRegisters();
-    providers.forEach((provider) => {
-        const parts = provider.class.split('.');
-        const className = parts[parts.length - 1];
-        importProviderCodes.push(`import { ${className} } from './${provider.plugin}/utssdk/app-harmony'`);
+    const allProviders = providers
+        .map((provider) => {
+        return {
+            service: provider.service,
+            name: provider.name,
+            moduleSpecifier: `./${provider.plugin}/utssdk/app-harmony`,
+        };
+    })
+        .concat(builtInProviders.map((provider) => {
+        return {
+            service: provider.service,
+            name: provider.name,
+            moduleSpecifier: `@dcloudio/uni-app-harmony/providers/uni-${provider.service}-${provider.name}`,
+        };
+    }));
+    relatedProviders.forEach((relatedProvider) => {
+        const provider = allProviders.find((item) => item.service === relatedProvider.service &&
+            item.name === relatedProvider.name);
+        if (!provider) {
+            return;
+        }
+        const className = uniCliShared.formatExtApiProviderName(provider.service, provider.name);
+        importProviderCodes.push(`import { ${className} } from '${provider.moduleSpecifier}'`);
         registerProviderCodes.push(`registerUniProvider('${provider.service}', '${provider.name}', new ${className}())`);
     });
     if (importProviderCodes.length) {
-        importProviderCodes.unshift(`import { registerUniProvider } from '../uni-app/lib/uni-api-shared'`);
+        importProviderCodes.unshift(`import { registerUniProvider } from '@dcloudio/uni-app-harmony'`);
         importCodes.push(...importProviderCodes);
         extApiCodes.push(...registerProviderCodes);
     }

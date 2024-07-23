@@ -25320,6 +25320,10 @@
     },
     longitude: {
       type: Number
+    },
+    keyword: {
+      type: String,
+      default: ""
     }
   };
   function distance(distance2) {
@@ -25338,6 +25342,10 @@
       keyword: "",
       searching: false
     });
+    if (props2.keyword) {
+      state.keyword = props2.keyword;
+      state.searching = true;
+    }
     function updatePosition() {
       if (props2.latitude && props2.longitude) {
         state.latitude = props2.latitude;
@@ -25349,7 +25357,6 @@
     return state;
   }
   function useList(state) {
-    var key2 = __uniConfig.qqMapKey;
     var list2 = reactive([]);
     var selectedIndexRef = ref(-1);
     var selectedRef = computed(() => list2[selectedIndexRef.value]);
@@ -25363,8 +25370,7 @@
       selectedIndex: selectedIndexRef,
       selected: selectedRef
     });
-    var adcodeRef = ref("");
-    var boundaryRef = computed(() => adcodeRef.value ? "region(".concat(adcodeRef.value, ",1,").concat(state.latitude, ",").concat(state.longitude, ")") : "nearby(".concat(state.latitude, ",").concat(state.longitude, ",5000)"));
+    var boundaryRef = computed(() => "nearby(".concat(state.latitude, ",").concat(state.longitude, ",1000,1)"));
     function pushData(array) {
       array.forEach((item) => {
         list2.push({
@@ -25389,7 +25395,7 @@
             return;
           }
           var service = new google.maps.places.PlacesService(document.createElement("div"));
-          service[state.searching ? "textSearch" : "nearbySearch"]({
+          service[state.keyword ? "textSearch" : "nearbySearch"]({
             location: {
               lat: state.latitude,
               lng: state.longitude
@@ -25420,16 +25426,15 @@
             }
           });
         } else if (mapInfo2.type === MapType.QQ) {
-          var url = state.searching ? "https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=".concat(key2, "&boundary=").concat(boundaryRef.value, "&keyword=").concat(state.keyword, "&page_size=").concat(listState.pageSize, "&page_index=").concat(listState.pageIndex) : "https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=".concat(key2, "&location=").concat(state.latitude, ",").concat(state.longitude, "&get_poi=1&poi_options=page_size=").concat(listState.pageSize, ";page_index=").concat(listState.pageIndex);
+          var url = state.keyword ? "https://apis.map.qq.com/ws/place/v1/search?output=jsonp&key=".concat(mapInfo2.key, "&boundary=").concat(boundaryRef.value, "&keyword=").concat(state.keyword, "&page_size=").concat(listState.pageSize, "&page_index=").concat(listState.pageIndex) : "https://apis.map.qq.com/ws/geocoder/v1/?output=jsonp&key=".concat(mapInfo2.key, "&location=").concat(state.latitude, ",").concat(state.longitude, "&get_poi=1&poi_options=page_size=").concat(listState.pageSize, ";page_index=").concat(listState.pageIndex);
           getJSONP(url, {
             callback: "callback"
           }, (res) => {
             listState.loading = false;
-            if (state.searching && "data" in res && res.data.length) {
+            if (state.keyword && "data" in res && res.data.length) {
               pushData(res.data);
             } else if ("result" in res) {
               var result = res.result;
-              adcodeRef.value = result.ad_info ? result.ad_info.adcode : "";
               if (result.pois) {
                 pushData(result.pois);
               }
@@ -25447,8 +25452,8 @@
               pageSize: 10,
               pageIndex: listState.pageIndex
             });
-            var keyword = state.searching ? state.keyword : "";
-            var radius = state.searching ? 5e4 : 5e3;
+            var keyword = state.keyword || "";
+            var radius = state.keyword ? 5e4 : 5e3;
             placeSearch.searchNearBy(keyword, [state.longitude, state.latitude], radius, function(status, result) {
               if (status === "error") {
                 console.error(result);
@@ -25566,10 +25571,8 @@
         } = _ref3;
         state.latitude = latitude;
         state.longitude = longitude;
-        if (!state.searching) {
-          reset();
-          getList();
-        }
+        reset();
+        getList();
       }
       if (!state.latitude || !state.longitude) {
         moveToLocation();
