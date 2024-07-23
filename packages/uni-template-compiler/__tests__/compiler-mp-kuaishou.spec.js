@@ -99,4 +99,29 @@ describe('mp:compiler-mp-kuaishou', () => {
       '<label class="_span"></label>'
     )
   })
+  // test follow-service payment-list playlet
+  it('follow-service 1', () => {
+    assertCodegen(
+      '<follow-service followed-id="abc" desc="cde" :bindopenprofile="fn"></follow-service>',
+      '<follow-service followed-id="abc" desc="cde" bindopenprofile="{{fn}}"></follow-service>'
+    )
+  })
+  it('follow-service 2', () => {
+    assertCodegen(
+      '<follow-service followed-id="abc" desc="cde" :bindopenprofile="fn" />',
+      '<follow-service followed-id="abc" desc="cde" bindopenprofile="{{fn}}"></follow-service>'
+    )
+  })
+  it('payment-list', () => {
+    assertCodegen(
+      '<payment-list theme-color="#ff0000" :bindchange="fn"></payment-list>',
+      '<payment-list theme-color="#ff0000" bindchange="{{fn}}"></payment-list>'
+    )
+  })
+  it('playlet', () => {
+    assertCodegen(
+      '<playlet :bindplay="fn" :bindpause="fn" playlet-id="123" />',
+      '<playlet bindplay="{{fn}}" bindpause="{{fn}}" playlet-id="123"></playlet>'
+    )
+  })
 })
