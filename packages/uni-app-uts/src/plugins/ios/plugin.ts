@@ -33,7 +33,7 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       return {
         base: '/', // 强制 base
         build: {
-          sourcemap: enableSourceMap() ? 'hidden' : false,
+          sourcemap: enableSourceMap(), //enableSourceMap() ? 'hidden' : false,
           emptyOutDir: false,
           assetsInlineLimit: 0,
           rollupOptions: {
@@ -82,15 +82,21 @@ export function uniAppIOSPlugin(): UniVitePlugin {
       if (appServiceMap && appServiceMap.type === 'asset') {
         const source = JSON.parse(appServiceMap.source as string)
         source.sourceRoot = normalizePath(inputDir)
-        fs.outputFileSync(
-          path.resolve(
-            process.env.UNI_APP_X_CACHE_DIR,
-            'sourcemap',
-            APP_SERVICE_FILENAME_MAP
-          ),
-          JSON.stringify(source)
+        const newSourceMapFileName = path.resolve(
+          process.env.UNI_APP_X_CACHE_DIR,
+          'sourcemap',
+          APP_SERVICE_FILENAME_MAP
         )
+        fs.outputFileSync(newSourceMapFileName, JSON.stringify(source))
         delete bundle[APP_SERVICE_FILENAME_MAP]
+        const appService = bundle[APP_SERVICE_FILENAME]
+        if (appService && appService.type === 'chunk') {
+          appService.code = appService.code.replace(
+            `//# sourceMappingURL=app-service.js.map`,
+            `//# sourceMappingURL=` +
+              path.relative(process.env.UNI_OUTPUT_DIR, newSourceMapFileName)
+          )
+        }
       }
     },
     async writeBundle() {
