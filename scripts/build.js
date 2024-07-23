@@ -241,12 +241,27 @@ async function build(target) {
   }
 }
 
+function getProviderBuildJson(projectDir, buildJson) {
+  const uniExtApiBuildJson = buildJson.find(options => options.input?.['temp/uni-ext-api/index.uts'] === 'uni.api.ets')
+  if (!uniExtApiBuildJson) {
+    return
+  }
+  const providerBuildJsonFilePath = path.resolve(projectDir, 'temp/uni-ext-api/provider.build.json')
+  if (fs.existsSync(providerBuildJsonFilePath)) {
+    return require(providerBuildJsonFilePath)
+  }
+}
+
 async function buildArkTS(target, buildJson) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
   const start = Date.now()
   if (!Array.isArray(buildJson)) {
     buildJson = [buildJson]
+  }
+  const providerBuildJson = getProviderBuildJson(projectDir, buildJson)
+  if (providerBuildJson) {
+    buildJson.push(providerBuildJson)
   }
   for (const options of buildJson) {
     const inputs = Object.keys(options.input);
