@@ -87,7 +87,7 @@
     "@types/stylus": "^0.48.36",
     "code-frame": "link:@types/@babel/code-frame",
     "postcss": "^8.4.21",
-    "unplugin-auto-import": "^0.16.7",
+    "unimport": "^3.9.0",
     "vue": "3.4.21"
   }
 }

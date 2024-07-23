@@ -166,6 +166,16 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       const compiler = resolveUTSCompiler()
       for (const uniModule of tempUniModules) {
         const pluginDir = path.resolve(tempUniModulesDir, uniModule)
+
+        // TODO 待优化autoImports，目前 uni-app x 的编译，autoImport 是在js层处理过，rust层基本不再使用
+        // 但uts插件目前还是使用的rust层的autoImports
+        const autoImports = {}
+        const allAutoImports = getUTSEasyComAutoImports()
+        Object.keys(allAutoImports).forEach((source) => {
+          if (!source.startsWith(`@/uni_modules/${uniModule}/components/`)) {
+            autoImports[source] = allAutoImports[source]
+          }
+        })
         const result = await compiler.compile(pluginDir, {
           isX: process.env.UNI_APP_X === 'true',
           isSingleThread: true,
@@ -174,7 +184,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           uni_modules: [],
           transform: {
             uvueClassNamePrefix: 'Gen',
-            autoImports: getUTSEasyComAutoImports(),
+            autoImports,
           },
         })
         if (result) {

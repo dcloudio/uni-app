@@ -16,7 +16,7 @@ import {
   getResolvedOptions,
   getSrcDescriptor,
 } from './descriptorCache'
-import { isVue } from '../utils'
+import { isVue, transformUniCloudMixinDataCom } from '../utils'
 
 import { transformStyle } from './code/style'
 
@@ -68,7 +68,7 @@ export function uniAppUVuePlugin(): Plugin {
       if (!query.vue) {
         // main request
         return transformMain(
-          code,
+          transformUniCloudMixinDataCom(code),
           filename,
           {
             ...options,
