@@ -776,8 +776,8 @@
           "swift": true
         }
       },
-      "createVirtualPaymentContext": {
-        "name": "createVirtualPaymentContext",
+      "getVirtualPaymentManager": {
+        "name": "getVirtualPaymentManager",
         "app": {
           "js": false,
           "kotlin": false,
