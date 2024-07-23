@@ -8,6 +8,7 @@ import { useTheme } from '../theme'
 import { setLaunchOptionsSync } from '../../api/base/getLaunchOptionsSync'
 import { extend } from '@vue/shared'
 import { getNativeApp } from './app'
+import { setEnterOptionsSync } from '../../api/base/getEnterOptionsSync'
 
 export function initAppLaunch(appVm: ComponentPublicInstance) {
   injectAppHooks(appVm.$)
@@ -31,6 +32,7 @@ export function initAppLaunch(appVm: ComponentPublicInstance) {
 
   // onShowOption
   const showOption = extend({}, launchOption)
+  setEnterOptionsSync(showOption)
   invokeHook(appVm, ON_SHOW, showOption)
 
   // 加载全局字体
