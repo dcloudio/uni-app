@@ -13304,6 +13304,36 @@ const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => { });
 const onLocationChangeError = defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { });
 const offLocationChangeError = defineOffApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
 
+function operateWebView(id, pageId, type, data, operateMapCallback) {
+    UniServiceJSBridge.invokeViewMethod('webview.' + id, {
+        type,
+        data,
+    }, pageId, operateMapCallback);
+}
+// TODO 完善类型定义，规范化。目前非uni-app-x仅鸿蒙支持
+function createWebviewContext(id, componentInstance) {
+    const pageId = componentInstance.$page.id;
+    return {
+        evalJs(jsCode) {
+            operateWebView(id, pageId, 'evalJs', {
+                jsCode,
+            });
+        },
+        back() {
+            operateWebView(id, pageId, 'back');
+        },
+        forward() {
+            operateWebView(id, pageId, 'forward');
+        },
+        reload() {
+            operateWebView(id, pageId, 'reload');
+        },
+        stop() {
+            operateWebView(id, pageId, 'stop');
+        },
+    };
+}
+
 const pluginDefines = {};
 function registerUTSPlugin(name, define) {
     pluginDefines[name] = define;
@@ -13331,6 +13361,7 @@ var uni$1 = {
   createMediaQueryObserver: createMediaQueryObserver,
   createSelectorQuery: createSelectorQuery,
   createVideoContext: createVideoContext,
+  createWebviewContext: createWebviewContext,
   getEnterOptionsSync: getEnterOptionsSync,
   getLaunchOptionsSync: getLaunchOptionsSync,
   getLocale: getLocale,
