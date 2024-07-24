@@ -13,8 +13,7 @@ let proxy: any
 const callbacks: Record<string, Function> = {}
 
 function isUniElement(obj: any) {
-  // @ts-expect-error
-  return typeof UniElement !== 'undefined' && obj instanceof UniElement
+  return typeof obj.getNodeId === 'function' && obj.pageId
 }
 
 function isComponentPublicInstance(instance: any) {
