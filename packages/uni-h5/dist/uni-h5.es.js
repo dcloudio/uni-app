@@ -13722,6 +13722,10 @@ function useScrollViewLoader(props2, state2, scrollTopNumber, scrollLeftNumber, 
         state2.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
+          trigger("refresherpulling", {}, {
+            deltaY: state2.refresherHeight,
+            dy: state2.refresherHeight
+          });
           trigger("refresherrefresh", {}, {
             dy: touchEnd.y - touchStart.y
           });
