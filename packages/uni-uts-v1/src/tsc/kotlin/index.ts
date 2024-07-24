@@ -107,6 +107,7 @@ export function runUTS2Kotlin(
     inlineSources: true,
     noEmitOnError: false,
     skipLibCheck: true,
+    moduleResolution: ts.ModuleResolutionKind.Bundler,
     typeRoots: [],
     paths: {
       '@dcloudio/uni-runtime': [
