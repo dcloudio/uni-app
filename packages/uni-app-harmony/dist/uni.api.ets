@@ -951,7 +951,7 @@ export type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollT
 export interface UniPaymentProvider extends UniProvider {
     requestPayment(options: RequestPaymentOptions): void;
 }
-type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700800 | 700801;
+type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700800 | 700801 | 700718;
 export type RequestPayment = (options: RequestPaymentOptions) => void;
 export class RequestPaymentSuccess extends UTSObject {
     data: object | null = null;
@@ -4015,6 +4015,44 @@ export function initUniExtApi(APP_ID: string) {
         const pageId = getPageIdByVm1(getCurrentPageVm1()!)! as number;
         UniServiceJSBridge1.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
     }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
+    const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
+        [
+            700600,
+            'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            701100,
+            'Order payment failure.'
+        ],
+        [
+            701110,
+            'Repeat the request.'
+        ],
+        [
+            700601,
+            'The user canceled midway.'
+        ],
+        [
+            700602,
+            'Network connection error.'
+        ],
+        [
+            700603,
+            'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            700000,
+            'Other payment errors.'
+        ],
+        [
+            700604,
+            'Wechat is not installed.'
+        ],
+        [
+            700718,
+            'URL Scheme is not configured.'
+        ]
+    ]);
     const API_REQUEST_PAYMENT = 'requestPayment';
     const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
         const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
@@ -4028,7 +4066,8 @@ export function initUniExtApi(APP_ID: string) {
                 exec.resolve(result);
             },
             fail: (error: RequestPaymentFail)=>{
-                exec.reject(error.errMsg, {
+                const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
+                exec.reject(errMsg, {
                     errCode: error.errCode
                 } as ApiError);
             }
@@ -4888,8 +4927,9 @@ export function initUniExtApi(APP_ID: string) {
     const socketTasks: SocketTask1[] = [];
     const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
-        ws.connect(encodeURI(args.url), {
-            header: args.header ? args.header as Object : undefined
+        ws.connect(args.url, {
+            header: args.header ? args.header as Object : undefined,
+            protocol: args.protocols ? Array.isArray(args.protocols) ? args.protocols.join(',') : args.protocols : undefined
         } as webSocket.WebSocketRequestOptions);
         const task = new SocketTask1(ws);
         socketTasks.push(task);

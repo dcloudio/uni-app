@@ -1,11 +1,11 @@
 import type { Plugin, ResolvedConfig } from 'vite'
-// import colors from 'picocolors'
+import colors from 'picocolors'
 
 import {
   commonjsProxyRE,
   cssLangRE,
-  // formatAtFilename,
-  // generateCodeFrame,
+  formatAtFilename,
+  generateCodeFrame,
   parseAssets,
   preUVueCss,
 } from '@dcloudio/uni-cli-shared'
@@ -35,20 +35,19 @@ export function uniAppCssPlugin(resolvedConfig: ResolvedConfig): Plugin {
       })
       messages.forEach((message) => {
         if (message.type === 'warning') {
-          // 暂不输出警告日志
           // 拆分成多行，第一行输出信息（有颜色），后续输出错误代码+文件行号
-          // resolvedConfig.logger.warn(
-          //   colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
-          // )
-          // let msg = ''
-          // if (message.line && message.column) {
-          //   msg += `\n${generateCodeFrame(source, {
-          //     line: message.line,
-          //     column: message.column,
-          //   }).replace(/\t/g, ' ')}\n`
-          // }
-          // msg += `${formatAtFilename(filename)}`
-          // resolvedConfig.logger.warn(msg)
+          resolvedConfig.logger.warn(
+            colors.yellow(`[plugin:uni:app-uvue-css] ${message.text}`)
+          )
+          let msg = ''
+          if (message.line && message.column) {
+            msg += `\n${generateCodeFrame(source, {
+              line: message.line,
+              column: message.column,
+            }).replace(/\t/g, ' ')}\n`
+          }
+          msg += `${formatAtFilename(filename)}`
+          resolvedConfig.logger.warn(msg)
         }
       })
       return { code: `export default ${code}`, map: { mappings: '' } }

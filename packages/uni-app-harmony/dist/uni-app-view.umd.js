@@ -13933,7 +13933,7 @@
       var {
         _handleSubscribe,
         _resize
-      } = useMethods(props2, canvas, actionsWaiting);
+      } = useMethods$1(props2, canvas, actionsWaiting);
       useSubscribe(_handleSubscribe, useContextInfo(props2.canvasId), true);
       onMounted(() => {
         _resize();
@@ -13997,7 +13997,7 @@
       _listeners
     };
   }
-  function useMethods(props2, canvasRef, actionsWaiting) {
+  function useMethods$1(props2, canvasRef, actionsWaiting) {
     var _actionsDefer = [];
     var _images = {};
     var _pixelRatio = computed(() => props2.hidpi ? pixelRatio : 1);
@@ -22419,7 +22419,8 @@
         clickRef.value++;
       }
       expose({
-        click
+        click,
+        elId
       });
       return () => createVNode("embed", mergeProps({
         "el-id": elId,
@@ -22428,7 +22429,39 @@
       }, attrs2), null, 16, ["el-id", "src"]);
     }
   });
+  function useMethods(embedRef) {
+    var MethodList = ["evalJs", "back", "forward", "reload", "stop"];
+    var methods = {};
+    var _loop = function(i3) {
+      var methodName = MethodList[i3];
+      methods[methodName] = function(data, resolve) {
+        var elId = embedRef.value.elId;
+        UniViewJSBridge.invokeServiceMethod("webview" + capitalize(methodName), {
+          elId,
+          data
+        }, (res) => {
+          resolve(res);
+        });
+      };
+    };
+    for (var i2 = 0; i2 < MethodList.length; i2++) {
+      _loop(i2);
+    }
+    function _handleSubscribe(type, data, resolve) {
+      var method = methods[type];
+      if (type.indexOf("_") !== 0 && isFunction(method)) {
+        method(data, resolve);
+      }
+    }
+    return extend(methods, {
+      _handleSubscribe
+    });
+  }
   var props$a = {
+    id: {
+      type: String,
+      default: ""
+    },
     src: {
       type: String,
       default: ""
@@ -22448,7 +22481,15 @@
     name: "WebView",
     props: props$a,
     setup(props2) {
-      return () => createVNode("uni-web-view", null, [createVNode(Embed, {
+      var embedRef = ref(null);
+      var {
+        _handleSubscribe
+      } = useMethods(embedRef);
+      useSubscribe(_handleSubscribe, useContextInfo(props2.id), true);
+      return () => createVNode("uni-web-view", {
+        "id": props2.id
+      }, [createVNode(Embed, {
+        "ref": embedRef,
         "tag": "webview",
         "options": {
           src: getRealPath(props2.src),
@@ -22456,7 +22497,7 @@
           webviewStyles: props2.webviewStyles
         },
         "style": "width:100%;height:100%"
-      }, null, 8, ["options"])]);
+      }, null, 8, ["options"])], 8, ["id"]);
     }
   });
   class UniWebView extends UniComponent {

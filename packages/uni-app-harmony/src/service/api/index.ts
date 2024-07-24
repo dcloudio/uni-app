@@ -18,6 +18,7 @@ export {
   onLocationChangeError,
   offLocationChangeError,
 } from './location/locationChange'
+export { createWebviewContext } from './context/operateWebView'
 export {
   addInterceptor,
   removeInterceptor,
