@@ -2,6 +2,7 @@ import {
   type ExtractPropTypes,
   type Ref,
   computed,
+  nextTick,
   onBeforeUnmount,
   onMounted,
   reactive,
@@ -138,9 +139,8 @@ function useImageState(rootRef: Ref<HTMLElement | null>, props: ImageProps) {
   })
   onMounted(() => {
     const rootEl = rootRef.value!
-    const style = rootEl!.style
-    state.origWidth = Number(style.width) || 0
-    state.origHeight = Number(style.height) || 0
+    state.origWidth = rootEl.clientWidth || 0
+    state.origHeight = rootEl.clientHeight || 0
   })
   return state
 }
@@ -171,8 +171,9 @@ function useImageLoader(
     img.onload = (evt) => {
       const { width, height } = img!
       setState(width, height, src)
-      fixSize()
-
+      nextTick(() => {
+        fixSize()
+      })
       img!.draggable = props.draggable
       if (draggableImg) {
         draggableImg.remove()
