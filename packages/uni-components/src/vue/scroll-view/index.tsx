@@ -518,6 +518,10 @@ function useScrollViewLoader(
         // 之前是刷新状态则不再触发刷新
         if (!beforeRefreshing) {
           beforeRefreshing = true
+          trigger('refresherpulling', {} as Event, {
+            deltaY: state.refresherHeight,
+            dy: state.refresherHeight,
+          })
           trigger('refresherrefresh', {} as Event, {
             dy: touchEnd.y - touchStart.y,
           })
