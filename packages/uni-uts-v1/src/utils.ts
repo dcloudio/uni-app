@@ -830,7 +830,10 @@ export function formatUniProviderName(service: string) {
 }
 
 function formatExtApiProviderName(service: string, name: string) {
-  return `${formatUniProviderName(service)}${capitalize(
+  if (service === 'oauth') {
+    service = 'OAuth'
+  }
+  return `Uni${capitalize(camelize(service))}${capitalize(
     camelize(name)
   )}ProviderImpl`
 }
