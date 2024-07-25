@@ -134,6 +134,7 @@ export default {
       let type = ''
       switch (this.type) {
         case 'text':
+          type = 'text'
           this.confirmType === 'search' && (type = 'search')
           break
         case 'idcard':
