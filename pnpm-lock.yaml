@@ -27,8 +27,8 @@ importers:
         specifier: 3.0.0-alpha-4020520240719001
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.15
-        version: 0.7.15
+        specifier: ^0.7.17
+        version: 0.7.17
       '@jest/types':
         specifier: ^29.0.3
         version: 29.6.3
@@ -2521,8 +2521,8 @@ packages:
   '@dcloudio/types@3.4.11':
     resolution: {integrity: sha512-vRmcqV/OQF8r4QQgIz+iHuuBirw7Y+0MeN/QgeEZtcKGUqyMSGDJW4gF8jLJaEtGSZ3dBZslupRXQKZhUBGTpw==}
 
-  '@dcloudio/uni-app-x@0.7.15':
-    resolution: {integrity: sha512-wBV+O523MNrP2M28cwn3YWqFVZRtj7KGVSdRKbTgm5k8P6UBZImFWg7LY4hLg/+CtbTV95hQazpTtJEHbwL3Qg==}
+  '@dcloudio/uni-app-x@0.7.17':
+    resolution: {integrity: sha512-oP72YhirPAsmyEV/iRxwqy4HLzPD/ilCBy1g4t0kKhig6qRmObQcO5XreH8R1wOO9unGlUHBWJUsPOrrnn4t6A==}
 
   '@dcloudio/uni-ui@1.5.5':
     resolution: {integrity: sha512-DTr8o4lcRgu4JJclA2eT7UFVKtglK63OUtcDGysrSeZhgAJAC2gBYm/pYbv0BFxKqxfbdoAFGAFCigCVY9+NAQ==}
@@ -7897,7 +7897,7 @@ snapshots:
 
   '@dcloudio/types@3.4.11': {}
 
-  '@dcloudio/uni-app-x@0.7.15': {}
+  '@dcloudio/uni-app-x@0.7.17': {}
 
   '@dcloudio/uni-ui@1.5.5': {}
 
