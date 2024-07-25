@@ -15740,9 +15740,8 @@
     });
     onMounted(() => {
       var rootEl = rootRef.value;
-      var style = rootEl.style;
-      state.origWidth = Number(style.width) || 0;
-      state.origHeight = Number(style.height) || 0;
+      state.origWidth = rootEl.clientWidth || 0;
+      state.origHeight = rootEl.clientHeight || 0;
     });
     return state;
   }
@@ -15770,7 +15769,9 @@
           height
         } = img;
         setState(width, height, src);
-        fixSize();
+        nextTick(() => {
+          fixSize();
+        });
         img.draggable = props2.draggable;
         if (draggableImg) {
           draggableImg.remove();
@@ -20303,6 +20304,10 @@
           state.refresherHeight = props2.refresherThreshold;
           if (!beforeRefreshing) {
             beforeRefreshing = true;
+            trigger2("refresherpulling", {}, {
+              deltaY: state.refresherHeight,
+              dy: state.refresherHeight
+            });
             trigger2("refresherrefresh", {}, {
               dy: touchEnd.y - touchStart.y
             });

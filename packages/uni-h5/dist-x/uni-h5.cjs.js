@@ -3041,7 +3041,9 @@ function useImageLoader(state, props2, rootRef, fixSize, trigger) {
         height
       } = img;
       setState(width, height, src);
-      fixSize();
+      vue.nextTick(() => {
+        fixSize();
+      });
       img.draggable = props2.draggable;
       if (draggableImg) {
         draggableImg.remove();

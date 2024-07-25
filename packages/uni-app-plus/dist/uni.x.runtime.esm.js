@@ -2788,7 +2788,7 @@ var callbackId = 1;
 var proxy;
 var callbacks = {};
 function isUniElement(obj) {
-  return typeof UniElement !== "undefined" && obj instanceof UniElement;
+  return typeof obj.getNodeId === "function" && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;
@@ -3351,6 +3351,7 @@ function initAppLaunch(appVm) {
   setLaunchOptionsSync(launchOption);
   invokeHook(appVm, ON_LAUNCH, launchOption);
   var showOption = extend({}, launchOption);
+  setEnterOptionsSync(showOption);
   invokeHook(appVm, ON_SHOW, showOption);
   var appStyle = appVm.$options.styles;
   if (appStyle) {

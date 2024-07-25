@@ -17405,8 +17405,7 @@ let callbackId = 1;
 let proxy;
 const callbacks = {};
 function isUniElement(obj) {
-    // @ts-expect-error
-    return typeof UniElement !== 'undefined' && obj instanceof UniElement;
+    return typeof obj.getNodeId === 'function' && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;

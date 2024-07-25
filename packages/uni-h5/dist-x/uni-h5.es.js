@@ -9423,9 +9423,8 @@ function useImageState(rootRef, props2) {
   });
   onMounted(() => {
     const rootEl = rootRef.value;
-    const style = rootEl.style;
-    state2.origWidth = Number(style.width) || 0;
-    state2.origHeight = Number(style.height) || 0;
+    state2.origWidth = rootEl.clientWidth || 0;
+    state2.origHeight = rootEl.clientHeight || 0;
   });
   return state2;
 }
@@ -9450,7 +9449,9 @@ function useImageLoader(state2, props2, rootRef, fixSize, trigger) {
         height
       } = img;
       setState(width, height, src);
-      fixSize();
+      nextTick(() => {
+        fixSize();
+      });
       img.draggable = props2.draggable;
       if (draggableImg) {
         draggableImg.remove();
