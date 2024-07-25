@@ -23,6 +23,7 @@
   "createAnimation",
   "createCameraContext",
   "createCanvasContext",
+  "createCanvasContextAsync",
   "createInnerAudioContext",
   "createIntersectionObserver",
   "createLivePlayerContext",
