@@ -10,7 +10,6 @@ import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
 import inputMethod from '@ohos.inputMethod';
 import image from '@ohos.multimedia.image';
-import media from '@ohos.multimedia.media';
 import connection from '@ohos.net.connection';
 import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
@@ -43,6 +42,7 @@ import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, Asyn
 import { UniServiceJSBridge as UniServiceJSBridge1, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
 import { UniServiceJSBridge, UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
 import Want1 from '@ohos.app.ability.Want';
+import { audio } from '@kit.AudioKit';
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
@@ -53,6 +53,7 @@ import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import { fileIo as fileIo1 } from '@kit.CoreFileKit';
+import { fileIo as fileIo2 } from '@kit.CoreFileKit';
 import { fileIo } from '@kit.CoreFileKit';
 import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
@@ -80,7 +81,9 @@ import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import { media } from '@kit.MediaKit';
 import media1 from '@ohos.multimedia.media';
+import media2 from '@ohos.multimedia.media';
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
@@ -174,6 +177,45 @@ export class GetClipboardDataOptions extends UTSObject {
 interface ClipboardModuleGetStringOptions {
     result: string;
     data: string;
+}
+type CreateInnerAudioContext = () => InnerAudioContext;
+interface InnerAudioContext {
+    duration: number;
+    currentTime: number;
+    paused: boolean;
+    src: string;
+    startTime: number;
+    buffered: number;
+    autoplay: boolean;
+    loop: boolean;
+    obeyMuteSwitch: boolean;
+    volume: number;
+    playbackRate?: number;
+    pause(): void;
+    stop(): void;
+    play(): void;
+    seek(position: number): void;
+    destroy(): void;
+    onCanplay(callback: (result: Object) => void): void;
+    onPlay(callback: (result: Object) => void): void;
+    onPause(callback: (result: Object) => void): void;
+    onStop(callback: (result: Object) => void): void;
+    onEnded(callback: (result: Object) => void): void;
+    onTimeUpdate(callback: (result: Object) => void): void;
+    onError(callback: (result: Object) => void): void;
+    onWaiting(callback: (result: Object) => void): void;
+    onSeeking(callback: (result: Object) => void): void;
+    onSeeked(callback: (result: Object) => void): void;
+    offCanplay(callback: (result: Object) => void): void;
+    offPlay(callback: (result: Object) => void): void;
+    offPause(callback: (result: Object) => void): void;
+    offStop(callback: (result: Object) => void): void;
+    offEnded(callback: (result: Object) => void): void;
+    offTimeUpdate(callback: (result: Object) => void): void;
+    offError(callback: (result: Object) => void): void;
+    offWaiting(callback: (result: Object) => void): void;
+    offSeeking(callback: (result: Object) => void): void;
+    offSeeked(callback: (result: Object) => void): void;
 }
 export type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
 export interface CreateIntersectionObserverOptions {
@@ -1493,6 +1535,7 @@ interface UniExtApi {
     base64ToArrayBuffer: Base64ToArrayBuffer;
     getClipboardData: GetClipboardData;
     setClipboardData: SetClipboardData;
+    createInnerAudioContext: CreateInnerAudioContext;
     createIntersectionObserver: CreateIntersectionObserver;
     $on: $On;
     $once: $Once;
@@ -1949,6 +1992,444 @@ export function initUniExtApi(APP_ID: string) {
         clipboard.setString(options.data);
         res.resolve();
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
+    const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
+    const isFileUri = (path: string)=>{
+        return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
+    };
+    const isSandboxPath = (path: string)=>{
+        return path && typeof path === 'string' && path.startsWith('/data/storage/');
+    };
+    const getFdFromUriOrSandBoxPath = (uri: string)=>{
+        try {
+            const file = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
+            return file.fd;
+        } catch (error) {
+            console.info(`[AdvancedAPI] Can not get file from uri: ${uri} `);
+        }
+        throw new Error('file is not exist');
+    };
+    const callCallbacks = (callbacks: Function[], ...args: Object[])=>{
+        callbacks.forEach((cb)=>{
+            typeof cb === 'function' && cb(...args);
+        });
+    };
+    const remoteCallback = (callbacks: Function[], callback: Function)=>{
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
+        }
+    };
+    class AudioPlayerError {
+        errMsg: string;
+        errCode: number;
+        constructor(errMsg: string, errCode: number){
+            this.errMsg = errMsg;
+            this.errCode = errCode;
+        }
+    }
+    class AudioPlayerCallback {
+        onCanplayCallbacks: Function[] = [];
+        onPlayCallbacks: Function[] = [];
+        onPauseCallbacks: Function[] = [];
+        onStopCallbacks: Function[] = [];
+        onEndedCallbacks: Function[] = [];
+        onTimeUpdateCallbacks: Function[] = [];
+        onErrorCallbacks: Function[] = [];
+        onWaitingCallbacks: Function[] = [];
+        onSeekingCallbacks: Function[] = [];
+        onSeekedCallbacks: Function[] = [];
+        constructor(){}
+        canPlay() {
+            callCallbacks(this.onCanplayCallbacks);
+        }
+        onCanplay(callback: Function) {
+            this.onCanplayCallbacks.push(callback);
+        }
+        offCanplay(callback: Function) {
+            remoteCallback(this.onCanplayCallbacks, callback);
+        }
+        play() {
+            callCallbacks(this.onPlayCallbacks);
+        }
+        onPlay(callback: Function) {
+            this.onPlayCallbacks.push(callback);
+        }
+        offPlay(callback: Function) {
+            remoteCallback(this.onPlayCallbacks, callback);
+        }
+        pause() {
+            callCallbacks(this.onPauseCallbacks);
+        }
+        onPause(callback: Function) {
+            this.onPauseCallbacks.push(callback);
+        }
+        offPause(callback: Function) {
+            remoteCallback(this.onPauseCallbacks, callback);
+        }
+        stop() {
+            callCallbacks(this.onStopCallbacks);
+        }
+        onStop(callback: Function) {
+            this.onStopCallbacks.push(callback);
+        }
+        offStop(callback: Function) {
+            remoteCallback(this.onStopCallbacks, callback);
+        }
+        ended() {
+            callCallbacks(this.onEndedCallbacks);
+        }
+        onEnded(callback: Function) {
+            this.onEndedCallbacks.push(callback);
+        }
+        offEnded(callback: Function) {
+            remoteCallback(this.onEndedCallbacks, callback);
+        }
+        timeUpdate(time: number) {
+            callCallbacks(this.onTimeUpdateCallbacks, time);
+        }
+        onTimeUpdate(callback: Function) {
+            this.onTimeUpdateCallbacks.push(callback);
+        }
+        offTimeUpdate(callback: Function) {
+            remoteCallback(this.onTimeUpdateCallbacks, callback);
+        }
+        error(res: AudioPlayerError) {
+            callCallbacks(this.onErrorCallbacks, res);
+        }
+        onError(callback: Function) {
+            this.onErrorCallbacks.push(callback);
+        }
+        offError(callback: Function) {
+            remoteCallback(this.onErrorCallbacks, callback);
+        }
+        onPrev(callback: Function) {
+            console.info('ios only');
+        }
+        onNext(callback: Function) {
+            console.info('ios only');
+        }
+        waiting() {
+            callCallbacks(this.onWaitingCallbacks);
+        }
+        onWaiting(callback: Function) {
+            this.onWaitingCallbacks.push(callback);
+        }
+        offWaiting(callback: Function) {
+            remoteCallback(this.onWaitingCallbacks, callback);
+        }
+        seeking() {
+            callCallbacks(this.onSeekingCallbacks);
+        }
+        onSeeking(callback: Function) {
+            this.onSeekingCallbacks.push(callback);
+        }
+        offSeeking(callback: Function) {
+            remoteCallback(this.onSeekingCallbacks, callback);
+        }
+        seeked() {
+            callCallbacks(this.onSeekedCallbacks);
+        }
+        onSeeked(callback: Function) {
+            this.onSeekedCallbacks.push(callback);
+        }
+        offSeeked(callback: Function) {
+            remoteCallback(this.onSeekedCallbacks, callback);
+        }
+    }
+    const audios: Record<string, InnerAudioContext | undefined> = {};
+    const LOG = (msg: string)=>console.log(`[createInnerAudioContext]: ${msg}`);
+    class STATE_TYPE {
+        static IDLE: string = 'idle';
+        static PLAYING: string = 'playing';
+        static PAUSED: string = 'paused';
+        static STOPPED: string = 'stopped';
+        static ERROR: string = 'error';
+    }
+    class AudioPlayer implements InnerAudioContext {
+        private audioPlayerCallback: AudioPlayerCallback = new AudioPlayerCallback();
+        private audioPlayer?: media.AudioPlayer;
+        private _volume: number = 1;
+        private _src: string = '';
+        private _autoplay: boolean = false;
+        private _startTime: number = 0;
+        private _buffered: number = 0;
+        private _title: string = '';
+        private audioId: string = '';
+        readonly obeyMuteSwitch: boolean = false;
+        isStopped?: boolean | undefined;
+        initStateChage?: boolean | undefined;
+        playbackRate?: number | undefined;
+        constructor(audioId: string){
+            this.audioId = audioId;
+            this.init();
+        }
+        init() {
+            this.audioPlayer = media.createAudioPlayer();
+            this.audioPlayer.on('dataLoad', ()=>{
+                this.audioPlayerCallback.canPlay();
+            });
+            this.audioPlayer.on('play', ()=>{
+                this.audioPlayerCallback.play();
+            });
+            this.audioPlayer.on('pause', ()=>{
+                this.audioPlayerCallback.pause();
+            });
+            this.audioPlayer.on('finish', ()=>{
+                this.audioPlayerCallback.ended();
+            });
+            this.audioPlayer.on('timeUpdate', (res)=>{
+                this.audioPlayerCallback.timeUpdate(res / 1000);
+            });
+            this.audioPlayer.on('error', (err)=>{
+                this.audioPlayerCallback.error(new AudioPlayerError(err.message, err.code));
+            });
+            this.audioPlayer.on('bufferingUpdate', (infoType, value)=>{
+                console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
+                if (infoType === media.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && this.audioPlayer) {
+                    this._buffered = value;
+                    if ((this.audioPlayer.currentTime / 1000) >= (this.audioPlayer.duration * value / 100000)) {
+                        this.audioPlayerCallback.waiting();
+                    }
+                }
+            });
+            this.audioPlayer.on('audioInterrupt', (InterruptEvent)=>{
+                console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
+                if (this.audioPlayer && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                    this.audioPlayer.pause();
+                }
+            });
+        }
+        get duration() {
+            if (!this.audioPlayer) {
+                return 0;
+            }
+            return this.audioPlayer.duration / 1000;
+        }
+        get currentTime() {
+            if (!this.audioPlayer) {
+                return 0;
+            }
+            return this.audioPlayer.currentTime / 1000;
+        }
+        get paused() {
+            if (!this.audioPlayer) {
+                return false;
+            }
+            return this.audioPlayer.state === STATE_TYPE.PAUSED;
+        }
+        get loop() {
+            if (!this.audioPlayer) {
+                return false;
+            }
+            return this.audioPlayer.loop;
+        }
+        set loop(value) {
+            if (this.audioPlayer) {
+                this.audioPlayer.loop = value;
+            }
+        }
+        get volume() {
+            return this._volume;
+        }
+        set volume(value) {
+            if (this.audioPlayer) {
+                this._volume = value;
+                this.audioPlayer.setVolume(value);
+            }
+        }
+        get src() {
+            if (!this.audioPlayer) {
+                return '';
+            }
+            return this.audioPlayer.src;
+        }
+        set src(value) {
+            if (typeof value !== 'string') {
+                this.audioPlayerCallback.error(new AudioPlayerError(`set src: ${value} is not string`, 10004));
+                return;
+            }
+            if (!this.audioPlayer) {
+                this.audioPlayerCallback.error(new AudioPlayerError(`player is not exist`, 10001));
+                return;
+            }
+            if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri(value) || isSandboxPath(value))) {
+                LOG(`set src: ${value} is invalid`);
+                return;
+            }
+            let path: string = '';
+            if (value.startsWith('http:') || value.startsWith('https:')) {
+                path = value;
+            } else if (isFileUri(value) || isSandboxPath(value)) {
+                try {
+                    const fd = getFdFromUriOrSandBoxPath(value);
+                    path = `fd://${fd}`;
+                } catch (error) {
+                    console.error(`${JSON.stringify(error)}`);
+                }
+            }
+            if (this.audioPlayer.src && path !== this.audioPlayer.src) {
+                this.audioPlayer.reset();
+            }
+            this.audioPlayer.src = path;
+            this._src = value;
+            if (this._autoplay) {
+                this.audioPlayer.play();
+                if (this._startTime) {
+                    this.audioPlayer.seek(this._startTime);
+                }
+            }
+        }
+        get startTime() {
+            return this._startTime / 1000;
+        }
+        set startTime(time: number) {
+            this._startTime = time * 1000;
+        }
+        get autoplay() {
+            return this._autoplay;
+        }
+        set autoplay(flag) {
+            this._autoplay = flag;
+        }
+        get buffered() {
+            if (!this.audioPlayer) return 0;
+            return this.audioPlayer.duration * this._buffered / 100000;
+        }
+        play() {
+            if (!this.audioPlayer) {
+                return;
+            }
+            const state = this.audioPlayer.state;
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.STOPPED,
+                STATE_TYPE.IDLE
+            ].includes(state)) {
+                return;
+            }
+            if (this._src && this.audioPlayer.src === '') {
+                this.src = this._src;
+            }
+            this.audioPlayer.play();
+        }
+        pause() {
+            if (!this.audioPlayer) {
+                return;
+            }
+            const state = this.audioPlayer.state;
+            if (STATE_TYPE.PLAYING !== state) {
+                return;
+            }
+            this.audioPlayer.pause();
+        }
+        stop() {
+            if (!this.audioPlayer) {
+                return;
+            }
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.PLAYING
+            ].includes(this.audioPlayer.state)) {
+                return;
+            }
+            this.audioPlayer.stop();
+            this.audioPlayerCallback.stop();
+            this.audioPlayer.release();
+            this.initStateChage;
+        }
+        seek(position: number) {
+            if (!this.audioPlayer) {
+                return;
+            }
+            const state = this.audioPlayer.state;
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.PLAYING
+            ].includes(state)) {
+                return;
+            }
+            this.audioPlayerCallback.seeking();
+            this.audioPlayer.seek(position * 1000);
+            this.audioPlayerCallback.seeked();
+        }
+        destroy() {
+            if (!this.audioPlayer) {
+                return;
+            }
+            this.audioPlayer.release();
+            this.audioPlayer = undefined;
+            audios[this.audioId] = undefined;
+        }
+        onCanplay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onCanplay(callback);
+        }
+        onPlay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onPlay(callback);
+        }
+        onPause(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onPause(callback);
+        }
+        onStop(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onStop(callback);
+        }
+        onEnded(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onEnded(callback);
+        }
+        onTimeUpdate(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onTimeUpdate(callback);
+        }
+        onError(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onError(callback);
+        }
+        onWaiting(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onWaiting(callback);
+        }
+        onSeeking(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onSeeking(callback);
+        }
+        onSeeked(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onSeeked(callback);
+        }
+        offCanplay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offCanplay(callback);
+        }
+        offPlay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offPlay(callback);
+        }
+        offPause(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offPause(callback);
+        }
+        offStop(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offStop(callback);
+        }
+        offEnded(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offEnded(callback);
+        }
+        offTimeUpdate(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offTimeUpdate(callback);
+        }
+        offError(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offError(callback);
+        }
+        offWaiting(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offWaiting(callback);
+        }
+        offSeeking(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offSeeking(callback);
+        }
+        offSeeked(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offSeeked(callback);
+        }
+    }
+    const createAudioInstance = ()=>{
+        const audioId = `${Date.now()}${Math.random()}`;
+        audios[audioId] = new AudioPlayer(audioId);
+        return audioId;
+    };
+    const createInnerAudioContext: CreateInnerAudioContext = defineSyncApi<InnerAudioContext>(API_CREATE_INNER_AUDIO_CONTEXT, ()=>{
+        const audioId = createAudioInstance();
+        return audios[audioId];
+    }) as CreateInnerAudioContext;
     const defaultOptions = {
         thresholds: [
             0
@@ -2528,11 +3009,11 @@ export function initUniExtApi(APP_ID: string) {
     const createFile = (supportFormats: string[], format: string, defaultExt: string)=>{
         const TEMP_PATH = getEnv1().TEMP_PATH as string;
         const filePath = `${TEMP_PATH}/recorder/`;
-        if (!fileIo.accessSync(filePath)) {
-            fileIo.mkdirSync(filePath);
+        if (!fileIo1.accessSync(filePath)) {
+            fileIo1.mkdirSync(filePath);
         }
         const fileName = `${Date.now()}.${supportFormats.includes(format ?? '') ? format?.toLocaleLowerCase() : defaultExt}`;
-        const file: fileIo.File = fileIo.openSync(`${filePath}${fileName}`, fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.CREATE);
+        const file: fileIo1.File = fileIo1.openSync(`${filePath}${fileName}`, fileIo1.OpenMode.READ_WRITE | fileIo1.OpenMode.CREATE);
         return file;
     };
     const permissionDenied = ()=>{
@@ -2542,10 +3023,10 @@ export function initUniExtApi(APP_ID: string) {
         'aac'
     ];
     class AVRecorder implements RecorderManager {
-        private avRecorder?: media.AVRecorder;
+        private avRecorder?: media1.AVRecorder;
         private isFirstStart: boolean = true;
         constructor(){}
-        private onStateChange(file: fileIo1.File) {
+        private onStateChange(file: fileIo2.File) {
             if (this.avRecorder) {
                 this.avRecorder.on('stateChange', async (state, reason)=>{
                     switch(state){
@@ -2557,23 +3038,23 @@ export function initUniExtApi(APP_ID: string) {
                                 this.isFirstStart = false;
                                 onRecorderStateChange('start');
                             } else {
-                                if (reason === media.StateChangeReason.BACKGROUND) {
+                                if (reason === media1.StateChangeReason.BACKGROUND) {
                                     onRecorderStateChange('interruptionEnd');
                                 }
                                 onRecorderStateChange('resume');
                             }
                             break;
                         case 'paused':
-                            if (reason === media.StateChangeReason.BACKGROUND) {
+                            if (reason === media1.StateChangeReason.BACKGROUND) {
                                 onRecorderStateChange('interruptionBegin');
                             }
                             onRecorderStateChange('pause');
                             break;
                         case 'stopped':
+                            fileIo2.closeSync(file);
                             onRecorderStateChange('stop', {
                                 tempFilePath: file.path
                             } as StateChangeRes);
-                            fileIo1.closeSync(file);
                             break;
                     }
                 });
@@ -2595,19 +3076,19 @@ export function initUniExtApi(APP_ID: string) {
             if (this.avRecorder !== undefined) {
                 await this.release();
             }
-            this.avRecorder = await media.createAVRecorder();
+            this.avRecorder = await media1.createAVRecorder();
             const _options_sampleRate = options.sampleRate, sampleRate = _options_sampleRate == null ? 48000 : _options_sampleRate, _options_numberOfChannels = options.numberOfChannels, numberOfChannels = _options_numberOfChannels == null ? 2 : _options_numberOfChannels, _options_encodeBitRate = options.encodeBitRate, encodeBitRate = _options_encodeBitRate == null ? 48000 : _options_encodeBitRate, _options_duration = options.duration, duration = _options_duration == null ? null : _options_duration;
             const file = createFile(supportFormats, options.format ?? '', 'aac');
             this.onStateChange(file);
-            const audioProfile: media.AVRecorderProfile = {
+            const audioProfile: media1.AVRecorderProfile = {
                 audioBitrate: encodeBitRate!,
                 audioChannels: numberOfChannels!,
-                audioCodec: media.CodecMimeType.AUDIO_AAC,
+                audioCodec: media1.CodecMimeType.AUDIO_AAC,
                 audioSampleRate: sampleRate!,
-                fileFormat: media.ContainerFormatType.CFT_MPEG_4A
+                fileFormat: media1.ContainerFormatType.CFT_MPEG_4A
             };
-            const audioConfig: media.AVRecorderConfig = {
-                audioSourceType: media.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
+            const audioConfig: media1.AVRecorderConfig = {
+                audioSourceType: media1.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
                 profile: audioProfile,
                 url: 'fd://' + file.fd
             };
@@ -2891,8 +3372,8 @@ export function initUniExtApi(APP_ID: string) {
     }, MakePhoneCallProtocol) as MakePhoneCall;
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
         const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
-        const avMetadataExtractor = await media1.createAVMetadataExtractor();
-        let metadata: media1.AVMetadata | null = null;
+        const avMetadataExtractor = await media2.createAVMetadataExtractor();
+        let metadata: media2.AVMetadata | null = null;
         let size: number = 0;
         try {
             size = (await fs1.stat(file.fd)).size;
@@ -5833,6 +6314,7 @@ export function initUniExtApi(APP_ID: string) {
         base64ToArrayBuffer,
         getClipboardData,
         setClipboardData,
+        createInnerAudioContext,
         createIntersectionObserver,
         $on,
         $once,
