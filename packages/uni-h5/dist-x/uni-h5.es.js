@@ -25050,6 +25050,12 @@ const createCanvasContextAsync = function(options) {
   }
   (_f = options.complete) == null ? void 0 : _f.call(options);
 };
+const requestAnimationFrame$1 = function(callback) {
+  return window.requestAnimationFrame(callback);
+};
+const cancelAnimationFrame$1 = function(handle) {
+  window.cancelAnimationFrame(handle);
+};
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -25062,6 +25068,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   arrayBufferToBase64,
   base64ToArrayBuffer,
   canIUse,
+  cancelAnimationFrame: cancelAnimationFrame$1,
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
@@ -25186,6 +25193,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   removeStorageSync,
   removeTabBarBadge,
   request,
+  requestAnimationFrame: requestAnimationFrame$1,
   rpx2px: upx2px,
   saveFile,
   saveImageToPhotosAlbum,
@@ -27702,6 +27710,7 @@ export {
   arrayBufferToBase64,
   base64ToArrayBuffer,
   canIUse,
+  cancelAnimationFrame$1 as cancelAnimationFrame,
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
@@ -27830,6 +27839,7 @@ export {
   removeStorageSync,
   removeTabBarBadge,
   request,
+  requestAnimationFrame$1 as requestAnimationFrame,
   upx2px as rpx2px,
   saveFile,
   saveImageToPhotosAlbum,
