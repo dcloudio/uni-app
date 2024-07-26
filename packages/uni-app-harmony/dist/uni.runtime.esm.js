@@ -1,6 +1,4 @@
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
-import fs from '@ohos.file.fs';
-import buffer from '@ohos.buffer';
 
 /**
 * @vue/shared v3.4.21
@@ -7345,8 +7343,6 @@ assign(pako, deflate, inflate, constants);
 
 var pako_1 = pako;
 
-const BASE64_TO_TEMP_FILE_PATH = 'base64ToTempFilePath';
-
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
 const I18N_JSON_DELIMITERS = ['%', '%'];
@@ -10568,14 +10564,14 @@ const createMediaQueryObserver = defineSyncApi('createMediaQueryObserver', (cont
 });
 
 // let eventReady = false
-let index$2 = 0;
+let index$1 = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
     const data = { options };
     const needCallOptions = options &&
         ('success' in options || 'fail' in options || 'complete' in options);
     if (needCallOptions) {
-        const callbackId = String(index$2++);
+        const callbackId = String(index$1++);
         data.callbackId = callbackId;
         optionsCache[callbackId] = options;
     }
@@ -13505,46 +13501,6 @@ function onMessage(pageId, arg) {
         }));
 }
 
-let index$1 = 0;
-function subscribeBase64ToTempFilePath() {
-    registerServiceMethod(BASE64_TO_TEMP_FILE_PATH, (args, resolve) => {
-        const { dataURL, dirname } = args;
-        const id = `${Date.now()}_${index$1++}`;
-        const array = dataURL.split(',');
-        const scheme = array[0];
-        const base64 = array[1];
-        const format = (scheme.match(/data:image\/(\S+?);/) || [
-            '',
-            'png',
-        ])[1].replace('jpeg', 'jpg');
-        const fileName = `${id}.${format}`;
-        const tempFilePath = `${dirname}/${fileName}`;
-        try {
-            if (!fs.accessSync(dirname)) {
-                fs.mkdirSync(dirname);
-            }
-        }
-        catch (error) {
-            resolve(error);
-            return;
-        }
-        fs.createStream(tempFilePath, 'w', (err, stream) => {
-            if (err) {
-                stream.closeSync();
-                return resolve(err);
-            }
-            stream.write(buffer.from(base64, 'base64').buffer, (err) => {
-                if (err) {
-                    stream.closeSync();
-                    return resolve(err);
-                }
-                stream.closeSync();
-                return resolve({ tempFilePath: `file://${tempFilePath}` });
-            });
-        });
-    });
-}
-
 function onWxsInvokeCallMethod({ nodeId, ownerId, method, args, }, pageId) {
     const node = findNodeById(nodeId, parseInt(pageId));
     if (!node) {
@@ -13600,7 +13556,6 @@ function initSubscribeHandlers() {
     subscribeNavigator();
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
-    subscribeBase64ToTempFilePath();
     subscribeGetLocation();
     subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod);
     const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
