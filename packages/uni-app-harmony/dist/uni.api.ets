@@ -828,8 +828,8 @@ interface Page {
     $getAppWebview: () => Webview | null;
     $page: $page;
 }
-export type Request<T> = (param: RequestOptions<T>) => RequestTask;
-export class RequestOptions<T> extends UTSObject {
+export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
+export class RequestOptions<T = Object> extends UTSObject {
     url!: string;
     data: Object | null = null;
     header: UTSJSONObject | null = null;
@@ -844,7 +844,7 @@ export class RequestOptions<T> extends UTSObject {
     fail: RequestFailCallback | null = null;
     complete: RequestCompleteCallback | null = null;
 }
-export class RequestSuccess<T> extends UTSObject {
+export class RequestSuccess<T = Object> extends UTSObject {
     data: T | null = null;
     statusCode!: number;
     header!: Object;

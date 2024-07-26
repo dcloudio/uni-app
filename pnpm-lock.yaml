@@ -14,6 +14,9 @@ importers:
       '@babel/core':
         specifier: ^7.23.3
         version: 7.24.4
+      '@babel/parser':
+        specifier: ^7.23.9
+        version: 7.24.4
       '@babel/preset-env':
         specifier: ^7.20.2
         version: 7.24.4(@babel/core@7.24.4)

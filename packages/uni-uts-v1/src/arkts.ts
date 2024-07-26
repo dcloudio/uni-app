@@ -14,34 +14,55 @@ interface ArkTSCompilerOptions {
   }
 }
 
-export function getArkTSAutoImports(): Record<
-  string,
-  [string, (string | undefined)?][]
-> {
-  return {
-    '@dcloudio/uts-harmony': [['IUTSObject'], ['UTSObject'], ['UTSJSONObject']],
-    '@dcloudio/uni-app-harmony': [
-      ['defineAsyncApi'],
-      ['defineSyncApi'],
-      ['defineTaskApi'],
-      ['defineOnApi'],
-      ['defineOffApi'],
-      ['getUniProvider'],
-      ['getUniProviders'],
-      ['string'],
-      ['AsyncApiSuccessResult'],
-      ['AsyncApiResult'],
-      ['ApiExecutor'],
-      ['ComponentInternalInstance'],
-      ['ComponentPublicInstance'],
-      ['IUniError'],
-      ['ProtocolOptions'],
-      ['ApiOptions'],
-      ['ApiError'],
-      ['UniError'],
-      ['UniProvider'],
-    ],
+type AutoImportOptions = Record<string, [string, (string | undefined)?][]>
+
+export function mergeArkTSAutoImports(
+  base: AutoImportOptions,
+  ext: AutoImportOptions
+): AutoImportOptions {
+  const keys = new Set([...Object.keys(base), ...Object.keys(ext)])
+  const result: AutoImportOptions = {}
+  for (const key of keys) {
+    const baseImports = base[key] || []
+    const extImports = ext[key] || []
+    result[key] = [...baseImports, ...extImports]
   }
+  return result
+}
+
+export function getArkTSAutoImports(): AutoImportOptions {
+  return mergeArkTSAutoImports(
+    {
+      '@dcloudio/uts-harmony': [
+        ['IUTSObject'],
+        ['UTSObject'],
+        ['UTSJSONObject'],
+      ],
+      '@dcloudio/uni-app-harmony': [
+        ['defineAsyncApi'],
+        ['defineSyncApi'],
+        ['defineTaskApi'],
+        ['defineOnApi'],
+        ['defineOffApi'],
+        ['getUniProvider'],
+        ['getUniProviders'],
+        ['string'],
+        ['AsyncApiSuccessResult'],
+        ['AsyncApiResult'],
+        ['ApiExecutor'],
+        ['ComponentInternalInstance'],
+        ['ComponentPublicInstance'],
+        ['IUniError'],
+        ['ProtocolOptions'],
+        ['ApiOptions'],
+        ['ApiError'],
+        ['UniError'],
+        ['UniProvider'],
+      ],
+      '@dcloudio/uni-app-harmony-framework': [['uni']],
+    },
+    require('../lib/arkts/ext-api-export.json')
+  )
 }
 export async function compileArkTS(
   pluginDir: string,

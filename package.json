@@ -42,6 +42,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",
+    "@babel/parser": "^7.23.9",
     "@babel/preset-env": "^7.20.2",
     "@dcloudio/types": "3.4.11",
     "@dcloudio/uni-api": "3.0.0-alpha-4020520240719001",
