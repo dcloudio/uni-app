@@ -45,12 +45,8 @@
       "null"
     ]
   },
-  "uni-base": {
+  "uni-interceptor": {
     "removeInterceptor": [
-      null,
-      "null"
-    ],
-    "$off": [
       null,
       "null"
     ]
@@ -84,6 +80,17 @@
   },
   "uni-exit": {
     "exit": [
+      "null"
+    ]
+  },
+  "uni-base": {
+    "$off": [
+      null,
+      "null"
+    ]
+  },
+  "uni-dialogPage": {
+    "closeDialogPage": [
       "null"
     ]
   },

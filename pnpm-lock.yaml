@@ -27,8 +27,8 @@ importers:
         specifier: 3.0.0-alpha-4020520240719001
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.15
-        version: 0.7.15
+        specifier: ^0.7.17
+        version: 0.7.17
       '@jest/types':
         specifier: ^29.0.3
         version: 29.6.3
@@ -666,8 +666,8 @@ importers:
         specifier: ^5.0.5
         version: 5.1.0(rollup@4.14.2)
       '@vitejs/plugin-vue':
-        specifier: ^5.0.4
-        version: 5.0.4(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))(vue@3.4.21(typescript@5.4.2))
+        specifier: 5.1.0
+        version: 5.1.0(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))(vue@3.4.21(typescript@5.4.2))
       '@vue/compiler-dom':
         specifier: 3.4.21
         version: 3.4.21
@@ -1793,13 +1793,13 @@ importers:
         specifier: ^5.0.5
         version: 5.1.0(rollup@4.14.2)
       '@vitejs/plugin-legacy':
-        specifier: ^5.3.2
+        specifier: 5.3.2
         version: 5.3.2(terser@5.30.3)(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))
       '@vitejs/plugin-vue':
-        specifier: ^5.0.4
-        version: 5.0.4(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))(vue@3.4.21(typescript@5.4.2))
+        specifier: 5.1.0
+        version: 5.1.0(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))(vue@3.4.21(typescript@5.4.2))
       '@vitejs/plugin-vue-jsx':
-        specifier: ^3.1.0
+        specifier: 3.1.0
         version: 3.1.0(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))(vue@3.4.21(typescript@5.4.2))
       '@vue/compiler-core':
         specifier: 3.4.21
@@ -2521,8 +2521,8 @@ packages:
   '@dcloudio/types@3.4.11':
     resolution: {integrity: sha512-vRmcqV/OQF8r4QQgIz+iHuuBirw7Y+0MeN/QgeEZtcKGUqyMSGDJW4gF8jLJaEtGSZ3dBZslupRXQKZhUBGTpw==}
 
-  '@dcloudio/uni-app-x@0.7.15':
-    resolution: {integrity: sha512-wBV+O523MNrP2M28cwn3YWqFVZRtj7KGVSdRKbTgm5k8P6UBZImFWg7LY4hLg/+CtbTV95hQazpTtJEHbwL3Qg==}
+  '@dcloudio/uni-app-x@0.7.17':
+    resolution: {integrity: sha512-oP72YhirPAsmyEV/iRxwqy4HLzPD/ilCBy1g4t0kKhig6qRmObQcO5XreH8R1wOO9unGlUHBWJUsPOrrnn4t6A==}
 
   '@dcloudio/uni-ui@1.5.5':
     resolution: {integrity: sha512-DTr8o4lcRgu4JJclA2eT7UFVKtglK63OUtcDGysrSeZhgAJAC2gBYm/pYbv0BFxKqxfbdoAFGAFCigCVY9+NAQ==}
@@ -3527,6 +3527,13 @@ packages:
 
   '@vitejs/plugin-vue@5.0.4':
     resolution: {integrity: sha512-WS3hevEszI6CEVEx28F8RjTX97k3KsrcY6kvTg7+Whm5y3oYvcqzVeGCU3hxSAn4uY2CLCkeokkGKpoctccilQ==}
+    engines: {node: ^18.0.0 || >=20.0.0}
+    peerDependencies:
+      vite: ^5.0.0
+      vue: ^3.2.25
+
+  '@vitejs/plugin-vue@5.1.0':
+    resolution: {integrity: sha512-QMRxARyrdiwi1mj3AW4fLByoHTavreXq0itdEW696EihXglf1MB3D4C2gBvE0jMPH29ZjC3iK8aIaUMLf4EOGA==}
     engines: {node: ^18.0.0 || >=20.0.0}
     peerDependencies:
       vite: ^5.0.0
@@ -7897,7 +7904,7 @@ snapshots:
 
   '@dcloudio/types@3.4.11': {}
 
-  '@dcloudio/uni-app-x@0.7.15': {}
+  '@dcloudio/uni-app-x@0.7.17': {}
 
   '@dcloudio/uni-ui@1.5.5': {}
 
@@ -9163,7 +9170,7 @@ snapshots:
       browserslist: 4.23.0
       browserslist-to-esbuild: 2.1.1(browserslist@4.23.0)
       core-js: 3.36.1
-      magic-string: 0.30.9
+      magic-string: 0.30.10
       regenerator-runtime: 0.14.1
       systemjs: 6.14.3
       terser: 5.30.3
@@ -9196,7 +9203,7 @@ snapshots:
       vite: 5.2.8(@types/node@18.19.31)(terser@5.30.3)
       vue: 3.4.21(typescript@5.3.2)
 
-  '@vitejs/plugin-vue@5.0.4(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))(vue@3.4.21(typescript@5.4.2))':
+  '@vitejs/plugin-vue@5.1.0(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))(vue@3.4.21(typescript@5.4.2))':
     dependencies:
       vite: 5.2.8(@types/node@18.19.31)(terser@5.30.3)
       vue: 3.4.21(typescript@5.4.2)

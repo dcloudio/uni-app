@@ -90,6 +90,8 @@ declare global {
       }
     }
   }
+  // Vue 相关
+  type SetupContext = any
 }
 
 declare module 'vue' {

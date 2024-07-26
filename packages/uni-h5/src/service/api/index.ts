@@ -128,3 +128,7 @@ export {
   invokePushCallback,
 } from '@dcloudio/uni-api'
 //#endif
+
+//#if !_NODE_JS_ && _X_
+export * from './context/createCanvasContextAsync'
+//#endif

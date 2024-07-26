@@ -11758,9 +11758,8 @@
   var pako = {};
   assign(pako, deflate, inflate, constants);
   var pako_1 = pako;
-  var BASE64_TO_TEMP_FILE_PATH = "base64ToTempFilePath";
   function saveImage(dataURL, dirname, callback) {
-    UniViewJSBridge.invokeServiceMethod(BASE64_TO_TEMP_FILE_PATH, {
+    UniViewJSBridge.invokeServiceMethod("base64ToTempFilePath", {
       dataURL,
       dirname
     }, (res) => {
@@ -16410,6 +16409,7 @@
         var type2 = "";
         switch (props2.type) {
           case "text":
+            type2 = "text";
             if (props2.confirmType === "search") {
               type2 = "search";
             }

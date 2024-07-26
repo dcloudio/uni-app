@@ -22,7 +22,6 @@ import {
   type WebInvokeAppService,
   onWebInvokeAppService,
 } from '@dcloudio/uni-app-plus/service/framework/app/subscriber/webInvokeAppService'
-import { subscribeBase64ToTempFilePath } from '../../../api/context/canvas'
 import { subscribeGetLocation } from '../../../api/location/getLocation'
 import { onWxsInvokeCallMethod } from '@dcloudio/uni-app-plus/service/framework/app/subscriber/wxs'
 
@@ -50,7 +49,6 @@ export function initSubscribeHandlers() {
   subscribeNavigator()
   subscribe(WEBVIEW_INSERTED, onWebviewInserted)
   subscribe(WEBVIEW_REMOVED, onWebviewRemoved)
-  subscribeBase64ToTempFilePath()
   subscribeGetLocation()
   subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
 

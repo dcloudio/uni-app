@@ -107,7 +107,7 @@ export function runUTS2Kotlin(
     inlineSources: true,
     noEmitOnError: false,
     skipLibCheck: true,
-    moduleResolution: ts.ModuleResolutionKind.Bundler,
+    resolveJsonModule: false, // 目前 json 文件会被 vite 提前处理，已经变成了标准的 ts 文件
     typeRoots: [],
     paths: {
       '@dcloudio/uni-runtime': [

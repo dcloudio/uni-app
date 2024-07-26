@@ -11,11 +11,15 @@ import picker from '@ohos.file.picker';
 import inputMethod from '@ohos.inputMethod';
 import image from '@ohos.multimedia.image';
 import media from '@ohos.multimedia.media';
+import connection from '@ohos.net.connection';
 import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
-import { BusinessError as BusinessError1 } from '@ohos.base';
-import { BusinessError as BusinessError2 } from '@ohos.base';
+import call from '@ohos.telephony.call';
+import radio from '@ohos.telephony.radio';
+import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError3 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
@@ -26,13 +30,16 @@ import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony2, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony3, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony5, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony7 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, defineOnApi, defineOffApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
+import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, defineOnApi, defineOffApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import { UniServiceJSBridge as UniServiceJSBridge1, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
+import { UniServiceJSBridge, UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
 import Want1 from '@ohos.app.ability.Want';
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
@@ -40,8 +47,8 @@ import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
+import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
-import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
 import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
@@ -68,8 +75,6 @@ import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
-import network, { NetworkResponse } from '@system.network';
-import { networkinfo, UniServiceJSBridge } from "@dcloudio/uni-app-harmony-framework";
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
@@ -77,6 +82,58 @@ import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
+type AddPhoneContact = (options: AddPhoneContactOptions) => void;
+class AddPhoneContactSuccess extends UTSObject {
+}
+class UniError1 extends UTSObject {
+    errSubject!: string;
+    errCode!: number;
+    errMsg!: string;
+    data: object | null = null;
+    cause: Object | null = null;
+}
+type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
+type AddPhoneContactFail = UniError1;
+type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
+type AddPhoneContactComplete = Object;
+type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
+class AddPhoneContactOptions extends UTSObject {
+    photoFilePath: string | null = null;
+    nickName: string | null = null;
+    lastName: string | null = null;
+    middleName: string | null = null;
+    firstName: string | null = null;
+    remark: string | null = null;
+    mobilePhoneNumber: string | null = null;
+    weChatNumber: string | null = null;
+    addressCountry: string | null = null;
+    addressState: string | null = null;
+    addressCity: string | null = null;
+    addressStreet: string | null = null;
+    addressPostalCode: string | null = null;
+    organization: string | null = null;
+    title: string | null = null;
+    workFaxNumber: string | null = null;
+    workPhoneNumber: string | null = null;
+    hostNumber: string | null = null;
+    email: string | null = null;
+    url: string | null = null;
+    workAddressCountry: string | null = null;
+    workAddressState: string | null = null;
+    workAddressCity: string | null = null;
+    workAddressStreet: string | null = null;
+    workAddressPostalCode: string | null = null;
+    homeFaxNumber: string | null = null;
+    homePhoneNumber: string | null = null;
+    homeAddressCountry: string | null = null;
+    homeAddressState: string | null = null;
+    homeAddressCity: string | null = null;
+    homeAddressStreet: string | null = null;
+    homeAddressPostalCode: string | null = null;
+    success: AddPhoneContactSuccessCallback | null = null;
+    fail: AddPhoneContactFailCallback | null = null;
+    complete: AddPhoneContactCompleteCallback | null = null;
+}
 type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
 type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
@@ -355,9 +412,6 @@ class OnNetworkStatusChangeCallbackResult extends UTSObject {
 type OnNetworkStatusChangeCallback = (result: OnNetworkStatusChangeCallbackResult) => void;
 type OnNetworkStatusChange = (callback: OnNetworkStatusChangeCallback) => void;
 type OffNetworkStatusChange = (callback: (result: Object) => void) => void;
-class NetworkSubscribeOptions extends UTSObject {
-    success!: (data: NetworkResponse) => void;
-}
 export class GetProviderSuccess extends UTSObject {
     service!: 'payment' | 'location';
     provider!: string[];
@@ -951,7 +1005,7 @@ export type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollT
 export interface UniPaymentProvider extends UniProvider {
     requestPayment(options: RequestPaymentOptions): void;
 }
-type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700800 | 700801 | 700718;
+type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700800 | 700801 | 700718;
 export type RequestPayment = (options: RequestPaymentOptions) => void;
 export class RequestPaymentSuccess extends UTSObject {
     data: object | null = null;
@@ -1386,6 +1440,7 @@ interface IUniWebsocketEmitter {
     emit: Function;
 }
 interface UniExtApi {
+    addPhoneContact: AddPhoneContact;
     arrayBufferToBase64: ArrayBufferToBase64;
     base64ToArrayBuffer: Base64ToArrayBuffer;
     getClipboardData: GetClipboardData;
@@ -1470,6 +1525,315 @@ interface UniExtApi {
     onSocketError: OnSocketError;
 }
 export function initUniExtApi(APP_ID: string) {
+    const API_ADD_PHONE_CONTACT = 'addPhoneContact';
+    const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
+        formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
+            [
+                'firstName',
+                (firstName: string)=>{
+                    if (!firstName) {
+                        return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const AddPhoneContactApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'firstName',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'photoFilePath',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'nickName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'lastName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'middleName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'remark',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'mobilePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'weChatNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'organization',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'title',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workPhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'hostNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'email',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'url',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(API_ADD_PHONE_CONTACT, (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>)=>{
+        UTSHarmony.requestSystemPermission([
+            'ohos.permission.WRITE_CONTACTS'
+        ], (allRight: boolean)=>{
+            if (allRight) {
+                const photoFilePath = args.photoFilePath, _args_nickName = args.nickName, nickName = _args_nickName == null ? '' : _args_nickName, _args_lastName = args.lastName, lastName = _args_lastName == null ? '' : _args_lastName, _args_middleName = args.middleName, middleName = _args_middleName == null ? '' : _args_middleName, _args_firstName = args.firstName, firstName = _args_firstName == null ? '' : _args_firstName, _args_remark = args.remark, remark = _args_remark == null ? '' : _args_remark, _args_mobilePhoneNumber = args.mobilePhoneNumber, mobilePhoneNumber = _args_mobilePhoneNumber == null ? '' : _args_mobilePhoneNumber, _args_addressCountry = args.addressCountry, addressCountry = _args_addressCountry == null ? '' : _args_addressCountry, _args_addressState = args.addressState, addressState = _args_addressState == null ? '' : _args_addressState, _args_addressCity = args.addressCity, addressCity = _args_addressCity == null ? '' : _args_addressCity, _args_addressStreet = args.addressStreet, addressStreet = _args_addressStreet == null ? '' : _args_addressStreet, _args_addressPostalCode = args.addressPostalCode, addressPostalCode = _args_addressPostalCode == null ? '' : _args_addressPostalCode, _args_organization = args.organization, organization = _args_organization == null ? '' : _args_organization, _args_url = args.url, url = _args_url == null ? '' : _args_url, _args_workPhoneNumber = args.workPhoneNumber, workPhoneNumber = _args_workPhoneNumber == null ? '' : _args_workPhoneNumber, _args_workFaxNumber = args.workFaxNumber, workFaxNumber = _args_workFaxNumber == null ? '' : _args_workFaxNumber, _args_hostNumber = args.hostNumber, hostNumber = _args_hostNumber == null ? '' : _args_hostNumber, _args_email = args.email, email = _args_email == null ? '' : _args_email, _args_title = args.title, title = _args_title == null ? '' : _args_title, _args_workAddressCountry = args.workAddressCountry, workAddressCountry = _args_workAddressCountry == null ? '' : _args_workAddressCountry, _args_workAddressState = args.workAddressState, workAddressState = _args_workAddressState == null ? '' : _args_workAddressState, _args_workAddressCity = args.workAddressCity, workAddressCity = _args_workAddressCity == null ? '' : _args_workAddressCity, _args_workAddressStreet = args.workAddressStreet, workAddressStreet = _args_workAddressStreet == null ? '' : _args_workAddressStreet, workAddressPostalCode = args.workAddressPostalCode, _args_homeFaxNumber = args.homeFaxNumber, homeFaxNumber = _args_homeFaxNumber == null ? '' : _args_homeFaxNumber, _args_homePhoneNumber = args.homePhoneNumber, homePhoneNumber = _args_homePhoneNumber == null ? '' : _args_homePhoneNumber, _args_homeAddressCountry = args.homeAddressCountry, homeAddressCountry = _args_homeAddressCountry == null ? '' : _args_homeAddressCountry, _args_homeAddressState = args.homeAddressState, homeAddressState = _args_homeAddressState == null ? '' : _args_homeAddressState, _args_homeAddressCity = args.homeAddressCity, homeAddressCity = _args_homeAddressCity == null ? '' : _args_homeAddressCity, _args_homeAddressStreet = args.homeAddressStreet, homeAddressStreet = _args_homeAddressStreet == null ? '' : _args_homeAddressStreet, _args_homeAddressPostalCode = args.homeAddressPostalCode, homeAddressPostalCode = _args_homeAddressPostalCode == null ? '' : _args_homeAddressPostalCode;
+                const contactInfo: contact.Contact = {
+                    name: {
+                        familyName: lastName!,
+                        middleName: middleName!,
+                        givenName: firstName!,
+                        fullName: lastName! + middleName! + firstName!
+                    },
+                    nickName: {
+                        nickName: nickName!
+                    },
+                    emails: [
+                        {
+                            email: email!,
+                            displayName: '邮箱'
+                        }
+                    ],
+                    phoneNumbers: [
+                        {
+                            phoneNumber: homePhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_HOME
+                        },
+                        {
+                            phoneNumber: mobilePhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_MOBILE
+                        },
+                        {
+                            phoneNumber: homeFaxNumber!,
+                            labelId: contact.PhoneNumber.NUM_FAX_HOME
+                        },
+                        {
+                            phoneNumber: workFaxNumber!,
+                            labelId: contact.PhoneNumber.NUM_FAX_WORK
+                        },
+                        {
+                            phoneNumber: workPhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_WORK
+                        },
+                        {
+                            phoneNumber: hostNumber!,
+                            labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
+                        }
+                    ],
+                    portrait: {
+                        uri: photoFilePath!
+                    },
+                    postalAddresses: [
+                        {
+                            city: homeAddressCity!,
+                            country: homeAddressCountry!,
+                            postcode: homeAddressPostalCode!,
+                            street: homeAddressStreet!,
+                            postalAddress: homeAddressCountry! + homeAddressState! + homeAddressCity + homeAddressStreet,
+                            labelId: contact.PostalAddress.ADDR_HOME
+                        },
+                        {
+                            city: workAddressCity!,
+                            country: workAddressCountry!,
+                            postcode: workAddressPostalCode!,
+                            street: workAddressStreet!,
+                            postalAddress: workAddressCountry! + workAddressState! + workAddressCity + workAddressStreet,
+                            labelId: contact.PostalAddress.ADDR_WORK
+                        },
+                        {
+                            city: addressCity!,
+                            country: addressCountry!,
+                            postcode: addressPostalCode!,
+                            street: addressStreet!,
+                            postalAddress: addressCountry! + addressState! + addressCity + addressStreet,
+                            labelId: contact.PostalAddress.CUSTOM_LABEL
+                        }
+                    ],
+                    websites: [
+                        {
+                            website: url!
+                        }
+                    ],
+                    note: {
+                        noteContent: remark!
+                    },
+                    organization: {
+                        name: organization!,
+                        title: title!
+                    }
+                };
+                contact.addContact(getContext(), contactInfo).then((contactId)=>{
+                    executor.resolve(contactId);
+                }).catch((err: BusinessError)=>{
+                    executor.reject(err.message);
+                });
+            } else {
+                executor.reject('Permission denied');
+            }
+        }, ()=>executor.reject('Permission denied'));
+    }, AddPhoneContactApiProtocol, AddPhoneContactApiOptions) as AddPhoneContact;
     const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
     const ArrayBufferToBase64Protocol = new Map<string, ProtocolOptions>([
         [
@@ -1628,7 +1992,7 @@ export function initUniExtApi(APP_ID: string) {
     }) as $Emit;
     const API_EXIT = 'exit';
     const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
-        UTSHarmony.exit();
+        UTSHarmony1.exit();
     }) as Exit;
     const API_SAVE_FILE = 'saveFile';
     const API_GET_FILE_INFO = 'getFileInfo';
@@ -1791,20 +2155,20 @@ export function initUniExtApi(APP_ID: string) {
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony1.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony2.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony1.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony1.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony1.getAppId() as string,
+            appId: UTSHarmony2.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony1.getAppName() as string,
-            appTheme: UTSHarmony1.getAppTheme() as string,
+            appName: UTSHarmony2.getAppName() as string,
+            appTheme: UTSHarmony2.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony1.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony2.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -1823,7 +2187,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony2.getOsTheme() as string,
+            osTheme: UTSHarmony3.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -1835,57 +2199,169 @@ export function initUniExtApi(APP_ID: string) {
     const API_GET_NETWORK_TYPE = 'getNetworkType';
     const API_ON_NETWORK_STATUS_CHANGE = 'onNetworkStatusChange';
     const API_OFF_NETWORK_STATUS_CHANGE = 'offNetworkStatusChange';
+    const PERMISSIONS = [
+        'ohos.permission.GET_NETWORK_INFO'
+    ];
     enum NetworkinfoType {
-        unknown = 0,
-        none = 1,
-        ethernet = 2,
-        wifi = 3,
-        "2g" = 4,
-        "3g" = 5,
-        "4g" = 6,
-        "5g" = 7
+        UNKNOW = 0,
+        NONE = 1,
+        ETHERNET = 2,
+        WIFI = 3,
+        "2G" = 4,
+        "3G" = 5,
+        "4G" = 6,
+        "5G" = 7
     }
+    const signalType = (resultObj: radio.NetworkType)=>{
+        switch(resultObj){
+            case radio.NetworkType.NETWORK_TYPE_GSM:
+            case radio.NetworkType.NETWORK_TYPE_CDMA:
+                return NetworkinfoType['2G'];
+            case radio.NetworkType.NETWORK_TYPE_WCDMA:
+            case radio.NetworkType.NETWORK_TYPE_TDSCDMA:
+                return NetworkinfoType['3G'];
+            case radio.NetworkType.NETWORK_TYPE_LTE:
+                return NetworkinfoType['4G'];
+            case radio.NetworkType.NETWORK_TYPE_NR:
+                return NetworkinfoType['5G'];
+            case radio.NetworkType.NETWORK_TYPE_UNKNOWN:
+                return NetworkinfoType.UNKNOW;
+            default:
+                return NetworkinfoType.NONE;
+        }
+    };
+    const networkGetType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+                if (allRight) {
+                    try {
+                        radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
+                            const data = signalInformation[0];
+                            if (data && data.signalType) {
+                                resolve(signalType(data.signalType));
+                            } else {
+                                resolve(NetworkinfoType.NONE);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error as BusinessError1);
+                    }
+                } else {
+                    reject('permission denied');
+                }
+            }, ()=>reject('permission denied'));
+        });
+    };
+    class GlobalContext {
+        netList: connection.NetHandle[] = [];
+        netHandle: connection.NetHandle | null = null;
+        private constructor(){}
+        private static instance: GlobalContext;
+        public static getContext(): GlobalContext {
+            if (!GlobalContext.instance) {
+                GlobalContext.instance = new GlobalContext();
+            }
+            return GlobalContext.instance;
+        }
+    }
+    const getCurrentType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+                if (allRight) {
+                    try {
+                        connection.getDefaultNet().then((data: connection.NetHandle)=>{
+                            if (data) {
+                                GlobalContext.getContext().netHandle = data;
+                                connection.getNetCapabilities(GlobalContext.getContext().netHandle!).then((data: connection.NetCapabilities)=>{
+                                    const bearerTypes: Set<number> = new Set(data.bearerTypes);
+                                    const bearerTypesNum = Array.from(bearerTypes.values());
+                                    for (const item of bearerTypesNum){
+                                        if (item == connection.NetBearType.BEARER_CELLULAR) {
+                                            networkGetType().then(resolve).catch(reject);
+                                        } else if (item == connection.NetBearType.BEARER_WIFI) {
+                                            resolve(NetworkinfoType.WIFI);
+                                        } else if (item == connection.NetBearType.BEARER_ETHERNET) {
+                                            resolve(NetworkinfoType.ETHERNET);
+                                        } else {
+                                            resolve(NetworkinfoType.UNKNOW);
+                                        }
+                                    }
+                                }).catch((err: BusinessError1)=>{
+                                    reject(err);
+                                });
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                } else {
+                    reject('permission denied');
+                }
+            });
+        });
+    };
+    class Network {
+        static netConnection: connection.NetConnection | null = null;
+        constructor(){
+            Network.netConnection = connection.createNetConnection();
+        }
+        static ohoSubscribe() {
+            if (!Network.netConnection) {
+                Network.netConnection = connection.createNetConnection();
+            }
+            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+                if (allRight && Network.netConnection) {
+                    Network.netConnection.register((err: BusinessError1)=>{});
+                    Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
+                        const NetBearType = capability?.netCap?.bearerTypes[0];
+                        let networkType = '';
+                        switch(NetBearType){
+                            case connection.NetBearType.BEARER_CELLULAR:
+                                getCurrentType().then((type: number)=>{
+                                    invokeOnNetworkStatusChange(NetworkinfoType[type]);
+                                }).catch(()=>{
+                                    invokeOnNetworkStatusChange(NetworkinfoType[1]);
+                                });
+                                return;
+                            case connection.NetBearType.BEARER_WIFI:
+                                networkType = NetworkinfoType[3];
+                                break;
+                            case connection.NetBearType.BEARER_ETHERNET:
+                                networkType = NetworkinfoType[2];
+                                break;
+                            default:
+                                networkType = NetworkinfoType[1];
+                        }
+                        invokeOnNetworkStatusChange(networkType);
+                    });
+                    Network.netConnection.on('netLost', (netLost: connection.NetHandle)=>{
+                        invokeOnNetworkStatusChange(NetworkinfoType[1]);
+                    });
+                }
+            });
+        }
+    }
+    new Network();
+    UTSHarmony4.appLifeCycle.once('onCreate', ()=>{
+        Network.ohoSubscribe();
+    });
     const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
-        networkinfo.getCurrentType().then((type: number)=>{
+        getCurrentType().then((type: number)=>{
             res.resolve({
-                networkType: NetworkinfoType[type]
+                networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError)=>{
+        }).catch((err: BusinessError1)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
     const invokeOnNetworkStatusChange = (networkType: string)=>{
         UniServiceJSBridge.invokeOnCallback(API_ON_NETWORK_STATUS_CHANGE, {
-            isConnected: networkType !== 'none',
-            networkType
+            isConnected: networkType !== NetworkinfoType[1],
+            networkType: networkType.toLocaleLowerCase()
         } as OnNetworkStatusChangeCallbackResult);
     };
-    const NetworkSubscribeSuccess = (data: NetworkResponse)=>{
-        if (data.type === 'none') {
-            networkinfo.getCurrentType().then((type: number)=>{
-                invokeOnNetworkStatusChange(NetworkinfoType[type]);
-            }).catch(()=>{
-                invokeOnNetworkStatusChange('none');
-            });
-        } else {
-            invokeOnNetworkStatusChange(data.type.toLocaleLowerCase());
-        }
-    };
-    const onNetworkStatusChange: OnNetworkStatusChange = defineOnApi<OnNetworkStatusChangeCallbackResult>(API_ON_NETWORK_STATUS_CHANGE, ()=>{
-        let firstInvoke: boolean = true;
-        network.subscribe({
-            success (data: NetworkResponse) {
-                if (firstInvoke) {
-                    firstInvoke = false;
-                } else {
-                    NetworkSubscribeSuccess(data);
-                }
-            }
-        } as NetworkSubscribeOptions);
-    }) as OnNetworkStatusChange;
-    const offNetworkStatusChange: OffNetworkStatusChange = defineOffApi<OffNetworkStatusChange>(API_OFF_NETWORK_STATUS_CHANGE, ()=>{
-        network.unsubscribe();
-    }) as OffNetworkStatusChange;
+    const onNetworkStatusChange: OnNetworkStatusChange = defineOnApi<OnNetworkStatusChangeCallbackResult>(API_ON_NETWORK_STATUS_CHANGE, ()=>{}) as OnNetworkStatusChange;
+    const offNetworkStatusChange: OffNetworkStatusChange = defineOffApi<OffNetworkStatusChange>(API_OFF_NETWORK_STATUS_CHANGE, ()=>{}) as OffNetworkStatusChange;
     const API_GET_PROVIDER = 'getProvider';
     const API_GET_PROVIDER_IDS = 'getProviderIds';
     const API_GET_PROVIDER_OBJECT = 'getProviderObject';
@@ -1957,11 +2433,11 @@ export function initUniExtApi(APP_ID: string) {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony3.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony5.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony5.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony5.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -1974,10 +2450,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony3.getAppId() as string,
+            appId: UTSHarmony5.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony3.getAppName() as string,
-            appTheme: UTSHarmony3.getAppTheme() as string,
+            appName: UTSHarmony5.getAppName() as string,
+            appTheme: UTSHarmony5.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -1993,7 +2469,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony3.getOsTheme() as string,
+            osTheme: UTSHarmony5.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -2056,10 +2532,31 @@ export function initUniExtApi(APP_ID: string) {
         }
         return false;
     };
+    const dial = (number: string, confirm = true)=>{
+        if (!confirm && typeof call.dial === 'function') {
+            return new Promise<void>((resolve, reject)=>{
+                UTSHarmony6.requestSystemPermission([
+                    'ohos.permission.PLACE_CALL'
+                ], (allRight: boolean)=>{
+                    if (allRight) {
+                        call.dial(number).then(()=>{
+                            resolve();
+                        }).catch(reject);
+                    } else {
+                        reject('permission denied');
+                    }
+                }, ()=>{
+                    reject('permission denied');
+                });
+            });
+        } else {
+            return call.makeCall(number);
+        }
+    };
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
-        const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
+        const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError1<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError2<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -4049,6 +4546,10 @@ export function initUniExtApi(APP_ID: string) {
             'Wechat is not installed.'
         ],
         [
+            700605,
+            'Failed to get provider.'
+        ],
+        [
             700718,
             'URL Scheme is not configured.'
         ]
@@ -4246,7 +4747,7 @@ export function initUniExtApi(APP_ID: string) {
             } as promptAction.ShowToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError2).message;
+            let message = (error as BusinessError3).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -4359,7 +4860,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony4.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony7.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -4981,6 +5482,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }) as CloseSocket;
     return {
+        addPhoneContact,
         arrayBufferToBase64,
         base64ToArrayBuffer,
         getClipboardData,

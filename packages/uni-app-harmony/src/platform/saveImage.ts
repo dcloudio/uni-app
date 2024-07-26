@@ -1,12 +1,10 @@
-import { BASE64_TO_TEMP_FILE_PATH } from '../constants'
-
 export function saveImage(
   dataURL: string,
   dirname: string,
   callback: (error: { message: string } | null, tempFilePath?: string) => void
 ) {
   UniViewJSBridge.invokeServiceMethod(
-    BASE64_TO_TEMP_FILE_PATH,
+    'base64ToTempFilePath',
     { dataURL, dirname },
     (res) => {
       if (res.message) {

@@ -131,6 +131,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       let type = ''
       switch (props.type) {
         case 'text':
+          type = 'text'
           if (props.confirmType === 'search') {
             type = 'search'
           }
