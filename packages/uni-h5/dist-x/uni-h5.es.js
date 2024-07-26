@@ -10135,6 +10135,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       let type2 = "";
       switch (props2.type) {
         case "text":
+          type2 = "text";
           if (props2.confirmType === "search") {
             type2 = "search";
           }
@@ -25009,6 +25010,46 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
   API_GET_PROVIDER,
   createUnsupportedAsyncApi(API_GET_PROVIDER)
 );
+class CanvasContextImpl {
+  constructor(element) {
+    this._element = element;
+  }
+  getContext(type) {
+    return this._element.getContext(type);
+  }
+  toBlob(callback, type, quality) {
+    this._element.toBlob(callback, type, quality);
+  }
+  toDataUrl(type, encoderOptions) {
+    return this._element.toDataUrl(type, encoderOptions);
+  }
+}
+const createCanvasContextAsync = function(options) {
+  var _a, _b, _c, _d, _e, _f;
+  const currentPage = (_a = options.component) != null ? _a : getCurrentPages()[getCurrentPages().length - 1];
+  if (currentPage != null) {
+    const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
+    if (element != null) {
+      const canvas = element;
+      (_c = options.success) == null ? void 0 : _c.call(options, new CanvasContextImpl(canvas));
+    } else {
+      const uniError = new UniError(
+        "uni-createCanvasContextAsync",
+        -1,
+        "canvas id invalid."
+      );
+      (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
+    }
+  } else {
+    const uniError = new UniError(
+      "uni-createCanvasContextAsync",
+      -1,
+      "No found current page."
+    );
+    (_e = options.fail) == null ? void 0 : _e.call(options, uniError);
+  }
+  (_f = options.complete) == null ? void 0 : _f.call(options);
+};
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -25036,6 +25077,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   createAnimation: createAnimation$1,
   createCameraContext,
   createCanvasContext,
+  createCanvasContextAsync,
   createInnerAudioContext,
   createIntersectionObserver,
   createLivePlayerContext,
@@ -27675,6 +27717,7 @@ export {
   createAnimation$1 as createAnimation,
   createCameraContext,
   createCanvasContext,
+  createCanvasContextAsync,
   createInnerAudioContext,
   createIntersectionObserver,
   createLivePlayerContext,
