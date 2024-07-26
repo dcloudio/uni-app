@@ -19,7 +19,8 @@ import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError3 } from '@ohos.base';
+import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError4 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
@@ -32,9 +33,10 @@ import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony3, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony5, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony5 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony6, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony7 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, defineOnApi, defineOffApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
@@ -50,6 +52,8 @@ import common3 from '@ohos.app.ability.common';
 import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
+import { fileIo as fileIo1 } from '@kit.CoreFileKit';
+import { fileIo } from '@kit.CoreFileKit';
 import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
@@ -60,7 +64,8 @@ import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmo
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv as getEnv1, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv2, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, getRealPath } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
@@ -75,6 +80,7 @@ import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import { isPlainObject, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import media1 from '@ohos.multimedia.media';
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
@@ -438,6 +444,48 @@ export class GetProviderIdsOptions extends UTSObject {
 export class GetProviderObjectOptions extends UTSObject {
     service!: 'payment' | 'location';
     provider!: string;
+}
+type GetRecorderManager = () => RecorderManager;
+class RecorderManagerStartOptions extends UTSObject {
+    duration: number | null = null;
+    sampleRate: number | null = null;
+    numberOfChannels: number | null = null;
+    encodeBitRate: number | null = null;
+    format: 'aac' | 'mp3' | 'PCM' | 'wav' | null = null;
+    frameSize: number | null = null;
+}
+interface RecorderManagerOnStopResult {
+    tempFilePath: string;
+}
+interface RecorderManager {
+    start(options: RecorderManagerStartOptions): void;
+    pause(): void;
+    resume(): void;
+    stop(): void;
+    onStart(options: (result: Object) => void): void;
+    onPause(options: (result: Object) => void): void;
+    onStop(options: (result: RecorderManagerOnStopResult) => void): void;
+    onFrameRecorded(options: (result: Object) => void): void;
+    onError(options: (result: Object) => void): void;
+    onResume?: (options: (result: Object) => void) => void;
+    onInterruptionBegin?: (options: (result: Object) => void) => void;
+    onInterruptionEnd?: (options: (result: Object) => void) => void;
+}
+type RecorderState = 'pause' | 'resume' | 'start' | 'stop' | 'error' | 'frameRecorded' | 'interruptionBegin' | 'interruptionEnd';
+interface Callbacks {
+    pause: Function[];
+    resume: Function[];
+    start: Function[];
+    stop: Function[];
+    error: Function[];
+    frameRecorded: Function[];
+    interruptionBegin: Function[];
+    interruptionEnd: Function[];
+}
+interface StateChangeRes extends RecorderManagerOnStopResult {
+    errMsg?: string;
+    frameBuffer?: ArrayBuffer;
+    isLastFrame?: boolean;
 }
 export type GetSystemInfo = (options: GetSystemInfoOptions) => void;
 export type GetSystemInfoSync = () => GetSystemInfoResult;
@@ -1464,6 +1512,7 @@ interface UniExtApi {
     getProvider: GetProvider;
     getProviderIds: GetProviderIds;
     getProviderObject: GetProviderObject;
+    getRecorderManager: GetRecorderManager;
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
     getWindowInfo: GetWindowInfo;
@@ -2408,6 +2457,283 @@ export function initUniExtApi(APP_ID: string) {
             }) || null;
         }
     }) as GetProviderObject;
+    const API_GET_RECORDER_MANAGER = 'getRecorderManager';
+    const callbacks: Callbacks = {
+        pause: [],
+        resume: [],
+        start: [],
+        stop: [],
+        error: [],
+        frameRecorded: [],
+        interruptionBegin: [],
+        interruptionEnd: []
+    };
+    const setRecordStateCallback = (state: RecorderState, cb: Function)=>{
+        switch(state){
+            case 'pause':
+                callbacks.pause.push(cb);
+                break;
+            case 'resume':
+                callbacks.resume.push(cb);
+                break;
+            case 'start':
+                callbacks.start.push(cb);
+                break;
+            case 'stop':
+                callbacks.stop.push(cb);
+                break;
+            case 'error':
+                callbacks.error.push(cb);
+                break;
+            case 'frameRecorded':
+                callbacks.frameRecorded.push(cb);
+                break;
+            case 'interruptionBegin':
+                callbacks.interruptionBegin.push(cb);
+                break;
+            case 'interruptionEnd':
+                callbacks.interruptionEnd.push(cb);
+                break;
+        }
+    };
+    const onRecorderStateChange = (state: RecorderState, res: StateChangeRes | null = null)=>{
+        const cbs: Function[] = (()=>{
+            switch(state){
+                case 'pause':
+                    return callbacks.pause;
+                case 'resume':
+                    return callbacks.resume;
+                case 'start':
+                    return callbacks.start;
+                case 'stop':
+                    return callbacks.stop;
+                case 'error':
+                    return callbacks.error;
+                case 'frameRecorded':
+                    return callbacks.frameRecorded;
+                case 'interruptionBegin':
+                    return callbacks.interruptionBegin;
+                case 'interruptionEnd':
+                    return callbacks.interruptionEnd;
+                default:
+                    return [];
+            }
+        })();
+        cbs.forEach((fn)=>{
+            if (typeof fn === 'function') {
+                fn(res);
+            }
+        });
+    };
+    const createFile = (supportFormats: string[], format: string, defaultExt: string)=>{
+        const TEMP_PATH = getEnv1().TEMP_PATH as string;
+        const filePath = `${TEMP_PATH}/recorder/`;
+        if (!fileIo.accessSync(filePath)) {
+            fileIo.mkdirSync(filePath);
+        }
+        const fileName = `${Date.now()}.${supportFormats.includes(format ?? '') ? format?.toLocaleLowerCase() : defaultExt}`;
+        const file: fileIo.File = fileIo.openSync(`${filePath}${fileName}`, fileIo.OpenMode.READ_WRITE | fileIo.OpenMode.CREATE);
+        return file;
+    };
+    const permissionDenied = ()=>{
+        throw new Error('Permission MICROPHONE denied');
+    };
+    const supportFormats = [
+        'aac'
+    ];
+    class AVRecorder implements RecorderManager {
+        private avRecorder?: media.AVRecorder;
+        private isFirstStart: boolean = true;
+        constructor(){}
+        private onStateChange(file: fileIo1.File) {
+            if (this.avRecorder) {
+                this.avRecorder.on('stateChange', async (state, reason)=>{
+                    switch(state){
+                        case 'idle':
+                            this.isFirstStart = true;
+                            break;
+                        case 'started':
+                            if (this.isFirstStart) {
+                                this.isFirstStart = false;
+                                onRecorderStateChange('start');
+                            } else {
+                                if (reason === media.StateChangeReason.BACKGROUND) {
+                                    onRecorderStateChange('interruptionEnd');
+                                }
+                                onRecorderStateChange('resume');
+                            }
+                            break;
+                        case 'paused':
+                            if (reason === media.StateChangeReason.BACKGROUND) {
+                                onRecorderStateChange('interruptionBegin');
+                            }
+                            onRecorderStateChange('pause');
+                            break;
+                        case 'stopped':
+                            onRecorderStateChange('stop', {
+                                tempFilePath: file.path
+                            } as StateChangeRes);
+                            fileIo1.closeSync(file);
+                            break;
+                    }
+                });
+                this.avRecorder.on('error', (err: BusinessError2)=>{
+                    onRecorderStateChange('error', {
+                        errMsg: `${err.message} ${err.code}`
+                    } as StateChangeRes);
+                });
+            }
+        }
+        private async release() {
+            if (this.avRecorder !== undefined) {
+                await this.avRecorder.reset();
+                await this.avRecorder.release();
+                this.avRecorder = undefined;
+            }
+        }
+        async start(options: RecorderManagerStartOptions): Promise<void> {
+            if (this.avRecorder !== undefined) {
+                await this.release();
+            }
+            this.avRecorder = await media.createAVRecorder();
+            const _options_sampleRate = options.sampleRate, sampleRate = _options_sampleRate == null ? 48000 : _options_sampleRate, _options_numberOfChannels = options.numberOfChannels, numberOfChannels = _options_numberOfChannels == null ? 2 : _options_numberOfChannels, _options_encodeBitRate = options.encodeBitRate, encodeBitRate = _options_encodeBitRate == null ? 48000 : _options_encodeBitRate, _options_duration = options.duration, duration = _options_duration == null ? null : _options_duration;
+            const file = createFile(supportFormats, options.format ?? '', 'aac');
+            this.onStateChange(file);
+            const audioProfile: media.AVRecorderProfile = {
+                audioBitrate: encodeBitRate!,
+                audioChannels: numberOfChannels!,
+                audioCodec: media.CodecMimeType.AUDIO_AAC,
+                audioSampleRate: sampleRate!,
+                fileFormat: media.ContainerFormatType.CFT_MPEG_4A
+            };
+            const audioConfig: media.AVRecorderConfig = {
+                audioSourceType: media.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
+                profile: audioProfile,
+                url: 'fd://' + file.fd
+            };
+            UTSHarmony5.requestSystemPermission([
+                'ohos.permission.MICROPHONE'
+            ], async (allRight: boolean)=>{
+                if (allRight) {
+                    await this.avRecorder?.prepare(audioConfig);
+                    await this.avRecorder?.start();
+                    if (duration) {
+                        setTimeout(async ()=>{
+                            await this.avRecorder?.stop();
+                        }, duration);
+                    }
+                } else {
+                    permissionDenied();
+                }
+            }, permissionDenied);
+        }
+        async pause(): Promise<void> {
+            if (this.avRecorder !== undefined && this.avRecorder.state === 'started') {
+                await this.avRecorder.pause();
+            }
+        }
+        async resume(): Promise<void> {
+            if (this.avRecorder !== undefined && this.avRecorder.state === 'paused') {
+                await this.avRecorder.resume();
+            }
+        }
+        async stop(): Promise<void> {
+            if (this.avRecorder !== undefined && (this.avRecorder.state === 'started' || this.avRecorder.state === 'paused')) {
+                await this.avRecorder.stop();
+                await this.release();
+                this.isFirstStart = true;
+            }
+        }
+        onStart(options: (result: Object) => void): void {
+            setRecordStateCallback('start', options);
+        }
+        onPause(options: (result: Object) => void): void {
+            setRecordStateCallback('pause', options);
+        }
+        onStop(options: (result: RecorderManagerOnStopResult) => void): void {
+            setRecordStateCallback('stop', options);
+        }
+        onFrameRecorded(options: (result: Object) => void): void {
+            setRecordStateCallback('frameRecorded', options);
+        }
+        onError(options: (result: Object) => void): void {
+            setRecordStateCallback('error', options);
+        }
+        onResume(options: (result: Object) => void): void {
+            setRecordStateCallback('resume', options);
+        }
+        onInterruptionBegin(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionBegin', options);
+        }
+        onInterruptionEnd(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionEnd', options);
+        }
+    }
+    class RecorderManagerImpl implements RecorderManager {
+        private manager?: RecorderManager;
+        start(options: RecorderManagerStartOptions): void {
+            if (!options.format) options.format = 'aac';
+            const DEFAULT_DURATION = 1000 * 60;
+            const MAX_DURATION = DEFAULT_DURATION * 10;
+            if (typeof options.duration === 'undefined' || options.duration === null) {
+                options.duration = DEFAULT_DURATION;
+            }
+            if (options.duration > MAX_DURATION) {
+                options.duration = MAX_DURATION;
+            } else if (supportFormats.includes(options.format ?? '')) this.manager = new AVRecorder();
+            if (this.manager) {
+                this.manager.start(options);
+            } else {
+                onRecorderStateChange('error', {
+                    errMsg: `format not supported. Only supported ${supportFormats.join(',')}`
+                } as StateChangeRes);
+            }
+        }
+        pause(): void {
+            if (this.manager) this.manager.pause();
+        }
+        resume(): void {
+            if (this.manager) this.manager.resume();
+        }
+        async stop() {
+            if (this.manager) {
+                try {
+                    await this.manager.stop();
+                } catch (error) {}
+                this.manager = undefined;
+            }
+        }
+        onStart(options: (result: Object) => void): void {
+            setRecordStateCallback('start', options);
+        }
+        onPause(options: (result: Object) => void): void {
+            setRecordStateCallback('pause', options);
+        }
+        onStop(options: (result: RecorderManagerOnStopResult) => void): void {
+            setRecordStateCallback('stop', options);
+        }
+        onFrameRecorded(options: (result: Object) => void): void {
+            setRecordStateCallback('frameRecorded', options);
+        }
+        onError(options: (result: Object) => void): void {
+            setRecordStateCallback('error', options);
+        }
+        onResume(options: (result: Object) => void): void {
+            setRecordStateCallback('resume', options);
+        }
+        onInterruptionBegin(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionBegin', options);
+        }
+        onInterruptionEnd(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionEnd', options);
+        }
+    }
+    let recorderManager: RecorderManager | null = null;
+    const getRecorderManager: GetRecorderManager = defineSyncApi<RecorderManager>(API_GET_RECORDER_MANAGER, (): RecorderManager =>{
+        if (recorderManager) return recorderManager;
+        else recorderManager = new RecorderManagerImpl();
+        return recorderManager;
+    }) as GetRecorderManager;
     const API_GET_SYSTEM_INFO = 'getSystemInfo';
     const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
     const API_GET_WINDOW_INFO = 'getWindowInfo';
@@ -2433,11 +2759,11 @@ export function initUniExtApi(APP_ID: string) {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony5.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony6.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony5.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony6.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony5.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony6.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -2450,10 +2776,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony5.getAppId() as string,
+            appId: UTSHarmony6.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony5.getAppName() as string,
-            appTheme: UTSHarmony5.getAppTheme() as string,
+            appName: UTSHarmony6.getAppName() as string,
+            appTheme: UTSHarmony6.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -2469,7 +2795,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony5.getOsTheme() as string,
+            osTheme: UTSHarmony6.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -2535,7 +2861,7 @@ export function initUniExtApi(APP_ID: string) {
     const dial = (number: string, confirm = true)=>{
         if (!confirm && typeof call.dial === 'function') {
             return new Promise<void>((resolve, reject)=>{
-                UTSHarmony6.requestSystemPermission([
+                UTSHarmony7.requestSystemPermission([
                     'ohos.permission.PLACE_CALL'
                 ], (allRight: boolean)=>{
                     if (allRight) {
@@ -2556,7 +2882,7 @@ export function initUniExtApi(APP_ID: string) {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError2<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError3<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -2565,8 +2891,8 @@ export function initUniExtApi(APP_ID: string) {
     }, MakePhoneCallProtocol) as MakePhoneCall;
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
         const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
-        const avMetadataExtractor = await media.createAVMetadataExtractor();
-        let metadata: media.AVMetadata | null = null;
+        const avMetadataExtractor = await media1.createAVMetadataExtractor();
+        let metadata: media1.AVMetadata | null = null;
         let size: number = 0;
         try {
             size = (await fs1.stat(file.fd)).size;
@@ -4334,6 +4660,26 @@ export function initUniExtApi(APP_ID: string) {
             this._downloadTask.offHeadersReceived(callback);
         }
     }
+    let downloadIndex: [string, number] = [
+        '0',
+        0
+    ];
+    const getDownloadFileName = (ext: string)=>{
+        let fileName = Date.now() + '';
+        if (downloadIndex[0] === fileName) {
+            downloadIndex[1]++;
+            if (downloadIndex[1] > 0) {
+                fileName += '-' + downloadIndex[1];
+            }
+        } else {
+            downloadIndex[0] = fileName;
+            downloadIndex[1] = 0;
+        }
+        if (ext) {
+            fileName += '.' + ext;
+        }
+        return fileName;
+    };
     const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
         const url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
         const httpRequest = http2.createHttp();
@@ -4370,7 +4716,7 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToWrite: totalSize
             } as OnProgressDownloadResult);
         });
-        const TEMP_PATH = getEnv1().TEMP_PATH as string;
+        const TEMP_PATH = getEnv2().TEMP_PATH as string;
         const downloadPath = TEMP_PATH + '/' + APP_ID + '/download';
         if (!fs4.accessSync(downloadPath)) {
             fs4.mkdirSync(downloadPath, true);
@@ -4388,7 +4734,7 @@ export function initUniExtApi(APP_ID: string) {
         httpRequest.on('dataReceive', (data)=>{
             if (!stream) {
                 const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
-                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
+                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + getDownloadFileName(ext);
                 stream = fs4.createStreamSync(tempFilePath, 'w+');
             }
             queueWrite(data);
@@ -4747,7 +5093,7 @@ export function initUniExtApi(APP_ID: string) {
             } as promptAction.ShowToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError3).message;
+            let message = (error as BusinessError4).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -4860,7 +5206,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony7.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony8.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -5506,6 +5852,7 @@ export function initUniExtApi(APP_ID: string) {
         getProvider,
         getProviderIds,
         getProviderObject,
+        getRecorderManager,
         getSystemInfo,
         getSystemInfoSync,
         getWindowInfo,
