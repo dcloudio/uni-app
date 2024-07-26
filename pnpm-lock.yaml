@@ -1793,7 +1793,7 @@ importers:
         specifier: ^5.0.5
         version: 5.1.0(rollup@4.14.2)
       '@vitejs/plugin-legacy':
-        specifier: ^5.3.2
+        specifier: 5.3.2
         version: 5.3.2(terser@5.30.3)(vite@5.2.8(@types/node@18.19.31)(terser@5.30.3))
       '@vitejs/plugin-vue':
         specifier: 5.1.0
@@ -9170,7 +9170,7 @@ snapshots:
       browserslist: 4.23.0
       browserslist-to-esbuild: 2.1.1(browserslist@4.23.0)
       core-js: 3.36.1
-      magic-string: 0.30.9
+      magic-string: 0.30.10
       regenerator-runtime: 0.14.1
       systemjs: 6.14.3
       terser: 5.30.3
