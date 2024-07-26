@@ -1,6 +1,7 @@
 import { defineAsyncApi } from '@dcloudio/uni-api'
 import type { ComponentPublicInstance } from 'vue'
 import { getCurrentPage } from '@dcloudio/uni-core'
+import { isVueComponent } from './createSelectorQuery'
 
 // type API_TYPE_CREATE_CANVAS_CONTEXT_ASYNC = typeof uni.createCanvasContext
 
@@ -123,13 +124,6 @@ export type CreateCanvasContextAsyncOptions = {
 
 export interface CanvasContext {
   getContext(type: string): CanvasRenderingContext2D
-  // toBlob(callback: any): void
-}
-function isVueComponent(comp: any) {
-  const has$instance = typeof comp.$ === 'object'
-  const has$el = typeof comp.$el === 'object'
-
-  return has$instance && has$el
 }
 
 export const createCanvasContextAsync = defineAsyncApi(
