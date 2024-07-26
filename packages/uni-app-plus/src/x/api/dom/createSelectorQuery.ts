@@ -20,7 +20,7 @@ type NodeField = _NodeField & {
   node?: boolean
 }
 
-function isVueComponent(comp: any) {
+export function isVueComponent(comp: any) {
   const has$instance = typeof comp.$ === 'object'
   const has$el = typeof comp.$el === 'object'
 
