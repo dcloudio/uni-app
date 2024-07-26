@@ -16410,6 +16410,7 @@
         var type2 = "";
         switch (props2.type) {
           case "text":
+            type2 = "text";
             if (props2.confirmType === "search") {
               type2 = "search";
             }

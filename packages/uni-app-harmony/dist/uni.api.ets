@@ -14,9 +14,8 @@ import media from '@ohos.multimedia.media';
 import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
-import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError1 } from '@ohos.base';
 import { BusinessError as BusinessError2 } from '@ohos.base';
-import { BusinessError as BusinessError3 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
@@ -27,13 +26,12 @@ import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony3, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony4, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony5 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, defineOnApi, defineOffApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
+import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, defineOnApi, defineOffApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import { UniServiceJSBridge as UniServiceJSBridge1, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
 import Want1 from '@ohos.app.ability.Want';
 import buffer1 from '@ohos.buffer';
@@ -42,7 +40,6 @@ import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
-import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
 import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
@@ -80,58 +77,6 @@ import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
-type AddPhoneContact = (options: AddPhoneContactOptions) => void;
-class AddPhoneContactSuccess extends UTSObject {
-}
-class UniError1 extends UTSObject {
-    errSubject!: string;
-    errCode!: number;
-    errMsg!: string;
-    data: object | null = null;
-    cause: Object | null = null;
-}
-type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
-type AddPhoneContactFail = UniError1;
-type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
-type AddPhoneContactComplete = Object;
-type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
-class AddPhoneContactOptions extends UTSObject {
-    photoFilePath: string | null = null;
-    nickName: string | null = null;
-    lastName: string | null = null;
-    middleName: string | null = null;
-    firstName: string | null = null;
-    remark: string | null = null;
-    mobilePhoneNumber: string | null = null;
-    weChatNumber: string | null = null;
-    addressCountry: string | null = null;
-    addressState: string | null = null;
-    addressCity: string | null = null;
-    addressStreet: string | null = null;
-    addressPostalCode: string | null = null;
-    organization: string | null = null;
-    title: string | null = null;
-    workFaxNumber: string | null = null;
-    workPhoneNumber: string | null = null;
-    hostNumber: string | null = null;
-    email: string | null = null;
-    url: string | null = null;
-    workAddressCountry: string | null = null;
-    workAddressState: string | null = null;
-    workAddressCity: string | null = null;
-    workAddressStreet: string | null = null;
-    workAddressPostalCode: string | null = null;
-    homeFaxNumber: string | null = null;
-    homePhoneNumber: string | null = null;
-    homeAddressCountry: string | null = null;
-    homeAddressState: string | null = null;
-    homeAddressCity: string | null = null;
-    homeAddressStreet: string | null = null;
-    homeAddressPostalCode: string | null = null;
-    success: AddPhoneContactSuccessCallback | null = null;
-    fail: AddPhoneContactFailCallback | null = null;
-    complete: AddPhoneContactCompleteCallback | null = null;
-}
 type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
 type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
@@ -1441,7 +1386,6 @@ interface IUniWebsocketEmitter {
     emit: Function;
 }
 interface UniExtApi {
-    addPhoneContact: AddPhoneContact;
     arrayBufferToBase64: ArrayBufferToBase64;
     base64ToArrayBuffer: Base64ToArrayBuffer;
     getClipboardData: GetClipboardData;
@@ -1526,315 +1470,6 @@ interface UniExtApi {
     onSocketError: OnSocketError;
 }
 export function initUniExtApi(APP_ID: string) {
-    const API_ADD_PHONE_CONTACT = 'addPhoneContact';
-    const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
-        formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
-            [
-                'firstName',
-                (firstName: string)=>{
-                    if (!firstName) {
-                        return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
-                    }
-                    return undefined;
-                }
-            ]
-        ])
-    };
-    const AddPhoneContactApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'firstName',
-            {
-                type: 'string',
-                required: true
-            }
-        ],
-        [
-            'photoFilePath',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'nickName',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'lastName',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'middleName',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'remark',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'mobilePhoneNumber',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'weChatNumber',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'addressCountry',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'addressState',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'addressCity',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'addressStreet',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'addressPostalCode',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'organization',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'title',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'workFaxNumber',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'workPhoneNumber',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'hostNumber',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'email',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'url',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'workAddressCountry',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'workAddressState',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'workAddressCity',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'workAddressStreet',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'workAddressPostalCode',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'homeFaxNumber',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'homePhoneNumber',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'homeAddressCountry',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'homeAddressState',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'homeAddressCity',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'homeAddressStreet',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'homeAddressPostalCode',
-            {
-                type: 'string'
-            }
-        ]
-    ]);
-    const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(API_ADD_PHONE_CONTACT, (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>)=>{
-        UTSHarmony.requestSystemPermission([
-            'ohos.permission.WRITE_CONTACTS'
-        ], (allRight: boolean)=>{
-            if (allRight) {
-                const photoFilePath = args.photoFilePath, _args_nickName = args.nickName, nickName = _args_nickName == null ? '' : _args_nickName, _args_lastName = args.lastName, lastName = _args_lastName == null ? '' : _args_lastName, _args_middleName = args.middleName, middleName = _args_middleName == null ? '' : _args_middleName, _args_firstName = args.firstName, firstName = _args_firstName == null ? '' : _args_firstName, _args_remark = args.remark, remark = _args_remark == null ? '' : _args_remark, _args_mobilePhoneNumber = args.mobilePhoneNumber, mobilePhoneNumber = _args_mobilePhoneNumber == null ? '' : _args_mobilePhoneNumber, _args_addressCountry = args.addressCountry, addressCountry = _args_addressCountry == null ? '' : _args_addressCountry, _args_addressState = args.addressState, addressState = _args_addressState == null ? '' : _args_addressState, _args_addressCity = args.addressCity, addressCity = _args_addressCity == null ? '' : _args_addressCity, _args_addressStreet = args.addressStreet, addressStreet = _args_addressStreet == null ? '' : _args_addressStreet, _args_addressPostalCode = args.addressPostalCode, addressPostalCode = _args_addressPostalCode == null ? '' : _args_addressPostalCode, _args_organization = args.organization, organization = _args_organization == null ? '' : _args_organization, _args_url = args.url, url = _args_url == null ? '' : _args_url, _args_workPhoneNumber = args.workPhoneNumber, workPhoneNumber = _args_workPhoneNumber == null ? '' : _args_workPhoneNumber, _args_workFaxNumber = args.workFaxNumber, workFaxNumber = _args_workFaxNumber == null ? '' : _args_workFaxNumber, _args_hostNumber = args.hostNumber, hostNumber = _args_hostNumber == null ? '' : _args_hostNumber, _args_email = args.email, email = _args_email == null ? '' : _args_email, _args_title = args.title, title = _args_title == null ? '' : _args_title, _args_workAddressCountry = args.workAddressCountry, workAddressCountry = _args_workAddressCountry == null ? '' : _args_workAddressCountry, _args_workAddressState = args.workAddressState, workAddressState = _args_workAddressState == null ? '' : _args_workAddressState, _args_workAddressCity = args.workAddressCity, workAddressCity = _args_workAddressCity == null ? '' : _args_workAddressCity, _args_workAddressStreet = args.workAddressStreet, workAddressStreet = _args_workAddressStreet == null ? '' : _args_workAddressStreet, workAddressPostalCode = args.workAddressPostalCode, _args_homeFaxNumber = args.homeFaxNumber, homeFaxNumber = _args_homeFaxNumber == null ? '' : _args_homeFaxNumber, _args_homePhoneNumber = args.homePhoneNumber, homePhoneNumber = _args_homePhoneNumber == null ? '' : _args_homePhoneNumber, _args_homeAddressCountry = args.homeAddressCountry, homeAddressCountry = _args_homeAddressCountry == null ? '' : _args_homeAddressCountry, _args_homeAddressState = args.homeAddressState, homeAddressState = _args_homeAddressState == null ? '' : _args_homeAddressState, _args_homeAddressCity = args.homeAddressCity, homeAddressCity = _args_homeAddressCity == null ? '' : _args_homeAddressCity, _args_homeAddressStreet = args.homeAddressStreet, homeAddressStreet = _args_homeAddressStreet == null ? '' : _args_homeAddressStreet, _args_homeAddressPostalCode = args.homeAddressPostalCode, homeAddressPostalCode = _args_homeAddressPostalCode == null ? '' : _args_homeAddressPostalCode;
-                const contactInfo: contact.Contact = {
-                    name: {
-                        familyName: lastName!,
-                        middleName: middleName!,
-                        givenName: firstName!,
-                        fullName: lastName! + middleName! + firstName!
-                    },
-                    nickName: {
-                        nickName: nickName!
-                    },
-                    emails: [
-                        {
-                            email: email!,
-                            displayName: '邮箱'
-                        }
-                    ],
-                    phoneNumbers: [
-                        {
-                            phoneNumber: homePhoneNumber!,
-                            labelId: contact.PhoneNumber.NUM_HOME
-                        },
-                        {
-                            phoneNumber: mobilePhoneNumber!,
-                            labelId: contact.PhoneNumber.NUM_MOBILE
-                        },
-                        {
-                            phoneNumber: homeFaxNumber!,
-                            labelId: contact.PhoneNumber.NUM_FAX_HOME
-                        },
-                        {
-                            phoneNumber: workFaxNumber!,
-                            labelId: contact.PhoneNumber.NUM_FAX_WORK
-                        },
-                        {
-                            phoneNumber: workPhoneNumber!,
-                            labelId: contact.PhoneNumber.NUM_WORK
-                        },
-                        {
-                            phoneNumber: hostNumber!,
-                            labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
-                        }
-                    ],
-                    portrait: {
-                        uri: photoFilePath!
-                    },
-                    postalAddresses: [
-                        {
-                            city: homeAddressCity!,
-                            country: homeAddressCountry!,
-                            postcode: homeAddressPostalCode!,
-                            street: homeAddressStreet!,
-                            postalAddress: homeAddressCountry! + homeAddressState! + homeAddressCity + homeAddressStreet,
-                            labelId: contact.PostalAddress.ADDR_HOME
-                        },
-                        {
-                            city: workAddressCity!,
-                            country: workAddressCountry!,
-                            postcode: workAddressPostalCode!,
-                            street: workAddressStreet!,
-                            postalAddress: workAddressCountry! + workAddressState! + workAddressCity + workAddressStreet,
-                            labelId: contact.PostalAddress.ADDR_WORK
-                        },
-                        {
-                            city: addressCity!,
-                            country: addressCountry!,
-                            postcode: addressPostalCode!,
-                            street: addressStreet!,
-                            postalAddress: addressCountry! + addressState! + addressCity + addressStreet,
-                            labelId: contact.PostalAddress.CUSTOM_LABEL
-                        }
-                    ],
-                    websites: [
-                        {
-                            website: url!
-                        }
-                    ],
-                    note: {
-                        noteContent: remark!
-                    },
-                    organization: {
-                        name: organization!,
-                        title: title!
-                    }
-                };
-                contact.addContact(getContext(), contactInfo).then((contactId)=>{
-                    executor.resolve(contactId);
-                }).catch((err: BusinessError)=>{
-                    executor.reject(err.message);
-                });
-            } else {
-                executor.reject('Permission denied');
-            }
-        }, ()=>executor.reject('Permission denied'));
-    }, AddPhoneContactApiProtocol, AddPhoneContactApiOptions) as AddPhoneContact;
     const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
     const ArrayBufferToBase64Protocol = new Map<string, ProtocolOptions>([
         [
@@ -1993,7 +1628,7 @@ export function initUniExtApi(APP_ID: string) {
     }) as $Emit;
     const API_EXIT = 'exit';
     const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
-        UTSHarmony1.exit();
+        UTSHarmony.exit();
     }) as Exit;
     const API_SAVE_FILE = 'saveFile';
     const API_GET_FILE_INFO = 'getFileInfo';
@@ -2156,20 +1791,20 @@ export function initUniExtApi(APP_ID: string) {
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony2.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony1.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony1.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony1.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony2.getAppId() as string,
+            appId: UTSHarmony1.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony2.getAppName() as string,
-            appTheme: UTSHarmony2.getAppTheme() as string,
+            appName: UTSHarmony1.getAppName() as string,
+            appTheme: UTSHarmony1.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony2.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony1.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -2188,7 +1823,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony3.getOsTheme() as string,
+            osTheme: UTSHarmony2.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -2215,7 +1850,7 @@ export function initUniExtApi(APP_ID: string) {
             res.resolve({
                 networkType: NetworkinfoType[type]
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError1)=>{
+        }).catch((err: BusinessError)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
@@ -2322,11 +1957,11 @@ export function initUniExtApi(APP_ID: string) {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony4.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony3.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony4.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony4.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -2339,10 +1974,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony4.getAppId() as string,
+            appId: UTSHarmony3.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony4.getAppName() as string,
-            appTheme: UTSHarmony4.getAppTheme() as string,
+            appName: UTSHarmony3.getAppName() as string,
+            appTheme: UTSHarmony3.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -2358,7 +1993,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony4.getOsTheme() as string,
+            osTheme: UTSHarmony3.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -2424,7 +2059,7 @@ export function initUniExtApi(APP_ID: string) {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError2<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError1<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -4611,7 +4246,7 @@ export function initUniExtApi(APP_ID: string) {
             } as promptAction.ShowToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError3).message;
+            let message = (error as BusinessError2).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -4724,7 +4359,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony5.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony4.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -5346,7 +4981,6 @@ export function initUniExtApi(APP_ID: string) {
         }
     }) as CloseSocket;
     return {
-        addPhoneContact,
         arrayBufferToBase64,
         base64ToArrayBuffer,
         getClipboardData,
