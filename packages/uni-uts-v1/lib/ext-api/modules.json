@@ -11,6 +11,32 @@
       }
     }
   },
+  "uni-cancelAnimationFrame": {
+    "uni": {
+      "cancelAnimationFrame": {
+        "name": "cancelAnimationFrame",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
+  "uni-canvas": {
+    "uni": {
+      "createCanvasContextAsync": {
+        "name": "createCanvasContextAsync",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      }
+    }
+  },
   "uni-createRequestPermissionListener": {
     "uni": {
       "createRequestPermissionListener": {
@@ -545,6 +571,19 @@
           "js": false,
           "kotlin": true,
           "swift": true
+        }
+      }
+    }
+  },
+  "uni-requestAnimationFrame": {
+    "uni": {
+      "requestAnimationFrame": {
+        "name": "requestAnimationFrame",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
         }
       }
     }
