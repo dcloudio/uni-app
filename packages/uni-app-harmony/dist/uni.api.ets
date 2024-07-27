@@ -2529,8 +2529,8 @@ export function initUniExtApi(APP_ID: string) {
     const API_GET_SAVED_FILE_INFO = 'getSavedFileInfo';
     const API_GET_SAVED_FILE_LIST = 'getSavedFileList';
     const API_REMOVE_SAVED_FILE = 'removeSavedFile';
-    const getSavedDir = (appId: string)=>{
-        return getEnv().USER_DATA_PATH + '/' + appId + '/saved';
+    const getSavedDir = ()=>{
+        return getEnv().USER_DATA_PATH + '/saved';
     };
     let savedIndex: [string, number] = [
         '0',
@@ -2566,7 +2566,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const saveFile: SaveFile = defineAsyncApi<SaveFileOptions, SaveFileSuccess>(API_SAVE_FILE, (options: SaveFileOptions, exec: ApiExecutor<SaveFileSuccess>)=>{
         const tempFilePath = getRealPath(options.tempFilePath) as string;
-        const savedPath = getSavedDir(APP_ID);
+        const savedPath = getSavedDir();
         if (!fs.accessSync(savedPath)) {
             fs.mkdirSync(savedPath, true);
         }
@@ -2590,7 +2590,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as SaveFile;
     const getSavedFileList: GetSavedFileList = defineAsyncApi<GetSavedFileListOptions, GetSavedFileListSuccess>(API_GET_SAVED_FILE_LIST, (options: GetSavedFileListOptions, exec: ApiExecutor<GetSavedFileListSuccess>)=>{
-        const savedPath = getSavedDir(APP_ID);
+        const savedPath = getSavedDir();
         if (!fs.accessSync(savedPath)) {
             exec.resolve({
                 fileList: []
@@ -5198,7 +5198,7 @@ export function initUniExtApi(APP_ID: string) {
             } as OnProgressDownloadResult);
         });
         const TEMP_PATH = getEnv2().TEMP_PATH as string;
-        const downloadPath = TEMP_PATH + '/' + APP_ID + '/download';
+        const downloadPath = TEMP_PATH + '/download';
         if (!fs4.accessSync(downloadPath)) {
             fs4.mkdirSync(downloadPath, true);
         }
