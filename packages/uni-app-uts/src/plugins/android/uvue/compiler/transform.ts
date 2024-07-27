@@ -80,6 +80,7 @@ export interface ImportItem {
 
 export interface TransformContext
   extends Required<Omit<TransformOptions, 'filename' | 'className'>> {
+  inSSR?: false
   selfName: string | null
   root: RootNode
   helpers: Map<symbol, number>

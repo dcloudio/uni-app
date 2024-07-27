@@ -1,11 +1,5 @@
 import { extend } from '@vue/shared'
-import {
-  type CompilerError,
-  baseParse,
-  trackSlotScopes,
-  trackVForSlotScopes,
-  transformElement,
-} from '@vue/compiler-core'
+import { type CompilerError, baseParse } from '@vue/compiler-core'
 
 import { isAppUVueNativeTag } from '@dcloudio/uni-shared'
 import {
@@ -43,6 +37,8 @@ import {
   SourceMapConsumer,
   SourceMapGenerator,
 } from 'source-map-js'
+import { trackSlotScopes, trackVForSlotScopes } from './transforms/vSlot'
+import { transformElement } from './transforms/transformElement'
 
 export type TransformPreset = [
   NodeTransform[],
