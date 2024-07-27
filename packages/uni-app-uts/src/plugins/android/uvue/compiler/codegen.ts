@@ -688,7 +688,7 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
 function genRenderList(node: CallExpression) {
   node.arguments.forEach((argument: any) => {
     if (argument.type === NodeTypes.JS_FUNCTION_EXPRESSION) {
-      argument.returnType = 'VNode'
+      argument.returnType = 'Any'
     }
   })
 }

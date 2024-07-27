@@ -113,7 +113,7 @@ const _component_Comp = resolveComponent("Comp")
       default: withScopedSlotCtx(({ data }: Qux): any[] => [toDisplayString(data)]),
       _: 1 /* STABLE */
     })),
-    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list as Fred, ({ z = _ctx.x as Qux }, __key, __index, _cached): VNode => {
+    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list as Fred, ({ z = _ctx.x as Qux }, __key, __index, _cached): Any => {
       return createElementVNode("view")
     }), 256 /* UNKEYED_FRAGMENT */)
   ], 64 /* STABLE_FRAGMENT */)

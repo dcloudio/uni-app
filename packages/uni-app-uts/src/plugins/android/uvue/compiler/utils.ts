@@ -18,6 +18,10 @@ export const __DEV__ = true
 export const __BROWSER__ = false
 export const __COMPAT__ = false
 
+export function isCompatEnabled(...args: any[]) {
+  return false
+}
+
 export function genRenderFunctionDecl({
   className,
   genDefaultAs,

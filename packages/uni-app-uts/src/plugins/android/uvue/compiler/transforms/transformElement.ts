@@ -1,51 +1,27 @@
+import type { NodeTransform, TransformContext } from '../transform'
 import {
   type ArrayExpression,
-  BindingTypes,
   type CallExpression,
-  CompilerDeprecationTypes,
   type ComponentNode,
   ConstantTypes,
   type DirectiveArguments,
   type DirectiveNode,
   type ElementNode,
   ElementTypes,
-  ErrorCodes,
   type ExpressionNode,
-  GUARD_REACTIVE_PROPS,
   type JSChildNode,
-  KEEP_ALIVE,
-  MERGE_PROPS,
-  NORMALIZE_CLASS,
-  NORMALIZE_PROPS,
-  NORMALIZE_STYLE,
   NodeTypes,
   type ObjectExpression,
   type Property,
-  RESOLVE_DYNAMIC_COMPONENT,
-  SUSPENSE,
-  TELEPORT,
   type TemplateTextChildNode,
-  UNREF,
   type VNodeCall,
-  buildSlots,
-  checkCompatEnabled,
   createArrayExpression,
   createCallExpression,
   createObjectExpression,
   createObjectProperty,
   createSimpleExpression,
   createVNodeCall,
-  findProp,
-  getConstantType,
-  isCoreComponent,
-  isStaticArgOf,
-  isStaticExp,
-  toValidAssetId,
 } from '@vue/compiler-core'
-import { getInnerRange } from '@dcloudio/uni-cli-shared'
-
-import type { NodeTransform, TransformContext } from '../transform'
-
 import {
   PatchFlagNames,
   PatchFlags,
@@ -57,13 +33,37 @@ import {
   isReservedProp,
   isSymbol,
 } from '@vue/shared'
-import { createCompilerError } from '../errors'
+import { ErrorCodes, createCompilerError } from '../errors'
 import {
+  GUARD_REACTIVE_PROPS,
+  KEEP_ALIVE,
+  MERGE_PROPS,
+  NORMALIZE_CLASS,
+  NORMALIZE_PROPS,
+  NORMALIZE_STYLE,
   RESOLVE_COMPONENT,
   RESOLVE_DIRECTIVE,
+  RESOLVE_DYNAMIC_COMPONENT,
+  SUSPENSE,
+  TELEPORT,
   TO_HANDLERS,
-} from '../runtimeHelpers'
-import { __BROWSER__, __COMPAT__, __DEV__ } from '../utils'
+  UNREF,
+} from '@vue/compiler-core'
+import {
+  findProp,
+  isCoreComponent,
+  isStaticArgOf,
+  isStaticExp,
+  toValidAssetId,
+} from '@vue/compiler-core'
+import { buildSlots } from './vSlot'
+import { getConstantType } from '@vue/compiler-core'
+import { BindingTypes } from '@vue/compiler-core'
+import {
+  CompilerDeprecationTypes,
+  checkCompatEnabled,
+} from '@vue/compiler-core'
+import { __BROWSER__, __COMPAT__, __DEV__, isCompatEnabled } from '../utils'
 
 // some directive transforms (e.g. v-model) may return a symbol for runtime
 // import, which should be used instead of a resolveDirective call.
@@ -174,7 +174,7 @@ export const transformElement: NodeTransform = (node, context) => {
         vnodeTag !== KEEP_ALIVE
 
       if (shouldBuildAsSlots) {
-        const { slots, hasDynamicSlots } = buildSlots(node, context as any)
+        const { slots, hasDynamicSlots } = buildSlots(node, context)
         vnodeChildren = slots
         if (hasDynamicSlots) {
           patchFlag |= PatchFlags.DYNAMIC_SLOTS
@@ -255,7 +255,14 @@ export function resolveComponentType(
   const isExplicitDynamic = isComponentTag(tag)
   const isProp = findProp(node, 'is')
   if (isProp) {
-    if (isExplicitDynamic) {
+    if (
+      isExplicitDynamic ||
+      (__COMPAT__ &&
+        isCompatEnabled(
+          CompilerDeprecationTypes.COMPILER_IS_ON_ELEMENT,
+          context
+        ))
+    ) {
       const exp =
         isProp.type === NodeTypes.ATTRIBUTE
           ? isProp.value && createSimpleExpression(isProp.value.content, true)
@@ -276,19 +283,6 @@ export function resolveComponentType(
       tag = isProp.value!.content.slice(4)
     }
   }
-
-  // 1.5 v-is (TODO: remove in 3.4)
-  // const isDir = !isExplicitDynamic && findDir(node, 'is')
-  // if (isDir && isDir.exp) {
-  //   if (__DEV__) {
-  //     context.onWarn(
-  //       createCompilerError(ErrorCodes.DEPRECATION_V_IS, isDir.loc)
-  //     )
-  //   }
-  //   return createCallExpression(context.helper(RESOLVE_DYNAMIC_COMPONENT), [
-  //     isDir.exp,
-  //   ])
-  // }
 
   // 2. built-in components (Teleport, Transition, KeepAlive, Suspense...)
   const builtIn = isCoreComponent(tag) || context.isBuiltInComponent(tag)
@@ -494,7 +488,7 @@ export function buildProps(
     // static attribute
     const prop = props[i]
     if (prop.type === NodeTypes.ATTRIBUTE) {
-      const { loc, name, value } = prop
+      const { loc, name, nameLoc, value } = prop
       let isStatic = true
       if (name === 'ref') {
         hasRef = true
@@ -529,17 +523,19 @@ export function buildProps(
       // skip is on <component>, or is="vue:xxx"
       if (
         name === 'is' &&
-        (isComponentTag(tag) || (value && value.content.startsWith('vue:')))
+        (isComponentTag(tag) ||
+          (value && value.content.startsWith('vue:')) ||
+          (__COMPAT__ &&
+            isCompatEnabled(
+              CompilerDeprecationTypes.COMPILER_IS_ON_ELEMENT,
+              context
+            )))
       ) {
         continue
       }
       properties.push(
         createObjectProperty(
-          createSimpleExpression(
-            name,
-            true,
-            getInnerRange(loc, 0, name.length)
-          ),
+          createSimpleExpression(name, true, nameLoc),
           createSimpleExpression(
             value ? value.content : '',
             isStatic,
@@ -569,7 +565,14 @@ export function buildProps(
       // skip v-is and :is on <component>
       if (
         name === 'is' ||
-        (isVBind && isStaticArgOf(arg, 'is') && isComponentTag(tag))
+        (isVBind &&
+          isStaticArgOf(arg, 'is') &&
+          (isComponentTag(tag) ||
+            (__COMPAT__ &&
+              isCompatEnabled(
+                CompilerDeprecationTypes.COMPILER_IS_ON_ELEMENT,
+                context
+              ))))
       ) {
         continue
       }
@@ -634,6 +637,16 @@ export function buildProps(
                     loc
                   )
                 }
+              }
+
+              if (
+                isCompatEnabled(
+                  CompilerDeprecationTypes.COMPILER_V_BIND_OBJECT_ORDER,
+                  context
+                )
+              ) {
+                mergeArgs.unshift(exp)
+                continue
               }
             }
 
@@ -742,7 +755,7 @@ export function buildProps(
   }
 
   // pre-normalize props, SSR is skipped for now
-  if (propsExpression) {
+  if (!context.inSSR && propsExpression) {
     switch (propsExpression.type) {
       case NodeTypes.JS_OBJECT_EXPRESSION:
         // means that there is no v-bind,
