@@ -17,6 +17,7 @@
         "name": "cancelAnimationFrame",
         "app": {
           "js": false,
+          "x-js": false,
           "kotlin": true,
           "swift": false,
           "arkts": false
@@ -30,6 +31,7 @@
         "name": "createCanvasContextAsync",
         "app": {
           "js": false,
+          "x-js": false,
           "kotlin": true,
           "swift": false,
           "arkts": false
@@ -581,6 +583,7 @@
         "name": "requestAnimationFrame",
         "app": {
           "js": false,
+          "x-js": false,
           "kotlin": true,
           "swift": false,
           "arkts": false
