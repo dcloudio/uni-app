@@ -9,6 +9,7 @@ import { registerPage } from '../../framework/page/register'
 import { getAllPages } from '../../framework/page/getCurrentPages'
 import { type RouteOptions, closePage, navigate } from './utils'
 import { showWebview } from '@dcloudio/uni-app-plus/service/api/route/webview'
+import { setStatusBarStyle } from '../../../helpers/statusBar'
 
 interface ReLaunchOptions extends RouteOptions {}
 
@@ -55,6 +56,6 @@ function _reLaunch({ url, path, query }: ReLaunchOptions): Promise<undefined> {
         resolve(undefined)
       }
     )
-    // TODO setStatusBarStyle()
+    setStatusBarStyle()
   })
 }

@@ -13,6 +13,7 @@ import { showWebview } from '@dcloudio/uni-app-plus/service/api/route/webview'
 import { registerPage } from '../../framework/page'
 import { getWebviewId } from '@dcloudio/uni-app-plus/service/framework/webview/utils'
 import { initAnimation } from '@dcloudio/uni-app-plus/service/api/route/navigateTo'
+import { setStatusBarStyle } from '../../../helpers/statusBar'
 
 export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   args,
@@ -77,6 +78,6 @@ function _navigateTo({
         resolve({ eventChannel })
       }
     )
-    // TODO setStatusBarStyle()
+    setStatusBarStyle()
   })
 }

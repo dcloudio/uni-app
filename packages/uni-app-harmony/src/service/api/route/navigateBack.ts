@@ -13,6 +13,7 @@ import {
   useI18n,
 } from '@dcloudio/uni-core'
 import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
+import { setStatusBarStyle } from '../../../helpers/statusBar'
 
 import {
   ANI_CLOSE,
@@ -114,7 +115,7 @@ function back(
     pages
       .slice(len - delta, len)
       .forEach((page) => removePage(page as ComponentPublicInstance))
-    // TODO setStatusBarStyle()
+    setStatusBarStyle()
     // 前一个页面触发 onShow
     invokeHook(ON_SHOW)
   }
