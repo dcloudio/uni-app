@@ -4,7 +4,7 @@ var __publicField = (obj, key, value) => {
   __defNormalProp(obj, typeof key !== "symbol" ? key + "" : key, value);
   return value;
 };
-import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot } from "vue";
+import { withModifiers, createVNode, getCurrentInstance, ref, defineComponent, openBlock, createElementBlock, onMounted, provide, computed, watch, onUnmounted, inject, onBeforeUnmount, mergeProps, injectHook, reactive, onActivated, nextTick, onBeforeMount, withDirectives, vShow, shallowRef, watchEffect, isVNode, Fragment, markRaw, Comment, h, createTextVNode, isReactive, Transition, createApp, createBlock, onBeforeActivate, onBeforeDeactivate, renderList, effectScope, withCtx, KeepAlive, resolveDynamicComponent, createElementVNode, normalizeStyle, renderSlot, Suspense } from "vue";
 import { isArray, isString, extend, remove, stringifyStyle, parseStringStyle, isPlainObject as isPlainObject$1, isFunction, capitalize, camelize, hasOwn, isObject, toRawType, makeMap as makeMap$1, isPromise, hyphenate, invokeArrayFns as invokeArrayFns$1 } from "@vue/shared";
 import { once, UNI_STORAGE_LOCALE, I18N_JSON_DELIMITERS, Emitter, passive, initCustomDatasetOnce, resolveComponentInstance, normalizeStyles, addLeadingSlash, invokeArrayFns, removeLeadingSlash, resolveOwnerVm, resolveOwnerEl, ON_WXS_INVOKE_CALL_METHOD, ON_RESIZE, ON_APP_ENTER_FOREGROUND, ON_APP_ENTER_BACKGROUND, ON_SHOW, ON_HIDE, ON_PAGE_SCROLL, ON_REACH_BOTTOM, EventChannel, SCHEME_RE, DATA_RE, getCustomDataset, ON_ERROR, callOptions, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, getLen, LINEFEED, PRIMARY_COLOR, debounce, isUniLifecycleHook, ON_LOAD, UniLifecycleHooks, invokeCreateErrorHandler, invokeCreateVueAppHook, parseQuery, NAVBAR_HEIGHT, ON_UNLOAD, normalizeTitleColor, ON_REACH_BOTTOM_DISTANCE, ON_THEME_CHANGE, decodedQuery, WEB_INVOKE_APPSERVICE, ON_WEB_INVOKE_APP_SERVICE, sortObject, OFF_THEME_CHANGE, updateElementStyle, ON_BACK_PRESS, parseUrl, addFont, ON_NAVIGATION_BAR_CHANGE, scrollTo, RESPONSIVE_MIN_WIDTH, onCreateVueApp, formatDateTime, ON_NAVIGATION_BAR_BUTTON_TAP, ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED, ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, ON_PULL_DOWN_REFRESH } from "@dcloudio/uni-shared";
 import { onCreateVueApp as onCreateVueApp2 } from "@dcloudio/uni-shared";
@@ -8311,6 +8311,14 @@ function initLaunchOptions({
   extend(enterOptions, launchOptions);
   return extend({}, launchOptions);
 }
+function getPageInstanceByVm(vm) {
+  var _a;
+  let pageInstance = vm.$.parent;
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
 const getEnv = () => ({
   TEMP_PATH,
   CACHE_PATH: "",
@@ -10135,6 +10143,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       let type2 = "";
       switch (props2.type) {
         case "text":
+          type2 = "text";
           if (props2.confirmType === "search") {
             type2 = "search";
           }
@@ -17131,6 +17140,15 @@ function normalizeWindowBottom(windowBottom) {
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
+const homeDialogPages = [];
+class DialogPage {
+  constructor(route, component, $parentPage) {
+    this.route = "";
+    this.route = route;
+    this.component = component;
+    this.$parentPage = $parentPage;
+  }
+}
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id2) => {
     if (page.$.isUnmounted) {
@@ -17234,8 +17252,29 @@ function initPage(vm) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
+    vm.$getDialogPages = () => {
+      var _a;
+      return ((_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPages.value) || [];
+    };
+    vm.$getParentPage = () => {
+      var _a, _b, _c;
+      return ((_c = (_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.parent) == null ? void 0 : _b.$dialogPageInstance) == null ? void 0 : _c.$parentPage) || null;
+    };
   }
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+  {
+    const pageInstance = getPageInstanceByVm(vm);
+    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
+      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+      if (currentPagesMap.size === 1 && homeDialogPages.length) {
+        homeDialogPages.forEach((dialogPage) => {
+          dialogPage.$parentPage = vm;
+          pageInstance.$dialogPages.value.push(dialogPage);
+        });
+        homeDialogPages.length = 0;
+      }
+    }
+    return;
+  }
 }
 function normalizeRouteKey(path, id2) {
   return path + SEP + id2;
@@ -25009,6 +25048,100 @@ const getProvider = /* @__PURE__ */ defineAsyncApi(
   API_GET_PROVIDER,
   createUnsupportedAsyncApi(API_GET_PROVIDER)
 );
+class CanvasContextImpl {
+  constructor(element) {
+    this._element = element;
+  }
+  getContext(type) {
+    return this._element.getContext(type);
+  }
+  toBlob(callback, type, quality) {
+    this._element.toBlob(callback, type, quality);
+  }
+  toDataUrl(type, encoderOptions) {
+    return this._element.toDataUrl(type, encoderOptions);
+  }
+}
+const createCanvasContextAsync = function(options) {
+  var _a, _b, _c, _d, _e, _f;
+  const currentPage = (_a = options.component) != null ? _a : getCurrentPages()[getCurrentPages().length - 1];
+  if (currentPage != null) {
+    const element = (_b = currentPage.$el) == null ? void 0 : _b.querySelector("#" + options.id);
+    if (element != null) {
+      const canvas = element;
+      (_c = options.success) == null ? void 0 : _c.call(options, new CanvasContextImpl(canvas));
+    } else {
+      const uniError = new UniError(
+        "uni-createCanvasContextAsync",
+        -1,
+        "canvas id invalid."
+      );
+      (_d = options.fail) == null ? void 0 : _d.call(options, uniError);
+    }
+  } else {
+    const uniError = new UniError(
+      "uni-createCanvasContextAsync",
+      -1,
+      "No found current page."
+    );
+    (_e = options.fail) == null ? void 0 : _e.call(options, uniError);
+  }
+  (_f = options.complete) == null ? void 0 : _f.call(options);
+};
+const requestAnimationFrame$1 = function(callback) {
+  return window.requestAnimationFrame(callback);
+};
+const cancelAnimationFrame$1 = function(handle) {
+  window.cancelAnimationFrame(handle);
+};
+const openDialogPage = /* @__PURE__ */ defineSyncApi(
+  "openDialogPage",
+  (options) => {
+    var _a, _b;
+    const targetRoute = __uniRoutes.find((route) => {
+      return options.url.indexOf(route.meta.route) !== -1;
+    });
+    const dialogPage = new DialogPage(options.url, targetRoute.component);
+    const currentPages = getCurrentPages();
+    const currentPage = currentPages[currentPages.length - 1];
+    if (!currentPage) {
+      homeDialogPages.push(dialogPage);
+    } else {
+      dialogPage.$parentPage = currentPage;
+      getPageInstanceByVm(currentPage).$dialogPages.value.push(dialogPage);
+    }
+    const successOptions = { errMsg: "openDialogPage: ok", eventChannel: new EventChannel(0, options.events) };
+    (_a = options.success) == null ? void 0 : _a.call(options, successOptions);
+    (_b = options.complete) == null ? void 0 : _b.call(options, successOptions);
+    return dialogPage;
+  },
+  {
+    url: {
+      type: String,
+      required: true
+    }
+  },
+  // @ts-expect-error
+  NavigateToOptions
+);
+const closeDialogPage = /* @__PURE__ */ defineSyncApi(
+  "closeDialogPage",
+  (options) => {
+    var _a, _b, _c, _d;
+    const currentPages = getCurrentPages();
+    const currentPage = currentPages[currentPages.length - 1];
+    if (!currentPages) {
+      const failOptions = { errMsg: "currentPage is null" };
+      (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
+      (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
+      return null;
+    }
+    getPageInstanceByVm(currentPage).$dialogPages.value = [];
+    const successOptions = { errMsg: "closeDialogPage: ok" };
+    (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, successOptions);
+    (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, successOptions);
+  }
+);
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,
@@ -25021,6 +25154,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   arrayBufferToBase64,
   base64ToArrayBuffer,
   canIUse,
+  cancelAnimationFrame: cancelAnimationFrame$1,
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
@@ -25030,12 +25164,14 @@ const api = /* @__PURE__ */ Object.defineProperty({
   chooseVideo,
   clearStorage,
   clearStorageSync,
+  closeDialogPage,
   closePreviewImage,
   closeSocket,
   connectSocket,
   createAnimation: createAnimation$1,
   createCameraContext,
   createCanvasContext,
+  createCanvasContextAsync,
   createInnerAudioContext,
   createIntersectionObserver,
   createLivePlayerContext,
@@ -25131,6 +25267,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   onUnhandledRejection,
   onUserCaptureScreen,
   onWindowResize,
+  openDialogPage,
   openDocument,
   openLocation,
   pageScrollTo,
@@ -25144,6 +25281,7 @@ const api = /* @__PURE__ */ Object.defineProperty({
   removeStorageSync,
   removeTabBarBadge,
   request,
+  requestAnimationFrame: requestAnimationFrame$1,
   rpx2px: upx2px,
   saveFile,
   saveImageToPhotosAlbum,
@@ -27538,8 +27676,25 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
+    const currentInstance = getCurrentInstance();
+    const currentDialogPage = ref(null);
+    let handleResolve = () => {
+    };
     {
       useBackgroundColorContent(pageMeta);
+      if (ctx.attrs.type === "dialog") {
+        navigationBar.style = "custom";
+        pageMeta.route = ctx.attrs.route;
+      }
+      currentInstance.$dialogPages = ref([]);
+      handleResolve = () => {
+        setTimeout(() => {
+          const dialogPages = currentInstance.$dialogPages.value;
+          const lastDialogPage = dialogPages[dialogPages.length - 1];
+          lastDialogPage.$vm = currentDialogPage.value;
+          lastDialogPage.$vm.$.$dialogPageInstance = lastDialogPage;
+        }, 0);
+      };
     }
     return () => createVNode(
       "uni-page",
@@ -27547,7 +27702,7 @@ const index = /* @__PURE__ */ defineSystemComponent({
         "data-page": pageMeta.route,
         style: pageStyle
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentDialogPage, handleResolve)] : [createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentDialogPage, handleResolve)]
     );
   }
 });
@@ -27560,6 +27715,24 @@ function createPageBodyVNode(ctx) {
       _: 3
     }
   );
+}
+function createDialogPageVNode(dialogPages, currentDialogPage, onResolve) {
+  return openBlock(true), createElementBlock(Fragment, null, renderList(dialogPages.value, (dialogPage) => {
+    return openBlock(), createBlock(Suspense, { onResolve }, {
+      default: withCtx(() => [
+        createVNode(
+          dialogPage.component,
+          {
+            style: { position: "fixed", "z-index": 999, top: 0, right: 0, bottom: 0, left: 0 },
+            ref: currentDialogPage,
+            type: "dialog",
+            route: dialogPage.route
+          },
+          null
+        )
+      ])
+    });
+  }));
 }
 export {
   $emit,
@@ -27660,6 +27833,7 @@ export {
   arrayBufferToBase64,
   base64ToArrayBuffer,
   canIUse,
+  cancelAnimationFrame$1 as cancelAnimationFrame,
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
@@ -27669,12 +27843,14 @@ export {
   chooseVideo,
   clearStorage,
   clearStorageSync,
+  closeDialogPage,
   closePreviewImage,
   closeSocket,
   connectSocket,
   createAnimation$1 as createAnimation,
   createCameraContext,
   createCanvasContext,
+  createCanvasContextAsync,
   createInnerAudioContext,
   createIntersectionObserver,
   createLivePlayerContext,
@@ -27773,6 +27949,7 @@ export {
   onUnhandledRejection,
   onUserCaptureScreen,
   onWindowResize,
+  openDialogPage,
   openDocument,
   openLocation,
   pageScrollTo,
@@ -27787,6 +27964,7 @@ export {
   removeStorageSync,
   removeTabBarBadge,
   request,
+  requestAnimationFrame$1 as requestAnimationFrame,
   upx2px as rpx2px,
   saveFile,
   saveImageToPhotosAlbum,

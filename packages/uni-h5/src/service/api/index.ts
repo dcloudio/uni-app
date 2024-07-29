@@ -133,4 +133,6 @@ export {
 export * from './context/createCanvasContextAsync'
 export * from './ui/requestAnimationFrame'
 export * from './ui/cancelAnimationFrame'
+export * from './ui/openDialogPage'
+export * from './ui/closeDialogPage'
 //#endif

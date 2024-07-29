@@ -27,10 +27,28 @@ import { usePageMeta } from './provide'
 import type { NavigateType } from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
+import { getPageInstanceByVm } from './utils'
 
 const SEP = '$$'
 
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
+export const homeDialogPages: UniDialogPage[] = []
+
+export class DialogPage {
+  route: string = ''
+  component?: any
+  $parentPage?: Page.PageInstance
+  $getParentPage?: () => Page.PageInstance
+  $vm?: ComponentPublicInstance
+
+  constructor(route: string, component: any, $parentPage?: Page.PageInstance) {
+    this.route = route
+    this.component = component
+    this.$parentPage = $parentPage
+  }
+}
+
+export type UniDialogPage = DialogPage
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
@@ -161,6 +179,30 @@ export function initPage(vm: ComponentPublicInstance) {
           pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
         backgroundColorContent: pageMeta.backgroundColorContent,
       })
+    vm.$getDialogPages = (): UniDialogPage[] => {
+      return getPageInstanceByVm(vm)?.$dialogPages.value || []
+    }
+    vm.$getParentPage = (): Page.PageInstance | null => {
+      return (
+        getPageInstanceByVm(vm)?.parent?.$dialogPageInstance?.$parentPage ||
+        null
+      )
+    }
+  }
+
+  if (__X__) {
+    const pageInstance = getPageInstanceByVm(vm)
+    if (pageInstance?.attrs.type !== 'dialog') {
+      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
+      if (currentPagesMap.size === 1 && homeDialogPages.length) {
+        homeDialogPages.forEach((dialogPage) => {
+          dialogPage.$parentPage = vm
+          pageInstance!.$dialogPages.value.push(dialogPage)
+        })
+        homeDialogPages.length = 0
+      }
+    }
+    return
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
 }

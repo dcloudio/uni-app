@@ -1,5 +1,6 @@
 import { extend } from '@vue/shared'
 import { type LaunchOptions, createLaunchOptions } from '@dcloudio/uni-core'
+import type { ComponentPublicInstance } from 'vue'
 
 const launchOptions: LaunchOptions = /*#__PURE__*/ createLaunchOptions()
 
@@ -26,4 +27,12 @@ export function initLaunchOptions({
   })
   extend(enterOptions, launchOptions)
   return extend({}, launchOptions)
+}
+
+export function getPageInstanceByVm(vm: ComponentPublicInstance) {
+  let pageInstance = vm.$.parent
+  while (pageInstance && pageInstance.type?.name !== 'Page') {
+    pageInstance = pageInstance.parent
+  }
+  return pageInstance
 }

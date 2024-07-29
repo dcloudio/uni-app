@@ -9838,6 +9838,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       let type2 = "";
       switch (props2.type) {
         case "text":
+          type2 = "text";
           if (props2.confirmType === "search") {
             type2 = "search";
           }
@@ -25969,13 +25970,15 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
+    getCurrentInstance();
+    ref(null);
     return () => createVNode(
       "uni-page",
       {
         "data-page": pageMeta.route,
         style: pageStyle
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx), null] : [createPageBodyVNode(ctx), null]
     );
   }
 });

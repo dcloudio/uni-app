@@ -1,6 +1,7 @@
 import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 import type { UniPage } from '@dcloudio/uni-app-x/types/native'
+import type { UniDialogPage } from '@dcloudio/uni-h5/framework/setup/page'
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
     rootElement?:
@@ -34,6 +35,8 @@ declare module '@vue/runtime-core' {
     // X web start
     $setPageStyle: (style: Record<string, any>) => void
     $getPageStyle: () => Record<string, any>
+    $getParentPage: () => Page.PageInstance | null
+    $getDialogPages: () => UniDialogPage[]
     // X web end
   }
 
@@ -56,6 +59,8 @@ declare module '@vue/runtime-core' {
     $pageInstance: ComponentInternalInstance
     // x
     $waitNativeRender: (fn: () => void) => void
+    $dialogPages: Ref<UniDialogPage[]>
+    $dialogPageInstance: UniDialogPage | null
   }
 
   export const onBeforeActivate: (fn: () => void) => void

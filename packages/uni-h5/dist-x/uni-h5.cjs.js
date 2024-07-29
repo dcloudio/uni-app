@@ -2604,6 +2604,14 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+function getPageInstanceByVm(vm) {
+  var _a;
+  let pageInstance = vm.$.parent;
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -3644,6 +3652,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       let type2 = "";
       switch (props2.type) {
         case "text":
+          type2 = "text";
           if (props2.confirmType === "search") {
             type2 = "search";
           }
@@ -8551,6 +8560,7 @@ function normalizeWindowBottom(windowBottom) {
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
+const homeDialogPages = [];
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id2) => {
     if (page.$.isUnmounted) {
@@ -8630,8 +8640,29 @@ function initPage(vm) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
+    vm.$getDialogPages = () => {
+      var _a;
+      return ((_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPages.value) || [];
+    };
+    vm.$getParentPage = () => {
+      var _a, _b, _c;
+      return ((_c = (_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.parent) == null ? void 0 : _b.$dialogPageInstance) == null ? void 0 : _c.$parentPage) || null;
+    };
   }
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+  {
+    const pageInstance = getPageInstanceByVm(vm);
+    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
+      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+      if (currentPagesMap.size === 1 && homeDialogPages.length) {
+        homeDialogPages.forEach((dialogPage) => {
+          dialogPage.$parentPage = vm;
+          pageInstance.$dialogPages.value.push(dialogPage);
+        });
+        homeDialogPages.length = 0;
+      }
+    }
+    return;
+  }
 }
 function normalizeRouteKey(path, id2) {
   return path + SEP + id2;
@@ -13512,8 +13543,25 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
+    const currentInstance = vue.getCurrentInstance();
+    const currentDialogPage = vue.ref(null);
+    let handleResolve = () => {
+    };
     {
       useBackgroundColorContent(pageMeta);
+      if (ctx.attrs.type === "dialog") {
+        navigationBar.style = "custom";
+        pageMeta.route = ctx.attrs.route;
+      }
+      currentInstance.$dialogPages = vue.ref([]);
+      handleResolve = () => {
+        setTimeout(() => {
+          const dialogPages = currentInstance.$dialogPages.value;
+          const lastDialogPage = dialogPages[dialogPages.length - 1];
+          lastDialogPage.$vm = currentDialogPage.value;
+          lastDialogPage.$vm.$.$dialogPageInstance = lastDialogPage;
+        }, 0);
+      };
     }
     return () => vue.createVNode(
       "uni-page",
@@ -13521,7 +13569,7 @@ const index = /* @__PURE__ */ defineSystemComponent({
         "data-page": pageMeta.route,
         style: pageStyle
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentDialogPage, handleResolve)] : [createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentDialogPage, handleResolve)]
     );
   }
 });
@@ -13534,6 +13582,24 @@ function createPageBodyVNode(ctx) {
       _: 3
     }
   );
+}
+function createDialogPageVNode(dialogPages, currentDialogPage, onResolve) {
+  return vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(dialogPages.value, (dialogPage) => {
+    return vue.openBlock(), vue.createBlock(vue.Suspense, { onResolve }, {
+      default: vue.withCtx(() => [
+        vue.createVNode(
+          dialogPage.component,
+          {
+            style: { position: "fixed", "z-index": 999, top: 0, right: 0, bottom: 0, left: 0 },
+            ref: currentDialogPage,
+            type: "dialog",
+            route: dialogPage.route
+          },
+          null
+        )
+      ])
+    });
+  }));
 }
 exports.Ad = index$6;
 exports.AdContentPage = index$5;
