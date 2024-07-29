@@ -23,7 +23,7 @@ exports[`compiler: transform component slots implicit default slot 1`] = `
 
 exports[`compiler: transform component slots named slot with v-for w/ prefixIdentifiers: true 1`] = `
 "createVNode(_component_Comp, null, createSlots(utsMapOf({ _: 2 /* DYNAMIC */ }), [
-  RenderHelpers.renderList(_ctx.list, (name, __key, __item, _cached): Any => {
+  RenderHelpers.renderList(_ctx.list, (name, __key, __item, _cached): any => {
     return utsMapOf({
       name: name,
       fn: withSlotCtx((): any[] => [toDisplayString(name)])

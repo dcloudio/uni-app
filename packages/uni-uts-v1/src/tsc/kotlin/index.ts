@@ -61,7 +61,11 @@ export function runUTS2Kotlin(
     'hbuilderx-language-services/builtin-dts'
   )
   const commonTypesPath = path.resolve(__dirname, '../../../lib/tsconfig')
-  const kotlinTypesPath = path.resolve(__dirname, '../../../lib/kotlin/types')
+  const utsCommonTypesPath = path.resolve(__dirname, '../../../lib/uts/types')
+  const utsKotlinTypesPath = path.resolve(
+    __dirname,
+    '../../../lib/kotlin/types'
+  )
 
   const rootFiles: string[] = [
     path.resolve(
@@ -69,7 +73,8 @@ export function runUTS2Kotlin(
       'uniappx/node_modules/@dcloudio/uni-app-x/types/shim-uts-basic.d.ts'
     ),
     path.resolve(commonTypesPath, 'global.d.ts'),
-    path.resolve(kotlinTypesPath, 'global.d.ts'),
+    path.resolve(utsKotlinTypesPath, 'global.d.ts'),
+    path.resolve(utsCommonTypesPath, 'index.d.ts'),
     path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
     ...resolvePlatformDeclarationFiles(hbxLanguageServicePath, 'app-android'),
     // path.resolve(hbxLanguageServicePath, 'common/HBuilderX.d.ts'),
@@ -112,7 +117,7 @@ export function runUTS2Kotlin(
     paths: {
       '@dcloudio/uni-runtime': [
         path.resolve(
-          kotlinTypesPath,
+          utsKotlinTypesPath,
           '@dcloudio/uni-runtime/dist/uni-runtime.d.ts'
         ),
       ],
