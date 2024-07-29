@@ -16,12 +16,13 @@ import webSocket from '@ohos.net.webSocket';
 import promptAction from '@ohos.promptAction';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
-import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError1 } from '@ohos.base';
 import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError4 } from '@ohos.base';
+import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError5 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
+import { Emitter as Emitter5 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
 import Hash from '@ohos.file.hash';
 import I18n from '@ohos.i18n';
@@ -32,17 +33,19 @@ import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony3, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony4, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony5 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony6, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony7 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, defineOnApi, defineOffApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
-import { UniServiceJSBridge as UniServiceJSBridge1, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
-import { UniServiceJSBridge, UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
+import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
+import { audio as audio1 } from '@kit.AudioKit';
 import { audio } from '@kit.AudioKit';
+import { avSession } from '@kit.AVSessionKit';
+import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
@@ -54,36 +57,39 @@ import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
 import { fileIo as fileIo1 } from '@kit.CoreFileKit';
 import { fileIo as fileIo2 } from '@kit.CoreFileKit';
+import { fileIo as fileIo3 } from '@kit.CoreFileKit';
 import { fileIo } from '@kit.CoreFileKit';
 import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
 import fs4 from '@ohos.file.fs';
-import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
 import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv as getEnv2, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv2, Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, getRealPath } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath2, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath4, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
-import { getResourceStr, getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath4, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr, getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
 import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
-import { isPlainObject, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import { isPlainObject, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
+import { media as media1 } from '@kit.MediaKit';
 import { media } from '@kit.MediaKit';
-import media1 from '@ohos.multimedia.media';
 import media2 from '@ohos.multimedia.media';
+import media3 from '@ohos.multimedia.media';
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
@@ -91,6 +97,7 @@ import promptAction1 from '@ohos.promptAction';
 import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
+import { wantAgent } from '@kit.AbilityKit';
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
 }
@@ -276,7 +283,7 @@ type $Emit = (eventName: string, args: Object | null) => void;
 interface IUniEventEmitter {
     on: (eventName: string, callback: Function) => void;
     once: (eventName: string, callback: Function) => void;
-    off: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 class ExitSuccess extends UTSObject {
@@ -413,6 +420,40 @@ interface IAppBaseInfoAppVersion {
     name: string;
     code: string;
 }
+type GetBackgroundAudioManager = () => BackgroundAudioManager;
+interface BackgroundAudioManager {
+    duration: number;
+    currentTime: number;
+    paused: boolean;
+    src: string;
+    startTime: number;
+    buffered: number;
+    title: string;
+    epname: string;
+    singer: string;
+    coverImgUrl: string;
+    webUrl: string;
+    protocol: string;
+    playbackRate?: number;
+    play(): void;
+    pause(): void;
+    seek(position: number): void;
+    stop(): void;
+    onCanplay(callback: (result: Object) => void): void;
+    onPlay(callback: (result: Object) => void): void;
+    onPause(callback: (result: Object) => void): void;
+    onStop(callback: (result: Object) => void): void;
+    onEnded(callback: (result: Object) => void): void;
+    onTimeUpdate(callback: (result: Object) => void): void;
+    onPrev(callback: (result: Object) => void): void;
+    onNext(callback: (result: Object) => void): void;
+    onError(callback: (result: Object) => void): void;
+    onWaiting(callback: (result: Object) => void): void;
+}
+interface TempAbilityInfo {
+    bundleName: string;
+    name: string;
+}
 class GetDeviceInfoOptions extends UTSObject {
     filter!: Array<string>;
 }
@@ -460,6 +501,12 @@ class OnNetworkStatusChangeCallbackResult extends UTSObject {
 type OnNetworkStatusChangeCallback = (result: OnNetworkStatusChangeCallbackResult) => void;
 type OnNetworkStatusChange = (callback: OnNetworkStatusChangeCallback) => void;
 type OffNetworkStatusChange = (callback: (result: Object) => void) => void;
+interface IUniGetNetworkTypeEventEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
 export class GetProviderSuccess extends UTSObject {
     service!: 'payment' | 'location';
     provider!: string[];
@@ -1020,10 +1067,22 @@ export interface DownloadTask {
     abort(): void;
     onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
 }
+interface IUniRequestEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
 interface IRequestTask {
     abort: Function;
     onHeadersReceived: Function;
     offHeadersReceived: Function;
+}
+interface IUniUploadFileEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface IUploadTask {
     abort: Function;
@@ -1031,6 +1090,12 @@ interface IUploadTask {
     offHeadersReceived: Function;
     onProgressUpdate: Function;
     offProgressUpdate: Function;
+}
+interface IUniDownloadFileEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface IDownloadTask {
     abort: Function;
@@ -1073,29 +1138,10 @@ export class OpenDocumentOptions extends UTSObject {
     complete: OpenDocumentCompleteCallback | null = null;
 }
 type OpenDocument = (options?: OpenDocumentOptions | null) => void;
-type PageScrollToErrorCode = 4;
-interface PageScrollToFail extends IUniError {
-    errCode: PageScrollToErrorCode;
-}
-export type PageScrollToSuccess = AsyncApiSuccessResult;
-type PageScrollToSuccessCallback = (result: PageScrollToSuccess) => void;
-type PageScrollToFailCallback = (result: PageScrollToFail) => void;
-type PageScrollToComplete = AsyncApiResult;
-type PageScrollToCompleteCallback = (result: PageScrollToComplete) => void;
-export class PageScrollToOptions extends UTSObject {
-    scrollTop: number | null = null;
-    selector: string | null = null;
-    offsetTop: number | null = null;
-    duration: number | null = null;
-    success: PageScrollToSuccessCallback | null = null;
-    fail: PageScrollToFailCallback | null = null;
-    complete: PageScrollToCompleteCallback | null = null;
-}
-export type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
 export interface UniPaymentProvider extends UniProvider {
     requestPayment(options: RequestPaymentOptions): void;
 }
-type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700800 | 700801 | 700718;
+type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700800 | 700801;
 export type RequestPayment = (options: RequestPaymentOptions) => void;
 export class RequestPaymentSuccess extends UTSObject {
     data: object | null = null;
@@ -1453,6 +1499,16 @@ export type ShowTabBar = (options?: ShowTabBarOptions | null) => void;
 export type HideTabBar = (options?: HideTabBarOptions | null) => void;
 export type ShowTabBarRedDot = (options: ShowTabBarRedDotOptions) => void;
 export type HideTabBarRedDot = (options: HideTabBarRedDotOptions) => void;
+interface ITabBar {
+    setTabBarBadge: (options: SetTabBarBadgeOptions) => void;
+    removeTabBarBadge: (options: RemoveTabBarBadgeOptions) => void;
+    setTabBarItem: (options: SetTabBarItemOptions) => void;
+    setTabBarStyle: (options: SetTabBarStyleOptions) => void;
+    hideTabBar: () => void;
+    showTabBar: () => void;
+    showTabBarRedDot: (options: ShowTabBarRedDotOptions) => void;
+    hideTabBarRedDot: (options: HideTabBarRedDotOptions) => void;
+}
 export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
 export class ConnectSocketSuccess extends UTSObject {
     errMsg!: string;
@@ -1525,9 +1581,10 @@ class OnSocketCloseCallbackResult extends UTSObject {
 type OnSocketCloseCallback = (result: OnSocketCloseCallbackResult) => void;
 type OnSocketClose = (callback: OnSocketCloseCallback) => void;
 interface IUniWebsocketEmitter {
-    on: Function;
-    off: Function;
-    emit: Function;
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface UniExtApi {
     addPhoneContact: AddPhoneContact;
@@ -1548,6 +1605,7 @@ interface UniExtApi {
     removeSavedFile: RemoveSavedFile;
     getFileInfo: GetFileInfo;
     getAppBaseInfo: GetAppBaseInfo;
+    getBackgroundAudioManager: GetBackgroundAudioManager;
     getDeviceInfo: GetDeviceInfo;
     getNetworkType: GetNetworkType;
     onNetworkStatusChange: OnNetworkStatusChange;
@@ -1578,7 +1636,6 @@ interface UniExtApi {
     downloadFile: DownloadFile;
     openAppAuthorizeSetting: OpenAppAuthorizeSetting;
     openDocument: OpenDocument;
-    pageScrollTo: PageScrollTo;
     requestPayment: RequestPayment;
     showToast: ShowToast;
     hideToast: HideToast;
@@ -2136,7 +2193,8 @@ export function initUniExtApi(APP_ID: string) {
             remoteCallback(this.onSeekedCallbacks, callback);
         }
     }
-    const audios: Record<string, InnerAudioContext | undefined> = {};
+    const AUDIOS: Record<string, InnerAudioContext | undefined> = {};
+    const AUDIO_PLAYERS: Record<string, media.AudioPlayer | undefined> = {};
     const LOG = (msg: string)=>console.log(`[createInnerAudioContext]: ${msg}`);
     class STATE_TYPE {
         static IDLE: string = 'idle';
@@ -2147,7 +2205,6 @@ export function initUniExtApi(APP_ID: string) {
     }
     class AudioPlayer implements InnerAudioContext {
         private audioPlayerCallback: AudioPlayerCallback = new AudioPlayerCallback();
-        private audioPlayer?: media.AudioPlayer;
         private _volume: number = 1;
         private _src: string = '';
         private _autoplay: boolean = false;
@@ -2155,100 +2212,105 @@ export function initUniExtApi(APP_ID: string) {
         private _buffered: number = 0;
         private _title: string = '';
         private audioId: string = '';
+        private _playbackRate: number = 1;
         readonly obeyMuteSwitch: boolean = false;
-        isStopped?: boolean | undefined;
-        initStateChage?: boolean | undefined;
-        playbackRate?: number | undefined;
         constructor(audioId: string){
             this.audioId = audioId;
             this.init();
         }
         init() {
-            this.audioPlayer = media.createAudioPlayer();
-            this.audioPlayer.on('dataLoad', ()=>{
+            AUDIO_PLAYERS[this.audioId]?.on('dataLoad', ()=>{
                 this.audioPlayerCallback.canPlay();
             });
-            this.audioPlayer.on('play', ()=>{
+            AUDIO_PLAYERS[this.audioId]?.on('play', ()=>{
                 this.audioPlayerCallback.play();
             });
-            this.audioPlayer.on('pause', ()=>{
+            AUDIO_PLAYERS[this.audioId]?.on('pause', ()=>{
                 this.audioPlayerCallback.pause();
             });
-            this.audioPlayer.on('finish', ()=>{
+            AUDIO_PLAYERS[this.audioId]?.on('finish', ()=>{
                 this.audioPlayerCallback.ended();
             });
-            this.audioPlayer.on('timeUpdate', (res)=>{
+            AUDIO_PLAYERS[this.audioId]?.on('timeUpdate', (res)=>{
                 this.audioPlayerCallback.timeUpdate(res / 1000);
             });
-            this.audioPlayer.on('error', (err)=>{
+            AUDIO_PLAYERS[this.audioId]?.on('error', (err)=>{
                 this.audioPlayerCallback.error(new AudioPlayerError(err.message, err.code));
             });
-            this.audioPlayer.on('bufferingUpdate', (infoType, value)=>{
+            AUDIO_PLAYERS[this.audioId]?.on('bufferingUpdate', (infoType, value)=>{
                 console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
-                if (infoType === media.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && this.audioPlayer) {
+                if (infoType === media.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && AUDIO_PLAYERS[this.audioId]) {
                     this._buffered = value;
-                    if ((this.audioPlayer.currentTime / 1000) >= (this.audioPlayer.duration * value / 100000)) {
+                    if ((AUDIO_PLAYERS[this.audioId]!.currentTime / 1000) >= (AUDIO_PLAYERS[this.audioId]!.duration * value / 100000)) {
                         this.audioPlayerCallback.waiting();
                     }
                 }
             });
-            this.audioPlayer.on('audioInterrupt', (InterruptEvent)=>{
+            AUDIO_PLAYERS[this.audioId]?.on('audioInterrupt', (InterruptEvent)=>{
                 console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
-                if (this.audioPlayer && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
-                    this.audioPlayer.pause();
+                if (AUDIO_PLAYERS[this.audioId] && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                    AUDIO_PLAYERS[this.audioId]!.pause();
                 }
             });
         }
         get duration() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return 0;
             }
-            return this.audioPlayer.duration / 1000;
+            return audioPlayer.duration / 1000;
         }
         get currentTime() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return 0;
             }
-            return this.audioPlayer.currentTime / 1000;
+            return audioPlayer.currentTime / 1000;
         }
         get paused() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return false;
             }
-            return this.audioPlayer.state === STATE_TYPE.PAUSED;
+            return audioPlayer.state === STATE_TYPE.PAUSED;
         }
         get loop() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return false;
             }
-            return this.audioPlayer.loop;
+            return audioPlayer.loop;
         }
         set loop(value) {
-            if (this.audioPlayer) {
-                this.audioPlayer.loop = value;
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (audioPlayer) {
+                audioPlayer.loop = value;
             }
         }
         get volume() {
             return this._volume;
         }
         set volume(value) {
-            if (this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (audioPlayer) {
                 this._volume = value;
-                this.audioPlayer.setVolume(value);
+                audioPlayer.setVolume(value);
             }
         }
         get src() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return '';
             }
-            return this.audioPlayer.src;
+            return audioPlayer.src;
         }
         set src(value) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
             if (typeof value !== 'string') {
                 this.audioPlayerCallback.error(new AudioPlayerError(`set src: ${value} is not string`, 10004));
                 return;
             }
-            if (!this.audioPlayer) {
+            if (!audioPlayer) {
                 this.audioPlayerCallback.error(new AudioPlayerError(`player is not exist`, 10001));
                 return;
             }
@@ -2267,15 +2329,15 @@ export function initUniExtApi(APP_ID: string) {
                     console.error(`${JSON.stringify(error)}`);
                 }
             }
-            if (this.audioPlayer.src && path !== this.audioPlayer.src) {
-                this.audioPlayer.reset();
+            if (audioPlayer.src && path !== audioPlayer.src) {
+                audioPlayer.reset();
             }
-            this.audioPlayer.src = path;
+            AUDIO_PLAYERS[this.audioId]!.src = path;
             this._src = value;
             if (this._autoplay) {
-                this.audioPlayer.play();
+                audioPlayer.play();
                 if (this._startTime) {
-                    this.audioPlayer.seek(this._startTime);
+                    audioPlayer.seek(this._startTime);
                 }
             }
         }
@@ -2292,14 +2354,22 @@ export function initUniExtApi(APP_ID: string) {
             this._autoplay = flag;
         }
         get buffered() {
-            if (!this.audioPlayer) return 0;
-            return this.audioPlayer.duration * this._buffered / 100000;
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) return 0;
+            return audioPlayer.duration * this._buffered / 100000;
+        }
+        set playbackRate(rate: number) {
+            this.audioPlayerCallback.error(new AudioPlayerError('HarmonyOS Next Audio setting playbackRate is not supported.', -1));
+        }
+        get playbackRate() {
+            return this._playbackRate;
         }
         play() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return;
             }
-            const state = this.audioPlayer.state;
+            const state = audioPlayer.state ?? '';
             if (![
                 STATE_TYPE.PAUSED,
                 STATE_TYPE.STOPPED,
@@ -2307,41 +2377,43 @@ export function initUniExtApi(APP_ID: string) {
             ].includes(state)) {
                 return;
             }
-            if (this._src && this.audioPlayer.src === '') {
+            if (this._src && audioPlayer.src === '') {
                 this.src = this._src;
             }
-            this.audioPlayer.play();
+            audioPlayer.play();
         }
         pause() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return;
             }
-            const state = this.audioPlayer.state;
+            const state = audioPlayer.state;
             if (STATE_TYPE.PLAYING !== state) {
                 return;
             }
-            this.audioPlayer.pause();
+            audioPlayer.pause();
         }
         stop() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return;
             }
             if (![
                 STATE_TYPE.PAUSED,
                 STATE_TYPE.PLAYING
-            ].includes(this.audioPlayer.state)) {
+            ].includes(audioPlayer.state)) {
                 return;
             }
-            this.audioPlayer.stop();
+            audioPlayer.stop();
             this.audioPlayerCallback.stop();
-            this.audioPlayer.release();
-            this.initStateChage;
+            audioPlayer.release();
         }
         seek(position: number) {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return;
             }
-            const state = this.audioPlayer.state;
+            const state = audioPlayer.state;
             if (![
                 STATE_TYPE.PAUSED,
                 STATE_TYPE.PLAYING
@@ -2349,16 +2421,17 @@ export function initUniExtApi(APP_ID: string) {
                 return;
             }
             this.audioPlayerCallback.seeking();
-            this.audioPlayer.seek(position * 1000);
+            audioPlayer.seek(position * 1000);
             this.audioPlayerCallback.seeked();
         }
         destroy() {
-            if (!this.audioPlayer) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
                 return;
             }
-            this.audioPlayer.release();
-            this.audioPlayer = undefined;
-            audios[this.audioId] = undefined;
+            audioPlayer.release();
+            AUDIO_PLAYERS[this.audioId] = undefined;
+            AUDIOS[this.audioId] = undefined;
         }
         onCanplay(callback: (result: Object) => void): void {
             this.audioPlayerCallback.onCanplay(callback);
@@ -2423,12 +2496,13 @@ export function initUniExtApi(APP_ID: string) {
     }
     const createAudioInstance = ()=>{
         const audioId = `${Date.now()}${Math.random()}`;
-        audios[audioId] = new AudioPlayer(audioId);
+        AUDIO_PLAYERS[audioId] = media.createAudioPlayer();
+        AUDIOS[audioId] = new AudioPlayer(audioId);
         return audioId;
     };
     const createInnerAudioContext: CreateInnerAudioContext = defineSyncApi<InnerAudioContext>(API_CREATE_INNER_AUDIO_CONTEXT, ()=>{
         const audioId = createAudioInstance();
-        return audios[audioId];
+        return AUDIOS[audioId];
     }) as CreateInnerAudioContext;
     const defaultOptions = {
         thresholds: [
@@ -2707,6 +2781,494 @@ export function initUniExtApi(APP_ID: string) {
             uniPlatform: 'app'
         } as GetAppBaseInfoResult;
     }) as GetAppBaseInfo;
+    const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
+    const isFileUri1 = (path: string)=>{
+        return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
+    };
+    const isSandboxPath1 = (path: string)=>{
+        return path && typeof path === 'string' && path.startsWith('/data/storage/');
+    };
+    const getFdFromUriOrSandBoxPath1 = (uri: string)=>{
+        try {
+            const file = fileIo1.openSync(uri, fileIo1.OpenMode.READ_ONLY);
+            return file.fd;
+        } catch (error) {
+            console.info(`[AdvancedAPI] Can not get file from uri: ${uri} `);
+        }
+        throw new Error('file is not exist');
+    };
+    const callCallbacks1 = (callbacks: Function[], ...args: Object[])=>{
+        callbacks.forEach((cb)=>{
+            typeof cb === 'function' && cb(...args);
+        });
+    };
+    const remoteCallback1 = (callbacks: Function[], callback: Function)=>{
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
+        }
+    };
+    class AudioPlayerError1 {
+        errMsg: string;
+        errCode: number;
+        constructor(errMsg: string, errCode: number){
+            this.errMsg = errMsg;
+            this.errCode = errCode;
+        }
+    }
+    class AudioPlayerCallback1 {
+        onCanplayCallbacks: Function[] = [];
+        onPlayCallbacks: Function[] = [];
+        onPauseCallbacks: Function[] = [];
+        onStopCallbacks: Function[] = [];
+        onEndedCallbacks: Function[] = [];
+        onTimeUpdateCallbacks: Function[] = [];
+        onErrorCallbacks: Function[] = [];
+        onWaitingCallbacks: Function[] = [];
+        onSeekingCallbacks: Function[] = [];
+        onSeekedCallbacks: Function[] = [];
+        constructor(){}
+        canPlay() {
+            callCallbacks1(this.onCanplayCallbacks);
+        }
+        onCanplay(callback: Function) {
+            this.onCanplayCallbacks.push(callback);
+        }
+        offCanplay(callback: Function) {
+            remoteCallback1(this.onCanplayCallbacks, callback);
+        }
+        play() {
+            callCallbacks1(this.onPlayCallbacks);
+        }
+        onPlay(callback: Function) {
+            this.onPlayCallbacks.push(callback);
+        }
+        offPlay(callback: Function) {
+            remoteCallback1(this.onPlayCallbacks, callback);
+        }
+        pause() {
+            callCallbacks1(this.onPauseCallbacks);
+        }
+        onPause(callback: Function) {
+            this.onPauseCallbacks.push(callback);
+        }
+        offPause(callback: Function) {
+            remoteCallback1(this.onPauseCallbacks, callback);
+        }
+        stop() {
+            callCallbacks1(this.onStopCallbacks);
+        }
+        onStop(callback: Function) {
+            this.onStopCallbacks.push(callback);
+        }
+        offStop(callback: Function) {
+            remoteCallback1(this.onStopCallbacks, callback);
+        }
+        ended() {
+            callCallbacks1(this.onEndedCallbacks);
+        }
+        onEnded(callback: Function) {
+            this.onEndedCallbacks.push(callback);
+        }
+        offEnded(callback: Function) {
+            remoteCallback1(this.onEndedCallbacks, callback);
+        }
+        timeUpdate(time: number) {
+            callCallbacks1(this.onTimeUpdateCallbacks, time);
+        }
+        onTimeUpdate(callback: Function) {
+            this.onTimeUpdateCallbacks.push(callback);
+        }
+        offTimeUpdate(callback: Function) {
+            remoteCallback1(this.onTimeUpdateCallbacks, callback);
+        }
+        error(res: AudioPlayerError1) {
+            callCallbacks1(this.onErrorCallbacks, res);
+        }
+        onError(callback: Function) {
+            this.onErrorCallbacks.push(callback);
+        }
+        offError(callback: Function) {
+            remoteCallback1(this.onErrorCallbacks, callback);
+        }
+        onPrev(callback: Function) {
+            console.info('ios only');
+        }
+        onNext(callback: Function) {
+            console.info('ios only');
+        }
+        waiting() {
+            callCallbacks1(this.onWaitingCallbacks);
+        }
+        onWaiting(callback: Function) {
+            this.onWaitingCallbacks.push(callback);
+        }
+        offWaiting(callback: Function) {
+            remoteCallback1(this.onWaitingCallbacks, callback);
+        }
+        seeking() {
+            callCallbacks1(this.onSeekingCallbacks);
+        }
+        onSeeking(callback: Function) {
+            this.onSeekingCallbacks.push(callback);
+        }
+        offSeeking(callback: Function) {
+            remoteCallback1(this.onSeekingCallbacks, callback);
+        }
+        seeked() {
+            callCallbacks1(this.onSeekedCallbacks);
+        }
+        onSeeked(callback: Function) {
+            this.onSeekedCallbacks.push(callback);
+        }
+        offSeeked(callback: Function) {
+            remoteCallback1(this.onSeekedCallbacks, callback);
+        }
+    }
+    const audioPlayerCallback = new AudioPlayerCallback1();
+    let AV_SESSION: avSession.AVSession | null = null;
+    const createAVSession = ()=>{
+        avSession.createAVSession(getAbilityContext()!, 'player', 'audio').then((data)=>{
+            AV_SESSION = data;
+        });
+    };
+    const destroyAVSession = ()=>{
+        if (AV_SESSION === null) {
+            return;
+        }
+        AV_SESSION.destroy();
+        AV_SESSION = null;
+    };
+    const startBackgroundTask = ()=>{
+        const abilityInfo: TempAbilityInfo = getAbilityContext()!.abilityInfo;
+        const wantAgentInfo: wantAgent.WantAgentInfo = {
+            wants: [
+                {
+                    bundleName: abilityInfo.bundleName,
+                    abilityName: abilityInfo.name
+                }
+            ],
+            operationType: wantAgent.OperationType.START_ABILITY,
+            requestCode: 0,
+            wantAgentFlags: [
+                wantAgent.WantAgentFlags.UPDATE_PRESENT_FLAG
+            ]
+        };
+        wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
+            return backgroundTaskManager.startBackgroundRunning(getAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+        }).then(()=>{
+            console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
+        }).catch((err: BusinessError1)=>{
+            audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+        });
+    };
+    const stopBackgroundTask = ()=>{
+        backgroundTaskManager.stopBackgroundRunning(getAbilityContext()!).then(()=>{
+            console.debug('[getBackgroundAudioManager]  stop operation succeeded');
+        }).catch((err: BusinessError1)=>{
+            audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+        });
+    };
+    const START_BACKGROUND = ()=>{
+        startBackgroundTask();
+        createAVSession();
+    };
+    const STOP_BACKGROUND = ()=>{
+        destroyAVSession();
+        stopBackgroundTask();
+    };
+    const LOG1 = (msg: string)=>console.log(`[getBackgroundAudioManager]: ${msg}`);
+    class STATE_TYPE1 {
+        static IDLE: string = 'idle';
+        static PLAYING: string = 'playing';
+        static PAUSED: string = 'paused';
+        static STOPPED: string = 'stopped';
+        static ERROR: string = 'error';
+    }
+    class BackgroundAudioManagerImpl implements BackgroundAudioManager {
+        static audioPlayer?: media1.AudioPlayer;
+        private _src: string = '';
+        private _startTime: number = 0;
+        private _buffered: number = 0;
+        private _title: string = '';
+        private _epname: string = '';
+        private _singer: string = '';
+        private _coverImgUrl: string = '';
+        private _webUrl: string = '';
+        private _protocol: string = '';
+        private _playbackRate: number = 1;
+        readonly obeyMuteSwitch: boolean = false;
+        constructor(){
+            this.init();
+        }
+        init() {
+            BackgroundAudioManagerImpl.audioPlayer = media1.createAudioPlayer();
+            BackgroundAudioManagerImpl.audioPlayer.on('dataLoad', ()=>{
+                audioPlayerCallback.canPlay();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('play', ()=>{
+                audioPlayerCallback.play();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('pause', ()=>{
+                audioPlayerCallback.pause();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('finish', ()=>{
+                STOP_BACKGROUND();
+                audioPlayerCallback.ended();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('timeUpdate', (res)=>{
+                audioPlayerCallback.timeUpdate(res / 1000);
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('error', (err)=>{
+                audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('bufferingUpdate', (infoType, value)=>{
+                console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
+                if (infoType === media1.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && BackgroundAudioManagerImpl.audioPlayer) {
+                    this._buffered = value;
+                    if ((BackgroundAudioManagerImpl.audioPlayer.currentTime / 1000) >= (BackgroundAudioManagerImpl.audioPlayer.duration * value / 100000)) {
+                        audioPlayerCallback.waiting();
+                    }
+                }
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('audioInterrupt', (InterruptEvent)=>{
+                console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
+                if (BackgroundAudioManagerImpl.audioPlayer && InterruptEvent.hintType === audio1.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                    BackgroundAudioManagerImpl.audioPlayer.pause();
+                }
+                if (BackgroundAudioManagerImpl.audioPlayer && InterruptEvent.hintType === audio1.InterruptHint.INTERRUPT_HINT_RESUME) {
+                    BackgroundAudioManagerImpl.audioPlayer.play();
+                }
+            });
+        }
+        get duration() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return 0;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.duration / 1000;
+        }
+        get currentTime() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return 0;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.currentTime / 1000;
+        }
+        get paused() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return false;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.state === STATE_TYPE1.PAUSED;
+        }
+        get src() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return '';
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.src;
+        }
+        set src(value) {
+            if (typeof value !== 'string') {
+                audioPlayerCallback.error(new AudioPlayerError1(`set src: ${value} is not string`, 10004));
+                return;
+            }
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                audioPlayerCallback.error(new AudioPlayerError1(`player is not exist`, 10001));
+                return;
+            }
+            if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri1(value) || isSandboxPath1(value))) {
+                LOG1(`set src: ${value} is invalid`);
+                return;
+            }
+            let path: string = '';
+            if (value.startsWith('http:') || value.startsWith('https:')) {
+                path = value;
+            } else if (isFileUri1(value) || isSandboxPath1(value)) {
+                try {
+                    const fd = getFdFromUriOrSandBoxPath1(value);
+                    path = `fd://${fd}`;
+                } catch (err) {
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError1).message, (err as BusinessError1).code));
+                }
+            }
+            if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
+                BackgroundAudioManagerImpl.audioPlayer.reset();
+            }
+            BackgroundAudioManagerImpl.audioPlayer.src = path;
+            this._src = value;
+            if (this._startTime) {
+                BackgroundAudioManagerImpl.audioPlayer.seek(this._startTime);
+            }
+            BackgroundAudioManagerImpl.audioPlayer.play();
+            START_BACKGROUND();
+        }
+        get startTime() {
+            return this._startTime / 1000;
+        }
+        set startTime(time: number) {
+            this._startTime = time * 1000;
+        }
+        get title() {
+            return this._title;
+        }
+        set title(titleName: string) {
+            this._title = titleName;
+        }
+        get buffered() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) return 0;
+            return BackgroundAudioManagerImpl.audioPlayer.duration * this._buffered / 100000;
+        }
+        get epname() {
+            return this._epname;
+        }
+        set epname(epName: string) {
+            this._epname = epName;
+        }
+        get singer() {
+            return this._singer;
+        }
+        set singer(singerName: string) {
+            this._singer = singerName;
+        }
+        get coverImgUrl() {
+            return this._coverImgUrl;
+        }
+        set coverImgUrl(url: string) {
+            this._coverImgUrl = url;
+        }
+        get webUrl() {
+            return this._webUrl;
+        }
+        set webUrl(url: string) {
+            this._webUrl = url;
+        }
+        get protocol() {
+            return this._protocol;
+        }
+        set protocol(protocolType: string) {
+            this._protocol = protocolType;
+        }
+        set playbackRate(rate: number) {
+            audioPlayerCallback.error(new AudioPlayerError1('HarmonyOS Next Audio setting playbackRate is not supported.', -1));
+        }
+        get playbackRate() {
+            return this._playbackRate;
+        }
+        play() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.STOPPED,
+                STATE_TYPE1.IDLE
+            ].includes(state)) {
+                return;
+            }
+            if (this._src && BackgroundAudioManagerImpl.audioPlayer.src === '') {
+                this.src = this._src;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.play();
+            START_BACKGROUND();
+        }
+        pause() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (STATE_TYPE1.PLAYING !== state) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.pause();
+        }
+        stop() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.PLAYING
+            ].includes(BackgroundAudioManagerImpl.audioPlayer.state)) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.stop();
+            BackgroundAudioManagerImpl.audioPlayer.release();
+            this.init();
+            STOP_BACKGROUND();
+            audioPlayerCallback.stop();
+        }
+        seek(position: number) {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.PLAYING
+            ].includes(state)) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.seek(position * 1000);
+        }
+        onCanplay(callback: (result: Object) => void): void {
+            audioPlayerCallback.onCanplay(callback);
+        }
+        onPlay(callback: (result: Object) => void): void {
+            audioPlayerCallback.onPlay(callback);
+        }
+        onPause(callback: (result: Object) => void): void {
+            audioPlayerCallback.onPause(callback);
+        }
+        onStop(callback: (result: Object) => void): void {
+            audioPlayerCallback.onStop(callback);
+        }
+        onEnded(callback: (result: Object) => void): void {
+            audioPlayerCallback.onEnded(callback);
+        }
+        onTimeUpdate(callback: (result: Object) => void): void {
+            audioPlayerCallback.onTimeUpdate(callback);
+        }
+        onError(callback: (result: Object) => void): void {
+            audioPlayerCallback.onError(callback);
+        }
+        onWaiting(callback: (result: Object) => void): void {
+            audioPlayerCallback.onWaiting(callback);
+        }
+        offCanplay(callback: (result: Object) => void): void {
+            audioPlayerCallback.offCanplay(callback);
+        }
+        offPlay(callback: (result: Object) => void): void {
+            audioPlayerCallback.offPlay(callback);
+        }
+        offPause(callback: (result: Object) => void): void {
+            audioPlayerCallback.offPause(callback);
+        }
+        offStop(callback: (result: Object) => void): void {
+            audioPlayerCallback.offStop(callback);
+        }
+        offEnded(callback: (result: Object) => void): void {
+            audioPlayerCallback.offEnded(callback);
+        }
+        offTimeUpdate(callback: (result: Object) => void): void {
+            audioPlayerCallback.offTimeUpdate(callback);
+        }
+        offError(callback: (result: Object) => void): void {
+            audioPlayerCallback.offError(callback);
+        }
+        offWaiting(callback: (result: Object) => void): void {
+            audioPlayerCallback.offWaiting(callback);
+        }
+        onPrev(callback: (result: Object) => void): void {
+            throw new Error('Method not implemented.');
+        }
+        onNext(callback: (result: Object) => void): void {
+            throw new Error('Method not implemented.');
+        }
+    }
+    let backgroundAudioManager: BackgroundAudioManager | null = null;
+    const getBackgroundAudioManager: GetBackgroundAudioManager = defineSyncApi<BackgroundAudioManager>(API_GET_BACKGROUND_AUDIO_MANAGER, ()=>{
+        if (!backgroundAudioManager) backgroundAudioManager = new BackgroundAudioManagerImpl();
+        return backgroundAudioManager;
+    }) as GetBackgroundAudioManager;
     const API_GET_DEVICE_INFO = 'getDeviceInfo';
     const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
         return {
@@ -2727,8 +3289,6 @@ export function initUniExtApi(APP_ID: string) {
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
     const API_GET_NETWORK_TYPE = 'getNetworkType';
-    const API_ON_NETWORK_STATUS_CHANGE = 'onNetworkStatusChange';
-    const API_OFF_NETWORK_STATUS_CHANGE = 'offNetworkStatusChange';
     const PERMISSIONS = [
         'ohos.permission.GET_NETWORK_INFO'
     ];
@@ -2774,7 +3334,7 @@ export function initUniExtApi(APP_ID: string) {
                             }
                         });
                     } catch (error) {
-                        reject(error as BusinessError1);
+                        reject(error as BusinessError2);
                     }
                 } else {
                     reject('permission denied');
@@ -2816,7 +3376,7 @@ export function initUniExtApi(APP_ID: string) {
                                             resolve(NetworkinfoType.UNKNOW);
                                         }
                                     }
-                                }).catch((err: BusinessError1)=>{
+                                }).catch((err: BusinessError2)=>{
                                     reject(err);
                                 });
                             }
@@ -2841,7 +3401,7 @@ export function initUniExtApi(APP_ID: string) {
             }
             UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
                 if (allRight && Network.netConnection) {
-                    Network.netConnection.register((err: BusinessError1)=>{});
+                    Network.netConnection.register((err: BusinessError2)=>{});
                     Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
                         const NetBearType = capability?.netCap?.bearerTypes[0];
                         let networkType = '';
@@ -2880,18 +3440,23 @@ export function initUniExtApi(APP_ID: string) {
             res.resolve({
                 networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError1)=>{
+        }).catch((err: BusinessError2)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
     const invokeOnNetworkStatusChange = (networkType: string)=>{
-        UniServiceJSBridge.invokeOnCallback(API_ON_NETWORK_STATUS_CHANGE, {
+        UniGetNetworkTypeEventEmitter.emit('networkStatusChange', {
             isConnected: networkType !== NetworkinfoType[1],
             networkType: networkType.toLocaleLowerCase()
         } as OnNetworkStatusChangeCallbackResult);
     };
-    const onNetworkStatusChange: OnNetworkStatusChange = defineOnApi<OnNetworkStatusChangeCallbackResult>(API_ON_NETWORK_STATUS_CHANGE, ()=>{}) as OnNetworkStatusChange;
-    const offNetworkStatusChange: OffNetworkStatusChange = defineOffApi<OffNetworkStatusChange>(API_OFF_NETWORK_STATUS_CHANGE, ()=>{}) as OffNetworkStatusChange;
+    const UniGetNetworkTypeEventEmitter = new Emitter1() as IUniGetNetworkTypeEventEmitter;
+    const onNetworkStatusChange: OnNetworkStatusChange = (callback: Function)=>{
+        UniGetNetworkTypeEventEmitter.on('networkStatusChange', callback);
+    };
+    const offNetworkStatusChange: OffNetworkStatusChange = (callback: Function)=>{
+        UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
+    };
     const API_GET_PROVIDER = 'getProvider';
     const API_GET_PROVIDER_IDS = 'getProviderIds';
     const API_GET_PROVIDER_OBJECT = 'getProviderObject';
@@ -3009,11 +3574,11 @@ export function initUniExtApi(APP_ID: string) {
     const createFile = (supportFormats: string[], format: string, defaultExt: string)=>{
         const TEMP_PATH = getEnv1().TEMP_PATH as string;
         const filePath = `${TEMP_PATH}/recorder/`;
-        if (!fileIo1.accessSync(filePath)) {
-            fileIo1.mkdirSync(filePath);
+        if (!fileIo2.accessSync(filePath)) {
+            fileIo2.mkdirSync(filePath);
         }
         const fileName = `${Date.now()}.${supportFormats.includes(format ?? '') ? format?.toLocaleLowerCase() : defaultExt}`;
-        const file: fileIo1.File = fileIo1.openSync(`${filePath}${fileName}`, fileIo1.OpenMode.READ_WRITE | fileIo1.OpenMode.CREATE);
+        const file: fileIo2.File = fileIo2.openSync(`${filePath}${fileName}`, fileIo2.OpenMode.READ_WRITE | fileIo2.OpenMode.CREATE);
         return file;
     };
     const permissionDenied = ()=>{
@@ -3023,10 +3588,10 @@ export function initUniExtApi(APP_ID: string) {
         'aac'
     ];
     class AVRecorder implements RecorderManager {
-        private avRecorder?: media1.AVRecorder;
+        private avRecorder?: media2.AVRecorder;
         private isFirstStart: boolean = true;
         constructor(){}
-        private onStateChange(file: fileIo2.File) {
+        private onStateChange(file: fileIo3.File) {
             if (this.avRecorder) {
                 this.avRecorder.on('stateChange', async (state, reason)=>{
                     switch(state){
@@ -3038,27 +3603,27 @@ export function initUniExtApi(APP_ID: string) {
                                 this.isFirstStart = false;
                                 onRecorderStateChange('start');
                             } else {
-                                if (reason === media1.StateChangeReason.BACKGROUND) {
+                                if (reason === media2.StateChangeReason.BACKGROUND) {
                                     onRecorderStateChange('interruptionEnd');
                                 }
                                 onRecorderStateChange('resume');
                             }
                             break;
                         case 'paused':
-                            if (reason === media1.StateChangeReason.BACKGROUND) {
+                            if (reason === media2.StateChangeReason.BACKGROUND) {
                                 onRecorderStateChange('interruptionBegin');
                             }
                             onRecorderStateChange('pause');
                             break;
                         case 'stopped':
-                            fileIo2.closeSync(file);
                             onRecorderStateChange('stop', {
                                 tempFilePath: file.path
                             } as StateChangeRes);
+                            fileIo3.closeSync(file);
                             break;
                     }
                 });
-                this.avRecorder.on('error', (err: BusinessError2)=>{
+                this.avRecorder.on('error', (err: BusinessError3)=>{
                     onRecorderStateChange('error', {
                         errMsg: `${err.message} ${err.code}`
                     } as StateChangeRes);
@@ -3076,19 +3641,19 @@ export function initUniExtApi(APP_ID: string) {
             if (this.avRecorder !== undefined) {
                 await this.release();
             }
-            this.avRecorder = await media1.createAVRecorder();
+            this.avRecorder = await media2.createAVRecorder();
             const _options_sampleRate = options.sampleRate, sampleRate = _options_sampleRate == null ? 48000 : _options_sampleRate, _options_numberOfChannels = options.numberOfChannels, numberOfChannels = _options_numberOfChannels == null ? 2 : _options_numberOfChannels, _options_encodeBitRate = options.encodeBitRate, encodeBitRate = _options_encodeBitRate == null ? 48000 : _options_encodeBitRate, _options_duration = options.duration, duration = _options_duration == null ? null : _options_duration;
             const file = createFile(supportFormats, options.format ?? '', 'aac');
             this.onStateChange(file);
-            const audioProfile: media1.AVRecorderProfile = {
+            const audioProfile: media2.AVRecorderProfile = {
                 audioBitrate: encodeBitRate!,
                 audioChannels: numberOfChannels!,
-                audioCodec: media1.CodecMimeType.AUDIO_AAC,
+                audioCodec: media2.CodecMimeType.AUDIO_AAC,
                 audioSampleRate: sampleRate!,
-                fileFormat: media1.ContainerFormatType.CFT_MPEG_4A
+                fileFormat: media2.ContainerFormatType.CFT_MPEG_4A
             };
-            const audioConfig: media1.AVRecorderConfig = {
-                audioSourceType: media1.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
+            const audioConfig: media2.AVRecorderConfig = {
+                audioSourceType: media2.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
                 profile: audioProfile,
                 url: 'fd://' + file.fd
             };
@@ -3150,8 +3715,8 @@ export function initUniExtApi(APP_ID: string) {
             setRecordStateCallback('interruptionEnd', options);
         }
     }
+    let RECORDER_MANAGER: RecorderManager | null = null;
     class RecorderManagerImpl implements RecorderManager {
-        private manager?: RecorderManager;
         start(options: RecorderManagerStartOptions): void {
             if (!options.format) options.format = 'aac';
             const DEFAULT_DURATION = 1000 * 60;
@@ -3161,9 +3726,12 @@ export function initUniExtApi(APP_ID: string) {
             }
             if (options.duration > MAX_DURATION) {
                 options.duration = MAX_DURATION;
-            } else if (supportFormats.includes(options.format ?? '')) this.manager = new AVRecorder();
-            if (this.manager) {
-                this.manager.start(options);
+            }
+            if (supportFormats.includes(options.format ?? '')) {
+                RECORDER_MANAGER = new AVRecorder();
+            }
+            if (RECORDER_MANAGER) {
+                RECORDER_MANAGER.start(options);
             } else {
                 onRecorderStateChange('error', {
                     errMsg: `format not supported. Only supported ${supportFormats.join(',')}`
@@ -3171,17 +3739,17 @@ export function initUniExtApi(APP_ID: string) {
             }
         }
         pause(): void {
-            if (this.manager) this.manager.pause();
+            if (RECORDER_MANAGER) RECORDER_MANAGER.pause();
         }
         resume(): void {
-            if (this.manager) this.manager.resume();
+            if (RECORDER_MANAGER) RECORDER_MANAGER.resume();
         }
         async stop() {
-            if (this.manager) {
+            if (RECORDER_MANAGER) {
                 try {
-                    await this.manager.stop();
+                    await RECORDER_MANAGER.stop();
                 } catch (error) {}
-                this.manager = undefined;
+                RECORDER_MANAGER = null;
             }
         }
         onStart(options: (result: Object) => void): void {
@@ -3363,7 +3931,7 @@ export function initUniExtApi(APP_ID: string) {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError3<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError4<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -3372,8 +3940,8 @@ export function initUniExtApi(APP_ID: string) {
     }, MakePhoneCallProtocol) as MakePhoneCall;
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
         const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
-        const avMetadataExtractor = await media2.createAVMetadataExtractor();
-        let metadata: media2.AVMetadata | null = null;
+        const avMetadataExtractor = await media3.createAVMetadataExtractor();
+        let metadata: media3.AVMetadata | null = null;
         let size: number = 0;
         try {
             size = (await fs1.stat(file.fd)).size;
@@ -3885,7 +4453,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
-        const context = getAbilityContext() as common.UIAbilityContext;
+        const context = getAbilityContext1() as common.UIAbilityContext;
         const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
@@ -3894,7 +4462,7 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext() as common.UIAbilityContext;
+        const context = getAbilityContext1() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs2.openSync(dest, fs2.OpenMode.WRITE_ONLY);
@@ -3911,7 +4479,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext() as common.UIAbilityContext;
+        const context = getAbilityContext1() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -4443,7 +5011,7 @@ export function initUniExtApi(APP_ID: string) {
             expectDataType = http.HttpDataType.STRING;
         }
         const httpRequest = http.createHttp();
-        const emitter = new Emitter1();
+        const emitter = new Emitter2() as IUniRequestEmitter;
         const requestTask: IRequestTask = {
             abort () {
                 httpRequest.destroy();
@@ -5057,7 +5625,7 @@ export function initUniExtApi(APP_ID: string) {
             } as IUploadTask);
         }
         const httpRequest = http1.createHttp();
-        const emitter = new Emitter2();
+        const emitter = new Emitter3() as IUniUploadFileEmitter;
         const uploadTask: IUploadTask = {
             abort () {
                 httpRequest.destroy();
@@ -5164,7 +5732,7 @@ export function initUniExtApi(APP_ID: string) {
     const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
         const url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
         const httpRequest = http2.createHttp();
-        const emitter = new Emitter3();
+        const emitter = new Emitter4() as IUniDownloadFileEmitter;
         const downloadTask: IDownloadTask = {
             abort () {
                 httpRequest.destroy();
@@ -5254,7 +5822,7 @@ export function initUniExtApi(APP_ID: string) {
                 pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext1() as common1.UIAbilityContext;
+        const context = getAbilityContext2() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -5299,46 +5867,13 @@ export function initUniExtApi(APP_ID: string) {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext2() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext3() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
             exec.reject(err.message);
         });
     }) as OpenDocument;
-    const API_PAGE_SCROLL_TO = 'pageScrollTo';
-    const PageScrollToProtocol = new Map<string, ProtocolOptions>([
-        [
-            'scrollTo',
-            {
-                type: 'number'
-            }
-        ],
-        [
-            'selector',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'duration',
-            {
-                type: 'number'
-            }
-        ]
-    ]);
-    const PageScrollToApiOptions: ApiOptions<PageScrollToOptions> = {
-        formatArgs: new Map<string, number>([
-            [
-                'duration',
-                300
-            ]
-        ])
-    };
-    const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExecutor<PageScrollToSuccess>)=>{
-        const pageId = getPageIdByVm1(getCurrentPageVm1()!)! as number;
-        UniServiceJSBridge1.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
-    }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
     const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
         [
             700600,
@@ -5377,8 +5912,12 @@ export function initUniExtApi(APP_ID: string) {
             'Failed to get provider.'
         ],
         [
-            700718,
+            700800,
             'URL Scheme is not configured.'
+        ],
+        [
+            700801,
+            'Universal Link is not configured.'
         ]
     ]);
     const API_REQUEST_PAYMENT = 'requestPayment';
@@ -5574,7 +6113,7 @@ export function initUniExtApi(APP_ID: string) {
             } as promptAction.ShowToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError4).message;
+            let message = (error as BusinessError5).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -5764,7 +6303,7 @@ export function initUniExtApi(APP_ID: string) {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext3()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext4()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -5803,7 +6342,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext4() as common3.UIAbilityContext, {
+        store = dataPreferences.getPreferencesSync(getAbilityContext5() as common3.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
@@ -6050,7 +6589,7 @@ export function initUniExtApi(APP_ID: string) {
         ]
     ]);
     const setTabBarBadge = defineAsyncApi<SetTabBarBadgeOptions, SetTabBarBadgeSuccess>(API_SET_TAB_BAR_BADGE, (options: SetTabBarBadgeOptions, exec: ApiExecutor<SetTabBarBadgeSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar === null) {
             exec.reject('tabBar is not exist');
             return;
@@ -6059,7 +6598,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     }, SetTabBarBadgeApiProtocol);
     const removeTabBarBadge = defineAsyncApi<RemoveTabBarBadgeOptions, RemoveTabBarBadgeSuccess>(API_REMOVE_TAB_BAR_BADGE, (options: RemoveTabBarBadgeOptions, exec: ApiExecutor<RemoveTabBarBadgeSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -6068,7 +6607,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     }, RemoveTabBarBadgeApiProtocol);
     const setTabBarItem = defineAsyncApi<SetTabBarItemOptions, SetTabBarItemSuccess>(API_SET_TAB_BAR_ITEM, (options: SetTabBarItemOptions, res: ApiExecutor<SetTabBarItemSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             res.reject('tabBar is not exist');
             return;
@@ -6077,7 +6616,7 @@ export function initUniExtApi(APP_ID: string) {
         res.resolve();
     }, SetTabBarItemApiProtocol);
     const setTabBarStyle = defineAsyncApi<SetTabBarStyleOptions, SetTabBarStyleSuccess>(API_SET_TAB_BAR_STYLE, (options: SetTabBarStyleOptions, exec: ApiExecutor<SetTabBarStyleSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -6086,7 +6625,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     }, SetTabBarStyleApiProtocol);
     const hideTabBar = defineAsyncApi<HideTabBarOptions, HideTabBarSuccess>(API_HIDE_TAB_BAR, (options: HideTabBarOptions | null, exec: ApiExecutor<HideTabBarSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -6095,7 +6634,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     });
     const showTabBar = defineAsyncApi<ShowTabBarOptions, ShowTabBarSuccess>(API_SHOW_TAB_BAR, (options: ShowTabBarOptions, exec: ApiExecutor<ShowTabBarSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -6104,7 +6643,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     });
     const showTabBarRedDot = defineAsyncApi<ShowTabBarRedDotOptions, ShowTabBarRedDotSuccess>(API_SHOW_TAB_BAR_RED_DOT, (options: ShowTabBarRedDotOptions, exec: ApiExecutor<ShowTabBarRedDotSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -6113,7 +6652,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     }, ShowTabBarRedDotApiProtocol);
     const hideTabBarRedDot = defineAsyncApi<HideTabBarRedDotOptions, HideTabBarRedDotSuccess>(API_HIDE_TAB_BAR_RED_DOT, (options: HideTabBarRedDotOptions, exec: ApiExecutor<HideTabBarRedDotSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -6169,10 +6708,10 @@ export function initUniExtApi(APP_ID: string) {
             console.error(error);
         }
     };
-    const GlobalWebsocketEvent: IUniWebsocketEmitter = new Emitter4() as IUniWebsocketEmitter;
+    const GlobalWebsocketEvent = new Emitter5() as IUniWebsocketEmitter;
     class SocketTask1 implements SocketTask {
         private _ws: webSocket.WebSocket;
-        private _emitter: IUniWebsocketEmitter = new Emitter4();
+        private _emitter: IUniWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
         constructor(ws: webSocket.WebSocket){
             this._ws = ws;
             this._ws.on('message', (_, data)=>{
@@ -6327,6 +6866,7 @@ export function initUniExtApi(APP_ID: string) {
         removeSavedFile,
         getFileInfo,
         getAppBaseInfo,
+        getBackgroundAudioManager,
         getDeviceInfo,
         getNetworkType,
         onNetworkStatusChange,
@@ -6357,7 +6897,6 @@ export function initUniExtApi(APP_ID: string) {
         downloadFile,
         openAppAuthorizeSetting,
         openDocument,
-        pageScrollTo,
         requestPayment,
         showToast,
         hideToast,

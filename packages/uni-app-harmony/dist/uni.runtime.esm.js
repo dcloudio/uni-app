@@ -11273,6 +11273,18 @@ const LoadFontFaceProtocol = {
     desc: Object,
 };
 
+const API_PAGE_SCROLL_TO = 'pageScrollTo';
+const PageScrollToProtocol = {
+    scrollTop: Number,
+    selector: String,
+    duration: Number,
+};
+const PageScrollToOptions = {
+    formatArgs: {
+        duration: 300,
+    },
+};
+
 const IndexProtocol = {
     index: {
         type: Number,
@@ -12602,6 +12614,27 @@ function getStatusbarHeight() {
     // 使用安全区高度，以适配小窗模式
     return plus.navigator.getSafeAreaInsets().top;
 }
+let lastStatusBarStyle;
+function setStatusBarStyle(statusBarStyle) {
+    if (!statusBarStyle) {
+        const page = getCurrentPage();
+        if (!page) {
+            return;
+        }
+        statusBarStyle = page.$page.statusBarStyle;
+        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+            return;
+        }
+    }
+    if (statusBarStyle === lastStatusBarStyle) {
+        return;
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('setStatusBarStyle', statusBarStyle));
+    }
+    lastStatusBarStyle = statusBarStyle;
+    plus.navigator.setStatusBarStyle(statusBarStyle);
+}
 
 function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
     // TODO initEntry()
@@ -12702,7 +12735,7 @@ function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
         showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
             resolve({ eventChannel });
         });
-        // TODO setStatusBarStyle()
+        setStatusBarStyle();
     });
 }
 
@@ -12777,7 +12810,7 @@ function back(delta, animationType, animationDuration) {
         pages
             .slice(len - delta, len)
             .forEach((page) => removePage(page));
-        // TODO setStatusBarStyle()
+        setStatusBarStyle();
         // 前一个页面触发 onShow
         invokeHook(ON_SHOW);
     };
@@ -12835,7 +12868,7 @@ function _redirectTo({ url, path, query, }) {
             }
             resolve(undefined);
         });
-        // TODO setStatusBarStyle()
+        setStatusBarStyle();
     });
 }
 
@@ -12868,7 +12901,7 @@ function _reLaunch({ url, path, query }) {
             pages.forEach((page) => closePage(page, 'none'));
             resolve(undefined);
         });
-        // TODO setStatusBarStyle()
+        setStatusBarStyle();
     });
 }
 
@@ -12953,7 +12986,7 @@ function _switchTab({ url, path, query, }) {
             if (callOnShow && !webview.__preload__) {
                 invokeHook(tabBarPage, ON_SHOW);
             }
-            // TODO setStatusBarStyle()
+            setStatusBarStyle();
             resolve(undefined);
         }
         else {
@@ -12963,7 +12996,7 @@ function _switchTab({ url, path, query, }) {
                 query,
                 openType: 'switchTab',
             }), 'none', 0, () => {
-                // TODO setStatusBarStyle()
+                setStatusBarStyle();
                 resolve(undefined);
             }, 70);
         }
@@ -13244,6 +13277,11 @@ function createWebviewContext(id, componentInstance) {
     };
 }
 
+const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) => {
+    const pageId = getPageIdByVm(getCurrentPageVm());
+    UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, resolve);
+}, PageScrollToProtocol, PageScrollToOptions);
+
 const pluginDefines = {};
 function registerUTSPlugin(name, define) {
     pluginDefines[name] = define;
@@ -13292,6 +13330,7 @@ var uni$1 = {
   onLocationChangeError: onLocationChangeError,
   onWindowResize: onWindowResize,
   openLocation: openLocation,
+  pageScrollTo: pageScrollTo,
   reLaunch: reLaunch,
   redirectTo: redirectTo,
   registerUTSPlugin: registerUTSPlugin,
