@@ -41,7 +41,8 @@ function isStatic (node) {
 }
 
 function markStatic (node) {
-  if (isStatic(node)) { // 静态节点且仅包含 ID 属性
+  const isStaticNode = isStatic(node)
+  if (isStaticNode) { // 静态节点且仅包含 ID 属性
     if (
       node.attrs &&
       node.attrs.length === 1 &&
@@ -50,9 +51,6 @@ function markStatic (node) {
       !node.slotTarget
     ) {
       node.plain = true
-    }
-    if (!node.attrsMap || !node.attrsMap.id) { // 保留 id 属性, selectComponent 需要使用
-      delete node.attrs
     }
   }
   if (node.type === 1) {
@@ -93,6 +91,27 @@ function markStatic (node) {
       for (let i = 1, l = node.ifConditions.length; i < l; i++) {
         const block = node.ifConditions[i].block
         markStatic(block)
+      }
+    }
+  }
+  if (isStaticNode) { // 静态节点且仅包含 ID 属性
+    if (!node.attrsMap || !node.attrsMap.id) { // 保留 id 属性, selectComponent 需要使用
+      // 在 vue2.0 中 https://github.com/fxy060608/vue/blob/app-service/src/core/vdom/patch.js#L41
+      // sameVnode 中会对比vnode的data，如果一个有值，一个没值，会触发新增逻辑
+      // app端service和view编译时均会为每个节点生成_i属性，但service层为了优化包体积，性能，会对静态节点移除_i属性
+      // 如果app-service中优化移除了_i属性，而app-view中又保留了，就导致两者运行时的逻辑不一样
+      // <view v-if="true" @click="click"><custom/></view><view v-else><custom/></view>
+      // 上述写法，第一个view始终有data（{onClick:click}）；第二个view，service层如果移除_i，则没有data，而view层会保留_i，又有data
+      // 导致：app-service触发的是custom create逻辑、而app-view触发了custom update逻辑
+      // 故：service层也不应该移除_i属性，但为了影响范围小一些，目前仅在if/for等条件节点上启用此逻辑，确保此情况下service和view的data均存在
+      if ((node.for || node.if || node.else || node.elseif) && node.children && node.children.length) {
+        if (!node.plain) { // 已经包含了其他data属性，不需要attrs来激活data，可以删除
+          delete node.attrs
+        } else { // 如果plain为true，需要调整为false，否则generate时会忽略data的生成
+          node.plain = false
+        }
+      } else {
+        delete node.attrs
       }
     }
   }
