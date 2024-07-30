@@ -17512,7 +17512,10 @@ function invokePropGetter(args) {
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
 function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const invokeCallback = ({ id, name, params, keepAlive, }) => {
+    const keepAlive = methodName.indexOf('on') === 0 &&
+        methodParams.length === 1 &&
+        methodParams[0].type === 'UTSCallback';
+    const invokeCallback = ({ id, name, params }) => {
         const callback = callbacks[id];
         if (callback) {
             callback(...params);
@@ -17532,6 +17535,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             name: methodName,
             method: methodParams,
+            keepAlive,
         }
         : {
             moduleName,
@@ -17542,6 +17546,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             companion,
             method: methodParams,
+            keepAlive,
         };
     return (...args) => {
         if (errMsg) {
@@ -17677,6 +17682,7 @@ function initUTSProxyClass(options) {
                                 moduleType,
                                 id: instance.__instanceId,
                                 type: 'getter',
+                                keepAlive: false,
                                 name: name,
                                 errMsg,
                             });
