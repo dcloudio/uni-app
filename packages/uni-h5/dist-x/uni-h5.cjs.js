@@ -13569,7 +13569,22 @@ const index = /* @__PURE__ */ defineSystemComponent({
         "data-page": pageMeta.route,
         style: pageStyle
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentDialogPage, handleResolve)] : [createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentDialogPage, handleResolve)]
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+        vue.createVNode(PageHead),
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentDialogPage,
+          handleResolve
+        )
+      ] : [
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentDialogPage,
+          handleResolve
+        )
+      ]
     );
   }
 });
@@ -13584,22 +13599,37 @@ function createPageBodyVNode(ctx) {
   );
 }
 function createDialogPageVNode(dialogPages, currentDialogPage, onResolve) {
-  return vue.openBlock(true), vue.createElementBlock(vue.Fragment, null, vue.renderList(dialogPages.value, (dialogPage) => {
-    return vue.openBlock(), vue.createBlock(vue.Suspense, { onResolve }, {
-      default: vue.withCtx(() => [
-        vue.createVNode(
-          dialogPage.component,
-          {
-            style: { position: "fixed", "z-index": 999, top: 0, right: 0, bottom: 0, left: 0 },
-            ref: currentDialogPage,
-            type: "dialog",
-            route: dialogPage.route
-          },
-          null
-        )
-      ])
-    });
-  }));
+  return vue.openBlock(true), vue.createElementBlock(
+    vue.Fragment,
+    null,
+    vue.renderList(dialogPages.value, (dialogPage) => {
+      return vue.openBlock(), vue.createBlock(
+        vue.Suspense,
+        { onResolve },
+        {
+          default: vue.withCtx(() => [
+            vue.createVNode(
+              dialogPage.component,
+              {
+                style: {
+                  position: "fixed",
+                  "z-index": 999,
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0
+                },
+                ref: currentDialogPage,
+                type: "dialog",
+                route: dialogPage.route
+              },
+              null
+            )
+          ])
+        }
+      );
+    })
+  );
 }
 exports.Ad = index$6;
 exports.AdContentPage = index$5;

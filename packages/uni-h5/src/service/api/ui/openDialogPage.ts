@@ -13,18 +13,9 @@ import type { ComponentPublicInstance } from 'vue'
  *
  * 文档: []()
  */
-
-interface OpenDialogPageSuccess {
-  /**
-   * 回调信息
-   */
-  errMsg: string
-  /**
-   * 和被打开页面进行通信
-   */
-  eventChannel: EventChannel
-}
-
+type OpenDialogPageSuccess = AsyncApiResult
+type OpenDialogPageFail = AsyncApiResult
+type OpenDialogPageComplete = AsyncApiResult
 interface OpenDialogPageOptions {
   /**
    * 需要跳转的应用内非 tabBar 的页面的路径 , 路径后可以带参数
@@ -58,8 +49,14 @@ interface OpenDialogPageOptions {
    * 页面间通信接口，用于监听被打开页面发送到当前页面的数据
    */
   events?: any
-
+  /**
+   * 要绑定的父级页面实例
+   */
   parentPage?: Page.PageInstance
+  /**
+   * 是否按键盘 ESC 时关闭
+   */
+  disableEscBack?: boolean | null
   /**
    * 接口调用成功的回调函数
    */
@@ -67,11 +64,11 @@ interface OpenDialogPageOptions {
   /**
    * 接口调用失败的回调函数
    */
-  fail?: (result: any) => void
+  fail?: (result: OpenDialogPageFail) => void
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    */
-  complete?: (result: any) => void
+  complete?: (result: OpenDialogPageComplete) => void
 }
 
 type OpenDialogPage = (options: OpenDialogPageOptions) => UniDialogPage | null
@@ -84,14 +81,28 @@ export const openDialogPage = defineSyncApi<OpenDialogPage>(
     })
     const dialogPage = new DialogPage(options.url, targetRoute!.component)
 
+    let parentPage = options.parentPage
     const currentPages = getCurrentPages()
-    const currentPage = currentPages[currentPages.length - 1]
-    if (!currentPage) {
+    if (options.parentPage) {
+      const pages = getCurrentPages()
+      if (pages.indexOf(options.parentPage) === -1) {
+        const failOptions = {
+          errMsg: 'openDialogPage: fail, parentPage is not a valid page',
+        }
+        options.fail?.(failOptions)
+        options.complete?.(failOptions)
+        return null
+      }
+    }
+    if (!currentPages.length) {
       homeDialogPages.push(dialogPage)
     } else {
-      dialogPage.$parentPage = currentPage
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1]
+      }
+      dialogPage.$parentPage = parentPage
       getPageInstanceByVm(
-        currentPage as ComponentPublicInstance
+        parentPage as ComponentPublicInstance
       )!.$dialogPages.value.push(dialogPage)
     }
 

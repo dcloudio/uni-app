@@ -6,13 +6,9 @@ import type { ComponentPublicInstance } from 'vue'
  *
  * 文档: []()
  */
-interface CloseDialogPageSuccess {
-  /**
-   * 回调信息
-   */
-  errMsg: string
-}
-
+type CloseDialogPageSuccess = AsyncApiResult
+type CloseDialogPageFail = AsyncApiResult
+type CloseDialogPageComplete = AsyncApiResult
 interface CloseDialogPageOptions {
   /**
    * 窗口显示的动画类型
@@ -51,11 +47,11 @@ interface CloseDialogPageOptions {
   /**
    * 接口调用失败的回调函数
    */
-  fail?: (result: any) => void
+  fail?: (result: CloseDialogPageFail) => void
   /**
    * 接口调用结束的回调函数（调用成功、失败都会执行）
    */
-  complete?: (result: any) => void
+  complete?: (result: CloseDialogPageComplete) => void
 }
 
 type CloseDialogPage = (options: CloseDialogPageOptions) => void

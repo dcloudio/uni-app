@@ -25978,7 +25978,14 @@ const index = /* @__PURE__ */ defineSystemComponent({
         "data-page": pageMeta.route,
         style: pageStyle
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx), null] : [createPageBodyVNode(ctx), null]
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+        createVNode(PageHead),
+        createPageBodyVNode(ctx),
+        null
+      ] : [
+        createPageBodyVNode(ctx),
+        null
+      ]
     );
   }
 });

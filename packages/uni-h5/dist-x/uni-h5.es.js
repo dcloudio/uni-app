@@ -25097,22 +25097,41 @@ const cancelAnimationFrame$1 = function(handle) {
 const openDialogPage = /* @__PURE__ */ defineSyncApi(
   "openDialogPage",
   (options) => {
-    var _a, _b;
+    var _a, _b, _c, _d;
     const targetRoute = __uniRoutes.find((route) => {
       return options.url.indexOf(route.meta.route) !== -1;
     });
     const dialogPage = new DialogPage(options.url, targetRoute.component);
+    let parentPage = options.parentPage;
     const currentPages = getCurrentPages();
-    const currentPage = currentPages[currentPages.length - 1];
-    if (!currentPage) {
+    if (options.parentPage) {
+      const pages = getCurrentPages();
+      if (pages.indexOf(options.parentPage) === -1) {
+        const failOptions = {
+          errMsg: "openDialogPage: fail, parentPage is not a valid page"
+        };
+        (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
+        (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
+        return null;
+      }
+    }
+    if (!currentPages.length) {
       homeDialogPages.push(dialogPage);
     } else {
-      dialogPage.$parentPage = currentPage;
-      getPageInstanceByVm(currentPage).$dialogPages.value.push(dialogPage);
+      if (!parentPage) {
+        parentPage = currentPages[currentPages.length - 1];
+      }
+      dialogPage.$parentPage = parentPage;
+      getPageInstanceByVm(
+        parentPage
+      ).$dialogPages.value.push(dialogPage);
     }
-    const successOptions = { errMsg: "openDialogPage: ok", eventChannel: new EventChannel(0, options.events) };
-    (_a = options.success) == null ? void 0 : _a.call(options, successOptions);
-    (_b = options.complete) == null ? void 0 : _b.call(options, successOptions);
+    const successOptions = {
+      errMsg: "openDialogPage: ok",
+      eventChannel: new EventChannel(0, options.events)
+    };
+    (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
+    (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
     return dialogPage;
   },
   {
@@ -25136,7 +25155,9 @@ const closeDialogPage = /* @__PURE__ */ defineSyncApi(
       (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
       return null;
     }
-    getPageInstanceByVm(currentPage).$dialogPages.value = [];
+    getPageInstanceByVm(
+      currentPage
+    ).$dialogPages.value = [];
     const successOptions = { errMsg: "closeDialogPage: ok" };
     (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, successOptions);
     (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, successOptions);
@@ -27702,7 +27723,22 @@ const index = /* @__PURE__ */ defineSystemComponent({
         "data-page": pageMeta.route,
         style: pageStyle
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [createVNode(PageHead), createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentDialogPage, handleResolve)] : [createPageBodyVNode(ctx), createDialogPageVNode(currentInstance.$dialogPages, currentDialogPage, handleResolve)]
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+        createVNode(PageHead),
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentDialogPage,
+          handleResolve
+        )
+      ] : [
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(
+          currentInstance.$dialogPages,
+          currentDialogPage,
+          handleResolve
+        )
+      ]
     );
   }
 });
@@ -27717,22 +27753,37 @@ function createPageBodyVNode(ctx) {
   );
 }
 function createDialogPageVNode(dialogPages, currentDialogPage, onResolve) {
-  return openBlock(true), createElementBlock(Fragment, null, renderList(dialogPages.value, (dialogPage) => {
-    return openBlock(), createBlock(Suspense, { onResolve }, {
-      default: withCtx(() => [
-        createVNode(
-          dialogPage.component,
-          {
-            style: { position: "fixed", "z-index": 999, top: 0, right: 0, bottom: 0, left: 0 },
-            ref: currentDialogPage,
-            type: "dialog",
-            route: dialogPage.route
-          },
-          null
-        )
-      ])
-    });
-  }));
+  return openBlock(true), createElementBlock(
+    Fragment,
+    null,
+    renderList(dialogPages.value, (dialogPage) => {
+      return openBlock(), createBlock(
+        Suspense,
+        { onResolve },
+        {
+          default: withCtx(() => [
+            createVNode(
+              dialogPage.component,
+              {
+                style: {
+                  position: "fixed",
+                  "z-index": 999,
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0
+                },
+                ref: currentDialogPage,
+                type: "dialog",
+                route: dialogPage.route
+              },
+              null
+            )
+          ])
+        }
+      );
+    })
+  );
 }
 export {
   $emit,
