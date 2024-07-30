@@ -83,9 +83,8 @@ export const openDialogPage = defineSyncApi<OpenDialogPage>(
 
     let parentPage = options.parentPage
     const currentPages = getCurrentPages()
-    if (options.parentPage) {
-      const pages = getCurrentPages()
-      if (pages.indexOf(options.parentPage) === -1) {
+    if (parentPage) {
+      if (currentPages.indexOf(parentPage) === -1) {
         const failOptions = {
           errMsg: 'openDialogPage: fail, parentPage is not a valid page',
         }

@@ -25137,9 +25137,8 @@ const openDialogPage = /* @__PURE__ */ defineSyncApi(
     const dialogPage = new DialogPage(options.url, targetRoute.component);
     let parentPage = options.parentPage;
     const currentPages = getCurrentPages();
-    if (options.parentPage) {
-      const pages = getCurrentPages();
-      if (pages.indexOf(options.parentPage) === -1) {
+    if (parentPage) {
+      if (currentPages.indexOf(parentPage) === -1) {
         const failOptions = {
           errMsg: "openDialogPage: fail, parentPage is not a valid page"
         };
@@ -25179,18 +25178,15 @@ const openDialogPage = /* @__PURE__ */ defineSyncApi(
 const closeDialogPage = /* @__PURE__ */ defineSyncApi(
   "closeDialogPage",
   (options) => {
-    var _a, _b, _c, _d, _e;
+    var _a, _b, _c, _d, _e, _f, _g;
     const currentPages = getCurrentPages();
     const currentPage = currentPages[currentPages.length - 1];
     if (!currentPages) {
       const failOptions = { errMsg: "currentPage is null" };
       (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
       (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
-      return null;
+      return;
     }
-    const dialogPages = getPageInstanceByVm(
-      currentPage
-    ).$dialogPages.value;
     if (options == null ? void 0 : options.dialogPage) {
       const dialogPage = options == null ? void 0 : options.dialogPage;
       const parentPage = (_c = dialogPage.$getParentPage) == null ? void 0 : _c.call(dialogPage);
@@ -25205,16 +25201,26 @@ const closeDialogPage = /* @__PURE__ */ defineSyncApi(
             ON_SHOW
           );
         }
+      } else {
+        const failOptions = {
+          errMsg: "closeDialogPage: fail, dialogPage is not a valid page"
+        };
+        (_d = options == null ? void 0 : options.fail) == null ? void 0 : _d.call(options, failOptions);
+        (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, failOptions);
+        return;
       }
     } else {
+      const dialogPages = getPageInstanceByVm(
+        currentPage
+      ).$dialogPages.value;
       dialogPages.forEach((dialogPage) => {
         invokeHook(dialogPage.$vm, ON_UNLOAD);
       });
       dialogPages.length = 0;
     }
     const successOptions = { errMsg: "closeDialogPage: ok" };
-    (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, successOptions);
-    (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, successOptions);
+    (_f = options == null ? void 0 : options.success) == null ? void 0 : _f.call(options, successOptions);
+    (_g = options == null ? void 0 : options.complete) == null ? void 0 : _g.call(options, successOptions);
   }
 );
 window.UniResizeObserver = window.ResizeObserver;

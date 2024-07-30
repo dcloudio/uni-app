@@ -67,11 +67,8 @@ export const closeDialogPage = defineSyncApi<CloseDialogPage>(
       const failOptions = { errMsg: 'currentPage is null' }
       options?.fail?.(failOptions)
       options?.complete?.(failOptions)
-      return null
+      return
     }
-    const dialogPages = getPageInstanceByVm(
-      currentPage as ComponentPublicInstance
-    )!.$dialogPages.value as UniDialogPage[]
 
     if (options?.dialogPage) {
       const dialogPage = options?.dialogPage!
@@ -87,8 +84,18 @@ export const closeDialogPage = defineSyncApi<CloseDialogPage>(
             ON_SHOW
           )
         }
+      } else {
+        const failOptions = {
+          errMsg: 'closeDialogPage: fail, dialogPage is not a valid page',
+        }
+        options?.fail?.(failOptions)
+        options?.complete?.(failOptions)
+        return
       }
     } else {
+      const dialogPages = getPageInstanceByVm(
+        currentPage as ComponentPublicInstance
+      )!.$dialogPages.value as UniDialogPage[]
       dialogPages.forEach((dialogPage) => {
         invokeHook(dialogPage.$vm!, ON_UNLOAD)
       })
