@@ -186,6 +186,10 @@ interface InvokeInstanceArgs extends ModuleOptions {
    */
   type: InvokeType
   /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
+  /**
    * 执行方法时的真实参数列表
    */
   params?: unknown[]
@@ -215,6 +219,10 @@ interface InvokeStaticArgs extends ModuleOptions {
    * 属性|方法
    */
   type: InvokeType
+  /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
   /**
    * 执行方法时的真实参数列表
    */
@@ -248,7 +256,6 @@ interface InvokeCallbackParamsRes {
   id: number
   name: string
   params: unknown[]
-  keepAlive?: boolean
 }
 interface InvokeSyncRes {
   type: 'return'
@@ -389,12 +396,11 @@ function initProxyFunction(
   instanceId: number,
   proxy?: unknown
 ) {
-  const invokeCallback = ({
-    id,
-    name,
-    params,
-    keepAlive,
-  }: InvokeCallbackParamsRes) => {
+  const keepAlive =
+    methodName.indexOf('on') === 0 &&
+    methodParams.length === 1 &&
+    methodParams[0].type === 'UTSCallback'
+  const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
     const callback = callbacks[id!]
     if (callback) {
       callback(...params)
@@ -413,6 +419,7 @@ function initProxyFunction(
         type,
         name: methodName,
         method: methodParams,
+        keepAlive,
       }
     : {
         moduleName,
@@ -423,6 +430,7 @@ function initProxyFunction(
         type,
         companion,
         method: methodParams,
+        keepAlive,
       }
   return (...args: unknown[]) => {
     if (errMsg) {
@@ -606,6 +614,7 @@ export function initUTSProxyClass(
                 moduleType,
                 id: instance.__instanceId,
                 type: 'getter',
+                keepAlive: false,
                 name: name as string,
                 errMsg,
               })

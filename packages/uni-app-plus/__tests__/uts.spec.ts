@@ -38,6 +38,17 @@ describe('uts-module', () => {
     })
   })
   test(`initProxyFunction`, () => {
+    const onMemory = initUTSProxyFunction(false, {
+      moduleName: '内存监控',
+      moduleType: 'built-in',
+      package: 'uts.modules.MemoryPlugin',
+      class: 'TestKt',
+      name: 'onMemory',
+      params: [{ name: 'callback', type: 'UTSCallback' }],
+    })
+    onMemory((res: any) => {
+      console.log('onMemory callback', res)
+    })
     ;[true, false].forEach((async) => {
       const preparePermission = initUTSProxyFunction(async, {
         moduleName: '权限管理',
@@ -76,6 +87,7 @@ describe('uts-module', () => {
       const errMsg = 'xx插件编译失败，无法使用'
       expect(
         initUTSProxyFunction(async, {
+          name: 'unknown',
           errMsg,
         } as any)
       ).toThrowError(errMsg)
