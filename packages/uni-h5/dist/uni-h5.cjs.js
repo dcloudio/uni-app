@@ -9334,10 +9334,10 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               callout.setOption(calloutStyle);
             } else {
               if (getIsAMap()) {
-                const callback = (id2) => {
-                  if (id2 !== "") {
+                const callback = () => {
+                  if (id !== "") {
                     trigger("callouttap", {}, {
-                      markerId: Number(id2)
+                      markerId: Number(id)
                     });
                   }
                 };
