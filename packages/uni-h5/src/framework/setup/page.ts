@@ -37,11 +37,15 @@ export const homeDialogPages: UniDialogPage[] = []
 export class DialogPage {
   route: string = ''
   component?: any
-  $parentPage?: Page.PageInstance
-  $getParentPage?: () => Page.PageInstance
+  $parentPage: ComponentPublicInstance | null = null
+  $getParentPage: () => ComponentPublicInstance | null = () => this.$parentPage
   $vm?: ComponentPublicInstance
 
-  constructor(route: string, component: any, $parentPage?: Page.PageInstance) {
+  constructor(
+    route: string,
+    component: any,
+    $parentPage: ComponentPublicInstance | null = null
+  ) {
     this.route = route
     this.component = component
     this.$parentPage = $parentPage
@@ -182,10 +186,11 @@ export function initPage(vm: ComponentPublicInstance) {
     vm.$getDialogPages = (): UniDialogPage[] => {
       return getPageInstanceByVm(vm)?.$dialogPages.value || []
     }
-    vm.$getParentPage = (): Page.PageInstance | null => {
+    vm.$getParentPage = (): ComponentPublicInstance | null => {
       return (
-        getPageInstanceByVm(vm)?.parent?.$dialogPageInstance?.$parentPage ||
-        null
+        // @ts-expect-error
+        getPageInstanceByVm(vm)?.parent?.$pageVm.$dialogPageInstance
+          ?.$parentPage || null
       )
     }
   }
@@ -201,6 +206,9 @@ export function initPage(vm: ComponentPublicInstance) {
         })
         homeDialogPages.length = 0
       }
+    } else {
+      // @ts-expect-error
+      pageInstance.parent!.$pageVm = vm
     }
     return
   }

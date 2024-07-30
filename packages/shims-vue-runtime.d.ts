@@ -35,7 +35,7 @@ declare module '@vue/runtime-core' {
     // X web start
     $setPageStyle: (style: Record<string, any>) => void
     $getPageStyle: () => Record<string, any>
-    $getParentPage: () => Page.PageInstance | null
+    $getParentPage: () => ComponentPublicInstance | null
     $getDialogPages: () => UniDialogPage[]
     // X web end
   }
@@ -60,7 +60,7 @@ declare module '@vue/runtime-core' {
     // x
     $waitNativeRender: (fn: () => void) => void
     $dialogPages: Ref<UniDialogPage[]>
-    $dialogPageInstance: UniDialogPage | null
+    $pageVm: ComponentInternalInstance | null
   }
 
   export const onBeforeActivate: (fn: () => void) => void

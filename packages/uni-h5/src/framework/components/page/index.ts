@@ -1,4 +1,5 @@
 import {
+  type ComponentPublicInstance,
   Fragment,
   type Ref,
   type SetupContext,
@@ -31,7 +32,7 @@ export default /*#__PURE__*/ defineSystemComponent({
     const pageStyle = {} as Record<string, any>
     useDocumentTitle(pageMeta)
     const currentInstance = getCurrentInstance()
-    const currentDialogPage = ref(null)
+    const currentDialogPage = ref<ComponentPublicInstance | null>(null)
     let handleResolve = () => {}
     if (__X__) {
       useBackgroundColorContent(pageMeta)
@@ -44,8 +45,8 @@ export default /*#__PURE__*/ defineSystemComponent({
         setTimeout(() => {
           const dialogPages = currentInstance!.$dialogPages.value
           const lastDialogPage = dialogPages[dialogPages.length - 1]
-          lastDialogPage.$vm = currentDialogPage.value
-          lastDialogPage.$vm.$.$dialogPageInstance = lastDialogPage
+          lastDialogPage.$vm = currentDialogPage.value!.$.$pageVm
+          lastDialogPage.$vm.$dialogPageInstance = lastDialogPage
         }, 0)
       }
     }
@@ -98,7 +99,7 @@ function createPageBodyVNode(ctx: SetupContext) {
 
 function createDialogPageVNode(
   dialogPages: Ref<UniDialogPage[]>,
-  currentDialogPage: Ref<null>,
+  currentDialogPage: Ref<ComponentPublicInstance | null>,
   onResolve: () => void
 ) {
   return (

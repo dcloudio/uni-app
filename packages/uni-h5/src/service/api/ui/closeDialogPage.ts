@@ -2,6 +2,8 @@ import { defineSyncApi } from '@dcloudio/uni-api'
 import type { UniDialogPage } from '../../../framework/setup/page'
 import { getPageInstanceByVm } from '../../../framework/setup/utils'
 import type { ComponentPublicInstance } from 'vue'
+import { invokeHook } from '@dcloudio/uni-core'
+import { ON_SHOW, ON_UNLOAD } from '@dcloudio/uni-shared'
 /**
  *
  * 文档: []()
@@ -54,11 +56,11 @@ interface CloseDialogPageOptions {
   complete?: (result: CloseDialogPageComplete) => void
 }
 
-type CloseDialogPage = (options: CloseDialogPageOptions) => void
+type CloseDialogPage = (options?: CloseDialogPageOptions) => void
 
 export const closeDialogPage = defineSyncApi<CloseDialogPage>(
   'closeDialogPage',
-  (options: CloseDialogPageOptions) => {
+  (options?: CloseDialogPageOptions) => {
     const currentPages = getCurrentPages()
     const currentPage = currentPages[currentPages.length - 1]
     if (!currentPages) {
@@ -67,9 +69,31 @@ export const closeDialogPage = defineSyncApi<CloseDialogPage>(
       options?.complete?.(failOptions)
       return null
     }
-    getPageInstanceByVm(
+    const dialogPages = getPageInstanceByVm(
       currentPage as ComponentPublicInstance
-    )!.$dialogPages.value = []
+    )!.$dialogPages.value as UniDialogPage[]
+
+    if (options?.dialogPage) {
+      const dialogPage = options?.dialogPage!
+      const parentPage = dialogPage.$getParentPage?.()
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.$getDialogPages()
+        const index = parentDialogPages.indexOf(dialogPage)
+        parentDialogPages.splice(index, 1)
+        invokeHook(dialogPage.$vm!, ON_UNLOAD)
+        if (index === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].$vm!,
+            ON_SHOW
+          )
+        }
+      }
+    } else {
+      dialogPages.forEach((dialogPage) => {
+        invokeHook(dialogPage.$vm!, ON_UNLOAD)
+      })
+      dialogPages.length = 0
+    }
 
     const successOptions = { errMsg: 'closeDialogPage: ok' }
     options?.success?.(successOptions)

@@ -8319,6 +8319,14 @@ function getPageInstanceByVm(vm) {
   }
   return pageInstance;
 }
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
 const getEnv = () => ({
   TEMP_PATH,
   CACHE_PATH: "",
@@ -17142,8 +17150,10 @@ const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 const homeDialogPages = [];
 class DialogPage {
-  constructor(route, component, $parentPage) {
+  constructor(route, component, $parentPage = null) {
     this.route = "";
+    this.$parentPage = null;
+    this.$getParentPage = () => this.$parentPage;
     this.route = route;
     this.component = component;
     this.$parentPage = $parentPage;
@@ -17258,7 +17268,10 @@ function initPage(vm) {
     };
     vm.$getParentPage = () => {
       var _a, _b, _c;
-      return ((_c = (_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.parent) == null ? void 0 : _b.$dialogPageInstance) == null ? void 0 : _c.$parentPage) || null;
+      return (
+        // @ts-expect-error
+        ((_c = (_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.parent) == null ? void 0 : _b.$pageVm.$dialogPageInstance) == null ? void 0 : _c.$parentPage) || null
+      );
     };
   }
   {
@@ -17272,6 +17285,8 @@ function initPage(vm) {
         });
         homeDialogPages.length = 0;
       }
+    } else {
+      pageInstance.parent.$pageVm = vm;
     }
     return;
   }
@@ -18530,6 +18545,24 @@ function setupPage(comp) {
         const { onReady } = instance2;
         onReady && invokeArrayFns$1(onReady);
         invokeOnTabItemTap(route);
+        {
+          setTimeout(() => {
+            var _a;
+            const pageInstance = getPageInstanceByChild(instance2);
+            if (pageInstance.attrs.type === "dialog") {
+              const parentPage = (_a = instance2.proxy) == null ? void 0 : _a.$getParentPage();
+              const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage) : null;
+              if (parentPageInstance) {
+                const dialogPages = parentPageInstance.$dialogPages.value;
+                if (dialogPages.length > 1) {
+                  const preDialogPage = dialogPages[dialogPages.length - 2];
+                  const { onHide } = preDialogPage.$vm.$;
+                  onHide && invokeArrayFns$1(onHide);
+                }
+              }
+            }
+          }, 0);
+        }
       });
       onBeforeActivate(() => {
         if (!instance2.__isVisible) {
@@ -25146,7 +25179,7 @@ const openDialogPage = /* @__PURE__ */ defineSyncApi(
 const closeDialogPage = /* @__PURE__ */ defineSyncApi(
   "closeDialogPage",
   (options) => {
-    var _a, _b, _c, _d;
+    var _a, _b, _c, _d, _e;
     const currentPages = getCurrentPages();
     const currentPage = currentPages[currentPages.length - 1];
     if (!currentPages) {
@@ -25155,12 +25188,33 @@ const closeDialogPage = /* @__PURE__ */ defineSyncApi(
       (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
       return null;
     }
-    getPageInstanceByVm(
+    const dialogPages = getPageInstanceByVm(
       currentPage
-    ).$dialogPages.value = [];
+    ).$dialogPages.value;
+    if (options == null ? void 0 : options.dialogPage) {
+      const dialogPage = options == null ? void 0 : options.dialogPage;
+      const parentPage = (_c = dialogPage.$getParentPage) == null ? void 0 : _c.call(dialogPage);
+      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+        const parentDialogPages = parentPage.$getDialogPages();
+        const index2 = parentDialogPages.indexOf(dialogPage);
+        parentDialogPages.splice(index2, 1);
+        invokeHook(dialogPage.$vm, ON_UNLOAD);
+        if (index2 === parentDialogPages.length) {
+          invokeHook(
+            parentDialogPages[parentDialogPages.length - 1].$vm,
+            ON_SHOW
+          );
+        }
+      }
+    } else {
+      dialogPages.forEach((dialogPage) => {
+        invokeHook(dialogPage.$vm, ON_UNLOAD);
+      });
+      dialogPages.length = 0;
+    }
     const successOptions = { errMsg: "closeDialogPage: ok" };
-    (_c = options == null ? void 0 : options.success) == null ? void 0 : _c.call(options, successOptions);
-    (_d = options == null ? void 0 : options.complete) == null ? void 0 : _d.call(options, successOptions);
+    (_d = options == null ? void 0 : options.success) == null ? void 0 : _d.call(options, successOptions);
+    (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, successOptions);
   }
 );
 window.UniResizeObserver = window.ResizeObserver;
@@ -27712,8 +27766,8 @@ const index = /* @__PURE__ */ defineSystemComponent({
         setTimeout(() => {
           const dialogPages = currentInstance.$dialogPages.value;
           const lastDialogPage = dialogPages[dialogPages.length - 1];
-          lastDialogPage.$vm = currentDialogPage.value;
-          lastDialogPage.$vm.$.$dialogPageInstance = lastDialogPage;
+          lastDialogPage.$vm = currentDialogPage.value.$.$pageVm;
+          lastDialogPage.$vm.$dialogPageInstance = lastDialogPage;
         }, 0);
       };
     }

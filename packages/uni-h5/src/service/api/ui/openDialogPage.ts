@@ -100,7 +100,7 @@ export const openDialogPage = defineSyncApi<OpenDialogPage>(
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1]
       }
-      dialogPage.$parentPage = parentPage
+      dialogPage.$parentPage = parentPage as ComponentPublicInstance
       getPageInstanceByVm(
         parentPage as ComponentPublicInstance
       )!.$dialogPages.value.push(dialogPage)

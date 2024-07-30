@@ -8646,7 +8646,10 @@ function initPage(vm) {
     };
     vm.$getParentPage = () => {
       var _a, _b, _c;
-      return ((_c = (_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.parent) == null ? void 0 : _b.$dialogPageInstance) == null ? void 0 : _c.$parentPage) || null;
+      return (
+        // @ts-expect-error
+        ((_c = (_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.parent) == null ? void 0 : _b.$pageVm.$dialogPageInstance) == null ? void 0 : _c.$parentPage) || null
+      );
     };
   }
   {
@@ -8660,6 +8663,8 @@ function initPage(vm) {
         });
         homeDialogPages.length = 0;
       }
+    } else {
+      pageInstance.parent.$pageVm = vm;
     }
     return;
   }
@@ -13558,8 +13563,8 @@ const index = /* @__PURE__ */ defineSystemComponent({
         setTimeout(() => {
           const dialogPages = currentInstance.$dialogPages.value;
           const lastDialogPage = dialogPages[dialogPages.length - 1];
-          lastDialogPage.$vm = currentDialogPage.value;
-          lastDialogPage.$vm.$.$dialogPageInstance = lastDialogPage;
+          lastDialogPage.$vm = currentDialogPage.value.$.$pageVm;
+          lastDialogPage.$vm.$dialogPageInstance = lastDialogPage;
         }, 0);
       };
     }
