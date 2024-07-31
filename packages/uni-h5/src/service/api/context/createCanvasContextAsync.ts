@@ -32,11 +32,11 @@ class CanvasContextImpl implements CanvasContext {
     this._element.toBlob(callback, type, quality)
   }
 
-  toDataUrl(): string
-  toDataUrl(type?: string, encoderOptions?: string): string {
+  toDataURL(): string
+  toDataURL(type?: string, encoderOptions?: string): string {
     // TODO 待语法库更新后移除
     // @ts-expect-error
-    return this._element.toDataUrl(type, encoderOptions)
+    return this._element.toDataURL(type, encoderOptions)
   }
 }
 
