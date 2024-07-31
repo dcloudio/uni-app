@@ -49,7 +49,7 @@ export function uniCopyPlugin({
       }
       return p !== platform
     })
-    .map((p) => '/' + PUBLIC_DIR + '/' + p)
+    .map((p) => '/' + PUBLIC_DIR + '/' + p + '/')
 
   const targets: UniViteCopyPluginTarget[] = [
     {
