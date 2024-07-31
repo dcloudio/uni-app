@@ -17149,14 +17149,44 @@ function normalizeWindowBottom(windowBottom) {
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
 const homeDialogPages = [];
+let escBackPageNum = 0;
+function handleEscKeyPress(event) {
+  if (event.key === "Escape") {
+    const currentPage = getCurrentPage();
+    const dialogPages = currentPage.$getDialogPages();
+    const dialogPage = dialogPages[dialogPages.length - 1];
+    if (!dialogPage.$disableEscBack) {
+      uni.closeDialogPage(dialogPage);
+    }
+  }
+}
+function incrementEscBackPageNum() {
+  escBackPageNum++;
+  if (escBackPageNum === 1) {
+    document.addEventListener("keydown", handleEscKeyPress);
+  }
+}
+function decrementEscBackPageNum() {
+  escBackPageNum--;
+  if (escBackPageNum === 0) {
+    document.removeEventListener("keydown", handleEscKeyPress);
+  }
+}
 class DialogPage {
-  constructor(route, component, $parentPage = null) {
+  constructor({
+    route,
+    component,
+    $parentPage = null,
+    $disableEscBack = false
+  }) {
     this.route = "";
     this.$parentPage = null;
     this.$getParentPage = () => this.$parentPage;
+    this.$disableEscBack = false;
     this.route = route;
     this.component = component;
     this.$parentPage = $parentPage;
+    this.$disableEscBack = $disableEscBack;
   }
 }
 function pruneCurrentPages() {
@@ -25102,8 +25132,8 @@ class CanvasContextImpl {
   toBlob(callback, type, quality) {
     this._element.toBlob(callback, type, quality);
   }
-  toDataUrl(type, encoderOptions) {
-    return this._element.toDataUrl(type, encoderOptions);
+  toDataURL(type, encoderOptions) {
+    return this._element.toDataURL(type, encoderOptions);
   }
 }
 const createCanvasContextAsync = function(options) {
@@ -25145,7 +25175,11 @@ const openDialogPage = /* @__PURE__ */ defineSyncApi(
     const targetRoute = __uniRoutes.find((route) => {
       return options.url.indexOf(route.meta.route) !== -1;
     });
-    const dialogPage = new DialogPage(options.url, targetRoute.component);
+    const dialogPage = new DialogPage({
+      route: options.url,
+      component: targetRoute.component,
+      $disableEscBack: options.disableEscBack
+    });
     let parentPage = options.parentPage;
     const currentPages = getCurrentPages();
     if (parentPage) {
@@ -25168,6 +25202,9 @@ const openDialogPage = /* @__PURE__ */ defineSyncApi(
       getPageInstanceByVm(
         parentPage
       ).$dialogPages.value.push(dialogPage);
+    }
+    if (!options.disableEscBack) {
+      incrementEscBackPageNum();
     }
     const successOptions = {
       errMsg: "openDialogPage: ok",
@@ -25212,6 +25249,9 @@ const closeDialogPage = /* @__PURE__ */ defineSyncApi(
             ON_SHOW
           );
         }
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum();
+        }
       } else {
         const failOptions = {
           errMsg: "closeDialogPage: fail, dialogPage is not a valid page"
@@ -25226,6 +25266,9 @@ const closeDialogPage = /* @__PURE__ */ defineSyncApi(
       ).$dialogPages.value;
       dialogPages.forEach((dialogPage) => {
         invokeHook(dialogPage.$vm, ON_UNLOAD);
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum();
+        }
       });
       dialogPages.length = 0;
     }

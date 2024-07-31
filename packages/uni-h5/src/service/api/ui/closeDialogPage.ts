@@ -1,5 +1,8 @@
 import { defineSyncApi } from '@dcloudio/uni-api'
-import type { UniDialogPage } from '../../../framework/setup/page'
+import {
+  type UniDialogPage,
+  decrementEscBackPageNum,
+} from '../../../framework/setup/page'
 import { getPageInstanceByVm } from '../../../framework/setup/utils'
 import type { ComponentPublicInstance } from 'vue'
 import { invokeHook } from '@dcloudio/uni-core'
@@ -84,6 +87,9 @@ export const closeDialogPage = defineSyncApi<CloseDialogPage>(
             ON_SHOW
           )
         }
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum()
+        }
       } else {
         const failOptions = {
           errMsg: 'closeDialogPage: fail, dialogPage is not a valid page',
@@ -98,6 +104,9 @@ export const closeDialogPage = defineSyncApi<CloseDialogPage>(
       )!.$dialogPages.value as UniDialogPage[]
       dialogPages.forEach((dialogPage) => {
         invokeHook(dialogPage.$vm!, ON_UNLOAD)
+        if (!dialogPage.$disableEscBack) {
+          decrementEscBackPageNum()
+        }
       })
       dialogPages.length = 0
     }

@@ -12,6 +12,7 @@ import {
   type CreateScrollListenerOptions,
   createScrollListener,
   disableScrollListener,
+  getCurrentPage,
   initPageInternalInstance,
   initPageVm,
   invokeHook,
@@ -33,22 +34,55 @@ const SEP = '$$'
 
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
 export const homeDialogPages: UniDialogPage[] = []
+let escBackPageNum = 0
+function handleEscKeyPress(event) {
+  if (event.key === 'Escape') {
+    const currentPage = getCurrentPage()
+    // @ts-expect-error
+    const dialogPages = currentPage.$getDialogPages()
+    const dialogPage = dialogPages[dialogPages.length - 1]
+    if (!dialogPage.$disableEscBack) {
+      // @ts-expect-error
+      uni.closeDialogPage({ dialogPage })
+    }
+  }
+}
+export function incrementEscBackPageNum() {
+  escBackPageNum++
+  if (escBackPageNum === 1) {
+    document.addEventListener('keydown', handleEscKeyPress)
+  }
+}
+export function decrementEscBackPageNum() {
+  escBackPageNum--
+  if (escBackPageNum === 0) {
+    document.removeEventListener('keydown', handleEscKeyPress)
+  }
+}
 
 export class DialogPage {
   route: string = ''
   component?: any
   $parentPage: ComponentPublicInstance | null = null
   $getParentPage: () => ComponentPublicInstance | null = () => this.$parentPage
+  $disableEscBack: boolean = false
   $vm?: ComponentPublicInstance
 
-  constructor(
-    route: string,
-    component: any,
-    $parentPage: ComponentPublicInstance | null = null
-  ) {
+  constructor({
+    route,
+    component,
+    $parentPage = null,
+    $disableEscBack = false,
+  }: {
+    route: string
+    component: any
+    $parentPage?: ComponentPublicInstance | null
+    $disableEscBack?: boolean
+  }) {
     this.route = route
     this.component = component
     this.$parentPage = $parentPage
+    this.$disableEscBack = $disableEscBack
   }
 }
 

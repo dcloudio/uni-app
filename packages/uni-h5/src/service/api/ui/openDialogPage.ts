@@ -4,6 +4,7 @@ import {
   DialogPage,
   type UniDialogPage,
   homeDialogPages,
+  incrementEscBackPageNum,
 } from '../../../framework/setup/page'
 import { EventChannel } from '@dcloudio/uni-shared'
 import { getPageInstanceByVm } from '../../../framework/setup/utils'
@@ -52,11 +53,11 @@ interface OpenDialogPageOptions {
   /**
    * 要绑定的父级页面实例
    */
-  parentPage?: Page.PageInstance
+  parentPage?: ComponentPublicInstance
   /**
    * 是否按键盘 ESC 时关闭
    */
-  disableEscBack?: boolean | null
+  disableEscBack?: boolean
   /**
    * 接口调用成功的回调函数
    */
@@ -79,7 +80,11 @@ export const openDialogPage = defineSyncApi<OpenDialogPage>(
     const targetRoute = __uniRoutes.find((route) => {
       return options.url.indexOf(route.meta.route) !== -1
     })
-    const dialogPage = new DialogPage(options.url, targetRoute!.component)
+    const dialogPage = new DialogPage({
+      route: options.url,
+      component: targetRoute!.component,
+      $disableEscBack: options.disableEscBack,
+    })
 
     let parentPage = options.parentPage
     const currentPages = getCurrentPages()
@@ -97,12 +102,18 @@ export const openDialogPage = defineSyncApi<OpenDialogPage>(
       homeDialogPages.push(dialogPage)
     } else {
       if (!parentPage) {
-        parentPage = currentPages[currentPages.length - 1]
+        parentPage = currentPages[
+          currentPages.length - 1
+        ] as ComponentPublicInstance
       }
       dialogPage.$parentPage = parentPage as ComponentPublicInstance
       getPageInstanceByVm(
         parentPage as ComponentPublicInstance
       )!.$dialogPages.value.push(dialogPage)
+    }
+
+    if (!options.disableEscBack) {
+      incrementEscBackPageNum()
     }
 
     const successOptions = {
