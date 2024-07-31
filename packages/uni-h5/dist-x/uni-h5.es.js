@@ -23504,11 +23504,22 @@ const offLocationChangeError = /* @__PURE__ */ defineOffApi(
 const navigateBack = /* @__PURE__ */ defineAsyncApi(
   API_NAVIGATE_BACK,
   (args, { resolve, reject }) => {
+    var _a, _b;
     let canBack = true;
     if (invokeHook(ON_BACK_PRESS, {
       from: args.from || "navigateBack"
     }) === true) {
       canBack = false;
+    }
+    {
+      const currentPage = getCurrentPage();
+      if (currentPage) {
+        const dialogPages = currentPage.$getDialogPages();
+        const dialogPage = dialogPages[dialogPages.length - 1];
+        if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.$vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
+          canBack = false;
+        }
+      }
     }
     if (!canBack) {
       return reject(ON_BACK_PRESS);
