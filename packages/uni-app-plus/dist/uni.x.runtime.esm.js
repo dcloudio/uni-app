@@ -2011,7 +2011,7 @@ var getElementById = /* @__PURE__ */ defineSyncApi("getElementById", (id2) => {
   }
   return bodyNode.querySelector("#".concat(id2));
 });
-function isVueComponent$1(comp) {
+function isVueComponent(comp) {
   var has$instance = typeof comp.$ === "object";
   var has$el = typeof comp.$el === "object";
   return has$instance && has$el;
@@ -2092,7 +2092,7 @@ class SelectorQueryImpl {
     return this._nodesRef;
   }
   in(component) {
-    if (isVueComponent$1(component)) {
+    if (isVueComponent(component)) {
       this._component = component;
     }
     return this;
@@ -2262,11 +2262,6 @@ var createSelectorQuery = function() {
   var instance = getCurrentPage();
   return new SelectorQueryImpl(instance);
 };
-function isVueComponent(comp) {
-  var has$instance = typeof comp.$ === "object";
-  var has$el = typeof comp.$el === "object";
-  return has$instance && has$el;
-}
 var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasContextAsync", (options, _ref) => {
   var _page$$el;
   var {
@@ -2445,6 +2440,14 @@ var env = {
   CACHE_PATH: "unifile://cache/",
   SANDBOX_PATH: "unifile://sandbox/"
 };
+var requestAnimationFrame = /* @__PURE__ */ defineSyncApi("requestAnimationFrame", (callback) => {
+  return globalThis.__uniappx__.requestAnimationFrame(callback);
+});
+var cancelAnimationFrame = /* @__PURE__ */ defineSyncApi("cancelAnimationFrame", () => {
+  return function(taskId) {
+    globalThis.__uniappx__.cancelAnimationFrame(taskId);
+  };
+});
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
 var PERFORMANCE_BUFFER_SIZE = 30;
@@ -3261,6 +3264,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   $once,
   __log__,
   addInterceptor,
+  cancelAnimationFrame,
   createCanvasContextAsync,
   createSelectorQuery,
   env,
@@ -3286,6 +3290,7 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   registerUTSPlugin,
   removeInterceptor,
   removeTabBarBadge,
+  requestAnimationFrame,
   requireUTSPlugin,
   setNavigationBarColor,
   setNavigationBarTitle,
