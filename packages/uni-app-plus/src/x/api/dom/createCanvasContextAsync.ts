@@ -162,6 +162,8 @@ export const createCanvasContextAsync = defineAsyncApi(
 
     resolve({
       getContext: element.getContext.bind(element),
+      // @ts-expect-error waiting for uni-app-x type update
+      toDataUrl: element.toDataUrl.bind(element),
     })
   }
 )
