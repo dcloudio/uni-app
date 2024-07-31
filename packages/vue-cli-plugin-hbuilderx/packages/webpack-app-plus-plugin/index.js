@@ -7,7 +7,9 @@ const {
   done
 } = require('@vue/cli-shared-utils')
 
-const { showRunPrompt } = require('@dcloudio/uni-cli-shared')
+const {
+  showRunPrompt
+} = require('@dcloudio/uni-cli-shared')
 
 let nvueCompiled = true
 let serviceCompiled = true
@@ -25,11 +27,26 @@ class WebpackAppPlusPlugin {
     if (process.env.UNI_USING_V3) {
       const chunkVersions = {}
 
-      const entry = compiler.options.entry()
-      const isAppService = !!entry['app-service']
-      const isAppView = !!entry['app-view']
+      let isAppService = false
+      let isAppView = false
+      let isAppNVue = false
 
-      const isAppNVue = !isAppService && !isAppView
+      const entry = compiler.options.entry()
+      // 兼容webpack5
+      if (entry instanceof Promise) {
+        compiler.hooks.beforeRun.tapAsync('EntryListPlugin', (compilation, callback) => {
+          entry.then(entry => {
+            isAppService = !!entry['app-service']
+            isAppView = !!entry['app-view']
+            isAppNVue = !isAppService && !isAppView
+            callback()
+          }).catch(callback)
+        })
+      } else {
+        isAppService = !!entry['app-service']
+        isAppView = !!entry['app-view']
+        isAppNVue = !isAppService && !isAppView
+      }
 
       compiler.hooks.invalid.tap('WebpackAppPlusPlugin', (fileName, changeTime) => {
         if (!compiling) {
