@@ -4,8 +4,19 @@ import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared'
 let callbackId = 1;
 let proxy;
 const callbacks = {};
+function isUniElement(obj) {
+    return typeof obj.getNodeId === 'function' && obj.pageId;
+}
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
+}
+function parseElement(obj) {
+    if (isUniElement(obj)) {
+        return obj;
+    }
+    else if (isComponentPublicInstance(obj)) {
+        return obj.$el;
+    }
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
@@ -21,11 +32,10 @@ function normalizeArg(arg) {
         return id;
     }
     else if (isPlainObject(arg)) {
-        if (isComponentPublicInstance(arg)) {
+        const el = parseElement(arg);
+        if (el) {
             let nodeId = '';
             let pageId = '';
-            // @ts-expect-error
-            const el = arg.$el;
             // 非 x 可能不存在 getNodeId 方法？
             if (el && el.getNodeId) {
                 pageId = el.pageId;
@@ -42,7 +52,7 @@ function normalizeArg(arg) {
     return arg;
 }
 function initUTSInstanceMethod(async, opts, instanceId, proxy) {
-    return initProxyFunction(async, opts, instanceId, proxy);
+    return initProxyFunction('method', async, opts, instanceId, proxy);
 }
 function getProxy() {
     if (!proxy) {
@@ -101,7 +111,7 @@ function invokePropGetter(args) {
     }
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
-function initProxyFunction(async, { moduleName, moduleType, package: pkg, class: cls, name: propOrMethod, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
+function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
     const invokeCallback = ({ id, name, params, keepAlive, }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -111,7 +121,7 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
             }
         }
         else {
-            console.error(`${pkg}${cls}.${propOrMethod} ${name} is not found`);
+            console.error(`${pkg}${cls}.${methodName} ${name} is not found`);
         }
     };
     const baseArgs = instanceId
@@ -119,7 +129,8 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
             moduleName,
             moduleType,
             id: instanceId,
-            name: propOrMethod,
+            type,
+            name: methodName,
             method: methodParams,
         }
         : {
@@ -127,7 +138,8 @@ function initProxyFunction(async, { moduleName, moduleType, package: pkg, class:
             moduleType,
             package: pkg,
             class: cls,
-            name: method || propOrMethod,
+            name: method || methodName,
+            type,
             companion,
             method: methodParams,
         };
@@ -173,7 +185,7 @@ function initUTSStaticMethod(async, opts) {
             opts.method = 's_' + opts.name;
         }
     }
-    return initProxyFunction(async, opts, 0);
+    return initProxyFunction('method', async, opts, 0);
 }
 const initUTSProxyFunction = initUTSStaticMethod;
 function parseClassMethodName(name, methods) {
@@ -188,8 +200,11 @@ function isUndefined(value) {
 function isProxyInterfaceOptions(options) {
     return !isUndefined(options.instanceId);
 }
+function parseClassPropertySetter(name) {
+    return '__$set' + capitalize(name);
+}
 function initUTSProxyClass(options) {
-    const { moduleName, moduleType, package: pkg, class: cls, methods, props, errMsg, } = options;
+    const { moduleName, moduleType, package: pkg, class: cls, methods, props, setters, errMsg, } = options;
     const baseOptions = {
         moduleName,
         moduleType,
@@ -201,6 +216,7 @@ function initUTSProxyClass(options) {
     let constructorParams = [];
     let staticMethods = {};
     let staticProps = [];
+    let staticSetters = {};
     let isProxyInterface = false;
     if (isProxyInterfaceOptions(options)) {
         isProxyInterface = true;
@@ -210,6 +226,7 @@ function initUTSProxyClass(options) {
         constructorParams = options.constructor.params;
         staticMethods = options.staticMethods;
         staticProps = options.staticProps;
+        staticSetters = options.staticSetters;
     }
     // iOS 需要为 ByJs 的 class 构造函数（如果包含JSONObject或UTSCallback类型）补充最后一个参数
     if (isUTSiOS()) {
@@ -227,7 +244,7 @@ function initUTSProxyClass(options) {
             // 初始化实例 ID
             if (!isProxyInterface) {
                 // 初始化未指定时，每次都要创建instanceId
-                this.__instanceId = initProxyFunction(false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
+                this.__instanceId = initProxyFunction('constructor', false, extend({ name: 'constructor', params: constructorParams }, baseOptions), 0).apply(null, params);
             }
             else if (typeof instanceId === 'number') {
                 this.__instanceId = instanceId;
@@ -259,6 +276,7 @@ function initUTSProxyClass(options) {
                                 moduleName,
                                 moduleType,
                                 id: instance.__instanceId,
+                                type: 'getter',
                                 name: name,
                                 errMsg,
                             });
@@ -266,10 +284,28 @@ function initUTSProxyClass(options) {
                     }
                     return target[name];
                 },
+                set(_, name, newValue) {
+                    if (props.includes(name)) {
+                        const setter = parseClassPropertySetter(name);
+                        if (!target[setter]) {
+                            const param = setters[name];
+                            if (param) {
+                                target[setter] = initProxyFunction('setter', false, extend({
+                                    name: name,
+                                    params: [param],
+                                }, baseOptions), instance.__instanceId, proxy);
+                            }
+                        }
+                        target[parseClassPropertySetter(name)](newValue);
+                        return true;
+                    }
+                    return false;
+                },
             });
             return proxy;
         }
     };
+    const staticPropSetterCache = {};
     const staticMethodCache = {};
     return new Proxy(ProxyClass, {
         get(target, name, receiver) {
@@ -278,15 +314,41 @@ function initUTSProxyClass(options) {
                 if (!staticMethodCache[name]) {
                     const { async, params, return: returnOptions } = staticMethods[name];
                     // 静态方法
-                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({ name, companion: true, params, return: returnOptions }, baseOptions));
+                    staticMethodCache[name] = initUTSStaticMethod(!!async, extend({
+                        name,
+                        companion: true,
+                        params,
+                        return: returnOptions,
+                    }, baseOptions));
                 }
                 return staticMethodCache[name];
             }
             if (staticProps.includes(name)) {
-                // 静态属性
-                return invokePropGetter(extend({ name: name, companion: true }, baseOptions));
+                return invokePropGetter(extend({
+                    name: name,
+                    companion: true,
+                    type: 'getter',
+                }, baseOptions));
             }
             return Reflect.get(target, name, receiver);
+        },
+        set(_, name, newValue) {
+            if (staticProps.includes(name)) {
+                // 静态属性
+                const setter = parseClassPropertySetter(name);
+                if (!staticPropSetterCache[setter]) {
+                    const param = staticSetters[name];
+                    if (param) {
+                        staticPropSetterCache[setter] = initProxyFunction('setter', false, extend({
+                            name: name,
+                            params: [param],
+                        }, baseOptions), 0);
+                    }
+                }
+                staticPropSetterCache[parseClassPropertySetter(name)](newValue);
+                return true;
+            }
+            return false;
         },
     });
 }

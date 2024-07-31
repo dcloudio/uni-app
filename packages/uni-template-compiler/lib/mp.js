@@ -146,10 +146,10 @@ const tags = {
     'aweme-user-card',
     'rtc-room'
   ],
-  "mp-kuaishou": [
-    "follow-service",
-    "payment-list",
-    "playlet"
+  'mp-kuaishou': [
+    'follow-service',
+    'payment-list',
+    'playlet'
   ]
 }
 
