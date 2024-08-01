@@ -317,4 +317,7 @@ export default {
   ${defineExtApis.join(',\n  ')}
 } as UniExtApi`
   )
+  fs.outputJSONSync(path.resolve(extApiTempDir, 'ext-api.json'), {
+    apiList: defineExtApis,
+  })
 }
