@@ -60,7 +60,10 @@ declare module '@vue/runtime-core' {
     // x
     $waitNativeRender: (fn: () => void) => void
     $dialogPages: Ref<UniDialogPage[]>
-    $pageVm: ComponentInternalInstance | null
+    $pageVm: ComponentPublicInstance | null
+    $parentInstance?: ComponentInternalInstance
+    $dialogPages?: Ref<UniDialogPage[]>
+    $dialogPage?: UniDialogPage
   }
 
   export const onBeforeActivate: (fn: () => void) => void

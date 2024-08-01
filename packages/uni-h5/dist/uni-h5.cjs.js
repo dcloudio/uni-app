@@ -12797,8 +12797,8 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
-    vue.getCurrentInstance();
-    vue.ref(null);
+    const currentInstance = vue.getCurrentInstance();
+    currentInstance.$dialogPages = vue.ref([]);
     return () => vue.createVNode(
       "uni-page",
       {

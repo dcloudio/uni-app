@@ -83,6 +83,7 @@ export const openDialogPage = defineSyncApi<OpenDialogPage>(
     const dialogPage = new DialogPage({
       route: options.url,
       component: targetRoute!.component,
+      $getParentPage: () => null,
       $disableEscBack: options.disableEscBack,
     })
 
@@ -106,7 +107,7 @@ export const openDialogPage = defineSyncApi<OpenDialogPage>(
           currentPages.length - 1
         ] as ComponentPublicInstance
       }
-      dialogPage.$parentPage = parentPage as ComponentPublicInstance
+      dialogPage.$getParentPage = () => parentPage as ComponentPublicInstance
       getPageInstanceByVm(
         parentPage as ComponentPublicInstance
       )!.$dialogPages.value.push(dialogPage)

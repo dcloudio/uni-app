@@ -40,8 +40,7 @@ export function getPageInstanceByVm(vm: ComponentPublicInstance) {
 export function getPageInstanceByChild(child: ComponentInternalInstance) {
   let pageInstance = child
   while (pageInstance.type?.name !== 'Page') {
-    // @ts-expect-error
-    pageInstance = pageInstance.parent
+    pageInstance = pageInstance.parent!
   }
   return pageInstance
 }

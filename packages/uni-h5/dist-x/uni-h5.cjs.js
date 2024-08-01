@@ -8645,11 +8645,8 @@ function initPage(vm) {
       return ((_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPages.value) || [];
     };
     vm.$getParentPage = () => {
-      var _a, _b, _c;
-      return (
-        // @ts-expect-error
-        ((_c = (_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.parent) == null ? void 0 : _b.$pageVm.$dialogPageInstance) == null ? void 0 : _c.$parentPage) || null
-      );
+      var _a, _b;
+      return ((_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
     };
   }
   {
@@ -8658,13 +8655,13 @@ function initPage(vm) {
       currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
       if (currentPagesMap.size === 1 && homeDialogPages.length) {
         homeDialogPages.forEach((dialogPage) => {
-          dialogPage.$parentPage = vm;
+          dialogPage.$getParentPage = () => vm;
           pageInstance.$dialogPages.value.push(dialogPage);
         });
         homeDialogPages.length = 0;
       }
     } else {
-      pageInstance.parent.$pageVm = vm;
+      pageInstance.$dialogPage.$vm = vm;
     }
     return;
   }
@@ -13549,24 +13546,23 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const pageStyle = {};
     useDocumentTitle(pageMeta);
     const currentInstance = vue.getCurrentInstance();
-    const currentDialogPage = vue.ref(null);
-    let handleResolve = () => {
-    };
+    currentInstance.$dialogPages = vue.ref([]);
     {
       useBackgroundColorContent(pageMeta);
       if (ctx.attrs.type === "dialog") {
         navigationBar.style = "custom";
         pageMeta.route = ctx.attrs.route;
+        const parentInstance = vue.inject(
+          "parentInstance"
+        );
+        if (currentInstance && parentInstance) {
+          currentInstance.$parentInstance = parentInstance;
+          const parentDialogPages = parentInstance.$dialogPages.value;
+          currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+        }
+      } else {
+        vue.provide("parentInstance", currentInstance);
       }
-      currentInstance.$dialogPages = vue.ref([]);
-      handleResolve = () => {
-        setTimeout(() => {
-          const dialogPages = currentInstance.$dialogPages.value;
-          const lastDialogPage = dialogPages[dialogPages.length - 1];
-          lastDialogPage.$vm = currentDialogPage.value.$.$pageVm;
-          lastDialogPage.$vm.$dialogPageInstance = lastDialogPage;
-        }, 0);
-      };
     }
     return () => vue.createVNode(
       "uni-page",
@@ -13577,18 +13573,10 @@ const index = /* @__PURE__ */ defineSystemComponent({
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
         vue.createVNode(PageHead),
         createPageBodyVNode(ctx),
-        createDialogPageVNode(
-          currentInstance.$dialogPages,
-          currentDialogPage,
-          handleResolve
-        )
+        createDialogPageVNode(currentInstance.$dialogPages)
       ] : [
         createPageBodyVNode(ctx),
-        createDialogPageVNode(
-          currentInstance.$dialogPages,
-          currentDialogPage,
-          handleResolve
-        )
+        createDialogPageVNode(currentInstance.$dialogPages)
       ]
     );
   }
@@ -13603,14 +13591,14 @@ function createPageBodyVNode(ctx) {
     }
   );
 }
-function createDialogPageVNode(dialogPages, currentDialogPage, onResolve) {
+function createDialogPageVNode(dialogPages) {
   return vue.openBlock(true), vue.createElementBlock(
     vue.Fragment,
     null,
     vue.renderList(dialogPages.value, (dialogPage) => {
       return vue.openBlock(), vue.createBlock(
         vue.Suspense,
-        { onResolve },
+        {},
         {
           default: vue.withCtx(() => [
             vue.createVNode(
@@ -13624,7 +13612,6 @@ function createDialogPageVNode(dialogPages, currentDialogPage, onResolve) {
                   bottom: 0,
                   left: 0
                 },
-                ref: currentDialogPage,
                 type: "dialog",
                 route: dialogPage.route
               },

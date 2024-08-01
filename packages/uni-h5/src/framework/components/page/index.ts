@@ -1,5 +1,5 @@
 import {
-  type ComponentPublicInstance,
+  type ComponentInternalInstance,
   Fragment,
   type Ref,
   type SetupContext,
@@ -8,7 +8,9 @@ import {
   createElementBlock,
   createVNode,
   getCurrentInstance,
+  inject,
   openBlock,
+  provide,
   ref,
   renderList,
   renderSlot,
@@ -32,22 +34,23 @@ export default /*#__PURE__*/ defineSystemComponent({
     const pageStyle = {} as Record<string, any>
     useDocumentTitle(pageMeta)
     const currentInstance = getCurrentInstance()
-    const currentDialogPage = ref<ComponentPublicInstance | null>(null)
-    let handleResolve = () => {}
+    currentInstance!.$dialogPages = ref<UniDialogPage[]>([])
     if (__X__) {
       useBackgroundColorContent(pageMeta)
       if (ctx.attrs.type === 'dialog') {
         navigationBar.style = 'custom'
         pageMeta.route = ctx.attrs.route as string
-      }
-      currentInstance!.$dialogPages = ref<UniDialogPage[]>([])
-      handleResolve = () => {
-        setTimeout(() => {
-          const dialogPages = currentInstance!.$dialogPages.value
-          const lastDialogPage = dialogPages[dialogPages.length - 1]
-          lastDialogPage.$vm = currentDialogPage.value!.$.$pageVm
-          lastDialogPage.$vm.$dialogPageInstance = lastDialogPage
-        }, 0)
+        const parentInstance = inject(
+          'parentInstance'
+        ) as ComponentInternalInstance
+        if (currentInstance && parentInstance) {
+          currentInstance.$parentInstance = parentInstance
+          const parentDialogPages = parentInstance.$dialogPages.value
+          currentInstance.$dialogPage =
+            parentDialogPages[parentDialogPages.length - 1]
+        }
+      } else {
+        provide('parentInstance', currentInstance)
       }
     }
     return () =>
@@ -62,21 +65,13 @@ export default /*#__PURE__*/ defineSystemComponent({
               createVNode(PageHead),
               createPageBodyVNode(ctx),
               __X__
-                ? createDialogPageVNode(
-                    currentInstance!.$dialogPages,
-                    currentDialogPage,
-                    handleResolve
-                  )
+                ? createDialogPageVNode(currentInstance!.$dialogPages)
                 : null,
             ]
           : [
               createPageBodyVNode(ctx),
               __X__
-                ? createDialogPageVNode(
-                    currentInstance!.$dialogPages,
-                    currentDialogPage,
-                    handleResolve
-                  )
+                ? createDialogPageVNode(currentInstance!.$dialogPages)
                 : null,
             ]
       )
@@ -97,11 +92,7 @@ function createPageBodyVNode(ctx: SetupContext) {
   )
 }
 
-function createDialogPageVNode(
-  dialogPages: Ref<UniDialogPage[]>,
-  currentDialogPage: Ref<ComponentPublicInstance | null>,
-  onResolve: () => void
-) {
+function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
   return (
     openBlock(true),
     createElementBlock(
@@ -112,7 +103,7 @@ function createDialogPageVNode(
           openBlock(),
           createBlock(
             Suspense,
-            { onResolve },
+            {},
             {
               default: withCtx(() => [
                 createVNode(
@@ -126,7 +117,6 @@ function createDialogPageVNode(
                       bottom: 0,
                       left: 0,
                     },
-                    ref: currentDialogPage,
                     type: 'dialog',
                     route: dialogPage.route,
                   },

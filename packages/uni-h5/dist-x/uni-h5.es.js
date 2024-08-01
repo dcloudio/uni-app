@@ -17156,7 +17156,7 @@ function handleEscKeyPress(event) {
     const dialogPages = currentPage.$getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
     if (!dialogPage.$disableEscBack) {
-      uni.closeDialogPage(dialogPage);
+      uni.closeDialogPage({ dialogPage });
     }
   }
 }
@@ -17176,16 +17176,14 @@ class DialogPage {
   constructor({
     route,
     component,
-    $parentPage = null,
+    $getParentPage,
     $disableEscBack = false
   }) {
     this.route = "";
-    this.$parentPage = null;
-    this.$getParentPage = () => this.$parentPage;
     this.$disableEscBack = false;
     this.route = route;
     this.component = component;
-    this.$parentPage = $parentPage;
+    this.$getParentPage = $getParentPage;
     this.$disableEscBack = $disableEscBack;
   }
 }
@@ -17297,11 +17295,8 @@ function initPage(vm) {
       return ((_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPages.value) || [];
     };
     vm.$getParentPage = () => {
-      var _a, _b, _c;
-      return (
-        // @ts-expect-error
-        ((_c = (_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.parent) == null ? void 0 : _b.$pageVm.$dialogPageInstance) == null ? void 0 : _c.$parentPage) || null
-      );
+      var _a, _b;
+      return ((_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
     };
   }
   {
@@ -17310,13 +17305,13 @@ function initPage(vm) {
       currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
       if (currentPagesMap.size === 1 && homeDialogPages.length) {
         homeDialogPages.forEach((dialogPage) => {
-          dialogPage.$parentPage = vm;
+          dialogPage.$getParentPage = () => vm;
           pageInstance.$dialogPages.value.push(dialogPage);
         });
         homeDialogPages.length = 0;
       }
     } else {
-      pageInstance.parent.$pageVm = vm;
+      pageInstance.$dialogPage.$vm = vm;
     }
     return;
   }
@@ -18571,28 +18566,26 @@ function setupPage(comp) {
         onPageShow(instance2, pageMeta);
       });
       onMounted(() => {
+        var _a;
+        {
+          const pageInstance = getPageInstanceByChild(instance2);
+          if (pageInstance.attrs.type === "dialog") {
+            const parentPage = (_a = instance2.proxy) == null ? void 0 : _a.$getParentPage();
+            const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage) : null;
+            if (parentPageInstance) {
+              const dialogPages = parentPageInstance.$dialogPages.value;
+              if (dialogPages.length > 1) {
+                const preDialogPage = dialogPages[dialogPages.length - 2];
+                const { onHide } = preDialogPage.$vm.$;
+                onHide && invokeArrayFns$1(onHide);
+              }
+            }
+          }
+        }
         onPageReady(instance2);
         const { onReady } = instance2;
         onReady && invokeArrayFns$1(onReady);
         invokeOnTabItemTap(route);
-        {
-          setTimeout(() => {
-            var _a;
-            const pageInstance = getPageInstanceByChild(instance2);
-            if (pageInstance.attrs.type === "dialog") {
-              const parentPage = (_a = instance2.proxy) == null ? void 0 : _a.$getParentPage();
-              const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage) : null;
-              if (parentPageInstance) {
-                const dialogPages = parentPageInstance.$dialogPages.value;
-                if (dialogPages.length > 1) {
-                  const preDialogPage = dialogPages[dialogPages.length - 2];
-                  const { onHide } = preDialogPage.$vm.$;
-                  onHide && invokeArrayFns$1(onHide);
-                }
-              }
-            }
-          }, 0);
-        }
       });
       onBeforeActivate(() => {
         if (!instance2.__isVisible) {
@@ -25178,6 +25171,7 @@ const openDialogPage = /* @__PURE__ */ defineSyncApi(
     const dialogPage = new DialogPage({
       route: options.url,
       component: targetRoute.component,
+      $getParentPage: () => null,
       $disableEscBack: options.disableEscBack
     });
     let parentPage = options.parentPage;
@@ -25198,7 +25192,7 @@ const openDialogPage = /* @__PURE__ */ defineSyncApi(
       if (!parentPage) {
         parentPage = currentPages[currentPages.length - 1];
       }
-      dialogPage.$parentPage = parentPage;
+      dialogPage.$getParentPage = () => parentPage;
       getPageInstanceByVm(
         parentPage
       ).$dialogPages.value.push(dialogPage);
@@ -27812,24 +27806,23 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const pageStyle = {};
     useDocumentTitle(pageMeta);
     const currentInstance = getCurrentInstance();
-    const currentDialogPage = ref(null);
-    let handleResolve = () => {
-    };
+    currentInstance.$dialogPages = ref([]);
     {
       useBackgroundColorContent(pageMeta);
       if (ctx.attrs.type === "dialog") {
         navigationBar.style = "custom";
         pageMeta.route = ctx.attrs.route;
+        const parentInstance = inject(
+          "parentInstance"
+        );
+        if (currentInstance && parentInstance) {
+          currentInstance.$parentInstance = parentInstance;
+          const parentDialogPages = parentInstance.$dialogPages.value;
+          currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+        }
+      } else {
+        provide("parentInstance", currentInstance);
       }
-      currentInstance.$dialogPages = ref([]);
-      handleResolve = () => {
-        setTimeout(() => {
-          const dialogPages = currentInstance.$dialogPages.value;
-          const lastDialogPage = dialogPages[dialogPages.length - 1];
-          lastDialogPage.$vm = currentDialogPage.value.$.$pageVm;
-          lastDialogPage.$vm.$dialogPageInstance = lastDialogPage;
-        }, 0);
-      };
     }
     return () => createVNode(
       "uni-page",
@@ -27840,18 +27833,10 @@ const index = /* @__PURE__ */ defineSystemComponent({
       __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
         createVNode(PageHead),
         createPageBodyVNode(ctx),
-        createDialogPageVNode(
-          currentInstance.$dialogPages,
-          currentDialogPage,
-          handleResolve
-        )
+        createDialogPageVNode(currentInstance.$dialogPages)
       ] : [
         createPageBodyVNode(ctx),
-        createDialogPageVNode(
-          currentInstance.$dialogPages,
-          currentDialogPage,
-          handleResolve
-        )
+        createDialogPageVNode(currentInstance.$dialogPages)
       ]
     );
   }
@@ -27866,14 +27851,14 @@ function createPageBodyVNode(ctx) {
     }
   );
 }
-function createDialogPageVNode(dialogPages, currentDialogPage, onResolve) {
+function createDialogPageVNode(dialogPages) {
   return openBlock(true), createElementBlock(
     Fragment,
     null,
     renderList(dialogPages.value, (dialogPage) => {
       return openBlock(), createBlock(
         Suspense,
-        { onResolve },
+        {},
         {
           default: withCtx(() => [
             createVNode(
@@ -27887,7 +27872,6 @@ function createDialogPageVNode(dialogPages, currentDialogPage, onResolve) {
                   bottom: 0,
                   left: 0
                 },
-                ref: currentDialogPage,
                 type: "dialog",
                 route: dialogPage.route
               },

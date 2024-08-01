@@ -63,25 +63,24 @@ export function decrementEscBackPageNum() {
 export class DialogPage {
   route: string = ''
   component?: any
-  $parentPage: ComponentPublicInstance | null = null
-  $getParentPage: () => ComponentPublicInstance | null = () => this.$parentPage
+  $getParentPage: () => ComponentPublicInstance | null
   $disableEscBack: boolean = false
   $vm?: ComponentPublicInstance
 
   constructor({
     route,
     component,
-    $parentPage = null,
+    $getParentPage,
     $disableEscBack = false,
   }: {
     route: string
     component: any
-    $parentPage?: ComponentPublicInstance | null
+    $getParentPage: () => ComponentPublicInstance | null
     $disableEscBack?: boolean
   }) {
     this.route = route
     this.component = component
-    this.$parentPage = $parentPage
+    this.$getParentPage = $getParentPage
     this.$disableEscBack = $disableEscBack
   }
 }
@@ -221,11 +220,7 @@ export function initPage(vm: ComponentPublicInstance) {
       return getPageInstanceByVm(vm)?.$dialogPages.value || []
     }
     vm.$getParentPage = (): ComponentPublicInstance | null => {
-      return (
-        // @ts-expect-error
-        getPageInstanceByVm(vm)?.parent?.$pageVm.$dialogPageInstance
-          ?.$parentPage || null
-      )
+      return getPageInstanceByVm(vm)?.$dialogPage?.$getParentPage() || null
     }
   }
 
@@ -235,14 +230,13 @@ export function initPage(vm: ComponentPublicInstance) {
       currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
       if (currentPagesMap.size === 1 && homeDialogPages.length) {
         homeDialogPages.forEach((dialogPage) => {
-          dialogPage.$parentPage = vm
+          dialogPage.$getParentPage = () => vm
           pageInstance!.$dialogPages.value.push(dialogPage)
         })
         homeDialogPages.length = 0
       }
     } else {
-      // @ts-expect-error
-      pageInstance.parent!.$pageVm = vm
+      pageInstance.$dialogPage!.$vm = vm
     }
     return
   }

@@ -135,31 +135,29 @@ export function setupPage(comp: any) {
         onPageShow(instance, pageMeta)
       })
       onMounted(() => {
+        if (__X__) {
+          // dialogPage 可以尝试在这里 触发父页面的 onHide, 但是要注意各种情况
+          // 1. B页面返回时，A 页面存在 dialogPage
+          const pageInstance = getPageInstanceByChild(instance)
+          if (pageInstance.attrs.type === 'dialog') {
+            const parentPage = instance.proxy?.$getParentPage()
+            const parentPageInstance = parentPage
+              ? getPageInstanceByVm(parentPage)
+              : null
+            if (parentPageInstance) {
+              const dialogPages = parentPageInstance.$dialogPages.value
+              if (dialogPages.length > 1) {
+                const preDialogPage = dialogPages[dialogPages.length - 2]
+                const { onHide } = preDialogPage.$vm.$
+                onHide && invokeArrayFns(onHide)
+              }
+            }
+          }
+        }
         onPageReady(instance)
         const { onReady } = instance
         onReady && invokeArrayFns(onReady)
         invokeOnTabItemTap(route)
-        if (__X__) {
-          // dialogPage 可以尝试在这里 触发父页面的 onHide, 但是要注意各种情况
-          // 1. B页面返回时，A 页面存在 dialogPage
-          setTimeout(() => {
-            const pageInstance = getPageInstanceByChild(instance)
-            if (pageInstance.attrs.type === 'dialog') {
-              const parentPage = instance.proxy?.$getParentPage()
-              const parentPageInstance = parentPage
-                ? getPageInstanceByVm(parentPage)
-                : null
-              if (parentPageInstance) {
-                const dialogPages = parentPageInstance.$dialogPages.value
-                if (dialogPages.length > 1) {
-                  const preDialogPage = dialogPages[dialogPages.length - 2]
-                  const { onHide } = preDialogPage.$vm.$
-                  onHide && invokeArrayFns(onHide)
-                }
-              }
-            }
-          }, 0)
-        }
       })
       onBeforeActivate(() => {
         if (!instance.__isVisible) {

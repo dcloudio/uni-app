@@ -25970,8 +25970,8 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
-    getCurrentInstance();
-    ref(null);
+    const currentInstance = getCurrentInstance();
+    currentInstance.$dialogPages = ref([]);
     return () => createVNode(
       "uni-page",
       {
