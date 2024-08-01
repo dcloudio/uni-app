@@ -52,6 +52,7 @@ export function uniViteCopyPlugin({
               }).watch(
                 {
                   cwd: process.env.UNI_INPUT_DIR,
+                  persistent: is_prod ? false : true,
                   ...watchOptions,
                 },
                 () => {
