@@ -11,8 +11,18 @@
       }
     }
   },
-  "uni-cancelAnimationFrame": {
+  "uni-animationFrame": {
     "uni": {
+      "requestAnimationFrame": {
+        "name": "requestAnimationFrame",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
+      },
       "cancelAnimationFrame": {
         "name": "cancelAnimationFrame",
         "app": {
@@ -573,20 +583,6 @@
           "js": false,
           "kotlin": true,
           "swift": true
-        }
-      }
-    }
-  },
-  "uni-requestAnimationFrame": {
-    "uni": {
-      "requestAnimationFrame": {
-        "name": "requestAnimationFrame",
-        "app": {
-          "js": false,
-          "x-js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": false
         }
       }
     }
