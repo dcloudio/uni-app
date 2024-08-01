@@ -5192,10 +5192,10 @@ export function initUniExtApi(APP_ID: string) {
         "jhc": "image/jphc",
         "jls": "image/jls",
         "jp2": "image/jp2",
+        "jpg": "image/jpeg",
         "jpe": "image/jpeg",
         "jpeg": "image/jpeg",
         "jpf": "image/jpx",
-        "jpg": "image/jpeg",
         "jpg2": "image/jp2",
         "jpgm": "image/jpm",
         "jpgv": "video/jpeg",
@@ -5509,7 +5509,7 @@ export function initUniExtApi(APP_ID: string) {
         "xloc": "text/vnd.rim.location.xloc",
         "htc": "text/x-component"
     };
-    const contentTypeToExt: Record<string, string> = {};
+    const contentTypeToExt: Record<string, string[]> = {};
     let contentTypeToExtInited = false;
     const initContentTypeToExtOnce = ()=>{
         if (contentTypeToExtInited) {
@@ -5520,12 +5520,16 @@ export function initUniExtApi(APP_ID: string) {
             const ext = exts[i];
             const contentType = extToContentType[ext] as string;
             if (!contentTypeToExt[contentType]) {
-                contentTypeToExt[contentType] = ext;
+                contentTypeToExt[contentType] = [
+                    ext
+                ];
+            } else {
+                contentTypeToExt[contentType].push(ext);
             }
         }
         contentTypeToExtInited = true;
     };
-    const lookupExt = (contentType: string): string | undefined =>{
+    const lookupExt = (contentType: string): string[] | undefined =>{
         initContentTypeToExtOnce();
         return contentTypeToExt[contentType.split(';')[0].trim().toLowerCase()];
     };
@@ -5682,10 +5686,10 @@ export function initUniExtApi(APP_ID: string) {
             return contentDispositionExt;
         }
         const contentTypeExt = lookupExt(contentType);
-        if (contentTypeExt) {
-            return contentTypeExt;
+        const urlExt = url.split('?')[0].split('/').pop()?.split('.')[1] || '';
+        if (contentTypeExt && contentTypeExt.length > 0) {
+            return contentTypeExt.includes(urlExt.toLowerCase()) ? urlExt : contentTypeExt[0];
         }
-        const urlExt = url.split('?')[0].split('/').pop()?.split('.')[1];
         return urlExt || '';
     };
     class DownloadTask1 implements DownloadTask {
