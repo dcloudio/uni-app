@@ -7,7 +7,7 @@ module.exports = function (url, options) {
   } // eslint-disable-next-line no-underscore-dangle, no-param-reassign
 
   url = url && url.__esModule ? url.default : url
-  let isAbsoluteFile = false
+  var isAbsoluteFile = false
   if (typeof url !== 'string') {
     if (url.protocol && url.protocol === 'file:' && url.pathname) {
       isAbsoluteFile = true
