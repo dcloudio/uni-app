@@ -267,10 +267,24 @@ type InvokeSyncCallback = (res: InvokeCallbackParamsRes) => void
 type InvokeAsyncCallback = (
   res: InvokeCallbackReturnRes | InvokeCallbackParamsRes
 ) => void
-function getProxy(): {
+
+interface InvokeChannel {
   invokeSync: (args: InvokeArgs, callback: InvokeSyncCallback) => InvokeSyncRes
   invokeAsync: (args: InvokeArgs, callback: InvokeAsyncCallback) => void
-} {
+}
+function createInvokeAsyncBySync(invokeSync: InvokeChannel['invokeSync']) {
+  return function invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
+    const res: InvokeSyncRes = invokeSync(args, callback)
+    callback(
+      extend(res, {
+        params: [res.params],
+      })
+    )
+    return res
+  }
+}
+
+function getProxy(): InvokeChannel {
   if (!proxy) {
     if (__X__) {
       // iOS
@@ -279,31 +293,18 @@ function getProxy(): {
           // @ts-expect-error
           return nativeChannel.invokeSync('APP-SERVICE', args, callback)
         },
-        invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
-          if (
-            // 硬编码
-            args.moduleName === 'uni-ad' &&
-            ['showByJs', 'loadByJs'].includes(args.name)
-          ) {
-            // @ts-expect-error
-            const res: InvokeSyncRes = nativeChannel.invokeSync(
-              'APP-SERVICE',
-              args,
-              callback
-            )
-            callback(
-              extend(res, {
-                params: [res.params],
-              })
-            )
-            return res
-          }
+        // iOS 平台用sync模拟async
+        invokeAsync: createInvokeAsyncBySync((args, callback) => {
           // @ts-expect-error
-          return nativeChannel.invokeAsync('APP-SERVICE', args, callback)
-        },
+          return nativeChannel.invokeSync('APP-SERVICE', args, callback)
+        }),
       }
     } else {
       proxy = uni.requireNativePlugin('UTS-Proxy') as any
+      if (isUTSiOS()) {
+        // iOS 平台用sync模拟async
+        proxy.invokeAsync = createInvokeAsyncBySync(proxy.invokeSync)
+      }
     }
   }
   return proxy
