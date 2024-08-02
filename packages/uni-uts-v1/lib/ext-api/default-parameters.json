@@ -82,6 +82,11 @@
       "null"
     ]
   },
+  "uni-exit": {
+    "exit": [
+      "null"
+    ]
+  },
   "uni-dialogPage": {
     "closeDialogPage": [
       "null"
@@ -90,11 +95,6 @@
   "uni-createWebviewContext": {
     "createWebviewContext": [
       null,
-      "null"
-    ]
-  },
-  "uni-exit": {
-    "exit": [
       "null"
     ]
   },
