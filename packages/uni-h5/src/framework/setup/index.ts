@@ -118,7 +118,7 @@ export function setupPage(comp: any) {
         const pageInstance = getPageInstanceByChild(instance)
         if (pageInstance.attrs.type === 'dialog') {
           instance.attrs.__pageQuery = decodedQuery(
-            parseQuery((pageInstance.attrs.route as string).split('?')[1])
+            parseQuery((pageInstance.attrs.route as string).split('?')[1] || '')
           )
         }
       }

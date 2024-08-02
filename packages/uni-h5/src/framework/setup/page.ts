@@ -222,6 +222,8 @@ export function initPage(vm: ComponentPublicInstance) {
     vm.$getParentPage = (): ComponentPublicInstance | null => {
       return getPageInstanceByVm(vm)?.$dialogPage?.$getParentPage() || null
     }
+    // @ts-expect-error
+    vm.$dialogPage = getPageInstanceByVm(vm)?.$dialogPage
   }
 
   if (__X__) {

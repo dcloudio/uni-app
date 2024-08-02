@@ -81,7 +81,7 @@ export const closeDialogPage = defineSyncApi<CloseDialogPage>(
         const index = parentDialogPages.indexOf(dialogPage)
         parentDialogPages.splice(index, 1)
         invokeHook(dialogPage.$vm!, ON_UNLOAD)
-        if (index === parentDialogPages.length) {
+        if (index > 0 && index === parentDialogPages.length) {
           invokeHook(
             parentDialogPages[parentDialogPages.length - 1].$vm!,
             ON_SHOW
