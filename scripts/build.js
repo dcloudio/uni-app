@@ -345,8 +345,4 @@ async function buildArkTS (target, buildJson) {
     genHarmonyExtApiExport(),
     { spaces: 2 }
   )
-  fs.copySync(
-    path.resolve(__dirname, '../packages/uni-app-harmony/temp/uni-ext-api/ext-api.json'),
-    path.resolve(__dirname, '../packages/uni-app-harmony/dist/ext-api.json')
-  )
 }

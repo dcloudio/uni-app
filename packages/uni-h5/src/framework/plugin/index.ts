@@ -18,6 +18,11 @@ export default {
     if (__UNI_FEATURE_PAGES__) {
       initRouter(app)
     }
+    if (__DEV__ && !__UNI_FEATURE_PAGES__) {
+      console.warn(
+        '\n当前项目为单页面工程，不能执行页面跳转api。\n如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。'
+      )
+    }
   },
 }
 
