@@ -24,6 +24,7 @@ import {
   WEB_INVOKE_APPSERVICE,
   debounce,
   decodedQuery,
+  parseQuery,
 } from '@dcloudio/uni-shared'
 import { injectAppHooks } from '@dcloudio/uni-api'
 import {
@@ -113,6 +114,14 @@ export function setupPage(comp: any) {
       // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
       const query = decodedQuery(route.query)
       instance.attrs.__pageQuery = query
+      if (__X__) {
+        const pageInstance = getPageInstanceByChild(instance)
+        if (pageInstance.attrs.type === 'dialog') {
+          instance.attrs.__pageQuery = decodedQuery(
+            parseQuery((pageInstance.attrs.route as string).split('?')[1])
+          )
+        }
+      }
       instance.proxy!.$page.options = query
       instance.proxy!.options = query
       if (__NODE_JS__) {
@@ -136,8 +145,6 @@ export function setupPage(comp: any) {
       })
       onMounted(() => {
         if (__X__) {
-          // dialogPage 可以尝试在这里 触发父页面的 onHide, 但是要注意各种情况
-          // 1. B页面返回时，A 页面存在 dialogPage
           const pageInstance = getPageInstanceByChild(instance)
           if (pageInstance.attrs.type === 'dialog') {
             const parentPage = instance.proxy?.$getParentPage()
