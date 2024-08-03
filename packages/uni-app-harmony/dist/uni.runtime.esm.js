@@ -11273,6 +11273,47 @@ const LoadFontFaceProtocol = {
     desc: Object,
 };
 
+const FRONT_COLORS = ['#ffffff', '#000000'];
+const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
+const SetNavigationBarColorOptions = {
+    formatArgs: {
+        animation(animation, params) {
+            if (!animation) {
+                animation = { duration: 0, timingFunc: 'linear' };
+            }
+            params.animation = {
+                duration: animation.duration || 0,
+                timingFunc: animation.timingFunc || 'linear',
+            };
+        },
+    },
+};
+const SetNavigationBarColorProtocol = {
+    frontColor: {
+        type: String,
+        required: true,
+        validator(frontColor) {
+            if (FRONT_COLORS.indexOf(frontColor) === -1) {
+                return `invalid frontColor "${frontColor}"`;
+            }
+        },
+    },
+    backgroundColor: {
+        type: String,
+        required: true,
+    },
+    animation: Object,
+};
+const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
+const SetNavigationBarTitleProtocol = {
+    title: {
+        type: String,
+        required: true,
+    },
+};
+const API_SHOW_NAVIGATION_BAR_LOADING = 'showNavigationBarLoading';
+const API_HIDE_NAVIGATION_BAR_LOADING = 'hideNavigationBarLoading';
+
 const API_PAGE_SCROLL_TO = 'pageScrollTo';
 const PageScrollToProtocol = {
     scrollTop: Number,
@@ -11683,6 +11724,86 @@ const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, rej
         }
     });
 }, LoadFontFaceProtocol);
+
+function getCurrentWebview() {
+    const page = getCurrentPage();
+    if (page) {
+        return page.$getAppWebview();
+    }
+    return null;
+}
+function getWebview(page) {
+    if (page) {
+        return page.$getAppWebview();
+    }
+    return getCurrentWebview();
+}
+
+const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, ({ __page__, title }, { resolve, reject }) => {
+    const webview = getWebview(__page__);
+    if (webview) {
+        const style = webview.getStyle();
+        if (style && style.titleNView) {
+            webview.setStyle({
+                titleNView: {
+                    titleText: title,
+                },
+            });
+        }
+        resolve();
+    }
+    else {
+        reject();
+    }
+}, SetNavigationBarTitleProtocol);
+const showNavigationBarLoading = defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
+    plus.nativeUI.showWaiting('', {
+        modal: false,
+    });
+    resolve();
+});
+const hideNavigationBarLoading = defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
+    plus.nativeUI.closeWaiting();
+    resolve();
+});
+function setPageStatusBarStyle(statusBarStyle) {
+    const pages = getCurrentPages();
+    if (!pages.length) {
+        return;
+    }
+    // 框架内部页面跳转会从这里获取style配置
+    pages[pages.length - 1].$page.statusBarStyle = statusBarStyle;
+}
+const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __page__, frontColor, backgroundColor }, { resolve, reject }) => {
+    const webview = getWebview(__page__);
+    if (webview) {
+        const styles = {};
+        if (frontColor) {
+            styles.titleColor = frontColor;
+        }
+        if (backgroundColor) {
+            styles.backgroundColor = backgroundColor;
+        }
+        const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light';
+        plus.navigator.setStatusBarStyle(statusBarStyle);
+        // 用户调用api时同时改变当前页配置，这样在系统调用设置时，可以避免覆盖用户设置
+        setPageStatusBarStyle(statusBarStyle);
+        const style = webview.getStyle();
+        if (style && style.titleNView) {
+            if (style.titleNView.autoBackButton) {
+                styles.backButton = styles.backButton || {};
+                styles.backButton.color = frontColor;
+            }
+            webview.setStyle({
+                titleNView: styles,
+            });
+        }
+        resolve();
+    }
+    else {
+        reject();
+    }
+}, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
 
 function onKeyboardHeightChangeCallback(res) {
     UniServiceJSBridge.invokeOnCallback(ON_KEYBOARD_HEIGHT_CHANGE, res);
@@ -13315,6 +13436,7 @@ var uni$1 = {
   getLocale: getLocale,
   getLocation: getLocation,
   getSelectedTextRange: getSelectedTextRange,
+  hideNavigationBarLoading: hideNavigationBarLoading,
   hideTabBar: hideTabBar,
   hideTabBarRedDot: hideTabBarRedDot,
   interceptors: interceptors,
@@ -13338,9 +13460,12 @@ var uni$1 = {
   removeTabBarBadge: removeTabBarBadge,
   requireUTSPlugin: requireUTSPlugin,
   setLocale: setLocale,
+  setNavigationBarColor: setNavigationBarColor,
+  setNavigationBarTitle: setNavigationBarTitle,
   setTabBarBadge: setTabBarBadge,
   setTabBarItem: setTabBarItem,
   setTabBarStyle: setTabBarStyle,
+  showNavigationBarLoading: showNavigationBarLoading,
   showTabBar: showTabBar,
   showTabBarRedDot: showTabBarRedDot,
   startLocationUpdate: startLocationUpdate,
