@@ -2295,7 +2295,9 @@ var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasConte
     return null;
   }
   resolve({
-    getContext: element.getContext.bind(element)
+    getContext: element.getContext.bind(element),
+    // @ts-expect-error waiting for uni-app-x type update
+    toDataURL: element.toDataURL.bind(element)
   });
 });
 function queryElementTop(component, selector) {
@@ -2838,6 +2840,15 @@ function normalizeArg(arg) {
 function initUTSInstanceMethod(async, opts, instanceId, proxy2) {
   return initProxyFunction("method", async, opts, instanceId, proxy2);
 }
+function createInvokeAsyncBySync(invokeSync) {
+  return function invokeAsync(args, callback) {
+    var res = invokeSync(args, callback);
+    callback(extend(res, {
+      params: [res.params]
+    }));
+    return res;
+  };
+}
 function getProxy() {
   if (!proxy) {
     {
@@ -2845,19 +2856,10 @@ function getProxy() {
         invokeSync(args, callback) {
           return nativeChannel.invokeSync("APP-SERVICE", args, callback);
         },
-        invokeAsync(args, callback) {
-          if (
-            // 硬编码
-            args.moduleName === "uni-ad" && ["showByJs", "loadByJs"].includes(args.name)
-          ) {
-            var res = nativeChannel.invokeSync("APP-SERVICE", args, callback);
-            callback(extend(res, {
-              params: [res.params]
-            }));
-            return res;
-          }
-          return nativeChannel.invokeAsync("APP-SERVICE", args, callback);
-        }
+        // iOS 平台用sync模拟async
+        invokeAsync: createInvokeAsyncBySync((args, callback) => {
+          return nativeChannel.invokeSync("APP-SERVICE", args, callback);
+        })
       };
     }
   }

@@ -13,14 +13,14 @@ import image from '@ohos.multimedia.image';
 import connection from '@ohos.net.connection';
 import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
-import promptAction from '@ohos.promptAction';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
-import { BusinessError as BusinessError1 } from '@ohos.base';
-import { BusinessError as BusinessError2 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError2 } from '@ohos.base';
 import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError5 } from '@ohos.base';
+import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError6 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter5 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
@@ -32,15 +32,16 @@ import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony3, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony4, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony5 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony6, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony7 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony5, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, getUniProviders, ApiError, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
+import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ApiError, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { audio as audio1 } from '@kit.AudioKit';
 import { audio } from '@kit.AudioKit';
@@ -93,10 +94,12 @@ import media3 from '@ohos.multimedia.media';
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
+import { promptAction } from '@kit.ArkUI';
 import promptAction1 from '@ohos.promptAction';
-import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+import promptAction2 from '@ohos.promptAction';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
+import { userAuth } from '@kit.UserAuthenticationKit';
 import { wantAgent } from '@kit.AbilityKit';
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
@@ -151,6 +154,66 @@ class AddPhoneContactOptions extends UTSObject {
     complete: AddPhoneContactCompleteCallback | null = null;
 }
 type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
+type StartSoterAuthentication = (options: StartSoterAuthenticationOptions) => void;
+type SoterAuthMode = 'fingerPrint' | 'facial' | 'speech';
+class StartSoterAuthenticationSuccess extends UTSObject {
+    errCode!: number;
+    authMode!: SoterAuthMode;
+    resultJSON: string | null = null;
+    resultJSONSignature: string | null = null;
+    errMsg!: string;
+}
+type StartSoterAuthenticationSuccessCallback = (result: StartSoterAuthenticationSuccess) => void;
+type StartSoterAuthenticationFail = UniError2;
+class UniError2 extends UTSObject {
+    errSubject!: string;
+    errCode!: number;
+    errMsg!: string;
+    data: object | null = null;
+    cause: Object | null = null;
+}
+type StartSoterAuthenticationFailCallback = (result: StartSoterAuthenticationFail) => void;
+type StartSoterAuthenticationComplete = Object;
+type StartSoterAuthenticationCompleteCallback = (result: StartSoterAuthenticationComplete) => void;
+class StartSoterAuthenticationOptions extends UTSObject {
+    requestAuthModes!: SoterAuthMode[];
+    challenge: string | null = null;
+    authContent: string | null = null;
+    success: StartSoterAuthenticationSuccessCallback | null = null;
+    fail: StartSoterAuthenticationFailCallback | null = null;
+    complete: StartSoterAuthenticationCompleteCallback | null = null;
+}
+type CheckIsSupportSoterAuthentication = (options: CheckIsSupportSoterAuthenticationOptions) => void;
+class CheckIsSupportSoterAuthenticationSuccess extends UTSObject {
+    supportMode!: SoterAuthMode[];
+    errMsg!: string;
+}
+type CheckIsSupportSoterAuthenticationSuccessCallback = (result: CheckIsSupportSoterAuthenticationSuccess) => void;
+type CheckIsSupportSoterAuthenticationFail = UniError2;
+type CheckIsSupportSoterAuthenticationFailCallback = (result: CheckIsSupportSoterAuthenticationFail) => void;
+type CheckIsSupportSoterAuthenticationComplete = Object;
+type CheckIsSupportSoterAuthenticationCompleteCallback = (result: CheckIsSupportSoterAuthenticationComplete) => void;
+class CheckIsSupportSoterAuthenticationOptions extends UTSObject {
+    success: CheckIsSupportSoterAuthenticationSuccessCallback | null = null;
+    fail: CheckIsSupportSoterAuthenticationFailCallback | null = null;
+    complete: CheckIsSupportSoterAuthenticationCompleteCallback | null = null;
+}
+type CheckIsSoterEnrolledInDevice = (options: CheckIsSoterEnrolledInDeviceOptions) => void;
+class CheckIsSoterEnrolledInDeviceSuccess extends UTSObject {
+    isEnrolled!: boolean;
+    errMsg!: string;
+}
+type CheckIsSoterEnrolledInDeviceSuccessCallback = (result: CheckIsSoterEnrolledInDeviceSuccess) => void;
+type CheckIsSoterEnrolledInDeviceFail = UniError2;
+type CheckIsSoterEnrolledInDeviceFailCallback = (result: CheckIsSoterEnrolledInDeviceFail) => void;
+type CheckIsSoterEnrolledInDeviceComplete = Object;
+type CheckIsSoterEnrolledInDeviceCompleteCallback = (result: CheckIsSoterEnrolledInDeviceComplete) => void;
+class CheckIsSoterEnrolledInDeviceOptions extends UTSObject {
+    checkAuthMode!: SoterAuthMode;
+    success: CheckIsSoterEnrolledInDeviceSuccessCallback | null = null;
+    fail: CheckIsSoterEnrolledInDeviceFailCallback | null = null;
+    complete: CheckIsSoterEnrolledInDeviceCompleteCallback | null = null;
+}
 type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
 export class SetClipboardDataSuccess extends UTSObject {
@@ -223,55 +286,6 @@ interface InnerAudioContext {
     offWaiting(callback: (result: Object) => void): void;
     offSeeking(callback: (result: Object) => void): void;
     offSeeked(callback: (result: Object) => void): void;
-}
-export type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
-export interface CreateIntersectionObserverOptions {
-    thresholds?: (Object[]) | null;
-    initialRatio?: number | null;
-    observeAll?: boolean | null;
-}
-class ObserveNodeRect extends UTSObject {
-    left!: number;
-    right!: number;
-    top!: number;
-    bottom!: number;
-}
-class ObserveResult extends UTSObject {
-    intersectionRatio!: number;
-    intersectionRect!: Object;
-    boundingClientRect!: ObserveNodeRect;
-    relativeRect!: ObserveNodeRect;
-    time!: number;
-}
-export type ObserveCallback = (result: ObserveResult) => void;
-export interface IntersectionObserver {
-    relativeTo(selector: string, margins?: Object): IntersectionObserver;
-    relativeToViewport(margins?: Object): IntersectionObserver;
-    observe(targetSelector: string, callback: ObserveCallback): void;
-    disconnect(): void;
-}
-interface AddIntersectionObserverArgs {
-    reqId: number;
-    component: ComponentPublicInstance;
-    options: ServiceIntersectionObserverOptions;
-    callback: ObserveCallback;
-}
-interface RemoveIntersectionObserverArgs {
-    reqId: number;
-    component: ComponentPublicInstance;
-}
-interface RequestComponentObserverOptions {
-    selector?: string;
-    rootMargin?: string;
-    relativeToSelector?: string;
-}
-interface ServiceIntersectionObserverOptions extends CreateIntersectionObserverOptions, RequestComponentObserverOptions {
-}
-interface Margins {
-    bottom?: number;
-    left?: number;
-    right?: number;
-    top?: number;
 }
 type $OnCallback = Function;
 type $On = (eventName: string, callback: $OnCallback) => void;
@@ -1589,11 +1603,13 @@ interface IUniWebsocketEmitter {
 interface UniExtApi {
     addPhoneContact: AddPhoneContact;
     arrayBufferToBase64: ArrayBufferToBase64;
+    startSoterAuthentication: StartSoterAuthentication;
+    checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
+    checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice;
     base64ToArrayBuffer: Base64ToArrayBuffer;
     getClipboardData: GetClipboardData;
     setClipboardData: SetClipboardData;
     createInnerAudioContext: CreateInnerAudioContext;
-    createIntersectionObserver: CreateIntersectionObserver;
     $on: $On;
     $once: $Once;
     $off: $Off;
@@ -1996,6 +2012,279 @@ export function initUniExtApi(APP_ID: string) {
     const arrayBufferToBase64: ArrayBufferToBase64 = defineSyncApi<string>(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer: ArrayBuffer): string =>{
         return buffer.from(arrayBuffer).toString('base64');
     }, ArrayBufferToBase64Protocol) as ArrayBufferToBase64;
+    const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication';
+    const StartSoterAuthenticationApiOptions: ApiOptions<StartSoterAuthenticationOptions> = {
+        formatArgs: new Map<string, ((value: string) => string | undefined)>([
+            [
+                'requestAuthModes',
+                (value: string)=>{
+                    if (!value.includes('fingerPrint') && !value.includes('facial')) {
+                        return 'requestAuthModes 填写错误';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const StartSoterAuthenticationApiProtocols = new Map<string, ProtocolOptions>([
+        [
+            'requestAuthModes',
+            {
+                type: 'array',
+                required: true
+            }
+        ],
+        [
+            'challenge',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'authContent',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE = 'checkIsSoterEnrolledInDevice';
+    const checkAuthModes: SoterAuthMode[] = [
+        'fingerPrint',
+        'facial',
+        'speech'
+    ];
+    const CheckIsSoterEnrolledInDeviceApiOptions: ApiOptions<CheckIsSoterEnrolledInDeviceOptions> = {
+        formatArgs: new Map<string, ((value: string) => string | undefined)>([
+            [
+                'checkAuthMode',
+                (value: string)=>{
+                    if (!checkAuthModes.includes(value as SoterAuthMode)) {
+                        return 'checkAuthMode 填写错误';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const CheckIsSoterEnrolledInDeviceProtocols = new Map<string, ProtocolOptions>([
+        [
+            'checkAuthMode',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'checkIsSupportSoterAuthentication';
+    const getErrorMessage = (code: number): string =>{
+        switch(code){
+            case 201:
+                return "权限认证失败";
+            case 401:
+                return "参数不正确。可能的一个原因: 强制参数未指定";
+            case userAuth.UserAuthResultCode.FAIL:
+                return "认证失败";
+            case userAuth.UserAuthResultCode.GENERAL_ERROR:
+                return "操作通用错误";
+            case userAuth.UserAuthResultCode.CANCELED:
+                return "操作取消";
+            case userAuth.UserAuthResultCode.TIMEOUT:
+                return "操作超时";
+            case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
+                return "不支持的认证类型";
+            case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
+                return "不支持的认证等级";
+            case userAuth.UserAuthResultCode.BUSY:
+                return "忙碌状态";
+            case userAuth.UserAuthResultCode.LOCKED:
+                return "认证器已锁定";
+            case userAuth.UserAuthResultCode.NOT_ENROLLED:
+                return "用户未录入认证信息";
+            case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
+                return "切换到自定义身份验证过程";
+            case 12500013:
+                return "系统锁屏密码过期";
+            default:
+                return '';
+        }
+    };
+    const getUniErrMsg = (code: number): number =>{
+        switch(code){
+            case 201:
+                return 90002;
+            case 401:
+                return 90004;
+            case userAuth.UserAuthResultCode.FAIL:
+                return 90009;
+            case userAuth.UserAuthResultCode.GENERAL_ERROR:
+                return 90007;
+            case userAuth.UserAuthResultCode.CANCELED:
+                return 90008;
+            case userAuth.UserAuthResultCode.TIMEOUT:
+                return 90007;
+            case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
+                return 90003;
+            case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
+                return 90003;
+            case userAuth.UserAuthResultCode.BUSY:
+                return 90010;
+            case userAuth.UserAuthResultCode.LOCKED:
+                return 90010;
+            case userAuth.UserAuthResultCode.NOT_ENROLLED:
+                return 90011;
+            case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
+                return userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET;
+            case 12500013:
+                return 12500013;
+            default:
+                return -1;
+        }
+    };
+    const toUint8Arr = (str: string)=>{
+        const buffer: number[] = [];
+        for (let i of str){
+            const _code: number = i.charCodeAt(0);
+            if (_code < 0x80) {
+                buffer.push(_code);
+            } else if (_code < 0x800) {
+                buffer.push(0xc0 + (_code >> 6));
+                buffer.push(0x80 + (_code & 0x3f));
+            } else if (_code < 0x10000) {
+                buffer.push(0xe0 + (_code >> 12));
+                buffer.push(0x80 + (_code >> 6 & 0x3f));
+                buffer.push(0x80 + (_code & 0x3f));
+            }
+        }
+        return Uint8Array.from(buffer);
+    };
+    const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi<StartSoterAuthenticationOptions, StartSoterAuthenticationSuccess>(API_START_SOTER_AUTHENTICATION, (args: StartSoterAuthenticationOptions, executor: ApiExecutor<StartSoterAuthenticationSuccess>)=>{
+        const authType: userAuth.UserAuthType[] = [];
+        args.requestAuthModes.forEach((item)=>{
+            if (item === 'fingerPrint') {
+                authType.push(userAuth.UserAuthType.FINGERPRINT);
+            } else if (item === 'facial') {
+                authType.push(userAuth.UserAuthType.FACE);
+            }
+        });
+        const challengeArr = toUint8Arr(args.challenge ?? '');
+        const authContent = args.authContent ?? '';
+        try {
+            const auth = userAuth.getUserAuthInstance({
+                challenge: challengeArr,
+                authType,
+                authTrustLevel: userAuth.AuthTrustLevel.ATL1
+            } as userAuth.AuthParam, {
+                title: authContent
+            } as userAuth.WidgetParam);
+            auth.on("result", {
+                onResult: (result: userAuth.UserAuthResult)=>{
+                    if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
+                        executor.resolve({
+                            errCode: 0,
+                            authMode: result.authType === userAuth.UserAuthType.FINGERPRINT ? 'fingerPrint' : 'facial'
+                        } as StartSoterAuthenticationSuccess);
+                    } else {
+                        const errMsg = getErrorMessage(result.result);
+                        const errCode = getUniErrMsg(result.result);
+                        executor.reject(errMsg, {
+                            errCode
+                        } as ApiError);
+                    }
+                }
+            } as userAuth.IAuthCallback);
+            if (authContent) {
+                promptAction.showToast({
+                    message: authContent
+                } as promptAction.ShowToastOptions);
+            }
+            auth.start();
+        } catch (error) {
+            const code = (error as BusinessError1).code;
+            executor.reject(getErrorMessage(code), {
+                errCode: getUniErrMsg(code)
+            } as ApiError);
+        }
+    }, StartSoterAuthenticationApiProtocols, StartSoterAuthenticationApiOptions) as StartSoterAuthentication;
+    const fingerPrintAvailable = ()=>{
+        try {
+            userAuth.getAvailableStatus(userAuth.UserAuthType.FINGERPRINT, userAuth.AuthTrustLevel.ATL1);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    };
+    const faceAvailable = ()=>{
+        try {
+            userAuth.getAvailableStatus(userAuth.UserAuthType.FACE, userAuth.AuthTrustLevel.ATL1);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    };
+    const PERMISSIONS = [
+        'ohos.permission.ACCESS_BIOMETRIC'
+    ];
+    const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication = defineAsyncApi<CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess>(API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION, (args: CheckIsSupportSoterAuthenticationOptions, executor: ApiExecutor<CheckIsSupportSoterAuthenticationSuccess>)=>{
+        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            if (allRight) {
+                try {
+                    const supportMode: SoterAuthMode[] = [];
+                    if (fingerPrintAvailable()) supportMode.push('fingerPrint');
+                    if (faceAvailable()) supportMode.push('facial');
+                    return executor.resolve({
+                        supportMode,
+                        errMsg: ''
+                    } as CheckIsSupportSoterAuthenticationSuccess);
+                } catch (error) {
+                    const code = (error as BusinessError1).code;
+                    executor.reject(getErrorMessage(code), {
+                        errCode: getUniErrMsg(code)
+                    } as ApiError);
+                }
+            } else {
+                executor.reject(getErrorMessage(201));
+            }
+        }, ()=>{
+            executor.reject(getErrorMessage(201));
+        });
+    }) as CheckIsSupportSoterAuthentication;
+    const getFingerPrintEnrolledState = ()=>{
+        userAuth.getEnrolledState(userAuth.UserAuthType.FINGERPRINT);
+        return true;
+    };
+    const getFaceEnrolledState = ()=>{
+        userAuth.getEnrolledState(userAuth.UserAuthType.FACE);
+        return true;
+    };
+    const harmonyCheckIsSoterEnrolledInDevice = (checkAuthMode: SoterAuthMode): boolean =>{
+        if (checkAuthMode === 'fingerPrint') {
+            return getFingerPrintEnrolledState();
+        } else if (checkAuthMode === 'facial') {
+            return getFaceEnrolledState();
+        }
+        return false;
+    };
+    const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = defineAsyncApi<CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess>(API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, (args: CheckIsSoterEnrolledInDeviceOptions, executor: ApiExecutor<CheckIsSoterEnrolledInDeviceSuccess>)=>{
+        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            if (allRight) {
+                try {
+                    const isEnrolled = harmonyCheckIsSoterEnrolledInDevice(args.checkAuthMode);
+                    executor.resolve({
+                        isEnrolled,
+                        errMsg: ''
+                    } as CheckIsSoterEnrolledInDeviceSuccess);
+                } catch (error) {
+                    const code = (error as BusinessError1).code;
+                    executor.reject(getErrorMessage(code), {
+                        errCode: getUniErrMsg(code)
+                    } as ApiError);
+                }
+            } else {
+                executor.reject(getErrorMessage(201));
+            }
+        }, ()=>{
+            executor.reject(getErrorMessage(201));
+        });
+    }, CheckIsSoterEnrolledInDeviceProtocols, CheckIsSoterEnrolledInDeviceApiOptions) as CheckIsSoterEnrolledInDevice;
     const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer';
     const Base64ToArrayBufferProtocol = new Map<string, ProtocolOptions>([
         [
@@ -2504,79 +2793,6 @@ export function initUniExtApi(APP_ID: string) {
         const audioId = createAudioInstance();
         return AUDIOS[audioId];
     }) as CreateInnerAudioContext;
-    const defaultOptions = {
-        thresholds: [
-            0
-        ],
-        initialRatio: 0,
-        observeAll: false
-    } as CreateIntersectionObserverOptions;
-    let reqComponentObserverId = 1;
-    const normalizeRootMargin = (margins: Margins | null = {})=>{
-        if (!margins) margins = {};
-        const top = Number(margins.top) || 0;
-        const right = Number(margins.right) || 0;
-        const bottom = Number(margins.bottom) || 0;
-        const left = Number(margins.left) || 0;
-        return `${top}px ${right}px ${bottom}px ${left}px`;
-    };
-    class ServiceIntersectionObserver {
-        private _reqId?: number;
-        private _pageId: number;
-        private _component: ComponentPublicInstance;
-        private _options: ServiceIntersectionObserverOptions;
-        constructor(component: ComponentPublicInstance, options: CreateIntersectionObserverOptions | null = null){
-            this._pageId = getPageIdByVm(component)!;
-            this._component = component;
-            if (options) {
-                if (typeof options.thresholds === 'undefined') options.thresholds = defaultOptions.thresholds;
-                if (typeof options.initialRatio === 'undefined') options.initialRatio = defaultOptions.initialRatio;
-                if (typeof options.observeAll === 'undefined') options.observeAll = defaultOptions.observeAll;
-            }
-            this._options = (options ?? defaultOptions) as ServiceIntersectionObserverOptions;
-        }
-        relativeTo(selector: string, margins: Margins | null = null) {
-            this._options.relativeToSelector = selector;
-            this._options.rootMargin = normalizeRootMargin(margins);
-            return this;
-        }
-        relativeToViewport(margins: Margins | null = null) {
-            this._options.relativeToSelector = undefined;
-            this._options.rootMargin = normalizeRootMargin(margins);
-            return this;
-        }
-        observe(selector: string, callback: ObserveCallback) {
-            if (!isFunction(callback)) {
-                return;
-            }
-            this._options.selector = selector;
-            this._reqId = reqComponentObserverId++;
-            addIntersectionObserver({
-                reqId: this._reqId,
-                component: this._component,
-                options: this._options,
-                callback
-            } as AddIntersectionObserverArgs, this._pageId);
-        }
-        disconnect() {
-            this._reqId && removeIntersectionObserver({
-                reqId: this._reqId,
-                component: this._component
-            } as RemoveIntersectionObserverArgs, this._pageId);
-        }
-    }
-    const createIntersectionObserver = defineSyncApi<IntersectionObserver>('createIntersectionObserver', (context: ComponentPublicInstance | null, options: CreateIntersectionObserverOptions | null = null)=>{
-        let _options: ComponentPublicInstance | CreateIntersectionObserverOptions | null = options;
-        context = resolveComponentInstance(context);
-        if (context && !getPageIdByVm(context)) {
-            _options = context;
-            context = null;
-        }
-        if (context) {
-            return new ServiceIntersectionObserver(context as ComponentPublicInstance, _options as CreateIntersectionObserverOptions);
-        }
-        return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
-    }) as CreateIntersectionObserver;
     const API_$_ON = '$on';
     const API_$_ONCE = '$once';
     const API_$_OFF = '$off';
@@ -2596,7 +2812,7 @@ export function initUniExtApi(APP_ID: string) {
     }) as $Emit;
     const API_EXIT = 'exit';
     const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
-        UTSHarmony1.exit();
+        UTSHarmony2.exit();
     }) as Exit;
     const API_SAVE_FILE = 'saveFile';
     const API_GET_FILE_INFO = 'getFileInfo';
@@ -2759,20 +2975,20 @@ export function initUniExtApi(APP_ID: string) {
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony2.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony3.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony2.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony2.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony2.getAppId() as string,
+            appId: UTSHarmony3.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony2.getAppName() as string,
-            appTheme: UTSHarmony2.getAppTheme() as string,
+            appName: UTSHarmony3.getAppName() as string,
+            appTheme: UTSHarmony3.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony2.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony3.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -2958,14 +3174,14 @@ export function initUniExtApi(APP_ID: string) {
             return backgroundTaskManager.startBackgroundRunning(getAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
         }).then(()=>{
             console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
-        }).catch((err: BusinessError1)=>{
+        }).catch((err: BusinessError2)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
     const stopBackgroundTask = ()=>{
         backgroundTaskManager.stopBackgroundRunning(getAbilityContext()!).then(()=>{
             console.debug('[getBackgroundAudioManager]  stop operation succeeded');
-        }).catch((err: BusinessError1)=>{
+        }).catch((err: BusinessError2)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
@@ -3086,7 +3302,7 @@ export function initUniExtApi(APP_ID: string) {
                     const fd = getFdFromUriOrSandBoxPath1(value);
                     path = `fd://${fd}`;
                 } catch (err) {
-                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError1).message, (err as BusinessError1).code));
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError2).message, (err as BusinessError2).code));
                 }
             }
             if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
@@ -3279,7 +3495,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony3.getOsTheme() as string,
+            osTheme: UTSHarmony4.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -3289,7 +3505,7 @@ export function initUniExtApi(APP_ID: string) {
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
     const API_GET_NETWORK_TYPE = 'getNetworkType';
-    const PERMISSIONS = [
+    const PERMISSIONS1 = [
         'ohos.permission.GET_NETWORK_INFO'
     ];
     enum NetworkinfoType {
@@ -3322,7 +3538,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const networkGetType = ()=>{
         return new Promise<number>((resolve, reject)=>{
-            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
                         radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
@@ -3334,7 +3550,7 @@ export function initUniExtApi(APP_ID: string) {
                             }
                         });
                     } catch (error) {
-                        reject(error as BusinessError2);
+                        reject(error as BusinessError3);
                     }
                 } else {
                     reject('permission denied');
@@ -3356,7 +3572,7 @@ export function initUniExtApi(APP_ID: string) {
     }
     const getCurrentType = ()=>{
         return new Promise<number>((resolve, reject)=>{
-            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight) {
                     try {
                         connection.getDefaultNet().then((data: connection.NetHandle)=>{
@@ -3376,7 +3592,7 @@ export function initUniExtApi(APP_ID: string) {
                                             resolve(NetworkinfoType.UNKNOW);
                                         }
                                     }
-                                }).catch((err: BusinessError2)=>{
+                                }).catch((err: BusinessError3)=>{
                                     reject(err);
                                 });
                             }
@@ -3399,9 +3615,9 @@ export function initUniExtApi(APP_ID: string) {
             if (!Network.netConnection) {
                 Network.netConnection = connection.createNetConnection();
             }
-            UTSHarmony4.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight && Network.netConnection) {
-                    Network.netConnection.register((err: BusinessError2)=>{});
+                    Network.netConnection.register((err: BusinessError3)=>{});
                     Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
                         const NetBearType = capability?.netCap?.bearerTypes[0];
                         let networkType = '';
@@ -3432,7 +3648,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     new Network();
-    UTSHarmony4.appLifeCycle.once('onCreate', ()=>{
+    UTSHarmony5.appLifeCycle.once('onCreate', ()=>{
         Network.ohoSubscribe();
     });
     const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
@@ -3440,7 +3656,7 @@ export function initUniExtApi(APP_ID: string) {
             res.resolve({
                 networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError2)=>{
+        }).catch((err: BusinessError3)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
@@ -3623,7 +3839,7 @@ export function initUniExtApi(APP_ID: string) {
                             break;
                     }
                 });
-                this.avRecorder.on('error', (err: BusinessError3)=>{
+                this.avRecorder.on('error', (err: BusinessError4)=>{
                     onRecorderStateChange('error', {
                         errMsg: `${err.message} ${err.code}`
                     } as StateChangeRes);
@@ -3657,7 +3873,7 @@ export function initUniExtApi(APP_ID: string) {
                 profile: audioProfile,
                 url: 'fd://' + file.fd
             };
-            UTSHarmony5.requestSystemPermission([
+            UTSHarmony6.requestSystemPermission([
                 'ohos.permission.MICROPHONE'
             ], async (allRight: boolean)=>{
                 if (allRight) {
@@ -3808,11 +4024,11 @@ export function initUniExtApi(APP_ID: string) {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony6.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony7.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony6.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony7.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony6.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony7.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -3825,10 +4041,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony6.getAppId() as string,
+            appId: UTSHarmony7.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony6.getAppName() as string,
-            appTheme: UTSHarmony6.getAppTheme() as string,
+            appName: UTSHarmony7.getAppName() as string,
+            appTheme: UTSHarmony7.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -3844,7 +4060,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony6.getOsTheme() as string,
+            osTheme: UTSHarmony7.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -3910,7 +4126,7 @@ export function initUniExtApi(APP_ID: string) {
     const dial = (number: string, confirm = true)=>{
         if (!confirm && typeof call.dial === 'function') {
             return new Promise<void>((resolve, reject)=>{
-                UTSHarmony7.requestSystemPermission([
+                UTSHarmony8.requestSystemPermission([
                     'ohos.permission.PLACE_CALL'
                 ], (allRight: boolean)=>{
                     if (allRight) {
@@ -3931,7 +4147,7 @@ export function initUniExtApi(APP_ID: string) {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError4<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError5<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -6111,13 +6327,13 @@ export function initUniExtApi(APP_ID: string) {
     const API_HIDE_LOADING = 'hideLoading';
     const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>)=>{
         try {
-            promptAction.showToast({
+            promptAction1.showToast({
                 message: options.title,
                 duration: options.duration!
-            } as promptAction.ShowToastOptions);
+            } as promptAction1.ShowToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
-            let message = (error as BusinessError5).message;
+            let message = (error as BusinessError6).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -6176,7 +6392,7 @@ export function initUniExtApi(APP_ID: string) {
         if (actionItemList.length === 0) {
             return;
         }
-        type ActionMenuButtons = [promptAction1.Button, promptAction1.Button?, promptAction1.Button?, promptAction1.Button?, promptAction1.Button?, promptAction1.Button?];
+        type ActionMenuButtons = [promptAction2.Button, promptAction2.Button?, promptAction2.Button?, promptAction2.Button?, promptAction2.Button?, promptAction2.Button?];
         const actionMenuButtons: ActionMenuButtons = [
             {
                 text: actionItemList[0],
@@ -6187,12 +6403,12 @@ export function initUniExtApi(APP_ID: string) {
             actionMenuButtons.push({
                 text: item,
                 color: options.itemColor!
-            } as promptAction1.Button);
+            } as promptAction2.Button);
         });
-        promptAction1.showActionMenu({
+        promptAction2.showActionMenu({
             title: options.title,
             buttons: actionMenuButtons
-        } as promptAction1.ActionMenuOptions).then((showACtionSheetRes)=>{
+        } as promptAction2.ActionMenuOptions).then((showACtionSheetRes)=>{
             res.resolve({
                 tapIndex: showACtionSheetRes.index
             } as ShowActionSheetSuccess);
@@ -6230,7 +6446,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony8.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony9.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -6854,11 +7070,13 @@ export function initUniExtApi(APP_ID: string) {
     return {
         addPhoneContact,
         arrayBufferToBase64,
+        startSoterAuthentication,
+        checkIsSupportSoterAuthentication,
+        checkIsSoterEnrolledInDevice,
         base64ToArrayBuffer,
         getClipboardData,
         setClipboardData,
         createInnerAudioContext,
-        createIntersectionObserver,
         $on,
         $once,
         $off,
