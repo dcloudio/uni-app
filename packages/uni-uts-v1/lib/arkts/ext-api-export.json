@@ -229,42 +229,6 @@
       "SaveVideoToPhotosAlbum"
     ],
     [
-      "SetNavigationBarColorOptions"
-    ],
-    [
-      "SetNavigationBarColorSuccess"
-    ],
-    [
-      "SetNavigationBarColor"
-    ],
-    [
-      "SetNavigationBarTitleOptions"
-    ],
-    [
-      "SetNavigationBarTitleSuccess"
-    ],
-    [
-      "SetNavigationBarTitle"
-    ],
-    [
-      "ShowNavigationBarLoadingSuccess"
-    ],
-    [
-      "ShowNavigationBarLoadingOptions"
-    ],
-    [
-      "ShowNavigationBarLoading"
-    ],
-    [
-      "HideNavigationBarLoadingSuccess"
-    ],
-    [
-      "HideNavigationBarLoadingOptions"
-    ],
-    [
-      "HideNavigationBarLoading"
-    ],
-    [
       "Request"
     ],
     [
