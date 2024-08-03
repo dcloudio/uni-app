@@ -36,15 +36,15 @@ export declare class WatchProgramHelper {
   wait(): Promise<void>
 }
 
-const RETURN_ANY_HOOKS = [
-  'onBeforeMount',
-  'onMounted',
-  'onBeforeUpdate',
-  'onUpdated',
-  'onBeforeUnmount',
-  'onUnmounted',
-  'onServerPrefetch',
-]
+// const RETURN_ANY_HOOKS = [
+//   'onBeforeMount',
+//   'onMounted',
+//   'onBeforeUpdate',
+//   'onUpdated',
+//   'onBeforeUnmount',
+//   'onUnmounted',
+//   'onServerPrefetch',
+// ]
 
 export function runUTS2Kotlin(
   mode: 'development' | 'production',
@@ -60,6 +60,9 @@ export function runUTS2Kotlin(
     pluginPath,
     'hbuilderx-language-services/builtin-dts'
   )
+
+  const hasHbxLanguageService = fs.existsSync(hbxLanguageServicePath)
+
   const commonTypesPath = path.resolve(__dirname, '../../../lib/tsconfig')
   const utsCommonTypesPath = path.resolve(__dirname, '../../../lib/uts/types')
   const utsKotlinTypesPath = path.resolve(
@@ -68,35 +71,48 @@ export function runUTS2Kotlin(
   )
 
   const rootFiles: string[] = [
-    path.resolve(
-      hbxLanguageServicePath,
-      'uniappx/node_modules/@dcloudio/uni-app-x/types/shim-uts-basic.d.ts'
-    ),
     path.resolve(commonTypesPath, 'global.d.ts'),
     path.resolve(utsKotlinTypesPath, 'global.d.ts'),
     path.resolve(utsCommonTypesPath, 'index.d.ts'),
-    path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
-    ...resolvePlatformDeclarationFiles(hbxLanguageServicePath, 'app-android'),
-    // path.resolve(hbxLanguageServicePath, 'common/HBuilderX.d.ts'),
-    path.resolve(
-      pluginPath,
-      'uniapp-cli-vite/node_modules/@dcloudio/types/hbuilder-x/HBuilderX.d.ts'
-    ),
-    path.resolve(
-      hbxLanguageServicePath,
-      'uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts'
-    ),
-    path.resolve(
-      hbxLanguageServicePath,
-      'uniappx/node_modules/@vue/global.d.ts'
-    ),
   ]
-  rootFiles.push(path.resolve(options.inputDir, 'main.uts.ts'))
+  const hbxDts = path.resolve(
+    pluginPath,
+    'uniapp-cli-vite/node_modules/@dcloudio/types/hbuilder-x/HBuilderX.d.ts'
+  )
+  if (fs.existsSync(hbxDts)) {
+    rootFiles.push(hbxDts)
+  }
+  if (hasHbxLanguageService) {
+    rootFiles.push(
+      ...[
+        path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
+        ...resolvePlatformDeclarationFiles(
+          hbxLanguageServicePath,
+          'app-android'
+        ),
+        // path.resolve(hbxLanguageServicePath, 'common/HBuilderX.d.ts'),
+        path.resolve(
+          hbxLanguageServicePath,
+          'uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts'
+        ),
+        path.resolve(
+          hbxLanguageServicePath,
+          'uniappx/node_modules/@vue/global.d.ts'
+        ),
+      ]
+    )
+  }
+
+  if (options.rootFiles && options.rootFiles.length) {
+    rootFiles.push(...options.rootFiles)
+  } else {
+    rootFiles.push(path.resolve(options.inputDir, 'main.uts.ts'))
+  }
 
   const vueRuntimeDts = [
     path.resolve(
-      pluginPath,
-      'uniapp-cli-vite/node_modules/@vue/runtime-core/dist/runtime-core.d.ts'
+      utsCommonTypesPath,
+      '@vue/runtime-core/dist/runtime-core.d.ts'
     ),
   ]
 
@@ -121,10 +137,13 @@ export function runUTS2Kotlin(
           '@dcloudio/uni-runtime/dist/uni-runtime.d.ts'
         ),
       ],
+      '@vue/shared': [
+        path.resolve(utsCommonTypesPath, '@vue/shared/dist/shared.d.ts'),
+      ],
       '@vue/reactivity': [
         path.resolve(
-          hbxLanguageServicePath,
-          'uniappx/node_modules/@vue/reactivity/dist/reactivity.d.ts'
+          utsCommonTypesPath,
+          '@vue/reactivity/dist/reactivity.d.ts'
         ),
       ],
       '@vue/runtime-core': vueRuntimeDts,
@@ -147,7 +166,6 @@ export function runUTS2Kotlin(
       transformOptions: TransformOptions
     }
   >
-
   return require('../../../lib/kotlin').compile(mode, {
     typescript: ts,
     inputDir: options.inputDir,
@@ -200,7 +218,7 @@ export function runUTS2Kotlin(
           if (node.parent && ts.isCallExpression(node.parent)) {
             const decl = node.parent.expression
             if (ts.isIdentifier(decl)) {
-              if (RETURN_ANY_HOOKS.includes(decl.text)) {
+              if (['provider'].includes(decl.text)) {
                 return false
               }
             }

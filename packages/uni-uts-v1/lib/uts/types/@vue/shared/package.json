@@ -1,0 +1,6 @@
+{
+  "name": "@vue/shared",
+  "version": "3.4.21",
+  "description": "@vue/shared",
+  "types": "dist/shared.d.ts"
+}

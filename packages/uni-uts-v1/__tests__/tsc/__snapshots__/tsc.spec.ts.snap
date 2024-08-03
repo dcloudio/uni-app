@@ -1,0 +1,27 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`android returnType 1`] = `
+"import { createElementVNode, defineComponent } from 'vue';
+const __sfc__ = defineComponent({
+    methods: {
+        num(): number {
+            return 1;
+        },
+        str(): string {
+            return '';
+        },
+        bool(): boolean {
+            return true;
+        },
+    },
+});
+function render(this: InstanceType<typeof __sfc__>): any | null {
+    const _ctx = this;
+    return createElementVNode('view', utsMapOf({
+        num: (): number => _ctx.num(),
+        str: (): string => _ctx.str(),
+        bool: (): boolean => _ctx.bool(),
+    }));
+}
+"
+`;

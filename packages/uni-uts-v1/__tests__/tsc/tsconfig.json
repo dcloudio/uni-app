@@ -1,0 +1,23 @@
+{
+  "compilerOptions": {
+    "noImplicitAny": false,
+    "useDefineForClassFields": false,
+    "sourceMap": false,
+    "noEmitOnError": false,
+    "skipLibCheck": true,
+    "resolveJsonModule": false,
+    "typeRoots": [],
+    "paths": {
+      "vue": ["../../lib/uts/types/@vue/runtime-core/dist/runtime-core.d.ts"],
+      "@vue/runtime-core": [
+        "../../lib/uts/types/@vue/runtime-core/dist/runtime-core.d.ts"
+      ]
+    }
+  },
+  "include": [
+    "android/*/src",
+    "../../lib/kotlin/types/global.d.ts",
+    "../../lib/uts/types/index.d.ts",
+    "../../lib/uts/types/common/index.d.ts"
+  ]
+}
