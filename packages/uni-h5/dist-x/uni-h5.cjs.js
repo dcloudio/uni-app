@@ -13620,28 +13620,23 @@ function createDialogPageVNode(dialogPages) {
     null,
     vue.renderList(dialogPages.value, (dialogPage) => {
       return vue.openBlock(), vue.createBlock(
-        vue.Suspense,
-        {},
-        {
-          default: vue.withCtx(() => [
-            vue.createVNode(
-              dialogPage.component,
-              {
-                style: {
-                  position: "fixed",
-                  "z-index": 999,
-                  top: 0,
-                  right: 0,
-                  bottom: 0,
-                  left: 0
-                },
-                type: "dialog",
-                route: dialogPage.route
-              },
-              null
-            )
-          ])
-        }
+        vue.createVNode(
+          dialogPage.component,
+          {
+            key: dialogPage.route,
+            style: {
+              position: "fixed",
+              "z-index": 999,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
+            },
+            type: "dialog",
+            route: dialogPage.route
+          },
+          null
+        )
       );
     })
   );

@@ -3,7 +3,6 @@ import {
   Fragment,
   type Ref,
   type SetupContext,
-  Suspense,
   createBlock,
   createElementBlock,
   createVNode,
@@ -102,28 +101,23 @@ function createDialogPageVNode(dialogPages: Ref<UniDialogPage[]>) {
         return (
           openBlock(),
           createBlock(
-            Suspense,
-            {},
-            {
-              default: withCtx(() => [
-                createVNode(
-                  dialogPage.component,
-                  {
-                    style: {
-                      position: 'fixed',
-                      'z-index': 999,
-                      top: 0,
-                      right: 0,
-                      bottom: 0,
-                      left: 0,
-                    },
-                    type: 'dialog',
-                    route: dialogPage.route,
-                  },
-                  null
-                ),
-              ]),
-            }
+            createVNode(
+              dialogPage.component,
+              {
+                key: dialogPage.route,
+                style: {
+                  position: 'fixed',
+                  'z-index': 999,
+                  top: 0,
+                  right: 0,
+                  bottom: 0,
+                  left: 0,
+                },
+                type: 'dialog',
+                route: dialogPage.route,
+              },
+              null
+            )
           )
         )
       })
