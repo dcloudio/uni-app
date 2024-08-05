@@ -21,6 +21,8 @@ import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError6 } from '@ohos.base';
+import { BusinessError as BusinessError7 } from '@ohos.base';
+import { BusinessError as BusinessError8 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter5 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
@@ -69,6 +71,9 @@ import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmo
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv2, Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
@@ -100,6 +105,9 @@ import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
 import { userAuth } from '@kit.UserAuthenticationKit';
 import { wantAgent } from '@kit.AbilityKit';
+import { window as window1 } from '@kit.ArkUI';
+import { window as window2 } from '@kit.ArkUI';
+import { window } from '@kit.ArkUI';
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
 }
@@ -6128,8 +6136,15 @@ export function initUniExtApi(APP_ID: string) {
                         break;
                 }
             }
-            promptAction1.showToast(showToastOptions);
-            res.resolve({} as ShowToastSuccess);
+            window.getLastWindow(getAbilityContext4()!, (err: BusinessError6, window: window.Window)=>{
+                const errCode: number = err.code;
+                if (errCode) {
+                    console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
+                    return;
+                }
+                window.getUIContext().getPromptAction().showToast(showToastOptions);
+                res.resolve({} as ShowToastSuccess);
+            });
         } catch (error) {
             let message = (error as BusinessError6).message;
             res.reject(message);
@@ -6163,18 +6178,25 @@ export function initUniExtApi(APP_ID: string) {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            AlertDialog.show({
-                title: args.title ?? '',
-                message: args.content ?? '',
-                autoCancel: false,
-                alignment: DialogAlignment.Center,
-                buttons,
-                cancel: ()=>{
-                    resolve({
-                        'cancel': true
-                    } as ShowModalSuccess);
+            window1.getLastWindow(getAbilityContext5()!, (err: BusinessError7, window: window1.Window)=>{
+                const errCode: number = err.code;
+                if (errCode) {
+                    console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
+                    return;
                 }
-            } as AlertDialogParamWithOptions);
+                window.getUIContext().showAlertDialog({
+                    title: args.title ?? '',
+                    message: args.content ?? '',
+                    autoCancel: false,
+                    alignment: DialogAlignment.Center,
+                    buttons,
+                    cancel: ()=>{
+                        resolve({
+                            'cancel': true
+                        } as ShowModalSuccess);
+                    }
+                } as AlertDialogParamWithOptions);
+            });
         });
         if (modalRes.confirm) {
             modalRes.cancel = false;
@@ -6203,19 +6225,26 @@ export function initUniExtApi(APP_ID: string) {
                 color: options.itemColor!
             } as promptAction2.Button);
         });
-        promptAction2.showActionMenu({
-            title: options.title,
-            buttons: actionMenuButtons
-        } as promptAction2.ActionMenuOptions).then((showACtionSheetRes)=>{
-            res.resolve({
-                tapIndex: showACtionSheetRes.index
-            } as ShowActionSheetSuccess);
-        }).catch((e: Error)=>{
-            if (e.message === 'cancel') {
-                res.reject('cancel');
+        window2.getLastWindow(getAbilityContext6()!, (err: BusinessError8, window: window2.Window)=>{
+            const errCode: number = err.code;
+            if (errCode) {
+                console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
                 return;
             }
-            res.reject(e.message);
+            window.getUIContext().getPromptAction().showActionMenu({
+                title: options.title,
+                buttons: actionMenuButtons
+            } as promptAction2.ActionMenuOptions).then((showACtionSheetRes)=>{
+                res.resolve({
+                    tapIndex: showACtionSheetRes.index
+                } as ShowActionSheetSuccess);
+            }).catch((e: Error)=>{
+                if (e.message === 'cancel') {
+                    res.reject('cancel');
+                    return;
+                }
+                res.reject(e.message);
+            });
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
     const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
@@ -6321,7 +6350,7 @@ export function initUniExtApi(APP_ID: string) {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext4()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext7()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -6360,7 +6389,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext5() as common3.UIAbilityContext, {
+        store = dataPreferences.getPreferencesSync(getAbilityContext8() as common3.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
