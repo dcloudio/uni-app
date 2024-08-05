@@ -2612,6 +2612,14 @@ function getPageInstanceByVm(vm) {
   }
   return pageInstance;
 }
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -8594,6 +8602,7 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
+  var _a;
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
@@ -8641,13 +8650,14 @@ function initPage(vm) {
       backgroundColorContent: pageMeta.backgroundColorContent
     });
     vm.$getDialogPages = () => {
-      var _a;
-      return ((_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPages.value) || [];
+      var _a2;
+      return ((_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPages.value) || [];
     };
     vm.$getParentPage = () => {
-      var _a, _b;
-      return ((_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
+      var _a2, _b;
+      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
     };
+    vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
   }
   {
     const pageInstance = getPageInstanceByVm(vm);
@@ -8908,6 +8918,14 @@ function setupPage(comp) {
       const route = usePageRoute();
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
+      {
+        const pageInstance = getPageInstanceByChild(instance);
+        if (pageInstance.attrs.type === "dialog") {
+          instance.attrs.__pageQuery = uniShared.decodedQuery(
+            uniShared.parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+          );
+        }
+      }
       instance.proxy.$page.options = query;
       instance.proxy.options = query;
       {

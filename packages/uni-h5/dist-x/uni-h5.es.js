@@ -17244,6 +17244,7 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
+  var _a;
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
@@ -17291,13 +17292,14 @@ function initPage(vm) {
       backgroundColorContent: pageMeta.backgroundColorContent
     });
     vm.$getDialogPages = () => {
-      var _a;
-      return ((_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPages.value) || [];
+      var _a2;
+      return ((_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPages.value) || [];
     };
     vm.$getParentPage = () => {
-      var _a, _b;
-      return ((_b = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
+      var _a2, _b;
+      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
     };
+    vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
   }
   {
     const pageInstance = getPageInstanceByVm(vm);
@@ -18553,6 +18555,14 @@ function setupPage(comp) {
       const route = usePageRoute();
       const query = decodedQuery(route.query);
       instance2.attrs.__pageQuery = query;
+      {
+        const pageInstance = getPageInstanceByChild(instance2);
+        if (pageInstance.attrs.type === "dialog") {
+          instance2.attrs.__pageQuery = decodedQuery(
+            parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+          );
+        }
+      }
       instance2.proxy.$page.options = query;
       instance2.proxy.options = query;
       const pageMeta = usePageMeta();
@@ -25242,7 +25252,7 @@ const closeDialogPage = /* @__PURE__ */ defineSyncApi(
         const index2 = parentDialogPages.indexOf(dialogPage);
         parentDialogPages.splice(index2, 1);
         invokeHook(dialogPage.$vm, ON_UNLOAD);
-        if (index2 === parentDialogPages.length) {
+        if (index2 > 0 && index2 === parentDialogPages.length) {
           invokeHook(
             parentDialogPages[parentDialogPages.length - 1].$vm,
             ON_SHOW
