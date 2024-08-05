@@ -124,6 +124,13 @@ function removeRouteCache(routeKey: string) {
 
 export function removePage(routeKey: string, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
+  if (__X__) {
+    const dialogPages = pageVm.$getDialogPages()
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      // @ts-expect-error
+      uni.closeDialogPage({ dialogPage: dialogPages[i] })
+    }
+  }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)
   currentPagesMap.delete(routeKey)

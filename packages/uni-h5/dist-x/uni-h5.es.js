@@ -17220,6 +17220,12 @@ function removeRouteCache(routeKey) {
 }
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
+  {
+    const dialogPages = pageVm.$getDialogPages();
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      uni.closeDialogPage({ dialogPage: dialogPages[i] });
+    }
+  }
   pageVm.$.__isUnload = true;
   invokeHook(pageVm, ON_UNLOAD);
   currentPagesMap.delete(routeKey);
