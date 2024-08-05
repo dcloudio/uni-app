@@ -1,6 +1,12 @@
 import { createElementVNode, defineComponent } from 'vue'
 
 const __sfc__ = defineComponent({
+  props: {
+    field: {
+      type: String,
+      default: '',
+    },
+  },
   methods: {
     num() {
       return 1

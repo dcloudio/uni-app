@@ -1579,7 +1579,7 @@ type LegacyPublicInstance = ComponentPublicInstance & LegacyPublicProperties;
 interface LegacyPublicProperties {
     $set(target: object, key: string, value: any): void;
     $delete(target: object, key: string): void;
-    $mount(el?: string | Element): this;
+    $mount(el?: string): this;
     $destroy(): void;
     $scopedSlots: Slots;
     $on(event: string | string[], fn: Function): this;
@@ -1645,6 +1645,9 @@ declare module '@vue/reactivity' {
 }
 
 export declare const DeprecationTypes: typeof DeprecationTypes$1;
+
+export declare let createApp: CreateAppFunction<Element>;
+export declare let createSSRApp: CreateAppFunction<Element>;
 
 export { createBaseVNode as createElementVNode, defineComponent as defineMixin,  };
 // Note: this file is auto concatenated to the end of the bundled d.ts during

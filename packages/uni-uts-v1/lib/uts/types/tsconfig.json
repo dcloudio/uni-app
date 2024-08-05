@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "noLib": true,
+    "noImplicitAny": false,
+    "useDefineForClassFields": false,
+    "sourceMap": false,
+    "noEmitOnError": false,
+    "skipLibCheck": false,
+    "resolveJsonModule": false,
+    "typeRoots": []
+  },
+  "include": ["**/*.d.ts"]
+}

@@ -1,10 +1,11 @@
 {
   "compilerOptions": {
+    "noLib": true,
     "noImplicitAny": false,
     "useDefineForClassFields": false,
     "sourceMap": false,
     "noEmitOnError": false,
-    "skipLibCheck": true,
+    "skipLibCheck": false,
     "resolveJsonModule": false,
     "typeRoots": [],
     "paths": {
@@ -15,7 +16,7 @@
     }
   },
   "include": [
-    "android/*/src",
+    "android/*/src/**/*.ts",
     "../../lib/kotlin/types/global.d.ts",
     "../../lib/uts/types/index.d.ts",
     "../../lib/uts/types/common/index.d.ts"
