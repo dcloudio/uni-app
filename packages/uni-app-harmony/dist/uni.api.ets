@@ -34,7 +34,7 @@ import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony5, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-app-harmony-framework";
@@ -70,14 +70,13 @@ import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmo
 import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
-import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv2, Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, getRealPath } from "@dcloudio/uni-app-harmony-framework";
-import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage2 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath2, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath4, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
 import { getResourceStr, getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
@@ -94,8 +93,8 @@ import media3 from '@ohos.multimedia.media';
 import picker1 from '@ohos.file.picker';
 import picker2 from '@ohos.file.picker';
 import picker3 from '@ohos.file.picker';
+import { promptAction as promptAction1 } from '@kit.ArkUI';
 import { promptAction } from '@kit.ArkUI';
-import promptAction1 from '@ohos.promptAction';
 import promptAction2 from '@ohos.promptAction';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
@@ -899,86 +898,6 @@ interface IPreviewImageOptions {
     current: string;
     showmenu: boolean;
 }
-type SetNavigationBarColorErrorCode = 4;
-interface SetNavigationBarColorFail extends IUniError {
-    errCode: SetNavigationBarColorErrorCode;
-}
-export class SetNavigationBarColorOptions extends UTSObject {
-    frontColor!: '#ffffff' | '#000000';
-    backgroundColor!: string.ColorString;
-    success: SetNavigationBarColorSuccessCallback | null = null;
-    fail: SetNavigationBarColorFailCallback | null = null;
-    complete: SetNavigationBarColorCompleteCallback | null = null;
-}
-export type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
-type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
-type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
-type SetNavigationBarColorComplete = AsyncApiResult;
-type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
-export type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
-type SetNavigationBarTitleErrorCode = 4;
-interface SetNavigationBarTitleFail extends IUniError {
-    errCode: SetNavigationBarTitleErrorCode;
-}
-export class SetNavigationBarTitleOptions extends UTSObject {
-    title!: string;
-    success: SetNavigationBarTitleSuccessCallback | null = null;
-    fail: SetNavigationBarTitleFailCallback | null = null;
-    complete: SetNavigationBarTitleCompleteCallback | null = null;
-}
-export type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
-type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
-type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
-type SetNavigationBarTitleComplete = AsyncApiResult;
-type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
-export type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
-export type ShowNavigationBarLoadingSuccess = AsyncApiSuccessResult;
-type ShowNavigationBarLoadingSuccessCallback = (result: ShowNavigationBarLoadingSuccess) => void;
-interface ShowNavigationBarLoadingFail extends IUniError {
-}
-type ShowNavigationBarLoadingFailCallback = (error: ShowNavigationBarLoadingFail) => void;
-export class ShowNavigationBarLoadingOptions extends UTSObject {
-    success: ShowNavigationBarLoadingSuccessCallback | null = null;
-    fail: ShowNavigationBarLoadingFailCallback | null = null;
-    complete: (() => void) | null = null;
-}
-export type ShowNavigationBarLoading = (options?: ShowNavigationBarLoadingOptions | null) => void;
-export type HideNavigationBarLoadingSuccess = AsyncApiSuccessResult;
-type HideNavigationBarLoadingSuccessCallback = (result: HideNavigationBarLoadingSuccess) => void;
-interface HideNavigationBarLoadingFail extends IUniError {
-}
-type HideNavigationBarLoadingFailCallback = (error: HideNavigationBarLoadingFail) => void;
-export class HideNavigationBarLoadingOptions extends UTSObject {
-    success: HideNavigationBarLoadingSuccessCallback | null = null;
-    fail: HideNavigationBarLoadingFailCallback | null = null;
-    complete: (() => void) | null = null;
-}
-export type HideNavigationBarLoading = (options?: HideNavigationBarLoadingOptions | null) => void;
-interface TitleNView {
-    titleText: string;
-    autoBackButton?: boolean;
-    loading?: boolean;
-}
-interface BackButton {
-    color?: string;
-}
-interface PlusWebviewWebviewTitleNViewStyles {
-    backgroundColor?: string;
-    titleColor?: string;
-    titleNView?: TitleNView;
-    backButton?: BackButton;
-}
-interface Webview {
-    getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
-    setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
-}
-interface $page {
-    statusBarStyle: 'dark' | 'light';
-}
-interface Page {
-    $getAppWebview: () => Webview | null;
-    $page: $page;
-}
 export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
 export class RequestOptions<T = Object> extends UTSObject {
     url!: string;
@@ -1185,13 +1104,15 @@ type ShowToastFail = IPromptError;
 type ShowToastSuccessCallback = (res: ShowToastSuccess) => void;
 type ShowToastFailCallback = (res: ShowToastFail) => void;
 type ShowToastCompleteCallback = (res: Object) => void;
+type Icon = "success" | "error" | "fail" | "exception" | "loading" | "none";
+type Position = "top" | "center" | "bottom";
 class ShowToastOptions extends UTSObject {
     title!: string;
-    icon: "success" | "error" | "fail" | "exception" | "loading" | "none" | null = null;
+    icon: Icon | null = null;
     image: string.ImageURIString | null = null;
     mask: boolean | null = null;
     duration: number | null = null;
-    position: "top" | "center" | "bottom" | null = null;
+    position: Position | null = null;
     success: ShowToastSuccessCallback | null = null;
     fail: ShowToastFailCallback | null = null;
     complete: ShowToastCompleteCallback | null = null;
@@ -1643,10 +1564,6 @@ interface UniExtApi {
     chooseVideo: ChooseVideo;
     saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
     getVideoInfo: GetVideoInfo;
-    setNavigationBarColor: SetNavigationBarColor;
-    setNavigationBarTitle: SetNavigationBarTitle;
-    showNavigationBarLoading: ShowNavigationBarLoading;
-    hideNavigationBarLoading: HideNavigationBarLoading;
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
@@ -3648,7 +3565,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     new Network();
-    UTSHarmony5.appLifeCycle.once('onCreate', ()=>{
+    waitForCurrentNativePage().then(()=>{
         Network.ohoSubscribe();
     });
     const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
@@ -4648,7 +4565,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
-        waitForCurrentNativePage().then((nativePage: Object)=>{
+        waitForCurrentNativePage1().then((nativePage: Object)=>{
             getOSRuntime().previewImage({
                 urls: options.urls.map((url)=>getRealPath2(url) as string),
                 current: options.current || '',
@@ -4661,7 +4578,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
     const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>)=>{
-        waitForCurrentNativePage().then((nativePage: Object)=>{
+        waitForCurrentNativePage1().then((nativePage: Object)=>{
             getOSRuntime().closePreviewImage();
             exec.resolve({
                 errMsg: ''
@@ -4756,139 +4673,6 @@ export function initUniExtApi(APP_ID: string) {
             });
         });
     }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
-    const FRONT_COLORS = [
-        '#ffffff',
-        '#000000'
-    ];
-    const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
-    const SetNavigationBarColorProtocol = new Map<string, ProtocolOptions>([
-        [
-            'frontColor',
-            {
-                type: 'string',
-                required: true,
-                validator (frontColor: Object) {
-                    if (FRONT_COLORS.indexOf(frontColor as string) === -1) {
-                        return `invalid frontColor "${frontColor}"`;
-                    }
-                    return;
-                }
-            }
-        ],
-        [
-            'backgroundColor',
-            {
-                type: 'string',
-                required: true
-            }
-        ]
-    ]);
-    const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
-    const SetNavigationBarTitleProtocol = new Map<string, ProtocolOptions>([
-        [
-            'title',
-            {
-                type: 'string',
-                required: true
-            }
-        ]
-    ]);
-    const getWebview = (page: Page): Webview | null =>{
-        const webview = page.$getAppWebview();
-        return webview;
-    };
-    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (args: SetNavigationBarColorOptions, executor: ApiExecutor<SetNavigationBarColorSuccess>)=>{
-        const page = getCurrentPage() as Page;
-        if (!page) {
-            return executor.reject(`getCurrentPages is empty`);
-        }
-        const webview = getWebview(page);
-        if (webview) {
-            const styles: PlusWebviewWebviewTitleNViewStyles = {};
-            if (args.frontColor) {
-                styles.titleColor = args.frontColor;
-            }
-            if (args.backgroundColor) {
-                styles.backgroundColor = args.backgroundColor;
-            }
-            const statusBarStyle = args.frontColor === '#000000' ? 'dark' : 'light';
-            navigator.setStatusBarStyle(statusBarStyle);
-            page.$page.statusBarStyle = statusBarStyle;
-            const style = webview.getStyle();
-            if (style && style.titleNView) {
-                if (style.titleNView.autoBackButton) {
-                    styles.backButton = styles.backButton || {};
-                    styles.backButton.color = args.frontColor;
-                }
-                webview.setStyle({
-                    titleNView: styles as TitleNView
-                } as PlusWebviewWebviewTitleNViewStyles);
-            }
-            executor.resolve();
-        } else {
-            executor.reject();
-        }
-    }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
-    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: SetNavigationBarTitleOptions, executor: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
-        const page = getCurrentPage() as Page;
-        if (!page) {
-            return executor.reject(`getCurrentPages is empty`);
-        }
-        const webview = getWebview(page);
-        if (webview) {
-            const style = webview.getStyle();
-            if (style && style.titleNView) {
-                webview.setStyle({
-                    titleNView: {
-                        titleText: args.title
-                    } as TitleNView
-                } as PlusWebviewWebviewTitleNViewStyles);
-            }
-            executor.resolve();
-        } else {
-            executor.reject();
-        }
-    }, SetNavigationBarTitleProtocol) as SetNavigationBarTitle;
-    const showNavigationBarLoading: ShowNavigationBarLoading = defineAsyncApi<ShowNavigationBarLoadingOptions, ShowNavigationBarLoadingSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: ShowNavigationBarLoadingOptions, executor: ApiExecutor<ShowNavigationBarLoadingSuccess>)=>{
-        const page = getCurrentPage() as Page;
-        if (!page) {
-            return executor.reject(`getCurrentPages is empty`);
-        }
-        const webview = getWebview(page);
-        if (webview) {
-            const style = webview.getStyle();
-            if (style && style.titleNView) {
-                webview.setStyle({
-                    titleNView: {
-                        loading: true
-                    } as TitleNView
-                } as PlusWebviewWebviewTitleNViewStyles);
-            }
-            executor.resolve();
-        } else {
-            executor.reject();
-        }
-    }) as ShowNavigationBarLoading;
-    const hideNavigationBarLoading: HideNavigationBarLoading = defineAsyncApi<HideNavigationBarLoadingOptions, HideNavigationBarLoadingSuccess>(API_SET_NAVIGATION_BAR_TITLE, (args: HideNavigationBarLoadingOptions, executor: ApiExecutor<HideNavigationBarLoadingSuccess>)=>{
-        const page = getCurrentPage() as Page;
-        if (!page) {
-            return executor.reject(`getCurrentPages is empty`);
-        }
-        const webview = getWebview(page);
-        if (webview) {
-            const style = webview.getStyle();
-            if (style && style.titleNView) {
-                webview.setStyle({
-                    titleNView: {
-                        loading: false
-                    } as TitleNView
-                } as PlusWebviewWebviewTitleNViewStyles);
-            }
-            executor.resolve();
-        } else {
-            executor.reject();
-        }
-    }) as HideNavigationBarLoading;
     const API_REQUEST = 'request';
     const RequestApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -6327,10 +6111,24 @@ export function initUniExtApi(APP_ID: string) {
     const API_HIDE_LOADING = 'hideLoading';
     const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>)=>{
         try {
-            promptAction1.showToast({
+            const showToastOptions: promptAction1.ShowToastOptions = {
                 message: options.title,
                 duration: options.duration!
-            } as promptAction1.ShowToastOptions);
+            };
+            if (options.position) {
+                switch(options.position){
+                    case 'top':
+                        showToastOptions.alignment = Alignment.Top;
+                        break;
+                    case 'center':
+                        showToastOptions.alignment = Alignment.Center;
+                        break;
+                    case 'bottom':
+                        showToastOptions.alignment = Alignment.Bottom;
+                        break;
+                }
+            }
+            promptAction1.showToast(showToastOptions);
             res.resolve({} as ShowToastSuccess);
         } catch (error) {
             let message = (error as BusinessError6).message;
@@ -6421,7 +6219,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
     const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
-        waitForCurrentNativePage1().then((nativePage: Object)=>{
+        waitForCurrentNativePage2().then((nativePage: Object)=>{
             getOSRuntime1().showLoading({
                 title: options.title || '',
                 mask: options.mask == null ? false : options.mask
@@ -6430,7 +6228,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
     const hideLoading: HideLoading = defineSyncApi<void>(API_HIDE_LOADING, ()=>{
-        waitForCurrentNativePage1().then((nativePage: Object)=>{
+        waitForCurrentNativePage2().then((nativePage: Object)=>{
             getOSRuntime1().hideLoading();
         });
     }) as HideLoading;
@@ -7110,10 +6908,6 @@ export function initUniExtApi(APP_ID: string) {
         chooseVideo,
         saveVideoToPhotosAlbum,
         getVideoInfo,
-        setNavigationBarColor,
-        setNavigationBarTitle,
-        showNavigationBarLoading,
-        hideNavigationBarLoading,
         request,
         uploadFile,
         downloadFile,
