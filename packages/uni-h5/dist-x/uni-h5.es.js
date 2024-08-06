@@ -25149,6 +25149,10 @@ class CanvasContextImpl {
   toDataURL(type, encoderOptions) {
     return this._element.toDataURL(type, encoderOptions);
   }
+  // @ts-expect-error TODO 类型不匹配?
+  createImage() {
+    return new Image();
+  }
 }
 const createCanvasContextAsync = function(options) {
   var _a, _b, _c, _d, _e, _f;

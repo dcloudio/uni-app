@@ -2296,8 +2296,9 @@ var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasConte
   }
   resolve({
     getContext: element.getContext.bind(element),
+    toDataURL: element.toDataURL.bind(element),
     // @ts-expect-error waiting for uni-app-x type update
-    toDataURL: element.toDataURL.bind(element)
+    createImage: element.createImage.bind(element)
   });
 });
 function queryElementTop(component, selector) {
@@ -2445,10 +2446,8 @@ var env = {
 var requestAnimationFrame = /* @__PURE__ */ defineSyncApi("requestAnimationFrame", (callback) => {
   return globalThis.__uniappx__.requestAnimationFrame(callback);
 });
-var cancelAnimationFrame = /* @__PURE__ */ defineSyncApi("cancelAnimationFrame", () => {
-  return function(taskId) {
-    globalThis.__uniappx__.cancelAnimationFrame(taskId);
-  };
+var cancelAnimationFrame = /* @__PURE__ */ defineSyncApi("cancelAnimationFrame", (taskId) => {
+  globalThis.__uniappx__.cancelAnimationFrame(Number(taskId));
 });
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
