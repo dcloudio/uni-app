@@ -25186,116 +25186,118 @@ const requestAnimationFrame$1 = function(callback) {
 const cancelAnimationFrame$1 = function(handle) {
   window.cancelAnimationFrame(handle);
 };
-const openDialogPage = /* @__PURE__ */ defineSyncApi(
-  "openDialogPage",
-  (options) => {
-    var _a, _b, _c, _d;
-    const targetRoute = __uniRoutes.find((route) => {
-      return options.url.indexOf(route.meta.route) !== -1;
-    });
-    const dialogPage = new DialogPage({
-      route: options.url,
-      component: targetRoute.component,
-      $getParentPage: () => null,
-      $disableEscBack: options.disableEscBack
-    });
-    let parentPage = options.parentPage;
-    const currentPages = getCurrentPages();
-    if (parentPage) {
-      if (currentPages.indexOf(parentPage) === -1) {
-        const failOptions = {
-          errMsg: "openDialogPage: fail, parentPage is not a valid page"
-        };
-        (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
-        (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
-        return null;
-      }
+const openDialogPage = (options) => {
+  var _a, _b;
+  if (!options.url) {
+    triggerFailCallback$1(options, "url is required");
+    return null;
+  }
+  const normalizeUrl = createNormalizeUrl("navigateTo");
+  const errMsg = normalizeUrl(options.url, {});
+  if (errMsg) {
+    triggerFailCallback$1(options, errMsg);
+    return null;
+  }
+  const targetRoute = __uniRoutes.find((route) => {
+    return options.url.indexOf(route.meta.route) !== -1;
+  });
+  if (!targetRoute) {
+    triggerFailCallback$1(options, `page '${options.url}' is not found`);
+    return null;
+  }
+  const dialogPage = new DialogPage({
+    route: options.url,
+    component: targetRoute.component,
+    $getParentPage: () => null,
+    $disableEscBack: options.disableEscBack
+  });
+  let parentPage = options.parentPage;
+  const currentPages = getCurrentPages();
+  if (parentPage) {
+    if (currentPages.indexOf(parentPage) === -1) {
+      triggerFailCallback$1(options, "parentPage is not a valid page");
+      return null;
     }
-    if (!currentPages.length) {
-      homeDialogPages.push(dialogPage);
+  }
+  if (!currentPages.length) {
+    homeDialogPages.push(dialogPage);
+  } else {
+    if (!parentPage) {
+      parentPage = currentPages[currentPages.length - 1];
+    }
+    dialogPage.$getParentPage = () => parentPage;
+    getPageInstanceByVm(
+      parentPage
+    ).$dialogPages.value.push(dialogPage);
+  }
+  if (!options.disableEscBack) {
+    incrementEscBackPageNum();
+  }
+  const successOptions = {
+    errMsg: "openDialogPage: ok",
+    eventChannel: new EventChannel(0, options.events)
+  };
+  (_a = options.success) == null ? void 0 : _a.call(options, successOptions);
+  (_b = options.complete) == null ? void 0 : _b.call(options, successOptions);
+  return dialogPage;
+};
+function triggerFailCallback$1(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError("uni-openDialogPage", 4, `openDialogPage: fail, ${errMsg}`);
+  (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
+const closeDialogPage = (options) => {
+  var _a, _b, _c;
+  const currentPages = getCurrentPages();
+  const currentPage = currentPages[currentPages.length - 1];
+  if (!currentPages) {
+    triggerFailCallback(options, "currentPage is null");
+    return;
+  }
+  if (options == null ? void 0 : options.dialogPage) {
+    const dialogPage = options == null ? void 0 : options.dialogPage;
+    const parentPage = (_a = dialogPage.$getParentPage) == null ? void 0 : _a.call(dialogPage);
+    if (parentPage && currentPages.indexOf(parentPage) !== -1) {
+      const parentDialogPages = parentPage.$getDialogPages();
+      const index2 = parentDialogPages.indexOf(dialogPage);
+      parentDialogPages.splice(index2, 1);
+      invokeHook(dialogPage.$vm, ON_UNLOAD);
+      if (index2 > 0 && index2 === parentDialogPages.length) {
+        invokeHook(
+          parentDialogPages[parentDialogPages.length - 1].$vm,
+          ON_SHOW
+        );
+      }
+      if (!dialogPage.$disableEscBack) {
+        decrementEscBackPageNum();
+      }
     } else {
-      if (!parentPage) {
-        parentPage = currentPages[currentPages.length - 1];
-      }
-      dialogPage.$getParentPage = () => parentPage;
-      getPageInstanceByVm(
-        parentPage
-      ).$dialogPages.value.push(dialogPage);
-    }
-    if (!options.disableEscBack) {
-      incrementEscBackPageNum();
-    }
-    const successOptions = {
-      errMsg: "openDialogPage: ok",
-      eventChannel: new EventChannel(0, options.events)
-    };
-    (_c = options.success) == null ? void 0 : _c.call(options, successOptions);
-    (_d = options.complete) == null ? void 0 : _d.call(options, successOptions);
-    return dialogPage;
-  },
-  {
-    url: {
-      type: String,
-      required: true
-    }
-  },
-  // @ts-expect-error
-  NavigateToOptions
-);
-const closeDialogPage = /* @__PURE__ */ defineSyncApi(
-  "closeDialogPage",
-  (options) => {
-    var _a, _b, _c, _d, _e, _f, _g;
-    const currentPages = getCurrentPages();
-    const currentPage = currentPages[currentPages.length - 1];
-    if (!currentPages) {
-      const failOptions = { errMsg: "currentPage is null" };
-      (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
-      (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
+      triggerFailCallback(options, "dialogPage is not a valid page");
       return;
     }
-    if (options == null ? void 0 : options.dialogPage) {
-      const dialogPage = options == null ? void 0 : options.dialogPage;
-      const parentPage = (_c = dialogPage.$getParentPage) == null ? void 0 : _c.call(dialogPage);
-      if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-        const parentDialogPages = parentPage.$getDialogPages();
-        const index2 = parentDialogPages.indexOf(dialogPage);
-        parentDialogPages.splice(index2, 1);
-        invokeHook(dialogPage.$vm, ON_UNLOAD);
-        if (index2 > 0 && index2 === parentDialogPages.length) {
-          invokeHook(
-            parentDialogPages[parentDialogPages.length - 1].$vm,
-            ON_SHOW
-          );
-        }
-        if (!dialogPage.$disableEscBack) {
-          decrementEscBackPageNum();
-        }
-      } else {
-        const failOptions = {
-          errMsg: "closeDialogPage: fail, dialogPage is not a valid page"
-        };
-        (_d = options == null ? void 0 : options.fail) == null ? void 0 : _d.call(options, failOptions);
-        (_e = options == null ? void 0 : options.complete) == null ? void 0 : _e.call(options, failOptions);
-        return;
+  } else {
+    const dialogPages = getPageInstanceByVm(
+      currentPage
+    ).$dialogPages.value;
+    dialogPages.forEach((dialogPage) => {
+      invokeHook(dialogPage.$vm, ON_UNLOAD);
+      if (!dialogPage.$disableEscBack) {
+        decrementEscBackPageNum();
       }
-    } else {
-      const dialogPages = getPageInstanceByVm(
-        currentPage
-      ).$dialogPages.value;
-      dialogPages.forEach((dialogPage) => {
-        invokeHook(dialogPage.$vm, ON_UNLOAD);
-        if (!dialogPage.$disableEscBack) {
-          decrementEscBackPageNum();
-        }
-      });
-      dialogPages.length = 0;
-    }
-    const successOptions = { errMsg: "closeDialogPage: ok" };
-    (_f = options == null ? void 0 : options.success) == null ? void 0 : _f.call(options, successOptions);
-    (_g = options == null ? void 0 : options.complete) == null ? void 0 : _g.call(options, successOptions);
+    });
+    dialogPages.length = 0;
   }
-);
+  const successOptions = { errMsg: "closeDialogPage: ok" };
+  (_b = options == null ? void 0 : options.success) == null ? void 0 : _b.call(options, successOptions);
+  (_c = options == null ? void 0 : options.complete) == null ? void 0 : _c.call(options, successOptions);
+};
+function triggerFailCallback(options, errMsg) {
+  var _a, _b;
+  const failOptions = new UniError("uni-closeDialogPage", 4, `closeDialogPage: fail, ${errMsg}`);
+  (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
+  (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
+}
 window.UniResizeObserver = window.ResizeObserver;
 const api = /* @__PURE__ */ Object.defineProperty({
   __proto__: null,

@@ -1,4 +1,4 @@
-import { NavigateToOptions, defineSyncApi } from '@dcloudio/uni-api'
+import { createNormalizeUrl } from '@dcloudio/uni-api'
 
 import {
   DialogPage,
@@ -72,66 +72,76 @@ interface OpenDialogPageOptions {
   complete?: (result: OpenDialogPageComplete) => void
 }
 
-type OpenDialogPage = (options: OpenDialogPageOptions) => UniDialogPage | null
+export const openDialogPage = (
+  options: OpenDialogPageOptions
+): UniDialogPage | null => {
+  if (!options.url) {
+    triggerFailCallback(options, 'url is required')
+    return null
+  }
 
-export const openDialogPage = defineSyncApi<OpenDialogPage>(
-  'openDialogPage',
-  (options: OpenDialogPageOptions): UniDialogPage | null => {
-    const targetRoute = __uniRoutes.find((route) => {
-      return options.url.indexOf(route.meta.route) !== -1
-    })
-    const dialogPage = new DialogPage({
-      route: options.url,
-      component: targetRoute!.component,
-      $getParentPage: () => null,
-      $disableEscBack: options.disableEscBack,
-    })
+  const normalizeUrl = createNormalizeUrl('navigateTo')
+  const errMsg = normalizeUrl(options.url, {})
+  if (errMsg) {
+    triggerFailCallback(options, errMsg)
+    return null
+  }
+  const targetRoute = __uniRoutes.find((route) => {
+    return options.url.indexOf(route.meta.route) !== -1
+  })
+  if (!targetRoute) {
+    triggerFailCallback(options, `page '${options.url}' is not found`)
+    return null
+  }
+  const dialogPage = new DialogPage({
+    route: options.url,
+    component: targetRoute!.component,
+    $getParentPage: () => null,
+    $disableEscBack: options.disableEscBack,
+  })
 
-    let parentPage = options.parentPage
-    const currentPages = getCurrentPages()
-    if (parentPage) {
-      if (currentPages.indexOf(parentPage) === -1) {
-        const failOptions = {
-          errMsg: 'openDialogPage: fail, parentPage is not a valid page',
-        }
-        options.fail?.(failOptions)
-        options.complete?.(failOptions)
-        return null
-      }
+  let parentPage = options.parentPage
+  const currentPages = getCurrentPages()
+  if (parentPage) {
+    if (currentPages.indexOf(parentPage) === -1) {
+      triggerFailCallback(options, 'parentPage is not a valid page')
+      return null
     }
-    if (!currentPages.length) {
-      homeDialogPages.push(dialogPage)
-    } else {
-      if (!parentPage) {
-        parentPage = currentPages[
-          currentPages.length - 1
-        ] as ComponentPublicInstance
-      }
-      dialogPage.$getParentPage = () => parentPage as ComponentPublicInstance
-      getPageInstanceByVm(
-        parentPage as ComponentPublicInstance
-      )!.$dialogPages.value.push(dialogPage)
+  }
+  if (!currentPages.length) {
+    homeDialogPages.push(dialogPage)
+  } else {
+    if (!parentPage) {
+      parentPage = currentPages[
+        currentPages.length - 1
+      ] as ComponentPublicInstance
     }
+    dialogPage.$getParentPage = () => parentPage as ComponentPublicInstance
+    getPageInstanceByVm(
+      parentPage as ComponentPublicInstance
+    )!.$dialogPages.value.push(dialogPage)
+  }
 
-    if (!options.disableEscBack) {
-      incrementEscBackPageNum()
-    }
+  if (!options.disableEscBack) {
+    incrementEscBackPageNum()
+  }
 
-    const successOptions = {
-      errMsg: 'openDialogPage: ok',
-      eventChannel: new EventChannel(0, options.events),
-    }
-    options.success?.(successOptions)
-    options.complete?.(successOptions)
+  const successOptions = {
+    errMsg: 'openDialogPage: ok',
+    eventChannel: new EventChannel(0, options.events),
+  }
+  options.success?.(successOptions)
+  options.complete?.(successOptions)
 
-    return dialogPage
-  },
-  {
-    url: {
-      type: String,
-      required: true,
-    },
-  },
-  // @ts-expect-error
-  NavigateToOptions
-)
+  return dialogPage
+}
+
+function triggerFailCallback(options: OpenDialogPageOptions, errMsg: string) {
+  const failOptions = new UniError(
+    'uni-openDialogPage',
+    4,
+    `openDialogPage: fail, ${errMsg}`
+  )
+  options.fail?.(failOptions)
+  options.complete?.(failOptions)
+}
