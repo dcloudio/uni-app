@@ -34,9 +34,12 @@ class CanvasContextImpl implements CanvasContext {
 
   toDataURL(): string
   toDataURL(type?: string, encoderOptions?: string): string {
-    // TODO 待语法库更新后移除
-    // @ts-expect-error
     return this._element.toDataURL(type, encoderOptions)
+  }
+
+  // @ts-expect-error TODO 类型不匹配?
+  createImage(): Image {
+    return new Image()
   }
 }
 
