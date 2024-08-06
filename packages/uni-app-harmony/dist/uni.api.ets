@@ -17,12 +17,13 @@ import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError2 } from '@ohos.base';
-import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError3 } from '@ohos.base';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError6 } from '@ohos.base';
+import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError7 } from '@ohos.base';
 import { BusinessError as BusinessError8 } from '@ohos.base';
+import { BusinessError as BusinessError9 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter5 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
@@ -30,6 +31,7 @@ import Hash from '@ohos.file.hash';
 import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
+import { IUniError, UniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ApiError, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
@@ -43,7 +45,6 @@ import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ApiError, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { audio as audio1 } from '@kit.AudioKit';
 import { audio } from '@kit.AudioKit';
@@ -51,6 +52,8 @@ import { avSession } from '@kit.AVSessionKit';
 import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
+import { camera } from '@kit.CameraKit';
+import { cameraPicker } from '@kit.CameraKit';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
@@ -67,13 +70,14 @@ import fs1 from '@ohos.file.fs';
 import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
 import fs4 from '@ohos.file.fs';
-import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv2, Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
@@ -84,7 +88,7 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework
 import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath4, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
-import { getResourceStr, getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
 import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
@@ -222,6 +226,49 @@ class CheckIsSoterEnrolledInDeviceOptions extends UTSObject {
     complete: CheckIsSoterEnrolledInDeviceCompleteCallback | null = null;
 }
 type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
+type MyApiErrorCode = 9010001 | 9010002;
+type CameraType = 'back' | 'front';
+type TakePhoto = (options: TakePhotoOptions) => void;
+class TakePhotoSuccess extends UTSObject {
+    resultCode!: number;
+    resultUri!: string;
+    mediaType!: string;
+}
+type TakePhotoSuccessCallback = (res: TakePhotoSuccess) => void;
+interface TakePhotoFail extends IUniError {
+    errSubject: string;
+    errCode: MyApiErrorCode;
+}
+type TakePhotoFailCallback = (res: TakePhotoFail) => void;
+type TakePhotoComplete = Object;
+type TakePhotoCompleteCallback = (res: TakePhotoComplete) => void;
+class TakePhotoOptions extends UTSObject {
+    cameraType: CameraType | null = null;
+    success: TakePhotoSuccessCallback | null = null;
+    fail: TakePhotoFailCallback | null = null;
+    complete: TakePhotoCompleteCallback | null = null;
+}
+type TakeVideo = (options: TakeVideoOptions) => void;
+class TakeVideoSuccess extends UTSObject {
+    resultCode!: number;
+    resultUri!: string;
+    mediaType!: string;
+}
+type TakeVideoSuccessCallback = (res: TakeVideoSuccess) => void;
+interface TakeVideoFail extends IUniError {
+    errSubject: string;
+    errCode: MyApiErrorCode;
+}
+type TakeVideoFailCallback = (res: TakeVideoFail) => void;
+type TakeVideoComplete = Object;
+type TakeVideoCompleteCallback = (res: TakeVideoComplete) => void;
+class TakeVideoOptions extends UTSObject {
+    cameraType: CameraType | null = null;
+    videoDuration: number | null = null;
+    success: TakeVideoSuccessCallback | null = null;
+    fail: TakeVideoFailCallback | null = null;
+    complete: TakeVideoCompleteCallback | null = null;
+}
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
 export class SetClipboardDataSuccess extends UTSObject {
 }
@@ -531,8 +578,9 @@ interface IUniGetNetworkTypeEventEmitter {
 export class GetProviderSuccess extends UTSObject {
     service!: 'payment' | 'location';
     provider!: string[];
+    providerIds!: string[];
+    providerObjects!: UniProvider[];
     providers!: UniProvider[];
-    errMsg!: string;
 }
 type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
 type GetProviderFail = UniError;
@@ -546,12 +594,9 @@ export class GetProviderOptions extends UTSObject {
     complete: GetProviderCompleteCallback | null = null;
 }
 export type GetProvider = (options: GetProviderOptions) => void;
-export type GetProviderIds = (options: GetProviderIdsOptions) => string[] | null;
-export type GetProviderObject = (options: GetProviderObjectOptions) => UniProvider | null;
-export class GetProviderIdsOptions extends UTSObject {
-    service!: 'payment' | 'location';
-}
-export class GetProviderObjectOptions extends UTSObject {
+export type GetProviderSync = (options: GetProviderOptions) => GetProviderSuccess;
+export type GetProviderObjectById = (options: GetProviderObjectByIdOptions) => UniProvider | null;
+export class GetProviderObjectByIdOptions extends UTSObject {
     service!: 'payment' | 'location';
     provider!: string;
 }
@@ -1536,6 +1581,8 @@ interface UniExtApi {
     checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
     checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice;
     base64ToArrayBuffer: Base64ToArrayBuffer;
+    takePhoto: TakePhoto;
+    takeVideo: TakeVideo;
     getClipboardData: GetClipboardData;
     setClipboardData: SetClipboardData;
     createInnerAudioContext: CreateInnerAudioContext;
@@ -1556,8 +1603,8 @@ interface UniExtApi {
     onNetworkStatusChange: OnNetworkStatusChange;
     offNetworkStatusChange: OffNetworkStatusChange;
     getProvider: GetProvider;
-    getProviderIds: GetProviderIds;
-    getProviderObject: GetProviderObject;
+    getProviderSync: GetProviderSync;
+    getProviderObjectById: GetProviderObjectById;
     getRecorderManager: GetRecorderManager;
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
@@ -2223,6 +2270,124 @@ export function initUniExtApi(APP_ID: string) {
     const base64ToArrayBuffer: Base64ToArrayBuffer = defineSyncApi<ArrayBuffer>(API_BASE64_TO_ARRAY_BUFFER, (base64: string): ArrayBuffer =>{
         return buffer1.from(base64, 'base64').buffer;
     }, Base64ToArrayBufferProtocol) as Base64ToArrayBuffer;
+    const API_TAKE_PHONE = 'takePhoto';
+    const TakePhotoContactApiOptions: ApiOptions<TakePhotoOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'cameraType',
+                (count: number, params: TakePhotoOptions)=>{
+                    if (count == null) {
+                        params.cameraType = 'back';
+                    }
+                }
+            ]
+        ])
+    };
+    const TakePhotoContactApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'cameraType',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const API_TAKE_VIDEO = 'TakeVideo';
+    const TakeVideoContactApiOptions: ApiOptions<TakeVideoOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'cameraType',
+                (cameraType: string, params: TakeVideoOptions)=>{
+                    if (cameraType == null) {
+                        params.cameraType = 'back';
+                    }
+                }
+            ],
+            [
+                'videoDuration',
+                (videoDuration: number, params: TakeVideoOptions)=>{
+                    if (videoDuration == null) {
+                        params.videoDuration = 3000;
+                    }
+                }
+            ]
+        ])
+    };
+    const TakeVideoContactApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'cameraType',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'videoDuration',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const UniErrorSubject = 'uni-cameraPicker';
+    const MyAPIErrors: Map<MyApiErrorCode, string> = new Map([
+        [
+            9010001,
+            'custom error mseeage1'
+        ],
+        [
+            9010002,
+            'custom error mseeage2'
+        ]
+    ]);
+    class FailImpl extends UniError implements TakePhotoFail {
+        errCode: MyApiErrorCode;
+        errSubject: string;
+        constructor(errCode: MyApiErrorCode){
+            super();
+            this.errSubject = UniErrorSubject;
+            this.errCode = errCode;
+            this.errMsg = MyAPIErrors.get(errCode) ?? "";
+        }
+    }
+    const getHMCameraPosition = (cameraType: string)=>{
+        switch(cameraType){
+            case 'back':
+                return camera.CameraPosition.CAMERA_POSITION_BACK;
+            case 'front':
+                return camera.CameraPosition.CAMERA_POSITION_FRONT;
+            default:
+                return camera.CameraPosition.CAMERA_POSITION_BACK;
+        }
+    };
+    const takePhoto: TakePhoto = defineAsyncApi<TakePhotoOptions, TakePhotoSuccess>(API_TAKE_PHONE, (args: TakePhotoOptions, executor: ApiExecutor<TakePhotoSuccess>)=>{
+        try {
+            let pickerProfile: cameraPicker.PickerProfile = {
+                cameraPosition: getHMCameraPosition(args.cameraType!)
+            };
+            cameraPicker.pick(getAbilityContext()!, [
+                cameraPicker.PickerMediaType.PHOTO
+            ], pickerProfile).then((pickerResult: cameraPicker.PickerResult)=>{
+                executor.resolve(pickerResult as TakePhotoSuccess);
+            });
+        } catch (error) {
+            const _ref = error as BusinessError2, code = _ref.code, message = _ref.message;
+            executor.reject(message, new FailImpl(code as MyApiErrorCode) as ApiError);
+        }
+    }, TakePhotoContactApiProtocol, TakePhotoContactApiOptions) as TakePhoto;
+    const takeVideo: TakeVideo = defineAsyncApi<TakeVideoOptions, TakeVideoSuccess>(API_TAKE_VIDEO, (args: TakeVideoOptions, executor: ApiExecutor<TakeVideoSuccess>)=>{
+        try {
+            let pickerProfile: cameraPicker.PickerProfile = {
+                cameraPosition: getHMCameraPosition(args.cameraType!),
+                videoDuration: args.videoDuration!
+            };
+            cameraPicker.pick(getAbilityContext()!, [
+                cameraPicker.PickerMediaType.VIDEO
+            ], pickerProfile).then((pickerResult: cameraPicker.PickerResult)=>{
+                executor.resolve(pickerResult as TakeVideoSuccess);
+            });
+        } catch (error) {
+            const _ref = error as BusinessError2, code = _ref.code, message = _ref.message;
+            executor.reject(message, new FailImpl(code as MyApiErrorCode) as ApiError);
+        }
+    }, TakeVideoContactApiProtocol, TakeVideoContactApiOptions) as TakeVideo;
     const API_GET_CLIPBOARD_DATA = 'getClipboardData';
     const API_SET_CLIPBOARD_DATA = 'setClipboardData';
     const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
@@ -3069,7 +3234,7 @@ export function initUniExtApi(APP_ID: string) {
     const audioPlayerCallback = new AudioPlayerCallback1();
     let AV_SESSION: avSession.AVSession | null = null;
     const createAVSession = ()=>{
-        avSession.createAVSession(getAbilityContext()!, 'player', 'audio').then((data)=>{
+        avSession.createAVSession(getAbilityContext1()!, 'player', 'audio').then((data)=>{
             AV_SESSION = data;
         });
     };
@@ -3081,7 +3246,7 @@ export function initUniExtApi(APP_ID: string) {
         AV_SESSION = null;
     };
     const startBackgroundTask = ()=>{
-        const abilityInfo: TempAbilityInfo = getAbilityContext()!.abilityInfo;
+        const abilityInfo: TempAbilityInfo = getAbilityContext1()!.abilityInfo;
         const wantAgentInfo: wantAgent.WantAgentInfo = {
             wants: [
                 {
@@ -3096,17 +3261,17 @@ export function initUniExtApi(APP_ID: string) {
             ]
         };
         wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
-            return backgroundTaskManager.startBackgroundRunning(getAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+            return backgroundTaskManager.startBackgroundRunning(getAbilityContext1()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
         }).then(()=>{
             console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
-        }).catch((err: BusinessError2)=>{
+        }).catch((err: BusinessError3)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
     const stopBackgroundTask = ()=>{
-        backgroundTaskManager.stopBackgroundRunning(getAbilityContext()!).then(()=>{
+        backgroundTaskManager.stopBackgroundRunning(getAbilityContext1()!).then(()=>{
             console.debug('[getBackgroundAudioManager]  stop operation succeeded');
-        }).catch((err: BusinessError2)=>{
+        }).catch((err: BusinessError3)=>{
             audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
         });
     };
@@ -3227,7 +3392,7 @@ export function initUniExtApi(APP_ID: string) {
                     const fd = getFdFromUriOrSandBoxPath1(value);
                     path = `fd://${fd}`;
                 } catch (err) {
-                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError2).message, (err as BusinessError2).code));
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError3).message, (err as BusinessError3).code));
                 }
             }
             if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
@@ -3475,7 +3640,7 @@ export function initUniExtApi(APP_ID: string) {
                             }
                         });
                     } catch (error) {
-                        reject(error as BusinessError3);
+                        reject(error as BusinessError4);
                     }
                 } else {
                     reject('permission denied');
@@ -3517,7 +3682,7 @@ export function initUniExtApi(APP_ID: string) {
                                             resolve(NetworkinfoType.UNKNOW);
                                         }
                                     }
-                                }).catch((err: BusinessError3)=>{
+                                }).catch((err: BusinessError4)=>{
                                     reject(err);
                                 });
                             }
@@ -3542,7 +3707,7 @@ export function initUniExtApi(APP_ID: string) {
             }
             UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
                 if (allRight && Network.netConnection) {
-                    Network.netConnection.register((err: BusinessError3)=>{});
+                    Network.netConnection.register((err: BusinessError4)=>{});
                     Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
                         const NetBearType = capability?.netCap?.bearerTypes[0];
                         let networkType = '';
@@ -3581,7 +3746,7 @@ export function initUniExtApi(APP_ID: string) {
             res.resolve({
                 networkType: NetworkinfoType[type].toLocaleLowerCase()
             } as GetNetworkTypeSuccess);
-        }).catch((err: BusinessError3)=>{
+        }).catch((err: BusinessError4)=>{
             res.reject(err.message);
         });
     }) as GetNetworkType;
@@ -3608,33 +3773,34 @@ export function initUniExtApi(APP_ID: string) {
         'push',
         'location'
     ];
-    const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(API_GET_PROVIDER, (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void =>{
+    const _getProviderSync = (options: GetProviderOptions)=>{
         if (!SupportedProviderServiceList.includes(options.service)) {
-            exec.reject('Parameter service invalid.');
-            return;
+            return 'Parameter service invalid.';
         }
         const providers = getUniProviders(options.service);
-        const result = {
+        const providerIds = providers.map((provider): string =>{
+            return provider.id;
+        });
+        const result: GetProviderSuccess = {
             service: options.service,
-            provider: providers.map((provider): string =>{
-                return provider.id;
-            }),
-            providers,
-            errMsg: 'GetProvider:ok'
-        } as GetProviderSuccess;
-        exec.resolve(result);
+            provider: providerIds,
+            providerIds,
+            providerObjects: providers,
+            providers
+        };
+        return result;
+    };
+    const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(API_GET_PROVIDER, (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void =>{
+        const res = _getProviderSync(options);
+        if (typeof res === 'string') exec.reject(res);
+        else exec.resolve(res);
     }) as GetProvider;
-    const getProviderIds: GetProviderIds = defineSyncApi<string[]>(API_GET_PROVIDER_IDS, (options: GetProviderIdsOptions): string[] | null =>{
-        if (!SupportedProviderServiceList.includes(options.service)) {
-            return null;
-        } else {
-            const providers = getUniProviders(options.service);
-            return providers.map((provider): string =>{
-                return provider.id;
-            });
-        }
-    }) as GetProviderIds;
-    const getProviderObject: GetProviderObject = defineSyncApi<UniProvider>(API_GET_PROVIDER_OBJECT, (options: GetProviderObjectOptions): UniProvider | null =>{
+    const getProviderSync: GetProviderSync = defineSyncApi<GetProviderSuccess>(API_GET_PROVIDER_IDS, (options: GetProviderOptions): GetProviderSuccess =>{
+        const res = _getProviderSync(options);
+        if (typeof res === 'string') throw new Error(res);
+        return res;
+    }) as GetProviderSync;
+    const getProviderObjectById: GetProviderObjectById = defineSyncApi<UniProvider>(API_GET_PROVIDER_OBJECT, (options: GetProviderObjectByIdOptions): UniProvider | null =>{
         if (!SupportedProviderServiceList.includes(options.service)) {
             return null;
         } else {
@@ -3643,7 +3809,7 @@ export function initUniExtApi(APP_ID: string) {
                 return provider.id === options.provider;
             }) || null;
         }
-    }) as GetProviderObject;
+    }) as GetProviderObjectById;
     const API_GET_RECORDER_MANAGER = 'getRecorderManager';
     const callbacks: Callbacks = {
         pause: [],
@@ -3764,7 +3930,7 @@ export function initUniExtApi(APP_ID: string) {
                             break;
                     }
                 });
-                this.avRecorder.on('error', (err: BusinessError4)=>{
+                this.avRecorder.on('error', (err: BusinessError5)=>{
                     onRecorderStateChange('error', {
                         errMsg: `${err.message} ${err.code}`
                     } as StateChangeRes);
@@ -4072,7 +4238,7 @@ export function initUniExtApi(APP_ID: string) {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError5<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError6<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -4594,7 +4760,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
-        const context = getAbilityContext1() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
@@ -4603,7 +4769,7 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext1() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs2.openSync(dest, fs2.OpenMode.WRITE_ONLY);
@@ -4620,7 +4786,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext1() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -5834,7 +6000,7 @@ export function initUniExtApi(APP_ID: string) {
                 pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext2() as common1.UIAbilityContext;
+        const context = getAbilityContext3() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -5879,7 +6045,7 @@ export function initUniExtApi(APP_ID: string) {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext3() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext4() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -6121,22 +6287,20 @@ export function initUniExtApi(APP_ID: string) {
         try {
             const showToastOptions: promptAction1.ShowToastOptions = {
                 message: options.title,
-                duration: options.duration!
+                duration: options.duration!,
+                alignment: Alignment.Center
             };
             if (options.position) {
                 switch(options.position){
                     case 'top':
                         showToastOptions.alignment = Alignment.Top;
                         break;
-                    case 'center':
-                        showToastOptions.alignment = Alignment.Center;
-                        break;
                     case 'bottom':
                         showToastOptions.alignment = Alignment.Bottom;
                         break;
                 }
             }
-            window.getLastWindow(getAbilityContext4()!, (err: BusinessError6, window: window.Window)=>{
+            window.getLastWindow(getAbilityContext5()!, (err: BusinessError7, window: window.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6146,7 +6310,7 @@ export function initUniExtApi(APP_ID: string) {
                 res.resolve({} as ShowToastSuccess);
             });
         } catch (error) {
-            let message = (error as BusinessError6).message;
+            let message = (error as BusinessError7).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -6178,7 +6342,7 @@ export function initUniExtApi(APP_ID: string) {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            window1.getLastWindow(getAbilityContext5()!, (err: BusinessError7, window: window1.Window)=>{
+            window1.getLastWindow(getAbilityContext6()!, (err: BusinessError8, window: window1.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6225,7 +6389,7 @@ export function initUniExtApi(APP_ID: string) {
                 color: options.itemColor!
             } as promptAction2.Button);
         });
-        window2.getLastWindow(getAbilityContext6()!, (err: BusinessError8, window: window2.Window)=>{
+        window2.getLastWindow(getAbilityContext7()!, (err: BusinessError9, window: window2.Window)=>{
             const errCode: number = err.code;
             if (errCode) {
                 console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6350,7 +6514,7 @@ export function initUniExtApi(APP_ID: string) {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext7()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext8()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -6389,7 +6553,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext8() as common3.UIAbilityContext, {
+        store = dataPreferences.getPreferencesSync(getAbilityContext9() as common3.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
@@ -6901,6 +7065,8 @@ export function initUniExtApi(APP_ID: string) {
         checkIsSupportSoterAuthentication,
         checkIsSoterEnrolledInDevice,
         base64ToArrayBuffer,
+        takePhoto,
+        takeVideo,
         getClipboardData,
         setClipboardData,
         createInnerAudioContext,
@@ -6921,8 +7087,8 @@ export function initUniExtApi(APP_ID: string) {
         onNetworkStatusChange,
         offNetworkStatusChange,
         getProvider,
-        getProviderIds,
-        getProviderObject,
+        getProviderSync,
+        getProviderObjectById,
         getRecorderManager,
         getSystemInfo,
         getSystemInfoSync,

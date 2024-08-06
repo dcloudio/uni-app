@@ -103,16 +103,13 @@
       "GetProvider"
     ],
     [
-      "GetProviderIds"
+      "GetProviderSync"
     ],
     [
-      "GetProviderObject"
+      "GetProviderObjectById"
     ],
     [
-      "GetProviderIdsOptions"
-    ],
-    [
-      "GetProviderObjectOptions"
+      "GetProviderObjectByIdOptions"
     ],
     [
       "GetSystemInfo"
