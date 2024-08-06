@@ -32,7 +32,7 @@ const __sfc__ = defineComponent({
         };
     },
     setup(props, ctx) {
-        computed((_oldValue): boolean => {
+        computed((): boolean => {
             return props.bool;
         });
     },
