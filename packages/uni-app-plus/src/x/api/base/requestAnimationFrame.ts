@@ -1,6 +1,6 @@
 import { defineSyncApi } from '@dcloudio/uni-api'
 
-type UniRequestAnimationFrameCallback = (task: number) => void
+import type { UniRequestAnimationFrameCallback } from '@dcloudio/uni-app-x/types/uni'
 
 export const requestAnimationFrame = defineSyncApi(
   'requestAnimationFrame',

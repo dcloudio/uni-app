@@ -2,16 +2,13 @@ import { defineAsyncApi } from '@dcloudio/uni-api'
 import type { ComponentPublicInstance } from 'vue'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { isVueComponent } from './createSelectorQuery'
+import type { CanvasContext } from '@dcloudio/uni-app-x/types/uni'
 export type {
   CreateCanvasContextAsyncSuccessCallback,
   CreateCanvasContextAsyncFailCallback,
   CreateCanvasContextAsyncCompleteCallback,
   CreateCanvasContextAsyncOptions,
 } from '@dcloudio/uni-app-x/types/uni'
-
-export interface CanvasContext {
-  getContext(type: string): CanvasRenderingContext2D
-}
 
 export const createCanvasContextAsync = defineAsyncApi(
   'createCanvasContextAsync',
@@ -52,6 +49,6 @@ export const createCanvasContextAsync = defineAsyncApi(
       toDataURL: element.toDataURL.bind(element),
       // @ts-expect-error waiting for uni-app-x type update
       createImage: element.createImage.bind(element),
-    })
+    } as CanvasContext)
   }
 )
