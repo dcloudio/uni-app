@@ -9,19 +9,20 @@
 import { defineSyncApi } from '@dcloudio/uni-api'
 import { getLaunchOptions } from '@dcloudio/uni-platform'
 
-import type { GetLaunchOptionsSync } from '@dcloudio/uni-app-x/types/uni'
+import type {
+  GetLaunchOptionsSync,
+  OnLaunchOptions,
+} from '@dcloudio/uni-app-x/types/uni'
 
 const API_GET_LAUNCH_OPTIONS_SYNC = 'getLaunchOptionsSync'
 
-let launchOptions: ReturnType<GetLaunchOptionsSync> = {
+let launchOptions: OnLaunchOptions = {
   path: '',
   appScheme: null,
   appLink: null,
 }
 
-export const setLaunchOptionsSync = function (
-  options: ReturnType<GetLaunchOptionsSync>
-) {
+export const setLaunchOptionsSync = function (options: OnLaunchOptions) {
   launchOptions = options
 }
 
