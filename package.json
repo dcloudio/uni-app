@@ -14,7 +14,7 @@
     "size": "npm run build size-check",
     "lint": "eslint packages/*/src/**/*.ts packages/*/__tests__/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
-    "test": "tsc -p ./test-dts/tsconfig.json && node scripts/test.js && jest",
+    "test": "tsc -p ./packages/uni-uts-v1/__tests__/tsc/tsconfig.json && tsc -p ./test-dts/tsconfig.json && node scripts/test.js && jest",
     "test-nvue-style": "jest --testMatch \"**/uni-nvue-styler/__tests__/*.spec.ts\" --watch",
     "test-dts": "tsc -p ./test-dts/tsconfig.json && tsc -p ./test-dts/tsconfig.build.json",
     "preinstall": "npx only-allow pnpm",

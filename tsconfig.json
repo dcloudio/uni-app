@@ -47,5 +47,6 @@
     "node_modules/mini-types/types/page.d.ts",
     "node_modules/mini-types/types/component.d.ts",
     "node_modules/mini-types/types/event.d.ts"
-  ]
+  ],
+  "exclude": ["packages/uni-uts-v1/__tests__/tsc"]
 }

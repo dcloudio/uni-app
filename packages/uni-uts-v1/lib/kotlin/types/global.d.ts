@@ -60,7 +60,7 @@ declare global {
     line = number,
     column = number
   > {
-    constructor(name: name, fileName: fileName, line: line, column: column) {}
+    constructor(name: name, fileName: fileName, line: line, column: column) 
   }
 
   namespace uts {

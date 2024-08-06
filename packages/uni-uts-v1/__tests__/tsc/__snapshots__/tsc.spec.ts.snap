@@ -1,7 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`android basic 1`] = `
-"import { defineComponent, SlotsType } from 'vue';
+"import { computed, defineComponent, SlotsType } from 'vue';
 const __sfc__ = defineComponent({
     slots: Object as SlotsType<{
         default: {};
@@ -31,11 +31,29 @@ const __sfc__ = defineComponent({
             dNum: 1,
         };
     },
+    setup(props, ctx) {
+        computed((_oldValue): boolean => {
+            return props.bool;
+        });
+    },
 });
 function render(this: InstanceType<typeof __sfc__>): any | null {
     const _ctx = this;
     _ctx.str;
     _ctx.dNum;
+}
+"
+`;
+
+exports[`android plugin 1`] = `
+"import { createApp } from 'vue';
+export function main() {
+    const app = createApp({});
+    app.use({
+        install(app, _options): any {
+            app.config.globalProperties.plugin1 = '';
+        },
+    });
 }
 "
 `;

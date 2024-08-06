@@ -20,7 +20,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  readonly length : number;
+  readonly length: number
   /**
    * 数组中每个元素的字节大小。
    * @uniPlatform {
@@ -28,7 +28,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -51,7 +51,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  readonly BYTES_PER_ELEMENT : number;
+  readonly BYTES_PER_ELEMENT: number
 
   /**
    * 数组引用的ArrayBuffer实例。
@@ -60,7 +60,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -83,7 +83,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  readonly buffer : ArrayBufferLike;
+  readonly buffer: ArrayBufferLike
 
   /**
    * 数组的字节长度。
@@ -92,7 +92,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -115,7 +115,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  readonly byteLength : number;
+  readonly byteLength: number
 
   /**
    * 数组的字节偏移量。
@@ -124,7 +124,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -147,7 +147,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  readonly byteOffset : number;
+  readonly byteOffset: number
 
   /**
    * 返回this对象，将数组中由start和end标识的部分复制到从位置target开始的相同数组。
@@ -160,7 +160,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -183,7 +183,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  copyWithin(target : number, start : number, end ?: number) : this;
+  copyWithin(target: number, start: number, end?: number): this
 
   /**
    * 确定数组的所有成员是否满足指定的测试。
@@ -194,7 +194,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -217,7 +217,13 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  every(predicate : (value : number, index : number, array : Uint8ClampedArray) => unknown) : boolean;
+  every(
+    predicate: (
+      value: number,
+      index: number,
+      array: Uint8ClampedArray
+    ) => unknown
+  ): boolean
 
   /**
    * 将数组中的所有元素更改为静态值value，并返回修改后的数组。
@@ -230,7 +236,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -253,7 +259,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  fill(value : number, start ?: number, end ?: number) : this;
+  fill(value: number, start?: number, end?: number): this
 
   /**
    * 返回满足回调函数中指定条件的数组元素。
@@ -264,7 +270,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -287,7 +293,9 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  filter(predicate : (value : number, index : number, array : Uint8ClampedArray) => any) : Uint8ClampedArray;
+  filter(
+    predicate: (value: number, index: number, array: Uint8ClampedArray) => any
+  ): Uint8ClampedArray
 
   /**
    * 返回数组中第一个满足条件的元素的值，否则返回undefined。
@@ -298,7 +306,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -321,7 +329,9 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  find(predicate : (value : number, index : number, obj : Uint8ClampedArray) => boolean) : number | undefined;
+  find(
+    predicate: (value: number, index: number, obj: Uint8ClampedArray) => boolean
+  ): number | undefined
 
   /**
    * 返回数组中第一个满足条件的元素的索引，否则返回-1。
@@ -332,7 +342,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -355,7 +365,9 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  findIndex(predicate : (value : number, index : number, obj : Uint8ClampedArray) => boolean) : number;
+  findIndex(
+    predicate: (value: number, index: number, obj: Uint8ClampedArray) => boolean
+  ): number
 
   /**
    * 对数组的每个元素执行指定的操作。
@@ -365,7 +377,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -388,7 +400,9 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  forEach(callbackfn : (value : number, index : number, array : Uint8ClampedArray) => void) : void;
+  forEach(
+    callbackfn: (value: number, index: number, array: Uint8ClampedArray) => void
+  ): void
 
   /**
    * 返回数组中第一个出现的指定值的索引，如果不存在则返回-1。
@@ -400,7 +414,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -423,7 +437,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  indexOf(searchElement : number, fromIndex ?: number) : number;
+  indexOf(searchElement: number, fromIndex?: number): number
 
   /**
    * 将数组中所有元素连接成一个字符串。
@@ -434,7 +448,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -457,7 +471,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  join(separator ?: string) : string;
+  join(separator?: string): string
 
   /**
    * 对数组的每个元素执行指定的操作，并返回包含执行结果的数组。
@@ -468,7 +482,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -491,7 +505,13 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  map(callbackfn : (value : number, index : number, array : Uint8ClampedArray) => number) : Uint8ClampedArray;
+  map(
+    callbackfn: (
+      value: number,
+      index: number,
+      array: Uint8ClampedArray
+    ) => number
+  ): Uint8ClampedArray
 
   /**
    * 对数组的每个元素执行指定的累加操作。
@@ -503,7 +523,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -526,8 +546,23 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  reduce(callbackfn : (previousValue : number, currentValue : number, currentIndex : number, array : Uint8ClampedArray) => number) : number;
-  reduce(callbackfn : (previousValue : number, currentValue : number, currentIndex : number, array : Uint8ClampedArray) => number, initialValue : number) : number;
+  reduce(
+    callbackfn: (
+      previousValue: number,
+      currentValue: number,
+      currentIndex: number,
+      array: Uint8ClampedArray
+    ) => number
+  ): number
+  reduce(
+    callbackfn: (
+      previousValue: number,
+      currentValue: number,
+      currentIndex: number,
+      array: Uint8ClampedArray
+    ) => number,
+    initialValue: number
+  ): number
 
   /**
    * 对数组的每个元素执行指定的累加操作，从右向左处理。
@@ -539,7 +574,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -562,8 +597,23 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  reduceRight(callbackfn : (previousValue : number, currentValue : number, currentIndex : number, array : Uint8ClampedArray) => number) : number;
-  reduceRight(callbackfn : (previousValue : number, currentValue : number, currentIndex : number, array : Uint8ClampedArray) => number, initialValue : number) : number;
+  reduceRight(
+    callbackfn: (
+      previousValue: number,
+      currentValue: number,
+      currentIndex: number,
+      array: Uint8ClampedArray
+    ) => number
+  ): number
+  reduceRight(
+    callbackfn: (
+      previousValue: number,
+      currentValue: number,
+      currentIndex: number,
+      array: Uint8ClampedArray
+    ) => number,
+    initialValue: number
+  ): number
 
   /**
    * 反转数组中的元素。
@@ -573,7 +623,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -596,7 +646,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  reverse() : Uint8ClampedArray;
+  reverse(): Uint8ClampedArray
 
   /**
    * 设置一个值或数组的值。
@@ -607,7 +657,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -630,7 +680,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  set(array : ArrayLike<number>, offset ?: number) : void;
+  set(array: ArrayLike<number>, offset?: number): void
 
   /**
    * 返回数组的一部分。
@@ -642,7 +692,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -665,7 +715,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  slice(start ?: number, end ?: number) : Uint8ClampedArray;
+  slice(start?: number, end?: number): Uint8ClampedArray
 
   /**
    * 确定数组的任何元素是否满足指定的测试。
@@ -676,7 +726,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -699,7 +749,13 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  some(predicate : (value : number, index : number, array : Uint8ClampedArray) => unknown) : boolean;
+  some(
+    predicate: (
+      value: number,
+      index: number,
+      array: Uint8ClampedArray
+    ) => unknown
+  ): boolean
 
   /**
    * 对数组进行排序。
@@ -710,7 +766,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -733,7 +789,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  sort(compareFn ?: (a : number, b : number) => number) : this;
+  sort(compareFn?: (a: number, b: number) => number): this
 
   /**
    * 获取此数组的ArrayBuffer存储的新的Uint8ClampedArray视图，引用从begin（包括）到end（不包括）的元素。
@@ -745,7 +801,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -768,7 +824,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  subarray(begin ?: number, end ?: number) : Uint8ClampedArray;
+  subarray(begin?: number, end?: number): Uint8ClampedArray
 
   /**
    * 返回数组的字符串表示形式。
@@ -778,7 +834,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -801,7 +857,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  toString() : string;
+  toString(): string
 
   /**
    * 返回指定对象的原始值。
@@ -811,7 +867,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -834,7 +890,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  valueOf() : Iterator<Number>;
+  valueOf(): Iterator<Number>
   /**
    * 为数组中的每个条目返回一个键值对数组
    * @return {IterableIterator<[number, number]>} 数组条目的键值对迭代器
@@ -843,7 +899,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -866,7 +922,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  entries() : IterableIterator<[number, number]>;
+  entries(): IterableIterator<[number, number]>
 
   /**
    * 确定数组是否包含某个元素，返回 true 或 false。
@@ -892,7 +948,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  includes(searchElement : number, fromIndex ?: number) : boolean;
+  includes(searchElement: number, fromIndex?: number): boolean
 
   /**
    * 返回数组中的键列表
@@ -902,7 +958,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -925,7 +981,7 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  keys() : IterableIterator<number>;
+  keys(): IterableIterator<number>
 
   /**
    * 返回数组中的值列表
@@ -935,7 +991,7 @@ interface Uint8ClampedArray {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -958,9 +1014,9 @@ interface Uint8ClampedArray {
    *    }
    * }
    */
-  values() : IterableIterator<number>;
+  values(): IterableIterator<number>
 
-  [index : number] : number;
+  [index: number]: number
 }
 
 interface Uint8ClampedArrayConstructor {
@@ -987,7 +1043,7 @@ interface Uint8ClampedArrayConstructor {
    *    }
    * }
    */
-  new(length : number) : Uint8ClampedArray;
+  new (length: number): Uint8ClampedArray
   /**
    * 初始化一个对象
    * @param array 当使用 TypedArray 子类的实例调用时，typedArray 会被拷贝到一个新的类型数组中。对于非 bigint TypeedArray 构造函数，typedArray 参数仅可以是非 bigint 类型（例如 Int32Array）。同样，对于 bigint TypedArray 构造函数（BigInt64Array 或 BigUint64Array），typedArray 参数仅可以是 bigint 类型。typedArray 中的每个值在拷贝到新数组之前都转换为构造函数的相应类型。新的类型化数组的长度与 typedArray 参数的长度相同。
@@ -997,7 +1053,7 @@ interface Uint8ClampedArrayConstructor {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -1020,7 +1076,7 @@ interface Uint8ClampedArrayConstructor {
    *    }
    * }
    */
-  new(array : ArrayLike<number> | ArrayBufferLike) : Uint8ClampedArray;
+  new (array: ArrayLike<number> | ArrayBufferLike): Uint8ClampedArray
   /**
    * 当使用 ArrayBuffer  实例以及可选的 byteOffset 和 length 参数调用时，将创建一个新的指定缓冲区的类型化数组视图。byteOffset 和 length 参数指定类型化数组视图将暴露的内存范围。如果忽略这两个参数，则是整个视图的所有 buffer；如果仅忽略 length，则是从 byteOffset 开始的 buffer 剩余部分的视图。
    * @param buffer ArrayBuffer实例
@@ -1046,7 +1102,11 @@ interface Uint8ClampedArrayConstructor {
    *    }
    * }
    */
-  new(buffer : ArrayBufferLike, byteOffset ?: number, length ?: number) : Uint8ClampedArray;
+  new (
+    buffer: ArrayBufferLike,
+    byteOffset?: number,
+    length?: number
+  ): Uint8ClampedArray
 
   /**
    * 数组中每个元素的字节大小。
@@ -1055,7 +1115,7 @@ interface Uint8ClampedArrayConstructor {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -1078,7 +1138,7 @@ interface Uint8ClampedArrayConstructor {
    *    }
    * }
    */
-  readonly BYTES_PER_ELEMENT : number;
+  readonly BYTES_PER_ELEMENT: number
 
   /**
    * 从一组元素创建一个新数组。
@@ -1088,7 +1148,7 @@ interface Uint8ClampedArrayConstructor {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -1111,7 +1171,7 @@ interface Uint8ClampedArrayConstructor {
    *    }
    * }
    */
-  of(...items : number[]) : Uint8ClampedArray;
+  of(...items: number[]): Uint8ClampedArray
 
   /**
    * 从类似数组或可迭代对象创建数组。
@@ -1122,7 +1182,7 @@ interface Uint8ClampedArrayConstructor {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -1145,6 +1205,9 @@ interface Uint8ClampedArrayConstructor {
    *    }
    * }
    */
-  from(arrayLike : ArrayLike<number>,mapfn?: (v: number, k: number) => number) : Uint8ClampedArray;
+  from(
+    arrayLike: ArrayLike<number>,
+    mapfn?: (v: number, k: number) => number
+  ): Uint8ClampedArray
 }
-declare var Uint8ClampedArray : Uint8ClampedArrayConstructor;
+declare var Uint8ClampedArray: Uint8ClampedArrayConstructor

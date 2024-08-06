@@ -30,8 +30,8 @@ importers:
         specifier: 3.0.0-alpha-4020520240719001
         version: link:packages/uni-app
       '@dcloudio/uni-app-x':
-        specifier: ^0.7.18
-        version: 0.7.18
+        specifier: ^0.7.20
+        version: 0.7.20
       '@jest/types':
         specifier: ^29.0.3
         version: 29.6.3
@@ -1124,6 +1124,9 @@ importers:
       fs-extra:
         specifier: ^10.0.0
         version: 10.1.0
+      unplugin-auto-import:
+        specifier: ^0.16.7
+        version: 0.16.7(rollup@4.14.2)
       vue:
         specifier: 3.4.21
         version: 3.4.21(typescript@5.4.2)
@@ -2524,8 +2527,8 @@ packages:
   '@dcloudio/types@3.4.11':
     resolution: {integrity: sha512-vRmcqV/OQF8r4QQgIz+iHuuBirw7Y+0MeN/QgeEZtcKGUqyMSGDJW4gF8jLJaEtGSZ3dBZslupRXQKZhUBGTpw==}
 
-  '@dcloudio/uni-app-x@0.7.18':
-    resolution: {integrity: sha512-4x8PI3GONWPaj4+Q1BDtIqcf/qweGgkJXbMurprP8hj/AJr+IdzEIljHlYiQURU7cSlYqGbkSjC6I52IUAmIWA==}
+  '@dcloudio/uni-app-x@0.7.20':
+    resolution: {integrity: sha512-9M6K29NLPbkLnkh6wxWVYFF2cPsIZ1n4GDFyyrUi4N57tdprwDHAOY8HBpkFnuj5zDrtAhnC3M0xfuOaLwfC4A==}
 
   '@dcloudio/uni-ui@1.5.5':
     resolution: {integrity: sha512-DTr8o4lcRgu4JJclA2eT7UFVKtglK63OUtcDGysrSeZhgAJAC2gBYm/pYbv0BFxKqxfbdoAFGAFCigCVY9+NAQ==}
@@ -7907,7 +7910,7 @@ snapshots:
 
   '@dcloudio/types@3.4.11': {}
 
-  '@dcloudio/uni-app-x@0.7.18': {}
+  '@dcloudio/uni-app-x@0.7.20': {}
 
   '@dcloudio/uni-ui@1.5.5': {}
 

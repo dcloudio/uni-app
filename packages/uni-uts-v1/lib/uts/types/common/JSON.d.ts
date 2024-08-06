@@ -1,5 +1,4 @@
 interface JSON {
-
   /**
    * JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的 JavaScript 值或对象。提供可选的 reviver 函数用以在返回之前对所得到的对象执行变换 (操作)。
    * @param text 要被解析成 JavaScript 值的字符串
@@ -25,7 +24,10 @@ interface JSON {
    *    }
    * }
    */
-  parse(text : string, reviver ?: (this : any, key : string, value : any) => any) : any | null;
+  parse(
+    text: string,
+    reviver?: (this: any, key: string, value: any) => any
+  ): any | null
 
   /**
    * JSON.parse() 方法用来解析 JSON 字符串，构造由字符串描述的值或者对象，其类型由泛型参数T决定
@@ -52,7 +54,7 @@ interface JSON {
    *    }
    * }
    */
-  parse<T>(text : string)  : T | null;
+  parse<T>(text: string): T | null
 
   /**
    * JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述的对象。
@@ -79,10 +81,7 @@ interface JSON {
    *    }
    * }
    */
-  parseObject(text : string) : UTSJSONObject | null;
-
-
-
+  parseObject(text: string): UTSJSONObject | null
 
   /**
    * JSON.parseObject() 方法用来解析 JSON 字符串，构造由字符串描述的对象，该对象的类型由泛型参数T决定
@@ -109,8 +108,7 @@ interface JSON {
    *    }
    * }
    */
-  parseObject<T>(text : string)  : T | null;
-
+  parseObject<T>(text: string): T | null
 
   /**
    * JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述的数组。数组元素类型为any
@@ -137,7 +135,7 @@ interface JSON {
    *    }
    * }
    */
-  parseArray(text : string) : Array<any> | null;
+  parseArray(text: string): Array<any> | null
 
   /**
    * JSON.parseArray() 方法用来解析 JSON 字符串，构造由字符串描述的数组。数组元素类型由泛型T决定
@@ -164,8 +162,7 @@ interface JSON {
    *    }
    * }
    */
-  parseArray<T>(text : string) : Array<T> | null;
-
+  parseArray<T>(text: string): Array<T> | null
 
   /**
    * JSON.stringify() 方法将一个 JavaScript 对象或值转换为 JSON 字符串，如果指定了一个 replacer 函数，则可以选择性地替换值，或者指定的 replacer 是数组，则可选择性地仅包含数组指定的属性
@@ -192,10 +189,14 @@ interface JSON {
    *    }
    * }
    */
-  stringify(value : any | null, replacer: any | null, space : any | null) : string;
+  stringify(
+    value: any | null,
+    replacer?: any | null,
+    space?: any | null
+  ): string
 }
 
 /**
  * An intrinsic object that provides functions to convert JavaScript values to and from the JavaScript Object Notation (JSON) format.
  */
-declare var JSON : JSON;
+declare var JSON: JSON

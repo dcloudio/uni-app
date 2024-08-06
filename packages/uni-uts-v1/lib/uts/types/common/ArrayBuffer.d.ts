@@ -11,7 +11,7 @@ interface ArrayBuffer {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -34,7 +34,7 @@ interface ArrayBuffer {
    *    }
    * }
    */
-  readonly byteLength : number;
+  readonly byteLength: number
 
   /**
    * ArrayBuffer 实例的 slice() 方法返回一个新的 ArrayBuffer 实例，其包含原 ArrayBuffer 实例中从 begin 开始（包含）到 end 结束（不含）的所有字节的副本。
@@ -52,7 +52,7 @@ interface ArrayBuffer {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -75,7 +75,7 @@ interface ArrayBuffer {
    *    }
    * }
    */
-  slice(begin ?: number, end ?: number) : ArrayBuffer;
+  slice(begin?: number, end?: number): ArrayBuffer
   /**
    * ArrayBuffer 实例的 toByteBuffer() 方法返回一个android原生ByteBuffer对象。
    * @return android 原生ByteBuffer对象。
@@ -84,7 +84,7 @@ interface ArrayBuffer {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "x",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -107,7 +107,7 @@ interface ArrayBuffer {
    *    }
    * }
    */
-  toByteBuffer() : ByteBuffer;
+  toByteBuffer(): ByteBuffer
 }
 interface ArrayBufferConstructor {
   /**
@@ -119,7 +119,7 @@ interface ArrayBufferConstructor {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -142,7 +142,7 @@ interface ArrayBufferConstructor {
    *    }
    * }
    */
-  new(byteLength : number) : ArrayBuffer;
+  new (byteLength: number): ArrayBuffer
   /**
    * ArrayBuffer.isView() 静态方法用于确定传递的值是否是 ArrayBuffer 视图之一。
    * @param arg 需要检测的值。
@@ -152,7 +152,7 @@ interface ArrayBufferConstructor {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -175,7 +175,7 @@ interface ArrayBufferConstructor {
    *    }
    * }
    */
-  isView(arg : any) : boolean;
+  isView(arg: any): boolean
   /**
    * ArrayBuffer.fromByteBuffer() 静态方法用于将android 原生的ByteBuffer对象转换为ArrayBuffer
    * @param byteBuffer android原生bytebuffer对象
@@ -185,7 +185,7 @@ interface ArrayBufferConstructor {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "x",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -208,6 +208,14 @@ interface ArrayBufferConstructor {
    *    }
    * }
    */
-  fromByteBuffer(byteBuffer : ByteBuffer) : ArrayBuffer;
+  fromByteBuffer(byteBuffer: ByteBuffer): ArrayBuffer
 }
-declare var ArrayBuffer : ArrayBufferConstructor;
+/**
+ * Allowed ArrayBuffer types for the buffer of an ArrayBufferView and related Typed Arrays.
+ */
+interface ArrayBufferTypes {
+  ArrayBuffer: ArrayBuffer
+}
+type ArrayBufferLike = ArrayBufferTypes[keyof ArrayBufferTypes]
+
+declare var ArrayBuffer: ArrayBufferConstructor

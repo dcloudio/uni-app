@@ -1,6 +1,6 @@
 interface Boolean {
   /** Returns the primitive value of the specified object. */
-  valueOf() : boolean;
+  valueOf(): boolean
 }
 
 interface BooleanConstructor {
@@ -25,7 +25,7 @@ interface BooleanConstructor {
    *    }
    * }
    */
-  new(value ?: any) : Boolean;
+  new (value?: any): Boolean
   /**
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Boolean.html#constructor
    * @uniPlatform {
@@ -47,8 +47,8 @@ interface BooleanConstructor {
    *    }
    * }
    */
-  <T>(value ?: T) : boolean;
-  readonly prototype : Boolean;
+  <T>(value?: T): boolean
+  readonly prototype: Boolean
 }
 
-declare var Boolean : BooleanConstructor;
+declare var Boolean: BooleanConstructor

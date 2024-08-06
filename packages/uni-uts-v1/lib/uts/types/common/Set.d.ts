@@ -1,5 +1,4 @@
 interface Set<T> {
-
   /**
    * 如果 Set 对象中没有具有相同值的元素，则 add() 方法将插入一个具有指定值的新元素到 Set 对象中。
    * @param value 要添加到 Set 对象的元素的值。
@@ -24,7 +23,7 @@ interface Set<T> {
    *    }
    * }
    */
-  add(value : T) : this;
+  add(value: T): this
 
   /**
    * 移除 Set 对象中所有元素。
@@ -48,7 +47,7 @@ interface Set<T> {
    *    }
    * }
    */
-  clear() : void;
+  clear(): void
 
   /**
    * 从 Set 对象中删除指定的值（如果该值在 Set 中）。
@@ -74,7 +73,7 @@ interface Set<T> {
    *    }
    * }
    */
-  delete(value : T) : boolean;
+  delete(value: T): boolean
 
   /**
    * 对 Set 对象中的每个值按插入顺序执行一次提供的函数。
@@ -100,7 +99,10 @@ interface Set<T> {
    *    }
    * }
    */
-  forEach(callbackfn : (value : T, value2 : T, set : Set<T>) => void, thisArg ?: any) : void;
+  forEach(
+    callbackfn: (value: T, value2: T, set: Set<T>) => void,
+    thisArg?: any
+  ): void
   /**
    * 对 Set 对象中的每个值按插入顺序执行一次提供的函数。
    * @param callbackfn 为集合中每个元素执行的回调函数，该函数接收两个参数：value、key。
@@ -125,7 +127,7 @@ interface Set<T> {
    *    }
    * }
    */
-  forEach(callbackfn : (value : T, value2 : T) => void, thisArg ?: any) : void;
+  forEach(callbackfn: (value: T, value2: T) => void, thisArg?: any): void
   /**
    * 对 Set 对象中的每个值按插入顺序执行一次提供的函数。
    * @param callbackfn 为集合中每个元素执行的回调函数，该函数接收一个参数：value。
@@ -150,8 +152,7 @@ interface Set<T> {
    *    }
    * }
    */
-  forEach(callbackfn : (value : T) => void, thisArg ?: any) : void;
-
+  forEach(callbackfn: (value: T) => void, thisArg?: any): void
 
   /**
    * 返回一个布尔值来指示对应的值是否存在于 Set 对象中。
@@ -177,7 +178,7 @@ interface Set<T> {
    *    }
    * }
    */
-  has(value : T) : boolean;
+  has(value: T): boolean
 
   /**
    * 返回 Set 对象中（唯一的）元素的个数。
@@ -202,7 +203,7 @@ interface Set<T> {
    *    }
    * }
    */
-  readonly size : number;
+  readonly size: number
 }
 
 interface SetConstructor {
@@ -227,7 +228,7 @@ interface SetConstructor {
    *    }
    * }
    */
-  new <T = any>(values ?: readonly T[] | null) : Set<T>;
-  readonly prototype : Set<any>;
+  new <T = any>(values?: readonly T[] | null): Set<T>
+  readonly prototype: Set<any>
 }
-declare var Set : SetConstructor;
+declare var Set: SetConstructor

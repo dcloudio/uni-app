@@ -1,4 +1,4 @@
-import { defineComponent, SlotsType } from 'vue';
+import { computed, defineComponent, SlotsType } from 'vue';
 const __sfc__ = defineComponent({
     slots: Object as SlotsType<{
         default: {};
@@ -27,6 +27,11 @@ const __sfc__ = defineComponent({
         return {
             dNum: 1,
         };
+    },
+    setup(props, ctx) {
+        computed((_oldValue): boolean => {
+            return props.bool;
+        });
     },
 });
 function render(this: InstanceType<typeof __sfc__>): any | null {

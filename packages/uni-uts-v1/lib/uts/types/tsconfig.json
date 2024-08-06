@@ -1,13 +1,24 @@
 {
   "compilerOptions": {
     "noLib": true,
+    "strict": true,
     "noImplicitAny": false,
     "useDefineForClassFields": false,
     "sourceMap": false,
     "noEmitOnError": false,
     "skipLibCheck": false,
     "resolveJsonModule": false,
-    "typeRoots": []
+    "typeRoots": [],
+    "paths": {
+      "@vue/shared": ["./@vue/shared/dist/shared.d.ts"],
+      "@vue/reactivity": [
+        "./@vue/reactivity/dist/reactivity.d.ts"
+      ],
+      "vue": ["./@vue/runtime-core/dist/runtime-core.d.ts"],
+      "@vue/runtime-core": [
+        "./@vue/runtime-core/dist/runtime-core.d.ts"
+      ]
+    }
   },
   "include": ["**/*.d.ts"]
 }

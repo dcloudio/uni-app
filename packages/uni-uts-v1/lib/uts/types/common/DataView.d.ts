@@ -6,7 +6,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -29,7 +29,7 @@ interface DataView {
    *    }
    * }
    */
-  readonly buffer : ArrayBuffer;
+  readonly buffer: ArrayBuffer
   /**
    * 视图的长度（以字节为单位）。在构造时会被固定，因此该属性只读。
    * @uniPlatform {
@@ -37,7 +37,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -60,7 +60,7 @@ interface DataView {
    *    }
    * }
    */
-  readonly byteLength : number;
+  readonly byteLength: number
   /**
    * 至 ArrayBuffer 的视图开始位置的字节偏移量。在构造时会被固定，因此该属性只读。
    * @uniPlatform {
@@ -68,7 +68,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -91,7 +91,7 @@ interface DataView {
    *    }
    * }
    */
-  readonly byteOffset : number;
+  readonly byteOffset: number
 
   /**
    * 获取指定字节偏移处的 Float32 值。没有对齐约束；多字节值可以从任何偏移处获取。
@@ -103,7 +103,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -126,7 +126,7 @@ interface DataView {
    *    }
    * }
    */
-  getFloat32(byteOffset : number, littleEndian ?: boolean) : number;
+  getFloat32(byteOffset: number, littleEndian?: boolean): number
 
   /**
    * 获取指定字节偏移处的 Float64 值。没有对齐约束；多字节值可以从任何偏移处获取。
@@ -138,7 +138,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -161,7 +161,7 @@ interface DataView {
    *    }
    * }
    */
-  getFloat64(byteOffset : number, littleEndian ?: boolean) : number;
+  getFloat64(byteOffset: number, littleEndian?: boolean): number
 
   /**
    * 获取指定字节偏移处的 Int8 值。没有对齐约束；多字节值可以从任何偏移处获取。
@@ -172,7 +172,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -195,7 +195,7 @@ interface DataView {
    *    }
    * }
    */
-  getInt8(byteOffset : number) : number;
+  getInt8(byteOffset: number): number
 
   /**
    * 获取指定字节偏移处的 Int16 值。没有对齐约束；多字节值可以从任何偏移处获取。
@@ -207,7 +207,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -230,7 +230,7 @@ interface DataView {
    *    }
    * }
    */
-  getInt16(byteOffset : number, littleEndian ?: boolean) : number;
+  getInt16(byteOffset: number, littleEndian?: boolean): number
 
   /**
    * 获取指定字节偏移处的 Int32 值。没有对齐约束；多字节值可以从任何偏移处获取。
@@ -242,7 +242,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -265,7 +265,7 @@ interface DataView {
    *    }
    * }
    */
-  getInt32(byteOffset : number, littleEndian ?: boolean) : number;
+  getInt32(byteOffset: number, littleEndian?: boolean): number
 
   /**
    * 获取指定字节偏移处的 Uint8 值。没有对齐约束；多字节值可以从任何偏移处获取。
@@ -276,7 +276,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -299,7 +299,7 @@ interface DataView {
    *    }
    * }
    */
-  getUint8(byteOffset : number) : number;
+  getUint8(byteOffset: number): number
 
   /**
    * 获取指定字节偏移处的 Uint16 值。没有对齐约束；多字节值可以从任何偏移处获取。
@@ -311,7 +311,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -334,7 +334,7 @@ interface DataView {
    *    }
    * }
    */
-  getUint16(byteOffset : number, littleEndian ?: boolean) : number;
+  getUint16(byteOffset: number, littleEndian?: boolean): number
 
   /**
    * 获取指定字节偏移处的 Uint32 值。没有对齐约束；多字节值可以从任何偏移处获取。
@@ -346,7 +346,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -369,7 +369,7 @@ interface DataView {
    *    }
    * }
    */
-  getUint32(byteOffset : number, littleEndian ?: boolean) : number;
+  getUint32(byteOffset: number, littleEndian?: boolean): number
 
   /**
    * 在指定的字节偏移处存储一个 Float32 值。
@@ -382,7 +382,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -405,7 +405,7 @@ interface DataView {
    *    }
    * }
    */
-  setFloat32(byteOffset : number, value : number, littleEndian ?: boolean) : void;
+  setFloat32(byteOffset: number, value: number, littleEndian?: boolean): void
 
   /**
    * 在指定的字节偏移处存储一个 Float64 值。
@@ -418,7 +418,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -441,7 +441,7 @@ interface DataView {
    *    }
    * }
    */
-  setFloat64(byteOffset : number, value : number, littleEndian ?: boolean) : void;
+  setFloat64(byteOffset: number, value: number, littleEndian?: boolean): void
 
   /**
    * 在指定的字节偏移处存储一个 Int8 值。
@@ -453,7 +453,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -476,7 +476,7 @@ interface DataView {
    *    }
    * }
    */
-  setInt8(byteOffset : number, value : number) : void;
+  setInt8(byteOffset: number, value: number): void
 
   /**
    * 在指定的字节偏移处存储一个 Int16 值。
@@ -489,7 +489,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -512,7 +512,7 @@ interface DataView {
    *    }
    * }
    */
-  setInt16(byteOffset : number, value : number, littleEndian ?: boolean) : void;
+  setInt16(byteOffset: number, value: number, littleEndian?: boolean): void
 
   /**
    * 在指定的字节偏移处存储一个 Int32 值。
@@ -525,7 +525,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -548,7 +548,7 @@ interface DataView {
    *    }
    * }
    */
-  setInt32(byteOffset : number, value : number, littleEndian ?: boolean) : void;
+  setInt32(byteOffset: number, value: number, littleEndian?: boolean): void
 
   /**
    * 在指定的字节偏移处存储一个 Uint8 值。
@@ -560,7 +560,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -583,7 +583,7 @@ interface DataView {
    *    }
    * }
    */
-  setUint8(byteOffset : number, value : number) : void;
+  setUint8(byteOffset: number, value: number): void
 
   /**
    * 在指定的字节偏移处存储一个 Uint16 值。
@@ -596,7 +596,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -619,7 +619,7 @@ interface DataView {
    *    }
    * }
    */
-  setUint16(byteOffset : number, value : number, littleEndian ?: boolean) : void;
+  setUint16(byteOffset: number, value: number, littleEndian?: boolean): void
 
   /**
    * 在指定的字节偏移处存储一个 Uint32 值。
@@ -632,7 +632,7 @@ interface DataView {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -655,7 +655,7 @@ interface DataView {
    *    }
    * }
    */
-  setUint32(byteOffset : number, value : number, littleEndian ?: boolean) : void;
+  setUint32(byteOffset: number, value: number, littleEndian?: boolean): void
 }
 
 interface DataViewConstructor {
@@ -671,7 +671,7 @@ interface DataViewConstructor {
    *        "android": {
    *            "osVer": "5.0",
    *            "uniVer": "√",
-   *            "uniUtsPlugin": "x",
+   *            "uniUtsPlugin": "√",
    *            "unixVer": "4.25",
    *            "unixUtsPlugin": "4.25"
    *        },
@@ -694,6 +694,10 @@ interface DataViewConstructor {
    *    }
    * }
    */
-  new(buffer : ArrayBufferLike & { BYTES_PER_ELEMENT ?: never; }, byteOffset ?: number, byteLength ?: number) : DataView;
+  new (
+    buffer: ArrayBufferLike & { BYTES_PER_ELEMENT?: never },
+    byteOffset?: number,
+    byteLength?: number
+  ): DataView
 }
-declare var DataView : DataViewConstructor;
+declare var DataView: DataViewConstructor

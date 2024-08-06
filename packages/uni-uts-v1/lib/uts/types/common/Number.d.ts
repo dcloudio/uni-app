@@ -41,7 +41,7 @@ interface Number {
    *    }
    * }
    */
-  toString(radix ?: number) : string;
+  toString(radix?: number): string
 
   /**
    * 使用定点表示法来格式化一个数值。
@@ -67,7 +67,7 @@ interface Number {
    *    }
    * }
    */
-  toFixed(fractionDigits ?: number) : string;
+  toFixed(fractionDigits?: number): string
 
   /**
    * 以指数表示法返回该数值字符串表示形式。
@@ -93,7 +93,7 @@ interface Number {
    *    }
    * }
    */
-  toExponential(fractionDigits ?: number) : string;
+  toExponential(fractionDigits?: number): string
 
   /**
    * 以指定的精度返回该数值对象的字符串表示。
@@ -119,7 +119,7 @@ interface Number {
    *    }
    * }
    */
-  toPrecision(precision ?: number) : string;
+  toPrecision(precision?: number): string
 
   /**
    * 返回一个被 Number 对象包装的原始值。
@@ -144,7 +144,7 @@ interface Number {
    *    }
    * }
    */
-  valueOf() : number;
+  valueOf(): number
 
   /**
    * 返回一个Int 值
@@ -169,7 +169,7 @@ interface Number {
    *    }
    * }
    */
-  toInt() : Int;
+  toInt(): Int
 
   /**
    * 返回一个Float 值
@@ -194,7 +194,7 @@ interface Number {
    *    }
    * }
    */
-  toFloat() : Float;
+  toFloat(): Float
 
   /**
    * 返回一个 Double 值
@@ -219,7 +219,7 @@ interface Number {
    *    }
    * }
    */
-  toDouble() : Double;
+  toDouble(): Double
 
   /**
    * 返回一个 Int64 值, app-iOS平台特有。
@@ -244,8 +244,7 @@ interface Number {
    *    }
    * }
    */
-  toInt64() : Int64;
-
+  toInt64(): Int64
 
   /**
    * 返回一个 Int32 值, app-iOS平台特有。
@@ -270,8 +269,7 @@ interface Number {
    *    }
    * }
    */
-  toInt32() : Int32;
-
+  toInt32(): Int32
 
   /**
    * 返回一个 Int16 值, app-iOS平台特有。
@@ -296,7 +294,7 @@ interface Number {
    *    }
    * }
    */
-  toInt16() : Int16;
+  toInt16(): Int16
 
   /**
    * 返回一个 Int8 值, app-iOS平台特有。
@@ -321,7 +319,7 @@ interface Number {
    *    }
    * }
    */
-  toInt8() : Int8;
+  toInt8(): Int8
 
   /**
    * 返回一个 UInt 值
@@ -346,7 +344,7 @@ interface Number {
    *    }
    * }
    */
-  toUInt() : UInt;
+  toUInt(): UInt
 
   /**
    * 返回一个 UInt64 值, app-iOS平台特有。
@@ -371,8 +369,7 @@ interface Number {
    *    }
    * }
    */
-  toUInt64() : UInt64;
-
+  toUInt64(): UInt64
 
   /**
    * 返回一个 UInt32 值, app-iOS平台特有。
@@ -397,8 +394,7 @@ interface Number {
    *    }
    * }
    */
-  toUInt32() : UInt32;
-
+  toUInt32(): UInt32
 
   /**
    * 返回一个 UInt16 值, app-iOS平台特有。
@@ -423,7 +419,7 @@ interface Number {
    *    }
    * }
    */
-  toUInt16() : UInt16;
+  toUInt16(): UInt16
 
   /**
    * 返回一个 UInt8 值, app-iOS平台特有。
@@ -448,7 +444,7 @@ interface Number {
    *    }
    * }
    */
-  toUInt8() : UInt8;
+  toUInt8(): UInt8
 
   /**
    * 将当前的Number数据转换为Byte表示，如果超出Byte最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
@@ -473,7 +469,7 @@ interface Number {
    *    }
    * }
    */
-  toByte() : Byte;
+  toByte(): Byte
 
   /**
    * 将当前的Number数据转换为Long表示，如果超出Long最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
@@ -498,7 +494,7 @@ interface Number {
    *    }
    * }
    */
-  toLong() : Long;
+  toLong(): Long
 
   /**
    * 将当前的Number数据转换为Short表示，如果超出Short最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
@@ -523,8 +519,7 @@ interface Number {
    *    }
    * }
    */
-  toShort() : Short;
-
+  toShort(): Short
 
   /**
    * 将当前的 Number 数据转换为 UShort 表示，如果超出 UShort 最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
@@ -549,7 +544,7 @@ interface Number {
    *    }
    * }
    */
-  toUShort() : UShort;
+  toUShort(): UShort
 
   /**
    * 将当前的 Number 数据转换为 ULong 表示，如果超出 ULong 最大值表示范围，会得到溢出后余数表示, app-andorid平台特有。
@@ -574,12 +569,10 @@ interface Number {
    *    }
    * }
    */
-  toULong() : ULong;
-
+  toULong(): ULong
 }
 
 interface NumberConstructor {
-
   /**
    * 创建一个 Number 对象。
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#constructor
@@ -602,7 +595,7 @@ interface NumberConstructor {
    *    }
    * }
    */
-  new(value ?: any) : Number;
+  new (value?: any): Number
   /**
    * 创建一个 Number 对象。
    * @param 所创建对象的数值。
@@ -626,8 +619,8 @@ interface NumberConstructor {
    *    }
    * }
    */
-  (value ?: any) : number;
-  readonly prototype : Number;
+  (value?: any): number
+  readonly prototype: Number
 
   /**
    * 在 JavaScript 里所能表示的最大数值。无限接近于 1.79E+308。
@@ -651,7 +644,7 @@ interface NumberConstructor {
    *    }
    * }
    */
-  readonly MAX_VALUE : number;
+  readonly MAX_VALUE: number
 
   /**
    * 表示在 JavaScript 中所能表示的最小的正值。 无限接近于 5.00E-324。
@@ -676,7 +669,7 @@ interface NumberConstructor {
    *    }
    * }
    */
-  readonly MIN_VALUE : number;
+  readonly MIN_VALUE: number
 
   /**
    * 表示“非数字”（Not-A-Number）。和 NaN 相同。
@@ -702,7 +695,7 @@ interface NumberConstructor {
    *    }
    * }
    */
-  readonly NaN : number;
+  readonly NaN: number
 
   /**
    * 表示负无穷大。
@@ -728,7 +721,7 @@ interface NumberConstructor {
    *    }
    * }
    */
-  readonly NEGATIVE_INFINITY : number;
+  readonly NEGATIVE_INFINITY: number
 
   /**
    * 表示正无穷大。
@@ -754,11 +747,11 @@ interface NumberConstructor {
    *    }
    * }
    */
-  readonly POSITIVE_INFINITY : number;
+  readonly POSITIVE_INFINITY: number
 
   /**
    * 通过 Int | Float | Double | Int64 | Int32 | Int16 | Int8 | UInt | UInt64 | UInt32 | UInt16 | UInt8  | Byte | Short | Long 类型创建一个 number
-   * @param value 必填。一个 Swfit 或者 Kottlin 专有数字类型的值。其中 Swift 平台 支持 Int, Float, Double, Int64, Int32, Int16, Int8, UInt,  UInt64, UInt32, UInt16, UInt8。Kottlin 平台支持  Int, Float, Double, Byte, Short, Long
+   * @param value 必填。一个 Swift 或者 Kotlin 专有数字类型的值。其中 Swift 平台 支持 Int, Float, Double, Int64, Int32, Int16, Int8, UInt,  UInt64, UInt32, UInt16, UInt8。Kotlin 平台支持  Int, Float, Double, Byte, Short, Long
    * @return 返回 number
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Number.html#from
    * @uniPlatform {
@@ -780,8 +773,25 @@ interface NumberConstructor {
    *    }
    * }
    */
-  from(value: Int | Float | Double | Int64 | Int32 | Int16 | Int8 | UInt | UInt64 | UInt32 | UInt16 | UInt8  | Byte | Short | Long ) : number;
+  from(
+    value:
+      | Int
+      | Float
+      | Double
+      | Int64
+      | Int32
+      | Int16
+      | Int8
+      | UInt
+      | UInt64
+      | UInt32
+      | UInt16
+      | UInt8
+      | Byte
+      | Short
+      | Long
+  ): number
 }
 
 /** An object that represents a number of any kind. All JavaScript numbers are 64-bit floating-point numbers. */
-declare var Number : NumberConstructor;
+declare var Number: NumberConstructor

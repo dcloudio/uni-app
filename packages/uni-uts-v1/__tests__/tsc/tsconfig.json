@@ -1,22 +1,37 @@
 {
   "compilerOptions": {
     "noLib": true,
+    "strict": true,
+    "noEmit": true,
     "noImplicitAny": false,
     "useDefineForClassFields": false,
     "sourceMap": false,
     "noEmitOnError": false,
-    "skipLibCheck": false,
+    "skipLibCheck": true,
     "resolveJsonModule": false,
     "typeRoots": [],
+    "types": [],
+    "traceResolution": false,
+    "isolatedModules": true,
     "paths": {
+      "@vue/shared": ["../../lib/uts/types/@vue/shared/dist/shared.d.ts"],
+      "@vue/reactivity": [
+        "../../lib/uts/types/@vue/reactivity/dist/reactivity.d.ts"
+      ],
       "vue": ["../../lib/uts/types/@vue/runtime-core/dist/runtime-core.d.ts"],
       "@vue/runtime-core": [
         "../../lib/uts/types/@vue/runtime-core/dist/runtime-core.d.ts"
-      ]
+      ],
+      "@vue/runtime-dom": [
+        "../../lib/uts/types/@vue/runtime-core/dist/runtime-core.d.ts"
+      ],
+      "@vue/dts-built-test": ["./dts-built-test/dist/dts-built-test.d.ts"]
     }
   },
   "include": [
-    "android/*/src/**/*.ts",
+    "shims.d.ts",
+    "dts-test/*.ts",
+    "./android/*/src/**/*.ts",
     "../../lib/kotlin/types/global.d.ts",
     "../../lib/uts/types/index.d.ts",
     "../../lib/uts/types/common/index.d.ts"

@@ -1648,8 +1648,24 @@ export declare const DeprecationTypes: typeof DeprecationTypes$1;
 
 export declare let createApp: CreateAppFunction<Element>;
 export declare let createSSRApp: CreateAppFunction<Element>;
+/**
+ * @private
+ */
+export declare const withModifiers: <T extends (event: Event, ...args: unknown[]) => any>(fn: T & {
+    _withMods?: {
+        [key: string]: T;
+    } | undefined;
+}, modifiers: string[]) => T;
+/**
+ * @private
+ */
+export declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T & {
+    _withKeys?: {
+        [k: string]: T;
+    } | undefined;
+}, modifiers: string[]) => T;
 
-export { createBaseVNode as createElementVNode, defineComponent as defineMixin,  };
+export { createBaseVNode as createElementVNode, defineComponent as defineApp, defineComponent as defineMixin,  };
 // Note: this file is auto concatenated to the end of the bundled d.ts during
 // build.
 type _defineProps = typeof defineProps

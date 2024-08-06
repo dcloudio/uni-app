@@ -45,8 +45,7 @@ interface PromiseSettledResult<T> {
  *  }
  *}
  */
-interface PromiseFulfilledResult<T>
-  extends PromiseSettledResult<T> {
+interface PromiseFulfilledResult<T> extends PromiseSettledResult<T> {
   value: T
 }
 /**
@@ -73,8 +72,7 @@ interface PromiseFulfilledResult<T>
  *  }
  *}
  */
-interface PromiseRejectedResult
-  extends PromiseSettledResult<never> {
+interface PromiseRejectedResult extends PromiseSettledResult<never> {
   reason: any | null
 }
 /**
@@ -128,7 +126,7 @@ declare class Promise<T> {
    *  }
    *}
    */
-  constructor (
+  constructor(
     fn: (
       resolve: (value: T) => void,
       reject: (reason: any | null) => void
@@ -160,7 +158,7 @@ declare class Promise<T> {
    *  }
    *}
    */
-  constructor (fn: (resolve: (value: T) => void) => void)
+  constructor(fn: (resolve: (value: T) => void) => void)
   /**
    * 将一个兑现处理器和拒绝处理器附加到 Promise 上，并返回一个新的 Promise，解决为调用处理器得到的返回值，或者如果 Promise 没有被处理（即相关处理器 onFulfilled 或 onRejected 不是函数），则以原始敲定值解决。
    * @returns 一个新的 Promise。
@@ -277,10 +275,7 @@ declare class Promise<T> {
    *  }
    *}
    */
-  then<R>(
-    onFulfilled: (res: T) => R,
-    onRejected?: Function | null
-  ): Promise<R>
+  then<R>(onFulfilled: (res: T) => R, onRejected?: Function | null): Promise<R>
   /**
    * 将一个兑现处理器和拒绝处理器附加到 Promise 上，并返回一个新的 Promise，解决为调用处理器得到的返回值，或者如果 Promise 没有被处理（即相关处理器 onFulfilled 或 onRejected 不是函数），则以原始敲定值解决。
    * @param onFulfilled 一个在此 Promise 对象被兑现时异步执行的函数。它的返回值将成为 then() 返回的 Promise 对象的兑现值。

@@ -22,7 +22,7 @@ interface String {
    *    }
    * }
    */
-  toString() : string;
+  toString(): string
 
   /**
    * 返回一个由给定索引处的单个 UTF-16 码元构成的新字符串。
@@ -48,7 +48,57 @@ interface String {
    *    }
    * }
    */
-  charAt(pos : number) : string;
+  charAt(pos: number): string
+
+  /**
+   * String 的 toWellFormed() 方法返回一个字符串，其中该字符串的所有单独代理项都被替换为 Unicode 替换字符 U+FFFD。
+   * @return 新的字符串是原字符串的一个拷贝，其中所有的单独代理项被替换为 Unicode 替换字符 U+FFFD。如果 str 是格式正确的，仍然会返回一个新字符串（本质上是 str 的一个拷贝）。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/buildin-object-api/string.html#toWellFormed
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "4.25+",
+   *           "unixVer": "4.25+"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *           "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  toWellFormed(): string
+
+  /**
+   * String 值的 isWellFormed() 方法返回一个表示该字符串是否包含单独代理项的布尔值。
+   * @return 如果字符串不包含单独代理项，返回 true，否则返回 false。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/buildin-object-api/string.html#isWellFormed
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "4.25+",
+   *           "unixVer": "4.25+"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *           "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "√"
+   *    }
+   * }
+   */
+  isWellFormed(): string
 
   /**
    * 返回包含此字符串的字符的[kotlin.CharArray]。
@@ -73,7 +123,7 @@ interface String {
    *    }
    * }
    */
-  toCharArray() : CharArray;
+  toCharArray(): CharArray
 
   /**
    * 返回 0 到 65535 之间的整数，表示给定索引处的 UTF-16 代码单元
@@ -99,7 +149,7 @@ interface String {
    *    }
    * }
    */
-  charCodeAt(index : number) : number;
+  charCodeAt(index: number): number
 
   /**
    * 将字符串参数连接到调用的字符串，并返回一个新的字符串。
@@ -125,7 +175,7 @@ interface String {
    *    }
    * }
    */
-  concat(...strings : string[]) : string;
+  concat(...strings: string[]): string
 
   /**
    * 在字符串中搜索指定子字符串，并返回其第一次出现的位置索引。它可以接受一个可选的参数指定搜索的起始位置，如果找到了指定的子字符串，则返回的位置索引大于或等于指定的数字。
@@ -152,7 +202,7 @@ interface String {
    *    }
    * }
    */
-  indexOf(searchString : string, position ?: number) : number;
+  indexOf(searchString: string, position?: number): number
 
   /**
    * 搜索该字符串并返回指定子字符串最后一次出现的索引。它可以接受一个可选的起始位置参数，并返回指定子字符串在小于或等于指定数字的索引中的最后一次出现的位置。
@@ -179,7 +229,7 @@ interface String {
    *    }
    * }
    */
-  lastIndexOf(searchString : string, position ?: number) : number;
+  lastIndexOf(searchString: string, position?: number): number
 
   /**
    * 返回一个数字，表示参考字符串在排序顺序中是在给定字符串之前、之后还是与之相同。
@@ -205,7 +255,7 @@ interface String {
    *    }
    * }
    */
-  localeCompare(that : string) : number;
+  localeCompare(that: string): number
 
   /**
    * match() 方法检索字符串与正则表达式进行匹配的结果。
@@ -231,7 +281,7 @@ interface String {
    *    }
    * }
    */
-  match(regexp : string | RegExp) : RegExpMatchArray | null;
+  match(regexp: string | RegExp): RegExpMatchArray | null
 
   /**
    * 返回一个由替换值（replacement）替换部分或所有的模式（pattern）匹配项后的新字符串。模式可以是一个字符串或者一个正则表达式。
@@ -258,7 +308,7 @@ interface String {
    *    }
    * }
    */
-  replace(searchValue : string | RegExp, replaceValue : string) : string;
+  replace(searchValue: string | RegExp, replaceValue: string): string
 
   /**
    * 返回一个由替换值（replacement）替换部分或所有的模式（pattern）匹配项后的新字符串。模式可以是一个字符串或者一个正则表达式，替换值是一个每次匹配都要调用的回调函数。如果pattern是字符串，则仅替换第一个匹配项。
@@ -285,7 +335,10 @@ interface String {
    *    }
    * }
    */
-  replace(searchValue : string | RegExp, replacer : (substring : string, ...args : any[]) => string) : string;
+  replace(
+    searchValue: string | RegExp,
+    replacer: (substring: string, ...args: any[]) => string
+  ): string
 
   /**
    * search() 方法执行正则表达式和 String 对象之间的一个搜索匹配。
@@ -311,7 +364,7 @@ interface String {
    *    }
    * }
    */
-  search(regexp : string | RegExp) : number;
+  search(regexp: string | RegExp): number
 
   /**
    * slice() 方法提取某个字符串的一部分，并返回一个新的字符串，且不会改动原字符串。
@@ -338,7 +391,7 @@ interface String {
    *    }
    * }
    */
-  slice(start ?: number, end ?: number) : string;
+  slice(start?: number, end?: number): string
 
   /**
    * split() 方法接受一个模式，通过搜索模式将字符串分割成一个有序的子串列表，将这些子串放入一个数组，并返回该数组。
@@ -365,7 +418,7 @@ interface String {
    *    }
    * }
    */
-  split(separator : string | RegExp, limit ?: number) : string[];
+  split(separator: string | RegExp, limit?: number): string[]
 
   /**
    * 返回一个字符串在开始索引到结束索引之间的一个子集，或从开始索引直到字符串的末尾的一个子集。
@@ -392,7 +445,7 @@ interface String {
    *    }
    * }
    */
-  substring(start : number, end ?: number) : string;
+  substring(start: number, end?: number): string
 
   /** toLowerCase() 会将调用该方法的字符串值转为小写形式，并返回。
    * @return 一个新的字符串，表示转换为小写的调用字符串。
@@ -416,7 +469,7 @@ interface String {
    *    }
    * }
    */
-  toLowerCase() : string;
+  toLowerCase(): string
 
   /**
    * 根据任何指定区域语言环境设置的大小写映射，返回调用字符串被转换为小写的格式。
@@ -442,7 +495,7 @@ interface String {
    *    }
    * }
    */
-  toLocaleLowerCase(locales ?: string | string[]) : string;
+  toLocaleLowerCase(locales?: string | string[]): string
   /**
    * 将调用该方法的字符串转为大写形式并返回（如果调用该方法的值不是字符串类型会被强制转换）。
    * @return 一个新的字符串，表示转换为大写的调用字符串。
@@ -466,7 +519,7 @@ interface String {
    *    }
    * }
    */
-  toUpperCase() : string;
+  toUpperCase(): string
   /**
    * 根据本地主机语言环境把字符串转换为大写格式，并返回转换后的字符串。
    * @param locales locales参数指示要用于根据任何特定于语言环境的大小写映射转换为大写的语言环境。如果Array中给出了多个区域设置，则使用最佳可用区域设置。默认语言环境是主机环境的当前语言环境。
@@ -491,7 +544,7 @@ interface String {
    *    }
    * }
    */
-  toLocaleUpperCase(locales ?: string | string[]) : string;
+  toLocaleUpperCase(locales?: string | string[]): string
   /**
    * 从字符串的两端清除空格，返回一个新的字符串，而不修改原始字符串。此上下文中的空格是指所有的空白字符（空格、tab、不换行空格等）以及所有行终止符字符（如 LF、CR 等）。
    * @return 一个表示 str 去掉了开头和结尾的空白字符后的新字符串。
@@ -515,7 +568,7 @@ interface String {
    *    }
    * }
    */
-  trim() : string;
+  trim(): string
   /**
    * 返回字符串的 UTF-16 码元长度。
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/buildin-object-api/string.html#length
@@ -538,7 +591,7 @@ interface String {
    *    }
    * }
    */
-  readonly length : number;
+  readonly length: number
 
   // IE extensions
   /**
@@ -567,7 +620,7 @@ interface String {
    *    }
    * }
    */
-  substr(from : number, length ?: number) : string;
+  substr(from: number, length?: number): string
 
   /** 返回 String 对象的原始值
    * @return String 对象的原始值
@@ -591,7 +644,7 @@ interface String {
    *    }
    * }
    */
-  valueOf() : string;
+  valueOf(): string
 
   /**
    * 用另一个字符串填充当前字符串（如果需要会重复填充），直到达到给定的长度。填充是从当前字符串的开头开始的。
@@ -618,7 +671,7 @@ interface String {
    *    }
    * }
    */
-  padStart(targetLength : number, padString ?: string) : string;
+  padStart(targetLength: number, padString?: string): string
 
   /**
    * 将当前字符串从末尾开始填充给定的字符串（如果需要会重复填充），直到达到给定的长度。填充是从当前字符串的末尾开始的。
@@ -645,9 +698,9 @@ interface String {
    *    }
    * }
    */
-  padEnd(targetLength : number, padString ?: string) : string;
+  padEnd(targetLength: number, padString?: string): string
 
-  readonly [index : number] : string;
+  readonly [index: number]: string
   /**
    * 返回一个小于 1114112 (0x110000) 的非负整数 Number，它是 UTF-16 编码的代码点的代码点值，该代码点始于将此对象转换为字符串而产生的字符串中位置 pos 处的字符串元素。
    * 如果该位置没有元素，则结果未定义。
@@ -674,7 +727,7 @@ interface String {
    *    }
    * }
    */
-  codePointAt(pos : number) : number | null;
+  codePointAt(pos: number): number | null
 
   /**
    * 如果 searchString 作为此对象转换为 String 的结果的子字符串出现在大于或等于position的一个或多个位置，则返回 true；否则，返回 false。
@@ -701,7 +754,7 @@ interface String {
    *    }
    * }
    */
-  includes(searchString : string, position ?: number) : boolean;
+  includes(searchString: string, position?: number): boolean
 
   /**
    * endsWith() 方法用于判断一个字符串是否以指定字符串结尾，如果是则返回 true，否则返回 false。该方法区分大小写。
@@ -728,7 +781,7 @@ interface String {
    *    }
    * }
    */
-  endsWith(searchString : string, endPosition ?: number) : boolean;
+  endsWith(searchString: string, endPosition?: number): boolean
 
   /**
    * normalize() 方法会按照指定的一种 Unicode 正规形式将当前字符串规范化。（如果该值不是字符串，则首先将其转换为一个字符串）。
@@ -754,7 +807,7 @@ interface String {
    *    }
    * }
    */
-  normalize(form : "NFC" | "NFD" | "NFKC" | "NFKD") : string;
+  normalize(form: 'NFC' | 'NFD' | 'NFKC' | 'NFKD'): string
 
   /**
    * normalize() 方法会按照指定的一种 Unicode 正规形式将当前字符串规范化。（如果该值不是字符串，则首先将其转换为一个字符串）。
@@ -780,7 +833,7 @@ interface String {
    *    }
    * }
    */
-  normalize(form ?: string) : string;
+  normalize(form?: string): string
 
   /**
    * repeat() 构造并返回一个新字符串，该字符串包含被连接在一起的指定数量的字符串的副本。
@@ -806,7 +859,7 @@ interface String {
    *    }
    * }
    */
-  repeat(count : number) : string;
+  repeat(count: number): string
 
   /**
    * startsWith() 方法用来判断当前字符串是否以另外一个给定的子字符串开头，并根据判断结果返回 true 或 false。这个方法区分大小写。
@@ -833,7 +886,7 @@ interface String {
    *    }
    * }
    */
-  startsWith(searchString : string, position ?: number) : boolean;
+  startsWith(searchString: string, position?: number): boolean
 
   /**
    * anchor() 方法创建一个 <a> HTML 锚元素，被用作超文本靶标（hypertext target）。
@@ -860,7 +913,7 @@ interface String {
    *    }
    * }
    */
-  anchor(name : string) : string;
+  anchor(name: string): string
 
   /**
    * 创建一个使字符串显示大号字体的<big>标签。
@@ -886,8 +939,7 @@ interface String {
    *    }
    * }
    */
-  big() : string;
-
+  big(): string
 
   /**
    * blink() 方法创建一个字符串，其在 <blink>str</blink> 中嵌入字符串，这使得字符串在旧版浏览器中闪烁。
@@ -913,7 +965,7 @@ interface String {
    *    }
    * }
    */
-  blink() : string;
+  blink(): string
 
   /**
    * bold() 方法会创建 HTML 元素“b”，并将字符串加粗展示。
@@ -939,7 +991,7 @@ interface String {
    *    }
    * }
    */
-  bold() : string;
+  bold(): string
 
   /**
    * fixed() 方法创建了一个 <tt> 标签元素将字符串包裹起来，从而让这个字符串里面的内容具有固定间距。
@@ -965,8 +1017,7 @@ interface String {
    *    }
    * }
    */
-  fixed() : string;
-
+  fixed(): string
 
   /**
    * 创建一个<font>的 HTML 元素让字符串被显示成指定的字体颜色。
@@ -994,7 +1045,7 @@ interface String {
    *    }
    * }
    */
-  fontcolor(color : string) : string;
+  fontcolor(color: string): string
 
   /**
    * 返回一个' <font> ' HTML元素并设置size属性值
@@ -1021,7 +1072,7 @@ interface String {
    *    }
    * }
    */
-  fontsize(size : number) : string;
+  fontsize(size: number): string
 
   /**
    * 返回一个' <font> ' HTML元素并设置size属性值
@@ -1048,7 +1099,7 @@ interface String {
    *    }
    * }
    */
-  fontsize(size : string) : string;
+  fontsize(size: string): string
 
   /**
    * italics()方法创建一个<i> HTML元素，使字符串变为斜体。
@@ -1074,7 +1125,7 @@ interface String {
    *    }
    * }
    */
-  italics() : string;
+  italics(): string
 
   /**
    * link() 方法创建一个 HTML 元素 <a> ，用该字符串作为超链接的显示文本，参数作为指向另一个 URL 的超链接。
@@ -1101,7 +1152,7 @@ interface String {
    *    }
    * }
    */
-  link(url : string) : string;
+  link(url: string): string
 
   /**
    * small() 方法的作用是创建一个使字符串显示小号字体的 <small> 标签。
@@ -1127,7 +1178,7 @@ interface String {
    *    }
    * }
    */
-  small() : string;
+  small(): string
 
   /**
    * strike()方法创建<strike> HTML 元素，使字符串展示为被删除的文本。
@@ -1153,7 +1204,7 @@ interface String {
    *    }
    * }
    */
-  strike() : string;
+  strike(): string
 
   /**
    * sub()方法创建一个 <sub> HTML 元素，使字符串展示为下标。
@@ -1179,7 +1230,7 @@ interface String {
    *    }
    * }
    */
-  sub() : string;
+  sub(): string
 
   /**
    * sup()方法创建 一个<sup>HTML 元素，使字符串显示为上标。
@@ -1205,7 +1256,7 @@ interface String {
    *    }
    * }
    */
-  sup() : string;
+  sup(): string
 
   /**
    * 方法接受一个整数值，并返回一个新的 String，该字符串由位于指定偏移量处的单个 UTF-16 码元组成
@@ -1230,7 +1281,7 @@ interface String {
    *    }
    * }
    */
-  at(index: number): string | null;
+  at(index: number): string | null
 }
 
 interface StringConstructor {
@@ -1278,7 +1329,7 @@ interface StringConstructor {
    * }
    */
   //(value ?: any) : string;
-  readonly prototype : String;
+  readonly prototype: String
   /**
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/buildin-object-api/string.html#fromCharCode
    * @uniPlatform {
@@ -1296,10 +1347,10 @@ interface StringConstructor {
    *    }
    * }
    */
-  fromCharCode(...codes : number[]) : string;
+  fromCharCode(...codes: number[]): string
 }
 
 /**
  * Allows manipulation and formatting of text strings and determination and location of substrings within strings.
  */
-declare var String : StringConstructor;
+declare var String: StringConstructor
