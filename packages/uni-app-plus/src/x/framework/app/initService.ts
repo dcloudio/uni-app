@@ -7,9 +7,38 @@ import { getNativeApp } from './app'
 import { extend } from '@vue/shared'
 
 export function initOn(app: IApp) {
-  app.addEventListener(ON_SHOW, function (event) {
+  app.addEventListener(ON_SHOW, async function (event) {
     const app = getNativeApp()
-    const schemaLink = app.getLaunchOptionsSync()
+    const MAX_TIMEOUT = 200
+
+    function getNewIntent() {
+      return new Promise((resolve, reject) => {
+        const handleNewIntent = (newIntent) => {
+          clearTimeout(timeout)
+          app.removeEventListener('onNewIntent', handleNewIntent)
+          resolve({
+            appScheme: newIntent.appScheme ?? null,
+            appLink: newIntent.appLink ?? null,
+          })
+        }
+
+        const timeout = setTimeout(() => {
+          app.removeEventListener('onNewIntent', handleNewIntent)
+          // 等 timeout 无返回值，视为无值
+          const appLink = {
+            appScheme: null,
+            appLink: null,
+          }
+          resolve(appLink)
+        }, MAX_TIMEOUT)
+
+        ;(app.addEventListener as any)('onNewIntent', handleNewIntent)
+      })
+    }
+
+    const schemaLink = (await getNewIntent()) as ReturnType<
+      typeof app.getLaunchOptionsSync
+    >
 
     const showOptions = extend(
       {
