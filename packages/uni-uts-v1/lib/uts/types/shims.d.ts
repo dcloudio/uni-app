@@ -14,42 +14,6 @@ declare global {
     <T>(...items: T[]): T[]
     readonly prototype: any[]
   }
-
-  // @vue/runtime-core 中用到的
-  const NodeMarker: unique symbol
-  interface Node {
-    [NodeMarker]: true
-  }
-  var Node: {
-    prototype: Node
-    new (): Node
-  }
-  interface Element extends Node {}
-  var Element: {
-    prototype: Element
-    new (): Element
-  }
-  interface ShadowRoot {}
-  var ShadowRoot: {
-    prototype: ShadowRoot
-    new (): ShadowRoot
-  }
-  interface HTMLElementEventMap {}
-  interface HTMLElementTagNameMap {}
-
-  const EventMarker: unique symbol
-  interface Event {
-    [EventMarker]: true
-  }
-  var Event: {
-    prototype: Event
-    new (type: string): Event
-  }
-  interface KeyboardEvent extends Event {}
-  var KeyboardEvent: {
-    prototype: KeyboardEvent
-    new (type: string): KeyboardEvent
-  }
 }
 declare module 'vue' {
   interface ComponentCustomProperties {

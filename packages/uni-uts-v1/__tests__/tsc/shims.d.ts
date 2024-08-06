@@ -19,6 +19,41 @@ declare global {
     new (): File
   }
 
+  const NodeMarker: unique symbol
+  interface Node {
+    [NodeMarker]: true
+  }
+  var Node: {
+    prototype: Node
+    new (): Node
+  }
+  interface Element extends Node {}
+  var Element: {
+    prototype: Element
+    new (): Element
+  }
+  interface ShadowRoot {}
+  var ShadowRoot: {
+    prototype: ShadowRoot
+    new (): ShadowRoot
+  }
+  interface HTMLElementEventMap {}
+  interface HTMLElementTagNameMap {}
+
+  const EventMarker: unique symbol
+  interface Event {
+    [EventMarker]: true
+  }
+  var Event: {
+    prototype: Event
+    new (type: string): Event
+  }
+  interface KeyboardEvent extends Event {}
+  var KeyboardEvent: {
+    prototype: KeyboardEvent
+    new (type: string): KeyboardEvent
+  }
+
   interface HTMLElement extends Element {
     // 因为 uni-api 用到了 document.createElement('a').href
     href: string

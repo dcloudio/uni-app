@@ -1579,7 +1579,7 @@ type LegacyPublicInstance = ComponentPublicInstance & LegacyPublicProperties;
 interface LegacyPublicProperties {
     $set(target: object, key: string, value: any): void;
     $delete(target: object, key: string): void;
-    $mount(el?: string): this;
+    $mount(el?: string | Element): this;
     $destroy(): void;
     $scopedSlots: Slots;
     $on(event: string | string[], fn: Function): this;
@@ -1665,7 +1665,7 @@ export declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T &
     } | undefined;
 }, modifiers: string[]) => T;
 
-export { createBaseVNode as createElementVNode, defineComponent as defineApp, defineComponent as defineMixin,  };
+export { createBaseVNode as createElementVNode, defineComponent as defineMixin,  };
 // Note: this file is auto concatenated to the end of the bundled d.ts during
 // build.
 type _defineProps = typeof defineProps
