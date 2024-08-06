@@ -11,9 +11,7 @@ export const requestAnimationFrame = defineSyncApi(
 
 export const cancelAnimationFrame = defineSyncApi(
   'cancelAnimationFrame',
-  () => {
-    return function (taskId: number) {
-      globalThis.__uniappx__.cancelAnimationFrame(taskId)
-    }
+  (taskId: number) => {
+    globalThis.__uniappx__.cancelAnimationFrame(Number(taskId))
   }
 )
