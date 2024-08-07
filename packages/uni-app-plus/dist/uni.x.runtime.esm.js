@@ -965,12 +965,12 @@ function initRouteOptions(path, openType) {
 function setupPage(component) {
   var oldSetup = component.setup;
   component.inheritAttrs = false;
-  component.setup = (_, ctx) => {
+  component.setup = (props, ctx) => {
     var {
       attrs: {
         __pageId,
         __pagePath,
-        __pageQuery,
+        /*__pageQuery,*/
         __pageInstance
       }
     } = ctx;
@@ -979,7 +979,7 @@ function setupPage(component) {
     initPageVm(pageVm, __pageInstance);
     addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
     if (oldSetup) {
-      return oldSetup(__pageQuery, ctx);
+      return oldSetup(props, ctx);
     }
   };
   return component;

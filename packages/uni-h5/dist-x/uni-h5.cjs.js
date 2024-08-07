@@ -8880,9 +8880,9 @@ function wrapperComponentSetup(comp, { clone, init, setup, before }) {
   comp.setup = (props2, ctx) => {
     const instance = vue.getCurrentInstance();
     init(instance.proxy);
-    const query = setup(instance);
+    setup(instance);
     if (oldSetup) {
-      return oldSetup(query || props2, ctx);
+      return oldSetup(props2, ctx);
     }
   };
   return comp;

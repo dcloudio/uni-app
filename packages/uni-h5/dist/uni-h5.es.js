@@ -16075,9 +16075,9 @@ function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
   comp.setup = (props2, ctx) => {
     const instance2 = getCurrentInstance();
     init2(instance2.proxy);
-    const query = setup(instance2);
+    setup(instance2);
     if (oldSetup) {
-      return oldSetup(query || props2, ctx);
+      return oldSetup(props2, ctx);
     }
   };
   return comp;

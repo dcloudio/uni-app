@@ -18523,9 +18523,9 @@ function wrapperComponentSetup(comp, { clone, init: init2, setup, before }) {
   comp.setup = (props2, ctx) => {
     const instance2 = getCurrentInstance();
     init2(instance2.proxy);
-    const query = setup(instance2);
+    setup(instance2);
     if (oldSetup) {
-      return oldSetup(query || props2, ctx);
+      return oldSetup(props2, ctx);
     }
   };
   return comp;
@@ -25243,7 +25243,11 @@ const openDialogPage = (options) => {
 };
 function triggerFailCallback$1(options, errMsg) {
   var _a, _b;
-  const failOptions = new UniError("uni-openDialogPage", 4, `openDialogPage: fail, ${errMsg}`);
+  const failOptions = new UniError(
+    "uni-openDialogPage",
+    4,
+    `openDialogPage: fail, ${errMsg}`
+  );
   (_a = options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
@@ -25294,7 +25298,11 @@ const closeDialogPage = (options) => {
 };
 function triggerFailCallback(options, errMsg) {
   var _a, _b;
-  const failOptions = new UniError("uni-closeDialogPage", 4, `closeDialogPage: fail, ${errMsg}`);
+  const failOptions = new UniError(
+    "uni-closeDialogPage",
+    4,
+    `closeDialogPage: fail, ${errMsg}`
+  );
   (_a = options == null ? void 0 : options.fail) == null ? void 0 : _a.call(options, failOptions);
   (_b = options == null ? void 0 : options.complete) == null ? void 0 : _b.call(options, failOptions);
 }
