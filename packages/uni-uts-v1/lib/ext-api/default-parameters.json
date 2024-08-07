@@ -87,14 +87,14 @@
       "null"
     ]
   },
-  "uni-createWebviewContext": {
-    "createWebviewContext": [
-      null,
+  "uni-dialogPage": {
+    "closeDialogPage": [
       "null"
     ]
   },
-  "uni-dialogPage": {
-    "closeDialogPage": [
+  "uni-createWebviewContext": {
+    "createWebviewContext": [
+      null,
       "null"
     ]
   },
