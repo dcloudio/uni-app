@@ -72,7 +72,10 @@ function wrapperComponentSetup(
     init(instance.proxy!)
     const query = setup(instance)
     if (oldSetup) {
-      return oldSetup(query || props, ctx)
+      let newProps = {}
+      extend(newProps, props)
+      extend(newProps, query)
+      return oldSetup(newProps, ctx)
     }
   }
   return comp
