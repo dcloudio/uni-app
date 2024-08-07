@@ -18,9 +18,9 @@ import { addCurrentPage } from './getCurrentPages'
 export function setupPage(component: VuePageComponent) {
   const oldSetup = component.setup
   component.inheritAttrs = false // 禁止继承 __pageId 等属性，避免告警
-  component.setup = (_, ctx) => {
+  component.setup = (props, ctx) => {
     const {
-      attrs: { __pageId, __pagePath, __pageQuery, __pageInstance },
+      attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance },
     } = ctx
     if (__DEV__) {
       console.log(formatLog(__pagePath as string, 'setup'))
@@ -48,7 +48,7 @@ export function setupPage(component: VuePageComponent) {
       })
     }
     if (oldSetup) {
-      return oldSetup(__pageQuery as any, ctx)
+      return oldSetup(props, ctx)
     }
   }
   return component
