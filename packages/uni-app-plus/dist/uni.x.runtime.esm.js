@@ -2443,12 +2443,6 @@ var env = {
   CACHE_PATH: "unifile://cache/",
   SANDBOX_PATH: "unifile://sandbox/"
 };
-var requestAnimationFrame = /* @__PURE__ */ defineSyncApi("requestAnimationFrame", (callback) => {
-  return globalThis.__uniappx__.requestAnimationFrame(callback);
-});
-var cancelAnimationFrame = /* @__PURE__ */ defineSyncApi("cancelAnimationFrame", (taskId) => {
-  globalThis.__uniappx__.cancelAnimationFrame(Number(taskId));
-});
 var _PerformanceEntryStatus;
 var APP_LAUNCH = "appLaunch";
 var PERFORMANCE_BUFFER_SIZE = 30;
@@ -2918,6 +2912,7 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     errMsg
   } = _ref;
   var keepAlive = methodName.indexOf("on") === 0 && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
+  var throws = async;
   var invokeCallback2 = (_ref2) => {
     var {
       id: id2,
@@ -2941,7 +2936,8 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     type,
     name: methodName,
     method: methodParams,
-    keepAlive
+    keepAlive,
+    throws
   } : {
     moduleName,
     moduleType,
@@ -2951,7 +2947,8 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     type,
     companion,
     method: methodParams,
-    keepAlive
+    keepAlive,
+    throws
   };
   return function() {
     if (errMsg) {
@@ -3093,6 +3090,7 @@ function initUTSProxyClass(options) {
                 id: instance.__instanceId,
                 type: "getter",
                 keepAlive: false,
+                throws: false,
                 name,
                 errMsg
               });
@@ -3265,7 +3263,6 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   $once,
   __log__,
   addInterceptor,
-  cancelAnimationFrame,
   createCanvasContextAsync,
   createSelectorQuery,
   env,
@@ -3291,7 +3288,6 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   registerUTSPlugin,
   removeInterceptor,
   removeTabBarBadge,
-  requestAnimationFrame,
   requireUTSPlugin,
   setNavigationBarColor,
   setNavigationBarTitle,
@@ -3400,20 +3396,77 @@ function onLaunchWebviewReady() {
 function initSubscribeHandlers() {
   subscribeWebviewReady({}, "1");
 }
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+function _asyncToGenerator(fn) {
+  return function() {
+    var self = this, args = arguments;
+    return new Promise(function(resolve, reject) {
+      var gen = fn.apply(self, args);
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+      _next(void 0);
+    });
+  };
+}
 function initOn(app) {
-  app.addEventListener(ON_SHOW, function(event) {
-    var app2 = getNativeApp();
-    var schemaLink = app2.getLaunchOptionsSync();
-    var showOptions = extend({
-      path: __uniConfig.entryPagePath
-    }, schemaLink);
-    setEnterOptionsSync(showOptions);
-    var page = getCurrentPage();
-    invokeHook(getApp(), ON_SHOW, showOptions);
-    if (page) {
-      invokeHook(page, ON_SHOW);
-    }
-  });
+  app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
+    var _ref = _asyncToGenerator(function* (event) {
+      var app2 = getNativeApp();
+      var MAX_TIMEOUT = 200;
+      function getNewIntent() {
+        return new Promise((resolve, reject) => {
+          var handleNewIntent = (newIntent) => {
+            var _newIntent$appScheme, _newIntent$appLink;
+            clearTimeout(timeout);
+            app2.removeEventListener("onNewIntent", handleNewIntent);
+            resolve({
+              appScheme: (_newIntent$appScheme = newIntent.appScheme) !== null && _newIntent$appScheme !== void 0 ? _newIntent$appScheme : null,
+              appLink: (_newIntent$appLink = newIntent.appLink) !== null && _newIntent$appLink !== void 0 ? _newIntent$appLink : null
+            });
+          };
+          var timeout = setTimeout(() => {
+            app2.removeEventListener("onNewIntent", handleNewIntent);
+            var appLink = {
+              appScheme: null,
+              appLink: null
+            };
+            resolve(appLink);
+          }, MAX_TIMEOUT);
+          app2.addEventListener("onNewIntent", handleNewIntent);
+        });
+      }
+      var schemaLink = yield getNewIntent();
+      var showOptions = extend({
+        path: __uniConfig.entryPagePath
+      }, schemaLink);
+      setEnterOptionsSync(showOptions);
+      var page = getCurrentPage();
+      invokeHook(getApp(), ON_SHOW, showOptions);
+      if (page) {
+        invokeHook(page, ON_SHOW);
+      }
+    });
+    return function(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }());
   app.addEventListener(ON_HIDE, function() {
     var page = getCurrentPage();
     invokeHook(getApp(), ON_HIDE);
