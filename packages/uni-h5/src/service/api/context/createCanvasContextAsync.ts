@@ -5,6 +5,7 @@ import type {
   CanvasContext,
   CanvasContextToBlobCallback,
   CreateCanvasContextAsyncOptions,
+  UniRequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
 
 class CanvasContextImpl implements CanvasContext {
@@ -40,6 +41,18 @@ class CanvasContextImpl implements CanvasContext {
   // @ts-expect-error TODO 类型不匹配?
   createImage(): Image {
     return new Image()
+  }
+
+  createPath2D(): Path2D {
+    return new Path2D()
+  }
+
+  requestAnimationFrame(callback: UniRequestAnimationFrameCallback): number {
+    return window.requestAnimationFrame(callback)
+  }
+
+  cancelAnimationFrame(taskId: number): void {
+    window.cancelAnimationFrame(taskId)
   }
 }
 
