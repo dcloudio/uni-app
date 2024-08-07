@@ -3,11 +3,6 @@ const __sfc__ = defineComponent({
   slots: Object as SlotsType<{
     default: {}
   }>,
-  provide() {
-    return {
-      msg: this.str,
-    }
-  },
   props: {
     str: {
       type: String,

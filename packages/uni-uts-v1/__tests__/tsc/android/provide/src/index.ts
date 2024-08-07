@@ -1,2 +1,8 @@
 import { defineComponent } from 'vue'
-defineComponent({})
+defineComponent({
+  provide() {
+    return {
+      msg: 'hello',
+    }
+  },
+})

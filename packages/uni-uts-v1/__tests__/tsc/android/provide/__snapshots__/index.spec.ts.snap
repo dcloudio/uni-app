@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`android provide 1`] = `
+"import { defineComponent } from 'vue';
+defineComponent({
+    provide() {
+        return {
+            msg: 'hello',
+        };
+    },
+});
+"
+`;

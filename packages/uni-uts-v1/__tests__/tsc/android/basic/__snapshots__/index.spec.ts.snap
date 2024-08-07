@@ -1,4 +1,7 @@
-import { computed, defineComponent, ref, watch, SlotsType } from 'vue';
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`android basic 1`] = `
+"import { computed, defineComponent, ref, watch, SlotsType } from 'vue';
 const __sfc__ = defineComponent({
     slots: Object as SlotsType<{
         default: {};
@@ -41,3 +44,5 @@ function render(this: InstanceType<typeof __sfc__>): any | null {
     _ctx.str;
     _ctx.dNum;
 }
+"
+`;

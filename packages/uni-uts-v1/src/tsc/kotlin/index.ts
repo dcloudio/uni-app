@@ -208,12 +208,11 @@ export function runUTS2Kotlin(
       },
       transformReturnType: {
         shouldTransform(node, _type) {
-          if (node.parent && ts.isCallExpression(node.parent)) {
-            const decl = node.parent.expression
-            if (ts.isIdentifier(decl)) {
-              if (['provider'].includes(decl.text)) {
-                return false
-              }
+          // { provide(){ return {} } }
+          if (ts.isMethodDeclaration(node) && ts.isIdentifier(node.name)) {
+            const name = node.name.getText()
+            if (name === 'provide') {
+              return false
             }
           }
           return true
