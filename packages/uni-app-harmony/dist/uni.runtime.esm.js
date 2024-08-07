@@ -13758,7 +13758,7 @@ function initAppLaunch(appVm) {
         referrerInfo: referrerInfo,
     });
     invokeHook(appVm, ON_LAUNCH, args);
-    invokeHook(appVm, ON_SHOW, args);
+    // invokeHook(appVm, ON_SHOW, args) // 鸿蒙应用启动时会在EntryAbility触发一次onForeground事件，不需要在initAppLaunch触发onShow
 }
 
 function initTabBar() {
