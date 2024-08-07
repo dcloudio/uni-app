@@ -34,10 +34,6 @@ export { removeInterceptor, addInterceptor } from './base/interceptor'
 export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
 export { getEnterOptionsSync } from './base/getEnterOptionsSync'
 export { env } from './base/env'
-export {
-  requestAnimationFrame,
-  cancelAnimationFrame,
-} from './base/requestAnimationFrame'
 
 export * from './performance'
 
