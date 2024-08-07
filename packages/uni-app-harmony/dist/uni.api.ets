@@ -3614,14 +3614,13 @@ export function initUniExtApi(APP_ID: string) {
         const providerIds = providers.map((provider): string =>{
             return provider.id;
         });
-        const result = {
+        const result: GetProviderSuccess = {
             service: options.service,
             provider: providerIds,
             providerIds,
             providerObjects: providers,
-            providers,
-            errMsg: 'GetProvider:ok'
-        } as GetProviderSuccess;
+            providers
+        };
         return result;
     };
     const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(API_GET_PROVIDER, (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void =>{
@@ -6121,15 +6120,13 @@ export function initUniExtApi(APP_ID: string) {
         try {
             const showToastOptions: promptAction1.ShowToastOptions = {
                 message: options.title,
-                duration: options.duration!
+                duration: options.duration!,
+                alignment: Alignment.Center
             };
             if (options.position) {
                 switch(options.position){
                     case 'top':
                         showToastOptions.alignment = Alignment.Top;
-                        break;
-                    case 'center':
-                        showToastOptions.alignment = Alignment.Center;
                         break;
                     case 'bottom':
                         showToastOptions.alignment = Alignment.Bottom;

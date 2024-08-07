@@ -30,7 +30,7 @@ const errorCodeMap: Map<number, number> = new Map([
 ]);
 class UniPaymentAlipayProviderImpl implements UniPaymentAlipayProvider {
     id: string = "alipay";
-    description: string = "支付宝支付";
+    description: string = "支付宝";
     constructor(){}
     requestPayment(options: RequestPaymentOptions) {
         new Pay().pay(options.orderInfo, true).then((res)=>{

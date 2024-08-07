@@ -12592,8 +12592,8 @@ function createPageNode(pageId, pageOptions, setup) {
 function setupPage(component) {
     const oldSetup = component.setup;
     component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
-    component.setup = (_, ctx) => {
-        const { attrs: { __pageId, __pagePath, __pageQuery, __pageInstance }, } = ctx;
+    component.setup = (props, ctx) => {
+        const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
         if (('production' !== 'production')) {
             console.log(formatLog(__pagePath, 'setup'));
         }
@@ -12614,7 +12614,7 @@ function setupPage(component) {
             });
         }
         if (oldSetup) {
-            return oldSetup(__pageQuery, ctx);
+            return oldSetup(props, ctx);
         }
     };
     return component;
@@ -12649,12 +12649,12 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     const pageNode = createPageNode(__pageId, pageOptions, true);
     const app = getVueApp();
     const component = pagesMap.get(__pagePath)();
-    const mountPage = (component) => app.mountPage(component, {
+    const mountPage = (component) => app.mountPage(component, extend({
         __pageId,
         __pagePath,
         __pageQuery,
         __pageInstance,
-    }, pageNode);
+    }, __pageQuery), pageNode);
     if (isPromise(component)) {
         return component.then((component) => mountPage(component));
     }

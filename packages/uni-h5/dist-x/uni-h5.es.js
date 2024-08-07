@@ -25153,6 +25153,15 @@ class CanvasContextImpl {
   createImage() {
     return new Image();
   }
+  createPath2D() {
+    return new Path2D();
+  }
+  requestAnimationFrame(callback) {
+    return window.requestAnimationFrame(callback);
+  }
+  cancelAnimationFrame(taskId) {
+    window.cancelAnimationFrame(taskId);
+  }
 }
 const createCanvasContextAsync = function(options) {
   var _a, _b, _c, _d, _e, _f;
@@ -25179,12 +25188,6 @@ const createCanvasContextAsync = function(options) {
     (_e = options.fail) == null ? void 0 : _e.call(options, uniError);
   }
   (_f = options.complete) == null ? void 0 : _f.call(options);
-};
-const requestAnimationFrame$1 = function(callback) {
-  return window.requestAnimationFrame(callback);
-};
-const cancelAnimationFrame$1 = function(handle) {
-  window.cancelAnimationFrame(handle);
 };
 const openDialogPage = (options) => {
   var _a, _b;
@@ -25318,7 +25321,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   arrayBufferToBase64,
   base64ToArrayBuffer,
   canIUse,
-  cancelAnimationFrame: cancelAnimationFrame$1,
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
@@ -25445,7 +25447,6 @@ const api = /* @__PURE__ */ Object.defineProperty({
   removeStorageSync,
   removeTabBarBadge,
   request,
-  requestAnimationFrame: requestAnimationFrame$1,
   rpx2px: upx2px,
   saveFile,
   saveImageToPhotosAlbum,
@@ -28012,7 +28013,6 @@ export {
   arrayBufferToBase64,
   base64ToArrayBuffer,
   canIUse,
-  cancelAnimationFrame$1 as cancelAnimationFrame,
   canvasGetImageData,
   canvasPutImageData,
   canvasToTempFilePath,
@@ -28143,7 +28143,6 @@ export {
   removeStorageSync,
   removeTabBarBadge,
   request,
-  requestAnimationFrame$1 as requestAnimationFrame,
   upx2px as rpx2px,
   saveFile,
   saveImageToPhotosAlbum,
