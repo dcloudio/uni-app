@@ -2,7 +2,7 @@ import { defineAsyncApi } from '@dcloudio/uni-api'
 import type { ComponentPublicInstance } from 'vue'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { isVueComponent } from './createSelectorQuery'
-import type { CanvasContext } from '@dcloudio/uni-app-x/types/uni'
+// import type { CanvasContext } from '@dcloudio/uni-app-x/types/uni'
 export type {
   CreateCanvasContextAsyncSuccessCallback,
   CreateCanvasContextAsyncFailCallback,
@@ -44,12 +44,19 @@ export const createCanvasContextAsync = defineAsyncApi(
       return null
     }
 
-    resolve({
-      getContext: element.getContext.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      toDataURL: element.toDataURL.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      createImage: element.createImage.bind(element),
-    } as CanvasContext)
+    resolve(
+      {
+        getContext: element.getContext.bind(element),
+        toDataURL: element.toDataURL.bind(element),
+        // @ts-expect-error waiting for uni-app-x type update
+        createImage: element.createImage.bind(element),
+        // @ts-expect-error waiting for uni-app-x type update
+        createPath2D: element.createPath2D.bind(element),
+        // @ts-expect-error waiting for uni-app-x type update
+        requestAnimationFrame: element.requestAnimationFrame.bind(element),
+        // @ts-expect-error waiting for uni-app-x type update
+        cancelAnimationFrame: element.cancelAnimationFrame.bind(element),
+      } //as CanvasContext as any
+    )
   }
 )
