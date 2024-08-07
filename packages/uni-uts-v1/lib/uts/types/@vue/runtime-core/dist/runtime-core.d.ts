@@ -656,7 +656,7 @@ type InjectToObject<T extends ComponentInjectOptions> = T extends string[] ? {
 interface LegacyOptions<Props, D, C extends ComputedOptions, M extends MethodOptions, Mixin extends ComponentOptionsMixin, Extends extends ComponentOptionsMixin, I extends ComponentInjectOptions, II extends string> {
     compatConfig?: CompatConfig;
     [key: string]: any;
-    data?: (this: CreateComponentPublicInstance<Props, {}, {}, {}, MethodOptions, Mixin, Extends>) => D;
+    data?: (this: CreateComponentPublicInstance<Props, {}, {}, {}, MethodOptions, Mixin, Extends>, vm: CreateComponentPublicInstance<Props, {}, {}, {}, MethodOptions, Mixin, Extends>) => D;
     computed?: C;
     methods?: M;
     watch?: ComponentWatchOptions;

@@ -5,7 +5,7 @@ exports[`android plugin 1`] = `
 export function main() {
     const app = createApp({});
     app.use({
-        install(app, _options): any {
+        install(app) {
             app.config.globalProperties.plugin1 = '';
         },
     });

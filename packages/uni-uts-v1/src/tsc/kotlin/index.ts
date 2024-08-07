@@ -203,6 +203,9 @@ export function runUTS2Kotlin(
               return false
             }
           }
+          if (isVueWatchCallback(ts, node)) {
+            return false
+          }
           return true
         },
       },
@@ -214,6 +217,9 @@ export function runUTS2Kotlin(
             if (name === 'provide') {
               return false
             }
+          }
+          if (isVueWatchCallback(ts, node)) {
+            return false
           }
           return true
         },
@@ -295,4 +301,23 @@ function resolvePlatformDeclarationFiles(
     platform
   )
   return sync([`${platformDeclarationDir}/**/*.d.ts`], { absolute: true })
+}
+
+function isVueWatchCallback(ts: typeof tsTypes, node: tsTypes.Node) {
+  if (
+    node.parent &&
+    ts.isCallExpression(node.parent) &&
+    ts.isIdentifier(node.parent.expression)
+  ) {
+    const name = node.parent.expression.getText()
+    if (
+      name === 'watch' ||
+      name === 'watchEffect' ||
+      name === 'watchPostEffect' ||
+      name === 'watchSyncEffect'
+    ) {
+      return true
+    }
+  }
+  return false
 }

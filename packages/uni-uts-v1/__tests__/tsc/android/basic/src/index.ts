@@ -28,13 +28,6 @@ const __sfc__ = defineComponent({
       dNum: 1,
     }
   },
-  setup(props) {
-    computed((): boolean => {
-      return props.bool
-    })
-    const count = ref(0)
-    watch(count, (count) => {})
-  },
 })
 function render(this: InstanceType<typeof __sfc__>): any | null {
   const _ctx = this
