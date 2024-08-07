@@ -1,14 +1,10 @@
-import {
-  defineApp as defineAppOrigin,
-  defineComponent as defineComponentOrigin
-} from '@vue/runtime-core'
 declare global {
   const CSS_VAR_WINDOW_TOP: number
   const CSS_VAR_WINDOW_BOTTOM: number
   const CSS_VAR_STATUS_BAR_HEIGHT: number
 
-  const defineApp: typeof defineAppOrigin
-  const defineComponent: typeof defineComponentOrigin
+  // const defineApp: typeof defineAppOrigin
+  // const defineComponent: typeof defineComponentOrigin
   const __uniConfig: UniConfig
   const __uniRoutes: UniPageRoute[]
 

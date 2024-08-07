@@ -24,7 +24,7 @@ export interface UTS2KotlinOptions {
 
 export interface TransformOptions {
   transformArguments?: {
-    shouldTransform(symbol: tsTypes.Symbol): boolean
+    shouldTransform(node: tsTypes.Node, type: tsTypes.Type): boolean
   }
   transformReturnType?: {
     shouldTransform(node: tsTypes.Node, type: tsTypes.Type): boolean
@@ -196,18 +196,11 @@ export function runUTS2Kotlin(
     },
     transformOptions: {
       transformArguments: {
-        shouldTransform(symbol) {
-          if (symbol.name === 'data' || symbol.name === 'setup') {
-            const decls = symbol.getDeclarations()
-            // 如果是 vue 中的 data/setup 函数，不补充参数列表
-            if (decls && decls.length) {
-              if (
-                decls.find((d) =>
-                  d.getSourceFile().fileName.includes('runtime-core.d.ts')
-                )
-              ) {
-                return false
-              }
+        shouldTransform(node, _type) {
+          if (ts.isMethodDeclaration(node) && ts.isIdentifier(node.name)) {
+            const name = node.name.getText()
+            if (name === 'data' || name === 'setup') {
+              return false
             }
           }
           return true

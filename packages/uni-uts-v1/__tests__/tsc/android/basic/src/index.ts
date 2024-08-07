@@ -1,8 +1,13 @@
-import { computed, defineComponent, SlotsType } from 'vue'
+import { computed, defineComponent, ref, watch, SlotsType } from 'vue'
 const __sfc__ = defineComponent({
   slots: Object as SlotsType<{
     default: {}
   }>,
+  provide() {
+    return {
+      msg: this.str,
+    }
+  },
   props: {
     str: {
       type: String,
@@ -28,10 +33,12 @@ const __sfc__ = defineComponent({
       dNum: 1,
     }
   },
-  setup(props, ctx) {
+  setup(props) {
     computed((): boolean => {
       return props.bool
     })
+    const count = ref(0)
+    watch(count, (count) => {})
   },
 })
 function render(this: InstanceType<typeof __sfc__>): any | null {
