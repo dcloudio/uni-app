@@ -2,13 +2,30 @@ import { defineAsyncApi } from '@dcloudio/uni-api'
 import type { ComponentPublicInstance } from 'vue'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { isVueComponent } from './createSelectorQuery'
-// import type { CanvasContext } from '@dcloudio/uni-app-x/types/uni'
 export type {
   CreateCanvasContextAsyncSuccessCallback,
   CreateCanvasContextAsyncFailCallback,
   CreateCanvasContextAsyncCompleteCallback,
   CreateCanvasContextAsyncOptions,
 } from '@dcloudio/uni-app-x/types/uni'
+import type {
+  UniImageElement as IImage,
+  Path2D as IPath2D,
+} from '@dcloudio/uni-app-x/types/native'
+
+import type {
+  CanvasContext,
+  UniRequestAnimationFrameCallback,
+} from '@dcloudio/uni-app-x/types/uni'
+
+declare global {
+  // requestAnimationFrame
+  function requestAnimationFrame(
+    callback: UniRequestAnimationFrameCallback
+  ): number
+  function cancelAnimationFrame(taskId: number): void
+  const __uniappx__: any
+}
 
 export const createCanvasContextAsync = defineAsyncApi(
   'createCanvasContextAsync',
@@ -44,19 +61,34 @@ export const createCanvasContextAsync = defineAsyncApi(
       return null
     }
 
-    resolve(
-      {
-        getContext: element.getContext.bind(element),
-        toDataURL: element.toDataURL.bind(element),
-        // @ts-expect-error waiting for uni-app-x type update
-        createImage: element.createImage.bind(element),
-        // @ts-expect-error waiting for uni-app-x type update
-        createPath2D: element.createPath2D.bind(element),
-        // @ts-expect-error waiting for uni-app-x type update
-        requestAnimationFrame: element.requestAnimationFrame.bind(element),
-        // @ts-expect-error waiting for uni-app-x type update
-        cancelAnimationFrame: element.cancelAnimationFrame.bind(element),
-      } //as CanvasContext as any
-    )
+    function createImage(): IImage {
+      return new Image() as unknown as IImage
+    }
+
+    function createPath2D(): IPath2D {
+      return new Path2D()
+    }
+
+    function requestAnimationFrame(
+      callback: UniRequestAnimationFrameCallback
+    ): number {
+      const requestAnimationFrameFunc =
+        requestAnimationFrame ?? __uniappx__.requestAnimationFrame
+      return requestAnimationFrameFunc(callback)
+    }
+    function cancelAnimationFrame(taskId: number) {
+      const cancelAnimationFrameFunc =
+        cancelAnimationFrame ?? __uniappx__.cancelAnimationFrame
+      cancelAnimationFrameFunc(taskId)
+    }
+
+    resolve({
+      getContext: element.getContext.bind(element),
+      toDataURL: element.toDataURL.bind(element),
+      createImage: createImage,
+      createPath2D: createPath2D,
+      requestAnimationFrame: requestAnimationFrame,
+      cancelAnimationFrame: cancelAnimationFrame,
+    } as CanvasContext)
   }
 )
