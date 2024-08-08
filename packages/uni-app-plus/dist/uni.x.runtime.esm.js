@@ -2294,21 +2294,28 @@ var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasConte
     reject("element is null");
     return null;
   }
-  resolve(
-    {
-      getContext: element.getContext.bind(element),
-      toDataURL: element.toDataURL.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      createImage: element.createImage.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      createPath2D: element.createPath2D.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      requestAnimationFrame: element.requestAnimationFrame.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      cancelAnimationFrame: element.cancelAnimationFrame.bind(element)
-    }
-    //as CanvasContext as any
-  );
+  function createImage() {
+    return new Image();
+  }
+  function createPath2D() {
+    return new Path2D();
+  }
+  function requestAnimationFrame(callback) {
+    var requestAnimationFrameFunc = requestAnimationFrame !== null && requestAnimationFrame !== void 0 ? requestAnimationFrame : __uniappx__.requestAnimationFrame;
+    return requestAnimationFrameFunc(callback);
+  }
+  function cancelAnimationFrame(taskId) {
+    var cancelAnimationFrameFunc = cancelAnimationFrame !== null && cancelAnimationFrame !== void 0 ? cancelAnimationFrame : __uniappx__.cancelAnimationFrame;
+    cancelAnimationFrameFunc(taskId);
+  }
+  resolve({
+    getContext: element.getContext.bind(element),
+    toDataURL: element.toDataURL.bind(element),
+    createImage,
+    createPath2D,
+    requestAnimationFrame,
+    cancelAnimationFrame
+  });
 });
 function queryElementTop(component, selector) {
   var _component$$el;

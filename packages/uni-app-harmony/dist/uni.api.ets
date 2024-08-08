@@ -95,9 +95,9 @@ import { media as media1 } from '@kit.MediaKit';
 import { media } from '@kit.MediaKit';
 import media2 from '@ohos.multimedia.media';
 import media3 from '@ohos.multimedia.media';
-import picker1 from '@ohos.file.picker';
-import picker2 from '@ohos.file.picker';
-import picker3 from '@ohos.file.picker';
+import photoAccessHelper1 from '@ohos.file.photoAccessHelper';
+import photoAccessHelper2 from '@ohos.file.photoAccessHelper';
+import photoAccessHelper3 from '@ohos.file.photoAccessHelper';
 import { promptAction as promptAction1 } from '@kit.ArkUI';
 import { promptAction } from '@kit.ArkUI';
 import promptAction2 from '@ohos.promptAction';
@@ -770,7 +770,7 @@ export class PreviewImageOptions extends UTSObject {
     current: Object | null = null;
     urls!: Array<string.ImageURIString>;
     showmenu: boolean | null = null;
-    indicator: string | null = null;
+    indicator: 'default' | 'number' | 'none' | null = null;
     loop: boolean | null = null;
     longPressActions: LongPressActionsOptions | null = null;
     success: (PreviewImageSuccessCallback) | null = null;
@@ -838,7 +838,7 @@ export class ChooseVideoOptions extends UTSObject {
     sourceType: (string[]) | null = null;
     compressed: boolean | null = true;
     maxDuration: number | null = null;
-    camera: string | null = null;
+    camera: 'front' | 'back' | null = null;
     extension: (string[]) | null = null;
     success: (ChooseVideoSuccessCallback) | null = null;
     fail: (ChooseVideoFailCallback) | null = null;
@@ -889,8 +889,9 @@ interface MediaFile {
     thumbTempFilePath?: string;
 }
 interface ChooseMediaOptions {
-    mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE | picker.PhotoViewMIMETypes.IMAGE_TYPE;
+    mimeType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE | photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE;
     count?: number;
+    sourceType?: ('album' | 'camera')[];
 }
 interface chooseMediaSuccessCallbackResult {
     tempFiles: MediaFile[];
@@ -4169,14 +4170,15 @@ export function initUniExtApi(APP_ID: string) {
         } as GetImageInfoSuccess;
     };
     const _chooseMedia = async (options: ChooseMediaOptions): Promise<chooseMediaSuccessCallbackResult> =>{
-        const photoSelectOptions = new picker.PhotoSelectOptions();
+        const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
         const mimeType = options.mimeType;
         photoSelectOptions.MIMEType = mimeType;
         photoSelectOptions.maxSelectNumber = options.count || 9;
-        const photoPicker = new picker.PhotoViewPicker();
+        photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
+        const photoPicker = new photoAccessHelper.PhotoViewPicker();
         const photoSelectResult = await photoPicker.select(photoSelectOptions);
         const uris = photoSelectResult.photoUris;
-        if (mimeType !== picker.PhotoViewMIMETypes.VIDEO_TYPE) {
+        if (mimeType !== photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE) {
             return {
                 tempFiles: uris.map((uri)=>{
                     const file = fs1.openSync(uri, fs1.OpenMode.READ_ONLY);
@@ -4501,7 +4503,8 @@ export function initUniExtApi(APP_ID: string) {
     ]);
     const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         _chooseMedia({
-            mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
+            mimeType: photoAccessHelper1.PhotoViewMIMETypes.IMAGE_TYPE,
+            sourceType: options.sourceType,
             count: options.count!
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const tempFiles = chooseMediaRes.tempFiles;
@@ -4529,7 +4532,8 @@ export function initUniExtApi(APP_ID: string) {
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
     const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         _chooseMedia({
-            mimeType: picker2.PhotoViewMIMETypes.VIDEO_TYPE
+            mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
+            sourceType: options.sourceType
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const file = chooseMediaRes.tempFiles[0];
             if (!file) {
@@ -4629,11 +4633,11 @@ export function initUniExtApi(APP_ID: string) {
         } else {
             fileName = realPath.split('/').pop() || fileName;
         }
-        const photoSaveOptions = new picker3.PhotoSaveOptions();
+        const photoSaveOptions = new picker.PhotoSaveOptions();
         photoSaveOptions.newFileNames = [
             fileName
         ];
-        const photoPicker = new picker3.PhotoViewPicker();
+        const photoPicker = new picker.PhotoViewPicker();
         const photoSaveResult = await photoPicker.save(photoSaveOptions);
         const destUri = photoSaveResult[0];
         if (isResource) {
@@ -4641,8 +4645,8 @@ export function initUniExtApi(APP_ID: string) {
         } else {
             await saveUri(realPath as string, destUri);
         }
-        const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
-        const assetChangeRequest: photoAccessHelper.MediaAssetChangeRequest = photoAccessHelper.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
+        const phAccessHelper = photoAccessHelper3.getPhotoAccessHelper(context);
+        const assetChangeRequest: photoAccessHelper3.MediaAssetChangeRequest = photoAccessHelper3.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
         await phAccessHelper.applyChanges(assetChangeRequest);
         return destUri;
     };
@@ -6840,7 +6844,7 @@ export function initUniExtApi(APP_ID: string) {
         const ws = webSocket.createWebSocket();
         ws.connect(args.url, {
             header: args.header ? args.header as Object : undefined,
-            protocol: args.protocols ? Array.isArray(args.protocols) ? args.protocols.join(',') : args.protocols : undefined
+            protocol: args.protocols ? Array.isArray(args.protocols) ? args.protocols.join(',') : args.protocols : ''
         } as webSocket.WebSocketRequestOptions);
         const task = new SocketTask1(ws);
         socketTasks.push(task);
