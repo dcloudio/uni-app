@@ -984,7 +984,11 @@ __ins.emit(event, ...do_not_transform_spread)
     )}({${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy${
+        options.genDefaultAs
+          ? ` as InstanceType<typeof ${options.genDefaultAs}>`
+          : ''
+      };
 const _cache = __ins.renderCache;
 ${exposeCall}`
   )

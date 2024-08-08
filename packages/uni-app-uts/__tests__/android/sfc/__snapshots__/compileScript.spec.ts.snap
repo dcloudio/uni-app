@@ -851,7 +851,7 @@ exports[`SFC genDefaultAs <script setup> only 1`] = `
 const __sfc__ = defineComponent({
   setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
 const _cache = __ins.renderCache;
 
       
@@ -868,7 +868,7 @@ exports[`SFC genDefaultAs <script setup> only w/ ts 1`] = `
 const __sfc__ = defineComponent({
   setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
 const _cache = __ins.renderCache;
 
       
