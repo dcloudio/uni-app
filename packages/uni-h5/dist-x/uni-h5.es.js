@@ -25287,12 +25287,18 @@ const closeDialogPage = (options) => {
     const dialogPages = getPageInstanceByVm(
       currentPage
     ).$dialogPages.value;
-    dialogPages.forEach((dialogPage) => {
-      invokeHook(dialogPage.$vm, ON_UNLOAD);
-      if (!dialogPage.$disableEscBack) {
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      invokeHook(dialogPages[i].$vm, ON_UNLOAD);
+      if (i > 0) {
+        invokeHook(
+          dialogPages[i - 1].$vm,
+          ON_SHOW
+        );
+      }
+      if (!dialogPages[i].$disableEscBack) {
         decrementEscBackPageNum();
       }
-    });
+    }
     dialogPages.length = 0;
   }
   const successOptions = { errMsg: "closeDialogPage: ok" };

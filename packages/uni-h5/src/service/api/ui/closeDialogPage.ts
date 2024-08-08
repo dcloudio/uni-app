@@ -91,12 +91,15 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     const dialogPages = getPageInstanceByVm(
       currentPage as ComponentPublicInstance
     )!.$dialogPages.value as UniDialogPage[]
-    dialogPages.forEach((dialogPage) => {
-      invokeHook(dialogPage.$vm!, ON_UNLOAD)
-      if (!dialogPage.$disableEscBack) {
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      invokeHook(dialogPages[i].$vm!, ON_UNLOAD)
+      if (i > 0) {
+        invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
+      }
+      if (!dialogPages[i].$disableEscBack) {
         decrementEscBackPageNum()
       }
-    })
+    }
     dialogPages.length = 0
   }
 
