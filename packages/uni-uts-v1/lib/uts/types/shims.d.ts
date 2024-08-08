@@ -21,4 +21,10 @@ declare module 'vue' {
   }
 }
 
+declare module '@vue/reactivity' {
+  interface RefUnwrapBailTypes {
+    utsBailTypes: UTSJSONObject
+  }
+}
+
 export {}
