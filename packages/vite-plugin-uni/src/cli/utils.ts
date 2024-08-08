@@ -142,6 +142,8 @@ export function initEnv(
     const projectPath = manifestJson['app-harmony']?.projectPath
     if (projectPath) {
       process.env.UNI_APP_HARMONY_PROJECT_PATH = path.resolve(projectPath)
+    }
+    if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
       // 指定了鸿蒙项目根目录
       process.env.UNI_OUTPUT_DIR = path.resolve(
         process.env.UNI_APP_HARMONY_PROJECT_PATH,
