@@ -1,19 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`android v-model 1`] = `
-"import { defineComponent, useModel } from 'vue';
+"import { defineComponent, getCurrentInstance, useModel } from 'vue';
 defineComponent({
-    props: {
-        modelValue: { type: String },
-        msg: { type: String, default: 'default msg' },
-        num: { type: Number, default: 1 },
-    },
-    setup(props) {
-        const modelValue = useModel(props, 'modelValue');
+    setup() {
+        const __ins = getCurrentInstance()!;
+        const modelValue = useModel<string>(__ins.props, 'modelValue');
         modelValue.value = '123';
-        const msg = useModel(props, 'msg');
+        const msg = useModel<string>(__ins.props, 'msg');
         msg.value = '123';
-        const num = useModel(props, 'num');
+        const num = useModel<number>(__ins.props, 'num');
         num.value = 1;
     },
 });

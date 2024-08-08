@@ -1373,8 +1373,6 @@ export declare function withDefaults<T, BKeys extends keyof T, Defaults extends 
 export declare function useSlots(): SetupContext['slots'];
 export declare function useAttrs(): SetupContext['attrs'];
 
-export declare function useModel<M extends string | number | symbol, T extends Record<string, any>, K extends keyof T>(props: T, name: K, options?: DefineModelOptions<T[K]>): ModelRef<T[K], M>;
-
 type RawProps = VNodeProps & {
     __v_isVNode?: never;
     [Symbol.iterator]?: never;
@@ -1659,6 +1657,8 @@ export declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T &
         [k: string]: T;
     } | undefined;
 }, modifiers: string[]) => T;
+
+export declare function useModel<R>(props: any, name: string, options?: any): ModelRef<R, string>;
 
 export { createBaseVNode as createElementVNode, defineComponent as defineMixin,  };
 // Note: this file is auto concatenated to the end of the bundled d.ts during

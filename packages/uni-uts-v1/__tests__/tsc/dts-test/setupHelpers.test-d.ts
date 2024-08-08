@@ -357,7 +357,7 @@ describe('useModel', () => {
       const r = useModel(props, 'foo')
       expectType<Ref<any>>(r)
 
-      // @ts-expect-error
+      //// @ts-expect-error fixed by uts
       useModel(props, 'bar')
     },
   })

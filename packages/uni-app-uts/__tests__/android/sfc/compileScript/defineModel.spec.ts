@@ -139,10 +139,10 @@ describe('defineModel()', () => {
       `const modelValue = useModel<any>(__ins.props, "modelValue")`
     )
     expect(content).toMatch(
-      `const count = useModel<Number>(__ins.props, "count")`
+      `const count = useModel<number>(__ins.props, "count")`
     )
     expect(content).toMatch(
-      `const disabled = useModel<Number>(__ins.props, "disabled")`
+      `const disabled = useModel<number>(__ins.props, "disabled")`
     )
     expect(content).toMatch(`const any = useModel<any>(__ins.props, "any")`)
 
@@ -179,10 +179,10 @@ describe('defineModel()', () => {
       'emits: ["update:modelValue", "update:fn", "update:fnWithDefault", "update:str", "update:optional"]'
     )
     expect(content).toMatch(
-      `const modelValue = useModel<Boolean>(__ins.props, "modelValue")`
+      `const modelValue = useModel<boolean>(__ins.props, "modelValue")`
     )
     expect(content).toMatch(`const fn = useModel<Function>(__ins.props, "fn")`)
-    expect(content).toMatch(`const str = useModel<String>(__ins.props, "str")`)
+    expect(content).toMatch(`const str = useModel<string>(__ins.props, "str")`)
     expect(bindings).toStrictEqual({
       modelValue: BindingTypes.SETUP_REF,
       fn: BindingTypes.SETUP_REF,
