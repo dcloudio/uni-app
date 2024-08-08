@@ -3,8 +3,6 @@ declare global {
   const CSS_VAR_WINDOW_BOTTOM: number
   const CSS_VAR_STATUS_BAR_HEIGHT: number
 
-  // const defineApp: typeof defineAppOrigin
-  // const defineComponent: typeof defineComponentOrigin
   const __uniConfig: UniConfig
   const __uniRoutes: UniPageRoute[]
 
@@ -56,7 +54,7 @@ declare global {
     line = number,
     column = number
   > {
-    constructor(name: name, fileName: fileName, line: line, column: column) 
+    constructor(name: name, fileName: fileName, line: line, column: column)
   }
 
   namespace uts {

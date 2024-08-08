@@ -1388,11 +1388,6 @@ interface Constructor<P = any> {
         $props: P;
     };
 }
-type HTMLElementEventHandler = {
-    [K in keyof HTMLElementEventMap as `on${Capitalize<K>}`]?: (ev: HTMLElementEventMap[K]) => any;
-};
-export declare function h<K extends keyof HTMLElementTagNameMap>(type: K, children?: RawChildren): VNode;
-export declare function h<K extends keyof HTMLElementTagNameMap>(type: K, props?: (RawProps & HTMLElementEventHandler) | null, children?: RawChildren | RawSlots): VNode;
 export declare function h(type: string, children?: RawChildren): VNode;
 export declare function h(type: string, props?: RawProps | null, children?: RawChildren | RawSlots): VNode;
 export declare function h(type: typeof Text | typeof Comment, children?: string | number | boolean): VNode;

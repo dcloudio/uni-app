@@ -4,8 +4,8 @@ import { runUTS2Kotlin } from '../../src/tsc/kotlin/index'
 
 function run(platform: 'android' | 'ios', dir: string) {
   describe('android', () => {
-    const projectDir = resolve(__dirname, platform, dir)
-    const outputDir = resolve(projectDir, 'dist')
+    const projectDir = resolve(__dirname, 'uni-app-x', dir)
+    const outputDir = resolve(projectDir, 'dist/' + platform)
     runUTS2Kotlin('production', {
       inputDir: resolve(projectDir, 'src'),
       outputDir,
