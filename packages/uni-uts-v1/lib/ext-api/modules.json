@@ -212,24 +212,6 @@
           "swift": true,
           "arkts": true
         }
-      },
-      "getProviderSync": {
-        "name": "getProviderSync",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": true
-        }
-      },
-      "getProviderObjectById": {
-        "name": "getProviderObjectById",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": true,
-          "arkts": true
-        }
       }
     }
   },
