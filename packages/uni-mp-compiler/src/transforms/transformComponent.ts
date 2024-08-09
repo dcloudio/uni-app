@@ -163,6 +163,7 @@ export function rewriteBinding(
   if (
     isMiniProgramComponent === 'plugin' ||
     isMiniProgramComponent === 'dynamicLib' ||
+    isMiniProgramComponent === 'xr-frame' ||
     isMiniProgramComponent === 'ext'
   ) {
     // 因无法介入插件类型组件内部实现，故保留原始属性
