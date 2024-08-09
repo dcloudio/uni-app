@@ -69,17 +69,13 @@ export const createCanvasContextAsync = defineAsyncApi(
       return new Path2D()
     }
 
-    function requestAnimationFrame(
+    function requestAnimationFrameFun(
       callback: UniRequestAnimationFrameCallback
     ): number {
-      const requestAnimationFrameFunc =
-        requestAnimationFrame ?? __uniappx__.requestAnimationFrame
-      return requestAnimationFrameFunc(callback)
+      return requestAnimationFrame(callback)
     }
-    function cancelAnimationFrame(taskId: number) {
-      const cancelAnimationFrameFunc =
-        cancelAnimationFrame ?? __uniappx__.cancelAnimationFrame
-      cancelAnimationFrameFunc(taskId)
+    function cancelAnimationFrameFun(taskId: number) {
+      cancelAnimationFrame(taskId)
     }
 
     resolve({
@@ -87,8 +83,8 @@ export const createCanvasContextAsync = defineAsyncApi(
       toDataURL: element.toDataURL.bind(element),
       createImage: createImage,
       createPath2D: createPath2D,
-      requestAnimationFrame: requestAnimationFrame,
-      cancelAnimationFrame: cancelAnimationFrame,
+      requestAnimationFrame: requestAnimationFrameFun,
+      cancelAnimationFrame: cancelAnimationFrameFun,
     } as CanvasContext)
   }
 )
