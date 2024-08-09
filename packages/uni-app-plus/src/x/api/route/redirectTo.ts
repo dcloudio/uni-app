@@ -16,11 +16,22 @@ import { setStatusBarStyle } from '../../statusBar'
 import { isTabPage } from '../../framework/app/tabBar'
 import { closePage } from './utils'
 import { invokeAfterRouteHooks, invokeBeforeRouteHooks } from './performance'
+import {
+  entryPageState,
+  redirectToPagesBeforeEntryPages,
+} from '../../framework/app'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
   ({ url }, { resolve, reject }) => {
     const { path, query } = parseUrl(url)
+    if (!entryPageState.isReady) {
+      redirectToPagesBeforeEntryPages.push({
+        args: { url, path, query },
+        handler: { resolve, reject },
+      })
+      return
+    }
     _redirectTo({
       url,
       path,
@@ -35,7 +46,7 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
 
 interface RedirectToOptions extends RouteOptions {}
 
-function _redirectTo({
+export function _redirectTo({
   url,
   path,
   query,
