@@ -9,6 +9,7 @@ packages/uni-nvue-styler/dist
 packages/vite-plugin-uni/dist
 packages/uts/dist
 packages/uni-uts-v1/dist
+packages/uni-uts-v1/__tests__/tsc/uni-app-x/*/dist
 packages/uni-app-uts/dist
 packages/uni-cli-utils/dist
 packages/uni-preprocess/dist
