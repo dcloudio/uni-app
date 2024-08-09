@@ -16,6 +16,11 @@ import { registerPage } from '../../framework/page'
 import { getWebviewId } from '../../../service/framework/webview/utils'
 import { setStatusBarStyle } from '../../statusBar'
 import { invokeAfterRouteHooks, invokeBeforeRouteHooks } from './performance'
+import {
+  entryPageState,
+  navigateToPagesBeforeEntryPages,
+} from '../../framework/app'
+import { handleBeforeEntryPageRoutes, updateEntryPageIsReady } from './utils'
 
 export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   args,
@@ -28,6 +33,15 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
     animationType,
     animationDuration
   )
+  updateEntryPageIsReady(path)
+
+  if (!entryPageState.isReady) {
+    navigateToPagesBeforeEntryPages.push({
+      args,
+      handler: { resolve, reject },
+    })
+    return
+  }
   _navigateTo({
     url,
     path,
@@ -38,6 +52,8 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   })
     .then(resolve)
     .catch(reject)
+
+  handleBeforeEntryPageRoutes()
 }
 
 export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
@@ -47,7 +63,7 @@ export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   NavigateToOptions
 )
 
-interface NavigateToOptions extends RouteOptions {
+export interface NavigateToOptions extends RouteOptions {
   events: Record<string, any>
   aniType: string
   aniDuration: number
