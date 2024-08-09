@@ -975,7 +975,7 @@ declare global {
   const ReportingObserver: AnyClass<ReportingObserver>
   type Request = any
   const Request: AnyClass<Request>
-  const requestAnimationFrame: AnyFunction
+  // const requestAnimationFrame: AnyFunction
   const requestIdleCallback: AnyFunction
   const resizeBy: AnyFunction
   type ResizeObserver = any
