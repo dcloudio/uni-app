@@ -547,12 +547,6 @@ export class GetProviderOptions extends UTSObject {
     complete: GetProviderCompleteCallback | null = null;
 }
 export type GetProvider = (options: GetProviderOptions) => void;
-export type GetProviderSync = (options: GetProviderOptions) => GetProviderSuccess;
-export type GetProviderObjectById = (options: GetProviderObjectByIdOptions) => UniProvider | null;
-export class GetProviderObjectByIdOptions extends UTSObject {
-    service!: 'payment' | 'location';
-    provider!: string;
-}
 type GetRecorderManager = () => RecorderManager;
 class RecorderManagerStartOptions extends UTSObject {
     duration: number | null = null;
@@ -1555,8 +1549,6 @@ interface UniExtApi {
     onNetworkStatusChange: OnNetworkStatusChange;
     offNetworkStatusChange: OffNetworkStatusChange;
     getProvider: GetProvider;
-    getProviderSync: GetProviderSync;
-    getProviderObjectById: GetProviderObjectById;
     getRecorderManager: GetRecorderManager;
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
@@ -3598,8 +3590,6 @@ export function initUniExtApi(APP_ID: string) {
         UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
     };
     const API_GET_PROVIDER = 'getProvider';
-    const API_GET_PROVIDER_IDS = 'getProviderIds';
-    const API_GET_PROVIDER_OBJECT = 'getProviderObject';
     const SupportedProviderServiceList = [
         'oauth',
         'share',
@@ -3629,21 +3619,6 @@ export function initUniExtApi(APP_ID: string) {
         if (typeof res === 'string') exec.reject(res);
         else exec.resolve(res);
     }) as GetProvider;
-    const getProviderSync: GetProviderSync = defineSyncApi<GetProviderSuccess>(API_GET_PROVIDER_IDS, (options: GetProviderOptions): GetProviderSuccess =>{
-        const res = _getProviderSync(options);
-        if (typeof res === 'string') throw new Error(res);
-        return res;
-    }) as GetProviderSync;
-    const getProviderObjectById: GetProviderObjectById = defineSyncApi<UniProvider>(API_GET_PROVIDER_OBJECT, (options: GetProviderObjectByIdOptions): UniProvider | null =>{
-        if (!SupportedProviderServiceList.includes(options.service)) {
-            return null;
-        } else {
-            const providers = getUniProviders(options.service);
-            return providers.find((provider)=>{
-                return provider.id === options.provider;
-            }) || null;
-        }
-    }) as GetProviderObjectById;
     const API_GET_RECORDER_MANAGER = 'getRecorderManager';
     const callbacks: Callbacks = {
         pause: [],
@@ -6922,8 +6897,6 @@ export function initUniExtApi(APP_ID: string) {
         onNetworkStatusChange,
         offNetworkStatusChange,
         getProvider,
-        getProviderSync,
-        getProviderObjectById,
         getRecorderManager,
         getSystemInfo,
         getSystemInfoSync,
