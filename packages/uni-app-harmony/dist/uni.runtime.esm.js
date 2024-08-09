@@ -12103,7 +12103,6 @@ const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
 const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
 const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
-const WEBVIEW_ID_PREFIX = 'webviewId';
 
 let preloadWebview;
 function setPreloadWebview(webview) {
@@ -12165,7 +12164,7 @@ function onWebviewReady(pageId, callback) {
     UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
 }
 
-function closeWebview(webview, animationType, animationDuration) {
+function closeWebview$1(webview, animationType, animationDuration) {
     webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
 }
 function showWebview(webview, animationType, animationDuration, showCallback, delay) {
@@ -12205,24 +12204,6 @@ function showWebview(webview, animationType, animationDuration, showCallback, de
         });
     }, delay);
 }
-function backWebview(webview, callback) {
-    const children = webview.children();
-    if (!children || !children.length) {
-        // 无子 webview
-        return callback();
-    }
-    // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
-    const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
-        children[0];
-    childWebview.canBack(({ canBack }) => {
-        if (canBack) {
-            childWebview.back(); // webview 返回
-        }
-        else {
-            callback();
-        }
-    });
-}
 
 let pendingNavigator = false;
 function getPendingNavigator() {
@@ -12240,7 +12221,7 @@ function setPendingNavigator(path, callback, msg) {
 }
 function closePage(page, animationType, animationDuration) {
     removePage(page);
-    closeWebview(page.$getAppWebview(), animationType, animationDuration);
+    closeWebview$1(page.$getAppWebview(), animationType, animationDuration);
 }
 function pendingNavigate() {
     if (!pendingNavigator) {
@@ -12860,6 +12841,32 @@ function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
     });
 }
 
+function closeWebview(webview, animationType, animationDuration) {
+    if (webview.__preload__) {
+        webview.hide(animationType, animationDuration);
+    }
+    else {
+        webview.close(animationType, animationDuration);
+    }
+}
+function backWebview(webview, callback) {
+    const children = webview.children();
+    if (!children || !children.length) {
+        // 无子 webview
+        return callback();
+    }
+    // 支持且仅支持一个子webview
+    const childWebview = children[0];
+    childWebview.canBack(({ canBack }) => {
+        if (canBack) {
+            childWebview.back(); // webview 返回
+        }
+        else {
+            callback();
+        }
+    });
+}
+
 const navigateBack = defineAsyncApi(API_NAVIGATE_BACK, (args, { resolve, reject }) => {
     const page = getCurrentPage();
     if (!page) {
@@ -13065,10 +13072,10 @@ function _switchTab({ url, path, query, }) {
             });
             removePage(currentPage);
             if (currentPage.$page.openType === 'redirectTo') {
-                closeWebview(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
+                closeWebview$1(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
             }
             else {
-                closeWebview(currentPage.$getAppWebview(), 'auto');
+                closeWebview$1(currentPage.$getAppWebview(), 'auto');
             }
         }
         else {

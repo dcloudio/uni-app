@@ -7589,6 +7589,8 @@
   var APP_SERVICE_ID = "__uniapp__service";
   var ON_WEBVIEW_READY = "onWebviewReady";
   var ACTION_TYPE_DICT = 0;
+  var WEBVIEW_INSERTED = "webviewInserted";
+  var WEBVIEW_REMOVED = "webviewRemoved";
   var API_SET_LOCALE = "setLocale";
   var UniViewJSBridge$1 = /* @__PURE__ */ extend(ViewJSBridge, {
     publishHandler
@@ -22487,10 +22489,17 @@
     props: props$a,
     setup(props2) {
       var embedRef = ref(null);
+      var pageId = getCurrentPageId();
       var {
         _handleSubscribe
       } = useMethods(embedRef);
       useSubscribe(_handleSubscribe, useContextInfo(props2.id), true);
+      onMounted(() => {
+        UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, pageId);
+      });
+      onBeforeUnmount(() => {
+        UniViewJSBridge.publishHandler(WEBVIEW_REMOVED, {}, pageId);
+      });
       return () => createVNode("uni-web-view", {
         "id": props2.id
       }, [createVNode(Embed, {

@@ -4,9 +4,14 @@ import {
   useSubscribe,
 } from '@dcloudio/uni-components'
 import { capitalize, extend, isFunction } from '@vue/shared'
-import { type Ref, ref } from 'vue'
+import { getCurrentPageId } from '@dcloudio/uni-core'
+import { type Ref, onBeforeUnmount, onMounted, ref } from 'vue'
 import { getRealPath } from '../../../platform/getRealPath'
 import Embed from '../embed'
+import {
+  WEBVIEW_INSERTED,
+  WEBVIEW_REMOVED,
+} from '@dcloudio/uni-app-plus/constants'
 
 export type OperateWebViewType =
   | 'evalJs'
@@ -81,6 +86,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
   props,
   setup(props) {
     const embedRef = ref<InstanceType<typeof Embed> | null>(null)
+    const pageId = getCurrentPageId()
     const { _handleSubscribe } = useMethods(embedRef)
     useSubscribe(
       _handleSubscribe as (
@@ -91,6 +97,15 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       useContextInfo(props.id),
       true
     )
+
+    onMounted(() => {
+      UniViewJSBridge.publishHandler(WEBVIEW_INSERTED, {}, pageId)
+    })
+
+    onBeforeUnmount(() => {
+      UniViewJSBridge.publishHandler(WEBVIEW_REMOVED, {}, pageId)
+    })
+
     return () => (
       <uni-web-view id={props.id}>
         <Embed

@@ -20,10 +20,7 @@ import {
   ANI_DURATION,
 } from '@dcloudio/uni-app-plus/service/constants'
 import { removePage } from '@dcloudio/uni-app-plus/service/framework/page/getCurrentPages'
-import {
-  backWebview,
-  closeWebview,
-} from '@dcloudio/uni-app-plus/service/api/route/webview'
+import { backWebview, closeWebview } from './webview'
 import {
   isDirectPage,
   reLaunchEntryPage,
