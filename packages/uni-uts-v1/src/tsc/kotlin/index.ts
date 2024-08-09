@@ -101,6 +101,9 @@ export function runUTS2Kotlin(
         ),
       ]
     )
+  } else {
+    // 仅引用内部包含的 uts common，理论上此处的index.d.ts，需要和(hbxLanguageServicePath, 'uts-types/common/index.d.ts')保持同步
+    rootFiles.push(...[path.resolve(utsCommonTypesPath, 'common/index.d.ts')])
   }
 
   if (options.rootFiles && options.rootFiles.length) {
@@ -125,8 +128,8 @@ export function runUTS2Kotlin(
     noImplicitAny: false,
     useDefineForClassFields: false,
     sourceMap: process.env.NODE_ENV === 'development',
-    inlineSources: true,
-    noEmitOnError: false,
+    inlineSources: process.env.NODE_ENV === 'development',
+    noEmitOnError: true,
     skipLibCheck: true,
     resolveJsonModule: false, // 目前 json 文件会被 vite 提前处理，已经变成了标准的 ts 文件
     typeRoots: [],

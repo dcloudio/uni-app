@@ -164,7 +164,7 @@ declare const SuspenseImpl: {
     name: string;
     __isSuspense: boolean;
     process(n1: VNode | null, n2: VNode, container: RendererElement, anchor: RendererNode | null, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, slotScopeIds: string[] | null, optimized: boolean, rendererInternals: RendererInternals): void;
-    hydrate: typeof hydrateSuspense;
+    // hydrate: typeof hydrateSuspense;
     create: typeof createSuspenseBoundary;
     normalize: typeof normalizeSuspenseChildren;
 };
@@ -202,12 +202,12 @@ export interface SuspenseBoundary {
     unmount(parentSuspense: SuspenseBoundary | null, doRemove?: boolean): void;
 }
 declare function createSuspenseBoundary(vnode: VNode, parentSuspense: SuspenseBoundary | null, parentComponent: ComponentInternalInstance | null, container: RendererElement, hiddenContainer: RendererElement, anchor: RendererNode | null, namespace: ElementNamespace, slotScopeIds: string[] | null, optimized: boolean, rendererInternals: RendererInternals, isHydrating?: boolean): SuspenseBoundary;
-declare function hydrateSuspense(node: Node, vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, slotScopeIds: string[] | null, optimized: boolean, rendererInternals: RendererInternals, hydrateNode: (node: Node, vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null): Node | null;
+// declare function hydrateSuspense(node: Node, vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, slotScopeIds: string[] | null, optimized: boolean, rendererInternals: RendererInternals, hydrateNode: (node: Node, vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null): Node | null;
 declare function normalizeSuspenseChildren(vnode: VNode): void;
 
-export type RootHydrateFunction = (vnode: VNode<Node, Element>, container: (Element | ShadowRoot) & {
-    _vnode?: VNode;
-}) => void;
+// export type RootHydrateFunction = (vnode: VNode<Node, Element>, container: (Element | ShadowRoot) & {
+//     _vnode?: VNode;
+// }) => void;
 
 type Hook<T = () => void> = T | T[];
 export interface BaseTransitionProps<HostElement = RendererElement> {
@@ -276,9 +276,9 @@ export interface Renderer<HostElement = RendererElement> {
     render: RootRenderFunction<HostElement>;
     createApp: CreateAppFunction<HostElement>;
 }
-export interface HydrationRenderer extends Renderer<Element | ShadowRoot> {
-    hydrate: RootHydrateFunction;
-}
+// export interface HydrationRenderer extends Renderer<Element | ShadowRoot> {
+//     hydrate: RootHydrateFunction;
+// }
 export type ElementNamespace = 'svg' | 'mathml' | undefined;
 export type RootRenderFunction<HostElement = RendererElement> = (vnode: VNode | null, container: HostElement, namespace?: ElementNamespace) => void;
 export interface RendererOptions<HostNode = RendererNode, HostElement = RendererElement> {
@@ -349,7 +349,7 @@ declare enum MoveType {
  * ```
  */
 export declare function createRenderer<HostNode = RendererNode, HostElement = RendererElement>(options: RendererOptions<HostNode, HostElement>): Renderer<HostElement>;
-export declare function createHydrationRenderer(options: RendererOptions<Node, Element>): HydrationRenderer;
+// export declare function createHydrationRenderer(options: RendererOptions<Node, Element>): HydrationRenderer;
 
 type MatchPattern = string | RegExp | (string | RegExp)[];
 export interface KeepAliveProps {
@@ -842,7 +842,7 @@ declare const TeleportImpl: {
     process(n1: TeleportVNode | null, n2: TeleportVNode, container: RendererElement, anchor: RendererNode | null, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, namespace: ElementNamespace, slotScopeIds: string[] | null, optimized: boolean, internals: RendererInternals): void;
     remove(vnode: VNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, optimized: boolean, { um: unmount, o: { remove: hostRemove } }: RendererInternals, doRemove: boolean): void;
     move: typeof moveTeleport;
-    hydrate: typeof hydrateTeleport;
+    // hydrate: typeof hydrateTeleport;
 };
 declare enum TeleportMoveTypes {
     TARGET_CHANGE = 0,
@@ -850,7 +850,7 @@ declare enum TeleportMoveTypes {
     REORDER = 2
 }
 declare function moveTeleport(vnode: VNode, container: RendererElement, parentAnchor: RendererNode | null, { o: { insert }, m: move }: RendererInternals, moveType?: TeleportMoveTypes): void;
-declare function hydrateTeleport(node: Node, vnode: TeleportVNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean, { o: { nextSibling, parentNode, querySelector }, }: RendererInternals<Node, Element>, hydrateChildren: (node: Node | null, vnode: VNode, container: Element, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null): Node | null;
+// declare function hydrateTeleport(node: Node, vnode: TeleportVNode, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean, { o: { nextSibling, parentNode, querySelector }, }: RendererInternals<Node, Element>, hydrateChildren: (node: Node | null, vnode: VNode, container: Element, parentComponent: ComponentInternalInstance | null, parentSuspense: SuspenseBoundary | null, slotScopeIds: string[] | null, optimized: boolean) => Node | null): Node | null;
 export declare const Teleport: {
     new (): {
         $props: VNodeProps & TeleportProps;
@@ -885,7 +885,7 @@ export declare const Text: unique symbol;
 export declare const Comment: unique symbol;
 export declare const Static: unique symbol;
 export type VNodeTypes = string | VNode | Component | typeof Text | typeof Static | typeof Comment | typeof Fragment | typeof Teleport | typeof TeleportImpl | typeof Suspense | typeof SuspenseImpl;
-export type VNodeRef = string | Ref | ((ref: Element | ComponentPublicInstance | null, refs: Record<string, any>) => void);
+export type VNodeRef = string | Ref | ((ref: ComponentPublicInstance | null, refs: Record<string, any>) => void);
 type VNodeNormalizedRefAtom = {
     i: ComponentInternalInstance;
     r: VNodeRef;
@@ -1572,7 +1572,7 @@ type LegacyPublicInstance = ComponentPublicInstance & LegacyPublicProperties;
 interface LegacyPublicProperties {
     $set(target: object, key: string, value: any): void;
     $delete(target: object, key: string): void;
-    $mount(el?: string | Element): this;
+    $mount(el?: string): this;
     $destroy(): void;
     $scopedSlots: Slots;
     $on(event: string | string[], fn: Function): this;
@@ -1639,24 +1639,8 @@ declare module '@vue/reactivity' {
 
 export declare const DeprecationTypes: typeof DeprecationTypes$1;
 
-export declare let createApp: CreateAppFunction<Element>;
-export declare let createSSRApp: CreateAppFunction<Element>;
-/**
- * @private
- */
-export declare const withModifiers: <T extends (event: Event, ...args: unknown[]) => any>(fn: T & {
-    _withMods?: {
-        [key: string]: T;
-    } | undefined;
-}, modifiers: string[]) => T;
-/**
- * @private
- */
-export declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T & {
-    _withKeys?: {
-        [k: string]: T;
-    } | undefined;
-}, modifiers: string[]) => T;
+export declare let createApp: CreateAppFunction<string>;
+export declare let createSSRApp: CreateAppFunction<string>;
 
 export declare function useModel<R>(props: any, name: string, options?: any): ModelRef<R, string>;
 
