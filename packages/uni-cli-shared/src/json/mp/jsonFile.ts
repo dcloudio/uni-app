@@ -145,7 +145,7 @@ export function isMiniProgramUsingComponent(
 }
 
 interface MiniProgramComponents {
-  [name: string]: 'plugin' | 'component' | 'dynamicLib' | 'ext'
+  [name: string]: 'plugin' | 'component' | 'dynamicLib' | 'ext' | 'xr-frame'
 }
 
 export function findMiniProgramUsingComponents({
@@ -207,6 +207,13 @@ function findMiniProgramUsingComponent(
       } else if (path.includes('ext://')) {
         // mp-toutiao
         res[name] = 'ext'
+      } else if (
+        componentsDir &&
+        path.includes(componentsDir + '/') &&
+        findUsingComponentsJson(path, componentsDir).renderer === 'xr-frame'
+      ) {
+        // mp-weixin & x-frame
+        res[name] = 'xr-frame'
       } else if (componentsDir && path.includes(componentsDir + '/')) {
         res[name] = 'component'
       }
@@ -214,4 +221,12 @@ function findMiniProgramUsingComponent(
     },
     {}
   )
+}
+
+function findUsingComponentsJson(pathInpages, componentsDir) {
+  let [, dir] = pathInpages.split(componentsDir)
+  dir = '.' + dir
+  const fulldir = path.resolve(process.env.UNI_INPUT_DIR, componentsDir, dir)
+  const json = require(path.resolve(fulldir, 'index.json')) as Record<any, any>
+  return json
 }
