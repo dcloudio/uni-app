@@ -8,7 +8,7 @@ export function createApp() {
 }
 defineComponent({
     mounted() {
-        this.globalStr;
+        // this.globalStr
     },
 });
 "

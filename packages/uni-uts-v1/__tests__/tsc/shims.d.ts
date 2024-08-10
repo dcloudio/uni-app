@@ -88,7 +88,7 @@ declare module '@vue/reactivity' {
 // 仅为测试服务
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
-    globalStr: string
+    // globalStr: string
   }
 }
 

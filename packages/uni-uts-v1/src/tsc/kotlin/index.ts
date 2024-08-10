@@ -129,7 +129,7 @@ export function runUTS2Kotlin(
     useDefineForClassFields: false,
     sourceMap: process.env.NODE_ENV === 'development',
     inlineSources: process.env.NODE_ENV === 'development',
-    noEmitOnError: true,
+    noEmitOnError: false,
     skipLibCheck: true,
     resolveJsonModule: false, // 目前 json 文件会被 vite 提前处理，已经变成了标准的 ts 文件
     typeRoots: [],

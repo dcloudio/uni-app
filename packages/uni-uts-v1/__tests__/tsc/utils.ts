@@ -1,7 +1,7 @@
 import { resolve } from 'path'
 import { readFileSync } from 'fs-extra'
 import { runUTS2Kotlin } from '../../src/tsc/kotlin/index'
-
+// process.env.DEBUG = 'uts:*'
 function run(platform: 'android' | 'ios', dir: string) {
   describe('android', () => {
     const projectDir = resolve(__dirname, 'uni-app-x', dir)
