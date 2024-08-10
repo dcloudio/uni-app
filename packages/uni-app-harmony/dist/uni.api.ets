@@ -51,6 +51,8 @@ import { avSession } from '@kit.AVSessionKit';
 import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
 import buffer1 from '@ohos.buffer';
 import bundleManager1 from '@ohos.bundle.bundleManager';
+import { camera } from '@kit.CameraKit';
+import { cameraPicker } from '@kit.CameraKit';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
@@ -61,19 +63,21 @@ import deviceInfo1 from '@ohos.deviceInfo';
 import { fileIo as fileIo1 } from '@kit.CoreFileKit';
 import { fileIo as fileIo2 } from '@kit.CoreFileKit';
 import { fileIo as fileIo3 } from '@kit.CoreFileKit';
+import { fileIo as fs2 } from '@kit.CoreFileKit';
 import { fileIo } from '@kit.CoreFileKit';
 import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
-import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
 import fs4 from '@ohos.file.fs';
-import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
+import fs5 from '@ohos.file.fs';
+import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv2, Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
@@ -84,7 +88,7 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework
 import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath4, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
-import { getResourceStr, getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
 import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
@@ -536,7 +540,7 @@ export class GetProviderSuccess extends UTSObject {
     providers!: UniProvider[];
 }
 type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
-type GetProviderFail = UniError;
+type GetProviderFail = IGetProviderFail;
 type GetProviderFailCallback = (result: GetProviderFail) => void;
 type GetProviderComplete = Object;
 type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
@@ -547,6 +551,10 @@ export class GetProviderOptions extends UTSObject {
     complete: GetProviderCompleteCallback | null = null;
 }
 export type GetProvider = (options: GetProviderOptions) => void;
+type ProviderErrorCode = 110600;
+interface IGetProviderFail extends IUniError {
+    errCode: ProviderErrorCode;
+}
 type GetRecorderManager = () => RecorderManager;
 class RecorderManagerStartOptions extends UTSObject {
     duration: number | null = null;
@@ -889,6 +897,30 @@ interface ChooseMediaOptions {
 }
 interface chooseMediaSuccessCallbackResult {
     tempFiles: MediaFile[];
+}
+type CameraPosition = 'back' | 'front';
+interface TempFiles {
+    path: string;
+    size: number;
+}
+interface TakePhotoRes {
+    tempFilePaths: string[];
+    tempFiles: TempFiles[];
+}
+interface TakeVideoOptions {
+    cameraType?: CameraPosition;
+    videoDuration?: number;
+}
+interface TakeVideoRes {
+    path: string;
+    orientation?: MediaOrientation;
+    type: string | null;
+    duration: number;
+    size: number;
+    height: number;
+    width: number;
+    fps: number | null;
+    bitrate: number | null;
 }
 interface TempFileItem {
     path: string;
@@ -4476,58 +4508,137 @@ export function initUniExtApi(APP_ID: string) {
             "unexpect error:"
         ]
     ]);
-    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
-        _chooseMedia({
-            mimeType: photoAccessHelper1.PhotoViewMIMETypes.IMAGE_TYPE,
-            sourceType: options.sourceType,
-            count: options.count!
-        } as ChooseMediaOptions).then((chooseMediaRes)=>{
-            const tempFiles = chooseMediaRes.tempFiles;
-            if (tempFiles.length === 0) {
-                const errMsg = MediaUniErrors.get(1101001) as string;
-                res.reject(errMsg, {
-                    errCode: 1101001
-                } as ApiError);
-                return;
-            }
-            res.resolve({
-                errMsg: '',
-                errSubject: 'uni-chooseImage',
-                tempFilePaths: chooseMediaRes.tempFiles.map((file)=>file.tempFilePath),
-                tempFiles: chooseMediaRes.tempFiles.map((file)=>{
-                    return {
-                        path: file.tempFilePath,
-                        size: file.size
-                    } as TempFileItem;
-                })
-            } as ChooseImageSuccess);
-        }, (err: Error)=>{
-            res.reject(err.message);
+    const getHMCameraPosition = (cameraType: CameraPosition)=>{
+        switch(cameraType){
+            case 'back':
+                return camera.CameraPosition.CAMERA_POSITION_BACK;
+            case 'front':
+                return camera.CameraPosition.CAMERA_POSITION_FRONT;
+            default:
+                return camera.CameraPosition.CAMERA_POSITION_BACK;
+        }
+    };
+    const takePhoto = async (cameraType: CameraPosition = 'back')=>{
+        let pickerProfile: cameraPicker.PickerProfile = {
+            cameraPosition: getHMCameraPosition(cameraType)
+        };
+        const res = await cameraPicker.pick(getAbilityContext1()!, [
+            cameraPicker.PickerMediaType.PHOTO
+        ], pickerProfile);
+        const file = fs2.openSync(res.resultUri, fs2.OpenMode.READ_ONLY);
+        const stat = fs2.statSync(file.fd);
+        return {
+            tempFilePaths: [
+                res.resultUri
+            ],
+            tempFiles: [
+                {
+                    path: res.resultUri,
+                    size: stat.size
+                }
+            ]
+        } as TakePhotoRes;
+    };
+    const takeVideo = async (args: TakeVideoOptions | null = null)=>{
+        let pickerProfile: cameraPicker.PickerProfile = {
+            cameraPosition: getHMCameraPosition(args?.cameraType ?? 'back'),
+            videoDuration: args?.videoDuration ?? 3000
+        };
+        const res = await cameraPicker.pick(getAbilityContext1()!, [
+            cameraPicker.PickerMediaType.VIDEO
+        ], pickerProfile);
+        return _getVideoInfo(res.resultUri).then((getVideInfoRes)=>{
+            return {
+                path: res.resultUri,
+                size: getVideInfoRes.size,
+                duration: getVideInfoRes.duration!,
+                width: getVideInfoRes.width!,
+                height: getVideInfoRes.height!,
+                type: getVideInfoRes.type!,
+                orientation: getVideInfoRes.orientation!
+            } as TakeVideoRes;
         });
+    };
+    const errSubject = 'uni-chooseImage';
+    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
+        if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
+            takePhoto().then((photo)=>{
+                res.resolve({
+                    errMsg: '',
+                    errSubject,
+                    tempFilePaths: photo.tempFilePaths,
+                    tempFiles: photo.tempFiles
+                } as ChooseImageSuccess);
+            }).catch((err: Error)=>{
+                res.reject(err.message);
+            });
+        } else {
+            _chooseMedia({
+                mimeType: photoAccessHelper1.PhotoViewMIMETypes.IMAGE_TYPE,
+                sourceType: options.sourceType,
+                count: options.count!
+            } as ChooseMediaOptions).then((chooseMediaRes)=>{
+                const tempFiles = chooseMediaRes.tempFiles;
+                if (tempFiles.length === 0) {
+                    const errMsg = MediaUniErrors.get(1101001) as string;
+                    res.reject(errMsg, {
+                        errCode: 1101001
+                    } as ApiError);
+                    return;
+                }
+                res.resolve({
+                    errMsg: '',
+                    errSubject,
+                    tempFilePaths: chooseMediaRes.tempFiles.map((file)=>file.tempFilePath),
+                    tempFiles: chooseMediaRes.tempFiles.map((file)=>{
+                        return {
+                            path: file.tempFilePath,
+                            size: file.size
+                        } as TempFileItem;
+                    })
+                } as ChooseImageSuccess);
+            }, (err: Error)=>{
+                res.reject(err.message);
+            });
+        }
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
     const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
-        _chooseMedia({
-            mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
-            sourceType: options.sourceType
-        } as ChooseMediaOptions).then((chooseMediaRes)=>{
-            const file = chooseMediaRes.tempFiles[0];
-            if (!file) {
-                const errMsg = MediaUniErrors.get(1101001) as string;
-                res.reject(errMsg, {
-                    errCode: 1101001
-                } as ApiError);
-                return;
-            }
-            res.resolve({
-                tempFilePath: file.tempFilePath,
-                duration: file.duration,
-                size: file.size,
-                width: file.width,
-                height: file.height
-            } as ChooseVideoSuccess);
-        }, (err: Error)=>{
-            res.reject(err.message);
-        });
+        if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
+            takeVideo().then((video)=>{
+                res.resolve({
+                    tempFilePath: video.path,
+                    duration: video.duration,
+                    size: video.size,
+                    width: video.width,
+                    height: video.height
+                } as ChooseVideoSuccess);
+            }).catch((err: Error)=>{
+                res.reject(err.message);
+            });
+        } else {
+            _chooseMedia({
+                mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
+                sourceType: options.sourceType
+            } as ChooseMediaOptions).then((chooseMediaRes)=>{
+                const file = chooseMediaRes.tempFiles[0];
+                if (!file) {
+                    const errMsg = MediaUniErrors.get(1101001) as string;
+                    res.reject(errMsg, {
+                        errCode: 1101001
+                    } as ApiError);
+                    return;
+                }
+                res.resolve({
+                    tempFilePath: file.tempFilePath,
+                    duration: file.duration,
+                    size: file.size,
+                    width: file.width,
+                    height: file.height
+                } as ChooseVideoSuccess);
+            }, (err: Error)=>{
+                res.reject(err.message);
+            });
+        }
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
     const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
         _getImageInfo(options.src).then((getImageInfoRes)=>{
@@ -4572,7 +4683,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
-        const context = getAbilityContext1() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
@@ -4581,24 +4692,24 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext1() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
-        const destFile = fs2.openSync(dest, fs2.OpenMode.WRITE_ONLY);
+        const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
         const content = await resourceManager.getRawFileContent(srcPath);
-        await fs2.write(destFile.fd, content.buffer);
-        await fs2.close(destFile);
+        await fs3.write(destFile.fd, content.buffer);
+        await fs3.close(destFile);
     };
     const saveUri = async (src: string, dest: string)=>{
-        const srcFile = fs2.openSync(src, fs2.OpenMode.READ_ONLY);
-        const destFile = fs2.openSync(dest, fs2.OpenMode.WRITE_ONLY);
-        await fs2.copyFile(srcFile.fd, destFile.fd);
-        await fs2.close(srcFile);
-        await fs2.close(destFile);
+        const srcFile = fs3.openSync(src, fs3.OpenMode.READ_ONLY);
+        const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
+        await fs3.copyFile(srcFile.fd, destFile.fd);
+        await fs3.close(srcFile);
+        await fs3.close(destFile);
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext1() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -5553,11 +5664,11 @@ export function initUniExtApi(APP_ID: string) {
     }
     const readFile = (filePath: string): ArrayBuffer =>{
         const readFilePath = getRealPath4(filePath) as string;
-        const file = fs3.openSync(readFilePath, fs3.OpenMode.READ_ONLY);
-        const stat = fs3.statSync(file.fd);
+        const file = fs4.openSync(readFilePath, fs4.OpenMode.READ_ONLY);
+        const stat = fs4.statSync(file.fd);
         const data = new ArrayBuffer(stat.size);
-        fs3.readSync(file.fd, data);
-        fs3.closeSync(file.fd);
+        fs4.readSync(file.fd, data);
+        fs4.closeSync(file.fd);
         return data;
     };
     const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
@@ -5757,10 +5868,10 @@ export function initUniExtApi(APP_ID: string) {
         });
         const TEMP_PATH = getEnv2().TEMP_PATH as string;
         const downloadPath = TEMP_PATH + '/download';
-        if (!fs4.accessSync(downloadPath)) {
-            fs4.mkdirSync(downloadPath, true);
+        if (!fs5.accessSync(downloadPath)) {
+            fs5.mkdirSync(downloadPath, true);
         }
-        let stream: fs4.Stream;
+        let stream: fs5.Stream;
         let tempFilePath = '';
         let writePromise = Promise.resolve(0);
         const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
@@ -5774,7 +5885,7 @@ export function initUniExtApi(APP_ID: string) {
             if (!stream) {
                 const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
                 tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + getDownloadFileName(ext);
-                stream = fs4.createStreamSync(tempFilePath, 'w+');
+                stream = fs5.createStreamSync(tempFilePath, 'w+');
             }
             queueWrite(data);
         });
@@ -5812,7 +5923,7 @@ export function initUniExtApi(APP_ID: string) {
                 pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext2() as common1.UIAbilityContext;
+        const context = getAbilityContext3() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -5857,7 +5968,7 @@ export function initUniExtApi(APP_ID: string) {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext3() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext4() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -6112,7 +6223,7 @@ export function initUniExtApi(APP_ID: string) {
                         break;
                 }
             }
-            window.getLastWindow(getAbilityContext4()!, (err: BusinessError6, window: window.Window)=>{
+            window.getLastWindow(getAbilityContext5()!, (err: BusinessError6, window: window.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6154,7 +6265,7 @@ export function initUniExtApi(APP_ID: string) {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            window1.getLastWindow(getAbilityContext5()!, (err: BusinessError7, window: window1.Window)=>{
+            window1.getLastWindow(getAbilityContext6()!, (err: BusinessError7, window: window1.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6201,7 +6312,7 @@ export function initUniExtApi(APP_ID: string) {
                 color: options.itemColor!
             } as promptAction2.Button);
         });
-        window2.getLastWindow(getAbilityContext6()!, (err: BusinessError8, window: window2.Window)=>{
+        window2.getLastWindow(getAbilityContext7()!, (err: BusinessError8, window: window2.Window)=>{
             const errCode: number = err.code;
             if (errCode) {
                 console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6326,7 +6437,7 @@ export function initUniExtApi(APP_ID: string) {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext7()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext8()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -6365,7 +6476,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext8() as common3.UIAbilityContext, {
+        store = dataPreferences.getPreferencesSync(getAbilityContext9() as common3.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
