@@ -84,9 +84,6 @@ export interface CodegenContext
   source: string
   code: string
   easyComponentAutoImports: Record<string, [string, string]>
-  importEasyComponents: string[]
-  importUTSComponents: string[]
-  importUTSElements: string[]
   line: number
   column: number
   offset: number
@@ -129,9 +126,6 @@ function createCodegenContext(
     source: ast.loc.source,
     code: ``,
     easyComponentAutoImports: {},
-    importEasyComponents: [],
-    importUTSComponents: [],
-    importUTSElements: [],
     column: 1,
     line: 1,
     offset: 0,
@@ -262,19 +256,11 @@ export function generate(
     push(`}`)
   }
 
-  if (mode === 'module') {
-    context.importUTSComponents.forEach((importCode) => {
-      preambleContext.push(importCode)
-      preambleContext.newline()
-    })
-  }
-
   return {
     ast,
     code: context.code,
     preamble: preambleContext.code,
     easyComponentAutoImports: context.easyComponentAutoImports,
-    imports: ast.imports.map((item) => `import '${item.path}'`),
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
     // @ts-expect-error

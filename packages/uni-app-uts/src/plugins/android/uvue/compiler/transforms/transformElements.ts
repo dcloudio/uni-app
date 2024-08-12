@@ -4,11 +4,7 @@ import {
   type RootNode,
   type TemplateChildNode,
 } from '@vue/compiler-core'
-import {
-  camelize,
-  capitalize,
-  parseUTSComponent,
-} from '@dcloudio/uni-cli-shared'
+import { camelize, capitalize } from '@dcloudio/uni-cli-shared'
 import type { TransformContext } from '../transform'
 
 export function transformElements(
@@ -21,7 +17,7 @@ export function transformElements(
   ) {
     context.elements.add(node.tag)
     // 原生UTS组件
-    const utsComponentOptions = parseUTSComponent(node.tag, 'kotlin')
+    const utsComponentOptions = context.parseUTSComponent(node.tag, 'kotlin')
 
     if (utsComponentOptions) {
       const className = `{ ${capitalize(camelize(node.tag)) + 'Component'} }`
