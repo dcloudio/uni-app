@@ -1,5 +1,4 @@
-import { defineComponent, h, VNode } from 'vue'
-defineComponent({
+export const __sfc__ = defineComponent({
   render(): VNode {
     return h('view', {
       onClick: () => {},

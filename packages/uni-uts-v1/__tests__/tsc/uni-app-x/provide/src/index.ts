@@ -1,12 +1,11 @@
-import { defineComponent } from 'vue'
-defineComponent({
+export const __sfc__1 = defineComponent({
   provide() {
     return {
       msg: 'hello',
     }
   },
 })
-const __sfc__ = defineComponent({
+export const __sfc__2 = defineComponent({
   inject: {
     str: {
       type: String,
@@ -23,7 +22,7 @@ const __sfc__ = defineComponent({
   },
 })
 
-export function render(this: InstanceType<typeof __sfc__>) {
+export function render(this: InstanceType<typeof __sfc__2>) {
   const _ctx = this
   _ctx.str
 }

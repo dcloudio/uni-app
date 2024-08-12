@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`android reactivity 1`] = `
-"import { defineComponent, reactive, readonly, ref, shallowReactive, shallowReadonly, toRaw, } from 'vue';
-defineComponent({
+"export const __sfc__ = defineComponent({
     setup() {
         const obj = {} as UTSJSONObject;
         const refObj = ref(obj);

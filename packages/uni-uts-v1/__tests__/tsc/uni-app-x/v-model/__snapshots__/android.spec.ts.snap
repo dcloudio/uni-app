@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`android v-model 1`] = `
-"import { defineComponent, getCurrentInstance, useModel } from 'vue';
-defineComponent({
+"export const __sfc__ = defineComponent({
     setup() {
         const __ins = getCurrentInstance()!;
         const modelValue = useModel<string>(__ins.props, 'modelValue');

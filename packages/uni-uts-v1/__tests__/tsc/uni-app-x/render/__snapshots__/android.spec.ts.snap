@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`android render 1`] = `
-"import { defineComponent, h, VNode } from 'vue';
-defineComponent({
+"export const __sfc__ = defineComponent({
     render(): VNode {
         return h('view', {
             onClick: () => { },

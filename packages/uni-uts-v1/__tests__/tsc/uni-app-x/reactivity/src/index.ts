@@ -1,13 +1,4 @@
-import {
-  defineComponent,
-  reactive,
-  readonly,
-  ref,
-  shallowReactive,
-  shallowReadonly,
-  toRaw,
-} from 'vue'
-defineComponent({
+export const __sfc__ = defineComponent({
   setup() {
     const obj = {} as UTSJSONObject
 

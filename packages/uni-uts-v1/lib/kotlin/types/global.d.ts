@@ -6,11 +6,35 @@ declare global {
   const __uniConfig: UniConfig
   const __uniRoutes: UniPageRoute[]
 
-  // function utsMapOf(obj?: Record<string, any>): Map<string, any | null>
-  // function utsMapOf<K, V>(obj?: Array<Array<any>>): Map<string, any | null>
-  // function padStyleMapOf(style: Map<string, any>): Map<string, Map<string, any>>
   function utsMapOf(obj?: any): any
   function padStyleMapOf(style: any): any
+
+  function isTrue(value: any): boolean
+  function looseToNumber(value: any): number
+  function resolveEasyComponent(
+    name: string,
+    easyCom: CreateVueComponent,
+    maybeSelfReference?: boolean
+  ): any
+  function resolveCache(
+    cache: Array<any | null>,
+    index: number,
+    run: () => VNode
+  ): VNode
+  function trySetRefValue<T>(target: T, value: any | null): T
+  function tryUpdateRefNumber<T extends number>(
+    target: T,
+    step: number,
+    isPrefix: boolean
+  ): T
+  function tryUpdateRefNumber<T extends number>(
+    target: Ref<T>,
+    step: number,
+    isPrefix: boolean
+  ): Ref<T>
+
+  const withScopedSlotCtx: typeof withCtx
+  const withSlotCtx: typeof withCtx
 
   type UniPageMeta = {
     isQuit: boolean

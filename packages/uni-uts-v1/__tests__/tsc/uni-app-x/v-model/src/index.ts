@@ -1,5 +1,4 @@
-import { defineComponent, getCurrentInstance, useModel } from 'vue'
-defineComponent({
+export const __sfc__ = defineComponent({
   setup() {
     const __ins = getCurrentInstance()!
     const modelValue = useModel<string>(__ins.props, 'modelValue')

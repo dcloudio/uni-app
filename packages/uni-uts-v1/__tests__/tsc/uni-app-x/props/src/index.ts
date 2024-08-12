@@ -1,6 +1,4 @@
-import { defineComponent, getCurrentInstance } from 'vue'
-
-const __sfc__1 = defineComponent({
+export const __sfc__1 = defineComponent({
   props: ['str', 'num'],
   setup() {
     const __ins = getCurrentInstance()!
@@ -12,7 +10,7 @@ const __sfc__1 = defineComponent({
   },
 })
 
-const __sfc__2 = defineComponent({
+export const __sfc__2 = defineComponent({
   props: {
     str: {
       type: String,
@@ -39,7 +37,7 @@ const __sfc__2 = defineComponent({
     }
   },
 })
-function render(this: InstanceType<typeof __sfc__2>): any | null {
+export function render(this: InstanceType<typeof __sfc__2>): any | null {
   const _ctx = this
   _ctx.str
   // _ctx.bool

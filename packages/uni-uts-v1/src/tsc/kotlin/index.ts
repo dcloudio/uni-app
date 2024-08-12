@@ -95,10 +95,6 @@ export function runUTS2Kotlin(
           hbxLanguageServicePath,
           'uniappx/node_modules/@dcloudio/uni-app-x/types/index.d.ts'
         ),
-        path.resolve(
-          hbxLanguageServicePath,
-          'uniappx/node_modules/@vue/global.d.ts'
-        ),
       ]
     )
   } else {

@@ -1,10 +1,8 @@
-import { createSSRApp, defineComponent } from 'vue'
-
 export function createApp() {
   const app = createSSRApp(defineComponent({}))
   app.config.globalProperties.globalStr = ''
 }
-defineComponent({
+export const __sfc__ = defineComponent({
   mounted() {
     // this.globalStr
   },

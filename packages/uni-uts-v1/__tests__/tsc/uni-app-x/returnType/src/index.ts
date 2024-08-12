@@ -1,6 +1,4 @@
-import { createElementVNode, defineComponent } from 'vue'
-
-const __sfc__ = defineComponent({
+export const __sfc__ = defineComponent({
   props: {
     field: {
       type: String,
@@ -20,7 +18,7 @@ const __sfc__ = defineComponent({
   },
 })
 
-function render(this: InstanceType<typeof __sfc__>): any | null {
+export function render(this: InstanceType<typeof __sfc__>): any | null {
   const _ctx = this
   return createElementVNode(
     'view',

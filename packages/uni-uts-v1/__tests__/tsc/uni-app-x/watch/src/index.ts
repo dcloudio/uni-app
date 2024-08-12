@@ -1,12 +1,4 @@
-import {
-  defineComponent,
-  ref,
-  watch,
-  watchEffect,
-  watchPostEffect,
-  watchSyncEffect,
-} from 'vue'
-defineComponent({
+export const __sfc__ = defineComponent({
   setup() {
     const count = ref(0)
     watch(count, () => {})
