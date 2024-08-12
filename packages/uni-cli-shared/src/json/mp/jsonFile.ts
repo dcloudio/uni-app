@@ -1,4 +1,5 @@
 import path from 'path'
+import fs from 'fs'
 import { extend } from '@vue/shared'
 import type { ComponentJson, PageWindowOptions, UsingComponents } from './types'
 import {
@@ -223,10 +224,25 @@ function findMiniProgramUsingComponent(
   )
 }
 
-function findUsingComponentsJson(pathInpages, componentsDir) {
+export function findUsingComponentsJson(pathInpages, componentsDir) {
   let [, dir] = pathInpages.split(componentsDir)
+  if (dir === '') {
+    console.warn(`${pathInpages} 路径里没有找到对应的 ${componentsDir} 目录`)
+    return {}
+  }
   dir = '.' + dir
   const fulldir = path.resolve(process.env.UNI_INPUT_DIR, componentsDir, dir)
-  const json = require(path.resolve(fulldir, 'index.json')) as Record<any, any>
-  return json
+  let filename = path.parse(pathInpages).name + '.json'
+
+  let jsonPath = path.resolve(fulldir, filename)
+  if (fs.existsSync(jsonPath)) {
+    return require(jsonPath) as Record<any, any>
+  }
+  jsonPath = path.resolve(fulldir, 'index.json')
+  if (fs.existsSync(jsonPath)) {
+    return require(jsonPath) as Record<any, any>
+  }
+
+  console.warn(`${pathInpages} 路径下没有找到对应的json文件`)
+  return {}
 }
