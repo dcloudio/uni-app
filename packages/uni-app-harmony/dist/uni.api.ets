@@ -71,8 +71,10 @@ import fs3 from '@ohos.file.fs';
 import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext11 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-app-harmony-framework";
@@ -88,7 +90,7 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework
 import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
 import { getRealPath as getRealPath4, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
-import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr, getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
 import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
@@ -103,14 +105,18 @@ import photoAccessHelper1 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper2 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper3 from '@ohos.file.photoAccessHelper';
 import { promptAction as promptAction1 } from '@kit.ArkUI';
+import { promptAction as promptAction2 } from '@kit.ArkUI';
+import { promptAction as promptAction3 } from '@kit.ArkUI';
 import { promptAction } from '@kit.ArkUI';
-import promptAction2 from '@ohos.promptAction';
+import promptAction4 from '@ohos.promptAction';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
 import { userAuth } from '@kit.UserAuthenticationKit';
 import { wantAgent } from '@kit.AbilityKit';
 import { window as window1 } from '@kit.ArkUI';
 import { window as window2 } from '@kit.ArkUI';
+import { window as window3 } from '@kit.ArkUI';
+import { window as window4 } from '@kit.ArkUI';
 import { window } from '@kit.ArkUI';
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
@@ -913,14 +919,12 @@ interface TakeVideoOptions {
 }
 interface TakeVideoRes {
     path: string;
-    orientation?: MediaOrientation;
-    type: string | null;
     duration: number;
     size: number;
     height: number;
     width: number;
-    fps: number | null;
-    bitrate: number | null;
+    orientation: MediaOrientation;
+    type: string;
 }
 interface TempFileItem {
     path: string;
@@ -4542,7 +4546,7 @@ export function initUniExtApi(APP_ID: string) {
     const takeVideo = async (args: TakeVideoOptions | null = null)=>{
         let pickerProfile: cameraPicker.PickerProfile = {
             cameraPosition: getHMCameraPosition(args?.cameraType ?? 'back'),
-            videoDuration: args?.videoDuration ?? 3000
+            videoDuration: args?.videoDuration
         };
         const res = await cameraPicker.pick(getAbilityContext1()!, [
             cameraPicker.PickerMediaType.VIDEO
@@ -4560,84 +4564,136 @@ export function initUniExtApi(APP_ID: string) {
         });
     };
     const errSubject = 'uni-chooseImage';
-    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
+    const _chooseImage = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
+        _chooseMedia({
+            mimeType: photoAccessHelper1.PhotoViewMIMETypes.IMAGE_TYPE,
+            sourceType: options.sourceType,
+            count: options.count!
+        } as ChooseMediaOptions).then((chooseMediaRes)=>{
+            const tempFiles = chooseMediaRes.tempFiles;
+            if (tempFiles.length === 0) {
+                const errMsg = MediaUniErrors.get(1101001) as string;
+                res.reject(errMsg, {
+                    errCode: 1101001
+                } as ApiError);
+                return;
+            }
+            res.resolve({
+                errMsg: '',
+                errSubject,
+                tempFilePaths: chooseMediaRes.tempFiles.map((file)=>file.tempFilePath),
+                tempFiles: chooseMediaRes.tempFiles.map((file)=>{
+                    return {
+                        path: file.tempFilePath,
+                        size: file.size
+                    } as TempFileItem;
+                })
+            } as ChooseImageSuccess);
+        }, (err: Error)=>{
+            res.reject(err.message);
+        });
+    };
+    const _takePhoto = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
+        takePhoto().then((photo)=>{
+            res.resolve({
+                errMsg: '',
+                errSubject,
+                tempFilePaths: photo.tempFilePaths,
+                tempFiles: photo.tempFiles
+            } as ChooseImageSuccess);
+        }).catch((err: Error)=>{
+            res.reject(err.message);
+        });
+    };
+    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, async (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
-            takePhoto().then((photo)=>{
-                res.resolve({
-                    errMsg: '',
-                    errSubject,
-                    tempFilePaths: photo.tempFilePaths,
-                    tempFiles: photo.tempFiles
-                } as ChooseImageSuccess);
-            }).catch((err: Error)=>{
-                res.reject(err.message);
-            });
+            _takePhoto(options, res);
+        } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
+            _chooseImage(options, res);
         } else {
-            _chooseMedia({
-                mimeType: photoAccessHelper1.PhotoViewMIMETypes.IMAGE_TYPE,
-                sourceType: options.sourceType,
-                count: options.count!
-            } as ChooseMediaOptions).then((chooseMediaRes)=>{
-                const tempFiles = chooseMediaRes.tempFiles;
-                if (tempFiles.length === 0) {
-                    const errMsg = MediaUniErrors.get(1101001) as string;
-                    res.reject(errMsg, {
-                        errCode: 1101001
-                    } as ApiError);
-                    return;
-                }
-                res.resolve({
-                    errMsg: '',
-                    errSubject,
-                    tempFilePaths: chooseMediaRes.tempFiles.map((file)=>file.tempFilePath),
-                    tempFiles: chooseMediaRes.tempFiles.map((file)=>{
-                        return {
-                            path: file.tempFilePath,
-                            size: file.size
-                        } as TempFileItem;
-                    })
-                } as ChooseImageSuccess);
-            }, (err: Error)=>{
-                res.reject(err.message);
-            });
+            const lastWindow = await window.getLastWindow(getAbilityContext2()!);
+            const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
+            const index = (await UIContextPromptAction.showActionMenu({
+                buttons: [
+                    {
+                        text: '拍照',
+                        color: '#000000'
+                    },
+                    {
+                        text: '从相册选择',
+                        color: '#000000'
+                    }
+                ]
+            } as promptAction1.ActionMenuOptions)).index;
+            if (index === 0) {
+                _takePhoto(options, res);
+            } else if (index === 1) {
+                _chooseImage(options, res);
+            }
         }
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
-    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
+    const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
+        _chooseMedia({
+            mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
+            sourceType: options.sourceType
+        } as ChooseMediaOptions).then((chooseMediaRes)=>{
+            const file = chooseMediaRes.tempFiles[0];
+            if (!file) {
+                const errMsg = MediaUniErrors.get(1101001) as string;
+                res.reject(errMsg, {
+                    errCode: 1101001
+                } as ApiError);
+                return;
+            }
+            res.resolve({
+                tempFilePath: file.tempFilePath,
+                duration: file.duration,
+                size: file.size,
+                width: file.width,
+                height: file.height
+            } as ChooseVideoSuccess);
+        }, (err: Error)=>{
+            res.reject(err.message);
+        });
+    };
+    const _takeVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
+        takeVideo().then((video)=>{
+            res.resolve({
+                tempFilePath: video.path,
+                duration: video.duration,
+                size: video.size,
+                width: video.width,
+                height: video.height
+            } as ChooseVideoSuccess);
+        }).catch((err: Error)=>{
+            res.reject(err.message);
+        });
+    };
+    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, async (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
-            takeVideo().then((video)=>{
-                res.resolve({
-                    tempFilePath: video.path,
-                    duration: video.duration,
-                    size: video.size,
-                    width: video.width,
-                    height: video.height
-                } as ChooseVideoSuccess);
-            }).catch((err: Error)=>{
-                res.reject(err.message);
-            });
+            _takeVideo(options, res);
+        } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
+            _chooseVideo(options, res);
         } else {
-            _chooseMedia({
-                mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
-                sourceType: options.sourceType
-            } as ChooseMediaOptions).then((chooseMediaRes)=>{
-                const file = chooseMediaRes.tempFiles[0];
-                if (!file) {
-                    const errMsg = MediaUniErrors.get(1101001) as string;
-                    res.reject(errMsg, {
-                        errCode: 1101001
-                    } as ApiError);
-                    return;
-                }
-                res.resolve({
-                    tempFilePath: file.tempFilePath,
-                    duration: file.duration,
-                    size: file.size,
-                    width: file.width,
-                    height: file.height
-                } as ChooseVideoSuccess);
-            }, (err: Error)=>{
-                res.reject(err.message);
-            });
+            const lastWindow = await window1.getLastWindow(getAbilityContext3()!);
+            const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
+            const index = (await UIContextPromptAction.showActionMenu({
+                buttons: [
+                    {
+                        text: '拍摄',
+                        color: '#000000'
+                    },
+                    {
+                        text: '从相册选择',
+                        color: '#000000'
+                    }
+                ]
+            } as promptAction2.ActionMenuOptions)).index;
+            if (index === 0) {
+                _takeVideo(options, res);
+            } else if (index === 1) {
+                _chooseVideo(options, res);
+            }
         }
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
     const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
@@ -4683,7 +4739,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
-        const context = getAbilityContext2() as common.UIAbilityContext;
+        const context = getAbilityContext4() as common.UIAbilityContext;
         const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
@@ -4692,7 +4748,7 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext2() as common.UIAbilityContext;
+        const context = getAbilityContext4() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
@@ -4709,7 +4765,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext2() as common.UIAbilityContext;
+        const context = getAbilityContext4() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -5923,7 +5979,7 @@ export function initUniExtApi(APP_ID: string) {
                 pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext3() as common1.UIAbilityContext;
+        const context = getAbilityContext5() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -5968,7 +6024,7 @@ export function initUniExtApi(APP_ID: string) {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext4() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext6() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -6208,7 +6264,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_HIDE_LOADING = 'hideLoading';
     const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>)=>{
         try {
-            const showToastOptions: promptAction1.ShowToastOptions = {
+            const showToastOptions: promptAction3.ShowToastOptions = {
                 message: options.title,
                 duration: options.duration!,
                 alignment: Alignment.Center
@@ -6223,7 +6279,7 @@ export function initUniExtApi(APP_ID: string) {
                         break;
                 }
             }
-            window.getLastWindow(getAbilityContext5()!, (err: BusinessError6, window: window.Window)=>{
+            window2.getLastWindow(getAbilityContext7()!, (err: BusinessError6, window: window2.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6265,7 +6321,7 @@ export function initUniExtApi(APP_ID: string) {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            window1.getLastWindow(getAbilityContext6()!, (err: BusinessError7, window: window1.Window)=>{
+            window3.getLastWindow(getAbilityContext8()!, (err: BusinessError7, window: window3.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6299,7 +6355,7 @@ export function initUniExtApi(APP_ID: string) {
         if (actionItemList.length === 0) {
             return;
         }
-        type ActionMenuButtons = [promptAction2.Button, promptAction2.Button?, promptAction2.Button?, promptAction2.Button?, promptAction2.Button?, promptAction2.Button?];
+        type ActionMenuButtons = [promptAction4.Button, promptAction4.Button?, promptAction4.Button?, promptAction4.Button?, promptAction4.Button?, promptAction4.Button?];
         const actionMenuButtons: ActionMenuButtons = [
             {
                 text: actionItemList[0],
@@ -6310,9 +6366,9 @@ export function initUniExtApi(APP_ID: string) {
             actionMenuButtons.push({
                 text: item,
                 color: options.itemColor!
-            } as promptAction2.Button);
+            } as promptAction4.Button);
         });
-        window2.getLastWindow(getAbilityContext7()!, (err: BusinessError8, window: window2.Window)=>{
+        window4.getLastWindow(getAbilityContext9()!, (err: BusinessError8, window: window4.Window)=>{
             const errCode: number = err.code;
             if (errCode) {
                 console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6321,7 +6377,7 @@ export function initUniExtApi(APP_ID: string) {
             window.getUIContext().getPromptAction().showActionMenu({
                 title: options.title,
                 buttons: actionMenuButtons
-            } as promptAction2.ActionMenuOptions).then((showACtionSheetRes)=>{
+            } as promptAction4.ActionMenuOptions).then((showACtionSheetRes)=>{
                 res.resolve({
                     tapIndex: showACtionSheetRes.index
                 } as ShowActionSheetSuccess);
@@ -6437,7 +6493,7 @@ export function initUniExtApi(APP_ID: string) {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext8()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext10()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -6476,7 +6532,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext9() as common3.UIAbilityContext, {
+        store = dataPreferences.getPreferencesSync(getAbilityContext11() as common3.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
