@@ -37,6 +37,7 @@ import {
   locStub,
 } from '@vue/compiler-core'
 import { findMiniProgramUsingComponents } from '@dcloudio/uni-cli-shared'
+import type { MiniProgramComponentsType } from '@dcloudio/uni-cli-shared'
 import IdentifierGenerator from './identifier'
 import type {
   CodegenRootNode,
@@ -123,9 +124,7 @@ export interface TransformContext
   addVIfScope(initScope: CodegenVIfScopeInit): CodegenVIfScope
   addVForScope(initScope: CodegenVForScopeInit): CodegenVForScope
   cache<T extends JSChildNode>(exp: T, isVNode?: boolean): CacheExpression | T
-  isMiniProgramComponent(
-    name: string
-  ): 'plugin' | 'component' | 'dynamicLib' | 'ext' | 'xr-frame' | undefined
+  isMiniProgramComponent(name: string): MiniProgramComponentsType | undefined
   rootNode: TemplateChildNode | null
 }
 

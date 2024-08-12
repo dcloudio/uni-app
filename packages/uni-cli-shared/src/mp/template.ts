@@ -1,17 +1,15 @@
 import path from 'path'
 import type { EmittedAsset } from 'rollup'
 import type { ElementNode } from '@vue/compiler-core'
-
 import { LINEFEED } from '@dcloudio/uni-shared'
 
 import { normalizeMiniProgramFilename } from '../utils'
+import type { MiniProgramComponentsType } from '../json/mp/types'
 
 type LazyElementFn = (
   node: ElementNode,
   context: {
-    isMiniProgramComponent(
-      name: string
-    ): 'plugin' | 'component' | 'dynamicLib' | 'ext' | 'xr-frame' | undefined
+    isMiniProgramComponent(name: string): MiniProgramComponentsType | undefined
   }
 ) =>
   | {

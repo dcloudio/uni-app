@@ -1,7 +1,12 @@
 import path from 'path'
 import fs from 'fs'
 import { extend } from '@vue/shared'
-import type { ComponentJson, PageWindowOptions, UsingComponents } from './types'
+import type {
+  ComponentJson,
+  MiniProgramComponentsType,
+  PageWindowOptions,
+  UsingComponents,
+} from './types'
 import {
   normalizeMiniProgramFilename,
   normalizeNodeModules,
@@ -146,7 +151,7 @@ export function isMiniProgramUsingComponent(
 }
 
 interface MiniProgramComponents {
-  [name: string]: 'plugin' | 'component' | 'dynamicLib' | 'ext' | 'xr-frame'
+  [name: string]: MiniProgramComponentsType
 }
 
 export function findMiniProgramUsingComponents({
