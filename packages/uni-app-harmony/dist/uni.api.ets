@@ -4567,7 +4567,9 @@ export function initUniExtApi(APP_ID: string) {
     const _chooseImage = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         _chooseMedia({
             mimeType: photoAccessHelper1.PhotoViewMIMETypes.IMAGE_TYPE,
-            sourceType: options.sourceType,
+            sourceType: [
+                "album"
+            ],
             count: options.count!
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const tempFiles = chooseMediaRes.tempFiles;
@@ -4635,7 +4637,9 @@ export function initUniExtApi(APP_ID: string) {
     const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         _chooseMedia({
             mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
-            sourceType: options.sourceType
+            sourceType: [
+                "album"
+            ]
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const file = chooseMediaRes.tempFiles[0];
             if (!file) {
