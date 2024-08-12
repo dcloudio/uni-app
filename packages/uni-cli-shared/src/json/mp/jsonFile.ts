@@ -229,7 +229,13 @@ function findMiniProgramUsingComponent(
   )
 }
 
-export function findUsingComponentsJson(pathInpages, componentsDir) {
+export function findUsingComponentsJson(
+  pathInpages: string,
+  componentsDir: string
+): Record<any, any> {
+  // 兼容test case
+  if (!process.env.UNI_INPUT_DIR) return {}
+
   let [, dir] = pathInpages.split(componentsDir)
   if (dir === '') {
     console.warn(`${pathInpages} 路径里没有找到对应的 ${componentsDir} 目录`)
