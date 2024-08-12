@@ -11,7 +11,10 @@ import type {
   DirectiveTransform as VueDirectiveTransform,
   NodeTransform as VueNodeTransform,
 } from '@vue/compiler-core'
-import type { MiniProgramCompilerOptions } from '@dcloudio/uni-cli-shared'
+import type {
+  MiniProgramCompilerOptions,
+  MiniProgramComponentsType,
+} from '@dcloudio/uni-cli-shared'
 import type {
   BindingMetadata,
   CompilerError,
@@ -107,9 +110,7 @@ export interface TemplateCodegenOptions
   scopeId?: string | null
   filename: string
   isBuiltInComponent: Required<TransformOptions>['isBuiltInComponent']
-  isMiniProgramComponent(
-    name: string
-  ): 'plugin' | 'component' | 'dynamicLib' | 'ext' | 'xr-frame' | undefined
+  isMiniProgramComponent(name: string): MiniProgramComponentsType | undefined
 }
 
 export type CompilerOptions = ParserOptions & TransformOptions & CodegenOptions
