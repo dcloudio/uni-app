@@ -209,7 +209,7 @@
     right: 320px;
   }
   .uni-system-choose-location .menu {
-    top: 54px;
+    top: calc(54px + var(--status-bar-height));
     left: auto;
     right: 10px;
     width: 300px;
