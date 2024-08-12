@@ -176,12 +176,30 @@ export function uniEncryptUniModulesPlugin(): Plugin {
             autoImports[source] = allAutoImports[source]
           }
         })
+        const uni_modules: string[] = []
+        const pkgJson = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          'uni_modules',
+          uniModule,
+          'package.json'
+        )
+        if (fs.existsSync(pkgJson)) {
+          try {
+            const pkg = require(pkgJson)
+            if (pkg.uni_modules?.dependencies) {
+              uni_modules.push(...pkg.uni_modules.dependencies)
+            }
+          } catch (e) {
+            console.error(e)
+          }
+        }
+
         const result = await compiler.compile(pluginDir, {
           isX: process.env.UNI_APP_X === 'true',
           isSingleThread: true,
           isPlugin: false,
           sourceMap: false,
-          uni_modules: [],
+          uni_modules,
           transform: {
             uvueClassNamePrefix: 'Gen',
             autoImports,
