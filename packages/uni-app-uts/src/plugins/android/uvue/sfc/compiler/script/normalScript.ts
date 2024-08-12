@@ -1,5 +1,6 @@
 import MagicString from 'magic-string'
 import type { BindingMetadata, SFCDescriptor } from '@vue/compiler-sfc'
+import { addUniModulesExtApiComponents } from '@dcloudio/uni-cli-shared'
 import { analyzeScriptBindings } from './analyzeScriptBindings'
 import type { ScriptCompileContext } from './context'
 import { hasConsole, rewriteConsole } from './rewriteConsole'
@@ -8,10 +9,6 @@ import { rewriteSourceMap } from './rewriteSourceMap'
 import { rewriteDefaultAST } from '../rewriteDefault'
 import { resolveDefineCode } from './utils'
 import { resolveGenTemplateCodeOptions } from '../../template'
-import {
-  addUniModulesExtApiComponents,
-  parseUTSComponent,
-} from '@dcloudio/uni-cli-shared'
 import { addExtApiComponents } from '../../../../../utils'
 import { genTemplateCode } from '../../../code/template'
 
@@ -111,9 +108,11 @@ export function processTemplate(
     rootDir: string
   }
 ) {
-  const { code, preamble, elements, imports, map } = genTemplateCode(
+  const options = resolveGenTemplateCodeOptions(
+    relativeFilename,
+    sfc.source,
     sfc,
-    resolveGenTemplateCodeOptions(relativeFilename, sfc.source, sfc, {
+    {
       mode: 'module',
       inline: !!sfc.scriptSetup,
       className,
@@ -122,15 +121,14 @@ export function processTemplate(
         process.env.NODE_ENV === 'development' &&
         process.env.UNI_COMPILE_TARGET !== 'uni_modules',
       bindingMetadata,
-    })
+    }
   )
-  const allImports = [...imports]
-  const importsCode = allImports.length ? allImports.join('\n') + '\n' : ''
+  const { code, preamble, elements, map } = genTemplateCode(sfc, options)
 
   if (process.env.NODE_ENV === 'production') {
     const components = elements.filter((element) => {
       // 如果是UTS原生组件，则无需记录摇树
-      if (parseUTSComponent(element, 'kotlin')) {
+      if (options.parseUTSComponent!(element, 'kotlin')) {
         return false
       }
       return true
@@ -141,5 +139,5 @@ export function processTemplate(
       addExtApiComponents(components)
     }
   }
-  return { code, map, importsCode, preamble }
+  return { code, map, preamble }
 }

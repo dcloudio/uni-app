@@ -80,13 +80,12 @@ export async function transformMain(
   let templatePreambleCode = ''
   let templateCode = ''
   let templateMap: RawSourceMap | undefined = undefined
-  let templateImportsCode = ''
 
   if (options.componentType !== 'app') {
     // template
     const isInline = !!descriptor.scriptSetup
     if (!isInline) {
-      const { code, map, importsCode, preamble } = processTemplate(descriptor, {
+      const { code, map, preamble } = processTemplate(descriptor, {
         relativeFilename,
         bindingMetadata: bindingMetadata,
         rootDir: options.root,
@@ -94,7 +93,6 @@ export async function transformMain(
       })
       templateCode = code
       templateMap = map
-      templateImportsCode = importsCode
       templatePreambleCode = preamble || ''
     }
   }
@@ -160,7 +158,7 @@ export async function transformMain(
   // handle TS transpilation
   let utsCode = utsOutput.filter(Boolean).join('\n')
 
-  const jsCodes = [templateImportsCode, templatePreambleCode]
+  const jsCodes = [templatePreambleCode]
 
   // 处理自动导入(主要是easyCom的组件类型)
   const { matchedImports } = await detectAutoImports(

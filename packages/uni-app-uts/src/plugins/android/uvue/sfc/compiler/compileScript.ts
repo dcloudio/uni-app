@@ -997,15 +997,12 @@ ${exposeCall}`
   // 11. generate return statement
   // 剩余由 rust 编译器处理
   if (options.componentType !== 'app') {
-    const { code, importsCode, preamble, map } = processTemplate(sfc, {
+    const { code, preamble, map } = processTemplate(sfc, {
       relativeFilename,
       bindingMetadata: ctx.bindingMetadata,
       rootDir: options.root,
       className: options.className,
     })
-    if (importsCode) {
-      ctx.s.prepend(importsCode)
-    }
     if (preamble) {
       ctx.s.prepend(preamble)
     }
