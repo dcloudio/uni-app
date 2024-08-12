@@ -224,7 +224,6 @@ export function generate(
     genEasyComImports(ast.components, preambleContext)
     if (ast.imports.length) {
       genImports(ast.imports, preambleContext)
-      newline()
     }
     push(genRenderFunctionDecl(options) + ` {`)
     newline()

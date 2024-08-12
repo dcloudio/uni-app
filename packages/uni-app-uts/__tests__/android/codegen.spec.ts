@@ -173,7 +173,6 @@ const _component_index1 = resolveComponent("index1")
     assert(
       `<image src="./logo.png"></image>`,
       `import _imports_0 from './logo.png'
-
 function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
