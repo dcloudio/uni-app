@@ -189,7 +189,7 @@ interface InvokeInstanceArgs extends ModuleOptions {
   /**
    * 是否抛出异常
    */
-  throws: boolean
+  // throws: boolean
   /**
    * 回调是否持久保留
    */
@@ -405,7 +405,7 @@ function initProxyFunction(
     methodName.indexOf('on') === 0 &&
     methodParams.length === 1 &&
     methodParams[0].type === 'UTSCallback'
-  const throws = async
+  // const throws = async
   const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
     const callback = callbacks[id!]
     if (callback) {
@@ -426,7 +426,7 @@ function initProxyFunction(
         name: methodName,
         method: methodParams,
         keepAlive,
-        throws,
+        // throws,
       }
     : {
         moduleName,
@@ -438,7 +438,7 @@ function initProxyFunction(
         companion,
         method: methodParams,
         keepAlive,
-        throws,
+        // throws,
       }
   return (...args: unknown[]) => {
     if (errMsg) {
@@ -623,7 +623,7 @@ export function initUTSProxyClass(
                 id: instance.__instanceId,
                 type: 'getter',
                 keepAlive: false,
-                throws: false,
+                // throws: false,
                 name: name as string,
                 errMsg,
               })
