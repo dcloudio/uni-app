@@ -97,6 +97,15 @@
       "GetProviderSuccess"
     ],
     [
+      "GetProviderSyncSuccess"
+    ],
+    [
+      "GetProviderSync"
+    ],
+    [
+      "GetProviderSyncOptions"
+    ],
+    [
       "GetProviderOptions"
     ],
     [

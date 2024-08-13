@@ -1,9 +1,7 @@
-import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import Want from '@ohos.app.ability.Want';
 import common from '@ohos.app.ability.common';
 import wantConstant from '@ohos.app.ability.wantConstant';
 import buffer from '@ohos.buffer';
-import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
@@ -45,12 +43,16 @@ import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ApiError, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
+import { abilityAccessCtrl } from '@kit.AbilityKit';
+import abilityAccessCtrl1 from '@ohos.abilityAccessCtrl';
 import { audio as audio1 } from '@kit.AudioKit';
 import { audio } from '@kit.AudioKit';
 import { avSession } from '@kit.AVSessionKit';
 import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
 import buffer1 from '@ohos.buffer';
+import { bundleManager } from '@kit.AbilityKit';
 import bundleManager1 from '@ohos.bundle.bundleManager';
+import bundleManager2 from '@ohos.bundle.bundleManager';
 import { camera } from '@kit.CameraKit';
 import { cameraPicker } from '@kit.CameraKit';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
@@ -101,6 +103,7 @@ import { media as media1 } from '@kit.MediaKit';
 import { media } from '@kit.MediaKit';
 import media2 from '@ohos.multimedia.media';
 import media3 from '@ohos.multimedia.media';
+import { notificationManager } from '@kit.NotificationKit';
 import photoAccessHelper1 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper2 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper3 from '@ohos.file.photoAccessHelper';
@@ -415,6 +418,21 @@ export type GetFileInfo = (options?: GetFileInfoOptions | null) => void;
 export type GetSavedFileInfo = (options?: GetSavedFileInfoOptions | null) => void;
 export type RemoveSavedFile = (options?: RemoveSavedFileOptions | null) => void;
 export type GetSavedFileList = (options?: GetSavedFileListOptions | null) => void;
+type GetAppAuthorizeSetting = () => GetAppAuthorizeSettingResult;
+class GetAppAuthorizeSettingResult extends UTSObject {
+    albumAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    bluetoothAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    cameraAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    locationAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    locationAccuracy: 'reduced' | 'full' | 'unsupported' | null = null;
+    locationReducedAccuracy: boolean | null = null;
+    microphoneAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    notificationAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    notificationAlertAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    notificationBadgeAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    notificationSoundAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    phoneCalendarAuthorized: 'authorized' | 'denied' | 'not determined' | null = null;
+}
 class GetAppBaseInfoOptions extends UTSObject {
     filter!: Array<string>;
 }
@@ -541,9 +559,16 @@ interface IUniGetNetworkTypeEventEmitter {
 export class GetProviderSuccess extends UTSObject {
     service!: 'payment' | 'location';
     provider!: string[];
+    providers!: UniProvider[];
+}
+export class GetProviderSyncSuccess extends UTSObject {
+    service!: 'payment' | 'location';
     providerIds!: string[];
     providerObjects!: UniProvider[];
-    providers!: UniProvider[];
+}
+export type GetProviderSync = (options: GetProviderSyncOptions) => GetProviderSyncSuccess;
+export class GetProviderSyncOptions extends UTSObject {
+    service!: 'payment' | 'location';
 }
 type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
 type GetProviderFail = IGetProviderFail;
@@ -1578,6 +1603,7 @@ interface UniExtApi {
     getSavedFileInfo: GetSavedFileInfo;
     removeSavedFile: RemoveSavedFile;
     getFileInfo: GetFileInfo;
+    getAppAuthorizeSetting: GetAppAuthorizeSetting;
     getAppBaseInfo: GetAppBaseInfo;
     getBackgroundAudioManager: GetBackgroundAudioManager;
     getDeviceInfo: GetDeviceInfo;
@@ -1585,6 +1611,7 @@ interface UniExtApi {
     onNetworkStatusChange: OnNetworkStatusChange;
     offNetworkStatusChange: OffNetworkStatusChange;
     getProvider: GetProvider;
+    getProviderSync: GetProviderSync;
     getRecorderManager: GetRecorderManager;
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
@@ -2914,14 +2941,119 @@ export function initUniExtApi(APP_ID: string) {
             }
         });
     }) as GetFileInfo;
+    const AUTHORIZED = 'authorized';
+    const DENIED = 'denied';
+    const NOT_DETERMINED = 'not determined';
+    class AppAuthorizeSetting {
+        albumAuthorized: string = NOT_DETERMINED;
+        bluetoothAuthorized: string = NOT_DETERMINED;
+        cameraAuthorized: string = NOT_DETERMINED;
+        locationAuthorized: string = NOT_DETERMINED;
+        locationAccuracy: string = NOT_DETERMINED;
+        microphoneAuthorized: string = NOT_DETERMINED;
+        notificationAuthorized: string = NOT_DETERMINED;
+        notificationAlertAuthorized: string = NOT_DETERMINED;
+        notificationBadgeAuthorized: string = NOT_DETERMINED;
+        notificationSoundAuthorized: string = NOT_DETERMINED;
+        phoneCalendarAuthorized: string = NOT_DETERMINED;
+    }
+    class GetAppAuthorizeSettingImpl {
+        accessTokenId: number;
+        atManager: abilityAccessCtrl.AtManager;
+        appAuthorizeSetting: AppAuthorizeSetting;
+        constructor(accessTokenId: number, atManager: abilityAccessCtrl.AtManager, appAuthorizeSetting: AppAuthorizeSetting){
+            this.accessTokenId = accessTokenId;
+            this.atManager = atManager;
+            this.appAuthorizeSetting = appAuthorizeSetting;
+            this.getAlbumAuthorizeSetting();
+            this.getBlueToothAuthorizeSetting();
+            this.getCameraAuthorizeSetting();
+            this.getLocationAuthorizeSetting();
+            this.getMicrophoneAuthorizeSetting();
+            this.getNotificationAuthorizeSetting();
+            this.getPhoneCalendarAuthorizeSetting();
+        }
+        getAlbumAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.READ_IMAGEVIDEO');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.albumAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.albumAuthorized = AUTHORIZED;
+            }
+        }
+        getBlueToothAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.ACCESS_BLUETOOTH');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.bluetoothAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.bluetoothAuthorized = AUTHORIZED;
+            }
+        }
+        getCameraAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.CAMERA');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.cameraAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.cameraAuthorized = AUTHORIZED;
+            }
+        }
+        getLocationAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.LOCATION');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.locationAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.locationAuthorized = AUTHORIZED;
+            }
+        }
+        getMicrophoneAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.MICROPHONE');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.microphoneAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.microphoneAuthorized = AUTHORIZED;
+            }
+        }
+        getNotificationAuthorizeSetting() {
+            try {
+                const isNotificationEnabled = notificationManager.isNotificationEnabledSync();
+                if (isNotificationEnabled) {
+                    this.appAuthorizeSetting.notificationAuthorized = DENIED;
+                }
+                if (isNotificationEnabled) {
+                    this.appAuthorizeSetting.notificationAuthorized = AUTHORIZED;
+                }
+            } catch (error) {
+                this.appAuthorizeSetting.notificationAuthorized = DENIED;
+            }
+        }
+        getPhoneCalendarAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.WRITE_CALENDAR');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.phoneCalendarAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.phoneCalendarAuthorized = AUTHORIZED;
+            }
+        }
+    }
+    const getAppAuthorizeSetting: GetAppAuthorizeSetting = defineSyncApi<GetAppAuthorizeSettingResult>('getAppAuthorizeSetting', ()=>{
+        const bundleInfoWithApplication = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION);
+        const appAuthorizeSettingImpl = new GetAppAuthorizeSettingImpl(bundleInfoWithApplication.appInfo.accessTokenId, abilityAccessCtrl.createAtManager(), new AppAuthorizeSetting());
+        return appAuthorizeSettingImpl.appAuthorizeSetting as GetAppAuthorizeSettingResult;
+    }) as GetAppAuthorizeSetting;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
     const getBundleInfoOnce = ()=>{
-        let bundleInfo: bundleManager.BundleInfo | null = null;
-        return (): bundleManager.BundleInfo =>{
+        let bundleInfo: bundleManager1.BundleInfo | null = null;
+        return (): bundleManager1.BundleInfo =>{
             if (bundleInfo) {
                 return bundleInfo;
             }
-            bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
+            bundleInfo = bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
             return bundleInfo;
         };
     };
@@ -3626,6 +3758,7 @@ export function initUniExtApi(APP_ID: string) {
         UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
     };
     const API_GET_PROVIDER = 'getProvider';
+    const API_GET_PROVIDER_SYNC = 'getProviderSync';
     const SupportedProviderServiceList = [
         'oauth',
         'share',
@@ -3644,8 +3777,6 @@ export function initUniExtApi(APP_ID: string) {
         const result: GetProviderSuccess = {
             service: options.service,
             provider: providerIds,
-            providerIds,
-            providerObjects: providers,
             providers
         };
         return result;
@@ -3655,6 +3786,15 @@ export function initUniExtApi(APP_ID: string) {
         if (typeof res === 'string') exec.reject(res);
         else exec.resolve(res);
     }) as GetProvider;
+    const getProviderSync: GetProviderSync = defineSyncApi<GetProviderSyncSuccess>(API_GET_PROVIDER_SYNC, (options: GetProviderSyncOptions): GetProviderSyncSuccess =>{
+        const res = _getProviderSync(options as GetProviderOptions);
+        if (typeof res === 'string') throw new Error(res);
+        return {
+            service: res.service,
+            providerIds: res.provider,
+            providerObjects: res.providers
+        } as GetProviderSyncSuccess;
+    }) as GetProviderSync;
     const API_GET_RECORDER_MANAGER = 'getRecorderManager';
     const callbacks: Callbacks = {
         pause: [],
@@ -4744,7 +4884,7 @@ export function initUniExtApi(APP_ID: string) {
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
         const context = getAbilityContext4() as common.UIAbilityContext;
-        const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
+        const atManager: abilityAccessCtrl1.AtManager = abilityAccessCtrl1.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
         ]);
@@ -5980,7 +6120,7 @@ export function initUniExtApi(APP_ID: string) {
             abilityName: 'com.huawei.hmos.settings.MainAbility',
             uri: 'application_info_entry',
             parameters: {
-                pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
+                pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
         const context = getAbilityContext5() as common1.UIAbilityContext;
@@ -7061,6 +7201,7 @@ export function initUniExtApi(APP_ID: string) {
         getSavedFileInfo,
         removeSavedFile,
         getFileInfo,
+        getAppAuthorizeSetting,
         getAppBaseInfo,
         getBackgroundAudioManager,
         getDeviceInfo,
@@ -7068,6 +7209,7 @@ export function initUniExtApi(APP_ID: string) {
         onNetworkStatusChange,
         offNetworkStatusChange,
         getProvider,
+        getProviderSync,
         getRecorderManager,
         getSystemInfo,
         getSystemInfoSync,
