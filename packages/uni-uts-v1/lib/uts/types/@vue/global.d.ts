@@ -1,3 +1,5 @@
+import { Plugin, ComponentOptions } from '@vue/runtime-core'
+
 // # 全局API
 // ## 应用实例
 import {
@@ -115,6 +117,11 @@ import {
   ComponentInternalInstance as ComponentInternalInstanceOrigin,
   SetupContext as SetupContextOrigin,
   Ref as RefOrigin,
+  OnCleanup as OnCleanupOrigin,
+  DebuggerEvent as DebuggerEventOrigin,
+  Directive as DirectiveOrigin,
+  DirectiveBinding as DirectiveBindingOrigin,
+  EffectScope as EffectScopeOrigin,
 } from '@vue/runtime-core'
 
 // # 其他
@@ -161,18 +168,18 @@ import {
   isMemoSame as isMemoSameOrigin,
 } from '@vue/runtime-core'
 // ## compiler-dom/runtimeHelpers
-// import {
-//   vModelRadio as vModelRadioOrigin,
-//   vModelCheckbox as vModelCheckboxOrigin,
-//   vModelText as vModelTextOrigin,
-//   vModelSelect as vModelSelectOrigin,
-//   vModelDynamic as vModelDynamicOrigin,
-//   vOnModifiersGuard as vOnModifiersGuardOrigin,
-//   vOnKeysGuard as vOnKeysGuardOrigin,
-//   vShow as vShowOrigin,
-//   Transition as TransitionOrigin,
-//   TransitionGroup as TransitionGroupOrigin,
-// } from '@vue/runtime-core'
+import {
+  //   vModelRadio as vModelRadioOrigin,
+  //   vModelCheckbox as vModelCheckboxOrigin,
+  //   vModelText as vModelTextOrigin,
+  //   vModelSelect as vModelSelectOrigin,
+  //   vModelDynamic as vModelDynamicOrigin,
+  //   vOnModifiersGuard as vOnModifiersGuardOrigin,
+  //   vOnKeysGuard as vOnKeysGuardOrigin,
+  vShow as vShowOrigin,
+  //   Transition as TransitionOrigin,
+  //   TransitionGroup as TransitionGroupOrigin,
+} from '@vue/runtime-core'
 // ## compiler-uts/runtimeHelpers
 
 // ## 官方文档已不公开的
@@ -268,10 +275,15 @@ declare global {
   type ComponentPublicInstance = ComponentPublicInstanceOrigin
   type ComponentInternalInstance = ComponentInternalInstanceOrigin
   type SetupContext = SetupContextOrigin
-  type Ref = RefOrigin
+  type Ref<T> = RefOrigin<T>
+  type OnCleanup = OnCleanupOrigin
+  type DebuggerEvent = DebuggerEventOrigin
+  type Directive<T = any, V = any> = DirectiveOrigin<T, V>
+  type DirectiveBinding<V = any> = DirectiveBindingOrigin<V>
+  type EffectScope = EffectScopeOrigin
 
   // # 其他
-  // ## runtimeHelpers
+  // ## core/runtimeHelpers
   const Fragment: typeof FragmentOrigin
   const Teleport: typeof TeleportOrigin
   const Suspense: typeof SuspenseOrigin
@@ -306,9 +318,18 @@ declare global {
   const withMemo: typeof withMemoOrigin
   const isMemoSame: typeof isMemoSameOrigin
 
+  // ## dom/runtimeHelpers
+  const vShow: typeof vShowOrigin
+
   // ## 官方文档已不公开的
   const getCurrentInstance: typeof getCurrentInstanceOrigin
 
   // ## 编译阶段使用的类型
   type VNode = VNodeOrigin
+
+  // 自定义
+  type SlotsType<T> = PropTypeOrigin<T>
+  const defineApp: typeof defineComponentOrigin
+  const defineMixin: (options: ComponentOptions) => ComponentOptions
+  const definePlugin: (plugin: Plugin) => Plugin
 }

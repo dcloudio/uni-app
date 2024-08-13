@@ -1144,7 +1144,7 @@ export type WatchCallback<V = any, OV = any> = (value: V, oldValue: OV, onCleanu
 type MapSources<T, Immediate> = {
     [K in keyof T]: T[K] extends WatchSource<infer V> ? Immediate extends true ? V | undefined : V : T[K] extends object ? Immediate extends true ? T[K] | undefined : T[K] : never;
 };
-type OnCleanup = (cleanupFn: () => void) => void;
+export type OnCleanup = (cleanupFn: () => void) => void;
 export interface WatchOptionsBase extends DebuggerOptions {
     flush?: 'pre' | 'post' | 'sync';
 }
@@ -1659,6 +1659,8 @@ export declare const withKeys: <T extends (event: KeyboardEvent) => any>(fn: T &
 }, modifiers: string[]) => T;
 
 export declare function useModel<R>(props: any, name: string, options?: any): ModelRef<R, string>;
+
+export declare const vShow: ObjectDirective;
 
 export { createBaseVNode as createElementVNode, defineComponent as defineMixin,  };
 // Note: this file is auto concatenated to the end of the bundled d.ts during

@@ -33,6 +33,94 @@ declare global {
     isPrefix: boolean
   ): Ref<T>
 
+  class RenderHelpers {
+    /**
+     * v-for string
+     * @private
+     */
+    static renderList(
+      source: string | null,
+      renderItem: (
+        value: string,
+        key: number,
+        index: number | null,
+        cached: any | null
+      ) => any,
+      cache?: Array<any | null> | null,
+      index?: number | null
+    ): any[]
+    /**
+     * v-for number
+     */
+    static renderList(
+      source: number | null,
+      renderItem: (
+        value: number,
+        key: number,
+        index: number | null,
+        cached: any | null
+      ) => any,
+      cache?: Array<any | null> | null,
+      index?: number | null
+    ): any[]
+    /**
+     * v-for array
+     */
+    static renderList<T>(
+      source: Array<T> | null,
+      renderItem: (
+        value: T,
+        key: number,
+        index: number | null,
+        cached: any | null
+      ) => any,
+      cache?: Array<any | null> | null,
+      index?: number | null
+    ): any[]
+    /**
+     * v-for Map
+     */
+    static renderList<K, V>(
+      source: Map<K, V> | null,
+      renderItem: (
+        value: Array<any | null>,
+        key: number,
+        index: number | null,
+        cached: any | null
+      ) => any,
+      cache?: Array<any | null> | null,
+      index?: number | null
+    ): any[]
+    /**
+     * v-for Set
+     */
+    static renderList<T>(
+      source: Set<T> | null,
+      renderItem: (
+        value: T,
+        key: number,
+        index: number | null,
+        cached: any | null
+      ) => any,
+      cache?: Array<any | null> | null,
+      index?: number | null
+    ): any[]
+    /**
+     * v-for object
+     */
+    static renderList<T extends IUTSObject>(
+      source: T | null,
+      renderItem: (
+        value: any | null,
+        key: string,
+        index: number | null,
+        cached: any | null
+      ) => any,
+      cache?: Array<any | null> | null,
+      index?: number | null
+    ): any[]
+  }
+
   const withScopedSlotCtx: typeof withCtx
   const withSlotCtx: typeof withCtx
 

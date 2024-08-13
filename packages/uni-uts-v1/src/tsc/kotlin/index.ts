@@ -15,6 +15,7 @@ export interface UTS2KotlinOptions {
   inputDir: string
   cacheDir: string
   outputDir: string
+  utsLibDir?: string
   hxLanguageServiceDir?: string
   tsconfig?: string
   rootFiles?: string[]
@@ -63,15 +64,12 @@ export function runUTS2Kotlin(
 
   const hasHbxLanguageService = fs.existsSync(hbxLanguageServicePath)
 
-  const commonTypesPath = path.resolve(__dirname, '../../../lib/tsconfig')
-  const utsCommonTypesPath = path.resolve(__dirname, '../../../lib/uts/types')
-  const utsKotlinTypesPath = path.resolve(
-    __dirname,
-    '../../../lib/kotlin/types'
-  )
+  const utsLibPath = path.resolve(__dirname, '../../../lib')
+
+  const utsCommonTypesPath = path.resolve(utsLibPath, 'uts/types')
+  const utsKotlinTypesPath = path.resolve(utsLibPath, 'kotlin/types')
 
   const rootFiles: string[] = [
-    path.resolve(commonTypesPath, 'global.d.ts'),
     path.resolve(utsKotlinTypesPath, 'global.d.ts'),
     path.resolve(utsCommonTypesPath, 'index.d.ts'),
   ]
@@ -115,7 +113,7 @@ export function runUTS2Kotlin(
     ),
   ]
 
-  const ts = require('../../../lib/typescript') as typeof tsTypes
+  const ts = require(path.resolve(utsLibPath, 'typescript')) as typeof tsTypes
   const compilerOptions: tsTypes.CompilerOptions = {
     rootDir: options.inputDir,
     baseUrl: options.inputDir,
@@ -130,12 +128,12 @@ export function runUTS2Kotlin(
     resolveJsonModule: false, // 目前 json 文件会被 vite 提前处理，已经变成了标准的 ts 文件
     typeRoots: [],
     paths: {
-      '@dcloudio/uni-runtime': [
-        path.resolve(
-          utsKotlinTypesPath,
-          '@dcloudio/uni-runtime/dist/uni-runtime.d.ts'
-        ),
-      ],
+      // '@dcloudio/uni-runtime': [
+      //   path.resolve(
+      //     utsKotlinTypesPath,
+      //     '@dcloudio/uni-runtime/dist/uni-runtime.d.ts'
+      //   ),
+      // ],
       '@vue/shared': [
         path.resolve(utsCommonTypesPath, '@vue/shared/dist/shared.d.ts'),
       ],
@@ -170,6 +168,7 @@ export function runUTS2Kotlin(
     inputDir: options.inputDir,
     cacheDir: options.cacheDir,
     rootFiles,
+    utsLibDir: utsLibPath,
     hxLanguageServiceDir: hbxLanguageServicePath,
     compilerOptions,
     originalPositionForSync,

@@ -1,9 +1,0 @@
-{
-  "name": "@vue/uni-runtime",
-  "version": "3.3.0-alpha.4",
-  "description": "@vue/uni-runtime",
-  "types": "./dist/uni-runtime.d.ts",
-  "dependencies": {
-    "@vue/runtime-core": "3.3.0-alpha.4"
-  }
-}
