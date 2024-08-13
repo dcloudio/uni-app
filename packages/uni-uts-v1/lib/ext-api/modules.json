@@ -99,7 +99,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -206,6 +207,15 @@
     "uni": {
       "getProvider": {
         "name": "getProvider",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "getProviderSync": {
+        "name": "getProviderSync",
         "app": {
           "js": false,
           "kotlin": true,
