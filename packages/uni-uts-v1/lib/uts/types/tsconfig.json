@@ -11,14 +11,10 @@
     "typeRoots": [],
     "paths": {
       "@vue/shared": ["./@vue/shared/dist/shared.d.ts"],
-      "@vue/reactivity": [
-        "./@vue/reactivity/dist/reactivity.d.ts"
-      ],
+      "@vue/reactivity": ["./@vue/reactivity/dist/reactivity.d.ts"],
       "vue": ["./@vue/runtime-core/dist/runtime-core.d.ts"],
-      "@vue/runtime-core": [
-        "./@vue/runtime-core/dist/runtime-core.d.ts"
-      ]
+      "@vue/runtime-core": ["./@vue/runtime-core/dist/runtime-core.d.ts"]
     }
   },
-  "include": ["**/*.d.ts"]
+  "include": ["index.d.ts", "common/common.d.ts"]
 }

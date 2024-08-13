@@ -83,7 +83,7 @@ export function runUTS2Kotlin(
   if (hasHbxLanguageService) {
     rootFiles.push(
       ...[
-        path.resolve(hbxLanguageServicePath, 'uts-types/common/index.d.ts'),
+        path.resolve(hbxLanguageServicePath, 'uts-types/common/common.d.ts'),
         ...resolvePlatformDeclarationFiles(
           hbxLanguageServicePath,
           'app-android'
@@ -97,7 +97,7 @@ export function runUTS2Kotlin(
     )
   } else {
     // 仅引用内部包含的 uts common，理论上此处的index.d.ts，需要和(hbxLanguageServicePath, 'uts-types/common/index.d.ts')保持同步
-    rootFiles.push(...[path.resolve(utsCommonTypesPath, 'common/index.d.ts')])
+    rootFiles.push(...[path.resolve(utsCommonTypesPath, 'common/common.d.ts')])
   }
 
   if (options.rootFiles && options.rootFiles.length) {

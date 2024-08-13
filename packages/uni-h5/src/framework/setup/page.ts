@@ -25,7 +25,11 @@ import {
   normalizeTitleColor,
 } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
-import type { NavigateType } from '../../service/api/route/utils'
+import {
+  type NavigateOptions,
+  type NavigateType,
+  handleBeforeEntryPageRoutes,
+} from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 import { getPageInstanceByVm } from './utils'
@@ -34,6 +38,34 @@ const SEP = '$$'
 
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
 export const homeDialogPages: UniDialogPage[] = []
+
+export const entryPageState = {
+  handledBeforeEntryPageRoutes: false,
+}
+type NavigateToPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.NavigateToOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type SwitchTabPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.SwitchTabOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type RedirectToPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.RedirectToOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type ReLaunchPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.ReLaunchOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+export const navigateToPagesBeforeEntryPages: NavigateToPage[] = []
+export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
+export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
+export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
 let escBackPageNum = 0
 function handleEscKeyPress(event) {
   if (event.key === 'Escape') {
@@ -237,12 +269,18 @@ export function initPage(vm: ComponentPublicInstance) {
     const pageInstance = getPageInstanceByVm(vm)
     if (pageInstance?.attrs.type !== 'dialog') {
       currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
-      if (currentPagesMap.size === 1 && homeDialogPages.length) {
-        homeDialogPages.forEach((dialogPage) => {
-          dialogPage.$getParentPage = () => vm
-          pageInstance!.$dialogPages.value.push(dialogPage)
-        })
-        homeDialogPages.length = 0
+      if (currentPagesMap.size === 1) {
+        // 通过异步保证首页生命周期触发
+        setTimeout(() => {
+          handleBeforeEntryPageRoutes()
+        }, 0)
+        if (homeDialogPages.length) {
+          homeDialogPages.forEach((dialogPage) => {
+            dialogPage.$getParentPage = () => vm
+            pageInstance!.$dialogPages.value.push(dialogPage)
+          })
+          homeDialogPages.length = 0
+        }
       }
     } else {
       pageInstance.$dialogPage!.$vm = vm
@@ -250,6 +288,12 @@ export function initPage(vm: ComponentPublicInstance) {
     return
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
+  if (currentPagesMap.size === 1) {
+    // 通过异步保证首页生命周期触发
+    setTimeout(() => {
+      handleBeforeEntryPageRoutes()
+    }, 0)
+  }
 }
 
 export function normalizeRouteKey(path: string, id: number) {
