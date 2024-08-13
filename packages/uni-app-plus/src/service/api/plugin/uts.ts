@@ -41,7 +41,8 @@ export function normalizeArg(arg: unknown) {
     const id = oldId ? parseInt(oldId) : callbackId++
     callbacks[id] = arg
     return id
-  } else if (isPlainObject(arg)) {
+  } else if (isPlainObject(arg) || isUniElement(arg)) {
+    // 判断值是否为元素
     const el = parseElement(arg)
     if (el) {
       let nodeId = ''
@@ -53,7 +54,7 @@ export function normalizeArg(arg: unknown) {
       }
       return { pageId, nodeId }
     } else {
-      Object.keys(arg).forEach((name) => {
+      Object.keys(arg as Object).forEach((name) => {
         ;(arg as any)[name] = normalizeArg((arg as any)[name])
       })
     }
