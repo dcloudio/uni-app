@@ -60,7 +60,7 @@ type ReLaunchPage = {
 export const navigateToPagesBeforeEntryPages: NavigateToPage[] = []
 export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
 export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
-export const reLaunchToPagesBeforeEntryPages: ReLaunchPage[] = []
+export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
 
 function initAppVm(appVm: ComponentPublicInstance) {
   appVm.$vm = appVm

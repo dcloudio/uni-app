@@ -16,7 +16,7 @@ import { closePage } from './utils'
 import { setStatusBarStyle } from '../../statusBar'
 import {
   entryPageState,
-  reLaunchToPagesBeforeEntryPages,
+  reLaunchPagesBeforeEntryPages,
 } from '../../framework/app'
 
 interface ReLaunchOptions extends RouteOptions {}
@@ -27,7 +27,7 @@ export const $reLaunch: DefineAsyncApiFn<API_TYPE_RE_LAUNCH> = (
 ) => {
   const { path, query } = parseUrl(url)
   if (!entryPageState.isReady) {
-    reLaunchToPagesBeforeEntryPages.push({
+    reLaunchPagesBeforeEntryPages.push({
       args: { url },
       handler: { resolve, reject },
     })
