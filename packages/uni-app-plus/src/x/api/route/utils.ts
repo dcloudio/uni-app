@@ -5,7 +5,7 @@ import { removeTabBarPage } from '../../framework/app/tabBar'
 import {
   entryPageState,
   navigateToPagesBeforeEntryPages,
-  reLaunchToPagesBeforeEntryPages,
+  reLaunchPagesBeforeEntryPages,
   redirectToPagesBeforeEntryPages,
   switchTabPagesBeforeEntryPages,
 } from '../../framework/app'
@@ -56,7 +56,7 @@ export function handleBeforeEntryPageRoutes() {
     _redirectTo(args).then(handler.resolve).catch(handler.reject)
   )
 
-  const reLaunchToPages = [...reLaunchToPagesBeforeEntryPages]
-  reLaunchToPagesBeforeEntryPages.length = 0
-  reLaunchToPages.forEach(({ args, handler }) => $reLaunch(args, handler))
+  const reLaunchPages = [...reLaunchPagesBeforeEntryPages]
+  reLaunchPagesBeforeEntryPages.length = 0
+  reLaunchPages.forEach(({ args, handler }) => $reLaunch(args, handler))
 }
