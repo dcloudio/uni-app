@@ -31,7 +31,8 @@ function normalizeArg(arg) {
         callbacks[id] = arg;
         return id;
     }
-    else if (isPlainObject(arg)) {
+    else if (isPlainObject(arg) || isUniElement(arg)) {
+        // 判断值是否为元素
         const el = parseElement(arg);
         if (el) {
             let nodeId = '';
@@ -54,23 +55,10 @@ function normalizeArg(arg) {
 function initUTSInstanceMethod(async, opts, instanceId, proxy) {
     return initProxyFunction('method', async, opts, instanceId, proxy);
 }
-function createInvokeAsyncBySync(invokeSync) {
-    return function invokeAsync(args, callback) {
-        const res = invokeSync(args, callback);
-        callback(extend(res, {
-            params: [res.params],
-        }));
-        return res;
-    };
-}
 function getProxy() {
     if (!proxy) {
         {
             proxy = uni.requireNativePlugin('UTS-Proxy');
-            if (isUTSiOS()) {
-                // iOS 平台用sync模拟async
-                proxy.invokeAsync = createInvokeAsyncBySync(proxy.invokeSync);
-            }
         }
     }
     return proxy;

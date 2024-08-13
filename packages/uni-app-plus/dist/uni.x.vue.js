@@ -1,4 +1,4 @@
-import { invokeArrayFns, isUniLifecycleHook, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
+import { invokeArrayFns, isUniLifecycleHook, decodedQuery, ON_LOAD, ON_SHOW, LINEFEED, RENDERJS_MODULES, formatLog, WXS_PROTOCOL, WXS_MODULES, UniLifecycleHooks, ON_ERROR, invokeCreateErrorHandler, invokeCreateVueAppHook } from '@dcloudio/uni-shared';
 import { isString, isArray, isFunction } from '@vue/shared';
 import { injectHook } from 'vue';
 
@@ -71,7 +71,11 @@ function initHooks(options, instance, publicThis) {
         instance.__isVisible = true;
         // 直接触发页面 onLoad、onShow 组件内的 onLoad 和 onShow 在注册时，直接触发一次
         try {
-            const query = instance.attrs.__pageQuery;
+            let query = instance.attrs.__pageQuery;
+            // onLoad 的 query 进行 decode
+            if (true) {
+                query = decodedQuery(query);
+            }
             if ('app' === 'app' && true) {
                 // TODO 统一处理 Web
                 publicThis.options = query || {};
