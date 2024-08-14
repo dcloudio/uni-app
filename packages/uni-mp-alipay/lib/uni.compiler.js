@@ -45,7 +45,8 @@ const EVENTS = {
   renderstart: 'renderStart',
   loadedmetadata: 'renderStart',
   // swiper
-  animationfinish: 'animationEnd'
+  animationfinish: 'animationEnd',
+  chooseavatar: 'chooseAvatar'
 }
 
 module.exports = {
