@@ -29,6 +29,11 @@ export function navigate(
   { type, url, tabBarText, events, isAutomatedTesting }: NavigateOptions,
   __id__?: number
 ): Promise<void | { eventChannel?: EventChannel; __id__?: number }> {
+  if (__DEV__ && !__UNI_FEATURE_PAGES__) {
+    console.warn(
+      '当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。'
+    )
+  }
   const router = getApp().$router as Router
   const { path, query } = parseUrl(url)
   return new Promise((resolve, reject) => {
