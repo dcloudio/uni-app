@@ -426,7 +426,6 @@ export interface Ref<T = any> {
  * @see {@link https://vuejs.org/api/reactivity-utilities.html#isref}
  */
 export declare function isRef<T>(r: Ref<T> | unknown): r is Ref<T>;
-
 /**
  * Takes an inner value and returns a reactive and mutable ref object, which
  * has a single property `.value` that points to the inner value.

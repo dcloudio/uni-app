@@ -3293,7 +3293,6 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     errMsg
   } = _ref;
   var keepAlive = methodName.indexOf("on") === 0 && methodParams.length === 1 && methodParams[0].type === "UTSCallback";
-  var throws = async;
   var invokeCallback2 = (_ref2) => {
     var {
       id: id2,
@@ -3317,8 +3316,8 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     type,
     name: methodName,
     method: methodParams,
-    keepAlive,
-    throws
+    keepAlive
+    // throws,
   } : {
     moduleName,
     moduleType,
@@ -3328,8 +3327,8 @@ function initProxyFunction(type, async, _ref, instanceId, proxy2) {
     type,
     companion,
     method: methodParams,
-    keepAlive,
-    throws
+    keepAlive
+    // throws,
   };
   return function() {
     if (errMsg) {
@@ -3471,7 +3470,7 @@ function initUTSProxyClass(options) {
                 id: instance.__instanceId,
                 type: "getter",
                 keepAlive: false,
-                throws: false,
+                // throws: false,
                 name,
                 errMsg
               });

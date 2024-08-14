@@ -18,9 +18,10 @@ import { BusinessError as BusinessError2 } from '@ohos.base';
 import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError6 } from '@ohos.base';
+import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError7 } from '@ohos.base';
 import { BusinessError as BusinessError8 } from '@ohos.base';
+import { BusinessError as BusinessError9 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
 import { Emitter as Emitter5 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
@@ -45,6 +46,7 @@ import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncA
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import abilityAccessCtrl1 from '@ohos.abilityAccessCtrl';
+import { access } from '@kit.ConnectivityKit';
 import { audio as audio1 } from '@kit.AudioKit';
 import { audio } from '@kit.AudioKit';
 import { avSession } from '@kit.AVSessionKit';
@@ -62,6 +64,7 @@ import common3 from '@ohos.app.ability.common';
 import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
+import { display } from '@kit.ArkUI';
 import { fileIo as fileIo1 } from '@kit.CoreFileKit';
 import { fileIo as fileIo2 } from '@kit.CoreFileKit';
 import { fileIo as fileIo3 } from '@kit.CoreFileKit';
@@ -72,6 +75,7 @@ import fs1 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
 import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
+import { geoLocationManager } from '@kit.LocationKit';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext11 } from "@dcloudio/uni-app-harmony-framework";
@@ -116,6 +120,7 @@ import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
 import { userAuth } from '@kit.UserAuthenticationKit';
 import { wantAgent } from '@kit.AbilityKit';
+import { wifiManager } from '@kit.ConnectivityKit';
 import { window as window1 } from '@kit.ArkUI';
 import { window as window2 } from '@kit.ArkUI';
 import { window as window3 } from '@kit.ArkUI';
@@ -721,6 +726,15 @@ interface ISystemInfoAppVersion {
     name: string;
     code: string;
 }
+class GetSystemSettingResult extends UTSObject {
+    bluetoothEnabled: boolean | null = null;
+    bluetoothError: string | null = null;
+    locationEnabled!: boolean;
+    wifiEnabled: boolean | null = null;
+    wifiError: string | null = null;
+    deviceOrientation!: 'portrait' | 'landscape';
+}
+type GetSystemSetting = () => GetSystemSettingResult;
 export class HideKeyboardSuccess extends UTSObject {
 }
 export class HideKeyboardFail extends UTSObject {
@@ -1616,6 +1630,7 @@ interface UniExtApi {
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
     getWindowInfo: GetWindowInfo;
+    getSystemSetting: GetSystemSetting;
     hideKeyboard: HideKeyboard;
     makePhoneCall: MakePhoneCall;
     chooseImage: ChooseImage;
@@ -4175,6 +4190,31 @@ export function initUniExtApi(APP_ID: string) {
             exec.reject((error as Error).message);
         }
     }) as GetSystemInfo;
+    const getSystemSetting: GetSystemSetting = defineSyncApi<GetSystemSettingResult>('getSystemSetting', (): GetSystemSettingResult =>{
+        const defaultDisplay = display.getDefaultDisplaySync();
+        const res: GetSystemSettingResult = {
+            bluetoothEnabled: false,
+            bluetoothError: null,
+            locationEnabled: false,
+            wifiEnabled: false,
+            wifiError: null,
+            deviceOrientation: (defaultDisplay.orientation === display.Orientation.PORTRAIT || defaultDisplay.orientation === display.Orientation.PORTRAIT_INVERTED) ? 'portrait' : 'landscape'
+        };
+        try {
+            if (access.getState() === access.BluetoothState.STATE_ON) res.bluetoothEnabled = true;
+        } catch (err) {
+            res.bluetoothError = (err as BusinessError5).message;
+        }
+        try {
+            res.locationEnabled = geoLocationManager.isLocationEnabled();
+        } catch (err) {}
+        try {
+            res.wifiEnabled = wifiManager.isWifiActive();
+        } catch (err) {
+            res.wifiError = (err as BusinessError5).message;
+        }
+        return res;
+    }) as GetSystemSetting;
     const API_HIDE_KEYBOARD = 'hideKeyboard';
     const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(API_HIDE_KEYBOARD, (options: HideKeyboardOptions, exec: ApiExecutor<HideKeyboardSuccess>)=>{
         inputMethod.getController().hideTextInput().then(()=>{
@@ -4223,7 +4263,7 @@ export function initUniExtApi(APP_ID: string) {
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
         const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError5<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError6<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -6423,7 +6463,7 @@ export function initUniExtApi(APP_ID: string) {
                         break;
                 }
             }
-            window2.getLastWindow(getAbilityContext7()!, (err: BusinessError6, window: window2.Window)=>{
+            window2.getLastWindow(getAbilityContext7()!, (err: BusinessError7, window: window2.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6433,7 +6473,7 @@ export function initUniExtApi(APP_ID: string) {
                 res.resolve({} as ShowToastSuccess);
             });
         } catch (error) {
-            let message = (error as BusinessError6).message;
+            let message = (error as BusinessError7).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -6465,7 +6505,7 @@ export function initUniExtApi(APP_ID: string) {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            window3.getLastWindow(getAbilityContext8()!, (err: BusinessError7, window: window3.Window)=>{
+            window3.getLastWindow(getAbilityContext8()!, (err: BusinessError8, window: window3.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6512,7 +6552,7 @@ export function initUniExtApi(APP_ID: string) {
                 color: options.itemColor!
             } as promptAction4.Button);
         });
-        window4.getLastWindow(getAbilityContext9()!, (err: BusinessError8, window: window4.Window)=>{
+        window4.getLastWindow(getAbilityContext9()!, (err: BusinessError9, window: window4.Window)=>{
             const errCode: number = err.code;
             if (errCode) {
                 console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -7214,6 +7254,7 @@ export function initUniExtApi(APP_ID: string) {
         getSystemInfo,
         getSystemInfoSync,
         getWindowInfo,
+        getSystemSetting,
         hideKeyboard,
         makePhoneCall,
         chooseImage,

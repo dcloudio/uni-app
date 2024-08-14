@@ -1,6 +1,8 @@
 declare var NaN: number
 declare var Infinity: number
 
+declare type RequestAnimationFrameCallback = (task: number) => void
+
 /**
  * eval() 函数会将传入的字符串当做 JavaScript 代码进行执行。
  * @param x 一个表示 JavaScript 表达式、语句或一系列语句的字符串。表达式可以包含变量与已存在对象的属性。
@@ -286,3 +288,51 @@ declare function atob(encodedData: string): string
  * }
  */
 declare function btoa(stringToEncode: string): string
+
+/**
+ * 在下一次重绘之前，调用用户提供的回调函数
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {
+ *       "osVer": "5.0",
+ *       "uniVer": "x",
+ *       "unixVer": "4.25"
+ *     },
+ *     "ios": {
+ *       "osVer": "12.0",
+ *       "uniVer": "x",
+ *       "unixVer": "4.25"
+ *     }
+ *   },
+ *   "web": {
+ *     "uniVer": "√",
+ *     "unixVer": "4.0"
+ *   }
+ * }
+ */
+declare function requestAnimationFrame(
+  callback: RequestAnimationFrameCallback
+): number
+
+/**
+ * 取消一个先前通过调用 requestAnimationFrame() 方法添加到计划中的动画帧请求
+ * @uniPlatform {
+ *   "app": {
+ *     "android": {
+ *       "osVer": "5.0",
+ *       "uniVer": "x",
+ *       "unixVer": "4.25"
+ *     },
+ *     "ios": {
+ *       "osVer": "12.0",
+ *       "uniVer": "x",
+ *       "unixVer": "4.25"
+ *     }
+ *   },
+ *   "web": {
+ *     "uniVer": "√",
+ *     "unixVer": "4.0"
+ *   }
+ * }
+ */
+declare function cancelAnimationFrame(taskId: number): void

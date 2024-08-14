@@ -1,5 +1,3 @@
-import { ComponentOptions } from '@vue/runtime-core'
-
 const mixin = defineMixin({
   props: {
     p1: {
@@ -27,21 +25,15 @@ const mixin = defineMixin({
 
 export function createApp() {
   const app = createSSRApp(defineComponent({}))
-  app.mixin(mixin)
+  // app.mixin(mixin)
 }
 
 export const __sfc__ = defineComponent({
-  mixins: [
-    {
-      props: {
-        p1: {
-          type: String,
-          default: '',
-        },
-      },
-    },
-  ],
+  mixins: [mixin],
   onLoad() {
+    this.d1
+    this.c1
+    this.m1
     this.p1
   },
 })

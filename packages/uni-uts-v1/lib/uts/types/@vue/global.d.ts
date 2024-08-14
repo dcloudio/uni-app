@@ -1,4 +1,4 @@
-import { Plugin, ComponentOptions } from '@vue/runtime-core'
+import { Plugin } from '@vue/runtime-core'
 
 // # 全局API
 // ## 应用实例
@@ -14,6 +14,8 @@ import {
   defineComponent as defineComponentOrigin,
   defineAsyncComponent as defineAsyncComponentOrigin,
   // defineCustomElement
+  // 扩展
+  defineMixin as defineMixinOrigin,
 } from '@vue/runtime-core'
 
 // # 组合式 API
@@ -198,6 +200,8 @@ declare global {
   const nextTick: typeof nextTickOrigin
   const defineComponent: typeof defineComponentOrigin
   const defineAsyncComponent: typeof defineAsyncComponentOrigin
+  // 扩展
+  const defineMixin: typeof defineMixinOrigin
 
   // # 组合式 API
   // ## 响应式 API：核心
@@ -330,6 +334,5 @@ declare global {
   // 自定义
   type SlotsType<T> = PropTypeOrigin<T>
   const defineApp: typeof defineComponentOrigin
-  const defineMixin: (options: ComponentOptions) => ComponentOptions
   const definePlugin: (plugin: Plugin) => Plugin
 }

@@ -1,3 +1,4 @@
+// 移除了 Promise.d.ts 因为该文件定义的 Promise 部分情况推导不准确，新版本 tsc 编译器将会内置标准的 Promise 相关声明
 /// <reference path="./Array.d.ts" />
 /// <reference path="./Boolean.d.ts" />
 /// <reference path="./console.d.ts" />

@@ -1,4 +1,5 @@
 interface UTSJSONObject {
+  constructor: Function
   [key: string]: any | null
   /**
    * 获取一个 属性，返回类型是any 或者 null
@@ -268,8 +269,10 @@ interface UTSJSONObject {
 }
 
 interface UTSJSONObjectConstructor {
+  new (value?: any): UTSJSONObject
   /**
    * 以数组的形式返回指定UTSJSONObjetc 对象内可枚举属性的名称列表
+   * @param item 需要检索的UTSJSONObject 实例对象
    * @return 返回 Array<string> 类型的可枚举属性的名称列表
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#keys
    * @uniPlatform {
@@ -291,10 +294,11 @@ interface UTSJSONObjectConstructor {
    *    }
    * }
    */
-  keys(): Array<string>
+  keys(item: UTSJSONObject): Array<string>
 
   /**
    * 该方法允许输入一个或者多个UTSJSONObject对象，合并后返回一个新的UTSJSONObject，其中包含全部输入对象的属性字段，如果存在同名的属性会以后传入的属性为准
+   * @param items 需要被合并的UTSJSONObject 实例对象
    * @return 合并后的UTSJSONObject
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#assign
    * @uniPlatform {
@@ -320,6 +324,7 @@ interface UTSJSONObjectConstructor {
 
   /**
    * 该方法允许输入一个或者多个UTSJSONObject对象，合并后返回一个新的泛型对象T，其中包含全部输入对象的属性字段，如果存在同名的属性会以后传入的属性为准
+   * @param items 需要被合并的实例对象
    * @return 合并后的泛型对象
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/UTSJSONObject.html#assign
    * @uniPlatform {

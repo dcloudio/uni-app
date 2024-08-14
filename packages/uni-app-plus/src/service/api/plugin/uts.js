@@ -116,7 +116,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
     const keepAlive = methodName.indexOf('on') === 0 &&
         methodParams.length === 1 &&
         methodParams[0].type === 'UTSCallback';
-    const throws = async;
+    // const throws = async
     const invokeCallback = ({ id, name, params }) => {
         const callback = callbacks[id];
         if (callback) {
@@ -138,7 +138,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             name: methodName,
             method: methodParams,
             keepAlive,
-            throws,
+            // throws,
         }
         : {
             moduleName,
@@ -150,7 +150,7 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             companion,
             method: methodParams,
             keepAlive,
-            throws,
+            // throws,
         };
     return (...args) => {
         if (errMsg) {
@@ -287,7 +287,7 @@ function initUTSProxyClass(options) {
                                 id: instance.__instanceId,
                                 type: 'getter',
                                 keepAlive: false,
-                                throws: false,
+                                // throws: false,
                                 name: name,
                                 errMsg,
                             });

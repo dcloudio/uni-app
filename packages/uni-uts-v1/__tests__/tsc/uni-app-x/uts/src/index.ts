@@ -3,5 +3,5 @@ function getStorageSync(_key: string): any | null {
 }
 export function main() {
   const res = getStorageSync('key')
-  //   console.log(res instanceof UTSJSONObject)
+  console.log(res instanceof UTSJSONObject)
 }

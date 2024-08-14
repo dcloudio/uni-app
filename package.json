@@ -5,7 +5,7 @@
     "packages/*"
   ],
   "scripts": {
-    "all": "npm run lint && npm run format && npm run build && npm run test",
+    "all": "npm run lint && npm run format && node scripts/sync.js && npm run build && npm run test",
     "clean": "rm -rf node_modules **/*/node_modules && pnpm install",
     "build": "node scripts/build.js",
     "build:h5": "node scripts/build.js uni-app uts uni-uts-v1 uni-app-uvue uni-cli-shared uni-h5 uni-i18n uni-stat uni-shared uni-h5-vite vite-plugin-uni",
