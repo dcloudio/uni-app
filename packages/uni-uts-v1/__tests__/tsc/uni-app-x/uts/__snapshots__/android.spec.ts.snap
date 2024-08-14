@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`android uts 1`] = `
+"function getStorageSync(_key: string): any | null {
+    return null;
+}
+export function main() {
+    const res = getStorageSync('key');
+    //   console.log(res instanceof UTSJSONObject)
+}
+"
+`;
