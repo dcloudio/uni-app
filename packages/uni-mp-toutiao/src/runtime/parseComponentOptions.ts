@@ -89,11 +89,11 @@ export function handleLink(
   if (!parentVm) {
     parentVm = this.$vm!
   }
-   if(this.$vm.$options?.options?.virtualHost) {
+  if (this.$vm?.$options?.options?.virtualHost) {
     // 抖音小程序下 form 组件开启 virtualHost 出现 infinite loop. see: https://github.com/vuejs/core/blob/32a1433e0debd538c199bde18390bb903b4cde5a/packages/runtime-core/src/componentProps.ts#L227
-    vm.$.parent = null;
+    vm.$.parent = null
   } else {
-    vm.$.parent = parentVm.$;
+    vm.$.parent = parentVm.$
   }
 
   if (__VUE_OPTIONS_API__) {
