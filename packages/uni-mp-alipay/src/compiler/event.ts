@@ -44,4 +44,5 @@ const eventMap: Record<string, string> = {
   loadedmetadata: 'renderStart',
   // swiper
   animationfinish: 'animationEnd',
+  chooseavatar: 'chooseAvatar',
 }
