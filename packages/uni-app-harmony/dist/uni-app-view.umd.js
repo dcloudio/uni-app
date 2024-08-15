@@ -19832,7 +19832,7 @@
       MODE: 3
     },
     props: props$i,
-    emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
+    emits: ["itemclick"],
     setup(props2, _ref) {
       var {
         emit: emit2

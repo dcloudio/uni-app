@@ -14,12 +14,13 @@ import webSocket from '@ohos.net.webSocket';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError10 } from '@ohos.base';
 import { BusinessError as BusinessError2 } from '@ohos.base';
 import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
-import { BusinessError as BusinessError7 } from '@ohos.base';
+import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError8 } from '@ohos.base';
 import { BusinessError as BusinessError9 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
@@ -68,6 +69,7 @@ import { display } from '@kit.ArkUI';
 import { fileIo as fileIo1 } from '@kit.CoreFileKit';
 import { fileIo as fileIo2 } from '@kit.CoreFileKit';
 import { fileIo as fileIo3 } from '@kit.CoreFileKit';
+import { fileIo as fileIo4 } from '@kit.CoreFileKit';
 import { fileIo as fs2 } from '@kit.CoreFileKit';
 import { fileIo } from '@kit.CoreFileKit';
 import fileUri from '@ohos.file.fileuri';
@@ -88,7 +90,8 @@ import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-app-harmo
 import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv as getEnv2, Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv2 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv3, Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
 import { getEnv, getRealPath } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage2 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
@@ -102,6 +105,7 @@ import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
+import { image as image1 } from '@kit.ImageKit';
 import { isPlainObject, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
 import { media as media1 } from '@kit.MediaKit';
 import { media } from '@kit.MediaKit';
@@ -562,7 +566,7 @@ interface IUniGetNetworkTypeEventEmitter {
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 export class GetProviderSuccess extends UTSObject {
-    service!: 'payment' | 'location';
+    service!: 'payment';
     provider!: string[];
     providers!: UniProvider[];
 }
@@ -581,7 +585,7 @@ type GetProviderFailCallback = (result: GetProviderFail) => void;
 type GetProviderComplete = Object;
 type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
 export class GetProviderOptions extends UTSObject {
-    service!: 'payment' | 'location';
+    service!: 'payment';
     success: GetProviderSuccessCallback | null = null;
     fail: GetProviderFailCallback | null = null;
     complete: GetProviderCompleteCallback | null = null;
@@ -870,6 +874,26 @@ export class SaveImageToPhotosAlbumOptions extends UTSObject {
     fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
     complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
 }
+type CompressImage = (options: CompressImageOptions) => void;
+class CompressImageSuccess extends UTSObject {
+    tempFilePath!: string;
+}
+type CompressImageFail = IMediaError;
+type CompressImageSuccessCallback = (callback: CompressImageSuccess) => void;
+type CompressImageFailCallback = (callback: CompressImageFail) => void;
+type CompressImageCompleteCallback = ChooseImageCompleteCallback;
+class CompressImageOptions extends UTSObject {
+    src!: string.ImageURIString;
+    quality: number | null = null;
+    rotate: number | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    compressedHeight: number | null = null;
+    compressedWidth: number | null = null;
+    success: (CompressImageSuccessCallback) | null = null;
+    fail: (CompressImageFailCallback) | null = null;
+    complete: (CompressImageCompleteCallback) | null = null;
+}
 export class ChooseVideoSuccess extends UTSObject {
     tempFilePath!: string;
     duration!: number;
@@ -939,17 +963,17 @@ interface ChooseMediaOptions {
     mimeType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE | photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE;
     count?: number;
     sourceType?: ('album' | 'camera')[];
+    crop?: ChooseImageCropOptions;
 }
 interface chooseMediaSuccessCallbackResult {
     tempFiles: MediaFile[];
 }
 type CameraPosition = 'back' | 'front';
 interface TempFiles {
-    path: string;
+    tempFilePath: string;
     size: number;
 }
 interface TakePhotoRes {
-    tempFilePaths: string[];
     tempFiles: TempFiles[];
 }
 interface TakeVideoOptions {
@@ -973,6 +997,10 @@ interface IPreviewImageOptions {
     urls: string[];
     current: string;
     showmenu: boolean;
+}
+interface _CompressImageSuccess {
+    size: number;
+    tempFilePath: string;
 }
 export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
 export class RequestOptions<T = Object> extends UTSObject {
@@ -1638,6 +1666,7 @@ interface UniExtApi {
     closePreviewImage: ClosePreviewImage;
     getImageInfo: GetImageInfo;
     saveImageToPhotosAlbum: SaveImageToPhotosAlbum;
+    compressImage: CompressImage;
     chooseVideo: ChooseVideo;
     saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
     getVideoInfo: GetVideoInfo;
@@ -4366,6 +4395,7 @@ export function initUniExtApi(APP_ID: string) {
         photoSelectOptions.MIMEType = mimeType;
         photoSelectOptions.maxSelectNumber = options.count || 9;
         photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
+        if (options.crop) photoSelectOptions.isEditSupported = true;
         const photoPicker = new photoAccessHelper.PhotoViewPicker();
         const photoSelectResult = await photoPicker.select(photoSelectOptions);
         const uris = photoSelectResult.photoUris;
@@ -4650,6 +4680,39 @@ export function initUniExtApi(APP_ID: string) {
             }
         ]
     ]);
+    const CompressImageApiOptions: ApiOptions<CompressImageOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'src',
+                (src: string, params: CompressImageOptions)=>{
+                    if (src) params.src = getRealPath1(src);
+                }
+            ],
+            [
+                'quality',
+                (quality: number, params: CompressImageOptions)=>{
+                    if (quality == null) {
+                        params.quality = 80;
+                    }
+                }
+            ]
+        ])
+    };
+    const CompressImageApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'src',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'quality',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
     const MediaUniErrors: Map<number, string> = new Map([
         [
             1101001,
@@ -4712,12 +4775,9 @@ export function initUniExtApi(APP_ID: string) {
         const file = fs2.openSync(res.resultUri, fs2.OpenMode.READ_ONLY);
         const stat = fs2.statSync(file.fd);
         return {
-            tempFilePaths: [
-                res.resultUri
-            ],
             tempFiles: [
                 {
-                    path: res.resultUri,
+                    tempFilePath: res.resultUri,
                     size: stat.size
                 }
             ]
@@ -4750,7 +4810,8 @@ export function initUniExtApi(APP_ID: string) {
             sourceType: [
                 "album"
             ],
-            count: options.count!
+            count: options.count!,
+            crop: options.crop
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const tempFiles = chooseMediaRes.tempFiles;
             if (tempFiles.length === 0) {
@@ -4780,7 +4841,7 @@ export function initUniExtApi(APP_ID: string) {
             res.resolve({
                 errMsg: '',
                 errSubject,
-                tempFilePaths: photo.tempFilePaths,
+                tempFilePaths: photo.tempFiles.map((file)=>file.tempFilePath),
                 tempFiles: photo.tempFiles
             } as ChooseImageSuccess);
         }).catch((err: Error)=>{
@@ -4841,7 +4902,11 @@ export function initUniExtApi(APP_ID: string) {
         });
     };
     const _takeVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
-        takeVideo().then((video)=>{
+        const takeVideoOptions: TakeVideoOptions = {
+            cameraType: options.camera! as CameraPosition,
+            videoDuration: options.maxDuration!
+        };
+        takeVideo(takeVideoOptions).then((video)=>{
             res.resolve({
                 tempFilePath: video.path,
                 duration: video.duration,
@@ -4902,10 +4967,11 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
+        const currentUrl = typeof options.current === 'number' ? options.urls[options.current ?? 0] : options.current as string;
         waitForCurrentNativePage1().then((nativePage: Object)=>{
             getOSRuntime().previewImage({
                 urls: options.urls.map((url)=>getRealPath2(url) as string),
-                current: options.current || '',
+                current: getRealPath2(currentUrl || ''),
                 showmenu: options.showmenu === false ? false : true
             } as IPreviewImageOptions, nativePage);
             exec.resolve({
@@ -5010,6 +5076,71 @@ export function initUniExtApi(APP_ID: string) {
             });
         });
     }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
+    const getFileName = (path: string)=>{
+        const array = path.split('/');
+        return array[array.length - 1];
+    };
+    const _compressImage = (args: CompressImageOptions)=>{
+        const imageName = getFileName(args.src);
+        const imageExt = imageName.split('.').slice(-1)[0];
+        const imagePacker: image1.ImagePacker = image1.createImagePacker();
+        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_WRITE);
+        const imageSource: image1.ImageSource = image1.createImageSource(file2.fd);
+        if (imageSource == null) {
+            throw new Error('create image source failed');
+        }
+        let decodingOptions: image1.DecodingOptions = {
+            editable: true
+        };
+        if (args.rotate != null) {
+            decodingOptions.rotate = args.rotate;
+        }
+        if (args.compressedHeight != null || args.compressedWidth != null) {
+            decodingOptions.desiredSize = {
+                height: (args.compressedHeight ?? args.compressedWidth)!,
+                width: (args.compressedWidth ?? args.compressedHeight)!
+            };
+        }
+        const pixelMap = imageSource.createPixelMapSync(decodingOptions);
+        let format: string = '';
+        if ([
+            'jpg',
+            'jpe',
+            'jpeg'
+        ].includes(imageExt)) {
+            format = 'image/jpeg';
+        }
+        if (imageExt === 'png') format = 'image/png';
+        if (imageExt === 'webp') format = 'image/webp';
+        if (!format.length) {
+            throw new Error('error image format');
+        }
+        const packOptions: image1.PackingOption = {
+            format,
+            quality: args.quality ?? 80
+        };
+        const tempFilePath: string = `${getEnv2().TEMP_PATH}/${Date.now()}_${imageName}`;
+        const file = fileIo4.openSync(tempFilePath, fileIo4.OpenMode.CREATE | fileIo4.OpenMode.READ_WRITE);
+        return imagePacker.packToFile(pixelMap, file.fd, packOptions).then((_)=>{
+            const size = fileIo4.statSync(file.fd).size;
+            fileIo4.closeSync(file.fd);
+            return {
+                size,
+                tempFilePath
+            } as _CompressImageSuccess;
+        });
+    };
+    const compressImage: CompressImage = defineAsyncApi<CompressImageOptions, CompressImageSuccess>(API_CHOOSE_IMAGE, (args: CompressImageOptions, executor: ApiExecutor<CompressImageSuccess>)=>{
+        try {
+            _compressImage(args).then((res)=>{
+                executor.resolve({
+                    tempFilePath: res.tempFilePath
+                } as CompressImageSuccess);
+            });
+        } catch (error) {
+            executor.reject((error as BusinessError7).message);
+        }
+    }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
     const API_REQUEST = 'request';
     const RequestApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -6106,7 +6237,7 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToWrite: totalSize
             } as OnProgressDownloadResult);
         });
-        const TEMP_PATH = getEnv2().TEMP_PATH as string;
+        const TEMP_PATH = getEnv3().TEMP_PATH as string;
         const downloadPath = TEMP_PATH + '/download';
         if (!fs5.accessSync(downloadPath)) {
             fs5.mkdirSync(downloadPath, true);
@@ -6463,7 +6594,7 @@ export function initUniExtApi(APP_ID: string) {
                         break;
                 }
             }
-            window2.getLastWindow(getAbilityContext7()!, (err: BusinessError7, window: window2.Window)=>{
+            window2.getLastWindow(getAbilityContext7()!, (err: BusinessError8, window: window2.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6473,7 +6604,7 @@ export function initUniExtApi(APP_ID: string) {
                 res.resolve({} as ShowToastSuccess);
             });
         } catch (error) {
-            let message = (error as BusinessError7).message;
+            let message = (error as BusinessError8).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -6505,7 +6636,7 @@ export function initUniExtApi(APP_ID: string) {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            window3.getLastWindow(getAbilityContext8()!, (err: BusinessError8, window: window3.Window)=>{
+            window3.getLastWindow(getAbilityContext8()!, (err: BusinessError9, window: window3.Window)=>{
                 const errCode: number = err.code;
                 if (errCode) {
                     console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -6552,7 +6683,7 @@ export function initUniExtApi(APP_ID: string) {
                 color: options.itemColor!
             } as promptAction4.Button);
         });
-        window4.getLastWindow(getAbilityContext9()!, (err: BusinessError9, window: window4.Window)=>{
+        window4.getLastWindow(getAbilityContext9()!, (err: BusinessError10, window: window4.Window)=>{
             const errCode: number = err.code;
             if (errCode) {
                 console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
@@ -7262,6 +7393,7 @@ export function initUniExtApi(APP_ID: string) {
         closePreviewImage,
         getImageInfo,
         saveImageToPhotosAlbum,
+        compressImage,
         chooseVideo,
         saveVideoToPhotosAlbum,
         getVideoInfo,
