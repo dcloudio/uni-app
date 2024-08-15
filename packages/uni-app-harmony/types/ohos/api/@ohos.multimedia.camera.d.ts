@@ -2810,6 +2810,74 @@ declare namespace camera {
         getActiveFrameRate(): FrameRateRange;
     }
     /**
+     * Enum for effect suggestion.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Multimedia.Camera.Core
+     * @since 12
+     */
+    enum EffectSuggestionType {
+        /**
+         * None.
+         *
+         * @syscap SystemCapability.Multimedia.Camera.Core
+         * @since 12
+         */
+        EFFECT_SUGGESTION_NONE = 0,
+        /**
+         * Portrait.
+         *
+         * @syscap SystemCapability.Multimedia.Camera.Core
+         * @since 12
+         */
+        EFFECT_SUGGESTION_PORTRAIT = 1,
+        /**
+         * Food.
+         *
+         * @syscap SystemCapability.Multimedia.Camera.Core
+         * @since 12
+         */
+        EFFECT_SUGGESTION_FOOD = 2,
+        /**
+         * Sky.
+         *
+         * @syscap SystemCapability.Multimedia.Camera.Core
+         * @since 12
+         */
+        EFFECT_SUGGESTION_SKY = 3,
+        /**
+         * Sunrise and sunset.
+         *
+         * @syscap SystemCapability.Multimedia.Camera.Core
+         * @since 12
+         */
+        EFFECT_SUGGESTION_SUNRISE_SUNSET = 4
+    }
+    /**
+     * Effect suggestion status
+     *
+     * @syscap SystemCapability.Multimedia.Camera.Core
+     * @since 12
+     */
+    class EffectSuggestionStatus {
+        /**
+         * Effect Suggestion type.
+         *
+         * @type { EffectSuggestionType }
+         * @syscap SystemCapability.Multimedia.Camera.Core
+         * @since 12
+         */
+        type: EffectSuggestionType;
+        /**
+         * Effect Suggestion type status.
+         *
+         * @type { boolean }
+         * @syscap SystemCapability.Multimedia.Camera.Core
+         * @since 12
+         */
+        status: boolean;
+    }
+    /**
      * Enumerates the image rotation angles.
      *
      * @enum { number }

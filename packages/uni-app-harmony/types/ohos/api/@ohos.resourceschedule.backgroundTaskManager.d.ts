@@ -19,7 +19,7 @@
 import { AsyncCallback, Callback } from './@ohos.base';
 import { WantAgent } from './@ohos.wantAgent';
 import Context from './application/BaseContext';
-import notificationManager from './@ohos.notificationManager';
+import type notificationManager from './@ohos.notificationManager';
 /**
  * Manages background tasks.
  *
@@ -91,10 +91,10 @@ declare namespace backgroundTaskManager {
      * <br> 2. Incorrect parameters types; 3. Parameter verification failed.
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9900001 - Caller information verification failed.
-     * @throws { BusinessError } 9900002 - Background task verification failed.
+     * @throws { BusinessError } 9900001 - Caller information verification failed for a transient task.
+     * @throws { BusinessError } 9900002 - Transient task verification failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.TransientTask
      * @since 9
      */
@@ -108,10 +108,10 @@ declare namespace backgroundTaskManager {
      * <br> 2. Incorrect parameters types; 3. Parameter verification failed.
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9900001 - Caller information verification failed.
-     * @throws { BusinessError } 9900002 - Background task verification failed.
+     * @throws { BusinessError } 9900001 - Caller information verification failed for a transient task.
+     * @throws { BusinessError } 9900002 - Transient task verification failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.TransientTask
      * @since 9
      */
@@ -125,10 +125,10 @@ declare namespace backgroundTaskManager {
      * <br> 2. Incorrect parameters types; 3. Parameter verification failed.
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9900001 - Caller information verification failed.
-     * @throws { BusinessError } 9900002 - Background task verification failed.
+     * @throws { BusinessError } 9900001 - Caller information verification failed for a transient task.
+     * @throws { BusinessError } 9900002 - Transient task verification failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.TransientTask
      * @since 9
      */
@@ -143,10 +143,10 @@ declare namespace backgroundTaskManager {
      * <br> 2. Incorrect parameters types.
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9900001 - Caller information verification failed.
-     * @throws { BusinessError } 9900002 - Background task verification failed.
+     * @throws { BusinessError } 9900001 - Caller information verification failed for a transient task.
+     * @throws { BusinessError } 9900002 - Transient task verification failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.TransientTask
      * @since 9
      */
@@ -166,11 +166,11 @@ declare namespace backgroundTaskManager {
      * <br> 2. Incorrect parameters types; 3. Parameter verification failed.
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9800005 - Background task verification failed.
-     * @throws { BusinessError } 9800006 - Notification verification failed.
-     * @throws { BusinessError } 9800007 - Task storage failed.
+     * @throws { BusinessError } 9800005 - Continuous task verification failed.
+     * @throws { BusinessError } 9800006 - Notification verification failed for a continuous task.
+     * @throws { BusinessError } 9800007 - Continuous task storage failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.ContinuousTask
      * @since 9
      */
@@ -190,11 +190,11 @@ declare namespace backgroundTaskManager {
      * <br> 2. Incorrect parameters types; 3. Parameter verification failed.
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9800005 - Background task verification failed.
-     * @throws { BusinessError } 9800006 - Notification verification failed.
-     * @throws { BusinessError } 9800007 - Task storage failed.
+     * @throws { BusinessError } 9800005 - Continuous task verification failed.
+     * @throws { BusinessError } 9800006 - Notification verification failed for a continuous task.
+     * @throws { BusinessError } 9800007 - Continuous task storage failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.ContinuousTask
      * @since 9
      */
@@ -213,11 +213,11 @@ declare namespace backgroundTaskManager {
      * <br> 2. Incorrect parameters types; 3. Parameter verification failed.
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9800005 - Background task verification failed.
-     * @throws { BusinessError } 9800006 - Notification verification failed.
-     * @throws { BusinessError } 9800007 - Task storage failed.
+     * @throws { BusinessError } 9800005 - Continuous task verification failed.
+     * @throws { BusinessError } 9800006 - Notification verification failed for a continuous task.
+     * @throws { BusinessError } 9800007 - Continuous task storage failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.ContinuousTask
      * @since 12
      */
@@ -234,11 +234,11 @@ declare namespace backgroundTaskManager {
      * <br> 2. Incorrect parameters types; 3. Parameter verification failed.
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9800005 - Background task verification failed.
-     * @throws { BusinessError } 9800006 - Notification verification failed.
-     * @throws { BusinessError } 9800007 - Task storage failed.
+     * @throws { BusinessError } 9800005 - Continuous task verification failed.
+     * @throws { BusinessError } 9800006 - Notification verification failed for a continuous task.
+     * @throws { BusinessError } 9800007 - Continuous task storage failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.ContinuousTask
      * @since 12
      */
@@ -252,11 +252,11 @@ declare namespace backgroundTaskManager {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9800005 - Background task verification failed.
-     * @throws { BusinessError } 9800006 - Notification verification failed.
-     * @throws { BusinessError } 9800007 - Task storage failed.
+     * @throws { BusinessError } 9800005 - Continuous task verification failed.
+     * @throws { BusinessError } 9800006 - Notification verification failed for a continuous task.
+     * @throws { BusinessError } 9800007 - Continuous task storage failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.ContinuousTask
      * @since 9
      */
@@ -270,11 +270,11 @@ declare namespace backgroundTaskManager {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
      * @throws { BusinessError } 9800001 - Memory operation failed.
      * @throws { BusinessError } 9800002 - Parcel operation failed.
-     * @throws { BusinessError } 9800003 - Inner transact failed.
+     * @throws { BusinessError } 9800003 - Internal transaction failed.
      * @throws { BusinessError } 9800004 - System service operation failed.
-     * @throws { BusinessError } 9800005 - Background task verification failed.
-     * @throws { BusinessError } 9800006 - Notification verification failed.
-     * @throws { BusinessError } 9800007 - Task storage failed.
+     * @throws { BusinessError } 9800005 - Continuous task verification failed.
+     * @throws { BusinessError } 9800006 - Notification verification failed for a continuous task.
+     * @throws { BusinessError } 9800007 - Continuous task storage failed.
      * @syscap SystemCapability.ResourceSchedule.BackgroundTaskManager.ContinuousTask
      * @since 9
      */

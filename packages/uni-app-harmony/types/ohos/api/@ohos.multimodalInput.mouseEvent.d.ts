@@ -195,14 +195,14 @@ export declare enum Axis {
 export declare interface AxisValue {
     /**
      * Axis type
-     *
+     * @type { Axis }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     axis: Axis;
     /**
      * Axis value
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
@@ -255,35 +255,35 @@ export declare enum ToolType {
 export declare interface MouseEvent extends InputEvent {
     /**
      * Mouse event action
-     *
+     * @type { Action }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     action: Action;
     /**
      * X coordinate of the mouse pointer on the screen
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     screenX: number;
     /**
      * Y coordinate of the mouse pointer on the screen
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     screenY: number;
     /**
      * X coordinate of the mouse pointer in the window
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     windowX: number;
     /**
      * Y coordinate of the mouse pointer in the window
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
@@ -291,14 +291,14 @@ export declare interface MouseEvent extends InputEvent {
     /**
      * X axis offset relative to the previous reported mouse pointer position. When the mouse pointer is at
      * the edge of the screen, the value may be less than the difference of the X coordinate reported twice.
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     rawDeltaX: number;
     /**
      * Y axis offset relative to the previous reported mouse pointer position
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
@@ -312,42 +312,42 @@ export declare interface MouseEvent extends InputEvent {
     button: Button;
     /**
      * Button that is being pressed
-     *
+     * @type { Button[] }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     pressedButtons: Button[];
     /**
      * All axis data contained in the event
-     *
+     * @type { AxisValue[] }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     axes: AxisValue[];
     /**
      * List of pressed keys
-     *
+     * @type { KeyCode[] }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     pressedKeys: KeyCode[];
     /**
      * Whether ctrlKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     ctrlKey: boolean;
     /**
      * Whether altKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     altKey: boolean;
     /**
      * Whether shiftKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
@@ -361,28 +361,28 @@ export declare interface MouseEvent extends InputEvent {
     logoKey: boolean;
     /**
      * Whether fnKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     fnKey: boolean;
     /**
      * Whether capsLock is active
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     capsLock: boolean;
     /**
      * Whether numLock is active
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     numLock: boolean;
     /**
      * Whether scrollLock is active
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */

@@ -251,7 +251,7 @@ declare namespace pasteboard {
      * @param { string } mimeType - indicates MIME type of value, its size cannot be greater than 1024 bytes.
      * @param { ValueType } value - content to be saved.
      * @returns { PasteDataRecord } a new PasteDataRecord object which contains mimeType and value.
-     * @throws { BusinessError } 401 - Possible causes: 1. Mandatory parameters are left unspecified.
+     * @throws { BusinessError } 401 - Possible causes: 1. Mandatory parameters are left unspecified;
      *    2. Incorrect parameters types;
      *    3. Parameter verification failed.
      * @syscap SystemCapability.MiscServices.Pasteboard
@@ -822,7 +822,7 @@ declare namespace pasteboard {
          * Gets record by index in PasteData.
          * @param { number } index - indicates the record index in PasteData.
          * @returns { PasteDataRecord } the record in PasteData with index.
-         * @throws { BusinessError } 401 - Possible causes: 1. Mandatory parameters are left unspecified;
+         * @throws { BusinessError }401 - Possible causes: 1. Mandatory parameters are left unspecified;
          *    2. Incorrect parameters types.
          * @throws { BusinessError } 12900001 - The index is out of the record.
          * @syscap SystemCapability.MiscServices.Pasteboard
@@ -1034,8 +1034,6 @@ declare namespace pasteboard {
         /**
          * Clears the pasteboard.
          * @param { AsyncCallback<void> } callback - the callback of clearData.
-         * @throws { BusinessError } 401 - Possible causes: 1. Mandatory parameters are left unspecified;
-         *    2. Incorrect parameters types.
          * @syscap SystemCapability.MiscServices.Pasteboard
          * @since 7
          * @deprecated since 9
@@ -1094,8 +1092,6 @@ declare namespace pasteboard {
         /**
          * Gets pastedata from the system pasteboard.
          * @param { AsyncCallback<PasteData> } callback - the callback of getData.
-         * @throws { BusinessError } 401 - Possible causes: 1. Mandatory parameters are left unspecified;
-         *    2. Incorrect  parameters types.
          * @syscap SystemCapability.MiscServices.Pasteboard
          * @since 6
          * @deprecated since 9
@@ -1286,7 +1282,7 @@ declare namespace pasteboard {
          * Writes PasteData to the system pasteboard.
          * @param { PasteData } data - PasteData will be written to the clipboard
          * @param { AsyncCallback<void> } callback - the callback of setData.
-         * @throws { BusinessError } 401 - Possible causes: 1. Mandatory parameters are left unspecified;
+         * @throws { BusinessError } 401 - Possible causes: 1. Mandatory parameters are left unspecified.
          *    2. Incorrect parameters types.
          * @throws { BusinessError } 12900003 - Another copy or paste is in progress.
          * @throws { BusinessError } 12900004 - Replication is prohibited.

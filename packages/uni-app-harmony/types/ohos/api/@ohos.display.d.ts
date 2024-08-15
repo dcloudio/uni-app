@@ -823,7 +823,11 @@ declare namespace display {
          * @since 7
          */
         /**
-         * Rotation degrees of the display.
+         * An enumeration value for rotation degrees of the display.
+         * The value 0 indicates that the screen of the display rotates clockwise by 0°.
+         * The value 1 indicates that the screen of the display rotates clockwise by 90°.
+         * The value 2 indicates that the screen of the display rotates clockwise by 180°.
+         * The value 3 indicates that the screen of the display rotates clockwise by 270°.
          *
          * @syscap SystemCapability.WindowManager.WindowManager.Core
          * @atomicservice

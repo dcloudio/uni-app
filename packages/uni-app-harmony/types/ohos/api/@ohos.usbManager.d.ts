@@ -40,7 +40,7 @@ declare namespace usbManager {
      * @throws { BusinessError } 401 - Parameter error. Possible causes:
      * <br>1.Mandatory parameters are left unspecified.
      * <br>2.Incorrect parameter types.
-     * @throws { BusinessError } 14400001 - Permission denied. Need call requestRight to get permission.
+     * @throws { BusinessError } 14400001 - Permission denied. Call requestRight to get the permission first.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */

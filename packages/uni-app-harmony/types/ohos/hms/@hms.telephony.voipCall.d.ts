@@ -465,7 +465,7 @@ declare namespace voipCall {
          */
         AUDIO_EVENT_SPEAKER_ON = 2,
         /**
-         * Indicates the event of speaker on
+         * Indicates the event of speaker off
          *
          * @syscap SystemCapability.Telephony.VoipCallManager
          * @since 5.0.0(12)

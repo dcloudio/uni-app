@@ -42,7 +42,7 @@ declare namespace walletTransitCard {
          * @param { string } callerToken? - Authentication JWT token of the mini program in Wechat, Alipay, and the like.
          * @returns { Promise<CardMetadataInDevice[]> } - Returns the array of CardMetadataInDevice objects, each of which contains the device information and
          * the metadata of every card.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: Parameter verification failed.
          * @throws { BusinessError } 1010200001 - No permission to access the Wallet APIs.
          * @throws { BusinessError } 1010200002 - Wallet app not found.
          * @throws { BusinessError } 1010200003 - The environment of the wallet is not ready.
@@ -62,7 +62,7 @@ declare namespace walletTransitCard {
          * @param { string } callerToken? - Authentication JWT token of the mini program in Wechat, Alipay, and the like.
          * @param { string } specifiedDeviceId - ID of the device where the card exists.
          * @returns { Promise<TransitCardInfo> } - Returns the transit card information.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: Parameter verification failed.
          * @throws { BusinessError } 1010200001 - No permission to access the Wallet APIs.
          * @throws { BusinessError } 1010200002 - Wallet app not found.
          * @throws { BusinessError } 1010200003 - The environment of the wallet is not ready.
@@ -83,7 +83,7 @@ declare namespace walletTransitCard {
          * @param { string } issuerId - ID of the issuer of the card. The value is from CardMetadata in CardMetadataInDevice.
          * @param { string } specifiedDeviceId - ID of the device where the card will be added. The value is from CardMetadataInDevice.
          * @returns { Promise<string> } - Returns a token for adding the card.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: Parameter verification failed.
          * @throws { BusinessError } 1010200001 - No permission to access the Wallet APIs.
          * @throws { BusinessError } 1010200002 - Wallet app not found.
          * @throws { BusinessError } 1010200003 - The environment of the wallet is not ready.
@@ -94,6 +94,7 @@ declare namespace walletTransitCard {
          * @throws { BusinessError } 1010200010 - Network connection error.
          * @throws { BusinessError } 1010200013 - Operation failed because of an internal error.
          * @throws { BusinessError } 1010200014 - The Wallet APIs can be called by the device owner only.
+         * @throws { BusinessError } 1010200016 - This card is not available for the current country or region.
          * @throws { BusinessError } 1010210201 - The device does not support adding the card specified by issuerId.
          * @throws { BusinessError } 1010210202 - A card conflicting with the specified card already exists in the device.
          * @throws { BusinessError } 1010210203 - The specified card already exists.
@@ -111,11 +112,12 @@ declare namespace walletTransitCard {
          * privacy agreement of Wallet and log in with a Huawei ID.
          *
          * @returns { Promise<void> } - Promise that returns no value.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: Parameter verification failed.
          * @throws { BusinessError } 1010200014 - The Wallet APIs can be called by the device owner only.
          * @throws { BusinessError } 1010200002 - Wallet app not found.
          * @throws { BusinessError } 1010200011 - Failed to initialize the environment.
          * @throws { BusinessError } 1010200013 - Operation failed because of an internal error.
+         * @throws { BusinessError } 1010200017 - The Wallet app was closed by the user.
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -127,11 +129,13 @@ declare namespace walletTransitCard {
          * @param { string } addCardOpaqueData - Result of the function canAddTransitCard.
          * @param { string } serverOrderId - Order ID generated in the service provider's backend server for the card addition business.
          * @returns { Promise<CardMetadata> } - Returns the card metadata.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: Parameter verification failed.
          * @throws { BusinessError } 1010200001 - No permission to access the Wallet APIs.
          * @throws { BusinessError } 1010200010 - Network connection error.
          * @throws { BusinessError } 1010200013 - Operation failed because of an internal error.
          * @throws { BusinessError } 1010200014 - The Wallet APIs can be called by the device owner only.
+         * @throws { BusinessError } 1010200016 - This card is not available for the current country or region.
+         * @throws { BusinessError } 1010200017 - The Wallet app was closed by the user.
          * @throws { BusinessError } 1010210301 - The card adding conditions are not met. The order can be refunded to end the card addition process.
          * @throws { BusinessError } 1010210319 - Failed to add the card.
          * @syscap SystemCapability.Payment.Wallet
@@ -146,7 +150,7 @@ declare namespace walletTransitCard {
          * @param { string } specifiedDeviceId - ID of the device where the card exists.
          * @param { string } serverOrderId - Order ID generated in the service provider's backend server for the balance recharging service.
          * @returns { Promise<number> } - Returns the new balance.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: Parameter verification failed.
          * @throws { BusinessError } 1010200001 - No permission to access the Wallet APIs.
          * @throws { BusinessError } 1010200002 - Wallet app not found.
          * @throws { BusinessError } 1010200003 - The environment of the wallet is not ready.
@@ -169,7 +173,7 @@ declare namespace walletTransitCard {
          * @param { string } specifiedDeviceId - ID of the device where the card exists.
          * @param { string } serverOrderId - Order ID generated in the service provider's backend server for the card data update service.
          * @returns { Promise<void> } - Promise that returns no value.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: Parameter verification failed.
          * @throws { BusinessError } 1010200001 - No permission to access the Wallet APIs.
          * @throws { BusinessError } 1010200002 - Wallet app not found.
          * @throws { BusinessError } 1010200003 - The environment of the wallet is not ready.
@@ -192,7 +196,7 @@ declare namespace walletTransitCard {
          * @param { string } specifiedDeviceId - ID of the device where the card exists.
          * @param { string } serverOrderId - Order ID generated in the service provider's backend server for the card deletion service.
          * @returns { Promise<void> } - Promise that returns no value.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: Parameter verification failed.
          * @throws { BusinessError } 1010200001 - No permission to access the Wallet APIs.
          * @throws { BusinessError } 1010200002 - Wallet app not found.
          * @throws { BusinessError } 1010200003 - The environment of the wallet is not ready.
@@ -210,6 +214,7 @@ declare namespace walletTransitCard {
     /**
      * Describes the metadata of a card.
      *
+     * @typedef CardMetadata
      * @syscap SystemCapability.Payment.Wallet
      * @atomicservice
      * @since 5.0.0(12)
@@ -218,6 +223,7 @@ declare namespace walletTransitCard {
         /**
          * ID of the issuer of the card.
          *
+         * @type { string }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -226,6 +232,7 @@ declare namespace walletTransitCard {
         /**
          * Applet ID for the card in the SE chip.
          *
+         * @type { string }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -234,6 +241,7 @@ declare namespace walletTransitCard {
         /**
          * Serial number of the card. It is mandatory only when a transit card exists in the device.
          *
+         * @type { ?string }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -242,6 +250,7 @@ declare namespace walletTransitCard {
         /**
          * Card number displayed. It is mandatory only when a transit card exists in the device.
          *
+         * @type { ?string }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -250,6 +259,7 @@ declare namespace walletTransitCard {
         /**
          * Balance of the card. It is mandatory only when a transit card exists in the device.
          *
+         * @type { ?number }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -259,6 +269,7 @@ declare namespace walletTransitCard {
     /**
      * Describes the card metadata in the device.
      *
+     * @typedef CardMetadataInDevice
      * @syscap SystemCapability.Payment.Wallet
      * @atomicservice
      * @since 5.0.0(12)
@@ -267,6 +278,7 @@ declare namespace walletTransitCard {
         /**
          * Device ID, which is used by the developer.
          *
+         * @type { string }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -275,6 +287,7 @@ declare namespace walletTransitCard {
         /**
          * Device type.
          *
+         * @type { DeviceType }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -283,6 +296,7 @@ declare namespace walletTransitCard {
         /**
          * Device name displayed.
          *
+         * @type { string }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -291,6 +305,7 @@ declare namespace walletTransitCard {
         /**
          * Array holding the metadata of every card supported by the device.
          *
+         * @type { CardMetadata[] }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -300,6 +315,7 @@ declare namespace walletTransitCard {
     /**
      * Describes the transit card information.
      *
+     * @typedef TransitCardInfo
      * @syscap SystemCapability.Payment.Wallet
      * @atomicservice
      * @since 5.0.0(12)
@@ -308,6 +324,7 @@ declare namespace walletTransitCard {
         /**
          * Card number displayed.
          *
+         * @type { string }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -316,6 +333,7 @@ declare namespace walletTransitCard {
         /**
          * Card data customized by the service provider.
          *
+         * @type { ?string }
          * @syscap SystemCapability.Payment.Wallet
          * @atomicservice
          * @since 5.0.0(12)
@@ -325,6 +343,7 @@ declare namespace walletTransitCard {
     /**
      * Enumerates the device types.
      *
+     * @enum { number }
      * @syscap SystemCapability.Payment.Wallet
      * @atomicservice
      * @since 5.0.0(12)

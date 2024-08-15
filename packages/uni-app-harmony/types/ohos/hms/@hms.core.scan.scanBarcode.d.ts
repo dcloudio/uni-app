@@ -117,7 +117,7 @@ declare namespace scanBarcode {
     }
     /**
      * Point parameter.
-     * @typedef point
+     * @typedef Point
      * @syscap SystemCapability.Multimedia.Scan.ScanBarcode
      * @since 5.0.0(12)
      */
@@ -238,6 +238,19 @@ declare namespace scanBarcode {
      * @atomicservice
      * @since 4.1.0(11)
      */
+    /**
+     * Bring up the scanning UI to scan barcodes.
+     * Note: This function must be called in the ArkUI page context.
+     * @param { common.Context } context - The context of an ability.
+     * @param { AsyncCallback<ScanResult> } callback - The callback used to return scan result of startScanForResult.
+     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 1000500001 - Internal error.
+     * @throws { BusinessError } 1000500002 - The user canceled the barcode scanning.
+     * @syscap SystemCapability.Multimedia.Scan.ScanBarcode
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
     function startScanForResult(context: common.Context, callback: AsyncCallback<ScanResult>): void;
     /**
      * Bring up the scanning UI to scan barcodes.
@@ -252,6 +265,20 @@ declare namespace scanBarcode {
      * @atomicservice
      * @since 4.1.0(11)
      */
+    /**
+     * Bring up the scanning UI to scan barcodes.
+     * Note: This function must be called in the ArkUI page context.
+     * @param { common.Context } context - The context of an ability.
+     * @param { ScanOptions } options - Option for start scan.
+     * @param { AsyncCallback<ScanResult> } callback - The callback used to return scan result of startScanForResult.
+     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 1000500001 - Internal error.
+     * @throws { BusinessError } 1000500002 - The user canceled the barcode scanning.
+     * @syscap SystemCapability.Multimedia.Scan.ScanBarcode
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
     function startScanForResult(context: common.Context, options: ScanOptions, callback: AsyncCallback<ScanResult>): void;
     /**
      * Bring up the scanning UI to scan barcodes.
@@ -265,6 +292,20 @@ declare namespace scanBarcode {
      * @stagemodelonly
      * @atomicservice
      * @since 4.1.0(11)
+     */
+    /**
+     * Bring up the scanning UI to scan barcodes.
+     * Note: The function must be called in the ArkUI page context.
+     * @param { common.Context } context - The context of an ability.
+     * @param { ScanOptions } options - Option for start scan.
+     * @returns { Promise<ScanResult> } The scan result returned by the function.
+     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 1000500001 - Internal error.
+     * @throws { BusinessError } 1000500002 - The user canceled the barcode scanning.
+     * @syscap SystemCapability.Multimedia.Scan.ScanBarcode
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
      */
     function startScanForResult(context: common.Context, options?: ScanOptions): Promise<ScanResult>;
 }

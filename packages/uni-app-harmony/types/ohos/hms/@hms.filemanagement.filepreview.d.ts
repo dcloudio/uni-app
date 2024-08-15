@@ -6,6 +6,7 @@
  * @kit PreviewKit
  */
 import type { AsyncCallback } from '@ohos.base';
+import type Context from '@ohos.inner.application.Context';
 /**
  * This module provides the capability to preview the file.
  * @namespace filePreview
@@ -19,7 +20,7 @@ declare namespace filePreview {
      *
      * @param { Context } context - context.
      * @param { PreviewInfo } file - file information.
-     * @param { DisplayInfo } info - window display rect.
+     * @param { DisplayInfo } [ info ] - window display rect.
      * @returns { Promise<void> } The promise returned by the function.
      * @throws { BusinessError } 401 - invalid input parameter.
      * @syscap SystemCapability.FileManagement.FilePreview.Core
@@ -39,13 +40,13 @@ declare namespace filePreview {
      * @atomicservice
      * @since 4.1.0(11)
      */
-    function openPreview(context: Context, file: PreviewInfo, info?: DisplayInfo, callback: AsyncCallback<void>): void;
+    function openPreview(context: Context, file: PreviewInfo, info: DisplayInfo, callback: AsyncCallback<void>): void;
     /**
      * Multiple file open preview. Only valid on mobile. Repeated opening within 1 second is invalid.
      *
      * @param { Context } context - context.
      * @param { Array<PreviewInfo> } files - Preview file list.
-     * @param { number } index - index of select file. Default is zero.
+     * @param { number } [ index ] - index of select file. Default is zero.
      * @returns { Promise<void> } The promise returned by the function.
      * @throws { BusinessError } 401 - invalid input parameter.
      * @throws { BusinessError } 801 - Capability not supported.
@@ -126,6 +127,7 @@ declare namespace filePreview {
      * load data when the preview window already existed. Repeated opening within 100 milliseconds is invalid.
      *
      * @param { Context } context - context.
+     * @param { PreviewInfo } file - file information.
      * @returns { Promise<void> } The promise returned by the function.
      * @throws { BusinessError } 401 - invalid input parameter.
      * @syscap SystemCapability.FileManagement.FilePreview.Core
@@ -137,6 +139,7 @@ declare namespace filePreview {
      * load data when the preview window already existed. Repeated opening within 100 milliseconds is invalid.
      *
      * @param { Context } context - context.
+     * @param { PreviewInfo } file - file information.
      * @param { AsyncCallback<boolean> } callback - The callback of the canPreview.
      * @throws { BusinessError } 401 - invalid input parameter.
      * @syscap SystemCapability.FileManagement.FilePreview.Core
@@ -149,7 +152,7 @@ declare namespace filePreview {
      *
      * @param { Context } context - context.
      * @param { Array<PreviewInfo> } files - Preview file list.
-     * @param { number } index - index of select file. Default is zero.
+     * @param { number } [ index ] - index of select file. Default is zero.
      * @returns { Promise<void> } The promise returned by the function.
      * @throws { BusinessError } 401 - invalid input parameter.
      * @throws { BusinessError } 801 - Capability not supported.

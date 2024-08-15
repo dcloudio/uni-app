@@ -29,7 +29,6 @@ declare namespace healthService {
          *
          * @returns { Promise<ActivityReport> } Result of today's total sport record and goals.
          * @throws { BusinessError } 201 - Permission verification failed.
-         * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 14500101 - Service exception.
          * @syscap SystemCapability.Health.HealthService
          * @atomicservice
@@ -48,6 +47,7 @@ declare namespace healthService {
             /**
              * Indicates the value of today's total steps.
              *
+             * @type { number }
              * @syscap SystemCapability.Health.HealthService
              * @atomicservice
              * @since 5.0.0(12)
@@ -56,6 +56,7 @@ declare namespace healthService {
             /**
              * Indicates the value of today's total step goals.
              *
+             * @type { ?number }
              * @syscap SystemCapability.Health.HealthService
              * @atomicservice
              * @since 5.0.0(12)
@@ -64,6 +65,7 @@ declare namespace healthService {
             /**
              * Indicates the value of today's total active calories.
              *
+             * @type { number }
              * @syscap SystemCapability.Health.HealthService
              * @atomicservice
              * @since 5.0.0(12)
@@ -72,6 +74,7 @@ declare namespace healthService {
             /**
              * Indicates the value of today's total active calories goals.
              *
+             * @type { ?number }
              * @syscap SystemCapability.Health.HealthService
              * @atomicservice
              * @since 5.0.0(12)
@@ -81,6 +84,7 @@ declare namespace healthService {
              * Indicates the value of today's total exercise duration.
              * Intensity is the cumulative amount of moderate to high-intensity exercise in a day.
              *
+             * @type { number }
              * @syscap SystemCapability.Health.HealthService
              * @atomicservice
              * @since 5.0.0(12)
@@ -89,6 +93,7 @@ declare namespace healthService {
             /**
              * Indicates the value of today's total exercise duration goals.
              *
+             * @type { ?number }
              * @syscap SystemCapability.Health.HealthService
              * @atomicservice
              * @since 5.0.0(12)
@@ -98,6 +103,7 @@ declare namespace healthService {
              * Indicates the value of today's total active hours.
              * Active hours are the number of hours when standing up for at least 1 minute.
              *
+             * @type { number }
              * @syscap SystemCapability.Health.HealthService
              * @atomicservice
              * @since 5.0.0(12)
@@ -107,6 +113,7 @@ declare namespace healthService {
              * Indicates the value of today's total active hours goals.
              * Active hours are the number of hours when standing up for at least 1 minute.
              *
+             * @type { ?number }
              * @syscap SystemCapability.Health.HealthService
              * @atomicservice
              * @since 5.0.0(12)

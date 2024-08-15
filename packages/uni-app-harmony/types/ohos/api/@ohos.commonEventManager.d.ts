@@ -282,6 +282,7 @@ declare namespace commonEventManager {
     export enum Support {
         /**
          * This commonEvent means when the device is booted or system upgrade completed, and only be sent by system.
+         * This API can be called only by system applications.
          *
          * @syscap SystemCapability.Notification.CommonEvent
          * @since 9
@@ -610,6 +611,7 @@ declare namespace commonEventManager {
          * Remind new user of that the service has been switched to new user.
          *
          * @syscap SystemCapability.Notification.CommonEvent
+         * This API can be called only by system applications.
          * @since 9
          */
         COMMON_EVENT_USER_SWITCHED = 'usual.event.USER_SWITCHED',
@@ -617,6 +619,7 @@ declare namespace commonEventManager {
          * Remind new user of that the service has been starting.
          *
          * @syscap SystemCapability.Notification.CommonEvent
+         * This API can be called only by system applications.
          * @since 9
          */
         COMMON_EVENT_USER_STARTING = 'usual.event.USER_STARTING',
@@ -631,6 +634,7 @@ declare namespace commonEventManager {
          * Remind new user of that the service has been stopping.
          *
          * @syscap SystemCapability.Notification.CommonEvent
+         * This API can be called only by system applications.
          * @since 9
          */
         COMMON_EVENT_USER_STOPPING = 'usual.event.USER_STOPPING',
@@ -1114,6 +1118,7 @@ declare namespace commonEventManager {
          * User added.
          *
          * @syscap SystemCapability.Notification.CommonEvent
+         * This API can be called only by system applications.
          * @since 9
          */
         COMMON_EVENT_USER_ADDED = 'usual.event.USER_ADDED',
@@ -1121,6 +1126,7 @@ declare namespace commonEventManager {
          * User removed.
          *
          * @syscap SystemCapability.Notification.CommonEvent
+         * This API can be called only by system applications.
          * @since 9
          */
         COMMON_EVENT_USER_REMOVED = 'usual.event.USER_REMOVED',
@@ -1341,6 +1347,7 @@ declare namespace commonEventManager {
         /**
          * The external storage was removed.
          * This is a protected common event that can only be sent by system.
+         * This API can be called only by system applications.
          *
          * @syscap SystemCapability.Notification.CommonEvent
          * @since 9
@@ -1349,6 +1356,7 @@ declare namespace commonEventManager {
         /**
          * The external storage was unmounted.
          * This is a protected common event that can only be sent by system.
+         * This API can be called only by system applications.
          *
          * @syscap SystemCapability.Notification.CommonEvent
          * @since 9
@@ -1357,6 +1365,7 @@ declare namespace commonEventManager {
         /**
          * The external storage was mounted.
          * This is a protected common event that can only be sent by system.
+         * This API can be called only by system applications.
          *
          * @syscap SystemCapability.Notification.CommonEvent
          * @since 9
@@ -1365,6 +1374,7 @@ declare namespace commonEventManager {
         /**
          * The external storage was bad removal.
          * This is a protected common event that can only be sent by system.
+         * This API can be called only by system applications.
          *
          * @syscap SystemCapability.Notification.CommonEvent
          * @since 9
@@ -1373,6 +1383,7 @@ declare namespace commonEventManager {
         /**
          * The external storage was eject.
          * This is a protected common event that can only be sent by system.
+         * This API can be called only by system applications.
          *
          * @syscap SystemCapability.Notification.CommonEvent
          * @since 9
@@ -1391,6 +1402,7 @@ declare namespace commonEventManager {
          * This is a protected common event that can only be sent by system.
          *
          * @syscap SystemCapability.Notification.CommonEvent
+         * This API can be called only by system applications.
          * @since 9
          */
         COMMON_EVENT_ACCOUNT_DELETED = 'usual.event.data.ACCOUNT_DELETED',
@@ -1427,6 +1439,7 @@ declare namespace commonEventManager {
         /**
          * The notification slot has been updated.
          * This is a protected common event that can only be sent by system.
+         * This API can be called only by system applications.
          *
          * @syscap SystemCapability.Notification.CommonEvent
          * @since 9
@@ -1567,7 +1580,16 @@ declare namespace commonEventManager {
          * @atomicservice
          * @since 12
          */
-        COMMON_EVENT_MINORSMODE_OFF = 'usual.event.MINORSMODE_OFF'
+        COMMON_EVENT_MINORSMODE_OFF = 'usual.event.MINORSMODE_OFF',
+        /**
+         * This common event means that datashare is ready.
+         * This is a protected common event that can only be sent by system.
+         *
+         * @syscap SystemCapability.Notification.CommonEvent
+         * @atomicservice
+         * @since 12
+         */
+        COMMON_EVENT_DATA_SHARE_READY = 'usual.event.DATA_SHARE_READY'
     }
     /**
      * Describes the data of the common event

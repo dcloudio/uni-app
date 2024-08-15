@@ -109,7 +109,7 @@ declare namespace abilityAccessCtrl {
          * @param { Permissions } permissionName - Name of the permission to be verified.
          * @returns { GrantStatus } Returns permission verify result.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The tokenID is 0, or the string size of permissionName is larger than 256.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The tokenID is 0, or the permissionName exceeds 256 characters.
          * @syscap SystemCapability.Security.AccessToken
          * @since 9
          */
@@ -121,7 +121,7 @@ declare namespace abilityAccessCtrl {
          * @param { Permissions } permissionName - Name of the permission to be verified.
          * @returns { Promise<GrantStatus> } Returns permission verify result.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The tokenID is 0, or the string size of permissionName is larger than 256.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The tokenID is 0, or the permissionName exceeds 256 characters.
          * @syscap SystemCapability.Security.AccessToken
          * @since 9
          */
@@ -133,7 +133,7 @@ declare namespace abilityAccessCtrl {
          * @param { Permissions } permissionName - Name of the permission to be verified.
          * @returns { Promise<GrantStatus> } Returns permission verify result.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The tokenID is 0, or the string size of permissionName is larger than 256.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The tokenID is 0, or the permissionName exceeds 256 characters.
          * @syscap SystemCapability.Security.AccessToken
          * @crossplatform
          * @since 10
@@ -146,7 +146,7 @@ declare namespace abilityAccessCtrl {
          * @param { Permissions } permissionName - Name of the permission to be verified.
          * @returns { Promise<GrantStatus> } Returns permission verify result.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The tokenID is 0, or the string size of permissionName is larger than 256.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The tokenID is 0, or the permissionName exceeds 256 characters.
          * @syscap SystemCapability.Security.AccessToken
          * @crossplatform
          * @atomicservice
@@ -161,7 +161,7 @@ declare namespace abilityAccessCtrl {
          * @param { Permissions } permissionName - Name of the permission to be verified.
          * @returns { GrantStatus } Returns permission verify result.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The tokenID is 0, or the string size of permissionName is larger than 256.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The tokenID is 0, or the permissionName exceeds 256 characters.
          * @syscap SystemCapability.Security.AccessToken
          * @crossplatform
          * @since 10
@@ -174,7 +174,7 @@ declare namespace abilityAccessCtrl {
          * @param { Permissions } permissionName - Name of the permission to be verified.
          * @returns { GrantStatus } Returns permission verify result.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The tokenID is 0, or the string size of permissionName is larger than 256.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The tokenID is 0, or the permissionName exceeds 256 characters.
          * @syscap SystemCapability.Security.AccessToken
          * @crossplatform
          * @atomicservice
@@ -189,7 +189,7 @@ declare namespace abilityAccessCtrl {
          * @param { Array<Permissions> } permissionList - Indicates the list of permissions to be requested. This parameter cannot be null or empty.
          * @param { AsyncCallback<PermissionRequestResult> } requestCallback Callback for the result from requesting permissions.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The context is invalid when it does not belong to the application itself.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The context is invalid when it does not belong to the application itself.
          * @syscap SystemCapability.Security.AccessToken
          * @stagemodelonly
          * @since 9
@@ -202,7 +202,7 @@ declare namespace abilityAccessCtrl {
          * @param { Array<Permissions> } permissionList - Indicates the list of permissions to be requested. This parameter cannot be null or empty.
          * @param { AsyncCallback<PermissionRequestResult> } requestCallback Callback for the result from requesting permissions.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The context is invalid when it does not belong to the application itself.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The context is invalid when it does not belong to the application itself.
          * @syscap SystemCapability.Security.AccessToken
          * @stagemodelonly
          * @crossplatform
@@ -216,7 +216,7 @@ declare namespace abilityAccessCtrl {
          * @param { Array<Permissions> } permissionList - Indicates the list of permissions to be requested. This parameter cannot be null or empty.
          * @param { AsyncCallback<PermissionRequestResult> } requestCallback Callback for the result from requesting permissions.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The context is invalid when it does not belong to the application itself.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The context is invalid when it does not belong to the application itself.
          * @syscap SystemCapability.Security.AccessToken
          * @stagemodelonly
          * @crossplatform
@@ -232,7 +232,7 @@ declare namespace abilityAccessCtrl {
          * @param { Array<Permissions> } permissionList - Indicates the list of permissions to be requested. This parameter cannot be null or empty.
          * @returns { Promise<PermissionRequestResult> } Returns result of requesting permissions.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The context is invalid when it does not belong to the application itself.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The context is invalid when it does not belong to the application itself.
          * @syscap SystemCapability.Security.AccessToken
          * @stagemodelonly
          * @since 9
@@ -245,7 +245,7 @@ declare namespace abilityAccessCtrl {
          * @param { Array<Permissions> } permissionList - Indicates the list of permissions to be requested. This parameter cannot be null or empty.
          * @returns { Promise<PermissionRequestResult> } Returns result of requesting permissions.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The context is invalid when it does not belong to the application itself.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The context is invalid when it does not belong to the application itself.
          * @syscap SystemCapability.Security.AccessToken
          * @stagemodelonly
          * @crossplatform
@@ -259,7 +259,7 @@ declare namespace abilityAccessCtrl {
          * @param { Array<Permissions> } permissionList - Indicates the list of permissions to be requested. This parameter cannot be null or empty.
          * @returns { Promise<PermissionRequestResult> } Returns result of requesting permissions.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
-         * @throws { BusinessError } 12100001 - Invalid Parameter. The context is invalid when it does not belong to the application itself.
+         * @throws { BusinessError } 12100001 - Invalid parameter. The context is invalid when it does not belong to the application itself.
          * @syscap SystemCapability.Security.AccessToken
          * @stagemodelonly
          * @crossplatform

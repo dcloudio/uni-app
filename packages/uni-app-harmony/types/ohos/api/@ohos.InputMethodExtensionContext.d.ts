@@ -69,6 +69,8 @@ export default class InputMethodExtensionContext extends ExtensionContext {
      * @throws { BusinessError } 16000053 - The ability is not on the top of the UI.
      * @throws { BusinessError } 16000055 - Installation-free timed out.
      * @throws { BusinessError } 16000061 - Can not start component belongs to other bundle.
+     * @throws { BusinessError } 16000069 - The extension cannot start the third party application.
+     * @throws { BusinessError } 16000070 - The extension cannot start the service.
      * @throws { BusinessError } 16200001 - The caller has been released.
      * @syscap SystemCapability.MiscServices.InputMethodFramework
      * @StageModelOnly

@@ -592,6 +592,7 @@ declare namespace i18n {
          * @throws { BusinessError } 890001 - Invalid parameter. Possible causes: Parameter verification failed.
          * @static
          * @syscap SystemCapability.Global.I18n
+         * @crossplatform
          * @atomicservice
          * @since 12
          */

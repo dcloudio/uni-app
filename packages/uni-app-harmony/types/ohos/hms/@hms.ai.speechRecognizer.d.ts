@@ -213,7 +213,7 @@ declare namespace speechRecognizer {
     export interface CreateEngineParams {
         /**
          * Indicates language info of the recognition.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
@@ -221,14 +221,14 @@ declare namespace speechRecognizer {
         /**
          * Indicates module type of the recognition.
          * The value 0 indicates online, value 1 indicates offline.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         online: number;
         /**
          * Indicates entity info of the speech.
-         *
+         * @type {?Record<string, Object>}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
@@ -244,14 +244,14 @@ declare namespace speechRecognizer {
     export interface LanguageQuery {
         /**
          * Indicates session ID of the recognition.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         sessionId: string;
         /**
          * Indicates entity info of the recognition.
-         *
+         * @type {?Record<string, Object>}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
@@ -267,21 +267,21 @@ declare namespace speechRecognizer {
     export interface StartParams {
         /**
          * Indicates session ID of the recognition.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         sessionId: string;
         /**
          * Indicates audio information of the recognition.
-         *
+         * @type {AudioInfo}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         audioInfo: AudioInfo;
         /**
          * Indicates entity info of the recognition.
-         *
+         * @type {?Record<string, Object>}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
@@ -297,35 +297,35 @@ declare namespace speechRecognizer {
     export interface AudioInfo {
         /**
          * Indicates audio type of the recognition.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         audioType: string;
         /**
          * Indicates sample rate of the recognition.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         sampleRate: number;
         /**
          * Indicates sound channel of the recognition.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         soundChannel: number;
         /**
          * Indicates sample bit of the recognition.
-         *
+         * @type {number}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         sampleBit: number;
         /**
          * Indicates entity info of the recognition.
-         *
+         * @type {?Record<string, Object>}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
@@ -342,7 +342,7 @@ declare namespace speechRecognizer {
         /**
          * Indicates whether it is the final result of this sentence.
          * The value true indicates the result is the final result of this sentence.
-         *
+         * @type {boolean}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
@@ -350,14 +350,14 @@ declare namespace speechRecognizer {
         /**
          * Indicates whether it is the result of the last sentence.
          * The value true indicates the result is the final result of this sentence.
-         *
+         * @type {boolean}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */
         isLast: boolean;
         /**
          * Indicates the optimal result of recognition.
-         *
+         * @type {string}
          * @syscap SystemCapability.AI.SpeechRecognizer
          * @since 4.1.0(11)
          */

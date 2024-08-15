@@ -17,6 +17,7 @@
  * @kit InputKit
  */
 import { ActionType, FourFingersSwipe, Pinch, Rotate, ThreeFingersSwipe, ThreeFingersTap } from '@ohos.multimodalInput.gestureEvent';
+import infraredEmitter from '@ohos.multimodalInput.infraredEmitter';
 import inputDevice from '@ohos.multimodalInput.inputDevice';
 import inputDeviceCooperate from '@ohos.multimodalInput.inputDeviceCooperate';
 import { InputEvent } from '@ohos.multimodalInput.inputEvent';
@@ -26,4 +27,4 @@ import { Action, Key, KeyEvent } from '@ohos.multimodalInput.keyEvent';
 import { Action as MouseAction, Axis, AxisValue, Button, MouseEvent, ToolType as MouseToolType } from '@ohos.multimodalInput.mouseEvent';
 import pointer from '@ohos.multimodalInput.pointer';
 import { Action as KeyAction, SourceType, ToolType, Touch, TouchEvent } from '@ohos.multimodalInput.touchEvent';
-export { Action, ActionType, Axis, AxisValue, Button, FourFingersSwipe, InputEvent, IntentionCode, Key, KeyAction, KeyCode, KeyEvent, MouseAction, MouseEvent, MouseToolType, Pinch, Rotate, SourceType, ThreeFingersSwipe, ThreeFingersTap, ToolType, Touch, TouchEvent, inputDevice, inputDeviceCooperate, pointer };
+export { Action, ActionType, Axis, AxisValue, Button, FourFingersSwipe, InputEvent, IntentionCode, Key, KeyAction, KeyCode, KeyEvent, MouseAction, MouseEvent, MouseToolType, Pinch, Rotate, SourceType, ThreeFingersSwipe, ThreeFingersTap, ToolType, Touch, TouchEvent, inputDevice, inputDeviceCooperate, pointer, infraredEmitter };

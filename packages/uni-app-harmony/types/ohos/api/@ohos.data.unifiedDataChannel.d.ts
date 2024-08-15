@@ -71,12 +71,12 @@ declare namespace unifiedDataChannel {
     type GetDelayData = (type: string) => UnifiedData;
     /**
      * Indicates type of value.
-     * @typedef {number | string | image.PixelMap | Want | ArrayBuffer}
+     * @typedef {number | string | boolean | image.PixelMap | Want | ArrayBuffer | object | null | undefined}
      * @syscap SystemCapability.DistributedDataManager.UDMF.Core
      * @atomicservice
      * @since 12
      */
-    type ValueType = number | string | image.PixelMap | Want | ArrayBuffer;
+    type ValueType = number | string | boolean | image.PixelMap | Want | ArrayBuffer | object | null | undefined;
     /**
      * Describe the unified data properties.
      *
@@ -210,8 +210,8 @@ declare namespace unifiedDataChannel {
          * Checks whether there is a specified type of data in DataProperties.
          * @param { string } type - indicates to query data type.
          * @returns { boolean } if having mimeType in UnifiedData returns true, else returns false.
-         * @throws { BusinessError } 401 - Parameter error. Possible causes:1.Mandatory parameters are left unspecified;
-         * <br>2.Incorrect Parameters types.
+         * @throws { BusinessError } 401 - Possible causes: 1. Mandatory parameters are left unspecified;
+         *    2. Incorrect  parameters types.
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
          * @atomicservice
          * @since 12

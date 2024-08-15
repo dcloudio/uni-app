@@ -49,6 +49,21 @@ import type UIAbilityContext from './application/UIAbilityContext';
  * @syscap SystemCapability.Notification.Notification
  * @since 9
  */
+/**
+ * Manages notifications.
+ * <p>Generally, only system applications have permissions on notification subscription and unsubscribe.
+ * You can specify the content of a notification to be published and the content is carried by
+ * {@link NotificationRequest}. A notification ID is unique in an application and must be specified
+ * when using {@link NotificationRequest} to carry the notification content. If a notification
+ * with this ID has been published and you need to use this ID to publish another notification,
+ * the original notification will be updated. In addition, the notification ID can be used to cancel
+ * a notification by calling the {@link #cancel(int)} method.
+ *
+ * @namespace notificationManager
+ * @syscap SystemCapability.Notification.Notification
+ * @crossplatform
+ * @since 12
+ */
 declare namespace notificationManager {
     /**
      * Publishes a notification.
@@ -534,6 +549,17 @@ declare namespace notificationManager {
      */
     function isNotificationEnabled(): Promise<boolean>;
     /**
+     * Checks whether this application allows to publish notifications.
+     *
+     * @returns { boolean } Returned by the function.
+     * @throws { BusinessError } 1600001 - Internal error.
+     * @throws { BusinessError } 1600002 - Marshalling or unmarshalling error.
+     * @throws { BusinessError } 1600003 - Failed to connect to the service.
+     * @syscap SystemCapability.Notification.Notification
+     * @since 12
+     */
+    function isNotificationEnabledSync(): boolean;
+    /**
      * Obtains the number of all active notifications.
      *
      * @param { AsyncCallback<number> } callback - The callback of getActiveNotificationCount.
@@ -681,6 +707,8 @@ declare namespace notificationManager {
      * @syscap SystemCapability.Notification.Notification
      * @crossplatform
      * @since 12
+     * @deprecated since 12
+     * @useinstead requestEnableNotification
      */
     function requestEnableNotification(callback: AsyncCallback<void>): void;
     /**
@@ -754,6 +782,8 @@ declare namespace notificationManager {
      * @syscap SystemCapability.Notification.Notification
      * @crossplatform
      * @since 12
+     * @deprecated since 12
+     * @useinstead requestEnableNotification
      */
     function requestEnableNotification(): Promise<void>;
     /**
@@ -941,6 +971,14 @@ declare namespace notificationManager {
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
+    /**
+     * Describes notification content types.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
+     */
     export enum ContentType {
         /**
          * Normal text notification.
@@ -948,12 +986,26 @@ declare namespace notificationManager {
          * @syscap SystemCapability.Notification.Notification
          * @since 9
          */
+        /**
+         * Normal text notification.
+         *
+         * @syscap SystemCapability.Notification.Notification
+         * @crossplatform
+         * @since 12
+         */
         NOTIFICATION_CONTENT_BASIC_TEXT,
         /**
          * Long text notification.
          *
          * @syscap SystemCapability.Notification.Notification
          * @since 9
+         */
+        /**
+         * Long text notification.
+         *
+         * @syscap SystemCapability.Notification.Notification
+         * @crossplatform
+         * @since 12
          */
         NOTIFICATION_CONTENT_LONG_TEXT,
         /**
@@ -975,6 +1027,13 @@ declare namespace notificationManager {
          *
          * @syscap SystemCapability.Notification.Notification
          * @since 9
+         */
+        /**
+         * Multi-line text notification.
+         *
+         * @syscap SystemCapability.Notification.Notification
+         * @crossplatform
+         * @since 12
          */
         NOTIFICATION_CONTENT_MULTILINE,
         /**
@@ -1060,12 +1119,26 @@ declare namespace notificationManager {
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
+    /**
+     * Describes a normal text notification.
+     *
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
+     */
     export type NotificationBasicContent = _NotificationBasicContent;
     /**
      * Describes notification types.
      *
      * @syscap SystemCapability.Notification.Notification
      * @since 9
+     */
+    /**
+     * Describes notification types.
+     *
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     export type NotificationContent = _NotificationContent;
     /**
@@ -1074,12 +1147,26 @@ declare namespace notificationManager {
      * @syscap SystemCapability.Notification.Notification
      * @since 9
      */
+    /**
+     * Describes a long text notification.
+     *
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
+     */
     export type NotificationLongTextContent = _NotificationLongTextContent;
     /**
      * Describes a multi-line text notification.
      *
      * @syscap SystemCapability.Notification.Notification
      * @since 9
+     */
+    /**
+     * Describes a multi-line text notification.
+     *
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     export type NotificationMultiLineContent = _NotificationMultiLineContent;
     /**
@@ -1101,6 +1188,13 @@ declare namespace notificationManager {
      *
      * @syscap SystemCapability.Notification.Notification
      * @since 9
+     */
+    /**
+     * Defines a NotificationRequest instance.
+     *
+     * @syscap SystemCapability.Notification.Notification
+     * @crossplatform
+     * @since 12
      */
     export type NotificationRequest = _NotificationRequest;
     /**

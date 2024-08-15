@@ -17,13 +17,13 @@ declare struct DocumentScanner {
      * config for document scanner.
      *
      * @type { DocumentScannerConfig }
-     * @default []
      * @syscap SystemCapability.AI.Component.DocScan
      * @atomicservice
      * @since 5.0.0(12)
      */
     scannerConfig: DocumentScannerConfig;
     /**
+     * @type { function }
      * @param { (code: number, saveType: SaveOption, uris: string[]) => void }
      * callback of the listened event, called when the Component is terminated.
      * @syscap SystemCapability.AI.Component.DocScan
@@ -42,7 +42,6 @@ declare struct DocumentScanner {
 /**
  * The class of configuration of document scanner
  *
- * @typedef Configuration
  * @syscap SystemCapability.AI.Component.DocScan
  * @atomicservice
  * @since 5.0.0(12)
@@ -51,7 +50,7 @@ declare class DocumentScannerConfig {
     /**
      * Max number of shots supported.
      *
-     * @type { number }
+     * @type { ?number }
      * @default 1
      * @max 12
      * @min 1
@@ -73,7 +72,7 @@ declare class DocumentScannerConfig {
     /**
      * Whether to support image selection from the gallery.
      *
-     * @type { boolean }
+     * @type { ?boolean }
      * @default true
      * @syscap SystemCapability.AI.Component.DocScan
      * @atomicservice
@@ -83,7 +82,7 @@ declare class DocumentScannerConfig {
     /**
      * Default filter id.
      *
-     * @type { FilterId }
+     * @type { ?FilterId }
      * @default FilterId.STRENGTHEN
      * @syscap SystemCapability.AI.Component.DocScan
      * @atomicservice
@@ -93,7 +92,7 @@ declare class DocumentScannerConfig {
     /**
      * WTabs needed to show to edit the image.
      *
-     * @type { EditTab[] }
+     * @type { ?EditTab[] }
      * @default [All EditTab]
      * @syscap SystemCapability.AI.Component.DocScan
      * @atomicservice
@@ -103,7 +102,7 @@ declare class DocumentScannerConfig {
     /**
      * Default shooting mode, whether automatically or manually.
      *
-     * @type { ShootingMode }
+     * @type { ?ShootingMode }
      * @default ShootingMode.MANUAL
      * @syscap SystemCapability.AI.Component.DocScan
      * @atomicservice
@@ -113,7 +112,7 @@ declare class DocumentScannerConfig {
     /**
      * Whether to show share button in edit page.
      *
-     * @type { boolean }
+     * @type { ?boolean }
      * @default true
      * @syscap SystemCapability.AI.Component.DocScan
      * @atomicservice
@@ -123,7 +122,7 @@ declare class DocumentScannerConfig {
     /**
      * Whether to show share button in edit page.
      *
-     * @type { SaveOption[] }
+     * @type { ?SaveOption[] }
      * @default [All SaveOption]
      * @syscap SystemCapability.AI.Component.DocScan
      * @atomicservice
@@ -133,8 +132,8 @@ declare class DocumentScannerConfig {
     /**
      * Jump directly to the editing page based on the initial image provided.
      *
-     * @type { string[] }
-     * @default []
+     * @type { ?string[] }
+     * @default string[]
      * @syscap SystemCapability.AI.Component.DocScan
      * @atomicservice
      * @since 5.0.0(12)

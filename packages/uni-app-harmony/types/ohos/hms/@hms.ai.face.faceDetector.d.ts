@@ -14,9 +14,16 @@ import type image from '@ohos.multimedia.image';
  * @since 5.0.0(12)
  */
 declare namespace faceDetector {
+    /**
+     * Visual configuration information, including related pictures.
+     * @interface VisionInfo
+     * @syscap SystemCapability.AI.Face.Detector
+     * @since 5.0.0(12)
+     */
     export interface VisionInfo {
         /**
          * Image information to be identified.
+         * @type {image.PixelMap}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
@@ -31,12 +38,14 @@ declare namespace faceDetector {
     export interface FacePoint {
         /**
          * Horizontal coordinates of pixel point.
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly x: number;
         /**
          * The vertical coordinate of the pixel point
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
@@ -51,18 +60,21 @@ declare namespace faceDetector {
     export interface FacePose {
         /**
          * Head-shaped yaw, rotating the object around the Y axis (localRotationY)
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly yaw: number;
         /**
          * Head-shaped pitch, rotating the object around the X axis (localRotationX)
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly pitch: number;
         /**
          * Head-shaped roll, rotating the object around the Z axis (localRotationZ)
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
@@ -77,24 +89,28 @@ declare namespace faceDetector {
     export interface FaceRectangle {
         /**
          * Indicates the horizontal coordinate of the upper left corner of the face rectangle.
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly left: number;
         /**
          * Indicates the vertical coordinate of the upper left corner of the face rectangle.
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly top: number;
         /**
          * width of the face rectangle.
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly width: number;
         /**
          * height of the face rectangle.
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
@@ -110,24 +126,28 @@ declare namespace faceDetector {
     export interface Face {
         /**
          * An array of numbers that represents the face detection results. The value range of each element
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly probability: number;
         /**
          *  detail for FacePose.
+         * @type {FacePose}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly pose: FacePose;
         /**
          *  detail for FaceRectangle.
+         * @type {FaceRectangle}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */
         readonly rect: FaceRectangle;
         /**
          *  detail for FacePoint.
+         * @type {Array<FacePoint>}
          * @syscap SystemCapability.AI.Face.Detector
          * @since 5.0.0(12)
          */

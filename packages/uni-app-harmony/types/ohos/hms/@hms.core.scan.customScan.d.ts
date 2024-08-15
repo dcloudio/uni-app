@@ -104,7 +104,7 @@ declare namespace customScan {
      * @permission ohos.permission.CAMERA
      * @param { ViewControl } viewControl - ViewControl info.
      * @param { AsyncCallback<Array<scanBarcode.ScanResult>> } callback - The callback used to return result of custom scan.
-     * @param { ?AsyncCallback<ScanFrame> } frameCallback - The callback used to return camera frame.
+     * @param { AsyncCallback<ScanFrame> } [frameCallback] - The callback used to return camera frame.
      * @throws { BusinessError } 401 - The parameter check failed.
      * @throws { BusinessError } 1000500001 - Internal error.
      * @syscap SystemCapability.Multimedia.Scan.ScanBarcode
@@ -227,5 +227,15 @@ declare namespace customScan {
      * @since 5.0.0(12)
      */
     function resetFocus(): void;
+    /**
+     * Triggers a rescan.
+     * If the scan result is not your expected one, you can call this API to trigger another scan.
+     * The scan result is returned through the following API:
+     * start(viewControl: ViewControl, callback: AsyncCallback<Array<scanBarcode.ScanResult>>, frameCallback?: AsyncCallback<ScanFrame>)
+     * @throws { BusinessError } 1000500001 - Internal error.
+     * @syscap SystemCapability.Multimedia.Scan.ScanBarcode
+     * @since 5.0.0(12)
+     */
+    function rescan(): void;
 }
 export default customScan;

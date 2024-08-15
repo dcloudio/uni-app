@@ -318,6 +318,15 @@ declare namespace relationalStore {
          * @since 12
          */
         allowRebuild?: boolean;
+        /**
+         * Specifies whether the database opened is read-only.
+         * If isReadOnly is true, other configuration items will become invalid.
+         *
+         * @type { ?boolean }
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        isReadOnly?: boolean;
     }
     /**
      * The cloud sync progress
@@ -510,6 +519,55 @@ declare namespace relationalStore {
          * @since 11
          */
         details: Record<string, TableDetails>;
+    }
+    /**
+     * Defines information about the SQL statements executed.
+     *
+     * @interface SqlExecutionInfo
+     * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+     * @since 12
+     */
+    interface SqlExecutionInfo {
+        /**
+         * Array of SQL statements executed. When the args of batchInsert is too large, there may be more than one SQL.
+         *
+         * @type { Array<string> }
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        sql: Array<string>;
+        /**
+         * Total time used for executing the SQL statements, in μs.
+         *
+         * @type { number }
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        totalTime: number;
+        /**
+         * Maximum time allowed to obtain the SQL file handle, in μs.
+         *
+         * @type { number }
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        waitTime: number;
+        /**
+         * Time used to prepare SQL and args, in μs.
+         *
+         * @type { number }
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        prepareTime: number;
+        /**
+         * Time used to execute the SQL statements, in μs.
+         *
+         * @type { number }
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        executeTime: number;
     }
     /**
      * Describes the {@code RdbStore} type.
@@ -905,7 +963,7 @@ declare namespace relationalStore {
      */
     enum RebuildType {
         /**
-         * The database is not rebuilt.
+         * The database is not rebuilt or repaired.
          *
          * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
          * @since 12
@@ -917,7 +975,14 @@ declare namespace relationalStore {
          * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
          * @since 12
          */
-        REBUILT
+        REBUILT,
+        /**
+         * The database is repaired.
+         *
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        REPAIRED
     }
     /**
      * Manages relational database configurations.
@@ -5393,6 +5458,18 @@ declare namespace relationalStore {
          */
         on(event: 'autoSyncProgress', progress: Callback<ProgressDetails>): void;
         /**
+         * Subscribes to the SQL statistics.
+         * @param { 'statistics' } event - Indicates the event type, which must be 'statistics'.
+         * @param { Callback<SqlExecutionInfo> } observer - Indicates the callback used to return the SQL execution statistics {@link SqlExeInfo} in the database.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
+         * @throws { BusinessError } 801 - Capability not supported.
+         * @throws { BusinessError } 14800000 - Inner error.
+         * @throws { BusinessError } 14800014 - Already closed.
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        on(event: 'statistics', observer: Callback<SqlExecutionInfo>): void;
+        /**
          * Remove specified observer of specified type from the database.
          *
          * @param { 'dataChange' } event - Indicates the event must be string 'dataChange'.
@@ -5506,6 +5583,18 @@ declare namespace relationalStore {
          * @since 12
          */
         off(event: 'autoSyncProgress', progress?: Callback<ProgressDetails>): void;
+        /**
+         * Unsubscribes from the SQL statistics.
+         * @param { 'statistics' } event - Indicates the event type, which must be 'statistics'.
+         * @param { Callback<SqlExecutionInfo> } observer - Indicates the callback to unregister.
+         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 801 - Capability not supported.
+         * @throws { BusinessError } 14800000 - Inner error.
+         * @throws { BusinessError } 14800014 - Already closed.
+         * @syscap SystemCapability.DistributedDataManager.RelationalStore.Core
+         * @since 12
+         */
+        off(event: 'statistics', observer?: Callback<SqlExecutionInfo>): void;
         /**
          * Notifies the registered observers of a change to the data resource specified by Uri.
          *

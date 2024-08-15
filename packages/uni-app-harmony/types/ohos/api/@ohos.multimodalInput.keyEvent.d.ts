@@ -58,21 +58,21 @@ export declare enum Action {
 export declare interface Key {
     /**
      * Key code
-     *
+     * @type { KeyCode }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     code: KeyCode;
     /**
      * Time when the key is pressed
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     pressedTime: number;
     /**
      * Device to which the key belongs
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
@@ -88,84 +88,84 @@ export declare interface Key {
 export declare interface KeyEvent extends InputEvent {
     /**
      * Key action
-     *
+     * @type { Action }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     action: Action;
     /**
      * Key that has changed
-     *
+     * @type { Key }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     key: Key;
     /**
      * Unicode character corresponding to the key
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     unicodeChar: number;
     /**
      * List of pressed keys
-     *
+     * @type { Key[] }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     keys: Key[];
     /**
      * Whether ctrlKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     ctrlKey: boolean;
     /**
      * Whether altKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     altKey: boolean;
     /**
      * Whether shiftKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     shiftKey: boolean;
     /**
      * Whether logoKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     logoKey: boolean;
     /**
      * Whether fnKey is being pressed
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     fnKey: boolean;
     /**
      * Whether capsLock is active
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     capsLock: boolean;
     /**
      * Whether numLock is active
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     numLock: boolean;
     /**
      * Whether scrollLock is active
-     *
+     * @type { boolean }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */

@@ -205,6 +205,7 @@ declare namespace deviceInfo {
     const hardwareProfile: string;
     /**
      * Obtains the device serial number represented by a string.
+     * This API can be called only by system applications.
      *
      * @permission ohos.permission.sec.ACCESS_UDID
      * @constant
@@ -541,6 +542,7 @@ declare namespace deviceInfo {
     const buildRootHash: string;
     /**
      * Obtains the device udid.
+     * This API can be called only by system applications.
      *
      * @permission ohos.permission.sec.ACCESS_UDID
      * @constant
@@ -597,7 +599,7 @@ declare namespace deviceInfo {
      * A developer can be an enterprise or individual developer.
      * Example: dff3cdfd-7beb-1e7d-fdf7-1dbfddd7d30c
      *
-     * An ODID will be regenerated in the following scenarios:
+     * An ODID will be regenerate in the following scenarios:
      * Restore a phone to its factory settings.
      * Uninstall and reinstall all apps of one developer on one device.
      *

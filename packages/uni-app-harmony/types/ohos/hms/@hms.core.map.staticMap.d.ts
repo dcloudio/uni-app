@@ -7,9 +7,11 @@
  */
 import type image from '@ohos.multimedia.image';
 import type mapCommon from '@hms.core.map.mapCommon';
+import type common from '@ohos.app.ability.common';
 /**
  * Returns a map image that enables developer to embed the map as a picture in their own pages.
  *
+ * @namespace staticMap
  * @syscap SystemCapability.Map.Core
  * @stagemodelonly
  * @atomicservice
@@ -39,8 +41,32 @@ declare namespace staticMap {
      */
     function getMapImage(options: StaticMapOptions): Promise<image.PixelMap>;
     /**
+     *  Make a map image based on the provided location, image height, and image width.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { StaticMapOptions } options - Indicates the map image attributes.
+     * @returns { Promise<image.PixelMap> } - The map image
+     * @throws { BusinessError } 401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002600005 - The network is unavailable.
+     * @throws { BusinessError } 1002600006 - The API call times exceeds the quota.
+     * @throws { BusinessError } 1002600007 - The API QPS exceeds the quota.
+     * @throws { BusinessError } 1002600008 - The API is in arrears.
+     * @throws { BusinessError } 1002600009 - The API have not subscribed to any pay-as-you-go package.
+     * @throws { BusinessError } 1002600010 -The server is busy. please wait and try again.
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function getMapImage(context: common.Context, options: StaticMapOptions): Promise<image.PixelMap>;
+    /**
      * The map image attributes
      *
+     * @typedef StaticMapOptions
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -50,7 +76,7 @@ declare namespace staticMap {
         /**
          * The center point coordinates of the map
          *
-         * @type {LatLng}
+         * @type {mapCommon.LatLng}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -104,7 +130,7 @@ declare namespace staticMap {
         /**
          * The alignment mode of the map logo
          *
-         * @type {?LogoAlignment}
+         * @type {?mapCommon.LogoAlignment}
          * @default LogoAlignment.BOTTOM_START
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
@@ -147,6 +173,7 @@ declare namespace staticMap {
     /**
      * The marker info which will be added on the map image.
      *
+     * @typedef StaticMapMarker
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -156,7 +183,7 @@ declare namespace staticMap {
         /**
          * Indicates the marker location.
          *
-         * @type {LatLng}
+         * @type {mapCommon.LatLng}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -195,7 +222,7 @@ declare namespace staticMap {
          */
         font?: string;
         /**
-         * Indicates the text color in the Marker icon.The color value is ARGB format。
+         * Indicates the text color in the Marker icon.The color value is ARGB format.
          *
          * @type {?number}
          * @default 0xff000000
@@ -220,6 +247,7 @@ declare namespace staticMap {
     /**
      * The path info which will be added on the map image.
      *
+     * @typedef StaticMapPath
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -229,7 +257,7 @@ declare namespace staticMap {
         /**
          * Indicates the coordinates of the path.
          *
-         * @type {Array<LatLng>}
+         * @type {Array<mapCommon.LatLng>}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -237,7 +265,7 @@ declare namespace staticMap {
          */
         locations: Array<mapCommon.LatLng>;
         /**
-         * Indicates the color of the path.The color value is ARGB format。
+         * Indicates the color of the path.The color value is ARGB format.
          *
          * @type {?number}
          * @default 0xff000000
@@ -248,7 +276,7 @@ declare namespace staticMap {
          */
         color?: number;
         /**
-         * Indicates the fill color of the path. If set the fillColor, the path indicates a polygon.The color value is ARGB format。
+         * Indicates the fill color of the path. If set the fillColor, the path indicates a polygon.The color value is ARGB format.
          *
          * @type {?number}
          * @syscap SystemCapability.Map.Core

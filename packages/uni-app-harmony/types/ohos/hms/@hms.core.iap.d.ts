@@ -12,6 +12,7 @@ import type common from '@ohos.app.ability.common';
  *
  * @namespace iap
  * @syscap SystemCapability.Payment.IAP
+ * @stagemodelonly
  * @since 4.0.0(10)
  */
 /**
@@ -29,6 +30,7 @@ declare namespace iap {
      *
      * @typedef QueryPurchasesParameter
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     /**
@@ -46,6 +48,7 @@ declare namespace iap {
          *
          * @type { ProductType }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -63,6 +66,7 @@ declare namespace iap {
          *
          * @type { ?string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -80,6 +84,7 @@ declare namespace iap {
          *
          * @type { ?PurchaseQueryType }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -99,6 +104,7 @@ declare namespace iap {
      *
      * @typedef QueryProductsParameter
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     /**
@@ -116,6 +122,7 @@ declare namespace iap {
          *
          * @type { ProductType }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -135,6 +142,7 @@ declare namespace iap {
          *
          * @type { string[] }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -155,6 +163,7 @@ declare namespace iap {
      *
      * @typedef PurchaseParameter
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     /**
@@ -174,6 +183,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -193,6 +203,7 @@ declare namespace iap {
          *
          * @type { ProductType }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -210,6 +221,7 @@ declare namespace iap {
          *
          * @type { ?string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -227,6 +239,7 @@ declare namespace iap {
          *
          * @type { ?string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -245,6 +258,7 @@ declare namespace iap {
      *
      * @typedef ConsumePurchaseParameter
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      */
@@ -254,7 +268,9 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         purchaseToken: string;
         /**
@@ -263,7 +279,9 @@ declare namespace iap {
          *
          * @type { ?string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         developerChallenge?: string;
     }
@@ -272,6 +290,7 @@ declare namespace iap {
      *
      * @typedef FinishPurchaseParameter
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -289,6 +308,7 @@ declare namespace iap {
          *
          * @type { ProductType }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -306,6 +326,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -323,6 +344,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -341,6 +363,7 @@ declare namespace iap {
      *
      * @typedef QueryPurchasesResult
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      */
@@ -350,7 +373,9 @@ declare namespace iap {
          *
          * @type { string[] }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         productList: string[];
         /**
@@ -359,7 +384,9 @@ declare namespace iap {
          *
          * @type { string[] }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         inAppPurchaseDataList: string[];
         /**
@@ -367,7 +394,9 @@ declare namespace iap {
          *
          * @type { string[] }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         inAppSignatureList: string[];
         /**
@@ -375,7 +404,9 @@ declare namespace iap {
          *
          * @type { ?string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         continuationToken?: string;
         /**
@@ -383,7 +414,9 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         signatureAlgorithm: string;
     }
@@ -392,6 +425,7 @@ declare namespace iap {
      *
      * @typedef QueryPurchaseResult
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -409,6 +443,7 @@ declare namespace iap {
          *
          * @type { string[] }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -426,6 +461,7 @@ declare namespace iap {
          *
          * @type { ?string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -444,6 +480,7 @@ declare namespace iap {
      *
      * @typedef Product
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     /**
@@ -461,6 +498,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -478,6 +516,7 @@ declare namespace iap {
          *
          * @type { ProductType }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -495,6 +534,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -512,6 +552,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -529,6 +570,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          * @deprecated since 4.1.0(11)
          */
@@ -538,6 +580,7 @@ declare namespace iap {
          *
          * @type { ?string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -555,6 +598,7 @@ declare namespace iap {
          *
          * @type { number }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -572,6 +616,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -589,6 +634,7 @@ declare namespace iap {
          *
          * @type { number }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -606,6 +652,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -631,14 +678,15 @@ declare namespace iap {
         /**
          * The subscription information of auto-renewables product.
          *
-         * @type { ?Subscription }
+         * @type { ?SubscriptionInfo }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
          * The subscription information of auto-renewables product.
          *
-         * @type { ?Subscription }
+         * @type { ?SubscriptionInfo }
          * @syscap SystemCapability.Payment.IAP
          * @stagemodelonly
          * @atomicservice
@@ -650,6 +698,7 @@ declare namespace iap {
          *
          * @type { ?string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -668,6 +717,7 @@ declare namespace iap {
      *
      * @typedef SubscriptionInfo
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -685,6 +735,7 @@ declare namespace iap {
          *
          * @type { PeriodUnit }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -702,6 +753,7 @@ declare namespace iap {
          *
          * @type { number }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -719,6 +771,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -736,6 +789,7 @@ declare namespace iap {
          *
          * @type { number }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -753,6 +807,7 @@ declare namespace iap {
          *
          * @type { ?boolean }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -770,6 +825,7 @@ declare namespace iap {
          *
          * @type { ?SubscriptionOffer }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -788,6 +844,7 @@ declare namespace iap {
      *
      * @typedef SubscriptionOffer
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -805,6 +862,7 @@ declare namespace iap {
          *
          * @type { OfferPaymentMode }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -822,6 +880,7 @@ declare namespace iap {
          *
          * @type { PeriodUnit }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -839,6 +898,7 @@ declare namespace iap {
          *
          * @type { number }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -856,6 +916,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -873,6 +934,7 @@ declare namespace iap {
          *
          * @type { number }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -890,6 +952,7 @@ declare namespace iap {
          *
          * @type { OfferType }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -908,6 +971,7 @@ declare namespace iap {
      *
      * @typedef PurchaseResult
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      */
@@ -917,7 +981,9 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         inAppPurchaseData: string;
         /**
@@ -925,7 +991,9 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         signature: string;
         /**
@@ -933,7 +1001,9 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         signatureAlgorithm: string;
     }
@@ -942,6 +1012,7 @@ declare namespace iap {
      *
      * @typedef CreatePurchaseResult
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -959,6 +1030,7 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -977,6 +1049,7 @@ declare namespace iap {
      *
      * @typedef ConsumeResult
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      */
@@ -986,7 +1059,9 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         consumedPurchaseData: string;
         /**
@@ -994,7 +1069,9 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         signature: string;
         /**
@@ -1002,7 +1079,9 @@ declare namespace iap {
          *
          * @type { string }
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
+         * @deprecated since 4.1.0(11)
          */
         signatureAlgorithm: string;
     }
@@ -1033,13 +1112,14 @@ declare namespace iap {
      * @param { common.UIAbilityContext } context - The context of an ability.
      * @returns { Promise<void> } return void
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860004 - Too frequent API calls.
      * @throws { BusinessError } 1001860005 - Network connection error.
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     /**
@@ -1048,13 +1128,14 @@ declare namespace iap {
      * @param { common.Context } context - The context of an ability.
      * @returns { Promise<void> } return void
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860004 - Too frequent API calls.
      * @throws { BusinessError } 1001860005 - Network connection error.
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1063,8 +1144,9 @@ declare namespace iap {
      * @param { common.Context } context - The context of an ability.
      * @returns { Promise<void> } return void
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
+     * @throws { BusinessError } 1001860002 - The application is not authorized.
      * @throws { BusinessError } 1001860004 - Too frequent API calls.
      * @throws { BusinessError } 1001860005 - Network connection error.
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
@@ -1081,13 +1163,14 @@ declare namespace iap {
      * @param { common.UIAbilityContext } context - The context of an ability.
      * @param { AsyncCallback<void> } callback - callback
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860004 - Too frequent API calls.
      * @throws { BusinessError } 1001860005 - Network connection error.
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     /**
@@ -1096,13 +1179,14 @@ declare namespace iap {
      * @param { common.Context } context - The context of an ability.
      * @param { AsyncCallback<void> } callback - callback
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860004 - Too frequent API calls.
      * @throws { BusinessError } 1001860005 - Network connection error.
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     function queryEnvironmentStatus(context: common.Context, callback: AsyncCallback<void>): void;
@@ -1122,6 +1206,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     /**
@@ -1161,6 +1246,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     function queryProducts(context: common.UIAbilityContext, parameter: QueryProductsParameter, callback: AsyncCallback<Array<Product>>): void;
@@ -1171,7 +1257,7 @@ declare namespace iap {
      * @param { PurchaseParameter } parameter - PurchaseParameter
      * @returns { Promise<PurchaseResult> } Returns PurchaseResult.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860002 - The application is not authorized.
      * @throws { BusinessError } 1001860003 - Invalid product information.
@@ -1182,6 +1268,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @throws { BusinessError } 1001860056 - The user is not allowed to make purchase.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      * @useinstead iap#createPurchase
@@ -1194,7 +1281,7 @@ declare namespace iap {
      * @param { PurchaseParameter } parameter - PurchaseParameter
      * @param { AsyncCallback<PurchaseResult> } callback - PurchaseResult.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860002 - The application is not authorized.
      * @throws { BusinessError } 1001860003 - Invalid product information.
@@ -1205,6 +1292,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @throws { BusinessError } 1001860056 - The user is not allowed to make purchase.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      * @useinstead iap#createPurchase
@@ -1217,7 +1305,7 @@ declare namespace iap {
      * @param { PurchaseParameter } parameter - Purchase parameter.
      * @returns { Promise<CreatePurchaseResult> } Promise used to return the result.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860002 - The application is not authorized.
      * @throws { BusinessError } 1001860003 - Invalid product information.
@@ -1228,6 +1316,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @throws { BusinessError } 1001860056 - The user is not allowed to make purchase.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1237,7 +1326,7 @@ declare namespace iap {
      * @param { PurchaseParameter } parameter - Purchase parameter.
      * @returns { Promise<CreatePurchaseResult> } Promise used to return the result.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860002 - The application is not authorized.
      * @throws { BusinessError } 1001860003 - Invalid product information.
@@ -1260,7 +1349,7 @@ declare namespace iap {
      * @param { PurchaseParameter } parameter - Purchase parameter.
      * @param { AsyncCallback<CreatePurchaseResult> } callback - The callback of creating purchase result.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 1001860000 - The operation was canceled by the user
+     * @throws { BusinessError } 1001860000 - The operation was canceled by the user.
      * @throws { BusinessError } 1001860001 - System internal error.
      * @throws { BusinessError } 1001860002 - The application is not authorized.
      * @throws { BusinessError } 1001860003 - Invalid product information.
@@ -1271,6 +1360,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @throws { BusinessError } 1001860056 - The user is not allowed to make purchase.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     function createPurchase(context: common.UIAbilityContext, parameter: PurchaseParameter, callback: AsyncCallback<CreatePurchaseResult>): void;
@@ -1291,6 +1381,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860053 - The purchase has been finished and cannot be finished again.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      * @useinstead iap#queryPurchases
@@ -1313,6 +1404,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860053 - The purchase has been finished and cannot be finished again.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      * @useinstead iap#queryPurchases
@@ -1335,6 +1427,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860053 - The purchase has been finished and cannot be finished again.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      * @useinstead iap#finishPurchase
@@ -1357,6 +1450,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860053 - The purchase has been finished and cannot be finished again.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      * @useinstead iap#finishPurchase
@@ -1378,6 +1472,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860053 - The purchase has been finished and cannot be finished again.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1417,6 +1512,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860053 - The purchase has been finished and cannot be finished again.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     function finishPurchase(context: common.UIAbilityContext, parameter: FinishPurchaseParameter, callback: AsyncCallback<void>): void;
@@ -1433,6 +1529,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860005 - Network connection error.
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      * @useinstead iap#queryPurchases
@@ -1451,6 +1548,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860005 - Network connection error.
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      * @deprecated since 4.1.0(11)
      * @useinstead iap#queryPurchases
@@ -1470,6 +1568,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1505,6 +1604,7 @@ declare namespace iap {
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
      * @throws { BusinessError } 1001860054 - The country or region of the signed-in HUAWEI ID does not support IAP.
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     function queryPurchases(context: common.UIAbilityContext, parameter: QueryPurchasesParameter, callback: AsyncCallback<QueryPurchaseResult>): void;
@@ -1513,10 +1613,11 @@ declare namespace iap {
      *
      * @param { common.Context } context - The context of an ability.
      * @param { UIWindowParameter } uiParameter - A parameter that manages the ui window style.
-     * @param { ?string } groupId - Subscription group id.
+     * @param { string } [groupId] - Subscription group id.
      * @returns { Promise<void> } return void
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1001860001 - System internal error.
+     * @throws { BusinessError } 1001860002 - The application is not authorized.
      * @throws { BusinessError } 1001860004 - Too frequent API calls.
      * @throws { BusinessError } 1001860005 - Network connection error.
      * @throws { BusinessError } 1001860050 - The HUAWEI ID is not signed in.
@@ -1552,6 +1653,7 @@ declare namespace iap {
      *
      * @enum { number }
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.0.0(10)
      */
     /**
@@ -1568,6 +1670,7 @@ declare namespace iap {
          * Consumable product
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -1583,6 +1686,7 @@ declare namespace iap {
          * Non-Consumable product for one time purchase
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.0.0(10)
          */
         /**
@@ -1598,6 +1702,7 @@ declare namespace iap {
          * Auto-renewable subscription product
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1615,6 +1720,7 @@ declare namespace iap {
      *
      * @enum { number }
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1631,6 +1737,7 @@ declare namespace iap {
          * All purchases, including purchased consumables, non-consumables and auto-renewables history.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1646,6 +1753,7 @@ declare namespace iap {
          * Purchased but not delivered products.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1661,6 +1769,7 @@ declare namespace iap {
          * Purchased non-consumable and auto-renewables currently in effect.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1678,6 +1787,7 @@ declare namespace iap {
      *
      * @enum { number }
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1694,6 +1804,7 @@ declare namespace iap {
          * Day unit.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1709,6 +1820,7 @@ declare namespace iap {
          * Week unit.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1724,6 +1836,7 @@ declare namespace iap {
          * Month unit.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1739,6 +1852,7 @@ declare namespace iap {
          * Year unit.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1754,6 +1868,7 @@ declare namespace iap {
          * Minute unit.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1771,6 +1886,7 @@ declare namespace iap {
      *
      * @enum { number }
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1787,6 +1903,7 @@ declare namespace iap {
          * Free trial.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1802,6 +1919,7 @@ declare namespace iap {
          * Indicates the discount applies over a single billing period or multiple billing periods.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1817,6 +1935,7 @@ declare namespace iap {
          * Indicates the system applies the discount up front.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1834,6 +1953,7 @@ declare namespace iap {
      *
      * @enum { number }
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1850,6 +1970,7 @@ declare namespace iap {
          * Introductory offer.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1865,6 +1986,7 @@ declare namespace iap {
          * Promotional offer.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1949,6 +2071,7 @@ declare namespace iap {
      *
      * @enum { number }
      * @syscap SystemCapability.Payment.IAP
+     * @stagemodelonly
      * @since 4.1.0(11)
      */
     /**
@@ -1965,6 +2088,7 @@ declare namespace iap {
          * The operation was canceled by the user.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1980,6 +2104,7 @@ declare namespace iap {
          * System internal error.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -1995,6 +2120,7 @@ declare namespace iap {
          * The application is not authorized.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2010,6 +2136,7 @@ declare namespace iap {
          * Invalid product information.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2025,6 +2152,7 @@ declare namespace iap {
          * Too frequent API calls.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2040,6 +2168,7 @@ declare namespace iap {
          * Network connection error.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2055,6 +2184,7 @@ declare namespace iap {
          * The app to which the product belongs is not released in a specified location.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2070,6 +2200,7 @@ declare namespace iap {
          * The HUAWEI ID is not signed in.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2085,6 +2216,7 @@ declare namespace iap {
          * Failed to purchase a product because the user already owns the product.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2100,6 +2232,7 @@ declare namespace iap {
          * The purchase cannot be finished because the user has not paid for it.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2115,6 +2248,7 @@ declare namespace iap {
          * The purchase has been finished and cannot be finished again.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2130,6 +2264,7 @@ declare namespace iap {
          * The country or region of the signed-in HUAWEI ID does not support IAP.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**
@@ -2145,6 +2280,7 @@ declare namespace iap {
          * The user is not allowed to make purchase.
          *
          * @syscap SystemCapability.Payment.IAP
+         * @stagemodelonly
          * @since 4.1.0(11)
          */
         /**

@@ -1005,6 +1005,36 @@ declare namespace bundleManager {
         BACKWARD_COMPATIBILITY = 1
     }
     /**
+     * This enumeration value is used to identify various types of extension ability
+     *
+     * @enum { number }
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @since 12
+    */
+    export enum MultiAppModeType {
+        /**
+         * Indicates multi app mode with type of unspecified
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @since 12
+         */
+        UNSPECIFIED = 0,
+        /**
+         * Indicates multi app mode with type of multiInstance
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @since 12
+         */
+        MULTI_INSTANCE = 1,
+        /**
+         * Indicates multi app mode with type of appClone
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @since 12
+        */
+        APP_CLONE = 2
+    }
+    /**
      * Obtains own bundleInfo.
      *
      * @param { number } bundleFlags - Indicates the flag used to specify information contained in the BundleInfo objects that will be returned.

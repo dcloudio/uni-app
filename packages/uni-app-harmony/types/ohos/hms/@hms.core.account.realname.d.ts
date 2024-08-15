@@ -263,7 +263,10 @@ declare namespace realName {
      * @param { common.Context } context - The context of an ability.
      * @param { FacialRecognitionVerificationRequest } request - Facial recognition verification request parameters.
      * @returns { Promise<FacialRecognitionVerificationResult> } Promise used to return the result.
-     * @throws { BusinessError } 401 - Invalid parameter.
+     * @throws { BusinessError } 401 - Parameter error.
+     * Possible causes:
+     *   1. Incorrect parameter types.
+     *   2. Parameter verification failed.
      * @throws { BusinessError } 1002500001 - The network is unavailable.
      * @throws { BusinessError } 1002500002 - The user has not logged in with HUAWEI ID.
      * @throws { BusinessError } 1002500003 - Failed to check the fingerprint of the application bundle.

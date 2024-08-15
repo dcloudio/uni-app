@@ -5,7 +5,7 @@
  * @file Defines the capabilities of invoiceAssistant module.
  * @kit AccountKit
  */
-
+import type { AsyncCallback } from '@ohos.base';
 import type common from '@ohos.app.ability.common';
 /**
  * This module provides the capabilities to use invoiceAssistant.
@@ -22,7 +22,8 @@ declare namespace invoiceAssistant {
      *
      * @param { common.Context } context - The context of an ability.
      * @returns { Promise<InvoiceTitle> } Returns InvoiceTitle.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 1010060001 - The operation was canceled by the user.
      * @throws { BusinessError } 1010060002 - System internal error.
      * @throws { BusinessError } 1010060003 - The application is not authorized.

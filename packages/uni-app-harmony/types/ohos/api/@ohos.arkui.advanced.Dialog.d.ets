@@ -16,9 +16,6 @@
  * @file
  * @kit ArkUI
  */
-
-/// <reference path="../component/units.d.ts" />
-import { ResourceStr } from 'GlobalResource';
 import { Theme, CustomTheme } from '@ohos.arkui.theme';
 /**
  * Declare ButtonOptions
@@ -147,7 +144,14 @@ export declare struct TipsDialog {
      * @atomicservice
      * @since 11
      */
-    imageRes: Resource;
+    /**
+     * Sets the TipsDialog imageRes.
+     * @type { ResourceStr | PixelMap }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @atomicservice
+     * @since 12
+     */
+    imageRes: ResourceStr | PixelMap;
     /**
      * Sets the TipsDialog image size.
      * @type { SizeOptions }.
@@ -278,6 +282,13 @@ export declare struct TipsDialog {
      * @since 12
      */
     theme?: Theme | CustomTheme;
+    /**
+     * Sets the TipsDialog CheckBox Callback.
+     * @type { ?Callback<boolean> }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    onCheckedChange?: Callback<boolean>;
 }
 /**
  * Declare CustomDialog SelectDialog
@@ -509,6 +520,13 @@ export declare struct ConfirmDialog {
      * @since 12
      */
     theme?: Theme | CustomTheme;
+    /**
+     * Sets the ConfirmDialog CheckBox Callback.
+     * @type { ?Callback<boolean> }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    onCheckedChange?: Callback<boolean>;
 }
 /**
  * Declare CustomDialog AlertDialog

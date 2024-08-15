@@ -13,5 +13,6 @@ import moduleInstallManager from '@hms.core.appgalleryservice.moduleInstallManag
 import updateManager from '@hms.core.appgalleryservice.updateManager';
 import attributionManager from '@hms.core.appgalleryservice.attributionManager';
 import attributionTestManager from '@hms.core.appgalleryservice.attributionTestManager';
+import privacyManager from '@hms.core.appgalleryservice.privacyManager';
 import sceneManager from '@hms.bundle.sceneManager';
-export {productViewManager, moduleInstallManager, updateManager, attributionManager, attributionTestManager, sceneManager} ;
+export {productViewManager, moduleInstallManager, updateManager, attributionManager, attributionTestManager, privacyManager, sceneManager} ;

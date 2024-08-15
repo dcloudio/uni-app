@@ -1132,6 +1132,10 @@ declare namespace authentication {
          * @param { AuthenticationRequest } request - Indicates the authentication request.
          * @param { AsyncCallback<AuthenticationResponse, { [key: string]: Object }> } callback - Indicates the callback for getting the response.
          * @throws { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Mandatory parameters are left unspecified.
+         *   2. Incorrect parameter types.
+         *   3. Parameter verification failed.
          * @throws { BusinessError } 12300001 - System service works abnormally.
          * @throws { BusinessError } 12300002 - Invalid parameter.
          * @syscap SystemCapability.AuthenticationServices.HuaweiID.Auth
@@ -1143,6 +1147,10 @@ declare namespace authentication {
          * @param { AuthenticationRequest } request - Indicates the authentication request.
          * @param { AsyncCallback<AuthenticationResponse, { [key: string]: Object }> } callback - Indicates the callback for getting the response.
          * @throws { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Mandatory parameters are left unspecified.
+         *   2. Incorrect parameter types.
+         *   3. Parameter verification failed.
          * @throws { BusinessError } 12300001 - System service works abnormally.
          * @throws { BusinessError } 12300002 - Invalid parameter.
          * @syscap SystemCapability.AuthenticationServices.HuaweiID.Auth
@@ -1155,6 +1163,10 @@ declare namespace authentication {
          * @param { AuthenticationRequest } request - Indicates the authentication request.
          * @param { AsyncCallback<AuthenticationResponse, Record<string, Object>> } callback - Indicates the callback for getting the response.
          * @throws { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Mandatory parameters are left unspecified.
+         *   2. Incorrect parameter types.
+         *   3. Parameter verification failed.
          * @throws { BusinessError } 12300001 - System service works abnormally.
          * @throws { BusinessError } 1001502001 - The user has not logged in with HUAWEI ID.
          * @throws { BusinessError } 1001502002 - The application is not authorized.
@@ -1177,6 +1189,10 @@ declare namespace authentication {
          * @param { AuthenticationRequest } request - Indicates the authentication request.
          * @returns { Promise<AuthenticationResponse> } The promise returned by the function.
          * @throws { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Mandatory parameters are left unspecified.
+         *   2. Incorrect parameter types.
+         *   3. Parameter verification failed.
          * @throws { BusinessError } 12300001 - System service works abnormally.
          * @throws { BusinessError } 12300002 - Invalid parameter.
          * @syscap SystemCapability.AuthenticationServices.HuaweiID.Auth
@@ -1188,6 +1204,10 @@ declare namespace authentication {
          * @param { AuthenticationRequest } request - Indicates the authentication request.
          * @returns { Promise<AuthenticationResponse> } The promise returned by the function.
          * @throws { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Mandatory parameters are left unspecified.
+         *   2. Incorrect parameter types.
+         *   3. Parameter verification failed.
          * @throws { BusinessError } 12300001 - System service works abnormally.
          * @throws { BusinessError } 12300002 - Invalid parameter.
          * @syscap SystemCapability.AuthenticationServices.HuaweiID.Auth
@@ -1200,6 +1220,10 @@ declare namespace authentication {
          * @param { AuthenticationRequest } request - Indicates the authentication request.
          * @returns { Promise<AuthenticationResponse> } The promise returned by the function.
          * @throws { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Mandatory parameters are left unspecified.
+         *   2. Incorrect parameter types.
+         *   3. Parameter verification failed.
          * @throws { BusinessError } 12300001 - System service works abnormally.
          * @throws { BusinessError } 1001502001 - The user has not logged in with HUAWEI ID.
          * @throws { BusinessError } 1001502002 - The application is not authorized.

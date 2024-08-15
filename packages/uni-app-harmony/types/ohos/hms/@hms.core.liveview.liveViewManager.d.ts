@@ -33,7 +33,8 @@ declare namespace liveViewManager {
      *
      * @param { LiveView } LiveView - a liveView.
      * @returns { Promise<LiveViewResult> } Returns the result of starting the liveView in the form of Promise.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     *                                 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 1003500001 - Internal error.
      * @throws { BusinessError } 1003500002 - Marshalling or unmarshalling error.
      * @throws { BusinessError } 1003500003 - Failed to connect service.
@@ -52,7 +53,8 @@ declare namespace liveViewManager {
      *
      * @param { LiveView } LiveView - a liveView.
      * @returns { Promise<LiveViewResult> } Returns the result of updating the liveView in the form of Promise.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     *                                 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 1003500001 - Internal error.
      * @throws { BusinessError } 1003500002 - Marshalling or unmarshalling error.
      * @throws { BusinessError } 1003500003 - Failed to connect service.
@@ -71,7 +73,8 @@ declare namespace liveViewManager {
      *
      * @param { LiveView } LiveView - a liveView.
      * @returns { Promise<LiveViewResult> } Returns the result of stopping the liveView in the form of Promise.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     *                                 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 1003500001 - Internal error.
      * @throws { BusinessError } 1003500002 - Marshalling or unmarshalling error.
      * @throws { BusinessError } 1003500003 - Failed to connect service.
@@ -90,7 +93,7 @@ declare namespace liveViewManager {
      *
      * @param { number } id - the liveView id
      * @returns { Promise<LiveView> } Returns the liveView.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 1003500001 - Internal error.
      * @throws { BusinessError } 1003500002 - Marshalling or unmarshalling error.
      * @throws { BusinessError } 1003500003 - Failed to connect service.
@@ -167,7 +170,7 @@ declare namespace liveViewManager {
     /**
      * liveView data.
      *
-     * @type { LiveViewData }
+     * @typedef LiveViewData
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -185,7 +188,7 @@ declare namespace liveViewManager {
         /**
          * capsule content of liveView.
          *
-         * @type { ?TextCapsule|TimerCapsule|ProgressCapsule }
+         * @type { ?(TextCapsule | TimerCapsule | ProgressCapsule) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -194,7 +197,7 @@ declare namespace liveViewManager {
         /**
          * external screen content of liveView.
          *
-         * @type { ?ExternalForm }
+         * @type { ?ExternalData }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -204,7 +207,7 @@ declare namespace liveViewManager {
     /**
      * Defines a primary data of liveView instance.
      *
-     * @type { PrimaryData }
+     * @typedef PrimaryData
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -240,7 +243,7 @@ declare namespace liveViewManager {
         /**
          * The statics picture of liveView in lock screen.
          *
-         * @type { ?string | image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 5.0.0(12)
@@ -302,7 +305,7 @@ declare namespace liveViewManager {
          * ScoreLayout is used when the templateType is 7.
          * NavigationLayout is used when the templateType is 8.
          *
-         * @type { ?ProgressLayout|PickupLayout|FlightLayout|ScoreLayout|NavigationLayout }
+         * @type { ?(ProgressLayout | PickupLayout | FlightLayout | ScoreLayout | NavigationLayout) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 5.0.0(12)
@@ -312,7 +315,7 @@ declare namespace liveViewManager {
     /**
      * Obtains the type of a liveView layout.
      *
-     * @type { number }
+     * @enum { number }
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -370,7 +373,7 @@ declare namespace liveViewManager {
     /**
      * Defines a extend area content of liveView instance.
      *
-     * @type { ExtensionData }
+     * @typedef ExtensionData
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -388,7 +391,7 @@ declare namespace liveViewManager {
         /**
          * the type of extend area content.
          *
-         * @type { ?number }
+         * @type { ?ExtensionType }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -397,7 +400,7 @@ declare namespace liveViewManager {
         /**
          * the picture of extend area content.
          *
-         * @type { string|image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -416,7 +419,7 @@ declare namespace liveViewManager {
     /**
      * Define a default capsule content of liveView instance.
      *
-     * @type { BasicCapsuleContent }
+     * @typedef CapsuleData
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -425,7 +428,7 @@ declare namespace liveViewManager {
         /**
          * the type of capsule content of liveView.
          *
-         * @type { number }
+         * @type { CapsuleType }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -443,7 +446,7 @@ declare namespace liveViewManager {
         /**
          * the icon of capsule content of liveView..
          *
-         * @type { ?string|image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -462,7 +465,7 @@ declare namespace liveViewManager {
     /**
      * Define a text capsule content of liveView instance, when the type is 1.
      *
-     * @type { TextCapsule }
+     * @typedef TextCapsule
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -490,7 +493,7 @@ declare namespace liveViewManager {
     /**
      * Define a timer capsule content of liveView instance, when the type is 2.
      *
-     * @type { TimerCapsule }
+     * @typedef TimerCapsule
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -536,7 +539,7 @@ declare namespace liveViewManager {
     /**
      * Define a progress capsule content of liveView instance, when the type is 2.
      *
-     * @type { ProgressCapsule }
+     * @typedef ProgressCapsule
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -573,7 +576,7 @@ declare namespace liveViewManager {
     /**
      * Define a external screen content of liveView instance.
      *
-     * @type { ExternalData }
+     * @typedef ExternalData
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -598,19 +601,37 @@ declare namespace liveViewManager {
          */
         content?: Array<RichText>;
         /**
+         * the background type of external screen.
+         *
+         * @type { ?ExternalType }
+         * @syscap SystemCapability.LiveView.LiveViewService
+         * @StageModelOnly
+         * @since 5.0.0(12)
+        */
+        type?: ExternalType;
+        /**
          * the backgroundColor of external screen content of liveView.
          *
          * @type { ?string }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
-         */
+        */
         backgroundColor?: string;
+        /**
+         * the backgroundPicture of external screen content of liveView.
+         *
+         * @type { ?(string | image.PixelMap) }
+         * @syscap SystemCapability.LiveView.LiveViewService
+         * @StageModelOnly
+         * @since 5.0.0(12)
+        */
+        backgroundPicture?: string | image.PixelMap;
     }
     /**
      * Define a default layout data of liveView instance.
      *
-     * @type { LayoutData }
+     * @typedef LayoutData
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -619,7 +640,7 @@ declare namespace liveViewManager {
         /**
          * liveView template type.
          *
-         * @type { number }
+         * @type { LayoutType }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -629,7 +650,7 @@ declare namespace liveViewManager {
     /**
      * Define a progress layout instance.
      *
-     * @type { progressLayout }
+     * @typedef ProgressLayout
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -668,7 +689,7 @@ declare namespace liveViewManager {
          * 1: displayed above the progress line
          * 2: indicates that the display is overwritten on the progress line..
          *
-         * @type { ?number }
+         * @type { ?IndicatorType }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -677,7 +698,7 @@ declare namespace liveViewManager {
         /**
          * indicator small icon.
          *
-         * @type { ?string|image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -686,7 +707,7 @@ declare namespace liveViewManager {
         /**
          * the lineType value of progress information.
          *
-         * @type { ?number }
+         * @type { ?LineType }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -705,7 +726,7 @@ declare namespace liveViewManager {
     /**
      * Define the pickup layout data instance when the layoutType is 3.
      *
-     * @type { PickupLayout }
+     * @typedef PickupLayout
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -741,7 +762,7 @@ declare namespace liveViewManager {
         /**
          * the descImage of extend area content of liveView.
          *
-         * @type { ?string|image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -751,7 +772,7 @@ declare namespace liveViewManager {
     /**
      * Define the flight layout data instance when the layoutType is 4.
      *
-     * @type { FlightLayout }
+     * @typedef FlightLayout
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -796,7 +817,7 @@ declare namespace liveViewManager {
         /**
          * Interval icon display in the middle of the FlightLayout
          *
-         * @type { ?string|image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -824,7 +845,7 @@ declare namespace liveViewManager {
     /**
      * Define a template data instance when the layoutType is 7.
      *
-     * @type { ScoreLayout }
+     * @typedef ScoreLayout
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -842,7 +863,7 @@ declare namespace liveViewManager {
         /**
          * The icon on the left in ScoreLayout.
          *
-         * @type { ?string|image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -869,7 +890,7 @@ declare namespace liveViewManager {
         /**
          * The icon on the right in ScoreLayout.
          *
-         * @type { ?string|image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -895,7 +916,7 @@ declare namespace liveViewManager {
         /**
          * the score of Live activity, which is the description text at the top of the middle of the ScoreLayout.
          *
-         * @type { ?string | Array<RichText> }
+         * @type { ?(string | Array<RichText>) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 5.0.0(12)
@@ -923,7 +944,7 @@ declare namespace liveViewManager {
     /**
      * Define a template data instance when the layoutType is 8.
      *
-     * @type { NavigationLayout }
+     * @typedef NavigationLayout
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 5.0.0(12)
@@ -941,7 +962,7 @@ declare namespace liveViewManager {
         /**
          * Cunrrent Navigation icon
          *
-         * @type { ?string|image.PixelMap }
+         * @type { ?(string | image.PixelMap) }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 5.0.0(12)
@@ -951,7 +972,7 @@ declare namespace liveViewManager {
     /**
      * Define a richText instance to display different text color.
      *
-     * @type { RichText }
+     * @typedef RichText
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -979,7 +1000,7 @@ declare namespace liveViewManager {
     /**
      * Display type of extend data. Default value is 0;
      *
-     * @type { number }
+     * @enum { number }
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -1029,7 +1050,7 @@ declare namespace liveViewManager {
     /**
      * Display type of indicator. Default value is 0;
      *
-     * @type { number }
+     * @enum { number }
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -1063,7 +1084,7 @@ declare namespace liveViewManager {
     /**
      * Display type of the progress bar in the layout. Default value is 0;
      *
-     * @type { number }
+     * @enum { number }
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -1097,7 +1118,7 @@ declare namespace liveViewManager {
     /**
      * Display type of capsule.;
      *
-     * @type { number }
+     * @enum { number }
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -1131,7 +1152,7 @@ declare namespace liveViewManager {
     /**
      * Indicates the return result of the data to operate liveView.
      *
-     * @type { LiveViewResult }
+     * @typedef LiveViewResult
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -1140,6 +1161,7 @@ declare namespace liveViewManager {
         /**
          * Indicates the result code returned after to start,update or end liveView.
          *
+         * @type { number }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -1148,6 +1170,7 @@ declare namespace liveViewManager {
         /**
          * Indicates the message returned after to start,update or end liveView.
          *
+         * @type { String }
          * @syscap SystemCapability.LiveView.LiveViewService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -1157,7 +1180,7 @@ declare namespace liveViewManager {
     /**
      * Define a timer instance to be used in liveView.
      *
-     * @type { LiveViewTimer }
+     * @typedef LiveViewTimer
      * @syscap SystemCapability.LiveView.LiveViewService
      * @StageModelOnly
      * @since 5.0.0(12)
@@ -1190,6 +1213,32 @@ declare namespace liveViewManager {
          * @since 5.0.0(12)
          */
         isPaused?: boolean;
+    }
+    /**
+     * Background type of the external screen. Default value is background color;
+     *
+     * @enum { number }
+     * @syscap SystemCapability.LiveView.LiveViewService
+     * @StageModelOnly
+     * @since 5.0.0(12)
+    */
+    export enum ExternalType {
+        /**
+         * The background type is background color.
+         *
+         * @syscap SystemCapability.LiveView.LiveViewService
+         * @StageModelOnly
+         * @since 5.0.0(12)
+        */
+        BACKGROUND_COLOR = 0,
+        /**
+         * The background type is background picture.
+         *
+         * @syscap SystemCapability.LiveView.LiveViewService
+         * @StageModelOnly
+         * @since 5.0.0(12)
+        */
+        BACKGROUND_PICTURE = 1
     }
 }
 export default liveViewManager;

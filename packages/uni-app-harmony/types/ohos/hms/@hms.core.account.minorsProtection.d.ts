@@ -97,7 +97,7 @@ declare namespace minorsProtection {
         minorsProtectionMode: boolean;
         /**
          * Age group type.
-         * @type { AgeGroup }
+         * @type { ?AgeGroup }
          * @syscap SystemCapability.AuthenticationServices.HuaweiID.MinorsProtection
          * @stagemodelonly
          * @atomicservice

@@ -20,8 +20,9 @@
 /**
  * Events for input devices
  *
- * @since 9
+ * @namespace inputDeviceCooperate
  * @syscap SystemCapability.MultimodalInput.Input.Cooperator
+ * @since 9
  */
 declare namespace inputDeviceCooperate {
 }

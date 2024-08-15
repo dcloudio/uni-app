@@ -16,9 +16,6 @@
  * @file
  * @kit ArkUI
  */
-
-/// <reference path="../component/units.d.ts" />
-import { Resource } from 'GlobalResource';
 /**
  * Defines the options of MeasureText.
  *

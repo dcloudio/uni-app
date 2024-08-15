@@ -16,9 +16,6 @@
  * @file
  * @kit ArkUI
  */
-
-/// <reference path="../component/units.d.ts" />
-import { ResourceStr } from 'GlobalResource';
 /**
  * Control style of operation element
  * @enum { TreeListenType }
@@ -217,7 +214,7 @@ export declare class TreeListenerManager {
  * Declare TreeView Component
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @atomicservice
- * @since 12
+ * @since 11
  */
 @Component
 export declare struct TreeView {

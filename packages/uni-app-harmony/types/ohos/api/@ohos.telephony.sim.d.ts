@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -91,9 +91,9 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 7
      */
@@ -109,9 +109,9 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 7
      */
@@ -126,10 +126,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 6
      */
@@ -144,10 +144,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 6
      */
@@ -176,10 +176,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 6
      */
@@ -196,10 +196,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 6
      */
@@ -230,10 +230,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 6
      */
@@ -251,10 +251,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 6
      */
@@ -290,9 +290,9 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 6
      */
@@ -314,9 +314,9 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 6
      */
@@ -348,10 +348,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 7
      */
@@ -365,10 +365,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 7
      */
@@ -402,9 +402,9 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 7
      */
@@ -418,9 +418,9 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 7
      */
@@ -447,11 +447,11 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
-     * @throws { BusinessError } 8301002 - SIM card operation error.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
+     * @throws { BusinessError } 8301002 - The SIM card failed to read or update data.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 10
      */
@@ -467,11 +467,11 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
-     * @throws { BusinessError } 8301002 - SIM card operation error.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
+     * @throws { BusinessError } 8301002 - The SIM card failed to read or update data.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 10
      */
@@ -486,10 +486,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 10
      */
@@ -500,10 +500,10 @@ declare namespace sim {
      * @permission ohos.permission.GET_TELEPHONY_STATE
      * @returns { Promise<Array<IccAccountInfo>> } Returns the array of {@link IccAccountInfo}. The ICCID
      * and phone number will be null if has no ohos.permission.GET_TELEPHONY_STATE.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 10
      */
@@ -519,9 +519,9 @@ declare namespace sim {
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 9
      */
@@ -537,9 +537,9 @@ declare namespace sim {
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 9
      */
@@ -566,9 +566,9 @@ declare namespace sim {
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 9
      */
@@ -584,9 +584,9 @@ declare namespace sim {
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 801 - Capability not supported.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 9
      */
@@ -610,10 +610,10 @@ declare namespace sim {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
      *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @throws { BusinessError } 8301001 - SIM card is not activated.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 10
@@ -625,10 +625,10 @@ declare namespace sim {
      * @returns { Promise<number> } Returns the SIM ID of the default voice sim
      * and SIM ID will increase from 1.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300004 - Do not have sim card.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300004 - No SIM card found.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @throws { BusinessError } 8301001 - SIM card is not activated.
      * @syscap SystemCapability.Telephony.CoreService
      * @since 10

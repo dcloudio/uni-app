@@ -10,6 +10,7 @@ import type common from '@ohos.app.ability.common';
 /**
  * Provides a set of APIs, with which you can use the navigation data service to develop functions such as route planning.
  *
+ * @namespace navi
  * @syscap SystemCapability.Map.Core
  * @stagemodelonly
  * @atomicservice
@@ -263,6 +264,47 @@ declare namespace navi {
      */
     function getDrivingMatrix(params: DrivingMatrixParams): Promise<MatrixResult>;
     /**
+     * Plans driving routes between multiple places.
+     *
+     * Scenario:
+     * This function is applicable to high concurrency scenarios, for example, online ride-hailing order dispatch.
+     * In this scenario, the function can calculate routes between multiple start points and end points, and
+     * find the start point and end point required for online ride-hailing order dispatch.
+     *
+     * Restrictions:
+     * 1. A route can only be planned within a distance of 10000 kilometers.
+     * 2. The number of start points multiplying the number of end points cannot exceed 100.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { DrivingMatrixParams } params - Indicates the routes attributes.
+     * @returns { Promise<MatrixResult> } - The routes matrix.
+     *
+     * @throws { BusinessError }        401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002600006 - The API call times exceeds the quota.
+     * @throws { BusinessError } 1002600007 - The API QPS exceeds the quota.
+     * @throws { BusinessError } 1002600008 - The API is in arrears.
+     * @throws { BusinessError } 1002600009 - The API have not subscribed to any pay-as-you-go package.
+     * @throws { BusinessError } 1002600010  - The server is busy. please wait and try again.
+     * @throws { BusinessError } 1002600011 - Server error.
+     * @throws { BusinessError } 1002600999 - Unknown error.
+     * @throws { BusinessError } 1002602001 - The start and end points do not have home countries, or a service error occurred.
+     * @throws { BusinessError } 1002602002 - Cross-region route planning is not supported.
+     * @throws { BusinessError } 1002602003 - Start points or end points exceed 100.
+     * @throws { BusinessError } 1002602004 - The linear distance between the start point and end point exceeds the upper limit.
+     * @throws { BusinessError } 1002602005 - The start point, end point, or waypoint does not support navigation.
+     * @throws { BusinessError } 1002602006 - The request point is mapped to the same point on the road.
+     *
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function getDrivingMatrix(context: common.Context, params: DrivingMatrixParams): Promise<MatrixResult>;
+    /**
      * Plans walking routes between multiple places.
      *
      * Scenario:
@@ -302,6 +344,47 @@ declare namespace navi {
      * @since 4.1.0(11)
      */
     function getWalkingMatrix(params: MatrixParams): Promise<MatrixResult>;
+    /**
+     * Plans walking routes between multiple places.
+     *
+     * Scenario:
+     * This function is applicable to high concurrency scenarios, for example, package delivery.
+     * In this scenario, the function can calculate routes between multiple start points and end points,
+     * and find the start points and end points required for package delivery.
+     *
+     * Restrictions:
+     * 1. A route can only be planned within a distance of 150 kilometers.
+     * 2. The number of start points multiplying the number of end points cannot exceed 100.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { MatrixParams } params - Indicates the routes attributes.
+     * @returns { Promise<MatrixResult> } - The routes matrix.
+     *
+     * @throws { BusinessError }        401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002600006 - The API call times exceeds the quota.
+     * @throws { BusinessError } 1002600007 - The API QPS exceeds the quota.
+     * @throws { BusinessError } 1002600008 - The API is in arrears.
+     * @throws { BusinessError } 1002600009 - The API have not subscribed to any pay-as-you-go package.
+     * @throws { BusinessError } 1002600010  - The server is busy. please wait and try again.
+     * @throws { BusinessError } 1002600011 - Server error.
+     * @throws { BusinessError } 1002600999 - Unknown error.
+     * @throws { BusinessError } 1002602001 - The start and end points do not have home countries, or a service error occurred.
+     * @throws { BusinessError } 1002602002 - Cross-region route planning is not supported.
+     * @throws { BusinessError } 1002602003 - Start points or end points exceed 100.
+     * @throws { BusinessError } 1002602004 - The linear distance between the start point and end point exceeds the upper limit.
+     * @throws { BusinessError } 1002602005 - The start point, end point, or waypoint does not support navigation.
+     * @throws { BusinessError } 1002602006 - The request point is mapped to the same point on the road.
+     *
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function getWalkingMatrix(context: common.Context, params: MatrixParams): Promise<MatrixResult>;
     /**
      * Plans cycling routes between multiple places.
      *
@@ -343,6 +426,47 @@ declare namespace navi {
      */
     function getCyclingMatrix(params: MatrixParams): Promise<MatrixResult>;
     /**
+     * Plans cycling routes between multiple places.
+     *
+     * Scenario:
+     * This function is applicable to high concurrency scenarios, for example, package delivery.
+     * In this scenario, the function can calculate routes between multiple start points and end points,
+     * and find the start points and end points required for package delivery.
+     *
+     * Restrictions:
+     * 1. A route can only be planned within a distance of 500 kilometers.
+     * 2. The number of start points multiplying the number of end points cannot exceed 100.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { MatrixParams } params - Indicates the routes attributes.
+     * @returns { Promise<CyclingMatrixResult> } - The routes matrix.
+     *
+     * @throws { BusinessError }        401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002600006 - The API call times exceeds the quota.
+     * @throws { BusinessError } 1002600007 - The API QPS exceeds the quota.
+     * @throws { BusinessError } 1002600008 - The API is in arrears.
+     * @throws { BusinessError } 1002600009 - The API have not subscribed to any pay-as-you-go package.
+     * @throws { BusinessError } 1002600010  - The server is busy. please wait and try again.
+     * @throws { BusinessError } 1002600011 - Server error.
+     * @throws { BusinessError } 1002600999 - Unknown error.
+     * @throws { BusinessError } 1002602001 - The start and end points do not have home countries, or a service error occurred.
+     * @throws { BusinessError } 1002602002 - Cross-region route planning is not supported.
+     * @throws { BusinessError } 1002602003 - Start points or end points exceed 100.
+     * @throws { BusinessError } 1002602004 - The linear distance between the start point and end point exceeds the upper limit.
+     * @throws { BusinessError } 1002602005 - The start point, end point, or waypoint does not support navigation.
+     * @throws { BusinessError } 1002602006 - The request point is mapped to the same point on the road.
+     *
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function getCyclingMatrix(context: common.Context, params: MatrixParams): Promise<MatrixResult>;
+    /**
      * Captures roads based on specified coordinate points to snap the user track to the correct roads, and
      * returns a set of coordinate points on the actual roads that the vehicle was traveling along.
      *
@@ -382,8 +506,49 @@ declare namespace navi {
      */
     function snapToRoads(params: SnapToRoadsParams): Promise<SnapToRoadsResult>;
     /**
+     * Captures roads based on specified coordinate points to snap the user track to the correct roads, and
+     * returns a set of coordinate points on the actual roads that the vehicle was traveling along.
+     *
+     * Scenario:
+     * Snap coordinate points on the vehicle traveling track to the actual roads.
+     *
+     * Restrictions:
+     * The number of coordinate points cannot exceed 100, and the distance between two adjacent points must
+     * be less than 500 meters.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { SnapToRoadsParams } params - Indicates the routes attributes.
+     * @returns { Promise<SnapToRoadsResult> } - The result.
+     *
+     * @throws { BusinessError }        401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002600006 - The API call times exceeds the quota.
+     * @throws { BusinessError } 1002600007 - The API QPS exceeds the quota.
+     * @throws { BusinessError } 1002600008 - The API is in arrears.
+     * @throws { BusinessError } 1002600009 - The API have not subscribed to any pay-as-you-go package.
+     * @throws { BusinessError } 1002600010  - The server is busy. please wait and try again.
+     * @throws { BusinessError } 1002600011 - Server error.
+     * @throws { BusinessError } 1002600999 - Unknown error.
+     * @throws { BusinessError } 1002602001 - The start and end points do not have home countries, or a service error occurred.
+     * @throws { BusinessError } 1002602002 - Cross-region route planning is not supported.
+     * @throws { BusinessError } 1002602003 - Start points or end points exceed 100.
+     * @throws { BusinessError } 1002602004 - The linear distance between the start point and end point exceeds the upper limit.
+     * @throws { BusinessError } 1002602005 - The start point, end point, or waypoint does not support navigation.
+     * @throws { BusinessError } 1002602006 - The request point is mapped to the same point on the road.
+     *
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function snapToRoads(context: common.Context, params: SnapToRoadsParams): Promise<SnapToRoadsResult>;
+    /**
      * The route planning attributes.
      *
+     * @typedef RouteCoordinate
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -483,6 +648,7 @@ declare namespace navi {
     /**
      * The route planning attributes.
      *
+     * @typedef RouteParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -567,6 +733,7 @@ declare namespace navi {
     /**
      * Route result.
      *
+     * @typedef RouteResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -587,6 +754,7 @@ declare namespace navi {
     /**
      * The walking route planning attributes.
      *
+     * @typedef DrivingRouteParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -671,6 +839,7 @@ declare namespace navi {
     /**
      * Route.
      *
+     * @typedef Route
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -822,6 +991,7 @@ declare namespace navi {
     /**
      * Step of route.
      *
+     * @typedef RouteStep
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -952,6 +1122,7 @@ declare namespace navi {
     /**
      * Road of a RouteStep.
      *
+     * @typedef RouteRoad
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1104,6 +1275,7 @@ declare namespace navi {
     /**
      * Coordinate bounds.
      *
+     * @typedef CoordinateBound
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1134,6 +1306,7 @@ declare namespace navi {
     /**
      * Waypoint.
      *
+     * @typedef Waypoint
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1164,6 +1337,7 @@ declare namespace navi {
     /**
      * Traffic information.
      *
+     * @typedef TrafficSegment
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1208,6 +1382,7 @@ declare namespace navi {
     /**
      * Matrix params.
      *
+     * @typedef MatrixParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1280,6 +1455,7 @@ declare namespace navi {
     /**
      * Matrix result.
      *
+     * @typedef MatrixResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1320,6 +1496,7 @@ declare namespace navi {
     /**
      * Driving matrix params.
      *
+     * @typedef DrivingMatrixParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1354,6 +1531,7 @@ declare namespace navi {
     /**
      * Row of a matrix.
      *
+     * @typedef MatrixRow
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1374,6 +1552,7 @@ declare namespace navi {
     /**
      * Cell of a matrix.
      *
+     * @typedef MatrixCell
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1424,6 +1603,7 @@ declare namespace navi {
     /**
      * The snap to roads attributes.
      *
+     * @typedef SnapToRoadsParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1445,6 +1625,7 @@ declare namespace navi {
     /**
      * The snap to roads result.
      *
+     * @typedef SnapToRoadsResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1476,6 +1657,7 @@ declare namespace navi {
     /**
      * Snapped point.
      *
+     * @typedef SnappedPoint
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice

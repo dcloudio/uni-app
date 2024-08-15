@@ -23,6 +23,7 @@ declare namespace subjectSegmentation {
     export interface VisionInfo {
         /**
          * Image information to be identified.
+         * @type {image.PixelMap}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
          * @since 5.0.0(12)
          */
@@ -37,24 +38,28 @@ declare namespace subjectSegmentation {
     export interface Rectangle {
         /**
          * Indicates the horizontal coordinate of the upper left corner of the object rectangle.
+         * @type {number}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
          * @since 5.0.0(12)
          */
         left: number;
         /**
          * Indicates the vertical coordinate of the upper left corner of the object rectangle.
+         * @type {number}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
          * @since 5.0.0(12)
          */
         top: number;
         /**
          * width of the object rectangle.
+         * @type {number}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
          * @since 5.0.0(12)
          */
         width: number;
         /**
          * height of the object rectangle.
+         * @type {number}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
          * @since 5.0.0(12)
          */
@@ -69,18 +74,21 @@ declare namespace subjectSegmentation {
     export interface SegmentationConfig {
         /**
          * The Optional maxCount: maximum number of output subjects. default 6, max 20.
+         * @type {?number}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
          * @since 5.0.0(12)
          */
         maxCount?: number;
         /**
          * Whether eachSubject information needed.
+         * @type {?boolean}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
          * @since 5.0.0(12)
          */
         enableSubjectDetails?: boolean;
         /**
          * Whether foregroundImage needed.
+         * @type {?boolean}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
          * @since 5.0.0(12)
          */
@@ -95,20 +103,23 @@ declare namespace subjectSegmentation {
     export interface SubjectResult {
         /**
          * Indicates the foreground image.
-         * @since 5.0.0(12)
+         * @type {image.PixelMap}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
+         * @since 5.0.0(12)
          */
         foregroundImage: image.PixelMap;
         /**
          * Indicates the maskList.
-         * @since 5.0.0(12)
+         * @type {Int32Array}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
+         * @since 5.0.0(12)
          */
         mattingList: Int32Array;
         /**
          * Indicates the bounding box of subject body.
-         * @since 5.0.0(12)
+         * @type {Rectangle}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
+         * @since 5.0.0(12)
          */
         subjectRectangle: Rectangle;
     }
@@ -121,20 +132,23 @@ declare namespace subjectSegmentation {
     export interface SegmentationResult {
         /**
          * Indicates the number of objects in the image.
-         * @since 5.0.0(12)
+         * @type {number}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
+         * @since 5.0.0(12)
          */
         subjectCount: number;
         /**
          * Indicates all subjects information.
-         * @since 5.0.0(12)
+         * @type {SubjectResult}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
+         * @since 5.0.0(12)
          */
         fullSubject: SubjectResult;
         /**
          * Indicates each subject information.
-         * @since 5.0.0(12)
+         * @type {?Array<SubjectResult>}
          * @syscap SystemCapability.AI.Vision.SubjectSegmentation
+         * @since 5.0.0(12)
          */
         subjectDetails?: Array<SubjectResult>;
     }

@@ -14,7 +14,6 @@
  */
 /**
  * @file
- * @kit TestKit
  */
 import { AbilityDelegator } from './application/AbilityDelegator';
 import { AbilityDelegatorArgs } from './application/abilityDelegatorArgs';

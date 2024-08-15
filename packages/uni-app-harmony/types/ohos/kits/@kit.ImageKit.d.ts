@@ -19,5 +19,6 @@
  */
 
 import image from '@ohos.multimedia.image';
+import sendableImage from '@ohos.multimedia.sendableImage';
 
-export { image };
+export { image, sendableImage };

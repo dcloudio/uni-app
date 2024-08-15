@@ -42,8 +42,7 @@ declare namespace safetyDetect {
         /**
          * Indicates the result of URL check.
          *
-         * @type { Array<UrlThreat> }
-         * @readonly
+         * @type { Array<UrlCheckResult> }
          * @syscap SystemCapability.Security.SafetyDetect
          * @since 5.0.0(12)
          */
@@ -163,7 +162,6 @@ declare namespace safetyDetect {
          * d. Obtain the integrity verification result from the payload.
          *
          * @type { string }
-         * @readonly
          * @syscap SystemCapability.Security.SafetyDetect
          * @since 5.0.0(12)
          */

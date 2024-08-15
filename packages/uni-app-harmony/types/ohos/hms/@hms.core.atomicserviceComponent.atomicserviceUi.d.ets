@@ -17,6 +17,7 @@ import type { AsyncCallback } from '@ohos.base';
 export declare struct FunctionalButton {
     /**
      * Defines FunctionalButton Params.
+     * @type { functionalButtonComponentManager.FunctionalButtonParams }
      * @syscap SystemCapability.AtomicserviceComponent.UIComponent
      * @stagemodelonly
      * @atomicservice
@@ -26,6 +27,7 @@ export declare struct FunctionalButton {
     params: functionalButtonComponentManager.FunctionalButtonParams;
     /**
      * Defines the controller to interact with FunctionalButton.
+     * @type { functionalButtonComponentManager.FunctionalButtonController }
      * @syscap SystemCapability.AtomicserviceComponent.UIComponent
      * @stagemodelonly
      * @atomicservice
@@ -115,6 +117,22 @@ export declare namespace functionalButtonComponentManager {
          * @since 5.0.0(12)
          */
         CHOOSE_INVOICE_TITLE = 6,
+        /**
+         * Real name authentication.
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        REAL_NAME_AUTHENTICATION = 7,
+        /**
+         * Face authentication.
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        FACE_AUTHENTICATION = 8,
         /**
          * To choose the location.
          * @syscap SystemCapability.AtomicserviceComponent.UIComponent
@@ -719,6 +737,96 @@ export declare namespace functionalButtonComponentManager {
         bankAccount?: string;
     }
     /**
+     * Define the return body for real name authentication.
+     * @typedef RealNameAuthenticationResult
+     * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    export interface RealNameAuthenticationResult {
+        /**
+         * AuthCode.
+         * @type { ?string }
+         * @readonly
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        authCode?: string;
+        /**
+         * OpenID.
+         * @type { ?string }
+         * @readonly
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        openID?: string;
+    }
+    /**
+     * Define the return body for face authentication.
+     * @typedef FaceAuthenticationResult
+     * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    export interface FaceAuthenticationResult {
+        /**
+         * AuthCode.
+         * @type { ?string }
+         * @readonly
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        authCode?: string;
+        /**
+         * OpenID.
+         * @type { ?string }
+         * @readonly
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        openID?: string;
+    }
+    /**
+     * Define the return body for face verification.
+     * @typedef FaceVerificationResult
+     * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    export interface FaceVerificationResult {
+        /**
+         * Facial recognition verify token returned upon verification success.
+         * @type { ?string }
+         * @readonly
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        facialRecognitionVerificationToken?: string;
+        /**
+         * State.
+         * @type { ?string }
+         * @readonly
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        state?: string;
+    }
+    /**
      * Define the return body for choose Location result.
      * @typedef ChooseLocationResult
      * @syscap SystemCapability.AtomicserviceComponent.UIComponent
@@ -866,6 +974,47 @@ export declare namespace functionalButtonComponentManager {
          * @since 5.0.0(12)
          */
         onChooseInvoiceTitle(callback: AsyncCallback<ChooseInvoiceTitleResult>): FunctionalButtonController;
+        /**
+         * Registers a callback to return the real name authentication result.
+         * @param { AsyncCallback<RealNameAuthenticationResult> } callback - Callback invoked to return the real name
+         *     authentication response.
+         * AsyncCallback param err { BusinessError } Error code returned when real name authentication fails.
+         * AsyncCallback param data { RealNameAuthenticationResult } Response returned when the real name authentication
+         *     success.
+         * @returns { FunctionalButtonController } Returns the current controller instance.
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        onRealNameAuthentication(callback: AsyncCallback<RealNameAuthenticationResult>): FunctionalButtonController;
+        /**
+         * Registers a callback to return the face authentication result.
+         * @param { AsyncCallback<FaceAuthenticationResult> } callback - Callback invoked to return the face
+         *     authentication response.
+         * AsyncCallback param err { BusinessError } Error code returned when face authentication fails.
+         * AsyncCallback param data { FaceAuthenticationResult } Response returned when the face authentication
+         *     success.
+         * @returns { FunctionalButtonController } Returns the current controller instance.
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        onFaceAuthentication(callback: AsyncCallback<FaceAuthenticationResult>): FunctionalButtonController;
+        /**
+         * Registers a callback to return the face verification result.
+         * @param { string } verifyToken - Result of the face authentication.
+         * @param { AsyncCallback<FaceVerificationResult> } callback - Callback invoked to return the face
+         *     verification response.
+         * AsyncCallback param err { BusinessError } Error code returned when face verification fails.
+         * AsyncCallback param data { FaceVerificationResult } Response returned when the face verification success.
+         * @syscap SystemCapability.AtomicserviceComponent.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        onFaceVerification(verifyToken: string, callback: AsyncCallback<FaceVerificationResult>): void;
         /**
          * Registers a callback to return the choose location result.
          * @param { AsyncCallback<ChooseLocationResult> } callback - Callback invoked to return the choose location
@@ -1031,7 +1180,7 @@ export declare namespace functionalButtonComponentManager {
         /**
          * The backgroundImage attribute of the Button.
          * @param { ResourceStr } value - The backgroundImage src attribute of the Button.
-         * @param { ?ImageRepeat } repeat - The backgroundImage repeat attribute of the Button.
+         * @param { ImageRepeat } [options] repeat - The backgroundImage repeat attribute of the Button.
          * @returns { ButtonConfig } Returns the current controller instance.
          * @syscap SystemCapability.AtomicserviceComponent.UIComponent
          * @stagemodelonly

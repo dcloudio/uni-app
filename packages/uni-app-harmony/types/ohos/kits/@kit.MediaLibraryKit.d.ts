@@ -19,5 +19,6 @@
  */
 
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
+import { MovingPhotoView, MovingPhotoViewController, MovingPhotoViewAttribute } from '@ohos.multimedia.movingphotoview';
 
-export { photoAccessHelper };
+export { photoAccessHelper, MovingPhotoView, MovingPhotoViewController, MovingPhotoViewAttribute };

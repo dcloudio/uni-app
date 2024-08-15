@@ -16,9 +16,7 @@
  * @file
  * @kit ArkUI
  */
-
-/// <reference path="../component/units.d.ts" />
-import { ResourceStr } from 'GlobalResource';
+import { TextModifier } from './@ohos.arkui.modifier';
 /**
  * Control style of operation element
  * @enum { OperationStyle }
@@ -193,82 +191,6 @@ export declare class SelectOptions {
     onSelect?: (index: number, value?: string) => void;
 }
 /**
- * The symbol rendering strategy.
- *
- * @enum { number }
- * @syscap SystemCapability.ArkUI.ArkUI.Full
- * @crossplatform
- * @atomicservice
- * @since 12
- */
-declare enum SymbolRenderingStrategy {
-    /**
-     * The single rendering strategy.
-     *
-     * @syscap SystemCapability.ArkUI.ArkUI.Full
-     * @crossplatform
-     * @atomicservice
-     * @since 12
-     */
-    SINGLE = 0,
-    /**
-     * The multiple color rendering strategy.
-     *
-     * @syscap SystemCapability.ArkUI.ArkUI.Full
-     * @crossplatform
-     * @atomicservice
-     * @since 12
-     */
-    MULTIPLE_COLOR = 1,
-    /**
-     * The multiple opacity rendering strategy.
-     *
-     * @syscap SystemCapability.ArkUI.ArkUI.Full
-     * @crossplatform
-     * @atomicservice
-     * @since 12
-     */
-    MULTIPLE_OPACITY = 2
-}
-/**
- * The symbol effect strategy.
- *
- * @enum { number }
- * @syscap SystemCapability.ArkUI.ArkUI.Full
- * @crossplatform
- * @atomicservice
- * @since 12
- */
-declare enum SymbolEffectStrategy {
-    /**
-     * There is no effect strategy.
-     *
-     * @syscap SystemCapability.ArkUI.ArkUI.Full
-     * @crossplatform
-     * @atomicservice
-     * @since 12
-     */
-    NONE = 0,
-    /**
-     * The scale effect strategy.
-     *
-     * @syscap SystemCapability.ArkUI.ArkUI.Full
-     * @crossplatform
-     * @atomicservice
-     * @since 12
-     */
-    SCALE = 1,
-    /**
-     * The hierarchical effect strategy.
-     *
-     * @syscap SystemCapability.ArkUI.ArkUI.Full
-     * @crossplatform
-     * @atomicservice
-     * @since 12
-     */
-    HIERARCHICAL = 2
-}
-/**
  * Declare type SymbolOptions
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @atomicservice
@@ -431,4 +353,47 @@ export declare struct SubHeader {
      * @since 12
      */
     operationSymbolOptions?: Array<SymbolOptions>;
+    /**
+     * Text modifier for primary title.
+     * @type { TextModifier }.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    primaryTitleModifier?: TextModifier;
+    /**
+     * Text modifier for secondary title.
+     * @type { TextModifier }.
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    secondaryTitleModifier?: TextModifier;
+    /**
+     * Set the title content.
+     * @type { () => void }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    @BuilderParam
+    titleBuilder?: () => void;
+    /**
+     * Set the content margin.
+     * @type { ?LocalizedMargin }
+     * @default {start: LengthMetrics.resource($r('sys.float.margin_left')),
+     * <br> end: LengthMetrics.resource($r('sys.float.margin_right'))}
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    @Prop
+    contentMargin?: LocalizedMargin;
+    /**
+     * Set the content padding.
+     * @type { ?LocalizedPadding }
+     * @default set different default values according to the width of the subHeader:
+     * <br> When the left area is secondaryTitle or the group of secondaryTitle and icon,
+     * <br> the default value is {start: LengthMetrics.vp(12), end: LengthMetrics.vp(12)};
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @since 12
+     */
+    @Prop
+    contentPadding?: LocalizedPadding;
 }

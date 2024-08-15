@@ -264,7 +264,14 @@ declare namespace scanCore {
          * @atomicservice
          * @since 4.1.0(11)
          */
-        INTERNAL_ERROR = 1000500001
+        INTERNAL_ERROR = 1000500001,
+        /**
+         * The user canceled the barcode scanning.
+         * @syscap SystemCapability.Multimedia.Scan.Core
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        SCAN_SERVICE_CANCELED = 1000500002
     }
 }
 export default scanCore;

@@ -11,4 +11,7 @@ import textRecognition from '@hms.ai.ocr.textRecognition';
 import faceDetector from '@hms.ai.face.faceDetector';
 import faceComparator from '@hms.ai.face.faceComparator';
 import subjectSegmentation from '@hms.ai.vision.subjectSegmentation';
-export {textRecognition, faceDetector, faceComparator, subjectSegmentation} ;
+import visionBase from '@hms.ai.vision.visionBase';
+import objectDetection from '@hms.ai.vision.objectDetection';
+import skeletonDetection from '@hms.ai.vision.skeletonDetection';
+export {textRecognition, faceDetector, faceComparator, subjectSegmentation, visionBase, objectDetection, skeletonDetection} ;

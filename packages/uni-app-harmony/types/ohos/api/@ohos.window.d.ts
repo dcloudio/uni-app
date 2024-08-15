@@ -16,11 +16,8 @@
  * @file
  * @kit ArkUI
  */
-
-/// <reference path="../component/common_ts_ets_api.d.ts"/>
 import { AsyncCallback, Callback } from './@ohos.base';
 import BaseContext from './application/BaseContext';
-import { LocalStorage } from 'StateManagement';
 import image from './@ohos.multimedia.image';
 import { UIContext } from './@ohos.arkui.UIContext';
 /**
@@ -386,6 +383,23 @@ declare namespace window {
          * @since 12
          */
         enableNavigationBarAnimation?: boolean;
+    }
+    /**
+     * Properties of status bar, it couldn't update automatically
+     *
+     * @interface SystemBarStyle
+     * @syscap SystemCapability.WindowManager.WindowManager.Core
+     * @atomicservice
+     * @since 12
+     */
+    interface SystemBarStyle {
+        /**
+         * The content color of the status bar
+         *
+         * @syscap SystemCapability.WindowManager.WindowManager.Core
+         * @since 12
+         */
+        statusBarContentColor?: string;
     }
     /**
      * Rectangle
@@ -3568,6 +3582,34 @@ declare namespace window {
          * @since 11
          */
         off(type: 'windowStatusChange', callback?: Callback<WindowStatusType>): void;
+        /**
+         * Register the callback of subWindowClose
+         *
+         * @param { 'subWindowClose' } type - The value is fixed at 'subWindowClose', indicating the subwindow close event.
+         * @param { Callback<void> } callback - Callback used to return whether to terminate the subwindow close process.
+         * @throws { BusinessError } 401 - Parameter error. Possible cause: 1. Incorrect parameter types;
+         *                                                                  2. Parameter verification failed.
+         * @throws { BusinessError } 801 - Capability not supported. Failed to call the API due to limited device capabilities.
+         * @throws { BusinessError } 1300002 - This window state is abnormal.
+         * @throws { BusinessError } 1300004 - Unauthorized operation.
+         * @syscap SystemCapability.Window.SessionManager
+         * @since 12
+         */
+        on(type: 'subWindowClose', callback: Callback<void>): void;
+        /**
+         * Unregister the callback of subWindowClose
+         *
+         * @param { 'subWindowClose' } type - The value is fixed at 'subWindowClose', indicating the subwindow close event.
+         * @param { Callback<void> } callback - Callback used to return whether to terminate the subwindow close process.
+         * @throws { BusinessError } 401 - Parameter error. Possible cause: 1. Incorrect parameter types;
+         *                                                                  2. Parameter verification failed.
+         * @throws { BusinessError } 801 - Capability not supported. Failed to call the API due to limited device capabilities.
+         * @throws { BusinessError } 1300002 - This window state is abnormal.
+         * @throws { BusinessError } 1300004 - Unauthorized operation.
+         * @syscap SystemCapability.Window.SessionManager
+         * @since 12
+         */
+        off(type: 'subWindowClose', callback?: Callback<void>): void;
         /**
          * Whether the window supports thr wide gamut setting.
          *

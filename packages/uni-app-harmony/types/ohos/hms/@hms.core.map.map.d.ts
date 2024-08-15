@@ -47,7 +47,7 @@ declare namespace map {
          * Updates the camera status in animation mode and invokes the callback when the update is complete.
          *
          * @param { CameraUpdate } update - Indicates the new camera state.
-         * @param { ?number } duration - Indicates the animate duration, unit is ms. The value is an integer greater than 0.Default value is 250.
+         * @param { number } [duration] - Indicates the animate duration, unit is ms. The value is an integer greater than 0.Default value is 250.
          * @returns { Promise<AnimateResult> } Return animate result.
          * @throws { BusinessError } 401 - Invalid input parameter.
          * @syscap SystemCapability.Map.Core
@@ -188,7 +188,6 @@ declare namespace map {
          *
          * @param {boolean} enabled - Indicates whether to enable the traffic layer.
          * @returns { void }
-         * @default false
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -211,7 +210,6 @@ declare namespace map {
          *
          * @param {boolean} enabled - Indicates whether to enable the 3D building layer.
          * @returns { void }
-         * @default false
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -234,7 +232,6 @@ declare namespace map {
          *
          * @param {boolean} myLocationEnabled - Indicates whether to enable the my location layer.
          * @returns { void }
-         * @default false
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -255,7 +252,7 @@ declare namespace map {
         setMyLocation(location: geoLocationManager.Location): void;
         /**
          * Set the style of my location layer.
-         * Abnormal values are processed as no response.
+         * If the value of MyLocationStyle's displayType is MyLocationDisplayType.FOLLOW_ROTATE, application should apply ohos.permission.ACCELEROMETER permission.
          *
          * @param {mapCommon.MyLocationStyle} style - Indicates the my location style
          * @returns { Promise<void> }
@@ -281,7 +278,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates the switch for zooming in or out gestures.
          * @returns { void }
-         * @default true
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -304,7 +300,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates the switch for scrolling gestures.
          * @returns { void }
-         * @default true
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -327,7 +322,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates whether to enable rotation gestures.
          * @returns { void }
-         * @default true
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -350,7 +344,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates whether to enable tilt gestures.
          * @returns { void }
-         * @default true
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -373,7 +366,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates whether to enable the zoom control.
          * @returns {void}
-         * @default true
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -396,7 +388,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates whether to enable the my location control.
          * @returns { void }
-         * @default false
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -419,7 +410,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates whether to enable the scale control.
          * @returns { void }
-         * @default false
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -442,7 +432,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates whether to enable the compass control.
          * @returns { void }
-         * @default true
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -452,7 +441,7 @@ declare namespace map {
         /**
          * Return whether to enable the compass control.
          *
-         * @param { boolean } Return whether to enable the compass control.
+         * @returns { boolean } Return whether to enable the compass control.
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -465,7 +454,6 @@ declare namespace map {
          *
          * @param { boolean } enabled - Indicates whether to zoom in or out at the center of the map.
          * @returns { void }
-         * @default false
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -488,7 +476,6 @@ declare namespace map {
          *
          * @param { mapCommon.LogoAlignment } alignment - Indicates the alignment mode of the map logo
          * @returns { void }
-         * @default LogoAlignment.BOTTOM_START
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -772,6 +759,51 @@ declare namespace map {
          * @since 5.0.0(12)
          */
         snapshot(): Promise<image.PixelMap>;
+        /**
+         * Add building overlay.
+         *
+         * @param { mapCommon.BuildingOverlayParams } params - Indicates the building overlay parameter.
+         * @returns { Promise<BuildingOverlay> } Return BuildingOverlay.
+         * @throws { BusinessError } 401 - Invalid input parameter.
+         * @throws { BusinessError } 1002601001 - The object to be operated does not exist.
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        addBuildingOverlay(params: mapCommon.BuildingOverlayParams): Promise<BuildingOverlay>;
+        /**
+         * Add trace overlay.If a marker is passed, the marker will move with the trace.
+         *
+         * @param { mapCommon.TraceOverlayParams } params - Indicates the trace overlay parameter.
+         * @param { Array<Marker> } [markers] - Indicates the marker.
+         * @returns { Promise<TraceOverlay> } Return TraceOverlay.
+         * @throws { BusinessError } 401 - Invalid input parameter.
+         * @throws { BusinessError } 1002601001 - The object to be operated does not exist.
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        addTraceOverlay(params: mapCommon.TraceOverlayParams, markers?: Array<Marker>): Promise<TraceOverlay>;
+        /**
+         * Switch the Map component to the foreground when the onPageShow of the page is triggered.
+         *
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        show(): void;
+        /**
+         * Switch the Map component to the background when the onPageHide of the page is triggered.
+         *
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        hide(): void;
         /**
          * listening the map camera changes event.
          * This callback is not triggered during motion, but is triggered at the end of the animation.
@@ -1272,7 +1304,7 @@ declare namespace map {
          * Cancel listening the ImageOverlay click event.
          *
          * @param {'imageOverlayClick'} type
-         * @param {?Callback<ImageOverlay>} callback - Cancel listening the ImageOverlay click event.
+         * @param {Callback<ImageOverlay>} [callback] - Cancel listening the ImageOverlay click event.
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1305,6 +1337,7 @@ declare namespace map {
     /**
      * This interface defines the base overlay, such as Marker, MapCircle, MapPolygon, and etc.
      *
+     * @typedef BaseOverlay
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1401,6 +1434,7 @@ declare namespace map {
     /**
      * Provides interfaces for updating and querying marker.
      *
+     * @typedef Marker
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1709,6 +1743,7 @@ declare namespace map {
     /**
      * Provides interfaces for updating and querying polyline.
      *
+     * @typedef MapPolyline
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1838,7 +1873,7 @@ declare namespace map {
          */
         setClickable(clickable: boolean): void;
         /**
-         * Set the color of the polyline. The color value is ARGB format。
+         * Set the color of the polyline. The color value is ARGB format.
          * Abnormal values are processed as no response.
          *
          * @param { number } color - Indicates the color of the polyline.
@@ -1850,7 +1885,7 @@ declare namespace map {
          */
         setColor(color: number): void;
         /**
-         * Set the multiple colors of the polyline. The color value is ARGB format。
+         * Set the multiple colors of the polyline. The color value is ARGB format.
          * Abnormal values are processed as no response.
          *
          * @param { Array<number> } colors - Indicates the multiple colors of the polyline.
@@ -1971,6 +2006,7 @@ declare namespace map {
     /**
      * Provides interfaces for updating and querying polygon.
      *
+     * @typedef MapPolygon
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -2080,7 +2116,7 @@ declare namespace map {
          */
         setClickable(clickable: boolean): void;
         /**
-         * Set the fill color of the polygon. The color value is ARGB format。
+         * Set the fill color of the polygon. The color value is ARGB format.
          * Abnormal values are processed as no response.
          *
          * @param { number } color - Indicates the fill color of the polygon.
@@ -2119,7 +2155,7 @@ declare namespace map {
          * Set the coordinate point list of the polygon.
          * Abnormal values are processed as no response.
          *
-         * @param { Array<Array<mapCommon.LatLng>> } holes - Indicates the coordinate point list of the polygon.
+         * @param { Array<mapCommon.LatLng> } points - Indicates the coordinate point list of the polygon.
          * @return { void }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
@@ -2128,7 +2164,7 @@ declare namespace map {
          */
         setPoints(points: Array<mapCommon.LatLng>): void;
         /**
-         * Set the stroke color of the polygon.The color value is ARGB format。
+         * Set the stroke color of the polygon.The color value is ARGB format.
          * Abnormal values are processed as no response.
          *
          * @param { number } color - Indicates the stroke color of the polygon.
@@ -2179,6 +2215,7 @@ declare namespace map {
     /**
      * Provides interfaces for updating and querying circle.
      *
+     * @typedef MapCircle
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -2260,7 +2297,7 @@ declare namespace map {
          * Abnormal values are processed as no response.
          *
          * @param { mapCommon.LatLng } center - Indicates the center position of the circle.
-         * @return { void } Promise object.No return value.
+         * @return { void }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -2280,7 +2317,7 @@ declare namespace map {
          */
         setClickable(clickable: boolean): void;
         /**
-         * Set the fill color of the circle.The color value is ARGB format。
+         * Set the fill color of the circle.The color value is ARGB format.
          * Abnormal values are processed as no response.
          *
          * @param { number } color - Indicates the fill color of the circle.
@@ -2304,7 +2341,7 @@ declare namespace map {
          */
         setRadius(radius: number): void;
         /**
-         * Set the stroke color of the circle.The color value is ARGB format。
+         * Set the stroke color of the circle.The color value is ARGB format.
          * Abnormal values are processed as no response.
          *
          * @param { number } color - Indicates the stroke color of the circle.
@@ -2332,7 +2369,7 @@ declare namespace map {
          * Abnormal values are processed as no response.
          *
          * @param { number } width - Indicates the stroke width of the circle.
-         * @return { void } Promise object.No return value.
+         * @return { void }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -2356,7 +2393,7 @@ declare namespace map {
      * Create a new CameraUpdate object to update the center point and zoom level of the map camera.
      *
      * @param { mapCommon.LatLng } latLng - Indicate the longitude and latitude
-     * @param { ?number } zoom - Indicate the zoom level
+     * @param { number } [zoom] - Indicate the zoom level
      * @returns { CameraUpdate } Return CameraUpdate object.
      * @throws { BusinessError } 401 - Invalid input parameter.
      * @syscap SystemCapability.Map.Core
@@ -2369,7 +2406,7 @@ declare namespace map {
      * Create a new CameraUpdate object to set the longitude and latitude range.
      *
      * @param { mapCommon.LatLngBounds } bounds - Indicate the LatLngBounds
-     * @param { ?number } padding - Indicate the distance between the map area and the border, in pixels.If not set, use default value 0.
+     * @param { number } [padding] - Indicate the distance between the map area and the border, in pixels.If not set, use default value 0.
      * @returns { CameraUpdate } Return CameraUpdate object.
      * @throws { BusinessError } 401 - Invalid input parameter.
      * @syscap SystemCapability.Map.Core
@@ -2411,7 +2448,7 @@ declare namespace map {
      * Create a new CameraUpdate object to move the camera in increments by the specified zoom level and center point screen coordinates.
      *
      * @param { number } amount - Indicate the added zoom level
-     * @param { ?mapCommon.MapPoint } focus - Indicate the center point screen coordinates.If not set, use the center point of the screen as the focus.
+     * @param { mapCommon.MapPoint } [focus] - Indicate the center point screen coordinates.If not set, use the center point of the screen as the focus.
      * @returns { CameraUpdate } Return CameraUpdate object.
      * @throws { BusinessError } 401 - Invalid input parameter.
      * @syscap SystemCapability.Map.Core
@@ -2482,6 +2519,7 @@ declare namespace map {
     /**
      * Provide the camera movement parameters which is created by CameraUpdateFactory.
      *
+     * @typedef CameraUpdate
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -2492,6 +2530,7 @@ declare namespace map {
     /**
      * This interface defines the overlays that support display priority control, such as PointAnnotation and Bubble.
      *
+     * @typedef BasePriorityOverlay
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -2578,6 +2617,7 @@ declare namespace map {
     /**
      * Provides interfaces for updating and querying point annotation.
      *
+     * @typedef PointAnnotation
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -2641,6 +2681,7 @@ declare namespace map {
     /**
      * Provides interfaces for updating and querying bubble.
      *
+     * @typedef Bubble
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -2686,6 +2727,7 @@ declare namespace map {
     /**
      * Used to convert between screen coordinates and longitude and latitude.
      *
+     * @typedef Projection
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -3102,6 +3144,7 @@ declare namespace map {
     /**
      * The cluster overlay.
      *
+     * @typedef ClusterOverlay
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -3124,14 +3167,14 @@ declare namespace map {
          * Cancel listening cluster click event.
          *
          * @param { 'clusterClick' } type
-         * @param { Callback<void> } callback - Cancel the listener when click the cluster.
+         * @param { Callback<void> } [callback] - Cancel the listener when click the cluster.
          * @returns { void }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
          * @since 5.0.0(12)
          */
-        off(type: 'clusterClick', callback: Callback<void>): void;
+        off(type: 'clusterClick', callback?: Callback<void>): void;
         /**
          * Add cluster item to the cluster overlay.
          *
@@ -3157,6 +3200,7 @@ declare namespace map {
     /**
      * Provides interfaces for updating and querying ImageOverlay.
      *
+     * @typedef ImageOverlay
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -3259,7 +3303,7 @@ declare namespace map {
          * Set the width and height.
          *
          * @param { number } width - Indicates width.
-         * @param { ?number } height - Indicates height.
+         * @param { number } [height] - Indicates height.
          * @return { void }
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
@@ -3338,6 +3382,7 @@ declare namespace map {
     /**
      * The animation is finished or canceled.
      *
+     * @typedef AnimateResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -3368,6 +3413,7 @@ declare namespace map {
     /**
      * The marker delegate class for the custom information window.
      *
+     * @typedef MarkerDelegate
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -3384,6 +3430,122 @@ declare namespace map {
          * @since 5.0.0(12)
          */
         marker?: Marker;
+    }
+    /**
+     * Provides interfaces for updating and querying BuildingOverlay.
+     *
+     * @typedef BuildingOverlay
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    interface BuildingOverlay {
+        /**
+         * Return the id of the BuildingOverlay.
+         *
+         * @returns { string } Return the id of the BuildingOverlay.
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        getId(): string;
+        /**
+         * Remove the BuildingOverlay.
+         *
+         * @returns { void }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        remove(): void;
+        /**
+         * Set whether to display the side and the top of the building.If want the building not to be displayed,
+         * also call setSideVisible(false) and setFloorVisible(false).
+         *
+         * @param { boolean } visible - Indicates whether to display the side of the building.
+         * @returns { void }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        setSideVisible(visible: boolean): void;
+        /**
+         * Set whether to display the selected floor of a building.
+         *
+         * @param { boolean } visible - Indicates whether to display the selected floor of a building.
+         * @returns { void }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        setFloorVisible(visible: boolean): void;
+        /**
+         * Set the height from the bottom of the selected floor to the ground, and the unit is meter.
+         *
+         * @param { number } height - Indicates the height from the bottom of the selected floor to the ground.
+         * @returns { void }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        setFloorBottomHeight(height: number): void;
+    }
+    /**
+     * Provides interfaces for updating and querying TraceOverlay.
+     *
+     * @typedef TraceOverlay
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    interface TraceOverlay {
+        /**
+         * Return the id of the TraceOverlay.
+         *
+         * @returns { string } Return the id of the TraceOverlay.
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        getId(): string;
+        /**
+         * Remove the TraceOverlay.
+         *
+         * @returns { void }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        remove(): void;
+        /**
+         * Pause track playback.
+         *
+         * @returns { void }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        pause(): void;
+        /**
+         * Resume track playback.
+         *
+         * @returns { void }
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        resume(): void;
     }
     /**
      * The animation fill mode.

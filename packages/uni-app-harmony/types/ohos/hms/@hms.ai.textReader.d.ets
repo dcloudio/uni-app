@@ -23,6 +23,8 @@ declare namespace TextReader {
      *
      * @param { common.BaseContext } context - Indicates the application context.
      * @param { ReaderParam } - readParams, Indicates the params for text reader.
+     * @throws { BusinessError } 201 - Permission denied. Interface caller does not
+     * have permission "ohos.permission.KEEP_BACKGROUND_RUNNING".
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1010600011 - Initialize failed.
      * @syscap SystemCapability.AI.Component.TextReader
@@ -38,8 +40,8 @@ declare namespace TextReader {
     function release(): Promise<void>;
     /**
      * Pull up the textReader player panel and start playing audio streams from the indicated article Id.
-     * @param { readInfoList } readInfoList.
-     * @param { articleId } - articleId.
+     * @param { ReadInfo[] } readInfoList - Indicates the list of readInfo data.
+     * @param { ?string } articleId - Indicates the article id.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1010600012 - The TextReader is not initialized.
      * @throws { BusinessError } 1010600013 - Text-to-speech engine error.
@@ -77,6 +79,22 @@ declare namespace TextReader {
      */
     function resume(): void;
     /**
+     * Play previous article.
+     * @throws { BusinessError } 1010600012 - The TextReader is not initialized.
+     * @throws { BusinessError } 1010600017 - playPrev failed.
+     * @syscap SystemCapability.AI.Component.TextReader
+     * @since 5.0.0(12)
+     */
+    function playPrev(): void;
+    /**
+     * Play next article.
+     * @throws { BusinessError } 1010600012 - The TextReader is not initialized.
+     * @throws { BusinessError } 1010600018 - playNext failed.
+     * @syscap SystemCapability.AI.Component.TextReader
+     * @since 5.0.0(12)
+     */
+    function playNext(): void;
+    /**
      * Hide the textReader player panel.
      * @throws { BusinessError } 1010600012 - The TextReader is not initialized.
      * @syscap SystemCapability.AI.Component.TextReader
@@ -92,9 +110,9 @@ declare namespace TextReader {
     function showPanel(): void;
     /**
      * Query the reading state of the indicated article id.
-     * @param { id } id - Indicates the article id.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @param { ?string } id - Indicates the article id.
      * @returns { ReadState } - ReadState is returned.
+     * @throws { BusinessError } 401 - Parameter error.
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
      */
@@ -102,12 +120,20 @@ declare namespace TextReader {
     /**
      * Set the content of the indicated article id.
      * @param { string } id - Indicates the article id.
-     * @param { content } string - Indicates the article content.
+     * @param { ?string } content - Indicates the article content.
      * @throws { BusinessError } 401 - Parameter error.
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
      */
     function setArticleContent(id: string, content?: string): void;
+    /**
+     * Set the article of the indicated article id.
+     * @param { ReadInfo } readInfo - The article info include image and content.
+     * @throws { BusinessError } 401 - Parameter error.
+     * @syscap SystemCapability.AI.Component.TextReader
+     * @since 5.0.0(12)
+     */
+    function setArticle(readInfo: ReadInfo): void;
     /**
      * Load more articles and set them to the playlist
      * @param { ReadInfo[] } readInfos - Indicates the list of articles to be loaded.
@@ -129,7 +155,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'setArticle' } type - Registration Type, 'setArticle'
-     * @param { Callback<string> } callback - Callback is invoked when the setArticle event is triggered.
+     * @param { Callback<string> } [callback] - Callback is invoked when the setArticle event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -147,7 +173,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'clickArticle' } type - Registration Type, 'clickArticle'
-     * @param { Callback<string> } callback - Callback is invoked when the clickArticle event is triggered.
+     * @param { Callback<string> } [callback] - Callback is invoked when the clickArticle event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -165,7 +191,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'clickAuthor' } type - Registration Type, 'clickAuthor'
-     * @param { Callback<string> } callback - Callback is invoked when the clickAuthor event is triggered.
+     * @param { Callback<string> } [callback] - Callback is invoked when the clickAuthor event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -183,7 +209,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'clickNotification' } type - Registration Type, 'clickNotification'
-     * @param { Callback<string> } callback - Callback is invoked when the clickNotification event is triggered.
+     * @param { Callback<string> } [callback] - Callback is invoked when the clickNotification event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -201,7 +227,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'showPanel' } type - Registration Type, 'showPanel'
-     * @param { Callback<void> } callback - Callback is invoked when the showPanel event is triggered.
+     * @param { Callback<void> } [callback] - Callback is invoked when the showPanel event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -219,7 +245,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'hidePanel' } type - Registration Type, 'hidePanel'
-     * @param { Callback<void> } callback - Callback is invoked when the hidePanel event is triggered.
+     * @param { Callback<void> } [callback] - Callback is invoked when the hidePanel event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -237,7 +263,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'stop' } type - Registration Type, 'stop'
-     * @param { Callback<void> } callback - Callback is invoked when the stop event is triggered.
+     * @param { Callback<void> } [callback] - Callback is invoked when the stop event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -255,7 +281,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'release' } type - Registration Type, 'release'
-     * @param { Callback<void> } callback - Callback is invoked when the release event is triggered.
+     * @param { Callback<void> } [callback] - Callback is invoked when the release event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -273,7 +299,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'stateChange' } type - Registration Type, 'stateChange'
-     * @param { Callback<ReadState> } callback - Callback is invoked when the stateChange event is triggered.
+     * @param { Callback<ReadState> } [callback] - Callback is invoked when the stateChange event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -291,7 +317,7 @@ declare namespace TextReader {
     /**
      * Unregister reader action callback
      * @param { 'requestMore' } type - Registration Type, 'requestMore'
-     * @param { Callback<void> } callback - Callback is invoked when the requestMore event is triggered.
+     * @param { Callback<void> } [callback] - Callback is invoked when the requestMore event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -310,7 +336,7 @@ declare namespace TextReader {
     /**
      * Unregister reader event callback
      * @param { 'eventNotification' } type - Registration Type, 'eventNotification'
-     * @param { Callback<NotificationEvent> } callback - Callback is invoked when the eventNotification event
+     * @param { Callback<NotificationEvent> } [callback] - Callback is invoked when the eventNotification event
      * is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
@@ -329,7 +355,7 @@ declare namespace TextReader {
     /**
      * Unregister reader event callback
      * @param { 'eventPanel' } type - Registration Type, 'eventPanel'
-     * @param { Callback<PanelEvent> } callback - Callback is invoked when the eventPanel event is triggered.
+     * @param { Callback<PanelEvent> } [callback] - Callback is invoked when the eventPanel event is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
@@ -348,7 +374,7 @@ declare namespace TextReader {
     /**
      * Unregister reader event callback
      * @param { 'eventReadList' } type - Registration Type, 'eventReadList'
-     * @param { Callback<Array<ListEventState>> } callback - Callback is invoked when the eventReadList event
+     * @param { Callback<Array<ListEventState>> } [callback] - Callback is invoked when the eventReadList event
      * is triggered.
      * @throws { BusinessError } 401 - parameter check failed
      * @syscap SystemCapability.AI.Component.TextReader
@@ -365,24 +391,28 @@ declare namespace TextReader {
     interface BusinessBrandInfo {
         /**
          * Brand name displayed on the panel
+         * @type { ?string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         panelName?: string;
         /**
          * Icon displayed on the panel
+         * @type { ?ResourceStr }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         panelIcon?: ResourceStr;
         /**
          * Icon displayed on the the notification bar
+         * @type { ?ResourceStr }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         notificationIcon?: ResourceStr;
         /**
          * Brand name displayed on the notification bar
+         * @type { ?string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -398,12 +428,14 @@ declare namespace TextReader {
     interface ReaderParam {
         /**
          * Display brand name, default to no
+         * @type { boolean }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         isVoiceBrandVisible: boolean;
         /**
          * Business branch information
+         * @type { ?BusinessBrandInfo }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -411,14 +443,23 @@ declare namespace TextReader {
         /**
          * Whether to set the fast forward/backward function to fast forward/backward for 15 seconds,
          * default to no, that is, fast forward/backward the previous and next sentences
+         * @type { ?boolean }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         isFastForward?: boolean;
         /**
+         * Whether to use the feature of keeping back ground running.
+         * @type { ?boolean }
+         * @syscap SystemCapability.AI.Component.TextReader
+         * @since 5.0.0(12)
+         */
+        keepBackgroundRunning?: boolean;
+        /**
          * Whether to support online audio stream synthesis, default to no
          * mode: 0, online audio stream synthesis
          * mode: 1, offline audio stream synthesis
+         * @type { ?number }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -434,12 +475,14 @@ declare namespace TextReader {
     interface TextInfo {
         /**
          * Text content
+         * @type { string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         text: string;
         /**
          * The click ability of the text content
+         * @type { boolean }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -455,24 +498,28 @@ declare namespace TextReader {
     interface ReadInfo {
         /**
          * ID of the article
+         * @type { string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         id: string;
         /**
          * Title of the article
+         * @type { TextInfo }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         title: TextInfo;
         /**
          * Author of the article
+         * @type { ?TextInfo }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         author?: TextInfo;
         /**
          * Date of the article
+         * @type { ?TextInfo }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -480,18 +527,21 @@ declare namespace TextReader {
         /**
          * Cover image of the article
          * Format：PixelMap
+         * @type { ?image.PixelMap }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         image?: image.PixelMap;
         /**
          * Body information of the article
+         * @type { ?string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         bodyInfo?: string;
         /**
          * Category of the article
+         * @type { ?string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -507,6 +557,7 @@ declare namespace TextReader {
     interface NotificationEvent {
         /**
          * ID of the article
+         * @type { string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -515,6 +566,7 @@ declare namespace TextReader {
          * Type of the notification business events
          * 1: Notification，
          * 2: Broadcasting center
+         * @type { number }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -528,6 +580,7 @@ declare namespace TextReader {
          * NBC_05：Next button click
          * NBC_06：Article cover click
          * NBC_07：Article title click
+         * @type { string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -543,6 +596,7 @@ declare namespace TextReader {
     interface PanelEvent {
         /**
          * ID of the article
+         * @type { string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -559,6 +613,7 @@ declare namespace TextReader {
          * BPC_08：Panel-Title click
          * BPC_09：Panel-Author click
          * BPC_10：Panel-close panel active (close button click of close slide)
+         * @type { string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -574,6 +629,7 @@ declare namespace TextReader {
     interface ListEventState {
         /**
          * ID of the article
+         * @type { string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -589,12 +645,14 @@ declare namespace TextReader {
     interface ReadState {
         /**
          * ID of the article
+         * @type { string }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
         id: string;
         /**
          * State code of indicated article
+         * @type { ReadStateCode }
          * @syscap SystemCapability.AI.Component.TextReader
          * @since 5.0.0(12)
          */
@@ -651,6 +709,7 @@ export enum ReadStateCode {
 export class WindowManager {
     /**
      * Set the window stage to window manager
+     * @param { window.WindowStage } windowStage - Indicates the window stage of the ability.
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
      */
@@ -672,6 +731,7 @@ export class WindowManager {
 @Component
 export struct TextReaderIcon {
     /**
+     * @type { ReadStateCode }
      * @syscap SystemCapability.AI.Component.TextReader
      * @since 5.0.0(12)
      */

@@ -21,6 +21,7 @@
 import cloudData from '@ohos.data.cloudData';
 import cloudExtension from '@ohos.data.cloudExtension';
 import commonType from '@ohos.data.commonType';
+import dataAbility from '@ohos.data.dataAbility';
 import dataSharePredicates from '@ohos.data.dataSharePredicates';
 import distributedDataObject from '@ohos.data.distributedDataObject';
 import distributedKVStore from '@ohos.data.distributedKVStore';
@@ -31,4 +32,4 @@ import uniformTypeDescriptor from '@ohos.data.uniformTypeDescriptor';
 import uniformDataStruct from '@ohos.data.uniformDataStruct';
 import { ValueType, ValuesBucket } from '@ohos.data.ValuesBucket';
 import sendablePreferences from '@ohos.data.sendablePreferences';
-export { ValueType, ValuesBucket, cloudData, cloudExtension, commonType, dataSharePredicates, distributedDataObject, distributedKVStore, preferences, relationalStore, unifiedDataChannel, uniformTypeDescriptor, uniformDataStruct, sendablePreferences };
+export { ValueType, ValuesBucket, cloudData, cloudExtension, commonType, dataSharePredicates, distributedDataObject, distributedKVStore, preferences, relationalStore, unifiedDataChannel, uniformTypeDescriptor, uniformDataStruct, sendablePreferences, dataAbility };

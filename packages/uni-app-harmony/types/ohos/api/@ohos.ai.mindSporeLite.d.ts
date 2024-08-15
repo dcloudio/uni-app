@@ -46,8 +46,8 @@ declare namespace mindSporeLite {
     /**
      * Create a Model instance from file path.
      * @param { string } model - model indicates model path to be loaded
-     * @param { Context } [context] - context indicates model context information
-     * @param { callback: Callback<Model> } callback - the callback of model
+     * @param { Context } context - context indicates model context information
+     * @param { callback<Model> } callback - the callback of model
      * @syscap SystemCapability.AI.MindSporeLite
      * @stagemodelonly
      * @since 10
@@ -56,7 +56,7 @@ declare namespace mindSporeLite {
     /**
      * Create a Model instance from buffer
      * @param { ArrayBuffer } model - model indicates model buffer to be loaded
-     * @param { Context } context - context indicates model context information
+     * @param { Context } [context] - context indicates model context information
      * @returns { Promise<Model> } the promise returned by the function.
      * @syscap SystemCapability.AI.MindSporeLite
      * @stagemodelonly
@@ -66,7 +66,7 @@ declare namespace mindSporeLite {
     /**
      * Create a Model instance from buffer
      * @param { ArrayBuffer } model - model indicates model buffer to be loaded
-     * @param { callback: Callback<Model> } callback - the callback of model
+     * @param { callback<Model> } callback - the callback of model
      * @syscap SystemCapability.AI.MindSporeLite
      * @stagemodelonly
      * @since 10
@@ -75,8 +75,8 @@ declare namespace mindSporeLite {
     /**
      * Create a Model instance from buffer
      * @param { ArrayBuffer } model - model indicates model buffer to be loaded
-     * @param { Context } [context] - context indicates model context information
-     * @param { callback: Callback<Model> } callback - the callback of model
+     * @param { Context } context - context indicates model context information
+     * @param { callback<Model> } callback - the callback of model
      * @syscap SystemCapability.AI.MindSporeLite
      * @stagemodelonly
      * @since 10

@@ -18,6 +18,7 @@ import { AsyncCallback } from '@ohos.base';
 declare struct LoginPanel {
     /**
      * Controls whether to display the login panel.
+     * @type { boolean }
      * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
      * @stagemodelonly
      * @atomicservice
@@ -27,6 +28,7 @@ declare struct LoginPanel {
     show: boolean;
     /**
      * Defines the data displayed on the login panel.
+     * @type { loginComponentManager.LoginPanelParams }
      * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
      * @stagemodelonly
      * @atomicservice
@@ -35,6 +37,7 @@ declare struct LoginPanel {
     params: loginComponentManager.LoginPanelParams;
     /**
      * Defines the controller to interact with the login panel.
+     * @type { loginComponentManager.LoginPanelController }
      * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
      * @stagemodelonly
      * @atomicservice
@@ -61,6 +64,7 @@ declare struct LoginPanel {
 declare struct LoginWithHuaweiIDButton {
     /**
      * Defines the presentation style of the button for login with a HUAWEI ID.
+     * @type { loginComponentManager.LoginWithHuaweiIDButtonParams }
      * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
      * @stagemodelonly
      * @atomicservice
@@ -69,6 +73,7 @@ declare struct LoginWithHuaweiIDButton {
     params: loginComponentManager.LoginWithHuaweiIDButtonParams;
     /**
      * Defines the controller to interact with the button for login with a HUAWEI ID.
+     * @type { loginComponentManager.LoginWithHuaweiIDButtonController }
      * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
      * @stagemodelonly
      * @atomicservice
@@ -378,6 +383,17 @@ declare namespace loginComponentManager {
          * @since 5.0.0(12)
          */
         optionalLoginAreaAttr?: OptionalLoginAreaAttr;
+        /**
+         * Display the SMS verification page if the mobile number associated
+         * with a HUAWEI ID has not been verified by SMS in the past 90 days.
+         * @type { ?boolean }
+         * @default true
+         * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        verifyPhoneNumber?: boolean;
     }
     /**
      * Defines the response returned for a successful login with the HUAWEI ID.
@@ -439,6 +455,9 @@ declare namespace loginComponentManager {
          * @param { AsyncCallback<HuaweiIDCredential> } callback - Callback invoked to return the HUAWEI ID login response.
          * AsyncCallback param err { BusinessError } Error code returned when the login fails.
          * { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Incorrect parameter types.
+         *   2. Parameter verification failed.
          * { BusinessError } 1001500001 - Failed to check the fingerprint of the app bundle.
          * { BusinessError } 1001500002 - This error code is reported when a request is already being processed.
          * { BusinessError } 1001502001 - The user has not logged in with HUAWEI ID.
@@ -461,6 +480,9 @@ declare namespace loginComponentManager {
          * @param { AsyncCallback<HuaweiIDCredential> } callback - Callback invoked to return the HUAWEI ID login response.
          * AsyncCallback param err { BusinessError } Error code returned when the login fails.
          * { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Incorrect parameter types.
+         *   2. Parameter verification failed.
          * { BusinessError } 1001500001 - Failed to check the fingerprint of the app bundle.
          * { BusinessError } 1001500002 - This error code is reported when a request is already being processed.
          * { BusinessError } 1001500003 - The scopes or permissions are not supported.
@@ -556,6 +578,35 @@ declare namespace loginComponentManager {
          * @since 5.0.0(12)
          */
         setShowAgreementForOptionalLogin(): LoginPanelController;
+        /**
+         * Register a callback to be triggered upon a tap on a button on the login panel.
+         * @param { AsyncCallback<ClickEvent> } callback - Callback to be triggered
+         * upon a tap on a button on the login panel.
+         * @returns { LoginPanelController } Returns the current controller instance.
+         * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        onClickEvent(callback: AsyncCallback<ClickEvent>): LoginPanelController;
+    }
+    /**
+     * Enumerates tap events.
+     * @enum { number }
+     * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    export enum ClickEvent {
+        /**
+         * Taps the HUAWEI ID login button.
+         * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        HUAWEI_ID_LOGIN_BUTTON = 0
     }
     /**
      * Status enum values for whether a user accepts the agreement.
@@ -814,6 +865,17 @@ declare namespace loginComponentManager {
          * @since 5.0.0(12)
          */
         customButtonParams?: CustomButtonParams;
+        /**
+         * Display the SMS verification page if the mobile number associated
+         * with a HUAWEI ID has not been verified by SMS in the past 90 days.
+         * @type { ?boolean }
+         * @default true
+         * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        verifyPhoneNumber?: boolean;
     }
     /**
      * Defines the controller to interact with the button for login with a HUAWEI ID.
@@ -828,6 +890,9 @@ declare namespace loginComponentManager {
          * @param { AsyncCallback<HuaweiIDCredential> } callback - Callback invoked to return the HUAWEI ID login response.
          * AsyncCallback param err { BusinessError } Error code returned when the login fails.
          * { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Incorrect parameter types.
+         *   2. Parameter verification failed.
          * { BusinessError } 1001500001 - Failed to check the fingerprint of the app bundle.
          * { BusinessError } 1001500002 - This error code is reported when a request is already being processed.
          * { BusinessError } 1001502001 - The user has not logged in with HUAWEI ID.
@@ -850,6 +915,9 @@ declare namespace loginComponentManager {
          * @param { AsyncCallback<HuaweiIDCredential> } callback - Callback invoked to return the HUAWEI ID login response.
          * AsyncCallback param err { BusinessError } Error code returned when the login fails.
          * { BusinessError } 401 - Parameter error.
+         * Possible causes:
+         *   1. Incorrect parameter types.
+         *   2. Parameter verification failed.
          * { BusinessError } 1001500001 - Failed to check the fingerprint of the app bundle.
          * { BusinessError } 1001500002 - This error code is reported when a request is already being processed.
          * { BusinessError } 1001500003 - The scopes or permissions are not supported.
@@ -882,6 +950,41 @@ declare namespace loginComponentManager {
          * @since 5.0.0(12)
          */
         setAgreementStatus(agreementStatus: AgreementStatus): LoginWithHuaweiIDButtonController;
+        /**
+         * Register a callback to be triggered upon a tap on the HUAWEI ID login button.
+         * @param { AsyncCallback<ClickEvent> } callback - Callback to be triggered
+         * upon a tap on the HUAWEI ID login button.
+         * @returns { LoginWithHuaweiIDButtonController } Returns the current controller instance.
+         * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        onClickEvent(callback: AsyncCallback<ClickEvent>): LoginWithHuaweiIDButtonController;
+        /**
+         * If the value is true, the component is available and can respond to operations such as clicking.
+         * If it is set to false, click operations are not responded.
+         * @param { boolean } enabled - The enabled attribute of the HUAWEI ID login button.
+         * @returns { LoginWithHuaweiIDButtonController } Returns the current controller instance.
+         * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
+         * @stagemodelonly
+         * @since 5.0.0(12)
+         */
+        setEnabled(enabled: boolean): LoginWithHuaweiIDButtonController;
+        /**
+         * When the user clicks the HUAWEI ID login button, a consent agreement pop-up box pops up.
+         * In the scenario where the user clicks to agree to the agreement and logs in, this method can be called.
+         * @param { AsyncCallback<void> } callback - Callback invoked
+         * when the user clicks to agree to the agreement and logs in.
+         * AsyncCallback param err { BusinessError } Error code returned
+         * when the user did not click the HUAWEI ID login button.
+         * @throws { BusinessError } 1005300002 - The user did not click the HUAWEI ID login button.
+         * @returns { LoginWithHuaweiIDButtonController } Returns the current controller instance.
+         * @syscap SystemCapability.AuthenticationServices.HuaweiID.UIComponent
+         * @stagemodelonly
+         * @since 5.0.0(12)
+         */
+        continueLogin(callback: AsyncCallback<void>): LoginWithHuaweiIDButtonController;
     }
 }
 export { LoginPanel, LoginWithHuaweiIDButton, loginComponentManager };

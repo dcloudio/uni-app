@@ -14,6 +14,11 @@
  */
 
 /**
+ * @file Defines all permissions.
+ * @kit AbilityKit
+ */
+
+ /**
  * Indicates permissions.
  *
  * @typedef Permissions
@@ -161,6 +166,14 @@ export type Permissions =
    * @since 9
    */
   | 'ohos.permission.APPROXIMATELY_LOCATION'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.CONTROL_LOCATION_SWITCH'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MOCK_LOCATION'
   /**
    * @since 7
    */
@@ -852,9 +865,17 @@ export type Permissions =
    */
   | 'ohos.permission.MANAGE_AUDIO_CONFIG'
   /**
+   * @since 12
+   */
+  | 'ohos.permission.MICROPHONE_CONTROL'
+  /**
    * @since 9
    */
   | 'ohos.permission.MANAGE_CAMERA_CONFIG'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.CAMERA_CONTROL'
   /**
    * @since 9
    */
@@ -1212,6 +1233,10 @@ export type Permissions =
    */
   | 'ohos.permission.WRITE_PRIVACY_PUSH_DATA'
   /**
+   * @since 12
+   */
+  | 'ohos.permission.READ_PRIVACY_PUSH_DATA'
+  /**
    * @since 11
    */
   | 'ohos.permission.ACCESS_MCP_AUTHORIZATION'
@@ -1334,6 +1359,18 @@ export type Permissions =
   /**
    * @since 12
    */
+  | 'ohos.permission.MANAGE_FINDNETWORK'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.OPERATE_FINDNETWORK'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_FINDNETWORK_LOCATION'
+  /**
+   * @since 12
+   */
   | 'ohos.permission.ACCESS_PROTOCOL_DFX_STATE'
   /**
    * @since 12
@@ -1363,6 +1400,10 @@ export type Permissions =
    * @since 12
    */
   | 'ohos.permission.ACCESS_AI_ABILITY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.hsdr.REQUEST_HSDR'
   /**
    * @since 12
    */
@@ -1399,6 +1440,18 @@ export type Permissions =
    * @since 12
    */
   | 'ohos.permission.EXEMPT_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.EXEMPT_CAMERA_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.EXEMPT_MICROPHONE_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.EXEMPT_LOCATION_PRIVACY_INDICATOR'
   /**
    * @since 12
    */
@@ -1482,6 +1535,10 @@ export type Permissions =
   /**
    * @since 12
    */
+  | 'ohos.permission.START_DLP_CRED'
+  /**
+   * @since 12
+   */
   | 'ohos.permission.START_SHORTCUT'
   /**
    * @since 12
@@ -1526,6 +1583,10 @@ export type Permissions =
   /**
    * @since 12
    */
+  | 'ohos.permission.ACCESS_BOOSTER_SERVICE'
+  /**
+   * @since 12
+   */
   | 'ohos.permission.PROTECT_SCREEN_LOCK_DATA'
   /**
    * @since 12
@@ -1534,8 +1595,84 @@ export type Permissions =
   /**
    * @since 12
    */
+  | 'ohos.permission.WRITE_RINGTONE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_SETTINGS'
+  /**
+   * @since 12
+   */
   | 'ohos.permission.ACCESS_DEVICE_COLLABORATION_PRIVATE_ABILITY'
   /**
    * @since 12
    */
-  | 'ohos.permission.INJECT_INPUT_EVENT';
+  | 'ohos.permission.ACCESS_SEARCH_SERVICE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_FILE_CONTENT_SHARE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SCREEN_LOCK'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.SET_PROCESS_CACHE_STATE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_RINGTONE_RESOURCE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ALLOW_TIPS_ACCESS'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SUBSCRIPTION_CAPSULE_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.INJECT_INPUT_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.READ_HEALTH_MOTION'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.PERCEIVE_SMART_POWER_SCENARIO'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_SECURITY_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.REPORT_SECURITY_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_SECURITY_MODEL_RESULT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_SECURITY_GUARD_CONFIG'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.COLLECT_SECURITY_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_AUDIT_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_SECURITY_POLICY_FROM_CLOUD'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.REPORT_SECURITY_EVENT_TO_CLOUD';

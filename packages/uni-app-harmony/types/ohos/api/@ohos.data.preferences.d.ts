@@ -101,7 +101,16 @@ declare namespace preferences {
      * @atomicservice
      * @since 11
      */
-    const MAX_KEY_LENGTH: 80;
+    /**
+     * Maximum length of a key.
+     *
+     * @constant
+     * @syscap SystemCapability.DistributedDataManager.Preferences.Core
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    const MAX_KEY_LENGTH: number;
     /**
      * Indicates the maximum length of a string (8192 characters).
      *
@@ -126,7 +135,16 @@ declare namespace preferences {
      * @atomicservice
      * @since 11
      */
-    const MAX_VALUE_LENGTH: 8192;
+    /**
+     * Maximum length of a value.
+     *
+     * @constant
+     * @syscap SystemCapability.DistributedDataManager.Preferences.Core
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    const MAX_VALUE_LENGTH: number;
     /**
      * Manages preferences file configurations.
      *

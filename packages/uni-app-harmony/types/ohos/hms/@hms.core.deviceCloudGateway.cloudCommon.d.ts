@@ -19,7 +19,7 @@ import type request from '@ohos.request';
 declare namespace cloudCommon {
     /**
      * Initialize the cloud development instance based on parameters.
-     * @param { ?CloudOptions } options - Parameters related to cloud development initialization.
+     * @param { CloudOptions } [options] - Parameters related to cloud development initialization.
      * @throws { BusinessError } 401 - Parameter error.
      * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
      * @stagemodelonly
@@ -115,7 +115,6 @@ declare namespace cloudCommon {
     enum CloudRegion {
         /**
          * storage zone: China.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice
@@ -124,7 +123,6 @@ declare namespace cloudCommon {
         CHINA = 0,
         /**
          * storage zone: Germany.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice
@@ -133,7 +131,6 @@ declare namespace cloudCommon {
         GERMANY = 1,
         /**
          * storage zone: Russian.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice
@@ -142,7 +139,6 @@ declare namespace cloudCommon {
         RUSSIA = 2,
         /**
          * storage zone: Singapore.
-         * @enum { number }
          * @syscap SystemCapability.DeviceCloudGateway.CloudFoundation
          * @stagemodelonly
          * @atomicservice

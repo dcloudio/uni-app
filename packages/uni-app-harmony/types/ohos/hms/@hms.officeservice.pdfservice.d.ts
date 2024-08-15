@@ -1,8 +1,11 @@
-import image from '@ohos.multimedia.image';
+/*
+ * Copyright (c) 2024 Huawei Device Co., Ltd. All rights reserved.
+ */
 /**
  * @file Defines the capabilities of pdf module.
  * @kit PDFKit
  */
+import image from '@ohos.multimedia.image';
 /**
 * This module provides the capability to load the pdf.
 * @namespace pdfService

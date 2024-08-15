@@ -24,6 +24,7 @@ declare namespace pushCommon {
     export interface PushPayload {
         /**
          * The type of push payload.
+         * @type { string }
          * @syscap SystemCapability.Push.PushService
          * @StageModelOnly
          * @since 4.0.0(10)
@@ -31,6 +32,7 @@ declare namespace pushCommon {
         type: string;
         /**
          * The data of push payload.
+         * @type { string }
          * @syscap SystemCapability.Push.PushService
          * @StageModelOnly
          * @since 4.0.0(10)
@@ -133,7 +135,7 @@ declare namespace pushCommon {
         /**
          * Number of remote notifications displayed on the app icon.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.Push.PushService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -142,7 +144,7 @@ declare namespace pushCommon {
         /**
          * Number of remote notifications displayed on the app icon.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.Push.PushService
          * @StageModelOnly
          * @since 5.0.0(12)
@@ -151,7 +153,7 @@ declare namespace pushCommon {
         /**
          * Data that can be replaced when the notification is clicked.
          *
-         * @type { RemoteWantAgent }
+         * @type { ?RemoteWantAgent }
          * @syscap SystemCapability.Push.PushService
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -197,7 +199,7 @@ declare namespace pushCommon {
         /**
          * The parameters of RemoteWantAgent.
          *
-         * @type { Record<string, Object> }
+         * @type { ?Record<string, Object> }
          * @syscap SystemCapability.Push.PushService
          * @StageModelOnly
          * @since 4.1.0(11)

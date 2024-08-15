@@ -252,7 +252,7 @@ declare namespace gamePlayer {
         /**
          * Whether the user is real name.
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @syscap SystemCapability.Game.GameService.GamePlayer
          * @since 5.0.0(12)
          */
@@ -260,7 +260,7 @@ declare namespace gamePlayer {
         /**
          * Whether the user is an adult.
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @syscap SystemCapability.Game.GameService.GamePlayer
          * @since 5.0.0(12)
          */
@@ -268,7 +268,7 @@ declare namespace gamePlayer {
         /**
          * Age range of user.
          *
-         * @type { int }
+         * @type { ?ThirdUserAgeRange }
          * @syscap SystemCapability.Game.GameService.GamePlayer
          * @since 5.0.0(12)
          */
@@ -283,7 +283,7 @@ declare namespace gamePlayer {
      */
     interface UnionLoginParam {
         /**
-         * Used to indicate whether  to force a union login dialog pops up, allowing users to choose to login again.
+         * Used to indicate whether to force a union login dialog pops up, allowing users to choose to login again.
          * Note：
          * true: When calling the unionLogin interface, a union login dialog will always pop up.
          * false: When calling the unionLogin interface, the internal logic will determine
@@ -301,7 +301,7 @@ declare namespace gamePlayer {
          * Note:
          * If this field value is not set, the default value is LoginPanelType ICON
          *
-         * @type { LoginPanelType }
+         * @type { ?LoginPanelType }
          * @syscap SystemCapability.Game.GameService.GamePlayer
          * @since 5.0.0(12)
          */
@@ -330,7 +330,7 @@ declare namespace gamePlayer {
          * Resource information of account icon.
          * resource of icon ($r or $rawfile)
          *
-         * @type { ResourceStr }
+         * @type { Resource }
          * @syscap SystemCapability.Game.GameService.GamePlayer
          * @since 5.0.0(12)
          */
@@ -355,11 +355,11 @@ declare namespace gamePlayer {
         /**
          * The account name provided by the developer.
          * Notes：
-         * If the user selects Huawei ID, return "hw_count".
+         * If the user selects Huawei ID, return "hw_account".
          * If you choose the account provided by the developer, return the account name passed in by the developer.
          * If there is an exception during the login process, return "official_account".
          * "official_account" indicates that the specific account name cannot be returned at present, and the developer
-         * can only be informed to log in through the official account.  If there are multiple official accounts,
+         * can only be informed to log in through the official account. If there are multiple official accounts,
          * the developer can select one to log in
          *
          * @type { string }
@@ -371,7 +371,7 @@ declare namespace gamePlayer {
          * Notify developers whether the current player ID needs to be bound to their account.
          * Notes: true：need be bound; false：no need be bound
          *
-         * @type { boolean}
+         * @type { boolean }
          * @syscap SystemCapability.Game.GameService.GamePlayer
          * @since 5.0.0(12)
          */
@@ -404,7 +404,7 @@ declare namespace gamePlayer {
         /**
          * This is a json string used to return relevant information about the current event.
          *
-         * @type { string }
+         * @type { string }
          * @syscap SystemCapability.Game.GameService.GamePlayer
          * @since 5.0.0(12)
          */
@@ -627,7 +627,15 @@ declare namespace gamePlayer {
          * @StageModelOnly
          * @since 5.0.0(12)
          */
-        UNION_LOGIN_CANCELED = 1002000016
+        UNION_LOGIN_CANCELED = 1002000016,
+        /**
+         * Illegal application identity.
+         *
+         * @syscap SystemCapability.Game.GameService.GamePlayer
+         * @StageModelOnly
+         * @since 5.0.0(12)
+         */
+        ILLEGAL_APPLICATION = 1002000017
     }
     /**
      * Indicates the product Type.
@@ -705,6 +713,7 @@ declare namespace gamePlayer {
      * @throws { BusinessError } 1002000006 - User is underage and has no playable time.
      * @throws { BusinessError } 1002000011 - Agreement not agreed.
      * @throws { BusinessError } 1002000014 - This interface is not available for this game.
+     * @throws { BusinessError } 1002000017 - Illegal application identity.
      * @syscap SystemCapability.Game.GameService.GamePlayer
      * @since 5.0.0(12)
      */
@@ -737,6 +746,7 @@ declare namespace gamePlayer {
      * @throws { BusinessError } 1002000006 - User is underage and has no playable time.
      * @throws { BusinessError } 1002000011 - Agreement not agreed.
      * @throws { BusinessError } 1002000014 - This interface is not available for this game.
+     * @throws { BusinessError } 1002000017 - Illegal application identity.
      * @syscap SystemCapability.Game.GameService.GamePlayer
      * @since 5.0.0(12)
      */
@@ -765,8 +775,8 @@ declare namespace gamePlayer {
      * Bind a game account to a Huawei player.
      *
      * @param { common.UIAbilityContext } context - The context of an ability.
-     * @param { string } thirdOpenId- The thirdOpenId of third game.
-     * @param { string } teamPlayerId- The teamPlayerId of Huawei player to bind.
+     * @param { string } thirdOpenId - The thirdOpenId of third game.
+     * @param { string } teamPlayerId - The teamPlayerId of Huawei player to bind.
      * @returns { Promise<void> } Returns void.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1002000001 - System internal error.
@@ -776,6 +786,7 @@ declare namespace gamePlayer {
      * @throws { BusinessError } 1002000010 - The playerId is not current player.
      * @throws { BusinessError } 1002000011 - Agreement not agreed.
      * @throws { BusinessError } 1002000012 - The thirdOpenId or teamPlayerId has been bound.
+     * @throws { BusinessError } 1002000017 - Illegal application identity.
      * @syscap SystemCapability.Game.GameService.GamePlayer
      * @since 5.0.0(12)
      */
@@ -784,8 +795,8 @@ declare namespace gamePlayer {
      * UnbindPlayer a game account to a Huawei player.
      *
      * @param { common.UIAbilityContext } context - The context of an ability.
-     * @param { string } thirdOpenId- The thirdOpenId of third game.
-     * @param { string } teamPlayerId- The teamPlayerId of Huawei player to unbind.
+     * @param { string } thirdOpenId - The thirdOpenId of third game.
+     * @param { string } teamPlayerId - The teamPlayerId of Huawei player to unbind.
      * @returns { Promise<void> } Returns void.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1002000001 - System internal error.
@@ -795,6 +806,7 @@ declare namespace gamePlayer {
      * @throws { BusinessError } 1002000010 - The playerId is not current player.
      * @throws { BusinessError } 1002000011 - Agreement not agreed.
      * @throws { BusinessError } 1002000013 - The thirdOpenId and teamPlayerId is not bound.
+     * @throws { BusinessError } 1002000017 - Illegal application identity.
      * @syscap SystemCapability.Game.GameService.GamePlayer
      * @since 5.0.0(12)
      */
@@ -803,7 +815,7 @@ declare namespace gamePlayer {
      * Verify whether the local player can enter the game.
      *
      * @param { common.UIAbilityContext } context - The context of an ability.
-     * @param { ThirdUserInfo } thirdUserInfo- user info of third game to verify.
+     * @param { ThirdUserInfo } thirdUserInfo - user info of third game to verify.
      * @returns { Promise<void> } Returns void.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1002000001 - System internal error.
@@ -815,6 +827,7 @@ declare namespace gamePlayer {
      * @throws { BusinessError } 1002000008 - The HUAWEI ID is in the blocklist.
      * @throws { BusinessError } 1002000011 - Agreement not agreed.
      * @throws { BusinessError } 1002000015 - The current player information is invalid. Execute the login process again to obtain the player information.
+     * @throws { BusinessError } 1002000017 - Illegal application identity.
      * @syscap SystemCapability.Game.GameService.GamePlayer
      * @since 5.0.0(12)
      */
@@ -823,7 +836,7 @@ declare namespace gamePlayer {
      * Provide the ability to union login with Huawei ID and developer accounts.
      *
      * @param { common.UIAbilityContext } context - The context of an ability.
-     * @param { UnionLoginParam} context - The params of unionLogin.
+     * @param { UnionLoginParam} loginParam - The params of unionLogin.
      * @returns { Promise<UnionLoginResult> } Returns UnionLoginResult.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1002000001 - System internal error.
@@ -835,6 +848,7 @@ declare namespace gamePlayer {
      * @throws { BusinessError } 1002000011 - Agreement not agreed.
      * @throws { BusinessError } 1002000014 - This interface is not available for this game.
      * @throws { BusinessError } 1002000016 - Union login canceled by user.
+     * @throws { BusinessError } 1002000017 - Illegal application identity.
      * @syscap SystemCapability.Game.GameService.GamePlayer
      * @since 5.0.0(12)
      */
@@ -843,7 +857,7 @@ declare namespace gamePlayer {
      * Registering a listening event for player changed.
      *
      * @param { 'playerChanged' } type - Type of the event to listen for.
-     * @param { Callback<PlayerChangedResult>} callback- The callback object need to be registered.
+     * @param { Callback<PlayerChangedResult> } callback - The callback object need to be registered.
      * @returns { void } Returns void.
      * @throws { BusinessError } 401 - Parameter error.
      * @syscap SystemCapability.Game.GameService.GamePlayer
@@ -857,7 +871,7 @@ declare namespace gamePlayer {
      * is unregistered. If this parameter is not passed in, it means that all registered callbacks are unregistered
      *
      * @param { 'playerChanged' } type - Type of the event to listen for.
-     * @param { ?Callback<PlayerChangedResult> } callback- The callback object need to be unregistered.
+     * @param { Callback<PlayerChangedResult> } callback - The callback object need to be unregistered.
      * @returns { void } Returns void.
      * @throws { BusinessError } 401 - Parameter error.
      * @syscap SystemCapability.Game.GameService.GamePlayer

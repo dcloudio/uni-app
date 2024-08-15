@@ -75,7 +75,7 @@ declare namespace updateManager {
         /**
          * Whether can update or not.
          * 0：do not update; 1:has new version to update
-         *
+         * @type { UpdateAvailableCode }
          * @syscap SystemCapability.AppGalleryService.Distribution.Update
          * @since 5.0.0(12)
          */

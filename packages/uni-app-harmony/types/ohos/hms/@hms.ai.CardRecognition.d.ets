@@ -24,7 +24,7 @@ declare struct CardRecognition {
     supportType: CardType;
     /**
      * Card side to recognize.
-     * @type { CardSide }
+     * @type { ?CardSide }
      * @default CardSide.DEFAULT
      * @syscap SystemCapability.AI.Component.CardRecognition
      * @atomicservice
@@ -33,7 +33,7 @@ declare struct CardRecognition {
     cardSide?: CardSide;
     /**
      * Card recognition result callback.
-     * @type { Callback }
+     * @type { Callback<CallbackParam> }
      * @syscap SystemCapability.AI.Component.CardRecognition
      * @atomicservice
      * @since 5.0.0(12)
@@ -141,6 +141,7 @@ declare enum CardSide {
 }
 /**
  * This is the card recognition result callback.
+ * @typedef CallbackParam
  * @syscap SystemCapability.AI.Component.CardRecognition
  * @atomicservice
  * @since 5.0.0(12)
@@ -156,7 +157,7 @@ declare interface CallbackParam {
     code: number;
     /**
      * Card recognition type.
-     * @type { CardType }
+     * @type { ?CardType }
      * @syscap SystemCapability.AI.Component.CardRecognition
      * @atomicservice
      * @since 5.0.0(12)
@@ -164,7 +165,7 @@ declare interface CallbackParam {
     cardType?: CardType;
     /**
      * Card recognition card info.
-     * @type { Record<string, Record<string, string>> }
+     * @type { ?Record<string, Record<string, string>> }
      * @syscap SystemCapability.AI.Component.CardRecognition
      * @atomicservice
      * @since 5.0.0(12)

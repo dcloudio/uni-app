@@ -80,6 +80,17 @@ export default class BackupExtensionAbility {
      */
     onBackup(): void;
     /**
+     * Callback to be called when the backup procedure is started.
+     * Developer could override this method to restore.
+     *
+     * @param { string } backupInfo BackupInfo to be backup
+     * @returns { string | Promise<string> } Return backup result.
+     * @syscap SystemCapability.FileManagement.StorageService.Backup
+     * @StageModelOnly
+     * @since 12
+     */
+    onBackupEx(backupInfo: string): string | Promise<string>;
+    /**
      * Callback to be called when the restore procedure is started.
      * Developer could override this method to restore from copies for various bundle versions.
      *
