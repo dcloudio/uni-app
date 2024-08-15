@@ -27,7 +27,6 @@ uni-switch[disabled] .uni-switch-input {
   position: relative;
   width: 52px;
   height: 32px;
-  margin-right: 5px;
   border: 2px solid transparent;
   outline: 0;
   border-radius: 16px;
