@@ -25,6 +25,9 @@ import type {
   TSTypeReference,
   TemplateLiteral,
 } from '@babel/types'
+import { capitalize, hasOwn } from '@vue/shared'
+import { parse as babelParse } from '@babel/parser'
+import { preUVueJs } from '@dcloudio/uni-cli-shared'
 import {
   UNKNOWN_TYPE,
   getId,
@@ -34,9 +37,7 @@ import {
 } from './utils'
 import { type ScriptCompileContext, resolveParserPlugins } from './context'
 import type { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
-import { capitalize, hasOwn } from '@vue/shared'
-import { parse as babelParse } from '@babel/parser'
-// import { parse } from '../parse'
+import { parse } from '@vue/compiler-sfc'
 // import { createCache } from '../cache'
 import { dirname, extname, join } from 'path'
 import * as process from 'process'
@@ -920,7 +921,7 @@ export function fileToScope(
   // }
   // fs should be guaranteed to exist here
   const fs = resolveFS(ctx)!
-  const source = fs.readFile(filename) || ''
+  const source = preUVueJs(fs.readFile(filename) || '')
   const body = parseFile(filename, source, ctx.options.babelParserPlugins)
   const scope = new TypeScope(filename, source, 0, recordImports(body))
   recordTypes(ctx, body, scope, asGlobal)
@@ -936,36 +937,39 @@ function parseFile(
   const ext = extname(filename)
   if (ext === '.uts' || ext === '.ts') {
     return babelParse(content, {
-      plugins: resolveParserPlugins(parserPlugins),
+      plugins: resolveParserPlugins(
+        'ts',
+        parserPlugins,
+        filename.endsWith('.d.ts')
+      ),
       sourceType: 'module',
     }).program.body
   } else if (ext === '.vue') {
-    // const {
-    //   descriptor: { script, scriptSetup },
-    // } = parse(content)
-    // if (!script && !scriptSetup) {
-    //   return []
-    // }
-    // // ensure the correct offset with original source
-    // const scriptOffset = script ? script.loc.start.offset : Infinity
-    // const scriptSetupOffset = scriptSetup
-    //   ? scriptSetup.loc.start.offset
-    //   : Infinity
-    // const firstBlock = scriptOffset < scriptSetupOffset ? script : scriptSetup
-    // const secondBlock = scriptOffset < scriptSetupOffset ? scriptSetup : script
-    // let scriptContent =
-    //   ' '.repeat(Math.min(scriptOffset, scriptSetupOffset)) +
-    //   firstBlock!.content
-    // if (secondBlock) {
-    //   scriptContent +=
-    //     ' '.repeat(secondBlock.loc.start.offset - script!.loc.end.offset) +
-    //     secondBlock.content
-    // }
-    // const lang = script?.lang || scriptSetup?.lang
-    // return babelParse(scriptContent, {
-    //   plugins: resolveParserPlugins(lang!, parserPlugins),
-    //   sourceType: 'module',
-    // }).program.body
+    const {
+      descriptor: { script, scriptSetup },
+    } = parse(content)
+    if (!script && !scriptSetup) {
+      return []
+    }
+    // ensure the correct offset with original source
+    const scriptOffset = script ? script.loc.start.offset : Infinity
+    const scriptSetupOffset = scriptSetup
+      ? scriptSetup.loc.start.offset
+      : Infinity
+    const firstBlock = scriptOffset < scriptSetupOffset ? script : scriptSetup
+    const secondBlock = scriptOffset < scriptSetupOffset ? scriptSetup : script
+    let scriptContent =
+      ' '.repeat(Math.min(scriptOffset, scriptSetupOffset)) +
+      firstBlock!.content
+    if (secondBlock) {
+      scriptContent +=
+        ' '.repeat(secondBlock.loc.start.offset - script!.loc.end.offset) +
+        secondBlock.content
+    }
+    return babelParse(scriptContent, {
+      plugins: resolveParserPlugins('ts', parserPlugins),
+      sourceType: 'module',
+    }).program.body
   }
   return []
 }
@@ -1250,7 +1254,7 @@ function recordImport(node: Node, imports: TypeScope['imports']) {
 export function inferRuntimeType(
   ctx: TypeResolveContext,
   node: Node & MaybeWithScope,
-  from: 'defineProps' | 'defineModel',
+  from: 'defineProps' | 'defineModel' = 'defineProps',
   scope = node._ownerScope || ctxToScope(ctx)
 ): string[] {
   try {
