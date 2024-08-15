@@ -62,6 +62,7 @@ import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
+import common4 from '@ohos.app.ability.common';
 import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
 import deviceInfo1 from '@ohos.deviceInfo';
@@ -81,6 +82,7 @@ import { geoLocationManager } from '@kit.LocationKit';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext11 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext12 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
@@ -122,6 +124,8 @@ import { promptAction } from '@kit.ArkUI';
 import promptAction4 from '@ohos.promptAction';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
+import { systemShare } from '@kit.ShareKit';
+import { uniformTypeDescriptor } from '@kit.ArkData';
 import { userAuth } from '@kit.UserAuthenticationKit';
 import { wantAgent } from '@kit.AbilityKit';
 import { wifiManager } from '@kit.ConnectivityKit';
@@ -1325,6 +1329,23 @@ export class ScanCodeOptions extends UTSObject {
     complete: ScanCodeCompleteCallback | null = null;
 }
 type ScanCode = (options?: ScanCodeOptions | null) => void;
+export class ShareWithSystemSuccess extends UTSObject {
+}
+export class ShareWithSystemFail extends UTSObject {
+}
+type ShareWithSystemSuccessCallback = (res: ShareWithSystemSuccess) => void;
+type ShareWithSystemFailCallback = (res: ShareWithSystemFail) => void;
+type ShareWithSystemCallback = (res: Object) => void;
+export class ShareWithSystemOptions extends UTSObject {
+    type: 'text' | 'image' | null = null;
+    summary: string | null = null;
+    href: string | null = null;
+    imageUrl: string | null = null;
+    success: ShareWithSystemSuccessCallback | null = null;
+    fail: ShareWithSystemFailCallback | null = null;
+    complete: ShareWithSystemCallback | null = null;
+}
+export type ShareWithSystem = (options: ShareWithSystemOptions) => void;
 export class SetStorageSuccess extends UTSObject {
 }
 type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
@@ -1686,6 +1707,7 @@ interface UniExtApi {
     stopPullDownRefresh: StopPullDownRefresh;
     rpx2px: Rpx2px;
     scanCode: ScanCode;
+    shareWithSystem: ShareWithSystem;
     setStorage: SetStorage;
     setStorageSync: SetStorageSync;
     getStorage: GetStorage;
@@ -6819,6 +6841,46 @@ export function initUniExtApi(APP_ID: string) {
             } as ScanCodeSuccess);
         });
     }) as ScanCode;
+    const API_SHARE_WITH_SYSTEM = 'shareWithSystem';
+    const shareWithSystem = defineAsyncApi<ShareWithSystemOptions, ShareWithSystemSuccess>(API_SHARE_WITH_SYSTEM, (args: ShareWithSystemOptions, exec: ApiExecutor<ShareWithSystemSuccess>)=>{
+        const href = args.href;
+        const imageUrl = args.imageUrl;
+        const summary = args.summary;
+        const shareRecords: systemShare.SharedRecord[] = [];
+        if (href) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.HYPERLINK,
+                content: href
+            } as systemShare.SharedRecord);
+        }
+        if (imageUrl) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.IMAGE,
+                uri: imageUrl
+            } as systemShare.SharedRecord);
+        }
+        if (summary) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.TEXT,
+                content: summary
+            } as systemShare.SharedRecord);
+        }
+        if (shareRecords.length === 0) {
+            exec.reject('No share data');
+            return;
+        }
+        const shareData = new systemShare.SharedData(shareRecords[0]);
+        for(let index = 1; index < shareRecords.length; index++){
+            shareData.addRecord(shareRecords[index]);
+        }
+        const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
+        shareController.show(getAbilityContext11() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        const onDismiss = ()=>{
+            shareController.off('dismiss', onDismiss);
+            exec.resolve({} as ShareWithSystemSuccess);
+        };
+        shareController.on('dismiss', onDismiss);
+    }) as ShareWithSystem;
     const API_GET_STORAGE = 'getStorage';
     const API_GET_STORAGE_SYNC = 'getStorageSync';
     const API_SET_STORAGE = 'setStorage';
@@ -6847,7 +6909,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext11() as common3.UIAbilityContext, {
+        store = dataPreferences.getPreferencesSync(getAbilityContext12() as common4.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
@@ -7413,6 +7475,7 @@ export function initUniExtApi(APP_ID: string) {
         stopPullDownRefresh,
         rpx2px,
         scanCode,
+        shareWithSystem,
         setStorage,
         setStorageSync,
         getStorage,
