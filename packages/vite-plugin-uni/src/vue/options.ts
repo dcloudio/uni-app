@@ -14,6 +14,7 @@ import {
   getBaseNodeTransforms,
   isExternalUrl,
   normalizePath,
+  preJs,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 
@@ -218,7 +219,8 @@ export function initPluginVueOptions(
         return fsExtra.existsSync(resolveFile(file))
       },
       readFile(file) {
-        return fsExtra.readFileSync(resolveFile(file), 'utf-8')
+        // 需要走条件编译
+        return preJs(fsExtra.readFileSync(resolveFile(file), 'utf-8'))
       },
       realpath(file) {
         return resolveFile(file)
