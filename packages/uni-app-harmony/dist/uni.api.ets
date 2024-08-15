@@ -967,7 +967,6 @@ interface ChooseMediaOptions {
     mimeType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE | photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE;
     count?: number;
     sourceType?: ('album' | 'camera')[];
-    crop?: ChooseImageCropOptions;
 }
 interface chooseMediaSuccessCallbackResult {
     tempFiles: MediaFile[];
@@ -4417,7 +4416,6 @@ export function initUniExtApi(APP_ID: string) {
         photoSelectOptions.MIMEType = mimeType;
         photoSelectOptions.maxSelectNumber = options.count || 9;
         photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
-        if (options.crop) photoSelectOptions.isEditSupported = true;
         const photoPicker = new photoAccessHelper.PhotoViewPicker();
         const photoSelectResult = await photoPicker.select(photoSelectOptions);
         const uris = photoSelectResult.photoUris;
@@ -4832,8 +4830,7 @@ export function initUniExtApi(APP_ID: string) {
             sourceType: [
                 "album"
             ],
-            count: options.count!,
-            crop: options.crop
+            count: options.count!
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const tempFiles = chooseMediaRes.tempFiles;
             if (tempFiles.length === 0) {
