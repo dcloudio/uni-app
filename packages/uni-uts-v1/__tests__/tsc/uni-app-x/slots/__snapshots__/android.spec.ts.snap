@@ -1,0 +1,18 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`android slots 1`] = `
+"const __sfc__ = defineComponent({
+    slots: Object as SlotsType<{
+        header: {
+            msg: string;
+        };
+        default: {
+            msg: string;
+        };
+        footer: {
+            msg: string;
+        };
+    }>,
+});
+"
+`;

@@ -1650,6 +1650,9 @@ importers:
       '@babel/code-frame':
         specifier: ^7.23.5
         version: 7.24.2
+      '@dcloudio/uni-app-x':
+        specifier: ^0.7.22
+        version: 0.7.22
       '@dcloudio/uts':
         specifier: 3.0.0-alpha-4020520240719001
         version: link:../uts

@@ -1,5 +1,5 @@
-declare var NaN: number
-declare var Infinity: number
+declare var NaN : number;
+declare var Infinity : number;
 
 declare type RequestAnimationFrameCallback = (task: number) => void
 
@@ -26,7 +26,7 @@ declare type RequestAnimationFrameCallback = (task: number) => void
  *    }
  * }
  */
-declare function eval(x: string): any
+declare function eval(x : string) : any;
 
 /**
  * parseInt(string, radix) 解析一个字符串并返回指定基数的十进制整数，radix 是 2-36 之间的整数，表示被解析字符串的基数。
@@ -53,7 +53,7 @@ declare function eval(x: string): any
  *    }
  * }
  */
-declare function parseInt(string: string, radix?: number): number
+declare function parseInt(string : string, radix ?: number) : number;
 
 /**
  * parseFloat() 函数解析一个参数（直接收字符串类型的参数，其他类型编译报错）并返回一个浮点数。
@@ -79,7 +79,7 @@ declare function parseInt(string: string, radix?: number): number
  *    }
  * }
  */
-declare function parseFloat(string: string): number
+declare function parseFloat(string : string) : number;
 
 /**
  * isNaN() 函数用来确定一个值是否为NaN 。注：isNaN函数内包含一些非常有趣的规则；你也可以使用 ECMAScript 2015 中定义的 Number.isNaN() 来判断。
@@ -105,7 +105,7 @@ declare function parseFloat(string: string): number
  *    }
  * }
  */
-declare function isNaN(number: number): boolean
+declare function isNaN(number : number) : boolean;
 
 /**
  * isFinite() 函数用来判断被传入的参数值是否为一个有限数值（finite number）。
@@ -131,7 +131,7 @@ declare function isNaN(number: number): boolean
  *    }
  * }
  */
-declare function isFinite(number: number): boolean
+declare function isFinite(number : number) : boolean;
 
 /**
  * decodeURI() 函数能解码由encodeURI 创建或其他流程得到的统一资源标识符（URI）。
@@ -157,7 +157,7 @@ declare function isFinite(number: number): boolean
  *    }
  * }
  */
-declare function decodeURI(encodedURI: string): string | null
+declare function decodeURI(encodedURI : string) : string|null;
 
 /**
  * decodeURIComponent() 方法用于解码由 encodeURIComponent 方法或者其他类似方法编码的部分统一资源标识符（URI）。
@@ -183,7 +183,7 @@ declare function decodeURI(encodedURI: string): string | null
  *    }
  * }
  */
-declare function decodeURIComponent(encodedURIComponent: string): string | null
+declare function decodeURIComponent(encodedURIComponent : string) : string|null;
 
 /**
  * encodeURI() 函数通过将特定字符的每个实例替换为一个、两个、三或四转义序列来对统一资源标识符 (URI) 进行编码 (该字符的 UTF-8 编码仅为四转义序列) 由两个 "代理" 字符组成)。
@@ -209,7 +209,7 @@ declare function decodeURIComponent(encodedURIComponent: string): string | null
  *    }
  * }
  */
-declare function encodeURI(uri: string): string | null
+declare function encodeURI(uri : string) : string|null;
 
 /**
  * encodeURIComponent() 函数通过将特定字符的每个实例替换成代表字符的 UTF-8 编码的一个、两个、三个或四个转义序列来编码 URI（只有由两个“代理”字符组成的字符会被编码为四个转义序列）。与 encodeURI() 相比，此函数会编码更多的字符，包括 URI 语法的一部分。
@@ -235,7 +235,8 @@ declare function encodeURI(uri: string): string | null
  *    }
  * }
  */
-declare function encodeURIComponent(uriComponent: string): string | null
+declare function encodeURIComponent(uriComponent : string) : string|null;
+
 
 /**
  * atob() 函数会对经过 Base64 编码的字符串进行解码
@@ -261,7 +262,8 @@ declare function encodeURIComponent(uriComponent: string): string | null
  *    }
  * }
  */
-declare function atob(encodedData: string): string
+declare function atob(encodedData : string) : string
+
 
 /**
  * btoa() 方法可以将一个二进制字符串（例如，将字符串中的每一个字节都视为一个二进制数据字节）编码为 Base64 编码的 ASCII 字符串
@@ -287,7 +289,7 @@ declare function atob(encodedData: string): string
  *    }
  * }
  */
-declare function btoa(stringToEncode: string): string
+declare function btoa(stringToEncode : string) : string
 
 /**
  * 在下一次重绘之前，调用用户提供的回调函数
@@ -310,9 +312,7 @@ declare function btoa(stringToEncode: string): string
  *   }
  * }
  */
-declare function requestAnimationFrame(
-  callback: RequestAnimationFrameCallback
-): number
+declare function requestAnimationFrame(callback: RequestAnimationFrameCallback): number;
 
 /**
  * 取消一个先前通过调用 requestAnimationFrame() 方法添加到计划中的动画帧请求
@@ -335,4 +335,4 @@ declare function requestAnimationFrame(
  *   }
  * }
  */
-declare function cancelAnimationFrame(taskId: number): void
+declare function cancelAnimationFrame(taskId: number): void;

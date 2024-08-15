@@ -1,5 +1,5 @@
 interface UTSJSONObject {
-  constructor: Function
+  constructor: Function;
   [key: string]: any | null
   /**
    * 获取一个 属性，返回类型是any 或者 null
@@ -24,7 +24,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  get(key: string): any | null
+  get(key:string) : any|null;
   /**
    * 获取一个 属性，返回类型是any 或者 null
    * @return 如果属性存在返回结果，不存在返回null
@@ -48,7 +48,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  set(key: string, value: any): void
+  set(key:string, value: any) : void;
   /**
    * 获取一个 属性，返回类型是any 或者 null
    * @return 如果属性存在返回结果，不存在返回null
@@ -72,7 +72,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  getAny(key: string): any | null
+  getAny(key:string) : any|null;
   /**
    * 获取一个Boolean属性，返回类型是Boolean 或者 null
    * @return 如果属性名存在，且类型为Boolean返回对应的结果，不存在返回null
@@ -96,7 +96,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  getBoolean(key: string): boolean | null
+  getBoolean(key:string) : boolean|null;
   /**
    * 获取一个number属性，返回类型是number 或者 null
    * @return 如果属性名存在，且类型为number返回对应的结果，不存在返回null
@@ -120,7 +120,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  getNumber(key: string): number | null
+  getNumber(key:string) : number|null;
   /**
    * 获取一个string属性，返回类型是string 或者 null
    * @return 如果属性名存在，且类型为string返回对应的结果，不存在返回null
@@ -144,7 +144,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  getString(key: string): string | null
+  getString(key:string) : string|null;
   /**
    * 获取一个UTSJSONObject属性，返回类型是UTSJSONObject 或者 null
    * @return 如果属性名存在，且类型为UTSJSONObject返回对应的结果，不存在返回null
@@ -168,7 +168,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  getJSON(key: string): UTSJSONObject | null
+  getJSON(key:string) : UTSJSONObject|null;
   /**
    * 获取一个Array属性，返回类型是Array 或者 null, 数组元素类型由泛型T决定
    * @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回null
@@ -192,7 +192,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  getArray<T>(key: string): Array<T> | null
+  getArray<T>(key:string) : Array<T>|null;
   /**
    * 获取一个Array属性，返回类型是Array 或者 null
    * @return 如果属性名存在，且类型为Array返回对应的结果，不存在返回null
@@ -216,7 +216,7 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  getArray(key: string): Array<any> | null
+  getArray(key:string) : Array<any>|null;
   /**
    * 将当前 UTSJSONObject 实例转换为 Map 实例。
    * @return 返回 Map<string, any> 类型的 map
@@ -240,7 +240,8 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  toMap(): Map<string, any>
+  toMap() : Map<string, any>;
+
 
   /**
    * 将当前的UTSJSONObject对象转换为某一个具体的类型 T
@@ -265,11 +266,12 @@ interface UTSJSONObject {
    *    }
    * }
    */
-  parse<T>(): T | null
+  parse<T>() : T|null;
+
 }
 
 interface UTSJSONObjectConstructor {
-  new (value?: any): UTSJSONObject
+  new(value?: any): UTSJSONObject;
   /**
    * 以数组的形式返回指定UTSJSONObjetc 对象内可枚举属性的名称列表
    * @param item 需要检索的UTSJSONObject 实例对象
@@ -294,7 +296,7 @@ interface UTSJSONObjectConstructor {
    *    }
    * }
    */
-  keys(item: UTSJSONObject): Array<string>
+  keys(item:UTSJSONObject) : Array<string>;
 
   /**
    * 该方法允许输入一个或者多个UTSJSONObject对象，合并后返回一个新的UTSJSONObject，其中包含全部输入对象的属性字段，如果存在同名的属性会以后传入的属性为准
@@ -320,7 +322,7 @@ interface UTSJSONObjectConstructor {
    *    }
    * }
    */
-  assign(...items: UTSJSONObject[]): UTSJSONObject
+  assign(...items:UTSJSONObject[]) : UTSJSONObject;
 
   /**
    * 该方法允许输入一个或者多个UTSJSONObject对象，合并后返回一个新的泛型对象T，其中包含全部输入对象的属性字段，如果存在同名的属性会以后传入的属性为准
@@ -346,7 +348,7 @@ interface UTSJSONObjectConstructor {
    *    }
    * }
    */
-  assign<T>(...items: any[]): T
+  assign<T>(...items:any[]) : T;
 }
 
-declare var UTSJSONObject: UTSJSONObjectConstructor
+declare var UTSJSONObject : UTSJSONObjectConstructor;

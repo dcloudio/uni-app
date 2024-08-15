@@ -18,7 +18,7 @@ exports[`android mixin 1`] = `
             return '';
         },
     },
-    onLoad() { },
+    onLoad(_query) { },
     methods: {
         m1(): string {
             return '';
@@ -31,7 +31,7 @@ export function createApp() {
 }
 export const __sfc__ = defineComponent({
     mixins: [mixin],
-    onLoad() {
+    onLoad(_query) {
         this.d1;
         this.c1;
         this.m1;

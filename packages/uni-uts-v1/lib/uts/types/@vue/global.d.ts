@@ -112,6 +112,7 @@ import {
   // ComponentCustomOptions as ComponentCustomOptionsOrigin,
   // ComponentCustomProps as ComponentCustomPropsOrigin,
   // CSSProperties as CSSPropertiesOrigin,
+  SlotsType as SlotsTypeOrigin,
 } from '@vue/runtime-core'
 // ### 其他类型信息
 import {
@@ -275,6 +276,9 @@ declare global {
   // ## TypeScript 工具类型
   type PropType<T> = PropTypeOrigin<T>
   type MaybeRef<T> = MaybeRefOrigin<T>
+  type SlotsType<T extends Record<string, any> = Record<string, any>> =
+    SlotsTypeOrigin<T>
+
   // ### 其他类型信息
   type ComponentPublicInstance = ComponentPublicInstanceOrigin
   type ComponentInternalInstance = ComponentInternalInstanceOrigin
@@ -332,7 +336,6 @@ declare global {
   type VNode = VNodeOrigin
 
   // 自定义
-  type SlotsType<T> = PropTypeOrigin<T>
   const defineApp: typeof defineComponentOrigin
   const definePlugin: (plugin: Plugin) => Plugin
 }

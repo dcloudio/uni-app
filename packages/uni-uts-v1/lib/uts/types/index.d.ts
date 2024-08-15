@@ -6,4 +6,3 @@
 /// <reference path="./lib.es2015.symbol.wellknown.d.ts" />
 /// <reference path="./lib.es2015.iterable.d.ts" />
 /// <reference path="./lib.es2018.promise.d.ts" />
-/// <reference path="./@vue/global.d.ts" />

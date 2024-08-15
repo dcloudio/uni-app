@@ -15,16 +15,5 @@ declare global {
     readonly prototype: any[]
   }
 }
-declare module 'vue' {
-  interface ComponentCustomProperties {
-    $callMethod(method: string, ...args: Array<any | null>): any | null
-  }
-}
-
-declare module '@vue/reactivity' {
-  interface RefUnwrapBailTypes {
-    utsBailTypes: UTSJSONObject
-  }
-}
 
 export {}

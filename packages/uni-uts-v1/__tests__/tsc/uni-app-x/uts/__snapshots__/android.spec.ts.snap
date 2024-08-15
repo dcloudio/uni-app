@@ -7,6 +7,9 @@ exports[`android uts 1`] = `
 export function main() {
     const res = getStorageSync('key');
     console.log(res instanceof UTSJSONObject);
+    Promise.resolve()
+        .then(() => { })
+        .catch(() => { });
 }
 "
 `;

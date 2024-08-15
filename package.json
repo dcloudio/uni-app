@@ -32,7 +32,11 @@
     "commit-msg": "node scripts/verifyCommit.js $1"
   },
   "lint-staged": {
-    "packages/**/*.ts?(x)": [
+    "packages/*/src/**/*.ts?(x)": [
+      "eslint",
+      "prettier --parser=typescript --write"
+    ],
+    "packages/*/__tests__/**/*.ts?(x)": [
       "eslint",
       "prettier --parser=typescript --write"
     ]

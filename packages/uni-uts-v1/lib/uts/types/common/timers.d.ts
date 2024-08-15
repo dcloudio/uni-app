@@ -21,11 +21,7 @@
  *    }
  * }
  */
-declare function setInterval(
-  handler: string | Function,
-  timeout?: number,
-  ...arguments: any[]
-): number
+declare function setInterval(handler: string | Function, timeout?: number, ...arguments: any[]): number;
 /**
  * 全局的 setTimeout() 方法设置一个定时器，一旦定时器到期，就会执行一个函数或指定的代码片段。
  * @tutorial https://developer.mozilla.org/docs/Web/API/setTimeout
@@ -48,11 +44,7 @@ declare function setInterval(
  *    }
  * }
  */
-declare function setTimeout(
-  handler: string | Function,
-  timeout?: number,
-  ...arguments: any[]
-): number
+declare function setTimeout(handler:  string | Function, timeout?: number, ...arguments: any[]): number;
 /**
  * clearInterval() 方法可取消先前通过 setInterval() 设置的重复定时任务。
  * @tutorial https://developer.mozilla.org/docs/Web/API/clearInterval
@@ -75,7 +67,7 @@ declare function setTimeout(
  *    }
  * }
  */
-declare function clearInterval(id: number | undefined): void
+declare function clearInterval(id: number | undefined): void;
 
 /**
  * clearTimeout() 方法取消了先前通过调用setTimeout()建立的定时器
@@ -99,4 +91,4 @@ declare function clearInterval(id: number | undefined): void
  *    }
  * }
  */
-declare function clearTimeout(id: number | undefined): void
+declare function clearTimeout(id: number | undefined): void;

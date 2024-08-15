@@ -16,5 +16,5 @@
       "@vue/runtime-core": ["./@vue/runtime-core/dist/runtime-core.d.ts"]
     }
   },
-  "include": ["index.d.ts", "common/common.d.ts"]
+  "include": ["common/common.d.ts", "index.d.ts", "vue.d.ts"]
 }

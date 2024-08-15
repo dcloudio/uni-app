@@ -1,4 +1,5 @@
 interface RegExp {
+
   /**
    * 返回一个字符串，由当前正则表达式对象的标志组成。此属性是一个只读属性
    * 此字符串中的字符按以下顺序排序和连接:
@@ -30,7 +31,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly flags: string
+  readonly flags : string;
 
   /**
    * 表明是否在正则表达式中一起使用"s"修饰符（引入/s 修饰符，使得。可以匹配任意单个字符）。dotAll 是一个只读的属性，属于单个正则表达式实例。
@@ -54,7 +55,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly dotAll: boolean
+  readonly dotAll : boolean;
 
   /**
    * 指示 d 标志是否与正则表达式一起使用。只读的。
@@ -78,7 +79,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly hasIndices: boolean
+  readonly hasIndices : boolean;
 
   /**
    * 搜索是否具有粘性（仅从正则表达式的 lastIndex 属性表示的索引处搜索）。sticky 是正则表达式对象的只读属性。默认为false。只读的。
@@ -102,7 +103,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly sticky: boolean
+  readonly sticky : boolean;
 
   /**
    * 表明正则表达式带有"u" 标志。 unicode 是正则表达式独立实例的只读属性。unicode 的值是 Boolean，并且如果使用了 "u" 标志则为 true；否则为 false。"u" 标志开启了多种 Unicode 相关的特性。使用 "u" 标志，任何 Unicode 代码点的转义都会被解释。
@@ -126,7 +127,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly unicode: boolean
+  readonly unicode : boolean;
 
   /**
    * 在一个指定字符串中执行一个搜索匹配。返回一个结果数组或 null。
@@ -152,7 +153,7 @@ interface RegExp {
    *    }
    * }
    */
-  exec(string: string): RegExpExecArray | null
+  exec(string : string) : RegExpExecArray | null;
 
   /**
    * 执行一个检索，用来查看正则表达式与指定的字符串是否匹配。返回 true 或 false。
@@ -178,7 +179,7 @@ interface RegExp {
    *    }
    * }
    */
-  test(string: string): boolean
+  test(string : string) : boolean;
 
   /**
    * 返回一个值为当前正则表达式对象的模式文本的字符串，该字符串不会包含正则字面量两边的斜杠以及任何的标志字符。
@@ -202,7 +203,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly source: string
+  readonly source : string;
 
   /**
    * 表明正则表达式是否使用了 "g" 标志。global 是一个正则表达式实例的只读属性。
@@ -226,7 +227,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly global: boolean
+  readonly global : boolean;
 
   /**
    * 表明正则表达式是否使用了 "i" 标志。ignoreCase 是正则表达式实例的只读属性。
@@ -250,7 +251,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly ignoreCase: boolean
+  readonly ignoreCase : boolean;
 
   /**
    * 表明正则表达式是否使用了 "m" 标志。multiline 是正则表达式实例的一个只读属性。
@@ -274,7 +275,7 @@ interface RegExp {
    *    }
    * }
    */
-  readonly multiline: boolean
+  readonly multiline : boolean;
   /**
    * 正则表达式的一个可读可写的整型属性，用来指定下一次匹配的起始索引。
    * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/RegExp.html#lastIndex
@@ -297,7 +298,8 @@ interface RegExp {
    *    }
    * }
    */
-  lastIndex: number
+  lastIndex : number;
+
 }
 
 interface RegExpConstructor {
@@ -324,7 +326,7 @@ interface RegExpConstructor {
    *    }
    * }
    */
-  new (pattern: RegExp | string): RegExp
+  new(pattern : RegExp | string) : RegExp;
   /**
    * 用于创建正则表达式对象，该对象用于将文本与一个模式匹配。
    * @param pattern 正则表达式的文本，也可以是另一个 RegExp 对象或文字。
@@ -349,40 +351,41 @@ interface RegExpConstructor {
    *    }
    * }
    */
-  new (pattern: string, flags?: string): RegExp
-  (pattern: RegExp | string): RegExp
-  (pattern: string, flags?: string): RegExp
-  readonly prototype: RegExp
+  new(pattern : string, flags ?: string) : RegExp;
+  (pattern : RegExp | string) : RegExp;
+  (pattern : string, flags ?: string) : RegExp;
+  readonly prototype : RegExp;
 }
 
-declare var RegExp: RegExpConstructor
+declare var RegExp : RegExpConstructor;
 
-interface RegExpMatchArray extends Array<string | null> {
+
+interface RegExpMatchArray extends Array<string|null> {
   /**
    * The index of the search at which the result was found.
    */
-  index?: number
+  index ?: number;
   /**
    * A copy of the search string.
    */
-  input?: string
+  input ?: string;
   /**
    * The first match. This will always be present because `null` will be returned if there are no matches.
    */
-  0: string
+  0 : string;
 }
 
 interface RegExpExecArray extends Array<string> {
   /**
    * The index of the search at which the result was found.
    */
-  index: number
+  index : number;
   /**
    * A copy of the search string.
    */
-  input: string
+  input : string;
   /**
    * The first match. This will always be present because `null` will be returned if there are no matches.
    */
-  0: string
+  0 : string;
 }

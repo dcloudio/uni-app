@@ -33,7 +33,8 @@
     "dts-test/*.ts",
     "./uni-app-x/*/src/**/*.ts",
     "../../lib/kotlin/types/global.d.ts",
+    "../../lib/uts/types/common/index.d.ts",
     "../../lib/uts/types/index.d.ts",
-    "../../lib/uts/types/common/index.d.ts"
+    "../../lib/uts/types/vue.d.ts",
   ]
 }
