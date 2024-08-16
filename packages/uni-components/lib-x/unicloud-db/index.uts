@@ -201,7 +201,7 @@ export const mixinDatacom = defineMixin({
           this.mixinDatacomPage.count = count
         }
 
-        this.mixinDatacomHasMore = !((count !== null) ? (this.mixinDatacomPage.current * this.mixinDatacomPage.size >= count) : (data.length < this.pageSize))
+        this.mixinDatacomHasMore = !((count != null) ? (this.mixinDatacomPage.current * this.mixinDatacomPage.size >= count) : (data.length < this.pageSize))
         this.mixinDatacomResData = data
 
         options?.success?.(res)
@@ -279,7 +279,7 @@ export const mixinDatacom = defineMixin({
         query = collection.skip(size * (current - 1)).limit(size)
       }
 
-      const getOptions = {}
+      const getOptions = {} as UTSJSONObject
       const treeOptions = {
         limitLevel: this.limitlevel,
         startWith: this.startwith
