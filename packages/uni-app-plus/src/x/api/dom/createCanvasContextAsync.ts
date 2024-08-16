@@ -15,13 +15,13 @@ import type {
 
 import type {
   CanvasContext,
-  UniRequestAnimationFrameCallback,
+  RequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
 
 declare global {
   // requestAnimationFrame
   function requestAnimationFrame(
-    callback: UniRequestAnimationFrameCallback
+    callback: RequestAnimationFrameCallback
   ): number
   function cancelAnimationFrame(taskId: number): void
   const __uniappx__: any
@@ -70,7 +70,7 @@ export const createCanvasContextAsync = defineAsyncApi(
     }
 
     function requestAnimationFrameFun(
-      callback: UniRequestAnimationFrameCallback
+      callback: RequestAnimationFrameCallback
     ): number {
       return requestAnimationFrame(callback)
     }

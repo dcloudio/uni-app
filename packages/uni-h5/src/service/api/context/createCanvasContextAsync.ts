@@ -5,7 +5,7 @@ import type {
   CanvasContext,
   CanvasContextToBlobCallback,
   CreateCanvasContextAsyncOptions,
-  UniRequestAnimationFrameCallback,
+  RequestAnimationFrameCallback,
 } from '@dcloudio/uni-app-x/types/uni'
 
 class CanvasContextImpl implements CanvasContext {
@@ -47,7 +47,7 @@ class CanvasContextImpl implements CanvasContext {
     return new Path2D()
   }
 
-  requestAnimationFrame(callback: UniRequestAnimationFrameCallback): number {
+  requestAnimationFrame(callback: RequestAnimationFrameCallback): number {
     return window.requestAnimationFrame(callback)
   }
 

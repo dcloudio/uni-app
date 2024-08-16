@@ -37,7 +37,6 @@
   "include": [
     "shims.d.ts",
     "dts-test/*.ts",
-    "./uni-app-x/*/src/**/*.ts",
     "../../lib/uts/types/uni-x/app-android.d.ts"
   ]
 }

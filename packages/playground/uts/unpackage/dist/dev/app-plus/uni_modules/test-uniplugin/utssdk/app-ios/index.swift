@@ -163,7 +163,7 @@ public func test1ByJs(_ callback: UTSCallback) -> String {
 @objcMembers
 public class TestByJs : Test {
     public func testByJs() -> String? {
-        return test();
+        return self.test();
     }
 }
 public func testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {

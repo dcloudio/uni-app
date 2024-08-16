@@ -216,7 +216,7 @@ export const mixinDatacom = defineMixin({
         options?.complete?.()
       })
     },
-    mixinDatacomGet(options ?: MixinDatacomGetOptions) : Promise<UniCloudDBGetResult> {
+    mixinDatacomGet(options: MixinDatacomGetOptions | null) : Promise<UniCloudDBGetResult> {
       let db = uniCloud.databaseForJQL()
 
       let collection = Array.isArray(this.collection) ? db.collection(...(this.collection as Array<any>)) : db.collection(this.collection)

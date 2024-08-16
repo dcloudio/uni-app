@@ -30,6 +30,9 @@ declare module 'vue' {
     $exposed: Record<string, any | null>
     $callMethod(method: string, ...args: Array<any | null>): any | null
   }
+  interface ComponentCustomOptions {
+    onShow?(options: OnShowOptions): void
+  }
 }
 
 declare module '@vue/reactivity' {
