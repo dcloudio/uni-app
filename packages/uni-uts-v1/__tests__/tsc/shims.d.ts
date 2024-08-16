@@ -40,14 +40,6 @@ declare global {
   interface HTMLElementEventMap {}
   interface HTMLElementTagNameMap {}
 
-  const EventMarker: unique symbol
-  interface Event {
-    [EventMarker]: true
-  }
-  var Event: {
-    prototype: Event
-    new (type: string): Event
-  }
   interface KeyboardEvent extends Event {}
   var KeyboardEvent: {
     prototype: KeyboardEvent

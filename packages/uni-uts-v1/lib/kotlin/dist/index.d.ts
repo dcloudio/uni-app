@@ -27,7 +27,6 @@ type RunAndroidOptions = {
     rootFiles?: string[];
     utsLibDir: string;
     hxLanguageServiceDir?: string;
-    uniAppXTypesDir?: string;
     outputDir: string;
     normalizeFileName: (fileName: string) => string;
     originalPositionForSync?: (generatedPosition: Omit<PositionFor, 'filename'>) => MappedPosition & {

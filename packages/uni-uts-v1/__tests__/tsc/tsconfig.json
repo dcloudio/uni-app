@@ -14,16 +14,22 @@
     "traceResolution": false,
     "isolatedModules": true,
     "paths": {
-      "@vue/shared": ["../../lib/uts/types/@vue/shared/dist/shared.d.ts"],
-      "@vue/reactivity": [
-        "../../lib/uts/types/@vue/reactivity/dist/reactivity.d.ts"
+      "@uts/common.d.ts": ["../../lib/uts/types/uts/common/common.d.ts"],
+      "@uni-x/app-android.d.ts": [
+        "../../lib/uts/types/uni-x/app-android/index.d.ts"
       ],
-      "vue": ["../../lib/uts/types/@vue/runtime-core/dist/runtime-core.d.ts"],
+      "@vue/shared": ["../../lib/uts/types/uni-x/@vue/shared/dist/shared.d.ts"],
+      "@vue/reactivity": [
+        "../../lib/uts/types/uni-x/@vue/reactivity/dist/reactivity.d.ts"
+      ],
+      "vue": [
+        "../../lib/uts/types/uni-x/@vue/runtime-core/dist/runtime-core.d.ts"
+      ],
       "@vue/runtime-core": [
-        "../../lib/uts/types/@vue/runtime-core/dist/runtime-core.d.ts"
+        "../../lib/uts/types/uni-x/@vue/runtime-core/dist/runtime-core.d.ts"
       ],
       "@vue/runtime-dom": [
-        "../../lib/uts/types/@vue/runtime-core/dist/runtime-core.d.ts"
+        "../../lib/uts/types/uni-x/@vue/runtime-core/dist/runtime-core.d.ts"
       ],
       "@vue/dts-built-test": ["./dts-built-test/dist/dts-built-test.d.ts"]
     }
@@ -32,9 +38,6 @@
     "shims.d.ts",
     "dts-test/*.ts",
     "./uni-app-x/*/src/**/*.ts",
-    "../../lib/kotlin/types/global.d.ts",
-    "../../lib/uts/types/common/index.d.ts",
-    "../../lib/uts/types/index.d.ts",
-    "../../lib/uts/types/vue.d.ts",
+    "../../lib/uts/types/uni-x/app-android.d.ts"
   ]
 }

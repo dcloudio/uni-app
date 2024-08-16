@@ -5,4 +5,7 @@
 /// <reference path="./lib.es2015.symbol.d.ts" />
 /// <reference path="./lib.es2015.symbol.wellknown.d.ts" />
 /// <reference path="./lib.es2015.iterable.d.ts" />
+/// <reference path="./lib.es2018.asyncgenerator.d.ts" />
+/// <reference path="./lib.es2018.asynciterable.d.ts" />
 /// <reference path="./lib.es2018.promise.d.ts" />
+/// <reference path="./lib.es2020.symbol.wellknown.d.ts" />

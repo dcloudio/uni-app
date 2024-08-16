@@ -10,11 +10,13 @@
     "resolveJsonModule": false,
     "typeRoots": [],
     "paths": {
+      "@uts/common.d.ts": ["./uts/common/common.d.ts"],
+      "@uni-x/app-android.d.ts": ["./uni-x/app-android/index.d.ts"],
       "@vue/shared": ["./@vue/shared/dist/shared.d.ts"],
       "@vue/reactivity": ["./@vue/reactivity/dist/reactivity.d.ts"],
       "vue": ["./@vue/runtime-core/dist/runtime-core.d.ts"],
       "@vue/runtime-core": ["./@vue/runtime-core/dist/runtime-core.d.ts"]
     }
   },
-  "include": ["common/common.d.ts", "index.d.ts", "vue.d.ts"]
+  "include": ["uni-x/app-android.d.ts"]
 }

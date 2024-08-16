@@ -1,3 +1,5 @@
+/// <reference path="../../uts/index.d.ts" />
+/// <reference path="../vue.d.ts" />
 declare global {
   const CSS_VAR_WINDOW_TOP: number
   const CSS_VAR_WINDOW_BOTTOM: number
@@ -5,6 +7,8 @@ declare global {
 
   const __uniConfig: UniConfig
   const __uniRoutes: UniPageRoute[]
+
+  type CreateVueComponent = any
 
   function utsMapOf(obj?: any): any
   function padStyleMapOf(style: any): any
@@ -196,8 +200,6 @@ declare global {
       }
     }
   }
-  // Vue 相关
-  type SetupContext = any
 }
 
 declare module 'vue' {
