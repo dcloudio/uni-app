@@ -44,4 +44,10 @@ declare module '@vue/reactivity' {
   }
 }
 
+declare global {
+  // 辅助类型，用于提取插槽的 props 类型
+  type SlotPropsType<T = any> = T extends (...args: any) => any
+    ? Parameters<T>[0]
+    : any
+}
 export {}

@@ -15,11 +15,11 @@ declare global {
 
   function isTrue(value: any): boolean
   function looseToNumber(value: any): number
-  function resolveEasyComponent(
+  function resolveEasyComponent<T>(
     name: string,
-    easyCom: CreateVueComponent,
+    easyCom: T,
     maybeSelfReference?: boolean
-  ): any
+  ): T
   function resolveCache(
     cache: Array<any | null>,
     index: number,

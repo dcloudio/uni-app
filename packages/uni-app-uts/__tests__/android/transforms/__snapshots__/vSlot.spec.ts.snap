@@ -2,10 +2,10 @@
 
 exports[`compiler: transform component slots dynamically named slots 1`] = `
 "createVNode(_component_Comp, null, utsMapOf({
-  [_ctx.one]: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+  [_ctx.one]: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
   return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
-  [_ctx.two]: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+  [_ctx.two]: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const bar = slotProps["bar"]
   return [toDisplayString(_ctx.foo), toDisplayString(bar)]}),
   _: 2 /* DYNAMIC */
@@ -37,7 +37,7 @@ exports[`compiler: transform component slots named slot with v-if + prefixIdenti
   isTrue(_ctx.ok)
     ? utsMapOf({
         name: "one",
-        fn: withScopedSlotCtx((props: Map<string, any | null>): any[] => [toDisplayString(props)]),
+        fn: withScopedSlotCtx((props: Record<string, any | null>): any[] => [toDisplayString(props)]),
         key: "0"
       })
     : null
@@ -55,7 +55,7 @@ exports[`compiler: transform component slots named slot with v-if + v-else-if + 
     : isTrue(orNot)
       ? utsMapOf({
           name: "two",
-          fn: withScopedSlotCtx((props: Map<string, any | null>): any[] => ["bar"]),
+          fn: withScopedSlotCtx((props: Record<string, any | null>): any[] => ["bar"]),
           key: "1"
         })
       : utsMapOf({
@@ -91,11 +91,11 @@ exports[`compiler: transform component slots named slots w/ implicit default slo
 
 exports[`compiler: transform component slots nested slots scoping 1`] = `
 "createVNode(_component_Comp, null, utsMapOf({
-  default: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+  default: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
   return [
     createVNode(_component_Inner, null, utsMapOf({
-      default: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+      default: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
       const bar = slotProps["bar"]
       return [toDisplayString(foo), toDisplayString(bar), toDisplayString(_ctx.baz)]}),
       _: 2 /* DYNAMIC */
@@ -111,7 +111,7 @@ exports[`compiler: transform component slots nested slots scoping 1`] = `
 
 exports[`compiler: transform component slots on component dynamically named slot 1`] = `
 "createVNode(_component_Comp, null, utsMapOf({
-  [_ctx.named]: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+  [_ctx.named]: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
   return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
   _: 2 /* DYNAMIC */
@@ -120,7 +120,7 @@ exports[`compiler: transform component slots on component dynamically named slot
 
 exports[`compiler: transform component slots on component named slot 1`] = `
 "createVNode(_component_Comp, null, utsMapOf({
-  named: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+  named: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
   return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
   _: 1 /* STABLE */
@@ -129,7 +129,7 @@ exports[`compiler: transform component slots on component named slot 1`] = `
 
 exports[`compiler: transform component slots on-component default slot 1`] = `
 "createVNode(_component_Comp, null, utsMapOf({
-  default: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+  default: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
   return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
   _: 1 /* STABLE */
@@ -138,10 +138,10 @@ exports[`compiler: transform component slots on-component default slot 1`] = `
 
 exports[`compiler: transform component slots template named slots 1`] = `
 "createVNode(_component_Comp, null, utsMapOf({
-  one: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+  one: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const foo = slotProps["foo"]
   return [toDisplayString(foo), toDisplayString(_ctx.bar)]}),
-  two: withScopedSlotCtx((slotProps: Map<string, any | null>): any[] => {
+  two: withScopedSlotCtx((slotProps: Record<string, any | null>): any[] => {
   const bar = slotProps["bar"]
   return [toDisplayString(_ctx.foo), toDisplayString(bar)]}),
   _: 1 /* STABLE */
