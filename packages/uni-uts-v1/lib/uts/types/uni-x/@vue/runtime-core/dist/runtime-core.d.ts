@@ -645,6 +645,7 @@ export type ComponentProvideOptions = ObjectProvideOptions | Function;
 type ObjectProvideOptions = Record<string | symbol, unknown>;
 export type ComponentInjectOptions = string[] | ObjectInjectOptions;
 type ObjectInjectOptions = Record<string | symbol, string | symbol | {
+    type?: unknown;
     from?: string | symbol;
     default?: unknown;
 }>;
