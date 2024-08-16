@@ -25,13 +25,16 @@ declare global {
   }
 }
 
-declare module 'vue' {
+declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     $exposed: Record<string, any | null>
     $callMethod(method: string, ...args: Array<any | null>): any | null
   }
   interface ComponentCustomOptions {
     onShow?(options: OnShowOptions): void
+  }
+  interface App<HostElement = any> {
+    mixin(mixin: unknown): void
   }
 }
 
