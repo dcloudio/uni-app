@@ -602,6 +602,8 @@ export type ToRef<T> = IfAny<T, Ref<T>, [T] extends [Ref] ? T : Ref<T>>;
 export declare function toRef<T>(value: T): T extends () => infer R ? Readonly<Ref<R>> : T extends Ref ? T : Ref<UnwrapRef<T>>;
 export declare function toRef<T extends object, K extends keyof T>(object: T, key: K): ToRef<T[K]>;
 export declare function toRef<T extends object, K extends keyof T>(object: T, key: K, defaultValue: T[K]): ToRef<Exclude<T[K], undefined>>;
+export declare function toRef<T>(value: object, key: string): T extends () => infer R ? Readonly<Ref<R>> : T extends Ref ? T : Ref<UnwrapRef<T>>;
+export declare function toRef<T>(value: () => T): Readonly<Ref<T>>;
 type BaseTypes = string | number | boolean;
 /**
  * This is a special exported interface for other packages to declare

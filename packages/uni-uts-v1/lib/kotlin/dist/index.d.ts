@@ -33,8 +33,11 @@ type RunAndroidOptions = {
         sourceContent?: string;
     };
 };
-declare function runAndroid(mode: 'development' | 'production', options: RunAndroidOptions): {
-    watcher?: WatchProgramHelper;
+declare function runAndroid(mode: 'development', options: RunAndroidOptions): {
+    watcher: WatchProgramHelper;
+};
+declare function runAndroid(mode: 'production', options: RunAndroidOptions): {
+    result: tsTypes.EmitResult;
 };
 
 export { type RunAndroidOptions, type TransformOptions, WatchProgramHelper, runAndroid };
