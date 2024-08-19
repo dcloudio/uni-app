@@ -33,12 +33,7 @@ export function mergeArkTSAutoImports(
 export function getArkTSAutoImports(): AutoImportOptions {
   return mergeArkTSAutoImports(
     {
-      '@dcloudio/uts-harmony': [
-        ['IUTSObject'],
-        ['UTSObject'],
-        ['UTSJSONObject'],
-      ],
-      '@dcloudio/uni-app-harmony': [
+      '@dcloudio/uni-app-runtime': [
         ['defineAsyncApi'],
         ['defineSyncApi'],
         ['defineTaskApi'],
@@ -58,8 +53,11 @@ export function getArkTSAutoImports(): AutoImportOptions {
         ['ApiError'],
         ['UniError'],
         ['UniProvider'],
+        ['uni'],
+        ['IUTSObject'],
+        ['UTSObject'],
+        ['UTSJSONObject'],
       ],
-      '@dcloudio/uni-app-harmony-framework': [['uni']],
     },
     require('../lib/arkts/ext-api-export.json')
   )
@@ -88,7 +86,7 @@ export async function compileArkTS(
 
   const autoImportExternals = getArkTSAutoImports()
   if (transform && transform.uniExtApiProviderService) {
-    autoImportExternals['@dcloudio/uni-app-harmony'].push([
+    autoImportExternals['@dcloudio/uni-app-runtime'].push([
       formatUniProviderName(transform.uniExtApiProviderService),
     ])
   }
@@ -99,7 +97,7 @@ export async function compileArkTS(
       root: inputDir,
       filename,
       paths: {
-        '@dcloudio/uni-runtime': '@dcloudio/uni-app-harmony-framework',
+        '@dcloudio/uni-runtime': '@dcloudio/uni-app-runtime',
       },
       parseOptions: {
         tsx: true,
