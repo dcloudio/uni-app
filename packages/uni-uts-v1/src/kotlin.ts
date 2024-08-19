@@ -173,7 +173,7 @@ export async function runKotlinProd(
     if (isModule) {
       // noop
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
-      updateManifestModules(inputDir, result.inject_apis)
+      updateManifestModules(inputDir, result.inject_apis, extApis)
     } else {
       addInjectApis(result.inject_apis)
     }
@@ -199,7 +199,11 @@ export async function runKotlinProd(
   return result
 }
 
-function updateManifestModules(inputDir: string, inject_apis: string[]) {
+function updateManifestModules(
+  inputDir: string,
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]> = {}
+) {
   const filename = path.resolve(inputDir, 'manifest.json')
   if (fs.existsSync(filename)) {
     const content = fs.readFileSync(filename, 'utf8')
@@ -216,7 +220,7 @@ function updateManifestModules(inputDir: string, inject_apis: string[]) {
       }
       const modules = json.app.distribute.modules
       let updated = false
-      parseInjectModules(inject_apis, {}, []).forEach((name) => {
+      parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
         if (!hasOwn(modules, name)) {
           modules[name] = {}
           updated = true
