@@ -1,4 +1,4 @@
-import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_BACK_PRESS, ON_LAUNCH } from "@dcloudio/uni-shared";
+import { normalizeStyles as normalizeStyles$1, addLeadingSlash, invokeArrayFns, parseQuery, Emitter, ON_UNHANDLE_REJECTION, ON_PAGE_NOT_FOUND, ON_ERROR, ON_SHOW, ON_HIDE, removeLeadingSlash, getLen, EventChannel, once, parseUrl, ON_UNLOAD, ON_READY, ON_PAGE_SCROLL, ON_PULL_DOWN_REFRESH, ON_REACH_BOTTOM, ON_RESIZE, ON_LAUNCH, ON_BACK_PRESS } from "@dcloudio/uni-shared";
 import { extend, isString, isPlainObject, isFunction as isFunction$1, isArray, isPromise, hasOwn, remove, invokeArrayFns as invokeArrayFns$1, capitalize, toTypeString, toRawType, parseStringStyle } from "@vue/shared";
 import { createVNode, render, injectHook, getCurrentInstance, defineComponent, warn, isInSSRComponentSetup, ref, watchEffect, watch, computed, onMounted, camelize, onUnmounted, reactive, nextTick } from "vue";
 function getCurrentPage() {
@@ -1520,6 +1520,529 @@ function setStatusBarStyle() {
     nativePage2.applyStatusBarStyle();
   }
 }
+function initGlobalEvent(app) {
+  app.addKeyEventListener(ON_BACK_BUTTON, () => {
+    backbuttonListener();
+    return true;
+  });
+}
+function loadFontFaceByStyles(styles2, global) {
+  styles2 = Array.isArray(styles2) ? styles2 : [styles2];
+  var fontFaceStyle = [];
+  styles2.forEach((style) => {
+    if (style["@FONT-FACE"]) {
+      fontFaceStyle.push(...style["@FONT-FACE"]);
+    }
+  });
+  if (fontFaceStyle.length === 0)
+    return;
+  fontFaceStyle.forEach((style) => {
+    var fontFamily = style["fontFamily"];
+    var fontWeight = style["fontWeight"];
+    var fontStyle = style["fontStyle"];
+    var fontVariant = style["fontVariant"];
+    var src = style["src"];
+    if (fontFamily != null && src != null) {
+      loadFontFace({
+        global,
+        family: fontFamily,
+        source: src,
+        desc: {
+          style: fontStyle,
+          weight: fontWeight,
+          variant: fontVariant
+        }
+      });
+    } else {
+      console.warn("loadFontFace: fail, font-family or src is null");
+    }
+  });
+}
+var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
+var launchOptions = {
+  path: "",
+  appScheme: null,
+  appLink: null
+};
+var setLaunchOptionsSync = function(options) {
+  launchOptions = options;
+};
+var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
+  var baseInfo = getLaunchOptions();
+  return Object.assign({}, baseInfo, launchOptions);
+});
+var API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
+var enterOptions = {
+  path: "",
+  appScheme: null,
+  appLink: null
+};
+var setEnterOptionsSync = function(options) {
+  enterOptions = options;
+};
+var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
+  var baseInfo = getLaunchOptions();
+  return Object.assign({}, baseInfo, enterOptions);
+});
+function initAppLaunch(appVm) {
+  injectAppHooks(appVm.$);
+  var {
+    entryPagePath,
+    entryPageQuery,
+    referrerInfo
+  } = __uniConfig;
+  var args = initLaunchOptions({
+    path: entryPagePath,
+    query: entryPageQuery,
+    referrerInfo
+  });
+  var app = getNativeApp();
+  var schemaLink = app.getLaunchOptionsSync();
+  var launchOption = extend({}, args, schemaLink);
+  setLaunchOptionsSync(launchOption);
+  invokeHook(appVm, ON_LAUNCH, launchOption);
+  var showOption = extend({}, launchOption);
+  setEnterOptionsSync(showOption);
+  invokeHook(appVm, ON_SHOW, showOption);
+  var appStyle = appVm.$options.styles;
+  if (appStyle) {
+    loadFontFaceByStyles(appStyle, true);
+  }
+  useTheme();
+}
+var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
+  var {
+    url
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  if (!entryPageState.isReady) {
+    redirectToPagesBeforeEntryPages.push({
+      args: {
+        url,
+        path,
+        query
+      },
+      handler: {
+        resolve,
+        reject
+      }
+    });
+    return;
+  }
+  _redirectTo({
+    url,
+    path,
+    query
+  }).then(resolve).catch(reject);
+}, RedirectToProtocol, RedirectToOptions);
+function _redirectTo(_ref3) {
+  var {
+    url,
+    path,
+    query
+  } = _ref3;
+  var lastPage = getCurrentPage();
+  return new Promise((resolve) => {
+    invokeAfterRouteHooks(API_REDIRECT_TO);
+    showWebview(registerPage({
+      url,
+      path,
+      query,
+      openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
+    }), "none", 0, () => {
+      if (lastPage) {
+        removePages(lastPage);
+      }
+      resolve(void 0);
+      setStatusBarStyle();
+    });
+    invokeBeforeRouteHooks(API_REDIRECT_TO);
+  });
+}
+function removePages(currentPage) {
+  if (isTabPage(currentPage)) {
+    var pages2 = getAllPages().slice(0, -1);
+    pages2.forEach((page) => {
+      closePage(page, "none");
+    });
+  } else {
+    closePage(currentPage, "none");
+  }
+}
+var $reLaunch = (_ref, _ref2) => {
+  var {
+    url
+  } = _ref;
+  var {
+    resolve,
+    reject
+  } = _ref2;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  if (!entryPageState.isReady) {
+    reLaunchPagesBeforeEntryPages.push({
+      args: {
+        url
+      },
+      handler: {
+        resolve,
+        reject
+      }
+    });
+    return;
+  }
+  _reLaunch({
+    url,
+    path,
+    query
+  }).then(resolve).catch(reject);
+};
+function _reLaunch(_ref3) {
+  var {
+    url,
+    path,
+    query
+  } = _ref3;
+  return new Promise((resolve) => {
+    var pages2 = getAllPages().slice(0);
+    var selected = getTabIndex(path);
+    function callback() {
+      pages2.forEach((page) => closePage(page, "none"));
+      resolve(void 0);
+      setStatusBarStyle();
+    }
+    if (selected === -1) {
+      showWebview(registerPage({
+        url,
+        path,
+        query,
+        openType: "reLaunch"
+      }), "none", 0, callback);
+    } else {
+      switchSelect(selected, path, query, true, callback);
+    }
+  });
+}
+var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
+function closePage(page, animationType, animationDuration) {
+  closeWebview(page.$nativePage, animationType, animationDuration);
+  removePage(page);
+  removeTabBarPage(page);
+}
+function updateEntryPageIsReady(path) {
+  if (!getCurrentPage() && path === addLeadingSlash(__uniConfig.entryPagePath)) {
+    entryPageState.isReady = true;
+  }
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  var navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach((_ref) => {
+    var {
+      args,
+      handler
+    } = _ref;
+    return $navigateTo(args, handler);
+  });
+  var switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach((_ref2) => {
+    var {
+      args,
+      handler
+    } = _ref2;
+    return $switchTab(args, handler);
+  });
+  var redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach((_ref3) => {
+    var {
+      args,
+      handler
+    } = _ref3;
+    return _redirectTo(args).then(handler.resolve).catch(handler.reject);
+  });
+  var reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach((_ref4) => {
+    var {
+      args,
+      handler
+    } = _ref4;
+    return $reLaunch(args, handler);
+  });
+}
+var $switchTab = (args, _ref) => {
+  var {
+    resolve,
+    reject
+  } = _ref;
+  var {
+    url
+  } = args;
+  var {
+    path,
+    query
+  } = parseUrl(url);
+  updateEntryPageIsReady(path);
+  if (!entryPageState.isReady) {
+    switchTabPagesBeforeEntryPages.push({
+      args,
+      handler: {
+        resolve,
+        reject
+      }
+    });
+    return;
+  }
+  _switchTab({
+    url,
+    path,
+    query
+  }).then(resolve).catch(reject);
+  handleBeforeEntryPageRoutes();
+};
+var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
+function _switchTab(_ref2) {
+  var {
+    url,
+    path,
+    query
+  } = _ref2;
+  var selected = getTabIndex(path);
+  if (selected == -1) {
+    return Promise.reject("tab ".concat(path, " not found"));
+  }
+  var pages2 = getCurrentPages();
+  switchSelect(selected, path, query);
+  for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
+    var page = pages2[index2];
+    if (isTabPage(page)) {
+      break;
+    }
+    closePage(page, "none");
+  }
+  return Promise.resolve();
+}
+var isLaunchWebviewReady = false;
+function subscribeWebviewReady(_data, pageId) {
+  var isLaunchWebview = pageId === "1";
+  if (isLaunchWebview && isLaunchWebviewReady) {
+    return;
+  }
+  if (isLaunchWebview) {
+    isLaunchWebviewReady = true;
+  }
+  isLaunchWebview && onLaunchWebviewReady();
+}
+function onLaunchWebviewReady() {
+  var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
+  var routeOptions = getRouteOptions(entryPagePath);
+  var args = {
+    url: entryPagePath + (__uniConfig.entryPageQuery || ""),
+    openType: "appLaunch"
+  };
+  var handler = {
+    resolve() {
+    },
+    reject() {
+    }
+  };
+  if (routeOptions.meta.isTabBar) {
+    return $switchTab(args, handler);
+  }
+  return $navigateTo(args, handler);
+}
+function initSubscribeHandlers() {
+  subscribeWebviewReady({}, "1");
+}
+function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
+  try {
+    var info = gen[key](arg);
+    var value = info.value;
+  } catch (error) {
+    reject(error);
+    return;
+  }
+  if (info.done) {
+    resolve(value);
+  } else {
+    Promise.resolve(value).then(_next, _throw);
+  }
+}
+function _asyncToGenerator(fn) {
+  return function() {
+    var self = this, args = arguments;
+    return new Promise(function(resolve, reject) {
+      var gen = fn.apply(self, args);
+      function _next(value) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
+      }
+      function _throw(err) {
+        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
+      }
+      _next(void 0);
+    });
+  };
+}
+function initOn(app) {
+  app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
+    var _ref = _asyncToGenerator(function* (event) {
+      var app2 = getNativeApp();
+      var MAX_TIMEOUT = 200;
+      function getNewIntent() {
+        return new Promise((resolve, reject) => {
+          var handleNewIntent = (newIntent) => {
+            var _newIntent$appScheme, _newIntent$appLink;
+            clearTimeout(timeout);
+            app2.removeEventListener("onNewIntent", handleNewIntent);
+            resolve({
+              appScheme: (_newIntent$appScheme = newIntent.appScheme) !== null && _newIntent$appScheme !== void 0 ? _newIntent$appScheme : null,
+              appLink: (_newIntent$appLink = newIntent.appLink) !== null && _newIntent$appLink !== void 0 ? _newIntent$appLink : null
+            });
+          };
+          var timeout = setTimeout(() => {
+            app2.removeEventListener("onNewIntent", handleNewIntent);
+            var appLink = {
+              appScheme: null,
+              appLink: null
+            };
+            resolve(appLink);
+          }, MAX_TIMEOUT);
+          app2.addEventListener("onNewIntent", handleNewIntent);
+        });
+      }
+      var schemaLink = yield getNewIntent();
+      var showOptions = extend({
+        path: __uniConfig.entryPagePath
+      }, schemaLink);
+      setEnterOptionsSync(showOptions);
+      var page = getCurrentPage();
+      invokeHook(getApp(), ON_SHOW, showOptions);
+      if (page) {
+        invokeHook(page, ON_SHOW);
+      }
+    });
+    return function(_x) {
+      return _ref.apply(this, arguments);
+    };
+  }());
+  app.addEventListener(ON_HIDE, function() {
+    var page = getCurrentPage();
+    invokeHook(getApp(), ON_HIDE);
+    if (page) {
+      invokeHook(page, ON_HIDE);
+    }
+  });
+}
+function initService(app) {
+  initOn(app);
+}
+function initComponentInstance(app) {
+  app.mixin({
+    beforeCreate() {
+      var vm = this;
+      var instance = vm.$;
+      if (instance.type.mpType === "app") {
+        return;
+      }
+      var pageId = instance.root.attrs.__pageId;
+      vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
+    },
+    beforeMount() {
+      var _vm$$options$styles;
+      var vm = this;
+      var instance = vm.$;
+      if (instance.type.mpType === "app") {
+        return;
+      }
+      loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
+    }
+  });
+}
+var appCtx;
+var defaultApp = {
+  globalData: {}
+};
+var entryPageState = {
+  isReady: false,
+  handledBeforeEntryPageRoutes: false
+};
+var navigateToPagesBeforeEntryPages = [];
+var switchTabPagesBeforeEntryPages = [];
+var redirectToPagesBeforeEntryPages = [];
+var reLaunchPagesBeforeEntryPages = [];
+function initAppVm(appVm) {
+  appVm.$vm = appVm;
+  appVm.$mpType = "app";
+}
+function getApp$1() {
+  var {
+    allowDefault = false
+  } = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
+  if (appCtx) {
+    return appCtx;
+  }
+  if (allowDefault) {
+    return defaultApp;
+  }
+  console.error("[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.");
+}
+function registerApp(appVm, nativeApp2) {
+  initEntryPagePath(nativeApp2);
+  setNativeApp(nativeApp2);
+  initVueApp(appVm);
+  appCtx = appVm;
+  initAppVm(appCtx);
+  extend(appCtx, defaultApp);
+  defineGlobalData(appCtx, defaultApp.globalData);
+  initService(nativeApp2);
+  initGlobalEvent(nativeApp2);
+  initAppLaunch(appVm);
+  initSubscribeHandlers();
+  __uniConfig.ready = true;
+}
+function initApp(app) {
+  initComponentInstance(app);
+}
+function initEntryPagePath(app) {
+  var redirectInfo = app.getRedirectInfo();
+  var debugInfo = redirectInfo.get("debug");
+  if (debugInfo) {
+    var url = debugInfo.get("url");
+    if (url && url != __uniConfig.entryPagePath) {
+      __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
+      var [path, query] = url.split("?");
+      __uniConfig.entryPagePath = path;
+      if (query) {
+        __uniConfig.entryPageQuery = "?".concat(query);
+      }
+      return;
+    }
+  }
+  if (__uniConfig.conditionUrl) {
+    __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
+    var conditionUrl = __uniConfig.conditionUrl;
+    var [_path, _query] = conditionUrl.split("?");
+    __uniConfig.entryPagePath = _path;
+    if (_query) {
+      __uniConfig.entryPageQuery = "?".concat(_query);
+    }
+  }
+}
 var $navigateTo = (args, _ref) => {
   var {
     resolve,
@@ -1536,6 +2059,17 @@ var $navigateTo = (args, _ref) => {
     query
   } = parseUrl(url);
   var [aniType, aniDuration] = initAnimation(path, animationType, animationDuration);
+  updateEntryPageIsReady(path);
+  if (!entryPageState.isReady) {
+    navigateToPagesBeforeEntryPages.push({
+      args,
+      handler: {
+        resolve,
+        reject
+      }
+    });
+    return;
+  }
   _navigateTo({
     url,
     path,
@@ -1544,6 +2078,7 @@ var $navigateTo = (args, _ref) => {
     aniType,
     aniDuration
   }).then(resolve).catch(reject);
+  handleBeforeEntryPageRoutes();
 };
 var navigateTo = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_TO, $navigateTo, NavigateToProtocol, NavigateToOptions);
 function _navigateTo(_ref2) {
@@ -1598,56 +2133,6 @@ function initAnimation(path, animationType, animationDuration) {
   var meta = getRouteMeta(path);
   return [animationType || meta.animationType || globalStyle.animationType || ANI_SHOW, animationDuration || meta.animationDuration || globalStyle.animationDuration || ANI_DURATION];
 }
-function closePage(page, animationType, animationDuration) {
-  closeWebview(page.$nativePage, animationType, animationDuration);
-  removePage(page);
-  removeTabBarPage(page);
-}
-var $reLaunch = (_ref, _ref2) => {
-  var {
-    url
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  _reLaunch({
-    url,
-    path,
-    query
-  }).then(resolve).catch(reject);
-};
-function _reLaunch(_ref3) {
-  var {
-    url,
-    path,
-    query
-  } = _ref3;
-  return new Promise((resolve) => {
-    var pages2 = getAllPages().slice(0);
-    var selected = getTabIndex(path);
-    function callback() {
-      pages2.forEach((page) => closePage(page, "none"));
-      resolve(void 0);
-      setStatusBarStyle();
-    }
-    if (selected === -1) {
-      showWebview(registerPage({
-        url,
-        path,
-        query,
-        openType: "reLaunch"
-      }), "none", 0, callback);
-    } else {
-      switchSelect(selected, path, query, true, callback);
-    }
-  });
-}
-var reLaunch = /* @__PURE__ */ defineAsyncApi(API_RE_LAUNCH, $reLaunch, ReLaunchProtocol, ReLaunchOptions);
 function isDirectPage(page) {
   return !!__uniConfig.realEntryPagePath && getRealPath(page.$page.route, true) === getRealPath(parseUrl(__uniConfig.entryPagePath).path, true);
 }
@@ -1726,98 +2211,6 @@ function back(delta, animationType, animationDuration) {
   };
   var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
   backPage(webview);
-}
-var redirectTo = /* @__PURE__ */ defineAsyncApi(API_REDIRECT_TO, (_ref, _ref2) => {
-  var {
-    url
-  } = _ref;
-  var {
-    resolve,
-    reject
-  } = _ref2;
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  _redirectTo({
-    url,
-    path,
-    query
-  }).then(resolve).catch(reject);
-}, RedirectToProtocol, RedirectToOptions);
-function _redirectTo(_ref3) {
-  var {
-    url,
-    path,
-    query
-  } = _ref3;
-  var lastPage = getCurrentPage();
-  return new Promise((resolve) => {
-    invokeAfterRouteHooks(API_REDIRECT_TO);
-    showWebview(registerPage({
-      url,
-      path,
-      query,
-      openType: isTabPage(lastPage) || getAllPages().length === 1 ? "reLaunch" : "redirectTo"
-    }), "none", 0, () => {
-      if (lastPage) {
-        removePages(lastPage);
-      }
-      resolve(void 0);
-      setStatusBarStyle();
-    });
-    invokeBeforeRouteHooks(API_REDIRECT_TO);
-  });
-}
-function removePages(currentPage) {
-  if (isTabPage(currentPage)) {
-    var pages2 = getAllPages().slice(0, -1);
-    pages2.forEach((page) => {
-      closePage(page, "none");
-    });
-  } else {
-    closePage(currentPage, "none");
-  }
-}
-var $switchTab = (args, _ref) => {
-  var {
-    resolve,
-    reject
-  } = _ref;
-  var {
-    url
-  } = args;
-  var {
-    path,
-    query
-  } = parseUrl(url);
-  _switchTab({
-    url,
-    path,
-    query
-  }).then(resolve).catch(reject);
-};
-var switchTab = /* @__PURE__ */ defineAsyncApi(API_SWITCH_TAB, $switchTab, SwitchTabProtocol, SwitchTabOptions);
-function _switchTab(_ref2) {
-  var {
-    url,
-    path,
-    query
-  } = _ref2;
-  var selected = getTabIndex(path);
-  if (selected == -1) {
-    return Promise.reject("tab ".concat(path, " not found"));
-  }
-  var pages2 = getCurrentPages();
-  switchSelect(selected, path, query);
-  for (var index2 = pages2.length - 1; index2 >= 0; index2--) {
-    var page = pages2[index2];
-    if (isTabPage(page)) {
-      break;
-    }
-    closePage(page, "none");
-  }
-  return Promise.resolve();
 }
 var setTabBarBadge = /* @__PURE__ */ defineAsyncApi(API_SET_TAB_BAR_BADGE, (_ref, _ref2) => {
   var {
@@ -2294,21 +2687,26 @@ var createCanvasContextAsync = /* @__PURE__ */ defineAsyncApi("createCanvasConte
     reject("element is null");
     return null;
   }
-  resolve(
-    {
-      getContext: element.getContext.bind(element),
-      toDataURL: element.toDataURL.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      createImage: element.createImage.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      createPath2D: element.createPath2D.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      requestAnimationFrame: element.requestAnimationFrame.bind(element),
-      // @ts-expect-error waiting for uni-app-x type update
-      cancelAnimationFrame: element.cancelAnimationFrame.bind(element)
-    }
-    //as CanvasContext as any
-  );
+  function createImage() {
+    return new Image();
+  }
+  function createPath2D() {
+    return new Path2D();
+  }
+  function requestAnimationFrameFun(callback) {
+    return requestAnimationFrame(callback);
+  }
+  function cancelAnimationFrameFun(taskId) {
+    cancelAnimationFrame(taskId);
+  }
+  resolve({
+    getContext: element.getContext.bind(element),
+    toDataURL: element.toDataURL.bind(element),
+    createImage,
+    createPath2D,
+    requestAnimationFrame: requestAnimationFrameFun,
+    cancelAnimationFrame: cancelAnimationFrameFun
+  });
 });
 function queryElementTop(component, selector) {
   var _component$$el;
@@ -2420,32 +2818,6 @@ var stopPullDownRefresh = /* @__PURE__ */ defineAsyncApi(API_STOP_PULL_DOWN_REFR
   }
   page.$nativePage.stopPullDownRefresh();
   res.resolve();
-});
-var API_GET_LAUNCH_OPTIONS_SYNC = "getLaunchOptionsSync";
-var launchOptions = {
-  path: "",
-  appScheme: null,
-  appLink: null
-};
-var setLaunchOptionsSync = function(options) {
-  launchOptions = options;
-};
-var getLaunchOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_LAUNCH_OPTIONS_SYNC, () => {
-  var baseInfo = getLaunchOptions();
-  return Object.assign({}, baseInfo, launchOptions);
-});
-var API_GET_ENTER_OPTIONS_SYNC = "getEnterOptionsSync";
-var enterOptions = {
-  path: "",
-  appScheme: null,
-  appLink: null
-};
-var setEnterOptionsSync = function(options) {
-  enterOptions = options;
-};
-var getEnterOptionsSync = /* @__PURE__ */ defineSyncApi(API_GET_ENTER_OPTIONS_SYNC, () => {
-  var baseInfo = getLaunchOptions();
-  return Object.assign({}, baseInfo, enterOptions);
 });
 var env = {
   USER_DATA_PATH: "unifile://usr/",
@@ -3305,268 +3677,6 @@ const uni$1 = /* @__PURE__ */ Object.defineProperty({
   stopPullDownRefresh,
   switchTab
 }, Symbol.toStringTag, { value: "Module" });
-function initGlobalEvent(app) {
-  app.addKeyEventListener(ON_BACK_BUTTON, () => {
-    backbuttonListener();
-    return true;
-  });
-}
-function loadFontFaceByStyles(styles2, global) {
-  styles2 = Array.isArray(styles2) ? styles2 : [styles2];
-  var fontFaceStyle = [];
-  styles2.forEach((style) => {
-    if (style["@FONT-FACE"]) {
-      fontFaceStyle.push(...style["@FONT-FACE"]);
-    }
-  });
-  if (fontFaceStyle.length === 0)
-    return;
-  fontFaceStyle.forEach((style) => {
-    var fontFamily = style["fontFamily"];
-    var fontWeight = style["fontWeight"];
-    var fontStyle = style["fontStyle"];
-    var fontVariant = style["fontVariant"];
-    var src = style["src"];
-    if (fontFamily != null && src != null) {
-      loadFontFace({
-        global,
-        family: fontFamily,
-        source: src,
-        desc: {
-          style: fontStyle,
-          weight: fontWeight,
-          variant: fontVariant
-        }
-      });
-    } else {
-      console.warn("loadFontFace: fail, font-family or src is null");
-    }
-  });
-}
-function initAppLaunch(appVm) {
-  injectAppHooks(appVm.$);
-  var {
-    entryPagePath,
-    entryPageQuery,
-    referrerInfo
-  } = __uniConfig;
-  var args = initLaunchOptions({
-    path: entryPagePath,
-    query: entryPageQuery,
-    referrerInfo
-  });
-  var app = getNativeApp();
-  var schemaLink = app.getLaunchOptionsSync();
-  var launchOption = extend({}, args, schemaLink);
-  setLaunchOptionsSync(launchOption);
-  invokeHook(appVm, ON_LAUNCH, launchOption);
-  var showOption = extend({}, launchOption);
-  setEnterOptionsSync(showOption);
-  invokeHook(appVm, ON_SHOW, showOption);
-  var appStyle = appVm.$options.styles;
-  if (appStyle) {
-    loadFontFaceByStyles(appStyle, true);
-  }
-  useTheme();
-}
-var isLaunchWebviewReady = false;
-function subscribeWebviewReady(_data, pageId) {
-  var isLaunchWebview = pageId === "1";
-  if (isLaunchWebview && isLaunchWebviewReady) {
-    return;
-  }
-  if (isLaunchWebview) {
-    isLaunchWebviewReady = true;
-  }
-  isLaunchWebview && onLaunchWebviewReady();
-}
-function onLaunchWebviewReady() {
-  var entryPagePath = addLeadingSlash(__uniConfig.entryPagePath);
-  var routeOptions = getRouteOptions(entryPagePath);
-  var args = {
-    url: entryPagePath + (__uniConfig.entryPageQuery || ""),
-    openType: "appLaunch"
-  };
-  var handler = {
-    resolve() {
-    },
-    reject() {
-    }
-  };
-  if (routeOptions.meta.isTabBar) {
-    return $switchTab(args, handler);
-  }
-  return $navigateTo(args, handler);
-}
-function initSubscribeHandlers() {
-  subscribeWebviewReady({}, "1");
-}
-function asyncGeneratorStep(gen, resolve, reject, _next, _throw, key, arg) {
-  try {
-    var info = gen[key](arg);
-    var value = info.value;
-  } catch (error) {
-    reject(error);
-    return;
-  }
-  if (info.done) {
-    resolve(value);
-  } else {
-    Promise.resolve(value).then(_next, _throw);
-  }
-}
-function _asyncToGenerator(fn) {
-  return function() {
-    var self = this, args = arguments;
-    return new Promise(function(resolve, reject) {
-      var gen = fn.apply(self, args);
-      function _next(value) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "next", value);
-      }
-      function _throw(err) {
-        asyncGeneratorStep(gen, resolve, reject, _next, _throw, "throw", err);
-      }
-      _next(void 0);
-    });
-  };
-}
-function initOn(app) {
-  app.addEventListener(ON_SHOW, /* @__PURE__ */ function() {
-    var _ref = _asyncToGenerator(function* (event) {
-      var app2 = getNativeApp();
-      var MAX_TIMEOUT = 200;
-      function getNewIntent() {
-        return new Promise((resolve, reject) => {
-          var handleNewIntent = (newIntent) => {
-            var _newIntent$appScheme, _newIntent$appLink;
-            clearTimeout(timeout);
-            app2.removeEventListener("onNewIntent", handleNewIntent);
-            resolve({
-              appScheme: (_newIntent$appScheme = newIntent.appScheme) !== null && _newIntent$appScheme !== void 0 ? _newIntent$appScheme : null,
-              appLink: (_newIntent$appLink = newIntent.appLink) !== null && _newIntent$appLink !== void 0 ? _newIntent$appLink : null
-            });
-          };
-          var timeout = setTimeout(() => {
-            app2.removeEventListener("onNewIntent", handleNewIntent);
-            var appLink = {
-              appScheme: null,
-              appLink: null
-            };
-            resolve(appLink);
-          }, MAX_TIMEOUT);
-          app2.addEventListener("onNewIntent", handleNewIntent);
-        });
-      }
-      var schemaLink = yield getNewIntent();
-      var showOptions = extend({
-        path: __uniConfig.entryPagePath
-      }, schemaLink);
-      setEnterOptionsSync(showOptions);
-      var page = getCurrentPage();
-      invokeHook(getApp(), ON_SHOW, showOptions);
-      if (page) {
-        invokeHook(page, ON_SHOW);
-      }
-    });
-    return function(_x) {
-      return _ref.apply(this, arguments);
-    };
-  }());
-  app.addEventListener(ON_HIDE, function() {
-    var page = getCurrentPage();
-    invokeHook(getApp(), ON_HIDE);
-    if (page) {
-      invokeHook(page, ON_HIDE);
-    }
-  });
-}
-function initService(app) {
-  initOn(app);
-}
-function initComponentInstance(app) {
-  app.mixin({
-    beforeCreate() {
-      var vm = this;
-      var instance = vm.$;
-      if (instance.type.mpType === "app") {
-        return;
-      }
-      var pageId = instance.root.attrs.__pageId;
-      vm.$nativePage = getNativeApp().pageManager.findPageById(pageId + "");
-    },
-    beforeMount() {
-      var _vm$$options$styles;
-      var vm = this;
-      var instance = vm.$;
-      if (instance.type.mpType === "app") {
-        return;
-      }
-      loadFontFaceByStyles((_vm$$options$styles = vm.$options.styles) !== null && _vm$$options$styles !== void 0 ? _vm$$options$styles : [], false);
-    }
-  });
-}
-var appCtx;
-var defaultApp = {
-  globalData: {}
-};
-function initAppVm(appVm) {
-  appVm.$vm = appVm;
-  appVm.$mpType = "app";
-}
-function getApp$1() {
-  var {
-    allowDefault = false
-  } = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  if (appCtx) {
-    return appCtx;
-  }
-  if (allowDefault) {
-    return defaultApp;
-  }
-  console.error("[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.");
-}
-function registerApp(appVm, nativeApp2) {
-  initEntryPagePath(nativeApp2);
-  setNativeApp(nativeApp2);
-  initVueApp(appVm);
-  appCtx = appVm;
-  initAppVm(appCtx);
-  extend(appCtx, defaultApp);
-  defineGlobalData(appCtx, defaultApp.globalData);
-  initService(nativeApp2);
-  initGlobalEvent(nativeApp2);
-  initAppLaunch(appVm);
-  initSubscribeHandlers();
-  __uniConfig.ready = true;
-}
-function initApp(app) {
-  initComponentInstance(app);
-}
-function initEntryPagePath(app) {
-  var redirectInfo = app.getRedirectInfo();
-  var debugInfo = redirectInfo.get("debug");
-  if (debugInfo) {
-    var url = debugInfo.get("url");
-    if (url && url != __uniConfig.entryPagePath) {
-      __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
-      var [path, query] = url.split("?");
-      __uniConfig.entryPagePath = path;
-      if (query) {
-        __uniConfig.entryPageQuery = "?".concat(query);
-      }
-      return;
-    }
-  }
-  if (__uniConfig.conditionUrl) {
-    __uniConfig.realEntryPagePath = __uniConfig.entryPagePath;
-    var conditionUrl = __uniConfig.conditionUrl;
-    var [_path, _query] = conditionUrl.split("?");
-    __uniConfig.entryPagePath = _path;
-    if (_query) {
-      __uniConfig.entryPageQuery = "?".concat(_query);
-    }
-  }
-}
 function converPx(value) {
   if (/^-?\d+[ur]px$/i.test(value)) {
     return value.replace(/(^-?\d+)[ur]px$/i, (text, num) => {
