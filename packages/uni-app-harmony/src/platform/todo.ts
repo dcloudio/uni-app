@@ -1,9 +1,7 @@
 import { extend } from '@vue/shared'
 import type {
   // AddIntersectionObserverArgs,
-  AddMediaQueryObserverArgs,
   // RemoveIntersectionObserverArgs,
-  RemoveMediaQueryObserverArgs,
   // SelectorQueryNodeInfo,
   // SelectorQueryRequest,
   SetPageMetaOptions,
@@ -26,20 +24,6 @@ export function operateVideoPlayer(
 }
 
 export const TEMP_PATH = '' // TODO 需要从applicationContext获取
-
-export function addMediaQueryObserver(
-  { reqId, component, options, callback }: AddMediaQueryObserverArgs,
-  _pageId: number
-) {
-  // TODO: Implement
-}
-
-export function removeMediaQueryObserver(
-  { reqId, component }: RemoveMediaQueryObserverArgs,
-  _pageId: number
-) {
-  // TODO: Implement
-}
 
 export function setCurrentPageMeta(
   page: ComponentPublicInstance,

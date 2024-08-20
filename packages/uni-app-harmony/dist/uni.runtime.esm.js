@@ -9080,12 +9080,12 @@ function removePage(curPage) {
     }
 }
 
-function getEventName(reqId) {
+function getEventName$1(reqId) {
     const EVENT_NAME = 'IntersectionObserver';
     return `${EVENT_NAME}.${reqId}`;
 }
 function addIntersectionObserver({ reqId, component, options, callback }, _pageId) {
-    const eventName = getEventName(reqId);
+    const eventName = getEventName$1(reqId);
     UniServiceJSBridge.invokeViewMethod('addIntersectionObserver', {
         reqId,
         component: component.$el.nodeId,
@@ -9096,6 +9096,28 @@ function addIntersectionObserver({ reqId, component, options, callback }, _pageI
 }
 function removeIntersectionObserver({ reqId, component }, _pageId) {
     UniServiceJSBridge.invokeViewMethod('removeIntersectionObserver', {
+        reqId,
+        component: component.$el.nodeId,
+    }, _pageId);
+    UniServiceJSBridge.unsubscribe(getEventName$1(reqId));
+}
+
+function getEventName(reqId) {
+    const EVENT_NAME = 'MediaQueryObserver';
+    return `${EVENT_NAME}.${reqId}`;
+}
+function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
+    const eventName = getEventName(reqId);
+    UniServiceJSBridge.invokeViewMethod('addMediaQueryObserver', {
+        reqId,
+        component: component.$el.nodeId,
+        options,
+        eventName,
+    }, _pageId);
+    UniServiceJSBridge.subscribe(eventName, callback);
+}
+function removeMediaQueryObserver({ reqId, component }, _pageId) {
+    UniServiceJSBridge.invokeViewMethod('removeMediaQueryObserver', {
         reqId,
         component: component.$el.nodeId,
     }, _pageId);
@@ -9125,12 +9147,6 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
-function addMediaQueryObserver({ reqId, component, options, callback }, _pageId) {
-    // TODO: Implement
-}
-function removeMediaQueryObserver({ reqId, component }, _pageId) {
-    // TODO: Implement
-}
 const enterOptions = /*#__PURE__*/ createLaunchOptions();
 const launchOptions = /*#__PURE__*/ createLaunchOptions();
 function getLaunchOptions() {
@@ -11756,15 +11772,45 @@ const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, ({ __
         reject();
     }
 }, SetNavigationBarTitleProtocol);
-const showNavigationBarLoading = defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
-    plus.nativeUI.showWaiting('', {
-        modal: false,
-    });
-    resolve();
+const showNavigationBarLoading = defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
+    let webview = null;
+    if (args)
+        webview = getWebview(args.__page__);
+    if (webview) {
+        const style = webview.getStyle();
+        if (style && style.titleNView) {
+            webview.setStyle({
+                titleNView: {
+                    // @ts-expect-error
+                    loading: true,
+                },
+            });
+        }
+        resolve();
+    }
+    else {
+        reject();
+    }
 });
-const hideNavigationBarLoading = defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
-    plus.nativeUI.closeWaiting();
-    resolve();
+const hideNavigationBarLoading = defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (args, { resolve, reject }) => {
+    let webview = null;
+    if (args)
+        webview = getWebview(args.__page__);
+    if (webview) {
+        const style = webview.getStyle();
+        if (style && style.titleNView) {
+            webview.setStyle({
+                titleNView: {
+                    // @ts-expect-error
+                    loading: false,
+                },
+            });
+        }
+        resolve();
+    }
+    else {
+        reject();
+    }
 });
 function setPageStatusBarStyle(statusBarStyle) {
     const pages = getCurrentPages();
@@ -13410,18 +13456,6 @@ const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) =
     UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, resolve);
 }, PageScrollToProtocol, PageScrollToOptions);
 
-const pluginDefines = {};
-function registerUTSPlugin(name, define) {
-    pluginDefines[name] = define;
-}
-function requireUTSPlugin(name) {
-    const define = pluginDefines[name];
-    if (!define) {
-        console.error(`${name} is not found`);
-    }
-    return define;
-}
-
 var uni$1 = {
   __proto__: null,
   addInterceptor: addInterceptor,
@@ -13462,10 +13496,8 @@ var uni$1 = {
   pageScrollTo: pageScrollTo,
   reLaunch: reLaunch,
   redirectTo: redirectTo,
-  registerUTSPlugin: registerUTSPlugin,
   removeInterceptor: removeInterceptor,
   removeTabBarBadge: removeTabBarBadge,
-  requireUTSPlugin: requireUTSPlugin,
   setLocale: setLocale,
   setNavigationBarColor: setNavigationBarColor,
   setNavigationBarTitle: setNavigationBarTitle,
@@ -13765,7 +13797,7 @@ function initAppLaunch(appVm) {
         referrerInfo: referrerInfo,
     });
     invokeHook(appVm, ON_LAUNCH, args);
-    // invokeHook(appVm, ON_SHOW, args) // 鸿蒙应用启动时会在EntryAbility触发一次onForeground事件，不需要在initAppLaunch触发onShow
+    invokeHook(appVm, ON_SHOW, args);
 }
 
 function initTabBar() {

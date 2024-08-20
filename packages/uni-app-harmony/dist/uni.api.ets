@@ -13,6 +13,7 @@ import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
 import call from '@ohos.telephony.call';
 import radio from '@ohos.telephony.radio';
+import webview from '@ohos.web.webview';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError10 } from '@ohos.base';
 import { BusinessError as BusinessError2 } from '@ohos.base';
@@ -24,24 +25,24 @@ import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError8 } from '@ohos.base';
 import { BusinessError as BusinessError9 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { Emitter as Emitter5 } from "@dcloudio/uni-app-harmony-framework";
-import { Emitter } from "@dcloudio/uni-app-harmony-framework";
+import { Emitter as Emitter5 } from "@dcloudio/uni-mp-sdk";
+import { Emitter } from "@dcloudio/uni-mp-sdk";
 import Hash from '@ohos.file.hash';
 import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
-import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, waitForCurrentNativePage } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ApiError, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
@@ -58,7 +59,7 @@ import bundleManager1 from '@ohos.bundle.bundleManager';
 import bundleManager2 from '@ohos.bundle.bundleManager';
 import { camera } from '@kit.CameraKit';
 import { cameraPicker } from '@kit.CameraKit';
-import { clipboard } from "@dcloudio/uni-app-harmony-framework";
+import { clipboard } from "@dcloudio/uni-mp-sdk";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
@@ -79,36 +80,36 @@ import fs3 from '@ohos.file.fs';
 import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
-import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext11 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext12 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv as getEnv2 } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv as getEnv3, Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv, getRealPath } from "@dcloudio/uni-app-harmony-framework";
-import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage2 } from "@dcloudio/uni-app-harmony-framework";
-import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath4, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
-import { getResourceStr, getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
-import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext11 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext12 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv1 } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv3, Emitter as Emitter4 } from "@dcloudio/uni-mp-sdk";
+import { getEnv, getRealPath } from "@dcloudio/uni-mp-sdk";
+import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage2 } from "@dcloudio/uni-mp-sdk";
+import { getOSRuntime } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
+import { getRealPath as getRealPath4, Emitter as Emitter3 } from "@dcloudio/uni-mp-sdk";
+import { getResourceStr, getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-mp-sdk";
+import { getTabBar } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
 import { image as image1 } from '@kit.ImageKit';
-import { isPlainObject, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
+import { isPlainObject, Emitter as Emitter2 } from "@dcloudio/uni-mp-sdk";
 import { media as media1 } from '@kit.MediaKit';
 import { media } from '@kit.MediaKit';
 import media2 from '@ohos.multimedia.media';
@@ -123,7 +124,7 @@ import { promptAction as promptAction3 } from '@kit.ArkUI';
 import { promptAction } from '@kit.ArkUI';
 import promptAction4 from '@ohos.promptAction';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
-import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
+import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-mp-sdk";
 import { systemShare } from '@kit.ShareKit';
 import { uniformTypeDescriptor } from '@kit.ArkData';
 import { userAuth } from '@kit.UserAuthenticationKit';
@@ -3932,7 +3933,7 @@ export function initUniExtApi(APP_ID: string) {
         const TEMP_PATH = getEnv1().TEMP_PATH as string;
         const filePath = `${TEMP_PATH}/recorder/`;
         if (!fileIo2.accessSync(filePath)) {
-            fileIo2.mkdirSync(filePath);
+            fileIo2.mkdirSync(filePath, true);
         }
         const fileName = `${Date.now()}.${supportFormats.includes(format ?? '') ? format?.toLocaleLowerCase() : defaultExt}`;
         const file: fileIo2.File = fileIo2.openSync(`${filePath}${fileName}`, fileIo2.OpenMode.READ_WRITE | fileIo2.OpenMode.CREATE);
@@ -4362,7 +4363,12 @@ export function initUniExtApi(APP_ID: string) {
         const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
         const imageSource = image.createImageSource(file.fd);
         const imageInfo = await imageSource.getImageInfo();
-        const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+        let orientation: string = '';
+        try {
+            orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+        } catch (error) {}
+        await imageSource.release();
+        await fs1.close(file.fd);
         let orientationNum = 0;
         if (typeof orientation === 'string') {
             const matched = orientation.match(/^Unknown value (\d)$/);
@@ -5099,6 +5105,7 @@ export function initUniExtApi(APP_ID: string) {
         const array = path.split('/');
         return array[array.length - 1];
     };
+    let id: number = 0;
     const _compressImage = (args: CompressImageOptions)=>{
         const imageName = getFileName(args.src);
         const imageExt = imageName.split('.').slice(-1)[0];
@@ -5138,7 +5145,12 @@ export function initUniExtApi(APP_ID: string) {
             format,
             quality: args.quality ?? 80
         };
-        const tempFilePath: string = `${getEnv2().TEMP_PATH}/${Date.now()}_${imageName}`;
+        const tempFileName = `${Date.now()}_${id++}_${imageName}`;
+        const tempDirPath = `${getEnv2().TEMP_PATH}/compress`;
+        if (!fileIo4.accessSync(tempDirPath)) {
+            fileIo4.mkdirSync(tempDirPath, true);
+        }
+        const tempFilePath: string = `${tempDirPath}/${tempFileName}`;
         const file = fileIo4.openSync(tempFilePath, fileIo4.OpenMode.CREATE | fileIo4.OpenMode.READ_WRITE);
         return imagePacker.packToFile(pixelMap, file.fd, packOptions).then((_)=>{
             const size = fileIo4.statSync(file.fd).size;
@@ -5427,6 +5439,15 @@ export function initUniExtApi(APP_ID: string) {
         });
         return urlObj.toString();
     };
+    const getCookieSync = (url: string): string =>{
+        return webview.WebCookieManager.fetchCookieSync(url);
+    };
+    const setCookieSync = (url: string, cookies: string[]): void =>{
+        cookies.forEach((cookie)=>{
+            webview.WebCookieManager.configCookieSync(url, cookie);
+        });
+        webview.WebCookieManager.saveCookieAsync();
+    };
     const cookiesParse = (header: Record<string, string>)=>{
         let cookiesArr: string[] = [];
         const handleCookiesArr = (header['Set-Cookie'] || header['set-cookie'] || []) as string[];
@@ -5457,18 +5478,20 @@ export function initUniExtApi(APP_ID: string) {
     }
     const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>)=>{
         let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
         let contentType = '';
         const headers = {} as Record<string, Object>;
-        if (header) {
-            const headerRecord = header as Object as Record<string, string>;
-            const headerKeys = Object.keys(headerRecord);
-            for(let i = 0; i < headerKeys.length; i++){
-                const name = headerKeys[i];
-                if (name.toLowerCase() === 'content-type') {
-                    contentType = headerRecord[name] as string;
-                }
-                headers[name.toLowerCase()] = headerRecord[name];
+        const headerRecord = header as Object as Record<string, string>;
+        const headerKeys = Object.keys(headerRecord);
+        for(let i = 0; i < headerKeys.length; i++){
+            const name = headerKeys[i];
+            if (name.toLowerCase() === 'content-type') {
+                contentType = headerRecord[name] as string;
             }
+            headers[name.toLowerCase()] = headerRecord[name];
         }
         if (!contentType && method === 'POST') {
             headers['Content-Type'] = 'application/json';
@@ -5501,6 +5524,7 @@ export function initUniExtApi(APP_ID: string) {
         const emitter = new Emitter2() as IUniRequestEmitter;
         const requestTask: IRequestTask = {
             abort () {
+                emitter.off('headersReceive');
                 httpRequest.destroy();
             },
             onHeadersReceived (callback: Function) {
@@ -5510,7 +5534,13 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('headersReceive', callback);
             }
         };
-        httpRequest.on('headersReceive', (header: Object)=>{});
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(url, setCookieHeader as string[]);
+            }
+        });
         httpRequest.request(parseUrl(url), {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
@@ -5994,7 +6024,31 @@ export function initUniExtApi(APP_ID: string) {
         "xpi": "application/x-xpinstall",
         "vcf": "text/vcard",
         "xloc": "text/vnd.rim.location.xloc",
-        "htc": "text/x-component"
+        "htc": "text/x-component",
+        "abw": "application/x-abiword",
+        "arc": "application/x-freearc",
+        "avi": "video/x-msvideo",
+        "azw": "application/vnd.amazon.ebook",
+        "bz": "application/x-bzip",
+        "bz2": "application/x-bzip2",
+        "cda": "application/x-cdf",
+        "csh": "application/x-csh",
+        "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "mpkg": "application/vnd.apple.installer+xml",
+        "odp": "application/vnd.oasis.opendocument.presentation",
+        "ods": "application/vnd.oasis.opendocument.spreadsheet",
+        "odt": "application/vnd.oasis.opendocument.text",
+        "php": "application/x-httpd-php",
+        "ppt": "application/vnd.ms-powerpoint",
+        "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "rar": "application/vnd.rar",
+        "sh": "application/x-sh",
+        "tar": "application/x-tar",
+        "vsd": "application/vnd.visio",
+        "xls": "application/vnd.ms-excel",
+        "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "xul": "application/vnd.mozilla.xul+xml",
+        "7z": "application/x-7z-compressed"
     };
     const contentTypeToExt: Record<string, string[]> = {};
     let contentTypeToExtInited = false;
@@ -6063,6 +6117,10 @@ export function initUniExtApi(APP_ID: string) {
     };
     const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
         const headers = {} as Record<string, Object>;
         if (header) {
             const headerRecord = header as Object as Record<string, string>;
@@ -6119,6 +6177,8 @@ export function initUniExtApi(APP_ID: string) {
         const emitter = new Emitter3() as IUniUploadFileEmitter;
         const uploadTask: IUploadTask = {
             abort () {
+                emitter.off('headersReceive');
+                emitter.off('progress');
                 httpRequest.destroy();
             },
             onHeadersReceived (callback: Function) {
@@ -6134,7 +6194,13 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('progress', callback);
             }
         };
-        httpRequest.on('headersReceive', (headers: Object)=>{});
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(url, setCookieHeader as string[]);
+            }
+        });
         httpRequest.on('dataSendProgress', (ref)=>{
             let sendSize = ref.sendSize, totalSize = ref.totalSize;
             emitter.emit('progress', {
@@ -6221,11 +6287,17 @@ export function initUniExtApi(APP_ID: string) {
         return fileName;
     };
     const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
-        const url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
+        let url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
         const httpRequest = http2.createHttp();
         const emitter = new Emitter4() as IUniDownloadFileEmitter;
         const downloadTask: IDownloadTask = {
             abort () {
+                emitter.off('headersReceive');
+                emitter.off('progress');
                 httpRequest.destroy();
             },
             onHeadersReceived (callback: Function) {
@@ -6244,9 +6316,13 @@ export function initUniExtApi(APP_ID: string) {
         let responseContentType = '';
         let responseContentDisposition = '';
         httpRequest.on('headersReceive', (headers: Object)=>{
-            const realHeaders = headers as Record<string, string>;
-            responseContentType = realHeaders['content-type'] || realHeaders['Content-Type'] || '';
-            responseContentDisposition = realHeaders['content-disposition'] || realHeaders['Content-Disposition'] || '';
+            const realHeaders = headers as Record<string, string | string[]>;
+            responseContentType = realHeaders['content-type'] as string || realHeaders['Content-Type'] as string || '';
+            responseContentDisposition = realHeaders['content-disposition'] as string || realHeaders['Content-Disposition'] as string || '';
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(url, setCookieHeader as string[]);
+            }
         });
         httpRequest.on('dataReceiveProgress', (ref)=>{
             let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
@@ -7272,7 +7348,13 @@ export function initUniExtApi(APP_ID: string) {
             console.error(error);
         }
     };
-    const GlobalWebsocketEvent = new Emitter5() as IUniWebsocketEmitter;
+    const GlobalWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
+    const destroySocketTaskEmitter = (emitter: IUniWebsocketEmitter)=>{
+        emitter.off('message');
+        emitter.off('open');
+        emitter.off('error');
+        emitter.off('close');
+    };
     class SocketTask1 implements SocketTask {
         private _ws: webSocket.WebSocket;
         private _emitter: IUniWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
@@ -7284,13 +7366,13 @@ export function initUniExtApi(APP_ID: string) {
                 } as OnSocketMessageCallbackResult;
                 this._emitter.emit('message', message);
                 if (this === socketTasks[0]) {
-                    GlobalWebsocketEvent.emit('message', message);
+                    GlobalWebsocketEmitter.emit('message', message);
                 }
             });
             this._ws.on('open', (_, data)=>{
                 this._emitter.emit('open', data);
                 if (this === socketTasks[0]) {
-                    GlobalWebsocketEvent.emit('open', data);
+                    GlobalWebsocketEmitter.emit('open', data);
                 }
             });
             this._ws.on('error', (error)=>{
@@ -7299,17 +7381,13 @@ export function initUniExtApi(APP_ID: string) {
                 } as OnSocketErrorCallbackResult;
                 this._emitter.emit('error', message);
                 if (this === socketTasks[0]) {
-                    GlobalWebsocketEvent.emit('error', message);
-                }
-                const index = socketTasks.indexOf(this);
-                if (index >= 0) {
-                    socketTasks.splice(index, 1);
+                    GlobalWebsocketEmitter.emit('error', message);
                 }
             });
             this._ws.on('close', (_, data)=>{
                 this._emitter.emit('close', data);
                 if (this === socketTasks[0]) {
-                    GlobalWebsocketEvent.emit('close', data);
+                    GlobalWebsocketEmitter.emit('close', data);
                 }
                 const index = socketTasks.indexOf(this);
                 if (index >= 0) {
@@ -7353,6 +7431,11 @@ export function initUniExtApi(APP_ID: string) {
         }
         onClose(callback: Function) {
             this._emitter.on('close', callback);
+            destroySocketTaskEmitter(this._emitter);
+        }
+        _destroy() {
+            destroySocketTaskEmitter(this._emitter);
+            this.close();
         }
     }
     const socketTasks: SocketTask1[] = [];
@@ -7367,16 +7450,16 @@ export function initUniExtApi(APP_ID: string) {
         return task;
     }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
     const onSocketMessage: OnSocketMessage = (callback: Function)=>{
-        GlobalWebsocketEvent.on('message', callback);
+        GlobalWebsocketEmitter.on('message', callback);
     };
     const onSocketOpen: OnSocketOpen = (callback: Function)=>{
-        GlobalWebsocketEvent.on('open', callback);
+        GlobalWebsocketEmitter.on('open', callback);
     };
     const onSocketError: OnSocketError = (callback: Function)=>{
-        GlobalWebsocketEvent.on('error', callback);
+        GlobalWebsocketEmitter.on('error', callback);
     };
     const onSocketClose: OnSocketClose = (callback: Function)=>{
-        GlobalWebsocketEvent.on('close', callback);
+        GlobalWebsocketEmitter.on('close', callback);
     };
     const sendSocketMessage = defineAsyncApi<SendSocketMessageOptions, GeneralCallbackResult>(API_SEND_SOCKET_MESSAGE, (args: SendSocketMessageOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
         const task = socketTasks[0];

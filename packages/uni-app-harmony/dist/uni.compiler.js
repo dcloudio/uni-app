@@ -173,7 +173,7 @@ function genAppHarmonyIndex(inputDir, utsPlugins) {
         return {
             service: provider.service,
             name: provider.name,
-            moduleSpecifier: `@dcloudio/uni-app-harmony/providers/uni-${provider.service}-${provider.name}`,
+            moduleSpecifier: `@dcloudio/uni-app-runtime/src/main/ets/uni-app-harmony/providers/uni-${provider.service}-${provider.name}`,
         };
     }));
     relatedProviders.forEach((relatedProvider) => {
@@ -187,7 +187,7 @@ function genAppHarmonyIndex(inputDir, utsPlugins) {
         registerProviderCodes.push(`registerUniProvider('${provider.service}', '${provider.name}', new ${className}())`);
     });
     if (importProviderCodes.length) {
-        importProviderCodes.unshift(`import { registerUniProvider } from '@dcloudio/uni-app-harmony'`);
+        importProviderCodes.unshift(`import { registerUniProvider } from '@dcloudio/uni-app-runtime'`);
         importCodes.push(...importProviderCodes);
         extApiCodes.push(...registerProviderCodes);
     }
