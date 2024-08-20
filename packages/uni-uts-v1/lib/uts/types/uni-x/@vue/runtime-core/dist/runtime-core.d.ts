@@ -1645,7 +1645,7 @@ export declare let createSSRApp: CreateAppFunction<Element>;
 /**
  * @private
  */
-export declare const withModifiers: <T extends (event: Event, ...args: unknown[]) => any>(fn: T & {
+export declare const withModifiers: <T extends (event: any, ...args: unknown[]) => any>(fn: T & {
     _withMods?: {
         [key: string]: T;
     } | undefined;
