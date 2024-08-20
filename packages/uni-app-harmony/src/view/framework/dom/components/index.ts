@@ -33,6 +33,8 @@ import { UniPicker } from './UniPicker'
 import { UniMap } from './UniMap'
 import { UniLocationPicker } from './UniLocationPicker'
 import { UniLocationView } from './UniLocationView'
+import { UniCoverImage } from './UniCoverImage'
+import { UniCoverView } from './UniCoverView'
 
 export const BuiltInComponents = {
   '#text': UniTextNode,
@@ -70,4 +72,6 @@ export const BuiltInComponents = {
   MAP: UniMap,
   'LOCATION-PICKER': UniLocationPicker,
   'LOCATION-VIEW': UniLocationView,
+  'COVER-IMAGE': UniCoverImage,
+  'COVER-VIEW': UniCoverView,
 }

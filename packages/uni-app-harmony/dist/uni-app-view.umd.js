@@ -13884,7 +13884,7 @@
     tempCanvas.height = height;
     return tempCanvas;
   }
-  var props$s = {
+  var props$t = {
     canvasId: {
       type: String,
       default: ""
@@ -13904,7 +13904,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$s,
+    props: props$t,
     computed: {
       id() {
         return this.canvasId;
@@ -14393,7 +14393,7 @@
     });
   }
   var uniCheckGroupKey = PolySymbol("ucg");
-  var props$r = {
+  var props$s = {
     name: {
       type: String,
       default: ""
@@ -14401,7 +14401,7 @@
   };
   const CheckboxGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "CheckboxGroup",
-    props: props$r,
+    props: props$s,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -14454,7 +14454,7 @@
     }
     return getFieldsValue;
   }
-  var props$q = {
+  var props$r = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -14503,7 +14503,7 @@
   };
   const Checkbox = /* @__PURE__ */ defineBuiltInComponent({
     name: "Checkbox",
-    props: props$q,
+    props: props$r,
     setup(props2, _ref) {
       var {
         slots
@@ -14688,7 +14688,7 @@
       });
     }
   }
-  var props$p = {
+  var props$q = {
     cursorSpacing: {
       type: [Number, String],
       default: 0
@@ -15531,7 +15531,7 @@
       });
     });
   }
-  var props$o = /* @__PURE__ */ extend({}, props$p, {
+  var props$p = /* @__PURE__ */ extend({}, props$q, {
     id: {
       type: String,
       default: ""
@@ -15559,7 +15559,7 @@
   });
   const Editor = /* @__PURE__ */ defineBuiltInComponent({
     name: "Editor",
-    props: props$o,
+    props: props$p,
     emit: ["ready", "focus", "blur", "input", "statuschange", ...emit$1],
     setup(props2, _ref) {
       var {
@@ -15650,7 +15650,7 @@
       };
     }
   });
-  var props$n = {
+  var props$o = {
     src: {
       type: String,
       default: ""
@@ -15689,7 +15689,7 @@
   };
   const Image$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Image",
-    props: props$n,
+    props: props$o,
     setup(props2, _ref) {
       var {
         emit: emit2
@@ -16022,7 +16022,7 @@
     return valueStr.slice(0, maxlength);
   }
   var INPUT_MODES = ["none", "text", "decimal", "numeric", "tel", "search", "email", "url"];
-  var props$m = /* @__PURE__ */ extend({}, {
+  var props$n = /* @__PURE__ */ extend({}, {
     name: {
       type: String,
       default: ""
@@ -16109,7 +16109,7 @@
       type: String,
       default: ""
     }
-  }, props$p);
+  }, props$q);
   var emit = ["input", "focus", "blur", "update:value", "update:modelValue", "update:focus", "compositionstart", "compositionupdate", "compositionend", ...emit$1];
   function useBase(props2, rootRef, emit2) {
     var fieldRef = ref(null);
@@ -16349,7 +16349,7 @@
       trigger: trigger2
     };
   }
-  var props$l = /* @__PURE__ */ extend({}, props$m, {
+  var props$m = /* @__PURE__ */ extend({}, props$n, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -16398,7 +16398,7 @@
   }
   const Input = /* @__PURE__ */ defineBuiltInComponent({
     name: "Input",
-    props: props$l,
+    props: props$m,
     emits: ["confirm", ...emit],
     setup(props2, _ref) {
       var {
@@ -19324,7 +19324,7 @@
     }
   }
   var uniRadioGroupKey = PolySymbol("ucg");
-  var props$k = {
+  var props$l = {
     name: {
       type: String,
       default: ""
@@ -19332,7 +19332,7 @@
   };
   const RadioGroup = /* @__PURE__ */ defineBuiltInComponent({
     name: "RadioGroup",
-    props: props$k,
+    props: props$l,
     // emits: ['change'],
     setup(props2, _ref) {
       var {
@@ -19417,7 +19417,7 @@
     }
     return fields2;
   }
-  var props$j = {
+  var props$k = {
     checked: {
       type: [Boolean, String],
       default: false
@@ -19461,7 +19461,7 @@
   };
   const Radio = /* @__PURE__ */ defineBuiltInComponent({
     name: "Radio",
-    props: props$j,
+    props: props$k,
     setup(props2, _ref) {
       var {
         slots
@@ -19818,7 +19818,7 @@
     });
     return results.children;
   }
-  var props$i = {
+  var props$j = {
     nodes: {
       type: [Array, String],
       default: function() {
@@ -19831,7 +19831,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$i,
+    props: props$j,
     emits: ["itemclick"],
     setup(props2, _ref) {
       var {
@@ -19967,7 +19967,7 @@
     }
   });
   var passiveOptions = /* @__PURE__ */ passive(true);
-  var props$h = {
+  var props$i = {
     direction: {
       type: [String],
       default: "vertical"
@@ -20038,7 +20038,7 @@
     compatConfig: {
       MODE: 3
     },
-    props: props$h,
+    props: props$i,
     emits: ["scroll", "scrolltoupper", "scrolltolower", "refresherrefresh", "refresherrestore", "refresherpulling", "refresherabort", "update:refresherTriggered"],
     setup(props2, _ref) {
       var {
@@ -20489,7 +20489,7 @@
       _scrollLeftChanged
     };
   }
-  var props$g = {
+  var props$h = {
     name: {
       type: String,
       default: ""
@@ -20545,7 +20545,7 @@
   };
   const Slider = /* @__PURE__ */ defineBuiltInComponent({
     name: "Slider",
-    props: props$g,
+    props: props$h,
     emits: ["changing", "change"],
     setup(props2, _ref) {
       var {
@@ -20717,7 +20717,7 @@
       return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m);
     }
   };
-  var props$f = {
+  var props$g = {
     indicatorDots: {
       type: [Boolean, String],
       default: false
@@ -21218,7 +21218,7 @@
   }
   const Swiper = /* @__PURE__ */ defineBuiltInComponent({
     name: "Swiper",
-    props: props$f,
+    props: props$g,
     emits: ["change", "transition", "animationfinish", "update:current", "update:currentItemId"],
     setup(props2, _ref) {
       var {
@@ -21329,7 +21329,7 @@
       };
     }
   });
-  var props$e = {
+  var props$f = {
     itemId: {
       type: String,
       default: ""
@@ -21337,7 +21337,7 @@
   };
   const SwiperItem = /* @__PURE__ */ defineBuiltInComponent({
     name: "SwiperItem",
-    props: props$e,
+    props: props$f,
     setup(props2, _ref) {
       var {
         slots
@@ -21387,7 +21387,7 @@
       };
     }
   });
-  var props$d = {
+  var props$e = {
     name: {
       type: String,
       default: ""
@@ -21415,7 +21415,7 @@
   };
   const Switch = /* @__PURE__ */ defineBuiltInComponent({
     name: "Switch",
-    props: props$d,
+    props: props$e,
     emits: ["change"],
     setup(props2, _ref) {
       var {
@@ -21620,7 +21620,7 @@
     }
     return obj;
   }
-  var props$c = /* @__PURE__ */ extend({}, props$m, {
+  var props$d = /* @__PURE__ */ extend({}, props$n, {
     placeholderClass: {
       type: String,
       default: "input-placeholder"
@@ -21645,7 +21645,7 @@
   }
   const Textarea = /* @__PURE__ */ defineBuiltInComponent({
     name: "Textarea",
-    props: props$c,
+    props: props$d,
     emits: ["confirm", "linechange", ...emit],
     setup(props2, _ref) {
       var {
@@ -22383,7 +22383,7 @@
       super(id2, "uni-icon", Icon, parentNodeId, refNodeId, nodeJson);
     }
   }
-  var props$b = {
+  var props$c = {
     tag: {
       type: String,
       default: ""
@@ -22397,7 +22397,7 @@
   };
   var index$1 = 0;
   const Embed = /* @__PURE__ */ defineBuiltInComponent({
-    props: props$b,
+    props: props$c,
     setup(props2, _ref) {
       var {
         expose,
@@ -22464,7 +22464,7 @@
       _handleSubscribe
     });
   }
-  var props$a = {
+  var props$b = {
     id: {
       type: String,
       default: ""
@@ -22486,7 +22486,7 @@
   };
   const WebView = /* @__PURE__ */ defineBuiltInComponent({
     name: "WebView",
-    props: props$a,
+    props: props$b,
     setup(props2) {
       var embedRef = ref(null);
       var pageId = getCurrentPageId();
@@ -23086,7 +23086,7 @@
       }
     }, id2, true);
   }
-  var props$9 = {
+  var props$a = {
     id: {
       type: String,
       default: ""
@@ -23172,7 +23172,7 @@
   };
   const Video = /* @__PURE__ */ defineBuiltInComponent({
     name: "Video",
-    props: props$9,
+    props: props$a,
     emits: ["fullscreenchange", "progress", "loadedmetadata", "waiting", "error", "play", "pause", "ended", "timeupdate"],
     setup(props2, _ref2) {
       var {
@@ -23439,7 +23439,7 @@
     }
     return "";
   }
-  var props$8 = {
+  var props$9 = {
     name: {
       type: String,
       default: ""
@@ -23484,7 +23484,7 @@
   };
   const Picker = /* @__PURE__ */ defineBuiltInComponent({
     name: "Picker",
-    props: props$8,
+    props: props$9,
     emits: ["change", "cancel", "columnchange"],
     setup(props2, _ref) {
       var {
@@ -23908,7 +23908,7 @@
   var getIsBMap = () => {
     return (mapInfo == null ? void 0 : mapInfo.type) === "BMapGL";
   };
-  var props$7 = {
+  var props$8 = {
     id: {
       type: [Number, String],
       default: ""
@@ -23994,7 +23994,7 @@
   }
   const MapMarker = /* @__PURE__ */ defineSystemComponent({
     name: "MapMarker",
-    props: props$7,
+    props: props$8,
     setup(props2) {
       var id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
       var onMapReady = inject("onMapReady");
@@ -24365,7 +24365,7 @@
       a: ("0x100".concat(sa) - 65536) / 255
     };
   }
-  var props$6 = {
+  var props$7 = {
     points: {
       type: Array,
       require: true
@@ -24411,7 +24411,7 @@
   };
   const MapPolyline = /* @__PURE__ */ defineSystemComponent({
     name: "MapPolyline",
-    props: props$6,
+    props: props$7,
     setup(props2) {
       var onMapReady = inject("onMapReady");
       var polyline;
@@ -24500,7 +24500,7 @@
       };
     }
   });
-  var props$5 = {
+  var props$6 = {
     latitude: {
       type: [Number, String],
       require: true
@@ -24532,7 +24532,7 @@
   };
   const MapCircle = /* @__PURE__ */ defineSystemComponent({
     name: "MapCircle",
-    props: props$5,
+    props: props$6,
     setup(props2) {
       var onMapReady = inject("onMapReady");
       var circle;
@@ -24608,7 +24608,7 @@
       };
     }
   });
-  var props$4 = {
+  var props$5 = {
     id: {
       type: [Number, String],
       default: ""
@@ -24632,7 +24632,7 @@
   };
   const MapControl = /* @__PURE__ */ defineSystemComponent({
     name: "MapControl",
-    props: props$4,
+    props: props$5,
     setup(props2) {
       var imgPath = computed(() => getRealPath(props2.iconPath));
       var positionStyle = computed(() => {
@@ -24783,7 +24783,7 @@
       };
     }
   });
-  const props$3 = {
+  const props$4 = {
     // 边框虚线，腾讯地图支持，google 高德 地图不支持，默认值为[0, 0] 为实线，非 [0, 0] 为虚线，H5 端无法像微信小程序一样控制虚线的间隔像素大小
     dashArray: {
       type: Array,
@@ -24817,7 +24817,7 @@
   };
   const MapPolygon = /* @__PURE__ */ defineSystemComponent({
     name: "MapPolygon",
-    props: props$3,
+    props: props$4,
     setup(props2) {
       var polygonIns;
       var onMapReady = inject("onMapReady");
@@ -24910,7 +24910,7 @@
       return () => null;
     }
   });
-  var props$2 = {
+  var props$3 = {
     id: {
       type: String,
       default: ""
@@ -25332,7 +25332,7 @@
   }
   const Map$1 = /* @__PURE__ */ defineBuiltInComponent({
     name: "Map",
-    props: props$2,
+    props: props$3,
     emits: ["markertap", "labeltap", "callouttap", "controltap", "regionchange", "tap", "click", "updated", "update:scale", "update:latitude", "update:longitude"],
     setup(props2, _ref3) {
       var {
@@ -25369,7 +25369,7 @@
   function _isSlot(s) {
     return typeof s === "function" || Object.prototype.toString.call(s) === "[object Object]" && !isVNode(s);
   }
-  var props$1 = {
+  var props$2 = {
     latitude: {
       type: Number
     },
@@ -25547,7 +25547,7 @@
   }
   const LocationPicker = /* @__PURE__ */ defineSystemComponent({
     name: "LoctaionPicker",
-    props: props$1,
+    props: props$2,
     emits: ["close"],
     setup(props2, _ref) {
       var {
@@ -25723,7 +25723,7 @@
     }
   }
   var ICON_PATH_NAV = "M28 17c-6.49396875 0-12.13721875 2.57040625-15 6.34840625V5.4105l6.29859375 6.29859375c0.387875 0.387875 1.02259375 0.387875 1.4105 0 0.387875-0.387875 0.387875-1.02259375 0-1.4105L12.77853125 2.36803125a0.9978125 0.9978125 0 0 0-0.0694375-0.077125c-0.1944375-0.1944375-0.45090625-0.291375-0.70721875-0.290875l-0.00184375-0.0000625-0.00184375 0.0000625c-0.2563125-0.0005-0.51278125 0.09640625-0.70721875 0.290875a0.9978125 0.9978125 0 0 0-0.0694375 0.077125l-7.930625 7.9305625c-0.387875 0.387875-0.387875 1.02259375 0 1.4105 0.387875 0.387875 1.02259375 0.387875 1.4105 0L11 5.4105V29c0 0.55 0.45 1 1 1s1-0.45 1-1c0-5.52284375 6.71571875-10 15-10 0.55228125 0 1-0.44771875 1-1 0-0.55228125-0.44771875-1-1-1z";
-  var props = {
+  var props$1 = {
     latitude: {
       type: Number
     },
@@ -25780,7 +25780,7 @@
   }
   const LocationView = /* @__PURE__ */ defineSystemComponent({
     name: "LocationView",
-    props,
+    props: props$1,
     emits: ["close"],
     setup(props2, _ref) {
       var {
@@ -25878,6 +25878,107 @@
       super(id2, "uni-location-view", LocationView, parentNodeId, refNodeId, nodeJson);
     }
   }
+  const CoverImage = /* @__PURE__ */ defineBuiltInComponent({
+    name: "CoverImage",
+    compatConfig: {
+      MODE: 3
+    },
+    props: {
+      src: {
+        type: String,
+        default: ""
+      }
+    },
+    emits: ["load", "error"],
+    setup(props2, _ref) {
+      var {
+        emit: emit2
+      } = _ref;
+      var root = ref(null);
+      var trigger2 = useCustomEvent(root, emit2);
+      function load($event) {
+        trigger2("load", $event);
+      }
+      function error($event) {
+        trigger2("error", $event);
+      }
+      return () => {
+        var {
+          src
+        } = props2;
+        return createVNode("uni-cover-image", {
+          "ref": root,
+          "src": src
+        }, [createVNode("div", {
+          "class": "uni-cover-image"
+        }, [src ? createVNode("img", {
+          "src": getRealPath(src),
+          "onLoad": load,
+          "onError": error
+        }, null, 40, ["src", "onLoad", "onError"]) : null])], 8, ["src"]);
+      };
+    }
+  });
+  class UniCoverImage extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-cover-image", CoverImage, parentNodeId, refNodeId, nodeJson);
+    }
+  }
+  var props = {
+    scrollTop: {
+      type: [String, Number],
+      default: 0
+    }
+  };
+  const CoverView = /* @__PURE__ */ defineBuiltInComponent({
+    name: "CoverView",
+    compatConfig: {
+      MODE: 3
+    },
+    props,
+    setup(props2, _ref) {
+      var {
+        slots
+      } = _ref;
+      var root = ref(null);
+      var content = ref(null);
+      watch(() => props2.scrollTop, (val) => {
+        setScrollTop(val);
+      });
+      function setScrollTop(val) {
+        var _content = content.value;
+        if (getComputedStyle(_content).overflowY === "scroll") {
+          _content.scrollTop = _upx2pxNum(val);
+        }
+      }
+      function _upx2pxNum(val) {
+        var _val = String(val);
+        if (/\d+[ur]px$/i.test(_val)) {
+          _val.replace(/\d+[ur]px$/i, (text2) => {
+            return String(uni.upx2px(parseFloat(text2)));
+          });
+        }
+        return parseFloat(_val) || 0;
+      }
+      onMounted(() => {
+        setScrollTop(props2.scrollTop);
+      });
+      return () => {
+        return createVNode("uni-cover-view", {
+          "scroll-top": props2.scrollTop,
+          "ref": root
+        }, [createVNode("div", {
+          "ref": content,
+          "class": "uni-cover-view"
+        }, [slots.default && slots.default()], 512)], 8, ["scroll-top"]);
+      };
+    }
+  });
+  class UniCoverView extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-cover-view", CoverView, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
@@ -25913,7 +26014,9 @@
     PICKER: UniPicker,
     MAP: UniMap,
     "LOCATION-PICKER": UniLocationPicker,
-    "LOCATION-VIEW": UniLocationView
+    "LOCATION-VIEW": UniLocationView,
+    "COVER-IMAGE": UniCoverImage,
+    "COVER-VIEW": UniCoverView
   };
   function createElement(id2, tag, parentNodeId, refNodeId) {
     var nodeJson = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};
