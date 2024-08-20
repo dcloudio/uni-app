@@ -113,10 +113,10 @@ declare global {
     /**
      * v-for object
      */
-    static renderList<T extends IUTSObject>(
+    static renderList<T>(
       source: T | null,
-      renderItem: (
-        value: any | null,
+      renderItem: <K extends keyof T>(
+        value: T[K],
         key: string,
         index: number | null,
         cached: any | null
