@@ -493,10 +493,10 @@ function useMap(
               if (context) {
                 try {
                   context.translate(data)
+                  callOptions(data, `${type}:ok`)
                 } catch (error: any) {
                   callOptions(data, `${type}:fail ${error.message}`)
                 }
-                callOptions(data, `${type}:ok`)
               } else {
                 callOptions(data, `${type}:fail not found`)
               }
