@@ -35,21 +35,22 @@ function getBorderStyle(borderStyle: string): string {
 // keep borderStyle aliways black/white
 export function fixBorderStyle(tabBarConfig: Map<string, any>) {
   let borderStyle = tabBarConfig.get('borderStyle')
-  if (!isString(borderStyle)) {
-    borderStyle = 'black'
+  let borderColor = tabBarConfig.get('borderColor')
+  const isBorderStyleFilled = isString(borderStyle)
+  const isBorderColorFilled = isString(borderColor)
+
+  // 如果设置 borderStyle 做格式化
+  if (isBorderStyleFilled) {
+    borderStyle = getBorderStyle(borderStyle as string)
   }
 
-  let borderColor = getBorderStyle(borderStyle as string)
   // 同时存在 borderColor>borderStyle，前者没有颜色限制，也不做格式化
-  if (
-    tabBarConfig.has('borderColor') &&
-    isString(tabBarConfig.get('borderColor'))
-  ) {
-    borderColor = tabBarConfig.get('borderColor')
-    tabBarConfig.delete('borderColor')
+  if (isBorderStyleFilled && isBorderColorFilled) {
+    borderStyle = borderColor
   }
 
-  tabBarConfig.set('borderStyle', borderColor)
+  tabBarConfig.set('borderStyle', borderStyle)
+  tabBarConfig.delete('borderColor')
 }
 
 function getTabList() {
