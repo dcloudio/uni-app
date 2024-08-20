@@ -21,7 +21,7 @@ interface Array<T> {
    *    }
    * }
    */
-  length : number;
+  length: number
 
   /**
    * toString() 方法返回一个字符串，表示指定的数组及其元素。
@@ -45,7 +45,7 @@ interface Array<T> {
    *    }
    * }
    */
-  toString() : string;
+  toString(): string
 
   /**
    * toKotlinList() 将当前的Array对象转换为 kotlin 中对应的List对象
@@ -65,7 +65,7 @@ interface Array<T> {
    *    }
    * }
    */
-  toKotlinList(): kotlin.collections.List<any>;
+  toKotlinList(): kotlin.collections.List<any>
 
   /**
    * 将指定的元素追加到此列表的末尾
@@ -87,8 +87,7 @@ interface Array<T> {
    *    }
    * }
    */
-  add(item:T):boolean;
-
+  add(item: T): boolean
 
   /**
    * toLocaleString() 方法返回一个字符串，表示数组中的所有元素。每个元素通过调用它们自己的 toLocaleString 方法转换为字符串，并且使用特定于语言环境的字符串（例如逗号“,”）分隔开。
@@ -112,7 +111,7 @@ interface Array<T> {
    *    }
    * }
    */
-  toLocaleString() : string;
+  toLocaleString(): string
 
   /**
    * 从所有元素中使用[separator]创建字符串
@@ -134,7 +133,7 @@ interface Array<T> {
    *    }
    * }
    */
-  joinToString(separator:string) : string;
+  joinToString(separator: string): string
 
   /**
    * pop() 方法从数组中删除最后一个元素，并返回该元素的值。此方法会更改数组的长度。
@@ -159,7 +158,7 @@ interface Array<T> {
    *    }
    * }
    */
-  pop() : T | undefined;
+  pop(): T | undefined
   /**
    * push() 方法将指定的元素添加到数组的末尾，并返回新的数组长度。
    * @param items 添加到数组末尾的元素。
@@ -184,7 +183,7 @@ interface Array<T> {
    *    }
    * }
    */
-  push(...items : T[]) : number;
+  push(...items: T[]): number
   /**
    * concat() 方法用于合并两个或多个数组。此方法不会更改现有数组，而是返回一个新数组。
    *
@@ -210,7 +209,7 @@ interface Array<T> {
    *    }
    * }
    */
-  concat(...items : ConcatArray<T>[]) : T[];
+  concat(...items: ConcatArray<T>[]): T[]
   /**
    * concat() 方法用于合并两个或多个数组。此方法不会更改现有数组，而是返回一个新数组。
    * @param items 数组和/或值，将被合并到一个新的数组中。如果省略了所有 valueN 参数，则 concat 会返回调用此方法的现存数组的一个浅拷贝。详情请参阅下文描述。
@@ -235,7 +234,7 @@ interface Array<T> {
    *    }
    * }
    */
-  concat(...items : (T | ConcatArray<T>)[]) : T[];
+  concat(...items: (T | ConcatArray<T>)[]): T[]
   /**
    * join() 方法将一个数组（或一个类数组对象）的所有元素连接成一个字符串并返回这个字符串，用逗号或指定的分隔符字符串分隔。如果数组只有一个元素，那么将返回该元素而不使用分隔符。
    * @param separator 指定一个字符串来分隔数组的每个元素。如果需要，将分隔符转换为字符串。如果省略，数组元素用逗号（,）分隔。如果 separator 是空字符串（""），则所有元素之间都没有任何字符。
@@ -256,7 +255,7 @@ interface Array<T> {
    *    }
    * }
    */
-  join(separator ?: string) : string;
+  join(separator?: string): string
   /**
    * reverse() 方法就地反转数组中的元素，并返回同一数组的引用。数组的第一个元素会变成最后一个，数组的最后一个元素变成第一个。换句话说，数组中的元素顺序将被翻转，变为与之前相反的方向。
    * @return 原始数组反转后的引用。注意，数组是就地反转的，并且没有复制。
@@ -280,7 +279,7 @@ interface Array<T> {
    *    }
    * }
    */
-  reverse() : T[];
+  reverse(): T[]
   /**
    * shift() 方法从数组中删除第一个元素，并返回该元素的值。此方法更改数组的长度。
    * @return 从数组中删除的元素；如果数组为空则返回 null。
@@ -304,7 +303,7 @@ interface Array<T> {
    *    }
    * }
    */
-  shift() : T | null;
+  shift(): T | null
   /**
    * slice() 方法返回一个新的数组对象，这一对象是一个由 start 和 end 决定的原数组的浅拷贝（包括 start，不包括 end），其中 start 和 end 代表了数组元素的索引。原始数组不会被改变。
    * @param start 提取起始处的索引（从 0 开始），会转换为整数。
@@ -329,7 +328,7 @@ interface Array<T> {
    *    }
    * }
    */
-  slice(start ?: number, end ?: number) : T[];
+  slice(start?: number, end?: number): T[]
 
   /**
    * sort() 方法就地对数组的元素进行排序，并返回对相同数组的引用。默认排序是将元素转换为字符串，然后按照它们的 UTF-16 码元值升序排序。
@@ -358,7 +357,7 @@ interface Array<T> {
    *    }
    * }
    */
-  sort(compareFn ?: (a : T, b : T) => number) : this;
+  sort(compareFn?: (a: T, b: T) => number): this
   /**
    * splice() 方法通过移除或者替换已存在的元素和/或添加新元素就地改变一个数组的内容。
    * @param start 从 0 开始计算的索引，表示要开始改变数组的位置，它会被转换成整数。
@@ -384,7 +383,7 @@ interface Array<T> {
    *    }
    * }
    */
-  splice(start : number, deleteCount ?: number) : T[];
+  splice(start: number, deleteCount?: number): T[]
   /**
    * splice() 方法通过移除或者替换已存在的元素和/或添加新元素就地改变一个数组的内容。
    * @param start 从 0 开始计算的索引，表示要开始改变数组的位置，它会被转换成整数。
@@ -410,7 +409,7 @@ interface Array<T> {
    *    }
    * }
    */
-  splice(start : number, deleteCount : number, ...items : T[]) : T[];
+  splice(start: number, deleteCount: number, ...items: T[]): T[]
 
   /**
    * unshift() 方法将指定元素添加到数组的开头，并返回数组的新长度。
@@ -435,7 +434,7 @@ interface Array<T> {
    *    }
    * }
    */
-  unshift(...items : T[]) : number;
+  unshift(...items: T[]): number
 
   /**
    * indexOf() 方法返回数组中第一次出现给定元素的下标，如果不存在则返回 -1。
@@ -461,7 +460,7 @@ interface Array<T> {
    *    }
    * }
    */
-  indexOf(searchElement : T, fromIndex ?: number) : number;
+  indexOf(searchElement: T, fromIndex?: number): number
   /**
    * lastIndexOf() 方法返回数组中给定元素最后一次出现的索引，如果不存在则返回 -1。该方法从 fromIndex 开始向前搜索数组。
    * @param searchElement 被查找的元素。
@@ -486,7 +485,66 @@ interface Array<T> {
    *    }
    * }
    */
-  lastIndexOf(searchElement : T, fromIndex ?: number) : number;
+  lastIndexOf(searchElement: T, fromIndex?: number): number
+  /**
+   * every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#every
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  every<S extends T>(
+    predicate: (value: T) => value is S,
+    thisArg?: any
+  ): this is S[]
+  /**
+   * every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   *     index:正在处理的元素在数组中的索引。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#every
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  every<S extends T>(
+    predicate: (value: T, index: number) => value is S,
+    thisArg?: any
+  ): this is S[]
   /**
    * every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
@@ -514,7 +572,63 @@ interface Array<T> {
    *    }
    * }
    */
-  every<S extends T>(predicate : (value : T, index ?: number, array ?: T[]) => value is S, thisArg ?: any) : this is S[];
+  every<S extends T>(
+    predicate: (value: T, index: number, array: T[]) => value is S,
+    thisArg?: any
+  ): this is S[]
+  /**
+   * every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#every
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  every(predicate: (value: T) => unknown, thisArg?: any): boolean
+  /**
+   * every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   *     index:正在处理的元素在数组中的索引。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#every
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  every(predicate: (value: T, index: number) => unknown, thisArg?: any): boolean
   /**
    * every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
@@ -542,14 +656,45 @@ interface Array<T> {
    *    }
    * }
    */
-  every(predicate : (value : T, index : number, array : T[]) => unknown, thisArg ?: any) : boolean;
+  every(
+    predicate: (value: T, index: number, array: T[]) => unknown,
+    thisArg?: any
+  ): boolean
   /**
-   * every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
+   * some() 方法测试数组中是否至少有一个元素通过了由提供的函数实现的测试。如果在数组中找到一个元素使得提供的函数返回 true，则返回 true；否则返回 false。它不会修改数组。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   * @param thisArg 执行 callbackFn 时用作 this 的值。
+   * @return 如果回调函数对数组中至少一个元素返回一个真值，则返回 true。否则返回 false。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#some
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  some(predicate: (value: T) => unknown, thisArg?: any): boolean
+  /**
+   * some() 方法测试数组中是否至少有一个元素通过了由提供的函数实现的测试。如果在数组中找到一个元素使得提供的函数返回 true，则返回 true；否则返回 false。它不会修改数组。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
    *     value:数组中当前正在处理的元素。
    *     index:正在处理的元素在数组中的索引。
-   * @param thisArg 执行 callbackFn 时用作 this 的值
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#every
+   * @param thisArg 执行 callbackFn 时用作 this 的值。
+   * @return 如果回调函数对数组中至少一个元素返回一个真值，则返回 true。否则返回 false。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#some
    * @uniPlatform {
    *    "app": {
    *        "android": {
@@ -569,33 +714,7 @@ interface Array<T> {
    *    }
    * }
    */
-  every(predicate : (value : T, index : number) => unknown, thisArg ?: any) : boolean;
-  /**
-   * every() 方法测试一个数组内的所有元素是否都能通过指定函数的测试。它返回一个布尔值。
-   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
-   *     value:数组中当前正在处理的元素。
-   * @param thisArg 执行 callbackFn 时用作 this 的值
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#every
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  every(predicate : (value : T) => unknown, thisArg ?: any) : boolean;
+  some(predicate: (value: T, index: number) => unknown, thisArg?: any): boolean
   /**
    * some() 方法测试数组中是否至少有一个元素通过了由提供的函数实现的测试。如果在数组中找到一个元素使得提供的函数返回 true，则返回 true；否则返回 false。它不会修改数组。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
@@ -624,15 +743,16 @@ interface Array<T> {
    *    }
    * }
    */
-  some(predicate : (value : T, index : number, array : T[]) => unknown, thisArg ?: any) : boolean;
+  some(
+    predicate: (value: T, index: number, array: T[]) => unknown,
+    thisArg?: any
+  ): boolean
   /**
-   * some() 方法测试数组中是否至少有一个元素通过了由提供的函数实现的测试。如果在数组中找到一个元素使得提供的函数返回 true，则返回 true；否则返回 false。它不会修改数组。
-   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
-   *     value:数组中当前正在处理的元素。
-   *     index:正在处理的元素在数组中的索引。
-   * @param thisArg 执行 callbackFn 时用作 this 的值。
-   * @return 如果回调函数对数组中至少一个元素返回一个真值，则返回 true。否则返回 false。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#some
+   * forEach() 方法对数组的每个元素执行一次给定的函数。
+   * @param callbackfn  为数组中每个元素执行的函数。并会丢弃它的返回值。该函数被调用时将传入以下参数：
+   *     value:数组中正在处理的当前元素。
+   * @param thisArg  执行 callbackFn 时用作 this 的值。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#forEach
    * @uniPlatform {
    *    "app": {
    *        "android": {
@@ -652,14 +772,14 @@ interface Array<T> {
    *    }
    * }
    */
-  some(predicate : (value : T, index : number) => unknown, thisArg ?: any) : boolean;
+  forEach(callbackfn: (value: T) => void, thisArg?: any): void
   /**
-   * some() 方法测试数组中是否至少有一个元素通过了由提供的函数实现的测试。如果在数组中找到一个元素使得提供的函数返回 true，则返回 true；否则返回 false。它不会修改数组。
-   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示元素通过测试，否则返回一个假值。该函数被调用时将传入以下参数：
-   *     value:数组中当前正在处理的元素。
-   * @param thisArg 执行 callbackFn 时用作 this 的值。
-   * @return 如果回调函数对数组中至少一个元素返回一个真值，则返回 true。否则返回 false。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#some
+   * forEach() 方法对数组的每个元素执行一次给定的函数。
+   * @param callbackfn  为数组中每个元素执行的函数。并会丢弃它的返回值。该函数被调用时将传入以下参数：
+   *     value:数组中正在处理的当前元素。
+   *     index:数组中正在处理的当前元素的索引。
+   * @param thisArg  执行 callbackFn 时用作 this 的值。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#forEach
    * @uniPlatform {
    *    "app": {
    *        "android": {
@@ -679,7 +799,7 @@ interface Array<T> {
    *    }
    * }
    */
-  some(predicate : (value : T) => unknown, thisArg ?: any) : boolean;
+  forEach(callbackfn: (value: T, index: number) => void, thisArg?: any): void
   /**
    * forEach() 方法对数组的每个元素执行一次给定的函数。
    * @param callbackfn  为数组中每个元素执行的函数。并会丢弃它的返回值。该函数被调用时将传入以下参数：
@@ -707,14 +827,16 @@ interface Array<T> {
    *    }
    * }
    */
-  forEach(callbackfn : (value : T, index : number, array : T[]) => void, thisArg ?: any) : void;
+  forEach(
+    callbackfn: (value: T, index: number, array: T[]) => void,
+    thisArg?: any
+  ): void
   /**
-   * forEach() 方法对数组的每个元素执行一次给定的函数。
-   * @param callbackfn  为数组中每个元素执行的函数。并会丢弃它的返回值。该函数被调用时将传入以下参数：
-   *     value:数组中正在处理的当前元素。
-   *     index:数组中正在处理的当前元素的索引。
-   * @param thisArg  执行 callbackFn 时用作 this 的值。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#forEach
+   * map() 方法创建一个新数组，这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成。
+   * @param callbackfn 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#map
    * @uniPlatform {
    *    "app": {
    *        "android": {
@@ -734,13 +856,14 @@ interface Array<T> {
    *    }
    * }
    */
-  forEach(callbackfn : (value : T, index : number) => void, thisArg ?: any) : void;
+  map<U>(callbackfn: (value: T) => U, thisArg?: any): U[]
   /**
-   * forEach() 方法对数组的每个元素执行一次给定的函数。
-   * @param callbackfn  为数组中每个元素执行的函数。并会丢弃它的返回值。该函数被调用时将传入以下参数：
-   *     value:数组中正在处理的当前元素。
-   * @param thisArg  执行 callbackFn 时用作 this 的值。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#forEach
+   * map() 方法创建一个新数组，这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成。
+   * @param callbackfn 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   *     index:正在处理的元素在数组中的索引。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#map
    * @uniPlatform {
    *    "app": {
    *        "android": {
@@ -760,7 +883,7 @@ interface Array<T> {
    *    }
    * }
    */
-  forEach(callbackfn : (value : T) => void, thisArg ?: any) : void;
+  map<U>(callbackfn: (value: T, index: number) => U, thisArg?: any): U[]
   /**
    * map() 方法创建一个新数组，这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成。
    * @param callbackfn 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数：
@@ -788,25 +911,54 @@ interface Array<T> {
    *    }
    * }
    */
-  map<U>(callbackfn : (value : T, index : number, array : T[]) => U, thisArg ?: any) : U[];
+  map<U>(
+    callbackfn: (value: T, index: number, array: T[]) => U,
+    thisArg?: any
+  ): U[]
   /**
-   * map() 方法创建一个新数组，这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成。
-   * @param callbackfn 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数：
+   * filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#filter
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  filter<S extends T>(predicate: (value: T) => value is S, thisArg?: any): S[]
+  /**
+   * filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数：
    *     value:数组中当前正在处理的元素。
    *     index:正在处理的元素在数组中的索引。
    * @param thisArg 执行 callbackFn 时用作 this 的值
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#map
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#filter
    * @uniPlatform {
    *    "app": {
    *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
    *        },
    *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
    *        }
    *    },
    *    "web": {
@@ -815,33 +967,10 @@ interface Array<T> {
    *    }
    * }
    */
-  map<U>(callbackfn : (value : T, index : number) => U, thisArg ?: any) : U[];
-  /**
-   * map() 方法创建一个新数组，这个新数组由原数组中的每个元素都调用一次提供的函数后的返回值组成。
-   * @param callbackfn 为数组中的每个元素执行的函数。它的返回值作为一个元素被添加为新数组中。该函数被调用时将传入以下参数：
-   *     value:数组中当前正在处理的元素。
-   * @param thisArg 执行 callbackFn 时用作 this 的值
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#map
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  map<U>(callbackfn : (value : T) => U, thisArg ?: any) : U[];
+  filter<S extends T>(
+    predicate: (value: T, index: number) => value is S,
+    thisArg?: any
+  ): S[]
   /**
    * filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数：
@@ -869,7 +998,63 @@ interface Array<T> {
    *    }
    * }
    */
-  filter<S extends T>(predicate : (value : T, index ?: number, array ?: T[]) => value is S, thisArg ?: any) : S[];
+  filter<S extends T>(
+    predicate: (value: T, index: number, array: T[]) => value is S,
+    thisArg?: any
+  ): S[]
+  /**
+   * filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#filter
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  filter(predicate: (value: T) => unknown, thisArg?: any): T[]
+  /**
+   * filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
+   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数：
+   *     value:数组中当前正在处理的元素。
+   *     index:正在处理的元素在数组中的索引。
+   * @param thisArg 执行 callbackFn 时用作 this 的值
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#filter
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  filter(predicate: (value: T, index: number) => unknown, thisArg?: any): T[]
   /**
    * filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数：
@@ -897,209 +1082,522 @@ interface Array<T> {
    *    }
    * }
    */
-  filter(predicate : (value : T, index : number, array : T[]) => unknown, thisArg ?: any) : T[];
+  filter(
+    predicate: (value: T, index: number, array: T[]) => unknown,
+    thisArg?: any
+  ): T[]
   /**
-   * filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
-   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数：
-   *     value:数组中当前正在处理的元素。
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce(callbackfn: (previousValue: T, currentValue: T) => T): T
+  /**
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce(
+    callbackfn: (previousValue: T, currentValue: T, currentIndex: number) => T
+  ): T
+  /**
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
+   *     array:调用了 reduce() 的数组本身。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce(
+    callbackfn: (
+      previousValue: T,
+      currentValue: T,
+      currentIndex: number,
+      array: T[]
+    ) => T
+  ): T
+  /**
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce(
+    callbackfn: (previousValue: T, currentValue: T) => T,
+    initialValue: T
+  ): T
+  /**
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
+   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce(
+    callbackfn: (previousValue: T, currentValue: T, currentIndex: number) => T,
+    initialValue: T
+  ): T
+  /**
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
+   *     array:调用了 reduce() 的数组本身。
+   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce(
+    callbackfn: (
+      previousValue: T,
+      currentValue: T,
+      currentIndex: number,
+      array: T[]
+    ) => T,
+    initialValue: T
+  ): T
+  /**
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce<U>(
+    callbackfn: (previousValue: U, currentValue: T) => U,
+    initialValue: U
+  ): U
+  /**
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
+   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce<U>(
+    callbackfn: (previousValue: U, currentValue: T, currentIndex: number) => U,
+    initialValue: U
+  ): U
+  /**
+   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
+   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
+   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
+   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
+   *     array:调用了 reduce() 的数组本身。
+   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduce<U>(
+    callbackfn: (
+      previousValue: U,
+      currentValue: T,
+      currentIndex: number,
+      array: T[]
+    ) => U,
+    initialValue: U
+  ): U
+  /**
+   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
+   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
+   *     currentValue:数组中当前正在处理的元素。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduceRight(callbackfn: (previousValue: T, currentValue: T) => T): T
+  /**
+   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
+   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
+   *     currentValue:数组中当前正在处理的元素。
+   *     currentIndex:正在处理的元素在数组中的索引。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduceRight(
+    callbackfn: (previousValue: T, currentValue: T, currentIndex: number) => T
+  ): T
+  /**
+   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
+   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
+   *     currentValue:数组中当前正在处理的元素。
+   *     currentIndex:正在处理的元素在数组中的索引。
+   *     array:调用了 reduceRight() 的数组本身。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduceRight(
+    callbackfn: (
+      previousValue: T,
+      currentValue: T,
+      currentIndex: number,
+      array: T[]
+    ) => T
+  ): T
+  /**
+   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
+   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
+   *     currentValue:数组中当前正在处理的元素。
+   * @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduceRight(
+    callbackfn: (previousValue: T, currentValue: T) => T,
+    initialValue: T
+  ): T
+  /**
+   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
+   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
+   *     currentValue:数组中当前正在处理的元素。
+   *     currentIndex:正在处理的元素在数组中的索引。
+   * @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduceRight(
+    callbackfn: (previousValue: T, currentValue: T, currentIndex: number) => T,
+    initialValue: T
+  ): T
+  /**
+   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
+   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
+   *     currentValue:数组中当前正在处理的元素。
+   *     currentIndex:正在处理的元素在数组中的索引。
+   *     array:调用了 reduceRight() 的数组本身。
+   * @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "5.0",
+   *           "uniVer": "√",
+   *            "unixVer": "3.9+"
+   *        },
+   *        "ios": {
+   *           "osVer": "12.0",
+   *           "uniVer": "√",
+   *            "unixVer": "4.11"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduceRight(
+    callbackfn: (
+      previousValue: T,
+      currentValue: T,
+      currentIndex: number,
+      array: T[]
+    ) => T,
+    initialValue: T
+  ): T
+  /**
+   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
+   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
+   *     currentValue:数组中当前正在处理的元素。
+   * @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
+   * @uniPlatform {
+   *    "app": {
+   *        "android": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        },
+   *        "ios": {
+   *           "osVer": "x",
+   *           "uniVer": "x",
+   *            "unixVer": "x"
+   *        }
+   *    },
+   *    "web": {
+   *        "uniVer": "√",
+   *        "unixVer": "4.0"
+   *    }
+   * }
+   */
+  reduceRight<U>(
+    callbackfn: (previousValue: U, currentValue: T) => U,
+    initialValue: U
+  ): U
+  /**
+   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
+   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
+   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
+   *     currentValue:数组中当前正在处理的元素。
    *     index:正在处理的元素在数组中的索引。
-   * @param thisArg 执行 callbackFn 时用作 this 的值
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#filter
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  filter(predicate : (value : T, index : number) => unknown, thisArg ?: any) : T[];
-  /**
-   * filter() 方法创建给定数组一部分的浅拷贝，其包含通过所提供函数实现的测试的所有元素。
-   * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以将元素保留在结果数组中，否则返回一个假值。该函数被调用时将传入以下参数：
-   *     value:数组中当前正在处理的元素。
-   * @param thisArg 执行 callbackFn 时用作 this 的值
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#filter
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  filter(predicate : (value : T) => unknown, thisArg ?: any) : T[];
-  /**
-   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
-   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
-   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
-   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
-   *     array:调用了 reduce() 的数组本身。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduce(callbackfn : (previousValue : T, currentValue : T, currentIndex : number, array : T[]) => T) : T;
-  /**
-   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
-   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
-   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
-   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduce(callbackfn : (previousValue : T, currentValue : T, currentIndex : number) => T) : T;
-  /**
-   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
-   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
-   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
-   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
-   *     array:调用了 reduce() 的数组本身。
-   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduce(callbackfn : (previousValue : T, currentValue : T, currentIndex : number, array : T[]) => T, initialValue : T) : T;
-  /**
-   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
-   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
-   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
-   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
-   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduce(callbackfn : (previousValue : T, currentValue : T, currentIndex : number) => T, initialValue : T) : T
-  /**
-   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
-   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
-   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
-   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduce(callbackfn : (previousValue : T, currentValue : T) => T, initialValue : T) : T
-
-  /**
-   * reduce() 方法对数组中的每个元素按序执行一个提供的 reducer 函数，每一次运行 reducer 会将先前元素的计算结果作为参数传入，最后将其结果汇总为单个返回值。
-   * @param callbackfn 为数组中每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将作为 reduce() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为 array[0] 的值。
-   *     currentValue:当前元素的值。在第一次调用时，如果指定了 initialValue，则为 array[0] 的值，否则为 array[1]。
-   *     currentIndex:currentValue 在数组中的索引位置。在第一次调用时，如果指定了 initialValue 则为 0，否则为 1
-   *     array:调用了 reduce() 的数组本身。
-   * @param initialValue 第一次调用回调时初始化 accumulator 的值。如果指定了 initialValue，则 callbackFn 从数组中的第一个值作为 currentValue 开始执行。如果没有指定 initialValue，则 accumulator 初始化为数组中的第一个值，并且 callbackFn 从数组中的第二个值作为 currentValue 开始执行。在这种情况下，如果数组为空（没有第一个值可以作为 accumulator 返回），则会抛出错误。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduce
+   * @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
+   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
    * @uniPlatform {
    *    "app": {
    *        "android": {
@@ -1119,172 +1617,10 @@ interface Array<T> {
    *    }
    * }
    */
-  reduce<U>(callbackfn : (previousValue : U, currentValue : T, currentIndex ?: number, array ?: T[]) => U, initialValue : U) : U;
-  /**
-   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
-   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
-   *     currentValue:数组中当前正在处理的元素。
-   *     currentIndex:正在处理的元素在数组中的索引。
-   *     array:调用了 reduceRight() 的数组本身。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduceRight(callbackfn : (previousValue : T, currentValue : T, currentIndex : number, array : T[]) => T) : T;
-  /**
-   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
-   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
-   *     currentValue:数组中当前正在处理的元素。
-   *     currentIndex:正在处理的元素在数组中的索引。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduceRight(callbackfn : (previousValue : T, currentValue : T, currentIndex : number) => T) : T;
-  /**
-   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
-   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
-   *     currentValue:数组中当前正在处理的元素。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduceRight(callbackfn : (previousValue : T, currentValue : T) => T) : T;
-  /**
-   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
-   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
-   *     currentValue:数组中当前正在处理的元素。
-   *     currentIndex:正在处理的元素在数组中的索引。
-   *     array:调用了 reduceRight() 的数组本身。
-   * @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduceRight(callbackfn : (previousValue : T, currentValue : T, currentIndex : number, array : T[]) => T, initialValue : T) : T;
-  /**
-   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
-   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
-   *     currentValue:数组中当前正在处理的元素。
-   *     currentIndex:正在处理的元素在数组中的索引。
-   * @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduceRight(callbackfn : (previousValue : T, currentValue : T, currentIndex : number) => T, initialValue : T) : T;
-  /**
-   * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
-   * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
-   *     previousValue:上一次调用 callbackFn 的结果。在第一次调用时，如果指定了 initialValue 则为指定的值，否则为数组最后一个元素的值。
-   *     currentValue:数组中当前正在处理的元素。
-   * @param initialValue 首次调用 callbackFn 时累加器的值。如果不提供初始值，则将使用数组中的最后一个元素，并在迭代时跳过它。没有初始值的情况下，在空数组上调用 reduceRight() 会产生 TypeError。
-   * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#reduceRight
-   * @uniPlatform {
-   *    "app": {
-   *        "android": {
-   *           "osVer": "5.0",
-   *           "uniVer": "√",
-   *            "unixVer": "3.9+"
-   *        },
-   *        "ios": {
-   *           "osVer": "12.0",
-   *           "uniVer": "√",
-   *            "unixVer": "4.11"
-   *        }
-   *    },
-   *    "web": {
-   *        "uniVer": "√",
-   *        "unixVer": "4.0"
-   *    }
-   * }
-   */
-  reduceRight(callbackfn : (previousValue : T, currentValue : T) => T, initialValue : T) : T;
+  reduceRight<U>(
+    callbackfn: (previousValue: U, currentValue: T, currentIndex: number) => U,
+    initialValue: U
+  ): U
   /**
    * reduceRight() 方法对累加器（accumulator）和数组的每个值（按从右到左的顺序）应用一个函数，并使其成为单个值。
    * @param callbackfn 为数组中的每个元素执行的函数。其返回值将作为下一次调用 callbackFn 时的 accumulator 参数。对于最后一次调用，返回值将成为 reduceRight() 的返回值。该函数被调用时将传入以下参数：
@@ -1313,9 +1649,17 @@ interface Array<T> {
    *    }
    * }
    */
-  reduceRight<U>(callbackfn : (previousValue : U, currentValue : T, currentIndex ?: number, array ?: T[]) => U, initialValue : U) : U;
+  reduceRight<U>(
+    callbackfn: (
+      previousValue: U,
+      currentValue: T,
+      currentIndex: number,
+      array: T[]
+    ) => U,
+    initialValue: U
+  ): U
 
-  [n : number] : T;
+  [n: number]: T
 
   /**
    * find() 方法返回数组中满足提供的测试函数的第一个元素的值。否则返回 null。
@@ -1342,7 +1686,10 @@ interface Array<T> {
    *    }
    * }
    */
-  find<S extends T>(predicate : (value : T, index : number, obj : T[]) => value is S, thisArg ?: any) : S | null;
+  find<S extends T>(
+    predicate: (value: T) => value is S,
+    thisArg?: any
+  ): S | null
   /**
    * find() 方法返回数组中满足提供的测试函数的第一个元素的值。否则返回 null。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值来表示已经找到了匹配的元素。
@@ -1368,7 +1715,11 @@ interface Array<T> {
    *    }
    * }
    */
-  find<S extends T>(predicate : (value : T, index : number) => value is S, thisArg ?: any) : S | null;
+  find<S extends T>(
+    predicate: (value: T, index: number) => value is S,
+    thisArg?: any
+  ): S | null
+
   /**
    * find() 方法返回数组中满足提供的测试函数的第一个元素的值。否则返回 null。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值来表示已经找到了匹配的元素。
@@ -1394,10 +1745,16 @@ interface Array<T> {
    *    }
    * }
    */
-  find<S extends T>(predicate : (value : T) => value is S, thisArg ?: any) : S | null;
-  find(predicate : (value : T, index : number, obj : T[]) => unknown, thisArg ?: any) : T | null;
-  find(predicate : (value : T, index : number,) => unknown, thisArg ?: any) : T | null;
-  find(predicate : (value : T) => unknown, thisArg ?: any) : T | null;
+  find<S extends T>(
+    predicate: (value: T, index: number, obj: T[]) => value is S,
+    thisArg?: any
+  ): S | null
+  find(predicate: (value: T) => unknown, thisArg?: any): T | null
+  find(predicate: (value: T, index: number) => unknown, thisArg?: any): T | null
+  find(
+    predicate: (value: T, index: number, obj: T[]) => unknown,
+    thisArg?: any
+  ): T | null
 
   /**
    * findIndex() 方法返回数组中满足提供的测试函数的第一个元素的索引。若没有找到对应元素则返回 -1。
@@ -1424,7 +1781,7 @@ interface Array<T> {
    *    }
    * }
    */
-  findIndex(predicate : (value : T, index : number, obj : T[]) => unknown, thisArg ?: any) : number;
+  findIndex(predicate: (value: T) => unknown, thisArg?: any): number
   /**
    * findIndex() 方法返回数组中满足提供的测试函数的第一个元素的索引。若没有找到对应元素则返回 -1。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示已找到匹配元素，否则返回一个假值。
@@ -1450,7 +1807,10 @@ interface Array<T> {
    *    }
    * }
    */
-  findIndex(predicate : (value : T, index : number) => unknown, thisArg ?: any) : number;
+  findIndex(
+    predicate: (value: T, index: number) => unknown,
+    thisArg?: any
+  ): number
   /**
    * findIndex() 方法返回数组中满足提供的测试函数的第一个元素的索引。若没有找到对应元素则返回 -1。
    * @param predicate 为数组中的每个元素执行的函数。它应该返回一个真值以指示已找到匹配元素，否则返回一个假值。
@@ -1476,7 +1836,10 @@ interface Array<T> {
    *    }
    * }
    */
-  findIndex(predicate : (value : T) => unknown, thisArg ?: any) : number;
+  findIndex(
+    predicate: (value: T, index: number, obj: T[]) => unknown,
+    thisArg?: any
+  ): number
 
   /**
    * fill() 方法用一个固定值填充一个数组中从起始索引（默认为 0）到终止索引（默认为 array.length）内的全部元素。它返回修改后的数组。
@@ -1503,7 +1866,7 @@ interface Array<T> {
    *    }
    * }
    */
-  fill(value : T, start ?: number, end ?: number) : this;
+  fill(value: T, start?: number, end?: number): this
 
   /**
    * copyWithin() 方法浅复制数组的一部分到同一数组中的另一个位置，并返回它，不会改变原数组的长度。
@@ -1530,7 +1893,7 @@ interface Array<T> {
    *    }
    * }
    */
-  copyWithin(target : number, start ?: number, end ?: number) : this;
+  copyWithin(target: number, start?: number, end?: number): this
 
   /**
    * includes() 方法用来判断一个数组是否包含一个指定的值，根据情况，如果包含则返回 true，否则返回 false。
@@ -1557,7 +1920,7 @@ interface Array<T> {
    *    }
    * }
    */
-  includes(searchElement : any, fromIndex ?: number) : boolean;
+  includes(searchElement: any, fromIndex?: number): boolean
 }
 
 interface ArrayConstructor {
@@ -1626,7 +1989,7 @@ interface ArrayConstructor {
    *    }
    * }
    */
-  new <T>(...items : T[]) : T[];
+  new <T>(...items: T[]): T[]
   // /**
   //  * @tutorial https://uniapp.dcloud.net.cn/uts/buildin-object-api/Array.html#constructor
   //  * @uniPlatform {
@@ -1717,8 +2080,8 @@ interface ArrayConstructor {
    *    }
    * }
    */
-  isArray(arg : any) : arg is any[];
-  readonly prototype : any[];
+  isArray(arg: any): arg is any[]
+  readonly prototype: any[]
 }
 
-declare var Array : ArrayConstructor;
+declare var Array: ArrayConstructor

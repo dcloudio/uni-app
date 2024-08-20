@@ -196,7 +196,7 @@ interface UTSAndroid {
 	/**
 	 * 注册监听 activity onDestroy事件
 	 * @param 用于监听的响应函数
-	 * @tutorial https://uniapp.dcloud.net.cn/uts/UTSAndroid.html#onAppActivityDestroy
+	 * @tutorial https://doc.dcloud.net.cn/uni-app-x/uts/UTSAndroid.html#onAppActivityDestroy
 	 * @uniPlatform {
 	 *    "app": {
 	 *        "android": {

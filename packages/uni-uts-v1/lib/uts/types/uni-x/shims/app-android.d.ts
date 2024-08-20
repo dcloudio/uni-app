@@ -10,6 +10,7 @@ declare global {
 
   type CreateVueComponent = any
 
+  function numberEquals(a: any, b: any): boolean
   function utsMapOf(obj?: any): any
   function padStyleMapOf(style: any): any
 
@@ -172,7 +173,6 @@ declare global {
   > {
     constructor(name: name, fileName: fileName, line: line, column: column)
   }
-
   namespace uts {
     namespace sdk {
       namespace modules {}
