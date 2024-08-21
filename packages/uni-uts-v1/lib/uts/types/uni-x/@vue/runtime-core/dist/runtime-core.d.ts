@@ -624,8 +624,10 @@ export type ComponentOptionsWithArrayProps<PropNames extends string = string, Ra
 export type ComponentOptionsWithObjectProps<PropsOptions = ComponentObjectPropsOptions, RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = EmitsOptions, EE extends string = string, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, Props = Prettify<Readonly<ExtractPropTypes<PropsOptions> & EmitsToProps<E>>>, Defaults = ExtractDefaultPropTypes<PropsOptions>> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, EE, Defaults, I, II, S> & {
     props: PropsOptions & ThisType<void>;
 } & ThisType<CreateComponentPublicInstance<Props, RawBindings, D, C, M, Mixin, Extends, E, Props, Defaults, false, I, S>>;
-export type ComponentOptions<Props = {}, RawBindings = any, D = any, C extends ComputedOptions = any, M extends MethodOptions = any, Mixin extends ComponentOptionsMixin = any, Extends extends ComponentOptionsMixin = any, E extends EmitsOptions = any, S extends SlotsType = any> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, string, S> & ThisType<CreateComponentPublicInstance<{}, RawBindings, D, C, M, Mixin, Extends, E, Readonly<Props>>>;
-export type ComponentOptionsMixin = ComponentOptionsBase<any, any, any, any, any, any, any, any, any, any, any>;
+export type ComponentOptions<Props = {}, RawBindings = any, D = any, C extends ComputedOptions = any, M extends MethodOptions = any, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, // any, fixed by xxxxxx
+Extends extends ComponentOptionsMixin = any, E extends EmitsOptions = any, S extends SlotsType = any> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, string, S> & ThisType<CreateComponentPublicInstance<{}, RawBindings, D, C, M, Mixin, Extends, E, Readonly<Props>>>;
+export type ComponentOptionsMixin = ComponentOptionsBase<any, any, any, any, any, ComponentOptionsMixin, // fixed by xxxxxx
+any, any, any, any, any>;
 export type ComputedOptions = Record<string, ComputedGetter<any> | WritableComputedOptions<any>>;
 export interface MethodOptions {
     [key: string]: Function;
@@ -650,9 +652,9 @@ type ObjectInjectOptions = Record<string | symbol, string | symbol | {
     default?: unknown;
 }>;
 type InjectToObject<T extends ComponentInjectOptions> = T extends string[] ? {
-    [K in T[number]]?: unknown;
+    [K in T[number]]?: any;
 } : T extends ObjectInjectOptions ? {
-    [K in keyof T]?: unknown;
+    [K in keyof T]?: any;
 } : never;
 interface LegacyOptions<Props, D, C extends ComputedOptions, M extends MethodOptions, Mixin extends ComponentOptionsMixin, Extends extends ComponentOptionsMixin, I extends ComponentInjectOptions, II extends string> {
     compatConfig?: CompatConfig;
@@ -664,7 +666,7 @@ interface LegacyOptions<Props, D, C extends ComputedOptions, M extends MethodOpt
     provide?: ComponentProvideOptions;
     inject?: I | II[];
     filters?: Record<string, Function>;
-    mixins?: Mixin[];
+    mixins?: ((Mixin | ComponentOptionsMixin) & ThisType<any>)[];
     extends?: Extends;
     beforeCreate?(): void;
     created?(): void;

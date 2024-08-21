@@ -27,14 +27,16 @@ declare global {
 
 declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
+    [key: string]: any
     $exposed: Record<string, any | null>
     $callMethod(method: string, ...args: Array<any | null>): any | null
   }
   interface ComponentCustomOptions {
     onShow?(options: OnShowOptions): void
   }
+  type AppMixin = { mixins?: AppMixin[] }
   interface App<HostElement = any> {
-    mixin(mixin: unknown): void
+    mixin(mixin: AppMixin): this
   }
 }
 
