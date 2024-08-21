@@ -584,6 +584,7 @@ interface EncryptPackageJson {
   id: string
   version: string
   uni_modules: {
+    dependencies: string[]
     artifacts: {
       env: {
         compilerVersion: string
@@ -706,7 +707,7 @@ export function resolveEncryptUniModule(
   platform: typeof process.env.UNI_UTS_PLATFORM,
   isX: boolean = true
 ) {
-  const parts = id.split('/')
+  const parts = id.split('?', 2)[0].split('/')
   const index = findLastIndex(parts, (part) => part === 'uni_modules')
   if (index !== -1) {
     const uniModuleId = parts[index + 1]
