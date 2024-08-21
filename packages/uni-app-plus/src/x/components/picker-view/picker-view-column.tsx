@@ -3,6 +3,7 @@ import {
   type StyleValue,
   computed,
   getCurrentInstance,
+  inject,
   nextTick,
   onMounted,
   onUnmounted,
@@ -15,6 +16,8 @@ import { parseStringStyle } from '@vue/shared'
 import { $dispatch, $dispatchParent } from '../../utils'
 import { _style_picker_column as _style } from './style'
 import { UniPickerViewColumnElement } from './model'
+// extractPropTypes
+// import type { } from '../picker-view/picker-view'
 
 export default /*#__PURE__*/ defineBuiltInComponent({
   name: 'PickerViewColumn',
@@ -31,15 +34,17 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const scrollViewRef = ref<UniScrollViewElement>()
     const contentRef = ref<UniElement>()
 
+    const pickerViewProps = inject('pickerViewProps') as any
+
     // data
     const data = reactive({
       height: 0,
       indicatorHeight: 0,
       current: 0,
       scrollToElementTime: 0,
-      maskTopStyle: '',
-      maskBottomStyle: '',
-      indicatorStyle: '',
+      maskTopStyle: pickerViewProps.maskTopStyle ?? '',
+      maskBottomStyle: pickerViewProps.maskBottomStyle ?? '',
+      // indicatorStyle: pickerViewProps.indicatorStyle ?? '',
       contentStyle: '',
       _isMounted: false,
     })
@@ -70,11 +75,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       ) as StyleValue
     })
     const indicatorStyle = computed(() => {
-      return Object.assign(
+      const val = Object.assign(
         {},
         _style['uni-picker-view-indicator'][''],
-        parseStringStyle(data.indicatorStyle)
+        parseStringStyle(pickerViewProps.indicatorStyle),
+        parseStringStyle(indicatorStyleTop)
       ) as StyleValue
+      return val
     })
 
     const styleUniPickerViewColumn = computed(() => {
@@ -93,6 +100,8 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return Object.assign({}, _style['uni-picker-view-mask']['']) as StyleValue
     })
 
+    let indicatorStyleTop = ''
+
     const init = () => {
       data.height = pickerColumnRef.value!.offsetHeight
       data.indicatorHeight = indicator.value!.offsetHeight
@@ -101,7 +110,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const maskPosition = `${data.height - padding}px`
       data.maskTopStyle += `;bottom:${maskPosition}`
       data.maskBottomStyle += `;top:${maskPosition}`
-      data.indicatorStyle += `;top:${padding}px`
+      // data.indicatorStyle += `;top:${padding}px`
+
+      indicatorStyleTop = `;top:${padding}px`
+
       data.contentStyle = `padding-top:${padding}px;padding-bottom:${padding}px`
 
       nextTick(() => {
@@ -137,9 +149,9 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         instance?.parent?.type.name === 'PickerView' ? instance?.parent : null
       if ($parent !== null) {
         // $parent.props
-        data.indicatorStyle = $parent.props['indicatorStyle'] as string
-        data.maskTopStyle = $parent.props['maskTopStyle'] as string
-        data.maskBottomStyle = $parent.props['maskBottomStyle'] as string
+        // data.indicatorStyle = $parent.props['indicatorStyle'] as string
+        // data.maskTopStyle = $parent.props['maskTopStyle'] as string
+        // data.maskBottomStyle = $parent.props['maskBottomStyle'] as string
 
         $dispatchParent(
           instance?.proxy,
