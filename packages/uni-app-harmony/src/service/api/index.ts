@@ -40,5 +40,7 @@ export {
   createMediaQueryObserver,
   getLaunchOptionsSync,
   getEnterOptionsSync,
+  base64ToArrayBuffer,
+  arrayBufferToBase64,
 } from '@dcloudio/uni-api'
 export { pageScrollTo } from '@dcloudio/uni-app-plus/service/api'

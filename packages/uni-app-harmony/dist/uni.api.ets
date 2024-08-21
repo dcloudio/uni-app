@@ -1,7 +1,6 @@
 import Want from '@ohos.app.ability.Want';
 import common from '@ohos.app.ability.common';
 import wantConstant from '@ohos.app.ability.wantConstant';
-import buffer from '@ohos.buffer';
 import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
@@ -44,7 +43,7 @@ import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, defineSyncApi, ApiError, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
+import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
 import abilityAccessCtrl1 from '@ohos.abilityAccessCtrl';
@@ -53,7 +52,6 @@ import { audio as audio1 } from '@kit.AudioKit';
 import { audio } from '@kit.AudioKit';
 import { avSession } from '@kit.AVSessionKit';
 import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
-import buffer1 from '@ohos.buffer';
 import { bundleManager } from '@kit.AbilityKit';
 import bundleManager1 from '@ohos.bundle.bundleManager';
 import bundleManager2 from '@ohos.bundle.bundleManager';
@@ -187,7 +185,6 @@ class AddPhoneContactOptions extends UTSObject {
     fail: AddPhoneContactFailCallback | null = null;
     complete: AddPhoneContactCompleteCallback | null = null;
 }
-type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
 type StartSoterAuthentication = (options: StartSoterAuthenticationOptions) => void;
 type SoterAuthMode = 'fingerPrint' | 'facial' | 'speech';
 class StartSoterAuthenticationSuccess extends UTSObject {
@@ -248,7 +245,6 @@ class CheckIsSoterEnrolledInDeviceOptions extends UTSObject {
     fail: CheckIsSoterEnrolledInDeviceFailCallback | null = null;
     complete: CheckIsSoterEnrolledInDeviceCompleteCallback | null = null;
 }
-type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
 export class SetClipboardDataSuccess extends UTSObject {
 }
@@ -1648,11 +1644,9 @@ interface IUniWebsocketEmitter {
 }
 interface UniExtApi {
     addPhoneContact: AddPhoneContact;
-    arrayBufferToBase64: ArrayBufferToBase64;
     startSoterAuthentication: StartSoterAuthentication;
     checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
     checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice;
-    base64ToArrayBuffer: Base64ToArrayBuffer;
     getClipboardData: GetClipboardData;
     setClipboardData: SetClipboardData;
     createInnerAudioContext: CreateInnerAudioContext;
@@ -2044,19 +2038,6 @@ export function initUniExtApi(APP_ID: string) {
             }
         }, ()=>executor.reject('Permission denied'));
     }, AddPhoneContactApiProtocol, AddPhoneContactApiOptions) as AddPhoneContact;
-    const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
-    const ArrayBufferToBase64Protocol = new Map<string, ProtocolOptions>([
-        [
-            'arrayBuffer',
-            {
-                type: 'arrayBuffer',
-                required: true
-            }
-        ]
-    ]);
-    const arrayBufferToBase64: ArrayBufferToBase64 = defineSyncApi<string>(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer: ArrayBuffer): string =>{
-        return buffer.from(arrayBuffer).toString('base64');
-    }, ArrayBufferToBase64Protocol) as ArrayBufferToBase64;
     const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication';
     const StartSoterAuthenticationApiOptions: ApiOptions<StartSoterAuthenticationOptions> = {
         formatArgs: new Map<string, ((value: string) => string | undefined)>([
@@ -2330,19 +2311,6 @@ export function initUniExtApi(APP_ID: string) {
             executor.reject(getErrorMessage(201));
         });
     }, CheckIsSoterEnrolledInDeviceProtocols, CheckIsSoterEnrolledInDeviceApiOptions) as CheckIsSoterEnrolledInDevice;
-    const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer';
-    const Base64ToArrayBufferProtocol = new Map<string, ProtocolOptions>([
-        [
-            'base64',
-            {
-                type: 'string',
-                required: true
-            }
-        ]
-    ]);
-    const base64ToArrayBuffer: Base64ToArrayBuffer = defineSyncApi<ArrayBuffer>(API_BASE64_TO_ARRAY_BUFFER, (base64: string): ArrayBuffer =>{
-        return buffer1.from(base64, 'base64').buffer;
-    }, Base64ToArrayBufferProtocol) as Base64ToArrayBuffer;
     const API_GET_CLIPBOARD_DATA = 'getClipboardData';
     const API_SET_CLIPBOARD_DATA = 'setClipboardData';
     const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
@@ -7496,11 +7464,9 @@ export function initUniExtApi(APP_ID: string) {
     }) as CloseSocket;
     return {
         addPhoneContact,
-        arrayBufferToBase64,
         startSoterAuthentication,
         checkIsSupportSoterAuthentication,
         checkIsSoterEnrolledInDevice,
-        base64ToArrayBuffer,
         getClipboardData,
         setClipboardData,
         createInnerAudioContext,

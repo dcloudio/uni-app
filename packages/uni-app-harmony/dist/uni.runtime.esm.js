@@ -1,5 +1,81 @@
 import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
+/*
+ * base64-arraybuffer
+ * https://github.com/niklasvh/base64-arraybuffer
+ *
+ * Copyright (c) 2012 Niklas von Hertzen
+ * Licensed under the MIT license.
+ */
+
+
+var chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+
+// Use a lookup table to find the index.
+var lookup = /*#__PURE__*/ (function () {
+  const lookup = new Uint8Array(256);
+  for (var i = 0; i < chars.length; i++) {
+    lookup[chars.charCodeAt(i)] = i;
+  }
+  return lookup
+})();
+
+function encode$2(arraybuffer) {
+  var bytes = new Uint8Array(arraybuffer),
+    i,
+    len = bytes.length,
+    base64 = '';
+
+  for (i = 0; i < len; i += 3) {
+    base64 += chars[bytes[i] >> 2];
+    base64 += chars[((bytes[i] & 3) << 4) | (bytes[i + 1] >> 4)];
+    base64 += chars[((bytes[i + 1] & 15) << 2) | (bytes[i + 2] >> 6)];
+    base64 += chars[bytes[i + 2] & 63];
+  }
+
+  if (len % 3 === 2) {
+    base64 = base64.substring(0, base64.length - 1) + '=';
+  } else if (len % 3 === 1) {
+    base64 = base64.substring(0, base64.length - 2) + '==';
+  }
+
+  return base64
+}
+
+function decode$1(base64) {
+  var bufferLength = base64.length * 0.75,
+    len = base64.length,
+    i,
+    p = 0,
+    encoded1,
+    encoded2,
+    encoded3,
+    encoded4;
+
+  if (base64[base64.length - 1] === '=') {
+    bufferLength--;
+    if (base64[base64.length - 2] === '=') {
+      bufferLength--;
+    }
+  }
+
+  var arraybuffer = new ArrayBuffer(bufferLength),
+    bytes = new Uint8Array(arraybuffer);
+
+  for (i = 0; i < len; i += 4) {
+    encoded1 = lookup[base64.charCodeAt(i)];
+    encoded2 = lookup[base64.charCodeAt(i + 1)];
+    encoded3 = lookup[base64.charCodeAt(i + 2)];
+    encoded4 = lookup[base64.charCodeAt(i + 3)];
+
+    bytes[p++] = (encoded1 << 2) | (encoded2 >> 4);
+    bytes[p++] = ((encoded2 & 15) << 4) | (encoded3 >> 2);
+    bytes[p++] = ((encoded3 & 3) << 6) | (encoded4 & 63);
+  }
+
+  return arraybuffer
+}
+
 /**
 * @vue/shared v3.4.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
@@ -568,6 +644,30 @@ function defineSyncApi(name, fn, protocol, options) {
 function defineAsyncApi(name, fn, protocol, options) {
     return promisify(name, wrapperAsyncApi(name, fn, ('production' !== 'production') ? protocol : undefined, options));
 }
+
+const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer';
+const Base64ToArrayBufferProtocol = [
+    {
+        name: 'base64',
+        type: String,
+        required: true,
+    },
+];
+const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
+const ArrayBufferToBase64Protocol = [
+    {
+        name: 'arrayBuffer',
+        type: [ArrayBuffer, Uint8Array],
+        required: true,
+    },
+];
+
+const base64ToArrayBuffer = defineSyncApi(API_BASE64_TO_ARRAY_BUFFER, (base64) => {
+    return decode$1(base64);
+}, Base64ToArrayBufferProtocol);
+const arrayBufferToBase64 = defineSyncApi(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer) => {
+    return encode$2(arrayBuffer);
+}, ArrayBufferToBase64Protocol);
 
 /**
  * 简易版systemInfo，主要为upx2px,i18n服务
@@ -13455,6 +13555,8 @@ const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) =
 var uni$1 = {
   __proto__: null,
   addInterceptor: addInterceptor,
+  arrayBufferToBase64: arrayBufferToBase64,
+  base64ToArrayBuffer: base64ToArrayBuffer,
   canIUse: canIUse,
   canvasGetImageData: canvasGetImageData,
   canvasPutImageData: canvasPutImageData,
