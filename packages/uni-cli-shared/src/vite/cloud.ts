@@ -203,6 +203,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
           transform: {
             uvueClassNamePrefix: 'Gen',
             autoImports,
+            uvueGenDefaultAs: '__sfc__',
           },
         })
         if (result) {
@@ -360,6 +361,7 @@ function genUniModulesPackageJson(
       id: pkg.id,
       version: pkg.version,
       uni_modules: {
+        dependencies: pkg.uni_modules?.dependencies || [],
         artifacts,
       },
     },
