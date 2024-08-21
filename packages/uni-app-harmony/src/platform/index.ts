@@ -11,3 +11,7 @@ export {
   addMediaQueryObserver,
   removeMediaQueryObserver,
 } from '@dcloudio/uni-app-plus/service/api/ui/mediaQueryObserver'
+export {
+  getLaunchOptions,
+  getEnterOptions,
+} from '@dcloudio/uni-app-plus/service/framework/app/utils'

@@ -9131,10 +9131,16 @@ function backbuttonListener() {
         success() { }, // 传入空方法，避免返回Promise，因为onBackPress可能导致fail
     });
 }
-const enterOptions$1 = /*#__PURE__*/ createLaunchOptions();
-const launchOptions$1 = /*#__PURE__*/ createLaunchOptions();
+const enterOptions = /*#__PURE__*/ createLaunchOptions();
+const launchOptions = /*#__PURE__*/ createLaunchOptions();
+function getLaunchOptions() {
+    return extend({}, launchOptions);
+}
+function getEnterOptions() {
+    return extend({}, enterOptions);
+}
 function initLaunchOptions({ path, query, referrerInfo, }) {
-    extend(launchOptions$1, {
+    extend(launchOptions, {
         path,
         query: query ? parseQuery(query) : {},
         referrerInfo: referrerInfo || {},
@@ -9142,21 +9148,11 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         channel: plus.runtime.channel,
         launcher: plus.runtime.launcher,
     });
-    extend(enterOptions$1, launchOptions$1);
-    return enterOptions$1;
+    extend(enterOptions, launchOptions);
+    return enterOptions;
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
-const enterOptions = /*#__PURE__*/ createLaunchOptions();
-const launchOptions = /*#__PURE__*/ createLaunchOptions();
-function getLaunchOptions() {
-    // TODO: Implement
-    return extend({}, launchOptions);
-}
-function getEnterOptions() {
-    // TODO: Implement
-    return extend({}, enterOptions);
-}
 
 function operateVideoPlayer(videoId, pageId, type, data) {
     UniServiceJSBridge.invokeViewMethod('video.' + videoId, {
