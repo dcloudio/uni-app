@@ -45,7 +45,7 @@ export function fixBorderStyle(tabBarConfig: Map<string, any>) {
   }
 
   // 同时存在 borderColor>borderStyle，前者没有颜色限制，也不做格式化
-  if (isBorderStyleFilled && isBorderColorFilled) {
+  if (isBorderColorFilled) {
     borderStyle = borderColor
   }
 

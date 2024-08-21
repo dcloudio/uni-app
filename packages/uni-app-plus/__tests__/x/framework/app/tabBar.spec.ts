@@ -1,9 +1,5 @@
 import { fixBorderStyle } from '../../../../src/x/framework/app/tabBar'
 
-console.log(fixBorderStyle)
-
-// fixBorderStyle
-
 describe('test tabBar', () => {
   it('test fixBorderStyle', () => {
     expect(fixBorderStyle).toBeDefined()
@@ -35,5 +31,12 @@ describe('test tabBar', () => {
     ])
     fixBorderStyle(tabBarConfig4)
     expect(tabBarConfig4.get('borderStyle')).toBe('blue')
+
+    const tabBarConfig5 = new Map([
+      ['borderStyle', 'red'],
+      ['borderColor', undefined],
+    ])
+    fixBorderStyle(tabBarConfig5)
+    expect(tabBarConfig5.get('borderStyle')).toBe('rgba(0, 0, 0, 0.33)')
   })
 })
