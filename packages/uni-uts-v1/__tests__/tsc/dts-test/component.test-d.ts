@@ -251,7 +251,7 @@ describe('object props', () => {
     const instance = new MyComponent()
     expectType<number>(instance.setupA)
     expectType<number | undefined>(instance.setupD)
-    // @ts-expect-error
+    //// @ts-expect-error fixed by xxxxxx 已经补充了未知属性为any，主要是解决mixin引发的问题
     instance.notExist
   })
 
@@ -425,7 +425,7 @@ describe('no props', () => {
     // instance
     const instance = new MyComponent()
     expectType<number>(instance.setupA)
-    // @ts-expect-error
+    //// @ts-expect-error fixed by xxxxxx 已经补充了未知属性为any，主要是解决mixin引发的问题
     instance.notExist
   })
 
