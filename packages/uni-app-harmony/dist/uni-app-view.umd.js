@@ -25979,6 +25979,11 @@
       super(id2, "uni-cover-view", CoverView, parentNodeId, refNodeId, nodeJson);
     }
   }
+  class UniLivePlayer extends UniComponent {
+    constructor(id2, parentNodeId, refNodeId, nodeJson) {
+      super(id2, "uni-live-player", Video, parentNodeId, refNodeId, nodeJson);
+    }
+  }
   var BuiltInComponents = {
     "#text": UniTextNode,
     "#comment": UniComment,
@@ -26016,7 +26021,8 @@
     "LOCATION-PICKER": UniLocationPicker,
     "LOCATION-VIEW": UniLocationView,
     "COVER-IMAGE": UniCoverImage,
-    "COVER-VIEW": UniCoverView
+    "COVER-VIEW": UniCoverView,
+    "LIVE-PLAYER": UniLivePlayer
   };
   function createElement(id2, tag, parentNodeId, refNodeId) {
     var nodeJson = arguments.length > 4 && arguments[4] !== void 0 ? arguments[4] : {};
