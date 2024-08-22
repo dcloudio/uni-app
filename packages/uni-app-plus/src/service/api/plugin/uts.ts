@@ -285,24 +285,24 @@ function getProxy(): {
           return nativeChannel.invokeSync('APP-SERVICE', args, callback)
         },
         invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
-          if (
-            // 硬编码
-            args.moduleName === 'uni-ad' &&
-            ['showByJs', 'loadByJs'].includes(args.name)
-          ) {
-            // @ts-expect-error
-            const res: InvokeSyncRes = nativeChannel.invokeSync(
-              'APP-SERVICE',
-              args,
-              callback
-            )
-            callback(
-              extend(res, {
-                params: [res.params],
-              })
-            )
-            return res
-          }
+          // if (
+          //   // 硬编码
+          //   args.moduleName === 'uni-ad' &&
+          //   ['showByJs', 'loadByJs'].includes(args.name)
+          // ) {
+          //   // @ts-expect-error
+          //   const res: InvokeSyncRes = nativeChannel.invokeSync(
+          //     'APP-SERVICE',
+          //     args,
+          //     callback
+          //   )
+          //   callback(
+          //     extend(res, {
+          //       params: [res.params],
+          //     })
+          //   )
+          //   return res
+          // }
           // @ts-expect-error
           return nativeChannel.invokeAsync('APP-SERVICE', args, callback)
         },
