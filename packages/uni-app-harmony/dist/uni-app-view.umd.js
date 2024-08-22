@@ -11790,7 +11790,8 @@
     if (isSystemURL(filepath)) {
       return "file:/" + normalizeLocalPath(filepath);
     }
-    var wwwPath = normalizeLocalPath("_www").replace(/.+?\/apps\//, "resource://rawfile/apps/");
+    var href = location.href;
+    var wwwPath = href.substring(0, href.lastIndexOf("/"));
     if (filepath.indexOf("/") === 0) {
       if (filepath.startsWith("/data/storage/")) {
         return "file://" + filepath;
