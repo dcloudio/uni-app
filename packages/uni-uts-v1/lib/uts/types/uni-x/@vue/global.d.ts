@@ -125,6 +125,7 @@ import {
   Directive as DirectiveOrigin,
   DirectiveBinding as DirectiveBindingOrigin,
   EffectScope as EffectScopeOrigin,
+  WritableComputedOptions as WritableComputedOptionsOrigin,
 } from '@vue/runtime-core'
 
 // # 其他
@@ -289,6 +290,7 @@ declare global {
   type Directive<T = any, V = any> = DirectiveOrigin<T, V>
   type DirectiveBinding<V = any> = DirectiveBindingOrigin<V>
   type EffectScope = EffectScopeOrigin
+  type WritableComputedOptions<T> = WritableComputedOptionsOrigin<T>
 
   // # 其他
   // ## core/runtimeHelpers
