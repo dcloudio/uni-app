@@ -624,7 +624,7 @@ export type ComponentOptionsWithArrayProps<PropNames extends string = string, Ra
 export type ComponentOptionsWithObjectProps<PropsOptions = ComponentObjectPropsOptions, RawBindings = {}, D = {}, C extends ComputedOptions = {}, M extends MethodOptions = {}, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, Extends extends ComponentOptionsMixin = ComponentOptionsMixin, E extends EmitsOptions = EmitsOptions, EE extends string = string, I extends ComponentInjectOptions = {}, II extends string = string, S extends SlotsType = {}, Props = Prettify<Readonly<ExtractPropTypes<PropsOptions> & EmitsToProps<E>>>, Defaults = ExtractDefaultPropTypes<PropsOptions>> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, EE, Defaults, I, II, S> & {
     props: PropsOptions & ThisType<void>;
 } & ThisType<CreateComponentPublicInstance<Props, RawBindings, D, C, M, Mixin, Extends, E, Props, Defaults, false, I, S>>;
-export type ComponentOptions<Props = {}, RawBindings = any, D = any, C extends ComputedOptions = any, M extends MethodOptions = any, Mixin extends ComponentOptionsMixin = ComponentOptionsMixin, // any, fixed by xxxxxx
+export type ComponentOptions<Props = {}, RawBindings = any, D = any, C extends ComputedOptions = any, M extends MethodOptions = any, Mixin extends ComponentOptionsMixin = any, // any, fixed by xxxxxx
 Extends extends ComponentOptionsMixin = any, E extends EmitsOptions = any, S extends SlotsType = any> = ComponentOptionsBase<Props, RawBindings, D, C, M, Mixin, Extends, E, string, S> & ThisType<CreateComponentPublicInstance<{}, RawBindings, D, C, M, Mixin, Extends, E, Readonly<Props>>>;
 export type ComponentOptionsMixin = ComponentOptionsBase<any, any, any, any, any, ComponentOptionsMixin, // fixed by xxxxxx
 any, any, any, any, any>;
@@ -666,7 +666,7 @@ interface LegacyOptions<Props, D, C extends ComputedOptions, M extends MethodOpt
     provide?: ComponentProvideOptions;
     inject?: I | II[];
     filters?: Record<string, Function>;
-    mixins?: ((Mixin | ComponentOptionsMixin) & ThisType<any>)[];
+    mixins?: Mixin[];
     extends?: Extends;
     beforeCreate?(): void;
     created?(): void;
