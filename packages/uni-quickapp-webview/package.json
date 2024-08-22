@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-quickapp-webview",
-  "version": "3.0.0-alpha-4020620240820001",
+  "version": "3.0.0-alpha-4020620240822001",
   "description": "uni-app quickapp-webview",
   "main": "dist/index.js",
   "files": [
@@ -25,13 +25,13 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-4020620240820001"
+    "@dcloudio/uni-mp-compiler": "3.0.0-alpha-4020620240822001"
   },
   "dependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020620240820001",
-    "@dcloudio/uni-mp-vite": "3.0.0-alpha-4020620240820001",
-    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4020620240820001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4020620240820001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020620240822001",
+    "@dcloudio/uni-mp-vite": "3.0.0-alpha-4020620240822001",
+    "@dcloudio/uni-mp-vue": "3.0.0-alpha-4020620240822001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4020620240822001",
     "@vue/shared": "3.4.21"
   }
 }
