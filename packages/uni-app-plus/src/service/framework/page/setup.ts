@@ -26,15 +26,18 @@ export function setupPage(component: VuePageComponent) {
       console.log(formatLog(__pagePath as string, 'setup'))
     }
     const instance = getCurrentInstance()!
+    instance.$dialogPages = []
     const pageVm = instance.proxy!
     initPageVm(pageVm, __pageInstance as Page.PageInstance['$page'])
-    addCurrentPage(
-      initScope(
-        __pageId as number,
-        pageVm,
-        __pageInstance as Page.PageInstance['$page']
+    if (pageVm.$page.openType !== 'openDialogPage') {
+      addCurrentPage(
+        initScope(
+          __pageId as number,
+          pageVm,
+          __pageInstance as Page.PageInstance['$page']
+        )
       )
-    )
+    }
     if (!__X__) {
       onMounted(() => {
         nextTick(() => {
@@ -81,6 +84,16 @@ export function initScope(
     Object.defineProperty(vm, '$setPageStyle', {
       get() {
         return vm.$nativePage!.setPageStyle.bind(vm.$nativePage!)
+      },
+    })
+    Object.defineProperty(vm, '$getDialogPages', {
+      get() {
+        return () => vm.$.$dialogPages
+      },
+    })
+    Object.defineProperty(vm, '$getParentPage', {
+      get() {
+        return () => null
       },
     })
   }

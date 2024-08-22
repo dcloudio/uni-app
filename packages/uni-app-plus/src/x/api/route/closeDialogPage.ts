@@ -1,11 +1,8 @@
-import {
-  type UniDialogPage,
-  decrementEscBackPageNum,
-} from '../../../framework/setup/page'
-import { getPageInstanceByVm } from '../../../framework/setup/utils'
-import type { ComponentPublicInstance } from 'vue'
+import { ON_SHOW } from '@dcloudio/uni-shared'
 import { invokeHook } from '@dcloudio/uni-core'
-import { ON_SHOW, ON_UNLOAD } from '@dcloudio/uni-shared'
+import { DialogPage, type UniDialogPage } from '../../framework/page/dialogPage'
+import { closeNativeDialogPage } from './utils'
+
 /**
  *
  * 文档: []()
@@ -63,39 +60,40 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
     triggerFailCallback(options, 'currentPage is null')
     return
   }
+  // @ts-expect-error
+  if (options?.animationType === 'pop-out') {
+    options.animationType = 'none'
+  }
 
   if (options?.dialogPage) {
     const dialogPage = options?.dialogPage!
-    const parentPage = dialogPage.$getParentPage?.()
+    if (!(dialogPage instanceof DialogPage)) {
+      triggerFailCallback(options, 'dialogPage is not a valid page')
+      return
+    }
+    const parentPage = dialogPage.$getParentPage!()
     if (parentPage && currentPages.indexOf(parentPage) !== -1) {
       const parentDialogPages = parentPage.$getDialogPages()
       const index = parentDialogPages.indexOf(dialogPage)
       parentDialogPages.splice(index, 1)
-      invokeHook(dialogPage.$vm!, ON_UNLOAD)
+      closeNativeDialogPage(dialogPage, options?.animationType || 'none')
       if (index > 0 && index === parentDialogPages.length) {
         invokeHook(
           parentDialogPages[parentDialogPages.length - 1].$vm!,
           ON_SHOW
         )
       }
-      if (!dialogPage.$disableEscBack) {
-        decrementEscBackPageNum()
-      }
     } else {
       triggerFailCallback(options, 'dialogPage is not a valid page')
       return
     }
   } else {
-    const dialogPages = getPageInstanceByVm(
-      currentPage as ComponentPublicInstance
-    )!.$dialogPages.value as UniDialogPage[]
+    // @ts-expect-error
+    const dialogPages = currentPage.$getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
-      invokeHook(dialogPages[i].$vm!, ON_UNLOAD)
+      closeNativeDialogPage(dialogPages[i], options?.animationType || 'none')
       if (i > 0) {
         invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
-      }
-      if (!dialogPages[i].$disableEscBack) {
-        decrementEscBackPageNum()
       }
     }
     dialogPages.length = 0
@@ -111,9 +109,9 @@ function triggerFailCallback(
   errMsg: string
 ) {
   const failOptions = new UniError(
-    'uni-closeDialogPage',
+    'uni-openDialogPage',
     4,
-    `closeDialogPage: fail, ${errMsg}`
+    `openDialogPage: fail, ${errMsg}`
   )
   options?.fail?.(failOptions)
   options?.complete?.(failOptions)

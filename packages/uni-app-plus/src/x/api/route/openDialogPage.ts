@@ -1,14 +1,13 @@
-import { createNormalizeUrl } from '@dcloudio/uni-api'
+import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
+import { getCurrentPage, getRouteMeta } from '@dcloudio/uni-core'
 
-import {
-  DialogPage,
-  type UniDialogPage,
-  homeDialogPages,
-  incrementEscBackPageNum,
-} from '../../../framework/setup/page'
-import { EventChannel } from '@dcloudio/uni-shared'
-import { getPageInstanceByVm } from '../../../framework/setup/utils'
+import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
+import { showWebview } from './webview'
 import type { ComponentPublicInstance } from 'vue'
+import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
+import { DialogPage, homeDialogPages } from '../../framework/page/dialogPage'
+import { registerDialogPage } from '../../framework/page/register'
+import { getWebviewId } from '../../../service/framework/webview/utils'
 
 /**
  *
@@ -74,9 +73,8 @@ interface OpenDialogPageOptions {
   complete?: (result: OpenDialogPageComplete) => void
 }
 
-export const openDialogPage = (
-  options: OpenDialogPageOptions
-): UniDialogPage | null => {
+export const openDialogPage = (options: OpenDialogPageOptions) => {
+  const { url, events, animationType, disableSwipeBack } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
     return null
@@ -95,14 +93,8 @@ export const openDialogPage = (
     triggerFailCallback(options, `page '${options.url}' is not found`)
     return null
   }
-  const dialogPage = new DialogPage({
-    route: options.url,
-    component: targetRoute!.component,
-    $getParentPage: () => null,
-    $disableEscBack: options.disableEscBack,
-  })
 
-  let parentPage = options.parentPage
+  let parentPage = options.parentPage || null
   const currentPages = getCurrentPages()
   if (parentPage) {
     if (currentPages.indexOf(parentPage) === -1) {
@@ -110,27 +102,47 @@ export const openDialogPage = (
       return null
     }
   }
-  if (!currentPages.length) {
+  if (currentPages.length && !parentPage) {
+    parentPage = currentPages[
+      currentPages.length - 1
+    ] as ComponentPublicInstance
+  }
+  const dialogPage = new DialogPage({
+    route: url,
+    $getParentPage: () => parentPage,
+    component: null,
+  })
+
+  if (!parentPage) {
     homeDialogPages.push(dialogPage)
   } else {
-    if (!parentPage) {
-      parentPage = currentPages[
-        currentPages.length - 1
-      ] as ComponentPublicInstance
-    }
-    dialogPage.$getParentPage = () => parentPage as ComponentPublicInstance
-    getPageInstanceByVm(
-      parentPage as ComponentPublicInstance
-    )!.$dialogPages.value.push(dialogPage)
+    parentPage!.$.$dialogPages.push(dialogPage)
   }
 
-  if (!options.disableEscBack) {
-    incrementEscBackPageNum()
+  const { path, query } = parseUrl(url)
+  const [aniType, aniDuration] = initAnimation(path, animationType)
+
+  const noAnimation = aniType === 'none' || aniDuration === 0
+  function callback(page: IPage) {
+    showWebview(page, aniType, aniDuration, () => {
+      beforeRoute()
+    })
+  }
+  // 有动画时先执行 show
+  const page = registerDialogPage(
+    { url, path, query, openType: 'openDialogPage', disableSwipeBack },
+    dialogPage,
+    noAnimation ? undefined : callback,
+    // 有动画时延迟创建 vm
+    noAnimation ? 0 : 1
+  )
+  if (noAnimation) {
+    callback(page)
   }
 
   const successOptions = {
     errMsg: 'openDialogPage: ok',
-    eventChannel: new EventChannel(0, options.events),
+    eventChannel: new EventChannel(getWebviewId() + 1, events),
   }
   options.success?.(successOptions)
   options.complete?.(successOptions)
@@ -146,4 +158,22 @@ function triggerFailCallback(options: OpenDialogPageOptions, errMsg: string) {
   )
   options.fail?.(failOptions)
   options.complete?.(failOptions)
+}
+
+function initAnimation(path: string, animationType?: string) {
+  // 首页去除动画
+  if (!getCurrentPage()) {
+    return ['none', 0] as const
+  }
+  const { globalStyle } = __uniConfig
+  const meta = getRouteMeta(path)!
+  let _animationType =
+    animationType || meta.animationType || globalStyle.animationType || ANI_SHOW
+  if (_animationType == 'pop-in') {
+    _animationType = 'none'
+  }
+  return [
+    _animationType,
+    meta.animationDuration || globalStyle.animationDuration || ANI_DURATION,
+  ] as const
 }

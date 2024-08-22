@@ -122,7 +122,7 @@ function createAnimationProtocol(animationTypes: string[]) {
 
 let navigatorLock: string
 
-function beforeRoute() {
+export function beforeRoute() {
   navigatorLock = ''
 }
 

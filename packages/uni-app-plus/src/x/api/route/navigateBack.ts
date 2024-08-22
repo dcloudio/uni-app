@@ -15,6 +15,7 @@ import type { IPage } from '@dcloudio/uni-app-x/types/native'
 import { getNativeApp } from '../../framework/app/app'
 import { setStatusBarStyle } from '../../statusBar'
 import { isDirectPage, reLaunchEntryPage } from './direct'
+import { closeNativeDialogPage } from './utils'
 
 export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
   API_NAVIGATE_BACK,
@@ -25,12 +26,28 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
     }
     if (
       // popGesture 时不触发 onBackPress 事件，避免引发半屏弹窗这种冲突情况
-      (args as any).from !== 'popGesture' &&
-      invokeHook(page as ComponentPublicInstance, ON_BACK_PRESS, {
-        from: (args as any).from || 'navigateBack',
-      })
+      (args as any).from !== 'popGesture'
     ) {
-      return reject('cancel')
+      let onBackPressRes = invokeHook(
+        page as ComponentPublicInstance,
+        ON_BACK_PRESS,
+        {
+          from: (args as any).from || 'navigateBack',
+        }
+      )
+      if (onBackPressRes !== true) {
+        // @ts-expect-error
+        const dialogPages = page.$getDialogPages()
+        if (dialogPages.length > 0) {
+          const dialogPage = dialogPages[dialogPages.length - 1]
+          onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {
+            from: (args as any).from || 'navigateBack',
+          })
+        }
+      }
+      if (onBackPressRes === true) {
+        return reject('cancel')
+      }
     }
     // TODO ext api
     try {
@@ -72,6 +89,12 @@ function back(
       .slice(len - delta, len - 1)
       .reverse()
       .forEach((deltaPage) => {
+        // @ts-expect-error
+        const dialogPages = deltaPage.$getDialogPages()
+        for (let i = dialogPages.length - 1; i >= 0; i--) {
+          const dialogPage = dialogPages[i]
+          closeNativeDialogPage(dialogPage, 'none')
+        }
         closeWebview(
           getNativeApp().pageManager.findPageById(deltaPage.$page.id + '')!,
           'none',
@@ -105,6 +128,15 @@ function back(
   const webview = getNativeApp().pageManager.findPageById(
     currentPage.$page.id + ''
   )!
+  // @ts-expect-error
+  const dialogPages = currentPage.$getDialogPages()
+  for (let i = dialogPages.length - 1; i >= 0; i--) {
+    const dialogPage = dialogPages[i]
+    closeNativeDialogPage(dialogPage, 'none')
+    if (i > 0) {
+      invokeHook(dialogPages[i - 1].$vm!, ON_SHOW)
+    }
+  }
   // TODO 处理子 view
   backPage(webview)
 }

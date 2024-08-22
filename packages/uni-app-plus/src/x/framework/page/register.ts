@@ -26,6 +26,8 @@ import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
+import { type DialogPage, homeDialogPages } from './dialogPage'
+import { closeDialogPage } from '../../api'
 
 type PageNodeOptions = {}
 
@@ -37,6 +39,7 @@ export interface RegisterPageOptions {
   webview?: IPage
   nvuePageVm?: ComponentPublicInstance
   eventChannel?: EventChannel
+  disableSwipeBack?: boolean
 }
 
 // parsePageStyle
@@ -157,6 +160,15 @@ export function registerPage(
     // nativePage.addPageEventListener(ON_SHOW, (_) => {
     //   invokeHook(page, ON_SHOW)
     // })
+    const pages = getCurrentPages()
+    if (pages.length === 1 && homeDialogPages.length) {
+      const homePage = pages[0] as ComponentPublicInstance
+      homePage.$.$dialogPages = homeDialogPages.map((dialogPage) => {
+        dialogPage.$getParentPage = () => homePage
+        return dialogPage
+      })
+      homeDialogPages.length = 0
+    }
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
       uni.navigateBack({
         from: 'popGesture',
@@ -166,6 +178,120 @@ export function registerPage(
           }
         },
       } as UniApp.NavigateBackOptions)
+    })
+    nativePage.addPageEventListener(ON_UNLOAD, (_) => {
+      invokeHook(page, ON_UNLOAD)
+    })
+    nativePage.addPageEventListener(ON_READY, (_) => {
+      invokePageReadyHooks(page)
+      invokeHook(page, ON_READY)
+    })
+
+    nativePage.addPageEventListener(ON_PAGE_SCROLL, (arg) => {
+      invokeHook(page, ON_PAGE_SCROLL, arg)
+    })
+
+    nativePage.addPageEventListener(ON_PULL_DOWN_REFRESH, (_) => {
+      invokeHook(page, ON_PULL_DOWN_REFRESH)
+    })
+
+    nativePage.addPageEventListener(ON_REACH_BOTTOM, (_) => {
+      invokeHook(page, ON_REACH_BOTTOM)
+    })
+
+    nativePage.addPageEventListener(ON_RESIZE, (_) => {
+      invokeHook(page, ON_RESIZE)
+    })
+    nativePage.startRender()
+  }
+  if (delay) {
+    setTimeout(fn, delay)
+  } else {
+    fn()
+  }
+  return nativePage
+}
+
+export function registerDialogPage(
+  {
+    url,
+    path,
+    query,
+    openType,
+    webview,
+    nvuePageVm,
+    eventChannel,
+    disableSwipeBack,
+  }: RegisterPageOptions,
+  dialogPage: DialogPage,
+  onCreated?: (page: IPage) => void,
+  delay = 0
+) {
+  const id = genWebviewId()
+  const routeOptions = initRouteOptions(path, openType)
+  const pageStyle = parsePageStyle(routeOptions)
+  pageStyle.set('navigationStyle', 'custom')
+  pageStyle.set('backgroundColor', 'transparent')
+  const parentPage = dialogPage.$getParentPage()
+  const nativePage = (getPageManager() as any).createDialogPage(
+    parentPage ? parentPage.$page.id.toString() : '',
+    id.toString(),
+    url,
+    pageStyle
+  )
+  if (onCreated) {
+    onCreated(nativePage)
+  }
+  // @ts-expect-error
+  dialogPage.$nativePage = nativePage
+  routeOptions.meta.id = parseInt(nativePage.pageId)
+  if (__DEV__) {
+    console.log(formatLog('registerPage', path, nativePage.pageId))
+  }
+  // TODO initWebview
+  // initWebview(webview, path, query, routeOptions.meta)
+  const route = path.slice(1)
+  // ;(webview as any).__uniapp_route = route
+  const pageInstance = initPageInternalInstance(
+    openType,
+    url,
+    query,
+    routeOptions.meta,
+    eventChannel,
+    // TODO ThemeMode
+    'light'
+  )
+  function fn() {
+    const page = createVuePage(
+      id,
+      route,
+      query,
+      pageInstance,
+      {},
+      nativePage
+    ) as ComponentPublicInstance
+    dialogPage.$vm = page
+    // @ts-expect-error
+    page.$dialogPage = dialogPage
+    page.$getParentPage = dialogPage.$getParentPage
+
+    // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
+    // nativePage.addPageEventListener(ON_SHOW, (_) => {
+    //   invokeHook(page, ON_SHOW)
+    // })
+    nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
+      if (disableSwipeBack === true) {
+        uni.navigateBack({
+          from: 'popGesture',
+          fail(e) {
+            if (e.errMsg.endsWith('cancel')) {
+              nativePage.show()
+            }
+          },
+        } as UniApp.NavigateBackOptions)
+      } else {
+        closeDialogPage({ dialogPage })
+      }
     })
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD)
