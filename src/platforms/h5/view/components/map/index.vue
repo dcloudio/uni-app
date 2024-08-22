@@ -277,6 +277,9 @@ export default {
           this.mapReady(() => {
             try {
               var marker = this.getMarker(data.markerId)
+              if (IS_AMAP) {
+                maps.plugin('AMap.MoveAnimation', function () {})
+              }
               var destination = data.destination
               var duration = data.duration
               var autoRotate = !!data.autoRotate
@@ -287,7 +290,12 @@ export default {
               }
               var a = marker.getPosition()
               const b = getMapPosition(maps, destination.latitude, destination.longitude)
-              var distance = maps.geometry.spherical.computeDistanceBetween(a, b) / 1000
+              var distance = 0
+              if (IS_AMAP) {
+                distance = maps.GeometryUtil.distance(a, b)
+              } else {
+                distance = maps.geometry.spherical.computeDistanceBetween(a, b) / 1000
+              }
               var time = ((typeof duration === 'number') ? duration : 1000) / (1000 * 60 * 60)
               var speed = distance / time
               var movingEvent = maps.event.addListener(marker, 'moving', e => {
@@ -302,8 +310,10 @@ export default {
                 }
               })
               var event = maps.event.addListener(marker, 'moveend', e => {
-                event.remove()
-                movingEvent.remove()
+                if (!IS_AMAP) {
+                  event.remove()
+                  movingEvent.remove()
+                }
                 marker.lastPosition = a
                 marker.setPosition(b)
                 var label = marker.label
@@ -320,7 +330,7 @@ export default {
                 }
               })
               var lastRtate = 0
-              if (autoRotate) {
+              if (autoRotate && !IS_AMAP) {
                 if (marker.lastPosition) {
                   lastRtate = maps.geometry.spherical.computeHeading(marker.lastPosition, a)
                 }
@@ -330,7 +340,14 @@ export default {
                 marker.setRotation(rotation + rotate)
               }
               if ('moveTo' in marker) {
-                marker.moveTo(b, speed)
+                if (IS_AMAP) {
+                  marker.moveTo(b, {
+                    duration: duration,
+                    autoRotation: autoRotate
+                  })
+                } else {
+                  marker.moveTo(b, speed)
+                }
               } else {
                 marker.setPosition(b)
                 maps.event.trigger(marker, 'moveend', {})
