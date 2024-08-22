@@ -11,17 +11,14 @@ export class DialogPage {
     route,
     component,
     $getParentPage,
-    $disableEscBack = false,
   }: {
     route: string
     component: any
     $getParentPage: () => ComponentPublicInstance | null
-    $disableEscBack?: boolean
   }) {
     this.route = route
     this.component = component
     this.$getParentPage = $getParentPage
-    this.$disableEscBack = $disableEscBack
   }
 }
 
