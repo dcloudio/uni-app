@@ -1,5 +1,5 @@
-import { EventChannel, parseUrl } from '@dcloudio/uni-shared'
-import { getCurrentPage, getRouteMeta } from '@dcloudio/uni-core'
+import { EventChannel, ON_HIDE, parseUrl } from '@dcloudio/uni-shared'
+import { getCurrentPage, getRouteMeta, invokeHook } from '@dcloudio/uni-core'
 
 import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
@@ -116,7 +116,11 @@ export const openDialogPage = (options: OpenDialogPageOptions) => {
   if (!parentPage) {
     homeDialogPages.push(dialogPage)
   } else {
-    parentPage!.$.$dialogPages.push(dialogPage)
+    const dialogPages = parentPage.$getDialogPages()
+    if (dialogPages.length) {
+      invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
+    }
+    dialogPages.push(dialogPage)
   }
 
   const { path, query } = parseUrl(url)
