@@ -8,8 +8,19 @@
           "kotlin": true,
           "swift": true
         }
+      },
+      "createInterstitialAd": {
+        "name": "createInterstitialAd",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
       }
-    }
+    },
+    "components": [
+      "ad"
+    ]
   },
   "uni-canvas": {
     "uni": {
