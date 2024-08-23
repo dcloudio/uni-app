@@ -180,8 +180,16 @@ export function setupPage(comp: any) {
       onBeforeDeactivate(() => {
         if (instance.__isVisible && !instance.__isUnload) {
           instance.__isVisible = false
-          const { onHide } = instance
-          onHide && invokeArrayFns(onHide)
+          if (__X__) {
+            const pageInstance = getPageInstanceByChild(instance)
+            if (pageInstance.attrs.type !== 'dialog') {
+              const { onHide } = instance
+              onHide && invokeArrayFns(onHide)
+            }
+          } else {
+            const { onHide } = instance
+            onHide && invokeArrayFns(onHide)
+          }
         }
       })
 

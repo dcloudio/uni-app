@@ -16330,8 +16330,10 @@ function setupPage(comp) {
       onBeforeDeactivate(() => {
         if (instance2.__isVisible && !instance2.__isUnload) {
           instance2.__isVisible = false;
-          const { onHide } = instance2;
-          onHide && invokeArrayFns$1(onHide);
+          {
+            const { onHide } = instance2;
+            onHide && invokeArrayFns$1(onHide);
+          }
         }
       });
       subscribeViewMethod(pageMeta.id);
