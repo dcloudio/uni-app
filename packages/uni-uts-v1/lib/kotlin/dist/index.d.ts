@@ -1,6 +1,16 @@
 import { MappedPosition } from 'source-map-js';
-import tsTypes from 'typescript';
+import tsTypes, { Diagnostic } from 'typescript';
 
+interface WatchProgramHelper {
+    invalidate(files?: {
+        fileName: string;
+        event: 'create' | 'update' | 'delete';
+    }[]): Promise<void>;
+    updateRootFileNames(fileNames: string[]): void;
+    watch(timeout?: number): void;
+    handleStatus(diagnostic: Diagnostic): void;
+    wait(): Promise<void>;
+}
 interface TransformOptions {
     transformArguments?: {
         shouldTransform(node: tsTypes.Node, type: tsTypes.Type): boolean;
@@ -8,10 +18,6 @@ interface TransformOptions {
     transformReturnType?: {
         shouldTransform(node: tsTypes.Node, type: tsTypes.Type): boolean;
     };
-}
-declare class WatchProgramHelper {
-    watch(timeout?: number): void;
-    wait(): Promise<void>;
 }
 interface PositionFor {
     sourceMapFile: string;
@@ -32,6 +38,11 @@ type RunAndroidOptions = {
     originalPositionForSync?: (generatedPosition: Omit<PositionFor, 'filename'>) => MappedPosition & {
         sourceContent?: string;
     };
+    watchFile?(path: string, callback: tsTypes.FileWatcherCallback, pollingInterval?: number, options?: tsTypes.WatchOptions): tsTypes.FileWatcher;
+};
+type RunAndroidResult = {
+    watcher?: WatchProgramHelper;
+    result?: tsTypes.EmitResult;
 };
 declare function runAndroid(mode: 'development', options: RunAndroidOptions): {
     watcher: WatchProgramHelper;
@@ -40,4 +51,4 @@ declare function runAndroid(mode: 'production', options: RunAndroidOptions): {
     result: tsTypes.EmitResult;
 };
 
-export { type RunAndroidOptions, type TransformOptions, WatchProgramHelper, runAndroid };
+export { type RunAndroidOptions, type RunAndroidResult, type TransformOptions, type WatchProgramHelper, runAndroid };

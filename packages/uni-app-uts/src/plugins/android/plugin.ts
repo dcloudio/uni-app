@@ -3,7 +3,7 @@ import fs from 'fs-extra'
 import type { ResolvedConfig } from 'vite'
 import debug from 'debug'
 import { extend, isString } from '@vue/shared'
-import type { OutputBundle, PluginContext } from 'rollup'
+import type { ChangeEvent, OutputBundle, PluginContext } from 'rollup'
 import {
   type UniVitePlugin,
   buildUniExtApis,
@@ -49,7 +49,9 @@ import { genClassName } from '../..'
 const debugTscWatcher = debug('uts:tsc:watcher')
 
 interface WatchProgramHelper {
-  invalidate(): Promise<void>
+  invalidate(
+    files?: { fileName: string; event: 'create' | 'update' | 'delete' }[]
+  ): Promise<void>
   updateRootFileNames(fileNames: string[]): void
   watch(timeout?: number): void
   wait(): Promise<void>
@@ -91,6 +93,8 @@ export function uniAppPlugin(): UniVitePlugin {
   let watcher: WatchProgramHelper | undefined
 
   let resolvedConfig: ResolvedConfig
+
+  const changedFiles: { fileName: string; event: ChangeEvent }[] = []
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -192,9 +196,10 @@ export function uniAppPlugin(): UniVitePlugin {
       // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
       // checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
-    watchChange() {
-      if (process.env.UNI_APP_X_TSC === 'true') {
+    async watchChange(fileName, change) {
+      if (process.env.UNI_APP_X_TSC === 'true' && watcher) {
         // watcher && watcher.watch(3000)
+        changedFiles.push({ fileName, event: change.event })
       }
     },
     async writeBundle() {
@@ -219,7 +224,6 @@ export function uniAppPlugin(): UniVitePlugin {
       }
       const { compileApp, runUTS2Kotlin } = resolveUTSCompiler()
       if (process.env.UNI_APP_X_TSC === 'true') {
-        debugTscWatcher('start')
         if (!watcher) {
           watcher = runUTS2Kotlin(
             process.env.NODE_ENV === 'development'
@@ -234,9 +238,14 @@ export function uniAppPlugin(): UniVitePlugin {
           ).watcher
         }
         if (watcher) {
-          await watcher.invalidate()
+          if (changedFiles.length) {
+            const start = Date.now()
+            debugTscWatcher('start')
+            const files = changedFiles.splice(0)
+            await watcher.invalidate(files)
+            debugTscWatcher('end', Date.now() - start)
+          }
         }
-        debugTscWatcher('end')
       }
       const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
         pageCount,
