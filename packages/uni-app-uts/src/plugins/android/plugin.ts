@@ -1,6 +1,7 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { ResolvedConfig } from 'vite'
+import debug from 'debug'
 import { extend, isString } from '@vue/shared'
 import type { OutputBundle, PluginContext } from 'rollup'
 import {
@@ -45,7 +46,11 @@ import {
 
 import { genClassName } from '../..'
 
-declare class WatchProgramHelper {
+const debugTscWatcher = debug('uts:tsc:watcher')
+
+interface WatchProgramHelper {
+  invalidate(): Promise<void>
+  updateRootFileNames(fileNames: string[]): void
   watch(timeout?: number): void
   wait(): Promise<void>
 }
@@ -189,7 +194,7 @@ export function uniAppPlugin(): UniVitePlugin {
     },
     watchChange() {
       if (process.env.UNI_APP_X_TSC === 'true') {
-        watcher && watcher.watch(3000)
+        // watcher && watcher.watch(3000)
       }
     },
     async writeBundle() {
@@ -214,6 +219,7 @@ export function uniAppPlugin(): UniVitePlugin {
       }
       const { compileApp, runUTS2Kotlin } = resolveUTSCompiler()
       if (process.env.UNI_APP_X_TSC === 'true') {
+        debugTscWatcher('start')
         if (!watcher) {
           watcher = runUTS2Kotlin(
             process.env.NODE_ENV === 'development'
@@ -228,8 +234,9 @@ export function uniAppPlugin(): UniVitePlugin {
           ).watcher
         }
         if (watcher) {
-          await watcher.wait()
+          await watcher.invalidate()
         }
+        debugTscWatcher('end')
       }
       const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
         pageCount,

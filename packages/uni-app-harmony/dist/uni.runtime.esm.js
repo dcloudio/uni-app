@@ -8879,8 +8879,9 @@ function getRealPath(filepath) {
         // 鸿蒙平台特性
         return 'file:/' + normalizeLocalPath(filepath);
     }
-    // TODO 暂时转换为 resource
-    const wwwPath = normalizeLocalPath('_www').replace(/.+?\/apps\//, 'resource://rawfile/apps/');
+    // TODO 暂时使用当前 dirname
+    const href = location.href;
+    const wwwPath = href.substring(0, href.lastIndexOf('/'));
     // 绝对路径转换为本地文件系统路径
     if (filepath.indexOf('/') === 0) {
         // 平台绝对路径
@@ -12579,9 +12580,12 @@ function setupPage(component) {
             console.log(formatLog(__pagePath, 'setup'));
         }
         const instance = getCurrentInstance();
+        instance.$dialogPages = [];
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
-        addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        if (pageVm.$page.openType !== 'openDialogPage') {
+            addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        }
         {
             onMounted(() => {
                 nextTick(() => {

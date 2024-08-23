@@ -19301,9 +19301,12 @@ function setupPage(component) {
             console.log(formatLog(__pagePath, 'setup'));
         }
         const instance = getCurrentInstance();
+        instance.$dialogPages = [];
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
-        addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        if (pageVm.$page.openType !== 'openDialogPage') {
+            addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        }
         {
             onMounted(() => {
                 nextTick(() => {
