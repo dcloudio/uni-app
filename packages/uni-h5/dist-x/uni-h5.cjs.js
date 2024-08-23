@@ -5972,7 +5972,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$h,
-  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
+  emits: ["itemclick"],
   setup(props2, {
     emit: emit2
   }) {

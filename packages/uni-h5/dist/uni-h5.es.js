@@ -3971,9 +3971,6 @@ class TextMetrics {
 }
 const getTempPath = () => {
   let _TEMP_PATH = TEMP_PATH;
-  if (!__PLUS__) {
-    typeof getEnv !== "undefined" && (_TEMP_PATH = getEnv().TEMP_PATH);
-  }
   return _TEMP_PATH;
 };
 class CanvasContext {
@@ -7128,11 +7125,6 @@ const inflateRaw = (...args) => {
 };
 const deflateRaw = (...args) => {
 };
-const getEnv = () => ({
-  TEMP_PATH,
-  CACHE_PATH: "",
-  USER_DATA_PATH: ""
-});
 const ResizeSensor = /* @__PURE__ */ defineBuiltInComponent({
   name: "ResizeSensor",
   props: {
@@ -13254,7 +13246,7 @@ const index$l = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$n,
-  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
+  emits: ["itemclick"],
   setup(props2, {
     emit: emit2
   }) {

@@ -5884,7 +5884,7 @@ const index$n = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$g,
-  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
+  emits: ["itemclick"],
   setup(props2, {
     emit: emit2
   }) {
