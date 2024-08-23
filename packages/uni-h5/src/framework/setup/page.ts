@@ -33,6 +33,13 @@ import {
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 import { getPageInstanceByVm } from './utils'
+import {
+  type EmitterEmit,
+  type EmitterOff,
+  type EmitterOn,
+  type EmitterOnce,
+  EventBus,
+} from '@dcloudio/uni-api'
 
 const SEP = '$$'
 
@@ -98,6 +105,10 @@ export class DialogPage {
   $getParentPage: () => ComponentPublicInstance | null
   $disableEscBack: boolean = false
   $vm?: ComponentPublicInstance
+  $on: EmitterOn
+  $once: EmitterOnce
+  $off: EmitterOff
+  $emit: EmitterEmit
 
   constructor({
     route,
@@ -114,6 +125,11 @@ export class DialogPage {
     this.component = component
     this.$getParentPage = $getParentPage
     this.$disableEscBack = $disableEscBack
+    const { $on, $once, $emit, $off } = new EventBus()
+    this.$on = $on
+    this.$once = $once
+    this.$off = $off
+    this.$emit = $emit
   }
 }
 
