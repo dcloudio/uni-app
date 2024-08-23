@@ -380,6 +380,15 @@
           "swift": true,
           "arkts": false
         }
+      },
+      "chooseFile": {
+        "name": "chooseFile",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
       }
     }
   },
