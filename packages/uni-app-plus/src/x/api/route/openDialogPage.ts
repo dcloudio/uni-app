@@ -52,10 +52,6 @@ interface OpenDialogPageOptions {
    */
   parentPage?: ComponentPublicInstance
   /**
-   * 是否禁用 iOS 侧滑返回
-   */
-  disableSwipeBack?: boolean
-  /**
    * 是否禁用按键盘 ESC 时关闭
    */
   disableEscBack?: boolean
@@ -74,7 +70,7 @@ interface OpenDialogPageOptions {
 }
 
 export const openDialogPage = (options: OpenDialogPageOptions) => {
-  const { url, events, animationType, disableSwipeBack } = options
+  const { url, events, animationType } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
     return null
@@ -134,7 +130,7 @@ export const openDialogPage = (options: OpenDialogPageOptions) => {
   }
   // 有动画时先执行 show
   const page = registerDialogPage(
-    { url, path, query, openType: 'openDialogPage', disableSwipeBack },
+    { url, path, query, openType: 'openDialogPage' },
     dialogPage,
     noAnimation ? undefined : callback,
     // 有动画时延迟创建 vm

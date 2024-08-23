@@ -27,7 +27,6 @@ import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
 import { type DialogPage, homeDialogPages } from './dialogPage'
-import { closeDialogPage } from '../../api'
 
 type PageNodeOptions = {}
 
@@ -39,7 +38,6 @@ export interface RegisterPageOptions {
   webview?: IPage
   nvuePageVm?: ComponentPublicInstance
   eventChannel?: EventChannel
-  disableSwipeBack?: boolean
 }
 
 // parsePageStyle
@@ -221,7 +219,6 @@ export function registerDialogPage(
     webview,
     nvuePageVm,
     eventChannel,
-    disableSwipeBack,
   }: RegisterPageOptions,
   dialogPage: DialogPage,
   onCreated?: (page: IPage) => void,
@@ -281,18 +278,14 @@ export function registerDialogPage(
     //   invokeHook(page, ON_SHOW)
     // })
     nativePage.addPageEventListener(ON_POP_GESTURE, function (e) {
-      if (disableSwipeBack === true) {
-        uni.navigateBack({
-          from: 'popGesture',
-          fail(e) {
-            if (e.errMsg.endsWith('cancel')) {
-              nativePage.show()
-            }
-          },
-        } as UniApp.NavigateBackOptions)
-      } else {
-        closeDialogPage({ dialogPage })
-      }
+      uni.navigateBack({
+        from: 'popGesture',
+        fail(e) {
+          if (e.errMsg.endsWith('cancel')) {
+            nativePage.show()
+          }
+        },
+      } as UniApp.NavigateBackOptions)
     })
     nativePage.addPageEventListener(ON_UNLOAD, (_) => {
       invokeHook(page, ON_UNLOAD)

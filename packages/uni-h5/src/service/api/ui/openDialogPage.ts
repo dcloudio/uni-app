@@ -53,10 +53,6 @@ interface OpenDialogPageOptions {
    */
   parentPage?: ComponentPublicInstance
   /**
-   * 是否禁用 iOS 侧滑返回
-   */
-  disableSwipeBack?: boolean
-  /**
    * 是否禁用按键盘 ESC 时关闭
    */
   disableEscBack?: boolean
