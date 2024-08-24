@@ -65,21 +65,12 @@ const AUTOCOMPLETES = ['off', 'one-time-code']
 const INPUT_MODES = ['none', 'text', 'decimal', 'numeric', 'tel', 'search', 'email', 'url']
 
 const resolveDigitDecimalPointDeleteContentBackward = (() => {
-  const iOS17BugVersions = [
-    '17.0',
-    '17.0.1',
-    '17.0.2',
-    '17.0.3',
-    '17.1',
-    '17.1.1',
-    '17.1.2'
-  ]
   if (__PLATFORM__ === 'app-plus') {
     const osVersion = plus.os.version
     return (
       plus.os.name === 'iOS' &&
       !!osVersion &&
-      (parseInt(osVersion) === 16 || iOS17BugVersions.includes(osVersion))
+      (parseInt(osVersion) === 16 || parseFloat(osVersion) < 17.2)
     )
   }
 
@@ -90,7 +81,7 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
     if (osVersionFind) {
       osVersion = osVersionFind[1].replace(/_/g, '.')
     }
-    return ua.includes('iPhone OS 16') || iOS17BugVersions.includes(osVersion)
+    return !!osVersion && (parseInt(osVersion) === 16 || parseFloat(osVersion) < 17.2)
   }
 })()
 export default {
