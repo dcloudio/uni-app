@@ -1,12 +1,12 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { ResolvedConfig } from 'vite'
-import debug from 'debug'
 import { extend, isString } from '@vue/shared'
 import type { ChangeEvent, OutputBundle, PluginContext } from 'rollup'
 import {
   type UniVitePlugin,
   buildUniExtApis,
+  createUniXCompilerOnce,
   emptyDir,
   formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
@@ -14,7 +14,6 @@ import {
   getUTSEasyComAutoImports,
   getUniExtApiProviderRegisters,
   normalizeEmitAssetFileName,
-  normalizeNodeModules,
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
@@ -45,17 +44,6 @@ import {
 } from '../utils'
 
 import { genClassName } from '../..'
-
-const debugTscWatcher = debug('uts:tsc:watcher')
-
-interface WatchProgramHelper {
-  invalidate(
-    files?: { fileName: string; event: 'create' | 'update' | 'delete' }[]
-  ): Promise<void>
-  updateRootFileNames(fileNames: string[]): void
-  watch(timeout?: number): void
-  wait(): Promise<void>
-}
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
@@ -90,11 +78,12 @@ export function uniAppPlugin(): UniVitePlugin {
   }
   emptyTscDir()
 
-  let watcher: WatchProgramHelper | undefined
-
   let resolvedConfig: ResolvedConfig
 
+  const uniXCompiler =
+    process.env.UNI_APP_X_TSC === 'true' ? createUniXCompilerOnce() : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
+
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -152,9 +141,12 @@ export function uniAppPlugin(): UniVitePlugin {
         },
       }
     },
-    configResolved(config) {
+    async configResolved(config) {
       configResolved(config, true)
       resolvedConfig = config
+      if (uniXCompiler) {
+        await uniXCompiler.init()
+      }
     },
     async transform(code, id) {
       const { filename } = parseVueRequest(id)
@@ -197,7 +189,7 @@ export function uniAppPlugin(): UniVitePlugin {
       // checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
     async watchChange(fileName, change) {
-      if (process.env.UNI_APP_X_TSC === 'true' && watcher) {
+      if (uniXCompiler) {
         // watcher && watcher.watch(3000)
         changedFiles.push({ fileName, event: change.event })
       }
@@ -205,6 +197,14 @@ export function uniAppPlugin(): UniVitePlugin {
     async writeBundle() {
       if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
         return
+      }
+      if (uniXCompiler) {
+        if (changedFiles.length) {
+          const files = changedFiles.splice(0)
+          await uniXCompiler.invalidate(files)
+        } else if (isFirst) {
+          await uniXCompiler.addRootFile(path.join(tscOutputDir, 'main.uts.ts'))
+        }
       }
       let pageCount = 0
       if (isFirst) {
@@ -222,31 +222,7 @@ export function uniAppPlugin(): UniVitePlugin {
       } else {
         process.env.UNI_APP_X_UNICLOUD_OBJECT = 'false'
       }
-      const { compileApp, runUTS2Kotlin } = resolveUTSCompiler()
-      if (process.env.UNI_APP_X_TSC === 'true') {
-        if (!watcher) {
-          watcher = runUTS2Kotlin(
-            process.env.NODE_ENV === 'development'
-              ? 'development'
-              : 'production',
-            {
-              inputDir: tscOutputDir,
-              cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
-              outputDir: uvueOutputDir,
-              normalizeFileName: normalizeNodeModules,
-            }
-          ).watcher
-        }
-        if (watcher) {
-          if (changedFiles.length) {
-            const start = Date.now()
-            debugTscWatcher('start')
-            const files = changedFiles.splice(0)
-            await watcher.invalidate(files)
-            debugTscWatcher('end', Date.now() - start)
-          }
-        }
-      }
+      const { compileApp } = resolveUTSCompiler()
       const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
         pageCount,
         uniCloudObjectInfo,

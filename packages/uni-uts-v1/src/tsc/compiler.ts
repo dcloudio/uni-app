@@ -3,17 +3,17 @@ import debug from 'debug'
 import type * as tsTypes from 'typescript'
 
 import type {
-  RunAndroidOptions,
-  RunAndroidResult,
-  WatchProgramHelper,
-} from '../../../lib/kotlin/dist/index'
-import { originalPositionForSync } from '../../sourceMap'
-import { normalizePath } from '../../shared'
+  UniXCompiler,
+  UniXCompilerOptions,
+} from '../../lib/uni-x/dist/compiler'
+import { originalPositionForSync } from '../sourceMap'
+import { normalizePath } from '../shared'
 
 const debugTscWatcher = debug('uts:tsc:watcher')
 
-export function runUTS2Kotlin(
-  mode: 'development' | 'production',
+export function createUniXCompiler(
+  mode: UniXCompilerOptions['mode'],
+  targetLanguage: UniXCompilerOptions['targetLanguage'],
   options: {
     inputDir: string
     outputDir: string
@@ -21,11 +21,9 @@ export function runUTS2Kotlin(
     rootFiles?: string[]
     normalizeFileName: (str: string) => string
   }
-): {
-  watcher?: WatchProgramHelper
-} {
+) {
   const inputDir = normalizePath(options.inputDir)
-  const utsLibDir = path.resolve(__dirname, '../../../lib')
+  const utsLibDir = path.resolve(__dirname, '../../lib')
 
   const pluginPath = process.env.UNI_HBUILDERX_PLUGINS
     ? process.env.UNI_HBUILDERX_PLUGINS
@@ -43,30 +41,29 @@ export function runUTS2Kotlin(
     inputDir: process.env.UNI_INPUT_DIR,
   })
 
-  const watchFile: RunAndroidOptions['watchFile'] =
-    mode === 'development'
-      ? (fileName, callback, pollingInterval, options) => {
-          // 仅监听工程目录内的文件
-          if (fileName.startsWith(inputDir)) {
-            if (fileName.includes('?type=page')) {
-              fileName = fileName.replace('?type=page', '')
-            }
-            return fileWatcher.watchFile(
-              fileName,
-              callback,
-              pollingInterval,
-              options
-            )
-          }
-          return {
-            close() {
-              /* noop */
-            },
-          }
-        }
-      : undefined
+  const watchFile: UniXCompilerOptions['watchFile'] = (
+    fileName,
+    callback,
+    pollingInterval,
+    options
+  ) => {
+    // 仅监听工程目录内的文件
+    if (fileName.startsWith(inputDir)) {
+      if (fileName.includes('?type=page')) {
+        fileName = fileName.replace('?type=page', '')
+      }
+      return fileWatcher.watchFile(fileName, callback, pollingInterval, options)
+    }
+    return {
+      close() {
+        /* noop */
+      },
+    }
+  }
 
-  const androidOptions: RunAndroidOptions = {
+  const compilerOptions: UniXCompilerOptions = {
+    mode,
+    targetLanguage,
     typescript: ts,
     utsLibDir,
     hxLanguageServiceDir,
@@ -74,24 +71,18 @@ export function runUTS2Kotlin(
     watchFile,
     ...options,
   }
-  const result: RunAndroidResult =
-    require('../../../lib/kotlin/dist/index').runAndroid(mode, androidOptions)
-  const { watcher } = result
-  if (watcher) {
-    watcher.invalidate = async (files) => {
-      let timeout = 300
-      if (files) {
-        for (const { fileName, event } of files) {
-          if (fileWatcher.onWatchFileChange(fileName, event!)) {
-            timeout = 2000
-          }
-        }
+  const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')
+  const compiler: UniXCompiler = new UniXCompiler(compilerOptions)
+  compiler.invalidate = (files) => {
+    let timeout = 300
+    for (const { fileName, event } of files) {
+      if (fileWatcher.onWatchFileChange(fileName, event!)) {
+        timeout = 2000
       }
-      watcher.watch(timeout)
-      return watcher.wait()
     }
+    return compiler.wait(timeout)
   }
-  return result
+  return compiler
 }
 
 const replacements = /(\.uts|\.uvue|\.vue|\.json)\.ts$/

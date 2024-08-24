@@ -10,6 +10,7 @@ import {
   capitalize,
   installDepTips,
   isArray,
+  normalizeNodeModules,
   normalizePath,
 } from './utils'
 
@@ -135,6 +136,20 @@ function resolveUTSFile(
     }
   }
 }
+
+export const createUniXCompilerOnce = once(() => {
+  const { createUniXCompiler } = resolveUTSCompiler()
+  return createUniXCompiler(
+    process.env.NODE_ENV === 'development' ? 'development' : 'production',
+    'Kotlin',
+    {
+      inputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.tsc'),
+      cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
+      outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue'),
+      normalizeFileName: normalizeNodeModules,
+    }
+  )
+})
 
 export function resolveUTSCompiler(): typeof UTSCompiler {
   let compilerPath: string = ''

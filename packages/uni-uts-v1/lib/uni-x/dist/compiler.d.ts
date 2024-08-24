@@ -1,16 +1,7 @@
+import { IUTSCompiler } from '@uts/compiler';
 import { MappedPosition } from 'source-map-js';
-import tsTypes, { Diagnostic } from 'typescript';
+import tsTypes from 'typescript';
 
-interface WatchProgramHelper {
-    invalidate(files?: {
-        fileName: string;
-        event: 'create' | 'update' | 'delete';
-    }[]): Promise<void>;
-    updateRootFileNames(fileNames: string[]): void;
-    watch(timeout?: number): void;
-    handleStatus(diagnostic: Diagnostic): void;
-    wait(): Promise<void>;
-}
 interface TransformOptions {
     transformArguments?: {
         shouldTransform(node: tsTypes.Node, type: tsTypes.Type): boolean;
@@ -19,6 +10,7 @@ interface TransformOptions {
         shouldTransform(node: tsTypes.Node, type: tsTypes.Type): boolean;
     };
 }
+type InvalidateEventKind = 'create' | 'update' | 'delete';
 interface PositionFor {
     sourceMapFile: string;
     filename: string;
@@ -26,7 +18,9 @@ interface PositionFor {
     column: number;
     withSourceContent?: boolean;
 }
-type RunAndroidOptions = {
+type UniXCompilerOptions = {
+    mode: 'development' | 'production';
+    targetLanguage: 'Kotlin' | 'Swift';
     typescript: typeof tsTypes;
     inputDir: string;
     cacheDir: string;
@@ -34,21 +28,27 @@ type RunAndroidOptions = {
     utsLibDir: string;
     hxLanguageServiceDir?: string;
     outputDir: string;
+    incremental?: boolean;
     normalizeFileName: (fileName: string) => string;
     originalPositionForSync?: (generatedPosition: Omit<PositionFor, 'filename'>) => MappedPosition & {
         sourceContent?: string;
     };
     watchFile?(path: string, callback: tsTypes.FileWatcherCallback, pollingInterval?: number, options?: tsTypes.WatchOptions): tsTypes.FileWatcher;
 };
-type RunAndroidResult = {
-    watcher?: WatchProgramHelper;
-    result?: tsTypes.EmitResult;
-};
-declare function runAndroid(mode: 'development', options: RunAndroidOptions): {
-    watcher: WatchProgramHelper;
-};
-declare function runAndroid(mode: 'production', options: RunAndroidOptions): {
-    result: tsTypes.EmitResult;
-};
+declare class UniXCompiler implements IUTSCompiler {
+    private _options;
+    private _utsCompiler;
+    constructor(options: UniXCompilerOptions);
+    close(): Promise<void>;
+    wait(timeout?: number): Promise<void>;
+    getRootFiles(): string[];
+    addRootFile(fileName: string): Promise<void>;
+    getDiagnostics(): tsTypes.Diagnostic[];
+    invalidate(files: {
+        fileName: string;
+        event: InvalidateEventKind;
+    }[]): Promise<void>;
+    init(): Promise<void>;
+}
 
-export { type RunAndroidOptions, type RunAndroidResult, type TransformOptions, type WatchProgramHelper, runAndroid };
+export { type InvalidateEventKind, type TransformOptions, UniXCompiler, type UniXCompilerOptions };
