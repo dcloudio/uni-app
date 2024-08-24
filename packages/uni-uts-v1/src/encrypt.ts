@@ -8,6 +8,7 @@ import {
   addInjectComponents,
   compileAndroidDex,
   createStderrListener,
+  getUniModulesCacheJars,
   resolveDexFile,
   resolveJarPath,
 } from './kotlin'
@@ -223,9 +224,13 @@ async function compileEncryptByUniHelpers(pluginDir: string) {
     )
     const waiting = { done: undefined }
     const kotlinFiles = Object.values(ktFiles)
-    const depJars =
+    const uniModules =
       require(path.resolve(pluginDir, 'package.json')).uni_modules
         ?.dependencies || []
+
+    const depJars = uniModules.length
+      ? getUniModulesCacheJars(cacheDir, uniModules) // 依赖的jar
+      : []
 
     const compilerServer = getCompilerServer<KotlinCompilerServer>(
       'uniapp-runextension'
