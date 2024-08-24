@@ -389,6 +389,15 @@
           "swift": false,
           "arkts": true
         }
+      },
+      "chooseMedia": {
+        "name": "chooseMedia",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
       }
     }
   },
