@@ -9369,27 +9369,36 @@ const EmitProtocol = [
     },
 ];
 
-const emitter = new Emitter();
-const $on = defineSyncApi(API_ON, (name, callback) => {
-    emitter.on(name, callback);
-    return () => emitter.off(name, callback);
-}, OnProtocol);
-const $once = defineSyncApi(API_ONCE, (name, callback) => {
-    emitter.once(name, callback);
-    return () => emitter.off(name, callback);
-}, OnceProtocol);
-const $off = defineSyncApi(API_OFF, (name, callback) => {
-    if (!name) {
-        emitter.e = {};
-        return;
+class EventBus {
+    constructor() {
+        this.emitter = new Emitter();
+        this.$on = defineSyncApi(API_ON, (name, callback) => {
+            this.emitter.on(name, callback);
+            return () => this.emitter.off(name, callback);
+        }, OnProtocol);
+        this.$once = defineSyncApi(API_ONCE, (name, callback) => {
+            this.emitter.once(name, callback);
+            return () => this.emitter.off(name, callback);
+        }, OnceProtocol);
+        this.$off = defineSyncApi(API_OFF, (name, callback) => {
+            if (!name) {
+                this.emitter.e = {};
+                return;
+            }
+            if (!isArray(name))
+                name = [name];
+            name.forEach((n) => this.emitter.off(n, callback));
+        }, OffProtocol);
+        this.$emit = defineSyncApi(API_EMIT, (name, ...args) => {
+            this.emitter.emit(name, ...args);
+        }, EmitProtocol);
     }
-    if (!isArray(name))
-        name = [name];
-    name.forEach((n) => emitter.off(n, callback));
-}, OffProtocol);
-const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
-    emitter.emit(name, ...args);
-}, EmitProtocol);
+}
+const eventBus = new EventBus();
+const $on = eventBus.$on;
+const $once = eventBus.$once;
+const $off = eventBus.$off;
+const $emit = eventBus.$emit;
 
 const validator = [
     {

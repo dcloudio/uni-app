@@ -617,30 +617,40 @@ var API_ON = "$on";
 var API_ONCE = "$once";
 var API_OFF = "$off";
 var API_EMIT = "$emit";
-var emitter = new Emitter();
-var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-  emitter.on(name, callback);
-  return () => emitter.off(name, callback);
-});
-var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-  emitter.once(name, callback);
-  return () => emitter.off(name, callback);
-});
-var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-  if (!name) {
-    emitter.e = {};
-    return;
+class EventBus {
+  constructor() {
+    var _this = this;
+    this.emitter = new Emitter();
+    this.$on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
+      this.emitter.on(name, callback);
+      return () => this.emitter.off(name, callback);
+    });
+    this.$once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
+      this.emitter.once(name, callback);
+      return () => this.emitter.off(name, callback);
+    });
+    this.$off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
+      if (!name) {
+        this.emitter.e = {};
+        return;
+      }
+      if (!isArray(name))
+        name = [name];
+      name.forEach((n) => this.emitter.off(n, callback));
+    });
+    this.$emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+      _this.emitter.emit(name, ...args);
+    });
   }
-  if (!isArray(name))
-    name = [name];
-  name.forEach((n) => emitter.off(n, callback));
-});
-var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
-  for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-    args[_key - 1] = arguments[_key];
-  }
-  emitter.emit(name, ...args);
-});
+}
+var eventBus = new EventBus();
+var $on = eventBus.$on;
+var $once = eventBus.$once;
+var $off = eventBus.$off;
+var $emit = eventBus.$emit;
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
   [ON_PAGE_NOT_FOUND]: [],
@@ -1413,6 +1423,16 @@ class DialogPage {
     this.route = route;
     this.component = component;
     this.$getParentPage = $getParentPage;
+    var {
+      $on: $on2,
+      $once: $once2,
+      $emit: $emit2,
+      $off: $off2
+    } = new EventBus();
+    this.$on = $on2;
+    this.$once = $once2;
+    this.$off = $off2;
+    this.$emit = $emit2;
   }
 }
 var homeDialogPages = [];

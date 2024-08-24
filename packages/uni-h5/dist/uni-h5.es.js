@@ -567,28 +567,28 @@ function initTabBarI18n(tabBar2) {
   return tabBar2;
 }
 function initBridge(subscribeNamespace) {
-  const emitter2 = new Emitter();
+  const emitter = new Emitter();
   return {
     on(event, callback) {
-      return emitter2.on(event, callback);
+      return emitter.on(event, callback);
     },
     once(event, callback) {
-      return emitter2.once(event, callback);
+      return emitter.once(event, callback);
     },
     off(event, callback) {
-      return emitter2.off(event, callback);
+      return emitter.off(event, callback);
     },
     emit(event, ...args) {
-      return emitter2.emit(event, ...args);
+      return emitter.emit(event, ...args);
     },
     subscribe(event, callback, once2 = false) {
-      emitter2[once2 ? "once" : "on"](`${subscribeNamespace}.${event}`, callback);
+      emitter[once2 ? "once" : "on"](`${subscribeNamespace}.${event}`, callback);
     },
     unsubscribe(event, callback) {
-      emitter2.off(`${subscribeNamespace}.${event}`, callback);
+      emitter.off(`${subscribeNamespace}.${event}`, callback);
     },
     subscribeHandler(event, args, pageId) {
-      emitter2.emit(`${subscribeNamespace}.${event}`, args, pageId);
+      emitter.emit(`${subscribeNamespace}.${event}`, args, pageId);
     }
   };
 }
@@ -3408,43 +3408,52 @@ const EmitProtocol = [
     required: true
   }
 ];
-const emitter = new Emitter();
-const $on = /* @__PURE__ */ defineSyncApi(
-  API_ON,
-  (name, callback) => {
-    emitter.on(name, callback);
-    return () => emitter.off(name, callback);
-  },
-  OnProtocol
-);
-const $once = /* @__PURE__ */ defineSyncApi(
-  API_ONCE,
-  (name, callback) => {
-    emitter.once(name, callback);
-    return () => emitter.off(name, callback);
-  },
-  OnceProtocol
-);
-const $off = /* @__PURE__ */ defineSyncApi(
-  API_OFF,
-  (name, callback) => {
-    if (!name) {
-      emitter.e = {};
-      return;
-    }
-    if (!isArray(name))
-      name = [name];
-    name.forEach((n) => emitter.off(n, callback));
-  },
-  OffProtocol
-);
-const $emit = /* @__PURE__ */ defineSyncApi(
-  API_EMIT,
-  (name, ...args) => {
-    emitter.emit(name, ...args);
-  },
-  EmitProtocol
-);
+class EventBus {
+  constructor() {
+    this.emitter = new Emitter();
+    this.$on = /* @__PURE__ */ defineSyncApi(
+      API_ON,
+      (name, callback) => {
+        this.emitter.on(name, callback);
+        return () => this.emitter.off(name, callback);
+      },
+      OnProtocol
+    );
+    this.$once = /* @__PURE__ */ defineSyncApi(
+      API_ONCE,
+      (name, callback) => {
+        this.emitter.once(name, callback);
+        return () => this.emitter.off(name, callback);
+      },
+      OnceProtocol
+    );
+    this.$off = /* @__PURE__ */ defineSyncApi(
+      API_OFF,
+      (name, callback) => {
+        if (!name) {
+          this.emitter.e = {};
+          return;
+        }
+        if (!isArray(name))
+          name = [name];
+        name.forEach((n) => this.emitter.off(n, callback));
+      },
+      OffProtocol
+    );
+    this.$emit = /* @__PURE__ */ defineSyncApi(
+      API_EMIT,
+      (name, ...args) => {
+        this.emitter.emit(name, ...args);
+      },
+      EmitProtocol
+    );
+  }
+}
+const eventBus = new EventBus();
+const $on = eventBus.$on;
+const $once = eventBus.$once;
+const $off = eventBus.$off;
+const $emit = eventBus.$emit;
 const validator = [
   {
     name: "id",
@@ -9773,6 +9782,18 @@ const props$q = /* @__PURE__ */ extend({}, props$r, {
     default: ""
   }
 });
+const resolveDigitDecimalPointDeleteContentBackward = (() => {
+  const iOS17BugVersions = ["17.0", "17.0.1", "17.0.2", "17.0.3", "17.1", "17.1.1", "17.1.2"];
+  {
+    const ua2 = navigator.userAgent;
+    let osVersion = "";
+    const osVersionFind = ua2.match(/OS\s([\w_]+)\slike/);
+    if (osVersionFind) {
+      osVersion = osVersionFind[1].replace(/_/g, ".");
+    }
+    return ua2.includes("iPhone OS 16") || iOS17BugVersions.includes(osVersion);
+  }
+})();
 function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -9792,7 +9813,7 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (navigator.userAgent.includes("iPhone OS 16")) {
+      if (resolveDigitDecimalPointDeleteContentBackward) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state2.value = input.value = cache.value.slice(0, -2);
           return true;
