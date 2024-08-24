@@ -240,14 +240,6 @@ function initArkTSExtApi() {
   )
   delete extApiProviderBuildJson.input['temp/uni-ext-api/index.uts']
   delete extApiProviderBuildJson.wrapper
-  // TODO 所有依赖均自动引入
-  extApiProviderBuildJson.autoImports['@dcloudio/uni-app-harmony'].push(
-    ['RequestPayment'],
-    ['RequestPaymentOptions'],
-    ['RequestPaymentFail'],
-    ['RequestPaymentSuccess'],
-    ['UniPaymentProvider']
-  )
 
   for (const extApi of fs.readdirSync(extApiDir)) {
     const extApiPath = path.resolve(extApiDir, extApi)

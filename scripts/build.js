@@ -253,16 +253,12 @@ function getProviderBuildJson (projectDir, buildJson) {
   }
 }
 
-async function buildArkTS (target, buildJson) {
+async function buildArkTS (target, buildJson, buildProvider = false) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
   const start = Date.now()
   if (!Array.isArray(buildJson)) {
     buildJson = [buildJson]
-  }
-  const providerBuildJson = getProviderBuildJson(projectDir, buildJson)
-  if (providerBuildJson) {
-    buildJson.push(providerBuildJson)
   }
   for (const options of buildJson) {
     const inputs = Object.keys(options.input);
@@ -340,9 +336,20 @@ async function buildArkTS (target, buildJson) {
       })
     }
   }
+  const extApiExportJsonPath = path.resolve(__dirname, '../packages/uni-uts-v1/lib/arkts/ext-api-export.json')
+  const extApiExport = genHarmonyExtApiExport()
   fs.outputJSON(
-    path.resolve(__dirname, '../packages/uni-uts-v1/lib/arkts/ext-api-export.json'),
-    genHarmonyExtApiExport(),
+    extApiExportJsonPath,
+    extApiExport,
     { spaces: 2 }
   )
+
+  if (!buildProvider) {
+    const providerBuildJson = getProviderBuildJson(projectDir, buildJson)
+    if (!providerBuildJson) {
+      return
+    }
+    Object.assign(providerBuildJson.autoImports, extApiExport)
+    await buildArkTS('uni-app-harmony', [providerBuildJson], true)
+  }
 }
