@@ -29,6 +29,36 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   },
 })
 
+const resolveDigitDecimalPointDeleteContentBackward = (() => {
+  const iOS17BugVersions = [
+    '17.0',
+    '17.0.1',
+    '17.0.2',
+    '17.0.3',
+    '17.1',
+    '17.1.1',
+    '17.1.2',
+  ]
+  if (__PLATFORM__ === 'app') {
+    const osVersion = plus.os.version
+    return (
+      plus.os.name === 'iOS' &&
+      !!osVersion &&
+      (parseInt(osVersion) === 16 || iOS17BugVersions.includes(osVersion))
+    )
+  }
+
+  if (__PLATFORM__ === 'h5') {
+    const ua = navigator.userAgent
+    let osVersion = ''
+    const osVersionFind = ua.match(/OS\s([\w_]+)\slike/)
+    if (osVersionFind) {
+      osVersion = osVersionFind[1].replace(/_/g, '.')
+    }
+    return ua.includes('iPhone OS 16') || iOS17BugVersions.includes(osVersion)
+  }
+})()
+
 function resolveDigitDecimalPoint(
   event: InputEvent,
   cache: Ref<string>,
@@ -56,14 +86,8 @@ function resolveDigitDecimalPoint(
         return false
       }
     } else if ((event as InputEvent).inputType === 'deleteContentBackward') {
-      // ios 16 无法删除小数
-      if (
-        (__PLATFORM__ === 'app' &&
-          plus.os.name === 'iOS' &&
-          plus.os.version &&
-          parseInt(plus.os.version) === 16) ||
-        (__PLATFORM__ === 'h5' && navigator.userAgent.includes('iPhone OS 16'))
-      ) {
+      // ios 无法删除小数
+      if (resolveDigitDecimalPointDeleteContentBackward) {
         if (cache.value.slice(-2, -1) === '.') {
           cache.value = state.value = input.value = cache.value.slice(0, -2)
           return true
