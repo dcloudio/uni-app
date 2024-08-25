@@ -15,6 +15,12 @@ import { showWebview } from './webview'
 import { registerPage } from '../../framework/page'
 import { getWebviewId } from '../../../service/framework/webview/utils'
 import { setStatusBarStyle } from '../../statusBar'
+import { invokeAfterRouteHooks, invokeBeforeRouteHooks } from './performance'
+import {
+  entryPageState,
+  navigateToPagesBeforeEntryPages,
+} from '../../framework/app'
+import { handleBeforeEntryPageRoutes, updateEntryPageIsReady } from './utils'
 
 export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   args,
@@ -27,6 +33,15 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
     animationType,
     animationDuration
   )
+  updateEntryPageIsReady(path)
+
+  if (!entryPageState.isReady) {
+    navigateToPagesBeforeEntryPages.push({
+      args,
+      handler: { resolve, reject },
+    })
+    return
+  }
   _navigateTo({
     url,
     path,
@@ -37,6 +52,8 @@ export const $navigateTo: DefineAsyncApiFn<API_TYPE_NAVIGATE_TO> = (
   })
     .then(resolve)
     .catch(reject)
+
+  handleBeforeEntryPageRoutes()
 }
 
 export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
@@ -46,7 +63,7 @@ export const navigateTo = defineAsyncApi<API_TYPE_NAVIGATE_TO>(
   NavigateToOptions
 )
 
-interface NavigateToOptions extends RouteOptions {
+export interface NavigateToOptions extends RouteOptions {
   events: Record<string, any>
   aniType: string
   aniDuration: number
@@ -60,6 +77,9 @@ function _navigateTo({
   aniType,
   aniDuration,
 }: NavigateToOptions): Promise<void | { eventChannel: EventChannel }> {
+  const currentPage = getCurrentPage()
+  const currentRouteType = currentPage == null ? 'appLaunch' : API_NAVIGATE_TO
+  invokeBeforeRouteHooks(currentRouteType)
   // 当前页面触发 onHide
   invokeHook(ON_HIDE)
   const eventChannel = new EventChannel(getWebviewId() + 1, events)
@@ -67,6 +87,7 @@ function _navigateTo({
     const noAnimation = aniType === 'none' || aniDuration === 0
     function callback(page: IPage) {
       showWebview(page, aniType, aniDuration, () => {
+        invokeAfterRouteHooks(currentRouteType)
         resolve({ eventChannel })
         setStatusBarStyle()
       })

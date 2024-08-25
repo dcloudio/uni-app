@@ -22,13 +22,16 @@
       "__UNI_FEATURE_I18N_FR__": "true",
       "__UNI_FEATURE_I18N_ZH_HANS__": "true",
       "__UNI_FEATURE_I18N_ZH_HANT__": "true",
-      "plus.os.name": "'Harmony'",
+      "plus.os.name": "'HarmonyOS'",
       "plus.os.version": "''"
     },
     "external": [
       "vue",
       {
         "source": "^@ohos.*"
+      },
+      {
+        "source": "^@hms.*"
       }
     ]
   },

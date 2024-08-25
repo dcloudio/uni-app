@@ -5,8 +5,6 @@ import {
   type SFCScriptCompileOptions,
   compileScript,
 } from '../../../src/plugins/android/uvue/sfc/compiler/compileScript'
-import { genTemplateCode } from '../../../src/plugins/android/uvue/code/template'
-import { resolveGenTemplateCodeOptions } from '../../../src/plugins/android/uvue/sfc/template'
 
 export const mockId = 'xxxxxxxx'
 
@@ -20,29 +18,12 @@ export function compileSFCScript(
   const result = compileScript(descriptor, {
     ...options,
     id: mockId,
+    root: __dirname,
     className,
     inlineTemplate: true,
     scriptAndScriptSetup: true,
+    componentType: 'component',
   })
-  if (options?.inlineTemplate) {
-    const isInline = !!descriptor.scriptSetup
-    const templateResult = genTemplateCode(
-      descriptor,
-      resolveGenTemplateCodeOptions(descriptor.filename, src, descriptor, {
-        mode: 'module',
-        inline: isInline,
-        rootDir: '',
-        className,
-        sourceMap: false,
-        bindingMetadata: result.bindings,
-        preprocessLang: descriptor.template?.lang,
-      })
-    )
-    result.content = result.content.replace(
-      `"INLINE_RENDER"`,
-      templateResult.code
-    )
-  }
   return result
 }
 

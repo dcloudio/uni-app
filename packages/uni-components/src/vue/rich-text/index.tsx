@@ -1,12 +1,12 @@
-import { ref, watch, onMounted, getCurrentInstance, h, VNode } from 'vue'
+import { type VNode, getCurrentInstance, h, onMounted, ref, watch } from 'vue'
 import { isString } from '@vue/shared'
 import {
+  type EmitEvent,
   defineBuiltInComponent,
   useCustomEvent,
-  EmitEvent,
 } from '@dcloudio/uni-components'
 import { nodeList2VNode } from './nodes-parser'
-import { props, parseHtml } from '../../components/rich-text'
+import { parseHtml, props } from '../../components/rich-text'
 import { UniElement } from '../../helpers/UniElement'
 
 export class UniRichTextElement extends UniElement {}
@@ -16,15 +16,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     MODE: 3,
   },
   props,
-  emits: [
-    'click',
-    'touchstart',
-    'touchmove',
-    'touchcancel',
-    'touchend',
-    'longpress',
-    'itemclick',
-  ],
+  emits: ['itemclick'],
   //#if _X_ && !_NODE_JS_
   rootElement: {
     name: 'uni-rich-text',

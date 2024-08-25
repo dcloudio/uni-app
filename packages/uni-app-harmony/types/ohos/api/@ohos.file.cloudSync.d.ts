@@ -172,7 +172,7 @@ declare namespace cloudSync {
         /**
          * A constructor used to create a CloudFileCache object.
          *
-         * @throws { BusinessError } 401 - The input parameter is invalid.
+         * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:Incorrect parameter types.
          * @syscap SystemCapability.FileManagement.DistributedFileService.CloudSync.Core
          * @since 11
          */
@@ -182,7 +182,8 @@ declare namespace cloudSync {
          *
          * @param { 'progress' } event - event type.
          * @param { Callback<DownloadProgress> } callback - callback function with a `DownloadProgress` argument.
-         * @throws { BusinessError } 401 - The input parameter is invalid.
+         * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:1.Mandatory parameters are left unspecified;
+         * <br>2.Incorrect parameter types.
          * @throws { BusinessError } 13600001 - IPC error
          * @syscap SystemCapability.FileManagement.DistributedFileService.CloudSync.Core
          * @since 11
@@ -193,7 +194,8 @@ declare namespace cloudSync {
          *
          * @param { 'progress' } event - event type.
          * @param { Callback<DownloadProgress> } [callback] - callback function with a `DownloadProgress` argument.
-         * @throws { BusinessError } 401 - The input parameter is invalid.
+         * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:1.Mandatory parameters are left unspecified;
+         * <br>2.Incorrect parameter types.
          * @throws { BusinessError } 13600001 - IPC error
          * @syscap SystemCapability.FileManagement.DistributedFileService.CloudSync.Core
          * @since 11
@@ -204,7 +206,8 @@ declare namespace cloudSync {
          *
          * @param { string } uri - uri of file.
          * @returns { Promise<void> } - Return Promise.
-         * @throws { BusinessError } 401 - The input parameter is invalid.
+         * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:1.Mandatory parameters are left unspecified;
+         * <br>2.Incorrect parameter types.
          * @throws { BusinessError } 13600001 - IPC error.
          * @throws { BusinessError } 13900002 - No such file or directory.
          * @throws { BusinessError } 13900025 - No space left on device.
@@ -218,7 +221,8 @@ declare namespace cloudSync {
          *
          * @param { string } uri - uri of file.
          * @param { AsyncCallback<void> } callback - Callback function.
-         * @throws { BusinessError } 401 - The input parameter is invalid.
+         * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:1.Mandatory parameters are left unspecified;
+         * <br>2.Incorrect parameter types.
          * @throws { BusinessError } 13600001 - IPC error.
          * @throws { BusinessError } 13900002 - No such file or directory.
          * @throws { BusinessError } 13900025 - No space left on device.
@@ -232,20 +236,36 @@ declare namespace cloudSync {
          *
          * @param { string } uri - uri of file.
          * @returns { Promise<void> } - Return Promise.
-         * @throws { BusinessError } 401 - The input parameter is invalid.
+         * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:1.Mandatory parameters are left unspecified;
+         * <br>2.Incorrect parameter types.
          * @throws { BusinessError } 13600001 - IPC error.
          * @throws { BusinessError } 13900002 - No such file or directory.
          * @throws { BusinessError } 14000002 - Invalid uri.
          * @syscap SystemCapability.FileManagement.DistributedFileService.CloudSync.Core
          * @since 11
          */
-        stop(uri: string): Promise<void>;
+        /**
+         * Stop the cloud file cache download task.
+         *
+         * @param { string } uri - uri of file.
+         * @param { boolean } [needClean] - whether to delete the file that already downloaded.
+         * @returns { Promise<void> } - Return Promise.
+         * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:1.Mandatory parameters are left unspecified;
+         * <br>2.Incorrect parameter types.
+         * @throws { BusinessError } 13600001 - IPC error.
+         * @throws { BusinessError } 13900002 - No such file or directory.
+         * @throws { BusinessError } 14000002 - Invalid uri.
+         * @syscap SystemCapability.FileManagement.DistributedFileService.CloudSync.Core
+         * @since 12
+         */
+        stop(uri: string, needClean?: boolean): Promise<void>;
         /**
          * Stop the cloud file cache download task with callback.
          *
          * @param { string } uri - uri of file.
          * @param { AsyncCallback<void> } callback - Callback function.
-         * @throws { BusinessError } 401 - The input parameter is invalid.
+         * @throws { BusinessError } 401 - The input parameter is invalid.Possible causes:1.Mandatory parameters are left unspecified;
+         * <br>2.Incorrect parameter types.
          * @throws { BusinessError } 13600001 - IPC error.
          * @throws { BusinessError } 13900002 - No such file or directory.
          * @throws { BusinessError } 14000002 - Invalid uri.

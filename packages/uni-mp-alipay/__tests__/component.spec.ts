@@ -74,4 +74,14 @@ describe('mp-alipay: transform component', () => {
 }`
     )
   })
+
+  test(`button chooseAvatar`, () => {
+    assert(
+      `<button open-type="chooseAvatar" @chooseavatar="onChooseAvatar" />`,
+      `<button open-type="chooseAvatar" onChooseAvatar="{{a}}"/>`,
+      `(_ctx, _cache) => {
+  return { a: _o(_ctx.onChooseAvatar) }
+}`
+    )
+  })
 })

@@ -1014,6 +1014,15 @@ declare interface Point {
  * @atomicservice
  * @since 11
  */
+/**
+ * Represents the rectangle area on the device screen.
+ *
+ * @typedef Rect
+ * @syscap SystemCapability.Test.UiTest
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare interface Rect {
     /**
      * The x-coordinate of the top left corner of the rectangle.
@@ -1029,6 +1038,15 @@ declare interface Rect {
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
+     */
+    /**
+     * The x-coordinate of the top left corner of the rectangle.
+     *
+     * @type { number }
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     readonly left: number;
     /**
@@ -1046,6 +1064,15 @@ declare interface Rect {
      * @atomicservice
      * @since 11
      */
+    /**
+     * The y-coordinate of the top left corner of the rectangle.
+     *
+     * @type { number }
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     readonly top: number;
     /**
      * The x-coordinate at the bottom right corner of the rectangle.
@@ -1062,6 +1089,15 @@ declare interface Rect {
      * @atomicservice
      * @since 11
      */
+    /**
+     * The x-coordinate at the bottom right corner of the rectangle.
+     *
+     * @type { number }
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     readonly right: number;
     /**
      * The y-coordinate at the bottom right corner of the rectangle.
@@ -1077,6 +1113,15 @@ declare interface Rect {
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
+     */
+    /**
+     * The y-coordinate at the bottom right corner of the rectangle.
+     *
+     * @type { number }
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     readonly bottom: number;
 }
@@ -1271,7 +1316,7 @@ declare interface UIEventObserver {
      *
      * @param { 'toastShow' } type -'toastShow'.
      * @param { Callback<UIElementInfo> } callback - function, returns the monitored UIElementInfo.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -1293,7 +1338,7 @@ declare interface UIEventObserver {
      *
      * @param { 'dialogShow' } type - 'dialogShow'.
      * @param { Callback<UIElementInfo> } callback - function, returns the monitored UIElementInfo.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -1316,6 +1361,15 @@ declare interface UIEventObserver {
  * @atomicservice
  * @since 11
  */
+/**
+ * Enumerates the direction for the UI operation .
+ *
+ * @enum { number }
+ * @syscap SystemCapability.Test.UiTest
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare enum UiDirection {
     /**
      * Left.
@@ -1330,6 +1384,15 @@ declare enum UiDirection {
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
+     * @test
+     */
+    /**
+     * Left.
+     *
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      * @test
      */
     LEFT = 0,
@@ -1348,6 +1411,15 @@ declare enum UiDirection {
      * @since 11
      * @test
      */
+    /**
+     * Right.
+     *
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     * @test
+     */
     RIGHT = 1,
     /**
      * Up.
@@ -1364,6 +1436,15 @@ declare enum UiDirection {
      * @since 11
      * @test
      */
+    /**
+     * Up.
+     *
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     * @test
+     */
     UP = 2,
     /**
      * Down.
@@ -1378,6 +1459,15 @@ declare enum UiDirection {
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
+     * @test
+     */
+    /**
+     * Down.
+     *
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      * @test
      */
     DOWN = 3
@@ -1460,6 +1550,14 @@ declare enum MouseButton {
  * @atomicservice
  * @since 11
  */
+/**
+ * Describes the attribute requirements for the target Components.
+ *
+ * @syscap SystemCapability.Test.UiTest
+ * @crossplatform
+ * @atomicservice
+ * @since 12
+ */
 declare class On {
     /**
      * Specifies the text for the target Component.
@@ -1490,7 +1588,7 @@ declare class On {
      * @param { string } txt - the text value.
      * @param { MatchPattern } [pattern] - the {@link MatchPattern} of the text value,Set it default {@link MatchPattern.EQUALS} if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1524,7 +1622,7 @@ declare class On {
      *
      * @param { string } id - the id value.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1558,7 +1656,7 @@ declare class On {
      *
      * @param { string } tp - The type value.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1590,9 +1688,9 @@ declare class On {
     /**
      * Specifies the clickable status of the target Component.
      *
-     * @param { boolean } [b] - the clickable status,default to true.Set it default if null or undefined.
+     * @param { boolean } [b] - the clickable status.Set it default true if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1624,9 +1722,9 @@ declare class On {
     /**
      * Specifies the longClickable status of the target Component.
      *
-     * @param { boolean } [b] - the longClickable status,default to true.Set it default if null or undefined.
+     * @param { boolean } [b] - the longClickable status.Set it default true if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1658,9 +1756,9 @@ declare class On {
     /**
      * Specifies the scrollable status of the target Component.
      *
-     * @param { boolean } [b] - the scrollable status,default to true.Set it default if null or undefined.
+     * @param { boolean } [b] - the scrollable status.Set it default true if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1692,9 +1790,9 @@ declare class On {
     /**
      * Specifies the enabled status of the target Component.
      *
-     * @param { boolean } [b] - the enabled status,default to true.Set it default if null or undefined.
+     * @param { boolean } [b] - the enabled status.Set it default true if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1726,9 +1824,9 @@ declare class On {
     /**
      * Specifies the focused status of the target Component.
      *
-     * @param { boolean } [b] - the focused status,default to true.Set it default if null or undefined.
+     * @param { boolean } [b] - the focused status.Set it default true if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1760,9 +1858,9 @@ declare class On {
     /**
      * Specifies the selected status of the target Component.
      *
-     * @param { boolean } [b] the - selected status,default to true.Set it default if null or undefined.
+     * @param { boolean } [b] the - selected status.Set it default true if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1794,9 +1892,9 @@ declare class On {
     /**
      * Specifies the checked status of the target Component.
      *
-     * @param { boolean } [b] - the checked status,default to false.Set it default if null or undefined.
+     * @param { boolean } [b] - the checked status.Set it default false if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1828,9 +1926,9 @@ declare class On {
     /**
      * Specifies the checkable status of the target Component.
      *
-     * @param { boolean } [b] - the checkable status,default to false.Set it default if null or undefined.
+     * @param { boolean } [b] - the checkable status.Set it default false if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. 1. Incorrect parameter types; 2. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1855,7 +1953,7 @@ declare class On {
      *
      * @param { On } on - describes the attribute requirements of Component which the target one is in front of.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1880,7 +1978,7 @@ declare class On {
      *
      * @param { On } on - describes the attribute requirements of Component which the target one is in back of.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1905,7 +2003,7 @@ declare class On {
      *
      * @param { On } on - describes the attribute requirements of Component which the target one is inside of.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -1928,7 +2026,7 @@ declare class On {
      *
      * @param { string } bundleName - the bundleName of the specified window.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -1941,7 +2039,7 @@ declare class On {
      * @param { string } val - the description value.
      * @param { MatchPattern } [pattern] - the {@link MatchPattern} of description value,set it default {@link MatchPattern.EQUALS} if null or undefined.
      * @returns { On } this {@link On} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -1962,6 +2060,15 @@ declare class On {
  * @syscap SystemCapability.Test.UiTest
  * @atomicservice
  * @since 11
+ * @test
+ */
+/**
+ * Represents an Component of the ohos application,user can perform operations or query attributes on it.
+ *
+ * @syscap SystemCapability.Test.UiTest
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  * @test
  */
 declare class Component {
@@ -1990,8 +2097,8 @@ declare class Component {
      * Click this {@link Component}.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2024,8 +2131,8 @@ declare class Component {
      * Double click this {@link Component}.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2058,8 +2165,8 @@ declare class Component {
      * Long click this {@link Component}.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2092,8 +2199,8 @@ declare class Component {
      * Get the id attribute value.
      *
      * @returns { Promise<string> } the id value.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2126,8 +2233,8 @@ declare class Component {
      * Get the text attribute value.
      *
      * @returns { Promise<string> } the text value.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2160,8 +2267,8 @@ declare class Component {
      * Get the type name.
      *
      * @returns { Promise<string> } the type name.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2194,8 +2301,8 @@ declare class Component {
      * Get the clickable status of this {@link Component}.
      *
      * @returns { Promise<boolean> } the clickable status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2228,8 +2335,8 @@ declare class Component {
      * Get the clickable status of this {@link Component}.
      *
      * @returns { Promise<boolean> } the clickable status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2262,8 +2369,8 @@ declare class Component {
      * Get the scrollable status of this {@link Component}.
      *
      * @returns { Promise<boolean> } the scrollable status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2296,8 +2403,8 @@ declare class Component {
      * Get the enabled status of this {@link Component}.
      *
      * @returns { Promise<boolean> } the enabled status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2330,8 +2437,8 @@ declare class Component {
      * Get the focused status of this {@link Component}.
      *
      * @returns { Promise<boolean> } the focused status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2364,8 +2471,8 @@ declare class Component {
      * Get the selected status of this {@link Component}.
      *
      * @returns { Promise<boolean> } the selected status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2398,8 +2505,8 @@ declare class Component {
      * Get the checked status of this {@link Component}.
      *
      * @returns { Promise<boolean> } the checked status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2432,8 +2539,8 @@ declare class Component {
      * Get the checkable status of this {@link Component}.
      *
      * @returns { Promise<boolean> } the checkable status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2471,9 +2578,9 @@ declare class Component {
      *
      * @param { string } text - the text to inject.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2506,12 +2613,12 @@ declare class Component {
      * Clear text of this {@link Component},applicable to TextInput.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
-     * @since 10
+     * @since 11
      * @test
      */
     clearText(): Promise<void>;
@@ -2545,9 +2652,9 @@ declare class Component {
      *
      * @param { number } [speed] - the speed of swipe(pixels per second),ranges from 200 to 40000.Set it default 600 if out of range or null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2585,9 +2692,9 @@ declare class Component {
      *
      * @param { number } [speed] - the speed of swipe(pixels per second),ranges from 200 to 40000. Set it default 600 if out of range or null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Incorrect parameter types; 2. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2625,13 +2732,13 @@ declare class Component {
      *
      * @param { On } on - the attribute requirements of the target {@link Component}.
      * @returns { Promise<Component> } the found result,or undefined if not found.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
-     * @since 10
+     * @since 11
      * @test
      */
     scrollSearch(on: On): Promise<Component>;
@@ -2654,6 +2761,18 @@ declare class Component {
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
+     * @test
+     */
+    /**
+     * Get the bounds rect of this {@link Component}.
+     *
+     * @returns { Promise<Rect> } the bounds rect object.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      * @test
      */
     getBounds(): Promise<Rect>;
@@ -2682,8 +2801,8 @@ declare class Component {
      * Get the boundsCenter of this {@link Component}.
      *
      * @returns { Promise<Point> } the boundsCenter object.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2708,9 +2827,9 @@ declare class Component {
      *
      * @param { Component } target - the target {@link Component}.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -2732,11 +2851,11 @@ declare class Component {
     /**
      * Pinch enlarge this {@link Component} to the target scale.
      *
-     * @param { number } scale - the scale of the pinch enlarge this {@link Component}'s size.
+     * @param { number } scale - the scale of the pinch enlarge this {@link Component}'s size, ranges greater than 1.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2759,11 +2878,11 @@ declare class Component {
     /**
      * Pinch shrink this {@link Component} to the target scale.
      *
-     * @param { number } scale - the scale of the pinch shrink this {@link Component}'s size.
+     * @param { number } scale - the scale of the pinch shrink this {@link Component}'s size, ranges from 0 to 1.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2775,8 +2894,8 @@ declare class Component {
      * Get the description attribute value.
      *
      * @returns { Promise<string> } the description value.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the component is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -2799,6 +2918,16 @@ declare class Component {
  * @syscap SystemCapability.Test.UiTest
  * @atomicservice
  * @since 11
+ * @test
+ */
+/**
+ * The unified facade of UiTest framework,can be used to find {@link Component},trigger keyEvents,perform
+ * coordinates-based UI actions,capture screen and so on.
+ *
+ * @syscap SystemCapability.Test.UiTest
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  * @test
  */
 declare class Driver {
@@ -2825,7 +2954,7 @@ declare class Driver {
      * Create an {@link Driver} object.
      *
      * @returns { Driver } the {@link Driver} object.
-     * @throws { BusinessError } 17000001 - if the test framework failed to initialize.
+     * @throws { BusinessError } 17000001 - Initialization failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2859,10 +2988,10 @@ declare class Driver {
     /**
      * Delay with specified duration.
      *
-     * @param { number } duration - the delay duration in milliseconds.
+     * @param { number } duration - the delay duration in milliseconds, not less than 0.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2898,8 +3027,8 @@ declare class Driver {
      *
      * @param { On } on - the attribute requirements of the target {@link Component}.
      * @returns { Promise<Component> } the first matched {@link Component} or undefined.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -2923,8 +3052,8 @@ declare class Driver {
      *
      * @param { WindowFilter } filter - the filer condition of the target {@link UiWindow}.
      * @returns { Promise<UiWindow> } the first matched {@link UiWindow} or undefined.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -2947,10 +3076,10 @@ declare class Driver {
      * Find the first matched {@link Component} on current UI during the time given.
      *
      * @param { On } on - the attribute requirements of the target {@link Component}.
-     * @param { number } time - duration of finding in milliseconds
+     * @param { number } time - duration of finding in milliseconds, not less than 0.
      * @returns { Promise<Component> } the first matched {@link Component} or undefined.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -2985,8 +3114,8 @@ declare class Driver {
      *
      * @param { On } on - the attribute requirements of the target {@link Component}.
      * @returns { Promise<Array<Component>> } the matched {@link Component}s list.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3024,9 +3153,9 @@ declare class Driver {
      *
      * @param { On } on - the attribute requirements of the target {@link Component}.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000003 - if the assertion failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000003 - Assertion failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3057,7 +3186,7 @@ declare class Driver {
      * Press the BACK key.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3081,8 +3210,8 @@ declare class Driver {
      *
      * @param { number } keyCode - the target keyCode.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3106,12 +3235,12 @@ declare class Driver {
     /**
      * Press two or three key combinations
      *
-     * @param { number } [key0] - the first keyCode,set it default 0 if null or undefined.
-     * @param { number } [key1] - the second keyCode,set it default 0 if null or undefined.
+     * @param { number } key0 - the first keyCode.
+     * @param { number } key1 - the second keyCode.
      * @param { number } [key2] - the third keyCode,set it default 0 if null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3147,11 +3276,11 @@ declare class Driver {
     /**
      * Click on the specified location on the screen.
      *
-     * @param { number } x - the x-coordinate.
-     * @param { number } y - the y-coordinate.
+     * @param { number } x - the x-coordinate, not less than 0.
+     * @param { number } y - the y-coordinate, not less than 0.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3187,11 +3316,11 @@ declare class Driver {
     /**
      * DoubleClick on the specified location on the screen.
      *
-     * @param { number } x - the x-coordinate.
-     * @param { number } y - the y-coordinate.
+     * @param { number } x - the x-coordinate, not less than 0.
+     * @param { number } y - the y-coordinate, not less than 0.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3227,11 +3356,11 @@ declare class Driver {
     /**
      * LongClick on the specified location on the screen.
      *
-     * @param { number } x - the x-coordinate.
-     * @param { number } y - the y-coordinate.
+     * @param { number } x - the x-coordinate, not less than 0.
+     * @param { number } y - the y-coordinate, not less than 0.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3273,14 +3402,14 @@ declare class Driver {
     /**
      * Swipe on the screen between the specified points.
      *
-     * @param { number } startx - the x-coordinate of the starting point.
-     * @param { number } starty - the y-coordinate of the starting point.
-     * @param { number } endx - the x-coordinate of the ending point.
-     * @param { number } endy - the y-coordinate of the ending point.
+     * @param { number } startx - the x-coordinate of the starting point, not less than 0.
+     * @param { number } starty - the y-coordinate of the starting point, not less than 0.
+     * @param { number } endx - the x-coordinate of the ending point, not less than 0.
+     * @param { number } endy - the y-coordinate of the ending point, not less than 0.
      * @param { number } [speed] - the speed of swipe(pixels per second),ranges from 200 to 40000. Set it default 600 if out of range or null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3306,14 +3435,14 @@ declare class Driver {
     /**
      * Drag on the screen between the specified points.
      *
-     * @param { number } startx - the x-coordinate of the starting point.
-     * @param { number } starty - the y-coordinate of the starting point.
-     * @param { number } endx - the x-coordinate of the ending point.
-     * @param { number } endy - the y-coordinate of the ending point.
+     * @param { number } startx - the x-coordinate of the starting point, not less than 0.
+     * @param { number } starty - the y-coordinate of the starting point, not less than 0.
+     * @param { number } endx - the x-coordinate of the ending point, not less than 0.
+     * @param { number } endy - the y-coordinate of the ending point, not less than 0.
      * @param { number } [speed] the speed of drag(pixels per second),ranges from 200 to 40000. Set it default 600 if out of range or null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3334,10 +3463,10 @@ declare class Driver {
     /**
      * Capture current screen and save as picture which PNG format.
      *
-     * @param { string } savePath - the path where to store the picture.
+     * @param { string } savePath - the path where to store the picture, must be in the application sandbox directory.
      * @returns { Promise<boolean> } true if screen-capturing and file-storing are completed successfully,false otherwise.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3360,8 +3489,8 @@ declare class Driver {
      *
      * @param { DisplayRotation } rotation - the target rotation to set.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3381,7 +3510,7 @@ declare class Driver {
      * Get the rotation of the device display.
      *
      * @returns { Promise<DisplayRotation> } the current display rotation.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3404,8 +3533,8 @@ declare class Driver {
      *
      * @param { boolean } enabled - enable the rotation or not.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3425,7 +3554,7 @@ declare class Driver {
      * Get the size of the device display.
      *
      * @returns { Promise<Point> } the size of the device display.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3445,7 +3574,7 @@ declare class Driver {
      * Get the density of the device display.
      *
      * @returns { Promise<Point> } the density of the device display.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3465,7 +3594,7 @@ declare class Driver {
      * Wake up the device display.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3485,7 +3614,7 @@ declare class Driver {
      * Press the home key.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3507,11 +3636,11 @@ declare class Driver {
     /**
      * Wait for the UI become idle.
      *
-     * @param { number } idleTime - the threshold of UI idle time, in millisecond.
-     * @param { number } timeout - the maximum time to wait for idle, in millisecond.
+     * @param { number } idleTime - the threshold of UI idle time, in millisecond, not less than 0.
+     * @param { number } timeout - the maximum time to wait for idle, in millisecond, not less than 0.
      * @returns { Promise<boolean> } true if wait for idle succeed in the timeout, false otherwise.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3555,8 +3684,8 @@ declare class Driver {
      * @param { number } stepLen - the length of each step, in pixels.
      * @param { number } [speed] - the speed of fling(pixels per second),ranges from 200 to 40000. Set it default 600 if out of range or null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3582,8 +3711,8 @@ declare class Driver {
      * @param { PointerMatrix } pointers - the two-dimensional array of pointers to inject.
      * @param { number } [speed] - the speed of swipe(pixels per second),ranges from 200 to 40000. Set it default 600 if out of range or null or undefined.
      * @returns { Promise<boolean> } true if the operation finished, false
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3609,11 +3738,25 @@ declare class Driver {
      * @param { UiDirection } direction - the direction of this action.
      * @param { number } speed - the speed of fling (pixels per second),default is 600,the value ranges from 200 to 40000,set it 600 if out of range.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 17000002 - if the async function was not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
+     * @test
+     */
+    /**
+     * Inject fling on the device display.
+     *
+     * @param { UiDirection } direction - the direction of this action.
+     * @param { number } speed - the speed of fling (pixels per second),default is 600,the value ranges from 200 to 40000,set it 600 if out of range.
+     * @returns { Promise<void> }
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @syscap SystemCapability.Test.UiTest
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      * @test
      */
     fling(direction: UiDirection, speed: number): Promise<void>;
@@ -3639,8 +3782,8 @@ declare class Driver {
      * @param { number } [key1] - the first keyCode,set it default 0 if null or undefined.
      * @param { number } [key2] - the second keyCode,set it default 0 if null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3663,8 +3806,8 @@ declare class Driver {
      *
      * @param { Point } p - the coordinate of the specified location.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3695,8 +3838,8 @@ declare class Driver {
      * @param { number } [key1] - the first keyCode,set it default 0 if null or undefined.
      * @param { number } [key2] - the second keyCode,set it default 0 if null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3713,8 +3856,8 @@ declare class Driver {
      * @param { number } [key2] - the second keyCode,set it default 0 if null or undefined.
      * @param { number } [speed] - The Speed of mouse wheel rolls(cells per second),ranges from 1 to 500.Set it default 20 if out of range or null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3736,11 +3879,11 @@ declare class Driver {
     /**
      * Capture the specified area of current screen and save as picture which PNG format.
      *
-     * @param { string } savePath - the path where to store the picture.
+     * @param { string } savePath - the path where to store the picture, must be in the application sandbox directory.
      * @param { Rect } [rect] - the specified area of current screen, default to full screen.Set it default if null or undefined.
      * @returns { Promise<boolean> } true if screen-capturing and file-storing are completed successfully,false otherwise.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3760,7 +3903,7 @@ declare class Driver {
      * Create an {@link UIEventObserver} object.
      *
      * @returns { UIEventObserver } the {@link UIEventObserver} object.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3775,8 +3918,8 @@ declare class Driver {
      * @param { number } [key1] - the first keyCode,set it default 0 if null or undefined.
      * @param { number } [key2] - the second keyCode,set it default 0 if null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3791,8 +3934,8 @@ declare class Driver {
      * @param { number } [key1] - the first keyCode,set it default 0 if null or undefined.
      * @param { number } [key2] - the second keyCode,set it default 0 if null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3806,8 +3949,8 @@ declare class Driver {
      * @param { Point } to - the ending point.
      * @param { number } [speed] - speed of swipe (pixels per second),the value ranges from 200 to 40000.Set it default 600 if out of range or null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3821,8 +3964,8 @@ declare class Driver {
      * @param { Point } to - the ending point.
      * @param { number } [speed] - speed of drag (pixels per second),the value ranges from 200 to 40000,Set it default 600 if out of range or null or undefined.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3835,8 +3978,8 @@ declare class Driver {
      * @param { Point } p - the coordinate of the specified location.
      * @param { string } text - the text to inject.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3872,8 +4015,8 @@ declare class UiWindow {
      * Get the bundle name of this {@link UiWindow}.
      *
      * @returns { Promise<string> } the bundle name.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3894,8 +4037,8 @@ declare class UiWindow {
      * Get the bounds rect of this {@link UiWindow}.
      *
      * @returns { Promise<Rect> } the bounds rect object.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -3917,8 +4060,8 @@ declare class UiWindow {
      * Get the title of this {@link UiWindow}.
      *
      * @returns { Promise<string> } the title value.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3939,8 +4082,8 @@ declare class UiWindow {
      * Get the window mode of this {@link UiWindow}.
      *
      * @returns { Promise<WindowMode> } the {@link WindowMode} object
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3961,8 +4104,8 @@ declare class UiWindow {
      * Get the focused status of this {@link UiWindow}.
      *
      * @returns { Promise<boolean> } the focused status
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -3983,8 +4126,8 @@ declare class UiWindow {
      * Get the active status of this {@link UiWindow}.
      *
      * @returns { Promise<boolean> } the actived status
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @since 11
      * @deprecated since 11
@@ -4006,8 +4149,8 @@ declare class UiWindow {
      * Set the focused status of this {@link UiWindow}.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4031,13 +4174,13 @@ declare class UiWindow {
     /**
      * Move this {@link UiWindow} to the specified points.
      *
-     * @param { number } x - the x coordinate of destination.
-     * @param { number } y - the y coordinate of destination.
+     * @param { number } x - the x coordinate of destination, not less than 0.
+     * @param { number } y - the y coordinate of destination, not less than 0.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
-     * @throws { BusinessError } 17000005 - if the action is not supported on this window.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
+     * @throws { BusinessError } 17000005 - This operation is not supported.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4066,10 +4209,10 @@ declare class UiWindow {
      * @param { number } height - the expected height of the window after resizing.
      * @param { ResizeDirection } direction - the expected direction of the window after resizing.
      * @returns { Promise<void> }
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
-     * @throws { BusinessError } 17000005 - if the action is not supported on this window.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
+     * @throws { BusinessError } 17000005 - This operation is not supported.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4091,9 +4234,9 @@ declare class UiWindow {
      * Change this {@link UiWindow} into split screen mode.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
-     * @throws { BusinessError } 17000005 - if the action is not supported on this window.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
+     * @throws { BusinessError } 17000005 - This operation is not supported.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4115,9 +4258,9 @@ declare class UiWindow {
      * Maximize this {@link UiWindow}.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
-     * @throws { BusinessError } 17000005 - if the action is not supported on this window.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
+     * @throws { BusinessError } 17000005 - This operation is not supported.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4139,9 +4282,9 @@ declare class UiWindow {
      * Minimize this {@link UiWindow}.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
-     * @throws { BusinessError } 17000005 - if the action is not supported on this window.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
+     * @throws { BusinessError } 17000005 - This operation is not supported.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4163,9 +4306,9 @@ declare class UiWindow {
      * Resume this {@link UiWindow}.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
-     * @throws { BusinessError } 17000005 - if the action is not supported on this window.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
+     * @throws { BusinessError } 17000005 - This operation is not supported.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4187,9 +4330,9 @@ declare class UiWindow {
      * Close this {@link UiWindow}.
      *
      * @returns { Promise<void> }
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
-     * @throws { BusinessError } 17000005 - if the action is not supported on this window.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
+     * @throws { BusinessError } 17000005 - This operation is not supported.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4200,8 +4343,8 @@ declare class UiWindow {
      * Get the active status of this {@link UiWindow}.
      *
      * @returns { Promise<boolean> } the active status.
-     * @throws { BusinessError } 17000002 - if the async function was not called with await.
-     * @throws { BusinessError } 17000004 - if the window is invisible or destroyed.
+     * @throws { BusinessError } 17000002 - The async function is not called with await.
+     * @throws { BusinessError } 17000004 - The window or component is invisible or destroyed.
      * @syscap SystemCapability.Test.UiTest
      * @atomicservice
      * @since 11
@@ -4242,10 +4385,10 @@ declare class PointerMatrix {
     /**
      * Create an {@link PointerMatrix} object.
      *
-     * @param { number } fingers - the number of fingers.
-     * @param { number } steps - the number of steps of each finger trace.
+     * @param { number } fingers - The number of fingers, ranges from 1 to 10.
+     * @param { number } steps - The number of steps of each finger trace, ranges from 1 to 1000.
      * @returns { PointerMatrix } the {@link PointerMatrix} object.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice
@@ -4270,7 +4413,7 @@ declare class PointerMatrix {
      * @param { number } finger - the index of target finger to set.
      * @param { number } step - the index of target step to set.
      * @param { Point } point - the coordinate of target step to set.
-     * @throws { BusinessError } 401 - if the input parameters are invalid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Test.UiTest
      * @crossplatform
      * @atomicservice

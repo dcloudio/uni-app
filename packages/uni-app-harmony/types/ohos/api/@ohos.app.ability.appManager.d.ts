@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -125,7 +125,8 @@ declare namespace appManager {
      * Is user running in stability test.
      *
      * @param { AsyncCallback<boolean> } callback - The callback is used to return true if user is running stability test.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
@@ -134,7 +135,8 @@ declare namespace appManager {
      * Is user running in stability test.
      *
      * @param { AsyncCallback<boolean> } callback - The callback is used to return true if user is running stability test.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @atomicservice
@@ -181,7 +183,8 @@ declare namespace appManager {
      * Is it a ram-constrained device
      *
      * @param { AsyncCallback<boolean> } callback - The callback is used to return true if the device is ram-constrained.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
@@ -190,7 +193,8 @@ declare namespace appManager {
      * Is it a ram-constrained device
      *
      * @param { AsyncCallback<boolean> } callback - The callback is used to return true if the device is ram-constrained.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @atomicservice
@@ -219,7 +223,8 @@ declare namespace appManager {
      * Get the memory size of the application
      *
      * @param { AsyncCallback<number> } callback - The callback is used to return the application memory size.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
@@ -228,7 +233,8 @@ declare namespace appManager {
      * Get the memory size of the application
      *
      * @param { AsyncCallback<number> } callback - The callback is used to return the application memory size.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @atomicservice
@@ -261,7 +267,8 @@ declare namespace appManager {
      *
      * @permission ohos.permission.GET_RUNNING_INFO
      * @param { AsyncCallback<Array<ProcessInformation>> } callback - The callback is used to return the array of {@link ProcessInformation}.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
@@ -270,7 +277,8 @@ declare namespace appManager {
      * Get information about the current process.
      *
      * @param { AsyncCallback<Array<ProcessInformation>> } callback - The callback is used to return the array of {@link ProcessInformation}.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @atomicservice
@@ -286,6 +294,7 @@ declare namespace appManager {
     /**
      * The class of a process information.
      *
+     * @typedef { _ProcessInformation }
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @atomicservice
      * @since 11

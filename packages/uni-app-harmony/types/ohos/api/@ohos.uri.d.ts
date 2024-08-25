@@ -71,7 +71,10 @@ declare namespace uri {
          * uri: Constructs a URI by parsing a given string.
          *
          * @param { string } uri - uri uri
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200002 - Invalid uri string.
          * @syscap SystemCapability.Utils.Lang
          * @since 8
@@ -81,7 +84,10 @@ declare namespace uri {
          * uri: Constructs a URI by parsing a given string.
          *
          * @param { string } uri - uri uri
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200002 - Invalid uri string.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -92,7 +98,10 @@ declare namespace uri {
          * uri: Constructs a URI by parsing a given string.
          *
          * @param { string } uri - uri uri
-         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types;
+         * 3.Parameter verification failed.
          * @throws { BusinessError } 10200002 - Invalid uri string.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
@@ -141,7 +150,9 @@ declare namespace uri {
          *
          * @param { URI } other - other other URI object to be compared
          * @returns { boolean } boolean Tests whether this URI is equivalent to other URI objects.
-         * @throws { BusinessError } 401 - The type of other must be URI.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @since 9
          */
@@ -150,7 +161,9 @@ declare namespace uri {
          *
          * @param { URI } other - other other URI object to be compared
          * @returns { boolean } boolean Tests whether this URI is equivalent to other URI objects.
-         * @throws { BusinessError } 401 - The type of other must be URI.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @since 10
@@ -160,7 +173,9 @@ declare namespace uri {
          *
          * @param { URI } other - other other URI object to be compared
          * @returns { boolean } boolean Tests whether this URI is equivalent to other URI objects.
-         * @throws { BusinessError } 401 - The type of other must be URI.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * 1.Mandatory parameters are left unspecified;
+         * 2.Incorrect parameter types.
          * @syscap SystemCapability.Utils.Lang
          * @crossplatform
          * @atomicservice
@@ -218,6 +233,165 @@ declare namespace uri {
          */
         normalize(): URI;
         /**
+         * Searches the query string for the first value with the given key.
+         *
+         * @param { string } key - Given the first value of the key。
+         * @returns { string } Return decoded value.
+         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        getQueryValue(key: string): string;
+        /**
+         * Encodes the key and value and then appends the result to the query string.
+         *
+         * @param { string } [key] - The key it will be encoded with.
+         * @param { string } [value] - The value it will be encoded with.
+         * @returns { URI } Return URI object.
+         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        addQueryValue(key: string, value: string): URI;
+        /**
+         * Returns a set of the unique names of all query parameters.
+         *
+         * @returns { string[] } Return a set of decoded names.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        getQueryNames(): string[];
+        /**
+         * Searches the query string for parameter values with the given key.
+         *
+         * @param { string } key - The key it will be encoded with.
+         * @returns { string[] } Return a set of decoded values.
+         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        getQueryValues(key: string): string[];
+        /**
+         * Searches the query string for the first value with the given key and interprets it as a boolean value.
+         *
+         * @param { string } key - Indicates the key value to be queried.
+         * @param { boolean } defaultValue - The default value returned when the key has no query parameters.
+         * @returns { boolean } Query with key value returns true, otherwise returns false.
+         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        getBooleanQueryValue(key: string, defaultValue: boolean): boolean;
+        /**
+         * Clears the the previously set query.
+         *
+         * @returns { URI } After clearing, return the URI object.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        clearQuery(): URI;
+        /**
+         * Gets the decoded last path segment.
+         *
+         * @returns { string } Returns the last decoded segment, or null if the path is empty.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        getLastSegment(): string;
+        /**
+         * Gets the decoded path segments.
+         *
+         * @returns { string[] } Return decoded path segments, each without a leading or trailing "/".
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        getSegment(): string[];
+        /**
+         * Encodes the given path segment and appends it to the path.
+         *
+         * @param { string } [pathSegment] - path segment to be added.
+         * @returns { URI } After adding, return the URI object.
+         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        addSegment(pathSegment: string): URI;
+        /**
+         * Creates a new Uri by appending an already-encoded path segment to a base Uri.
+         *
+         * @param { string } pathSegment - Encoding path segment to be added.
+         * @returns { URI } After adding, return the URI object.
+         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        addEncodedSegment(pathSegment: string): URI;
+        /**
+         * Determine whether URI is hierarchical.
+         *
+         * @returns { boolean } Return true as Hierarchical, otherwise return false.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        checkHierarchical(): boolean;
+        /**
+         * Determine whether URI is Opaque.
+         *
+         * @returns { boolean } Return true as Opaque, otherwise return false.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        checkOpaque(): boolean;
+        /**
+         * Determine whether URI is Relative.
+         *
+         * @returns { boolean } Return true as Relative, otherwise return false.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        checkRelative(): boolean;
+        /**
+         * Creates an opaque Uri from the given components.
+         *
+         * @param { string } scheme -  of the URI.
+         * @param { string } ssp -scheme-specific-part, everything between the scheme separator (':') and the fragment
+         * separator ('#'), which will get encoded.
+         * @param { string } fragment - fragment, everything after the '#', null if undefined, will get encoded.
+         * @returns { URI } Return Uri consisting of a given scheme, SSP, and fragment.
+         * @throws { BusinessError } 401 - if the input parameters are invalid.
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        static createFromParts(scheme: string, ssp: string, fragment: string): URI;
+        /**
          * Gets the protocol part of the URI.
          *
          * @syscap SystemCapability.Utils.Lang
@@ -237,6 +411,14 @@ declare namespace uri {
          * @crossplatform
          * @atomicservice
          * @since 11
+         */
+        /**
+         * Gets/Sets the protocol part of the URI.
+         *
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
          */
         scheme: string;
         /**
@@ -259,6 +441,14 @@ declare namespace uri {
          * @crossplatform
          * @atomicservice
          * @since 11
+         */
+        /**
+         * Gets/Sets Obtains the user information part of the URI.
+         *
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
          */
         userInfo: string;
         /**
@@ -326,6 +516,14 @@ declare namespace uri {
          * @atomicservice
          * @since 11
          */
+        /**
+         * Gets/Sets the path portion of the URI.
+         *
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
         path: string;
         /**
          * Gets the query portion of the URI
@@ -347,6 +545,14 @@ declare namespace uri {
          * @crossplatform
          * @atomicservice
          * @since 11
+         */
+        /**
+         * Gets/Sets the query portion of the URI
+         *
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
          */
         query: string;
         /**
@@ -370,6 +576,14 @@ declare namespace uri {
          * @atomicservice
          * @since 11
          */
+        /**
+         * Gets/Sets the fragment part of the URI.
+         *
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
         fragment: string;
         /**
          * Gets the decoding permission component part of this URI.
@@ -391,6 +605,14 @@ declare namespace uri {
          * @crossplatform
          * @atomicservice
          * @since 11
+         */
+        /**
+         * Gets/Sets the decoding permission component part of this URI.
+         *
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
          */
         authority: string;
         /**
@@ -414,7 +636,77 @@ declare namespace uri {
          * @atomicservice
          * @since 11
          */
+        /**
+         * Gets/Sets the decoding scheme-specific part of the URI.
+         *
+         * @type { string }
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
         ssp: string;
+        /**
+         * Gets/Sets Obtains the encoded user information part of the URI.
+         *
+         * @type { string }
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        encodedUserInfo: string;
+        /**
+         * Gets/Sets the encoded path portion of the URI.
+         *
+         * @type { string }
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        encodedPath: string;
+        /**
+         * Gets/Sets the encoded query component from this URI.
+         *
+         * @type { string }
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        encodedQuery: string;
+        /**
+         * Gets/Sets the encoded fragment part of this URI, everything after the '#'.
+         *
+         * @type { string }
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        encodedFragment: string;
+        /**
+         * Gets/Sets the encoded authority part of this URI.
+         *
+         * @type { string }
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        encodedAuthority: string;
+        /**
+         * Gets/Sets the scheme-specific part of this URI, i.e. everything between the scheme separator ':' and
+         * the fragment separator '#'.
+         *
+         * @type { string }
+         * @syscap SystemCapability.Utils.Lang
+         * @crossplatform
+         * @atomicservice
+         * @since 12
+         */
+        encodedSSP: string;
     }
 }
 export default uri;

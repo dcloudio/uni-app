@@ -84,6 +84,7 @@ export interface CompileAppOptions {
     scopedSlots: string[]
     declaration: string
   }[]
+  env?: Record<string, unknown>
 }
 
 export async function compileApp(entry: string, options: CompileAppOptions) {
@@ -137,6 +138,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     uniModules: uni_modules,
     globals: {
       envs: {
+        ...options.env,
         // 自动化测试
         NODE_ENV: process.env.NODE_ENV,
         UNI_AUTOMATOR_WS_ENDPOINT: process.env.UNI_AUTOMATOR_WS_ENDPOINT || '',
@@ -181,6 +183,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
         uniExtApiDefaultParameters: parseExtApiDefaultParameters(),
         uniExtApiProviders: options.extApiProviders,
         uvueClassNamePrefix: options.uvueClassNamePrefix || 'Gen',
+        uvueGenDefaultAs: '__sfc__',
         uniCloudObjectInfo: options.uniCloudObjectInfo,
         autoImports,
         uniModulesArtifacts: options.uniModulesArtifacts,
@@ -219,9 +222,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     const useUniCloudApi =
       result.inject_apis &&
       result.inject_apis.find((api) => api.startsWith('uniCloud.'))
-    if (!autoImportUniCloud && useUniCloudApi) {
-      throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
-    } else if (autoImportUniCloud && !useUniCloudApi) {
+    if (autoImportUniCloud && !useUniCloudApi) {
       result.inject_apis = result.inject_apis || []
       result.inject_apis.push('uniCloud.importObject')
     }
@@ -233,6 +234,10 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 
 export function uvueOutDir() {
   return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
+}
+
+export function tscOutDir() {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc')
 }
 
 function kotlinSrcDir(kotlinDir: string) {

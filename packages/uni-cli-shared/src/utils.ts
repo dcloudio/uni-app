@@ -193,9 +193,11 @@ export function isAppVue(filename: string) {
 }
 
 export function resolveAppVue(inputDir: string) {
-  const appUVue = path.resolve(inputDir, 'App.uvue')
-  if (fs.existsSync(appUVue)) {
-    return normalizePath(appUVue)
+  if (process.env.UNI_APP_X === 'true') {
+    const appUVue = path.resolve(inputDir, 'App.uvue')
+    if (fs.existsSync(appUVue)) {
+      return normalizePath(appUVue)
+    }
   }
   return normalizePath(path.resolve(inputDir, 'App.vue'))
 }
@@ -255,8 +257,11 @@ function createIdent() {
 }
 
 export function createShadowImageUrl(cdn: number, type: string = 'grey') {
-  const ident = createIdent()
-  const identStr = ident ? `${ident}/` : ''
+  let identStr = ''
+  if (process.env.UNI_PLATFORM !== 'h5' && process.env.UNI_PLATFORM !== 'web') {
+    const ident = createIdent()
+    identStr = ident ? `${ident}/` : ''
+  }
   return `https://cdn${
     (cdn || 0) + (process.env.UNI_APP_X === 'true' ? 1000 : 0) || ''
   }.dcloud.net.cn/${identStr}img/shadow-${type}.png`

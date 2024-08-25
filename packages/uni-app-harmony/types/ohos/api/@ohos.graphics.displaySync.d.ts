@@ -16,9 +16,6 @@
  * @file
  * @kit ArkGraphics2D
  */
-
-/// <reference path="../component/common.d.ts" />
-import type { ExpectedFrameRateRange } from 'ExpectedFrameRateRange';
 import type { Callback } from './@ohos.base';
 /**
  * Provides functions of applying an independent draw frame rate used for drawing the UI.
@@ -63,7 +60,10 @@ declare namespace displaySync {
          * If the function isn't be called. The DisplaySync's
          * minimum/maximum/expected rate default value is 60.
          * @param { ExpectedFrameRateRange } rateRange - Indicates ExpectedFrameRateRange.
-         * @throws { BusinessError } 401 - if parameter error
+         * @throws { BusinessError } 401 - Parameter error. Possible causes:
+         * <br> 1. Mandatory parameters are left unspecified.
+         * <br> 2. Incorrect parameters types.
+         * <br> 3. Parameter verification failed.
          * or check ExpectedFrameRateRange if valid.
          * @syscap SystemCapability.ArkUI.ArkUI.Full
          * @since 11

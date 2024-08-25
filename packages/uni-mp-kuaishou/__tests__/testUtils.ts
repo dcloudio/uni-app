@@ -1,7 +1,14 @@
-import { isMiniProgramNativeTag as isNativeTag } from '@dcloudio/uni-shared'
+import {
+  createIsCustomElement,
+  isMiniProgramNativeTag as isNativeTag,
+} from '@dcloudio/uni-shared'
 import { type CompilerOptions, compile } from '@dcloudio/uni-mp-compiler'
 
-import { compilerOptions, miniProgram } from '../src/compiler/options'
+import {
+  compilerOptions,
+  customElements,
+  miniProgram,
+} from '../src/compiler/options'
 
 export function assert(
   template: string,
@@ -14,10 +21,11 @@ export function assert(
     filename: 'foo.vue',
     prefixIdentifiers: true,
     inline: true,
-    isNativeTag,
     generatorOpts: {
       concise: true,
     },
+    isNativeTag,
+    isCustomElement: createIsCustomElement(customElements),
     miniProgram: {
       ...miniProgram,
       emitFile({ source }) {

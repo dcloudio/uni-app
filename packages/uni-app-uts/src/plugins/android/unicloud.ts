@@ -29,8 +29,7 @@ export function uniCloudPlugin(): Plugin {
         asset.source =
           asset.source +
           `
-import "io.dcloud.unicloud.InternalUniCloudConfig"
-export class UniCloudConfig extends InternalUniCloudConfig {
+export class UniCloudConfig extends io.dcloud.unicloud.InternalUniCloudConfig {
     override isDev : boolean = ${
       process.env.NODE_ENV === 'development' ? 'true' : 'false'
     }
@@ -48,7 +47,7 @@ export class UniCloudConfig extends InternalUniCloudConfig {
     )}
     override secureNetworkEnable : boolean = false
     override secureNetworkConfig ?: string = ""
-    constructor() {}
+    constructor() { super() }
 }
 `
       }

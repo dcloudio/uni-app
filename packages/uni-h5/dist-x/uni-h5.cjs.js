@@ -421,6 +421,18 @@ function setUTSJSONObjectValue(obj, key, value) {
   }
 }
 let UTSJSONObject$1 = class UTSJSONObject2 {
+  static keys(obj) {
+    return Object.keys(obj);
+  }
+  static assign(target, ...sources) {
+    for (let i = 0; i < sources.length; i++) {
+      const source = sources[i];
+      for (let key in source) {
+        target[key] = source[key];
+      }
+    }
+    return target;
+  }
   constructor(content = {}) {
     if (content instanceof Map) {
       content.forEach((value, key) => {
@@ -855,9 +867,9 @@ const INVOKE_SERVICE_API = "invokeServiceApi";
 let invokeServiceMethodId = 1;
 const invokeServiceMethod = (name, args, callback) => {
   const { subscribe, publishHandler } = UniViewJSBridge;
-  const id = callback ? invokeServiceMethodId++ : 0;
-  callback && subscribe(INVOKE_SERVICE_API + "." + id, callback, true);
-  publishHandler(INVOKE_SERVICE_API, { id, name, args });
+  const id2 = callback ? invokeServiceMethodId++ : 0;
+  callback && subscribe(INVOKE_SERVICE_API + "." + id2, callback, true);
+  publishHandler(INVOKE_SERVICE_API, { id: id2, name, args });
 };
 const viewMethods = /* @__PURE__ */ Object.create(null);
 function normalizeViewMethodName(pageId, name) {
@@ -978,9 +990,9 @@ const PAGE_META_KEYS = ["navigationBar", "pullToRefresh"];
 function initGlobalStyle() {
   return JSON.parse(JSON.stringify(__uniConfig.globalStyle || {}));
 }
-function initRouteMeta(pageMeta, id) {
+function initRouteMeta(pageMeta, id2) {
   const globalStyle = initGlobalStyle();
-  const res = shared.extend({ id }, globalStyle, pageMeta);
+  const res = shared.extend({ id: id2 }, globalStyle, pageMeta);
   PAGE_META_KEYS.forEach((name) => {
     res[name] = shared.extend({}, globalStyle[name], pageMeta[name]);
   });
@@ -1001,14 +1013,14 @@ function normalizePullToRefreshRpx(pullToRefresh) {
   return pullToRefresh;
 }
 function initPageInternalInstance(openType, url, pageQuery, meta, eventChannel, themeMode) {
-  const { id, route } = meta;
+  const { id: id2, route } = meta;
   const titleColor = uniShared.normalizeStyles(
     meta.navigationBar,
     __uniConfig.themeConfig,
     themeMode
   ).titleColor;
   return {
-    id,
+    id: id2,
     path: uniShared.addLeadingSlash(route),
     route,
     fullPath: url,
@@ -1071,16 +1083,16 @@ function publishViewMethodName(pageId) {
 }
 const invokeViewMethod = (name, args, pageId, callback) => {
   const { subscribe, publishHandler } = UniServiceJSBridge;
-  const id = callback ? invokeViewMethodId++ : 0;
-  callback && subscribe(INVOKE_VIEW_API + "." + id, callback, true);
-  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
+  const id2 = callback ? invokeViewMethodId++ : 0;
+  callback && subscribe(INVOKE_VIEW_API + "." + id2, callback, true);
+  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
 };
 const invokeViewMethodKeepAlive = (name, args, callback, pageId) => {
   const { subscribe, unsubscribe, publishHandler } = UniServiceJSBridge;
-  const id = invokeViewMethodId++;
-  const subscribeName = INVOKE_VIEW_API + "." + id;
+  const id2 = invokeViewMethodId++;
+  const subscribeName = INVOKE_VIEW_API + "." + id2;
   subscribe(subscribeName, callback);
-  publishHandler(publishViewMethodName(pageId), { id, name, args }, pageId);
+  publishHandler(publishViewMethodName(pageId), { id: id2, name, args }, pageId);
   return () => {
     unsubscribe(subscribeName);
   };
@@ -1650,6 +1662,13 @@ class UniCanvasElement extends UniElement {
   getContext(contextId, options) {
     return this.querySelector("canvas").getContext(contextId, options);
   }
+  toBlob(...args) {
+    const c = this.querySelector("canvas");
+    return c.toBlob.apply(c, args);
+  }
+  toDataURL(type, encoderOptions) {
+    return this.querySelector("canvas").toDataURL(type, encoderOptions);
+  }
 }
 const indexX$4 = /* @__PURE__ */ defineBuiltInComponent({
   inheritAttrs: true,
@@ -2136,20 +2155,20 @@ function tryCatch(fn) {
 }
 let invokeCallbackId = 1;
 const invokeCallbacks = {};
-function addInvokeCallback(id, name, callback, keepAlive = false) {
-  invokeCallbacks[id] = {
+function addInvokeCallback(id2, name, callback, keepAlive = false) {
+  invokeCallbacks[id2] = {
     name,
     keepAlive,
     callback
   };
-  return id;
+  return id2;
 }
-function invokeCallback(id, res, extras) {
-  if (typeof id === "number") {
-    const opts = invokeCallbacks[id];
+function invokeCallback(id2, res, extras) {
+  if (typeof id2 === "number") {
+    const opts = invokeCallbacks[id2];
     if (opts) {
       if (!opts.keepAlive) {
-        delete invokeCallbacks[id];
+        delete invokeCallbacks[id2];
       }
       return opts.callback(res, extras);
     }
@@ -2356,20 +2375,20 @@ function formatApiArgs(args, options) {
     }
   }
 }
-function invokeSuccess(id, name, res) {
+function invokeSuccess(id2, name, res) {
   const result = {
     errMsg: name + ":ok"
   };
   result.errSubject = name;
-  return invokeCallback(id, shared.extend(res || {}, result));
+  return invokeCallback(id2, shared.extend(res || {}, result));
 }
-function invokeFail(id, name, errMsg, errRes = {}) {
+function invokeFail(id2, name, errMsg, errRes = {}) {
   const apiErrMsg = name + ":fail" + (errMsg ? " " + errMsg : "");
   let res = shared.extend({ errMsg: apiErrMsg }, errRes);
   if (typeof UniError !== "undefined") {
     res = typeof errRes.errCode !== "undefined" ? new UniError(name, errRes.errCode, apiErrMsg) : new UniError(apiErrMsg, errRes);
   }
-  return invokeCallback(id, res);
+  return invokeCallback(id2, res);
 }
 function beforeInvokeApi(name, args, protocol, options) {
   if (process.env.NODE_ENV !== "production") {
@@ -2398,14 +2417,14 @@ function parseErrMsg(errMsg) {
 }
 function wrapperTaskApi(name, fn, protocol, options) {
   return (args) => {
-    const id = createAsyncApiCallback(name, args, options);
+    const id2 = createAsyncApiCallback(name, args, options);
     const errMsg = beforeInvokeApi(name, [args], protocol, options);
     if (errMsg) {
-      return invokeFail(id, name, errMsg);
+      return invokeFail(id2, name, errMsg);
     }
     return fn(args, {
-      resolve: (res) => invokeSuccess(id, name, res),
-      reject: (errMsg2, errRes) => invokeFail(id, name, parseErrMsg(errMsg2), errRes)
+      resolve: (res) => invokeSuccess(id2, name, res),
+      reject: (errMsg2, errRes) => invokeFail(id2, name, parseErrMsg(errMsg2), errRes)
     });
   };
 }
@@ -2585,6 +2604,22 @@ const SetNavigationBarTitleProtocol = {
 };
 const API_SHOW_NAVIGATION_BAR_LOADING = "showNavigationBarLoading";
 const API_HIDE_NAVIGATION_BAR_LOADING = "hideNavigationBarLoading";
+function getPageInstanceByVm(vm) {
+  var _a;
+  let pageInstance = vm.$.parent;
+  while (pageInstance && ((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
+function getPageInstanceByChild(child) {
+  var _a;
+  let pageInstance = child;
+  while (((_a = pageInstance.type) == null ? void 0 : _a.name) !== "Page") {
+    pageInstance = pageInstance.parent;
+  }
+  return pageInstance;
+}
 var startTag = /^<([-A-Za-z0-9_]+)((?:\s+[a-zA-Z_:][-a-zA-Z0-9_:.]*(?:\s*=\s*(?:(?:"[^"]*")|(?:'[^']*')|[^>\s]+))?)*)\s*(\/?)>/;
 var endTag = /^<\/([-A-Za-z0-9_]+)[^>]*>/;
 var attr = /([a-zA-Z_:][-a-zA-Z0-9_:.]*)(?:\s*=\s*(?:(?:"((?:\\.|[^"])*)")|(?:'((?:\\.|[^'])*)')|([^>\s]+)))?/g;
@@ -3022,7 +3057,9 @@ function useImageLoader(state, props2, rootRef, fixSize, trigger) {
         height
       } = img;
       setState(width, height, src);
-      fixSize();
+      vue.nextTick(() => {
+        fixSize();
+      });
       img.draggable = props2.draggable;
       if (draggableImg) {
         draggableImg.remove();
@@ -3330,7 +3367,6 @@ const emit = [
   ...emit$1
 ];
 function useBase(props2, rootRef, emit2) {
-  var _a;
   const fieldRef = vue.ref(null);
   const trigger = useCustomEvent(rootRef, emit2);
   const selectionStart = vue.computed(() => {
@@ -3353,7 +3389,13 @@ function useBase(props2, rootRef, emit2) {
   });
   let value = "";
   {
-    value = props2.modelValue !== void 0 ? (_a = getValueString(props2.modelValue, props2.type, maxlength.value)) != null ? _a : getValueString(props2.value, props2.type, maxlength.value) : getValueString(props2.value, props2.type, maxlength.value);
+    const modelValueString = getValueString(
+      props2.modelValue,
+      props2.type,
+      maxlength.value
+    );
+    const valueString = getValueString(props2.value, props2.type, maxlength.value);
+    value = props2.modelValue !== void 0 ? modelValueString !== null && modelValueString !== void 0 ? modelValueString : valueString : valueString;
   }
   const state = vue.reactive({
     value,
@@ -3561,6 +3603,18 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
+const resolveDigitDecimalPointDeleteContentBackward = (() => {
+  const iOS17BugVersions = ["17.0", "17.0.1", "17.0.2", "17.0.3", "17.1", "17.1.1", "17.1.2"];
+  {
+    const ua = navigator.userAgent;
+    let osVersion = "";
+    const osVersionFind = ua.match(/OS\s([\w_]+)\slike/);
+    if (osVersionFind) {
+      osVersion = osVersionFind[1].replace(/_/g, ".");
+    }
+    return ua.includes("iPhone OS 16") || iOS17BugVersions.includes(osVersion);
+  }
+})();
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -3580,7 +3634,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (navigator.userAgent.includes("iPhone OS 16")) {
+      if (resolveDigitDecimalPointDeleteContentBackward) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state.value = input.value = cache.value.slice(0, -2);
           return true;
@@ -3591,13 +3645,13 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
 }
 function useCache(props2, type) {
   if (type.value === "number") {
-    const value = props2.modelValue ?? props2.value;
-    const cache = vue.ref(typeof value !== "undefined" ? value.toLocaleString() : "");
+    const value = typeof props2.modelValue === "undefined" ? props2.value : props2.modelValue;
+    const cache = vue.ref(typeof value !== "undefined" && value !== null ? value.toLocaleString() : "");
     vue.watch(() => props2.modelValue, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     vue.watch(() => props2.value, (value2) => {
-      cache.value = typeof value2 !== "undefined" ? value2.toLocaleString() : "";
+      cache.value = typeof value2 !== "undefined" && value2 !== null ? value2.toLocaleString() : "";
     });
     return cache;
   } else {
@@ -3618,6 +3672,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
       let type2 = "";
       switch (props2.type) {
         case "text":
+          type2 = "text";
           if (props2.confirmType === "search") {
             type2 = "search";
           }
@@ -5929,7 +5984,7 @@ const index$o = /* @__PURE__ */ defineBuiltInComponent({
     MODE: 3
   },
   props: props$h,
-  emits: ["click", "touchstart", "touchmove", "touchcancel", "touchend", "longpress", "itemclick"],
+  emits: ["itemclick"],
   setup(props2, {
     emit: emit2
   }) {
@@ -6362,6 +6417,10 @@ function useScrollViewLoader(props2, state, scrollTopNumber, scrollLeftNumber, t
         state.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
+          trigger("refresherpulling", {}, {
+            deltaY: state.refresherHeight,
+            dy: state.refresherHeight
+          });
           trigger("refresherrefresh", {}, {
             dy: touchEnd.y - touchStart.y
           });
@@ -8056,6 +8115,10 @@ function handleTouchEvent(isVertical, containerRef, props2, state, trigger, emit
         state.refresherHeight = props2.refresherThreshold;
         if (!beforeRefreshing) {
           beforeRefreshing = true;
+          trigger("refresherpulling", {}, {
+            deltaY: state.refresherHeight,
+            dy: state.refresherHeight
+          });
           trigger("refresherrefresh", {}, {
             dy: touchEnd.y - touchStart.y
           });
@@ -8239,8 +8302,8 @@ function useContextInfo(_id) {
   const instance = vue.getCurrentInstance();
   const vm = instance.proxy;
   const type = vm.$options.name.toLowerCase();
-  const id = _id || vm.id || `context${index$d++}`;
-  return `${type}.${id}`;
+  const id2 = _id || vm.id || `context${index$d++}`;
+  return `${type}.${id2}`;
 }
 function injectLifecycleHook(name, hook, publicThis, instance) {
   if (shared.isFunction(hook)) {
@@ -8268,7 +8331,10 @@ function initHooks(options, instance, publicThis) {
   if (mpType === "page") {
     instance.__isVisible = true;
     try {
-      const query = instance.attrs.__pageQuery;
+      let query = instance.attrs.__pageQuery;
+      if (true) {
+        query = uniShared.decodedQuery(query);
+      }
       if (false)
         ;
       invokeHook(publicThis, uniShared.ON_LOAD, query);
@@ -8415,8 +8481,8 @@ const pageMetaKey = PolySymbol(process.env.NODE_ENV !== "production" ? "UniPageM
 function usePageMeta() {
   return vue.inject(pageMetaKey);
 }
-function providePageMeta(id) {
-  const pageMeta = initPageMeta(id);
+function providePageMeta(id2) {
+  const pageMeta = initPageMeta(id2);
   vue.provide(pageMetaKey, pageMeta);
   return pageMeta;
 }
@@ -8442,7 +8508,7 @@ function usePageRoute() {
     matched: [{ path }]
   };
 }
-function initPageMeta(id) {
+function initPageMeta(id2) {
   if (__UNI_FEATURE_PAGES__) {
     return vue.reactive(
       normalizePageMeta(
@@ -8450,7 +8516,7 @@ function initPageMeta(id) {
           JSON.stringify(
             initRouteMeta(
               vueRouter.useRoute().meta,
-              id
+              id2
             )
           )
         )
@@ -8459,7 +8525,7 @@ function initPageMeta(id) {
   }
   return vue.reactive(
     normalizePageMeta(
-      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id)))
+      JSON.parse(JSON.stringify(initRouteMeta(__uniRoutes[0].meta, id2)))
     )
   );
 }
@@ -8504,6 +8570,128 @@ function getStateId() {
     return 1;
   }
 }
+function removeNonTabBarPages() {
+  const curTabBarPageVm = getCurrentPageVm();
+  if (!curTabBarPageVm) {
+    return;
+  }
+  const pagesMap = getCurrentPagesMap();
+  const keys = pagesMap.keys();
+  for (const routeKey of keys) {
+    const page = pagesMap.get(routeKey);
+    if (!page.$.__isTabBar) {
+      removePage(routeKey);
+    } else {
+      page.$.__isActive = false;
+    }
+  }
+  if (curTabBarPageVm.$.__isTabBar) {
+    curTabBarPageVm.$.__isVisible = false;
+    invokeHook(curTabBarPageVm, uniShared.ON_HIDE);
+  }
+}
+function isSamePage(url, $page) {
+  return url === $page.fullPath || url === "/" && $page.meta.isEntry;
+}
+function getTabBarPageId(url) {
+  const pages = getCurrentPagesMap().values();
+  for (const page of pages) {
+    const $page = page.$page;
+    if (isSamePage(url, $page)) {
+      page.$.__isActive = true;
+      return $page.id;
+    }
+  }
+}
+function removeLastPage() {
+  const page = getCurrentPage();
+  if (!page) {
+    return;
+  }
+  const $page = page.$page;
+  removePage(normalizeRouteKey($page.path, $page.id));
+}
+function removeAllPages() {
+  const keys = getCurrentPagesMap().keys();
+  for (const routeKey of keys) {
+    removePage(routeKey);
+  }
+}
+function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__) {
+  if (process.env.NODE_ENV !== "production" && !__UNI_FEATURE_PAGES__) {
+    console.warn(
+      "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
+    );
+  }
+  const router = getApp().$router;
+  const { path, query } = uniShared.parseUrl(url);
+  return new Promise((resolve, reject) => {
+    const state = createPageState(type, __id__);
+    router[type === "navigateTo" ? "push" : "replace"]({
+      path,
+      query,
+      state,
+      force: true
+    }).then((failure) => {
+      if (vueRouter.isNavigationFailure(failure)) {
+        return reject(failure.message);
+      }
+      if (type === "switchTab") {
+        router.currentRoute.value.meta.tabBarText = tabBarText;
+      }
+      if (type === "navigateTo") {
+        const meta = router.currentRoute.value.meta;
+        if (!meta.eventChannel) {
+          meta.eventChannel = new uniShared.EventChannel(state.__id__, events);
+        } else if (events) {
+          Object.keys(events).forEach((eventName) => {
+            meta.eventChannel._addListener(
+              eventName,
+              "on",
+              events[eventName]
+            );
+          });
+          meta.eventChannel._clearCache();
+        }
+        return isAutomatedTesting ? resolve({
+          __id__: state.__id__
+        }) : resolve({
+          eventChannel: meta.eventChannel
+        });
+      }
+      return isAutomatedTesting ? resolve({ __id__: state.__id__ }) : resolve();
+    });
+  });
+}
+function handleBeforeEntryPageRoutes() {
+  if (entryPageState.handledBeforeEntryPageRoutes) {
+    return;
+  }
+  entryPageState.handledBeforeEntryPageRoutes = true;
+  const navigateToPages = [...navigateToPagesBeforeEntryPages];
+  navigateToPagesBeforeEntryPages.length = 0;
+  navigateToPages.forEach(
+    ({ args, resolve, reject }) => (
+      // @ts-expect-error
+      navigate(args).then(resolve).catch(reject)
+    )
+  );
+  const switchTabPages = [...switchTabPagesBeforeEntryPages];
+  switchTabPagesBeforeEntryPages.length = 0;
+  switchTabPages.forEach(
+    ({ args, resolve, reject }) => (removeNonTabBarPages(), navigate(args, getTabBarPageId(args.url)).then(resolve).catch(reject))
+  );
+  const redirectToPages = [...redirectToPagesBeforeEntryPages];
+  redirectToPagesBeforeEntryPages.length = 0;
+  redirectToPages.forEach(
+    ({ args, resolve, reject }) => (removeLastPage(), navigate(args).then(resolve).catch(reject))
+  );
+  const reLaunchPages = [...reLaunchPagesBeforeEntryPages];
+  reLaunchPagesBeforeEntryPages.length = 0;
+  reLaunchPages.forEach(
+    ({ args, resolve, reject }) => (removeAllPages(), navigate(args).then(resolve).catch(reject))
+  );
+}
 let tabBar;
 function useTabBar() {
   if (!tabBar) {
@@ -8517,12 +8705,23 @@ function normalizeWindowBottom(windowBottom) {
 }
 const SEP = "$$";
 const currentPagesMap = /* @__PURE__ */ new Map();
+const homeDialogPages = [];
+const entryPageState = {
+  handledBeforeEntryPageRoutes: false
+};
+const navigateToPagesBeforeEntryPages = [];
+const switchTabPagesBeforeEntryPages = [];
+const redirectToPagesBeforeEntryPages = [];
+const reLaunchPagesBeforeEntryPages = [];
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id2) => {
     if (page.$.isUnmounted) {
       currentPagesMap.delete(id2);
     }
   });
+}
+function getCurrentPagesMap() {
+  return currentPagesMap;
 }
 function getCurrentPages$1() {
   const curPages = [];
@@ -8538,6 +8737,33 @@ function getCurrentPages$1() {
   }
   return curPages;
 }
+function removeRouteCache(routeKey) {
+  const vnode = pageCacheMap.get(routeKey);
+  if (vnode) {
+    pageCacheMap.delete(routeKey);
+    routeCache.pruneCacheEntry(vnode);
+  }
+}
+function removePage(routeKey, removeRouteCaches = true) {
+  const pageVm = currentPagesMap.get(routeKey);
+  {
+    const dialogPages = pageVm.$getDialogPages();
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      uni.closeDialogPage({ dialogPage: dialogPages[i] });
+    }
+  }
+  pageVm.$.__isUnload = true;
+  invokeHook(pageVm, uniShared.ON_UNLOAD);
+  currentPagesMap.delete(routeKey);
+  removeRouteCaches && removeRouteCache(routeKey);
+}
+let id = /* @__PURE__ */ getStateId();
+function createPageState(type, __id__) {
+  return {
+    __id__: __id__ || ++id,
+    __type__: type
+  };
+}
 function initPublicPage(route) {
   const meta = usePageMeta();
   if (!__UNI_FEATURE_PAGES__) {
@@ -8550,6 +8776,7 @@ function initPublicPage(route) {
   return initPageInternalInstance("navigateTo", fullPath, {}, meta);
 }
 function initPage(vm) {
+  var _a;
   const route = vm.$route;
   const page = initPublicPage(route);
   initPageVm(vm, page);
@@ -8596,8 +8823,37 @@ function initPage(vm) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
+    vm.$getDialogPages = () => {
+      var _a2;
+      return ((_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPages.value) || [];
+    };
+    vm.$getParentPage = () => {
+      var _a2, _b;
+      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
+    };
+    vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
   }
-  currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+  {
+    const pageInstance = getPageInstanceByVm(vm);
+    if ((pageInstance == null ? void 0 : pageInstance.attrs.type) !== "dialog") {
+      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm);
+      if (currentPagesMap.size === 1) {
+        setTimeout(() => {
+          handleBeforeEntryPageRoutes();
+        }, 0);
+        if (homeDialogPages.length) {
+          homeDialogPages.forEach((dialogPage) => {
+            dialogPage.$getParentPage = () => vm;
+            pageInstance.$dialogPages.value.push(dialogPage);
+          });
+          homeDialogPages.length = 0;
+        }
+      }
+    } else {
+      pageInstance.$dialogPage.$vm = vm;
+    }
+    return;
+  }
 }
 function normalizeRouteKey(path, id2) {
   return path + SEP + id2;
@@ -8665,12 +8921,12 @@ function initRouter(app) {
   app.use(router);
 }
 let positionStore = /* @__PURE__ */ Object.create(null);
-function getTabBarScrollPosition(id) {
-  return positionStore[id];
+function getTabBarScrollPosition(id2) {
+  return positionStore[id2];
 }
-function saveTabBarScrollPosition(id) {
+function saveTabBarScrollPosition(id2) {
   if (typeof window !== "undefined") {
-    positionStore[id] = {
+    positionStore[id2] = {
       left: window.pageXOffset,
       top: window.pageYOffset
     };
@@ -8798,9 +9054,9 @@ function wrapperComponentSetup(comp, { clone, init, setup, before }) {
   comp.setup = (props2, ctx) => {
     const instance = vue.getCurrentInstance();
     init(instance.proxy);
-    const query = setup(instance);
+    setup(instance);
     if (oldSetup) {
-      return oldSetup(query || props2, ctx);
+      return oldSetup(props2, ctx);
     }
   };
   return comp;
@@ -8811,11 +9067,11 @@ function setupComponent(comp, options) {
   }
   return wrapperComponentSetup(comp, options);
 }
-function setupWindow(comp, id) {
+function setupWindow(comp, id2) {
   return setupComponent(comp, {
     init: (vm) => {
       vm.$page = {
-        id
+        id: id2
       };
     },
     setup(instance) {
@@ -8836,6 +9092,14 @@ function setupPage(comp) {
       const route = usePageRoute();
       const query = uniShared.decodedQuery(route.query);
       instance.attrs.__pageQuery = query;
+      {
+        const pageInstance = getPageInstanceByChild(instance);
+        if (pageInstance.attrs.type === "dialog") {
+          instance.attrs.__pageQuery = uniShared.decodedQuery(
+            uniShared.parseQuery(pageInstance.attrs.route.split("?")[1] || "")
+          );
+        }
+      }
       instance.proxy.$page.options = query;
       instance.proxy.options = query;
       {
@@ -9800,8 +10064,8 @@ const props$7 = {
     default: ""
   }
 };
-function useMarkerLabelStyle(id) {
-  const className = "uni-map-marker-label-" + id;
+function useMarkerLabelStyle(id2) {
+  const className = "uni-map-marker-label-" + id2;
   const styleEl = document.createElement("style");
   styleEl.id = className;
   document.head.appendChild(styleEl);
@@ -9823,9 +10087,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
   name: "MapMarker",
   props: props$7,
   setup(props2) {
-    const id = String(!isNaN(Number(props2.id)) ? props2.id : "");
+    const id2 = String(!isNaN(Number(props2.id)) ? props2.id : "");
     const onMapReady = vue.inject("onMapReady");
-    const updateMarkerLabelStyle = useMarkerLabelStyle(id);
+    const updateMarkerLabelStyle = useMarkerLabelStyle(id2);
     let marker;
     function removeMarkerCallout(callout) {
       if (getIsAMap()) {
@@ -9987,7 +10251,7 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               callout.setOption(calloutStyle);
             } else {
               if (getIsAMap()) {
-                const callback = (id2) => {
+                const callback = () => {
                   if (id2 !== "") {
                     trigger("callouttap", {}, {
                       markerId: Number(id2)
@@ -9998,9 +10262,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
               } else {
                 callout = marker.callout = new maps.Callout(calloutStyle);
                 callout.div.onclick = function($event) {
-                  if (id !== "") {
+                  if (id2 !== "") {
                     trigger("callouttap", $event, {
-                      markerId: Number(id)
+                      markerId: Number(id2)
                     });
                   }
                   $event.stopPropagation();
@@ -10062,9 +10326,9 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
                 }
               }
             }
-            if (id) {
+            if (id2) {
               trigger("markertap", {}, {
-                markerId: Number(id),
+                markerId: Number(id2),
                 latitude: props3.latitude,
                 longitude: props3.longitude
               });
@@ -10075,11 +10339,11 @@ const MapMarker = /* @__PURE__ */ defineSystemComponent({
       addMarker(props2);
       vue.watch(props2, updateMarker);
     });
-    if (id) {
+    if (id2) {
       const addMapChidlContext = vue.inject("addMapChidlContext");
       vue.inject("removeMapChidlContext");
       const context = {
-        id,
+        id: id2,
         translate(data) {
           onMapReady((map, maps, trigger) => {
             const destination = data.destination;
@@ -10800,7 +11064,7 @@ function useMap(props2, rootRef, emit2) {
     }
   }
   try {
-    const id = useContextInfo();
+    const id2 = useContextInfo();
     useSubscribe((type, data = {}) => {
       switch (type) {
         case "getCenterLocation":
@@ -10888,7 +11152,7 @@ function useMap(props2, rootRef, emit2) {
           });
           break;
       }
-    }, id, true);
+    }, id2, true);
   } catch (error) {
   }
   vue.provide("onMapReady", onMapReady);
@@ -13019,7 +13283,7 @@ function usePageHeadTransparentBackgroundColor(backgroundColor) {
   return `rgba(${r},${g2},${b},0)`;
 }
 function usePageHeadTransparent(headRef, {
-  id,
+  id: id2,
   navigationBar: { titleColor, coverage, backgroundColor }
 }) {
   vue.computed(() => hexToRgba(backgroundColor));
@@ -13247,7 +13511,7 @@ function usePageHead(navigationBar) {
   };
 }
 function usePageHeadButtons({
-  id,
+  id: id2,
   navigationBar
 }) {
   const left = [];
@@ -13271,7 +13535,7 @@ function usePageHeadButtons({
         }
         btn.fontFamily = fontFamily;
       }
-      const pageHeadBtn = usePageHeadButton(id, index2, btn, isTransparent);
+      const pageHeadBtn = usePageHeadButton(id2, index2, btn, isTransparent);
       if (btn.float === "left") {
         left.push(pageHeadBtn);
       } else {
@@ -13325,7 +13589,7 @@ function usePageHeadButton(pageId, index2, btn, isTransparent) {
   });
 }
 function usePageHeadSearchInput({
-  id,
+  id: id2,
   navigationBar: {
     searchInput
   }
@@ -13338,7 +13602,7 @@ function usePageHeadSearchInput({
   } = searchInput;
   if (disabled) {
     const onClick = () => {
-      invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
+      invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED);
     };
     return {
       focus,
@@ -13349,24 +13613,24 @@ function usePageHeadSearchInput({
   }
   const onFocus = () => {
     focus.value = true;
-    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: true
     });
   };
   const onBlur = () => {
     focus.value = false;
-    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED, {
       focus: false
     });
   };
   const onInput = (evt) => {
     text.value = evt.detail.value;
-    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED, {
       text: text.value
     });
   };
   const onConfirm = (evt) => {
-    invokeHook(id, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
+    invokeHook(id2, uniShared.ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED, {
       text: text.value
     });
   };
@@ -13478,8 +13742,24 @@ const index = /* @__PURE__ */ defineSystemComponent({
     const navigationBar = pageMeta.navigationBar;
     const pageStyle = {};
     useDocumentTitle(pageMeta);
+    const currentInstance = vue.getCurrentInstance();
+    currentInstance.$dialogPages = vue.ref([]);
     {
       useBackgroundColorContent(pageMeta);
+      if (ctx.attrs.type === "dialog") {
+        navigationBar.style = "custom";
+        pageMeta.route = ctx.attrs.route;
+        const parentInstance = vue.inject(
+          "parentInstance"
+        );
+        if (currentInstance && parentInstance) {
+          currentInstance.$parentInstance = parentInstance;
+          const parentDialogPages = parentInstance.$dialogPages.value;
+          currentInstance.$dialogPage = parentDialogPages[parentDialogPages.length - 1];
+        }
+      } else {
+        vue.provide("parentInstance", currentInstance);
+      }
     }
     return () => vue.createVNode(
       "uni-page",
@@ -13487,7 +13767,14 @@ const index = /* @__PURE__ */ defineSystemComponent({
         "data-page": pageMeta.route,
         style: pageStyle
       },
-      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [vue.createVNode(PageHead), createPageBodyVNode(ctx)] : [createPageBodyVNode(ctx)]
+      __UNI_FEATURE_NAVIGATIONBAR__ && navigationBar.style !== "custom" ? [
+        vue.createVNode(PageHead),
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(currentInstance.$dialogPages)
+      ] : [
+        createPageBodyVNode(ctx),
+        createDialogPageVNode(currentInstance.$dialogPages)
+      ]
     );
   }
 });
@@ -13499,6 +13786,33 @@ function createPageBodyVNode(ctx) {
       default: vue.withCtx(() => [vue.renderSlot(ctx.slots, "page")]),
       _: 3
     }
+  );
+}
+function createDialogPageVNode(dialogPages) {
+  return vue.openBlock(true), vue.createElementBlock(
+    vue.Fragment,
+    null,
+    vue.renderList(dialogPages.value, (dialogPage) => {
+      return vue.openBlock(), vue.createBlock(
+        vue.createVNode(
+          dialogPage.component,
+          {
+            key: dialogPage.route,
+            style: {
+              position: "fixed",
+              "z-index": 999,
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0
+            },
+            type: "dialog",
+            route: dialogPage.route
+          },
+          null
+        )
+      );
+    })
   );
 }
 exports.Ad = index$6;

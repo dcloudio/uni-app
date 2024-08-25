@@ -135,6 +135,14 @@ const directiveTransforms = {
     on: transformOn,
     model: transformModel,
 };
+const customElements = [
+    'playlet',
+    'ad',
+    'follow-service',
+    'payment-list',
+    'web-view',
+    'playlet',
+];
 const compilerOptions = {
     nodeTransforms,
     directiveTransforms,
@@ -189,7 +197,7 @@ const options = {
         config: ['project.ks.json'],
         source,
     },
-    template: Object.assign(Object.assign({}, miniProgram), { filter: undefined, extname: '.ksml', compilerOptions }),
+    template: Object.assign(Object.assign({}, miniProgram), { customElements, filter: undefined, extname: '.ksml', compilerOptions }),
     style: {
         extname: '.css',
     },

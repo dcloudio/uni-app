@@ -156,4 +156,40 @@ export interface Configuration {
      * @since 11
      */
     hasPointerDevice?: boolean;
+    /**
+     * Indicates the font size scale.
+     *
+     * @type { ?number }
+     * @syscap SystemCapability.Ability.AbilityBase
+     * @atomicservice
+     * @since 12
+     */
+    fontSizeScale?: number;
+    /**
+     * Indicates the font weight scale.
+     *
+     * @type { ?number }
+     * @syscap SystemCapability.Ability.AbilityBase
+     * @atomicservice
+     * @since 12
+     */
+    fontWeightScale?: number;
+    /**
+     * Indicates the mobile country code.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.Ability.AbilityBase
+     * @atomicservice
+     * @since 12
+     */
+    mcc?: string;
+    /**
+     * Indicates the mobile network code.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.Ability.AbilityBase
+     * @atomicservice
+     * @since 12
+     */
+    mnc?: string;
 }

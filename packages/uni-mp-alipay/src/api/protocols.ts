@@ -30,10 +30,24 @@ function handleNetworkInfo(
   }
 }
 
+function reviseScreenSize(
+  fromRes: my.IGetSystemInfoSuccessResult & {
+    screen?: { width: number; height: number }
+  },
+  toRes: UniApp.GetSystemInfoResult
+) {
+  // 支付宝: 10.2.0+ 修正屏幕宽度和高度 https://opendocs.alipay.com/mini/api/gawhvz
+  if (fromRes.screen) {
+    toRes.screenWidth = fromRes.screen.width
+    toRes.screenHeight = fromRes.screen.height
+  }
+}
+
 function handleSystemInfo(
   fromRes: my.IGetSystemInfoSuccessResult,
   toRes: UniApp.GetSystemInfoResult
 ) {
+  reviseScreenSize(fromRes, toRes)
   addSafeAreaInsets(fromRes, toRes)
   useDeviceId({
     getStorageSync: getStorageSync as Uni['getStorageSync'],

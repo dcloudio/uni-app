@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Provides a way to control the process.
  *
  * @since 8
@@ -131,6 +135,55 @@ declare class TextTimerController {
      * @form
      */
     reset();
+}
+/**
+ * TextTimerConfiguration used by content modifier.
+ *
+ * @interface TextTimerConfiguration
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface TextTimerConfiguration extends CommonConfiguration<TextTimerConfiguration> {
+    /**
+     * Specifies the timer range.
+     * In the non-countDown scenario, a negative value indicates that the timer is not limited.
+     * The unit is millisecond.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    count: number;
+    /**
+     * Texttimer is isCountDown or not.
+     *
+     * @type { boolean }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    isCountDown: boolean;
+    /**
+     * Texttimer is started or not.
+     *
+     * @type { boolean }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    started: boolean;
+    /**
+     * Elapsed time of the timer, readonly.
+     * The unit is millisecond.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    elapsedTime: number;
 }
 /**
  * Defines the options of TextTimer.
@@ -553,7 +606,27 @@ declare class TextTimerAttribute extends CommonMethod<TextTimerAttribute> {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Called when the text shadow is set.
+     *
+     * @param { ShadowOptions | Array<ShadowOptions> } value - The shadow options.
+     * @returns { TextTimerAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     textShadow(value: ShadowOptions | Array<ShadowOptions>): TextTimerAttribute;
+    /**
+     * Set the content modifier of texttimer.
+     *
+     * @param { ContentModifier<TextTimerConfiguration> } modifier - The content modifier of texttimer.
+     * @returns { TextTimerAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    contentModifier(modifier: ContentModifier<TextTimerConfiguration>): TextTimerAttribute;
 }
 /**
  * Defines TextTimer Component.

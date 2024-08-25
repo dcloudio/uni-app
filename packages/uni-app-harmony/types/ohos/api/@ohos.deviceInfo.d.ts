@@ -205,6 +205,7 @@ declare namespace deviceInfo {
     const hardwareProfile: string;
     /**
      * Obtains the device serial number represented by a string.
+     * This API can be called only by system applications.
      *
      * @permission ohos.permission.sec.ACCESS_UDID
      * @constant
@@ -541,6 +542,7 @@ declare namespace deviceInfo {
     const buildRootHash: string;
     /**
      * Obtains the device udid.
+     * This API can be called only by system applications.
      *
      * @permission ohos.permission.sec.ACCESS_UDID
      * @constant
@@ -592,5 +594,25 @@ declare namespace deviceInfo {
      * @since 10
      */
     const distributionOSReleaseType: string;
+    /**
+     * Open Device Identifier (ODID): a developer-level non-permanent device identifier.
+     * A developer can be an enterprise or individual developer.
+     * Example: dff3cdfd-7beb-1e7d-fdf7-1dbfddd7d30c
+     *
+     * An ODID will be regenerate in the following scenarios:
+     * Restore a phone to its factory settings.
+     * Uninstall and reinstall all apps of one developer on one device.
+     *
+     * An ODID is generated based on the following rules:
+     * For apps from the same developer, which are running on the same device, they have the same ODID.
+     * For apps from different developers, which are running on the same device, each of them has its own ODID.
+     * For apps from the same developer, which are running on different devices, each of them has its own ODID.
+     * For apps from different developers, which are running on different devices, each of them has its own ODID.
+     *
+     * @constant
+     * @syscap SystemCapability.Startup.SystemInfo
+     * @since 12
+     */
+    const ODID: string;
 }
 export default deviceInfo;

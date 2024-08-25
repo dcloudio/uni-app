@@ -14,6 +14,10 @@ import { registerPage } from '../../framework/page/register'
 import { getAllPages } from '../../../service/framework/page/getCurrentPages'
 import { closePage } from './utils'
 import { setStatusBarStyle } from '../../statusBar'
+import {
+  entryPageState,
+  reLaunchPagesBeforeEntryPages,
+} from '../../framework/app'
 
 interface ReLaunchOptions extends RouteOptions {}
 
@@ -22,6 +26,13 @@ export const $reLaunch: DefineAsyncApiFn<API_TYPE_RE_LAUNCH> = (
   { resolve, reject }
 ) => {
   const { path, query } = parseUrl(url)
+  if (!entryPageState.isReady) {
+    reLaunchPagesBeforeEntryPages.push({
+      args: { url },
+      handler: { resolve, reject },
+    })
+    return
+  }
   _reLaunch({
     url,
     path,

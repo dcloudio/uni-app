@@ -381,6 +381,15 @@ declare namespace formInfo {
          * @since 11
          */
         transparencyEnabled: boolean;
+        /**
+         * Obtains the shape supported by this form.
+         *
+         * @type { Array<number> }
+         * @syscap SystemCapability.Ability.Form
+         * @atomicservice
+         * @since 12
+         */
+        supportedShapes: Array<number>;
     }
     /**
      * Type of form.
@@ -883,6 +892,18 @@ declare namespace formInfo {
          */
         PARAM_FORM_CUSTOMIZE_KEY = 'ohos.extra.param.key.form_customize',
         /**
+         * Indicates the key specifying the form location, which is represented as
+         * want: {
+         *   "parameters": {
+         *       FORM_LOCATION_KEY: FormLocation.DESKTOP
+         *    }
+         * }.
+         *
+         * @syscap SystemCapability.Ability.Form
+         * @since 12
+         */
+        FORM_LOCATION_KEY = 'ohos.extra.param.key.form_location',
+        /**
          * Indicates the key specifying the form rendering mode, which is represented as
          * want: {
          *   "parameters": {
@@ -893,7 +914,58 @@ declare namespace formInfo {
          * @syscap SystemCapability.Ability.Form
          * @since 11
          */
-        FORM_RENDERING_MODE_KEY = 'ohos.extra.param.key.form_rendering_mode'
+        /**
+         * Indicates the key specifying the form rendering mode, which is represented as
+         * want: {
+         *   "parameters": {
+         *       FORM_RENDERING_MODE_KEY: FormRenderingMode.SINGLE_COLOR
+         *    }
+         * }.
+         *
+         * @syscap SystemCapability.Ability.Form
+         * @atomicservice
+         * @since 12
+         */
+        FORM_RENDERING_MODE_KEY = 'ohos.extra.param.key.form_rendering_mode',
+        /**
+         * Indicates the key specifying the inverse of the host background color, which is represented as
+         * want: {
+         *   "parameters": {
+         *       HOST_BG_INVERSE_COLOR_KEY: "#FF000000"
+         *    }
+         * }.
+         *
+         * @syscap SystemCapability.Ability.Form
+         * @atomicservice
+         * @since 12
+         */
+        HOST_BG_INVERSE_COLOR_KEY = 'ohos.extra.param.key.host_bg_inverse_color',
+        /**
+         * Indicates the key specifying the user granted permission name, which is represented as
+         * want: {
+         *   "parameters": {
+         *       FORM_PERMISSION_NAME_KEY: "permissionName"
+         *    }
+         * }.
+         *
+         * @syscap SystemCapability.Ability.Form
+         * @atomicservice
+         * @since 12
+         */
+        FORM_PERMISSION_NAME_KEY = 'ohos.extra.param.key.permission_name',
+        /**
+         * Indicates the key specifying whether the user granted, which is represented as
+         * want: {
+         *   "parameters": {
+         *       FORM_PERMISSION_GRANTED_KEY: true
+         *    }
+         * }.
+         *
+         * @syscap SystemCapability.Ability.Form
+         * @atomicservice
+         * @since 12
+         */
+        FORM_PERMISSION_GRANTED_KEY = 'ohos.extra.param.key.permission_granted'
     }
     /**
      * The optional options used as filters to ask
@@ -1025,7 +1097,41 @@ declare namespace formInfo {
          * @atomicservice
          * @since 11
          */
-        DIMENSION_1_1
+        DIMENSION_1_1,
+        /**
+         * 6 x 4 form
+         *
+         * @syscap SystemCapability.Ability.Form
+         * @atomicservice
+         * @since 12
+         */
+        DIMENSION_6_4
+    }
+    /**
+    * Defines the FormShape enum.
+    *
+    * @enum { number }
+    * @syscap SystemCapability.Ability.Form
+    * @atomicservice
+    * @since 12
+    */
+    enum FormShape {
+        /**
+         * The rect shape.
+         *
+         * @syscap SystemCapability.Ability.Form
+         * @atomicservice
+         * @since 12
+         */
+        RECT = 1,
+        /**
+         * The circle shape.
+         *
+         * @syscap SystemCapability.Ability.Form
+         * @atomicservice
+         * @since 12
+         */
+        CIRCLE
     }
     /**
      * The visibility of a form.

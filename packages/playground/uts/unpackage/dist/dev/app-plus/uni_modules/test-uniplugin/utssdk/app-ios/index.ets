@@ -58,9 +58,9 @@ class Test {
     }
 }
 async function testAsync() {
-    .showToast();
-    .showToast();
-    .showModel();
+    uni.showToast();
+    uni.showToast();
+    uni.showModel();
     return {
         a: 1
     };

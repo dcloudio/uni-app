@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Enum for the mode of the tab bar when selected.
  *
  * @enum { number }
@@ -412,6 +416,79 @@ declare interface LabelStyle {
      * @since 11
      */
     font?: Font;
+    /**
+     * The text color of the selected tab bar.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    selectedColor?: ResourceColor;
+    /**
+     * The text color of the unselected tab bar.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    unselectedColor?: ResourceColor;
+}
+/**
+ * TabBarIconStyle object.
+ *
+ * @interface TabBarIconStyle
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface TabBarIconStyle {
+    /**
+     * The icon color of the selected tab bar.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    selectedColor?: ResourceColor;
+    /**
+     * The icon color of the unselected tab bar.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    unselectedColor?: ResourceColor;
+}
+/**
+ * TabBarSymbol object.
+ *
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare class TabBarSymbol {
+    /**
+     * The properties of the symbol icon in the tab bar need to be unselected.
+     *
+     * @type { SymbolGlyphModifier }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    normal: SymbolGlyphModifier;
+    /**
+     * The properties of the symbol icon in the tab bar need to be selected.
+     *
+     * @type { ?SymbolGlyphModifier }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    selected?: SymbolGlyphModifier;
 }
 /**
  * Define SubTabBarStyle, the style is text and underline.
@@ -461,6 +538,16 @@ declare class SubTabBarStyle {
      */
     constructor(content: ResourceStr);
     /**
+     * constructor.
+     *
+     * @param { ResourceStr | ComponentContent } content - indicates the content of the sub tab bar
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    constructor(content: ResourceStr | ComponentContent);
+    /**
      * constructor
      *
      * @param { ResourceStr } content - indicates the content of the sub tab bar
@@ -482,6 +569,18 @@ declare class SubTabBarStyle {
      * @since 11
      */
     static of(content: ResourceStr): SubTabBarStyle;
+    /**
+     * Create a content object of the sub tab bar
+     *
+     * @param { ResourceStr | ComponentContent } content - indicates the content of the sub tab bar
+     * @returns { SubTabBarStyle } the style of the sub tab bar
+     * @static
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    static of(content: ResourceStr | ComponentContent): SubTabBarStyle;
     /**
      * Set the style of the indicator when selected
      *
@@ -591,6 +690,16 @@ declare class SubTabBarStyle {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Set an id to the sub tab bar to identify it
+     *
+     * @param { string } value - id of the sub tab bar to identify it
+     * @returns { SubTabBarStyle } the style of the sub tab bar
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     id(value: string): SubTabBarStyle;
 }
 /**
@@ -642,7 +751,16 @@ declare class BottomTabBarStyle {
      * @atomicservice
      * @since 11
      */
-    constructor(icon: ResourceStr, text: ResourceStr);
+    /**
+     * constructor.
+     *
+     * @param { ResourceStr | TabBarSymbol } icon - indicates the icon of the bottom tab bar
+     * @param { ResourceStr } text - indicates the text of the bottom tab bar
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    constructor(icon: ResourceStr | TabBarSymbol, text: ResourceStr);
     /**
      * of.
      *
@@ -666,7 +784,18 @@ declare class BottomTabBarStyle {
      * @atomicservice
      * @since 11
      */
-    static of(icon: ResourceStr, text: ResourceStr): BottomTabBarStyle;
+    /**
+     * of.
+     *
+     * @param { ResourceStr | TabBarSymbol } icon - indicates the icon of the bottom tab bar
+     * @param { ResourceStr } text - indicates the text of the bottom tab bar
+     * @returns { BottomTabBarStyle } the style of the bottom tab bar
+     * @static
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    static of(icon: ResourceStr | TabBarSymbol, text: ResourceStr): BottomTabBarStyle;
     /**
      * Set the label style of the indicator
      *
@@ -776,7 +905,27 @@ declare class BottomTabBarStyle {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Set an id to the bottom tab bar to identify it
+     *
+     * @param { string } value - id of the bottom tab bar to identify it
+     * @returns { BottomTabBarStyle } the style of the bottom tab bar
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     id(value: string): BottomTabBarStyle;
+    /**
+     * Set the icon style of the bottom tab bar
+     *
+     * @param { TabBarIconStyle } style - indicates the icon style of the bottom tab bar
+     * @returns { BottomTabBarStyle } the style of the bottom tab bar
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    iconStyle(style: TabBarIconStyle): BottomTabBarStyle;
 }
 /**
  * Provides an interface for switching the content view on a tab page.
@@ -921,6 +1070,26 @@ declare class TabContentAttribute extends CommonMethod<TabContentAttribute> {
      * @since 11
      */
     tabBar(value: SubTabBarStyle | BottomTabBarStyle): TabContentAttribute;
+    /**
+     * Called when the tab content will show.
+     * @param { VoidCallback  } event
+     * @returns { TabContentAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    onWillShow(event: VoidCallback): TabContentAttribute;
+    /**
+     * Called when the tab content will hide.
+     * @param { VoidCallback  } event
+     * @returns { TabContentAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
+    onWillHide(event: VoidCallback): TabContentAttribute;
 }
 /**
  * Defines TabContent Component.

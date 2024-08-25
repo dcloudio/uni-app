@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -16,7 +16,7 @@
  * @file
  * @kit CoreFileKit
  */
-import type ExtensionContext from './application/ExtensionContext';
+import type BackupExtensionContext from './@ohos.file.BackupExtensionContext';
 /**
  * Describe bundle version
  *
@@ -61,7 +61,15 @@ export default class BackupExtensionAbility {
      * @StageModelOnly
      * @since 11
      */
-    context: ExtensionContext;
+    /**
+   * Indicates backup extension ability context.
+   *
+   * @type { BackupExtensionContext }
+   * @syscap SystemCapability.FileManagement.StorageService.Backup
+   * @StageModelOnly
+   * @since 12
+   */
+    context: BackupExtensionContext;
     /**
      * Callback to be called when the backup procedure is started.
      * Developer could override this method to build files to be backup.
@@ -71,6 +79,17 @@ export default class BackupExtensionAbility {
      * @since 10
      */
     onBackup(): void;
+    /**
+     * Callback to be called when the backup procedure is started.
+     * Developer could override this method to restore.
+     *
+     * @param { string } backupInfo BackupInfo to be backup
+     * @returns { string | Promise<string> } Return backup result.
+     * @syscap SystemCapability.FileManagement.StorageService.Backup
+     * @StageModelOnly
+     * @since 12
+     */
+    onBackupEx(backupInfo: string): string | Promise<string>;
     /**
      * Callback to be called when the restore procedure is started.
      * Developer could override this method to restore from copies for various bundle versions.

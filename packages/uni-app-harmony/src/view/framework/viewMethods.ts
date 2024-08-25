@@ -20,7 +20,7 @@ import {
   setCurrentPageMeta,
 } from '../../../../uni-h5/src/platform'
 
-import { loadFontFace } from '@dcloudio/uni-app-plus/view/framework/dom/font'
+import { loadFontFace } from './dom/font'
 import { onPageReady, pageScrollTo } from './dom/page'
 
 const pageVm = { $el: document.body } as ComponentPublicInstance

@@ -25,6 +25,16 @@
  * @syscap SystemCapability.PowerManager.BatteryManager.Core
  * @since 6
  */
+/**
+ * Obtains battery information of a device.
+ * <p>Battery information includes the remaining battery power,
+ * voltage, temperature, model, and charger type.
+ *
+ * @namespace batteryInfo
+ * @syscap SystemCapability.PowerManager.BatteryManager.Core
+ * @atomicservice
+ * @since 12
+ */
 declare namespace batteryInfo {
     /**
      * Battery state of charge (SoC) of the current device, in percent.
@@ -33,6 +43,14 @@ declare namespace batteryInfo {
      * @syscap SystemCapability.PowerManager.BatteryManager.Core
      * @since 6
      */
+    /**
+     * Battery state of charge (SoC) of the current device, in percent.
+     *
+     * @constant
+     * @syscap SystemCapability.PowerManager.BatteryManager.Core
+     * @atomicservice
+     * @since 12
+     */
     const batterySOC: number;
     /**
      * Battery charging status of the current device.
@@ -40,6 +58,14 @@ declare namespace batteryInfo {
      * @constant
      * @syscap SystemCapability.PowerManager.BatteryManager.Core
      * @since 6
+     */
+    /**
+     * Battery charging status of the current device.
+     *
+     * @constant
+     * @syscap SystemCapability.PowerManager.BatteryManager.Core
+     * @atomicservice
+     * @since 12
      */
     const chargingStatus: BatteryChargeState;
     /**
@@ -99,6 +125,14 @@ declare namespace batteryInfo {
      */
     const batteryCapacityLevel: BatteryCapacityLevel;
     /**
+     * Battery immediate current of the current device, in mA.
+     *
+     * @constant
+     * @syscap SystemCapability.PowerManager.BatteryManager.Core
+     * @since 12
+     */
+    const nowCurrent: number;
+    /**
      * Charger type of a device.
      *
      * @enum { number }
@@ -142,12 +176,27 @@ declare namespace batteryInfo {
      * @syscap SystemCapability.PowerManager.BatteryManager.Core
      * @since 6
      */
+    /**
+     * Battery charging status of a device.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.PowerManager.BatteryManager.Core
+     * @atomicservice
+     * @since 12
+     */
     export enum BatteryChargeState {
         /**
          * Unknown state.
          *
          * @syscap SystemCapability.PowerManager.BatteryManager.Core
          * @since 6
+         */
+        /**
+         * Unknown state.
+         *
+         * @syscap SystemCapability.PowerManager.BatteryManager.Core
+         * @atomicservice
+         * @since 12
          */
         NONE,
         /**
@@ -156,6 +205,13 @@ declare namespace batteryInfo {
          * @syscap SystemCapability.PowerManager.BatteryManager.Core
          * @since 6
          */
+        /**
+         * The battery is being charged.
+         *
+         * @syscap SystemCapability.PowerManager.BatteryManager.Core
+         * @atomicservice
+         * @since 12
+         */
         ENABLE,
         /**
          * The battery is not being charged.
@@ -163,12 +219,26 @@ declare namespace batteryInfo {
          * @syscap SystemCapability.PowerManager.BatteryManager.Core
          * @since 6
          */
+        /**
+         * The battery is not being charged.
+         *
+         * @syscap SystemCapability.PowerManager.BatteryManager.Core
+         * @atomicservice
+         * @since 12
+         */
         DISABLE,
         /**
          * The battery is fully charged.
          *
          * @syscap SystemCapability.PowerManager.BatteryManager.Core
          * @since 6
+         */
+        /**
+         * The battery is fully charged.
+         *
+         * @syscap SystemCapability.PowerManager.BatteryManager.Core
+         * @atomicservice
+         * @since 12
          */
         FULL
     }

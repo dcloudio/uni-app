@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-h5",
-  "version": "3.0.0-alpha-4010920240605001",
+  "version": "3.0.0-alpha-4020520240719001",
   "description": "@dcloudio/uni-h5",
   "main": "./dist/uni-h5.cjs.js",
   "module": "./dist/uni-h5.es.js",
@@ -30,10 +30,10 @@
     "main": "dist/uni.compiler.js"
   },
   "dependencies": {
-    "@dcloudio/uni-h5-vite": "3.0.0-alpha-4010920240605001",
-    "@dcloudio/uni-h5-vue": "3.0.0-alpha-4010920240605001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-4010920240605001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4010920240605001",
+    "@dcloudio/uni-h5-vite": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-h5-vue": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4020520240719001",
     "@vue/server-renderer": "3.4.21",
     "@vue/shared": "3.4.21",
     "debug": "^4.3.3",
@@ -45,7 +45,7 @@
   },
   "gitHead": "33e807d66e1fe47e2ee08ad9c59247e37b8884da",
   "devDependencies": {
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4010920240605001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020520240719001",
     "@types/estree": "^1.0.5",
     "@types/google.maps": "^3.45.6",
     "@amap/amap-jsapi-types": "^0.0.8",
@@ -54,6 +54,7 @@
     "estree-walker": "^2.0.2",
     "fast-glob": "^3.2.11",
     "fs-extra": "^10.0.0",
+    "unplugin-auto-import": "^0.16.7",
     "vue": "3.4.21"
   }
 }

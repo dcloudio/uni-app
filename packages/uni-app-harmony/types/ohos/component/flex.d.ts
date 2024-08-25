@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Defines the options of Flex.
  *
  * @interface FlexOptions
@@ -222,6 +226,45 @@ declare interface FlexOptions {
      * @form
      */
     alignContent?: FlexAlign;
+    /**
+     * The space to be inserted, either horizontally or vertically,
+     * between two adjacent components in the Flex container.
+     *
+     * @type { ?FlexSpaceOptions }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    space?: FlexSpaceOptions;
+}
+/**
+ * The space to be inserted, either horizontally or vertically,
+ * between two adjacent components in the Flex container.
+ *
+ * @interface FlexSpaceOptions
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface FlexSpaceOptions {
+    /**
+     * Defines the main space property.
+     *
+     * @type { ?LengthMetrics }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    main?: LengthMetrics;
+    /**
+     * Defines the cross space property.
+     *
+     * @type { ?LengthMetrics }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    cross?: LengthMetrics;
 }
 /**
  * Provides a monthly view component to display information such as date, shift break, and schedule.

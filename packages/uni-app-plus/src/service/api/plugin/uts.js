@@ -4,8 +4,19 @@ import { isPlainObject, hasOwn, extend, capitalize, isString } from 'uni-shared'
 let callbackId = 1;
 let proxy;
 const callbacks = {};
+function isUniElement(obj) {
+    return typeof obj.getNodeId === 'function' && obj.pageId;
+}
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
+}
+function parseElement(obj) {
+    if (isUniElement(obj)) {
+        return obj;
+    }
+    else if (isComponentPublicInstance(obj)) {
+        return obj.$el;
+    }
 }
 function toRaw(observed) {
     const raw = observed && observed.__v_raw;
@@ -20,12 +31,12 @@ function normalizeArg(arg) {
         callbacks[id] = arg;
         return id;
     }
-    else if (isPlainObject(arg)) {
-        if (isComponentPublicInstance(arg)) {
+    else if (isPlainObject(arg) || isUniElement(arg)) {
+        // 判断值是否为元素
+        const el = parseElement(arg);
+        if (el) {
             let nodeId = '';
             let pageId = '';
-            // @ts-expect-error
-            const el = arg.$el;
             // 非 x 可能不存在 getNodeId 方法？
             if (el && el.getNodeId) {
                 pageId = el.pageId;
@@ -102,7 +113,11 @@ function invokePropGetter(args) {
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
 function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const invokeCallback = ({ id, name, params, keepAlive, }) => {
+    const keepAlive = methodName.indexOf('on') === 0 &&
+        methodParams.length === 1 &&
+        methodParams[0].type === 'UTSCallback';
+    // const throws = async
+    const invokeCallback = ({ id, name, params }) => {
         const callback = callbacks[id];
         if (callback) {
             callback(...params);
@@ -122,6 +137,8 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             name: methodName,
             method: methodParams,
+            keepAlive,
+            // throws,
         }
         : {
             moduleName,
@@ -132,6 +149,8 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             companion,
             method: methodParams,
+            keepAlive,
+            // throws,
         };
     return (...args) => {
         if (errMsg) {
@@ -267,6 +286,8 @@ function initUTSProxyClass(options) {
                                 moduleType,
                                 id: instance.__instanceId,
                                 type: 'getter',
+                                keepAlive: false,
+                                // throws: false,
                                 name: name,
                                 errMsg,
                             });

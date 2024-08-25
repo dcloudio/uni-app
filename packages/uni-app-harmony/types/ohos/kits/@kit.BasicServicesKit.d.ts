@@ -17,6 +17,7 @@
  * @kit BasicServicesKit
  */
 import appAccount from '@ohos.account.appAccount';
+import customConfig from '@ohos.customization.customConfig';
 import distributedAccount from '@ohos.account.distributedAccount';
 import osAccount from '@ohos.account.osAccount';
 import { AsyncCallback, BusinessError, Callback, ErrorCallback } from '@ohos.base';
@@ -43,4 +44,5 @@ import Battery, { BatteryResponse, GetStatusOptions } from '@system.battery';
 import Brightness, { BrightnessModeResponse, BrightnessResponse, GetBrightnessModeOptions, GetBrightnessOptions, SetBrightnessModeOptions, SetBrightnessOptions, SetKeepScreenOnOptions } from '@system.brightness';
 import Device, { DeviceResponse, GetDeviceOptions } from '@system.device';
 import Request, { DownloadRequestOptions, DownloadResponse, OnDownloadCompleteOptions, OnDownloadCompleteResponse, RequestData, RequestFile, UploadRequestOptions, UploadResponse } from '@system.request';
-export { AsyncCallback, Battery, BatteryResponse, Brightness, BrightnessModeResponse, BrightnessResponse, BusinessError, Callback, Device, DeviceResponse, DownloadRequestOptions, DownloadResponse, ErrorCallback, GetBrightnessModeOptions, GetBrightnessOptions, GetDeviceOptions, GetStatusOptions, OnDownloadCompleteOptions, OnDownloadCompleteResponse, Request, RequestData, RequestFile, SetBrightnessModeOptions, SetBrightnessOptions, SetKeepScreenOnOptions, UploadRequestOptions, UploadResponse, appAccount, batteryInfo, deviceAttest, deviceInfo, distributedAccount, osAccount, pasteboard, power, print, request, runningLock, screenLock, settings, systemDateTime, systemTime, thermal, usb, usbManager, wallpaper, zlib, commonEventManager, emitter };
+import systemLoad from '@ohos.resourceschedule.systemload';
+export { AsyncCallback, Battery, BatteryResponse, Brightness, BrightnessModeResponse, BrightnessResponse, BusinessError, Callback, Device, DeviceResponse, DownloadRequestOptions, DownloadResponse, ErrorCallback, GetBrightnessModeOptions, GetBrightnessOptions, GetDeviceOptions, GetStatusOptions, OnDownloadCompleteOptions, OnDownloadCompleteResponse, Request, RequestData, RequestFile, SetBrightnessModeOptions, SetBrightnessOptions, SetKeepScreenOnOptions, UploadRequestOptions, UploadResponse, appAccount, batteryInfo, customConfig, deviceAttest, deviceInfo, distributedAccount, osAccount, pasteboard, power, print, request, runningLock, screenLock, settings, systemDateTime, systemTime, thermal, usb, usbManager, wallpaper, zlib, commonEventManager, emitter, systemLoad };

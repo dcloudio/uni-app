@@ -5,17 +5,35 @@ import type { ComponentPublicInstance } from 'vue'
 import { initLaunchOptions } from '../../../service/framework/app/utils'
 import { loadFontFaceByStyles } from '../utils'
 import { useTheme } from '../theme'
+import { setLaunchOptionsSync } from '../../api/base/getLaunchOptionsSync'
+import { extend } from '@vue/shared'
+import { getNativeApp } from './app'
+import { setEnterOptionsSync } from '../../api/base/getEnterOptionsSync'
 
 export function initAppLaunch(appVm: ComponentPublicInstance) {
   injectAppHooks(appVm.$)
   const { entryPagePath, entryPageQuery, referrerInfo } = __uniConfig
+
   const args = initLaunchOptions({
     path: entryPagePath,
     query: entryPageQuery,
     referrerInfo: referrerInfo,
   })
-  invokeHook(appVm, ON_LAUNCH, args)
-  invokeHook(appVm, ON_SHOW, args)
+
+  const app = getNativeApp()
+  const schemaLink = app.getLaunchOptionsSync()
+
+  const launchOption = extend({}, args, schemaLink)
+
+  // onLaunchOption
+  setLaunchOptionsSync(launchOption)
+
+  invokeHook(appVm, ON_LAUNCH, launchOption)
+
+  // onShowOption
+  const showOption = extend({}, launchOption)
+  setEnterOptionsSync(showOption)
+  invokeHook(appVm, ON_SHOW, showOption)
 
   // 加载全局字体
   const appStyle = appVm.$options.styles

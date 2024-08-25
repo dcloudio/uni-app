@@ -138,6 +138,10 @@ uni-app uni-web-view {
   border-width: medium;
 }
 
+uni-app uni-rich-text {
+  line-height: 1.5;
+}
+
 uni-app uni-text {
   display: inline;
 }

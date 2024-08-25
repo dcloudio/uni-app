@@ -8527,7 +8527,12 @@ function parseStyleSheet({
   root
 }) {
   const component = type;
-  {
+  const pageInstance = root;
+  if (!pageInstance.componentStylesCache) {
+    pageInstance.componentStylesCache = /* @__PURE__ */ new Map();
+  }
+  let cache = pageInstance.componentStylesCache.get(component);
+  if (!cache) {
     const __globalStyles = appContext.provides.__globalStyles;
     if (appContext && isArray(__globalStyles)) {
       appContext.provides.__globalStyles = useCssStyles(__globalStyles);
@@ -8544,9 +8549,10 @@ function parseStyleSheet({
     if (isArray(component.styles)) {
       styles.push(...component.styles);
     }
-    component.__styles = useCssStyles(styles);
+    cache = useCssStyles(styles);
+    pageInstance.componentStylesCache.set(component, cache);
   }
-  return component.__styles;
+  return cache;
 }
 function extend(a, b) {
   b.forEach((value, key) => {
@@ -8765,7 +8771,8 @@ function transformAttr(el, key, value, instance) {
     }
     if (opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
-        return [camelized, parseStringStyle(value)];
+        const sytle = parseStringStyle(camelize(value));
+        return [camelized, sytle];
       }
       return [camelized, normalizeStyle(value)];
     }
@@ -8851,8 +8858,13 @@ const transformBackground = function(prop, value) {
   const result = /* @__PURE__ */ new Map();
   if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
     result.set(backgroundColor, value);
+    result.set(backgroundImage, "");
   } else if (/^linear-gradient(.+)$/.test(value)) {
     result.set(backgroundImage, value);
+    result.set(backgroundColor, "");
+  } else if (value == "") {
+    result.set(backgroundColor, "");
+    result.set(backgroundImage, "");
   } else {
     result.set(prop, value);
   }
@@ -8875,7 +8887,8 @@ const transformBorder = function(prop, value) {
     return index < 0 ? null : splitResult.splice(index, 1)[0];
   });
   const result = /* @__PURE__ */ new Map();
-  if (splitResult.length != 0) {
+  const isEmptyStringArray = splitResult.length == 1 && splitResult[0] == "";
+  if (splitResult.length > 0 && !isEmptyStringArray) {
     result.set(prop, value);
     return result;
   }

@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Provides the interface for scoring bars.
  *
  * @interface RatingInterface
@@ -89,6 +93,61 @@ interface RatingInterface {
         rating: number;
         indicator?: boolean;
     }): RatingAttribute;
+}
+/**
+ * RatingConfiguration used by rating content modifier.
+ *
+ * @interface RatingConfiguration
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface RatingConfiguration extends CommonConfiguration<RatingConfiguration> {
+    /**
+     * Current number of Rating.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    rating: number;
+    /**
+     * Indicates whether Rating is used as an indicator.
+     *
+     * @type { boolean }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    indicator: boolean;
+    /**
+     * Total stars of Rating.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    stars: number;
+    /**
+     * The step size of the Rating.
+     *
+     * @type { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    stepSize: number;
+    /**
+     * Trigger Rating select change.
+     *
+     * @type { Callback<number> }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    triggerChange: Callback<number>;
 }
 /**
  * Defines the rating attribute functions.
@@ -285,6 +344,16 @@ declare class RatingAttribute extends CommonMethod<RatingAttribute> {
      * @form
      */
     onChange(callback: (value: number) => void): RatingAttribute;
+    /**
+     * Set the content modifier of rating.
+     *
+     * @param { ContentModifier<RatingConfiguration> } modifier - The content modifier of rating.
+     * @returns { RatingAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    contentModifier(modifier: ContentModifier<RatingConfiguration>): RatingAttribute;
 }
 /**
  * Defines Rating Component.

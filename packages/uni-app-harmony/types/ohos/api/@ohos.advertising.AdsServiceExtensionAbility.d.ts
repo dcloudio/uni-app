@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 /**
- * @file
+ * @file Provides the capability of integrating advertising services with vendors
  * @kit AdsKit
  */
 import type advertising from './@ohos.advertising';

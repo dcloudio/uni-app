@@ -30,8 +30,10 @@ import vpn from '@ohos.net.vpn';
 import webSocket from '@ohos.net.webSocket';
 import vpnExtension from '@ohos.net.vpnExtension';
 import networkSecurity from '@ohos.net.networkSecurity';
+import VpnExtensionAbility, { VpnExtensionContext } from '@ohos.app.ability.VpnExtensionAbility';
 
 export {
   connection, ethernet, http, mdns, policy, sharing, webSocket,
-  socket, statistics, vpn, vpnExtension, networkSecurity
+  socket, statistics, vpn, vpnExtension, networkSecurity, 
+  VpnExtensionAbility, VpnExtensionContext
 };

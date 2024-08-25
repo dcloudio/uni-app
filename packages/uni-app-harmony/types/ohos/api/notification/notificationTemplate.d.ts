@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file Describes a NotificationTemplate instance
+ * @kit NotificationKit
+ */
+/**
  * Describes a NotificationTemplate instance.
  *
  * @typedef NotificationTemplate

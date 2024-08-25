@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-app-uts",
-  "version": "3.0.0-alpha-4010920240605001",
+  "version": "3.0.0-alpha-4020520240719001",
   "description": "uni-app-uts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -20,10 +20,10 @@
   "dependencies": {
     "@babel/parser": "^7.23.9",
     "@babel/types": "^7.20.7",
-    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4010920240605001",
-    "@dcloudio/uni-i18n": "3.0.0-alpha-4010920240605001",
-    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-4010920240605001",
-    "@dcloudio/uni-shared": "3.0.0-alpha-4010920240605001",
+    "@dcloudio/uni-cli-shared": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-i18n": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-nvue-styler": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-shared": "3.0.0-alpha-4020520240719001",
     "@jridgewell/gen-mapping": "^0.3.3",
     "@jridgewell/trace-mapping": "^0.3.19",
     "@rollup/pluginutils": "^5.0.5",
@@ -39,7 +39,7 @@
     "magic-string": "^0.30.7",
     "picocolors": "^1.0.0",
     "source-map-js": "^1.0.2",
-    "unplugin-auto-import": "^0.16.7"
+    "unimport": "^3.9.0"
   },
   "devDependencies": {
     "@types/debug": "^4.1.7",

@@ -26,6 +26,14 @@ import type { AsyncCallback } from './@ohos.base';
  */
 declare namespace userAuth {
     /**
+     * The maximum allowable reuse duration is 300000 milliseconds.
+     *
+     * @constant
+     * @syscap SystemCapability.UserIAM.UserAuth.Core
+     * @since 12
+     */
+    const MAX_ALLOWABLE_REUSE_DURATION: 300000;
+    /**
      * Enum for authentication result.
      *
      * @enum { number }
@@ -830,7 +838,8 @@ declare namespace userAuth {
      * @param { UserAuthType } authType - Credential type for authentication.
      * @param { AuthTrustLevel } authTrustLevel - Trust level of authentication result.
      * @throws { BusinessError } 201 - Permission verification failed.
-     * @throws { BusinessError } 401 - Incorrect parameters.
+     * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+     * <br>1. Mandatory parameters are left unspecified.
      * @throws { BusinessError } 12500002 - General operation error.
      * @throws { BusinessError } 12500005 - The authentication type is not supported.
      * @throws { BusinessError } 12500006 - The authentication trust level is not supported.
@@ -838,7 +847,65 @@ declare namespace userAuth {
      * @syscap SystemCapability.UserIAM.UserAuth.Core
      * @since 9
      */
+    /**
+     * Check whether the authentication capability is available.
+     *
+     * @permission ohos.permission.ACCESS_BIOMETRIC
+     * @param { UserAuthType } authType - Credential type for authentication.
+     * @param { AuthTrustLevel } authTrustLevel - Trust level of authentication result.
+     * @throws { BusinessError } 201 - Permission verification failed.
+     * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+     * <br>1. Mandatory parameters are left unspecified.
+     * @throws { BusinessError } 12500002 - General operation error.
+     * @throws { BusinessError } 12500005 - The authentication type is not supported.
+     * @throws { BusinessError } 12500006 - The authentication trust level is not supported.
+     * @throws { BusinessError } 12500010 - The type of credential has not been enrolled.
+     * @throws { BusinessError } 12500013 - Operation failed because of PIN expired.
+     * @syscap SystemCapability.UserIAM.UserAuth.Core
+     * @since 12
+     */
     function getAvailableStatus(authType: UserAuthType, authTrustLevel: AuthTrustLevel): void;
+    /**
+     * Enrolled state.
+     *
+     * @typedef EnrolledState
+     * @syscap SystemCapability.UserIAM.UserAuth.Core
+     * @since 12
+     */
+    interface EnrolledState {
+        /**
+         * The credential digest.
+         *
+         * @type { number }
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        credentialDigest: number;
+        /**
+         * The credential count.
+         *
+         * @type { number }
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        credentialCount: number;
+    }
+    /**
+     * Get the state of enrolled credentials which varies as credentials change.
+     *
+     * @permission ohos.permission.ACCESS_BIOMETRIC
+     * @param { UserAuthType } authType - Credential type for authentication.
+     * @returns { EnrolledState } Returns the enrolled state.
+     * @throws { BusinessError } 201 - Permission verification failed.
+     * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+     * <br>1. Mandatory parameters are left unspecified.
+     * @throws { BusinessError } 12500002 - General operation error.
+     * @throws { BusinessError } 12500005 - The authentication type is not supported.
+     * @throws { BusinessError } 12500010 - The type of credential has not been enrolled.
+     * @syscap SystemCapability.UserIAM.UserAuth.Core
+     * @since 12
+     */
+    function getEnrolledState(authType: UserAuthType): EnrolledState;
     /**
      * Get Authentication instance.
      *
@@ -856,6 +923,56 @@ declare namespace userAuth {
      * @useinstead ohos.userIAM.userAuth.getUserAuthInstance
      */
     function getAuthInstance(challenge: Uint8Array, authType: UserAuthType, authTrustLevel: AuthTrustLevel): AuthInstance;
+    /**
+     * The mode for reusing unlock authentication result.
+     *
+     * @enum { number }
+     * @syscap SystemCapability.UserIAM.UserAuth.Core
+     * @since 12
+     */
+    enum ReuseMode {
+        /**
+         * Authentication type relevant.The unlock authentication result can be reused only when the result is within
+         * valid duration as well as it comes from one of specified UserAuthTypes of the AuthParam.
+         *
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        AUTH_TYPE_RELEVANT = 1,
+        /**
+         * Authentication type irrelevant.The unlock authentication result can be reused as long as the result is within
+         * valid duration.
+         *
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        AUTH_TYPE_IRRELEVANT = 2
+    }
+    /**
+     * Reuse unlock authentication result.
+     *
+     * @typedef ReuseUnlockResult
+     * @syscap SystemCapability.UserIAM.UserAuth.Core
+     * @since 12
+     */
+    interface ReuseUnlockResult {
+        /**
+         * The mode for reusing unlock authentication result.
+         *
+         * @type { ReuseMode }
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        reuseMode: ReuseMode;
+        /**
+         * The allowable reuse duration.The value of the duration should be between 0 and MAX_ALLOWABLE_REUSE_DURATION.
+         *
+         * @type { number }
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        reuseDuration: number;
+    }
     /**
      * Auth parameter.
      *
@@ -888,6 +1005,14 @@ declare namespace userAuth {
          * @since 10
          */
         authTrustLevel: AuthTrustLevel;
+        /**
+         * Reuse unlock authentication result.
+         *
+         * @type { ?ReuseUnlockResult }
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        reuseUnlockResult?: ReuseUnlockResult;
     }
     /**
      * Auth widget parameter.
@@ -946,6 +1071,15 @@ declare namespace userAuth {
          * @since 10
          */
         authType?: UserAuthType;
+        /**
+         * The enrolled state for authentication succeed. EnrolledState would be returned when the authentication has
+         * passed.
+         *
+         * @type { ?EnrolledState }
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        enrolledState?: EnrolledState;
     }
     /**
      * Asynchronous callback of authentication operation.
@@ -978,7 +1112,10 @@ declare namespace userAuth {
          *
          * @param { 'result' } type - Indicates the type of event.
          * @param { IAuthCallback } callback - Indicates the listener.
-         * @throws { BusinessError } 401 - Incorrect parameters.
+         * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+         * <br>1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types.
+         * <br>3. Parameter verification failed.
          * @throws { BusinessError } 12500002 - General operation error.
          * @syscap SystemCapability.UserIAM.UserAuth.Core
          * @since 10
@@ -989,7 +1126,10 @@ declare namespace userAuth {
          *
          * @param { 'result' } type - Indicates the type of event.
          * @param { IAuthCallback } callback - Indicates the listener.
-         * @throws { BusinessError } 401 - Incorrect parameters.
+         * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+         * <br>1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types.
+         * <br>3. Parameter verification failed.
          * @throws { BusinessError } 12500002 - General operation error.
          * @syscap SystemCapability.UserIAM.UserAuth.Core
          * @since 10
@@ -1000,19 +1140,41 @@ declare namespace userAuth {
          *
          * @permission ohos.permission.ACCESS_BIOMETRIC
          * @throws { BusinessError } 201 - Permission verification failed.
-         * @throws { BusinessError } 401 - Incorrect parameters.
+         * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+         * <br>1. Incorrect parameter types.
          * @throws { BusinessError } 12500001 - Authentication failed.
          * @throws { BusinessError } 12500002 - General operation error.
-         * @throws { BusinessError } 12500003 - The operation is canceled.
-         * @throws { BusinessError } 12500004 - The operation is time-out.
+         * @throws { BusinessError } 12500003 - Authentication canceled.
+         * @throws { BusinessError } 12500004 - Authentication timeout.
          * @throws { BusinessError } 12500005 - The authentication type is not supported.
          * @throws { BusinessError } 12500006 - The authentication trust level is not supported.
-         * @throws { BusinessError } 12500007 - The authentication task is busy.
-         * @throws { BusinessError } 12500009 - The authenticator is locked.
+         * @throws { BusinessError } 12500007 - Authentication service is busy.
+         * @throws { BusinessError } 12500009 - Authentication is locked out.
          * @throws { BusinessError } 12500010 - The type of credential has not been enrolled.
-         * @throws { BusinessError } 12500011 - The authentication is canceled from widget's navigation button.
+         * @throws { BusinessError } 12500011 - Switched to the custom authentication process.
          * @syscap SystemCapability.UserIAM.UserAuth.Core
          * @since 10
+         */
+        /**
+         * Start this authentication, an instance can only perform authentication once.
+         *
+         * @permission ohos.permission.ACCESS_BIOMETRIC
+         * @throws { BusinessError } 201 - Permission verification failed.
+         * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+         * <br>1. Incorrect parameter types.
+         * @throws { BusinessError } 12500001 - Authentication failed.
+         * @throws { BusinessError } 12500002 - General operation error.
+         * @throws { BusinessError } 12500003 - Authentication canceled.
+         * @throws { BusinessError } 12500004 - Authentication timeout.
+         * @throws { BusinessError } 12500005 - The authentication type is not supported.
+         * @throws { BusinessError } 12500006 - The authentication trust level is not supported.
+         * @throws { BusinessError } 12500007 - Authentication service is busy.
+         * @throws { BusinessError } 12500009 - Authentication is locked out.
+         * @throws { BusinessError } 12500010 - The type of credential has not been enrolled.
+         * @throws { BusinessError } 12500011 - Switched to the custom authentication process.
+         * @throws { BusinessError } 12500013 - Operation failed because of PIN expired.
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
          */
         start(): void;
         /**
@@ -1020,7 +1182,8 @@ declare namespace userAuth {
          *
          * @permission ohos.permission.ACCESS_BIOMETRIC
          * @throws { BusinessError } 201 - Permission verification failed.
-         * @throws { BusinessError } 401 - Incorrect parameters.
+         * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+         * <br>1. Incorrect parameter types.
          * @throws { BusinessError } 12500002 - General operation error.
          * @syscap SystemCapability.UserIAM.UserAuth.Core
          * @since 10
@@ -1033,7 +1196,10 @@ declare namespace userAuth {
      * @param { AuthParam } authParam - Auth parameter.
      * @param { WidgetParam } widgetParam - Widget parameter.
      * @returns { UserAuthInstance } Returns an authentication instance with widget.
-     * @throws { BusinessError } 401 - Incorrect parameters.
+     * @throws { BusinessError } 401 - Incorrect parameters. Possible causes:
+     * <br>1. Mandatory parameters are left unspecified.
+     * <br>2. Incorrect parameter types.
+     * <br>3. Parameter verification failed.
      * @throws { BusinessError } 12500002 - General operation error.
      * @throws { BusinessError } 12500005 - The authentication type is not supported.
      * @throws { BusinessError } 12500006 - The authentication trust level is not supported.
@@ -1125,7 +1291,14 @@ declare namespace userAuth {
          * @syscap SystemCapability.UserIAM.UserAuth.Core
          * @since 10
          */
-        CANCELED_FROM_WIDGET = 12500011
+        CANCELED_FROM_WIDGET = 12500011,
+        /**
+         * Indicates that current operation failed because of PIN expired.
+         *
+         * @syscap SystemCapability.UserIAM.UserAuth.Core
+         * @since 12
+         */
+        PIN_EXPIRED = 12500013
     }
 }
 export default userAuth;

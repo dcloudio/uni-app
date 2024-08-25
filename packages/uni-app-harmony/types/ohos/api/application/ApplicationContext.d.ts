@@ -12,6 +12,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+/**
+ * @file
+ * @kit AbilityKit
+ */
 import { AsyncCallback } from '../@ohos.base';
 import Context from './Context';
 import AbilityLifecycleCallback from '../@ohos.app.ability.AbilityLifecycleCallback';
@@ -19,12 +23,13 @@ import EnvironmentCallback from '../@ohos.app.ability.EnvironmentCallback';
 import type ApplicationStateChangeCallback from '../@ohos.app.ability.ApplicationStateChangeCallback';
 import { ProcessInformation } from './ProcessInformation';
 import type ConfigurationConstant from '../@ohos.app.ability.ConfigurationConstant';
+import Want from '../@ohos.app.ability.Want';
 /**
  * The context of an application. It allows access to application-specific resources.
  *
  * @extends Context
  * @syscap SystemCapability.Ability.AbilityRuntime.Core
- * @StageModelOnly
+ * @stagemodelonly
  * @since 9
  */
 /**
@@ -32,7 +37,7 @@ import type ConfigurationConstant from '../@ohos.app.ability.ConfigurationConsta
  *
  * @extends Context
  * @syscap SystemCapability.Ability.AbilityRuntime.Core
- * @StageModelOnly
+ * @stagemodelonly
  * @crossplatform
  * @since 10
  */
@@ -41,7 +46,7 @@ import type ConfigurationConstant from '../@ohos.app.ability.ConfigurationConsta
  *
  * @extends Context
  * @syscap SystemCapability.Ability.AbilityRuntime.Core
- * @StageModelOnly
+ * @stagemodelonly
  * @crossplatform
  * @atomicservice
  * @since 11
@@ -53,9 +58,9 @@ export default class ApplicationContext extends Context {
      * @param { 'abilityLifecycle' } type - abilityLifecycle.
      * @param { AbilityLifecycleCallback } callback - The ability lifecycle callback.
      * @returns { number } Returns the number code of the callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
@@ -64,9 +69,9 @@ export default class ApplicationContext extends Context {
      * @param { 'abilityLifecycle' } type - abilityLifecycle.
      * @param { AbilityLifecycleCallback } callback - The ability lifecycle callback.
      * @returns { number } Returns the number code of the callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @crossplatform
      * @since 10
      */
@@ -76,9 +81,9 @@ export default class ApplicationContext extends Context {
      * @param { 'abilityLifecycle' } type - abilityLifecycle.
      * @param { AbilityLifecycleCallback } callback - The ability lifecycle callback.
      * @returns { number } Returns the number code of the callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @crossplatform
      * @atomicservice
      * @since 11
@@ -90,9 +95,9 @@ export default class ApplicationContext extends Context {
      * @param { 'abilityLifecycle' } type - abilityLifecycle.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @param { AsyncCallback<void> } callback - The callback of off.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
@@ -101,9 +106,9 @@ export default class ApplicationContext extends Context {
      * @param { 'abilityLifecycle' } type - abilityLifecycle.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @param { AsyncCallback<void> } callback - The callback of off.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @crossplatform
      * @since 10
      */
@@ -113,9 +118,9 @@ export default class ApplicationContext extends Context {
      * @param { 'abilityLifecycle' } type - abilityLifecycle.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @param { AsyncCallback<void> } callback - The callback of off.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @crossplatform
      * @atomicservice
      * @since 11
@@ -127,9 +132,9 @@ export default class ApplicationContext extends Context {
      * @param { 'abilityLifecycle' } type - abilityLifecycle.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
@@ -138,9 +143,9 @@ export default class ApplicationContext extends Context {
      * @param { 'abilityLifecycle' } type - abilityLifecycle.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -151,9 +156,9 @@ export default class ApplicationContext extends Context {
      * @param { 'environment' } type - environment.
      * @param { EnvironmentCallback } callback - The environment callback.
      * @returns { number } Returns the number code of the callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
@@ -162,9 +167,9 @@ export default class ApplicationContext extends Context {
      * @param { 'environment' } type - environment.
      * @param { EnvironmentCallback } callback - The environment callback.
      * @returns { number } Returns the number code of the callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -175,9 +180,9 @@ export default class ApplicationContext extends Context {
      * @param { 'environment' } type - environment.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @param { AsyncCallback<void> } callback - The callback of unregisterEnvironmentCallback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
@@ -186,9 +191,9 @@ export default class ApplicationContext extends Context {
      * @param { 'environment' } type - environment.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @param { AsyncCallback<void> } callback - The callback of unregisterEnvironmentCallback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -199,9 +204,9 @@ export default class ApplicationContext extends Context {
      * @param { 'environment' } type - environment.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
@@ -210,9 +215,9 @@ export default class ApplicationContext extends Context {
      * @param { 'environment' } type - environment.
      * @param { number } callbackId - Indicates the number code of the callback.
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -222,9 +227,9 @@ export default class ApplicationContext extends Context {
      *
      * @param { 'applicationStateChange' } type - applicationStateChange.
      * @param { ApplicationStateChangeCallback } callback - The applicationStateChange callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 10
      */
     /**
@@ -232,9 +237,9 @@ export default class ApplicationContext extends Context {
      *
      * @param { 'applicationStateChange' } type - applicationStateChange.
      * @param { ApplicationStateChangeCallback } callback - The applicationStateChange callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -244,9 +249,9 @@ export default class ApplicationContext extends Context {
      *
      * @param { 'applicationStateChange' } type - applicationStateChange.
      * @param { ApplicationStateChangeCallback } [callback] - The applicationStateChange callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 10
      */
     /**
@@ -254,9 +259,9 @@ export default class ApplicationContext extends Context {
      *
      * @param { 'applicationStateChange' } type - applicationStateChange.
      * @param { ApplicationStateChangeCallback } [callback] - The applicationStateChange callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -265,22 +270,22 @@ export default class ApplicationContext extends Context {
      * Get information about running processes
      *
      * @returns { Promise<Array<ProcessInformation>> } Returns the array of {@link ProcessInformation}.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
      * Get information about running processes
      *
      * @returns { Promise<Array<ProcessInformation>> } Returns the array of {@link ProcessInformation}.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @crossplatform
      * @since 10
      */
@@ -288,11 +293,11 @@ export default class ApplicationContext extends Context {
      * Get information about running processes
      *
      * @returns { Promise<Array<ProcessInformation>> } Returns the array of {@link ProcessInformation}.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @crossplatform
      * @atomicservice
      * @since 11
@@ -302,22 +307,22 @@ export default class ApplicationContext extends Context {
      * Get information about running processes
      *
      * @param { AsyncCallback<Array<ProcessInformation>> } callback - The callback is used to return the array of {@link ProcessInformation}.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
      * Get information about running processes
      *
      * @param { AsyncCallback<Array<ProcessInformation>> } callback - The callback is used to return the array of {@link ProcessInformation}.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @crossplatform
      * @since 10
      */
@@ -325,11 +330,11 @@ export default class ApplicationContext extends Context {
      * Get information about running processes
      *
      * @param { AsyncCallback<Array<ProcessInformation>> } callback - The callback is used to return the array of {@link ProcessInformation}.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @crossplatform
      * @atomicservice
      * @since 11
@@ -339,20 +344,20 @@ export default class ApplicationContext extends Context {
      * Kill all processes of the application
      *
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
      * Kill all processes of the application
      *
      * @returns { Promise<void> } The promise returned by the function.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -361,20 +366,20 @@ export default class ApplicationContext extends Context {
      * Kill all processes of the application
      *
      * @param { AsyncCallback<void> } callback - The callback of killAllProcesses.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 9
      */
     /**
      * Kill all processes of the application
      *
      * @param { AsyncCallback<void> } callback - The callback of killAllProcesses.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -383,10 +388,10 @@ export default class ApplicationContext extends Context {
      * Set colorMode of the application
      *
      * @param { ConfigurationConstant.ColorMode } colorMode - Color mode.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -395,10 +400,10 @@ export default class ApplicationContext extends Context {
      * Set language of the application
      *
      * @param { string } language - Language.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @atomicservice
      * @since 11
      */
@@ -410,7 +415,7 @@ export default class ApplicationContext extends Context {
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 11
      */
     clearUpApplicationData(): Promise<void>;
@@ -418,12 +423,26 @@ export default class ApplicationContext extends Context {
      * Clear up application data by app self
      *
      * @param { AsyncCallback<void> } callback - The callback of clearUpApplicationData.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
      * @throws { BusinessError } 16000011 - The context does not exist.
      * @throws { BusinessError } 16000050 - Internal error.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
-     * @StageModelOnly
+     * @stagemodelonly
      * @since 11
      */
     clearUpApplicationData(callback: AsyncCallback<void>): void;
+    /**
+     * Kill the application and does not call back the onDestroy method, then start UIAbility.
+     *
+     * @param { Want } want - Indicates the want name of the current app, and the ability name is UIAbility.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified. 2.Incorrect parameter types.
+     * @throws { BusinessError } 16000050 - Internal error.
+     * @throws { BusinessError } 16000063 - The target to restart does not belong to the current app or is not a UIAbility.
+     * @throws { BusinessError } 16000064 - Restart too frequently. Try again at least 10s later.
+     * @syscap SystemCapability.Ability.AbilityRuntime.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 12
+     */
+    restartApp(want: Want): void;
 }

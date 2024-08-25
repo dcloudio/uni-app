@@ -1,5 +1,4 @@
 import { once } from '@dcloudio/uni-shared'
-import type { Context } from '@ohos.abilityAccessCtrl'
 
 /**
  * 主要文件路径分为如下四种
@@ -26,13 +25,12 @@ const env = {
   CACHE_PATH: '',
 }
 
-declare function getContext(): Context
-
 function initEnv() {
-  const context = getContext()
-  env.USER_DATA_PATH = context.filesDir
-  env.TEMP_PATH = context.tempDir
-  env.CACHE_PATH = context.cacheDir
+  // @ts-expect-error getEnv for plus
+  const plusIoEnv = plus.io.getEnv()
+  env.USER_DATA_PATH = plusIoEnv.USER_DATA_PATH
+  env.TEMP_PATH = plusIoEnv.TEMP_PATH
+  env.CACHE_PATH = plusIoEnv.CACHE_PATH
   return env
 }
 

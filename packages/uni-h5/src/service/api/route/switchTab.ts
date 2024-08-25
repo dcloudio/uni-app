@@ -7,11 +7,16 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPageVm, invokeHook } from '@dcloudio/uni-core'
-import { getCurrentPagesMap, removePage } from '../../../framework/setup/page'
+import {
+  entryPageState,
+  getCurrentPagesMap,
+  removePage,
+  switchTabPagesBeforeEntryPages,
+} from '../../../framework/setup/page'
 import { navigate } from './utils'
 import { ON_HIDE } from '@dcloudio/uni-shared'
 
-function removeNonTabBarPages() {
+export function removeNonTabBarPages() {
   const curTabBarPageVm = getCurrentPageVm()
   if (!curTabBarPageVm) {
     return
@@ -42,7 +47,7 @@ function isSamePage(url: string, $page: Page.PageInstance['$page']) {
   return url === $page.fullPath || (url === '/' && $page.meta.isEntry)
 }
 
-function getTabBarPageId(url: string) {
+export function getTabBarPageId(url: string) {
   const pages = getCurrentPagesMap().values()
   for (const page of pages) {
     const $page = page.$page
@@ -57,6 +62,15 @@ export const switchTab = defineAsyncApi<API_TYPE_SWITCH_TAB>(
   API_SWITCH_TAB,
   // @ts-expect-error
   ({ url, tabBarText, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      switchTabPagesBeforeEntryPages.push({
+        args: { type: API_SWITCH_TAB, url, tabBarText, isAutomatedTesting },
+        resolve,
+        reject,
+      })
+      return
+    }
+
     return (
       removeNonTabBarPages(),
       navigate(

@@ -35,8 +35,9 @@ declare namespace sms {
      * @param { string } specification - Indicates the SMS protocol type. The value {@code 3gpp} indicates GSM/UMTS/LTE
      * SMS, and the value {@code 3gpp2} indicates CDMA/LTE SMS.
      * @param { AsyncCallback<ShortMessage> } callback - Indicates the callback for getting an SMS message instance;
-     * Returns {@code null} if {@code pdu} is empty or {@code specification} is not supported.
-     * @throws { BusinessError } 401 - Parameter error.
+     * returns {@code null} if {@code pdu} is empty or {@code specification} is not supported.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2.
+     * Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -55,8 +56,9 @@ declare namespace sms {
      * @param { string } specification - Indicates the SMS protocol type. The value {@code 3gpp} indicates GSM/UMTS/LTE
      * SMS, and the value {@code 3gpp2} indicates CDMA/LTE SMS.
      * @returns { Promise<ShortMessage> } Returns an SMS message instance;
-     * Returns {@code null} if {@code pdu} is empty or {@code specification} is not supported.
-     * @throws { BusinessError } 401 - Parameter error.
+     * returns {@code null} if {@code pdu} is empty or {@code specification} is not supported.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2.
+     * Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -74,7 +76,8 @@ declare namespace sms {
      * @permission ohos.permission.SEND_MESSAGES
      * @param { SendMessageOptions } options - Indicates the parameters and callback for sending the SMS message.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2.
+     * Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -95,7 +98,8 @@ declare namespace sms {
      * @param { SendMessageOptions } options - Indicates the parameters and callback for sending the SMS message.
      * @param { AsyncCallback<void> } callback - The callback of sendShortMessage.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2.
+     * Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -114,7 +118,8 @@ declare namespace sms {
      * @param { SendMessageOptions } options - Indicates the parameters and callback for sending the SMS message.
      * @returns { Promise<void> } The promise returned by the sendShortMessage.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2.
+     * Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.
@@ -157,7 +162,8 @@ declare namespace sms {
      *
      * @param { AsyncCallback<number> } callback - Returns the SIM ID of the default sms sim and
      * SIM ID will increase from 1.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified. 2.
+     * Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
      * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
      * @throws { BusinessError } 8300003 - System internal error.

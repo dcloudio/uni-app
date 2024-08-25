@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2021-2023 Huawei Device Co., Ltd.
+ * Copyright (C) 2021-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -102,11 +102,12 @@ declare namespace observer {
      * @param { Callback<NetworkState> } callback - Indicates the callback for
      * getting an instance of the {@code NetworkState} class.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -123,9 +124,9 @@ declare namespace observer {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -138,11 +139,12 @@ declare namespace observer {
      * @param { Callback<NetworkState> } callback - Indicates the callback for getting
      * an instance of the {@code NetworkState} class.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -153,11 +155,12 @@ declare namespace observer {
      * @param { 'networkStateChange' } type - Event type. Indicates the networkStateChange event to unsubscribe from.
      * @param { Callback<NetworkState> } callback - Indicates the callback for getting
      * an instance of the {@code NetworkState} class.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -168,11 +171,12 @@ declare namespace observer {
      * @param { 'signalInfoChange' } type - Event type. Indicates the signalInfoChange event to be subscribed to.
      * @param { Callback<Array<SignalInformation>> } callback - Indicates the callback for getting
      * an array of instances of the classes derived from {@link SignalInformation}.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -187,9 +191,9 @@ declare namespace observer {
      * an array of instances of the classes derived from {@link SignalInformation}.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -200,11 +204,12 @@ declare namespace observer {
      * @param { ObserverOptions } options - Indicates the options for observer.
      * @param { Callback<Array<SignalInformation>> } callback - Indicates the callback for getting
      * an array of instances of the classes derived from {@link SignalInformation}.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -215,11 +220,12 @@ declare namespace observer {
      * @param { 'signalInfoChange' } type - Event type. Indicates the signalInfoChange event to unsubscribe from.
      * @param { Callback<Array<SignalInformation>> } callback - Indicates the callback to unsubscribe from
      * the signalInfoChange event.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -234,9 +240,9 @@ declare namespace observer {
      * for cellular data services.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -248,11 +254,12 @@ declare namespace observer {
      * @param { Callback<DataConnectionStateInfo> } callback - Indicates the callback for
      * getting the cellular data link connection state, and networkType Indicates the radio access technology
      * for cellular data services.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -269,9 +276,9 @@ declare namespace observer {
      * cellular data services.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -284,11 +291,12 @@ declare namespace observer {
      * @param { Callback<DataConnectionStateInfo> } callback - Indicates the callback for
      * getting the cellular data link connection state, and networkType Indicates the radio access technology for
      * cellular data services.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -302,9 +310,9 @@ declare namespace observer {
      * from the cellularDataConnectionStateChange event.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -315,11 +323,12 @@ declare namespace observer {
      * event to unsubscribe from.
      * @param { Callback<DataConnectionStateInfo> } callback - Indicates the callback to unsubscribe
      * from the cellularDataConnectionStateChange event.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -330,11 +339,12 @@ declare namespace observer {
      *
      * @param { 'cellularDataFlowChange' } type - Event type. Indicates the cellularDataFlowChange event to be subscribed to.
      * @param { Callback<DataFlowType> } callback - Indicates the callback for getting the cellular data flow state.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -349,9 +359,9 @@ declare namespace observer {
      * @param { Callback<DataFlowType> } callback - Indicates the callback for getting the cellular data flow state.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -362,11 +372,12 @@ declare namespace observer {
      * @param { 'cellularDataFlowChange' } type - Event type. Indicates the cellularDataFlowChange event to be subscribed to.
      * @param { ObserverOptions } options - Indicates the options for observer.
      * @param { Callback<DataFlowType> } callback - Indicates the callback for getting the cellular data flow state.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -377,11 +388,12 @@ declare namespace observer {
      * @param { 'cellularDataFlowChange' } type - Event type. Indicates the cellularDataFlowChange event to unsubscribe from.
      * @param { Callback<DataFlowType> } callback - Indicates the callback to unsubscribe from
      * the cellularDataFlowChange event.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -394,9 +406,9 @@ declare namespace observer {
      * getting the call state and the called number.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -406,11 +418,12 @@ declare namespace observer {
      * @param { 'callStateChange' } type - Event type. Indicates the callStateChange event to be subscribed to.
      * @param { Callback<CallStateInfo> } callback - Indicates the callback for
      * getting the call state and the called number.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -425,9 +438,9 @@ declare namespace observer {
      * getting the call state and the called number.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -438,11 +451,12 @@ declare namespace observer {
      * @param { ObserverOptions } options - Indicates the options for observer.
      * @param { Callback<CallStateInfo> } callback - Indicates the callback for
      * getting the call state and the called number.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -455,9 +469,9 @@ declare namespace observer {
      * unsubscribe from the callStateChange event.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 6
      */
@@ -467,11 +481,12 @@ declare namespace observer {
      * @param { 'callStateChange' } type - Event type. Indicates the callStateChange event to unsubscribe from.
      * @param { Callback<CallStateInfo> } callback - Indicates the callback to
      * unsubscribe from the callStateChange event.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -482,11 +497,12 @@ declare namespace observer {
      * @param { 'simStateChange' } type - Event type. Indicates the simStateChange event to be subscribed to.
      * @param { Callback<SimStateData> } callback - Indicates the callback for getting the SimStateData object.
      * including state Indicates the sim state, and reason Indicates the cause of the change.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -500,9 +516,9 @@ declare namespace observer {
      * @param { Callback<SimStateData> } callback - Indicates the callback for getting the SimStateData object.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -512,11 +528,12 @@ declare namespace observer {
      * @param { 'simStateChange' } type - Event type. Indicates the simStateChange event to be subscribed to.
      * @param { ObserverOptions } options - Indicates the options for observer.
      * @param { Callback<SimStateData> } callback - Indicates the callback for getting the SimStateData object.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 11
      */
@@ -526,11 +543,12 @@ declare namespace observer {
      *
      * @param { 'simStateChange' } type - Event type. Indicates the simStateChange event to unsubscribe from.
      * @param { Callback<SimStateData> } callback - Indicates the callback to unsubscribe from the simStateChange event.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 7
      */
@@ -542,11 +560,12 @@ declare namespace observer {
      * @param { 'iccAccountInfoChange' } type - iccAccountInfoChange
      * @param { Callback<void> } callback - including state Indicates the ICC account information,
      * and reason Indicates the cause of the change.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 10
      */
@@ -557,11 +576,12 @@ declare namespace observer {
      * @param { 'iccAccountInfoChange' } type - iccAccountInfoChange
      * @param { Callback<void> } callback - including state Indicates the ICC account information,
      * and reason Indicates the cause of the change.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+     *     2. Incorrect parameter types.
      * @throws { BusinessError } 8300001 - Invalid parameter value.
-     * @throws { BusinessError } 8300002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 8300002 - Service connection failed.
      * @throws { BusinessError } 8300003 - System internal error.
-     * @throws { BusinessError } 8300999 - Unknown error code.
+     * @throws { BusinessError } 8300999 - Unknown error.
      * @syscap SystemCapability.Telephony.StateRegistry
      * @since 10
      */

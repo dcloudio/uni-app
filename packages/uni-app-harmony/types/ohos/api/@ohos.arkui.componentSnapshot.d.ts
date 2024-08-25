@@ -32,8 +32,11 @@ declare namespace componentSnapshot {
      *
      * @param { string } id - Target component ID, set by developer through .id attribute.
      * @param { AsyncCallback<image.PixelMap> } callback - Callback that contains the snapshot in PixelMap format.
-     * @throws { BusinessError } 401 - if parameter check fails.
-     * @throws { BusinessError } 100001 - if id is not valid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
+     * @throws { BusinessError } 100001 - Invalid ID.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 10
@@ -44,8 +47,11 @@ declare namespace componentSnapshot {
      *
      * @param { string } id - Target component ID, set by developer through .id attribute.
      * @returns { Promise<image.PixelMap> } A Promise with the snapshot in PixelMap format.
-     * @throws { BusinessError } 401 - if parameter check fails.
-     * @throws { BusinessError } 100001 - if id is not valid.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
+     * @throws { BusinessError } 100001 - Invalid ID.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 10
@@ -56,8 +62,11 @@ declare namespace componentSnapshot {
      *
      * @param { CustomBuilder } builder - Builder function of a custom component.
      * @param { AsyncCallback<image.PixelMap> } callback - Callback that contains the snapshot in PixelMap format.
-     * @throws { BusinessError } 401 - if parameter check fails.
-     * @throws { BusinessError } 100001 - if builder is not a valid build function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
+     * @throws { BusinessError } 100001 - The builder is not a valid build function.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 10
@@ -68,8 +77,11 @@ declare namespace componentSnapshot {
      *
      * @param { CustomBuilder } builder - Builder function of a custom component.
      * @returns { Promise<image.PixelMap> } A Promise with the snapshot in PixelMap format.
-     * @throws { BusinessError } 401 - if parameter check fails.
-     * @throws { BusinessError } 100001 - if builder is not a valid build function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br> 1. Mandatory parameters are left unspecified.
+     * <br> 2. Incorrect parameters types.
+     * <br> 3. Parameter verification failed.
+     * @throws { BusinessError } 100001 - The builder is not a valid build function.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 10

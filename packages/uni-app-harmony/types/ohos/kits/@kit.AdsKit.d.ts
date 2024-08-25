@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 /**
- * @file
+ * @file Provides AdsKit APIs
  * @kit AdsKit
  */
 import { AdComponent } from '@ohos.advertising.AdComponent';

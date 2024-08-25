@@ -117,6 +117,29 @@ export function resolvePackage(filename: string) {
   }
 }
 
+export function copyPlatformFiles(
+  utsInputDir: string,
+  utsOutputDir: string,
+  extname: string[]
+) {
+  const files: string[] = []
+  if (fs.existsSync(utsInputDir)) {
+    fs.copySync(utsInputDir, utsOutputDir, {
+      filter(src) {
+        if (fs.statSync(src).isDirectory()) {
+          return true
+        }
+        if (extname.includes(path.extname(src))) {
+          files.push(src)
+          return true
+        }
+        return false
+      },
+    })
+  }
+  return files
+}
+
 export interface UTSPlatformResourceOptions {
   isX: boolean
   pluginId: string
@@ -131,6 +154,7 @@ export interface UTSPlatformResourceOptions {
   provider?: { name: string; service: string; class: string }
   uniModules: string[]
 }
+
 export function genUTSPlatformResource(
   filename: string,
   options: UTSPlatformResourceOptions
@@ -140,11 +164,16 @@ export function genUTSPlatformResource(
   const utsInputDir = resolveUTSPlatformDir(filename, platform)
   const utsOutputDir = resolveUTSPlatformDir(platformFile, platform)
 
+  const extname: string[] =
+    options.extname === '.kt' ? ['.kt', '.java'] : [options.extname]
   // 拷贝所有非uts,vue文件及目录
   if (fs.existsSync(utsInputDir)) {
     fs.copySync(utsInputDir, utsOutputDir, {
       filter(src) {
         if (src.endsWith('config.json')) {
+          return false
+        }
+        if (extname.includes(path.extname(src))) {
           return false
         }
         return !['.uts', '.vue'].includes(path.extname(src))
@@ -196,7 +225,9 @@ export function genUTSPlatformResource(
         overwrite: true,
       }
     )
+    copyPlatformFiles(utsInputDir, path.join(utsOutputDir, 'src'), extname)
   }
+
   if (options.result.chunks) {
     options.result.chunks.forEach((chunk) => {
       const chunkFile = path.resolve(utsOutputDir, chunk)
@@ -673,12 +704,21 @@ export function parseInjectModules(
   return [...modules]
 }
 
+function readExtApiModulesJson() {
+  const json = require('../lib/ext-api/modules.json')
+  if (!json['uni-canvas']) {
+    json['uni-canvas'] = {}
+  }
+  json['uni-canvas']['components'] = ['canvas']
+  return json
+}
+
 export function parseExtApiModules() {
-  return normalizeExtApiModules(require('../lib/ext-api/modules.json'))
+  return normalizeExtApiModules(readExtApiModulesJson())
 }
 
 export function parseExtApiProviders() {
-  const modules = require('../lib/ext-api/modules.json')
+  const modules = readExtApiModulesJson()
   const providers: {
     [name: string]: {
       service: string
@@ -782,13 +822,20 @@ export function resolveConfigProvider(
   }
 }
 
+export function formatUniProviderName(service: string) {
+  if (service === 'oauth') {
+    service = 'OAuth'
+  }
+  return `Uni${capitalize(camelize(service))}Provider`
+}
+
 function formatExtApiProviderName(service: string, name: string) {
   if (service === 'oauth') {
     service = 'OAuth'
   }
   return `Uni${capitalize(camelize(service))}${capitalize(
     camelize(name)
-  )}Provider`
+  )}ProviderImpl`
 }
 
 export function requireUniHelpers() {

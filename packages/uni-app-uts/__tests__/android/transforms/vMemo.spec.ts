@@ -4,6 +4,7 @@ describe('compiler: v-memo transform', () => {
     return baseCompile(`<view>${content}</view>`, {
       mode: 'module',
       prefixIdentifiers: true,
+      className: 'PagesIndexIndex',
     }).code
   }
 
@@ -12,6 +13,7 @@ describe('compiler: v-memo transform', () => {
       baseCompile(`<view v-memo="[x]"></view>`, {
         mode: 'module',
         prefixIdentifiers: true,
+        className: 'PagesIndexIndex',
       }).code
     ).toMatchSnapshot()
   })

@@ -45,7 +45,9 @@ export function uniAppCssPlugin(): Plugin {
           const { filename } = parseVueRequest(id)
           if (isVue(filename)) {
             return normalizeNodeModules(
-              path.relative(process.env.UNI_INPUT_DIR, filename) + '.style.uts'
+              (path.isAbsolute(filename)
+                ? path.relative(process.env.UNI_INPUT_DIR, filename)
+                : filename) + '.style.uts'
             )
           }
         },

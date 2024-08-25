@@ -5,7 +5,10 @@ import DCloudUTSExtAPI;
 public typealias ShowToast = (_ msg: String) -> Void;
 @objc(UTSSDKModulesTestUniPluginGetBatteryInfoOptions)
 @objcMembers
-public class GetBatteryInfoOptions : NSObject, UTSObject {
+public class GetBatteryInfoOptions : NSObject, UTSObject, IUTSSourceMap {
+    public func __$getOriginalPosition() -> UTSSourceMapPosition? {
+        return UTSSourceMapPosition("GetBatteryInfoOptions", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 5, 6);
+    }
     public var name: String!;
     public var pwd: NSNumber!;
     public var success: ((_ res: UTSJSONObject) -> Void)?;
@@ -49,7 +52,7 @@ public func getBatteryInfo(_ options: GetBatteryInfoOptions) {
         "errMsg": "getBatteryInfo:ok",
         "level": UIDevice.current.batteryLevel * 100,
         "isCharging": UIDevice.current.batteryState == UIDevice.BatteryState.charging
-    ]);
+    ], UTSSourceMapPosition("res", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 19, 9));
     if (options.success != nil) {
         options.success!(res);
     }
@@ -72,11 +75,17 @@ public func test1(_ callback:@escaping () -> Void) -> String {
 }
 @objc(UTSSDKModulesTestUniPluginTest1)
 @objcMembers
-public class Test1 : NSObject {
+public class Test1 : NSObject, IUTSSourceMap {
+    public func __$getOriginalPosition() -> UTSSourceMapPosition? {
+        return UTSSourceMapPosition("Test1", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 59, 7);
+    }
 }
 @objc(UTSSDKModulesTestUniPluginTest)
 @objcMembers
-public class Test : NSObject {
+public class Test : NSObject, IUTSSourceMap {
+    public func __$getOriginalPosition() -> UTSSourceMapPosition? {
+        return UTSSourceMapPosition("Test", "uni_modules/test-uniplugin/utssdk/app-ios/index.uts", 60, 14);
+    }
     override public init(){
         Test1();
     }
@@ -97,14 +106,16 @@ public class Test : NSObject {
         return nil;
     }
 }
-@available(iOS 13.0.0, *)
-public func testAsync() async -> UTSJSONObject {
+public func testAsync() -> UTSPromise<UTSJSONObject> {
+    return UTSPromise({
+    () -> Any? in
     DCloudUTSExtAPI.showToast();
     DCloudUTSExtAPI.showToast();
     DCloudUTSExtAPI.showModel();
     return UTSJSONObject([
         "a": 1 as NSNumber
     ]);
+    }, UTSJSONObject.self);
 }
 public var showToast1: ShowToast = {
 (_ msg) -> Void in
@@ -152,12 +163,17 @@ public func test1ByJs(_ callback: UTSCallback) -> String {
 @objcMembers
 public class TestByJs : Test {
     public func testByJs() -> String? {
-        return test();
+        return self.test();
     }
 }
-@available(iOS 13.0.0, *)
-public func testAsyncByJs() async -> UTSJSONObject {
-    return await testAsync();
+public func testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {
+    testAsync().then({
+    (res) -> Void in
+    utsCompletionHandler(res, nil);
+    }).catch({
+    (err) -> Void in
+    utsCompletionHandler(nil, err);
+    });
 }
 public func showToast1ByJs(_ msg: String) -> Void {
     return showToast1(msg);
@@ -177,9 +193,8 @@ public class UTSSDKModulesTestUniPluginIndexSwift : NSObject {
     public static func s_test1ByJs(_ callback: UTSCallback) -> String {
         return test1ByJs(callback);
     }
-    @available(iOS 13.0.0, *)
-    public static func s_testAsyncByJs() async -> UTSJSONObject {
-        return await testAsyncByJs();
+    public static func s_testAsyncByJs(utsCompletionHandler:@escaping (_ res: Any?, _ err: Any?) -> Void) {
+        return testAsyncByJs(utsCompletionHandler: utsCompletionHandler);
     }
     public static func s_showToast1ByJs(_ msg: String) -> Void {
         return showToast1ByJs(msg);

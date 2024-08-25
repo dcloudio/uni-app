@@ -29,9 +29,11 @@ export function relativeFile(from: string, to: string) {
 }
 
 export const resolveMainPathOnce = once((inputDir: string) => {
-  const mainUTSPath = path.resolve(inputDir, 'main.uts')
-  if (fs.existsSync(mainUTSPath)) {
-    return normalizePath(mainUTSPath)
+  if (process.env.UNI_APP_X === 'true') {
+    const mainUTSPath = path.resolve(inputDir, 'main.uts')
+    if (fs.existsSync(mainUTSPath)) {
+      return normalizePath(mainUTSPath)
+    }
   }
   const mainTsPath = path.resolve(inputDir, 'main.ts')
   if (fs.existsSync(mainTsPath)) {
@@ -127,13 +129,17 @@ export function resolveComponentsLibPath() {
           dir
         )
       } catch (e) {
-        componentsLibPath = path.join(
-          resolveWithSymlinks(
-            '@dcloudio/uni-components/package.json',
-            process.cwd()
-          ),
-          dir
-        )
+        try {
+          componentsLibPath = path.join(
+            resolveWithSymlinks(
+              '@dcloudio/uni-components/package.json',
+              process.cwd()
+            ),
+            dir
+          )
+        } catch (e) {
+          console.log(e)
+        }
       }
     }
   }

@@ -234,11 +234,21 @@ function useBase(
   if (__X__) {
     // case: 如果 modelValue 和 value 都存在，优先使用 modelValue
     // case: 如果 modelValue 未设置，读取 value
+
+    const modelValueString = getValueString(
+      props.modelValue,
+      props.type,
+      maxlength.value
+    )
+    const valueString = getValueString(props.value, props.type, maxlength.value)
+
+    // prettier-ignore
     value =
       props.modelValue !== void 0
-        ? getValueString(props.modelValue, props.type, maxlength.value) ??
-          getValueString(props.value, props.type, maxlength.value)
-        : getValueString(props.value, props.type, maxlength.value)
+        ? modelValueString !== null && modelValueString !== void 0
+          ? modelValueString
+          : valueString
+        : valueString
   } else {
     value =
       getValueString(props.modelValue, props.type) ||

@@ -1,5 +1,6 @@
 import fsExtra from 'fs-extra'
 import { hasOwn, isArray, isPlainObject } from '@vue/shared'
+import type { Plugin } from 'vite'
 import type {
   AssetURLOptions,
   SFCStyleCompileOptions,
@@ -13,6 +14,7 @@ import {
   getBaseNodeTransforms,
   isExternalUrl,
   normalizePath,
+  preJs,
   uniPostcssScopedPlugin,
 } from '@dcloudio/uni-cli-shared'
 
@@ -30,7 +32,12 @@ export function createPluginVueInstance(options: VueOptions) {
   delete require.cache[pluginVuePath]
   delete require.cache[normalizedPluginVuePath]
   const vuePlugin = require('@vitejs/plugin-vue')
-  return vuePlugin(options)
+  const vuePluginInstance: Plugin = vuePlugin(options)
+  if (process.env.NODE_ENV === 'development') {
+    // 删除 buildEnd 逻辑，因为里边清理了缓存，导致 watch 模式失效 https://github.com/vitejs/vite-plugin-vue/commit/96dbb220ff210d2f7391f43a807bcd8cfb0da776
+    delete vuePluginInstance.buildEnd
+  }
+  return vuePluginInstance
 }
 
 export function initPluginVueOptions(
@@ -212,7 +219,8 @@ export function initPluginVueOptions(
         return fsExtra.existsSync(resolveFile(file))
       },
       readFile(file) {
-        return fsExtra.readFileSync(resolveFile(file), 'utf-8')
+        // 需要走条件编译
+        return preJs(fsExtra.readFileSync(resolveFile(file), 'utf-8'))
       },
       realpath(file) {
         return resolveFile(file)

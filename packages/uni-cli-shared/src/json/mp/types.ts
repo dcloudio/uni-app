@@ -131,3 +131,10 @@ export interface AppJson {
   restartStrategy?: RestartStrategy
   [name: string]: unknown
 }
+
+export type MiniProgramComponentsType =
+  | 'plugin'
+  | 'component'
+  | 'dynamicLib'
+  | 'ext'
+  | 'xr-frame'

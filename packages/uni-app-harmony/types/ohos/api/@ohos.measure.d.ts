@@ -16,9 +16,6 @@
  * @file
  * @kit ArkUI
  */
-
-/// <reference path="../component/units.d.ts" />
-import { Resource } from 'GlobalResource';
 /**
  * Defines the options of MeasureText.
  *
@@ -33,6 +30,15 @@ import { Resource } from 'GlobalResource';
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @crossplatform
  * @since 11
+ */
+/**
+ * Defines the options of MeasureText.
+ *
+ * @interface MeasureOptions
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  */
 export interface MeasureOptions {
     /**
@@ -49,6 +55,15 @@ export interface MeasureOptions {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 10
      */
+    /**
+     * Text to display.
+     *
+     * @type { string | Resource }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     textContent: string | Resource;
     /**
      * Text display area of width.
@@ -56,6 +71,15 @@ export interface MeasureOptions {
      * @type { ?(number | string | Resource) }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 10
+     */
+    /**
+     * Text display area of width.
+     *
+     * @type { ?(number | string | Resource) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     constraintWidth?: number | string | Resource;
     /**
@@ -65,6 +89,15 @@ export interface MeasureOptions {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 9
      */
+    /**
+     * Font Size.
+     *
+     * @type { ?(number | string | Resource) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     fontSize?: number | string | Resource;
     /**
      * Font style.
@@ -72,6 +105,15 @@ export interface MeasureOptions {
      * @type { ?(number | FontStyle) }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 9
+     */
+    /**
+     * Font style.
+     *
+     * @type { ?(number | FontStyle) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     fontStyle?: number | FontStyle;
     /**
@@ -81,6 +123,15 @@ export interface MeasureOptions {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 9
      */
+    /**
+     * Font weight.
+     *
+     * @type { ?(number | string | FontWeight) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     fontWeight?: number | string | FontWeight;
     /**
      * Font list of text.
@@ -88,6 +139,15 @@ export interface MeasureOptions {
      * @type { ?(string | Resource) }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 9
+     */
+    /**
+     * Font list of text.
+     *
+     * @type { ?(string | Resource) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     fontFamily?: string | Resource;
     /**
@@ -97,6 +157,15 @@ export interface MeasureOptions {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 9
      */
+    /**
+     * Distance between text fonts.
+     *
+     * @type { ?(number | string) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     letterSpacing?: number | string;
     /**
      * Alignment of text.
@@ -104,6 +173,15 @@ export interface MeasureOptions {
      * @type { ?(number | TextAlign) }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 10
+     */
+    /**
+     * Alignment of text.
+     *
+     * @type { ?(number | TextAlign) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     textAlign?: number | TextAlign;
     /**
@@ -113,6 +191,15 @@ export interface MeasureOptions {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 10
      */
+    /**
+     * Overflow mode of the font.
+     *
+     * @type { ?(number | TextOverflow) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     overflow?: number | TextOverflow;
     /**
      * Maximum number of lines of text.
@@ -120,6 +207,15 @@ export interface MeasureOptions {
      * @type { ?number }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 10
+     */
+    /**
+     * Maximum number of lines of text.
+     *
+     * @type { ?number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     maxLines?: number;
     /**
@@ -129,6 +225,15 @@ export interface MeasureOptions {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 10
      */
+    /**
+     * Vertical center mode of the font.
+     *
+     * @type { ?(number | string | Resource) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     lineHeight?: number | string | Resource;
     /**
      * Baseline offset.
@@ -137,6 +242,15 @@ export interface MeasureOptions {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 10
      */
+    /**
+     * Baseline offset.
+     *
+     * @type { ?(number | string) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     baselineOffset?: number | string;
     /**
      * Type of letter in the text font
@@ -144,6 +258,15 @@ export interface MeasureOptions {
      * @type { ?(number | TextCase) }
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 10
+     */
+    /**
+     * Type of letter in the text font
+     *
+     * @type { ?(number | TextCase) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     textCase?: number | TextCase;
     /**
@@ -154,6 +277,15 @@ export interface MeasureOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Specify the indentation of the first line in a text-block.
+     *
+     * @type { ?(number | string) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     textIndent?: number | string;
     /**
      * Set the word break type.
@@ -163,6 +295,15 @@ export interface MeasureOptions {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Set the word break type.
+     *
+     * @type { ?WordBreak }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     wordBreak?: WordBreak;
 }
 /**
@@ -170,6 +311,14 @@ export interface MeasureOptions {
  *
  * @syscap SystemCapability.ArkUI.ArkUI.Full
  * @since 9
+ */
+/**
+ * Defines the Measure interface.
+ *
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  */
 export default class MeasureText {
     /**
@@ -189,6 +338,16 @@ export default class MeasureText {
      * @crossplatform
      * @since 11
      */
+    /**
+     * Displays the textWidth.
+     *
+     * @param { MeasureOptions } options - Options.
+     * @returns { number }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     static measureText(options: MeasureOptions): number;
     /**
      * Displays the text width and height.
@@ -206,6 +365,16 @@ export default class MeasureText {
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 11
+     */
+    /**
+     * Displays the text width and height.
+     *
+     * @param { MeasureOptions } options - Options of measure area occupied by text.
+     * @returns { SizeOptions } width and height for text to display \
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     static measureTextSize(options: MeasureOptions): SizeOptions;
 }

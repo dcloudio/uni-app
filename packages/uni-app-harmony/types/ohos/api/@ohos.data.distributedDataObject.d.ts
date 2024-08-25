@@ -94,7 +94,8 @@ declare namespace distributedDataObject {
      * @param { Context } context - Indicates the application context.
      * @param { object } source - Source Init data of distributed object.
      * @returns { DataObject } - Return the distributed object.
-     * @throws { BusinessError } 401 - Parameter error.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     *                                                                   2. Incorrect parameter types.
      * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
      * @since 9
      */
@@ -259,10 +260,23 @@ declare namespace distributedDataObject {
          * @param {string} sessionId - sessionId The sessionId to be joined, if empty, leave all session.
          * @param {AsyncCallback<void>} callback - The callback of setSessionId.
          * @throws {BusinessError} 201 - Permission verification failed.
-         * @throws {BusinessError} 401 - Parameter error.
+         * @throws {BusinessError} 401 - Parameter error. Incorrect parameter types.
          * @throws {BusinessError} 15400001 - Create table failed.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
+         */
+        /**
+         * Change object session.
+         *
+         * @permission ohos.permission.DISTRIBUTED_DATASYNC
+         * @param {string} sessionId - sessionId The sessionId to be joined, if empty, leave all session.
+         * @param {AsyncCallback<void>} callback - The callback of setSessionId.
+         * @throws {BusinessError} 201 - Permission verification failed.
+         * @throws {BusinessError} 401 - Parameter error. Possible causes: 1. Incorrect parameter types;
+         * 2. The sessionId allows only letters, digits, and underscores(_), and cannot exceed 128 in length.
+         * @throws {BusinessError} 15400001 - Create table failed.
+         * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
+         * @since 12
          */
         setSessionId(sessionId: string, callback: AsyncCallback<void>): void;
         /**
@@ -271,7 +285,7 @@ declare namespace distributedDataObject {
          * @permission ohos.permission.DISTRIBUTED_DATASYNC
          * @param {AsyncCallback<void>} callback - The callback of setSessionId.
          * @throws {BusinessError} 201 - Permission verification failed.
-         * @throws {BusinessError} 401 - Parameter error.
+         * @throws {BusinessError} 401 - Parameter error. Incorrect parameter types.
          * @throws {BusinessError} 15400001 - Create table failed.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
@@ -284,10 +298,23 @@ declare namespace distributedDataObject {
          * @param {string} sessionId - sessionId The sessionId to be joined, if empty, leave all session.
          * @returns {Promise<void>} - The promise returned by the function.
          * @throws {BusinessError} 201 - Permission verification failed.
-         * @throws {BusinessError} 401 - Parameter error.
+         * @throws {BusinessError} 401 - Parameter error. Incorrect parameter types.
          * @throws {BusinessError} 15400001 - Create table failed.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
+         */
+        /**
+         * Change object session.
+         *
+         * @permission ohos.permission.DISTRIBUTED_DATASYNC
+         * @param {string} sessionId - sessionId The sessionId to be joined, if empty, leave all session.
+         * @returns {Promise<void>} - The promise returned by the function.
+         * @throws {BusinessError} 201 - Permission verification failed.
+         * @throws {BusinessError} 401 - Parameter error. Possible causes: 1. Incorrect parameter types;
+         * 2. The sessionId allows only letters, digits, and underscores(_), and cannot exceed 128 in length.
+         * @throws {BusinessError} 15400001 - Create table failed.
+         * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
+         * @since 12
          */
         setSessionId(sessionId?: string): Promise<void>;
         /**
@@ -299,7 +326,8 @@ declare namespace distributedDataObject {
          *          {string} sessionId - the sessionId of the changed object.
          *          {Array<string>} fields - Attribute names of changed data.
          *          sessionId The sessionId of the changed object.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws {BusinessError} 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         *                                                                 2. Incorrect parameter types.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
          */
@@ -313,7 +341,8 @@ declare namespace distributedDataObject {
          *          {string} sessionId - The sessionId of the changed object.
          *          {Array<string>} fields - Attribute names of changed data.
          *          callback If not null, off the callback, if undefined, off all callbacks.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws {BusinessError} 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         *                                                                 2. Incorrect parameter types.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
          */
@@ -330,7 +359,8 @@ declare namespace distributedDataObject {
          *                   'online' The object became online on the device and data can be synced to the device.
          *                   'offline' The object became offline on the device and the object can not sync any data.
          *                   'restored' The object restored success.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws {BusinessError} 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         *                                                                 2. Incorrect parameter types.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
          */
@@ -347,7 +377,8 @@ declare namespace distributedDataObject {
          *                   'online' The object became online on the device and data can be synced to the device.
          *                   'offline' The object became offline on the device and the object can not sync any data.
          *          callback If not null, off the callback, if undefined, off all callbacks.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         *                                                                   2. Incorrect parameter types.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
          */
@@ -365,7 +396,8 @@ declare namespace distributedDataObject {
          * @param { string } deviceId - Indicates the device that will resume the object data.
          * @param { AsyncCallback<SaveSuccessResponse> } callback
          *        {SaveSuccessResponse}: The response of save.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         *                                                                   2. Incorrect parameter types.
          * @throws { BusinessError } 801 - Capability not supported.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
@@ -383,7 +415,8 @@ declare namespace distributedDataObject {
          *
          * @param { string } deviceId - Indicates the device that will resume the object data.
          * @returns { Promise<SaveSuccessResponse> } {SaveSuccessResponse}: The response of save.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         *                                                                   2. Incorrect parameter types.
          * @throws { BusinessError } 801 - Capability not supported.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
@@ -396,7 +429,7 @@ declare namespace distributedDataObject {
          *
          * @param { AsyncCallback<RevokeSaveSuccessResponse> } callback
          *        {RevokeSaveSuccessResponse}: The response of revokeSave.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Incorrect parameter types.
          * @throws { BusinessError } 801 - Capability not supported.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
@@ -408,7 +441,6 @@ declare namespace distributedDataObject {
          * if object is saved in other device, it will delete data in local device.
          *
          * @returns { Promise<RevokeSaveSuccessResponse> } {RevokeSaveSuccessResponse}: The response of revokeSave.
-         * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 801 - Capability not supported.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
@@ -420,7 +452,8 @@ declare namespace distributedDataObject {
          * @param { string } assetKey - Indicates the key of the asset type in Object.
          * @param { BindInfo } bindInfo - Indicates the information of the asset in RelationalStore.
          * @param { AsyncCallback<void> } callback - The callback of bindAssetStore.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         *                                                                   2. Incorrect parameter types.
          * @throws { BusinessError } 801 - Capability not supported.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 11
@@ -432,7 +465,8 @@ declare namespace distributedDataObject {
          * @param { string } assetKey - Indicates the key of the asset type in Object.
          * @param { BindInfo } bindInfo - Indicates the information of the asset in RelationalStore.
          * @returns { Promise<void> } The promise returned by the function.
-         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         *                                                                   2. Incorrect parameter types.
          * @throws { BusinessError } 801 - Capability not supported.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 11

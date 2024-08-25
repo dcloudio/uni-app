@@ -48,7 +48,8 @@ export function initLaunchOptions({
     launcher: __X__ ? undefined : plus.runtime.launcher,
   })
   extend(enterOptions, launchOptions)
-  return extend({}, launchOptions)
+
+  return enterOptions
 }
 
 export interface RedirectInfo extends Omit<LaunchOptions, 'query' | 'scene'> {

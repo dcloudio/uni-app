@@ -12,6 +12,8 @@ import {
   onBeforeUnmount,
   onMounted,
   openBlock,
+  reactive,
+  watch,
 } from 'vue'
 import {
   ON_APP_ENTER_BACKGROUND,
@@ -22,18 +24,30 @@ import {
   WEB_INVOKE_APPSERVICE,
   debounce,
   decodedQuery,
+  parseQuery,
 } from '@dcloudio/uni-shared'
 import { injectAppHooks } from '@dcloudio/uni-api'
 import {
+  getCurrentPage,
   invokeHook,
   subscribeViewMethod,
   unsubscribeViewMethod,
 } from '@dcloudio/uni-core'
 import { LayoutComponent } from '../..'
 import { initApp } from './app'
-import { initPage, onPageReady, onPageShow } from './page'
+import {
+  initPage,
+  initPageScrollListener,
+  onPageReady,
+  onPageShow,
+} from './page'
 import { usePageMeta, usePageRoute } from './provide'
-import { getEnterOptions, initLaunchOptions } from './utils'
+import {
+  getEnterOptions,
+  getPageInstanceByChild,
+  getPageInstanceByVm,
+  initLaunchOptions,
+} from './utils'
 import type { RouteLocationNormalizedLoaded } from 'vue-router'
 import { useRouter } from 'vue-router'
 
@@ -56,9 +70,9 @@ function wrapperComponentSetup(
   comp.setup = (props, ctx) => {
     const instance = getCurrentInstance()!
     init(instance.proxy!)
-    const query = setup(instance)
+    setup(instance)
     if (oldSetup) {
-      return oldSetup(query || props, ctx)
+      return oldSetup(props, ctx)
     }
   }
   return comp
@@ -100,16 +114,53 @@ export function setupPage(comp: any) {
       // 存储参数，让 initHooks 中执行 onLoad 时，可以访问到
       const query = decodedQuery(route.query)
       instance.attrs.__pageQuery = query
+      if (__X__) {
+        const pageInstance = getPageInstanceByChild(instance)
+        if (pageInstance.attrs.type === 'dialog') {
+          instance.attrs.__pageQuery = decodedQuery(
+            parseQuery((pageInstance.attrs.route as string).split('?')[1] || '')
+          )
+        }
+      }
       instance.proxy!.$page.options = query
       instance.proxy!.options = query
       if (__NODE_JS__) {
         return query
       }
       const pageMeta = usePageMeta()
+      // 动态监听子组件 onReachBottom, onPageScroll的hook，从而初始化pageScroll逻辑
+      instance.onReachBottom = reactive([])
+      instance.onPageScroll = reactive([])
+      watch(
+        [instance.onReachBottom, instance.onPageScroll],
+        () => {
+          if (instance.proxy === getCurrentPage()) {
+            initPageScrollListener(instance, pageMeta)
+          }
+        },
+        { once: true }
+      )
       onBeforeMount(() => {
         onPageShow(instance, pageMeta)
       })
       onMounted(() => {
+        if (__X__) {
+          const pageInstance = getPageInstanceByChild(instance)
+          if (pageInstance.attrs.type === 'dialog') {
+            const parentPage = instance.proxy?.$getParentPage()
+            const parentPageInstance = parentPage
+              ? getPageInstanceByVm(parentPage)
+              : null
+            if (parentPageInstance) {
+              const dialogPages = parentPageInstance.$dialogPages.value
+              if (dialogPages.length > 1) {
+                const preDialogPage = dialogPages[dialogPages.length - 2]
+                const { onHide } = preDialogPage.$vm.$
+                onHide && invokeArrayFns(onHide)
+              }
+            }
+          }
+        }
         onPageReady(instance)
         const { onReady } = instance
         onReady && invokeArrayFns(onReady)
@@ -129,8 +180,16 @@ export function setupPage(comp: any) {
       onBeforeDeactivate(() => {
         if (instance.__isVisible && !instance.__isUnload) {
           instance.__isVisible = false
-          const { onHide } = instance
-          onHide && invokeArrayFns(onHide)
+          if (__X__) {
+            const pageInstance = getPageInstanceByChild(instance)
+            if (pageInstance.attrs.type !== 'dialog') {
+              const { onHide } = instance
+              onHide && invokeArrayFns(onHide)
+            }
+          } else {
+            const { onHide } = instance
+            onHide && invokeArrayFns(onHide)
+          }
         }
       })
 

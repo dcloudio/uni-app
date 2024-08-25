@@ -96,6 +96,7 @@ const eventMap = {
     loadedmetadata: 'renderStart',
     // swiper
     animationfinish: 'animationEnd',
+    chooseavatar: 'chooseAvatar',
 };
 
 function transformOpenType(node) {

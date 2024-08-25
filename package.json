@@ -1,11 +1,11 @@
 {
   "private": true,
-  "version": "3.0.0-alpha-4010920240605001",
+  "version": "3.0.0-alpha-4020520240719001",
   "workspaces": [
     "packages/*"
   ],
   "scripts": {
-    "all": "npm run lint && npm run format && npm run build && npm run test",
+    "all": "npm run lint && npm run format && node scripts/sync.js && npm run build && npm run test",
     "clean": "rm -rf node_modules **/*/node_modules && pnpm install",
     "build": "node scripts/build.js",
     "build:h5": "node scripts/build.js uni-app uts uni-uts-v1 uni-app-uvue uni-cli-shared uni-h5 uni-i18n uni-stat uni-shared uni-h5-vite vite-plugin-uni",
@@ -14,7 +14,7 @@
     "size": "npm run build size-check",
     "lint": "eslint packages/*/src/**/*.ts packages/*/__tests__/**/*.ts",
     "format": "prettier --write --parser typescript \"packages/**/*.ts?(x)\"",
-    "test": "tsc -p ./test-dts/tsconfig.json && node scripts/test.js && jest",
+    "test": "tsc -p ./packages/uni-uts-v1/__tests__/tsc/tsconfig.json && tsc -p ./test-dts/tsconfig.json && node scripts/test.js && jest",
     "test-nvue-style": "jest --testMatch \"**/uni-nvue-styler/__tests__/*.spec.ts\" --watch",
     "test-dts": "tsc -p ./test-dts/tsconfig.json && tsc -p ./test-dts/tsconfig.build.json",
     "preinstall": "npx only-allow pnpm",
@@ -32,7 +32,11 @@
     "commit-msg": "node scripts/verifyCommit.js $1"
   },
   "lint-staged": {
-    "packages/**/*.ts?(x)": [
+    "packages/*/src/**/*.ts?(x)": [
+      "eslint",
+      "prettier --parser=typescript --write"
+    ],
+    "packages/*/__tests__/**/*.ts?(x)": [
       "eslint",
       "prettier --parser=typescript --write"
     ]
@@ -42,11 +46,12 @@
   },
   "devDependencies": {
     "@babel/core": "^7.23.3",
+    "@babel/parser": "^7.23.9",
     "@babel/preset-env": "^7.20.2",
-    "@dcloudio/types": "3.4.8",
-    "@dcloudio/uni-api": "3.0.0-alpha-4010920240605001",
-    "@dcloudio/uni-app": "3.0.0-alpha-4010920240605001",
-    "@dcloudio/uni-app-x": "^0.7.11",
+    "@dcloudio/types": "3.4.11",
+    "@dcloudio/uni-api": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-app": "3.0.0-alpha-4020520240719001",
+    "@dcloudio/uni-app-x": "^0.7.25",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.34.5",
     "@rollup/plugin-alias": "^4.0.2",
@@ -100,7 +105,6 @@
     "terser": "^5.4.0",
     "ts-jest": "^29.1.0",
     "typescript": "5.3.2",
-    "unplugin-auto-import": "^0.16.7",
     "vite": "5.2.8",
     "vue": "3.4.21",
     "vue-router": "^4.3.0",
@@ -109,6 +113,6 @@
   "resolutions": {
     "@babel/plugin-transform-block-scoping": "7.19.4"
   },
-  "packageManager": "pnpm@8.2.0",
+  "packageManager": "pnpm@9.5.0",
   "name": "uni-app-next"
 }

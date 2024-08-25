@@ -17,6 +17,7 @@ import {
   type RunOptions,
   type RunProdOptions,
   type ToKotlinOptions,
+  copyPlatformFiles,
   genComponentsCode,
   genUTSPlatformResource,
   getCompilerServer,
@@ -163,9 +164,7 @@ export async function runKotlinProd(
   const useUniCloudApi =
     result.inject_apis &&
     result.inject_apis.find((api) => api.startsWith('uniCloud.'))
-  if (!autoImportUniCloud && useUniCloudApi) {
-    throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
-  } else if (autoImportUniCloud && !useUniCloudApi) {
+  if (autoImportUniCloud && !useUniCloudApi) {
     result.inject_apis = result.inject_apis || []
     result.inject_apis.push('uniCloud.importObject')
   }
@@ -174,7 +173,7 @@ export async function runKotlinProd(
     if (isModule) {
       // noop
     } else if (isX && process.env.UNI_UTS_COMPILER_TYPE === 'cloud') {
-      updateManifestModules(inputDir, result.inject_apis)
+      updateManifestModules(inputDir, result.inject_apis, extApis)
     } else {
       addInjectApis(result.inject_apis)
     }
@@ -200,7 +199,11 @@ export async function runKotlinProd(
   return result
 }
 
-function updateManifestModules(inputDir: string, inject_apis: string[]) {
+function updateManifestModules(
+  inputDir: string,
+  inject_apis: string[],
+  localExtApis: Record<string, [string, string]> = {}
+) {
   const filename = path.resolve(inputDir, 'manifest.json')
   if (fs.existsSync(filename)) {
     const content = fs.readFileSync(filename, 'utf8')
@@ -217,7 +220,7 @@ function updateManifestModules(inputDir: string, inject_apis: string[]) {
       }
       const modules = json.app.distribute.modules
       let updated = false
-      parseInjectModules(inject_apis, {}, []).forEach((name) => {
+      parseInjectModules(inject_apis, localExtApis, []).forEach((name) => {
         if (!hasOwn(modules, name)) {
           modules[name] = {}
           updated = true
@@ -363,6 +366,16 @@ export async function runKotlinDev(
           .concat(getUniModulesCacheJars(cacheDir, uniModules)) // 普通插件jar
           .concat(getUniModulesJars(outputDir, uniModules)) // cli版本插件jar（没有指定cache的时候,也不应该需要了，默认cache目录即可）
       : []
+
+    const platformFiles = copyPlatformFiles(
+      path.resolve(inputDir, pluginRelativeDir, 'utssdk', 'app-android'),
+      path.resolve(outputDir, pluginRelativeDir, 'utssdk', 'app-android'),
+      ['.kt', '.java']
+    )
+
+    kotlinFiles.push(...platformFiles)
+
+    result.deps = [...(result.deps || []), ...platformFiles]
 
     const { code, msg } = await compileAndroidDex(
       isX,

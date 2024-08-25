@@ -35,10 +35,12 @@ declare namespace usbManager {
     /**
      * Connects to the USB device based on the device information returned by getDevices().
      *
-     * @param { USBDevice } device - USB device on the device list returned by getDevices().
+     * @param { USBDevice } device - USB device on the device list returned by getDevices(). It cannot be empty.
      * @returns { Readonly<USBDevicePipe> } object for data transfer.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
-     * @throws { BusinessError } 14400001 - Permission denied. Need call requestRight to get permission.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
+     * @throws { BusinessError } 14400001 - Permission denied. Call requestRight to get the permission first.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -46,9 +48,11 @@ declare namespace usbManager {
     /**
      * Checks whether the application has the permission to access the device.
      *
-     * @param { string } deviceName - device name defined by USBDevice.name.
+     * @param { string } deviceName - device name defined by USBDevice.name. It cannot be empty.
      * @returns { boolean } indicates if the user has the permission to access the device.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -57,9 +61,11 @@ declare namespace usbManager {
      * Requests the permission for a given application to access the USB device.
      * The system application has access to the device by default, and there is no need to call this interface to apply.
      *
-     * @param { string } deviceName - device name defined by USBDevice.name.
+     * @param { string } deviceName - device name defined by USBDevice.name. It cannot be empty.
      * @returns { Promise<boolean> } indicates if the device access permissions are granted.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -68,9 +74,11 @@ declare namespace usbManager {
      * Remove the permission for a given application to access the USB device.
      * The system application has access to the device by default, and calling this interface will not have any impact.
      *
-     * @param { string } deviceName - device name defined by USBDevice.name.
+     * @param { string } deviceName - device name defined by USBDevice.name. It cannot be empty.
      * @returns { boolean } indicates if the device access permissions are removed.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -79,11 +87,13 @@ declare namespace usbManager {
     /**
      * Claims a USB interface.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address.
-     * @param { USBInterface } iface - USB interface, which is used to determine the interface to claim.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address. It cannot be empty.
+     * @param { USBInterface } iface - USB interface, which is used to determine the interface to claim. It cannot be empty.
      * @param { boolean } [force] - optional parameter that determines whether to forcibly claim the USB interface.
      * @returns { number } returns **0** if the USB interface is successfully claimed; returns an error code otherwise.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -91,8 +101,8 @@ declare namespace usbManager {
     /**
      * Releases a USB interface.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address.
-     * @param { USBInterface } iface - USB interface, which is used to determine the interface to release.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address. It cannot be empty.
+     * @param { USBInterface } iface - USB interface, which is used to determine the interface to release. It cannot be empty.
      * @returns { number } returns **0** if the USB interface is successfully released; returns an error code otherwise.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
@@ -101,10 +111,12 @@ declare namespace usbManager {
     /**
      * Sets the device configuration.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address.
-     * @param { USBConfiguration } config - device configuration.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address. It cannot be empty.
+     * @param { USBConfiguration } config - device configuration. It cannot be empty.
      * @returns { number } returns **0** if the device configuration is successfully set; returns an error code otherwise.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -112,10 +124,12 @@ declare namespace usbManager {
     /**
      * Sets a USB interface.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address.
-     * @param { USBInterface } iface - USB interface, which is used to determine the interface to set.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address. It cannot be empty.
+     * @param { USBInterface } iface - USB interface, which is used to determine the interface to set. It cannot be empty.
      * @returns { number } returns **0** if the USB interface is successfully set; return an error code otherwise.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -123,9 +137,11 @@ declare namespace usbManager {
     /**
      * Obtains the raw USB descriptor.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the bus number and device address. It cannot be empty.
      * @returns { Uint8Array } returns the raw descriptor data.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -133,9 +149,11 @@ declare namespace usbManager {
     /**
      * Obtains the file descriptor.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the USB device.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the USB device. It cannot be empty.
      * @returns { number } returns the file descriptor of the USB device.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -143,12 +161,14 @@ declare namespace usbManager {
     /**
      * Performs control transfer.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the USB device.
-     * @param { USBControlParams } controlparam - control transfer parameters.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the USB device. It cannot be empty.
+     * @param { USBControlParams } controlparam - control transfer parameters. It cannot be empty.
      * @param { number } [timeout] - timeout duration. This parameter is optional. The default value is **0**, indicating no timeout.
      * @returns { Promise<number> } returns the size of the transmitted or received data block if the control transfer is successful;
      * return -1 if an exception occurs.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -156,13 +176,15 @@ declare namespace usbManager {
     /**
      * Performs bulk transfer.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the USB device.
-     * @param { USBEndpoint } endpoint - USB endpoint, which is used to determine the USB port for data transfer.
-     * @param { Uint8Array } buffer - buffer for writing or reading data.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the USB device. It cannot be empty.
+     * @param { USBEndpoint } endpoint - USB endpoint, which is used to determine the USB port for data transfer. It cannot be empty.
+     * @param { Uint8Array } buffer - buffer for writing or reading data. It cannot be empty.
      * @param { number } [timeout] - timeout duration. This parameter is optional. The default value is **0**, indicating no timeout.
      * @returns { Promise<number> } the size of the transmitted or received data block if the control transfer is successful;
      * return -1 if an exception occurs.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */
@@ -170,9 +192,11 @@ declare namespace usbManager {
     /**
      * Closes a USB device pipe.
      *
-     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the USB device.
+     * @param { USBDevicePipe } pipe - device pipe, which is used to determine the USB device. It cannot be empty.
      * @returns { number } returns **0** if the USB device pipe is closed successfully; return an error code otherwise.
-     * @throws { BusinessError } 401 - The parameter types do not match or parameter is not specified.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes:
+     * <br>1.Mandatory parameters are left unspecified.
+     * <br>2.Incorrect parameter types.
      * @syscap SystemCapability.USB.USBManager
      * @since 9
      */

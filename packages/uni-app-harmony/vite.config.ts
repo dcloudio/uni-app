@@ -73,7 +73,7 @@ export default defineConfig({
     'process.env.NODE_ENV': JSON.stringify('production'),
     __X__: false,
     __PLUS__: false,
-    'plus.os.name': "'Harmony'",
+    'plus.os.name': "'HarmonyOS'",
     'plus.os.version': "''",
   },
   resolve: {
@@ -101,6 +101,14 @@ export default defineConfig({
       {
         find: '@dcloudio/uni-app-plus',
         replacement: resolve('../uni-app-plus/src'),
+      },
+      {
+        find: '@dcloudio/uni-h5/style',
+        replacement: resolve('../uni-h5/style'),
+      },
+      {
+        find: '@dcloudio/uni-h5',
+        replacement: resolve('../uni-h5/src'),
       },
       {
         find: '@dcloudio/uni-components/style',
@@ -192,6 +200,23 @@ function parseExtApiInjects(uniModulesDir: string) {
   )
 }
 
+function parseExtApiProvider(uniModulesDir: string) {
+  const exiApiConfig =
+    require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
+      'uni-ext-api'
+    ] || {}
+  if (
+    exiApiConfig.provider &&
+    exiApiConfig.provider.service &&
+    exiApiConfig.provider.name
+  ) {
+    return {
+      service: exiApiConfig.provider.service,
+      name: exiApiConfig.provider.name,
+    }
+  }
+}
+
 initArkTSExtApi()
 
 function initArkTSExtApi() {
@@ -205,6 +230,17 @@ function initArkTSExtApi() {
   const exportExtApis: string[] = []
   const defineExtApis: string[] = []
   const uniExtApis: string[] = []
+  // TODO 优化编译配置的生成及传递
+  const extApiProviderBuildJson = JSON.parse(
+    JSON.stringify(
+      require(path.resolve(__dirname, 'build.ets.json')).find(
+        (item) => !!item.input['temp/uni-ext-api/index.uts']
+      )
+    )
+  )
+  delete extApiProviderBuildJson.input['temp/uni-ext-api/index.uts']
+  delete extApiProviderBuildJson.wrapper
+
   for (const extApi of fs.readdirSync(extApiDir)) {
     const extApiPath = path.resolve(extApiDir, extApi)
     if (
@@ -212,6 +248,14 @@ function initArkTSExtApi() {
         path.resolve(extApiPath, 'utssdk', 'app-harmony', 'index.uts')
       )
     ) {
+      continue
+    }
+    const extApiProvider = parseExtApiProvider(extApiPath)
+    if (extApiProvider) {
+      fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
+      extApiProviderBuildJson.input[
+        `temp/uni-ext-api/${extApi}/utssdk/app-harmony/index.uts`
+      ] = `providers/${extApi}/index.ets`
       continue
     }
     const injects = parseExtApiInjects(extApiPath)
@@ -222,7 +266,8 @@ function initArkTSExtApi() {
     const apiTypeSpecifiers: string[] = []
     Object.keys(injects).forEach((key) => {
       const api = injects[key][1]
-      const apiType = capitalize(api)
+      const apiType =
+        api[0] === '$' ? '$' + capitalize(api.slice(1)) : capitalize(api)
       apiSpecifiers.push(api)
       apiTypeSpecifiers.push(apiType)
       defineExtApis.push(api)
@@ -245,7 +290,12 @@ function initArkTSExtApi() {
     )
     fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
   }
-
+  if (Object.keys(extApiProviderBuildJson.input).length > 0) {
+    fs.writeFileSync(
+      path.resolve(extApiTempDir, 'provider.build.json'),
+      JSON.stringify(extApiProviderBuildJson, null, 2)
+    )
+  }
   // 生成 ext-api/index.ts
   const extApiIndex = path.resolve(extApiTempDir, 'index.uts')
   fs.writeFileSync(

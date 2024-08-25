@@ -14,6 +14,11 @@
  */
 
 /**
+ * @file Defines all permissions.
+ * @kit AbilityKit
+ */
+
+ /**
  * Indicates permissions.
  *
  * @typedef Permissions
@@ -53,6 +58,10 @@ export type Permissions =
    * @since 11
    */
   | 'ohos.permission.GET_BLUETOOTH_LOCAL_MAC'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.GET_BLUETOOTH_PEERS_MAC'
   /**
    * @since 9
    */
@@ -157,6 +166,14 @@ export type Permissions =
    * @since 9
    */
   | 'ohos.permission.APPROXIMATELY_LOCATION'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.CONTROL_LOCATION_SWITCH'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MOCK_LOCATION'
   /**
    * @since 7
    */
@@ -314,6 +331,10 @@ export type Permissions =
    * @since 8
    */
   | 'ohos.permission.FACTORY_RESET'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ASSIST_DEVICE_UPDATE'
   /**
    * @since 10
    */
@@ -676,6 +697,18 @@ export type Permissions =
    */
   | 'ohos.permission.ENTERPRISE_SET_BROWSER_POLICY'
   /**
+   * @since 12
+   */
+  | 'ohos.permission.ENTERPRISE_OPERATE_DEVICE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ENTERPRISE_ADMIN_MANAGE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ENTERPRISE_CONFIG'
+  /**
    * @since 7
    */
   | 'ohos.permission.NFC_TAG'
@@ -832,9 +865,17 @@ export type Permissions =
    */
   | 'ohos.permission.MANAGE_AUDIO_CONFIG'
   /**
+   * @since 12
+   */
+  | 'ohos.permission.MICROPHONE_CONTROL'
+  /**
    * @since 9
    */
   | 'ohos.permission.MANAGE_CAMERA_CONFIG'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.CAMERA_CONTROL'
   /**
    * @since 9
    */
@@ -894,6 +935,10 @@ export type Permissions =
   /**
    * @since 10
    */
+  | 'ohos.permission.SUPPORT_USER_AUTH'
+  /**
+   * @since 10
+   */
   | 'ohos.permission.PROXY_AUTHORIZATION_URI'
   /**
    * @since 10
@@ -911,10 +956,6 @@ export type Permissions =
    * @since 10
    */
   | 'ohos.permission.ACCESS_CAST_ENGINE_STREAM'
-  /**
-   * @since 10
-   */
-  | 'ohos.permission.CLOUDDATA_CONFIG'
   /**
    * @since 10
    */
@@ -938,11 +979,7 @@ export type Permissions =
   /**
    * @since 10
    */
-  | 'ohos.permission.MANAGE_ECOLOGICAL_RULE'
-  /**
-   * @since 10
-   */
-  | 'ohos.permission.GET_SCENE_CODE'
+  | 'ohos.permission.CLOUDDATA_CONFIG'
   /**
    * @since 10
    */
@@ -962,7 +999,11 @@ export type Permissions =
   /**
    * @since 10
    */
-  | 'ohos.permission.SUPPORT_USER_AUTH'
+  | 'ohos.permission.MANAGE_ECOLOGICAL_RULE'
+  /**
+   * @since 10
+   */
+  | 'ohos.permission.GET_SCENE_CODE'
   /**
    * @since 10
    */
@@ -1046,10 +1087,6 @@ export type Permissions =
   /**
    * @since 11
    */
-  | 'ohos.permission.ACCESS_INSTANTSHARE_PRIVATE_ABILITY'
-  /**
-   * @since 11
-   */
   | 'ohos.permission.SECURE_PASTE'
   /**
    * @since 11
@@ -1058,7 +1095,7 @@ export type Permissions =
   /**
    * @since 11
    */
-  | 'ohos.permission.ACCESS_MCP_AUTHORIZATION'
+  | 'ohos.permission.ACCESS_INSTANTSHARE_PRIVATE_ABILITY'
   /**
    * @since 11
    */
@@ -1110,6 +1147,10 @@ export type Permissions =
   /**
    * @since 11
    */
+  | 'ohos.permission.INPUT_CONTROL_DISPATCHING'
+  /**
+   * @since 11
+   */
   | 'ohos.permission.ACCESS_OUC'
   /**
    * @since 11
@@ -1126,11 +1167,15 @@ export type Permissions =
   /**
    * @since 11
    */
-  | 'ohos.permission.INPUT_CONTROL_DISPATCHING'
+  | 'ohos.permission.RECORD_VOICE_CALL'
   /**
    * @since 11
    */
-  | 'ohos.permission.INTERCEPT_INPUT_EVENT'
+  | 'ohos.permission.MANAGE_APP_INSTALL_INFO'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.RECEIVE_APP_INSTALL_INFO_CHANGE'
   /**
    * @since 11
    */
@@ -1146,23 +1191,23 @@ export type Permissions =
   /**
    * @since 11
    */
+  | 'ohos.permission.ACCESS_ADVANCED_SECURITY_MODE'
+  /**
+   * @since 11
+   */
   | 'ohos.permission.USE_SECURITY_PRIVACY_MESSAGER'
   /**
    * @since 11
    */
-  | 'ohos.permission.RECORD_VOICE_CALL'
+  | 'ohos.permission.ACCESS_PASSWORDVAULT_ABILITY'
   /**
-   * @since 11
+   * @since 12
    */
-  | 'ohos.permission.MANAGE_APP_INSTALL_INFO'
+  | 'ohos.permission.ACCESS_PRIVATE_SPACE_MANAGER'
   /**
-   * @since 11
+   * @since 12
    */
-  | 'ohos.permission.RECEIVE_APP_INSTALL_INFO_CHANGE'
-  /**
-   * @since 11
-   */
-  | 'ohos.permission.ACCESS_ADVANCED_SECURITY_MODE'
+  | 'ohos.permission.ACCESS_PRIVATE_SPACE_PASSWORD_PROTECT'
   /**
    * @since 11
    */
@@ -1174,27 +1219,31 @@ export type Permissions =
   /**
    * @since 11
    */
-  | 'ohos.permission.ACCESS_PASSWORDVAULT_ABILITY'
-  /**
-   * @since 11
-   */
   | 'ohos.permission.ACCESS_LOWPOWER_MANAGER'
   /**
-   * @since 10
+   * @since 11
    */
-  | 'ohos.permission.ACCESS_DDK_USB'
-  /**
-   * @since 10
-   */
-  | 'ohos.permission.ACCESS_EXTENSIONAL_DEVICE_DRIVER'
+  | 'ohos.permission.ACCESS_ACCOUNT_KIT_SERVICE'
   /**
    * @since 11
    */
-  | 'ohos.permission.ACCESS_DDK_HID'
+  | 'ohos.permission.REQUEST_ANONYMOUS_ATTEST'
   /**
    * @since 11
    */
-  | 'ohos.permission.MANAGE_APP_BOOT'
+  | 'ohos.permission.WRITE_PRIVACY_PUSH_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.READ_PRIVACY_PUSH_DATA'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.ACCESS_MCP_AUTHORIZATION'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.ACCESS_ACCOUNT_KIT_SERVICE'
   /**
    * @since 11
    */
@@ -1203,6 +1252,10 @@ export type Permissions =
    * @since 11
    */
   | 'ohos.permission.CONNECT_UI_EXTENSION_ABILITY'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.ACCESS_ACCOUNT_KIT_UI'
   /**
    * @since 11
    */
@@ -1218,23 +1271,43 @@ export type Permissions =
   /**
    * @since 11
    */
-  | 'ohos.permission.FILE_ACCESS_PERSIST'
-  /**
-   * @since 11
-   */
   | 'ohos.permission.SET_SANDBOX_POLICY'
   /**
    * @since 11
    */
-  | 'ohos.permission.ACCESS_ACCOUNT_KIT_SERVICE'
+  | 'ohos.permission.FILE_ACCESS_PERSIST'
   /**
    * @since 11
    */
-  | 'ohos.permission.REQUEST_ANONYMOUS_ATTEST'
+  | 'ohos.permission.MANAGE_USB_CONFIG'
   /**
    * @since 11
    */
-  | 'ohos.permission.ACCESS_ACCOUNT_KIT_UI'
+  | 'ohos.permission.ACCESS_DDK_USB'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.ACCESS_EXTENSIONAL_DEVICE_DRIVER'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.ACCESS_DDK_HID'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.MANAGE_APP_BOOT'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.INTERCEPT_INPUT_EVENT'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.ACCESS_STATUSBAR_ICON'
+  /**
+   * @since 11
+   */
+  | 'ohos.permission.START_SYSTEM_DIALOG'
   /**
    * @since 11
    */
@@ -1256,25 +1329,13 @@ export type Permissions =
    */
   | 'ohos.permission.MANAGE_FINDSERVICE'
   /**
+   * @since 12
+   */
+  | 'ohos.permission.READ_FINDSERVICE'
+  /**
    * @since 11
    */
   | 'ohos.permission.TRIGGER_ACTIVATIONLOCK'
-  /**
-   * @since 11
-   */
-  | 'ohos.permission.MANAGE_USB_CONFIG'
-  /**
-   * @since 11
-   */
-  | 'ohos.permission.WRITE_PRIVACY_PUSH_DATA'
-  /**
-   * @since 11
-   */
-  | 'ohos.permission.ACCESS_STATUSBAR_ICON'
-  /**
-   * @since 11
-   */
-  | 'ohos.permission.START_SYSTEM_DIALOG'
   /**
    * @since 11
    */
@@ -1290,4 +1351,328 @@ export type Permissions =
   /**
    * @since 12
    */
-  | 'ohos.permission.GET_NEARLINK_LOCAL_MAC';
+  | 'ohos.permission.GET_NEARLINK_LOCAL_MAC'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.GET_NEARLINK_PEER_MAC'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_FINDNETWORK'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.OPERATE_FINDNETWORK'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_FINDNETWORK_LOCATION'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_PROTOCOL_DFX_STATE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_RGM'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ALLOW_UPGRADE_GUIDE_ACCESS'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.READ_ACCOUNT_LOGIN_STATE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.WRITE_ACCOUNT_LOGIN_STATE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.INTERACT_ACROSS_LOCAL_ACCOUNTS_AS_USER'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_PROTOCOL_DFX_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_AI_ABILITY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.hsdr.REQUEST_HSDR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_USER_ACCOUNT_INFO'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.NOTIFY_DEBUG_ASSERT_RESULT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_PASSWORD_VAULT_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.SUBSCRIBE_NOTIFICATION_WINDOW_STATE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.CHANGE_DISPLAYMODE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_MEDIALIB_THUMB_DB'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.GET_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.SET_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.EXEMPT_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.EXEMPT_CAMERA_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.EXEMPT_MICROPHONE_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.EXEMPT_LOCATION_PRIVACY_INDICATOR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.SET_SUPER_PRIVACY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MIGRATE_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_DYNAMIC_ICON'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.CHANGE_BUNDLE_UNINSTALL_STATE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.GET_SUPER_PRIVACY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.LAUNCH_SPAMSHIELD_PAGE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SPAMSHIELD_SERVICE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.WRITE_GTOKEN_POLICY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.READ_GTOKEN_POLICY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ENABLE_PROFILER'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.USE_CLOUD_DRIVE_SERVICE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.USE_CLOUD_BACKUP_SERVICE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.USE_CLOUD_COMMON_SERVICE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_STYLUS_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SERVICE_NAVIGATION_INFO'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.PRELOAD_APPLICATION'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_TEXTAUTOFILL_ABILITY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_LOCAL_BACKUP'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.CAST_AUDIO_OUTPUT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_INPUT_INFRARED_EMITTER'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.START_DLP_CRED'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.START_SHORTCUT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.GET_ACCOUNT_MINORS_INFO'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.KILL_APP_PROCESSES'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SCREEN_LOCK_MEDIA_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SCREEN_LOCK_ALL_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_LOCAL_THEME'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.INSTALL_CLONE_BUNDLE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.UNINSTALL_CLONE_BUNDLE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SHADER_CACHE_DIR'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SYSTEM_APP_CERT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_USER_TRUSTED_CERT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_BOOSTER_SERVICE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.PROTECT_SCREEN_LOCK_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.PRELOAD_UI_EXTENSION_ABILITY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.WRITE_RINGTONE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_SETTINGS'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_DEVICE_COLLABORATION_PRIVATE_ABILITY'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SEARCH_SERVICE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_FILE_CONTENT_SHARE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SCREEN_LOCK'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.SET_PROCESS_CACHE_STATE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_RINGTONE_RESOURCE'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ALLOW_TIPS_ACCESS'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.ACCESS_SUBSCRIPTION_CAPSULE_DATA'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.INJECT_INPUT_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.READ_HEALTH_MOTION'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.PERCEIVE_SMART_POWER_SCENARIO'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_SECURITY_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.REPORT_SECURITY_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_SECURITY_MODEL_RESULT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.MANAGE_SECURITY_GUARD_CONFIG'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.COLLECT_SECURITY_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_AUDIT_EVENT'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.QUERY_SECURITY_POLICY_FROM_CLOUD'
+  /**
+   * @since 12
+   */
+  | 'ohos.permission.REPORT_SECURITY_EVENT_TO_CLOUD';

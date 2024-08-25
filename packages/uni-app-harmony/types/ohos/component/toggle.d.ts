@@ -13,6 +13,10 @@
  * limitations under the License.
  */
 /**
+ * @file
+ * @kit ArkUI
+ */
+/**
  * Declare the type of status button
  *
  * @enum { number }
@@ -140,6 +144,89 @@ declare enum ToggleType {
      * @form
      */
     Button
+}
+/**
+ * Defines the switch style.
+ *
+ * @interface SwitchStyle
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface SwitchStyle {
+    /**
+     * Set the radius of the point of the switch.
+     *
+     * @type { ?(number | Resource) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    pointRadius?: number | Resource;
+    /**
+     * Set the color of the unselected switch.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    unselectedColor?: ResourceColor;
+    /**
+     * Set the color of the point of the switch.
+     *
+     * @type { ?ResourceColor }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    pointColor?: ResourceColor;
+    /**
+     * Set the border radius of the track of the switch.
+     *
+     * @type { ?(number | Resource) }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    trackBorderRadius?: number | Resource;
+}
+/**
+ * ToggleConfiguration used by toggle Modifier
+ *
+ * @interface ToggleConfiguration
+ * @syscap SystemCapability.ArkUI.ArkUI.Full
+ * @crossplatform
+ * @since 12
+ */
+declare interface ToggleConfiguration extends CommonConfiguration<ToggleConfiguration> {
+    /**
+     * Indicates whether the Toggle is on.
+     *
+     * @type { boolean }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    isOn: boolean;
+    /**
+     * Indicates whether the Toggle is enabled.
+     *
+     * @type { boolean }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    enabled: boolean;
+    /**
+     * Trigger toggle select change
+     *
+     * @type { Callback<boolean> }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    triggerChange: Callback<boolean>;
 }
 /**
  * Defines the toggle interface.
@@ -294,6 +381,16 @@ declare class ToggleAttribute extends CommonMethod<ToggleAttribute> {
      */
     onChange(callback: (isOn: boolean) => void): ToggleAttribute;
     /**
+     * Set the content modifier of toggle.
+     *
+     * @param { ContentModifier<ToggleConfiguration> } modifier - The content modifier of toggle.
+     * @returns { ToggleAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    contentModifier(modifier: ContentModifier<ToggleConfiguration>): ToggleAttribute;
+    /**
      * Called when the color of the selected button is set.
      *
      * @param { ResourceColor } value
@@ -371,6 +468,16 @@ declare class ToggleAttribute extends CommonMethod<ToggleAttribute> {
      * @form
      */
     switchPointColor(color: ResourceColor): ToggleAttribute;
+    /**
+     * Set the style of the switch.
+     *
+     * @param { SwitchStyle } value
+     * @returns { ToggleAttribute }
+     * @syscap SystemCapability.ArkUI.ArkUI.Full
+     * @crossplatform
+     * @since 12
+     */
+    switchStyle(value: SwitchStyle): ToggleAttribute;
 }
 /**
  * Defines Toggle Component.

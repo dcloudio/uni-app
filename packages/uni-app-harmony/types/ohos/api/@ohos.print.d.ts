@@ -39,6 +39,7 @@ declare namespace print {
          * @param { 'block' } type - Indicates the print task has been blocked.
          * @param { Callback<void> } callback - The callback function for print task change event
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 10
          */
@@ -49,6 +50,7 @@ declare namespace print {
          * @param { 'succeed' } type - Indicates the print task succeed.
          * @param { Callback<void> } callback - The callback function for print task change event
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 10
          */
@@ -59,6 +61,7 @@ declare namespace print {
          * @param { 'fail' } type - Indicates the print task has completed with failure.
          * @param { Callback<void> } callback - The callback function for print task change event
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 10
          */
@@ -69,6 +72,7 @@ declare namespace print {
          * @param { 'cancel' } type - Indicates the print task has been cancelled.
          * @param { Callback<void> } callback - The callback function for print task change event
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 10
          */
@@ -79,6 +83,7 @@ declare namespace print {
          * @param { 'block' } type - Indicates the print task has been blocked.
          * @param { Callback<void> } callback - The callback function for print task change event
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 10
          */
@@ -89,6 +94,7 @@ declare namespace print {
          * @param { 'succeed' } type - Indicates the print task succeed.
          * @param { Callback<void> } callback - The callback function for print task change event
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 10
          */
@@ -99,6 +105,7 @@ declare namespace print {
          * @param { 'fail' } type - Indicates the print task has completed with failure.
          * @param { Callback<void> } callback - The callback function for print task change event
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 10
          */
@@ -109,6 +116,7 @@ declare namespace print {
          * @param { 'cancel' } type - Indicates the print task has been cancelled.
          * @param { Callback<void> } callback - The callback function for print task change event
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 10
          */
@@ -130,6 +138,7 @@ declare namespace print {
          * @param { number } fd - Indicates print file fd.
          * @param { function } writeResultCallback - Indicates this function should execute after the file is updated.
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 11
          */
@@ -140,6 +149,7 @@ declare namespace print {
          * @param { string } jobId - Indicates print job id.
          * @param { PrintDocumentAdapterState } state - Indicates job changes to this state.
          * @throws { BusinessError } 201 - the application does not have permission to call this function.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
          * @syscap SystemCapability.Print.PrintFramework
          * @since 11
          */
@@ -151,6 +161,7 @@ declare namespace print {
      * @param { Array<string> } files - Indicates the filepath list to be printed. Only pdf and picture filetype are supported.
      * @param { AsyncCallback<PrintTask> } callback - The callback function for print task.
      * @throws { BusinessError } 201 - the application does not have permission to call this function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
      * @syscap SystemCapability.Print.PrintFramework
      * @since 10
      */
@@ -161,6 +172,7 @@ declare namespace print {
      * @param { Array<string> } files - Indicates the filepath list to be printed. Only pdf and picture filetype are supported.
      * @returns { Promise<PrintTask> } the promise returned by the function.
      * @throws { BusinessError } 201 - the application does not have permission to call this function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
      * @syscap SystemCapability.Print.PrintFramework
      * @since 10
      */
@@ -172,6 +184,7 @@ declare namespace print {
      * @param { Context } context - The ability context that initiates the call print request.
      * @param { AsyncCallback<PrintTask> } callback - The callback function for print task.
      * @throws { BusinessError } 201 - the application does not have permission to call this function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
      * @syscap SystemCapability.Print.PrintFramework
      * @since 11
      */
@@ -183,6 +196,7 @@ declare namespace print {
      * @param { Context } context - The ability context that initiates the call print request.
      * @returns { Promise<PrintTask> } the promise returned by the function.
      * @throws { BusinessError } 201 - the application does not have permission to call this function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
      * @syscap SystemCapability.Print.PrintFramework
      * @since 11
      */
@@ -196,6 +210,7 @@ declare namespace print {
      * @param { Context } context - The ability context that initiates the call print request.
      * @returns { Promise<PrintTask> } the promise returned by the function.
      * @throws { BusinessError } 201 - the application does not have permission to call this function.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
      * @syscap SystemCapability.Print.PrintFramework
      * @since 11
      */

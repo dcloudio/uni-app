@@ -122,7 +122,7 @@ declare namespace connection {
      * @param { AsyncCallback<NetHandle> } callback - the callback of getDefaultNet.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -134,7 +134,7 @@ declare namespace connection {
      * @param { AsyncCallback<NetHandle> } callback - the callback of getDefaultNet.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @atomicservice
@@ -148,7 +148,7 @@ declare namespace connection {
      * @returns { Promise<NetHandle> } The promise returned by the function.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -159,8 +159,7 @@ declare namespace connection {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @returns { Promise<NetHandle> } The promise returned by the function.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @atomicservice
@@ -174,7 +173,7 @@ declare namespace connection {
      * @returns { NetHandle } if the default network is not activated.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 9
@@ -185,8 +184,7 @@ declare namespace connection {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @returns { NetHandle } if the default network is not activated.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @atomicservice
@@ -200,7 +198,7 @@ declare namespace connection {
      * @param { AsyncCallback<Array<NetHandle>> } callback - the callback of getAllNets.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -212,8 +210,7 @@ declare namespace connection {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @returns { Promise<Array<NetHandle>> } The promise returned by the function.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -225,8 +222,7 @@ declare namespace connection {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @returns { Array<NetHandle> } Returns data networks that are activated.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
@@ -241,7 +237,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -256,7 +252,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -271,7 +267,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
@@ -286,7 +282,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -300,7 +296,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @atomicservice
@@ -316,7 +312,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -330,7 +326,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @atomicservice
@@ -346,7 +342,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
@@ -360,7 +356,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @atomicservice
@@ -374,7 +370,7 @@ declare namespace connection {
      * returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 9
@@ -385,8 +381,7 @@ declare namespace connection {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @returns { Promise<boolean> } the promise returned by the function.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 9
@@ -397,8 +392,7 @@ declare namespace connection {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @returns { boolean } Returns true if the current network is metered, else returns false.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
@@ -411,7 +405,7 @@ declare namespace connection {
      * returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -423,7 +417,7 @@ declare namespace connection {
      * returns {@code false} otherwise.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @crossplatform
@@ -436,7 +430,7 @@ declare namespace connection {
      * @returns { Promise<boolean> } The promise returned by the function.
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -446,8 +440,7 @@ declare namespace connection {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @returns { Promise<boolean> } The promise returned by the function.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @crossplatform
@@ -459,8 +452,7 @@ declare namespace connection {
      * @permission ohos.permission.GET_NETWORK_INFO
      * @returns { boolean } Returns true if the default data network is activated, else returns false.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
@@ -474,7 +466,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -488,7 +480,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -502,7 +494,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -516,7 +508,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -530,7 +522,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -544,7 +536,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
@@ -555,7 +547,7 @@ declare namespace connection {
      * @param { AsyncCallback<NetHandle> } callback - Returns the {@link NetHandle} bound to the process;
      * returns {@code null} if no {@link NetHandle} is bound to the process.For details, see {@link NetHandle}.
      * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 9
@@ -564,8 +556,7 @@ declare namespace connection {
     /**
      * Obtains the {@link NetHandle} bound to a process using {@link setAppNet}.
      * @returns { Promise<NetHandle> } the promise returned by the function.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 9
@@ -574,8 +565,7 @@ declare namespace connection {
     /**
      * Obtains the {@link NetHandle} bound to a process using {@link setAppNet}.
      * @returns { NetHandle } Returns the {@link NetHandle} bound to a process using {@link setAppNet}.
-     * @throws { BusinessError } 401 - Parameter error.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
@@ -591,7 +581,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 9
@@ -607,7 +597,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 9
@@ -622,7 +612,7 @@ declare namespace connection {
      * In other cases, the proxy settings of default network are returned.
      *
      * @param { AsyncCallback<HttpProxy> } callback - Returns the default {@link HttpProxy} settings.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
@@ -637,7 +627,7 @@ declare namespace connection {
      * In other cases, the proxy settings of default network are returned.
      *
      * @returns { Promise<HttpProxy> } the promise returned by the function.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
@@ -661,7 +651,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 11
@@ -676,7 +666,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 11
@@ -690,7 +680,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 11
@@ -704,7 +694,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 11
@@ -717,7 +707,7 @@ declare namespace connection {
      * @throws { BusinessError } 201 - Permission denied.
      * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 11
@@ -728,9 +718,8 @@ declare namespace connection {
      * @permission ohos.permission.INTERNET
      * @returns { Promise<void> } the promise returned by the function.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 2100001 - Invalid parameter value.
-     * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+     * @throws { BusinessError } 2100002 - Failed to connect to the service.
      * @throws { BusinessError } 2100003 - System internal error.
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 11
@@ -894,10 +883,10 @@ declare namespace connection {
          * @param { AsyncCallback<void> } callback - the callback of register.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
-         * @throws { BusinessError } 2101008 - The same callback exists.
-         * @throws { BusinessError } 2101022 - The number of requests exceeded the maximum.
+         * @throws { BusinessError } 2101008 - The callback already exists.
+         * @throws { BusinessError } 2101022 - The number of requests exceeded the maximum allowed.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
          */
@@ -907,10 +896,10 @@ declare namespace connection {
          * @param { AsyncCallback<void> } callback - the callback of register.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
-         * @throws { BusinessError } 2101008 - The same callback exists.
-         * @throws { BusinessError } 2101022 - The number of requests exceeded the maximum.
+         * @throws { BusinessError } 2101008 - The callback already exists.
+         * @throws { BusinessError } 2101022 - The number of requests exceeded the maximum allowed.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @crossplatform
          * @since 10
@@ -921,10 +910,10 @@ declare namespace connection {
          * @param { AsyncCallback<void> } callback - the callback of register.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
-         * @throws { BusinessError } 2101008 - The same callback exists.
-         * @throws { BusinessError } 2101022 - The number of requests exceeded the maximum.
+         * @throws { BusinessError } 2101008 - The callback already exists.
+         * @throws { BusinessError } 2101022 - The number of requests exceeded the maximum allowed.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @crossplatform
          * @atomicservice
@@ -936,9 +925,9 @@ declare namespace connection {
          * @param { AsyncCallback<void> } callback - the callback of unregister.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
-         * @throws { BusinessError } 2101007 - The callback is not exists.
+         * @throws { BusinessError } 2101007 - The callback does not exists.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
          */
@@ -947,9 +936,9 @@ declare namespace connection {
          * @param { AsyncCallback<void> } callback - the callback of unregister.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
-         * @throws { BusinessError } 2101007 - The callback is not exists.
+         * @throws { BusinessError } 2101007 - The callback does not exists.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @crossplatform
          * @since 10
@@ -959,13 +948,25 @@ declare namespace connection {
          * @param { AsyncCallback<void> } callback - the callback of unregister.
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
-         * @throws { BusinessError } 2101007 - The callback is not exists.
+         * @throws { BusinessError } 2101007 - The callback does not exists.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @crossplatform
          * @atomicservice
          * @since 11
+         */
+        /**
+         * Cancels listening for network status changes.
+         * @param { AsyncCallback<void> } callback - the callback of unregister.
+         * @throws { BusinessError } 401 - Parameter error.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
+         * @throws { BusinessError } 2100003 - System internal error.
+         * @throws { BusinessError } 2101007 - The callback does not exists.
+         * @syscap SystemCapability.Communication.NetManager.Core
+         * @crossplatform
+         * @atomicservice
+         * @since 12
          */
         unregister(callback: AsyncCallback<void>): void;
     }
@@ -1113,7 +1114,7 @@ declare namespace connection {
          * @param { AsyncCallback<void> } callback - the callback of bindSocket.
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 2100001 - Invalid parameter value.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 9
@@ -1127,7 +1128,7 @@ declare namespace connection {
          * @returns { Promise<void> } the promise returned by the function.
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 2100001 - Invalid parameter value.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 9
@@ -1141,7 +1142,7 @@ declare namespace connection {
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 2100001 - Invalid parameter value.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
@@ -1155,7 +1156,7 @@ declare namespace connection {
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 2100001 - Invalid parameter value.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
@@ -1169,7 +1170,7 @@ declare namespace connection {
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 2100001 - Invalid parameter value.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
@@ -1183,7 +1184,7 @@ declare namespace connection {
          * @throws { BusinessError } 201 - Permission denied.
          * @throws { BusinessError } 401 - Parameter error.
          * @throws { BusinessError } 2100001 - Invalid parameter value.
-         * @throws { BusinessError } 2100002 - Operation failed. Cannot connect to service.
+         * @throws { BusinessError } 2100002 - Failed to connect to the service.
          * @throws { BusinessError } 2100003 - System internal error.
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
@@ -1380,7 +1381,14 @@ declare namespace connection {
          * @atomicservice
          * @since 11
          */
-        NET_CAPABILITY_VALIDATED = 16
+        NET_CAPABILITY_VALIDATED = 16,
+        /**
+         * Indicates that the network is portal.
+         * @syscap SystemCapability.Communication.NetManager.Core
+         * @atomicservice
+         * @since 12
+         */
+        NET_CAPABILITY_PORTAL = 17
     }
     /**
      * Enumerates network types.
@@ -1453,7 +1461,13 @@ declare namespace connection {
          * @atomicservice
          * @since 11
          */
-        BEARER_ETHERNET = 3
+        BEARER_ETHERNET = 3,
+        /**
+         * Indicates that the network is based on a VPN network.
+         * @syscap SystemCapability.Communication.NetManager.Core
+         * @since 12
+         */
+        BEARER_VPN = 4
     }
     /**
      * Defines the network connection properties.
@@ -1576,12 +1590,26 @@ declare namespace connection {
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 8
      */
+    /**
+     * Defines a network address.
+     * @interface NetAddress
+     * @syscap SystemCapability.Communication.NetManager.Core
+     * @atomicservice
+     * @since 12
+     */
     export interface NetAddress {
         /**
          * Network address.
          * @type {string}
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
+         */
+        /**
+         * Network address.
+         * @type {string}
+         * @syscap SystemCapability.Communication.NetManager.Core
+         * @atomicservice
+         * @since 12
          */
         address: string;
         /**
@@ -1590,12 +1618,26 @@ declare namespace connection {
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
          */
+        /**
+         * Address family identifier. The value is 1 for IPv4 and 2 for IPv6. The default value is 1.
+         * @type {?number}
+         * @syscap SystemCapability.Communication.NetManager.Core
+         * @atomicservice
+         * @since 12
+         */
         family?: number;
         /**
          * Port number. The value ranges from 0 to 65535.
          * @type {?number}
          * @syscap SystemCapability.Communication.NetManager.Core
          * @since 8
+         */
+        /**
+         * Port number. The value ranges from 0 to 65535.
+         * @type {?number}
+         * @syscap SystemCapability.Communication.NetManager.Core
+         * @atomicservice
+         * @since 12
          */
         port?: number;
     }
@@ -1641,6 +1683,20 @@ declare namespace connection {
          * @since 11
          */
         port: number;
+        /**
+         * Http proxy username.
+         * @type {?string}
+         * @syscap SystemCapability.Communication.NetManager.Core
+         * @since 12
+         */
+        username?: string;
+        /**
+         * Http proxy password.
+         * @type {?string}
+         * @syscap SystemCapability.Communication.NetManager.Core
+         * @since 12
+         */
+        password?: string;
         /**
          * Do not use a blocking list for proxy servers.
          * @type {Array<string>}

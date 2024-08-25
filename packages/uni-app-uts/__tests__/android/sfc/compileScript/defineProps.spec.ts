@@ -27,7 +27,7 @@ const bar = 1
     // should assign user identifier to it
     // expect(content).toMatch(`const props = __props`)
     // should include context options in default export
-    expect(content).toMatch(`export default {
+    expect(content).toMatch(`export default defineComponent({
   props: {
   foo: String
 },`)

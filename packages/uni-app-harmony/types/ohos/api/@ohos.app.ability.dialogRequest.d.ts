@@ -152,7 +152,8 @@ declare namespace dialogRequest {
          * Send request result to caller.
          *
          * @param { RequestResult } result - result for request.
-         * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+         * 2. Incorrect parameter types; 3. Parameter verification failed.
          * @syscap SystemCapability.Ability.AbilityRuntime.AbilityCore
          * @StageModelOnly
          * @since 9
@@ -164,7 +165,8 @@ declare namespace dialogRequest {
      *
      * @param { Want } want - want from caller.
      * @returns { RequestInfo } Returns the request info from caller.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
      */
@@ -174,7 +176,8 @@ declare namespace dialogRequest {
      *
      * @param { Want } want - want from caller.
      * @returns { RequestCallback } Returns the request callback.
-     * @throws { BusinessError } 401 - If the input parameter is not valid parameter.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
+     * 2. Incorrect parameter types; 3. Parameter verification failed.
      * @syscap SystemCapability.Ability.AbilityRuntime.Core
      * @since 9
      */

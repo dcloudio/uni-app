@@ -1,4 +1,4 @@
-@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME")
+@file:Suppress("UNCHECKED_CAST", "USELESS_CAST", "INAPPLICABLE_JVM_NAME", "UNUSED_ANONYMOUS_PARAMETER")
 package uts.modules.modules.testComponent;
 import android.animation.Animator;
 import android.text.TextUtils;
@@ -12,7 +12,9 @@ import io.dcloud.feature.uniapp.ui.action.AbsComponentData;
 import io.dcloud.feature.uniapp.ui.component.AbsVContainer;
 import io.dcloud.uts.*;
 import io.dcloud.uts.Map;
+import io.dcloud.uts.component.*;
 import io.dcloud.uts.component.UTSComponent;
+import io.dcloud.uts.component.UTSMeasureMode;
 import io.dcloud.uts.component.UTSSize;
 import kotlinx.coroutines.CoroutineScope;
 import kotlinx.coroutines.Deferred;

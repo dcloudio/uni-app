@@ -122,7 +122,7 @@ function createAnimationProtocol(animationTypes: string[]) {
 
 let navigatorLock: string
 
-function beforeRoute() {
+export function beforeRoute() {
   navigatorLock = ''
 }
 
@@ -135,7 +135,7 @@ function createRouteOptions(type: string): ApiOptions<API_TYPE_NAVIGATE_TO> {
   }
 }
 
-function createNormalizeUrl(type: string) {
+export function createNormalizeUrl(type: string) {
   return function normalizeUrl(url: string, params: Record<string, any>) {
     if (!url) {
       return `Missing required args: "url"`

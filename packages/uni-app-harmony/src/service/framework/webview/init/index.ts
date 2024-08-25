@@ -1,4 +1,5 @@
 import { initWebviewStyle } from './style'
+import { initWebviewEvent } from './event'
 
 export function initWebview(
   webview: PlusWebviewWebviewObject,
@@ -8,5 +9,5 @@ export function initWebview(
 ) {
   initWebviewStyle(webview, path, query, routeMeta)
 
-  // TODO initWebviewEvent(webview)
+  initWebviewEvent(webview)
 }

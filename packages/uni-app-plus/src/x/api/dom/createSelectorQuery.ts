@@ -1,16 +1,26 @@
 import type { SelectorQueryRequest } from '@dcloudio/uni-api'
 import type {
   CreateSelectorQuery,
-  NodeField,
-  NodeInfo,
   NodesRef,
   SelectorQuery,
   SelectorQueryNodeInfoCallback,
+  NodeField as _NodeField,
+  NodeInfo as _NodeInfo,
 } from '@dcloudio/uni-app-x/types/uni'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import type { ComponentPublicInstance, VNode } from 'vue'
 
-function isVueComponent(comp: any) {
+type NodeInfo = Partial<
+  _NodeInfo & {
+    node: UniElement
+  }
+>
+
+type NodeField = _NodeField & {
+  node?: boolean
+}
+
+export function isVueComponent(comp: any) {
   const has$instance = typeof comp.$ === 'object'
   const has$el = typeof comp.$el === 'object'
 
@@ -23,6 +33,7 @@ class NodesRefImpl implements NodesRef {
   private _selectorQuery: SelectorQueryImpl
   private _component: ComponentPublicInstance | null
   private _selector: string
+  /** single=true querySelector */
   private _single: boolean
   constructor(
     selectorQuery: SelectorQueryImpl,
@@ -61,7 +72,7 @@ class NodesRefImpl implements NodesRef {
 
   fields(
     fields: NodeField,
-    callback: SelectorQueryNodeInfoCallback
+    callback: SelectorQueryNodeInfoCallback | null
   ): SelectorQuery {
     this._selectorQuery._push(
       this._selector,
@@ -101,7 +112,19 @@ class NodesRefImpl implements NodesRef {
     return this._selectorQuery
   }
 
+  /**
+   * fields({node:true})
+   */
   node(_callback: (result: any) => void): SelectorQuery {
+    this._selectorQuery._push(
+      this._selector,
+      this._component,
+      this._single,
+      {
+        node: true,
+      } as NodeField,
+      _callback
+    )
     return this._selectorQuery
   }
 }
@@ -174,24 +197,43 @@ class SelectorQueryImpl implements SelectorQuery {
   }
 }
 
+/**
+ * QuerySelectorHelper
+ */
 class QuerySelectorHelper {
   _element: UniElement
   _commentStartVNode: VNode | undefined
+  _fields: NodeField
 
-  constructor(element: UniElement, vnode: VNode | undefined) {
+  constructor(
+    element: UniElement,
+    vnode: VNode | undefined,
+    fields: NodeField
+  ) {
     this._element = element
     this._commentStartVNode = vnode
+    this._fields = fields
   }
 
+  /**
+   * entry
+   */
   static queryElement(
     element: UniElement,
     selector: string,
     all: boolean,
-    vnode: VNode | undefined
+    vnode: VNode | undefined,
+    fields: NodeField
   ): any | null {
-    return new QuerySelectorHelper(element, vnode).query(selector, all)
+    return new QuerySelectorHelper(element, vnode, fields).query(selector, all)
   }
 
+  /**
+   * 执行查询
+   * @param selector 选择器
+   * @param all 是否查询所有 selectAll
+   * @returns
+   */
   query(selector: string, all: boolean): any | null {
     if (this._element.nodeName == '#comment') {
       return this.queryFragment(this._element, selector, all)
@@ -243,6 +285,7 @@ class QuerySelectorHelper {
     if (element2 == null) {
       element2 = element.querySelector(selector)
     }
+    // 查询到元素，查询 nodeInfo
     if (element2 != null) {
       return this.getNodeInfo(element2)
     }
@@ -285,7 +328,25 @@ class QuerySelectorHelper {
     return null
   }
 
+  /**
+   * 查询元素信息
+   * @param element
+   * @returns
+   */
   getNodeInfo(element: UniElement): NodeInfo {
+    if (this._fields.node == true) {
+      const nodeInfo: NodeInfo = {
+        node: element,
+      }
+
+      if (this._fields.size == true) {
+        const rect = element.getBoundingClientRect()
+        nodeInfo.width = rect.width
+        nodeInfo.height = rect.height
+      }
+      return nodeInfo
+    }
+
     const rect = element.getBoundingClientRect()
     const nodeInfo = {
       id: element.getAttribute('id')?.toString(),
@@ -296,11 +357,17 @@ class QuerySelectorHelper {
       bottom: rect.bottom,
       width: rect.width,
       height: rect.height,
-    } as NodeInfo
+    }
     return nodeInfo
   }
 }
 
+/**
+ * requestComponentInfo
+ * @param vueComponent
+ * @param queue
+ * @param callback
+ */
 function requestComponentInfo(
   vueComponent: ComponentPublicInstance | null,
   queue: Array<SelectorQueryRequest>,
@@ -309,12 +376,14 @@ function requestComponentInfo(
   const result: Array<any> = []
   const el = vueComponent?.$el
   if (el != null) {
+    // 执行待查询 queue
     queue.forEach((item: SelectorQueryRequest) => {
       const queryResult = QuerySelectorHelper.queryElement(
         el,
         item.selector,
         !item.single,
-        vueComponent?.$.subTree
+        vueComponent?.$.subTree,
+        item.fields
       )
       if (queryResult != null) {
         result.push(queryResult)
@@ -324,6 +393,9 @@ function requestComponentInfo(
   callback(result)
 }
 
+/**
+ * createSelectorQuery
+ */
 export const createSelectorQuery: CreateSelectorQuery =
   function (): SelectorQuery {
     const instance = getCurrentPage() as ComponentPublicInstance

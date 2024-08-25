@@ -17,11 +17,19 @@
  * @kit AVSessionKit
  */
 import { AVCastPickerState } from './@ohos.multimedia.avCastPickerParam';
+import { AVCastPickerStyle } from './@ohos.multimedia.avCastPickerParam';
+import { AVCastPickerColorMode } from './@ohos.multimedia.avCastPickerParam';
 /**
  * A picker view to show availale streaming device list.
  * @syscap SystemCapability.Multimedia.AVSession.AVCast
  * @since 10
  */
+/**
+* A picker view to show availale streaming device list.
+* @syscap SystemCapability.Multimedia.AVSession.AVCast
+* @atomicservice
+* @since 12
+*/
 @Component
 declare struct AVCastPicker {
     /**
@@ -31,6 +39,14 @@ declare struct AVCastPicker {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Assigns the color of picker component at normal state .
+    * @type { ? Color | number | string }
+    * @syscap SystemCapability.Multimedia.AVSession.AVCast
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     @Prop
     normalColor?: Color | number | string;
     /**
@@ -40,8 +56,54 @@ declare struct AVCastPicker {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Assigns the color of picker component at active state.
+    * @type { ? Color | number | string }
+    * @syscap SystemCapability.Multimedia.AVSession.AVCast
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     @Prop
     activeColor?: Color | number | string;
+    /**
+     * Set the picker style.
+     * @type { ? AVCastPickerStyle }
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    @Prop
+    pickerStyle?: AVCastPickerStyle;
+    /**
+     * Set the picker color mode.
+     * @type { ? AVCastPickerColorMode }
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    @Prop
+    colorMode?: AVCastPickerColorMode;
+    /**
+     * Set the session type used by current picker component which can refer to AVSessionType in avSession.
+     * If not set, default value is 'audio'.
+     * @type { ? string }
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    @Prop
+    sessionType?: string;
+    /**
+     * Set the custom builder for the picker appearance.
+     * If not set, system will show the default appearance for different device type.
+     * @type { ? CustomBuilder }
+     * @syscap SystemCapability.Multimedia.AVSession.AVCast
+     * @atomicservice
+     * @since 12
+     */
+    @Prop
+    customPicker?: CustomBuilder;
     /**
      * Picker state change callback.
      * @type { ?function }
@@ -49,6 +111,14 @@ declare struct AVCastPicker {
      * @crossplatform
      * @since 11
      */
+    /**
+    * Picker state change callback.
+    * @type { ?function }
+    * @syscap SystemCapability.Multimedia.AVSession.AVCast
+    * @crossplatform
+    * @atomicservice
+    * @since 12
+    */
     onStateChange?: (state: AVCastPickerState) => void;
 }
 export default AVCastPicker;

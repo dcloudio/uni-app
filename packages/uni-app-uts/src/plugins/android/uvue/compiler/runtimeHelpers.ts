@@ -20,6 +20,8 @@ export const RESOLVE_CACHE = Symbol(`resolveCache`)
 export const TRY_SET_REF_VALUE = Symbol(`trySetRefValue`)
 export const TRY_UPDATE_REF_NUMBER = Symbol(`tryUpdateRefNumber`)
 
+export const LOOSE_TO_NUMBER = Symbol(`looseToNumber`)
+
 registerRuntimeHelpers({
   [IS_TRUE]: 'isTrue',
   [V_SHOW]: 'vShow',
@@ -36,4 +38,5 @@ registerRuntimeHelpers({
   [RESOLVE_CACHE]: `resolveCache`,
   [TRY_SET_REF_VALUE]: `trySetRefValue`,
   [TRY_UPDATE_REF_NUMBER]: `tryUpdateRefNumber`,
+  [LOOSE_TO_NUMBER]: `looseToNumber`,
 })

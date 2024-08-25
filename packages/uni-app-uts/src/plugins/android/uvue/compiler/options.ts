@@ -39,22 +39,6 @@ interface SharedTransformCodegenOptions {
    * 编译的模板类名
    */
   className?: string
-}
-export interface CodegenOptions extends SharedTransformCodegenOptions {
-  inMap?: RawSourceMap
-  /**
-   * Generate source map?
-   * @default false
-   */
-  sourceMap?: boolean
-  /**
-   * 匹配 easycom 组件
-   * @param tag
-   */
-  matchEasyCom?: (
-    tag: string,
-    uts: boolean
-  ) => string | false | undefined | void
   /**
    * 解析 uts component 组件
    * @param name
@@ -71,6 +55,22 @@ export interface CodegenOptions extends SharedTransformCodegenOptions {
       }
     | undefined
     | void
+}
+export interface CodegenOptions extends SharedTransformCodegenOptions {
+  inMap?: RawSourceMap
+  /**
+   * Generate source map?
+   * @default false
+   */
+  sourceMap?: boolean
+  /**
+   * 匹配 easycom 组件
+   * @param tag
+   */
+  matchEasyCom?: (
+    tag: string,
+    uts: boolean
+  ) => string | false | undefined | void
   /**
    * template的offset
    */
@@ -151,9 +151,6 @@ export interface CodegenResult {
   code: string
   preamble?: string
   easyComponentAutoImports: Record<string, [string, string]>
-  importEasyComponents: string[]
-  importUTSComponents: string[]
-  imports: string[]
   elements: string[]
   map?: RawSourceMap
 }

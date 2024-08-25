@@ -16,7 +16,7 @@ import {
   getResolvedOptions,
   getSrcDescriptor,
 } from './descriptorCache'
-import { isVue } from '../utils'
+import { isVue, transformUniCloudMixinDataCom } from '../utils'
 
 import { transformStyle } from './code/style'
 
@@ -67,7 +67,19 @@ export function uniAppUVuePlugin(): Plugin {
       }
       if (!query.vue) {
         // main request
-        return transformMain(code, filename, options, this, isAppVue(filename))
+        return transformMain(
+          transformUniCloudMixinDataCom(code),
+          filename,
+          {
+            ...options,
+            componentType: isAppVue(filename)
+              ? 'app'
+              : query.type === 'page'
+              ? 'page'
+              : 'component',
+          },
+          this
+        )
       } else {
         // sub block request
         const descriptor = query.src

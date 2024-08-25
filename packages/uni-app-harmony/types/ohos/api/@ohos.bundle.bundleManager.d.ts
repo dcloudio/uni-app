@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2022-2023 Huawei Device Co., Ltd.
+ * Copyright (c) 2022-2024 Huawei Device Co., Ltd.
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -24,6 +24,7 @@ import * as _AbilityInfo from './bundleManager/AbilityInfo';
 import * as _BundleInfo from './bundleManager/BundleInfo';
 import * as _HapModuleInfo from './bundleManager/HapModuleInfo';
 import * as _ExtensionAbilityInfo from './bundleManager/ExtensionAbilityInfo';
+import * as _Skill from './bundleManager/Skill';
 /**
  * This module is used to obtain package information of various applications installed on the current device.
  *
@@ -38,6 +39,15 @@ import * as _ExtensionAbilityInfo from './bundleManager/ExtensionAbilityInfo';
  * @syscap SystemCapability.BundleManager.BundleFramework.Core
  * @atomicservice
  * @since 11
+ */
+/**
+ * This module is used to obtain package information of various applications installed on the current device.
+ *
+ * @namespace bundleManager
+ * @syscap SystemCapability.BundleManager.BundleFramework.Core
+ * @crossplatform
+ * @atomicservice
+ * @since 12
  */
 declare namespace bundleManager {
     /**
@@ -217,7 +227,27 @@ declare namespace bundleManager {
          * @atomicservice
          * @since 11
          */
-        GET_BUNDLE_INFO_WITH_MENU = 0x00000100
+        GET_BUNDLE_INFO_WITH_MENU = 0x00000100,
+        /**
+         * Used to obtain the bundleInfo containing router map configuration in hapModuleInfo.
+         * The obtained bundleInfo does not contain the information of applicationInfo, extensionAbility, ability and permission.
+         * It can't be used alone, it needs to be used with GET_BUNDLE_INFO_WITH_HAP_MODULE.
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @atomicservice
+         * @since 12
+         */
+        GET_BUNDLE_INFO_WITH_ROUTER_MAP = 0x00000200,
+        /**
+         * Used to obtain the skillInfo contained in abilityInfo and extensionInfo.
+         * It can't be used alone, it needs to be used with GET_BUNDLE_INFO_WITH_HAP_MODULE,
+         * GET_BUNDLE_INFO_WITH_ABILITIES, GET_BUNDLE_INFO_WITH_EXTENSION_ABILITY.
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @atomicservice
+         * @since 12
+         */
+        GET_BUNDLE_INFO_WITH_SKILL = 0x00000800
     }
     /**
      * This enumeration value is used to identify various types of extension ability
@@ -382,6 +412,20 @@ declare namespace bundleManager {
          * @since 11
          */
         ADS_SERVICE = 20,
+        /**
+         * Indicates extension info with type of embedded UI
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @since 12
+         */
+        EMBEDDED_UI = 21,
+        /**
+         * Indicates extension info with type of insight intent UI
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @since 12
+         */
+        INSIGHT_INTENT_UI = 22,
         /**
          * Indicates extension info with type of unspecified
          *
@@ -809,7 +853,23 @@ declare namespace bundleManager {
          * @atomicservice
          * @since 11
          */
-        LOCKED
+        LOCKED,
+        /**
+         * Indicates the system automatically determines the sensor restricted mode
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @atomicservice
+         * @since 12
+         */
+        AUTO_ROTATION_UNSPECIFIED,
+        /**
+         * Indicates the orientation follow the desktop rotate mode
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @atomicservice
+         * @since 12
+         */
+        FOLLOW_DESKTOP
     }
     /**
      * Indicates module type
@@ -945,11 +1005,41 @@ declare namespace bundleManager {
         BACKWARD_COMPATIBILITY = 1
     }
     /**
+     * This enumeration value is used to identify various types of extension ability
+     *
+     * @enum { number }
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @since 12
+    */
+    export enum MultiAppModeType {
+        /**
+         * Indicates multi app mode with type of unspecified
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @since 12
+         */
+        UNSPECIFIED = 0,
+        /**
+         * Indicates multi app mode with type of multiInstance
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @since 12
+         */
+        MULTI_INSTANCE = 1,
+        /**
+         * Indicates multi app mode with type of appClone
+         *
+         * @syscap SystemCapability.BundleManager.BundleFramework.Core
+         * @since 12
+        */
+        APP_CLONE = 2
+    }
+    /**
      * Obtains own bundleInfo.
      *
      * @param { number } bundleFlags - Indicates the flag used to specify information contained in the BundleInfo objects that will be returned.
      * @returns { Promise<BundleInfo> } The result of getting the bundle info.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
@@ -958,7 +1048,7 @@ declare namespace bundleManager {
      *
      * @param { number } bundleFlags - Indicates the flag used to specify information contained in the BundleInfo objects that will be returned.
      * @returns { Promise<BundleInfo> } The result of getting the bundle info.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -969,7 +1059,7 @@ declare namespace bundleManager {
      *
      * @param { number } bundleFlags - Indicates the flag used to specify information contained in the BundleInfo objects that will be returned.
      * @param { AsyncCallback<BundleInfo> } callback - The callback of getting bundle info result.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
@@ -978,7 +1068,7 @@ declare namespace bundleManager {
      *
      * @param { number } bundleFlags - Indicates the flag used to specify information contained in the BundleInfo objects that will be returned.
      * @param { AsyncCallback<BundleInfo> } callback - The callback of getting bundle info result.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -989,7 +1079,7 @@ declare namespace bundleManager {
      *
      * @param { number } bundleFlags - Indicates the flag used to specify information contained in the BundleInfo objects that will be returned.
      * @returns { BundleInfo } The result of getting the bundle info.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 10
      */
@@ -998,7 +1088,7 @@ declare namespace bundleManager {
      *
      * @param { number } bundleFlags - Indicates the flag used to specify information contained in the BundleInfo objects that will be returned.
      * @returns { BundleInfo } The result of getting the bundle info.
-     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1011,7 +1101,7 @@ declare namespace bundleManager {
      * @param { string } abilityName - Indicates the abilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @param { AsyncCallback<Array<string>> } callback - The callback of returning string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified abilityName is not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1027,7 +1117,7 @@ declare namespace bundleManager {
      * @param { string } abilityName - Indicates the abilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @param { AsyncCallback<Array<string>> } callback - The callback of returning string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified abilityName is not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1045,7 +1135,7 @@ declare namespace bundleManager {
      * @param { string } abilityName - Indicates the abilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @returns { Promise<Array<string>> } Returns string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified abilityName is not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1061,7 +1151,7 @@ declare namespace bundleManager {
      * @param { string } abilityName - Indicates the abilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @returns { Promise<Array<string>> } Returns string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified abilityName is not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1079,7 +1169,7 @@ declare namespace bundleManager {
      * @param { string } abilityName - Indicates the abilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @returns { Array<string> } Returns string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified abilityName is not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1095,7 +1185,7 @@ declare namespace bundleManager {
      * @param { string } abilityName - Indicates the abilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @returns { Array<string> } Returns string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified abilityName is not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1113,7 +1203,7 @@ declare namespace bundleManager {
      * @param { string } extensionAbilityName - Indicates the extensionAbilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @param { AsyncCallback<Array<string>> } callback - The callback of returning string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified extensionAbilityName not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1128,7 +1218,7 @@ declare namespace bundleManager {
      * @param { string } extensionAbilityName - Indicates the extensionAbilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @param { AsyncCallback<Array<string>> } callback - The callback of returning string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified extensionAbilityName not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1145,7 +1235,7 @@ declare namespace bundleManager {
      * @param { string } extensionAbilityName - Indicates the extensionAbilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @returns { Promise<Array<string>> } Returns string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified extensionAbilityName not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1160,7 +1250,7 @@ declare namespace bundleManager {
      * @param { string } extensionAbilityName - Indicates the extensionAbilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @returns { Promise<Array<string>> } Returns string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified extensionAbilityName not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1177,7 +1267,7 @@ declare namespace bundleManager {
      * @param { string } extensionAbilityName - Indicates the extensionAbilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @returns { Array<string> } Returns string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified extensionAbilityName not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1192,7 +1282,7 @@ declare namespace bundleManager {
      * @param { string } extensionAbilityName - Indicates the extensionAbilityName of the application.
      * @param { string } metadataName - Indicates the name of metadata in ability.
      * @returns { Array<string> } Returns string in json-format of the corresponding config file.
-     * @throws { BusinessError } 401 - Input parameters check failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 17700002 - The specified moduleName is not existed.
      * @throws { BusinessError } 17700003 - The specified extensionAbilityName not existed.
      * @throws { BusinessError } 17700024 - Failed to get the profile because there is no profile in the HAP.
@@ -1210,8 +1300,8 @@ declare namespace bundleManager {
      * @param { boolean } deleteOriginalFiles - Used to decide whether to delete the original files.
      * @param { AsyncCallback<void> } callback - Indicates the callback of verifyAbc result.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - The parameter check failed.
-     * @throws { BusinessError } 17700201 - verifyAbc failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
+     * @throws { BusinessError } 17700201 - Failed to verify the abc file.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 11
      */
@@ -1224,8 +1314,8 @@ declare namespace bundleManager {
      * @param { boolean } deleteOriginalFiles - Used to decide whether to delete the original files.
      * @returns { Promise<void> } Returns verifyAbc result.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - The parameter check failed.
-     * @throws { BusinessError } 17700201 - verifyAbc failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
+     * @throws { BusinessError } 17700201 - Failed to verify the abc file.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 11
      */
@@ -1237,21 +1327,36 @@ declare namespace bundleManager {
      * @param { string } abcPath - The abc path.
      * @returns { Promise<void> } Returns deleteAbc result.
      * @throws { BusinessError } 201 - Permission denied.
-     * @throws { BusinessError } 401 - The parameter check failed.
-     * @throws { BusinessError } 17700202 - deleteAbc failed.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
+     * @throws { BusinessError } 17700202 - Failed to delete the abc file.
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 11
      */
     function deleteAbc(abcPath: string): Promise<void>;
     /**
+     * Check whether the link can be opened.
+     *
+     * @param { string } link - Indicates the link to be opened.
+     * @returns { boolean } Returns true if the link can be opened; returns false otherwise.
+     * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
+     * @throws { BusinessError } 17700055 - The specified link is invalid.
+     * @throws { BusinessError } 17700056 - The scheme of the specified link is not in the querySchemes.
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    function canOpenLink(link: string): boolean;
+    /**
      * Obtains configuration information about an application.
      *
+     * @typedef { _ApplicationInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Obtains configuration information about an application.
      *
+     * @typedef { _ApplicationInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1260,12 +1365,14 @@ declare namespace bundleManager {
     /**
      * Indicates the metadata information about a module.
      *
+     * @typedef { _ModuleMetadata }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 10
      */
     /**
      * Indicates the metadata information about a module.
      *
+     * @typedef { _ModuleMetadata }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1274,12 +1381,14 @@ declare namespace bundleManager {
     /**
      * Indicates the Metadata.
      *
+     * @typedef { _Metadata }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Indicates the Metadata.
      *
+     * @typedef { _Metadata }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1288,12 +1397,14 @@ declare namespace bundleManager {
     /**
      * Obtains configuration information about a bundle.
      *
+     * @typedef { _BundleInfo.BundleInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Obtains configuration information about a bundle.
      *
+     * @typedef { _BundleInfo.BundleInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1302,12 +1413,14 @@ declare namespace bundleManager {
     /**
      * The scene which is used.
      *
+     * @typedef { _BundleInfo.UsedScene }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * The scene which is used.
      *
+     * @typedef { _BundleInfo.UsedScene }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1316,12 +1429,14 @@ declare namespace bundleManager {
     /**
      * Indicates the required permissions details defined in file config.json.
      *
+     * @typedef { _BundleInfo.ReqPermissionDetail }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Indicates the required permissions details defined in file config.json.
      *
+     * @typedef { _BundleInfo.ReqPermissionDetail }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1330,12 +1445,14 @@ declare namespace bundleManager {
     /**
      * Indicates the SignatureInfo.
      *
+     * @typedef { _BundleInfo.SignatureInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Indicates the SignatureInfo.
      *
+     * @typedef { _BundleInfo.SignatureInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1344,12 +1461,14 @@ declare namespace bundleManager {
     /**
      * Obtains configuration information about a module.
      *
+     * @typedef { _HapModuleInfo.HapModuleInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Obtains configuration information about a module.
      *
+     * @typedef { _HapModuleInfo.HapModuleInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1358,12 +1477,14 @@ declare namespace bundleManager {
     /**
      * Obtains preload information about a module.
      *
+     * @typedef { _HapModuleInfo.PreloadItem }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Obtains preload information about a module.
      *
+     * @typedef { _HapModuleInfo.PreloadItem }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1372,26 +1493,48 @@ declare namespace bundleManager {
     /**
      * Obtains dependency information about a module.
      *
+     * @typedef { _HapModuleInfo.Dependency }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Obtains dependency information about a module.
      *
+     * @typedef { _HapModuleInfo.Dependency }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
      */
     export type Dependency = _HapModuleInfo.Dependency;
     /**
+     * Obtains the router item about a module.
+     *
+     * @typedef { _HapModuleInfo.RouterItem}
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    export type RouterItem = _HapModuleInfo.RouterItem;
+    /**
+     * Obtains the data item within router item.
+     *
+     * @typedef { _HapModuleInfo.DataItem }
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    export type DataItem = _HapModuleInfo.DataItem;
+    /**
      * Obtains configuration information about an ability.
      *
+     * @typedef { _AbilityInfo.AbilityInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Obtains configuration information about an ability.
      *
+     * @typedef { _AbilityInfo.AbilityInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1400,12 +1543,14 @@ declare namespace bundleManager {
     /**
      * Contains basic Ability information. Indicates the window size..
      *
+     * @typedef { _AbilityInfo.WindowSize }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Contains basic Ability information. Indicates the window size..
      *
+     * @typedef { _AbilityInfo.WindowSize }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1414,12 +1559,14 @@ declare namespace bundleManager {
     /**
      * Obtains extension information about a bundle.
      *
+     * @typedef { _ExtensionAbilityInfo.ExtensionAbilityInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Obtains extension information about a bundle.
      *
+     * @typedef { _ExtensionAbilityInfo.ExtensionAbilityInfo }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
@@ -1428,16 +1575,36 @@ declare namespace bundleManager {
     /**
      * Contains basic Ability information, which uniquely identifies an ability.
      *
+     * @typedef { _ElementName }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @since 9
      */
     /**
      * Contains basic Ability information, which uniquely identifies an ability.
      *
+     * @typedef { _ElementName }
      * @syscap SystemCapability.BundleManager.BundleFramework.Core
      * @atomicservice
      * @since 11
      */
     export type ElementName = _ElementName;
+    /**
+     * Obtains configuration information about an skill
+     *
+     * @typedef { _Skill.Skill }
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    export type Skill = _Skill.Skill;
+    /**
+     * Obtains configuration information about an skillUri
+     *
+     * @typedef { _Skill.SkillUri }
+     * @syscap SystemCapability.BundleManager.BundleFramework.Core
+     * @atomicservice
+     * @since 12
+     */
+    export type SkillUrl = _Skill.SkillUri;
 }
 export default bundleManager;

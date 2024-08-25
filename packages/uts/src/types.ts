@@ -80,6 +80,7 @@ export type UTSOutputOptions = {
     uniExtApiProviders?: [string, string, string][]
     uvueClassNamePrefix?: string
     uvueClassNameOnlyBasename?: boolean
+    uvueGenDefaultAs?: string
     disableReactiveObject?: boolean
     reactiveObjects?: string[]
     reactiveAll?: boolean
