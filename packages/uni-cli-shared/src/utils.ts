@@ -107,10 +107,16 @@ export function normalizeMiniProgramFilename(
   filename: string,
   inputDir?: string
 ) {
-  if (!inputDir || !path.isAbsolute(filename)) {
-    return normalizeNodeModules(filename)
+  let relativeFilename = filename
+  if (inputDir && path.isAbsolute(filename)) {
+    relativeFilename = path.relative(inputDir, filename)
   }
-  return normalizeNodeModules(path.relative(inputDir, filename))
+  if (/^\.\.(\/|\\)/.test(relativeFilename)) {
+    const level = `_${relativeFilename.match(/\.\.(\/|\\)/g)!.length}`
+    relativeFilename = relativeFilename.replace(/\.\.(\/|\\)/g, '')
+    relativeFilename = path.join('_symlinks', level, relativeFilename)
+  }
+  return normalizeNodeModules(relativeFilename)
 }
 
 export function normalizeParsePlugins(
