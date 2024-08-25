@@ -17,16 +17,17 @@
  * @kit CoreFileKit
  */
 import BackupExtensionAbility, { BundleVersion } from '@ohos.application.BackupExtensionAbility';
+import BackupExtensionContext from '@ohos.file.BackupExtensionContext';
 import cloudSync from '@ohos.file.cloudSync';
 import cloudSyncManager from '@ohos.file.cloudSyncManager';
 import Environment from '@ohos.file.environment';
 import fileAccess from '@ohos.file.fileAccess';
 import fileUri from '@ohos.file.fileuri';
-import fileIo, { ConflictFiles, Filter, Options, ReaderIteratorResult, WatchEvent, WatchEventListener, Watcher, ReadOptions, ReadTextOptions, WriteOptions, ListFileOptions } from '@ohos.file.fs';
+import fileIo, { ConflictFiles, Filter, Options, ReaderIteratorResult, WatchEvent, WatchEventListener, Watcher, ReadOptions, ReadTextOptions, WriteOptions, ListFileOptions, DfsListeners, TaskSignal } from '@ohos.file.fs';
 import hash from '@ohos.file.hash';
 import picker from '@ohos.file.picker';
 import securityLabel from '@ohos.file.securityLabel';
 import statfs from '@ohos.file.statvfs';
 import storageStatistics from '@ohos.file.storageStatistics';
 import fileShare from '@ohos.fileshare';
-export { BackupExtensionAbility, BundleVersion, ConflictFiles, Environment, Filter, Options, ReaderIteratorResult, WatchEvent, WatchEventListener, Watcher, ReadOptions, ReadTextOptions, WriteOptions, ListFileOptions, cloudSync, cloudSyncManager, fileAccess, fileIo, fileShare, fileUri, hash, picker, securityLabel, statfs, storageStatistics };
+export { BackupExtensionAbility, BackupExtensionContext, BundleVersion, ConflictFiles, Environment, Filter, Options, ReaderIteratorResult, WatchEvent, WatchEventListener, Watcher, ReadOptions, ReadTextOptions, WriteOptions, ListFileOptions, cloudSync, cloudSyncManager, fileAccess, fileIo, fileShare, fileUri, hash, picker, securityLabel, statfs, storageStatistics, DfsListeners, TaskSignal };

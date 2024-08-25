@@ -15,11 +15,52 @@ import { initService } from './initService'
 // import { initKeyboardEvent } from '../dom/keyboard'
 import { setNativeApp } from './app'
 import { initComponentInstance } from './initComponentInstance'
+import type {
+  NavigateToOptions,
+  SwitchTabOptions,
+} from '@dcloudio/uni-app-x/types/uni'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
+
+export const entryPageState = {
+  isReady: false,
+  handledBeforeEntryPageRoutes: false,
+}
+type NavigateToPage = {
+  args: NavigateToOptions
+  handler: {
+    resolve: (res: void | AsyncApiRes<UniNamespace.NavigateToOptions>) => void
+    reject: (errMsg?: string, errRes?: any) => void
+  }
+}
+type SwitchTabPage = {
+  args: SwitchTabOptions
+  handler: {
+    resolve: (res: void | AsyncApiRes<UniNamespace.SwitchTabOptions>) => void
+    reject: (errMsg?: string, errRes?: any) => void
+  }
+}
+type RedirectToPage = {
+  args: { url: string; path: string; query: Record<string, any> }
+  handler: {
+    resolve: (res: void | AsyncApiRes<UniNamespace.RedirectToOptions>) => void
+    reject: (errMsg?: string, errRes?: any) => void
+  }
+}
+type ReLaunchPage = {
+  args: { url: string }
+  handler: {
+    resolve: (res: void | AsyncApiRes<UniNamespace.ReLaunchOptions>) => void
+    reject: (errMsg?: string, errRes?: any) => void
+  }
+}
+export const navigateToPagesBeforeEntryPages: NavigateToPage[] = []
+export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
+export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
+export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
 
 function initAppVm(appVm: ComponentPublicInstance) {
   appVm.$vm = appVm

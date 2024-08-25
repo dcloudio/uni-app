@@ -9,7 +9,10 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return toDisplayString(a)
+}
 }
 
 })"
@@ -27,7 +30,10 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 const a = 1
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return toDisplayString(a)
+}
 }
 
 })"
@@ -44,7 +50,10 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 const a = 1
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return toDisplayString(a)
+}
 }
 
 })"
@@ -61,7 +70,7 @@ const _cache = __ins.renderCache;
 
 
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -76,7 +85,7 @@ const _cache = __ins.renderCache;
 
       const { foo, b: bar, ['x' + 'y']: baz, x: { y, zz: { z }}} = {}
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -94,7 +103,21 @@ const _cache = __ins.renderCache;
 
         function b() {}
         
-return "INLINE_RENDER"
+return (): any | null => {
+
+const _component_Comp = resolveComponent("Comp")
+
+  return createElementVNode(Fragment, null, [
+    toDisplayString(a as Foo) + " " + toDisplayString(b<Bar>()) + " " + toDisplayString(unref(Baz)) + " ",
+    createVNode(_component_Comp, null, utsMapOf({
+      default: withScopedSlotCtx(({ data }: Qux): any[] => [toDisplayString(data)]),
+      _: 1 /* STABLE */
+    })),
+    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list as Fred, ({ z = _ctx.x as Qux }, __key, __index, _cached): any => {
+      return createElementVNode("view")
+    }), 256 /* UNKEYED_FRAGMENT */)
+  ], 64 /* STABLE_FRAGMENT */)
+}
 }
 
 })"
@@ -111,7 +134,13 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return createElementVNode("view", utsMapOf({
+    class: normalizeClass([cond ? '' : unref(bar)(), 'default']),
+    style: normalizeStyle(unref(baz))
+  }), null, 6 /* CLASS, STYLE */)
+}
 }
 
 })"
@@ -128,7 +157,15 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return createElementVNode(Fragment, null, [
+    createVNode(unref(FooBaz)),
+    createVNode(unref(FooQux)),
+    createVNode(unref(foo)),
+    " FooBar "
+  ], 64 /* STABLE_FRAGMENT */)
+}
 }
 
 })"
@@ -144,7 +181,12 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
+    [unref(vMyDir)]
+  ])
+}
 }
 
 })"
@@ -160,7 +202,16 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return createElementVNode(Fragment, null, [
+    createVNode(unref(FooBar)),
+    createVNode(unref(FooBar)),
+    createElementVNode("view", normalizeProps(utsMapOf({ [(unref(bar).attrName) || ""]: 15 })), null, 16 /* FULL_PROPS */),
+    createElementVNode("view", utsMapOf({ unused: "unused" })),
+    createVNode(unref(FooBar))
+  ], 64 /* STABLE_FRAGMENT */)
+}
 }
 
 })"
@@ -176,7 +227,10 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return toDisplayString(\`\${unref(VAR)}VAR2\${unref(VAR3)}\`)
+}
 }
 
 })"
@@ -192,7 +246,13 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return createElementVNode(Fragment, null, [
+    createVNode(unref(FooBaz)),
+    createVNode(unref(Last))
+  ], 64 /* STABLE_FRAGMENT */)
+}
 }
 
 })"
@@ -208,7 +268,20 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
           
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return createElementVNode(Fragment, null, [
+    createElementVNode("view", utsMapOf({
+      ref_key: "foo",
+      ref: foo
+    }), null, 512 /* NEED_PATCH */),
+    createElementVNode("view", utsMapOf({ ref: "" }), null, 512 /* NEED_PATCH */),
+    createVNode(unref(Baz), utsMapOf({
+      ref_key: "bar",
+      ref: bar
+    }), null, 512 /* NEED_PATCH */)
+  ], 64 /* STABLE_FRAGMENT */)
+}
 }
 
 })"
@@ -224,7 +297,12 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
-return "INLINE_RENDER"
+return (): any | null => {
+
+  return createElementVNode("view", utsMapOf({
+    id: unref(z) + 'y'
+  }), toDisplayString(unref(x)) + " " + toDisplayString(_ctx.yy) + " " + toDisplayString(unref(x$y)), 9 /* TEXT, PROPS */, ["id"])
+}
 }
 
 })"
@@ -250,7 +328,7 @@ const _cache = __ins.renderCache;
         
         
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -276,7 +354,7 @@ const _cache = __ins.renderCache;
           
           
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -293,7 +371,7 @@ const _cache = __ins.renderCache;
 
       let foo = $ref(1)
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -310,7 +388,7 @@ const _cache = __ins.renderCache;
 
         x()
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -331,7 +409,7 @@ const _cache = __ins.renderCache;
       
       const r = ref(0)
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -348,7 +426,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -365,7 +443,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
           
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -381,7 +459,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -405,8 +483,7 @@ const _cache = __ins.renderCache;
         let lett = 1
         function fn() {}
         
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode(Fragment, null, [
     createVNode(Foo, null, utsMapOf({
@@ -434,8 +511,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode(Fragment, null, [
     withDirectives(createElementVNode("view", null, null, 512 /* NEED_PATCH */), [
@@ -461,8 +537,7 @@ const _cache = __ins.renderCache;
 
         const count = ref(0)
         
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("view", null, toDisplayString(count.value), 1 /* TEXT */),
@@ -488,8 +563,7 @@ const _cache = __ins.renderCache;
         let lett = 1
         let v = ref(1)
         
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("view", utsMapOf({
@@ -548,8 +622,7 @@ const _cache = __ins.renderCache;
         const maybe = foo()
         let lett = 1
         
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("view", utsMapOf({
@@ -581,8 +654,7 @@ const _cache = __ins.renderCache;
         const maybe = foo()
         let lett = 1
         
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("view", utsMapOf({
@@ -623,8 +695,7 @@ const _cache = __ins.renderCache;
         const maybe = foo()
         let lett = 1
         
-return 
-function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null {
+return (): any | null => {
 
   return createElementVNode(Fragment, null, [
     createElementVNode("input", utsMapOf({
@@ -656,7 +727,7 @@ const _cache = __ins.renderCache;
         const count = ref(0)
         __expose({ count })
         
-return function GenAnonymousRender(this: InstanceType<typeof __sfc__>): any | null { return null }
+return (): any | null => { return null }
 }
 
 })"
@@ -673,7 +744,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -700,7 +771,7 @@ const _cache = __ins.renderCache;
       function c() {}
       class d {}
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -716,7 +787,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -733,7 +804,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -749,7 +820,7 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -768,7 +839,7 @@ const _cache = __ins.renderCache;
 
         enum Foo { A = 123 }
         
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -780,11 +851,11 @@ exports[`SFC genDefaultAs <script setup> only 1`] = `
 const __sfc__ = defineComponent({
   setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
 const _cache = __ins.renderCache;
 
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })
@@ -797,11 +868,11 @@ exports[`SFC genDefaultAs <script setup> only w/ ts 1`] = `
 const __sfc__ = defineComponent({
   setup(__props): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy as InstanceType<typeof __sfc__>;
 const _cache = __ins.renderCache;
 
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })

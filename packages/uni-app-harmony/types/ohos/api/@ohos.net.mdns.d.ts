@@ -38,6 +38,12 @@ declare namespace mdns {
      * @syscap SystemCapability.Communication.NetManager.Core
      * @since 10
      */
+    /**
+     * Get a network address.
+     * @syscap SystemCapability.Communication.NetManager.Core
+     * @atomicservice
+     * @since 12
+     */
     type NetAddress = connection.NetAddress;
     /**
      * Adds an mDNS service.

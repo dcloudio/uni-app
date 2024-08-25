@@ -17,7 +17,6 @@ declare enum CollaborationServiceFilter {
     /**
      * 0 indicates all the collaboration services.
      *
-     * @enum {number}
      * @syscap SystemCapability.Collaboration.Service
      * @since 5.0.0(12)
      */
@@ -25,7 +24,6 @@ declare enum CollaborationServiceFilter {
     /**
      * 1 indicates the collaboration service used to take photos.
      *
-     * @enum {number}
      * @syscap SystemCapability.Collaboration.Service
      * @since 5.0.0(12)
      */
@@ -33,7 +31,6 @@ declare enum CollaborationServiceFilter {
     /**
      * 2  indicates the collaboration service used to scan documents.
      *
-     * @enum {number}
      * @syscap SystemCapability.Collaboration.Service
      * @since 5.0.0(12)
      */
@@ -41,7 +38,6 @@ declare enum CollaborationServiceFilter {
     /**
      * 3  indicates the collaboration service used to pick images.
      *
-     * @enum {number}
      * @syscap SystemCapability.Collaboration.Service
      * @since 5.0.0(12)
      */

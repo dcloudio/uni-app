@@ -1,0 +1,10 @@
+{
+  "name": "@vue/runtime-core",
+  "version": "3.4.21",
+  "description": "@vue/runtime-core",
+  "types": "dist/runtime-core.d.ts",
+  "dependencies": {
+    "@vue/shared": "3.4.21",
+    "@vue/reactivity": "3.4.21"
+  }
+}

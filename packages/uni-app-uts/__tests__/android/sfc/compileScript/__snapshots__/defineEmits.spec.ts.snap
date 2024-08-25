@@ -12,7 +12,7 @@ function myEmit(event: string, ...do_not_transform_spread: Array<any | null>) {
 __ins.emit(event, ...do_not_transform_spread)
 }
 
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -30,7 +30,7 @@ function emit(event: string, ...do_not_transform_spread: Array<any | null>) {
 __ins.emit(event, ...do_not_transform_spread)
 }
 
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -50,7 +50,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -70,7 +70,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -90,7 +90,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -111,7 +111,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -131,7 +131,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -149,7 +149,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -167,7 +167,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -187,7 +187,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -207,7 +207,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -227,7 +227,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -245,7 +245,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -266,7 +266,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -284,7 +284,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -302,7 +302,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -322,7 +322,7 @@ const _cache = __ins.renderCache;
 __ins.emit(event, ...do_not_transform_spread)
 }
     
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"

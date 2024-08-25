@@ -14,7 +14,7 @@
  */
 /**
  * @file
- * @kit Asset Store Kit
+ * @kit AssetStoreKit
  */
 /**
  * This module provides the capabilities for life cycle management of sensitive user data (Asset) such as passwords

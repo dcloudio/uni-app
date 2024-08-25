@@ -10,6 +10,7 @@ import {
   capitalize,
   installDepTips,
   isArray,
+  normalizeNodeModules,
   normalizePath,
 } from './utils'
 
@@ -63,10 +64,11 @@ export function resolveUTSAppModule(
       if (fs.existsSync(path.resolve(id, basedir, 'index.uts'))) {
         return id
       }
+      const fileName = id.split('?')[0]
       const resolvePlatformDir = (p: typeof process.env.UNI_UTS_PLATFORM) => {
-        return path.resolve(id, basedir, p)
+        return path.resolve(fileName, basedir, p)
       }
-      const extname = ['.uts']
+      const extname = ['.uts', '.vue', '.uvue']
       if (platform === 'app-harmony') {
         if (resolveUTSFile(resolvePlatformDir(platform), extname)) {
           return id
@@ -135,6 +137,20 @@ function resolveUTSFile(
   }
 }
 
+export const createUniXCompilerOnce = once(() => {
+  const { createUniXCompiler } = resolveUTSCompiler()
+  return createUniXCompiler(
+    process.env.NODE_ENV === 'development' ? 'development' : 'production',
+    'Kotlin',
+    {
+      inputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.tsc'),
+      cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
+      outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue'),
+      normalizeFileName: normalizeNodeModules,
+    }
+  )
+})
+
 export function resolveUTSCompiler(): typeof UTSCompiler {
   let compilerPath: string = ''
   if (isInHBuilderX()) {
@@ -187,6 +203,25 @@ export function isUTSComponent(name: string) {
   return utsComponents.has(name)
 }
 
+export function getUTSComponentAutoImports() {
+  const utsComponentAutoImports: Record<string, [[string]]> = {}
+  utsComponents.forEach(({ kotlinPackage }, name) => {
+    const className = capitalize(camelize(name)) + 'Element'
+    if (!utsComponentAutoImports[kotlinPackage]) {
+      utsComponentAutoImports[kotlinPackage] = [[className]]
+    } else {
+      if (
+        !utsComponentAutoImports[kotlinPackage].find(
+          (item) => item[0] === className
+        )
+      ) {
+        utsComponentAutoImports[kotlinPackage].push([className])
+      }
+    }
+  })
+  return utsComponentAutoImports
+}
+
 export function parseUTSComponent(name: string, type: 'kotlin' | 'swift') {
   const meta = utsComponents.get(name)
   if (meta) {
@@ -237,11 +272,19 @@ export function initUTSComponents(
             }
           }
           if (name) {
-            const importDir = normalizePath(
-              is_uni_modules_utssdk ? path.dirname(dir) : dir
-            )
+            const source =
+              '@/' +
+              normalizePath(
+                isApp
+                  ? path.relative(
+                      inputDir,
+                      is_uni_modules_utssdk ? path.dirname(dir) : dir
+                    )
+                  : path.relative(inputDir, file)
+              )
+
             easycomsObj[`^${name}$`] = {
-              source: isApp ? `${importDir}?uts-proxy` : normalizePath(file),
+              source: isApp ? `${source}?uts-proxy` : source,
               kotlinPackage: parseKotlinPackageWithPluginId(
                 pluginId,
                 is_uni_modules_utssdk

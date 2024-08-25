@@ -1,76 +1,250 @@
-import abilityAccessCtrl from '@ohos.abilityAccessCtrl';
 import Want from '@ohos.app.ability.Want';
 import common from '@ohos.app.ability.common';
 import wantConstant from '@ohos.app.ability.wantConstant';
-import buffer from '@ohos.buffer';
-import bundleManager from '@ohos.bundle.bundleManager';
 import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
 import picker from '@ohos.file.picker';
 import inputMethod from '@ohos.inputMethod';
 import image from '@ohos.multimedia.image';
-import media from '@ohos.multimedia.media';
+import connection from '@ohos.net.connection';
 import http from '@ohos.net.http';
 import webSocket from '@ohos.net.webSocket';
-import promptAction from '@ohos.promptAction';
-import { BusinessError as BusinessError1 } from '@ohos.base';
-import { BusinessError } from '@ohos.base';
-import { Emitter as Emitter4 } from "@dcloudio/uni-app-harmony-framework";
+import call from '@ohos.telephony.call';
+import radio from '@ohos.telephony.radio';
+import webview from '@ohos.web.webview';
+import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError10 } from '@ohos.base';
+import { BusinessError as BusinessError2 } from '@ohos.base';
+import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError5 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError6 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
+import { BusinessError as BusinessError8 } from '@ohos.base';
+import { BusinessError as BusinessError9 } from '@ohos.base';
+import { BusinessError } from '@kit.BasicServicesKit';
+import { Emitter as Emitter5, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-app-harmony-framework";
 import { Emitter } from "@dcloudio/uni-app-harmony-framework";
+import Hash from '@ohos.file.hash';
 import I18n from '@ohos.i18n';
 import I18n1 from '@ohos.i18n';
 import I18n2 from '@ohos.i18n';
+import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony2, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony3, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
-import { UTSHarmony as UTSHarmony4 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-app-harmony-framework";
+import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-app-harmony-framework";
 import { UTSHarmony } from "@dcloudio/uni-app-harmony-framework";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
-import { UniError, ComponentPublicInstance, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ProtocolOptions, defineSyncApi, ApiOptions, defineAsyncApi, ApiExecutor, getUniProviders, ApiError, defineTaskApi } from "@dcloudio/uni-app-harmony";
-import { UniServiceJSBridge, getCurrentPageVm as getCurrentPageVm1, getPageIdByVm as getPageIdByVm1 } from "@dcloudio/uni-app-harmony-framework";
+import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
-import buffer1 from '@ohos.buffer';
+import { abilityAccessCtrl } from '@kit.AbilityKit';
+import abilityAccessCtrl1 from '@ohos.abilityAccessCtrl';
+import { access } from '@kit.ConnectivityKit';
+import { audio as audio1 } from '@kit.AudioKit';
+import { audio } from '@kit.AudioKit';
+import { avSession } from '@kit.AVSessionKit';
+import { backgroundTaskManager } from '@kit.BackgroundTasksKit';
+import { bundleManager } from '@kit.AbilityKit';
 import bundleManager1 from '@ohos.bundle.bundleManager';
+import bundleManager2 from '@ohos.bundle.bundleManager';
+import { camera } from '@kit.CameraKit';
+import { cameraPicker } from '@kit.CameraKit';
 import { clipboard } from "@dcloudio/uni-app-harmony-framework";
 import common1 from '@ohos.app.ability.common';
 import common2 from '@ohos.app.ability.common';
 import common3 from '@ohos.app.ability.common';
+import common4 from '@ohos.app.ability.common';
+import { contact } from '@kit.ContactsKit';
 import dataPreferences from '@ohos.data.preferences';
-import { device } from "@dcloudio/uni-app-harmony-framework";
 import deviceInfo1 from '@ohos.deviceInfo';
+import { display } from '@kit.ArkUI';
+import { fileIo as fileIo1 } from '@kit.CoreFileKit';
+import { fileIo as fileIo2 } from '@kit.CoreFileKit';
+import { fileIo as fileIo3 } from '@kit.CoreFileKit';
+import { fileIo as fileIo4 } from '@kit.CoreFileKit';
+import { fileIo as fs2 } from '@kit.CoreFileKit';
+import { fileIo } from '@kit.CoreFileKit';
 import fileUri from '@ohos.file.fileuri';
 import fs1 from '@ohos.file.fs';
-import fs2 from '@ohos.file.fs';
 import fs3 from '@ohos.file.fs';
+import fs4 from '@ohos.file.fs';
+import fs5 from '@ohos.file.fs';
+import { geoLocationManager } from '@kit.LocationKit';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext11 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext12 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-app-harmony-framework";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-app-harmony-framework";
-import { getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
-import { getCurrentPage, navigator } from "@dcloudio/uni-app-harmony-framework";
-import { getEnv, Emitter as Emitter3 } from "@dcloudio/uni-app-harmony-framework";
-import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-app-harmony-framework";
+import { getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv1 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv2 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv as getEnv3, Emitter as Emitter4, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-app-harmony-framework";
+import { getEnv, getRealPath } from "@dcloudio/uni-app-harmony-framework";
+import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage2 } from "@dcloudio/uni-app-harmony-framework";
 import { getOSRuntime } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath1, waitForCurrentNativePage } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath2 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath as getRealPath3, Emitter as Emitter2 } from "@dcloudio/uni-app-harmony-framework";
-import { getRealPath } from "@dcloudio/uni-app-harmony-framework";
-import { getResourceStr, getAbilityContext } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath3 } from "@dcloudio/uni-app-harmony-framework";
+import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-app-harmony-framework";
+import { getResourceStr, getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-app-harmony-framework";
 import { getTabBar } from "@dcloudio/uni-app-harmony-framework";
+import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
 import http1 from '@ohos.net.http';
 import http2 from '@ohos.net.http';
-import { isPlainObject, Emitter as Emitter1 } from "@dcloudio/uni-app-harmony-framework";
-import picker1 from '@ohos.file.picker';
-import picker2 from '@ohos.file.picker';
-import picker3 from '@ohos.file.picker';
-import promptAction1 from '@ohos.promptAction';
-import { resolveComponentInstance, isFunction, getCurrentPageVm, getPageIdByVm, addIntersectionObserver, removeIntersectionObserver } from "@dcloudio/uni-app-harmony-framework";
+import { image as image1 } from '@kit.ImageKit';
+import { isPlainObject, Emitter as Emitter2, getCurrentMP } from "@dcloudio/uni-app-harmony-framework";
+import { media as media1 } from '@kit.MediaKit';
+import { media } from '@kit.MediaKit';
+import media2 from '@ohos.multimedia.media';
+import media3 from '@ohos.multimedia.media';
+import { notificationManager } from '@kit.NotificationKit';
+import photoAccessHelper1 from '@ohos.file.photoAccessHelper';
+import photoAccessHelper2 from '@ohos.file.photoAccessHelper';
+import photoAccessHelper3 from '@ohos.file.photoAccessHelper';
+import { promptAction as promptAction1 } from '@kit.ArkUI';
+import { promptAction as promptAction2 } from '@kit.ArkUI';
+import { promptAction as promptAction3 } from '@kit.ArkUI';
+import { promptAction } from '@kit.ArkUI';
+import promptAction4 from '@ohos.promptAction';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-app-harmony-framework";
-type ArrayBufferToBase64 = (arrayBuffer: ArrayBuffer) => string;
-type Base64ToArrayBuffer = (base64: string) => ArrayBuffer;
+import { systemShare } from '@kit.ShareKit';
+import { uniformTypeDescriptor } from '@kit.ArkData';
+import { userAuth } from '@kit.UserAuthenticationKit';
+import { wantAgent } from '@kit.AbilityKit';
+import { wifiManager } from '@kit.ConnectivityKit';
+import { window as window1 } from '@kit.ArkUI';
+import { window as window2 } from '@kit.ArkUI';
+import { window as window3 } from '@kit.ArkUI';
+import { window as window4 } from '@kit.ArkUI';
+import { window } from '@kit.ArkUI';
+type AddPhoneContact = (options: AddPhoneContactOptions) => void;
+class AddPhoneContactSuccess extends UTSObject {
+}
+class UniError1 extends UTSObject {
+    errSubject!: string;
+    errCode!: number;
+    errMsg!: string;
+    data: object | null = null;
+    cause: Object | null = null;
+}
+type AddPhoneContactSuccessCallback = (result: AddPhoneContactSuccess) => void;
+type AddPhoneContactFail = UniError1;
+type AddPhoneContactFailCallback = (result: AddPhoneContactFail) => void;
+type AddPhoneContactComplete = Object;
+type AddPhoneContactCompleteCallback = (result: AddPhoneContactComplete) => void;
+class AddPhoneContactOptions extends UTSObject {
+    photoFilePath: string | null = null;
+    nickName: string | null = null;
+    lastName: string | null = null;
+    middleName: string | null = null;
+    firstName: string | null = null;
+    remark: string | null = null;
+    mobilePhoneNumber: string | null = null;
+    weChatNumber: string | null = null;
+    addressCountry: string | null = null;
+    addressState: string | null = null;
+    addressCity: string | null = null;
+    addressStreet: string | null = null;
+    addressPostalCode: string | null = null;
+    organization: string | null = null;
+    title: string | null = null;
+    workFaxNumber: string | null = null;
+    workPhoneNumber: string | null = null;
+    hostNumber: string | null = null;
+    email: string | null = null;
+    url: string | null = null;
+    workAddressCountry: string | null = null;
+    workAddressState: string | null = null;
+    workAddressCity: string | null = null;
+    workAddressStreet: string | null = null;
+    workAddressPostalCode: string | null = null;
+    homeFaxNumber: string | null = null;
+    homePhoneNumber: string | null = null;
+    homeAddressCountry: string | null = null;
+    homeAddressState: string | null = null;
+    homeAddressCity: string | null = null;
+    homeAddressStreet: string | null = null;
+    homeAddressPostalCode: string | null = null;
+    success: AddPhoneContactSuccessCallback | null = null;
+    fail: AddPhoneContactFailCallback | null = null;
+    complete: AddPhoneContactCompleteCallback | null = null;
+}
+type StartSoterAuthentication = (options: StartSoterAuthenticationOptions) => void;
+type SoterAuthMode = 'fingerPrint' | 'facial' | 'speech';
+class StartSoterAuthenticationSuccess extends UTSObject {
+    errCode!: number;
+    authMode!: SoterAuthMode;
+    resultJSON: string | null = null;
+    resultJSONSignature: string | null = null;
+    errMsg!: string;
+}
+type StartSoterAuthenticationSuccessCallback = (result: StartSoterAuthenticationSuccess) => void;
+type StartSoterAuthenticationFail = UniError2;
+class UniError2 extends UTSObject {
+    errSubject!: string;
+    errCode!: number;
+    errMsg!: string;
+    data: object | null = null;
+    cause: Object | null = null;
+}
+type StartSoterAuthenticationFailCallback = (result: StartSoterAuthenticationFail) => void;
+type StartSoterAuthenticationComplete = Object;
+type StartSoterAuthenticationCompleteCallback = (result: StartSoterAuthenticationComplete) => void;
+class StartSoterAuthenticationOptions extends UTSObject {
+    requestAuthModes!: SoterAuthMode[];
+    challenge: string | null = null;
+    authContent: string | null = null;
+    success: StartSoterAuthenticationSuccessCallback | null = null;
+    fail: StartSoterAuthenticationFailCallback | null = null;
+    complete: StartSoterAuthenticationCompleteCallback | null = null;
+}
+type CheckIsSupportSoterAuthentication = (options: CheckIsSupportSoterAuthenticationOptions) => void;
+class CheckIsSupportSoterAuthenticationSuccess extends UTSObject {
+    supportMode!: SoterAuthMode[];
+    errMsg!: string;
+}
+type CheckIsSupportSoterAuthenticationSuccessCallback = (result: CheckIsSupportSoterAuthenticationSuccess) => void;
+type CheckIsSupportSoterAuthenticationFail = UniError2;
+type CheckIsSupportSoterAuthenticationFailCallback = (result: CheckIsSupportSoterAuthenticationFail) => void;
+type CheckIsSupportSoterAuthenticationComplete = Object;
+type CheckIsSupportSoterAuthenticationCompleteCallback = (result: CheckIsSupportSoterAuthenticationComplete) => void;
+class CheckIsSupportSoterAuthenticationOptions extends UTSObject {
+    success: CheckIsSupportSoterAuthenticationSuccessCallback | null = null;
+    fail: CheckIsSupportSoterAuthenticationFailCallback | null = null;
+    complete: CheckIsSupportSoterAuthenticationCompleteCallback | null = null;
+}
+type CheckIsSoterEnrolledInDevice = (options: CheckIsSoterEnrolledInDeviceOptions) => void;
+class CheckIsSoterEnrolledInDeviceSuccess extends UTSObject {
+    isEnrolled!: boolean;
+    errMsg!: string;
+}
+type CheckIsSoterEnrolledInDeviceSuccessCallback = (result: CheckIsSoterEnrolledInDeviceSuccess) => void;
+type CheckIsSoterEnrolledInDeviceFail = UniError2;
+type CheckIsSoterEnrolledInDeviceFailCallback = (result: CheckIsSoterEnrolledInDeviceFail) => void;
+type CheckIsSoterEnrolledInDeviceComplete = Object;
+type CheckIsSoterEnrolledInDeviceCompleteCallback = (result: CheckIsSoterEnrolledInDeviceComplete) => void;
+class CheckIsSoterEnrolledInDeviceOptions extends UTSObject {
+    checkAuthMode!: SoterAuthMode;
+    success: CheckIsSoterEnrolledInDeviceSuccessCallback | null = null;
+    fail: CheckIsSoterEnrolledInDeviceFailCallback | null = null;
+    complete: CheckIsSoterEnrolledInDeviceCompleteCallback | null = null;
+}
 export type SetClipboardData = (options: SetClipboardDataOptions) => void;
 export class SetClipboardDataSuccess extends UTSObject {
 }
@@ -104,54 +278,44 @@ interface ClipboardModuleGetStringOptions {
     result: string;
     data: string;
 }
-export type CreateIntersectionObserver = (component: Object, options: CreateIntersectionObserverOptions) => IntersectionObserver;
-export interface CreateIntersectionObserverOptions {
-    thresholds?: (Object[]) | null;
-    initialRatio?: number | null;
-    observeAll?: boolean | null;
-}
-class ObserveNodeRect extends UTSObject {
-    left!: number;
-    right!: number;
-    top!: number;
-    bottom!: number;
-}
-class ObserveResult extends UTSObject {
-    intersectionRatio!: number;
-    intersectionRect!: Object;
-    boundingClientRect!: ObserveNodeRect;
-    relativeRect!: ObserveNodeRect;
-    time!: number;
-}
-export type ObserveCallback = (result: ObserveResult) => void;
-export interface IntersectionObserver {
-    relativeTo(selector: string, margins?: Object): IntersectionObserver;
-    relativeToViewport(margins?: Object): IntersectionObserver;
-    observe(targetSelector: string, callback: ObserveCallback): void;
-    disconnect(): void;
-}
-interface AddIntersectionObserverArgs {
-    reqId: number;
-    component: ComponentPublicInstance;
-    options: ServiceIntersectionObserverOptions;
-    callback: ObserveCallback;
-}
-interface RemoveIntersectionObserverArgs {
-    reqId: number;
-    component: ComponentPublicInstance;
-}
-interface RequestComponentObserverOptions {
-    selector?: string;
-    rootMargin?: string;
-    relativeToSelector?: string;
-}
-interface ServiceIntersectionObserverOptions extends CreateIntersectionObserverOptions, RequestComponentObserverOptions {
-}
-interface Margins {
-    bottom?: number;
-    left?: number;
-    right?: number;
-    top?: number;
+type CreateInnerAudioContext = () => InnerAudioContext;
+interface InnerAudioContext {
+    duration: number;
+    currentTime: number;
+    paused: boolean;
+    src: string;
+    startTime: number;
+    buffered: number;
+    autoplay: boolean;
+    loop: boolean;
+    obeyMuteSwitch: boolean;
+    volume: number;
+    playbackRate?: number;
+    pause(): void;
+    stop(): void;
+    play(): void;
+    seek(position: number): void;
+    destroy(): void;
+    onCanplay(callback: (result: Object) => void): void;
+    onPlay(callback: (result: Object) => void): void;
+    onPause(callback: (result: Object) => void): void;
+    onStop(callback: (result: Object) => void): void;
+    onEnded(callback: (result: Object) => void): void;
+    onTimeUpdate(callback: (result: Object) => void): void;
+    onError(callback: (result: Object) => void): void;
+    onWaiting(callback: (result: Object) => void): void;
+    onSeeking(callback: (result: Object) => void): void;
+    onSeeked(callback: (result: Object) => void): void;
+    offCanplay(callback: (result: Object) => void): void;
+    offPlay(callback: (result: Object) => void): void;
+    offPause(callback: (result: Object) => void): void;
+    offStop(callback: (result: Object) => void): void;
+    offEnded(callback: (result: Object) => void): void;
+    offTimeUpdate(callback: (result: Object) => void): void;
+    offError(callback: (result: Object) => void): void;
+    offWaiting(callback: (result: Object) => void): void;
+    offSeeking(callback: (result: Object) => void): void;
+    offSeeked(callback: (result: Object) => void): void;
 }
 type $OnCallback = Function;
 type $On = (eventName: string, callback: $OnCallback) => void;
@@ -163,7 +327,7 @@ type $Emit = (eventName: string, args: Object | null) => void;
 interface IUniEventEmitter {
     on: (eventName: string, callback: Function) => void;
     once: (eventName: string, callback: Function) => void;
-    off: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 class ExitSuccess extends UTSObject {
@@ -183,6 +347,102 @@ class ExitOptions extends UTSObject {
     complete: ExitCompleteCallback | null = null;
 }
 type Exit = (options?: ExitOptions | null) => void;
+export class SaveFileSuccess extends UTSObject {
+    savedFilePath!: string;
+}
+type SaveFileSuccessCallback = (res: SaveFileSuccess) => void;
+export class SaveFileFail extends UTSObject {
+}
+type SaveFileFailCallback = (res: SaveFileFail) => void;
+type SaveFileCompleteCallback = (res: Object) => void;
+export class SaveFileOptions extends UTSObject {
+    tempFilePath!: string;
+    success: SaveFileSuccessCallback | null = null;
+    fail: SaveFileFailCallback | null = null;
+    complete: SaveFileCompleteCallback | null = null;
+}
+export class GetFileInfoSuccess extends UTSObject {
+    digest!: string;
+    size!: number;
+}
+type GetFileInfoSuccessCallback = (res: GetFileInfoSuccess) => void;
+export class GetFileInfoFail extends UTSObject {
+}
+type GetFileInfoFailCallback = (res: GetFileInfoFail) => void;
+type GetFileInfoCompleteCallback = (res: Object) => void;
+export class GetFileInfoOptions extends UTSObject {
+    filePath!: string;
+    digestAlgorithm: string | null = null;
+    success: GetFileInfoSuccessCallback | null = null;
+    fail: GetFileInfoFailCallback | null = null;
+    complete: GetFileInfoCompleteCallback | null = null;
+}
+export class GetSavedFileInfoSuccess extends UTSObject {
+    size!: number;
+    createTime!: number;
+}
+type GetSavedFileInfoSuccessCallback = (res: GetSavedFileInfoSuccess) => void;
+export class GetSavedFileInfoFail extends UTSObject {
+}
+type GetSavedFileInfoFailCallback = (res: GetSavedFileInfoFail) => void;
+type GetSavedFileInfoCompleteCallback = (res: Object) => void;
+export class GetSavedFileInfoOptions extends UTSObject {
+    filePath!: string;
+    success: GetSavedFileInfoSuccessCallback | null = null;
+    fail: GetSavedFileInfoFailCallback | null = null;
+    complete: GetSavedFileInfoCompleteCallback | null = null;
+}
+export class RemoveSavedFileSuccess extends UTSObject {
+}
+type RemoveSavedFileSuccessCallback = (res: RemoveSavedFileSuccess) => void;
+export class RemoveSavedFileFail extends UTSObject {
+}
+type RemoveSavedFileFailCallback = (res: RemoveSavedFileFail) => void;
+type RemoveSavedFileCompleteCallback = (res: Object) => void;
+export class RemoveSavedFileOptions extends UTSObject {
+    filePath!: string;
+    success: RemoveSavedFileSuccessCallback | null = null;
+    fail: RemoveSavedFileFailCallback | null = null;
+    complete: RemoveSavedFileCompleteCallback | null = null;
+}
+export class SavedFileListItem extends UTSObject {
+    filePath!: string;
+    size!: number;
+    createTime!: number;
+}
+export class GetSavedFileListSuccess extends UTSObject {
+    fileList!: SavedFileListItem[];
+}
+type GetSavedFileListSuccessCallback = (res: GetSavedFileListSuccess) => void;
+export class GetSavedFileListFail extends UTSObject {
+}
+type GetSavedFileListFailCallback = (res: GetSavedFileListFail) => void;
+type GetSavedFileListCompleteCallback = (res: Object) => void;
+export class GetSavedFileListOptions extends UTSObject {
+    success: GetSavedFileListSuccessCallback | null = null;
+    fail: GetSavedFileListFailCallback | null = null;
+    complete: GetSavedFileListCompleteCallback | null = null;
+}
+export type SaveFile = (options?: SaveFileOptions | null) => void;
+export type GetFileInfo = (options?: GetFileInfoOptions | null) => void;
+export type GetSavedFileInfo = (options?: GetSavedFileInfoOptions | null) => void;
+export type RemoveSavedFile = (options?: RemoveSavedFileOptions | null) => void;
+export type GetSavedFileList = (options?: GetSavedFileListOptions | null) => void;
+type GetAppAuthorizeSetting = () => GetAppAuthorizeSettingResult;
+class GetAppAuthorizeSettingResult extends UTSObject {
+    albumAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    bluetoothAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    cameraAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    locationAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    locationAccuracy: 'reduced' | 'full' | 'unsupported' | null = null;
+    locationReducedAccuracy: boolean | null = null;
+    microphoneAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    notificationAuthorized!: 'authorized' | 'denied' | 'not determined' | 'config error';
+    notificationAlertAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    notificationBadgeAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    notificationSoundAuthorized: 'authorized' | 'denied' | 'not determined' | 'config error' | null = null;
+    phoneCalendarAuthorized: 'authorized' | 'denied' | 'not determined' | null = null;
+}
 class GetAppBaseInfoOptions extends UTSObject {
     filter!: Array<string>;
 }
@@ -219,6 +479,40 @@ interface IAppBaseInfoAppVersion {
     name: string;
     code: string;
 }
+type GetBackgroundAudioManager = () => BackgroundAudioManager;
+interface BackgroundAudioManager {
+    duration: number;
+    currentTime: number;
+    paused: boolean;
+    src: string;
+    startTime: number;
+    buffered: number;
+    title: string;
+    epname: string;
+    singer: string;
+    coverImgUrl: string;
+    webUrl: string;
+    protocol: string;
+    playbackRate?: number;
+    play(): void;
+    pause(): void;
+    seek(position: number): void;
+    stop(): void;
+    onCanplay(callback: (result: Object) => void): void;
+    onPlay(callback: (result: Object) => void): void;
+    onPause(callback: (result: Object) => void): void;
+    onStop(callback: (result: Object) => void): void;
+    onEnded(callback: (result: Object) => void): void;
+    onTimeUpdate(callback: (result: Object) => void): void;
+    onPrev(callback: (result: Object) => void): void;
+    onNext(callback: (result: Object) => void): void;
+    onError(callback: (result: Object) => void): void;
+    onWaiting(callback: (result: Object) => void): void;
+}
+interface TempAbilityInfo {
+    bundleName: string;
+    name: string;
+}
 class GetDeviceInfoOptions extends UTSObject {
     filter!: Array<string>;
 }
@@ -245,24 +539,105 @@ export class GetDeviceInfoResult extends UTSObject {
     romVersion: string | null = null;
 }
 export type GetDeviceInfo = (options?: GetDeviceInfoOptions | null) => GetDeviceInfoResult;
-class GetProviderSuccess extends UTSObject {
+type GetNetworkType = (options: GetNetworkTypeOptions) => void;
+class GetNetworkTypeSuccess extends UTSObject {
+    networkType!: string;
+}
+type GetNetworkTypeSuccessCallback = (result: GetNetworkTypeSuccess) => void;
+type GetNetworkTypeFail = UniError;
+type GetNetworkTypeFailCallback = (result: GetNetworkTypeFail) => void;
+type GetNetworkTypeComplete = Object;
+type GetNetworkTypeCompleteCallback = (result: GetNetworkTypeComplete) => void;
+class GetNetworkTypeOptions extends UTSObject {
+    success: GetNetworkTypeSuccessCallback | null = null;
+    fail: GetNetworkTypeFailCallback | null = null;
+    complete: GetNetworkTypeCompleteCallback | null = null;
+}
+class OnNetworkStatusChangeCallbackResult extends UTSObject {
+    isConnected!: boolean;
+    networkType!: string;
+}
+type OnNetworkStatusChangeCallback = (result: OnNetworkStatusChangeCallbackResult) => void;
+type OnNetworkStatusChange = (callback: OnNetworkStatusChangeCallback) => void;
+type OffNetworkStatusChange = (callback: (result: Object) => void) => void;
+interface IUniGetNetworkTypeEventEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
+export class GetProviderSuccess extends UTSObject {
     service!: 'payment';
     provider!: string[];
     providers!: UniProvider[];
-    errMsg!: string;
+}
+export class GetProviderSyncSuccess extends UTSObject {
+    service!: 'payment' | 'location';
+    providerIds!: string[];
+    providerObjects!: UniProvider[];
+}
+export type GetProviderSync = (options: GetProviderSyncOptions) => GetProviderSyncSuccess;
+export class GetProviderSyncOptions extends UTSObject {
+    service!: 'payment' | 'location';
 }
 type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
-type GetProviderFail = UniError;
+type GetProviderFail = IGetProviderFail;
 type GetProviderFailCallback = (result: GetProviderFail) => void;
 type GetProviderComplete = Object;
 type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
-class GetProviderOptions extends UTSObject {
+export class GetProviderOptions extends UTSObject {
     service!: 'payment';
     success: GetProviderSuccessCallback | null = null;
     fail: GetProviderFailCallback | null = null;
     complete: GetProviderCompleteCallback | null = null;
 }
-type GetProvider = (options: GetProviderOptions) => void;
+export type GetProvider = (options: GetProviderOptions) => void;
+type ProviderErrorCode = 110600;
+interface IGetProviderFail extends IUniError {
+    errCode: ProviderErrorCode;
+}
+type GetRecorderManager = () => RecorderManager;
+class RecorderManagerStartOptions extends UTSObject {
+    duration: number | null = null;
+    sampleRate: number | null = null;
+    numberOfChannels: number | null = null;
+    encodeBitRate: number | null = null;
+    format: 'aac' | 'mp3' | 'PCM' | 'wav' | null = null;
+    frameSize: number | null = null;
+}
+interface RecorderManagerOnStopResult {
+    tempFilePath: string;
+}
+interface RecorderManager {
+    start(options: RecorderManagerStartOptions): void;
+    pause(): void;
+    resume(): void;
+    stop(): void;
+    onStart(options: (result: Object) => void): void;
+    onPause(options: (result: Object) => void): void;
+    onStop(options: (result: RecorderManagerOnStopResult) => void): void;
+    onFrameRecorded(options: (result: Object) => void): void;
+    onError(options: (result: Object) => void): void;
+    onResume?: (options: (result: Object) => void) => void;
+    onInterruptionBegin?: (options: (result: Object) => void) => void;
+    onInterruptionEnd?: (options: (result: Object) => void) => void;
+}
+type RecorderState = 'pause' | 'resume' | 'start' | 'stop' | 'error' | 'frameRecorded' | 'interruptionBegin' | 'interruptionEnd';
+interface Callbacks {
+    pause: Function[];
+    resume: Function[];
+    start: Function[];
+    stop: Function[];
+    error: Function[];
+    frameRecorded: Function[];
+    interruptionBegin: Function[];
+    interruptionEnd: Function[];
+}
+interface StateChangeRes extends RecorderManagerOnStopResult {
+    errMsg?: string;
+    frameBuffer?: ArrayBuffer;
+    isLastFrame?: boolean;
+}
 export type GetSystemInfo = (options: GetSystemInfoOptions) => void;
 export type GetSystemInfoSync = () => GetSystemInfoResult;
 export type GetWindowInfo = () => GetWindowInfoResult;
@@ -356,6 +731,15 @@ interface ISystemInfoAppVersion {
     name: string;
     code: string;
 }
+class GetSystemSettingResult extends UTSObject {
+    bluetoothEnabled: boolean | null = null;
+    bluetoothError: string | null = null;
+    locationEnabled!: boolean;
+    wifiEnabled: boolean | null = null;
+    wifiError: string | null = null;
+    deviceOrientation!: 'portrait' | 'landscape';
+}
+type GetSystemSetting = () => GetSystemSettingResult;
 export class HideKeyboardSuccess extends UTSObject {
 }
 export class HideKeyboardFail extends UTSObject {
@@ -438,7 +822,7 @@ export class PreviewImageOptions extends UTSObject {
     current: Object | null = null;
     urls!: Array<string.ImageURIString>;
     showmenu: boolean | null = null;
-    indicator: string | null = null;
+    indicator: 'default' | 'number' | 'none' | null = null;
     loop: boolean | null = null;
     longPressActions: LongPressActionsOptions | null = null;
     success: (PreviewImageSuccessCallback) | null = null;
@@ -491,6 +875,26 @@ export class SaveImageToPhotosAlbumOptions extends UTSObject {
     fail: (SaveImageToPhotosAlbumFailCallback) | null = null;
     complete: (SaveImageToPhotosAlbumCompleteCallback) | null = null;
 }
+type CompressImage = (options: CompressImageOptions) => void;
+class CompressImageSuccess extends UTSObject {
+    tempFilePath!: string;
+}
+type CompressImageFail = IMediaError;
+type CompressImageSuccessCallback = (callback: CompressImageSuccess) => void;
+type CompressImageFailCallback = (callback: CompressImageFail) => void;
+type CompressImageCompleteCallback = ChooseImageCompleteCallback;
+class CompressImageOptions extends UTSObject {
+    src!: string.ImageURIString;
+    quality: number | null = null;
+    rotate: number | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    compressedHeight: number | null = null;
+    compressedWidth: number | null = null;
+    success: (CompressImageSuccessCallback) | null = null;
+    fail: (CompressImageFailCallback) | null = null;
+    complete: (CompressImageCompleteCallback) | null = null;
+}
 export class ChooseVideoSuccess extends UTSObject {
     tempFilePath!: string;
     duration!: number;
@@ -506,7 +910,7 @@ export class ChooseVideoOptions extends UTSObject {
     sourceType: (string[]) | null = null;
     compressed: boolean | null = true;
     maxDuration: number | null = null;
-    camera: string | null = null;
+    camera: 'front' | 'back' | null = null;
     extension: (string[]) | null = null;
     success: (ChooseVideoSuccessCallback) | null = null;
     fail: (ChooseVideoFailCallback) | null = null;
@@ -557,11 +961,33 @@ interface MediaFile {
     thumbTempFilePath?: string;
 }
 interface ChooseMediaOptions {
-    mimeType: picker.PhotoViewMIMETypes.VIDEO_TYPE | picker.PhotoViewMIMETypes.IMAGE_TYPE;
+    mimeType: photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE | photoAccessHelper.PhotoViewMIMETypes.IMAGE_TYPE;
     count?: number;
+    sourceType?: ('album' | 'camera')[];
 }
 interface chooseMediaSuccessCallbackResult {
     tempFiles: MediaFile[];
+}
+type CameraPosition = 'back' | 'front';
+interface TempFiles {
+    tempFilePath: string;
+    size: number;
+}
+interface TakePhotoRes {
+    tempFiles: TempFiles[];
+}
+interface TakeVideoOptions {
+    cameraType?: CameraPosition;
+    videoDuration?: number;
+}
+interface TakeVideoRes {
+    path: string;
+    duration: number;
+    size: number;
+    height: number;
+    width: number;
+    orientation: MediaOrientation;
+    type: string;
 }
 interface TempFileItem {
     path: string;
@@ -572,65 +998,12 @@ interface IPreviewImageOptions {
     current: string;
     showmenu: boolean;
 }
-type SetNavigationBarColorErrorCode = 4;
-interface SetNavigationBarColorFail extends IUniError {
-    errCode: SetNavigationBarColorErrorCode;
+interface _CompressImageSuccess {
+    size: number;
+    tempFilePath: string;
 }
-export class SetNavigationBarColorOptions extends UTSObject {
-    frontColor!: '#ffffff' | '#000000';
-    backgroundColor!: string.ColorString;
-    success: SetNavigationBarColorSuccessCallback | null = null;
-    fail: SetNavigationBarColorFailCallback | null = null;
-    complete: SetNavigationBarColorCompleteCallback | null = null;
-}
-export type SetNavigationBarColorSuccess = AsyncApiSuccessResult;
-type SetNavigationBarColorSuccessCallback = (result: SetNavigationBarColorSuccess) => void;
-type SetNavigationBarColorFailCallback = (error: SetNavigationBarColorFail) => void;
-type SetNavigationBarColorComplete = AsyncApiResult;
-type SetNavigationBarColorCompleteCallback = (res: SetNavigationBarColorComplete) => void;
-export type SetNavigationBarColor = (options: SetNavigationBarColorOptions) => void;
-type SetNavigationBarTitleErrorCode = 4;
-interface SetNavigationBarTitleFail extends IUniError {
-    errCode: SetNavigationBarTitleErrorCode;
-}
-export class SetNavigationBarTitleOptions extends UTSObject {
-    title!: string;
-    success: SetNavigationBarTitleSuccessCallback | null = null;
-    fail: SetNavigationBarTitleFailCallback | null = null;
-    complete: SetNavigationBarTitleCompleteCallback | null = null;
-}
-export type SetNavigationBarTitleSuccess = AsyncApiSuccessResult;
-type SetNavigationBarTitleSuccessCallback = (result: SetNavigationBarTitleSuccess) => void;
-type SetNavigationBarTitleFailCallback = (error: SetNavigationBarTitleFail) => void;
-type SetNavigationBarTitleComplete = AsyncApiResult;
-type SetNavigationBarTitleCompleteCallback = (res: SetNavigationBarTitleComplete) => void;
-export type SetNavigationBarTitle = (options: SetNavigationBarTitleOptions) => void;
-interface TitleNView {
-    titleText: string;
-    autoBackButton?: boolean;
-}
-interface BackButton {
-    color?: string;
-}
-interface PlusWebviewWebviewTitleNViewStyles {
-    backgroundColor?: string;
-    titleColor?: string;
-    titleNView?: TitleNView;
-    backButton?: BackButton;
-}
-interface Webview {
-    getStyle: () => PlusWebviewWebviewTitleNViewStyles | null;
-    setStyle: (style: PlusWebviewWebviewTitleNViewStyles) => void;
-}
-interface $page {
-    statusBarStyle: 'dark' | 'light';
-}
-interface Page {
-    $getAppWebview: () => Webview | null;
-    $page: $page;
-}
-export type Request<T> = (param: RequestOptions<T>) => RequestTask;
-export class RequestOptions<T> extends UTSObject {
+export type Request<T = Object> = (param: RequestOptions<T>) => RequestTask;
+export class RequestOptions<T = Object> extends UTSObject {
     url!: string;
     data: Object | null = null;
     header: UTSJSONObject | null = null;
@@ -645,7 +1018,7 @@ export class RequestOptions<T> extends UTSObject {
     fail: RequestFailCallback | null = null;
     complete: RequestCompleteCallback | null = null;
 }
-export class RequestSuccess<T> extends UTSObject {
+export class RequestSuccess<T = Object> extends UTSObject {
     data: T | null = null;
     statusCode!: number;
     header!: Object;
@@ -731,10 +1104,26 @@ export interface DownloadTask {
     abort(): void;
     onProgressUpdate(callback: DownloadFileProgressUpdateCallback): void;
 }
+interface UniNetworkMP {
+    on: Function;
+    off: Function;
+}
+interface IUniRequestEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
+}
 interface IRequestTask {
     abort: Function;
     onHeadersReceived: Function;
     offHeadersReceived: Function;
+}
+interface IUniUploadFileEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface IUploadTask {
     abort: Function;
@@ -742,6 +1131,12 @@ interface IUploadTask {
     offHeadersReceived: Function;
     onProgressUpdate: Function;
     offProgressUpdate: Function;
+}
+interface IUniDownloadFileEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface IDownloadTask {
     abort: Function;
@@ -784,25 +1179,29 @@ export class OpenDocumentOptions extends UTSObject {
     complete: OpenDocumentCompleteCallback | null = null;
 }
 type OpenDocument = (options?: OpenDocumentOptions | null) => void;
-type PageScrollToErrorCode = 4;
-interface PageScrollToFail extends IUniError {
-    errCode: PageScrollToErrorCode;
+export interface UniPaymentProvider extends UniProvider {
+    requestPayment(options: RequestPaymentOptions): void;
 }
-export type PageScrollToSuccess = AsyncApiSuccessResult;
-type PageScrollToSuccessCallback = (result: PageScrollToSuccess) => void;
-type PageScrollToFailCallback = (result: PageScrollToFail) => void;
-type PageScrollToComplete = AsyncApiResult;
-type PageScrollToCompleteCallback = (result: PageScrollToComplete) => void;
-export class PageScrollToOptions extends UTSObject {
-    scrollTop: number | null = null;
-    selector: string | null = null;
-    offsetTop: number | null = null;
-    duration: number | null = null;
-    success: PageScrollToSuccessCallback | null = null;
-    fail: PageScrollToFailCallback | null = null;
-    complete: PageScrollToCompleteCallback | null = null;
+type RequestPaymentErrorCode = 700600 | 701100 | 701110 | 700601 | 700602 | 700603 | 700000 | 700604 | 700605 | 700800 | 700801;
+export type RequestPayment = (options: RequestPaymentOptions) => void;
+export class RequestPaymentSuccess extends UTSObject {
+    data: object | null = null;
 }
-export type PageScrollTo = (options: PageScrollToOptions) => Promise<PageScrollToSuccess> | null;
+type RequestPaymentSuccessCallback = (result: RequestPaymentSuccess) => void;
+export type RequestPaymentFail = IRequestPaymentFail;
+type RequestPaymentFailCallback = (result: RequestPaymentFail) => void;
+type RequestPaymentComplete = Object;
+interface IRequestPaymentFail extends IUniError {
+    errCode: RequestPaymentErrorCode;
+}
+type RequestPaymentCompleteCallback = (result: RequestPaymentComplete) => void;
+export class RequestPaymentOptions extends UTSObject {
+    provider!: string;
+    orderInfo!: string;
+    success: RequestPaymentSuccessCallback | null = null;
+    fail: RequestPaymentFailCallback | null = null;
+    complete: RequestPaymentCompleteCallback | null = null;
+}
 type PromptErrorCode = 1 | 1001;
 interface IPromptError extends IUniError {
     errCode: PromptErrorCode;
@@ -813,13 +1212,15 @@ type ShowToastFail = IPromptError;
 type ShowToastSuccessCallback = (res: ShowToastSuccess) => void;
 type ShowToastFailCallback = (res: ShowToastFail) => void;
 type ShowToastCompleteCallback = (res: Object) => void;
+type Icon = "success" | "error" | "fail" | "exception" | "loading" | "none";
+type Position = "top" | "center" | "bottom";
 class ShowToastOptions extends UTSObject {
     title!: string;
-    icon: "success" | "error" | "fail" | "exception" | "loading" | "none" | null = null;
+    icon: Icon | null = null;
     image: string.ImageURIString | null = null;
     mask: boolean | null = null;
     duration: number | null = null;
-    position: "top" | "center" | "bottom" | null = null;
+    position: Position | null = null;
     success: ShowToastSuccessCallback | null = null;
     fail: ShowToastFailCallback | null = null;
     complete: ShowToastCompleteCallback | null = null;
@@ -928,6 +1329,23 @@ export class ScanCodeOptions extends UTSObject {
     complete: ScanCodeCompleteCallback | null = null;
 }
 type ScanCode = (options?: ScanCodeOptions | null) => void;
+export class ShareWithSystemSuccess extends UTSObject {
+}
+export class ShareWithSystemFail extends UTSObject {
+}
+type ShareWithSystemSuccessCallback = (res: ShareWithSystemSuccess) => void;
+type ShareWithSystemFailCallback = (res: ShareWithSystemFail) => void;
+type ShareWithSystemCallback = (res: Object) => void;
+export class ShareWithSystemOptions extends UTSObject {
+    type: 'text' | 'image' | null = null;
+    summary: string | null = null;
+    href: string | null = null;
+    imageUrl: string | null = null;
+    success: ShareWithSystemSuccessCallback | null = null;
+    fail: ShareWithSystemFailCallback | null = null;
+    complete: ShareWithSystemCallback | null = null;
+}
+export type ShareWithSystem = (options: ShareWithSystemOptions) => void;
 export class SetStorageSuccess extends UTSObject {
 }
 type SetStorageSuccessCallback = (res: SetStorageSuccess) => void;
@@ -1141,6 +1559,16 @@ export type ShowTabBar = (options?: ShowTabBarOptions | null) => void;
 export type HideTabBar = (options?: HideTabBarOptions | null) => void;
 export type ShowTabBarRedDot = (options: ShowTabBarRedDotOptions) => void;
 export type HideTabBarRedDot = (options: HideTabBarRedDotOptions) => void;
+interface ITabBar {
+    setTabBarBadge: (options: SetTabBarBadgeOptions) => void;
+    removeTabBarBadge: (options: RemoveTabBarBadgeOptions) => void;
+    setTabBarItem: (options: SetTabBarItemOptions) => void;
+    setTabBarStyle: (options: SetTabBarStyleOptions) => void;
+    hideTabBar: () => void;
+    showTabBar: () => void;
+    showTabBarRedDot: (options: ShowTabBarRedDotOptions) => void;
+    hideTabBarRedDot: (options: HideTabBarRedDotOptions) => void;
+}
 export type ConnectSocket = (options: ConnectSocketOptions) => SocketTask;
 export class ConnectSocketSuccess extends UTSObject {
     errMsg!: string;
@@ -1212,28 +1640,49 @@ class OnSocketCloseCallbackResult extends UTSObject {
 }
 type OnSocketCloseCallback = (result: OnSocketCloseCallbackResult) => void;
 type OnSocketClose = (callback: OnSocketCloseCallback) => void;
-interface IUniWebsocketEmitter {
+interface UniWebsocketMP {
+    id: string;
     on: Function;
     off: Function;
-    emit: Function;
+}
+interface IUniWebsocketEmitter {
+    on: (eventName: string, callback: Function) => void;
+    once: (eventName: string, callback: Function) => void;
+    off: (eventName: string, callback?: Function | null) => void;
+    emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 interface UniExtApi {
-    arrayBufferToBase64: ArrayBufferToBase64;
-    base64ToArrayBuffer: Base64ToArrayBuffer;
+    addPhoneContact: AddPhoneContact;
+    startSoterAuthentication: StartSoterAuthentication;
+    checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication;
+    checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice;
     getClipboardData: GetClipboardData;
     setClipboardData: SetClipboardData;
-    createIntersectionObserver: CreateIntersectionObserver;
+    createInnerAudioContext: CreateInnerAudioContext;
     $on: $On;
     $once: $Once;
     $off: $Off;
     $emit: $Emit;
     exit: Exit;
+    saveFile: SaveFile;
+    getSavedFileList: GetSavedFileList;
+    getSavedFileInfo: GetSavedFileInfo;
+    removeSavedFile: RemoveSavedFile;
+    getFileInfo: GetFileInfo;
+    getAppAuthorizeSetting: GetAppAuthorizeSetting;
     getAppBaseInfo: GetAppBaseInfo;
+    getBackgroundAudioManager: GetBackgroundAudioManager;
     getDeviceInfo: GetDeviceInfo;
+    getNetworkType: GetNetworkType;
+    onNetworkStatusChange: OnNetworkStatusChange;
+    offNetworkStatusChange: OffNetworkStatusChange;
     getProvider: GetProvider;
+    getProviderSync: GetProviderSync;
+    getRecorderManager: GetRecorderManager;
     getSystemInfo: GetSystemInfo;
     getSystemInfoSync: GetSystemInfoSync;
     getWindowInfo: GetWindowInfo;
+    getSystemSetting: GetSystemSetting;
     hideKeyboard: HideKeyboard;
     makePhoneCall: MakePhoneCall;
     chooseImage: ChooseImage;
@@ -1241,17 +1690,16 @@ interface UniExtApi {
     closePreviewImage: ClosePreviewImage;
     getImageInfo: GetImageInfo;
     saveImageToPhotosAlbum: SaveImageToPhotosAlbum;
+    compressImage: CompressImage;
     chooseVideo: ChooseVideo;
     saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum;
     getVideoInfo: GetVideoInfo;
-    setNavigationBarColor: SetNavigationBarColor;
-    setNavigationBarTitle: SetNavigationBarTitle;
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
     openAppAuthorizeSetting: OpenAppAuthorizeSetting;
     openDocument: OpenDocument;
-    pageScrollTo: PageScrollTo;
+    requestPayment: RequestPayment;
     showToast: ShowToast;
     hideToast: HideToast;
     showLoading: ShowLoading;
@@ -1262,6 +1710,7 @@ interface UniExtApi {
     stopPullDownRefresh: StopPullDownRefresh;
     rpx2px: Rpx2px;
     scanCode: ScanCode;
+    shareWithSystem: ShareWithSystem;
     setStorage: SetStorage;
     setStorageSync: SetStorageSync;
     getStorage: GetStorage;
@@ -1289,32 +1738,588 @@ interface UniExtApi {
     onSocketError: OnSocketError;
 }
 export function initUniExtApi(APP_ID: string) {
-    const API_ARRAY_BUFFER_TO_BASE64 = 'arrayBufferToBase64';
-    const ArrayBufferToBase64Protocol = new Map<string, ProtocolOptions>([
+    const API_ADD_PHONE_CONTACT = 'addPhoneContact';
+    const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
+        formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
+            [
+                'firstName',
+                (firstName: string)=>{
+                    if (!firstName) {
+                        return 'addPhoneContact:fail parameter error: parameter.firstName should not be empty;';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const AddPhoneContactApiProtocol = new Map<string, ProtocolOptions>([
         [
-            'arrayBuffer',
-            {
-                type: 'arrayBuffer',
-                required: true
-            }
-        ]
-    ]);
-    const arrayBufferToBase64: ArrayBufferToBase64 = defineSyncApi<string>(API_ARRAY_BUFFER_TO_BASE64, (arrayBuffer: ArrayBuffer): string =>{
-        return buffer.from(arrayBuffer).toString('base64');
-    }, ArrayBufferToBase64Protocol) as ArrayBufferToBase64;
-    const API_BASE64_TO_ARRAY_BUFFER = 'base64ToArrayBuffer';
-    const Base64ToArrayBufferProtocol = new Map<string, ProtocolOptions>([
-        [
-            'base64',
+            'firstName',
             {
                 type: 'string',
                 required: true
             }
+        ],
+        [
+            'photoFilePath',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'nickName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'lastName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'middleName',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'remark',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'mobilePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'weChatNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'addressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'organization',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'title',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workPhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'hostNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'email',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'url',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'workAddressPostalCode',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeFaxNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homePhoneNumber',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCountry',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressState',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressCity',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressStreet',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'homeAddressPostalCode',
+            {
+                type: 'string'
+            }
         ]
     ]);
-    const base64ToArrayBuffer: Base64ToArrayBuffer = defineSyncApi<ArrayBuffer>(API_BASE64_TO_ARRAY_BUFFER, (base64: string): ArrayBuffer =>{
-        return buffer1.from(base64, 'base64').buffer;
-    }, Base64ToArrayBufferProtocol) as Base64ToArrayBuffer;
+    const addPhoneContact: AddPhoneContact = defineAsyncApi<AddPhoneContactOptions, AddPhoneContactSuccess>(API_ADD_PHONE_CONTACT, (args: AddPhoneContactOptions, executor: ApiExecutor<AddPhoneContactSuccess>)=>{
+        UTSHarmony.requestSystemPermission([
+            'ohos.permission.WRITE_CONTACTS'
+        ], (allRight: boolean)=>{
+            if (allRight) {
+                const photoFilePath = args.photoFilePath, _args_nickName = args.nickName, nickName = _args_nickName == null ? '' : _args_nickName, _args_lastName = args.lastName, lastName = _args_lastName == null ? '' : _args_lastName, _args_middleName = args.middleName, middleName = _args_middleName == null ? '' : _args_middleName, _args_firstName = args.firstName, firstName = _args_firstName == null ? '' : _args_firstName, _args_remark = args.remark, remark = _args_remark == null ? '' : _args_remark, _args_mobilePhoneNumber = args.mobilePhoneNumber, mobilePhoneNumber = _args_mobilePhoneNumber == null ? '' : _args_mobilePhoneNumber, _args_addressCountry = args.addressCountry, addressCountry = _args_addressCountry == null ? '' : _args_addressCountry, _args_addressState = args.addressState, addressState = _args_addressState == null ? '' : _args_addressState, _args_addressCity = args.addressCity, addressCity = _args_addressCity == null ? '' : _args_addressCity, _args_addressStreet = args.addressStreet, addressStreet = _args_addressStreet == null ? '' : _args_addressStreet, _args_addressPostalCode = args.addressPostalCode, addressPostalCode = _args_addressPostalCode == null ? '' : _args_addressPostalCode, _args_organization = args.organization, organization = _args_organization == null ? '' : _args_organization, _args_url = args.url, url = _args_url == null ? '' : _args_url, _args_workPhoneNumber = args.workPhoneNumber, workPhoneNumber = _args_workPhoneNumber == null ? '' : _args_workPhoneNumber, _args_workFaxNumber = args.workFaxNumber, workFaxNumber = _args_workFaxNumber == null ? '' : _args_workFaxNumber, _args_hostNumber = args.hostNumber, hostNumber = _args_hostNumber == null ? '' : _args_hostNumber, _args_email = args.email, email = _args_email == null ? '' : _args_email, _args_title = args.title, title = _args_title == null ? '' : _args_title, _args_workAddressCountry = args.workAddressCountry, workAddressCountry = _args_workAddressCountry == null ? '' : _args_workAddressCountry, _args_workAddressState = args.workAddressState, workAddressState = _args_workAddressState == null ? '' : _args_workAddressState, _args_workAddressCity = args.workAddressCity, workAddressCity = _args_workAddressCity == null ? '' : _args_workAddressCity, _args_workAddressStreet = args.workAddressStreet, workAddressStreet = _args_workAddressStreet == null ? '' : _args_workAddressStreet, workAddressPostalCode = args.workAddressPostalCode, _args_homeFaxNumber = args.homeFaxNumber, homeFaxNumber = _args_homeFaxNumber == null ? '' : _args_homeFaxNumber, _args_homePhoneNumber = args.homePhoneNumber, homePhoneNumber = _args_homePhoneNumber == null ? '' : _args_homePhoneNumber, _args_homeAddressCountry = args.homeAddressCountry, homeAddressCountry = _args_homeAddressCountry == null ? '' : _args_homeAddressCountry, _args_homeAddressState = args.homeAddressState, homeAddressState = _args_homeAddressState == null ? '' : _args_homeAddressState, _args_homeAddressCity = args.homeAddressCity, homeAddressCity = _args_homeAddressCity == null ? '' : _args_homeAddressCity, _args_homeAddressStreet = args.homeAddressStreet, homeAddressStreet = _args_homeAddressStreet == null ? '' : _args_homeAddressStreet, _args_homeAddressPostalCode = args.homeAddressPostalCode, homeAddressPostalCode = _args_homeAddressPostalCode == null ? '' : _args_homeAddressPostalCode;
+                const contactInfo: contact.Contact = {
+                    name: {
+                        familyName: lastName!,
+                        middleName: middleName!,
+                        givenName: firstName!,
+                        fullName: lastName! + middleName! + firstName!
+                    },
+                    nickName: {
+                        nickName: nickName!
+                    },
+                    emails: [
+                        {
+                            email: email!,
+                            displayName: '邮箱'
+                        }
+                    ],
+                    phoneNumbers: [
+                        {
+                            phoneNumber: homePhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_HOME
+                        },
+                        {
+                            phoneNumber: mobilePhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_MOBILE
+                        },
+                        {
+                            phoneNumber: homeFaxNumber!,
+                            labelId: contact.PhoneNumber.NUM_FAX_HOME
+                        },
+                        {
+                            phoneNumber: workFaxNumber!,
+                            labelId: contact.PhoneNumber.NUM_FAX_WORK
+                        },
+                        {
+                            phoneNumber: workPhoneNumber!,
+                            labelId: contact.PhoneNumber.NUM_WORK
+                        },
+                        {
+                            phoneNumber: hostNumber!,
+                            labelId: contact.PhoneNumber.NUM_COMPANY_MAIN
+                        }
+                    ],
+                    portrait: {
+                        uri: photoFilePath!
+                    },
+                    postalAddresses: [
+                        {
+                            city: homeAddressCity!,
+                            country: homeAddressCountry!,
+                            postcode: homeAddressPostalCode!,
+                            street: homeAddressStreet!,
+                            postalAddress: homeAddressCountry! + homeAddressState! + homeAddressCity + homeAddressStreet,
+                            labelId: contact.PostalAddress.ADDR_HOME
+                        },
+                        {
+                            city: workAddressCity!,
+                            country: workAddressCountry!,
+                            postcode: workAddressPostalCode!,
+                            street: workAddressStreet!,
+                            postalAddress: workAddressCountry! + workAddressState! + workAddressCity + workAddressStreet,
+                            labelId: contact.PostalAddress.ADDR_WORK
+                        },
+                        {
+                            city: addressCity!,
+                            country: addressCountry!,
+                            postcode: addressPostalCode!,
+                            street: addressStreet!,
+                            postalAddress: addressCountry! + addressState! + addressCity + addressStreet,
+                            labelId: contact.PostalAddress.CUSTOM_LABEL
+                        }
+                    ],
+                    websites: [
+                        {
+                            website: url!
+                        }
+                    ],
+                    note: {
+                        noteContent: remark!
+                    },
+                    organization: {
+                        name: organization!,
+                        title: title!
+                    }
+                };
+                contact.addContact(getContext(), contactInfo).then((contactId)=>{
+                    executor.resolve(contactId);
+                }).catch((err: BusinessError)=>{
+                    executor.reject(err.message);
+                });
+            } else {
+                executor.reject('Permission denied');
+            }
+        }, ()=>executor.reject('Permission denied'));
+    }, AddPhoneContactApiProtocol, AddPhoneContactApiOptions) as AddPhoneContact;
+    const API_START_SOTER_AUTHENTICATION = 'startSoterAuthentication';
+    const StartSoterAuthenticationApiOptions: ApiOptions<StartSoterAuthenticationOptions> = {
+        formatArgs: new Map<string, ((value: string) => string | undefined)>([
+            [
+                'requestAuthModes',
+                (value: string)=>{
+                    if (!value.includes('fingerPrint') && !value.includes('facial')) {
+                        return 'requestAuthModes 填写错误';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const StartSoterAuthenticationApiProtocols = new Map<string, ProtocolOptions>([
+        [
+            'requestAuthModes',
+            {
+                type: 'array',
+                required: true
+            }
+        ],
+        [
+            'challenge',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'authContent',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE = 'checkIsSoterEnrolledInDevice';
+    const checkAuthModes: SoterAuthMode[] = [
+        'fingerPrint',
+        'facial',
+        'speech'
+    ];
+    const CheckIsSoterEnrolledInDeviceApiOptions: ApiOptions<CheckIsSoterEnrolledInDeviceOptions> = {
+        formatArgs: new Map<string, ((value: string) => string | undefined)>([
+            [
+                'checkAuthMode',
+                (value: string)=>{
+                    if (!checkAuthModes.includes(value as SoterAuthMode)) {
+                        return 'checkAuthMode 填写错误';
+                    }
+                    return undefined;
+                }
+            ]
+        ])
+    };
+    const CheckIsSoterEnrolledInDeviceProtocols = new Map<string, ProtocolOptions>([
+        [
+            'checkAuthMode',
+            {
+                type: 'string'
+            }
+        ]
+    ]);
+    const API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION = 'checkIsSupportSoterAuthentication';
+    const getErrorMessage = (code: number): string =>{
+        switch(code){
+            case 201:
+                return "权限认证失败";
+            case 401:
+                return "参数不正确。可能的一个原因: 强制参数未指定";
+            case userAuth.UserAuthResultCode.FAIL:
+                return "认证失败";
+            case userAuth.UserAuthResultCode.GENERAL_ERROR:
+                return "操作通用错误";
+            case userAuth.UserAuthResultCode.CANCELED:
+                return "操作取消";
+            case userAuth.UserAuthResultCode.TIMEOUT:
+                return "操作超时";
+            case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
+                return "不支持的认证类型";
+            case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
+                return "不支持的认证等级";
+            case userAuth.UserAuthResultCode.BUSY:
+                return "忙碌状态";
+            case userAuth.UserAuthResultCode.LOCKED:
+                return "认证器已锁定";
+            case userAuth.UserAuthResultCode.NOT_ENROLLED:
+                return "用户未录入认证信息";
+            case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
+                return "切换到自定义身份验证过程";
+            case 12500013:
+                return "系统锁屏密码过期";
+            default:
+                return '';
+        }
+    };
+    const getUniErrMsg = (code: number): number =>{
+        switch(code){
+            case 201:
+                return 90002;
+            case 401:
+                return 90004;
+            case userAuth.UserAuthResultCode.FAIL:
+                return 90009;
+            case userAuth.UserAuthResultCode.GENERAL_ERROR:
+                return 90007;
+            case userAuth.UserAuthResultCode.CANCELED:
+                return 90008;
+            case userAuth.UserAuthResultCode.TIMEOUT:
+                return 90007;
+            case userAuth.UserAuthResultCode.TYPE_NOT_SUPPORT:
+                return 90003;
+            case userAuth.UserAuthResultCode.TRUST_LEVEL_NOT_SUPPORT:
+                return 90003;
+            case userAuth.UserAuthResultCode.BUSY:
+                return 90010;
+            case userAuth.UserAuthResultCode.LOCKED:
+                return 90010;
+            case userAuth.UserAuthResultCode.NOT_ENROLLED:
+                return 90011;
+            case userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET:
+                return userAuth.UserAuthResultCode.CANCELED_FROM_WIDGET;
+            case 12500013:
+                return 12500013;
+            default:
+                return -1;
+        }
+    };
+    const toUint8Arr = (str: string)=>{
+        const buffer: number[] = [];
+        for (let i of str){
+            const _code: number = i.charCodeAt(0);
+            if (_code < 0x80) {
+                buffer.push(_code);
+            } else if (_code < 0x800) {
+                buffer.push(0xc0 + (_code >> 6));
+                buffer.push(0x80 + (_code & 0x3f));
+            } else if (_code < 0x10000) {
+                buffer.push(0xe0 + (_code >> 12));
+                buffer.push(0x80 + (_code >> 6 & 0x3f));
+                buffer.push(0x80 + (_code & 0x3f));
+            }
+        }
+        return Uint8Array.from(buffer);
+    };
+    const startSoterAuthentication: StartSoterAuthentication = defineAsyncApi<StartSoterAuthenticationOptions, StartSoterAuthenticationSuccess>(API_START_SOTER_AUTHENTICATION, (args: StartSoterAuthenticationOptions, executor: ApiExecutor<StartSoterAuthenticationSuccess>)=>{
+        const authType: userAuth.UserAuthType[] = [];
+        args.requestAuthModes.forEach((item)=>{
+            if (item === 'fingerPrint') {
+                authType.push(userAuth.UserAuthType.FINGERPRINT);
+            } else if (item === 'facial') {
+                authType.push(userAuth.UserAuthType.FACE);
+            }
+        });
+        const challengeArr = toUint8Arr(args.challenge ?? '');
+        const authContent = args.authContent ?? '';
+        try {
+            const auth = userAuth.getUserAuthInstance({
+                challenge: challengeArr,
+                authType,
+                authTrustLevel: userAuth.AuthTrustLevel.ATL1
+            } as userAuth.AuthParam, {
+                title: authContent
+            } as userAuth.WidgetParam);
+            auth.on("result", {
+                onResult: (result: userAuth.UserAuthResult)=>{
+                    if (result.result === userAuth.UserAuthResultCode.SUCCESS) {
+                        executor.resolve({
+                            errCode: 0,
+                            authMode: result.authType === userAuth.UserAuthType.FINGERPRINT ? 'fingerPrint' : 'facial'
+                        } as StartSoterAuthenticationSuccess);
+                    } else {
+                        const errMsg = getErrorMessage(result.result);
+                        const errCode = getUniErrMsg(result.result);
+                        executor.reject(errMsg, {
+                            errCode
+                        } as ApiError);
+                    }
+                }
+            } as userAuth.IAuthCallback);
+            if (authContent) {
+                promptAction.showToast({
+                    message: authContent
+                } as promptAction.ShowToastOptions);
+            }
+            auth.start();
+        } catch (error) {
+            const code = (error as BusinessError1).code;
+            executor.reject(getErrorMessage(code), {
+                errCode: getUniErrMsg(code)
+            } as ApiError);
+        }
+    }, StartSoterAuthenticationApiProtocols, StartSoterAuthenticationApiOptions) as StartSoterAuthentication;
+    const fingerPrintAvailable = ()=>{
+        try {
+            userAuth.getAvailableStatus(userAuth.UserAuthType.FINGERPRINT, userAuth.AuthTrustLevel.ATL1);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    };
+    const faceAvailable = ()=>{
+        try {
+            userAuth.getAvailableStatus(userAuth.UserAuthType.FACE, userAuth.AuthTrustLevel.ATL1);
+            return true;
+        } catch (error) {
+            return false;
+        }
+    };
+    const PERMISSIONS = [
+        'ohos.permission.ACCESS_BIOMETRIC'
+    ];
+    const checkIsSupportSoterAuthentication: CheckIsSupportSoterAuthentication = defineAsyncApi<CheckIsSupportSoterAuthenticationOptions, CheckIsSupportSoterAuthenticationSuccess>(API_CHECK_IS_SUPPORT_SOTER_AUTHENTICATION, (args: CheckIsSupportSoterAuthenticationOptions, executor: ApiExecutor<CheckIsSupportSoterAuthenticationSuccess>)=>{
+        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            if (allRight) {
+                try {
+                    const supportMode: SoterAuthMode[] = [];
+                    if (fingerPrintAvailable()) supportMode.push('fingerPrint');
+                    if (faceAvailable()) supportMode.push('facial');
+                    return executor.resolve({
+                        supportMode,
+                        errMsg: ''
+                    } as CheckIsSupportSoterAuthenticationSuccess);
+                } catch (error) {
+                    const code = (error as BusinessError1).code;
+                    executor.reject(getErrorMessage(code), {
+                        errCode: getUniErrMsg(code)
+                    } as ApiError);
+                }
+            } else {
+                executor.reject(getErrorMessage(201));
+            }
+        }, ()=>{
+            executor.reject(getErrorMessage(201));
+        });
+    }) as CheckIsSupportSoterAuthentication;
+    const getFingerPrintEnrolledState = ()=>{
+        userAuth.getEnrolledState(userAuth.UserAuthType.FINGERPRINT);
+        return true;
+    };
+    const getFaceEnrolledState = ()=>{
+        userAuth.getEnrolledState(userAuth.UserAuthType.FACE);
+        return true;
+    };
+    const harmonyCheckIsSoterEnrolledInDevice = (checkAuthMode: SoterAuthMode): boolean =>{
+        if (checkAuthMode === 'fingerPrint') {
+            return getFingerPrintEnrolledState();
+        } else if (checkAuthMode === 'facial') {
+            return getFaceEnrolledState();
+        }
+        return false;
+    };
+    const checkIsSoterEnrolledInDevice: CheckIsSoterEnrolledInDevice = defineAsyncApi<CheckIsSoterEnrolledInDeviceOptions, CheckIsSoterEnrolledInDeviceSuccess>(API_CHECK_IS_SOTER_ENROLLED_IN_DEVICE, (args: CheckIsSoterEnrolledInDeviceOptions, executor: ApiExecutor<CheckIsSoterEnrolledInDeviceSuccess>)=>{
+        UTSHarmony1.requestSystemPermission(PERMISSIONS, (allRight: boolean)=>{
+            if (allRight) {
+                try {
+                    const isEnrolled = harmonyCheckIsSoterEnrolledInDevice(args.checkAuthMode);
+                    executor.resolve({
+                        isEnrolled,
+                        errMsg: ''
+                    } as CheckIsSoterEnrolledInDeviceSuccess);
+                } catch (error) {
+                    const code = (error as BusinessError1).code;
+                    executor.reject(getErrorMessage(code), {
+                        errCode: getUniErrMsg(code)
+                    } as ApiError);
+                }
+            } else {
+                executor.reject(getErrorMessage(201));
+            }
+        }, ()=>{
+            executor.reject(getErrorMessage(201));
+        });
+    }, CheckIsSoterEnrolledInDeviceProtocols, CheckIsSoterEnrolledInDeviceApiOptions) as CheckIsSoterEnrolledInDevice;
     const API_GET_CLIPBOARD_DATA = 'getClipboardData';
     const API_SET_CLIPBOARD_DATA = 'setClipboardData';
     const SetClipboardDataApiOptions: ApiOptions<SetClipboardDataOptions> = {
@@ -1355,79 +2360,461 @@ export function initUniExtApi(APP_ID: string) {
         clipboard.setString(options.data);
         res.resolve();
     }, SetClipboardDataProtocol, SetClipboardDataApiOptions) as SetClipboardData;
-    const defaultOptions = {
-        thresholds: [
-            0
-        ],
-        initialRatio: 0,
-        observeAll: false
-    } as CreateIntersectionObserverOptions;
-    let reqComponentObserverId = 1;
-    const normalizeRootMargin = (margins: Margins | null = {})=>{
-        if (!margins) margins = {};
-        const top = Number(margins.top) || 0;
-        const right = Number(margins.right) || 0;
-        const bottom = Number(margins.bottom) || 0;
-        const left = Number(margins.left) || 0;
-        return `${top}px ${right}px ${bottom}px ${left}px`;
+    const API_CREATE_INNER_AUDIO_CONTEXT = 'createInnerAudioContext';
+    const isFileUri = (path: string)=>{
+        return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
     };
-    class ServiceIntersectionObserver {
-        private _reqId?: number;
-        private _pageId: number;
-        private _component: ComponentPublicInstance;
-        private _options: ServiceIntersectionObserverOptions;
-        constructor(component: ComponentPublicInstance, options: CreateIntersectionObserverOptions | null = null){
-            this._pageId = getPageIdByVm(component)!;
-            this._component = component;
-            if (options) {
-                if (typeof options.thresholds === 'undefined') options.thresholds = defaultOptions.thresholds;
-                if (typeof options.initialRatio === 'undefined') options.initialRatio = defaultOptions.initialRatio;
-                if (typeof options.observeAll === 'undefined') options.observeAll = defaultOptions.observeAll;
-            }
-            this._options = (options ?? defaultOptions) as ServiceIntersectionObserverOptions;
+    const isSandboxPath = (path: string)=>{
+        return path && typeof path === 'string' && path.startsWith('/data/storage/');
+    };
+    const getFdFromUriOrSandBoxPath = (uri: string)=>{
+        try {
+            const file = fileIo.openSync(uri, fileIo.OpenMode.READ_ONLY);
+            return file.fd;
+        } catch (error) {
+            console.info(`[AdvancedAPI] Can not get file from uri: ${uri} `);
         }
-        relativeTo(selector: string, margins: Margins | null = null) {
-            this._options.relativeToSelector = selector;
-            this._options.rootMargin = normalizeRootMargin(margins);
-            return this;
+        throw new Error('file is not exist');
+    };
+    const callCallbacks = (callbacks: Function[], ...args: Object[])=>{
+        callbacks.forEach((cb)=>{
+            typeof cb === 'function' && cb(...args);
+        });
+    };
+    const remoteCallback = (callbacks: Function[], callback: Function)=>{
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
         }
-        relativeToViewport(margins: Margins | null = null) {
-            this._options.relativeToSelector = undefined;
-            this._options.rootMargin = normalizeRootMargin(margins);
-            return this;
-        }
-        observe(selector: string, callback: ObserveCallback) {
-            if (!isFunction(callback)) {
-                return;
-            }
-            this._options.selector = selector;
-            this._reqId = reqComponentObserverId++;
-            addIntersectionObserver({
-                reqId: this._reqId,
-                component: this._component,
-                options: this._options,
-                callback
-            } as AddIntersectionObserverArgs, this._pageId);
-        }
-        disconnect() {
-            this._reqId && removeIntersectionObserver({
-                reqId: this._reqId,
-                component: this._component
-            } as RemoveIntersectionObserverArgs, this._pageId);
+    };
+    class AudioPlayerError {
+        errMsg: string;
+        errCode: number;
+        constructor(errMsg: string, errCode: number){
+            this.errMsg = errMsg;
+            this.errCode = errCode;
         }
     }
-    const createIntersectionObserver = defineSyncApi<IntersectionObserver>('createIntersectionObserver', (context: ComponentPublicInstance | null, options: CreateIntersectionObserverOptions | null = null)=>{
-        let _options: ComponentPublicInstance | CreateIntersectionObserverOptions | null = options;
-        context = resolveComponentInstance(context);
-        if (context && !getPageIdByVm(context)) {
-            _options = context;
-            context = null;
+    class AudioPlayerCallback {
+        onCanplayCallbacks: Function[] = [];
+        onPlayCallbacks: Function[] = [];
+        onPauseCallbacks: Function[] = [];
+        onStopCallbacks: Function[] = [];
+        onEndedCallbacks: Function[] = [];
+        onTimeUpdateCallbacks: Function[] = [];
+        onErrorCallbacks: Function[] = [];
+        onWaitingCallbacks: Function[] = [];
+        onSeekingCallbacks: Function[] = [];
+        onSeekedCallbacks: Function[] = [];
+        constructor(){}
+        canPlay() {
+            callCallbacks(this.onCanplayCallbacks);
         }
-        if (context) {
-            return new ServiceIntersectionObserver(context as ComponentPublicInstance, _options as CreateIntersectionObserverOptions);
+        onCanplay(callback: Function) {
+            this.onCanplayCallbacks.push(callback);
         }
-        return new ServiceIntersectionObserver(getCurrentPageVm()!, _options as CreateIntersectionObserverOptions);
-    }) as CreateIntersectionObserver;
+        offCanplay(callback: Function) {
+            remoteCallback(this.onCanplayCallbacks, callback);
+        }
+        play() {
+            callCallbacks(this.onPlayCallbacks);
+        }
+        onPlay(callback: Function) {
+            this.onPlayCallbacks.push(callback);
+        }
+        offPlay(callback: Function) {
+            remoteCallback(this.onPlayCallbacks, callback);
+        }
+        pause() {
+            callCallbacks(this.onPauseCallbacks);
+        }
+        onPause(callback: Function) {
+            this.onPauseCallbacks.push(callback);
+        }
+        offPause(callback: Function) {
+            remoteCallback(this.onPauseCallbacks, callback);
+        }
+        stop() {
+            callCallbacks(this.onStopCallbacks);
+        }
+        onStop(callback: Function) {
+            this.onStopCallbacks.push(callback);
+        }
+        offStop(callback: Function) {
+            remoteCallback(this.onStopCallbacks, callback);
+        }
+        ended() {
+            callCallbacks(this.onEndedCallbacks);
+        }
+        onEnded(callback: Function) {
+            this.onEndedCallbacks.push(callback);
+        }
+        offEnded(callback: Function) {
+            remoteCallback(this.onEndedCallbacks, callback);
+        }
+        timeUpdate(time: number) {
+            callCallbacks(this.onTimeUpdateCallbacks, time);
+        }
+        onTimeUpdate(callback: Function) {
+            this.onTimeUpdateCallbacks.push(callback);
+        }
+        offTimeUpdate(callback: Function) {
+            remoteCallback(this.onTimeUpdateCallbacks, callback);
+        }
+        error(res: AudioPlayerError) {
+            callCallbacks(this.onErrorCallbacks, res);
+        }
+        onError(callback: Function) {
+            this.onErrorCallbacks.push(callback);
+        }
+        offError(callback: Function) {
+            remoteCallback(this.onErrorCallbacks, callback);
+        }
+        onPrev(callback: Function) {
+            console.info('ios only');
+        }
+        onNext(callback: Function) {
+            console.info('ios only');
+        }
+        waiting() {
+            callCallbacks(this.onWaitingCallbacks);
+        }
+        onWaiting(callback: Function) {
+            this.onWaitingCallbacks.push(callback);
+        }
+        offWaiting(callback: Function) {
+            remoteCallback(this.onWaitingCallbacks, callback);
+        }
+        seeking() {
+            callCallbacks(this.onSeekingCallbacks);
+        }
+        onSeeking(callback: Function) {
+            this.onSeekingCallbacks.push(callback);
+        }
+        offSeeking(callback: Function) {
+            remoteCallback(this.onSeekingCallbacks, callback);
+        }
+        seeked() {
+            callCallbacks(this.onSeekedCallbacks);
+        }
+        onSeeked(callback: Function) {
+            this.onSeekedCallbacks.push(callback);
+        }
+        offSeeked(callback: Function) {
+            remoteCallback(this.onSeekedCallbacks, callback);
+        }
+    }
+    const AUDIOS: Record<string, InnerAudioContext | undefined> = {};
+    const AUDIO_PLAYERS: Record<string, media.AudioPlayer | undefined> = {};
+    const LOG = (msg: string)=>console.log(`[createInnerAudioContext]: ${msg}`);
+    class STATE_TYPE {
+        static IDLE: string = 'idle';
+        static PLAYING: string = 'playing';
+        static PAUSED: string = 'paused';
+        static STOPPED: string = 'stopped';
+        static ERROR: string = 'error';
+    }
+    class AudioPlayer implements InnerAudioContext {
+        private audioPlayerCallback: AudioPlayerCallback = new AudioPlayerCallback();
+        private _volume: number = 1;
+        private _src: string = '';
+        private _autoplay: boolean = false;
+        private _startTime: number = 0;
+        private _buffered: number = 0;
+        private _title: string = '';
+        private audioId: string = '';
+        private _playbackRate: number = 1;
+        readonly obeyMuteSwitch: boolean = false;
+        constructor(audioId: string){
+            this.audioId = audioId;
+            this.init();
+        }
+        init() {
+            AUDIO_PLAYERS[this.audioId]?.on('dataLoad', ()=>{
+                this.audioPlayerCallback.canPlay();
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('play', ()=>{
+                this.audioPlayerCallback.play();
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('pause', ()=>{
+                this.audioPlayerCallback.pause();
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('finish', ()=>{
+                this.audioPlayerCallback.ended();
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('timeUpdate', (res)=>{
+                this.audioPlayerCallback.timeUpdate(res / 1000);
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('error', (err)=>{
+                this.audioPlayerCallback.error(new AudioPlayerError(err.message, err.code));
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('bufferingUpdate', (infoType, value)=>{
+                console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
+                if (infoType === media.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && AUDIO_PLAYERS[this.audioId]) {
+                    this._buffered = value;
+                    if ((AUDIO_PLAYERS[this.audioId]!.currentTime / 1000) >= (AUDIO_PLAYERS[this.audioId]!.duration * value / 100000)) {
+                        this.audioPlayerCallback.waiting();
+                    }
+                }
+            });
+            AUDIO_PLAYERS[this.audioId]?.on('audioInterrupt', (InterruptEvent)=>{
+                console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
+                if (AUDIO_PLAYERS[this.audioId] && InterruptEvent.hintType === audio.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                    AUDIO_PLAYERS[this.audioId]!.pause();
+                }
+            });
+        }
+        get duration() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return 0;
+            }
+            return audioPlayer.duration / 1000;
+        }
+        get currentTime() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return 0;
+            }
+            return audioPlayer.currentTime / 1000;
+        }
+        get paused() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return false;
+            }
+            return audioPlayer.state === STATE_TYPE.PAUSED;
+        }
+        get loop() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return false;
+            }
+            return audioPlayer.loop;
+        }
+        set loop(value) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (audioPlayer) {
+                audioPlayer.loop = value;
+            }
+        }
+        get volume() {
+            return this._volume;
+        }
+        set volume(value) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (audioPlayer) {
+                this._volume = value;
+                audioPlayer.setVolume(value);
+            }
+        }
+        get src() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return '';
+            }
+            return audioPlayer.src;
+        }
+        set src(value) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (typeof value !== 'string') {
+                this.audioPlayerCallback.error(new AudioPlayerError(`set src: ${value} is not string`, 10004));
+                return;
+            }
+            if (!audioPlayer) {
+                this.audioPlayerCallback.error(new AudioPlayerError(`player is not exist`, 10001));
+                return;
+            }
+            if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri(value) || isSandboxPath(value))) {
+                LOG(`set src: ${value} is invalid`);
+                return;
+            }
+            let path: string = '';
+            if (value.startsWith('http:') || value.startsWith('https:')) {
+                path = value;
+            } else if (isFileUri(value) || isSandboxPath(value)) {
+                try {
+                    const fd = getFdFromUriOrSandBoxPath(value);
+                    path = `fd://${fd}`;
+                } catch (error) {
+                    console.error(`${JSON.stringify(error)}`);
+                }
+            }
+            if (audioPlayer.src && path !== audioPlayer.src) {
+                audioPlayer.reset();
+            }
+            AUDIO_PLAYERS[this.audioId]!.src = path;
+            this._src = value;
+            if (this._autoplay) {
+                audioPlayer.play();
+                if (this._startTime) {
+                    audioPlayer.seek(this._startTime);
+                }
+            }
+        }
+        get startTime() {
+            return this._startTime / 1000;
+        }
+        set startTime(time: number) {
+            this._startTime = time * 1000;
+        }
+        get autoplay() {
+            return this._autoplay;
+        }
+        set autoplay(flag) {
+            this._autoplay = flag;
+        }
+        get buffered() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) return 0;
+            return audioPlayer.duration * this._buffered / 100000;
+        }
+        set playbackRate(rate: number) {
+            this.audioPlayerCallback.error(new AudioPlayerError('HarmonyOS Next Audio setting playbackRate is not supported.', -1));
+        }
+        get playbackRate() {
+            return this._playbackRate;
+        }
+        play() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            const state = audioPlayer.state ?? '';
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.STOPPED,
+                STATE_TYPE.IDLE
+            ].includes(state)) {
+                return;
+            }
+            if (this._src && audioPlayer.src === '') {
+                this.src = this._src;
+            }
+            audioPlayer.play();
+        }
+        pause() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            const state = audioPlayer.state;
+            if (STATE_TYPE.PLAYING !== state) {
+                return;
+            }
+            audioPlayer.pause();
+        }
+        stop() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.PLAYING
+            ].includes(audioPlayer.state)) {
+                return;
+            }
+            audioPlayer.stop();
+            this.audioPlayerCallback.stop();
+            audioPlayer.release();
+        }
+        seek(position: number) {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            const state = audioPlayer.state;
+            if (![
+                STATE_TYPE.PAUSED,
+                STATE_TYPE.PLAYING
+            ].includes(state)) {
+                return;
+            }
+            this.audioPlayerCallback.seeking();
+            audioPlayer.seek(position * 1000);
+            this.audioPlayerCallback.seeked();
+        }
+        destroy() {
+            const audioPlayer = AUDIO_PLAYERS[this.audioId];
+            if (!audioPlayer) {
+                return;
+            }
+            audioPlayer.release();
+            AUDIO_PLAYERS[this.audioId] = undefined;
+            AUDIOS[this.audioId] = undefined;
+        }
+        onCanplay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onCanplay(callback);
+        }
+        onPlay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onPlay(callback);
+        }
+        onPause(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onPause(callback);
+        }
+        onStop(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onStop(callback);
+        }
+        onEnded(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onEnded(callback);
+        }
+        onTimeUpdate(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onTimeUpdate(callback);
+        }
+        onError(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onError(callback);
+        }
+        onWaiting(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onWaiting(callback);
+        }
+        onSeeking(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onSeeking(callback);
+        }
+        onSeeked(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.onSeeked(callback);
+        }
+        offCanplay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offCanplay(callback);
+        }
+        offPlay(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offPlay(callback);
+        }
+        offPause(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offPause(callback);
+        }
+        offStop(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offStop(callback);
+        }
+        offEnded(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offEnded(callback);
+        }
+        offTimeUpdate(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offTimeUpdate(callback);
+        }
+        offError(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offError(callback);
+        }
+        offWaiting(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offWaiting(callback);
+        }
+        offSeeking(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offSeeking(callback);
+        }
+        offSeeked(callback: (result: Object) => void): void {
+            this.audioPlayerCallback.offSeeked(callback);
+        }
+    }
+    const createAudioInstance = ()=>{
+        const audioId = `${Date.now()}${Math.random()}`;
+        AUDIO_PLAYERS[audioId] = media.createAudioPlayer();
+        AUDIOS[audioId] = new AudioPlayer(audioId);
+        return audioId;
+    };
+    const createInnerAudioContext: CreateInnerAudioContext = defineSyncApi<InnerAudioContext>(API_CREATE_INNER_AUDIO_CONTEXT, ()=>{
+        const audioId = createAudioInstance();
+        return AUDIOS[audioId];
+    }) as CreateInnerAudioContext;
     const API_$_ON = '$on';
     const API_$_ONCE = '$once';
     const API_$_OFF = '$off';
@@ -1447,35 +2834,288 @@ export function initUniExtApi(APP_ID: string) {
     }) as $Emit;
     const API_EXIT = 'exit';
     const exit: Exit = defineSyncApi<void>(API_EXIT, ()=>{
-        UTSHarmony.exit();
+        UTSHarmony2.exit();
     }) as Exit;
+    const API_SAVE_FILE = 'saveFile';
+    const API_GET_FILE_INFO = 'getFileInfo';
+    const API_GET_SAVED_FILE_INFO = 'getSavedFileInfo';
+    const API_GET_SAVED_FILE_LIST = 'getSavedFileList';
+    const API_REMOVE_SAVED_FILE = 'removeSavedFile';
+    const getSavedDir = ()=>{
+        return getEnv().USER_DATA_PATH + '/saved';
+    };
+    let savedIndex: [string, number] = [
+        '0',
+        0
+    ];
+    const getSavedFileName = (filePath: string)=>{
+        const ext = filePath.split('/').pop()?.split('.').slice(1).join('.');
+        let fileName = Date.now() + '';
+        if (savedIndex[0] === fileName) {
+            savedIndex[1]++;
+            if (savedIndex[1] > 0) {
+                fileName += '-' + savedIndex[1];
+            }
+        } else {
+            savedIndex[0] = fileName;
+            savedIndex[1] = 0;
+        }
+        if (ext) {
+            fileName += '.' + ext;
+        }
+        return fileName;
+    };
+    const getFsPath = (filePath: string)=>{
+        filePath = getRealPath(filePath) as string;
+        if (!/^file:/.test(filePath)) {
+            return filePath;
+        }
+        const rawPath = filePath.replace(/^file:\/\//, '');
+        if (rawPath[0] === '/') {
+            return rawPath;
+        }
+        return filePath;
+    };
+    const saveFile: SaveFile = defineAsyncApi<SaveFileOptions, SaveFileSuccess>(API_SAVE_FILE, (options: SaveFileOptions, exec: ApiExecutor<SaveFileSuccess>)=>{
+        const tempFilePath = getRealPath(options.tempFilePath) as string;
+        const savedPath = getSavedDir();
+        if (!fs.accessSync(savedPath)) {
+            fs.mkdirSync(savedPath, true);
+        }
+        let srcFile: fs.File;
+        try {
+            srcFile = fs.openSync(tempFilePath, fs.OpenMode.READ_ONLY);
+        } catch (error) {
+            exec.reject((error as Error).message);
+            return;
+        }
+        const savedFilePath = savedPath + '/' + getSavedFileName(tempFilePath);
+        fs.copyFile(srcFile.fd, savedFilePath, (err)=>{
+            fs.closeSync(srcFile);
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    savedFilePath: 'file://' + savedFilePath
+                } as SaveFileSuccess);
+            }
+        });
+    }) as SaveFile;
+    const getSavedFileList: GetSavedFileList = defineAsyncApi<GetSavedFileListOptions, GetSavedFileListSuccess>(API_GET_SAVED_FILE_LIST, (options: GetSavedFileListOptions, exec: ApiExecutor<GetSavedFileListSuccess>)=>{
+        const savedPath = getSavedDir();
+        if (!fs.accessSync(savedPath)) {
+            exec.resolve({
+                fileList: []
+            } as GetSavedFileListSuccess);
+        }
+        fs.listFile(savedPath, {} as ListFileOptions, (err, fileList)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    fileList: fileList.map((filePath: string)=>{
+                        const fullPath = savedPath + '/' + filePath;
+                        const stat = fs.statSync(fullPath);
+                        if (!stat.isFile()) {
+                            return null;
+                        }
+                        return {
+                            filePath: 'file://' + fullPath,
+                            size: stat.size,
+                            createTime: stat.ctime
+                        } as SavedFileListItem;
+                    }).filter((item)=>!!item)
+                } as GetSavedFileListSuccess);
+            }
+        });
+    }) as GetSavedFileList;
+    const getSavedFileInfo: GetSavedFileInfo = defineAsyncApi<GetSavedFileInfoOptions, GetSavedFileInfoSuccess>(API_GET_SAVED_FILE_INFO, (options: GetSavedFileInfoOptions, exec: ApiExecutor<GetSavedFileInfoSuccess>)=>{
+        const savedFilePath = getFsPath(options.filePath);
+        if (!fs.accessSync(savedFilePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        const stat = fs.statSync(savedFilePath);
+        if (!stat.isFile()) {
+            exec.reject('file not exist');
+        }
+        exec.resolve({
+            size: stat.size,
+            createTime: stat.ctime
+        } as GetSavedFileInfoSuccess);
+    }) as GetSavedFileInfo;
+    const removeSavedFile: RemoveSavedFile = defineAsyncApi<RemoveSavedFileOptions, RemoveSavedFileSuccess>(API_REMOVE_SAVED_FILE, (options: RemoveSavedFileOptions, exec: ApiExecutor<RemoveSavedFileSuccess>)=>{
+        const savedFilePath = getFsPath(options.filePath);
+        if (!fs.accessSync(savedFilePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        fs.unlink(savedFilePath, (err)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve();
+            }
+        });
+    }) as RemoveSavedFile;
+    const SupportedHashAlgorithm = [
+        'md5',
+        'sha1'
+    ];
+    const getFileInfo: GetFileInfo = defineAsyncApi<GetFileInfoOptions, GetFileInfoSuccess>(API_GET_FILE_INFO, (options: GetFileInfoOptions, exec: ApiExecutor<GetFileInfoSuccess>)=>{
+        const filePath = getFsPath(options.filePath);
+        const digestAlgorithm = options.digestAlgorithm && SupportedHashAlgorithm.includes(options.digestAlgorithm) ? options.digestAlgorithm : 'md5';
+        if (!fs.accessSync(filePath)) {
+            exec.reject('file not exist');
+            return;
+        }
+        const stat = fs.statSync(filePath);
+        if (!stat.isFile()) {
+            exec.reject('file not exist');
+        }
+        Hash.hash(filePath, digestAlgorithm, (err, hash)=>{
+            if (err) {
+                exec.reject(err.message);
+            } else {
+                exec.resolve({
+                    size: stat.size,
+                    digest: hash
+                } as GetFileInfoSuccess);
+            }
+        });
+    }) as GetFileInfo;
+    const AUTHORIZED = 'authorized';
+    const DENIED = 'denied';
+    const NOT_DETERMINED = 'not determined';
+    class AppAuthorizeSetting {
+        albumAuthorized: string = NOT_DETERMINED;
+        bluetoothAuthorized: string = NOT_DETERMINED;
+        cameraAuthorized: string = NOT_DETERMINED;
+        locationAuthorized: string = NOT_DETERMINED;
+        locationAccuracy: string = NOT_DETERMINED;
+        microphoneAuthorized: string = NOT_DETERMINED;
+        notificationAuthorized: string = NOT_DETERMINED;
+        notificationAlertAuthorized: string = NOT_DETERMINED;
+        notificationBadgeAuthorized: string = NOT_DETERMINED;
+        notificationSoundAuthorized: string = NOT_DETERMINED;
+        phoneCalendarAuthorized: string = NOT_DETERMINED;
+    }
+    class GetAppAuthorizeSettingImpl {
+        accessTokenId: number;
+        atManager: abilityAccessCtrl.AtManager;
+        appAuthorizeSetting: AppAuthorizeSetting;
+        constructor(accessTokenId: number, atManager: abilityAccessCtrl.AtManager, appAuthorizeSetting: AppAuthorizeSetting){
+            this.accessTokenId = accessTokenId;
+            this.atManager = atManager;
+            this.appAuthorizeSetting = appAuthorizeSetting;
+            this.getAlbumAuthorizeSetting();
+            this.getBlueToothAuthorizeSetting();
+            this.getCameraAuthorizeSetting();
+            this.getLocationAuthorizeSetting();
+            this.getMicrophoneAuthorizeSetting();
+            this.getNotificationAuthorizeSetting();
+            this.getPhoneCalendarAuthorizeSetting();
+        }
+        getAlbumAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.READ_IMAGEVIDEO');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.albumAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.albumAuthorized = AUTHORIZED;
+            }
+        }
+        getBlueToothAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.ACCESS_BLUETOOTH');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.bluetoothAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.bluetoothAuthorized = AUTHORIZED;
+            }
+        }
+        getCameraAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.CAMERA');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.cameraAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.cameraAuthorized = AUTHORIZED;
+            }
+        }
+        getLocationAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.LOCATION');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.locationAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.locationAuthorized = AUTHORIZED;
+            }
+        }
+        getMicrophoneAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.MICROPHONE');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.microphoneAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.microphoneAuthorized = AUTHORIZED;
+            }
+        }
+        getNotificationAuthorizeSetting() {
+            try {
+                const isNotificationEnabled = notificationManager.isNotificationEnabledSync();
+                if (isNotificationEnabled) {
+                    this.appAuthorizeSetting.notificationAuthorized = DENIED;
+                }
+                if (isNotificationEnabled) {
+                    this.appAuthorizeSetting.notificationAuthorized = AUTHORIZED;
+                }
+            } catch (error) {
+                this.appAuthorizeSetting.notificationAuthorized = DENIED;
+            }
+        }
+        getPhoneCalendarAuthorizeSetting() {
+            const grantStatus = this.atManager.checkAccessTokenSync(this.accessTokenId, 'ohos.permission.WRITE_CALENDAR');
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_DENIED) {
+                this.appAuthorizeSetting.phoneCalendarAuthorized = DENIED;
+            }
+            if (grantStatus === abilityAccessCtrl.GrantStatus.PERMISSION_GRANTED) {
+                this.appAuthorizeSetting.phoneCalendarAuthorized = AUTHORIZED;
+            }
+        }
+    }
+    const getAppAuthorizeSetting: GetAppAuthorizeSetting = defineSyncApi<GetAppAuthorizeSettingResult>('getAppAuthorizeSetting', ()=>{
+        const bundleInfoWithApplication = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_WITH_APPLICATION);
+        const appAuthorizeSettingImpl = new GetAppAuthorizeSettingImpl(bundleInfoWithApplication.appInfo.accessTokenId, abilityAccessCtrl.createAtManager(), new AppAuthorizeSetting());
+        return appAuthorizeSettingImpl.appAuthorizeSetting as GetAppAuthorizeSettingResult;
+    }) as GetAppAuthorizeSetting;
     const API_GET_APP_BASE_INFO = 'getAppBaseInfo';
     const getBundleInfoOnce = ()=>{
-        let bundleInfo: bundleManager.BundleInfo | null = null;
-        return (): bundleManager.BundleInfo =>{
+        let bundleInfo: bundleManager1.BundleInfo | null = null;
+        return (): bundleManager1.BundleInfo =>{
             if (bundleInfo) {
                 return bundleInfo;
             }
-            bundleInfo = bundleManager.getBundleInfoForSelfSync(bundleManager.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
+            bundleInfo = bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT);
             return bundleInfo;
         };
     };
     const getBundleInfo = getBundleInfoOnce();
     const getAppBaseInfo: GetAppBaseInfo = defineSyncApi<GetAppBaseInfoResult>(API_GET_APP_BASE_INFO, (): GetAppBaseInfoResult =>{
-        const appVersion: IAppBaseInfoAppVersion = UTSHarmony1.getAppVersion();
+        const appVersion: IAppBaseInfoAppVersion = UTSHarmony3.getAppVersion();
         const appLanguage = I18n.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony1.getUniCompilerVersion();
-        const uniRuntimeVersion: string = UTSHarmony1.getUniRuntimeVersion();
+        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
+        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
         return {
-            appId: UTSHarmony1.getAppId() as string,
+            appId: UTSHarmony3.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony1.getAppName() as string,
-            appTheme: UTSHarmony1.getAppTheme() as string,
+            appName: UTSHarmony3.getAppName() as string,
+            appTheme: UTSHarmony3.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
             hostLanguage: I18n.System.getSystemLanguage(),
-            isUniAppX: UTSHarmony1.isUniAppX() as boolean,
+            isUniAppX: UTSHarmony3.isUniAppX() as boolean,
             packageName: getBundleInfo().name,
             uniCompilerVersion: uniCompilerVersion,
             uniCompilerVersionCode: parseFloat(uniCompilerVersion),
@@ -1484,6 +3124,494 @@ export function initUniExtApi(APP_ID: string) {
             uniPlatform: 'app'
         } as GetAppBaseInfoResult;
     }) as GetAppBaseInfo;
+    const API_GET_BACKGROUND_AUDIO_MANAGER = 'getBackgroundAudioManager';
+    const isFileUri1 = (path: string)=>{
+        return path && typeof path === 'string' && (path.startsWith('file://') || path.startsWith('datashare://'));
+    };
+    const isSandboxPath1 = (path: string)=>{
+        return path && typeof path === 'string' && path.startsWith('/data/storage/');
+    };
+    const getFdFromUriOrSandBoxPath1 = (uri: string)=>{
+        try {
+            const file = fileIo1.openSync(uri, fileIo1.OpenMode.READ_ONLY);
+            return file.fd;
+        } catch (error) {
+            console.info(`[AdvancedAPI] Can not get file from uri: ${uri} `);
+        }
+        throw new Error('file is not exist');
+    };
+    const callCallbacks1 = (callbacks: Function[], ...args: Object[])=>{
+        callbacks.forEach((cb)=>{
+            typeof cb === 'function' && cb(...args);
+        });
+    };
+    const remoteCallback1 = (callbacks: Function[], callback: Function)=>{
+        const index = callbacks.indexOf(callback);
+        if (index > -1) {
+            callbacks.splice(index, 1);
+        }
+    };
+    class AudioPlayerError1 {
+        errMsg: string;
+        errCode: number;
+        constructor(errMsg: string, errCode: number){
+            this.errMsg = errMsg;
+            this.errCode = errCode;
+        }
+    }
+    class AudioPlayerCallback1 {
+        onCanplayCallbacks: Function[] = [];
+        onPlayCallbacks: Function[] = [];
+        onPauseCallbacks: Function[] = [];
+        onStopCallbacks: Function[] = [];
+        onEndedCallbacks: Function[] = [];
+        onTimeUpdateCallbacks: Function[] = [];
+        onErrorCallbacks: Function[] = [];
+        onWaitingCallbacks: Function[] = [];
+        onSeekingCallbacks: Function[] = [];
+        onSeekedCallbacks: Function[] = [];
+        constructor(){}
+        canPlay() {
+            callCallbacks1(this.onCanplayCallbacks);
+        }
+        onCanplay(callback: Function) {
+            this.onCanplayCallbacks.push(callback);
+        }
+        offCanplay(callback: Function) {
+            remoteCallback1(this.onCanplayCallbacks, callback);
+        }
+        play() {
+            callCallbacks1(this.onPlayCallbacks);
+        }
+        onPlay(callback: Function) {
+            this.onPlayCallbacks.push(callback);
+        }
+        offPlay(callback: Function) {
+            remoteCallback1(this.onPlayCallbacks, callback);
+        }
+        pause() {
+            callCallbacks1(this.onPauseCallbacks);
+        }
+        onPause(callback: Function) {
+            this.onPauseCallbacks.push(callback);
+        }
+        offPause(callback: Function) {
+            remoteCallback1(this.onPauseCallbacks, callback);
+        }
+        stop() {
+            callCallbacks1(this.onStopCallbacks);
+        }
+        onStop(callback: Function) {
+            this.onStopCallbacks.push(callback);
+        }
+        offStop(callback: Function) {
+            remoteCallback1(this.onStopCallbacks, callback);
+        }
+        ended() {
+            callCallbacks1(this.onEndedCallbacks);
+        }
+        onEnded(callback: Function) {
+            this.onEndedCallbacks.push(callback);
+        }
+        offEnded(callback: Function) {
+            remoteCallback1(this.onEndedCallbacks, callback);
+        }
+        timeUpdate(time: number) {
+            callCallbacks1(this.onTimeUpdateCallbacks, time);
+        }
+        onTimeUpdate(callback: Function) {
+            this.onTimeUpdateCallbacks.push(callback);
+        }
+        offTimeUpdate(callback: Function) {
+            remoteCallback1(this.onTimeUpdateCallbacks, callback);
+        }
+        error(res: AudioPlayerError1) {
+            callCallbacks1(this.onErrorCallbacks, res);
+        }
+        onError(callback: Function) {
+            this.onErrorCallbacks.push(callback);
+        }
+        offError(callback: Function) {
+            remoteCallback1(this.onErrorCallbacks, callback);
+        }
+        onPrev(callback: Function) {
+            console.info('ios only');
+        }
+        onNext(callback: Function) {
+            console.info('ios only');
+        }
+        waiting() {
+            callCallbacks1(this.onWaitingCallbacks);
+        }
+        onWaiting(callback: Function) {
+            this.onWaitingCallbacks.push(callback);
+        }
+        offWaiting(callback: Function) {
+            remoteCallback1(this.onWaitingCallbacks, callback);
+        }
+        seeking() {
+            callCallbacks1(this.onSeekingCallbacks);
+        }
+        onSeeking(callback: Function) {
+            this.onSeekingCallbacks.push(callback);
+        }
+        offSeeking(callback: Function) {
+            remoteCallback1(this.onSeekingCallbacks, callback);
+        }
+        seeked() {
+            callCallbacks1(this.onSeekedCallbacks);
+        }
+        onSeeked(callback: Function) {
+            this.onSeekedCallbacks.push(callback);
+        }
+        offSeeked(callback: Function) {
+            remoteCallback1(this.onSeekedCallbacks, callback);
+        }
+    }
+    const audioPlayerCallback = new AudioPlayerCallback1();
+    let AV_SESSION: avSession.AVSession | null = null;
+    const createAVSession = ()=>{
+        avSession.createAVSession(getAbilityContext()!, 'player', 'audio').then((data)=>{
+            AV_SESSION = data;
+        });
+    };
+    const destroyAVSession = ()=>{
+        if (AV_SESSION === null) {
+            return;
+        }
+        AV_SESSION.destroy();
+        AV_SESSION = null;
+    };
+    const startBackgroundTask = ()=>{
+        const abilityInfo: TempAbilityInfo = getAbilityContext()!.abilityInfo;
+        const wantAgentInfo: wantAgent.WantAgentInfo = {
+            wants: [
+                {
+                    bundleName: abilityInfo.bundleName,
+                    abilityName: abilityInfo.name
+                }
+            ],
+            operationType: wantAgent.OperationType.START_ABILITY,
+            requestCode: 0,
+            wantAgentFlags: [
+                wantAgent.WantAgentFlags.UPDATE_PRESENT_FLAG
+            ]
+        };
+        wantAgent.getWantAgent(wantAgentInfo).then((wantAgentObj)=>{
+            return backgroundTaskManager.startBackgroundRunning(getAbilityContext()!, backgroundTaskManager.BackgroundMode.AUDIO_PLAYBACK, wantAgentObj);
+        }).then(()=>{
+            console.debug('[getBackgroundAudioManager]  start bg operation succeeded');
+        }).catch((err: BusinessError2)=>{
+            audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+        });
+    };
+    const stopBackgroundTask = ()=>{
+        backgroundTaskManager.stopBackgroundRunning(getAbilityContext()!).then(()=>{
+            console.debug('[getBackgroundAudioManager]  stop operation succeeded');
+        }).catch((err: BusinessError2)=>{
+            audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+        });
+    };
+    const START_BACKGROUND = ()=>{
+        startBackgroundTask();
+        createAVSession();
+    };
+    const STOP_BACKGROUND = ()=>{
+        destroyAVSession();
+        stopBackgroundTask();
+    };
+    const LOG1 = (msg: string)=>console.log(`[getBackgroundAudioManager]: ${msg}`);
+    class STATE_TYPE1 {
+        static IDLE: string = 'idle';
+        static PLAYING: string = 'playing';
+        static PAUSED: string = 'paused';
+        static STOPPED: string = 'stopped';
+        static ERROR: string = 'error';
+    }
+    class BackgroundAudioManagerImpl implements BackgroundAudioManager {
+        static audioPlayer?: media1.AudioPlayer;
+        private _src: string = '';
+        private _startTime: number = 0;
+        private _buffered: number = 0;
+        private _title: string = '';
+        private _epname: string = '';
+        private _singer: string = '';
+        private _coverImgUrl: string = '';
+        private _webUrl: string = '';
+        private _protocol: string = '';
+        private _playbackRate: number = 1;
+        readonly obeyMuteSwitch: boolean = false;
+        constructor(){
+            this.init();
+        }
+        init() {
+            BackgroundAudioManagerImpl.audioPlayer = media1.createAudioPlayer();
+            BackgroundAudioManagerImpl.audioPlayer.on('dataLoad', ()=>{
+                audioPlayerCallback.canPlay();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('play', ()=>{
+                audioPlayerCallback.play();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('pause', ()=>{
+                audioPlayerCallback.pause();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('finish', ()=>{
+                STOP_BACKGROUND();
+                audioPlayerCallback.ended();
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('timeUpdate', (res)=>{
+                audioPlayerCallback.timeUpdate(res / 1000);
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('error', (err)=>{
+                audioPlayerCallback.error(new AudioPlayerError1(err.message, err.code));
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('bufferingUpdate', (infoType, value)=>{
+                console.info(`[AdvancedAPI] audioPlayer bufferingUpdate ${infoType} ${value}`);
+                if (infoType === media1.BufferingInfoType.BUFFERING_PERCENT && value !== 0 && BackgroundAudioManagerImpl.audioPlayer) {
+                    this._buffered = value;
+                    if ((BackgroundAudioManagerImpl.audioPlayer.currentTime / 1000) >= (BackgroundAudioManagerImpl.audioPlayer.duration * value / 100000)) {
+                        audioPlayerCallback.waiting();
+                    }
+                }
+            });
+            BackgroundAudioManagerImpl.audioPlayer.on('audioInterrupt', (InterruptEvent)=>{
+                console.info('[AdvancedAPI]  audioInterrupt:' + JSON.stringify(InterruptEvent));
+                if (BackgroundAudioManagerImpl.audioPlayer && InterruptEvent.hintType === audio1.InterruptHint.INTERRUPT_HINT_PAUSE) {
+                    BackgroundAudioManagerImpl.audioPlayer.pause();
+                }
+                if (BackgroundAudioManagerImpl.audioPlayer && InterruptEvent.hintType === audio1.InterruptHint.INTERRUPT_HINT_RESUME) {
+                    BackgroundAudioManagerImpl.audioPlayer.play();
+                }
+            });
+        }
+        get duration() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return 0;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.duration / 1000;
+        }
+        get currentTime() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return 0;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.currentTime / 1000;
+        }
+        get paused() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return false;
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.state === STATE_TYPE1.PAUSED;
+        }
+        get src() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return '';
+            }
+            return BackgroundAudioManagerImpl.audioPlayer.src;
+        }
+        set src(value) {
+            if (typeof value !== 'string') {
+                audioPlayerCallback.error(new AudioPlayerError1(`set src: ${value} is not string`, 10004));
+                return;
+            }
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                audioPlayerCallback.error(new AudioPlayerError1(`player is not exist`, 10001));
+                return;
+            }
+            if (!value || !(value.startsWith('http:') || value.startsWith('https:') || isFileUri1(value) || isSandboxPath1(value))) {
+                LOG1(`set src: ${value} is invalid`);
+                return;
+            }
+            let path: string = '';
+            if (value.startsWith('http:') || value.startsWith('https:')) {
+                path = value;
+            } else if (isFileUri1(value) || isSandboxPath1(value)) {
+                try {
+                    const fd = getFdFromUriOrSandBoxPath1(value);
+                    path = `fd://${fd}`;
+                } catch (err) {
+                    audioPlayerCallback.error(new AudioPlayerError1((err as BusinessError2).message, (err as BusinessError2).code));
+                }
+            }
+            if (BackgroundAudioManagerImpl.audioPlayer.src && path !== BackgroundAudioManagerImpl.audioPlayer.src) {
+                BackgroundAudioManagerImpl.audioPlayer.reset();
+            }
+            BackgroundAudioManagerImpl.audioPlayer.src = path;
+            this._src = value;
+            if (this._startTime) {
+                BackgroundAudioManagerImpl.audioPlayer.seek(this._startTime);
+            }
+            BackgroundAudioManagerImpl.audioPlayer.play();
+            START_BACKGROUND();
+        }
+        get startTime() {
+            return this._startTime / 1000;
+        }
+        set startTime(time: number) {
+            this._startTime = time * 1000;
+        }
+        get title() {
+            return this._title;
+        }
+        set title(titleName: string) {
+            this._title = titleName;
+        }
+        get buffered() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) return 0;
+            return BackgroundAudioManagerImpl.audioPlayer.duration * this._buffered / 100000;
+        }
+        get epname() {
+            return this._epname;
+        }
+        set epname(epName: string) {
+            this._epname = epName;
+        }
+        get singer() {
+            return this._singer;
+        }
+        set singer(singerName: string) {
+            this._singer = singerName;
+        }
+        get coverImgUrl() {
+            return this._coverImgUrl;
+        }
+        set coverImgUrl(url: string) {
+            this._coverImgUrl = url;
+        }
+        get webUrl() {
+            return this._webUrl;
+        }
+        set webUrl(url: string) {
+            this._webUrl = url;
+        }
+        get protocol() {
+            return this._protocol;
+        }
+        set protocol(protocolType: string) {
+            this._protocol = protocolType;
+        }
+        set playbackRate(rate: number) {
+            audioPlayerCallback.error(new AudioPlayerError1('HarmonyOS Next Audio setting playbackRate is not supported.', -1));
+        }
+        get playbackRate() {
+            return this._playbackRate;
+        }
+        play() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.STOPPED,
+                STATE_TYPE1.IDLE
+            ].includes(state)) {
+                return;
+            }
+            if (this._src && BackgroundAudioManagerImpl.audioPlayer.src === '') {
+                this.src = this._src;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.play();
+            START_BACKGROUND();
+        }
+        pause() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (STATE_TYPE1.PLAYING !== state) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.pause();
+        }
+        stop() {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.PLAYING
+            ].includes(BackgroundAudioManagerImpl.audioPlayer.state)) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.stop();
+            BackgroundAudioManagerImpl.audioPlayer.release();
+            this.init();
+            STOP_BACKGROUND();
+            audioPlayerCallback.stop();
+        }
+        seek(position: number) {
+            if (!BackgroundAudioManagerImpl.audioPlayer) {
+                return;
+            }
+            const state = BackgroundAudioManagerImpl.audioPlayer.state;
+            if (![
+                STATE_TYPE1.PAUSED,
+                STATE_TYPE1.PLAYING
+            ].includes(state)) {
+                return;
+            }
+            BackgroundAudioManagerImpl.audioPlayer.seek(position * 1000);
+        }
+        onCanplay(callback: (result: Object) => void): void {
+            audioPlayerCallback.onCanplay(callback);
+        }
+        onPlay(callback: (result: Object) => void): void {
+            audioPlayerCallback.onPlay(callback);
+        }
+        onPause(callback: (result: Object) => void): void {
+            audioPlayerCallback.onPause(callback);
+        }
+        onStop(callback: (result: Object) => void): void {
+            audioPlayerCallback.onStop(callback);
+        }
+        onEnded(callback: (result: Object) => void): void {
+            audioPlayerCallback.onEnded(callback);
+        }
+        onTimeUpdate(callback: (result: Object) => void): void {
+            audioPlayerCallback.onTimeUpdate(callback);
+        }
+        onError(callback: (result: Object) => void): void {
+            audioPlayerCallback.onError(callback);
+        }
+        onWaiting(callback: (result: Object) => void): void {
+            audioPlayerCallback.onWaiting(callback);
+        }
+        offCanplay(callback: (result: Object) => void): void {
+            audioPlayerCallback.offCanplay(callback);
+        }
+        offPlay(callback: (result: Object) => void): void {
+            audioPlayerCallback.offPlay(callback);
+        }
+        offPause(callback: (result: Object) => void): void {
+            audioPlayerCallback.offPause(callback);
+        }
+        offStop(callback: (result: Object) => void): void {
+            audioPlayerCallback.offStop(callback);
+        }
+        offEnded(callback: (result: Object) => void): void {
+            audioPlayerCallback.offEnded(callback);
+        }
+        offTimeUpdate(callback: (result: Object) => void): void {
+            audioPlayerCallback.offTimeUpdate(callback);
+        }
+        offError(callback: (result: Object) => void): void {
+            audioPlayerCallback.offError(callback);
+        }
+        offWaiting(callback: (result: Object) => void): void {
+            audioPlayerCallback.offWaiting(callback);
+        }
+        onPrev(callback: (result: Object) => void): void {
+            throw new Error('Method not implemented.');
+        }
+        onNext(callback: (result: Object) => void): void {
+            throw new Error('Method not implemented.');
+        }
+    }
+    let backgroundAudioManager: BackgroundAudioManager | null = null;
+    const getBackgroundAudioManager: GetBackgroundAudioManager = defineSyncApi<BackgroundAudioManager>(API_GET_BACKGROUND_AUDIO_MANAGER, ()=>{
+        if (!backgroundAudioManager) backgroundAudioManager = new BackgroundAudioManagerImpl();
+        return backgroundAudioManager;
+    }) as GetBackgroundAudioManager;
     const API_GET_DEVICE_INFO = 'getDeviceInfo';
     const getDeviceInfo: GetDeviceInfo = defineSyncApi<GetDeviceInfoResult>(API_GET_DEVICE_INFO, (): GetDeviceInfoResult =>{
         return {
@@ -1494,7 +3622,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: deviceInfo.deviceType === 'tablet' ? 'pad' : deviceInfo.deviceType,
             osLanguage: I18n1.System.getSystemLanguage(),
-            osTheme: UTSHarmony2.getOsTheme() as string,
+            osTheme: UTSHarmony4.getOsTheme() as string,
             osVersion: deviceInfo.buildVersion + '',
             osName: 'harmonyos',
             platform: 'harmonyos',
@@ -1503,6 +3631,177 @@ export function initUniExtApi(APP_ID: string) {
             system: deviceInfo.osFullName
         } as GetDeviceInfoResult;
     }) as GetDeviceInfo;
+    const API_GET_NETWORK_TYPE = 'getNetworkType';
+    const PERMISSIONS1 = [
+        'ohos.permission.GET_NETWORK_INFO'
+    ];
+    enum NetworkinfoType {
+        UNKNOW = 0,
+        NONE = 1,
+        ETHERNET = 2,
+        WIFI = 3,
+        "2G" = 4,
+        "3G" = 5,
+        "4G" = 6,
+        "5G" = 7
+    }
+    const signalType = (resultObj: radio.NetworkType)=>{
+        switch(resultObj){
+            case radio.NetworkType.NETWORK_TYPE_GSM:
+            case radio.NetworkType.NETWORK_TYPE_CDMA:
+                return NetworkinfoType['2G'];
+            case radio.NetworkType.NETWORK_TYPE_WCDMA:
+            case radio.NetworkType.NETWORK_TYPE_TDSCDMA:
+                return NetworkinfoType['3G'];
+            case radio.NetworkType.NETWORK_TYPE_LTE:
+                return NetworkinfoType['4G'];
+            case radio.NetworkType.NETWORK_TYPE_NR:
+                return NetworkinfoType['5G'];
+            case radio.NetworkType.NETWORK_TYPE_UNKNOWN:
+                return NetworkinfoType.UNKNOW;
+            default:
+                return NetworkinfoType.NONE;
+        }
+    };
+    const networkGetType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+                if (allRight) {
+                    try {
+                        radio.getPrimarySlotId().then((slotId: number)=>radio.getSignalInformationSync(slotId)).then((signalInformation: Array<radio.SignalInformation>)=>{
+                            const data = signalInformation[0];
+                            if (data && data.signalType) {
+                                resolve(signalType(data.signalType));
+                            } else {
+                                resolve(NetworkinfoType.NONE);
+                            }
+                        });
+                    } catch (error) {
+                        reject(error as BusinessError3);
+                    }
+                } else {
+                    reject('permission denied');
+                }
+            }, ()=>reject('permission denied'));
+        });
+    };
+    class GlobalContext {
+        netList: connection.NetHandle[] = [];
+        netHandle: connection.NetHandle | null = null;
+        private constructor(){}
+        private static instance: GlobalContext;
+        public static getContext(): GlobalContext {
+            if (!GlobalContext.instance) {
+                GlobalContext.instance = new GlobalContext();
+            }
+            return GlobalContext.instance;
+        }
+    }
+    const getCurrentType = ()=>{
+        return new Promise<number>((resolve, reject)=>{
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+                if (allRight) {
+                    try {
+                        connection.getDefaultNet().then((data: connection.NetHandle)=>{
+                            if (data) {
+                                GlobalContext.getContext().netHandle = data;
+                                connection.getNetCapabilities(GlobalContext.getContext().netHandle!).then((data: connection.NetCapabilities)=>{
+                                    const bearerTypes: Set<number> = new Set(data.bearerTypes);
+                                    const bearerTypesNum = Array.from(bearerTypes.values());
+                                    for (const item of bearerTypesNum){
+                                        if (item == connection.NetBearType.BEARER_CELLULAR) {
+                                            networkGetType().then(resolve).catch(reject);
+                                        } else if (item == connection.NetBearType.BEARER_WIFI) {
+                                            resolve(NetworkinfoType.WIFI);
+                                        } else if (item == connection.NetBearType.BEARER_ETHERNET) {
+                                            resolve(NetworkinfoType.ETHERNET);
+                                        } else {
+                                            resolve(NetworkinfoType.UNKNOW);
+                                        }
+                                    }
+                                }).catch((err: BusinessError3)=>{
+                                    reject(err);
+                                });
+                            }
+                        });
+                    } catch (error) {
+                        reject(error);
+                    }
+                } else {
+                    reject('permission denied');
+                }
+            });
+        });
+    };
+    class Network {
+        static netConnection: connection.NetConnection | null = null;
+        constructor(){
+            Network.netConnection = connection.createNetConnection();
+        }
+        static ohoSubscribe() {
+            if (!Network.netConnection) {
+                Network.netConnection = connection.createNetConnection();
+            }
+            UTSHarmony5.requestSystemPermission(PERMISSIONS1, (allRight: boolean)=>{
+                if (allRight && Network.netConnection) {
+                    Network.netConnection.register((err: BusinessError3)=>{});
+                    Network.netConnection.on('netCapabilitiesChange', (capability: connection.NetCapabilityInfo)=>{
+                        const NetBearType = capability?.netCap?.bearerTypes[0];
+                        let networkType = '';
+                        switch(NetBearType){
+                            case connection.NetBearType.BEARER_CELLULAR:
+                                getCurrentType().then((type: number)=>{
+                                    invokeOnNetworkStatusChange(NetworkinfoType[type]);
+                                }).catch(()=>{
+                                    invokeOnNetworkStatusChange(NetworkinfoType[1]);
+                                });
+                                return;
+                            case connection.NetBearType.BEARER_WIFI:
+                                networkType = NetworkinfoType[3];
+                                break;
+                            case connection.NetBearType.BEARER_ETHERNET:
+                                networkType = NetworkinfoType[2];
+                                break;
+                            default:
+                                networkType = NetworkinfoType[1];
+                        }
+                        invokeOnNetworkStatusChange(networkType);
+                    });
+                    Network.netConnection.on('netLost', (netLost: connection.NetHandle)=>{
+                        invokeOnNetworkStatusChange(NetworkinfoType[1]);
+                    });
+                }
+            });
+        }
+    }
+    new Network();
+    waitForCurrentNativePage().then(()=>{
+        Network.ohoSubscribe();
+    });
+    const getNetworkType: GetNetworkType = defineAsyncApi<GetNetworkTypeOptions, GetNetworkTypeSuccess>(API_GET_NETWORK_TYPE, (options: GetNetworkTypeOptions, res: ApiExecutor<GetNetworkTypeSuccess>)=>{
+        getCurrentType().then((type: number)=>{
+            res.resolve({
+                networkType: NetworkinfoType[type].toLocaleLowerCase()
+            } as GetNetworkTypeSuccess);
+        }).catch((err: BusinessError3)=>{
+            res.reject(err.message);
+        });
+    }) as GetNetworkType;
+    const invokeOnNetworkStatusChange = (networkType: string)=>{
+        UniGetNetworkTypeEventEmitter.emit('networkStatusChange', {
+            isConnected: networkType !== NetworkinfoType[1],
+            networkType: networkType.toLocaleLowerCase()
+        } as OnNetworkStatusChangeCallbackResult);
+    };
+    const UniGetNetworkTypeEventEmitter = new Emitter1() as IUniGetNetworkTypeEventEmitter;
+    const onNetworkStatusChange: OnNetworkStatusChange = (callback: Function)=>{
+        UniGetNetworkTypeEventEmitter.on('networkStatusChange', callback);
+    };
+    const offNetworkStatusChange: OffNetworkStatusChange = (callback: Function)=>{
+        UniGetNetworkTypeEventEmitter.off('networkStatusChange', callback);
+    };
+    const API_GET_PROVIDER = 'getProvider';
+    const API_GET_PROVIDER_SYNC = 'getProviderSync';
     const SupportedProviderServiceList = [
         'oauth',
         'share',
@@ -1510,25 +3809,315 @@ export function initUniExtApi(APP_ID: string) {
         'push',
         'location'
     ];
-    const getProvider: GetProvider = (options: GetProviderOptions): void =>{
+    const _getProviderSync = (options: GetProviderOptions)=>{
         if (!SupportedProviderServiceList.includes(options.service)) {
-            const uniError = new UniError('uni-getProvider', -1, 'Parameter service invalid.');
-            options.fail?.(uniError);
-            options.complete?.(uniError);
-        } else {
-            const providers = getUniProviders(options.service);
-            const result = {
-                service: options.service,
-                provider: providers.map((provider): string =>{
-                    return provider.id;
-                }),
-                providers,
-                errMsg: 'GetProvider:ok'
-            } as GetProviderSuccess;
-            options.success?.(result);
-            options.complete?.(result);
+            return 'Parameter service invalid.';
+        }
+        const providers = getUniProviders(options.service);
+        const providerIds = providers.map((provider): string =>{
+            return provider.id;
+        });
+        const result: GetProviderSuccess = {
+            service: options.service,
+            provider: providerIds,
+            providers
+        };
+        return result;
+    };
+    const getProvider: GetProvider = defineAsyncApi<GetProviderOptions, GetProviderSuccess>(API_GET_PROVIDER, (options: GetProviderOptions, exec: ApiExecutor<GetProviderSuccess>): void =>{
+        const res = _getProviderSync(options);
+        if (typeof res === 'string') exec.reject(res);
+        else exec.resolve(res);
+    }) as GetProvider;
+    const getProviderSync: GetProviderSync = defineSyncApi<GetProviderSyncSuccess>(API_GET_PROVIDER_SYNC, (options: GetProviderSyncOptions): GetProviderSyncSuccess =>{
+        const res = _getProviderSync(options as GetProviderOptions);
+        if (typeof res === 'string') throw new Error(res);
+        return {
+            service: res.service,
+            providerIds: res.provider,
+            providerObjects: res.providers
+        } as GetProviderSyncSuccess;
+    }) as GetProviderSync;
+    const API_GET_RECORDER_MANAGER = 'getRecorderManager';
+    const callbacks: Callbacks = {
+        pause: [],
+        resume: [],
+        start: [],
+        stop: [],
+        error: [],
+        frameRecorded: [],
+        interruptionBegin: [],
+        interruptionEnd: []
+    };
+    const setRecordStateCallback = (state: RecorderState, cb: Function)=>{
+        switch(state){
+            case 'pause':
+                callbacks.pause.push(cb);
+                break;
+            case 'resume':
+                callbacks.resume.push(cb);
+                break;
+            case 'start':
+                callbacks.start.push(cb);
+                break;
+            case 'stop':
+                callbacks.stop.push(cb);
+                break;
+            case 'error':
+                callbacks.error.push(cb);
+                break;
+            case 'frameRecorded':
+                callbacks.frameRecorded.push(cb);
+                break;
+            case 'interruptionBegin':
+                callbacks.interruptionBegin.push(cb);
+                break;
+            case 'interruptionEnd':
+                callbacks.interruptionEnd.push(cb);
+                break;
         }
     };
+    const onRecorderStateChange = (state: RecorderState, res: StateChangeRes | null = null)=>{
+        const cbs: Function[] = (()=>{
+            switch(state){
+                case 'pause':
+                    return callbacks.pause;
+                case 'resume':
+                    return callbacks.resume;
+                case 'start':
+                    return callbacks.start;
+                case 'stop':
+                    return callbacks.stop;
+                case 'error':
+                    return callbacks.error;
+                case 'frameRecorded':
+                    return callbacks.frameRecorded;
+                case 'interruptionBegin':
+                    return callbacks.interruptionBegin;
+                case 'interruptionEnd':
+                    return callbacks.interruptionEnd;
+                default:
+                    return [];
+            }
+        })();
+        cbs.forEach((fn)=>{
+            if (typeof fn === 'function') {
+                fn(res);
+            }
+        });
+    };
+    const createFile = (supportFormats: string[], format: string, defaultExt: string)=>{
+        const TEMP_PATH = getEnv1().TEMP_PATH as string;
+        const filePath = `${TEMP_PATH}/recorder/`;
+        if (!fileIo2.accessSync(filePath)) {
+            fileIo2.mkdirSync(filePath, true);
+        }
+        const fileName = `${Date.now()}.${supportFormats.includes(format ?? '') ? format?.toLocaleLowerCase() : defaultExt}`;
+        const file: fileIo2.File = fileIo2.openSync(`${filePath}${fileName}`, fileIo2.OpenMode.READ_WRITE | fileIo2.OpenMode.CREATE);
+        return file;
+    };
+    const permissionDenied = ()=>{
+        throw new Error('Permission MICROPHONE denied');
+    };
+    const supportFormats = [
+        'aac'
+    ];
+    class AVRecorder implements RecorderManager {
+        private avRecorder?: media2.AVRecorder;
+        private isFirstStart: boolean = true;
+        constructor(){}
+        private onStateChange(file: fileIo3.File) {
+            if (this.avRecorder) {
+                this.avRecorder.on('stateChange', async (state, reason)=>{
+                    switch(state){
+                        case 'idle':
+                            this.isFirstStart = true;
+                            break;
+                        case 'started':
+                            if (this.isFirstStart) {
+                                this.isFirstStart = false;
+                                onRecorderStateChange('start');
+                            } else {
+                                if (reason === media2.StateChangeReason.BACKGROUND) {
+                                    onRecorderStateChange('interruptionEnd');
+                                }
+                                onRecorderStateChange('resume');
+                            }
+                            break;
+                        case 'paused':
+                            if (reason === media2.StateChangeReason.BACKGROUND) {
+                                onRecorderStateChange('interruptionBegin');
+                            }
+                            onRecorderStateChange('pause');
+                            break;
+                        case 'stopped':
+                            onRecorderStateChange('stop', {
+                                tempFilePath: file.path
+                            } as StateChangeRes);
+                            fileIo3.closeSync(file);
+                            break;
+                    }
+                });
+                this.avRecorder.on('error', (err: BusinessError4)=>{
+                    onRecorderStateChange('error', {
+                        errMsg: `${err.message} ${err.code}`
+                    } as StateChangeRes);
+                });
+            }
+        }
+        private async release() {
+            if (this.avRecorder !== undefined) {
+                await this.avRecorder.reset();
+                await this.avRecorder.release();
+                this.avRecorder = undefined;
+            }
+        }
+        async start(options: RecorderManagerStartOptions): Promise<void> {
+            if (this.avRecorder !== undefined) {
+                await this.release();
+            }
+            this.avRecorder = await media2.createAVRecorder();
+            const _options_sampleRate = options.sampleRate, sampleRate = _options_sampleRate == null ? 48000 : _options_sampleRate, _options_numberOfChannels = options.numberOfChannels, numberOfChannels = _options_numberOfChannels == null ? 2 : _options_numberOfChannels, _options_encodeBitRate = options.encodeBitRate, encodeBitRate = _options_encodeBitRate == null ? 48000 : _options_encodeBitRate, _options_duration = options.duration, duration = _options_duration == null ? null : _options_duration;
+            const file = createFile(supportFormats, options.format ?? '', 'aac');
+            this.onStateChange(file);
+            const audioProfile: media2.AVRecorderProfile = {
+                audioBitrate: encodeBitRate!,
+                audioChannels: numberOfChannels!,
+                audioCodec: media2.CodecMimeType.AUDIO_AAC,
+                audioSampleRate: sampleRate!,
+                fileFormat: media2.ContainerFormatType.CFT_MPEG_4A
+            };
+            const audioConfig: media2.AVRecorderConfig = {
+                audioSourceType: media2.AudioSourceType.AUDIO_SOURCE_TYPE_MIC,
+                profile: audioProfile,
+                url: 'fd://' + file.fd
+            };
+            UTSHarmony6.requestSystemPermission([
+                'ohos.permission.MICROPHONE'
+            ], async (allRight: boolean)=>{
+                if (allRight) {
+                    await this.avRecorder?.prepare(audioConfig);
+                    await this.avRecorder?.start();
+                    if (duration) {
+                        setTimeout(async ()=>{
+                            await this.avRecorder?.stop();
+                        }, duration);
+                    }
+                } else {
+                    permissionDenied();
+                }
+            }, permissionDenied);
+        }
+        async pause(): Promise<void> {
+            if (this.avRecorder !== undefined && this.avRecorder.state === 'started') {
+                await this.avRecorder.pause();
+            }
+        }
+        async resume(): Promise<void> {
+            if (this.avRecorder !== undefined && this.avRecorder.state === 'paused') {
+                await this.avRecorder.resume();
+            }
+        }
+        async stop(): Promise<void> {
+            if (this.avRecorder !== undefined && (this.avRecorder.state === 'started' || this.avRecorder.state === 'paused')) {
+                await this.avRecorder.stop();
+                await this.release();
+                this.isFirstStart = true;
+            }
+        }
+        onStart(options: (result: Object) => void): void {
+            setRecordStateCallback('start', options);
+        }
+        onPause(options: (result: Object) => void): void {
+            setRecordStateCallback('pause', options);
+        }
+        onStop(options: (result: RecorderManagerOnStopResult) => void): void {
+            setRecordStateCallback('stop', options);
+        }
+        onFrameRecorded(options: (result: Object) => void): void {
+            setRecordStateCallback('frameRecorded', options);
+        }
+        onError(options: (result: Object) => void): void {
+            setRecordStateCallback('error', options);
+        }
+        onResume(options: (result: Object) => void): void {
+            setRecordStateCallback('resume', options);
+        }
+        onInterruptionBegin(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionBegin', options);
+        }
+        onInterruptionEnd(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionEnd', options);
+        }
+    }
+    let RECORDER_MANAGER: RecorderManager | null = null;
+    class RecorderManagerImpl implements RecorderManager {
+        start(options: RecorderManagerStartOptions): void {
+            if (!options.format) options.format = 'aac';
+            const DEFAULT_DURATION = 1000 * 60;
+            const MAX_DURATION = DEFAULT_DURATION * 10;
+            if (typeof options.duration === 'undefined' || options.duration === null) {
+                options.duration = DEFAULT_DURATION;
+            }
+            if (options.duration > MAX_DURATION) {
+                options.duration = MAX_DURATION;
+            }
+            if (supportFormats.includes(options.format ?? '')) {
+                RECORDER_MANAGER = new AVRecorder();
+            }
+            if (RECORDER_MANAGER) {
+                RECORDER_MANAGER.start(options);
+            } else {
+                onRecorderStateChange('error', {
+                    errMsg: `format not supported. Only supported ${supportFormats.join(',')}`
+                } as StateChangeRes);
+            }
+        }
+        pause(): void {
+            if (RECORDER_MANAGER) RECORDER_MANAGER.pause();
+        }
+        resume(): void {
+            if (RECORDER_MANAGER) RECORDER_MANAGER.resume();
+        }
+        async stop() {
+            if (RECORDER_MANAGER) {
+                try {
+                    await RECORDER_MANAGER.stop();
+                } catch (error) {}
+                RECORDER_MANAGER = null;
+            }
+        }
+        onStart(options: (result: Object) => void): void {
+            setRecordStateCallback('start', options);
+        }
+        onPause(options: (result: Object) => void): void {
+            setRecordStateCallback('pause', options);
+        }
+        onStop(options: (result: RecorderManagerOnStopResult) => void): void {
+            setRecordStateCallback('stop', options);
+        }
+        onFrameRecorded(options: (result: Object) => void): void {
+            setRecordStateCallback('frameRecorded', options);
+        }
+        onError(options: (result: Object) => void): void {
+            setRecordStateCallback('error', options);
+        }
+        onResume(options: (result: Object) => void): void {
+            setRecordStateCallback('resume', options);
+        }
+        onInterruptionBegin(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionBegin', options);
+        }
+        onInterruptionEnd(options: (result: Object) => void): void {
+            setRecordStateCallback('interruptionEnd', options);
+        }
+    }
+    let recorderManager: RecorderManager | null = null;
+    const getRecorderManager: GetRecorderManager = defineSyncApi<RecorderManager>(API_GET_RECORDER_MANAGER, (): RecorderManager =>{
+        if (recorderManager) return recorderManager;
+        else recorderManager = new RecorderManagerImpl();
+        return recorderManager;
+    }) as GetRecorderManager;
     const API_GET_SYSTEM_INFO = 'getSystemInfo';
     const API_GET_SYSTEM_INFO_SYNC = 'getSystemInfoSync';
     const API_GET_WINDOW_INFO = 'getWindowInfo';
@@ -1554,11 +4143,11 @@ export function initUniExtApi(APP_ID: string) {
         return internalGetWindowInfo() as GetWindowInfoResult;
     }) as GetWindowInfo;
     const internalGetSystemInfo = (): GetSystemInfoResult =>{
-        const appVersion: ISystemInfoAppVersion = UTSHarmony3.getAppVersion();
+        const appVersion: ISystemInfoAppVersion = UTSHarmony7.getAppVersion();
         const appLanguage = I18n2.System.getAppPreferredLanguage();
-        const uniCompilerVersion: string = UTSHarmony3.getUniCompilerVersion();
+        const uniCompilerVersion: string = UTSHarmony7.getUniCompilerVersion();
         const uniCompilerVersionCode: number = parseFloat(uniCompilerVersion);
-        const uniRuntimeVersion: string = UTSHarmony3.getUniRuntimeVersion();
+        const uniRuntimeVersion: string = UTSHarmony7.getUniRuntimeVersion();
         const windowInfo = internalGetWindowInfo() as GetWindowInfoResult;
         const pixelRatio = windowInfo.pixelRatio;
         const safeArea = windowInfo.safeArea;
@@ -1571,10 +4160,10 @@ export function initUniExtApi(APP_ID: string) {
         const windowTop = windowInfo.windowTop;
         const windowWidth = windowInfo.windowWidth;
         return {
-            appId: UTSHarmony3.getAppId() as string,
+            appId: UTSHarmony7.getAppId() as string,
             appLanguage,
-            appName: UTSHarmony3.getAppName() as string,
-            appTheme: UTSHarmony3.getAppTheme() as string,
+            appName: UTSHarmony7.getAppName() as string,
+            appTheme: UTSHarmony7.getAppTheme() as string,
             appVersion: appVersion.name,
             appVersionCode: appVersion.code,
             appWgtVersion: appVersion.name,
@@ -1590,7 +4179,7 @@ export function initUniExtApi(APP_ID: string) {
             devicePixelRatio: vp2px(1),
             deviceType: parseDeviceType(deviceInfo1.deviceType),
             osLanguage: I18n2.System.getSystemLanguage(),
-            osTheme: UTSHarmony3.getOsTheme() as string,
+            osTheme: UTSHarmony7.getOsTheme() as string,
             osVersion: deviceInfo1.buildVersion + '',
             osName: 'harmonyos',
             romName: deviceInfo1.distributionOSName,
@@ -1629,6 +4218,31 @@ export function initUniExtApi(APP_ID: string) {
             exec.reject((error as Error).message);
         }
     }) as GetSystemInfo;
+    const getSystemSetting: GetSystemSetting = defineSyncApi<GetSystemSettingResult>('getSystemSetting', (): GetSystemSettingResult =>{
+        const defaultDisplay = display.getDefaultDisplaySync();
+        const res: GetSystemSettingResult = {
+            bluetoothEnabled: false,
+            bluetoothError: null,
+            locationEnabled: false,
+            wifiEnabled: false,
+            wifiError: null,
+            deviceOrientation: (defaultDisplay.orientation === display.Orientation.PORTRAIT || defaultDisplay.orientation === display.Orientation.PORTRAIT_INVERTED) ? 'portrait' : 'landscape'
+        };
+        try {
+            if (access.getState() === access.BluetoothState.STATE_ON) res.bluetoothEnabled = true;
+        } catch (err) {
+            res.bluetoothError = (err as BusinessError5).message;
+        }
+        try {
+            res.locationEnabled = geoLocationManager.isLocationEnabled();
+        } catch (err) {}
+        try {
+            res.wifiEnabled = wifiManager.isWifiActive();
+        } catch (err) {
+            res.wifiError = (err as BusinessError5).message;
+        }
+        return res;
+    }) as GetSystemSetting;
     const API_HIDE_KEYBOARD = 'hideKeyboard';
     const hideKeyboard: HideKeyboard = defineAsyncApi<HideKeyboardOptions, HideKeyboardSuccess>(API_HIDE_KEYBOARD, (options: HideKeyboardOptions, exec: ApiExecutor<HideKeyboardSuccess>)=>{
         inputMethod.getController().hideTextInput().then(()=>{
@@ -1653,10 +4267,31 @@ export function initUniExtApi(APP_ID: string) {
         }
         return false;
     };
+    const dial = (number: string, confirm = true)=>{
+        if (!confirm && typeof call.dial === 'function') {
+            return new Promise<void>((resolve, reject)=>{
+                UTSHarmony8.requestSystemPermission([
+                    'ohos.permission.PLACE_CALL'
+                ], (allRight: boolean)=>{
+                    if (allRight) {
+                        call.dial(number).then(()=>{
+                            resolve();
+                        }).catch(reject);
+                    } else {
+                        reject('permission denied');
+                    }
+                }, ()=>{
+                    reject('permission denied');
+                });
+            });
+        } else {
+            return call.makeCall(number);
+        }
+    };
     const makePhoneCall: MakePhoneCall = defineAsyncApi<MakePhoneCallOptions, MakePhoneCallSuccess>(API_MAKE_PHONE_CALL, (options: MakePhoneCallOptions, res: ApiExecutor<MakePhoneCallSuccess>)=>{
-        const dialRes = device.dial(options.phoneNumber) as Object as Promise<void>;
+        const dialRes = dial(options.phoneNumber) as Object as Promise<void>;
         if (isPromise(dialRes)) {
-            dialRes.then(res.resolve).catch((err: BusinessError<void>)=>{
+            dialRes.then(res.resolve).catch((err: BusinessError6<void>)=>{
                 res.reject(err.message);
             });
         } else {
@@ -1664,16 +4299,16 @@ export function initUniExtApi(APP_ID: string) {
         }
     }, MakePhoneCallProtocol) as MakePhoneCall;
     const _getVideoInfo = async (uri: string): Promise<GetVideoInfoSuccess> =>{
-        const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
-        const avMetadataExtractor = await media.createAVMetadataExtractor();
-        let metadata: media.AVMetadata | null = null;
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
+        const avMetadataExtractor = await media3.createAVMetadataExtractor();
+        let metadata: media3.AVMetadata | null = null;
         let size: number = 0;
         try {
-            size = (await fs.stat(file.fd)).size;
+            size = (await fs1.stat(file.fd)).size;
             avMetadataExtractor.dataSrc = {
                 fileSize: size,
                 callback: (buffer: ArrayBuffer, length: number, pos: number | null = null)=>{
-                    return fs.readSync(file.fd, buffer, {
+                    return fs1.readSync(file.fd, buffer, {
                         offset: pos,
                         length
                     } as ReadOptions);
@@ -1684,7 +4319,7 @@ export function initUniExtApi(APP_ID: string) {
             throw error as Error;
         } finally{
             await avMetadataExtractor.release();
-            await fs.close(file);
+            await fs1.close(file);
         }
         const videoOrientationArr = [
             'up',
@@ -1702,10 +4337,15 @@ export function initUniExtApi(APP_ID: string) {
         } as GetVideoInfoSuccess;
     };
     const _getImageInfo = async (uri: string): Promise<GetImageInfoSuccess> =>{
-        const file = await fs.open(uri, fs.OpenMode.READ_ONLY);
+        const file = await fs1.open(uri, fs1.OpenMode.READ_ONLY);
         const imageSource = image.createImageSource(file.fd);
         const imageInfo = await imageSource.getImageInfo();
-        const orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+        let orientation: string = '';
+        try {
+            orientation = await imageSource.getImageProperty(image.PropertyKey.ORIENTATION);
+        } catch (error) {}
+        await imageSource.release();
+        await fs1.close(file.fd);
         let orientationNum = 0;
         if (typeof orientation === 'string') {
             const matched = orientation.match(/^Unknown value (\d)$/);
@@ -1754,19 +4394,20 @@ export function initUniExtApi(APP_ID: string) {
         } as GetImageInfoSuccess;
     };
     const _chooseMedia = async (options: ChooseMediaOptions): Promise<chooseMediaSuccessCallbackResult> =>{
-        const photoSelectOptions = new picker.PhotoSelectOptions();
+        const photoSelectOptions = new photoAccessHelper.PhotoSelectOptions();
         const mimeType = options.mimeType;
         photoSelectOptions.MIMEType = mimeType;
         photoSelectOptions.maxSelectNumber = options.count || 9;
-        const photoPicker = new picker.PhotoViewPicker();
+        photoSelectOptions.isPhotoTakingSupported = !(options.sourceType && !options.sourceType.includes('camera'));
+        const photoPicker = new photoAccessHelper.PhotoViewPicker();
         const photoSelectResult = await photoPicker.select(photoSelectOptions);
         const uris = photoSelectResult.photoUris;
-        if (mimeType !== picker.PhotoViewMIMETypes.VIDEO_TYPE) {
+        if (mimeType !== photoAccessHelper.PhotoViewMIMETypes.VIDEO_TYPE) {
             return {
                 tempFiles: uris.map((uri)=>{
-                    const file = fs.openSync(uri, fs.OpenMode.READ_ONLY);
-                    const stat = fs.statSync(file.fd);
-                    fs.closeSync(file);
+                    const file = fs1.openSync(uri, fs1.OpenMode.READ_ONLY);
+                    const stat = fs1.statSync(file.fd);
+                    fs1.closeSync(file);
                     return {
                         fileType: 'image',
                         tempFilePath: uri,
@@ -1807,7 +4448,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'src',
                 (src: string, params: GetImageInfoOptions)=>{
-                    params.src = getRealPath(src);
+                    params.src = getRealPath1(src);
                 }
             ]
         ])
@@ -1902,7 +4543,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'src',
                 (src: string, params: GetVideoInfoOptions)=>{
-                    params.src = getRealPath(src);
+                    params.src = getRealPath1(src);
                 }
             ]
         ])
@@ -2016,7 +4657,7 @@ export function initUniExtApi(APP_ID: string) {
             [
                 'urls',
                 (urls: string[], params: PreviewImageOptions)=>{
-                    params.urls = urls.map((url)=>getRealPath(url) as string);
+                    params.urls = urls.map((url)=>getRealPath1(url) as string);
                 }
             ]
         ])
@@ -2039,6 +4680,39 @@ export function initUniExtApi(APP_ID: string) {
             {
                 type: 'string',
                 required: true
+            }
+        ]
+    ]);
+    const CompressImageApiOptions: ApiOptions<CompressImageOptions> = {
+        formatArgs: new Map<string, Function>([
+            [
+                'src',
+                (src: string, params: CompressImageOptions)=>{
+                    if (src) params.src = getRealPath1(src);
+                }
+            ],
+            [
+                'quality',
+                (quality: number, params: CompressImageOptions)=>{
+                    if (quality == null) {
+                        params.quality = 80;
+                    }
+                }
+            ]
+        ])
+    };
+    const CompressImageApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'src',
+            {
+                type: 'string',
+                required: true
+            }
+        ],
+        [
+            'quality',
+            {
+                type: 'number'
             }
         ]
     ]);
@@ -2084,9 +4758,61 @@ export function initUniExtApi(APP_ID: string) {
             "unexpect error:"
         ]
     ]);
-    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
+    const getHMCameraPosition = (cameraType: CameraPosition)=>{
+        switch(cameraType){
+            case 'back':
+                return camera.CameraPosition.CAMERA_POSITION_BACK;
+            case 'front':
+                return camera.CameraPosition.CAMERA_POSITION_FRONT;
+            default:
+                return camera.CameraPosition.CAMERA_POSITION_BACK;
+        }
+    };
+    const takePhoto = async (cameraType: CameraPosition = 'back')=>{
+        let pickerProfile: cameraPicker.PickerProfile = {
+            cameraPosition: getHMCameraPosition(cameraType)
+        };
+        const res = await cameraPicker.pick(getAbilityContext1()!, [
+            cameraPicker.PickerMediaType.PHOTO
+        ], pickerProfile);
+        const file = fs2.openSync(res.resultUri, fs2.OpenMode.READ_ONLY);
+        const stat = fs2.statSync(file.fd);
+        return {
+            tempFiles: [
+                {
+                    tempFilePath: res.resultUri,
+                    size: stat.size
+                }
+            ]
+        } as TakePhotoRes;
+    };
+    const takeVideo = async (args: TakeVideoOptions | null = null)=>{
+        let pickerProfile: cameraPicker.PickerProfile = {
+            cameraPosition: getHMCameraPosition(args?.cameraType ?? 'back'),
+            videoDuration: args?.videoDuration
+        };
+        const res = await cameraPicker.pick(getAbilityContext1()!, [
+            cameraPicker.PickerMediaType.VIDEO
+        ], pickerProfile);
+        return _getVideoInfo(res.resultUri).then((getVideInfoRes)=>{
+            return {
+                path: res.resultUri,
+                size: getVideInfoRes.size,
+                duration: getVideInfoRes.duration!,
+                width: getVideInfoRes.width!,
+                height: getVideInfoRes.height!,
+                type: getVideInfoRes.type!,
+                orientation: getVideInfoRes.orientation!
+            } as TakeVideoRes;
+        });
+    };
+    const errSubject = 'uni-chooseImage';
+    const _chooseImage = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
         _chooseMedia({
-            mimeType: picker1.PhotoViewMIMETypes.IMAGE_TYPE,
+            mimeType: photoAccessHelper1.PhotoViewMIMETypes.IMAGE_TYPE,
+            sourceType: [
+                "album"
+            ],
             count: options.count!
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const tempFiles = chooseMediaRes.tempFiles;
@@ -2099,7 +4825,7 @@ export function initUniExtApi(APP_ID: string) {
             }
             res.resolve({
                 errMsg: '',
-                errSubject: 'uni-chooseImage',
+                errSubject,
                 tempFilePaths: chooseMediaRes.tempFiles.map((file)=>file.tempFilePath),
                 tempFiles: chooseMediaRes.tempFiles.map((file)=>{
                     return {
@@ -2111,10 +4837,52 @@ export function initUniExtApi(APP_ID: string) {
         }, (err: Error)=>{
             res.reject(err.message);
         });
+    };
+    const _takePhoto = (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
+        takePhoto().then((photo)=>{
+            res.resolve({
+                errMsg: '',
+                errSubject,
+                tempFilePaths: photo.tempFiles.map((file)=>file.tempFilePath),
+                tempFiles: photo.tempFiles
+            } as ChooseImageSuccess);
+        }).catch((err: Error)=>{
+            res.reject(err.message);
+        });
+    };
+    const chooseImage: ChooseImage = defineAsyncApi<ChooseImageOptions, ChooseImageSuccess>(API_CHOOSE_IMAGE, async (options: ChooseImageOptions, res: ApiExecutor<ChooseImageSuccess>)=>{
+        if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
+            _takePhoto(options, res);
+        } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
+            _chooseImage(options, res);
+        } else {
+            const lastWindow = await window.getLastWindow(getAbilityContext2()!);
+            const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
+            const index = (await UIContextPromptAction.showActionMenu({
+                buttons: [
+                    {
+                        text: '拍照',
+                        color: '#000000'
+                    },
+                    {
+                        text: '从相册选择',
+                        color: '#000000'
+                    }
+                ]
+            } as promptAction1.ActionMenuOptions)).index;
+            if (index === 0) {
+                _takePhoto(options, res);
+            } else if (index === 1) {
+                _chooseImage(options, res);
+            }
+        }
     }, ChooseImageApiProtocol, ChooseImageApiOptions) as ChooseImage;
-    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
+    const _chooseVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
         _chooseMedia({
-            mimeType: picker2.PhotoViewMIMETypes.VIDEO_TYPE
+            mimeType: photoAccessHelper2.PhotoViewMIMETypes.VIDEO_TYPE,
+            sourceType: [
+                "album"
+            ]
         } as ChooseMediaOptions).then((chooseMediaRes)=>{
             const file = chooseMediaRes.tempFiles[0];
             if (!file) {
@@ -2134,6 +4902,50 @@ export function initUniExtApi(APP_ID: string) {
         }, (err: Error)=>{
             res.reject(err.message);
         });
+    };
+    const _takeVideo = (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
+        const takeVideoOptions: TakeVideoOptions = {
+            cameraType: options.camera! as CameraPosition,
+            videoDuration: options.maxDuration!
+        };
+        takeVideo(takeVideoOptions).then((video)=>{
+            res.resolve({
+                tempFilePath: video.path,
+                duration: video.duration,
+                size: video.size,
+                width: video.width,
+                height: video.height
+            } as ChooseVideoSuccess);
+        }).catch((err: Error)=>{
+            res.reject(err.message);
+        });
+    };
+    const chooseVideo: ChooseVideo = defineAsyncApi<ChooseVideoOptions, ChooseVideoSuccess>(API_CHOOSE_VIDEO, async (options: ChooseVideoOptions, res: ApiExecutor<ChooseVideoSuccess>)=>{
+        if (options.sourceType?.length === 1 && options.sourceType[0] === 'camera') {
+            _takeVideo(options, res);
+        } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
+            _chooseVideo(options, res);
+        } else {
+            const lastWindow = await window1.getLastWindow(getAbilityContext3()!);
+            const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
+            const index = (await UIContextPromptAction.showActionMenu({
+                buttons: [
+                    {
+                        text: '拍摄',
+                        color: '#000000'
+                    },
+                    {
+                        text: '从相册选择',
+                        color: '#000000'
+                    }
+                ]
+            } as promptAction2.ActionMenuOptions)).index;
+            if (index === 0) {
+                _takeVideo(options, res);
+            } else if (index === 1) {
+                _chooseVideo(options, res);
+            }
+        }
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
     const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
         _getImageInfo(options.src).then((getImageInfoRes)=>{
@@ -2157,10 +4969,11 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, GetVideoInfoApiProtocol, GetVideoInfoApiOptions) as GetVideoInfo;
     const previewImage: PreviewImage = defineAsyncApi<PreviewImageOptions, PreviewImageSuccess>(API_PREVIEW_IMAGE, (options: PreviewImageOptions, exec: ApiExecutor<PreviewImageSuccess>)=>{
-        waitForCurrentNativePage().then((nativePage: Object)=>{
+        const currentUrl = typeof options.current === 'number' ? options.urls[options.current ?? 0] : options.current as string;
+        waitForCurrentNativePage1().then((nativePage: Object)=>{
             getOSRuntime().previewImage({
-                urls: options.urls.map((url)=>getRealPath1(url) as string),
-                current: options.current || '',
+                urls: options.urls.map((url)=>getRealPath2(url) as string),
+                current: getRealPath2(currentUrl || ''),
                 showmenu: options.showmenu === false ? false : true
             } as IPreviewImageOptions, nativePage);
             exec.resolve({
@@ -2170,7 +4983,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, PreviewImageApiProtocol, PreviewImageApiOptions) as PreviewImage;
     const closePreviewImage: ClosePreviewImage = defineAsyncApi<ClosePreviewImageOptions, ClosePreviewImageSuccess>(API_CLOSE_PREVIEW_IMAGE, (options: ClosePreviewImageOptions, exec: ApiExecutor<ClosePreviewImageSuccess>)=>{
-        waitForCurrentNativePage().then((nativePage: Object)=>{
+        waitForCurrentNativePage1().then((nativePage: Object)=>{
             getOSRuntime().closePreviewImage();
             exec.resolve({
                 errMsg: ''
@@ -2178,8 +4991,8 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
-        const context = getAbilityContext() as common.UIAbilityContext;
-        const atManager: abilityAccessCtrl.AtManager = abilityAccessCtrl.createAtManager();
+        const context = getAbilityContext4() as common.UIAbilityContext;
+        const atManager: abilityAccessCtrl1.AtManager = abilityAccessCtrl1.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
         ]);
@@ -2187,24 +5000,24 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext() as common.UIAbilityContext;
+        const context = getAbilityContext4() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
-        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
+        const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
         const content = await resourceManager.getRawFileContent(srcPath);
-        await fs1.write(destFile.fd, content.buffer);
-        await fs1.close(destFile);
+        await fs3.write(destFile.fd, content.buffer);
+        await fs3.close(destFile);
     };
     const saveUri = async (src: string, dest: string)=>{
-        const srcFile = fs1.openSync(src, fs1.OpenMode.READ_ONLY);
-        const destFile = fs1.openSync(dest, fs1.OpenMode.WRITE_ONLY);
-        await fs1.copyFile(srcFile.fd, destFile.fd);
-        await fs1.close(srcFile);
-        await fs1.close(destFile);
+        const srcFile = fs3.openSync(src, fs3.OpenMode.READ_ONLY);
+        const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
+        await fs3.copyFile(srcFile.fd, destFile.fd);
+        await fs3.close(srcFile);
+        await fs3.close(destFile);
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext() as common.UIAbilityContext;
+        const context = getAbilityContext4() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -2214,11 +5027,11 @@ export function initUniExtApi(APP_ID: string) {
         } else {
             fileName = realPath.split('/').pop() || fileName;
         }
-        const photoSaveOptions = new picker3.PhotoSaveOptions();
+        const photoSaveOptions = new picker.PhotoSaveOptions();
         photoSaveOptions.newFileNames = [
             fileName
         ];
-        const photoPicker = new picker3.PhotoViewPicker();
+        const photoPicker = new picker.PhotoViewPicker();
         const photoSaveResult = await photoPicker.save(photoSaveOptions);
         const destUri = photoSaveResult[0];
         if (isResource) {
@@ -2226,8 +5039,8 @@ export function initUniExtApi(APP_ID: string) {
         } else {
             await saveUri(realPath as string, destUri);
         }
-        const phAccessHelper = photoAccessHelper.getPhotoAccessHelper(context);
-        const assetChangeRequest: photoAccessHelper.MediaAssetChangeRequest = photoAccessHelper.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
+        const phAccessHelper = photoAccessHelper3.getPhotoAccessHelper(context);
+        const assetChangeRequest: photoAccessHelper3.MediaAssetChangeRequest = photoAccessHelper3.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
         await phAccessHelper.applyChanges(assetChangeRequest);
         return destUri;
     };
@@ -2265,99 +5078,77 @@ export function initUniExtApi(APP_ID: string) {
             });
         });
     }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
-    const FRONT_COLORS = [
-        '#ffffff',
-        '#000000'
-    ];
-    const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
-    const SetNavigationBarColorProtocol = new Map<string, ProtocolOptions>([
-        [
-            'frontColor',
-            {
-                type: 'string',
-                required: true,
-                validator (frontColor: Object) {
-                    if (FRONT_COLORS.indexOf(frontColor as string) === -1) {
-                        return `invalid frontColor "${frontColor}"`;
-                    }
-                    return;
-                }
-            }
-        ],
-        [
-            'backgroundColor',
-            {
-                type: 'string',
-                required: true
-            }
-        ]
-    ]);
-    const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
-    const SetNavigationBarTitleProtocol = new Map<string, ProtocolOptions>([
-        [
-            'title',
-            {
-                type: 'string',
-                required: true
-            }
-        ]
-    ]);
-    const getWebview = (page: Page): Webview | null =>{
-        const webview = page.$getAppWebview();
-        return webview;
+    const getFileName = (path: string)=>{
+        const array = path.split('/');
+        return array[array.length - 1];
     };
-    const setNavigationBarColor: SetNavigationBarColor = defineAsyncApi<SetNavigationBarColorOptions, SetNavigationBarColorSuccess>(API_SET_NAVIGATION_BAR_COLOR, (options: SetNavigationBarColorOptions, res: ApiExecutor<SetNavigationBarColorSuccess>)=>{
-        const page = getCurrentPage() as Page;
-        if (!page) {
-            return res.reject(`getCurrentPages is empty`);
+    let id: number = 0;
+    const _compressImage = (args: CompressImageOptions)=>{
+        const imageName = getFileName(args.src);
+        const imageExt = imageName.split('.').slice(-1)[0];
+        const imagePacker: image1.ImagePacker = image1.createImagePacker();
+        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_WRITE);
+        const imageSource: image1.ImageSource = image1.createImageSource(file2.fd);
+        if (imageSource == null) {
+            throw new Error('create image source failed');
         }
-        const webview = getWebview(page);
-        if (webview) {
-            const styles: PlusWebviewWebviewTitleNViewStyles = {};
-            if (options.frontColor) {
-                styles.titleColor = options.frontColor;
-            }
-            if (options.backgroundColor) {
-                styles.backgroundColor = options.backgroundColor;
-            }
-            const statusBarStyle = options.frontColor === '#000000' ? 'dark' : 'light';
-            navigator.setStatusBarStyle(statusBarStyle);
-            page.$page.statusBarStyle = statusBarStyle;
-            const style = webview.getStyle();
-            if (style && style.titleNView) {
-                if (style.titleNView.autoBackButton) {
-                    styles.backButton = styles.backButton || {};
-                    styles.backButton.color = options.frontColor;
-                }
-                webview.setStyle({
-                    titleNView: styles as TitleNView
-                } as PlusWebviewWebviewTitleNViewStyles);
-            }
-            res.resolve();
-        } else {
-            res.reject();
+        let decodingOptions: image1.DecodingOptions = {
+            editable: true
+        };
+        if (args.rotate != null) {
+            decodingOptions.rotate = args.rotate;
         }
-    }, SetNavigationBarColorProtocol) as SetNavigationBarColor;
-    const setNavigationBarTitle: SetNavigationBarTitle = defineAsyncApi<SetNavigationBarTitleOptions, SetNavigationBarTitleSuccess>(API_SET_NAVIGATION_BAR_TITLE, (options: SetNavigationBarTitleOptions, res: ApiExecutor<SetNavigationBarTitleSuccess>)=>{
-        const page = getCurrentPage() as Page;
-        if (!page) {
-            return res.reject(`getCurrentPages is empty`);
+        if (args.compressedHeight != null || args.compressedWidth != null) {
+            decodingOptions.desiredSize = {
+                height: (args.compressedHeight ?? args.compressedWidth)!,
+                width: (args.compressedWidth ?? args.compressedHeight)!
+            };
         }
-        const webview = getWebview(page);
-        if (webview) {
-            const style = webview.getStyle();
-            if (style && style.titleNView) {
-                webview.setStyle({
-                    titleNView: {
-                        titleText: options.title
-                    } as TitleNView
-                } as PlusWebviewWebviewTitleNViewStyles);
-            }
-            res.resolve();
-        } else {
-            res.reject();
+        const pixelMap = imageSource.createPixelMapSync(decodingOptions);
+        let format: string = '';
+        if ([
+            'jpg',
+            'jpe',
+            'jpeg'
+        ].includes(imageExt)) {
+            format = 'image/jpeg';
         }
-    }, SetNavigationBarTitleProtocol) as SetNavigationBarTitle;
+        if (imageExt === 'png') format = 'image/png';
+        if (imageExt === 'webp') format = 'image/webp';
+        if (!format.length) {
+            throw new Error('error image format');
+        }
+        const packOptions: image1.PackingOption = {
+            format,
+            quality: args.quality ?? 80
+        };
+        const tempFileName = `${Date.now()}_${id++}_${imageName}`;
+        const tempDirPath = `${getEnv2().TEMP_PATH}/compress`;
+        if (!fileIo4.accessSync(tempDirPath)) {
+            fileIo4.mkdirSync(tempDirPath, true);
+        }
+        const tempFilePath: string = `${tempDirPath}/${tempFileName}`;
+        const file = fileIo4.openSync(tempFilePath, fileIo4.OpenMode.CREATE | fileIo4.OpenMode.READ_WRITE);
+        return imagePacker.packToFile(pixelMap, file.fd, packOptions).then((_)=>{
+            const size = fileIo4.statSync(file.fd).size;
+            fileIo4.closeSync(file.fd);
+            return {
+                size,
+                tempFilePath
+            } as _CompressImageSuccess;
+        });
+    };
+    const compressImage: CompressImage = defineAsyncApi<CompressImageOptions, CompressImageSuccess>(API_CHOOSE_IMAGE, (args: CompressImageOptions, executor: ApiExecutor<CompressImageSuccess>)=>{
+        try {
+            _compressImage(args).then((res)=>{
+                executor.resolve({
+                    tempFilePath: res.tempFilePath
+                } as CompressImageSuccess);
+            });
+        } catch (error) {
+            executor.reject((error as BusinessError7).message);
+        }
+    }, CompressImageApiProtocol, CompressImageApiOptions) as CompressImage;
     const API_REQUEST = 'request';
     const RequestApiProtocol = new Map<string, ProtocolOptions>([
         [
@@ -2594,7 +5385,7 @@ export function initUniExtApi(APP_ID: string) {
                     if (filePath == null) {
                         throw new Error('filePath is required');
                     }
-                    params.filePath = getRealPath2(filePath);
+                    params.filePath = getRealPath3(filePath);
                 }
             ],
             [
@@ -2606,6 +5397,33 @@ export function initUniExtApi(APP_ID: string) {
                 }
             ]
         ])
+    };
+    const needsEncoding = (str: string)=>{
+        const decoded = decodeURIComponent(str);
+        if (decoded !== str) {
+            if (encodeURIComponent(decoded) === str) {
+                return false;
+            }
+        }
+        return encodeURIComponent(decoded) !== decoded;
+    };
+    const parseUrl = (url: string)=>{
+        const urlObj = harmonyUrl.URL.parseURL(url);
+        urlObj.params.forEach((value, key)=>{
+            if (needsEncoding(value)) {
+                urlObj.params.set(key, value);
+            }
+        });
+        return urlObj.toString();
+    };
+    const getCookieSync = (url: string): string =>{
+        return webview.WebCookieManager.fetchCookieSync(url);
+    };
+    const setCookieSync = (url: string, cookies: string[]): void =>{
+        cookies.forEach((cookie)=>{
+            webview.WebCookieManager.configCookieSync(url, cookie);
+        });
+        webview.WebCookieManager.saveCookieAsync();
     };
     const cookiesParse = (header: Record<string, string>)=>{
         let cookiesArr: string[] = [];
@@ -2637,18 +5455,20 @@ export function initUniExtApi(APP_ID: string) {
     }
     const request = defineTaskApi<RequestOptions<Object>, RequestSuccess<Object>, RequestTask>(API_REQUEST, (args: RequestOptions<Object>, exec: ApiExecutor<RequestSuccess<Object>>)=>{
         let header = args.header, method = args.method, data = args.data, dataType = args.dataType, timeout = args.timeout, url = args.url, responseType = args.responseType;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
         let contentType = '';
         const headers = {} as Record<string, Object>;
-        if (header) {
-            const headerRecord = header as Object as Record<string, string>;
-            const headerKeys = Object.keys(headerRecord);
-            for(let i = 0; i < headerKeys.length; i++){
-                const name = headerKeys[i];
-                if (name.toLowerCase() === 'content-type') {
-                    contentType = headerRecord[name] as string;
-                }
-                headers[name.toLowerCase()] = headerRecord[name];
+        const headerRecord = header as Object as Record<string, string>;
+        const headerKeys = Object.keys(headerRecord);
+        for(let i = 0; i < headerKeys.length; i++){
+            const name = headerKeys[i];
+            if (name.toLowerCase() === 'content-type') {
+                contentType = headerRecord[name] as string;
             }
+            headers[name.toLowerCase()] = headerRecord[name];
         }
         if (!contentType && method === 'POST') {
             headers['Content-Type'] = 'application/json';
@@ -2656,9 +5476,10 @@ export function initUniExtApi(APP_ID: string) {
         }
         if (method === 'GET' && data && isPlainObject(data)) {
             const dataRecord = data as Record<string, Object>;
-            url += '?' + Object.keys(dataRecord).map((key)=>{
+            const query = Object.keys(dataRecord).map((key)=>{
                 return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as string | number | boolean));
             }).join('&');
+            url += query ? (url.indexOf('?') > -1 ? '&' : '?') + query : '';
             data = null;
         } else if (method !== 'GET' && contentType && contentType.indexOf('application/json') === 0 && isPlainObject(data)) {
             data = JSON.stringify(data);
@@ -2677,9 +5498,11 @@ export function initUniExtApi(APP_ID: string) {
             expectDataType = http.HttpDataType.STRING;
         }
         const httpRequest = http.createHttp();
-        const emitter = new Emitter1();
+        const mp = getCurrentMP() as UniNetworkMP;
+        const emitter = new Emitter2() as IUniRequestEmitter;
         const requestTask: IRequestTask = {
             abort () {
+                emitter.off('headersReceive');
                 httpRequest.destroy();
             },
             onHeadersReceived (callback: Function) {
@@ -2689,11 +5512,22 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('headersReceive', callback);
             }
         };
-        httpRequest.on('headersReceive', (header: Object)=>{});
-        httpRequest.request(encodeURI(url), {
+        const destroy = ()=>{
+            emitter.off('headersReceive');
+            httpRequest.destroy();
+        };
+        mp.on('beforeClose', destroy);
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(url, setCookieHeader as string[]);
+            }
+        });
+        httpRequest.request(parseUrl(url), {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
-            extraData: data,
+            extraData: data || undefined,
             expectDataType,
             connectTimeout: timeout ? timeout : undefined,
             readTimeout: timeout ? timeout : undefined
@@ -2716,6 +5550,7 @@ export function initUniExtApi(APP_ID: string) {
             }
             requestTask.offHeadersReceived();
             httpRequest.destroy();
+            mp.off('beforeClose', destroy);
         });
         return new RequestTask1(requestTask);
     }, RequestApiProtocol, RequestApiOptions) as Request<Object>;
@@ -2858,10 +5693,10 @@ export function initUniExtApi(APP_ID: string) {
         "jhc": "image/jphc",
         "jls": "image/jls",
         "jp2": "image/jp2",
+        "jpg": "image/jpeg",
         "jpe": "image/jpeg",
         "jpeg": "image/jpeg",
         "jpf": "image/jpx",
-        "jpg": "image/jpeg",
         "jpg2": "image/jp2",
         "jpgm": "image/jpm",
         "jpgv": "video/jpeg",
@@ -3173,9 +6008,33 @@ export function initUniExtApi(APP_ID: string) {
         "xpi": "application/x-xpinstall",
         "vcf": "text/vcard",
         "xloc": "text/vnd.rim.location.xloc",
-        "htc": "text/x-component"
+        "htc": "text/x-component",
+        "abw": "application/x-abiword",
+        "arc": "application/x-freearc",
+        "avi": "video/x-msvideo",
+        "azw": "application/vnd.amazon.ebook",
+        "bz": "application/x-bzip",
+        "bz2": "application/x-bzip2",
+        "cda": "application/x-cdf",
+        "csh": "application/x-csh",
+        "docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        "mpkg": "application/vnd.apple.installer+xml",
+        "odp": "application/vnd.oasis.opendocument.presentation",
+        "ods": "application/vnd.oasis.opendocument.spreadsheet",
+        "odt": "application/vnd.oasis.opendocument.text",
+        "php": "application/x-httpd-php",
+        "ppt": "application/vnd.ms-powerpoint",
+        "pptx": "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        "rar": "application/vnd.rar",
+        "sh": "application/x-sh",
+        "tar": "application/x-tar",
+        "vsd": "application/vnd.visio",
+        "xls": "application/vnd.ms-excel",
+        "xlsx": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "xul": "application/vnd.mozilla.xul+xml",
+        "7z": "application/x-7z-compressed"
     };
-    const contentTypeToExt: Record<string, string> = {};
+    const contentTypeToExt: Record<string, string[]> = {};
     let contentTypeToExtInited = false;
     const initContentTypeToExtOnce = ()=>{
         if (contentTypeToExtInited) {
@@ -3186,12 +6045,16 @@ export function initUniExtApi(APP_ID: string) {
             const ext = exts[i];
             const contentType = extToContentType[ext] as string;
             if (!contentTypeToExt[contentType]) {
-                contentTypeToExt[contentType] = ext;
+                contentTypeToExt[contentType] = [
+                    ext
+                ];
+            } else {
+                contentTypeToExt[contentType].push(ext);
             }
         }
         contentTypeToExtInited = true;
     };
-    const lookupExt = (contentType: string): string | undefined =>{
+    const lookupExt = (contentType: string): string[] | undefined =>{
         initContentTypeToExtOnce();
         return contentTypeToExt[contentType.split(';')[0].trim().toLowerCase()];
     };
@@ -3228,16 +6091,20 @@ export function initUniExtApi(APP_ID: string) {
         }
     }
     const readFile = (filePath: string): ArrayBuffer =>{
-        const readFilePath = getRealPath3(filePath) as string;
-        const file = fs2.openSync(readFilePath, fs2.OpenMode.READ_ONLY);
-        const stat = fs2.statSync(file.fd);
+        const readFilePath = getRealPath4(filePath) as string;
+        const file = fs4.openSync(readFilePath, fs4.OpenMode.READ_ONLY);
+        const stat = fs4.statSync(file.fd);
         const data = new ArrayBuffer(stat.size);
-        fs2.readSync(file.fd, data);
-        fs2.closeSync(file.fd);
+        fs4.readSync(file.fd, data);
+        fs4.closeSync(file.fd);
         return data;
     };
     const uploadFile = defineTaskApi<UploadFileOptions, UploadFileSuccess, UploadTask>(API_UPLOAD_FILE, (args: UploadFileOptions, exec: ApiExecutor<UploadFileSuccess>)=>{
         let url = args.url, timeout = args.timeout, header = args.header, formData = args.formData, files = args.files, filePath = args.filePath, name = args.name;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
         const headers = {} as Record<string, Object>;
         if (header) {
             const headerRecord = header as Object as Record<string, string>;
@@ -3268,6 +6135,7 @@ export function initUniExtApi(APP_ID: string) {
                     multiFormDataList.push({
                         name: name || 'file',
                         contentType: lookupContentTypeWithUri(uri) || 'application/octet-stream',
+                        remoteFileName: uri.split('/').pop() || 'no-name',
                         data: readFile(uri!)
                     } as http1.MultiFormData);
                 }
@@ -3275,6 +6143,7 @@ export function initUniExtApi(APP_ID: string) {
                 multiFormDataList.push({
                     name: name || 'file',
                     contentType: lookupContentTypeWithUri(filePath!) || 'application/octet-stream',
+                    remoteFileName: filePath.split('/').pop() || 'no-name',
                     data: readFile(filePath!)
                 } as http1.MultiFormData);
             }
@@ -3289,9 +6158,12 @@ export function initUniExtApi(APP_ID: string) {
             } as IUploadTask);
         }
         const httpRequest = http1.createHttp();
-        const emitter = new Emitter2();
+        const mp = getCurrentMP1() as UniNetworkMP;
+        const emitter = new Emitter3() as IUniUploadFileEmitter;
         const uploadTask: IUploadTask = {
             abort () {
+                emitter.off('headersReceive');
+                emitter.off('progress');
                 httpRequest.destroy();
             },
             onHeadersReceived (callback: Function) {
@@ -3307,7 +6179,19 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('progress', callback);
             }
         };
-        httpRequest.on('headersReceive', (headers: Object)=>{});
+        const destroy = ()=>{
+            emitter.off('headersReceive');
+            emitter.off('progress');
+            httpRequest.destroy();
+        };
+        mp.on('beforeClose', destroy);
+        httpRequest.on('headersReceive', (headers: Object)=>{
+            const realHeaders = headers as Record<string, string | string[]>;
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(url, setCookieHeader as string[]);
+            }
+        });
         httpRequest.on('dataSendProgress', (ref)=>{
             let sendSize = ref.sendSize, totalSize = ref.totalSize;
             emitter.emit('progress', {
@@ -3316,7 +6200,7 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToSend: totalSize
             } as OnProgressUpdateResult);
         });
-        httpRequest.request(encodeURI(url), {
+        httpRequest.request(parseUrl(url), {
             header: headers,
             method: http1.RequestMethod.POST,
             connectTimeout: timeout ? timeout : undefined,
@@ -3335,6 +6219,7 @@ export function initUniExtApi(APP_ID: string) {
             uploadTask.offHeadersReceived();
             uploadTask.offProgressUpdate();
             httpRequest.destroy();
+            mp.off('beforeClose', destroy);
         });
         return new UploadTask1(uploadTask);
     }, UploadFileApiProtocol, UploadFileApiOptions) as UploadFile;
@@ -3346,10 +6231,10 @@ export function initUniExtApi(APP_ID: string) {
             return contentDispositionExt;
         }
         const contentTypeExt = lookupExt(contentType);
-        if (contentTypeExt) {
-            return contentTypeExt;
+        const urlExt = url.split('?')[0].split('/').pop()?.split('.')[1] || '';
+        if (contentTypeExt && contentTypeExt.length > 0) {
+            return contentTypeExt.includes(urlExt.toLowerCase()) ? urlExt : contentTypeExt[0];
         }
-        const urlExt = url.split('?')[0].split('/').pop()?.split('.')[1];
         return urlExt || '';
     };
     class DownloadTask1 implements DownloadTask {
@@ -3373,12 +6258,39 @@ export function initUniExtApi(APP_ID: string) {
             this._downloadTask.offHeadersReceived(callback);
         }
     }
+    let downloadIndex: [string, number] = [
+        '0',
+        0
+    ];
+    const getDownloadFileName = (ext: string)=>{
+        let fileName = Date.now() + '';
+        if (downloadIndex[0] === fileName) {
+            downloadIndex[1]++;
+            if (downloadIndex[1] > 0) {
+                fileName += '-' + downloadIndex[1];
+            }
+        } else {
+            downloadIndex[0] = fileName;
+            downloadIndex[1] = 0;
+        }
+        if (ext) {
+            fileName += '.' + ext;
+        }
+        return fileName;
+    };
     const downloadFile = defineTaskApi<DownloadFileOptions, DownloadFileSuccess, DownloadTask>(API_DOWNLOAD_FILE, (args: DownloadFileOptions, exec: ApiExecutor<DownloadFileSuccess>)=>{
-        const url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
+        let url = args.url, timeout = args.timeout, header = args.header, filePath = args.filePath;
+        header = header || {} as ESObject;
+        if (!header!['Cookie'] && !header!['cookie']) {
+            header!['Cookie'] = getCookieSync(url);
+        }
         const httpRequest = http2.createHttp();
-        const emitter = new Emitter3();
+        const mp = getCurrentMP2() as UniNetworkMP;
+        const emitter = new Emitter4() as IUniDownloadFileEmitter;
         const downloadTask: IDownloadTask = {
             abort () {
+                emitter.off('headersReceive');
+                emitter.off('progress');
                 httpRequest.destroy();
             },
             onHeadersReceived (callback: Function) {
@@ -3394,12 +6306,20 @@ export function initUniExtApi(APP_ID: string) {
                 emitter.off('progress', callback);
             }
         };
+        const destroy = ()=>{
+            downloadTask.abort();
+        };
+        mp.on('beforeClose', destroy);
         let responseContentType = '';
         let responseContentDisposition = '';
         httpRequest.on('headersReceive', (headers: Object)=>{
-            const realHeaders = headers as Record<string, string>;
-            responseContentType = realHeaders['content-type'] || realHeaders['Content-Type'] || '';
-            responseContentDisposition = realHeaders['content-disposition'] || realHeaders['Content-Disposition'] || '';
+            const realHeaders = headers as Record<string, string | string[]>;
+            responseContentType = realHeaders['content-type'] as string || realHeaders['Content-Type'] as string || '';
+            responseContentDisposition = realHeaders['content-disposition'] as string || realHeaders['Content-Disposition'] as string || '';
+            const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
+            if (setCookieHeader) {
+                setCookieSync(url, setCookieHeader as string[]);
+            }
         });
         httpRequest.on('dataReceiveProgress', (ref)=>{
             let receiveSize = ref.receiveSize, totalSize = ref.totalSize;
@@ -3409,12 +6329,12 @@ export function initUniExtApi(APP_ID: string) {
                 totalBytesExpectedToWrite: totalSize
             } as OnProgressDownloadResult);
         });
-        const TEMP_PATH = getEnv().TEMP_PATH as string;
+        const TEMP_PATH = getEnv3().TEMP_PATH as string;
         const downloadPath = TEMP_PATH + '/download';
-        if (!fs3.accessSync(downloadPath)) {
-            fs3.mkdirSync(downloadPath);
+        if (!fs5.accessSync(downloadPath)) {
+            fs5.mkdirSync(downloadPath, true);
         }
-        let stream: fs3.Stream;
+        let stream: fs5.Stream;
         let tempFilePath = '';
         let writePromise = Promise.resolve(0);
         const queueWrite = async (data: ArrayBuffer): Promise<number> =>{
@@ -3427,12 +6347,12 @@ export function initUniExtApi(APP_ID: string) {
         httpRequest.on('dataReceive', (data)=>{
             if (!stream) {
                 const ext = getPossibleExt(responseContentType, responseContentDisposition, url);
-                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + Date.now() + (ext ? '.' + ext : '');
-                stream = fs3.createStreamSync(tempFilePath, 'w+');
+                tempFilePath = filePath ? filePath.replace(/^file:\/\//, '') : downloadPath + '/' + getDownloadFileName(ext);
+                stream = fs5.createStreamSync(tempFilePath, 'w+');
             }
             queueWrite(data);
         });
-        httpRequest.requestInStream(encodeURI(url), {
+        httpRequest.requestInStream(parseUrl(url), {
             header: header ? header : {} as ESObject,
             method: http2.RequestMethod.GET,
             connectTimeout: timeout ? timeout : undefined,
@@ -3453,6 +6373,7 @@ export function initUniExtApi(APP_ID: string) {
             downloadTask.offHeadersReceived();
             downloadTask.offProgressUpdate();
             httpRequest.destroy();
+            mp.off('beforeClose', destroy);
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
@@ -3463,10 +6384,10 @@ export function initUniExtApi(APP_ID: string) {
             abilityName: 'com.huawei.hmos.settings.MainAbility',
             uri: 'application_info_entry',
             parameters: {
-                pushParams: bundleManager1.getBundleInfoForSelfSync(bundleManager1.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
+                pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext1() as common1.UIAbilityContext;
+        const context = getAbilityContext5() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -3511,46 +6432,79 @@ export function initUniExtApi(APP_ID: string) {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext2() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext6() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
             exec.reject(err.message);
         });
     }) as OpenDocument;
-    const API_PAGE_SCROLL_TO = 'pageScrollTo';
-    const PageScrollToProtocol = new Map<string, ProtocolOptions>([
+    const RequestPaymentUniErrors: Map<RequestPaymentErrorCode, string> = new Map([
         [
-            'scrollTo',
-            {
-                type: 'number'
-            }
+            700600,
+            'The payment result is unknown (it may have been successfully paid). Please check the payment status of the order in the merchant order list.'
         ],
         [
-            'selector',
-            {
-                type: 'string'
-            }
+            701100,
+            'Order payment failure.'
         ],
         [
-            'duration',
-            {
-                type: 'number'
-            }
+            701110,
+            'Repeat the request.'
+        ],
+        [
+            700601,
+            'The user canceled midway.'
+        ],
+        [
+            700602,
+            'Network connection error.'
+        ],
+        [
+            700603,
+            'Payment result unknown (may have been successfully paid), please check the payment status of the order in the merchant order list.'
+        ],
+        [
+            700000,
+            'Other payment errors.'
+        ],
+        [
+            700604,
+            'Wechat is not installed.'
+        ],
+        [
+            700605,
+            'Failed to get provider.'
+        ],
+        [
+            700800,
+            'URL Scheme is not configured.'
+        ],
+        [
+            700801,
+            'Universal Link is not configured.'
         ]
     ]);
-    const PageScrollToApiOptions: ApiOptions<PageScrollToOptions> = {
-        formatArgs: new Map<string, number>([
-            [
-                'duration',
-                300
-            ]
-        ])
-    };
-    const pageScrollTo: PageScrollTo = defineAsyncApi<PageScrollToOptions, PageScrollToSuccess>(API_PAGE_SCROLL_TO, (options: PageScrollToOptions, res: ApiExecutor<PageScrollToSuccess>)=>{
-        const pageId = getPageIdByVm1(getCurrentPageVm1()!)! as number;
-        UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, res.resolve);
-    }, PageScrollToProtocol, PageScrollToApiOptions) as PageScrollTo;
+    const API_REQUEST_PAYMENT = 'requestPayment';
+    const requestPayment: RequestPayment = defineAsyncApi<RequestPaymentOptions, RequestPaymentSuccess>(API_REQUEST_PAYMENT, (options: RequestPaymentOptions, exec: ApiExecutor<RequestPaymentSuccess>): void =>{
+        const provider = getUniProvider<UniPaymentProvider>('payment', options.provider);
+        if (!provider) {
+            exec.reject('Provider not found.');
+            return;
+        }
+        provider.requestPayment({
+            orderInfo: options.orderInfo,
+            success: (result: RequestPaymentSuccess)=>{
+                exec.resolve(result);
+            },
+            fail: (error: RequestPaymentFail)=>{
+                const errMsg = RequestPaymentUniErrors.get(error.errCode) ?? "";
+                exec.reject(errMsg, {
+                    errCode: error.errCode
+                } as ApiError);
+            }
+        } as RequestPaymentOptions);
+    }) as RequestPayment;
     const API_SHOW_TOAST = 'showToast';
     const ShowToastProtocol = new Map<string, ProtocolOptions>([
         [
@@ -3718,13 +6672,32 @@ export function initUniExtApi(APP_ID: string) {
     const API_HIDE_LOADING = 'hideLoading';
     const showToast: ShowToast = defineAsyncApi<ShowToastOptions, ShowToastSuccess>(API_SHOW_TOAST, (options: ShowToastOptions, res: ApiExecutor<ShowToastSuccess>)=>{
         try {
-            promptAction.showToast({
+            const showToastOptions: promptAction3.ShowToastOptions = {
                 message: options.title,
-                duration: options.duration!
-            } as promptAction.ShowToastOptions);
-            res.resolve({} as ShowToastSuccess);
+                duration: options.duration!,
+                alignment: Alignment.Center
+            };
+            if (options.position) {
+                switch(options.position){
+                    case 'top':
+                        showToastOptions.alignment = Alignment.Top;
+                        break;
+                    case 'bottom':
+                        showToastOptions.alignment = Alignment.Bottom;
+                        break;
+                }
+            }
+            window2.getLastWindow(getAbilityContext7()!, (err: BusinessError8, window: window2.Window)=>{
+                const errCode: number = err.code;
+                if (errCode) {
+                    console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
+                    return;
+                }
+                window.getUIContext().getPromptAction().showToast(showToastOptions);
+                res.resolve({} as ShowToastSuccess);
+            });
         } catch (error) {
-            let message = (error as BusinessError1).message;
+            let message = (error as BusinessError8).message;
             res.reject(message);
         }
     }, ShowToastProtocol, ShowToastApiOptions) as ShowToast;
@@ -3756,18 +6729,25 @@ export function initUniExtApi(APP_ID: string) {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            AlertDialog.show({
-                title: args.title ?? '',
-                message: args.content ?? '',
-                autoCancel: false,
-                alignment: DialogAlignment.Center,
-                buttons,
-                cancel: ()=>{
-                    resolve({
-                        'cancel': true
-                    } as ShowModalSuccess);
+            window3.getLastWindow(getAbilityContext8()!, (err: BusinessError9, window: window3.Window)=>{
+                const errCode: number = err.code;
+                if (errCode) {
+                    console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
+                    return;
                 }
-            } as AlertDialogParamWithOptions);
+                window.getUIContext().showAlertDialog({
+                    title: args.title ?? '',
+                    message: args.content ?? '',
+                    autoCancel: false,
+                    alignment: DialogAlignment.Center,
+                    buttons,
+                    cancel: ()=>{
+                        resolve({
+                            'cancel': true
+                        } as ShowModalSuccess);
+                    }
+                } as AlertDialogParamWithOptions);
+            });
         });
         if (modalRes.confirm) {
             modalRes.cancel = false;
@@ -3783,7 +6763,7 @@ export function initUniExtApi(APP_ID: string) {
         if (actionItemList.length === 0) {
             return;
         }
-        type ActionMenuButtons = [promptAction1.Button, promptAction1.Button?, promptAction1.Button?, promptAction1.Button?, promptAction1.Button?, promptAction1.Button?];
+        type ActionMenuButtons = [promptAction4.Button, promptAction4.Button?, promptAction4.Button?, promptAction4.Button?, promptAction4.Button?, promptAction4.Button?];
         const actionMenuButtons: ActionMenuButtons = [
             {
                 text: actionItemList[0],
@@ -3794,25 +6774,32 @@ export function initUniExtApi(APP_ID: string) {
             actionMenuButtons.push({
                 text: item,
                 color: options.itemColor!
-            } as promptAction1.Button);
+            } as promptAction4.Button);
         });
-        promptAction1.showActionMenu({
-            title: options.title,
-            buttons: actionMenuButtons
-        } as promptAction1.ActionMenuOptions).then((showACtionSheetRes)=>{
-            res.resolve({
-                tapIndex: showACtionSheetRes.index
-            } as ShowActionSheetSuccess);
-        }).catch((e: Error)=>{
-            if (e.message === 'cancel') {
-                res.reject('cancel');
+        window4.getLastWindow(getAbilityContext9()!, (err: BusinessError10, window: window4.Window)=>{
+            const errCode: number = err.code;
+            if (errCode) {
+                console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
                 return;
             }
-            res.reject(e.message);
+            window.getUIContext().getPromptAction().showActionMenu({
+                title: options.title,
+                buttons: actionMenuButtons
+            } as promptAction4.ActionMenuOptions).then((showACtionSheetRes)=>{
+                res.resolve({
+                    tapIndex: showACtionSheetRes.index
+                } as ShowActionSheetSuccess);
+            }).catch((e: Error)=>{
+                if (e.message === 'cancel') {
+                    res.reject('cancel');
+                    return;
+                }
+                res.reject(e.message);
+            });
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
     const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
-        waitForCurrentNativePage1().then((nativePage: Object)=>{
+        waitForCurrentNativePage2().then((nativePage: Object)=>{
             getOSRuntime1().showLoading({
                 title: options.title || '',
                 mask: options.mask == null ? false : options.mask
@@ -3821,7 +6808,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }, ShowLoadingProtocol, ShowLoadingApiOptions) as ShowLoading;
     const hideLoading: HideLoading = defineSyncApi<void>(API_HIDE_LOADING, ()=>{
-        waitForCurrentNativePage1().then((nativePage: Object)=>{
+        waitForCurrentNativePage2().then((nativePage: Object)=>{
             getOSRuntime1().hideLoading();
         });
     }) as HideLoading;
@@ -3837,7 +6824,7 @@ export function initUniExtApi(APP_ID: string) {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony4.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony9.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
@@ -3860,24 +6847,30 @@ export function initUniExtApi(APP_ID: string) {
         return number < 0 ? -result : result;
     }) as Rpx2px;
     const API_SCAN_CODE = 'scanCode';
-    const supportedScanTypesMap = new Map<ScanCodeSupportedTypes, scanCore.ScanType>([
-        [
-            'barCode',
-            scanCore.ScanType.CODABAR_CODE
-        ],
-        [
-            'qrCode',
-            scanCore.ScanType.QR_CODE
-        ],
-        [
-            'datamatrix',
-            scanCore.ScanType.DATAMATRIX_CODE
-        ],
-        [
-            'pdf417',
-            scanCore.ScanType.PDF417_CODE
-        ]
-    ]);
+    let supportedScanTypesMap: Map<ScanCodeSupportedTypes, scanCore.ScanType>;
+    const initScanTypesMapOnce = ()=>{
+        if (supportedScanTypesMap) {
+            return;
+        }
+        supportedScanTypesMap = new Map<ScanCodeSupportedTypes, scanCore.ScanType>([
+            [
+                'barCode',
+                scanCore.ScanType.CODABAR_CODE
+            ],
+            [
+                'qrCode',
+                scanCore.ScanType.QR_CODE
+            ],
+            [
+                'datamatrix',
+                scanCore.ScanType.DATAMATRIX_CODE
+            ],
+            [
+                'pdf417',
+                scanCore.ScanType.PDF417_CODE
+            ]
+        ]);
+    };
     const getUniScanType = (scanType: scanCore.ScanType): ScanCodeSupportedTypes =>{
         for (const ref of supportedScanTypesMap.entries()){
             let key = ref[0], value = ref[1];
@@ -3888,6 +6881,11 @@ export function initUniExtApi(APP_ID: string) {
         return 'qrCode';
     };
     const scanCode: ScanCode = defineAsyncApi<ScanCodeOptions, ScanCodeSuccess>(API_SCAN_CODE, (options: ScanCodeOptions, exec: ApiExecutor<ScanCodeSuccess>)=>{
+        if (!canIUse('SystemCapability.Multimedia.Scan.ScanBarcode')) {
+            exec.reject('not support');
+            return;
+        }
+        initScanTypesMapOnce();
         let scanTypes: scanCore.ScanType[] = [
             scanCore.ScanType.ALL
         ];
@@ -3903,7 +6901,7 @@ export function initUniExtApi(APP_ID: string) {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext3()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext10()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -3914,6 +6912,46 @@ export function initUniExtApi(APP_ID: string) {
             } as ScanCodeSuccess);
         });
     }) as ScanCode;
+    const API_SHARE_WITH_SYSTEM = 'shareWithSystem';
+    const shareWithSystem = defineAsyncApi<ShareWithSystemOptions, ShareWithSystemSuccess>(API_SHARE_WITH_SYSTEM, (args: ShareWithSystemOptions, exec: ApiExecutor<ShareWithSystemSuccess>)=>{
+        const href = args.href;
+        const imageUrl = args.imageUrl;
+        const summary = args.summary;
+        const shareRecords: systemShare.SharedRecord[] = [];
+        if (href) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.HYPERLINK,
+                content: href
+            } as systemShare.SharedRecord);
+        }
+        if (imageUrl) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.IMAGE,
+                uri: imageUrl
+            } as systemShare.SharedRecord);
+        }
+        if (summary) {
+            shareRecords.push({
+                utd: uniformTypeDescriptor.UniformDataType.TEXT,
+                content: summary
+            } as systemShare.SharedRecord);
+        }
+        if (shareRecords.length === 0) {
+            exec.reject('No share data');
+            return;
+        }
+        const shareData = new systemShare.SharedData(shareRecords[0]);
+        for(let index = 1; index < shareRecords.length; index++){
+            shareData.addRecord(shareRecords[index]);
+        }
+        const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
+        shareController.show(getAbilityContext11() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        const onDismiss = ()=>{
+            shareController.off('dismiss', onDismiss);
+            exec.resolve({} as ShareWithSystemSuccess);
+        };
+        shareController.on('dismiss', onDismiss);
+    }) as ShareWithSystem;
     const API_GET_STORAGE = 'getStorage';
     const API_GET_STORAGE_SYNC = 'getStorageSync';
     const API_SET_STORAGE = 'setStorage';
@@ -3942,7 +6980,7 @@ export function initUniExtApi(APP_ID: string) {
         if (store) {
             return store;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext4() as common3.UIAbilityContext, {
+        store = dataPreferences.getPreferencesSync(getAbilityContext12() as common4.UIAbilityContext, {
             name: `storage.${APP_ID}`
         } as dataPreferences.Options);
         return store;
@@ -3976,12 +7014,16 @@ export function initUniExtApi(APP_ID: string) {
         createStore().flush();
     }) as SetStorageSync;
     const setStorage = defineAsyncApi<SetStorageOptions, SetStorageSuccess>(API_SET_STORAGE, (args: SetStorageOptions, exec: ApiExecutor<SetStorageSuccess>)=>{
-        createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
-            createStore().flush();
-            exec.resolve({} as ESObject);
-        }, (error: Error)=>{
-            exec.reject(error.message);
-        });
+        try {
+            createStore().put(args.key, stringifyStorageValue(args.data)).then(()=>{
+                createStore().flush();
+                exec.resolve({} as ESObject);
+            }, (error: Error)=>{
+                exec.reject(error.message);
+            });
+        } catch (error) {
+            exec.reject((error as Error).message);
+        }
     }) as SetStorage;
     const removeStorageSync = defineSyncApi<void>(API_REMOVE_STORAGE_SYNC, (key: string)=>{
         createStore().deleteSync(key);
@@ -4185,7 +7227,7 @@ export function initUniExtApi(APP_ID: string) {
         ]
     ]);
     const setTabBarBadge = defineAsyncApi<SetTabBarBadgeOptions, SetTabBarBadgeSuccess>(API_SET_TAB_BAR_BADGE, (options: SetTabBarBadgeOptions, exec: ApiExecutor<SetTabBarBadgeSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar === null) {
             exec.reject('tabBar is not exist');
             return;
@@ -4194,7 +7236,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     }, SetTabBarBadgeApiProtocol);
     const removeTabBarBadge = defineAsyncApi<RemoveTabBarBadgeOptions, RemoveTabBarBadgeSuccess>(API_REMOVE_TAB_BAR_BADGE, (options: RemoveTabBarBadgeOptions, exec: ApiExecutor<RemoveTabBarBadgeSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -4203,7 +7245,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     }, RemoveTabBarBadgeApiProtocol);
     const setTabBarItem = defineAsyncApi<SetTabBarItemOptions, SetTabBarItemSuccess>(API_SET_TAB_BAR_ITEM, (options: SetTabBarItemOptions, res: ApiExecutor<SetTabBarItemSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             res.reject('tabBar is not exist');
             return;
@@ -4212,7 +7254,7 @@ export function initUniExtApi(APP_ID: string) {
         res.resolve();
     }, SetTabBarItemApiProtocol);
     const setTabBarStyle = defineAsyncApi<SetTabBarStyleOptions, SetTabBarStyleSuccess>(API_SET_TAB_BAR_STYLE, (options: SetTabBarStyleOptions, exec: ApiExecutor<SetTabBarStyleSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -4221,7 +7263,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     }, SetTabBarStyleApiProtocol);
     const hideTabBar = defineAsyncApi<HideTabBarOptions, HideTabBarSuccess>(API_HIDE_TAB_BAR, (options: HideTabBarOptions | null, exec: ApiExecutor<HideTabBarSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -4230,7 +7272,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     });
     const showTabBar = defineAsyncApi<ShowTabBarOptions, ShowTabBarSuccess>(API_SHOW_TAB_BAR, (options: ShowTabBarOptions, exec: ApiExecutor<ShowTabBarSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -4239,7 +7281,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     });
     const showTabBarRedDot = defineAsyncApi<ShowTabBarRedDotOptions, ShowTabBarRedDotSuccess>(API_SHOW_TAB_BAR_RED_DOT, (options: ShowTabBarRedDotOptions, exec: ApiExecutor<ShowTabBarRedDotSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -4248,7 +7290,7 @@ export function initUniExtApi(APP_ID: string) {
         exec.resolve();
     }, ShowTabBarRedDotApiProtocol);
     const hideTabBarRedDot = defineAsyncApi<HideTabBarRedDotOptions, HideTabBarRedDotSuccess>(API_HIDE_TAB_BAR_RED_DOT, (options: HideTabBarRedDotOptions, exec: ApiExecutor<HideTabBarRedDotSuccess>)=>{
-        const tabBar = getTabBar();
+        const tabBar = getTabBar() as ITabBar;
         if (tabBar == null) {
             exec.reject('tabBar is not exist');
             return;
@@ -4304,25 +7346,35 @@ export function initUniExtApi(APP_ID: string) {
             console.error(error);
         }
     };
-    const GlobalWebsocketEvent: IUniWebsocketEmitter = new Emitter4() as IUniWebsocketEmitter;
+    const GlobalWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
+    const destroySocketTaskEmitter = (emitter: IUniWebsocketEmitter)=>{
+        emitter.off('message');
+        emitter.off('open');
+        emitter.off('error');
+        emitter.off('close');
+    };
     class SocketTask1 implements SocketTask {
+        _destroy: Function;
         private _ws: webSocket.WebSocket;
-        private _emitter: IUniWebsocketEmitter = new Emitter4();
+        private _emitter: IUniWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
         constructor(ws: webSocket.WebSocket){
+            const mp = getCurrentMP3() as UniWebsocketMP;
             this._ws = ws;
             this._ws.on('message', (_, data)=>{
                 const message = {
                     data
                 } as OnSocketMessageCallbackResult;
                 this._emitter.emit('message', message);
+                const socketTasks = getSocketTasks(mp.id);
                 if (this === socketTasks[0]) {
-                    GlobalWebsocketEvent.emit('message', message);
+                    GlobalWebsocketEmitter.emit('message', message);
                 }
             });
             this._ws.on('open', (_, data)=>{
                 this._emitter.emit('open', data);
+                const socketTasks = getSocketTasks(mp.id);
                 if (this === socketTasks[0]) {
-                    GlobalWebsocketEvent.emit('open', data);
+                    GlobalWebsocketEmitter.emit('open', data);
                 }
             });
             this._ws.on('error', (error)=>{
@@ -4330,24 +7382,26 @@ export function initUniExtApi(APP_ID: string) {
                     errMsg: error.message
                 } as OnSocketErrorCallbackResult;
                 this._emitter.emit('error', message);
+                const socketTasks = getSocketTasks(mp.id);
                 if (this === socketTasks[0]) {
-                    GlobalWebsocketEvent.emit('error', message);
-                }
-                const index = socketTasks.indexOf(this);
-                if (index >= 0) {
-                    socketTasks.splice(index, 1);
+                    GlobalWebsocketEmitter.emit('error', message);
                 }
             });
             this._ws.on('close', (_, data)=>{
                 this._emitter.emit('close', data);
+                const socketTasks = getSocketTasks(mp.id);
                 if (this === socketTasks[0]) {
-                    GlobalWebsocketEvent.emit('close', data);
+                    GlobalWebsocketEmitter.emit('close', data);
                 }
                 const index = socketTasks.indexOf(this);
                 if (index >= 0) {
                     socketTasks.splice(index, 1);
                 }
             });
+            this._destroy = ()=>{
+                destroySocketTaskEmitter(this._emitter);
+                this.close();
+            };
         }
         send(options: SendSocketMessageOptions) {
             this._ws.send(options.data as string | ArrayBuffer).then((success: boolean)=>{
@@ -4385,31 +7439,59 @@ export function initUniExtApi(APP_ID: string) {
         }
         onClose(callback: Function) {
             this._emitter.on('close', callback);
+            destroySocketTaskEmitter(this._emitter);
         }
     }
-    const socketTasks: SocketTask1[] = [];
+    const socketTasksMap: Map<string, SocketTask1[]> = new Map();
+    const addSocketTask = (task: SocketTask1)=>{
+        const mp = getCurrentMP3() as UniWebsocketMP;
+        mp.on('beforeClose', task._destroy);
+        task.onClose(()=>{
+            mp.off('beforeClose', task._destroy);
+        });
+        const id = mp.id;
+        if (!socketTasksMap.has(id)) {
+            socketTasksMap.set(id, []);
+        }
+        const socketTasks = socketTasksMap.get(id) as SocketTask1[];
+        socketTasks.push(task);
+    };
+    const getSocketTasks = (id: string | null = null)=>{
+        if (!id) {
+            const mp = getCurrentMP3() as UniWebsocketMP;
+            id = mp.id;
+        }
+        return socketTasksMap.get(id) || [];
+    };
     const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
-        ws.connect(encodeURI(args.url), {
-            header: args.header ? args.header as Object : undefined
+        const mp = getCurrentMP3() as UniWebsocketMP;
+        ws.connect(args.url, {
+            header: args.header ? args.header as Object : undefined,
+            protocol: args.protocols ? Array.isArray(args.protocols) ? args.protocols.join(',') : args.protocols : ''
         } as webSocket.WebSocketRequestOptions);
         const task = new SocketTask1(ws);
-        socketTasks.push(task);
+        mp.on('beforeClose', task._destroy);
+        task.onClose(()=>{
+            mp.off('beforeClose', task._destroy);
+        });
+        addSocketTask(task);
         return task;
     }, ConnectSocketApiProtocol, ConnectSocketApiOptions) as ConnectSocket;
     const onSocketMessage: OnSocketMessage = (callback: Function)=>{
-        GlobalWebsocketEvent.on('message', callback);
+        GlobalWebsocketEmitter.on('message', callback);
     };
     const onSocketOpen: OnSocketOpen = (callback: Function)=>{
-        GlobalWebsocketEvent.on('open', callback);
+        GlobalWebsocketEmitter.on('open', callback);
     };
     const onSocketError: OnSocketError = (callback: Function)=>{
-        GlobalWebsocketEvent.on('error', callback);
+        GlobalWebsocketEmitter.on('error', callback);
     };
     const onSocketClose: OnSocketClose = (callback: Function)=>{
-        GlobalWebsocketEvent.on('close', callback);
+        GlobalWebsocketEmitter.on('close', callback);
     };
     const sendSocketMessage = defineAsyncApi<SendSocketMessageOptions, GeneralCallbackResult>(API_SEND_SOCKET_MESSAGE, (args: SendSocketMessageOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const socketTasks = getSocketTasks();
         const task = socketTasks[0];
         if (task) {
             task.send({
@@ -4426,6 +7508,7 @@ export function initUniExtApi(APP_ID: string) {
         }
     }) as SendSocketMessage;
     const closeSocket = defineAsyncApi<CloseSocketOptions, GeneralCallbackResult>(API_CLOSE_SOCKET, (args: CloseSocketOptions, exec: ApiExecutor<GeneralCallbackResult>)=>{
+        const socketTasks = getSocketTasks();
         const task = socketTasks[0];
         if (task) {
             task.close({
@@ -4443,22 +7526,37 @@ export function initUniExtApi(APP_ID: string) {
         }
     }) as CloseSocket;
     return {
-        arrayBufferToBase64,
-        base64ToArrayBuffer,
+        addPhoneContact,
+        startSoterAuthentication,
+        checkIsSupportSoterAuthentication,
+        checkIsSoterEnrolledInDevice,
         getClipboardData,
         setClipboardData,
-        createIntersectionObserver,
+        createInnerAudioContext,
         $on,
         $once,
         $off,
         $emit,
         exit,
+        saveFile,
+        getSavedFileList,
+        getSavedFileInfo,
+        removeSavedFile,
+        getFileInfo,
+        getAppAuthorizeSetting,
         getAppBaseInfo,
+        getBackgroundAudioManager,
         getDeviceInfo,
+        getNetworkType,
+        onNetworkStatusChange,
+        offNetworkStatusChange,
         getProvider,
+        getProviderSync,
+        getRecorderManager,
         getSystemInfo,
         getSystemInfoSync,
         getWindowInfo,
+        getSystemSetting,
         hideKeyboard,
         makePhoneCall,
         chooseImage,
@@ -4466,17 +7564,16 @@ export function initUniExtApi(APP_ID: string) {
         closePreviewImage,
         getImageInfo,
         saveImageToPhotosAlbum,
+        compressImage,
         chooseVideo,
         saveVideoToPhotosAlbum,
         getVideoInfo,
-        setNavigationBarColor,
-        setNavigationBarTitle,
         request,
         uploadFile,
         downloadFile,
         openAppAuthorizeSetting,
         openDocument,
-        pageScrollTo,
+        requestPayment,
         showToast,
         hideToast,
         showLoading,
@@ -4487,6 +7584,7 @@ export function initUniExtApi(APP_ID: string) {
         stopPullDownRefresh,
         rpx2px,
         scanCode,
+        shareWithSystem,
         setStorage,
         setStorageSync,
         getStorage,

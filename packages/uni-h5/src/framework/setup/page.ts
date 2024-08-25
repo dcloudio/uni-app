@@ -12,6 +12,7 @@ import {
   type CreateScrollListenerOptions,
   createScrollListener,
   disableScrollListener,
+  getCurrentPage,
   initPageInternalInstance,
   initPageVm,
   invokeHook,
@@ -24,13 +25,115 @@ import {
   normalizeTitleColor,
 } from '@dcloudio/uni-shared'
 import { usePageMeta } from './provide'
-import type { NavigateType } from '../../service/api/route/utils'
+import {
+  type NavigateOptions,
+  type NavigateType,
+  handleBeforeEntryPageRoutes,
+} from '../../service/api/route/utils'
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
+import { getPageInstanceByVm } from './utils'
+import {
+  type EmitterEmit,
+  type EmitterOff,
+  type EmitterOn,
+  type EmitterOnce,
+  EventBus,
+} from '@dcloudio/uni-api'
 
 const SEP = '$$'
 
 const currentPagesMap = new Map<string, ComponentPublicInstance>()
+export const homeDialogPages: UniDialogPage[] = []
+
+export const entryPageState = {
+  handledBeforeEntryPageRoutes: false,
+}
+type NavigateToPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.NavigateToOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type SwitchTabPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.SwitchTabOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type RedirectToPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.RedirectToOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+type ReLaunchPage = {
+  args: NavigateOptions
+  resolve: (res: void | AsyncApiRes<UniNamespace.ReLaunchOptions>) => void
+  reject: (errMsg?: string, errRes?: any) => void
+}
+export const navigateToPagesBeforeEntryPages: NavigateToPage[] = []
+export const switchTabPagesBeforeEntryPages: SwitchTabPage[] = []
+export const redirectToPagesBeforeEntryPages: RedirectToPage[] = []
+export const reLaunchPagesBeforeEntryPages: ReLaunchPage[] = []
+let escBackPageNum = 0
+function handleEscKeyPress(event) {
+  if (event.key === 'Escape') {
+    const currentPage = getCurrentPage()
+    // @ts-expect-error
+    const dialogPages = currentPage.$getDialogPages()
+    const dialogPage = dialogPages[dialogPages.length - 1]
+    if (!dialogPage.$disableEscBack) {
+      // @ts-expect-error
+      uni.closeDialogPage({ dialogPage })
+    }
+  }
+}
+export function incrementEscBackPageNum() {
+  escBackPageNum++
+  if (escBackPageNum === 1) {
+    document.addEventListener('keydown', handleEscKeyPress)
+  }
+}
+export function decrementEscBackPageNum() {
+  escBackPageNum--
+  if (escBackPageNum === 0) {
+    document.removeEventListener('keydown', handleEscKeyPress)
+  }
+}
+
+export class DialogPage {
+  route: string = ''
+  component?: any
+  $getParentPage: () => ComponentPublicInstance | null
+  $disableEscBack: boolean = false
+  $vm?: ComponentPublicInstance
+  $on: EmitterOn
+  $once: EmitterOnce
+  $off: EmitterOff
+  $emit: EmitterEmit
+
+  constructor({
+    route,
+    component,
+    $getParentPage,
+    $disableEscBack = false,
+  }: {
+    route: string
+    component: any
+    $getParentPage: () => ComponentPublicInstance | null
+    $disableEscBack?: boolean
+  }) {
+    this.route = route
+    this.component = component
+    this.$getParentPage = $getParentPage
+    this.$disableEscBack = $disableEscBack
+    const { $on, $once, $emit, $off } = new EventBus()
+    this.$on = $on
+    this.$once = $once
+    this.$off = $off
+    this.$emit = $emit
+  }
+}
+
+export type UniDialogPage = DialogPage
 
 function pruneCurrentPages() {
   currentPagesMap.forEach((page, id) => {
@@ -69,6 +172,13 @@ function removeRouteCache(routeKey: string) {
 
 export function removePage(routeKey: string, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
+  if (__X__) {
+    const dialogPages = pageVm.$getDialogPages()
+    for (let i = dialogPages.length - 1; i >= 0; i--) {
+      // @ts-expect-error
+      uni.closeDialogPage({ dialogPage: dialogPages[i] })
+    }
+  }
   pageVm.$.__isUnload = true
   invokeHook(pageVm, ON_UNLOAD)
   currentPagesMap.delete(routeKey)
@@ -161,8 +271,45 @@ export function initPage(vm: ComponentPublicInstance) {
           pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
         backgroundColorContent: pageMeta.backgroundColorContent,
       })
+    vm.$getDialogPages = (): UniDialogPage[] => {
+      return getPageInstanceByVm(vm)?.$dialogPages.value || []
+    }
+    vm.$getParentPage = (): ComponentPublicInstance | null => {
+      return getPageInstanceByVm(vm)?.$dialogPage?.$getParentPage() || null
+    }
+    // @ts-expect-error
+    vm.$dialogPage = getPageInstanceByVm(vm)?.$dialogPage
+  }
+
+  if (__X__) {
+    const pageInstance = getPageInstanceByVm(vm)
+    if (pageInstance?.attrs.type !== 'dialog') {
+      currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
+      if (currentPagesMap.size === 1) {
+        // 通过异步保证首页生命周期触发
+        setTimeout(() => {
+          handleBeforeEntryPageRoutes()
+        }, 0)
+        if (homeDialogPages.length) {
+          homeDialogPages.forEach((dialogPage) => {
+            dialogPage.$getParentPage = () => vm
+            pageInstance!.$dialogPages.value.push(dialogPage)
+          })
+          homeDialogPages.length = 0
+        }
+      }
+    } else {
+      pageInstance.$dialogPage!.$vm = vm
+    }
+    return
   }
   currentPagesMap.set(normalizeRouteKey(page.path, page.id), vm)
+  if (currentPagesMap.size === 1) {
+    // 通过异步保证首页生命周期触发
+    setTimeout(() => {
+      handleBeforeEntryPageRoutes()
+    }, 0)
+  }
 }
 
 export function normalizeRouteKey(path: string, id: number) {
@@ -295,8 +442,8 @@ function updateBodyScopeId(instance: ComponentInternalInstance) {
 }
 
 let curScrollListener: (evt: Event) => any
-// TODO 当动态渲染的组件内监听onPageScroll时
-function initPageScrollListener(
+
+export function initPageScrollListener(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
 ) {
@@ -310,7 +457,11 @@ function initPageScrollListener(
 
   const { onPageScroll, onReachBottom } = instance
   const navigationBarTransparent = pageMeta.navigationBar.type === 'transparent'
-  if (!onPageScroll && !onReachBottom && !navigationBarTransparent) {
+  if (
+    !onPageScroll?.length &&
+    !onReachBottom?.length &&
+    !navigationBarTransparent
+  ) {
     return
   }
   const opts: CreateScrollListenerOptions = {}
@@ -322,7 +473,7 @@ function initPageScrollListener(
       navigationBarTransparent
     )
   }
-  if (onReachBottom) {
+  if (onReachBottom?.length) {
     opts.onReachBottomDistance =
       pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE
     opts.onReachBottom = () =>

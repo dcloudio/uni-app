@@ -12,11 +12,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import StartupConfig from './@ohos.app.appstartup.StartupConfig';
 /**
  * @file
  * @kit AbilityKit
  */
+import StartupConfig from './@ohos.app.appstartup.StartupConfig';
 /**
  * Startup task manager.
  *

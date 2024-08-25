@@ -341,7 +341,7 @@ class TextMetrics {
 
 const getTempPath = () => {
   let _TEMP_PATH = TEMP_PATH
-  if (!__PLUS__) {
+  if (__PLATFORM__ === 'app' && !__PLUS__) {
     typeof getEnv !== 'undefined' && (_TEMP_PATH = getEnv().TEMP_PATH)
   }
   return _TEMP_PATH

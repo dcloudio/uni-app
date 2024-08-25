@@ -53,7 +53,7 @@ declare namespace systemShare {
     }
     /**
      * Describe the shared record
-     *
+     * @typedef SharedRecord
      * @syscap SystemCapability.Collaboration.SystemShare
      * @since 4.1.0(11)
      */
@@ -71,7 +71,7 @@ declare namespace systemShare {
          * Indicates the content of shared record, information that does not
          * require authorization, including but not limited to text, HTML text, and URL.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -79,7 +79,7 @@ declare namespace systemShare {
         /**
          * Indicates the uri of shared record.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -87,7 +87,7 @@ declare namespace systemShare {
         /**
          * Indicates the title of shared record
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -95,7 +95,7 @@ declare namespace systemShare {
         /**
          * Indicates the label of shared record
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -103,7 +103,7 @@ declare namespace systemShare {
         /**
          * Indicates the description of shared record
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -111,7 +111,7 @@ declare namespace systemShare {
         /**
          * Indicates the thumbnail of shared record
          *
-         * @type { Uint8Array }
+         * @type { ?Uint8Array }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -120,7 +120,7 @@ declare namespace systemShare {
          * Indicates the extra data of shared record. The content
          * is forwarded to the target application without permission authorization.
          *
-         * @type { Record<string, string | number | boolean | Array<string | number | boolean>> }
+         * @type { ?Record<string, string | number | boolean | Array<string | number | boolean>> }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -136,7 +136,7 @@ declare namespace systemShare {
         /**
          * Coordinate x of the Position.
          *
-         * @type {number}
+         * @type { number }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -144,7 +144,7 @@ declare namespace systemShare {
         /**
          * Coordinate y of the Position.
          *
-         * @type {number}
+         * @type { number }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -161,7 +161,7 @@ declare namespace systemShare {
         /**
          * Defines the width property.
          *
-         * @type {number}
+         * @type { number }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -169,7 +169,7 @@ declare namespace systemShare {
         /**
          * Defines the height property.
          *
-         * @type {number}
+         * @type { number }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -195,7 +195,7 @@ declare namespace systemShare {
         /**
          * Indicates the size of the selected content area.
          *
-         * @type { Size }
+         * @type { ?Size }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -301,7 +301,7 @@ declare namespace systemShare {
         /**
          * Indicates the selection mode.
          *
-         * @type { SelectionMode }
+         * @type { ?SelectionMode }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -309,7 +309,7 @@ declare namespace systemShare {
         /**
          * Indicates the anchor of system share panel, set anchor or the ID of component.
          *
-         * @type { ShareControllerAnchor | string }
+         * @type { ?(ShareControllerAnchor | string) }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -317,7 +317,7 @@ declare namespace systemShare {
         /**
          * Indicates the preview mode.
          *
-         * @type { SharePreviewMode }
+         * @type { ?SharePreviewMode }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -325,7 +325,7 @@ declare namespace systemShare {
         /**
          * Indicates configuration information about excluded Share Abilities.
          *
-         * @type { Array<ShareAbilityType> }
+         * @type { ?Array<ShareAbilityType> }
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 5.0.0(12)
          */
@@ -364,7 +364,8 @@ declare namespace systemShare {
          * Register dismiss event callback.
          *
          * @param { 'dismiss' } event - canceled event.
-         * @param { void } callback - Called when system share panel dismissed.
+         * @param { function } callback - Called when system share panel dismissed.
+         * @throws { BusinessError } 401 - Parameter error.
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -373,7 +374,8 @@ declare namespace systemShare {
          * Cancel callback registered through { @link on }.
          *
          * @param { 'dismiss' } event - canceled event.
-         * @param { void } callback - Called when callback unregister.
+         * @param { function } callback - Called when callback unregister.
+         * @throws { BusinessError } 401 - Parameter error.
          * @syscap SystemCapability.Collaboration.SystemShare
          * @since 4.1.0(11)
          */
@@ -436,7 +438,8 @@ declare namespace systemShare {
     /**
      * Create shared data information from want.
      *
-     * @param { want } want - the want transferred to the ability with sharing capability.
+     * @param { Want } want - the want transferred to the ability with sharing capability.
+     * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1003703001 - parse data failed.
      * @syscap SystemCapability.Collaboration.SystemShare
      * @since 4.1.0(11)
@@ -447,6 +450,7 @@ declare namespace systemShare {
      *
      * @param { SharedData } data - the shared data information transferred to the ability with sharing capability.
      * @param { ShareControllerOptions } options - fill the share controller configuration.
+     * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1003703001 - parse data failed.
      * @syscap SystemCapability.Collaboration.SystemShare
      * @since 5.0.0(12)
@@ -455,7 +459,8 @@ declare namespace systemShare {
     /**
      * Create contact information from want .
      *
-     * @param { want } want - the want transferred to the ability with sharing capability.
+     * @param { Want } want - the want transferred to the ability with sharing capability.
+     * @throws { BusinessError } 401 - Parameter error.
      * @throws { BusinessError } 1003703001 - parse data failed.
      * @syscap SystemCapability.Collaboration.SystemShare
      * @since 4.1.0(11)

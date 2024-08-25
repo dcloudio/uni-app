@@ -13,6 +13,8 @@ import type bundleManager from '@ohos.bundle.bundleManager';
  *
  * @namespace moduleInstallManager
  * @syscap SystemCapability.AppGalleryService.Distribution.OnDemandInstall
+ * @StageModelOnly
+ * @since 4.1.0(11)
  *
  */
 declare namespace moduleInstallManager {
@@ -309,7 +311,7 @@ declare namespace moduleInstallManager {
         /**
          * Indicates type of this module.
          *
-         * @type { bundleManager.ModuleType }
+         * @type { ?bundleManager.ModuleType }
          * @syscap SystemCapability.AppGalleryService.Distribution.OnDemandInstall
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -355,7 +357,7 @@ declare namespace moduleInstallManager {
         /**
          * Download task ID (timestamp when the task is created). The default value is 0.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.AppGalleryService.Distribution.OnDemandInstall
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -373,7 +375,7 @@ declare namespace moduleInstallManager {
         /**
          * List of modules to be downloaded. The default value is [].
          *
-         * @type { string[] }
+         * @type { ?string[] }
          * @syscap SystemCapability.AppGalleryService.Distribution.OnDemandInstall
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -382,7 +384,7 @@ declare namespace moduleInstallManager {
         /**
          * Total size of modules to be downloaded. The default value is 0.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.AppGalleryService.Distribution.OnDemandInstall
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -391,7 +393,7 @@ declare namespace moduleInstallManager {
         /**
          * Installed size of the module to be downloaded. The default value is 0.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.AppGalleryService.Distribution.OnDemandInstall
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -401,7 +403,7 @@ declare namespace moduleInstallManager {
     /**
      * Obtain the installation status of the module.
      *
-     * @param { moduleName } string - Indicates name of this module.
+     * @param { string } moduleName - Indicates name of this module.
      * @return { InstalledModule } Returns the installation status of the module.
      * @throws { BusinessError } 401 - The parameter check failed.
      * @throws { BusinessError } 1006500001 - Failed to invoke the BMS.
@@ -521,7 +523,6 @@ declare namespace moduleInstallManager {
          * Creating an On-Demand Loading Request.
          *
          * @param { common.UIAbilityContext | common.ExtensionContext } context - the context of an ability or extensionContext
-         * @param { string } taskId - ID of a download task.
          * @return { ModuleInstallRequest } - Returns the <b>ModuleInstallRequest</b> object.
          * @throws { BusinessError } 401 - The parameter check failed.
          * @syscap SystemCapability.AppGalleryService.Distribution.OnDemandInstall

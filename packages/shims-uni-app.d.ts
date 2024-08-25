@@ -32,6 +32,7 @@ declare namespace UniNamespace {
     | 'navigateBack'
     | 'preloadPage'
     | 'launch'
+    | 'openDialogPage'
     | ''
   interface LayoutWindowOptions {
     matchMedia?: {

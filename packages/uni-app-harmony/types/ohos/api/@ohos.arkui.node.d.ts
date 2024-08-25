@@ -63,7 +63,7 @@ export { DrawContext, Size, Offset, Position, Pivot, Scale, Translation, Matrix4
  * @crossplatform
  * @since 12
  */
-export { LengthUnit, SizeT, LengthMetric, LengthMetrics, ColorMetrics } from './arkui/Graphics';
+export { LengthUnit, SizeT, LengthMetrics, ColorMetrics } from './arkui/Graphics';
 /**
  * Export RenderNode. RenderNode contains node tree operations and render property operations on node.
  *

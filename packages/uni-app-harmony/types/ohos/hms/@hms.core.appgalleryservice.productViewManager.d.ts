@@ -81,7 +81,7 @@ declare namespace productViewManager {
         /**
          * Indicates information of the harmony service detail page.
          *
-         * @type { string }
+         * @type { object }
          * @syscap SystemCapability.AppGalleryService.Distribution.Recommendations
          * @StageModelOnly
          * @since 4.1.0(11)
@@ -142,7 +142,7 @@ declare namespace productViewManager {
      *
      * @param { common.UIAbilityContext } context - Indicates the ui ability context of the media application.
      * @param { Want } want - Indicates the ability to start.
-     * @param { ?ServiceViewCallback } callbacks - callbacks for opening the harmony service detail page.
+     * @param { ServiceViewCallback } [callback] - callback for opening the harmony service detail page.
      * @throws { BusinessError } 401 - The parameter check failed.
      * @syscap SystemCapability.AppGalleryService.Distribution.Recommendations
      * @StageModelOnly
@@ -154,7 +154,7 @@ declare namespace productViewManager {
      *
      * @param { common.UIAbilityContext } context - Indicates the ui ability context of the media application.
      * @param { Want } want - Indicates the ability to start.
-     * @param { ?ProductViewCallback } callbacks - callbacks for opening the application detail page.
+     * @param { ProductViewCallback } [callback] - callback for opening the application detail page.
      * @throws { BusinessError } 401 - The parameter check failed.
      * @syscap SystemCapability.AppGalleryService.Distribution.Recommendations
      * @StageModelOnly

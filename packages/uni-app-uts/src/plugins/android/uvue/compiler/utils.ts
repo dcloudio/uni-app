@@ -7,7 +7,6 @@ import MagicString from 'magic-string'
 import {
   camelize,
   genUTSComponentPublicInstanceIdent,
-  genUTSComponentPublicInstanceImported,
   normalizePath,
 } from '@dcloudio/uni-cli-shared'
 import type { TemplateCompilerOptions } from './options'
@@ -19,19 +18,23 @@ export const __DEV__ = true
 export const __BROWSER__ = false
 export const __COMPAT__ = false
 
+export function isCompatEnabled(...args: any[]) {
+  return false
+}
+
 export function genRenderFunctionDecl({
-  className = '',
+  className,
   genDefaultAs,
-}: // inline = false,
-TemplateCompilerOptions & { genDefaultAs?: string }): string {
-  // if(inline){
-  //   return `(): VNode | null =>`
-  // }
+  inline = false,
+}: TemplateCompilerOptions & { genDefaultAs?: string }): string {
+  if (inline) {
+    return `(): any | null =>`
+  }
   // 调整返回值类型为 any | null, 支持 <template>some text</template>
   const thisCode = genDefaultAs
     ? `this: InstanceType<typeof ${genDefaultAs}>`
     : ''
-  return `function ${className}Render(${thisCode}): any | null`
+  return `function ${className || ''}Render(${thisCode}): any | null`
 }
 
 export function rewriteObjectExpression(
@@ -63,12 +66,26 @@ export function rewriteObjectExpression(
 
 export function onCompilerError(error: CompilerError) {}
 
+export function parseSource(fileName: string, rootDir: string) {
+  if (fileName.includes('@dcloudio')) {
+    return fileName
+  }
+  rootDir = normalizePath(rootDir)
+  if (path.isAbsolute(fileName) && fileName.startsWith(rootDir)) {
+    return '@/' + normalizePath(path.relative(rootDir, fileName))
+  }
+  return fileName
+}
+
 export function addEasyComponentAutoImports(
   easyComponentAutoImports: Record<string, [string, string]>,
   rootDir: string,
   tagName: string,
   fileName: string
 ) {
+  if (easyComponentAutoImports[fileName]) {
+    return
+  }
   // 内置easycom，如 unicloud-db
   if (fileName.includes('@dcloudio')) {
     return
@@ -77,21 +94,11 @@ export function addEasyComponentAutoImports(
   if (path.isAbsolute(fileName) && fileName.startsWith(rootDir)) {
     fileName = '@/' + normalizePath(path.relative(rootDir, fileName))
   }
-
-  let imported = ''
   // 加密插件easycom类型导入
   if (fileName.includes('?uts-proxy')) {
     const moduleId = path.basename(fileName.split('?uts-proxy')[0])
     fileName = `uts.sdk.modules.${camelize(moduleId)}`
-    imported = genUTSComponentPublicInstanceImported(
-      rootDir,
-      `@/uni_modules/${moduleId}/components/${tagName}/${tagName}`
-    )
-  } else {
-    imported = genUTSComponentPublicInstanceImported(rootDir, fileName)
   }
-  easyComponentAutoImports[fileName] = [
-    imported,
-    genUTSComponentPublicInstanceIdent(tagName),
-  ]
+  const ident = genUTSComponentPublicInstanceIdent(tagName)
+  easyComponentAutoImports[fileName] = [ident, ident]
 }

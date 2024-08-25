@@ -11,33 +11,6 @@ var appVite__default = /*#__PURE__*/_interopDefault(appVite);
 var path__default = /*#__PURE__*/_interopDefault(path);
 var fs__default = /*#__PURE__*/_interopDefault(fs);
 
-/*! *****************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-/* global Reflect, Promise */
-
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
 const commondGlobals = {
     vue: 'Vue',
     '@vue/shared': 'uni.VueShared',
@@ -95,30 +68,69 @@ function uniAppHarmonyPlugin() {
                 },
             };
         },
-        generateBundle(_, bundle) {
-            return __awaiter(this, void 0, void 0, function* () {
-                genAppHarmonyIndex(process.env.UNI_INPUT_DIR, uniCliShared.getCurrentCompiledUTSPlugins());
-                for (const key in bundle) {
-                    const serviceBundle = bundle[key];
-                    if (serviceBundle.code) {
-                        serviceBundle.code =
-                            generateHarmonyImportExternalCode(serviceBundle.imports) +
-                                serviceBundle.code;
-                    }
+        async generateBundle(_, bundle) {
+            genAppHarmonyIndex(process.env.UNI_INPUT_DIR, uniCliShared.getCurrentCompiledUTSPlugins());
+            for (const key in bundle) {
+                const serviceBundle = bundle[key];
+                if (serviceBundle.code) {
+                    serviceBundle.code =
+                        generateHarmonyImportExternalCode(serviceBundle.imports) +
+                            serviceBundle.code;
                 }
-            });
+            }
         },
-        writeBundle() {
-            return __awaiter(this, void 0, void 0, function* () {
-                if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
-                    return;
-                }
-                // x 上暂时编译所有uni ext api，不管代码里是否调用了
-                yield uniCliShared.buildUniExtApis();
-            });
+        async writeBundle() {
+            if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
+                return;
+            }
+            // x 上暂时编译所有uni ext api，不管代码里是否调用了
+            await uniCliShared.buildUniExtApis();
         },
     };
 }
+const ProviderServiceMap = {
+    oauth: {},
+    payment: {
+        // alipay: 'alipay',
+        weixin: 'wxpay',
+    },
+};
+/**
+ * 获取manifest.json中勾选的provider
+ */
+function getRelatedProviders(inputDir) {
+    const manifest = uniCliShared.parseManifestJsonOnce(inputDir);
+    const providers = [];
+    const sdkConfigs = manifest?.['app-plus']?.distribute?.sdkConfigs;
+    if (!sdkConfigs) {
+        return providers;
+    }
+    for (const service in sdkConfigs) {
+        if (Object.prototype.hasOwnProperty.call(sdkConfigs, service)) {
+            const ProviderNameMap = ProviderServiceMap[service];
+            if (!ProviderNameMap) {
+                continue;
+            }
+            const relatedProviders = sdkConfigs[service];
+            for (const name in relatedProviders) {
+                if (Object.prototype.hasOwnProperty.call(relatedProviders, name)) {
+                    const providerName = ProviderNameMap[name];
+                    providers.push({
+                        service,
+                        name: providerName || name,
+                    });
+                }
+            }
+        }
+    }
+    return providers;
+}
+const builtInProviders = [
+    {
+        service: 'payment',
+        name: 'alipay',
+    },
+];
 function genAppHarmonyIndex(inputDir, utsPlugins) {
     if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
         return;
@@ -145,17 +157,37 @@ function genAppHarmonyIndex(inputDir, utsPlugins) {
             registerCodes.push(`uni.registerUTSPlugin('uni_modules/${plugin}', ${ident})`);
         }
     });
+    const relatedProviders = getRelatedProviders(inputDir);
     const importProviderCodes = [];
     const registerProviderCodes = [];
     const providers = uniCliShared.getUniExtApiProviderRegisters();
-    providers.forEach((provider) => {
-        const parts = provider.class.split('.');
-        const className = parts[parts.length - 1];
-        importProviderCodes.push(`import { ${className} } from './${provider.plugin}/utssdk/app-harmony'`);
+    const allProviders = providers
+        .map((provider) => {
+        return {
+            service: provider.service,
+            name: provider.name,
+            moduleSpecifier: `./${provider.plugin}/utssdk/app-harmony`,
+        };
+    })
+        .concat(builtInProviders.map((provider) => {
+        return {
+            service: provider.service,
+            name: provider.name,
+            moduleSpecifier: `@dcloudio/uni-app-harmony/providers/uni-${provider.service}-${provider.name}`,
+        };
+    }));
+    relatedProviders.forEach((relatedProvider) => {
+        const provider = allProviders.find((item) => item.service === relatedProvider.service &&
+            item.name === relatedProvider.name);
+        if (!provider) {
+            return;
+        }
+        const className = uniCliShared.formatExtApiProviderName(provider.service, provider.name);
+        importProviderCodes.push(`import { ${className} } from '${provider.moduleSpecifier}'`);
         registerProviderCodes.push(`registerUniProvider('${provider.service}', '${provider.name}', new ${className}())`);
     });
     if (importProviderCodes.length) {
-        importProviderCodes.unshift(`import { registerUniProvider } from '../uni-app/lib/uni-api-shared'`);
+        importProviderCodes.unshift(`import { registerUniProvider } from '@dcloudio/uni-app-harmony'`);
         importCodes.push(...importProviderCodes);
         extApiCodes.push(...registerProviderCodes);
     }

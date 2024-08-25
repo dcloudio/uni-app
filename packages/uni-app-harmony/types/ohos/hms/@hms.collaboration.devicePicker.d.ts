@@ -25,6 +25,7 @@ declare namespace devicePicker {
      * { @link SUCCESSFUL } state offline.
      *
      * { 'deviceSelected' | 'deviceUnselected' | 'selectedDeviceOffline' }
+     * @typedef DeviceEvent
      * @syscap SystemCapability.Collaboration.DevicePicker
      * @since 4.0.0(10)
      */

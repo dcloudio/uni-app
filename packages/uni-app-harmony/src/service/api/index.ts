@@ -1,20 +1,24 @@
-// export * from './media/chooseImage'
-// export * from './media/chooseVideo'
-// export * from './media/getImageInfo'
-// export * from './media/getVideoInfo'
-// export * from './network/request'
-// export * from './network/uploadFile'
-// export * from './network/downloadFile'
 export * from './ui/index'
 export * from './ui/index'
 export * from './keyboard/keyboard'
 export { canIUse } from './base/canIUse'
-// export * from './device/index'
 export { navigateTo } from './route/navigateTo'
 export { navigateBack } from './route/navigateBack'
 export { redirectTo } from './route/redirectTo'
 export { reLaunch } from './route/reLaunch'
 export { switchTab } from './route/switchTab'
+export { chooseLocation } from './location/chooseLocation/index'
+export { openLocation } from './location/openLocation/index'
+export { getLocation } from './location/getLocation'
+export {
+  startLocationUpdate,
+  stopLocationUpdate,
+  onLocationChange,
+  offLocationChange,
+  onLocationChangeError,
+  offLocationChangeError,
+} from './location/locationChange'
+export { createWebviewContext } from './context/operateWebView'
 export {
   addInterceptor,
   removeInterceptor,
@@ -22,6 +26,7 @@ export {
   setLocale,
   getLocale,
   onLocaleChange,
+  createMapContext,
   createCanvasContext,
   canvasGetImageData,
   canvasPutImageData,
@@ -36,4 +41,5 @@ export {
   getLaunchOptionsSync,
   getEnterOptionsSync,
 } from '@dcloudio/uni-api'
+export { pageScrollTo } from '@dcloudio/uni-app-plus/service/api'
 export { requireUTSPlugin, registerUTSPlugin } from './plugin/uts'

@@ -32,6 +32,14 @@
       "null"
     ]
   },
+  "uni-navigationBar": {
+    "showNavigationBarLoading": [
+      "null"
+    ],
+    "hideNavigationBarLoading": [
+      "null"
+    ]
+  },
   "uni-keyboard": {
     "hideKeyboard": [
       "null"
@@ -57,8 +65,30 @@
       "null"
     ]
   },
+  "uni-file": {
+    "saveFile": [
+      "null"
+    ],
+    "getSavedFileList": [
+      "null"
+    ],
+    "getSavedFileInfo": [
+      "null"
+    ],
+    "removeSavedFile": [
+      "null"
+    ],
+    "getFileInfo": [
+      "null"
+    ]
+  },
   "uni-exit": {
     "exit": [
+      "null"
+    ]
+  },
+  "uni-dialogPage": {
+    "closeDialogPage": [
       "null"
     ]
   },

@@ -331,8 +331,7 @@ declare namespace trustedAppService {
     /**
      * Create attestation key.
      *
-     * @param { AttestOptions } options - options indicates the properties of the key.
-     * @syscap SystemCapability.Security.TrustedAppService.Core
+     * @param { AttestOptions } options - Indicates the properties of the key.
      * @throws { BusinessError } 401 - argument is invalid.
      * @throws { BusinessError } 1011500001 - algorithm param is invalid.
      * @throws { BusinessError } 1011500002 - algorithm param is missing.
@@ -340,26 +339,26 @@ declare namespace trustedAppService {
      * @throws { BusinessError } 1011500004 - create anonymous certificate failed.
      * @throws { BusinessError } 1011500005 - operating file failed.
      * @throws { BusinessError } 1011500006 - IPC communication failed.
+     * @syscap SystemCapability.Security.TrustedAppService.Core
      * @since 5.0.0(12)
      */
     function createAttestKey(options: AttestOptions): Promise<void>;
     /**
      * Destroy attestation key.
      *
-     * @syscap SystemCapability.Security.TrustedAppService.Core
      * @throws { BusinessError } 1011500005 - operating file failed.
      * @throws { BusinessError } 1011500006 - IPC communication failed.
      * @throws { BusinessError } 1011500007 - item not found.
+     * @syscap SystemCapability.Security.TrustedAppService.Core
      * @since 5.0.0(12)
      */
     function destroyAttestKey(): Promise<void>;
     /**
      * Initialize attestation context for secure location or secure camera.
      *
-     * @param { AttestOptions } options - options indicates the properties of the key.
-     * @param { string } userData - options indicates the properties of the key.
+     * @param { string } userData - User-defined data as challenge value.
+     * @param { AttestOptions } options - Indicates the properties of the key.
      * @returns { Promise<AttestReturnResult> } Return the certchains.
-     * @syscap SystemCapability.Security.TrustedAppService.Core
      * @throws { BusinessError } 401 - argument is invalid.
      * @throws { BusinessError } 1011500002 - param is missing.
      * @throws { BusinessError } 1011500005 - operating file failed.
@@ -369,17 +368,19 @@ declare namespace trustedAppService {
      * @throws { BusinessError } 1011500009 - anonymous certificate has expired.
      * @throws { BusinessError } 1011500010 - get attestation key failed.
      * @throws { BusinessError } 1011500011 - initialize secure camera failed.
+     * @syscap SystemCapability.Security.TrustedAppService.Core
      * @since 5.0.0(12)
      */
     function initializeAttestContext(userData: string, options: AttestOptions): Promise<AttestReturnResult>;
     /**
      * Finalize attestation context.
      *
-     * @syscap SystemCapability.Security.TrustedAppService.Core
+     * @param { AttestOptions } options - Indicates the properties of the key.
      * @throws { BusinessError } 401 - argument is invalid.
      * @throws { BusinessError } 1011500002 - param is missing.
      * @throws { BusinessError } 1011500006 - IPC communication failed.
      * @throws { BusinessError } 1011500007 - item not found.
+     * @syscap SystemCapability.Security.TrustedAppService.Core
      * @since 5.0.0(12)
      */
     function finalizeAttestContext(options: AttestOptions): Promise<void>;
@@ -491,12 +492,10 @@ declare namespace trustedAppService {
     /**
      * Get current secure location.
      *
-     * @permission ohos.permission.LOCATION
-     * @permission ohos.permission.APPROXIMATELY_LOCATION
-     * @param { number } [timeout] - Timeout of a single location request, in milliseconds.
-     * @param { LocatingPriority } [priority] - Priority of the location request.
+     * @permission ohos.permission.LOCATION and ohos.permission.APPROXIMATELY_LOCATION
+     * @param { number } timeout - Timeout of a single location request, in milliseconds.
+     * @param { LocatingPriority } priority - Priority of the location request.
      * @returns { Promise<SecureLocation> } The promise returned by the function.
-     * @syscap SystemCapability.Security.TrustedAppService.Location
      * @throws { BusinessError } 201 - has no permission.
      * @throws { BusinessError } 401 - argument is invalid.
      * @throws { BusinessError } 1011500012 - attestation context not initialized.
@@ -504,6 +503,7 @@ declare namespace trustedAppService {
      * @throws { BusinessError } 1011500014 - location service is unavailable.
      * @throws { BusinessError } 1011500015 - The location switch is off.
      * @throws { BusinessError } 1011500016 - Failed to obtain the secure geographical location.
+     * @syscap SystemCapability.Security.TrustedAppService.Location
      * @since 5.0.0(12)
      */
     function getCurrentSecureLocation(timeout: number, priority: LocatingPriority): Promise<SecureLocation>;

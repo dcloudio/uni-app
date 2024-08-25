@@ -186,7 +186,9 @@ export function usePageRefresh(refreshRef: Ref) {
       return
     }
 
-    ev.preventDefault()
+    if (ev.cancelable) {
+      ev.preventDefault()
+    }
 
     if (distance === null) {
       offset = deltaY

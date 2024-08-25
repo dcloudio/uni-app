@@ -24,6 +24,15 @@
  * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
  * @since 8
  */
+/**
+ * Provide interfaces related to debugger access and obtaining CPU,
+ * memory and other virtual machine information during runtime for JS programs
+ *
+ * @namespace hidebug
+ * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+ * @atomicservice
+ * @since 12
+ */
 declare namespace hidebug {
     /**
      * Get total native heap memory size
@@ -156,6 +165,7 @@ declare namespace hidebug {
     /**
      * Get a debugging dump of a system service by service id.
      * It need dump permission.
+     * This API can be called only by system application.
      *
      * @permission ohos.permission.DUMP
      * @param { number } serviceid - Indicates the id of the service ability.
@@ -164,7 +174,7 @@ declare namespace hidebug {
      * @throws {BusinessError} 401 - the parameter check failed, Possible causes:
      *                               1.the parameter type error
      *                               2.the args parameter is not string array
-     * @throws {BusinessError} 11400101 - the service id is invalid
+     * @throws {BusinessError} 11400101 - ServiceId invalid. The system ability does not exist.
      * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
      * @since 9
      */
@@ -173,7 +183,7 @@ declare namespace hidebug {
      * Obtains the cpu usage of system.
      *
      * @returns { number } Returns the cpu usage of system.
-     * @throws { BusinessError } 11400104 - The status of the system cpu usage is abnormal
+     * @throws { BusinessError } 11400104 - The status of the system CPU usage is abnormal.
      * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
      * @since 12
      */
@@ -357,6 +367,14 @@ declare namespace hidebug {
          * @since 12
          */
         vmHeapLimit: bigint;
+        /**
+         * The limit of the total js vm heap size of process, in kilobyte
+         *
+         * @type { bigint }
+         * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+         * @since 12
+         */
+        vmTotalHeapSize: bigint;
     }
     /**
      * Obtains the memory limit of application process.
@@ -706,9 +724,9 @@ declare namespace hidebug {
      *                           1.The limit parameter is too small
      *                           2.The parameter is not within the enumeration type
      *                           3.The parameter type error or parameter order error
-     * @throws { BusinessError } 11400102 - Have already capture trace
-     * @throws { BusinessError } 11400103 - Without write permission on the file
-     * @throws { BusinessError } 11400104 - The status of the trace is abnormal
+     * @throws { BusinessError } 11400102 - Capture trace already enabled.
+     * @throws { BusinessError } 11400103 - No write permission on the file.
+     * @throws { BusinessError } 11400104 - Abnormal trace status.
      * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
      * @since 12
      */
@@ -722,6 +740,34 @@ declare namespace hidebug {
      * @since 12
      */
     function stopAppTraceCapture(): void;
+    /**
+     * Collection statistics.
+     *
+     * @typedef { Record<string, number> } GcStats
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    type GcStats = Record<string, number>;
+    /**
+     * Get the garbage collection statistics.
+     *
+     * @returns { GcStats } Returns garbage collection statistics.
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function getVMRuntimeStats(): GcStats;
+    /**
+     * Get the garbage collection statistics by statistical item.
+     *
+     * @param { string } item - statistical item.
+     * @returns { number } Returns garbage collection statistics.
+     * @throws { BusinessError } 401 - Possible causes:
+     *                           1. Invalid parameter, a string parameter required.
+     *                           2. Invalid parameter, unknown property.
+     * @syscap SystemCapability.HiviewDFX.HiProfiler.HiDebug
+     * @since 12
+     */
+    function getVMRuntimeStat(item: string): number;
     /**
      * Set the resource limitation of application.Please note that this function is only valid
      * when the developer options switch of setting is turned on.

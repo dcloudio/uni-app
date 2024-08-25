@@ -25,7 +25,7 @@ declare namespace gamePerformance {
         /**
          * GPU load level. The value ranges from 1 to 10 in ascending order.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -33,7 +33,7 @@ declare namespace gamePerformance {
         /**
          * Vertex processing load level. The value ranges from 1 to 10 in ascending order.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -41,7 +41,7 @@ declare namespace gamePerformance {
         /**
          * Fragment processing load level. The value ranges from 1 to 10 in ascending order.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -49,7 +49,7 @@ declare namespace gamePerformance {
         /**
          * Texture processing load level. The value ranges from 1 to 10 in ascending order.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -57,7 +57,7 @@ declare namespace gamePerformance {
         /**
          * Bandwidth load level. The value ranges from 1 to 10 in ascending order.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -91,7 +91,7 @@ declare namespace gamePerformance {
         /**
          * GPU info
          *
-         * @type { GpuInfo }
+         * @type { ?GpuInfo }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -122,7 +122,7 @@ declare namespace gamePerformance {
          * Extra info.
          * A json string used to carry extension parameters.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -160,7 +160,7 @@ declare namespace gamePerformance {
          * 4: COCOS
          * 200: OTHERS
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -168,7 +168,7 @@ declare namespace gamePerformance {
         /**
          * Game engine version.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -182,7 +182,7 @@ declare namespace gamePerformance {
          * 5: RAC
          * 200: OTHERS
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -190,7 +190,7 @@ declare namespace gamePerformance {
         /**
          * Is game render with vulkan or not.
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -327,7 +327,7 @@ declare namespace gamePerformance {
         /**
          * Scene description.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -335,7 +335,7 @@ declare namespace gamePerformance {
         /**
          * Sub-scene id.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -343,7 +343,7 @@ declare namespace gamePerformance {
         /**
          * Sub-scene description.
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -359,7 +359,7 @@ declare namespace gamePerformance {
         /**
          * Frequency in one game of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -367,7 +367,7 @@ declare namespace gamePerformance {
         /**
          * Duration of this scene in milliseconds.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -375,7 +375,7 @@ declare namespace gamePerformance {
         /**
          * Recommended cpu level. The value ranges from 1 to 3 in ascending order.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -383,7 +383,7 @@ declare namespace gamePerformance {
         /**
          * Recommended gpu level. The value ranges from 1 to 3 in ascending order.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -391,7 +391,7 @@ declare namespace gamePerformance {
         /**
          * Recommended ddr level. The value ranges from 1 to 3 in ascending order.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -399,7 +399,7 @@ declare namespace gamePerformance {
         /**
          * Recommended fps.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -407,7 +407,7 @@ declare namespace gamePerformance {
         /**
          * Max fps of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -415,7 +415,7 @@ declare namespace gamePerformance {
         /**
          * Current fps of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -426,7 +426,7 @@ declare namespace gamePerformance {
          * "logic": logic thread
          * "net": network thread
          *
-         * @type { string }
+         * @type { ?string }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -434,7 +434,7 @@ declare namespace gamePerformance {
         /**
          * Average number of draw-calls per frame of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -442,7 +442,7 @@ declare namespace gamePerformance {
         /**
          * Average number of model vertices per frame of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -450,7 +450,7 @@ declare namespace gamePerformance {
         /**
          * Average number of model triangles per frame of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -458,7 +458,7 @@ declare namespace gamePerformance {
         /**
          * Average number of shaders per frame of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -466,7 +466,7 @@ declare namespace gamePerformance {
         /**
          * Average number of textures per frame of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -474,7 +474,7 @@ declare namespace gamePerformance {
         /**
          * Average number of meshes per frame of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -482,7 +482,7 @@ declare namespace gamePerformance {
         /**
          * Average number of channels per frame of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -490,7 +490,7 @@ declare namespace gamePerformance {
         /**
          * Number of participants on the same screen of this scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -508,10 +508,10 @@ declare namespace gamePerformance {
          * Game network delay time in millisecond.
          * When the total delay changes, the delay is sent once. The sending delay includes the uplink delay, downlink delay, and server processing time.
          *
-         * @example total:50|up:20|server:10|down:20
          * @type { string }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
+         * @example total:50|up:20|server:10|down:20
          */
         netLatency: string;
         /**
@@ -520,7 +520,7 @@ declare namespace gamePerformance {
          * 2: mid
          * 3: high
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.GameService.GamePerformance
          * @since 5.0.0(12)
          */
@@ -603,7 +603,7 @@ declare namespace gamePerformance {
     /**
      * Update game info in gaming.
      *
-     * @param {T extends BaseGameInfo} gameInfo
+     * @param { T } gameInfo
      * @returns { Promise<void> } Returns void.
      * @throws { BusinessError } 401 - The parameter check failed.
      * @throws { BusinessError } 1010300003 - Invalid request.
@@ -624,7 +624,7 @@ declare namespace gamePerformance {
     /**
      * Unsubscribes device state change events
      * @param { 'deviceStateChanged' } type - Type of the event to listen for.
-     * @param { ?Callback<DeviceInfo> } [callback] - If this parameter is specified, unsubscribe only current subscriber, otherwise unsubscribe all subscribers.
+     * @param { Callback<DeviceInfo> } [callback] - If this parameter is specified, unsubscribe only current subscriber, otherwise unsubscribe all subscribers.
      * @throws { BusinessError } 401 - The parameter check failed.
      * @syscap SystemCapability.GameService.GamePerformance
      * @since 5.0.0(12)

@@ -6,10 +6,15 @@ import {
   defineAsyncApi,
 } from '@dcloudio/uni-api'
 import { getCurrentPage } from '@dcloudio/uni-core'
-import { normalizeRouteKey, removePage } from '../../../framework/setup/page'
+import {
+  entryPageState,
+  normalizeRouteKey,
+  redirectToPagesBeforeEntryPages,
+  removePage,
+} from '../../../framework/setup/page'
 import { navigate } from './utils'
 
-function removeLastPage() {
+export function removeLastPage() {
   const page = getCurrentPage()
   if (!page) {
     return
@@ -22,6 +27,15 @@ export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
   // @ts-expect-error
   ({ url, isAutomatedTesting }, { resolve, reject }) => {
+    if (!entryPageState.handledBeforeEntryPageRoutes) {
+      redirectToPagesBeforeEntryPages.push({
+        args: { type: API_REDIRECT_TO, url, isAutomatedTesting },
+        resolve,
+        reject,
+      })
+      return
+    }
+
     return (
       // TODO exists 属性未实现
       removeLastPage(),

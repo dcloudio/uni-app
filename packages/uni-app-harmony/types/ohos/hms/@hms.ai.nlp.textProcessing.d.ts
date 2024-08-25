@@ -22,6 +22,7 @@ declare namespace textProcessing {
     export interface EntityConfig {
         /**
          * Entity type configuration item. The structure is of the enumeration type.
+         * @type {?EntityType[]}
          * @syscap SystemCapability.AI.NaturalLanguage.TextProcessing
          * @since 5.0.0(12)
          */
@@ -36,24 +37,28 @@ declare namespace textProcessing {
     export interface Entity {
         /**
          * Original text of the entity.
+         * @type {string}
          * @syscap SystemCapability.AI.NaturalLanguage.TextProcessing
          * @since 5.0.0(12)
          */
         text: string;
         /**
          * Position of the entity in the original text.
+         * @type {number}
          * @syscap SystemCapability.AI.NaturalLanguage.TextProcessing
          * @since 5.0.0(12)
          */
         charOffset: number;
         /**
          * The type of the entity.
+         * @type {EntityType}
          * @syscap SystemCapability.AI.NaturalLanguage.TextProcessing
          * @since 5.0.0(12)
          */
         type: EntityType;
         /**
          * Structured Information of the entity.
+         * @type {string}
          * @syscap SystemCapability.AI.NaturalLanguage.TextProcessing
          * @since 5.0.0(12)
          */
@@ -68,12 +73,14 @@ declare namespace textProcessing {
     export interface WordSegment {
         /**
          * the word in the getWordSegment method result.
+         * @type {string}
          * @syscap SystemCapability.AI.NaturalLanguage.TextProcessing
          * @since 5.0.0(12)
          */
         word: string;
         /**
          * The tag of word in the getWordSegment method result.
+         * @type {string}
          * @syscap SystemCapability.AI.NaturalLanguage.TextProcessing
          * @since 5.0.0(12)
          */
@@ -93,9 +100,8 @@ declare namespace textProcessing {
     function getWordSegment(text: string): Promise<Array<WordSegment>>;
     /**
      * Get the entity from the given text.
-     * @param { string }  text - The input text from js.
+     * @param { string } text - The input text from js.
      * @param { EntityConfig } entityConfig - Optional configuration item, which is the entity type.
-     * @param { string } text - The input text.
      * @returns { Promise<Array<Entity>> } promise - The promise of getting getEntity result.
      * @throws { BusinessError } 200 - Run timed out, please try again later.
      * @throws { BusinessError } 401 - The parameter check failed.

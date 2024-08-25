@@ -30,38 +30,33 @@ export function uniViteCopyPlugin({
         return
       }
       initialized = true
+      const is_prod =
+        process.env.NODE_ENV !== 'development' ||
+        process.env.UNI_AUTOMATOR_CONFIG
+      const onChange = is_prod
+        ? undefined
+        : debounce(
+            () => {
+              resetOutput('log')
+              output('log', M['dev.watching.end'])
+            },
+            100,
+            { setTimeout, clearTimeout }
+          )
       return new Promise((resolve) => {
         Promise.all(
           targets.map(({ watchOptions, ...target }) => {
             return new Promise((resolve) => {
-              // 防抖，可能短时间触发很多次add,unlink
-              const onChange = debounce(
-                () => {
-                  resetOutput('log')
-                  output('log', M['dev.watching.end'])
-                },
-                100,
-                { setTimeout, clearTimeout }
-              )
               new FileWatcher({
                 ...target,
               }).watch(
                 {
                   cwd: process.env.UNI_INPUT_DIR,
+                  persistent: is_prod ? false : true,
                   ...watchOptions,
                 },
-                (watcher) => {
-                  if (
-                    process.env.NODE_ENV !== 'development' ||
-                    process.env.UNI_AUTOMATOR_CONFIG
-                  ) {
-                    // 生产或自动化测试模式下，延迟 close，否则会影响 chokidar 初始化的 add 等事件
-                    setTimeout(() => {
-                      watcher.close().then(() => resolve(void 0))
-                    }, 2000)
-                  } else {
-                    resolve(void 0)
-                  }
+                () => {
+                  resolve(void 0)
                 },
                 onChange
               )

@@ -30,7 +30,7 @@ declare namespace serviceNotification {
      *
      * @param { Context } context - Indicates the context of application or capability.
      * @param { Array<string> } entityIds - Indicates ids of the entities to be subscribed.
-     * @param { AsyncCallback<SubscribeResult> } callback - The callback of requestSubscribeNotification.
+     * @param { AsyncCallback<RequestResult> } callback - The callback of requestSubscribeNotification.
      * @throws { BusinessError } 401 - Invalid input parameter.
      * @throws { BusinessError } 1000900001 - System internal error.
      * @throws { BusinessError } 1000900008 - Connect push service failed.
@@ -209,7 +209,7 @@ declare namespace serviceNotification {
     /**
      * The result code of entity.
      *
-     * @typedef ResultCode
+     * @enum { number }
      * @syscap SystemCapability.Push.PushService
      * @StageModelOnly
      * @since 4.1.0(11)
@@ -217,7 +217,7 @@ declare namespace serviceNotification {
     /**
     * The result code of entity.
     *
-    * @typedef ResultCode
+    * @enum { number }
     * @syscap SystemCapability.Push.PushService
     * @StageModelOnly
     * @atomicservice
@@ -308,7 +308,7 @@ declare namespace serviceNotification {
     /**
      * The type of the subscribe notification.
      *
-     * @typedef SubscribeNotificationType
+     * @enum { number }
      * @syscap SystemCapability.Push.PushService
      * @StageModelOnly
      * @atomicservice

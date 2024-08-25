@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023 Huawei Device Co., Ltd. All rights reserved.
  */
-
+import { BusinessError } from '@ohos.base';
 /**
  * Provides taboo related APIs to deal with political, religious, or cultural data.
  *

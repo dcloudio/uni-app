@@ -13,16 +13,14 @@ import {
   useI18n,
 } from '@dcloudio/uni-core'
 import { ON_BACK_PRESS, ON_SHOW } from '@dcloudio/uni-shared'
+import { setStatusBarStyle } from '../../../helpers/statusBar'
 
 import {
   ANI_CLOSE,
   ANI_DURATION,
 } from '@dcloudio/uni-app-plus/service/constants'
 import { removePage } from '@dcloudio/uni-app-plus/service/framework/page/getCurrentPages'
-import {
-  backWebview,
-  closeWebview,
-} from '@dcloudio/uni-app-plus/service/api/route/webview'
+import { backWebview, closeWebview } from './webview'
 import {
   isDirectPage,
   reLaunchEntryPage,
@@ -114,7 +112,7 @@ function back(
     pages
       .slice(len - delta, len)
       .forEach((page) => removePage(page as ComponentPublicInstance))
-    // TODO setStatusBarStyle()
+    setStatusBarStyle()
     // 前一个页面触发 onShow
     invokeHook(ON_SHOW)
   }

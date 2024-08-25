@@ -395,6 +395,9 @@ declare namespace extendService {
      * @param { VerifyRequest } request - Indicates the verification request parameters.
      * @param { AsyncCallback<VerifyResult> } callback - Indicates the callback used to return the result.
      * @throws { BusinessError } 401 - Parameter error.
+     * Possible causes:
+     *   1. Incorrect parameter types.
+     *   2. Parameter verification failed.
      * @throws { BusinessError } 1001600001 - The network is unavailable.
      * @throws { BusinessError } 1001600002 - The user has not logged in with HUAWEI ID.
      * @throws { BusinessError } 1001600003 - Failed to check the fingerprint of the application bundle.
@@ -413,6 +416,9 @@ declare namespace extendService {
      * @param { VerifyRequest } request - Indicates the verification request parameters.
      * @param { AsyncCallback<VerifyResult> } callback - Indicates the callback used to return the result.
      * @throws { BusinessError } 401 - Parameter error.
+     * Possible causes:
+     *   1. Incorrect parameter types.
+     *   2. Parameter verification failed.
      * @throws { BusinessError } 1001600001 - The network is unavailable.
      * @throws { BusinessError } 1001600002 - The user has not logged in with HUAWEI ID.
      * @throws { BusinessError } 1001600003 - Failed to check the fingerprint of the application bundle.
@@ -433,6 +439,9 @@ declare namespace extendService {
      * @param { VerifyRequest } request - Indicates the verification request parameters.
      * @returns { Promise<VerifyResult> } Promise used to return the result.
      * @throws { BusinessError } 401 - Parameter error.
+     * Possible causes:
+     *   1. Incorrect parameter types.
+     *   2. Parameter verification failed.
      * @throws { BusinessError } 1001600001 - The network is unavailable.
      * @throws { BusinessError } 1001600002 - The user has not logged in with HUAWEI ID.
      * @throws { BusinessError } 1001600003 - Failed to check the fingerprint of the application bundle.
@@ -451,6 +460,9 @@ declare namespace extendService {
      * @param { VerifyRequest } request - Indicates the verification request parameters.
      * @returns { Promise<VerifyResult> } Promise used to return the result.
      * @throws { BusinessError } 401 - Parameter error.
+     * Possible causes:
+     *   1. Incorrect parameter types.
+     *   2. Parameter verification failed.
      * @throws { BusinessError } 1001600001 - The network is unavailable.
      * @throws { BusinessError } 1001600002 - The user has not logged in with HUAWEI ID.
      * @throws { BusinessError } 1001600003 - Failed to check the fingerprint of the application bundle.
@@ -483,6 +495,9 @@ declare namespace extendService {
      * @param { common.Context } context - The context of an ability.
      * @param { AsyncCallback<void> } callback - Indicates the callback used to return the result.
      * @throws { BusinessError } 401 - Parameter error.
+     * Possible causes:
+     *   1. Incorrect parameter types.
+     *   2. Parameter verification failed.
      * @throws { BusinessError } 1001600001 - The network is unavailable.
      * @throws { BusinessError } 1001600002 - The user has not logged in with HUAWEI ID.
      * @throws { BusinessError } 1001600003 - Failed to check the fingerprint of the application bundle.
@@ -512,6 +527,9 @@ declare namespace extendService {
      * @param { common.Context } context - The context of an ability.
      * @returns { Promise<void> } Promise used to return the result.
      * @throws { BusinessError } 401 - Parameter error.
+     * Possible causes:
+     *   1. Incorrect parameter types.
+     *   2. Parameter verification failed.
      * @throws { BusinessError } 1001600001 - The network is unavailable.
      * @throws { BusinessError } 1001600002 - The user has not logged in with HUAWEI ID.
      * @throws { BusinessError } 1001600003 - Failed to check the fingerprint of the application bundle.

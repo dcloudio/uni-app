@@ -16,14 +16,12 @@
  * @file
  * @kit ArkWeb
  */
-
-/// <reference path="../component/units.d.ts" />
 import { AsyncCallback } from './@ohos.base';
 import { Callback } from './@ohos.base';
-import { Resource } from 'GlobalResource';
 import cert from './@ohos.security.cert';
 import image from './@ohos.multimedia.image';
 import type print from './@ohos.print';
+import { WebNetErrorList } from './@ohos.web.netErrorList';
 /**
  * This module provides the capability to manage web modules.
  *
@@ -72,6 +70,15 @@ declare namespace webview {
      * @crossplatform
      * @atomicservice
      * @since 11
+     */
+    /**
+     * Defines the Web's request/response header.
+     *
+     * @typedef WebHeader
+     * @syscap SystemCapability.Web.Webview.Core
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     interface WebHeader {
         /**
@@ -374,6 +381,14 @@ declare namespace webview {
      * @atomicservice
      * @since 11
      */
+    /**
+     * Defines the hit test value, related to {@link getHitTestValue} method.
+     *
+     * @typedef HitTestValue
+     * @syscap SystemCapability.Web.Webview.Core
+     * @atomicservice
+     * @since 12
+     */
     interface HitTestValue {
         /**
          * Get the hit test type.
@@ -418,6 +433,14 @@ declare namespace webview {
      * @syscap SystemCapability.Web.Webview.Core
      * @atomicservice
      * @since 11
+     */
+    /**
+     * Defines the configuration of web custom scheme, related to {@link customizeSchemes} method.
+     *
+     * @typedef WebCustomScheme
+     * @syscap SystemCapability.Web.Webview.Core
+     * @atomicservice
+     * @since 12
      */
     interface WebCustomScheme {
         /**
@@ -532,6 +555,14 @@ declare namespace webview {
      * @atomicservice
      * @since 11
      */
+    /**
+     * Provides basic information of web storage.
+     *
+     * @typedef WebStorageOrigin
+     * @syscap SystemCapability.Web.Webview.Core
+     * @atomicservice
+     * @since 12
+     */
     interface WebStorageOrigin {
         /**
          * Url source.
@@ -579,7 +610,7 @@ declare namespace webview {
     /**
      * Defines the Web's request info.
      *
-     * @interface RequestInfo
+     * @typedef RequestInfo
      * @syscap SystemCapability.Web.Webview.Core
      * @atomicservice
      * @since 12
@@ -1561,7 +1592,7 @@ declare namespace webview {
         /**
          * Get the string value of the web message.
          * @returns { string } - Returns data of string type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1569,7 +1600,7 @@ declare namespace webview {
         /**
          * Get the string value of the web message.
          * @returns { string } - Returns data of string type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
@@ -1579,7 +1610,7 @@ declare namespace webview {
         /**
          * Get the number value of the web message.
          * @returns { number } - Returns data of number type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1587,7 +1618,7 @@ declare namespace webview {
         /**
          * Get the number value of the web message.
          * @returns { number } - Returns data of number type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
@@ -1597,7 +1628,7 @@ declare namespace webview {
         /**
          * Get the boolean value of the web message.
          * @returns { boolean } - Returns data of Boolean type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1605,7 +1636,7 @@ declare namespace webview {
         /**
          * Get the boolean value of the web message.
          * @returns { boolean } - Returns data of Boolean type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
@@ -1615,7 +1646,7 @@ declare namespace webview {
         /**
          * Get the array buffer value of the web message.
          * @returns { ArrayBuffer } - Returns data of ArrayBuffer type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1623,7 +1654,7 @@ declare namespace webview {
         /**
          * Get the array buffer value of the web message.
          * @returns { ArrayBuffer } - Returns data of ArrayBuffer type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
@@ -1633,7 +1664,7 @@ declare namespace webview {
         /**
          * Get the array value of the web message.
          * @returns { Array<string | number | boolean> } - Returns data of Array type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1641,7 +1672,7 @@ declare namespace webview {
         /**
          * Get the array value of the web message.
          * @returns { Array<string | number | boolean> } - Returns data of Array type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
@@ -1651,7 +1682,7 @@ declare namespace webview {
         /**
          * Get the error value of the web message.
          * @returns { Error } - Returns data of Error type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1659,7 +1690,7 @@ declare namespace webview {
         /**
          * Get the error value of the web message.
          * @returns { Error } - Returns data of Error type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
@@ -1670,7 +1701,7 @@ declare namespace webview {
          * Set the type of the web message.
          * @param { WebMessageType } type - set WebMessageType type data
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1691,7 +1722,7 @@ declare namespace webview {
          * Set the string value of the web message.
          * @param { string } message - set string type data
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1712,7 +1743,7 @@ declare namespace webview {
          * Set the number value of the web message.
          * @param { number } message - set number type data
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1733,7 +1764,7 @@ declare namespace webview {
          * Set the boolean value of the web message.
          * @param { boolean } message - set boolean type data
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1754,7 +1785,7 @@ declare namespace webview {
          * Set the array buffer value of the web message.
          * @param { ArrayBuffer } message - set ArrayBuffer type data
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          *
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
@@ -1775,7 +1806,7 @@ declare namespace webview {
          * Set the array value of the web message.
          * @param { Array<string | number | boolean> } message - set Array type data
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the web message.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
          */
@@ -1841,6 +1872,14 @@ declare namespace webview {
      * @atomicservice
      * @since 11
      */
+    /**
+     * Define html web message port.
+     * @typedef WebMessagePort
+     * @syscap SystemCapability.Web.Webview.Core
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     interface WebMessagePort {
         /**
          * The flag indicates whether more formats are supported than string and array buffers.
@@ -1873,7 +1912,7 @@ declare namespace webview {
          * Post a message to other port.
          * @param { WebMessage } message - Message to send.
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100010 - Can not post message using this port.
+         * @throws { BusinessError } 17100010 - Failed to post messages through the port.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 9
          */
@@ -1893,7 +1932,7 @@ declare namespace webview {
          * Receive message from other port.
          * @param { function } callback - Callback function for receiving messages.
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100006 - Can not register message event using this port.
+         * @throws { BusinessError } 17100006 - Failed to register a message event for the port.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 9
          */
@@ -1913,7 +1952,7 @@ declare namespace webview {
          * Post a message to other port.
          * @param { WebMessageExt } message - Message to send.
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100010 - Can not post message using this port.
+         * @throws { BusinessError } 17100010 - Failed to post messages through the port.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
          */
@@ -1932,7 +1971,7 @@ declare namespace webview {
          * Receive message from other port.
          * @param { function } callback - Callback function for receiving messages.
          * @throws { BusinessError } 401 - Invalid input parameter.
-         * @throws { BusinessError } 17100006 - Can not register message event using this port.
+         * @throws { BusinessError } 17100006 - Failed to register a message event for the port.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
          */
@@ -1961,6 +2000,14 @@ declare namespace webview {
      * @crossplatform
      * @atomicservice
      * @since 11
+     */
+    /**
+     * Provides information for history item in BackForwardList.
+     * @typedef HistoryItem
+     * @syscap SystemCapability.Web.Webview.Core
+     * @crossplatform
+     * @atomicservice
+     * @since 12
      */
     interface HistoryItem {
         /**
@@ -2029,6 +2076,14 @@ declare namespace webview {
      * @atomicservice
      * @since 11
      */
+    /**
+     * Provides back and forward history list information method. related to {@link HistoryItem}.
+     * @typedef BackForwardList
+     * @syscap SystemCapability.Web.Webview.Core
+     * @crossplatform
+     * @atomicservice
+     * @since 12
+     */
     interface BackForwardList {
         /**
          * Current index in BackForwardList.
@@ -2082,7 +2137,7 @@ declare namespace webview {
     /**
      * Defines the snapshot info.
      *
-     * @interface SnapshotInfo
+     * @typedef SnapshotInfo
      * @syscap SystemCapability.Web.Webview.Core
      * @atomicservice
      * @since 12
@@ -2110,7 +2165,7 @@ declare namespace webview {
     /**
      * Defines the snapshot result.
      *
-     * @interface SnapshotResult
+     * @typedef SnapshotResult
      * @syscap SystemCapability.Web.Webview.Core
      * @atomicservice
      * @since 12
@@ -2269,14 +2324,14 @@ declare namespace webview {
         /**
          * Get the string value of the JavaScript code execution result.
          * @returns { string } - Returns data of string type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
          */
         /**
          * Get the string value of the JavaScript code execution result.
          * @returns { string } - Returns data of string type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -2285,14 +2340,14 @@ declare namespace webview {
         /**
          * Get the number value of the JavaScript code execution result.
          * @returns { number } - Returns data of number type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
          */
         /**
          * Get the number value of the JavaScript code execution result.
          * @returns { number } - Returns data of number type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -2301,14 +2356,14 @@ declare namespace webview {
         /**
          * Get the boolean value of the JavaScript code execution result.
          * @returns { boolean } - Returns data of Boolean type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
          */
         /**
          * Get the boolean value of the JavaScript code execution result.
          * @returns { boolean } - Returns data of Boolean type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -2317,14 +2372,14 @@ declare namespace webview {
         /**
          * Get the array buffer value of the JavaScript code execution result.
          * @returns { ArrayBuffer } - Returns data of ArrayBuffer
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
          */
         /**
          * Get the array buffer value of the JavaScript code execution result.
          * @returns { ArrayBuffer } - Returns data of ArrayBuffer
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -2333,14 +2388,14 @@ declare namespace webview {
         /**
          * Get the array value of the the JavaScript code execution result.
          * @returns { Array<string | number | boolean> } - Returns data of Array type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 10
          */
         /**
          * Get the array value of the the JavaScript code execution result.
          * @returns { Array<string | number | boolean> } - Returns data of Array type
-         * @throws { BusinessError } 17100014 - The type does not match with the value of the result.
+         * @throws { BusinessError } 17100014 - The type and value of the message do not match.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -2376,7 +2431,7 @@ declare namespace webview {
     }
     /**
      * Options of generating code cache
-     * @interface CacheOptions
+     * @typedef CacheOptions
      * @syscap SystemCapability.Web.Webview.Core
      * @since 12
      */
@@ -2428,7 +2483,7 @@ declare namespace webview {
     }
     /**
      * Define offline resource's content and info.
-     * @interface OfflineResourceMap
+     * @typedef OfflineResourceMap
      * @syscap SystemCapability.Web.Webview.Core
      * @since 12
      */
@@ -2930,7 +2985,7 @@ declare namespace webview {
          * @throws { BusinessError } 401 - Invalid input parameter.
          * @throws { BusinessError } 17100001 - Init error.
          *                           The WebviewController must be associated with a Web component.
-         * @throws { BusinessError } 17100004 - Function not enable.
+         * @throws { BusinessError } 17100004 - Function not enabled.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 9
          */
@@ -2942,7 +2997,7 @@ declare namespace webview {
          * <br>2. Incorrect parameter types. 3.Parameter verification failed.
          * @throws { BusinessError } 17100001 - Init error.
          *                           The WebviewController must be associated with a Web component.
-         * @throws { BusinessError } 17100004 - Function not enable.
+         * @throws { BusinessError } 17100004 - Function not enabled.
          * @syscap SystemCapability.Web.Webview.Core
          * @crossplatform
          * @atomicservice
@@ -2954,7 +3009,7 @@ declare namespace webview {
          *
          * @throws { BusinessError } 17100001 - Init error.
          *                           The WebviewController must be associated with a Web component.
-         * @throws { BusinessError } 17100004 - Function not enable.
+         * @throws { BusinessError } 17100004 - Function not enabled.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 9
          */
@@ -2963,7 +3018,7 @@ declare namespace webview {
          *
          * @throws { BusinessError } 17100001 - Init error.
          *                           The WebviewController must be associated with a Web component.
-         * @throws { BusinessError } 17100004 - Function not enable.
+         * @throws { BusinessError } 17100004 - Function not enabled.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -2974,7 +3029,7 @@ declare namespace webview {
          *
          * @throws { BusinessError } 17100001 - Init error.
          *                           The WebviewController must be associated with a Web component.
-         * @throws { BusinessError } 17100004 - Function not enable.
+         * @throws { BusinessError } 17100004 - Function not enabled.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 9
          */
@@ -2983,7 +3038,7 @@ declare namespace webview {
          *
          * @throws { BusinessError } 17100001 - Init error.
          *                           The WebviewController must be associated with a Web component.
-         * @throws { BusinessError } 17100004 - Function not enable.
+         * @throws { BusinessError } 17100004 - Function not enabled.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -3261,7 +3316,7 @@ declare namespace webview {
          * @throws { BusinessError } 401 - Invalid input parameter.
          * @throws { BusinessError } 17100001 - Init error.
          *                           The WebviewController must be associated with a Web component.
-         * @throws { BusinessError } 17100008 - Cannot delete JavaScriptProxy.
+         * @throws { BusinessError } 17100008 - Failed to delete JavaScriptProxy because it does not exist.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 9
          */
@@ -3273,7 +3328,7 @@ declare namespace webview {
          * <br>2. Incorrect parameter types. 3.Parameter verification failed.
          * @throws { BusinessError } 17100001 - Init error.
          *                           The WebviewController must be associated with a Web component.
-         * @throws { BusinessError } 17100008 - Cannot delete JavaScriptProxy.
+         * @throws { BusinessError } 17100008 - Failed to delete JavaScriptProxy because it does not exist.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -4477,6 +4532,12 @@ declare namespace webview {
          *
          * @param { Array<OfflineResourceMap> } resourceMaps - Array of offline resource info maps.
          *    The count of array must between 1 and 30.
+         * @throws { BusinessError } 401 - Invalid input parameter.
+         *    Possible causes: 1. Mandatory parameters are left unspecified.
+         *    2. Incorrect parameter types. 3. Parameter verification failed.
+         * @throws { BusinessError } 17100001 - Init error.
+         *    The WebviewController must be associated with a Web component.
+         * @throws { BusinessError } 17100002 - Invalid url.
          * @syscap SystemCapability.Web.Webview.Core
          * @since 12
          */
@@ -4523,6 +4584,72 @@ declare namespace webview {
          * @since 12
          */
         getSurfaceId(): string;
+        /**
+         * Enable the ability to block Ads, disabled by default.
+         *
+         * @param { boolean } enable {@code true} Enable Ads block; {@code false} otherwise.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Parameter string is too long. 3.Parameter verification failed.
+         * @throws { BusinessError } 17100001 - Init error.
+         *     The WebviewController must be associated with a Web component.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        enableAdsBlock(enable: boolean): void;
+        /**
+         * Get whether Ads block is enabled.
+         *
+         * @returns { boolean } True if the ability of AdsBlock is enabled; else false.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        isAdsBlockEnabled(): boolean;
+        /**
+         * Get whether Ads block is enabled for current Webpage.
+         *
+         * @returns { boolean } True if the ability of AdsBlock is enabled for current Webpage; else false.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        isAdsBlockEnabledForCurPage(): boolean;
+        /**
+         * Set the URL trust list for the ArkWeb.
+         * When the URL trust list has been set, only the URLs in the list can be accessed.
+         *
+         * @param { string } urlTrustList - the URL trust list in JSON format.
+         *     An empty string means that all URLs are allowed to access.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Parameter string is too long. 3.Parameter verification failed.
+         * @throws { BusinessError } 17100001 - Init error.
+         *     The WebviewController must be associated with a Web component.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        setUrlTrustList(urlTrustList: string): void;
+        /**
+         * Set a path list, allowing cross-origin request access any origin when the file scheme URLs access resources in this
+         * path list. Also, When the path list is set, the file scheme URLs only allow access to resources within the path list.
+         * Path in the path list must meet one of the following path formats(sub path and module name must be provided):
+         *
+         * 1. App bundle resource directory, like "/data/storage/el1/bundle/entry/resource/resfile".
+         *    You can get resource directory using Context.resourceDir in AbilityKit.
+         * 2. A sub path of app files directory, like "/data/storage/el2/base/files/example/"
+         *    or "/data/storage/el2/base/haps/entry/files/example".
+         *    You can get app files directory using Context.filesDir in AbilityKit.
+         *
+         * @param { Array<string> } pathList - The path list allow universal access.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Parameter string is too long. 3.Parameter verification failed.
+         * @throws { BusinessError } 17100001 - Init error.
+         *     The WebviewController must be associated with a Web component.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @since 12
+         */
+        setPathAllowingUniversalAccess(pathList: Array<string>): void;
     }
     /**
      * Defines the state for download.
@@ -4894,7 +5021,7 @@ declare namespace webview {
         cancel(): void;
         /**
          * Pause the web download.
-         * @throws { BusinessError } 17100019 - The download has not been started yet.
+         * @throws { BusinessError } 17100019 - The download task is not started yet.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -4904,7 +5031,7 @@ declare namespace webview {
          * Resume the web download.
          * Use WebDownloadManager.resumeDownload to resume deserialized downloads.
          * WebDownloadItem.resume is only used to resume the currently paused download.
-         * @throws { BusinessError } 17100016 - The download is not paused.
+         * @throws { BusinessError } 17100016 - The download task is not paused.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 11
@@ -5023,7 +5150,7 @@ declare namespace webview {
          * Initialize data stream.
          *
          * @returns { Promise<void> } The promise of data stream is initialized.
-         * @throws { BusinessError } 17100022 - Data stream init failed.
+         * @throws { BusinessError } 17100022 - Failed to initialize the HTTP body stream.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 12
@@ -5513,7 +5640,7 @@ declare namespace webview {
         /**
          * Notify that this request should be finished and there is no more data available.
          *
-         * @throws { BusinessError } 17100021 - Resource handler process failed.
+         * @throws { BusinessError } 17100021 - The resource handler is invalid.
          * @syscap SystemCapability.Web.Webview.Core
          * @atomicservice
          * @since 12
@@ -5700,7 +5827,7 @@ declare namespace webview {
      * The native media player status handler.
      * Apps should use this class to handle native media player's status.
      *
-     * @interface NativeMediaPlayerHandler
+     * @typedef NativeMediaPlayerHandler
      * @syscap SystemCapability.Web.Webview.Core
      * @atomicservice
      * @since 12
@@ -5856,7 +5983,7 @@ declare namespace webview {
      * Apps should implements this interface, and pass an instance to web core.
      * Then web core can control native media player by this bridge.
      *
-     * @interface NativeMediaPlayerBridge
+     * @typedef NativeMediaPlayerBridge
      * @syscap SystemCapability.Web.Webview.Core
      * @atomicservice
      * @since 12
@@ -5961,18 +6088,21 @@ declare namespace webview {
      * Enum type for indicating the media type of native media player.
      * @enum {number}
      * @syscap SystemCapability.Web.Webview.Core
+     * @atomicservice
      * @since 12
      */
     enum MediaType {
         /**
          * Media type is video.
          * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
          * @since 12
          */
         VIDEO = 0,
         /**
          * Media type is audio.
          * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
          * @since 12
          */
         AUDIO
@@ -6030,6 +6160,47 @@ declare namespace webview {
         format: string;
     }
     /**
+     * Rectangle definition.
+     *
+     * @typedef RectEvent
+     * @syscap SystemCapability.Web.Webview.Core
+     * @since 12
+     */
+    interface RectEvent {
+        /**
+         * X coordinator of top left point.
+         *
+         * @type { number }
+         * @syscap SystemCapability.Web.Webview.Core
+         * @since 12
+         */
+        x: number;
+        /**
+         * Y coordinator of top left point.
+         *
+         * @type { number }
+         * @syscap SystemCapability.Web.Webview.Core
+         * @since 12
+         */
+        y: number;
+        /**
+         * Width of this rectangle.
+         *
+         * @type { number }
+         * @syscap SystemCapability.Web.Webview.Core
+         * @since 12
+         */
+        width: number;
+        /**
+         * Height of this rectangle.
+         *
+         * @type { number }
+         * @syscap SystemCapability.Web.Webview.Core
+         * @since 12
+         */
+        height: number;
+    }
+    /**
      * Surface information.
      *
      * @syscap SystemCapability.Web.Webview.Core
@@ -6046,15 +6217,11 @@ declare namespace webview {
         id: string;
         /**
          * Surface rect info.
+         * @type { RectEvent }
          * @syscap SystemCapability.Web.Webview.Core
          * @since 12
          */
-        rect: {
-            x: number;
-            y: number;
-            width: number;
-            height: number;
-        };
+        rect: RectEvent;
     }
     /**
      * Enum type for indicating the preload type.
@@ -6089,7 +6256,7 @@ declare namespace webview {
     /**
      * Media information.
      *
-     * @interface MediaInfo
+     * @typedef MediaInfo
      * @syscap SystemCapability.Web.Webview.Core
      * @atomicservice
      * @since 12
@@ -6179,5 +6346,83 @@ declare namespace webview {
      * @since 12
      */
     type CreateNativeMediaPlayerCallback = (handler: NativeMediaPlayerHandler, mediaInfo: MediaInfo) => NativeMediaPlayerBridge;
+    /**
+     * This class is used to set adblock config.
+     * @syscap SystemCapability.Web.Webview.Core
+     * @atomicservice
+     * @since 12
+     */
+    class AdsBlockManager {
+        /**
+         * set Ads Block ruleset file, containing easylist rules.
+         * @param {string} rulesFile - absolute file path contains app customized ads block rules.
+         * @param {boolean} replace - (@code true)replace internal rules;(@code false) add to internal rules.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        static setAdsBlockRules(rulesFile: string, replace: boolean): void;
+        /**
+         * Add items to Ads Block Disallow list.
+         * @param { Array<string> } domainSuffixes - list of domain suffix, if web page url matches someone in the list,
+         * Ads Block will be disallowed for the web page.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        static addAdsBlockDisallowedList(domainSuffixes: Array<string>): void;
+        /**
+         * Add items to Ads Block Allow list.
+         * By default, ads block is allowed for all pages unless they are added to the
+         * disallow list. The priority of allowlist is higher than the disallowlist. It is
+         * used to re-enable ads block on the page that matches disallow list.
+         * @param { Array<string> } domainSuffixes - list of domain suffix, if web page url matches someone in the list,
+         * Ads Block will be allowed for the web page.
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        static addAdsBlockAllowedList(domainSuffixes: Array<string>): void;
+        /**
+         * remove items from Ads Block Disallowed list.
+         * @param { Array<string> } domainSuffixes - list of domain suffix needed be removed from disallow list
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        static removeAdsBlockDisallowedList(domainSuffixes: Array<string>): void;
+        /**
+         * remove items from Ads Block Allowed list.
+         * @param { Array<string> } domainSuffixes - list of domain suffix needed be removed from allow list
+         * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified.
+         * <br>2. Incorrect parameter types.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        static removeAdsBlockAllowedList(domainSuffixes: Array<string>): void;
+        /**
+         * clear Ads Block Disallowed list.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        static clearAdsBlockDisallowedList(): void;
+        /**
+         * clear Ads Block Allowed list.
+         * @syscap SystemCapability.Web.Webview.Core
+         * @atomicservice
+         * @since 12
+         */
+        static clearAdsBlockAllowedList(): void;
+    }
 }
 export default webview;

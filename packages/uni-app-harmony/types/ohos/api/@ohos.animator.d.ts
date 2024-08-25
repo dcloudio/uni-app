@@ -326,7 +326,7 @@ export interface AnimatorResult {
      * <br> 1. Mandatory parameters are left unspecified.
      * <br> 2. Incorrect parameters types.
      * <br> 3. Parameter verification failed.
-     * @throws { BusinessError } 100001 - if no page is found for pageId or fail to get object property list.
+     * @throws { BusinessError } 100001 - The specified page is not found or the object property list is not obtained.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @since 9
      */
@@ -337,7 +337,7 @@ export interface AnimatorResult {
      * <br> 1. Mandatory parameters are left unspecified.
      * <br> 2. Incorrect parameters types.
      * <br> 3. Parameter verification failed.
-     * @throws { BusinessError } 100001 - if no page is found for pageId or fail to get object property list.
+     * @throws { BusinessError } 100001 - The specified page is not found or the object property list is not obtained.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @since 10
@@ -349,7 +349,7 @@ export interface AnimatorResult {
      * <br> 1. Mandatory parameters are left unspecified.
      * <br> 2. Incorrect parameters types.
      * <br> 3. Parameter verification failed.
-     * @throws { BusinessError } 100001 - if no page is found for pageId or fail to get object property list.
+     * @throws { BusinessError } 100001 - The specified page is not found or the object property list is not obtained.
      * @syscap SystemCapability.ArkUI.ArkUI.Full
      * @crossplatform
      * @atomicservice

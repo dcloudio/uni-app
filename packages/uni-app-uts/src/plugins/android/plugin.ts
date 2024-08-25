@@ -1,16 +1,19 @@
 import path from 'path'
 import fs from 'fs-extra'
-import type { OutputBundle, PluginContext } from 'rollup'
+import type { ResolvedConfig } from 'vite'
+import { extend, isString } from '@vue/shared'
+import type { ChangeEvent, OutputBundle, PluginContext } from 'rollup'
 import {
   type UniVitePlugin,
   buildUniExtApis,
+  createUniXCompilerOnce,
   emptyDir,
   formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
+  getUTSComponentAutoImports,
   getUTSEasyComAutoImports,
   getUniExtApiProviderRegisters,
   normalizeEmitAssetFileName,
-  normalizeNodeModules,
   normalizePath,
   parseManifestJsonOnce,
   parseUniExtApiNamespacesOnce,
@@ -27,6 +30,8 @@ import {
   getUniCloudSpaceList,
   parseImports,
   parseUTSRelativeFilename,
+  transformAutoImport,
+  transformUniCloudMixinDataCom,
   tscOutDir,
   uvueOutDir,
 } from './utils'
@@ -39,13 +44,6 @@ import {
 } from '../utils'
 
 import { genClassName } from '../..'
-import type { ResolvedConfig } from 'vite'
-import { extend, isString } from '@vue/shared'
-
-declare class WatchProgramHelper {
-  watch(timeout?: number): void
-  wait(): Promise<void>
-}
 
 const uniCloudSpaceList = getUniCloudSpaceList()
 
@@ -80,9 +78,12 @@ export function uniAppPlugin(): UniVitePlugin {
   }
   emptyTscDir()
 
-  let watcher: WatchProgramHelper | undefined
-
   let resolvedConfig: ResolvedConfig
+
+  const uniXCompiler =
+    process.env.UNI_APP_X_TSC === 'true' ? createUniXCompilerOnce() : null
+  const changedFiles: { fileName: string; event: ChangeEvent }[] = []
+
   return {
     name: 'uni:app-uts',
     apply: 'build',
@@ -140,20 +141,20 @@ export function uniAppPlugin(): UniVitePlugin {
         },
       }
     },
-    configResolved(config) {
+    async configResolved(config) {
       configResolved(config, true)
       resolvedConfig = config
+      if (uniXCompiler) {
+        await uniXCompiler.init()
+      }
     },
     async transform(code, id) {
       const { filename } = parseVueRequest(id)
       if (!filename.endsWith('.uts') && !filename.endsWith('.ts')) {
         if (filename.endsWith('.json')) {
-          const fileName = path.relative(inputDir, id)
           this.emitFile({
             type: 'asset',
-            fileName: normalizeEmitAssetFileName(
-              normalizeFilename(fileName, false)
-            ),
+            fileName: normalizeEmitAssetFileName(normalizeFilename(id, false)),
             source: code,
           })
         }
@@ -162,12 +163,14 @@ export function uniAppPlugin(): UniVitePlugin {
       // 仅处理 uts 文件
       // 忽略 uni-app-uts/lib/automator/index.uts
       if (!filename.includes('uni-app-uts')) {
+        code = (
+          await transformAutoImport(transformUniCloudMixinDataCom(code), id)
+        ).code
         const isMainUTS = normalizePath(id) === mainUTS
-        const fileName = path.relative(inputDir, id)
         this.emitFile({
           type: 'asset',
           fileName: normalizeEmitAssetFileName(
-            normalizeFilename(fileName, isMainUTS)
+            normalizeFilename(id, isMainUTS)
           ),
           source: normalizeCode(code, isMainUTS),
         })
@@ -183,16 +186,25 @@ export function uniAppPlugin(): UniVitePlugin {
         return
       }
       // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
-      checkUTSEasyComAutoImports(inputDir, bundle, this)
+      // checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
-    watchChange() {
-      if (process.env.UNI_APP_X_TSC === 'true') {
-        watcher && watcher.watch(3000)
+    async watchChange(fileName, change) {
+      if (uniXCompiler) {
+        // watcher && watcher.watch(3000)
+        changedFiles.push({ fileName, event: change.event })
       }
     },
     async writeBundle() {
       if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
         return
+      }
+      if (uniXCompiler) {
+        if (changedFiles.length) {
+          const files = changedFiles.splice(0)
+          await uniXCompiler.invalidate(files)
+        } else if (isFirst) {
+          await uniXCompiler.addRootFile(path.join(tscOutputDir, 'main.uts.ts'))
+        }
       }
       let pageCount = 0
       if (isFirst) {
@@ -210,25 +222,7 @@ export function uniAppPlugin(): UniVitePlugin {
       } else {
         process.env.UNI_APP_X_UNICLOUD_OBJECT = 'false'
       }
-      const { compileApp, runUTS2Kotlin } = resolveUTSCompiler()
-      if (process.env.UNI_APP_X_TSC === 'true') {
-        if (!watcher) {
-          watcher = runUTS2Kotlin(
-            process.env.NODE_ENV === 'development'
-              ? 'development'
-              : 'production',
-            {
-              inputDir: tscOutputDir,
-              cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
-              outputDir: uvueOutputDir,
-              normalizeFileName: normalizeNodeModules,
-            }
-          ).watcher
-        }
-        if (watcher) {
-          await watcher.wait()
-        }
-      }
+      const { compileApp } = resolveUTSCompiler()
       const res = await compileApp(path.join(uvueOutputDir, 'main.uts'), {
         pageCount,
         uniCloudObjectInfo,
@@ -248,7 +242,7 @@ export function uniAppPlugin(): UniVitePlugin {
         ),
         extApiComponents: [...getExtApiComponents()],
         uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-        autoImports: getUTSEasyComAutoImports(),
+        autoImports: initAutoImports(),
         extApiProviders: parseUniExtApiProviders(manifestJson),
         uniModulesArtifacts: parseUniModulesArtifacts(),
         env: parseProcessEnv(resolvedConfig),
@@ -289,11 +283,24 @@ export function uniAppPlugin(): UniVitePlugin {
   }
 }
 
+function initAutoImports() {
+  const utsComponents = getUTSComponentAutoImports()
+  const autoImports: Record<string, [[string, string?]]> = {}
+  Object.keys(utsComponents).forEach((source) => {
+    if (autoImports[source]) {
+      autoImports[source].push(...utsComponents[source])
+    } else {
+      autoImports[source] = utsComponents[source]
+    }
+  })
+  return autoImports
+}
+
 function normalizeFilename(filename: string, isMain = false) {
   if (isMain) {
     return 'main.uts'
   }
-  return parseUTSRelativeFilename(filename)
+  return parseUTSRelativeFilename(filename, process.env.UNI_INPUT_DIR)
 }
 
 function normalizeCode(code: string, isMain = false) {
@@ -315,12 +322,14 @@ export function main(app: IApp) {
 `
 }
 
-function checkUTSEasyComAutoImports(
+// @ts-expect-error
+function _checkUTSEasyComAutoImports(
   inputDir: string,
   bundle: OutputBundle,
   ctx: PluginContext
 ) {
   const res = getUTSEasyComAutoImports()
+  const uvueOutputDir = uvueOutDir()
   Object.keys(res).forEach((fileName) => {
     if (fileName.endsWith('.vue') || fileName.endsWith('.uvue')) {
       if (fileName.startsWith('@/')) {
@@ -333,12 +342,21 @@ function checkUTSEasyComAutoImports(
         !bundle[relativeFileName + '.ts']
       ) {
         const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
-        ctx.emitFile({
-          type: 'asset',
-          fileName: normalizeEmitAssetFileName(relativeFileName),
-          source: `function ${className}Render(): any | null { return null }
-const ${className}Styles = []`,
-        })
+        const assetFileName = normalizeEmitAssetFileName(relativeFileName)
+        const assetSource = `function ${className}Render(): any | null { return null }
+const ${className}Styles = []`
+        if (process.env.UNI_APP_X_TSC === 'true') {
+          const fileName = path.resolve(uvueOutputDir, assetFileName)
+          if (!fs.existsSync(fileName)) {
+            fs.outputFileSync(fileName.replace(/\.ts$/, ''), assetSource)
+          }
+        } else {
+          ctx.emitFile({
+            type: 'asset',
+            fileName: assetFileName,
+            source: assetSource,
+          })
+        }
       }
     }
   })

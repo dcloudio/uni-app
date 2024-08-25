@@ -21,6 +21,7 @@ declare namespace site {
     /**
      * Provides interfaces for keyword search.
      *
+     * @typedef SearchByTextParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -156,6 +157,7 @@ declare namespace site {
     /**
      * Provides interfaces for nearby search.
      *
+     * @typedef NearbySearchParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -256,6 +258,7 @@ declare namespace site {
     /**
      * Provides interfaces for auto-Complete Search.
      *
+     * @typedef QueryAutoCompleteParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -355,6 +358,7 @@ declare namespace site {
     /**
      * Provides interfaces for address Details Search.
      *
+     * @typedef SearchByIdParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -397,6 +401,7 @@ declare namespace site {
     /**
      * Provides interfaces for positive geographic search.
      *
+     * @typedef GeocodeParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -439,6 +444,7 @@ declare namespace site {
     /**
      * Provides interfaces for inverse geographic search.
      *
+     * @typedef ReverseGeocodeParams
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -501,10 +507,33 @@ declare namespace site {
          * @since 4.1.0(11)
          */
         poiTypes?: Array<string>;
+        /**
+         * Whether to return to the nearby AOI, and this attribute is valid when isExtension is true.
+         *
+         * @type { ?boolean }
+         * @default false
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        isNearbyAoi?: boolean;
+        /**
+         * Sort rule for POIs.
+         *
+         * @type { ?SortRule }
+         * @default SortRule.DISTANCE
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        sortRule?: SortRule;
     }
     /**
      * Provides interfaces for keyword search Result.
      *
+     * @typedef SearchByTextResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -537,6 +566,7 @@ declare namespace site {
     /**
      * Provides interfaces for nearby search Response Result.
      *
+     * @typedef NearbySearchResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -569,6 +599,7 @@ declare namespace site {
     /**
      * Provides interfaces for auto-Complete Search Result.
      *
+     * @typedef QueryAutoCompleteResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -589,6 +620,7 @@ declare namespace site {
     /**
      * Provides interfaces for address Details Search Result.
      *
+     * @typedef SearchByIdResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -609,6 +641,7 @@ declare namespace site {
     /**
      * Provides interfaces for positive geographic search.
      *
+     * @typedef GeocodeResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -629,6 +662,7 @@ declare namespace site {
     /**
      * Provides interfaces for inverse geographic search Result.
      *
+     * @typedef ReverseGeocodeResult
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -699,6 +733,7 @@ declare namespace site {
     /**
      * The Site.
      *
+     * @typedef Site
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -799,6 +834,7 @@ declare namespace site {
     /**
      * The AddressComponent.
      *
+     * @typedef AddressComponent
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -808,7 +844,7 @@ declare namespace site {
         /**
          * countryName.
          *
-         * @type {string}
+         * @type {?string}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -959,6 +995,7 @@ declare namespace site {
     /**
      * The City.
      *
+     * @typedef City
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -968,7 +1005,7 @@ declare namespace site {
         /**
          * cityCode.
          *
-         * @type {string}
+         * @type {?string}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -978,7 +1015,7 @@ declare namespace site {
         /**
          * cityId.
          *
-         * @type {string}
+         * @type {?string}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -999,6 +1036,7 @@ declare namespace site {
     /**
      * The StreetNumber.
      *
+     * @typedef StreetNumber
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1008,7 +1046,7 @@ declare namespace site {
         /**
          * direction.
          *
-         * @type {string}
+         * @type {?string}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1018,7 +1056,7 @@ declare namespace site {
         /**
          * distance.
          *
-         * @type {number}
+         * @type {?number}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1038,7 +1076,7 @@ declare namespace site {
         /**
          * streetNumber.
          *
-         * @type {string}
+         * @type {?string}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1048,7 +1086,7 @@ declare namespace site {
         /**
          * streetName.
          *
-         * @type {string}
+         * @type {?string}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1058,7 +1096,7 @@ declare namespace site {
         /**
          * formatAddress.
          *
-         * @type {string}
+         * @type {?string}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1069,6 +1107,7 @@ declare namespace site {
     /**
      * The Poi.
      *
+     * @typedef Poi
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1178,7 +1217,7 @@ declare namespace site {
         /**
          * starRating.
          *
-         * @type {?string}
+         * @type {?number}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1188,7 +1227,7 @@ declare namespace site {
         /**
          * child nodes.
          *
-         * @type {?Array<childNode>}
+         * @type {?Array<ChildNode>}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1239,6 +1278,7 @@ declare namespace site {
     /**
      * The OpeningHours.
      *
+     * @typedef OpeningHours
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1248,7 +1288,7 @@ declare namespace site {
         /**
          * texts.
          *
-         * @type {Array<string>}
+         * @type {?Array<string>}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1269,6 +1309,7 @@ declare namespace site {
     /**
      * The Period.
      *
+     * @typedef Period
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1299,6 +1340,7 @@ declare namespace site {
     /**
      * The TimeOfWeek.
      *
+     * @typedef TimeOfWeek
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1329,6 +1371,7 @@ declare namespace site {
     /**
      * Child Node.
      *
+     * @typedef ChildNode
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1389,6 +1432,7 @@ declare namespace site {
     /**
      * The Comment.
      *
+     * @typedef Comment
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1419,6 +1463,7 @@ declare namespace site {
     /**
      * The Aoi.
      *
+     * @typedef Aoi
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1448,7 +1493,7 @@ declare namespace site {
         /**
          * siteId.
          *
-         * @type {?number}
+         * @type {?string}
          * @syscap SystemCapability.Map.Core
          * @stagemodelonly
          * @atomicservice
@@ -1485,10 +1530,21 @@ declare namespace site {
          * @since 4.1.0(11)
          */
         poiType?: string;
+        /**
+         * direction.
+         *
+         * @type {?string}
+         * @syscap SystemCapability.Map.Core
+         * @stagemodelonly
+         * @atomicservice
+         * @since 5.0.0(12)
+         */
+        direction?: string;
     }
     /**
      * The ReverseGeocodePoi.
      *
+     * @typedef ReverseGeocodePoi
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1569,6 +1625,7 @@ declare namespace site {
     /**
      * The Road.
      *
+     * @typedef Road
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1629,6 +1686,7 @@ declare namespace site {
     /**
      * The Intersection.
      *
+     * @typedef Intersection
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice
@@ -1688,7 +1746,6 @@ declare namespace site {
     }
     /**
      * Keyword query interface.
-     * Abnormal values are processed as no response.
      *
      * @param { SearchByTextParams } searchByTextParams.
      * @returns { SearchByTextResult } Return SearchByTextResult object.
@@ -1724,7 +1781,6 @@ declare namespace site {
     function searchByText(context: common.Context, searchByTextParams: SearchByTextParams): Promise<SearchByTextResult>;
     /**
      * Peripheral search interface.
-     * Abnormal values are processed as no response.
      *
      * @param { NearbySearchParams } nearbySearchParams.
      * @returns { NearbySearchResult } Return NearbySearchResult object.
@@ -1741,8 +1797,25 @@ declare namespace site {
      */
     function nearbySearch(nearbySearchParams: NearbySearchParams): Promise<NearbySearchResult>;
     /**
+     * Peripheral search interface.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { NearbySearchParams } nearbySearchParams.
+     * @returns { NearbySearchResult } Return NearbySearchResult object.
+     * @throws { BusinessError } 401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002603001 - Zero result.
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function nearbySearch(context: common.Context, nearbySearchParams: NearbySearchParams): Promise<NearbySearchResult>;
+    /**
      * Auto-Complete Interface.
-     * Abnormal values are processed as no response.
      *
      * @param { QueryAutoCompleteParams } queryAutoCompleteParams
      * @returns { QueryAutoCompleteResult } Return QueryAutoCompleteResult object.
@@ -1759,8 +1832,25 @@ declare namespace site {
      */
     function queryAutoComplete(queryAutoCompleteParams: QueryAutoCompleteParams): Promise<QueryAutoCompleteResult>;
     /**
+     * Auto-Complete Interface.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { QueryAutoCompleteParams } queryAutoCompleteParams
+     * @returns { QueryAutoCompleteResult } Return QueryAutoCompleteResult object.
+     * @throws { BusinessError } 401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002603001 - Zero result.
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function queryAutoComplete(context: common.Context, queryAutoCompleteParams: QueryAutoCompleteParams): Promise<QueryAutoCompleteResult>;
+    /**
      * Address details interface.
-     * Abnormal values are processed as no response.
      *
      * @param { SearchByIdParams } searchByIdParams
      * @returns { SearchByIdResult } Return SearchByIdResult object.
@@ -1777,8 +1867,25 @@ declare namespace site {
      */
     function searchById(searchByIdParams: SearchByIdParams): Promise<SearchByIdResult>;
     /**
+     * Address details interface.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { SearchByIdParams } searchByIdParams
+     * @returns { SearchByIdResult } Return SearchByIdResult object.
+     * @throws { BusinessError } 401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002603001 - Zero result.
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function searchById(context: common.Context, searchByIdParams: SearchByIdParams): Promise<SearchByIdResult>;
+    /**
      * geocoding interface.
-     * Abnormal values are processed as no response.
      *
      * @param { GeocodeParams } geocodeParams.
      * @returns { GeocodeResult } Return GeocodeResult Object.
@@ -1795,8 +1902,25 @@ declare namespace site {
      */
     function geocode(geocodeParams: GeocodeParams): Promise<GeocodeResult>;
     /**
+     * geocoding interface.
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { GeocodeParams } geocodeParams.
+     * @returns { GeocodeResult } Return GeocodeResult Object.
+     * @throws { BusinessError } 401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002603001 - Zero result.
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function geocode(context: common.Context, geocodeParams: GeocodeParams): Promise<GeocodeResult>;
+    /**
      * inverse geocoding interface
-     * Abnormal values are processed as no response.
      *
      * @param { ReverseGeocodeParams } reverseGeocodeParams
      * @returns { ReverseGeocodeResult } Return ReverseGeocodeResult object.
@@ -1812,6 +1936,24 @@ declare namespace site {
      * @since 4.1.0(11)
      */
     function reverseGeocode(reverseGeocodeParams: ReverseGeocodeParams): Promise<ReverseGeocodeResult>;
+    /**
+     * inverse geocoding interface
+     *
+     * @param { common.Context } context - The context of an ability.
+     * @param { ReverseGeocodeParams } reverseGeocodeParams
+     * @returns { ReverseGeocodeResult } Return ReverseGeocodeResult object.
+     * @throws { BusinessError } 401 - Invalid input parameter.
+     * @throws { BusinessError } 1002600001 - System internal error.
+     * @throws { BusinessError } 1002600002 - Failed to connect to the Map service.
+     * @throws { BusinessError } 1002600003 - App authentication failed.
+     * @throws { BusinessError } 1002600004 - The Map permission is not enabled.
+     * @throws { BusinessError } 1002603001 - Zero result.
+     * @syscap SystemCapability.Map.Core
+     * @stagemodelonly
+     * @atomicservice
+     * @since 5.0.0(12)
+     */
+    function reverseGeocode(context: common.Context, reverseGeocodeParams: ReverseGeocodeParams): Promise<ReverseGeocodeResult>;
     /**
      * Rule of result sort.
      *

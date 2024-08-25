@@ -56,6 +56,7 @@ export function resolveScript(
   resolved = compileScript(descriptor, {
     ...options.script,
     className: options.className || '',
+    root: options.root,
     id: descriptor.id,
     isProd: options.isProduction,
     inlineTemplate: true,

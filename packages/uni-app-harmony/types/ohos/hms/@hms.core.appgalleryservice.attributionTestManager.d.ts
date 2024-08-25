@@ -118,7 +118,7 @@ declare namespace attributionTestManager {
          * @type { number }
          * @syscap SystemCapability.AppGalleryService.AttributionManager
          * @StageModelOnly
-         * @@since 5.0.0(12)
+         * @since 5.0.0(12)
          */
         timestamp: number;
         /**
@@ -188,7 +188,7 @@ declare namespace attributionTestManager {
         /**
          * Business scene.
          *
-         * @type { number }
+         * @type { ?number }
          * @syscap SystemCapability.AppGalleryService.AttributionManager
          * @StageModelOnly
          * @since 5.0.0(12)

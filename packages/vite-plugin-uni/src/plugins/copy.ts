@@ -38,13 +38,18 @@ export function uniCopyPlugin({
   const ignorePlatformStaticDirs = getPlatforms()
     .filter((p) => {
       if (platform === 'app') {
+        if (process.env.UNI_APP_X === 'true') {
+          return p !== 'app'
+        }
         return p !== 'app' && p !== 'app-plus'
       } else if (platform === 'h5' || platform === 'web') {
         return p !== 'h5' && p !== 'web'
+      } else if (platform.startsWith('app-')) {
+        return p !== 'app' && p !== platform
       }
       return p !== platform
     })
-    .map((p) => '/' + PUBLIC_DIR + '/' + p)
+    .map((p) => '/' + PUBLIC_DIR + '/' + p + '/')
 
   const targets: UniViteCopyPluginTarget[] = [
     {

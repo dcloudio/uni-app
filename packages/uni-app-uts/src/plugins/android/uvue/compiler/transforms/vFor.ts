@@ -52,6 +52,7 @@ import {
   type TransformContext,
   createStructuralDirectiveTransform,
 } from '../transform'
+import { __BROWSER__, __DEV__ } from '../utils'
 
 export const transformFor = createStructuralDirectiveTransform(
   'for',
@@ -380,8 +381,7 @@ export function parseForExpression(
     index: undefined,
     finalized: false,
   }
-  // if (!__BROWSER__ && context.prefixIdentifiers) {
-  if (context.prefixIdentifiers) {
+  if (!__BROWSER__ && context.prefixIdentifiers) {
     result.source = processExpression(
       result.source as SimpleExpressionNode,
       context
@@ -475,7 +475,7 @@ function createAliasExpression(
   )
 }
 
-function createForLoopParams(
+export function createForLoopParams(
   { value, key, index }: ForParseResult,
   memoArgs: ExpressionNode
 ): ExpressionNode[] {

@@ -159,126 +159,126 @@ export declare enum SourceType {
 export declare interface Touch {
     /**
      * Pointer identifier
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     id: number;
     /**
      * Time stamp when touch is pressed
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     pressedTime: number;
     /**
      * X coordinate of the touch position on the screen
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     screenX: number;
     /**
      * Y coordinate of the touch position on the screen
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     screenY: number;
     /**
      * X coordinate of the touch position in the window
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     windowX: number;
     /**
      * Y coordinate of the touch position in the window
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     windowY: number;
     /**
      * Pressure value. The value range is [0.0, 1.0]. The value 0.0 indicates that the pressure is not supported.
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     pressure: number;
     /**
      * Width of the contact area when touch is pressed
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     width: number;
     /**
      * Height of the contact area when touch is pressed
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     height: number;
     /**
      * Angle relative to the YZ plane. The value range is [-90, 90]. A positive value indicates a rightward tilt.
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     tiltX: number;
     /**
      * Angle relative to the XZ plane. The value range is [-90, 90]. A positive value indicates a downward tilt.
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     tiltY: number;
     /**
      * Center point X of the tool area
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     toolX: number;
     /**
      * Center point Y of the tool area
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     toolY: number;
     /**
      * Width of the tool area
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     toolWidth: number;
     /**
      * Height of the tool area
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     toolHeight: number;
     /**
      * X coordinate of the input device
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     rawX: number;
     /**
      * Y coordinate of the input device
-     *
+     * @type { number }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     rawY: number;
     /**
      * Tool type
-     *
+     * @type { ToolType }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
@@ -294,28 +294,28 @@ export declare interface Touch {
 export declare interface TouchEvent extends InputEvent {
     /**
      * Touch action
-     *
+     * @type { Action }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     action: Action;
     /**
      * Current touch point
-     *
+     * @type { Touch }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     touch: Touch;
     /**
      * All touch points
-     *
+     * @type { Touch[] }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */
     touches: Touch[];
     /**
      * Device type of the touch source
-     *
+     * @type { SourceType }
      * @syscap SystemCapability.MultimodalInput.Input.Core
      * @since 9
      */

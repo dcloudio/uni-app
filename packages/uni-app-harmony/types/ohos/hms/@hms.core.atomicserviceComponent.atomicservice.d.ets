@@ -29,7 +29,7 @@ declare namespace atomicService {
         /**
          * Bluetooth switch
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -40,7 +40,7 @@ declare namespace atomicService {
         /**
          * Location switch
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -51,7 +51,7 @@ declare namespace atomicService {
         /**
          * Wi-Fi switch
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -62,7 +62,7 @@ declare namespace atomicService {
         /**
          * Device orientation
          *
-         * @type { string }
+         * @type { ?string }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -84,7 +84,7 @@ declare namespace atomicService {
         /**
          * Device Brand
          *
-         * @type { string }
+         * @type { ?string }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -95,7 +95,7 @@ declare namespace atomicService {
         /**
          * Device Model
          *
-         * @type { string }
+         * @type { ?string }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -106,7 +106,7 @@ declare namespace atomicService {
         /**
          * Screen Width
          *
-         * @type { number }
+         * @type { ?number }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -117,7 +117,7 @@ declare namespace atomicService {
         /**
          * Screen Height
          *
-         * @type { number }
+         * @type { ?number }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -128,7 +128,7 @@ declare namespace atomicService {
         /**
          * Status bar height
          *
-         * @type { number }
+         * @type { ?number }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -139,7 +139,7 @@ declare namespace atomicService {
         /**
          * Screen security zone
          *
-         * @type { window.AvoidArea }
+         * @type { ?window.AvoidArea }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -150,7 +150,7 @@ declare namespace atomicService {
         /**
          * Current system language
          *
-         * @type { string }
+         * @type { ?string }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -161,7 +161,7 @@ declare namespace atomicService {
         /**
          * Operating system version
          *
-         * @type { string }
+         * @type { ?string }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -172,7 +172,7 @@ declare namespace atomicService {
         /**
          * System Font Size
          *
-         * @type { number }
+         * @type { ?number }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -183,7 +183,7 @@ declare namespace atomicService {
         /**
          * SDK Api Version
          *
-         * @type { number }
+         * @type { ?number }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -194,7 +194,7 @@ declare namespace atomicService {
         /**
          * Bluetooth switch
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -205,7 +205,7 @@ declare namespace atomicService {
         /**
          * Location switch
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -216,7 +216,7 @@ declare namespace atomicService {
         /**
          * Wi-Fi switch
          *
-         * @type { boolean }
+         * @type { ?boolean }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -227,7 +227,7 @@ declare namespace atomicService {
         /**
          * Device orientation
          *
-         * @type { string }
+         * @type { ?string }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -238,7 +238,7 @@ declare namespace atomicService {
         /**
          * System current theme
          *
-         * @type { ColorMode }
+         * @type { ?ColorMode }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -249,7 +249,7 @@ declare namespace atomicService {
         /**
          * Usable Window Width
          *
-         * @type { number }
+         * @type { ?number }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -260,7 +260,7 @@ declare namespace atomicService {
         /**
          * Usable Window Height
          *
-         * @type { number }
+         * @type { ?number }
          * @readonly
          * @syscap SystemCapability.AtomicserviceComponent.atomicservice
          * @StageModelOnly
@@ -271,211 +271,27 @@ declare namespace atomicService {
     }
     /**
      * Types of SystemInfo.
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-    export type SystemInfoType = 
-    /**
-     * Type for device brand.
      *
+     * @typedef { string }
      * @syscap SystemCapability.AtomicserviceComponent.atomicservice
      * @StageModelOnly
      * @atomicservice
      * @since 5.0.0(12)
      */
-    'brand'
-    /**
-     * Type for device model.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'deviceModel'
-    /**
-     * Type for device screen width.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'screenWidth'
-    /**
-     * Type for device screen height.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'screenHeight'
-    /**
-     * Type for status bar height.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'statusBarHeight'
-    /**
-     * Type for device screen security zone.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'screenSafeArea'
-    /**
-     * Type for system language.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'language'
-    /**
-     * Type for operating system version.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'osFullName'
-    /**
-     * Type for system font size.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'fontSizeSetting'
-    /**
-     * Type for SDK api version.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'sdkApiVersion'
-    /**
-     * Type for bluetooth switch.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'bluetoothEnabled'
-    /**
-     * Type for location switch.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'locationEnabled'
-    /**
-     * Type for Wi-Fi switch.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'wifiEnabled'
-    /**
-     * Type for device orientation.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'deviceOrientation'
-    /**
-     * Type for system current theme.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'theme'
-    /**
-     * Type for device usable window width.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'windowWidth'
-    /**
-     * Type for device usable window height.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'windowHeight';
+    export type SystemInfoType = 'brand' | 'deviceModel' | 'screenWidth' | 'screenHeight' | 'statusBarHeight' | 'screenSafeArea' | 'language' | 'osFullName' | 'fontSizeSetting' | 'sdkApiVersion' | 'bluetoothEnabled' | 'locationEnabled' | 'wifiEnabled' | 'deviceOrientation' | 'theme' | 'windowWidth' | 'windowHeight';
     /**
      * Type of SystemSetting.
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-    export type SystemSettingType = 
-    /**
-     * Type for bluetooth switch.
      *
+     * @typedef { string }
      * @syscap SystemCapability.AtomicserviceComponent.atomicservice
      * @StageModelOnly
      * @atomicservice
      * @since 5.0.0(12)
      */
-    'bluetoothEnabled'
-    /**
-     * Type for location switch.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'locationEnabled'
-    /**
-     * Type for Wi-Fi switch.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'wifiEnabled'
-    /**
-     * Type for device orientation.
-     *
-     * @syscap SystemCapability.AtomicserviceComponent.atomicservice
-     * @StageModelOnly
-     * @atomicservice
-     * @since 5.0.0(12)
-     */
-     | 'deviceOrientation';
+    export type SystemSettingType = 'bluetoothEnabled' | 'locationEnabled' | 'wifiEnabled' | 'deviceOrientation';
     /**
      * Obtains system information such as the device, network status, screen, language, and theme.
+     *
      * @param { Array<SystemInfoType> } properties - Indicates the list of parameters to be obtained. This parameter
      *     can be null or empty.
      * @returns { SystemInfo }
@@ -487,6 +303,7 @@ declare namespace atomicService {
     function getSystemInfoSync(properties?: Array<SystemInfoType>): SystemInfo;
     /**
      * Obtains system information such as the device, network status, screen, language, and theme.
+     *
      * @param { Array<SystemInfoType> } properties - Indicates the list of parameters to be obtained. This parameter can
      *     be null or empty.
      * @returns { Promise<SystemInfo> }
@@ -498,6 +315,7 @@ declare namespace atomicService {
     function getSystemInfo(properties?: Array<SystemInfoType>): Promise<SystemInfo>;
     /**
      * Obtains system information, including Bluetooth, location, Wi-Fi status, and device direction information.
+     *
      * @param { Array<SystemSettingType> } properties - Indicates the list of parameters to be obtained. This parameter
      *     can be null or empty.
      * @returns { SystemSettingInfo }

@@ -2386,11 +2386,6 @@ function getExtName(path) {
     return array.length > 1 ? '.' + array[array.length - 1] : '';
 }
 
-let nativeApp;
-function getNativeApp() {
-    return nativeApp;
-}
-
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
     uni.navigateBack({
@@ -2414,7 +2409,6 @@ function initEnterOptions({ path, query, referrerInfo, }) {
     });
 }
 function initLaunchOptions({ path, query, referrerInfo, }) {
-    var _a, _b;
     extend(launchOptions, {
         path,
         query: query ? parseQuery(query) : {},
@@ -2424,10 +2418,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions, launchOptions);
-    const app = getNativeApp();
-    // @ts-expect-error syntaxdoc
-    const schemaLink = (_b = (_a = void 0 ) === null || _a === void 0 ? void 0 : _a.call(app)) !== null && _b !== void 0 ? _b : {};
-    return extend({}, launchOptions, schemaLink);
+    return enterOptions;
 }
 function parseRedirectInfo() {
     const weexPlus = weex.requireModule('plus');
@@ -9378,27 +9369,36 @@ const EmitProtocol = [
     },
 ];
 
-const emitter = new Emitter();
-const $on = defineSyncApi(API_ON, (name, callback) => {
-    emitter.on(name, callback);
-    return () => emitter.off(name, callback);
-}, OnProtocol);
-const $once = defineSyncApi(API_ONCE, (name, callback) => {
-    emitter.once(name, callback);
-    return () => emitter.off(name, callback);
-}, OnceProtocol);
-const $off = defineSyncApi(API_OFF, (name, callback) => {
-    if (!name) {
-        emitter.e = {};
-        return;
+class EventBus {
+    constructor() {
+        this.emitter = new Emitter();
+        this.$on = defineSyncApi(API_ON, (name, callback) => {
+            this.emitter.on(name, callback);
+            return () => this.emitter.off(name, callback);
+        }, OnProtocol);
+        this.$once = defineSyncApi(API_ONCE, (name, callback) => {
+            this.emitter.once(name, callback);
+            return () => this.emitter.off(name, callback);
+        }, OnceProtocol);
+        this.$off = defineSyncApi(API_OFF, (name, callback) => {
+            if (!name) {
+                this.emitter.e = {};
+                return;
+            }
+            if (!isArray(name))
+                name = [name];
+            name.forEach((n) => this.emitter.off(n, callback));
+        }, OffProtocol);
+        this.$emit = defineSyncApi(API_EMIT, (name, ...args) => {
+            this.emitter.emit(name, ...args);
+        }, EmitProtocol);
     }
-    if (!isArray(name))
-        name = [name];
-    name.forEach((n) => emitter.off(n, callback));
-}, OffProtocol);
-const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
-    emitter.emit(name, ...args);
-}, EmitProtocol);
+}
+const eventBus = new EventBus();
+const $on = eventBus.$on;
+const $once = eventBus.$once;
+const $off = eventBus.$off;
+const $emit = eventBus.$emit;
 
 const validator = [
     {
@@ -17414,8 +17414,7 @@ let callbackId = 1;
 let proxy;
 const callbacks = {};
 function isUniElement(obj) {
-    // @ts-expect-error
-    return typeof UniElement !== 'undefined' && obj instanceof UniElement;
+    return typeof obj.getNodeId === 'function' && obj.pageId;
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;
@@ -17441,7 +17440,8 @@ function normalizeArg(arg) {
         callbacks[id] = arg;
         return id;
     }
-    else if (isPlainObject(arg)) {
+    else if (isPlainObject(arg) || isUniElement(arg)) {
+        // 判断值是否为元素
         const el = parseElement(arg);
         if (el) {
             let nodeId = '';
@@ -17522,7 +17522,11 @@ function invokePropGetter(args) {
     return resolveSyncResult(args, getProxy().invokeSync(args, () => { }));
 }
 function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, class: cls, name: methodName, method, companion, params: methodParams, return: returnOptions, errMsg, }, instanceId, proxy) {
-    const invokeCallback = ({ id, name, params, keepAlive, }) => {
+    const keepAlive = methodName.indexOf('on') === 0 &&
+        methodParams.length === 1 &&
+        methodParams[0].type === 'UTSCallback';
+    // const throws = async
+    const invokeCallback = ({ id, name, params }) => {
         const callback = callbacks[id];
         if (callback) {
             callback(...params);
@@ -17542,6 +17546,8 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             name: methodName,
             method: methodParams,
+            keepAlive,
+            // throws,
         }
         : {
             moduleName,
@@ -17552,6 +17558,8 @@ function initProxyFunction(type, async, { moduleName, moduleType, package: pkg, 
             type,
             companion,
             method: methodParams,
+            keepAlive,
+            // throws,
         };
     return (...args) => {
         if (errMsg) {
@@ -17687,6 +17695,8 @@ function initUTSProxyClass(options) {
                                 moduleType,
                                 id: instance.__instanceId,
                                 type: 'getter',
+                                keepAlive: false,
+                                // throws: false,
                                 name: name,
                                 errMsg,
                             });
@@ -19294,15 +19304,18 @@ function createPageNode(pageId, pageOptions, setup) {
 function setupPage(component) {
     const oldSetup = component.setup;
     component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
-    component.setup = (_, ctx) => {
-        const { attrs: { __pageId, __pagePath, __pageQuery, __pageInstance }, } = ctx;
+    component.setup = (props, ctx) => {
+        const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
         if ((process.env.NODE_ENV !== 'production')) {
             console.log(formatLog(__pagePath, 'setup'));
         }
         const instance = getCurrentInstance();
+        instance.$dialogPages = [];
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
-        addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        if (pageVm.$page.openType !== 'openDialogPage') {
+            addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        }
         {
             onMounted(() => {
                 nextTick(() => {
@@ -19316,7 +19329,7 @@ function setupPage(component) {
             });
         }
         if (oldSetup) {
-            return oldSetup(__pageQuery, ctx);
+            return oldSetup(props, ctx);
         }
     };
     return component;
@@ -19351,12 +19364,12 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     const pageNode = createPageNode(__pageId, pageOptions, true);
     const app = getVueApp();
     const component = pagesMap.get(__pagePath)();
-    const mountPage = (component) => app.mountPage(component, {
+    const mountPage = (component) => app.mountPage(component, extend({
         __pageId,
         __pagePath,
         __pageQuery,
         __pageInstance,
-    }, pageNode);
+    }, __pageQuery), pageNode);
     if (isPromise(component)) {
         return component.then((component) => mountPage(component));
     }

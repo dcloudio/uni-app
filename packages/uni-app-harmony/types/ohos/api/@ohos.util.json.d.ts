@@ -24,6 +24,7 @@
  * @namespace json
  * @syscap SystemCapability.Utils.Lang
  * @crossplatform
+ * @atomicservice
  * @since 12
  */
 declare namespace json {
@@ -36,9 +37,10 @@ declare namespace json {
    * @param { Object } value - The value of the parsed key value pair.
    * @returns { Object | undefined | null } Return the modified object or undefined or null.
    * @syscap SystemCapability.Utils.Lang
+   * @atomicservice
    * @since 12
    */
-  type Transformer = (this: Object, key: string, value: Object) => Object | undefined | null
+  type Transformer = (this: Object, key: string, value: Object) => Object | undefined | null;
 
   /**
    * Converts a JavaScript Object Notation (JSON) string into an Object or null.
@@ -46,9 +48,12 @@ declare namespace json {
    * @param { string } text - A valid JSON string.
    * @param { Transformer } [reviver] - A function that transforms the results.
    * @returns { Object | null } Return an Object, array, string, number, boolean, or null value corresponding to JSON text.
-   * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types; 3.Parameter verification failed.
+   * @throws { BusinessError } 401 - Parameter error. Possible causes:
+   * 1.Mandatory parameters are left unspecified;
+   * 2.Incorrect parameter types; 3.Parameter verification failed.
    * @syscap SystemCapability.Utils.Lang
    * @crossplatform
+   * @atomicservice
    * @since 12
    */
   function parse(text: string, reviver?: Transformer): Object | null;
@@ -57,15 +62,20 @@ declare namespace json {
    * Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
    *
    * @param { Object } value - A JavaScript value, usually an Object or array.
-   * @param { (number | string)[] | null } [replacer] - An array of strings and numbers that acts as an approved list for selecting the object properties that will be stringify.
+   * @param { (number | string)[] | null } [replacer] - An array of strings and numbers that acts as an approved list
+   * for selecting the object properties that will be stringify.
    * @param { string | number } [space] - Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read.
    * @returns { string } Return a JSON text.
-   * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types; 3.Parameter verification failed.
+   * @throws { BusinessError } 401 - Parameter error. Possible causes:
+   * 1.Mandatory parameters are left unspecified;
+   * 2.Incorrect parameter types;
+   * 3.Parameter verification failed.
    * @syscap SystemCapability.Utils.Lang
    * @crossplatform
+   * @atomicservice
    * @since 12
    */
-  function stringify(value: Object, replacer?: (number | string)[] | null, space?: string | number): string
+  function stringify(value: Object, replacer?: (number | string)[] | null, space?: string | number): string;
 
   /**
    * Converts a JavaScript value to a JavaScript Object Notation (JSON) string.
@@ -74,9 +84,13 @@ declare namespace json {
    * @param { Transformer } [replacer] - A function that transforms the results.
    * @param { string | number } [space] - Adds indentation, white space, and line break characters to the return-value JSON text to make it easier to read.
    * @returns { string } Return a JSON text.
-   * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types; 3.Parameter verification failed.
+   * @throws { BusinessError } 401 - Parameter error. Possible causes:
+   * 1.Mandatory parameters are left unspecified;
+   * 2.Incorrect parameter types;
+   * 3.Parameter verification failed.
    * @syscap SystemCapability.Utils.Lang
    * @crossplatform
+   * @atomicservice
    * @since 12
    */
   function stringify(value: Object, replacer?: Transformer, space?: string | number): string;
@@ -90,6 +104,7 @@ declare namespace json {
    * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
    * @syscap SystemCapability.Utils.Lang
    * @crossplatform
+   * @atomicservice
    * @since 12
    */
   function has(obj: object, property: string): boolean;
@@ -102,6 +117,7 @@ declare namespace json {
    * @throws { BusinessError } 401 - Parameter error. Possible causes: 1.Mandatory parameters are left unspecified; 2.Incorrect parameter types.
    * @syscap SystemCapability.Utils.Lang
    * @crossplatform
+   * @atomicservice
    * @since 12
    */
   function remove(obj: object, property: string): void;

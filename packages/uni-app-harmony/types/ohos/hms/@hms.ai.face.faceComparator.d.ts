@@ -14,23 +14,38 @@ import type image from '@ohos.multimedia.image';
  * @since 5.0.0(12)
  */
 declare namespace faceComparator {
+    /**
+     * Visual configuration information, including related pictures.
+     * @interface VisionInfo
+     * @syscap SystemCapability.AI.Face.Comparator
+     * @since 5.0.0(12)
+     */
     export interface VisionInfo {
         /**
          * Image information to be identified.
+         * @type {image.PixelMap}
          * @syscap SystemCapability.AI.Face.Comparator
          * @since 5.0.0(12)
          */
         readonly pixelMap: image.PixelMap;
     }
+    /**
+    * @Indicates The result of face compare.
+    * @interface FaceCompareResult
+    * @syscap SystemCapability.AI.Face.Comparator
+    * @since 5.0.0(12)
+    */
     export interface FaceCompareResult {
         /**
          * Determine if it's the same person
+         * @type {boolean}
          * @syscap SystemCapability.AI.Face.Comparator
          * @since 5.0.0(12)
          */
         readonly isSamePerson: boolean;
         /**
          * Calculate the similarity between two faces. The value ranges from 0 to 1.
+         * @type {number}
          * @syscap SystemCapability.AI.Face.Comparator
          * @since 5.0.0(12)
          */

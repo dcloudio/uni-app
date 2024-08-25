@@ -52,6 +52,7 @@ export struct MapComponent {
     /**
      * The custom info window.
      *
+     * @type { function }
      * @syscap SystemCapability.Map.Core
      * @stagemodelonly
      * @atomicservice

@@ -8,4 +8,5 @@
  */
 
 import TextReader, {WindowManager, TextReaderIcon, ReadStateCode} from '@hms.ai.textReader';
-export {TextReader, WindowManager, TextReaderIcon, ReadStateCode} ;
+import {AICaptionController, AudioInfo, AudioData, AICaptionSettingType, AlignmentMode, AICaptionOptions, AICaptionComponent} from '@hms.ai.AICaption';
+export {TextReader, WindowManager, TextReaderIcon, ReadStateCode, AICaptionController, AudioInfo, AudioData, AICaptionSettingType, AlignmentMode, AICaptionOptions, AICaptionComponent} ;

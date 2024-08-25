@@ -125,6 +125,14 @@ declare namespace batteryInfo {
      */
     const batteryCapacityLevel: BatteryCapacityLevel;
     /**
+     * Battery immediate current of the current device, in mA.
+     *
+     * @constant
+     * @syscap SystemCapability.PowerManager.BatteryManager.Core
+     * @since 12
+     */
+    const nowCurrent: number;
+    /**
      * Charger type of a device.
      *
      * @enum { number }

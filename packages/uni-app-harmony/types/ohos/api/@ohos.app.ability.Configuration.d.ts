@@ -174,4 +174,22 @@ export interface Configuration {
      * @since 12
      */
     fontWeightScale?: number;
+    /**
+     * Indicates the mobile country code.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.Ability.AbilityBase
+     * @atomicservice
+     * @since 12
+     */
+    mcc?: string;
+    /**
+     * Indicates the mobile network code.
+     *
+     * @type { ?string }
+     * @syscap SystemCapability.Ability.AbilityBase
+     * @atomicservice
+     * @since 12
+     */
+    mnc?: string;
 }

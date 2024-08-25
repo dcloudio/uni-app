@@ -11,26 +11,29 @@ import { TraceMap, eachMapping } from '@jridgewell/trace-mapping'
 import type { EncodedSourceMap as GenEncodedSourceMap } from '@jridgewell/gen-mapping'
 import { addMapping, fromMap, toEncodedMap } from '@jridgewell/gen-mapping'
 import {
-  addUTSEasyComAutoImports,
-  addUniModulesExtApiComponents,
   createResolveErrorMsg,
   createRollupError,
   genUTSClassName,
-  genUTSComponentPublicInstanceImported,
+  getUTSEasyComAutoImports,
   normalizeEmitAssetFileName,
+  normalizePath,
   offsetToStartAndEnd,
-  parseUTSComponent,
+  resolveComponentsLibPath,
 } from '@dcloudio/uni-cli-shared'
 import type { BindingMetadata, Position } from '@vue/compiler-core'
 import type { ImportSpecifier } from 'es-module-lexer'
 import { createDescriptor, setSrcDescriptor } from '../descriptorCache'
 import { resolveScript } from './script'
 import type { ResolvedOptions } from './index'
-import { createResolveError, parseImports, wrapResolve } from '../../utils'
-import { genTemplateCode } from '../code/template'
-import { resolveGenTemplateCodeOptions } from './template'
-import { addExtApiComponents } from '../../../utils'
+import {
+  createResolveError,
+  detectAutoImports,
+  genAutoImportsCode,
+  parseImports,
+  wrapResolve,
+} from '../../utils'
 import { genDefaultScriptCode } from '../code/script'
+import { processTemplate } from './compiler/script/normalScript'
 
 export async function transformMain(
   code: string,
@@ -45,7 +48,13 @@ export async function transformMain(
   const { descriptor, errors } = createDescriptor(filename, code, options)
 
   const relativeFilename = descriptor.relativeFilename
-
+  let easyComInstance = ''
+  if (options.genDefaultAs) {
+    const imports = getUTSEasyComAutoImports()['@/' + relativeFilename]
+    if (imports && imports.length === 1) {
+      easyComInstance = imports[0][1]
+    }
+  }
   if (errors.length) {
     if (pluginContext) {
       errors.forEach((error) =>
@@ -58,71 +67,33 @@ export async function transformMain(
   const className = genUTSClassName(relativeFilename, options.classNamePrefix)
 
   // script
-  const {
+  const scriptOptions = {
+    ...options,
+    className,
+  }
+  let {
     code: scriptCode,
     map: scriptMap,
     bindingMetadata,
-  } = await genScriptCode(descriptor, {
-    ...options,
-    className,
-  })
+  } = await genScriptCode(descriptor, scriptOptions)
 
-  let templatePreambleCode: string | undefined = undefined
+  let templatePreambleCode = ''
   let templateCode = ''
   let templateMap: RawSourceMap | undefined = undefined
-  let templateImportsCode = ''
-  let templateImportEasyComponentsCode = ''
-  let templateImportUTSComponentsCode = ''
 
   if (options.componentType !== 'app') {
     // template
     const isInline = !!descriptor.scriptSetup
-    const templateResult = genTemplateCode(
-      descriptor,
-      resolveGenTemplateCodeOptions(relativeFilename, code, descriptor, {
-        mode: 'module',
-        inline: isInline,
-        className,
+    if (!isInline) {
+      const { code, map, preamble } = processTemplate(descriptor, {
+        relativeFilename,
+        bindingMetadata: bindingMetadata,
         rootDir: options.root,
-        sourceMap:
-          process.env.NODE_ENV === 'development' &&
-          process.env.UNI_COMPILE_TARGET !== 'uni_modules',
-        bindingMetadata,
+        className,
       })
-    )
-
-    templatePreambleCode = templateResult.preamble
-    templateCode = templateResult.code
-    templateMap = templateResult.map
-    const {
-      easyComponentAutoImports,
-      elements,
-      importEasyComponents,
-      importUTSComponents,
-      imports,
-    } = templateResult
-
-    templateImportEasyComponentsCode = importEasyComponents.join('\n')
-    templateImportUTSComponentsCode = importUTSComponents.join('\n')
-    templateImportsCode = imports.join('\n')
-
-    Object.keys(easyComponentAutoImports).forEach((source) => {
-      addUTSEasyComAutoImports(source, easyComponentAutoImports[source])
-    })
-
-    if (process.env.NODE_ENV === 'production') {
-      const components = elements.filter((element) => {
-        // 如果是UTS原生组件，则无需记录摇树
-        if (parseUTSComponent(element, 'kotlin')) {
-          return false
-        }
-        return true
-      })
-      if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
-        addUniModulesExtApiComponents(relativeFilename, components)
-      } else {
-        addExtApiComponents(components)
-      }
+      templateCode = code
+      templateMap = map
+      templatePreambleCode = preamble || ''
     }
   }
 
@@ -132,6 +103,9 @@ export async function transformMain(
   const utsOutput: string[] = [
     scriptCode || genDefaultScriptCode(options.genDefaultAs),
     templateCode,
+    easyComInstance
+      ? `export type ${easyComInstance} = InstanceType<typeof __sfc__>;`
+      : '',
     `/*${className}Styles*/\n`,
   ]
 
@@ -182,7 +156,24 @@ export async function transformMain(
   }
 
   // handle TS transpilation
-  let utsCode = utsOutput.join('\n')
+  let utsCode = utsOutput.filter(Boolean).join('\n')
+
+  const jsCodes = [templatePreambleCode]
+
+  // 处理自动导入(主要是easyCom的组件类型)
+  const { matchedImports } = await detectAutoImports(
+    utsCode,
+    descriptor.filename,
+    easyComInstance ? [easyComInstance] : []
+  )
+  if (matchedImports.length) {
+    const autoImportCode = genAutoImportsCode(matchedImports)
+    if (autoImportCode) {
+      utsCode += '\n' + autoImportCode
+      // 给 script 增加自动导入，让下边的 jsCode 可以 parse 到
+      scriptCode += '\n' + autoImportCode
+    }
+  }
 
   if (resolvedMap && pluginContext) {
     pluginContext.emitFile({
@@ -198,11 +189,6 @@ export async function transformMain(
     }
   }
 
-  const jsCodes = [
-    templateImportEasyComponentsCode,
-    templateImportUTSComponentsCode,
-    templateImportsCode,
-  ]
   if (scriptCode) {
     jsCodes.push(
       await parseImports(
@@ -229,14 +215,10 @@ export async function transformMain(
     jsCodes.push(stylesCode)
   }
   jsCodes.push(`export default "${className}"
-export const ${genUTSComponentPublicInstanceImported(
-    options.root,
-    relativeFilename
-  )} = {}`)
-  const jsCode = jsCodes.filter(Boolean).join('\n')
-
+${easyComInstance ? `export const ${easyComInstance} = {}` : ''}`)
+  let jsCode = jsCodes.filter(Boolean).join('\n')
   return {
-    code: jsCode,
+    code: processJsCodeImport(jsCode),
     map: {
       mappings: '',
     } as SourceMapInput,
@@ -245,6 +227,16 @@ export const ${genUTSComponentPublicInstanceImported(
     uts: utsCode,
     descriptor,
   }
+}
+
+function processJsCodeImport(jsCode: string) {
+  if (jsCode.includes('@/node-modules/@dcloudio/uni-components/lib-x')) {
+    return jsCode.replaceAll(
+      '@/node-modules/@dcloudio/uni-components/lib-x',
+      normalizePath(resolveComponentsLibPath())
+    )
+  }
+  return jsCode
 }
 
 async function genScriptCode(

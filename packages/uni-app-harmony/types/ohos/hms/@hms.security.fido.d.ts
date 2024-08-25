@@ -431,14 +431,14 @@ declare namespace fido {
         /**
          * 1 to 256 palette entries
          *
-         * @type { number }
+         * @type { Array<RgbPaletteEntry> }
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
          */
         /**
          * 1 to 256 palette entries
          *
-         * @type { number }
+         * @type { Array<RgbPaletteEntry> }
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
          * @since 5.0.0(12)
@@ -464,6 +464,7 @@ declare namespace fido {
         /**
          * Name for the authenticator
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -471,6 +472,7 @@ declare namespace fido {
         /**
          * Name for the authenticator
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -480,6 +482,7 @@ declare namespace fido {
         /**
          * The Authenticator Attestation ID, which identifies the type and batch of the authenticator.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -487,6 +490,7 @@ declare namespace fido {
         /**
          * The Authenticator Attestation ID, which identifies the type and batch of the authenticator.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -496,6 +500,7 @@ declare namespace fido {
         /**
          * The description string for the authenticator.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -503,6 +508,7 @@ declare namespace fido {
         /**
          * The description string for the authenticator.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -512,6 +518,7 @@ declare namespace fido {
         /**
          * Indicates the UAF protocol Versions supported by the authenticator.
          *
+         * @type { Array<Version> }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -519,6 +526,7 @@ declare namespace fido {
         /**
          * Indicates the UAF protocol Versions supported by the authenticator.
          *
+         * @type { Array<Version> }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -528,6 +536,7 @@ declare namespace fido {
         /**
          * The assertion scheme the authenticator uses for attested data and signatures.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -535,6 +544,7 @@ declare namespace fido {
         /**
          * The assertion scheme the authenticator uses for attested data and signatures.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -544,6 +554,7 @@ declare namespace fido {
         /**
          * Supported Authentication Algorithm.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -551,6 +562,7 @@ declare namespace fido {
         /**
          * Supported Authentication Algorithm.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -560,6 +572,7 @@ declare namespace fido {
         /**
          * A list of supported attestation types.
          *
+         * @type { Array<number> }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -567,6 +580,7 @@ declare namespace fido {
         /**
          * A list of supported attestation types.
          *
+         * @type { Array<number> }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -576,6 +590,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating the user verification methods supported by the authenticator.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -583,6 +598,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating the user verification methods supported by the authenticator.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -592,6 +608,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating the key protection used by the authenticator.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -599,6 +616,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating the key protection used by the authenticator.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -608,6 +626,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating the matcher protection used by the authenticator.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -615,6 +634,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating the matcher protection used by the authenticator.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -624,6 +644,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating how the authenticator is currently connected to the FIDO User Device.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -631,6 +652,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating how the authenticator is currently connected to the FIDO User Device.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -640,6 +662,7 @@ declare namespace fido {
         /**
          * Indicates whether the authenticator can only be used as a second-factor.
          *
+         * @type { boolean }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -647,6 +670,7 @@ declare namespace fido {
         /**
          * Indicates whether the authenticator can only be used as a second-factor.
          *
+         * @type { boolean }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -656,6 +680,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating the availability and type of transaction confirmation display.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -663,6 +688,7 @@ declare namespace fido {
         /**
          * A set of bit flags indicating the availability and type of transaction confirmation display.
          *
+         * @type { number }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -672,6 +698,7 @@ declare namespace fido {
         /**
          * The MIME content-type [RFC2045] supported by the transaction confirmation display.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -679,6 +706,7 @@ declare namespace fido {
         /**
          * The MIME content-type [RFC2045] supported by the transaction confirmation display.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -688,6 +716,7 @@ declare namespace fido {
         /**
          * The set of PNG characteristics currently supported by the transaction confirmation display.
          *
+         * @type { Array<DisplayPNGCharacteristicsDescriptor> }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -695,6 +724,7 @@ declare namespace fido {
         /**
          * The set of PNG characteristics currently supported by the transaction confirmation display.
          *
+         * @type { Array<DisplayPNGCharacteristicsDescriptor> }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -704,6 +734,7 @@ declare namespace fido {
         /**
          * A PNG [PNG] icon for the authenticator.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -711,6 +742,7 @@ declare namespace fido {
         /**
          * A PNG [PNG] icon for the authenticator.
          *
+         * @type { string }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -720,6 +752,7 @@ declare namespace fido {
         /**
          * A list of supported UAF protocol extension identifiers.
          *
+         * @type { Array<string> }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
@@ -727,6 +760,7 @@ declare namespace fido {
         /**
          * A list of supported UAF protocol extension identifiers.
          *
+         * @type { Array<string> }
          * @readonly
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
@@ -801,14 +835,14 @@ declare namespace fido {
         /**
          * An array containing Authenticator dictionaries describing the available UAF authenticators. The order is not significant. The list may be empty.
          *
-         * @type { string }
+         * @type { Array<Authenticator> }
          * @syscap SystemCapability.Security.FIDO
          * @since 4.1.0(11)
          */
         /**
          * An array containing Authenticator dictionaries describing the available UAF authenticators. The order is not significant. The list may be empty.
          *
-         * @type { string }
+         * @type { Array<Authenticator> }
          * @syscap SystemCapability.Security.FIDO
          * @atomicservice
          * @since 5.0.0(12)

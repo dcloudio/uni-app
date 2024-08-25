@@ -64,7 +64,7 @@ declare namespace power {
      * The screen will be on if device is active, screen will be off otherwise.
      *
      * @returns { boolean } Returns true if the device is active; returns false otherwise.
-     * @throws { BusinessError } 4900101 - If connecting to the service failed.
+     * @throws { BusinessError } 4900101 - Failed to connect to the service.
      * @syscap SystemCapability.PowerManager.PowerManager.Core
      * @since 9
      */
@@ -73,7 +73,7 @@ declare namespace power {
      * Obtains the power mode of the current device. For details, see {@link DevicePowerMode}.
      *
      * @returns { DevicePowerMode } The power mode {@link DevicePowerMode} of current device .
-     * @throws { BusinessError } 4900101 - If connecting to the service failed.
+     * @throws { BusinessError } 4900101 - Failed to connect to the service.
      * @syscap SystemCapability.PowerManager.PowerManager.Core
      * @since 9
      */
@@ -82,7 +82,7 @@ declare namespace power {
      * Returns true if the device is currently in idle mode.
      *
      * @returns { boolean } Returns true if the device is in idle mode; returns false otherwise.
-     * @throws { BusinessError } 4900101 - If connecting to the service failed.
+     * @throws { BusinessError } 4900101 - Failed to connect to the service.
      * @syscap SystemCapability.PowerManager.PowerManager.Core
      * @since 10
      */

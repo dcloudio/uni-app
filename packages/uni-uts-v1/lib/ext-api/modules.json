@@ -8,6 +8,31 @@
           "kotlin": true,
           "swift": true
         }
+      },
+      "createInterstitialAd": {
+        "name": "createInterstitialAd",
+        "app": {
+          "js": false,
+          "kotlin": true,
+          "swift": false
+        }
+      }
+    },
+    "components": [
+      "ad"
+    ]
+  },
+  "uni-canvas": {
+    "uni": {
+      "createCanvasContextAsync": {
+        "name": "createCanvasContextAsync",
+        "app": {
+          "js": false,
+          "x-js": false,
+          "kotlin": true,
+          "swift": false,
+          "arkts": false
+        }
       }
     }
   },
@@ -30,7 +55,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false
+          "swift": true
         }
       }
     }
@@ -85,7 +110,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -120,6 +146,7 @@
         "name": "getElementById",
         "app": {
           "js": false,
+          "x-js": false,
           "kotlin": false,
           "swift": true,
           "arkts": false
@@ -163,7 +190,26 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
+        }
+      },
+      "onNetworkStatusChange": {
+        "name": "onNetworkStatusChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "offNetworkStatusChange": {
+        "name": "offNetworkStatusChange",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -175,26 +221,17 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
-      "getProviderIds": {
-        "name": "getProviderIds",
+      "getProviderSync": {
+        "name": "getProviderSync",
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
-          "arkts": false
-        }
-      },
-      "getProviderObject": {
-        "name": "getProviderObject",
-        "app": {
-          "js": false,
-          "kotlin": true,
-          "swift": false,
-          "arkts": false
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -234,7 +271,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -285,7 +323,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -303,8 +341,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
-          "arkts": false
+          "swift": true,
+          "arkts": true
         }
       },
       "chooseVideo": {
@@ -330,7 +368,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -339,8 +377,26 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": false
+        }
+      },
+      "chooseFile": {
+        "name": "chooseFile",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "chooseMedia": {
+        "name": "chooseMedia",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
         }
       }
     }
@@ -398,7 +454,8 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": true
+          "swift": true,
+          "arkts": true
         }
       }
     }
@@ -716,24 +773,8 @@
           "swift": true
         }
       },
-      "restoreCompletedTransactions": {
-        "name": "restoreCompletedTransactions",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": true
-        }
-      },
-      "getUnfinishedTransactions": {
-        "name": "getUnfinishedTransactions",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": true
-        }
-      },
-      "finishedTransaction": {
-        "name": "finishedTransaction",
+      "getVirtualPaymentManager": {
+        "name": "getVirtualPaymentManager",
         "app": {
           "js": false,
           "kotlin": false,
@@ -749,7 +790,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -758,7 +799,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -767,7 +808,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -776,7 +817,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -785,7 +826,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -794,7 +835,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       },
@@ -803,7 +844,7 @@
         "app": {
           "js": false,
           "kotlin": true,
-          "swift": false,
+          "swift": true,
           "arkts": true
         }
       }

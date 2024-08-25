@@ -7,7 +7,7 @@ import type {
   TSTypeLiteral,
 } from '@babel/types'
 import type { SFCDescriptor } from '@vue/compiler-sfc'
-import { generateCodeFrame } from '@vue/shared'
+import { generateCodeFrame, isArray } from '@vue/shared'
 import { type ParserPlugin, parse as babelParse } from '@babel/parser'
 import type { ImportBinding, SFCScriptCompileOptions } from '../compileScript'
 import type { PropsDestructureBindings } from './defineProps'
@@ -89,6 +89,7 @@ export class ScriptCompileContext {
   ) {
     // resolve parser plugins
     const plugins: ParserPlugin[] = resolveParserPlugins(
+      'ts',
       options.babelParserPlugins
     )
 
@@ -155,18 +156,34 @@ export class ScriptCompileContext {
 }
 
 export function resolveParserPlugins(
+  lang: string,
   userPlugins?: ParserPlugin[],
   dts = false
 ) {
   const plugins: ParserPlugin[] = []
-  // if (userPlugins) {
-  //   // If don't match the case of adding jsx
-  //   // should remove the jsx from user options
-  //   userPlugins = userPlugins.filter((p) => p !== 'jsx')
-  // }
-  plugins.push(['typescript', { dts }])
-  if (!userPlugins || !userPlugins.includes('decorators')) {
-    plugins.push('decorators')
+  if (
+    !userPlugins ||
+    !userPlugins.some(
+      (p) =>
+        p === 'importAssertions' ||
+        p === 'importAttributes' ||
+        (isArray(p) && p[0] === 'importAttributes')
+    )
+  ) {
+    plugins.push('importAttributes')
+  }
+  if (lang === 'jsx' || lang === 'tsx') {
+    plugins.push('jsx')
+  } else if (userPlugins) {
+    // If don't match the case of adding jsx
+    // should remove the jsx from user options
+    userPlugins = userPlugins.filter((p) => p !== 'jsx')
+  }
+  if (lang === 'ts' || lang === 'tsx') {
+    plugins.push(['typescript', { dts }], 'explicitResourceManagement')
+    if (!userPlugins || !userPlugins.includes('decorators')) {
+      plugins.push('decorators-legacy')
+    }
   }
   if (userPlugins) {
     plugins.push(...userPlugins)

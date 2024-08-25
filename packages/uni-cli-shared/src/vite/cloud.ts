@@ -166,15 +166,44 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       const compiler = resolveUTSCompiler()
       for (const uniModule of tempUniModules) {
         const pluginDir = path.resolve(tempUniModulesDir, uniModule)
+
+        // TODO 待优化autoImports，目前 uni-app x 的编译，autoImport 是在js层处理过，rust层基本不再使用
+        // 但uts插件目前还是使用的rust层的autoImports
+        const autoImports = {}
+        const allAutoImports = getUTSEasyComAutoImports()
+        Object.keys(allAutoImports).forEach((source) => {
+          if (!source.startsWith(`@/uni_modules/${uniModule}/components/`)) {
+            autoImports[source] = allAutoImports[source]
+          }
+        })
+        const uni_modules: string[] = []
+        const pkgJson = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          'uni_modules',
+          uniModule,
+          'package.json'
+        )
+        if (fs.existsSync(pkgJson)) {
+          try {
+            const pkg = require(pkgJson)
+            if (pkg.uni_modules?.dependencies) {
+              uni_modules.push(...pkg.uni_modules.dependencies)
+            }
+          } catch (e) {
+            console.error(e)
+          }
+        }
+
         const result = await compiler.compile(pluginDir, {
           isX: process.env.UNI_APP_X === 'true',
           isSingleThread: true,
           isPlugin: false,
           sourceMap: false,
-          uni_modules: [],
+          uni_modules,
           transform: {
             uvueClassNamePrefix: 'Gen',
-            autoImports: getUTSEasyComAutoImports(),
+            autoImports,
+            uvueGenDefaultAs: '__sfc__',
           },
         })
         if (result) {
@@ -332,6 +361,7 @@ function genUniModulesPackageJson(
       id: pkg.id,
       version: pkg.version,
       uni_modules: {
+        dependencies: pkg.uni_modules?.dependencies || [],
         artifacts,
       },
     },

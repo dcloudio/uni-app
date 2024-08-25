@@ -126,5 +126,16 @@ declare namespace generateBarcode {
      * @since 4.1.0(11)
      */
     function createBarcode(content: string, options: CreateOptions, callback: AsyncCallback<image.PixelMap>): void;
+    /**
+     * Create a barcode.
+     * @param { ArrayBuffer } content - Content for create a barcode.
+     * @param { CreateOptions } options - Option for create a barcode.
+     * @returns { Promise<image.PixelMap> } Promise - The image.PixelMap of a barcode.
+     * @throws { BusinessError } 401 - The parameter check failed.
+     * @throws { BusinessError } 1000500001 - Internal error.
+     * @syscap SystemCapability.Multimedia.Scan.GenerateBarcode
+     * @since 5.0.0(12)
+     */
+    function createBarcode(content: ArrayBuffer, options: CreateOptions): Promise<image.PixelMap>;
 }
 export default generateBarcode;

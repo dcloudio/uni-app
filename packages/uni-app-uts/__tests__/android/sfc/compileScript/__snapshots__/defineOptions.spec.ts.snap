@@ -10,7 +10,7 @@ const _cache = __ins.renderCache;
 
       
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -25,7 +25,7 @@ const _cache = __ins.renderCache;
 
       
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"

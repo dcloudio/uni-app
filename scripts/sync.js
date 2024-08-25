@@ -1,34 +1,18 @@
-const fs = require('fs-extra')
 const path = require('path')
-
-const pkgs = [
-  'uni-mp-alipay',
-  'uni-mp-baidu',
-  'uni-mp-qq',
-  'uni-mp-toutiao',
-  'uni-mp-weixin',
-  'uni-quickapp-webview'
-]
-
-const branch = '/Users/fxy/Documents/GitHub/uni-app-dev'
-
-console.log('copy[uni-mp-vue]:vue.runtime.esm.js')
-fs.copySync(
-  path.resolve(__dirname, '../packages/uni-mp-vue/dist/vue.runtime.esm.js'),
-  path.resolve(branch, 'packages/uni-mp-vue/dist/vue.runtime.esm.js')
-)
-
-pkgs.forEach(pkg => {
-  const fromDir = path.resolve(__dirname, '../packages/' + pkg + '/dist')
-  const toDir = path.resolve(branch, 'packages/' + pkg + '/dist')
-  console.log('copy[' + pkg + ']:uni.api.esm.js')
-  fs.copySync(
-    path.join(fromDir, 'uni.api.esm.js'),
-    path.join(toDir, 'uni.api.esm.js')
-  )
-  console.log('copy[' + pkg + ']:uni.mp.esm.js')
-  fs.copySync(
-    path.join(fromDir, 'uni.mp.esm.js'),
-    path.join(toDir, 'uni.mp.esm.js')
-  )
-})
+const fs = require('fs-extra')
+const { config } = require('dotenv')
+config()
+if (process.env.UNI_APP_SYNTAX_DIR) {
+  fs.copySync(path.resolve(process.env.UNI_APP_SYNTAX_DIR, 'uts/common'), path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uts/common'))
+  fs.copySync(path.resolve(process.env.UNI_APP_SYNTAX_DIR, 'uts/app-android'), path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uni-x/app-android'))
+  fs.copySync(path.resolve(process.env.UNI_APP_SYNTAX_DIR, 'uts/app-ios'), path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uni-x/app-ios'))
+}
+if (process.env.UNI_APP_VUE_TYPES_DIR) {
+  ['reactivity', 'runtime-core', 'shared'].forEach(pkg => {
+    const fileName = pkg + '/dist/' + pkg + '.d.ts'
+    fs.copySync(
+      path.resolve(process.env.UNI_APP_VUE_TYPES_DIR, 'packages', fileName),
+      path.resolve(__dirname, '../packages/uni-uts-v1/lib/uts/types/uni-x/@vue', fileName)
+    )
+  })
+}

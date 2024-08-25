@@ -141,7 +141,7 @@ export function defineSyncApi<K>(
 export function defineOnApi<T>(
   name: string,
   fn: () => void,
-  options: ApiOptions<T>
+  options?: ApiOptions<T>
 ): Function {
   const originalOptions = buildOptions(
     options as ApiOptions<AsyncMethodOptionLike>
@@ -152,7 +152,7 @@ export function defineOnApi<T>(
 export function defineOffApi<T>(
   name: string,
   fn: () => void,
-  options: ApiOptions<T>
+  options?: ApiOptions<T>
 ): Function {
   const originalOptions = buildOptions(
     options as ApiOptions<AsyncMethodOptionLike>

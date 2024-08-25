@@ -1,6 +1,4 @@
-import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount } from 'vue';
-import fs from '@ohos.file.fs';
-import buffer from '@ohos.buffer';
+import { ref, createVNode, render, injectHook, queuePostFlushCb, getCurrentInstance, onMounted, nextTick, onBeforeUnmount, openBlock, createElementBlock, createCommentVNode } from 'vue';
 
 /**
 * @vue/shared v3.4.21
@@ -7345,8 +7343,6 @@ assign(pako, deflate, inflate, constants);
 
 var pako_1 = pako;
 
-const BASE64_TO_TEMP_FILE_PATH = 'base64ToTempFilePath';
-
 const TABBAR_HEIGHT = 50;
 const ON_REACH_BOTTOM_DISTANCE = 50;
 const I18N_JSON_DELIMITERS = ['%', '%'];
@@ -7376,6 +7372,7 @@ const ON_NAVIGATION_BAR_BUTTON_TAP = 'onNavigationBarButtonTap';
 // framework
 const ON_APP_ENTER_FOREGROUND = 'onAppEnterForeground';
 const ON_APP_ENTER_BACKGROUND = 'onAppEnterBackground';
+const ON_WXS_INVOKE_CALL_METHOD = 'onWxsInvokeCallMethod';
 
 function isComponentInternalInstance(vm) {
     return !!vm.appContext;
@@ -8018,10 +8015,11 @@ const env = {
     CACHE_PATH: '',
 };
 function initEnv() {
-    const context = getContext();
-    env.USER_DATA_PATH = context.filesDir;
-    env.TEMP_PATH = context.tempDir;
-    env.CACHE_PATH = context.cacheDir;
+    // @ts-expect-error getEnv for plus
+    const plusIoEnv = plus.io.getEnv();
+    env.USER_DATA_PATH = plusIoEnv.USER_DATA_PATH;
+    env.TEMP_PATH = plusIoEnv.TEMP_PATH;
+    env.CACHE_PATH = plusIoEnv.CACHE_PATH;
     return env;
 }
 const initEnvOnce = once(initEnv);
@@ -8881,8 +8879,9 @@ function getRealPath(filepath) {
         // 鸿蒙平台特性
         return 'file:/' + normalizeLocalPath(filepath);
     }
-    // TODO 暂时转换为 resource
-    const wwwPath = normalizeLocalPath('_www').replace(/.+?\/apps\//, 'resource://rawfile/apps/');
+    // TODO 暂时使用当前 dirname
+    const href = location.href;
+    const wwwPath = href.substring(0, href.lastIndexOf('/'));
     // 绝对路径转换为本地文件系统路径
     if (filepath.indexOf('/') === 0) {
         // 平台绝对路径
@@ -9104,11 +9103,6 @@ function removeIntersectionObserver({ reqId, component }, _pageId) {
     UniServiceJSBridge.unsubscribe(getEventName(reqId));
 }
 
-let nativeApp;
-function getNativeApp() {
-    return nativeApp;
-}
-
 const EVENT_BACKBUTTON = 'backbutton';
 function backbuttonListener() {
     uni.navigateBack({
@@ -9119,7 +9113,6 @@ function backbuttonListener() {
 const enterOptions$1 = /*#__PURE__*/ createLaunchOptions();
 const launchOptions$1 = /*#__PURE__*/ createLaunchOptions();
 function initLaunchOptions({ path, query, referrerInfo, }) {
-    var _a, _b;
     extend(launchOptions$1, {
         path,
         query: query ? parseQuery(query) : {},
@@ -9129,10 +9122,7 @@ function initLaunchOptions({ path, query, referrerInfo, }) {
         launcher: plus.runtime.launcher,
     });
     extend(enterOptions$1, launchOptions$1);
-    const app = getNativeApp();
-    // @ts-expect-error syntaxdoc
-    const schemaLink = (_b = (_a = void 0 ) === null || _a === void 0 ? void 0 : _a.call(app)) !== null && _b !== void 0 ? _b : {};
-    return extend({}, launchOptions$1, schemaLink);
+    return enterOptions$1;
 }
 
 const TEMP_PATH = ''; // TODO 需要从applicationContext获取
@@ -9159,6 +9149,13 @@ function operateVideoPlayer(videoId, pageId, type, data) {
         type,
         data,
     }, pageId);
+}
+
+function operateMap(id, pageId, type, data, operateMapCallback) {
+    UniServiceJSBridge.invokeViewMethod('map.' + id, {
+        type,
+        data,
+    }, pageId, operateMapCallback);
 }
 
 const API_ADD_INTERCEPTOR = 'addInterceptor';
@@ -9314,7 +9311,20 @@ const createVideoContext = defineSyncApi(API_CREATE_VIDEO_CONTEXT, (id, context)
     return new VideoContext(id, getPageIdByVm(getCurrentPageVm()));
 });
 
+const operateMapCallback = (options, res) => {
+    const errMsg = res.errMsg || '';
+    if (new RegExp('\\:\\s*fail').test(errMsg)) {
+        options.fail && options.fail(res);
+    }
+    else {
+        options.success && options.success(res);
+    }
+    options.complete && options.complete(res);
+};
 const operateMapWrap = (id, pageId, type, options) => {
+    operateMap(id, pageId, type, options, (res) => {
+        options && operateMapCallback(options, res);
+    });
 };
 class MapContext {
     constructor(id, pageId) {
@@ -9322,22 +9332,22 @@ class MapContext {
         this.pageId = pageId;
     }
     getCenterLocation(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getCenterLocation', options);
     }
     moveToLocation(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'moveToLocation', options);
     }
     getScale(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getScale', options);
     }
     getRegion(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'getRegion', options);
     }
     includePoints(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'includePoints', options);
     }
     translateMarker(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'translateMarker', options);
     }
     $getAppMap() {
         {
@@ -9345,43 +9355,43 @@ class MapContext {
         }
     }
     addCustomLayer(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addCustomLayer', options);
     }
     removeCustomLayer(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeCustomLayer', options);
     }
     addGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addGroundOverlay', options);
     }
     removeGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeGroundOverlay', options);
     }
     updateGroundOverlay(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'updateGroundOverlay', options);
     }
     initMarkerCluster(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'initMarkerCluster', options);
     }
     addMarkers(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'addMarkers', options);
     }
     removeMarkers(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'removeMarkers', options);
     }
     moveAlong(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'moveAlong', options);
     }
     setLocMarkerIcon(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'setLocMarkerIcon', options);
     }
     openMapApp(options) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'openMapApp', options);
     }
     on(name, callback) {
-        operateMapWrap(this.id, this.pageId);
+        operateMapWrap(this.id, this.pageId, 'on', { name, callback });
     }
 }
-defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
+const createMapContext = defineSyncApi(API_CREATE_MAP_CONTEXT, (id, context) => {
     if (context) {
         return new MapContext(id, getPageIdByVm(context));
     }
@@ -10556,14 +10566,14 @@ const createMediaQueryObserver = defineSyncApi('createMediaQueryObserver', (cont
 });
 
 // let eventReady = false
-let index$2 = 0;
+let index$1 = 0;
 let optionsCache = {};
 function operateEditor(componentId, pageId, type, options) {
     const data = { options };
     const needCallOptions = options &&
         ('success' in options || 'fail' in options || 'complete' in options);
     if (needCallOptions) {
-        const callbackId = String(index$2++);
+        const callbackId = String(index$1++);
         data.callbackId = callbackId;
         optionsCache[callbackId] = options;
     }
@@ -10971,6 +10981,101 @@ const CanIUseProtocol = [
     },
 ];
 
+const API_CHOOSE_LOCATION = 'chooseLocation';
+const ChooseLocationProtocol = {
+    keyword: String,
+    latitude: Number,
+    longitude: Number,
+};
+
+const API_GET_LOCATION = 'getLocation';
+const coordTypes$1 = ['wgs84', 'gcj02'];
+const GetLocationOptions = {
+    formatArgs: {
+        type(value, params) {
+            value = (value || '').toLowerCase();
+            if (coordTypes$1.indexOf(value) === -1) {
+                params.type = coordTypes$1[0];
+            }
+            else {
+                params.type = value;
+            }
+        },
+        altitude(value, params) {
+            params.altitude = value ? value : false;
+        },
+    },
+};
+const GetLocationProtocol = {
+    type: String,
+    altitude: Boolean,
+};
+
+const API_OPEN_LOCATION = 'openLocation';
+const checkProps = (key, value) => {
+    if (value === undefined) {
+        return `${key} should not be empty.`;
+    }
+    if (typeof value !== 'number') {
+        let receivedType = typeof value;
+        receivedType = receivedType[0].toUpperCase() + receivedType.substring(1);
+        return `Expected Number, got ${receivedType} with value ${JSON.stringify(value)}.`;
+    }
+};
+const OpenLocationOptions = {
+    formatArgs: {
+        latitude(value, params) {
+            const checkedInfo = checkProps('latitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.latitude = value;
+        },
+        longitude(value, params) {
+            const checkedInfo = checkProps('longitude', value);
+            if (checkedInfo) {
+                return checkedInfo;
+            }
+            params.longitude = value;
+        },
+        scale(value, params) {
+            value = Math.floor(value);
+            params.scale = value >= 5 && value <= 18 ? value : 18;
+        },
+    },
+};
+const OpenLocationProtocol = {
+    latitude: Number,
+    longitude: Number,
+    scale: Number,
+    name: String,
+    address: String,
+};
+
+const API_START_LOCATION_UPDATE = 'startLocationUpdate';
+const API_ON_LOCATION_CHANGE = 'onLocationChange';
+const API_STOP_LOCATION_UPDATE = 'stopLocationUpdate';
+const API_OFF_LOCATION_CHANGE = 'offLocationChange';
+const API_OFF_LOCATION_CHANGE_ERROR = 'offLocationChangeError';
+const API_ON_LOCATION_CHANGE_ERROR = 'onLocationChangeError';
+const coordTypes = ['wgs84', 'gcj02'];
+const StartLocationUpdateProtocol = {
+    type: String,
+};
+const StartLocationUpdateOptions = {
+    formatArgs: {
+        type(value, params) {
+            value = (value || '').toLowerCase();
+            if (coordTypes.indexOf(value) === -1) {
+                params.type = coordTypes[1];
+            }
+            else {
+                params.type = value;
+            }
+        },
+    },
+};
+
 function encodeQueryString(url) {
     if (!isString(url)) {
         return url;
@@ -11167,6 +11272,59 @@ const LoadFontFaceProtocol = {
         required: true,
     },
     desc: Object,
+};
+
+const FRONT_COLORS = ['#ffffff', '#000000'];
+const API_SET_NAVIGATION_BAR_COLOR = 'setNavigationBarColor';
+const SetNavigationBarColorOptions = {
+    formatArgs: {
+        animation(animation, params) {
+            if (!animation) {
+                animation = { duration: 0, timingFunc: 'linear' };
+            }
+            params.animation = {
+                duration: animation.duration || 0,
+                timingFunc: animation.timingFunc || 'linear',
+            };
+        },
+    },
+};
+const SetNavigationBarColorProtocol = {
+    frontColor: {
+        type: String,
+        required: true,
+        validator(frontColor) {
+            if (FRONT_COLORS.indexOf(frontColor) === -1) {
+                return `invalid frontColor "${frontColor}"`;
+            }
+        },
+    },
+    backgroundColor: {
+        type: String,
+        required: true,
+    },
+    animation: Object,
+};
+const API_SET_NAVIGATION_BAR_TITLE = 'setNavigationBarTitle';
+const SetNavigationBarTitleProtocol = {
+    title: {
+        type: String,
+        required: true,
+    },
+};
+const API_SHOW_NAVIGATION_BAR_LOADING = 'showNavigationBarLoading';
+const API_HIDE_NAVIGATION_BAR_LOADING = 'hideNavigationBarLoading';
+
+const API_PAGE_SCROLL_TO = 'pageScrollTo';
+const PageScrollToProtocol = {
+    scrollTop: Number,
+    selector: String,
+    duration: Number,
+};
+const PageScrollToOptions = {
+    formatArgs: {
+        duration: 300,
+    },
 };
 
 const IndexProtocol = {
@@ -11568,6 +11726,86 @@ const loadFontFace = defineAsyncApi(API_LOAD_FONT_FACE, (options, { resolve, rej
     });
 }, LoadFontFaceProtocol);
 
+function getCurrentWebview() {
+    const page = getCurrentPage();
+    if (page) {
+        return page.$getAppWebview();
+    }
+    return null;
+}
+function getWebview(page) {
+    if (page) {
+        return page.$getAppWebview();
+    }
+    return getCurrentWebview();
+}
+
+const setNavigationBarTitle = defineAsyncApi(API_SET_NAVIGATION_BAR_TITLE, ({ __page__, title }, { resolve, reject }) => {
+    const webview = getWebview(__page__);
+    if (webview) {
+        const style = webview.getStyle();
+        if (style && style.titleNView) {
+            webview.setStyle({
+                titleNView: {
+                    titleText: title,
+                },
+            });
+        }
+        resolve();
+    }
+    else {
+        reject();
+    }
+}, SetNavigationBarTitleProtocol);
+const showNavigationBarLoading = defineAsyncApi(API_SHOW_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
+    plus.nativeUI.showWaiting('', {
+        modal: false,
+    });
+    resolve();
+});
+const hideNavigationBarLoading = defineAsyncApi(API_HIDE_NAVIGATION_BAR_LOADING, (_, { resolve }) => {
+    plus.nativeUI.closeWaiting();
+    resolve();
+});
+function setPageStatusBarStyle(statusBarStyle) {
+    const pages = getCurrentPages();
+    if (!pages.length) {
+        return;
+    }
+    // 框架内部页面跳转会从这里获取style配置
+    pages[pages.length - 1].$page.statusBarStyle = statusBarStyle;
+}
+const setNavigationBarColor = defineAsyncApi(API_SET_NAVIGATION_BAR_COLOR, ({ __page__, frontColor, backgroundColor }, { resolve, reject }) => {
+    const webview = getWebview(__page__);
+    if (webview) {
+        const styles = {};
+        if (frontColor) {
+            styles.titleColor = frontColor;
+        }
+        if (backgroundColor) {
+            styles.backgroundColor = backgroundColor;
+        }
+        const statusBarStyle = frontColor === '#000000' ? 'dark' : 'light';
+        plus.navigator.setStatusBarStyle(statusBarStyle);
+        // 用户调用api时同时改变当前页配置，这样在系统调用设置时，可以避免覆盖用户设置
+        setPageStatusBarStyle(statusBarStyle);
+        const style = webview.getStyle();
+        if (style && style.titleNView) {
+            if (style.titleNView.autoBackButton) {
+                styles.backButton = styles.backButton || {};
+                styles.backButton.color = frontColor;
+            }
+            webview.setStyle({
+                titleNView: styles,
+            });
+        }
+        resolve();
+    }
+    else {
+        reject();
+    }
+}, SetNavigationBarColorProtocol, SetNavigationBarColorOptions);
+
 function onKeyboardHeightChangeCallback(res) {
     UniServiceJSBridge.invokeOnCallback(ON_KEYBOARD_HEIGHT_CHANGE, res);
 }
@@ -11866,7 +12104,6 @@ const ANI_SHOW = 'pop-in';
 const ANI_DURATION = 300;
 const ANI_CLOSE = downgrade ? 'slide-out-right' : 'pop-out';
 const VIEW_WEBVIEW_PATH = '_www/__uniappview.html';
-const WEBVIEW_ID_PREFIX = 'webviewId';
 
 let preloadWebview;
 function setPreloadWebview(webview) {
@@ -11928,7 +12165,7 @@ function onWebviewReady(pageId, callback) {
     UniServiceJSBridge.once(ON_WEBVIEW_READY + '.' + pageId, callback);
 }
 
-function closeWebview(webview, animationType, animationDuration) {
+function closeWebview$1(webview, animationType, animationDuration) {
     webview[webview.__preload__ ? 'hide' : 'close'](animationType, animationDuration);
 }
 function showWebview(webview, animationType, animationDuration, showCallback, delay) {
@@ -11968,24 +12205,6 @@ function showWebview(webview, animationType, animationDuration, showCallback, de
         });
     }, delay);
 }
-function backWebview(webview, callback) {
-    const children = webview.children();
-    if (!children || !children.length) {
-        // 无子 webview
-        return callback();
-    }
-    // 如果页面有subNvues，切使用了webview组件，则返回时子webview会取错，因此需要做id匹配
-    const childWebview = children.find((webview) => webview.id.indexOf(WEBVIEW_ID_PREFIX) === 0) ||
-        children[0];
-    childWebview.canBack(({ canBack }) => {
-        if (canBack) {
-            childWebview.back(); // webview 返回
-        }
-        else {
-            callback();
-        }
-    });
-}
 
 let pendingNavigator = false;
 function getPendingNavigator() {
@@ -12003,7 +12222,7 @@ function setPendingNavigator(path, callback, msg) {
 }
 function closePage(page, animationType, animationDuration) {
     removePage(page);
-    closeWebview(page.$getAppWebview(), animationType, animationDuration);
+    closeWebview$1(page.$getAppWebview(), animationType, animationDuration);
 }
 function pendingNavigate() {
     if (!pendingNavigator) {
@@ -12355,15 +12574,18 @@ function createPageNode(pageId, pageOptions, setup) {
 function setupPage(component) {
     const oldSetup = component.setup;
     component.inheritAttrs = false; // 禁止继承 __pageId 等属性，避免告警
-    component.setup = (_, ctx) => {
-        const { attrs: { __pageId, __pagePath, __pageQuery, __pageInstance }, } = ctx;
+    component.setup = (props, ctx) => {
+        const { attrs: { __pageId, __pagePath, /*__pageQuery,*/ __pageInstance }, } = ctx;
         if (('production' !== 'production')) {
             console.log(formatLog(__pagePath, 'setup'));
         }
         const instance = getCurrentInstance();
+        instance.$dialogPages = [];
         const pageVm = instance.proxy;
         initPageVm(pageVm, __pageInstance);
-        addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        if (pageVm.$page.openType !== 'openDialogPage') {
+            addCurrentPage(initScope(__pageId, pageVm, __pageInstance));
+        }
         {
             onMounted(() => {
                 nextTick(() => {
@@ -12377,7 +12599,7 @@ function setupPage(component) {
             });
         }
         if (oldSetup) {
-            return oldSetup(__pageQuery, ctx);
+            return oldSetup(props, ctx);
         }
     };
     return component;
@@ -12412,12 +12634,12 @@ function createVuePage(__pageId, __pagePath, __pageQuery, __pageInstance, pageOp
     const pageNode = createPageNode(__pageId, pageOptions, true);
     const app = getVueApp();
     const component = pagesMap.get(__pagePath)();
-    const mountPage = (component) => app.mountPage(component, {
+    const mountPage = (component) => app.mountPage(component, extend({
         __pageId,
         __pagePath,
         __pageQuery,
         __pageInstance,
-    }, pageNode);
+    }, __pageQuery), pageNode);
     if (isPromise(component)) {
         return component.then((component) => mountPage(component));
     }
@@ -12497,6 +12719,27 @@ function createWebview(options) {
 function getStatusbarHeight() {
     // 使用安全区高度，以适配小窗模式
     return plus.navigator.getSafeAreaInsets().top;
+}
+let lastStatusBarStyle;
+function setStatusBarStyle(statusBarStyle) {
+    if (!statusBarStyle) {
+        const page = getCurrentPage();
+        if (!page) {
+            return;
+        }
+        statusBarStyle = page.$page.statusBarStyle;
+        if (!statusBarStyle || statusBarStyle === lastStatusBarStyle) {
+            return;
+        }
+    }
+    if (statusBarStyle === lastStatusBarStyle) {
+        return;
+    }
+    if (('production' !== 'production')) {
+        console.log(formatLog('setStatusBarStyle', statusBarStyle));
+    }
+    lastStatusBarStyle = statusBarStyle;
+    plus.navigator.setStatusBarStyle(statusBarStyle);
 }
 
 function registerPage({ url, path, query, openType, webview, nvuePageVm, eventChannel, }) {
@@ -12598,7 +12841,33 @@ function _navigateTo({ url, path, query, events, aniType, aniDuration, }) {
         showWebview(registerPage({ url, path, query, openType: 'navigateTo', eventChannel }), aniType, aniDuration, () => {
             resolve({ eventChannel });
         });
-        // TODO setStatusBarStyle()
+        setStatusBarStyle();
+    });
+}
+
+function closeWebview(webview, animationType, animationDuration) {
+    if (webview.__preload__) {
+        webview.hide(animationType, animationDuration);
+    }
+    else {
+        webview.close(animationType, animationDuration);
+    }
+}
+function backWebview(webview, callback) {
+    const children = webview.children();
+    if (!children || !children.length) {
+        // 无子 webview
+        return callback();
+    }
+    // 支持且仅支持一个子webview
+    const childWebview = children[0];
+    childWebview.canBack(({ canBack }) => {
+        if (canBack) {
+            childWebview.back(); // webview 返回
+        }
+        else {
+            callback();
+        }
     });
 }
 
@@ -12673,7 +12942,7 @@ function back(delta, animationType, animationDuration) {
         pages
             .slice(len - delta, len)
             .forEach((page) => removePage(page));
-        // TODO setStatusBarStyle()
+        setStatusBarStyle();
         // 前一个页面触发 onShow
         invokeHook(ON_SHOW);
     };
@@ -12731,7 +13000,7 @@ function _redirectTo({ url, path, query, }) {
             }
             resolve(undefined);
         });
-        // TODO setStatusBarStyle()
+        setStatusBarStyle();
     });
 }
 
@@ -12764,7 +13033,7 @@ function _reLaunch({ url, path, query }) {
             pages.forEach((page) => closePage(page, 'none'));
             resolve(undefined);
         });
-        // TODO setStatusBarStyle()
+        setStatusBarStyle();
     });
 }
 
@@ -12807,10 +13076,10 @@ function _switchTab({ url, path, query, }) {
             });
             removePage(currentPage);
             if (currentPage.$page.openType === 'redirectTo') {
-                closeWebview(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
+                closeWebview$1(currentPage.$getAppWebview(), ANI_CLOSE, ANI_DURATION);
             }
             else {
-                closeWebview(currentPage.$getAppWebview(), 'auto');
+                closeWebview$1(currentPage.$getAppWebview(), 'auto');
             }
         }
         else {
@@ -12849,7 +13118,7 @@ function _switchTab({ url, path, query, }) {
             if (callOnShow && !webview.__preload__) {
                 invokeHook(tabBarPage, ON_SHOW);
             }
-            // TODO setStatusBarStyle()
+            setStatusBarStyle();
             resolve(undefined);
         }
         else {
@@ -12859,12 +13128,291 @@ function _switchTab({ url, path, query, }) {
                 query,
                 openType: 'switchTab',
             }), 'none', 0, () => {
-                // TODO setStatusBarStyle()
+                setStatusBarStyle();
                 resolve(undefined);
             }, 70);
         }
     });
 }
+
+// @ts-nocheck
+// TODO 优化此处代码，此页面无对应的css
+const LocationPickerPage = {
+    data() {
+        return {
+            keyword: '',
+            latitude: 0,
+            longitude: 0,
+            loaded: false,
+            channel: void 0,
+            closed: false,
+        };
+    },
+    onLoad(e) {
+        this.latitude = e.latitude;
+        this.longitude = e.longitude;
+        this.keyword = e.keyword;
+        this.loaded = true;
+        this.channel = this.getOpenerEventChannel();
+    },
+    onUnload() {
+        if (this.closed) {
+            return;
+        }
+        this.channel.emit('close', {});
+    },
+    methods: {
+        onClose(e) {
+            this.closed = true;
+            this.channel.emit('close', e.detail);
+            uni.navigateBack();
+        },
+    },
+    render: function (_ctx, _cache, $props, $setup, $data, $options) {
+        return $data.loaded
+            ? (openBlock(),
+                createElementBlock('location-picker', {
+                    key: 0,
+                    style: { width: '100%', height: '100%' },
+                    latitude: $data.latitude,
+                    longitude: $data.longitude,
+                    keyword: $data.keyword,
+                    onClose: _cache[0] ||
+                        (_cache[0] = (...args) => $options.onClose && $options.onClose(...args)),
+                }, null, 40, ['latitude', 'longitude', 'keyword']))
+            : createCommentVNode('v-if', true);
+    },
+};
+const ROUTE_LOCATION_PICKER_PAGE = '__uniappchooselocation';
+const initLocationPickerPageOnce = once(() => {
+    definePage(ROUTE_LOCATION_PICKER_PAGE, LocationPickerPage);
+    __uniRoutes.push({
+        meta: {
+            navigationBar: {
+                style: 'custom',
+            },
+            isNVue: false,
+            route: ROUTE_LOCATION_PICKER_PAGE,
+        },
+        path: '/' + ROUTE_LOCATION_PICKER_PAGE,
+    });
+});
+
+const chooseLocation = defineAsyncApi(API_CHOOSE_LOCATION, (args, { resolve, reject }) => {
+    initLocationPickerPageOnce();
+    const { keyword = '', latitude = '', longitude = '' } = args;
+    uni.navigateTo({
+        url: '/' +
+            ROUTE_LOCATION_PICKER_PAGE +
+            '?keyword=' +
+            keyword +
+            '&latitude=' +
+            latitude +
+            '&longitude=' +
+            longitude,
+        events: {
+            close: (res) => {
+                if (res && res.latitude) {
+                    resolve(res);
+                }
+                else {
+                    reject('cancel');
+                }
+            },
+        },
+        fail: (err) => {
+            reject(err.errMsg || 'cancel');
+        },
+    });
+}, ChooseLocationProtocol);
+
+// @ts-nocheck
+// TODO 优化此处代码，此页面无对应的css
+const LocationViewPage = {
+    data() {
+        return {
+            latitude: 0,
+            longitude: 0,
+            loaded: false,
+        };
+    },
+    onLoad(e) {
+        this.latitude = e.latitude;
+        this.longitude = e.longitude;
+        this.loaded = true;
+    },
+    methods: {},
+    render: function (_ctx, _cache, $props, $setup, $data, $options) {
+        return $data.loaded
+            ? (openBlock(),
+                createElementBlock('location-view', {
+                    key: 0,
+                    style: { width: '100%', height: '100%' },
+                    latitude: $data.latitude,
+                    longitude: $data.longitude,
+                }, null, 40, ['latitude', 'longitude']))
+            : createCommentVNode('v-if', true);
+    },
+};
+const ROUTE_LOCATION_VIEW_PAGE = '__uniappopenlocation';
+const initLocationViewPageOnce = once(() => {
+    definePage(ROUTE_LOCATION_VIEW_PAGE, LocationViewPage);
+    __uniRoutes.push({
+        meta: {
+            navigationBar: {
+                style: 'custom',
+            },
+            isNVue: false,
+            route: ROUTE_LOCATION_VIEW_PAGE,
+        },
+        path: '/' + ROUTE_LOCATION_VIEW_PAGE,
+    });
+});
+
+const openLocation = defineAsyncApi(API_OPEN_LOCATION, (args, { resolve, reject }) => {
+    initLocationViewPageOnce();
+    const { latitude = '', longitude = '' } = args;
+    uni.navigateTo({
+        url: '/' +
+            ROUTE_LOCATION_VIEW_PAGE +
+            '?latitude=' +
+            latitude +
+            '&longitude=' +
+            longitude,
+        success: (res) => {
+            resolve();
+        },
+        fail: (err) => {
+            reject(err.errMsg || 'cancel');
+        },
+    });
+}, OpenLocationProtocol, OpenLocationOptions);
+
+function getLocationSuccess(type, position, resolve) {
+    const coords = position.coords;
+    resolve({
+        type,
+        altitude: coords.altitude || 0,
+        latitude: coords.latitude,
+        longitude: coords.longitude,
+        speed: coords.speed,
+        accuracy: coords.accuracy,
+        address: position.address,
+        errMsg: 'getLocation:ok',
+    });
+}
+const getLocation = defineAsyncApi(API_GET_LOCATION, ({ type = 'wgs84', geocode = false, altitude = false, highAccuracyExpireTime, isHighAccuracy = false, }, { resolve, reject }) => {
+    plus.geolocation.getCurrentPosition((position) => {
+        getLocationSuccess(type, position, resolve);
+    }, (e) => {
+        // 坐标地址解析失败
+        if (e.code === 1501) {
+            getLocationSuccess(type, e, resolve);
+            return;
+        }
+        reject('getLocation:fail ' + e.message);
+    }, {
+        geocode: geocode,
+        enableHighAccuracy: isHighAccuracy || altitude,
+        timeout: highAccuracyExpireTime,
+        coordsType: type,
+    });
+}, GetLocationProtocol, GetLocationOptions);
+function subscribeGetLocation() {
+    registerServiceMethod(API_GET_LOCATION, (args, resolve) => {
+        getLocation({
+            type: args.type,
+            altitude: args.altitude,
+            highAccuracyExpireTime: args.highAccuracyExpireTime,
+            isHighAccuracy: args.isHighAccuracy,
+            success(res) {
+                resolve({
+                    latitude: res.latitude,
+                    longitude: res.longitude,
+                    speed: res.speed,
+                    accuracy: res.accuracy,
+                    altitude: res.altitude,
+                    verticalAccuracy: res.verticalAccuracy,
+                    horizontalAccuracy: res.horizontalAccuracy,
+                });
+            },
+            fail(err) {
+                resolve({
+                    errMsg: err.errMsg || 'getLocation:fail',
+                });
+            },
+        });
+    });
+}
+
+let started = false;
+let watchId = 0;
+const startLocationUpdate = defineAsyncApi(API_START_LOCATION_UPDATE, (options, { resolve, reject }) => {
+    watchId =
+        watchId ||
+            plus.geolocation.watchPosition((res) => {
+                started = true;
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE, res.coords);
+            }, (error) => {
+                if (!started) {
+                    reject(error.message);
+                    started = true;
+                }
+                UniServiceJSBridge.invokeOnCallback(API_ON_LOCATION_CHANGE_ERROR, {
+                    errMsg: `onLocationChange:fail ${error.message}`,
+                });
+            }, {
+                coordsType: options?.type,
+            });
+    setTimeout(resolve, 100);
+}, StartLocationUpdateProtocol, StartLocationUpdateOptions);
+const stopLocationUpdate = defineAsyncApi(API_STOP_LOCATION_UPDATE, (_, { resolve }) => {
+    if (watchId) {
+        plus.geolocation.clearWatch(watchId);
+        started = false;
+        watchId = 0;
+    }
+    resolve();
+});
+const onLocationChange = defineOnApi(API_ON_LOCATION_CHANGE, () => { });
+const offLocationChange = defineOffApi(API_OFF_LOCATION_CHANGE, () => { });
+const onLocationChangeError = defineOnApi(API_ON_LOCATION_CHANGE_ERROR, () => { });
+const offLocationChangeError = defineOffApi(API_OFF_LOCATION_CHANGE_ERROR, () => { });
+
+function operateWebView(id, pageId, type, data, operateMapCallback) {
+    UniServiceJSBridge.invokeViewMethod('webview.' + id, {
+        type,
+        data,
+    }, pageId, operateMapCallback);
+}
+// TODO 完善类型定义，规范化。目前非uni-app-x仅鸿蒙支持
+function createWebviewContext(id, componentInstance) {
+    const pageId = componentInstance.$page.id;
+    return {
+        evalJs(jsCode) {
+            operateWebView(id, pageId, 'evalJs', {
+                jsCode,
+            });
+        },
+        back() {
+            operateWebView(id, pageId, 'back');
+        },
+        forward() {
+            operateWebView(id, pageId, 'forward');
+        },
+        reload() {
+            operateWebView(id, pageId, 'reload');
+        },
+        stop() {
+            operateWebView(id, pageId, 'stop');
+        },
+    };
+}
+
+const pageScrollTo = defineAsyncApi(API_PAGE_SCROLL_TO, (options, { resolve }) => {
+    const pageId = getPageIdByVm(getCurrentPageVm());
+    UniServiceJSBridge.invokeViewMethod(API_PAGE_SCROLL_TO, options, pageId, resolve);
+}, PageScrollToProtocol, PageScrollToOptions);
 
 const pluginDefines = {};
 function registerUTSPlugin(name, define) {
@@ -12878,14 +13426,6 @@ function requireUTSPlugin(name) {
     return define;
 }
 
-// export * from './media/chooseImage'
-// export * from './media/chooseVideo'
-// export * from './media/getImageInfo'
-// export * from './media/getVideoInfo'
-// export * from './network/request'
-// export * from './network/uploadFile'
-// export * from './network/downloadFile'
-
 var uni$1 = {
   __proto__: null,
   addInterceptor: addInterceptor,
@@ -12893,16 +13433,21 @@ var uni$1 = {
   canvasGetImageData: canvasGetImageData,
   canvasPutImageData: canvasPutImageData,
   canvasToTempFilePath: canvasToTempFilePath,
+  chooseLocation: chooseLocation,
   createAnimation: createAnimation,
   createCanvasContext: createCanvasContext,
   createIntersectionObserver: createIntersectionObserver,
+  createMapContext: createMapContext,
   createMediaQueryObserver: createMediaQueryObserver,
   createSelectorQuery: createSelectorQuery,
   createVideoContext: createVideoContext,
+  createWebviewContext: createWebviewContext,
   getEnterOptionsSync: getEnterOptionsSync,
   getLaunchOptionsSync: getLaunchOptionsSync,
   getLocale: getLocale,
+  getLocation: getLocation,
   getSelectedTextRange: getSelectedTextRange,
+  hideNavigationBarLoading: hideNavigationBarLoading,
   hideTabBar: hideTabBar,
   hideTabBarRedDot: hideTabBarRedDot,
   interceptors: interceptors,
@@ -12910,9 +13455,15 @@ var uni$1 = {
   navigateBack: navigateBack,
   navigateTo: navigateTo,
   offKeyboardHeightChange: offKeyboardHeightChange,
+  offLocationChange: offLocationChange,
+  offLocationChangeError: offLocationChangeError,
   onKeyboardHeightChange: onKeyboardHeightChange,
   onLocaleChange: onLocaleChange,
+  onLocationChange: onLocationChange,
+  onLocationChangeError: onLocationChangeError,
   onWindowResize: onWindowResize,
+  openLocation: openLocation,
+  pageScrollTo: pageScrollTo,
   reLaunch: reLaunch,
   redirectTo: redirectTo,
   registerUTSPlugin: registerUTSPlugin,
@@ -12920,11 +13471,16 @@ var uni$1 = {
   removeTabBarBadge: removeTabBarBadge,
   requireUTSPlugin: requireUTSPlugin,
   setLocale: setLocale,
+  setNavigationBarColor: setNavigationBarColor,
+  setNavigationBarTitle: setNavigationBarTitle,
   setTabBarBadge: setTabBarBadge,
   setTabBarItem: setTabBarItem,
   setTabBarStyle: setTabBarStyle,
+  showNavigationBarLoading: showNavigationBarLoading,
   showTabBar: showTabBar,
   showTabBarRedDot: showTabBarRedDot,
+  startLocationUpdate: startLocationUpdate,
+  stopLocationUpdate: stopLocationUpdate,
   switchTab: switchTab
 };
 
@@ -13121,44 +13677,44 @@ function onMessage(pageId, arg) {
         }));
 }
 
-let index$1 = 0;
-function subscribeBase64ToTempFilePath() {
-    registerServiceMethod(BASE64_TO_TEMP_FILE_PATH, (args, resolve) => {
-        const { dataURL, dirname } = args;
-        const id = `${Date.now()}_${index$1++}`;
-        const array = dataURL.split(',');
-        const scheme = array[0];
-        const base64 = array[1];
-        const format = (scheme.match(/data:image\/(\S+?);/) || [
-            '',
-            'png',
-        ])[1].replace('jpeg', 'jpg');
-        const fileName = `${id}.${format}`;
-        const tempFilePath = `${dirname}/${fileName}`;
-        try {
-            if (!fs.accessSync(dirname)) {
-                fs.mkdirSync(dirname);
-            }
+function onWxsInvokeCallMethod({ nodeId, ownerId, method, args, }, pageId) {
+    const node = findNodeById(nodeId, parseInt(pageId));
+    if (!node) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', nodeId, 'not found'));
         }
-        catch (error) {
-            resolve(error);
-            return;
+        return;
+    }
+    const vm = resolveOwnerVm(ownerId, node.__vueParentComponent);
+    if (!vm) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', 'vm not found'));
         }
-        fs.createStream(tempFilePath, 'w', (err, stream) => {
-            if (err) {
-                stream.closeSync();
-                return resolve(err);
-            }
-            stream.write(buffer.from(base64, 'base64').buffer, (err) => {
-                if (err) {
-                    stream.closeSync();
-                    return resolve(err);
-                }
-                stream.closeSync();
-                return resolve({ tempFilePath: `file://${tempFilePath}` });
-            });
-        });
-    });
+        return;
+    }
+    if (!vm[method]) {
+        if (('production' !== 'production')) {
+            console.error(formatLog('Wxs', 'CallMethod', method, ' not found'));
+        }
+        return;
+    }
+    vm[method](args);
+}
+function resolveOwnerVm(ownerId, vm) {
+    if (!vm) {
+        return null;
+    }
+    if (vm.uid === ownerId) {
+        return vm.proxy;
+    }
+    let parent = vm.parent;
+    while (parent) {
+        if (parent.uid === ownerId) {
+            return parent.proxy;
+        }
+        parent = parent.parent;
+    }
+    return vm.proxy;
 }
 
 function initSubscribeHandlers() {
@@ -13176,8 +13732,8 @@ function initSubscribeHandlers() {
     subscribeNavigator();
     subscribe(WEBVIEW_INSERTED, onWebviewInserted);
     subscribe(WEBVIEW_REMOVED, onWebviewRemoved);
-    subscribeBase64ToTempFilePath();
-    // TODO subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod)
+    subscribeGetLocation();
+    subscribe(ON_WXS_INVOKE_CALL_METHOD, onWxsInvokeCallMethod);
     const routeOptions = getRouteOptions(addLeadingSlash(__uniConfig.entryPagePath));
     if (routeOptions) {
         // 防止首页 webview 初始化过早， service 还未开始监听
@@ -13213,7 +13769,7 @@ function initAppLaunch(appVm) {
         referrerInfo: referrerInfo,
     });
     invokeHook(appVm, ON_LAUNCH, args);
-    invokeHook(appVm, ON_SHOW, args);
+    // invokeHook(appVm, ON_SHOW, args) // 鸿蒙应用启动时会在EntryAbility触发一次onForeground事件，不需要在initAppLaunch触发onShow
 }
 
 function initTabBar() {
@@ -13313,4 +13869,4 @@ var index = {
     UniServiceJSBridge: UniServiceJSBridge$1,
 };
 
-export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };
+export { Emitter, UniServiceJSBridge$1 as UniServiceJSBridge, __uniConfig$1 as __uniConfig, addIntersectionObserver, index as default, defineAsyncApi, defineOffApi, defineOnApi, defineSyncApi, defineTaskApi, disableEnumerable, extend, getCurrentPage, getCurrentPageId, getCurrentPageMeta, getCurrentPageVm, getEnv, getPageIdByVm, getRealPath, getType, hasOwn$1 as hasOwn, isArray, isFunction, isPlainObject, isString, registerServiceMethod, removeIntersectionObserver, requestComponentInfo, resolveComponentInstance, setUniRuntime };

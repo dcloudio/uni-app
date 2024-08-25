@@ -2,13 +2,14 @@ import path from 'path'
 import debug from 'debug'
 import type { Plugin } from 'vite'
 
-import { resolveBuiltIn } from '@dcloudio/uni-cli-shared'
+import { resolveBuiltIn, resolveMainPathOnce } from '@dcloudio/uni-cli-shared'
 import { isSSR, ownerModuleName } from '../utils'
 
 const debugResolve = debug('uni:resolve')
 
 export function uniResolveIdPlugin(): Plugin {
   const resolveCache: Record<string, string> = {}
+  const mainPath = resolveMainPathOnce(process.env.UNI_INPUT_DIR)
   return {
     name: 'uni:h5-resolve-id',
     enforce: 'pre',
@@ -28,7 +29,10 @@ export function uniResolveIdPlugin(): Plugin {
         )
       )
     },
-    resolveId(id, _, options) {
+    resolveId(id, importer, options) {
+      if (id === '/main' && importer && importer.endsWith('index.html')) {
+        return mainPath
+      }
       if (id === 'vue') {
         id = '@dcloudio/uni-h5-vue'
       }

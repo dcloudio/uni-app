@@ -318,14 +318,32 @@ const extApiErrorFormatter: Formatter = {
     }
   },
 }
+
+function parseOrigType(type1: string, type2: string) {
+  if (type1.startsWith(type2)) {
+    const renamedIndex = type1.replace(type2, '')
+    if (/[0-9]+/.test(renamedIndex)) {
+      return type2
+    }
+  }
+}
 const typeMismatchErrorFormatter: Formatter = {
   format(error, _) {
     const matches = error.match(TYPE_MISMATCH_RE)
     if (matches) {
       const [, inferredType, expectedType] = matches
-      return `类型不匹配: 推断类型是${normalizeType(
-        inferredType
-      )}，但预期的是${normalizeType(expectedType)}。`
+      const normalizedInferredType = normalizeType(inferredType)
+      const normalizedExpectedType = normalizeType(expectedType)
+      let extra = ''
+      const origType =
+        parseOrigType(normalizedInferredType, normalizedExpectedType) ||
+        parseOrigType(normalizedExpectedType, normalizedInferredType)
+      if (origType) {
+        extra = `该错误可能是没有使用import导入${origType}引发的`
+      }
+      return `类型不匹配: 推断类型是${normalizedInferredType}，但预期的是${normalizedExpectedType}${
+        extra ? `，${extra}` : ''
+      }。`
     }
   },
 }

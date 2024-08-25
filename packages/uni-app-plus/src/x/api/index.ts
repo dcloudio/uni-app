@@ -3,6 +3,8 @@ export { navigateBack } from './route/navigateBack'
 export { redirectTo } from './route/redirectTo'
 export { switchTab } from './route/switchTab'
 export { reLaunch } from './route/reLaunch'
+export { openDialogPage } from './route/openDialogPage'
+export { closeDialogPage } from './route/closeDialogPage'
 
 export { setTabBarBadge } from './tabBar/setTabBarBadge'
 export { removeTabBarBadge } from './tabBar/removeTabBarBadge'
@@ -21,6 +23,7 @@ export { setNavigationBarTitle } from './navigationBar/setNavigationBarTitle'
 // dom
 export { getElementById } from './dom/getElementById'
 export { createSelectorQuery } from './dom/createSelectorQuery'
+export { createCanvasContextAsync } from './dom/createCanvasContextAsync'
 
 // ui
 export { pageScrollTo } from './ui/pageScrollTo'
@@ -31,6 +34,7 @@ export { stopPullDownRefresh } from './ui/stopPullDownRefresh'
 export { $emit, $off, $on, $once } from './base/event-bus'
 export { removeInterceptor, addInterceptor } from './base/interceptor'
 export { getLaunchOptionsSync } from './base/getLaunchOptionsSync'
+export { getEnterOptionsSync } from './base/getEnterOptionsSync'
 export { env } from './base/env'
 
 export * from './performance'

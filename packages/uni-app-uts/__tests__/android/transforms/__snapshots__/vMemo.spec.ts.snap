@@ -1,8 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`compiler: v-memo transform on component 1`] = `
-"
-function Render(): any | null {
+"function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Comp = resolveComponent("Comp")
@@ -14,8 +13,7 @@ const _component_Comp = resolveComponent("Comp")
 `;
 
 exports[`compiler: v-memo transform on normal element 1`] = `
-"
-function Render(): any | null {
+"function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
@@ -25,8 +23,7 @@ const _cache = this.$.renderCache
 `;
 
 exports[`compiler: v-memo transform on root element 1`] = `
-"
-function Render(): any | null {
+"function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return withMemo([_ctx.x], (): VNode => createElementVNode("view"), _cache, 0)
@@ -34,12 +31,11 @@ const _cache = this.$.renderCache
 `;
 
 exports[`compiler: v-memo transform on template v-for 1`] = `
-"
-function Render(): any | null {
+"function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
-    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): VNode => {
+    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): any => {
       const _memo: Array<any | null> = ([x, y === _ctx.z])
       if (_cached != null && _cached.key === x && isMemoSame(_cached, _memo)) return _cached
       const _item = createElementVNode("text", utsMapOf({ key: x }), "foobar")
@@ -51,12 +47,11 @@ const _cache = this.$.renderCache
 `;
 
 exports[`compiler: v-memo transform on v-for 1`] = `
-"
-function Render(): any | null {
+"function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
   return createElementVNode("view", null, [
-    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): VNode => {
+    createElementVNode(Fragment, null, RenderHelpers.renderList(_ctx.list, ({ x, y }, __key, __index, _cached): any => {
       const _memo: Array<any | null> = ([x, y === _ctx.z])
       if (_cached != null && _cached.key === x && isMemoSame(_cached, _memo)) return _cached
       const _item = createElementVNode("view", utsMapOf({ key: x }), [
@@ -70,8 +65,7 @@ const _cache = this.$.renderCache
 `;
 
 exports[`compiler: v-memo transform on v-if 1`] = `
-"
-function Render(): any | null {
+"function PagesIndexIndexRender(): any | null {
 const _ctx = this
 const _cache = this.$.renderCache
 const _component_Comp = resolveComponent("Comp")

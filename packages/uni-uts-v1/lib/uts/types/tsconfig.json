@@ -1,0 +1,22 @@
+{
+  "compilerOptions": {
+    "noLib": true,
+    "strict": true,
+    "noImplicitAny": false,
+    "useDefineForClassFields": false,
+    "sourceMap": false,
+    "noEmitOnError": false,
+    "skipLibCheck": false,
+    "resolveJsonModule": false,
+    "typeRoots": [],
+    "paths": {
+      "@uts/common.d.ts": ["./uts/common/common.d.ts"],
+      "@uni-x/app-android.d.ts": ["./uni-x/app-android/index.d.ts"],
+      "@vue/shared": ["./uni-x/@vue/shared/dist/shared.d.ts"],
+      "@vue/reactivity": ["./uni-x/@vue/reactivity/dist/reactivity.d.ts"],
+      "vue": ["./uni-x/@vue/runtime-core/dist/runtime-core.d.ts"],
+      "@vue/runtime-core": ["./uni-x/@vue/runtime-core/dist/runtime-core.d.ts"]
+    }
+  },
+  "include": ["uni-x/app-android.d.ts"]
+}

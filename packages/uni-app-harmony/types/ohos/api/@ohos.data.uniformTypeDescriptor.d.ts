@@ -133,6 +133,20 @@ declare namespace uniformTypeDescriptor {
          */
         XML = 'general.xml',
         /**
+         * Xhtml data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        XHTML = 'general.xhtml',
+        /**
+         * Rss data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        RSS = 'general.rss',
+        /**
          * Real synchronized multimedia integration language.
          *
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
@@ -210,6 +224,13 @@ declare namespace uniformTypeDescriptor {
          */
         JAVA_SCRIPT = 'general.java-script',
         /**
+         * Css data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        CSS = 'general.css',
+        /**
          * C header data type.
          *
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
@@ -245,12 +266,54 @@ declare namespace uniformTypeDescriptor {
          */
         JAVA_SOURCE = 'general.java-source',
         /**
+         * Tex source code data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        TEX = 'general.tex',
+        /**
          * Markdown format.
          *
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
          * @since 12
          */
         MARKDOWN = 'general.markdown',
+        /**
+         * Asc text data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        ASC_TEXT = 'general.asc-text',
+        /**
+         * Rich text data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        RICH_TEXT = 'general.rich-text',
+        /**
+         * Delimited values text data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        DELIMITED_VALUES_TEXT = 'general.delimited-values-text',
+        /**
+         * Comma separated values text data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        COMMA_SEPARATED_VALUES_TEXT = 'general.comma-separated-values-text',
+        /**
+         * Tab separated values text data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        TAB_SEPARATED_VALUES_TEXT = 'general.tab-separated-values-text',
         /**
          * Ebook data type.
          *
@@ -399,6 +462,13 @@ declare namespace uniformTypeDescriptor {
          */
         XBITMAP_IMAGE = 'general.xbitmap-image',
         /**
+         * Gif image format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        GIF = 'general.gif',
+        /**
          * Tagged Graphics (TGA), a type of image format.
          *
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
@@ -447,6 +517,41 @@ declare namespace uniformTypeDescriptor {
          * @since 11
          */
         PPT = 'com.microsoft.powerpoint.ppt',
+        /**
+         * Microsoft Word dot data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        WORD_DOT = 'com.microsoft.word.dot',
+        /**
+         * Microsoft Powerpoint pps data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        POWERPOINT_PPS = 'com.microsoft.powerpoint.pps',
+        /**
+         * Microsoft Powerpoint pot data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        POWERPOINT_POT = 'com.microsoft.powerpoint.pot',
+        /**
+         * Microsoft Excel xlt data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        EXCEL_XLT = 'com.microsoft.excel.xlt',
+        /**
+         * Microsoft Visio vsd data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        VISIO_VSD = 'com.microsoft.visio.vsd',
         /**
          * PDF data type.
          *
@@ -518,6 +623,20 @@ declare namespace uniformTypeDescriptor {
          */
         VIDEO_3GPP2 = 'general.3gpp2',
         /**
+         * Ts video format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        TS = 'general.ts',
+        /**
+         * Mpegurl video format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        MPEGURL_VIDEO = 'general.mpegurl-video',
+        /**
          * Windows WM video format data type.
          *
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
@@ -559,6 +678,20 @@ declare namespace uniformTypeDescriptor {
          * @since 12
          */
         REALMEDIA = 'com.real.realmedia',
+        /**
+         * Matroska video format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        MATROSKA_VIDEO = 'org.matroska.mkv',
+        /**
+         * Flash data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        FLASH = 'com.adobe.flash',
         /**
          * Audio data type.
          *
@@ -658,6 +791,41 @@ declare namespace uniformTypeDescriptor {
          */
         AIFC_AUDIO = 'general.aifc-audio',
         /**
+         * Mpegurl audio format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        MPEGURL_AUDIO = 'general.mpegurl-audio',
+        /**
+         * Mpeg-4 audio format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        MPEG_4_AUDIO = 'general.mpeg-4-audio',
+        /**
+         * Mp2 audio format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        MP2 = 'general.mp2',
+        /**
+         * Mpeg audio format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        MPEG_AUDIO = 'general.mpeg-audio',
+        /**
+         * Ulaw audio format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        ULAW_AUDIO = 'general.ulaw-audio',
+        /**
          * Digidesign Sound Designer II audio.
          *
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
@@ -671,6 +839,13 @@ declare namespace uniformTypeDescriptor {
          * @since 12
          */
         REALAUDIO = 'com.real.realaudio',
+        /**
+         * Matroska audio format data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        MATROSKA_AUDIO = 'org.matroska.mka',
         /**
          * File data type.
          *
@@ -728,12 +903,40 @@ declare namespace uniformTypeDescriptor {
          */
         BZ2_ARCHIVE = 'general.bz2-archive',
         /**
+         * Opg archive data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        OPG = 'general.opg',
+        /**
+         * Taz archive data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        TAZ_ARCHIVE = 'general.taz-archive',
+        /**
+         * Web archive data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        WEB_ARCHIVE = 'general.web-archive',
+        /**
          * Disk image archive file data type.
          *
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
          * @since 11
          */
         DISK_IMAGE = 'general.disk-image',
+        /**
+         * Iso data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        ISO = 'general.iso',
         /**
          * Tar archive data type.
          *
@@ -805,6 +1008,48 @@ declare namespace uniformTypeDescriptor {
          */
         PRESENTATIONML_PRESENTATION = 'org.openxmlformats.presentationml.presentation',
         /**
+         * Office Open XML Drawingml visio.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        DRAWINGML_VISIO = 'org.openxmlformats.drawingml.visio',
+        /**
+         * Office Open XML Drawingml template.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        DRAWINGML_TEMPLATE = 'org.openxmlformats.drawingml.template',
+        /**
+         * Office Open XML Wordprocessingml template.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        WORDPROCESSINGML_TEMPLATE = 'org.openxmlformats.wordprocessingml.template',
+        /**
+         * Office Open XML Presentationml template.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        PRESENTATIONML_TEMPLATE = 'org.openxmlformats.presentationml.template',
+        /**
+         * Office Open XML Presentationml slideshow.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        PRESENTATIONML_SLIDESHOW = 'org.openxmlformats.presentationml.slideshow',
+        /**
+         * Office Open XML Spreadsheetml template.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        SPREADSHEETML_TEMPLATE = 'org.openxmlformats.spreadsheetml.template',
+        /**
          * Open Document Format for Office Applications.
          *
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
@@ -853,6 +1098,20 @@ declare namespace uniformTypeDescriptor {
          * @since 12
          */
         STUFFIT_ARCHIVE = 'com.allume.stuffit-archive',
+        /**
+         * Rar archive.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        RAR_ARCHIVE = 'com.rarlab.rar-archive',
+        /**
+         * 7-zip archive.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        SEVEN_ZIP_ARCHIVE = 'org.7-zip.7-zip-archive',
         /**
          * Calendar data type.
          *
@@ -1077,7 +1336,28 @@ declare namespace uniformTypeDescriptor {
          * @syscap SystemCapability.DistributedDataManager.UDMF.Core
          * @since 12
          */
-        OPENHARMONY_WANT = 'openharmony.want'
+        OPENHARMONY_WANT = 'openharmony.want',
+        /**
+         * Ofd data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        OFD = 'general.ofd',
+        /**
+         * Cad data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        CAD = 'general.cad',
+        /**
+         * Octet stream data type.
+         *
+         * @syscap SystemCapability.DistributedDataManager.UDMF.Core
+         * @since 12
+         */
+        OCTET_STREAM = 'general.octet-stream'
     }
     /**
      * Class describing the uniform data type defined in the {@code UniformDataType}, which consists of attributes and

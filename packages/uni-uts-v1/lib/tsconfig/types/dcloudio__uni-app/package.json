@@ -1,0 +1,4 @@
+{
+  "name": "@dcloudio/uni-app",
+  "types": "./types/index.d.ts"
+}

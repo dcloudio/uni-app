@@ -222,9 +222,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
     const useUniCloudApi =
       result.inject_apis &&
       result.inject_apis.find((api) => api.startsWith('uniCloud.'))
-    if (!autoImportUniCloud && useUniCloudApi) {
-      throw new Error(`应用未关联服务空间，请在uniCloud目录右键关联服务空间`)
-    } else if (autoImportUniCloud && !useUniCloudApi) {
+    if (autoImportUniCloud && !useUniCloudApi) {
       result.inject_apis = result.inject_apis || []
       result.inject_apis.push('uniCloud.importObject')
     }

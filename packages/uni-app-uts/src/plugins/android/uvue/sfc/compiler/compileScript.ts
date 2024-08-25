@@ -16,8 +16,12 @@ import type {
   Statement,
 } from '@babel/types'
 import { walk } from 'estree-walker'
-import type { RawSourceMap } from 'source-map-js'
-import { processNormalScript } from './script/normalScript'
+import {
+  type RawSourceMap,
+  SourceMapConsumer,
+  SourceMapGenerator,
+} from 'source-map-js'
+import { processNormalScript, processTemplate } from './script/normalScript'
 import type { SFCTemplateCompileOptions } from '@vue/compiler-sfc'
 import { warnOnce } from './warn'
 import { ScriptCompileContext } from './script/context'
@@ -54,6 +58,7 @@ export const normalScriptDefaultVar = `__default__`
 export const DEFAULT_FILENAME = 'anonymous.vue'
 
 export interface SFCScriptCompileOptions {
+  root: string
   /**
    * 类型
    */
@@ -918,26 +923,7 @@ __ins.emit(event, ...do_not_transform_spread)
   if (destructureElements.length) {
     args += `, { ${destructureElements.join(', ')} }: SetupContext`
   }
-
-  // 10. generate return statement
-  // 剩余由 rust 编译器处理
-  const returned = `"INLINE_RENDER"`
-
-  // if (!options.inlineTemplate && !__TEST__) {
-  //   // in non-inline mode, the `__isScriptSetup: true` flag is used by
-  //   // componentPublicInstance proxy to allow properties that start with $ or _
-  //   ctx.s.appendRight(
-  //     endOffset,
-  //     `\nconst __returned__ = ${returned}\n` +
-  //       `Object.defineProperty(__returned__, '__isScriptSetup', { enumerable: false, value: true })\n` +
-  //       `return __returned__` +
-  //       `\n}\n\n`
-  //   )
-  // } else {
-  ctx.s.appendRight(endOffset, `\nreturn ${returned}\n}\n\n`)
-  // }
-
-  // 11. finalize default export
+  // 10. finalize default export
   const genDefaultAs = options.genDefaultAs
     ? `const ${options.genDefaultAs} =`
     : `export default`
@@ -998,11 +984,59 @@ __ins.emit(event, ...do_not_transform_spread)
     )}({${runtimeOptions}\n  ` +
       `${hasAwait ? `async ` : ``}setup(${args}): any | null {
 const __ins = getCurrentInstance()!;
-const _ctx = __ins.proxy;
+const _ctx = __ins.proxy${
+        options.genDefaultAs
+          ? ` as InstanceType<typeof ${options.genDefaultAs}>`
+          : ''
+      };
 const _cache = __ins.renderCache;
 ${exposeCall}`
   )
-  ctx.s.appendRight(endOffset, `})`)
+
+  let scriptMap: RawSourceMap | undefined
+  // 11. generate return statement
+  // 剩余由 rust 编译器处理
+  if (options.componentType !== 'app') {
+    const { code, preamble, map } = processTemplate(sfc, {
+      relativeFilename,
+      bindingMetadata: ctx.bindingMetadata,
+      rootDir: options.root,
+      className: options.className,
+    })
+    if (preamble) {
+      ctx.s.prepend(preamble)
+    }
+
+    // 放到最后，以免查找 offset 有问题
+    let offset = map ? (ctx.s.toString().match(/\r?\n/g)?.length ?? 0) + 1 : 1
+    if (options.genDefaultAs) {
+      offset = offset - 2 // 排除 export default __sfc__
+    }
+    ctx.s.appendRight(endOffset, `\nreturn ${code}\n}\n\n})`)
+    ctx.s.trim()
+    scriptMap =
+      options.sourceMap !== false
+        ? (ctx.s.generateMap({
+            source: relativeFilename,
+            hires: true,
+            includeContent: true,
+          }) as unknown as RawSourceMap)
+        : undefined
+    if (map && scriptMap) {
+      scriptMap = generateScriptMap(offset, map, scriptMap)
+    }
+  } else {
+    ctx.s.appendRight(endOffset, `})`)
+    ctx.s.trim()
+    scriptMap =
+      options.sourceMap !== false
+        ? (ctx.s.generateMap({
+            source: relativeFilename,
+            hires: true,
+            includeContent: true,
+          }) as unknown as RawSourceMap)
+        : undefined
+  }
 
   // 12. finalize Vue helper imports
   // if (ctx.helperImports.size > 0) {
@@ -1013,25 +1047,63 @@ ${exposeCall}`
   //   )
   // }
 
-  ctx.s.trim()
-
   return {
     ...scriptSetup,
     bindings: ctx.bindingMetadata,
     imports: ctx.userImports,
     content: ctx.s.toString(),
-    map:
-      options.sourceMap !== false
-        ? (ctx.s.generateMap({
-            source: relativeFilename,
-            hires: true,
-            includeContent: true,
-          }) as unknown as RawSourceMap)
-        : undefined,
+    map: scriptMap,
     scriptAst: scriptAst?.body,
     scriptSetupAst: scriptSetupAst?.body,
     deps: ctx.deps ? [...ctx.deps] : undefined,
   }
+}
+
+function generateScriptMap(
+  offset: number,
+  templateMap: RawSourceMap,
+  scriptMap: RawSourceMap
+): RawSourceMap {
+  const templateMapConsumer = new SourceMapConsumer(templateMap)
+  const scriptMapConsumer = new SourceMapConsumer(scriptMap)
+  const scriptMapGenerator = new SourceMapGenerator()
+  scriptMapConsumer.eachMapping((m) => {
+    scriptMapGenerator.addMapping({
+      original: {
+        line: m.originalLine,
+        column: m.originalColumn,
+      },
+      generated: {
+        line: m.generatedLine,
+        column: m.generatedColumn,
+      },
+      source: m.source,
+      name: m.name,
+    })
+  })
+  templateMapConsumer.eachMapping((m) => {
+    scriptMapGenerator.addMapping({
+      original: {
+        line: m.originalLine,
+        column: m.originalColumn,
+      },
+      generated: {
+        line: m.generatedLine + offset,
+        column: m.generatedColumn,
+      },
+      source: m.source,
+      name: m.name,
+    })
+  })
+
+  scriptMap.sources.forEach(function (sourceFile) {
+    const sourceContent = scriptMapConsumer.sourceContentFor(sourceFile)
+    if (sourceContent != null) {
+      scriptMapGenerator.setSourceContent(sourceFile, sourceContent)
+    }
+  })
+
+  return JSON.parse(scriptMapGenerator.toString())
 }
 
 function registerBinding(

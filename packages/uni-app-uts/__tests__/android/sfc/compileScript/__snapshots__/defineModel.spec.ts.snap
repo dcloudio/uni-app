@@ -17,7 +17,7 @@ const _cache = __ins.renderCache;
       const c = useModel<any>(__ins.props, "count")
       const toString = useModel<Function>(__ins.props, "toString")
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -37,7 +37,7 @@ const _cache = __ins.renderCache;
       
       const count = useModel<any>(__ins.props, "count")
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -58,7 +58,7 @@ const _cache = __ins.renderCache;
       
       const count = useModel<any>(__ins.props, "modelValue")
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -88,7 +88,7 @@ const _cache = __ins.renderCache;
 
       const hoist = useModel<any>(__ins.props, "hoist", { local })
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -109,11 +109,11 @@ const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
       const modelValue = useModel<any>(__ins.props, "modelValue")
-      const count = useModel<Number>(__ins.props, "count")
-      const disabled = useModel<Number>(__ins.props, "disabled")
+      const count = useModel<number>(__ins.props, "count")
+      const disabled = useModel<number>(__ins.props, "disabled")
       const any = useModel<any>(__ins.props, "any")
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"
@@ -134,13 +134,13 @@ const __ins = getCurrentInstance()!;
 const _ctx = __ins.proxy;
 const _cache = __ins.renderCache;
 
-      const modelValue = useModel<Boolean>(__ins.props, "modelValue")
+      const modelValue = useModel<boolean>(__ins.props, "modelValue")
       const fn = useModel<Function>(__ins.props, "fn")
       const fnWithDefault = useModel<Function>(__ins.props, "fnWithDefault")
-      const str = useModel<String>(__ins.props, "str")
-      const optional = useModel<String>(__ins.props, "optional")
+      const str = useModel<string>(__ins.props, "str")
+      const optional = useModel<string>(__ins.props, "optional")
       
-return "INLINE_RENDER"
+return (): any | null => { return null }
 }
 
 })"

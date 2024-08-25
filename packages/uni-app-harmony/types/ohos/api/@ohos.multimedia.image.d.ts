@@ -2909,6 +2909,14 @@ declare namespace image {
          * @since 12
          */
         desiredDynamicRange?: PackingDynamicRange;
+        /**
+         * Whether the image properties can be saved, like Exif.
+         *
+         * @type { ?boolean }
+         * @syscap SystemCapability.Multimedia.Image.ImagePacker
+         * @since 12
+         */
+        needsPackProperties?: boolean;
     }
     /**
      * Describes image properties.
@@ -4730,6 +4738,15 @@ declare namespace image {
          * @since 12
          */
         writeBufferToPixelsSync(src: ArrayBuffer): void;
+        /**
+         * Convert pixelmap to standard dynamic range.
+         *
+         * @returns { Promise<void> } A Promise instance used to return the operation result. If the operation fails, an error message is returned.
+         * @throws { BusinessError } 62980137 - Invalid image operation.
+         * @syscap SystemCapability.Multimedia.Image.Core
+         * @since 12
+         */
+        toSdr(): Promise<void>;
         /**
          * Obtains pixel map information about this image. This method uses a promise to return the information.
          *

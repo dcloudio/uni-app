@@ -988,7 +988,7 @@ declare namespace zlib {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 900001 - The input source file is invalid.
      * @throws { BusinessError } 900002 - The input destination file is invalid.
-     * @throws { BusinessError } 900003 - The input source file is not ZIP format or damaged.
+     * @throws { BusinessError } 900003 - The input source file is not in ZIP format or is damaged.
      * @syscap SystemCapability.BundleManager.Zlib
      * @since 10
      */
@@ -1002,7 +1002,7 @@ declare namespace zlib {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 900001 - The input source file is invalid.
      * @throws { BusinessError } 900002 - The input destination file is invalid.
-     * @throws { BusinessError } 900003 - The input source file is not ZIP format or damaged.
+     * @throws { BusinessError } 900003 - The input source file is not in ZIP format or is damaged.
      * @syscap SystemCapability.BundleManager.Zlib
      * @crossplatform
      * @atomicservice
@@ -1018,7 +1018,7 @@ declare namespace zlib {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 900001 - The input source file is invalid.
      * @throws { BusinessError } 900002 - The input destination file is invalid.
-     * @throws { BusinessError } 900003 - The input source file is not ZIP format or damaged.
+     * @throws { BusinessError } 900003 - The input source file is not in ZIP format or is damaged.
      * @syscap SystemCapability.BundleManager.Zlib
      * @since 10
      */
@@ -1031,7 +1031,7 @@ declare namespace zlib {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 900001 - The input source file is invalid.
      * @throws { BusinessError } 900002 - The input destination file is invalid.
-     * @throws { BusinessError } 900003 - The input source file is not ZIP format or damaged.
+     * @throws { BusinessError } 900003 - The input source file is not in ZIP format or is damaged.
      * @syscap SystemCapability.BundleManager.Zlib
      * @crossplatform
      * @atomicservice
@@ -1061,7 +1061,7 @@ declare namespace zlib {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 900001 - The input source file is invalid.
      * @throws { BusinessError } 900002 - The input destination file is invalid.
-     * @throws { BusinessError } 900003 - The input source file is not ZIP format or damaged.
+     * @throws { BusinessError } 900003 - The input source file is not in ZIP format or is damaged.
      * @syscap SystemCapability.BundleManager.Zlib
      * @since 10
      */
@@ -1075,7 +1075,7 @@ declare namespace zlib {
      * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 900001 - The input source file is invalid.
      * @throws { BusinessError } 900002 - The input destination file is invalid.
-     * @throws { BusinessError } 900003 - The input source file is not ZIP format or damaged.
+     * @throws { BusinessError } 900003 - The input source file is not in ZIP format or is damaged.
      * @syscap SystemCapability.BundleManager.Zlib
      * @crossplatform
      * @atomicservice
@@ -1089,7 +1089,7 @@ declare namespace zlib {
      * @returns { Promise<number> } Returns the original size of the compressed file.
      * @throws { BusinessError } 401 - The parameter check failed. Possible causes: 1. Mandatory parameters are left unspecified; 2. Incorrect parameter types.
      * @throws { BusinessError } 900001 - The input source file is invalid.
-     * @throws { BusinessError } 900003 - The input source file is not ZIP format or damaged.
+     * @throws { BusinessError } 900003 - The input source file is not in ZIP format or is damaged.
      * @syscap SystemCapability.BundleManager.Zlib
      * @crossplatform
      * @atomicservice
@@ -1166,7 +1166,7 @@ declare namespace zlib {
          * @param { ArrayBuffer } buf - Calculate checksum data buffer.
          * @returns { Promise<number> } Return the updated checksum.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
-         * 2. Incorrect parameter types; 3. Parameter verification failed.
+         * <br>2. Incorrect parameter types; 3. Parameter verification failed.
          * @syscap SystemCapability.BundleManager.Zlib
          * @atomicservice
          * @since 12
@@ -1180,7 +1180,7 @@ declare namespace zlib {
          * @param { number } len2 - The length of the data block associated with the second Adler32 checksum.
          * @returns { Promise<number> } Returns the Adler-32 checksum.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
-         * 2. Incorrect parameter types; 3. Parameter verification failed.
+         * <br>2. Incorrect parameter types; 3. Parameter verification failed.
          * @syscap SystemCapability.BundleManager.Zlib
          * @atomicservice
          * @since 12
@@ -1193,7 +1193,7 @@ declare namespace zlib {
          * @param { ArrayBuffer } buf - Calculate checksum data buffer.
          * @returns { Promise<number> } Return the updated CRC-32.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
-         * 2. Incorrect parameter types; 3. Parameter verification failed.
+         * <br>2. Incorrect parameter types; 3. Parameter verification failed.
          * @syscap SystemCapability.BundleManager.Zlib
          * @atomicservice
          * @since 12
@@ -1207,7 +1207,7 @@ declare namespace zlib {
          * @param { number } len2 - The length of the data block associated with the second CRC-32 checksum.
          * @returns { Promise<number> } Returns the CRC-32 check value.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
-         * 2. Incorrect parameter types; 3. Parameter verification failed.
+         * <br>2. Incorrect parameter types; 3. Parameter verification failed.
          * @syscap SystemCapability.BundleManager.Zlib
          * @atomicservice
          * @since 12
@@ -1220,7 +1220,7 @@ declare namespace zlib {
          * @param { ArrayBuffer } buf - Calculate checksum data buffer.
          * @returns { Promise<number> } Return the updated CRC-64.
          * @throws { BusinessError } 401 - Parameter error. Possible causes: 1. Mandatory parameters are left unspecified;
-         * 2. Incorrect parameter types; 3. Parameter verification failed.
+         * <br>2. Incorrect parameter types; 3. Parameter verification failed.
          * @syscap SystemCapability.BundleManager.Zlib
          * @atomicservice
          * @since 12
@@ -1932,7 +1932,6 @@ declare namespace zlib {
         /**
          * Open the gzip (.gz) file at path for reading and decompressing, or compressing and writing.
          *
-    
          * @param { string } path - The file path to be opened.
          * @param { string } mode - Specify the file opening method.
          * @returns { Promise<void> }

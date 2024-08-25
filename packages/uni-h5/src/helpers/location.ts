@@ -95,17 +95,13 @@ export function translateCoordinateSystem(
   if (mapInfo.type === MapType.QQ) {
     return new Promise((resolve: GeolocationCoordinates | any) => {
       getJSONP(
-        `https://apis.map.qq.com/jsapi?qt=translate&type=1&points=${coords.longitude},${coords.latitude}&key=${mapInfo.key}&output=jsonp&pf=jsapi&ref=jsapi`,
+        `https://apis.map.qq.com/ws/coord/v1/translate?type=1&locations=${coords.latitude},${coords.longitude}&key=${mapInfo.key}&output=jsonp`,
         {
-          callback: 'cb',
+          callback: 'callback',
         },
         (res: any) => {
-          if (
-            'detail' in res &&
-            'points' in res.detail &&
-            res.detail.points.length
-          ) {
-            const { lng, lat } = res.detail.points[0]
+          if ('locations' in res && res.locations.length) {
+            const { lng, lat } = res.locations[0]
             resolve({
               longitude: lng,
               latitude: lat,

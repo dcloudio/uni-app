@@ -43,6 +43,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     }
     expose({
       click,
+      elId,
     })
     return () => (
       <embed

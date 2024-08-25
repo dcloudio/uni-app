@@ -193,9 +193,11 @@ export function isAppVue(filename: string) {
 }
 
 export function resolveAppVue(inputDir: string) {
-  const appUVue = path.resolve(inputDir, 'App.uvue')
-  if (fs.existsSync(appUVue)) {
-    return normalizePath(appUVue)
+  if (process.env.UNI_APP_X === 'true') {
+    const appUVue = path.resolve(inputDir, 'App.uvue')
+    if (fs.existsSync(appUVue)) {
+      return normalizePath(appUVue)
+    }
   }
   return normalizePath(path.resolve(inputDir, 'App.vue'))
 }

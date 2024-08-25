@@ -13,8 +13,7 @@ let proxy: any
 const callbacks: Record<string, Function> = {}
 
 function isUniElement(obj: any) {
-  // @ts-expect-error
-  return typeof UniElement !== 'undefined' && obj instanceof UniElement
+  return typeof obj.getNodeId === 'function' && obj.pageId
 }
 
 function isComponentPublicInstance(instance: any) {
@@ -42,7 +41,8 @@ export function normalizeArg(arg: unknown) {
     const id = oldId ? parseInt(oldId) : callbackId++
     callbacks[id] = arg
     return id
-  } else if (isPlainObject(arg)) {
+  } else if (isPlainObject(arg) || isUniElement(arg)) {
+    // 判断值是否为元素
     const el = parseElement(arg)
     if (el) {
       let nodeId = ''
@@ -54,7 +54,7 @@ export function normalizeArg(arg: unknown) {
       }
       return { pageId, nodeId }
     } else {
-      Object.keys(arg).forEach((name) => {
+      Object.keys(arg as Object).forEach((name) => {
         ;(arg as any)[name] = normalizeArg((arg as any)[name])
       })
     }
@@ -187,6 +187,14 @@ interface InvokeInstanceArgs extends ModuleOptions {
    */
   type: InvokeType
   /**
+   * 是否抛出异常
+   */
+  // throws: boolean
+  /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
+  /**
    * 执行方法时的真实参数列表
    */
   params?: unknown[]
@@ -216,6 +224,10 @@ interface InvokeStaticArgs extends ModuleOptions {
    * 属性|方法
    */
   type: InvokeType
+  /**
+   * 回调是否持久保留
+   */
+  keepAlive: boolean
   /**
    * 执行方法时的真实参数列表
    */
@@ -249,7 +261,6 @@ interface InvokeCallbackParamsRes {
   id: number
   name: string
   params: unknown[]
-  keepAlive?: boolean
 }
 interface InvokeSyncRes {
   type: 'return'
@@ -274,24 +285,24 @@ function getProxy(): {
           return nativeChannel.invokeSync('APP-SERVICE', args, callback)
         },
         invokeAsync(args: InvokeArgs, callback: InvokeAsyncCallback) {
-          if (
-            // 硬编码
-            args.moduleName === 'uni-ad' &&
-            ['showByJs', 'loadByJs'].includes(args.name)
-          ) {
-            // @ts-expect-error
-            const res: InvokeSyncRes = nativeChannel.invokeSync(
-              'APP-SERVICE',
-              args,
-              callback
-            )
-            callback(
-              extend(res, {
-                params: [res.params],
-              })
-            )
-            return res
-          }
+          // if (
+          //   // 硬编码
+          //   args.moduleName === 'uni-ad' &&
+          //   ['showByJs', 'loadByJs'].includes(args.name)
+          // ) {
+          //   // @ts-expect-error
+          //   const res: InvokeSyncRes = nativeChannel.invokeSync(
+          //     'APP-SERVICE',
+          //     args,
+          //     callback
+          //   )
+          //   callback(
+          //     extend(res, {
+          //       params: [res.params],
+          //     })
+          //   )
+          //   return res
+          // }
           // @ts-expect-error
           return nativeChannel.invokeAsync('APP-SERVICE', args, callback)
         },
@@ -390,12 +401,12 @@ function initProxyFunction(
   instanceId: number,
   proxy?: unknown
 ) {
-  const invokeCallback = ({
-    id,
-    name,
-    params,
-    keepAlive,
-  }: InvokeCallbackParamsRes) => {
+  const keepAlive =
+    methodName.indexOf('on') === 0 &&
+    methodParams.length === 1 &&
+    methodParams[0].type === 'UTSCallback'
+  // const throws = async
+  const invokeCallback = ({ id, name, params }: InvokeCallbackParamsRes) => {
     const callback = callbacks[id!]
     if (callback) {
       callback(...params)
@@ -414,6 +425,8 @@ function initProxyFunction(
         type,
         name: methodName,
         method: methodParams,
+        keepAlive,
+        // throws,
       }
     : {
         moduleName,
@@ -424,6 +437,8 @@ function initProxyFunction(
         type,
         companion,
         method: methodParams,
+        keepAlive,
+        // throws,
       }
   return (...args: unknown[]) => {
     if (errMsg) {
@@ -607,6 +622,8 @@ export function initUTSProxyClass(
                 moduleType,
                 id: instance.__instanceId,
                 type: 'getter',
+                keepAlive: false,
+                // throws: false,
                 name: name as string,
                 errMsg,
               })

@@ -94,16 +94,16 @@ val showToast3: ShowToast = fun(msg) {};
 open class UserByJs : User {
     constructor() : super() {}
     open fun loginByJs(name: String, pwd: String) {
-        return login(name, pwd);
+        return this.login(name, pwd);
     }
     open fun registerByJs(name: String, callback: UTSCallback) {
-        return register(name, fun(){
+        return this.register(name, fun(){
             callback();
         }
         );
     }
     open fun testByJs(view: View) {
-        return test(view);
+        return this.test(view);
     }
 }
 fun registerByJs(name: String, callback: UTSCallback) {

@@ -60,7 +60,7 @@ import {
   WITH_SLOT_CTX,
 } from './runtimeHelpers'
 import { stringifyExpression } from './transforms/transformExpression'
-import { isBinaryExpression } from '@babel/types'
+import { isArrowFunctionExpression, isBinaryExpression } from '@babel/types'
 import {
   SLOT_PROPS_NAME,
   createDestructuringSlotProps,
@@ -84,9 +84,6 @@ export interface CodegenContext
   source: string
   code: string
   easyComponentAutoImports: Record<string, [string, string]>
-  importEasyComponents: string[]
-  importUTSComponents: string[]
-  importUTSElements: string[]
   line: number
   column: number
   offset: number
@@ -129,9 +126,6 @@ function createCodegenContext(
     source: ast.loc.source,
     code: ``,
     easyComponentAutoImports: {},
-    importEasyComponents: [],
-    importUTSComponents: [],
-    importUTSElements: [],
     column: 1,
     line: 1,
     offset: 0,
@@ -205,8 +199,6 @@ function createCodegenContext(
   return context
 }
 
-const UTS_COMPONENT_ELEMENT_IMPORTS = `/*UTS-COMPONENTS-IMPORTS*/`
-
 export function generate(
   ast: RootNode,
   options: CodegenOptions & { genDefaultAs?: string } = {}
@@ -220,16 +212,12 @@ export function generate(
   // const preambleContext = isSetupInlined
   //   ? createCodegenContext(ast, options)
   //   : context
-  // 目前不分割
-  const preambleContext = context
+  const preambleContext = createCodegenContext(ast, options)
 
   if (mode === 'module') {
-    preambleContext.push(UTS_COMPONENT_ELEMENT_IMPORTS)
-    newline()
     genEasyComImports(ast.components, preambleContext)
     if (ast.imports.length) {
       genImports(ast.imports, preambleContext)
-      newline()
     }
     push(genRenderFunctionDecl(options) + ` {`)
     newline()
@@ -268,21 +256,11 @@ export function generate(
     push(`}`)
   }
 
-  preambleContext.code = preambleContext.code.replace(
-    UTS_COMPONENT_ELEMENT_IMPORTS,
-    context.importUTSElements.length
-      ? context.importUTSElements.join(';') + ';'
-      : ''
-  )
-
   return {
     ast,
     code: context.code,
-    // preamble: isSetupInlined ? preambleContext.code : ``,
+    preamble: preambleContext.code,
     easyComponentAutoImports: context.easyComponentAutoImports,
-    importEasyComponents: context.importEasyComponents,
-    importUTSComponents: context.importUTSComponents,
-    imports: ast.imports.map((item) => `import '${item.path}'`),
     // SourceMapGenerator does have toJSON() method but it's not in the types
     map: context.map ? (context.map as any).toJSON() : undefined,
     // @ts-expect-error
@@ -296,7 +274,11 @@ function genImports(importsOptions: ImportItem[], context: CodegenContext) {
   }
   importsOptions.forEach((imports) => {
     if (isString(imports.exp)) {
-      context.push(`import ${imports.exp} from '${imports.path}'`)
+      if (imports.exp) {
+        context.push(`import ${imports.exp} from '${imports.path}'`)
+      } else {
+        context.push(`import '${imports.path}'`)
+      }
     } else if (isSimpleExpressionNode(imports.exp)) {
       // 解决静态资源导入 sourcemap 映射问题
       context.push(
@@ -348,7 +330,6 @@ function genAssets(
     helper,
     push,
     newline,
-    importEasyComponents,
     easyComponentAutoImports,
     matchEasyCom,
     rootDir,
@@ -368,7 +349,6 @@ function genAssets(
     if (type === 'component') {
       const source = matchEasyCom(id, false)
       if (source) {
-        let importCode = ''
         const componentId = toValidAssetId(id, type)
         // 加密 easyCom
         if (source.includes('?uts-proxy')) {
@@ -379,23 +359,19 @@ function genAssets(
           assetCode = `const ${componentId} = ${helper(
             RESOLVE_EASY_COMPONENT
           )}(${JSON.stringify(id)},${easyComponentId})`
-          importCode = `import { ${easyComponentId} } from '${source}';`
         } else {
           const easyComponentId = toValidAssetId(id, 'easycom' as 'component')
           assetCode = `const ${componentId} = ${helper(
             RESOLVE_EASY_COMPONENT
           )}(${JSON.stringify(id)},${easyComponentId})`
-          importCode = `import ${easyComponentId} from '${source}';`
         }
-        if (!importEasyComponents.includes(importCode)) {
-          importEasyComponents.push(importCode)
-          addEasyComponentAutoImports(
-            easyComponentAutoImports,
-            rootDir,
-            id,
-            source
-          )
-        }
+
+        addEasyComponentAutoImports(
+          easyComponentAutoImports,
+          rootDir,
+          id,
+          source
+        )
       }
     }
     if (!assetCode) {
@@ -608,12 +584,7 @@ function genComment(node: CommentNode, context: CodegenContext) {
 function parseTag(
   tag: string | symbol | CallExpression,
   curNode: Node,
-  {
-    parseUTSComponent,
-    targetLanguage,
-    importUTSComponents,
-    importUTSElements,
-  }: CodegenContext
+  { parseUTSComponent, targetLanguage }: CodegenContext
 ) {
   if (isString(tag)) {
     // 原生UTS组件
@@ -622,22 +593,8 @@ function parseTag(
       targetLanguage
     )
     if (utsComponentOptions) {
-      const importCode = `import '${utsComponentOptions.source}';`
-      if (!importUTSComponents.includes(importCode)) {
-        importUTSComponents.push(importCode)
-      }
-      const importElementCode = `import { ${utsComponentOptions.className.replace(
-        /Component$/,
-        'Element'
-      )} } from '${utsComponentOptions.namespace}'`
-      if (!importUTSElements.includes(importElementCode)) {
-        importUTSElements.push(importElementCode)
-      }
       return createSimpleExpression(
-        utsComponentOptions.namespace +
-          '.' +
-          utsComponentOptions.className +
-          '.name',
+        utsComponentOptions.className + '.name',
         false,
         curNode.loc
       )
@@ -716,7 +673,7 @@ function genCallExpression(node: CallExpression, context: CodegenContext) {
 function genRenderList(node: CallExpression) {
   node.arguments.forEach((argument: any) => {
     if (argument.type === NodeTypes.JS_FUNCTION_EXPRESSION) {
-      argument.returnType = 'VNode'
+      argument.returnType = 'any'
     }
   })
 }
@@ -784,7 +741,19 @@ function genFunctionExpression(
   } else {
     if (isSlot) {
       if (params) {
-        push(`: Map<string, any | null>): any[] => `)
+        // { data } :Qux
+        const paramsStr = stringifyExpression(params)
+        let code = ': Record<string, any | null>): any[] => '
+        if (paramsStr.includes(':')) {
+          const ast = parseExpression(`(${paramsStr})=>{}`, {
+            plugins: context.expressionPlugins,
+          })
+          // 判断是否已经指定了类型
+          if (isArrowFunctionExpression(ast) && ast.params[0].typeAnnotation) {
+            code = `): any[] => `
+          }
+        }
+        push(code)
         if (
           isDestructuringSlotProps(isSlot, params as CompoundExpressionNode)
         ) {

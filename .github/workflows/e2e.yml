@@ -12,12 +12,12 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest]
-        node_version: [16]
+        node_version: [18.20.0]
         include:
           - os: macos-latest
-            node_version: 16
+            node_version: 18.20.0
           - os: windows-latest
-            node_version: 16
+            node_version: 18.20.0
       fail-fast: false
     name: 'e2e: node-${{ matrix.node_version }}, ${{ matrix.os }}'
     env:
@@ -29,7 +29,7 @@ jobs:
       - name: Install pnpm
         uses: pnpm/action-setup@v2.0.1
         with:
-          version: 8
+          version: 9
 
       - name: Set node version to ${{ matrix.node_version }}
         uses: actions/setup-node@v3

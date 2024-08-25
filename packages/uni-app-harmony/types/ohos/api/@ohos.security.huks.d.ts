@@ -1660,6 +1660,7 @@ declare namespace huks {
          * @since 8
          */
         /**
+         * @type { HuksTag }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 11
@@ -1670,6 +1671,7 @@ declare namespace huks {
          * @since 8
          */
         /**
+         * @type { boolean | number | bigint | Uint8Array }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 11
@@ -1687,18 +1689,21 @@ declare namespace huks {
      */
     export interface HuksHandle {
         /**
+         * @type { number }
          * @syscap SystemCapability.Security.Huks.Extension
          * @since 8
          * @deprecated since 9
          */
         errorCode: number;
         /**
+         * @type { number }
          * @syscap SystemCapability.Security.Huks.Extension
          * @since 8
          * @deprecated since 9
          */
         handle: number;
         /**
+         * @type { ?Uint8Array }
          * @syscap SystemCapability.Security.Huks.Extension
          * @since 8
          * @deprecated since 9
@@ -1726,6 +1731,7 @@ declare namespace huks {
          * @since 9
          */
         /**
+         * @type { number }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 11
@@ -1736,6 +1742,7 @@ declare namespace huks {
          * @since 9
          */
         /**
+         * @type { ?Uint8Array }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 11
@@ -1763,6 +1770,7 @@ declare namespace huks {
          * @since 8
          */
         /**
+         * @type { ?Array<HuksParam> }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 11
@@ -1773,6 +1781,7 @@ declare namespace huks {
          * @since 8
          */
         /**
+         * @type { ?Uint8Array }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 11
@@ -1790,24 +1799,28 @@ declare namespace huks {
      */
     export interface HuksResult {
         /**
+         * @type { number }
          * @syscap SystemCapability.Security.Huks.Extension
          * @since 8
          * @deprecated since 9
          */
         errorCode: number;
         /**
+         * @type { ?Uint8Array }
          * @syscap SystemCapability.Security.Huks.Extension
          * @since 8
          * @deprecated since 9
          */
         outData?: Uint8Array;
         /**
+         * @type { ?Array<HuksParam> }
          * @syscap SystemCapability.Security.Huks.Extension
          * @since 8
          * @deprecated since 9
          */
         properties?: Array<HuksParam>;
         /**
+         * @type { ?Array<string> }
          * @syscap SystemCapability.Security.Huks.Extension
          * @since 8
          * @deprecated since 9
@@ -1835,6 +1848,7 @@ declare namespace huks {
          * @since 9
          */
         /**
+         * @type { ?Uint8Array }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 11
@@ -1845,6 +1859,7 @@ declare namespace huks {
          * @since 9
          */
         /**
+         * @type { ?Array<HuksParam> }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 11
@@ -1855,6 +1870,7 @@ declare namespace huks {
          * @since 9
          */
         /**
+         * @type { ?Array<string> }
          * @syscap SystemCapability.Security.Huks.Core
          * @atomicservice
          * @since 12

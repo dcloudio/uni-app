@@ -265,6 +265,19 @@ declare namespace distributedDataObject {
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
          */
+        /**
+         * Change object session.
+         *
+         * @permission ohos.permission.DISTRIBUTED_DATASYNC
+         * @param {string} sessionId - sessionId The sessionId to be joined, if empty, leave all session.
+         * @param {AsyncCallback<void>} callback - The callback of setSessionId.
+         * @throws {BusinessError} 201 - Permission verification failed.
+         * @throws {BusinessError} 401 - Parameter error. Possible causes: 1. Incorrect parameter types;
+         * 2. The sessionId allows only letters, digits, and underscores(_), and cannot exceed 128 in length.
+         * @throws {BusinessError} 15400001 - Create table failed.
+         * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
+         * @since 12
+         */
         setSessionId(sessionId: string, callback: AsyncCallback<void>): void;
         /**
          * Leave all session.
@@ -289,6 +302,19 @@ declare namespace distributedDataObject {
          * @throws {BusinessError} 15400001 - Create table failed.
          * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
          * @since 9
+         */
+        /**
+         * Change object session.
+         *
+         * @permission ohos.permission.DISTRIBUTED_DATASYNC
+         * @param {string} sessionId - sessionId The sessionId to be joined, if empty, leave all session.
+         * @returns {Promise<void>} - The promise returned by the function.
+         * @throws {BusinessError} 201 - Permission verification failed.
+         * @throws {BusinessError} 401 - Parameter error. Possible causes: 1. Incorrect parameter types;
+         * 2. The sessionId allows only letters, digits, and underscores(_), and cannot exceed 128 in length.
+         * @throws {BusinessError} 15400001 - Create table failed.
+         * @syscap SystemCapability.DistributedDataManager.DataObject.DistributedObject
+         * @since 12
          */
         setSessionId(sessionId?: string): Promise<void>;
         /**

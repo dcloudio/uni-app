@@ -19,6 +19,12 @@ export interface ModelDecl {
   identifier: string | undefined
 }
 
+const RUNTIME_TYPES: Record<string, string> = {
+  Boolean: 'boolean',
+  String: 'string',
+  Number: 'number',
+}
+
 export function processDefineModel(
   ctx: ScriptCompileContext,
   node: Node,
@@ -86,7 +92,9 @@ export function processDefineModel(
   const runtimeTypes = type && inferRuntimeType(ctx, type, 'defineModel')
   let runtimeType =
     runtimeTypes && runtimeTypes.length === 1 ? runtimeTypes[0] : undefined
-
+  if (runtimeType) {
+    runtimeType = RUNTIME_TYPES[runtimeType] || runtimeType
+  }
   let runtimeOptions = ''
   if (options) {
     if (options.type === 'ObjectExpression') {

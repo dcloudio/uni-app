@@ -12,6 +12,7 @@ import { registerPage } from '../../framework/page'
 import { type RouteOptions, navigate } from './utils'
 import { showWebview } from '@dcloudio/uni-app-plus/service/api/route/webview'
 import type { ComponentPublicInstance } from 'vue'
+import { setStatusBarStyle } from '../../../helpers/statusBar'
 
 export const redirectTo = defineAsyncApi<API_TYPE_REDIRECT_TO>(
   API_REDIRECT_TO,
@@ -81,6 +82,6 @@ function _redirectTo({
         resolve(undefined)
       }
     )
-    // TODO setStatusBarStyle()
+    setStatusBarStyle()
   })
 }
