@@ -70,7 +70,7 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
     return (
       plus.os.name === 'iOS' &&
       !!osVersion &&
-      (parseInt(osVersion) === 16 || parseFloat(osVersion) < 17.2)
+      (parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2)
     )
   }
 
@@ -81,7 +81,7 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
     if (osVersionFind) {
       osVersion = osVersionFind[1].replace(/_/g, '.')
     }
-    return !!osVersion && (parseInt(osVersion) === 16 || parseFloat(osVersion) < 17.2)
+    return !!osVersion && (parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2)
   }
 })()
 export default {
