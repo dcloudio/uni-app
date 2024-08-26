@@ -42,14 +42,13 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       indicatorHeight: 0,
       current: 0,
       scrollToElementTime: 0,
-      maskTopStyle: pickerViewProps.maskTopStyle ?? '',
-      maskBottomStyle: pickerViewProps.maskBottomStyle ?? '',
-      // indicatorStyle: pickerViewProps.indicatorStyle ?? '',
+      maskTopStyle: '',
+      maskBottomStyle: '',
+      indicatorStyle: '',
       contentStyle: '',
       _isMounted: false,
     })
 
-    // data.maskTopStyle
     const formatUserStyle = (styleStr: string): Record<string, any> => {
       // 用户传递的 background-color 优先级高
       let formatUserStyle = parseStringStyle(styleStr)
@@ -77,24 +76,26 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     const maskTopStyle = computed(() => {
-      const userStyle = formatUserStyle(data.maskTopStyle)
+      const userStyle = formatUserStyle(pickerViewProps.maskTopStyle)
 
       const style = Object.assign(
         {},
         _style['uni-picker-view-mask'][''],
         _style['uni-picker-view-mask-top'][''],
+        parseStringStyle(data.maskTopStyle),
         userStyle
       ) as StyleValue
 
       return style
     })
     const maskBottomStyle = computed(() => {
-      const userStyle = formatUserStyle(data.maskBottomStyle)
+      const userStyle = formatUserStyle(pickerViewProps.maskBottomStyle)
 
       return Object.assign(
         {},
         _style['uni-picker-view-mask'][''],
         _style['uni-picker-view-mask-bottom'][''],
+        parseStringStyle(data.maskBottomStyle),
         userStyle
       ) as StyleValue
     })
@@ -103,7 +104,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         {},
         _style['uni-picker-view-indicator'][''],
         parseStringStyle(pickerViewProps.indicatorStyle),
-        parseStringStyle(indicatorStyleTop)
+        parseStringStyle(data.indicatorStyle)
       ) as StyleValue
       return val
     })
@@ -124,8 +125,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       return Object.assign({}, _style['uni-picker-view-mask']['']) as StyleValue
     })
 
-    let indicatorStyleTop = ''
-
     const init = () => {
       data.height = pickerColumnRef.value!.offsetHeight
       data.indicatorHeight = indicator.value!.offsetHeight
@@ -134,9 +133,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const maskPosition = `${data.height - padding}px`
       data.maskTopStyle += `;bottom:${maskPosition}`
       data.maskBottomStyle += `;top:${maskPosition}`
-      // data.indicatorStyle += `;top:${padding}px`
-
-      indicatorStyleTop = `;top:${padding}px`
+      data.indicatorStyle = `;top:${padding}px`
 
       data.contentStyle = `padding-top:${padding}px;padding-bottom:${padding}px`
 
@@ -172,11 +169,6 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       const $parent =
         instance?.parent?.type.name === 'PickerView' ? instance?.parent : null
       if ($parent !== null) {
-        // $parent.props
-        // data.indicatorStyle = $parent.props['indicatorStyle'] as string
-        // data.maskTopStyle = $parent.props['maskTopStyle'] as string
-        // data.maskBottomStyle = $parent.props['maskBottomStyle'] as string
-
         $dispatchParent(
           instance?.proxy,
           'PickerView',
