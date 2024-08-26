@@ -35,7 +35,8 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
     return (
       plus.os.name === 'iOS' &&
       !!osVersion &&
-      (parseInt(osVersion) === 16 || parseFloat(osVersion) < 17.2)
+      parseInt(osVersion) >= 16 &&
+      parseFloat(osVersion) < 17.2
     )
   }
 
@@ -45,10 +46,14 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
     const osVersionFind = ua.match(/OS\s([\w_]+)\slike/)
     if (osVersionFind) {
       osVersion = osVersionFind[1].replace(/_/g, '.')
+    } else if (/Macintosh|Mac/i.test(ua) && navigator.maxTouchPoints > 0) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/)
+      if (versionMatched) {
+        osVersion = versionMatched[1]
+      }
     }
     return (
-      !!osVersion &&
-      (parseInt(osVersion) === 16 || parseFloat(osVersion) < 17.2)
+      !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2
     )
   }
 })()
