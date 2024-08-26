@@ -1,10 +1,14 @@
 import type { Plugin } from 'vite'
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
-
+import fg from 'fast-glob'
 import { once } from '@dcloudio/uni-shared'
 
-import { resolveUTSAppModule, resolveUTSCompiler } from '../../../uts'
+import {
+  createUniXCompilerOnce,
+  resolveUTSAppModule,
+  resolveUTSCompiler,
+} from '../../../uts'
 import { parseVueRequest } from '../../utils'
 import {
   checkEncryptUniModules,
@@ -12,8 +16,11 @@ import {
   parseUTSModuleDeps,
   resolveEncryptUniModule,
 } from '../../../uni_modules'
-import { enableSourceMap } from '../../../utils'
+import { enableSourceMap, normalizePath } from '../../../utils'
 import { parseManifestJsonOnce } from '../../../json'
+import { preJson } from '../../../preprocess'
+import type { ChangeEvent } from 'rollup'
+import { dataToEsm } from '@rollup/pluginutils'
 
 const UTSProxyRE = /\?uts-proxy$/
 const UniHelpersRE = /\?uni_helpers$/
@@ -55,9 +62,93 @@ export function uniUTSAppUniModulesPlugin(
 ): Plugin {
   const inputDir = process.env.UNI_INPUT_DIR
   process.env.UNI_UTS_USING_ROLLUP = 'true'
+  const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
+
+  const uniXCompiler =
+    process.env.UNI_APP_X_TSC === 'true' &&
+    (process.env.UNI_UTS_PLATFORM === 'app-android' ||
+      process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+      process.env.UNI_UTS_PLATFORM === 'app')
+      ? createUniXCompilerOnce()
+      : null
+  const changedFiles = new Map<
+    string,
+    {
+      fileName: string
+      event: ChangeEvent
+    }[]
+  >()
 
   const compilePlugin = async (pluginDir: string) => {
-    utsPlugins.add(path.basename(pluginDir))
+    const plugin = path.basename(pluginDir)
+
+    if (uniXCompiler) {
+      const start = Date.now()
+      // 目前每次编译，都全量比对同步uni_modules目录下的文件，不然还要 watch dir
+      const files = await syncUniModuleFiles(
+        process.env.UNI_UTS_PLATFORM as any,
+        pluginDir,
+        path.join(
+          process.env.UNI_OUTPUT_DIR,
+          '../.tsc',
+          path.relative(inputDir, pluginDir)
+        )
+      )
+      uniXCompiler.debug(
+        `${plugin} sync files(${files.length})`,
+        Date.now() - start
+      )
+    }
+
+    if (!utsPlugins.has(plugin)) {
+      utsPlugins.add(plugin)
+      if (uniXCompiler) {
+        const outputPluginDir = path.join(
+          process.env.UNI_OUTPUT_DIR,
+          '../.tsc',
+          path.relative(inputDir, pluginDir)
+        )
+        if (
+          // 非 x 需要两个
+          process.env.UNI_APP_X !== 'true'
+        ) {
+          let indexFileName = resolveTscUniModuleIndexFileName(
+            'app-android',
+            outputPluginDir
+          )
+          if (indexFileName) {
+            await uniXCompiler.addRootFile(indexFileName)
+          }
+          indexFileName = resolveTscUniModuleIndexFileName(
+            'app-ios',
+            outputPluginDir
+          )
+          if (indexFileName) {
+            await uniXCompiler.addRootFile(indexFileName)
+          }
+        } else if (
+          process.env.UNI_UTS_PLATFORM === 'app-android' ||
+          process.env.UNI_UTS_PLATFORM === 'app-ios'
+        ) {
+          const indexFileName = resolveTscUniModuleIndexFileName(
+            process.env.UNI_UTS_PLATFORM,
+            outputPluginDir
+          )
+          if (indexFileName) {
+            await uniXCompiler.addRootFile(indexFileName)
+          }
+        }
+      }
+    }
+
+    if (uniXCompiler) {
+      // 处理uni_modules中的文件变更
+      const files = changedFiles.get(plugin)
+      if (files) {
+        changedFiles.delete(plugin)
+        await uniXCompiler.invalidate(files)
+      }
+    }
 
     const pkgJson = require(path.join(pluginDir, 'package.json'))
     const isExtApi = !!pkgJson.uni_modules?.['uni-ext-api']
@@ -174,6 +265,24 @@ export function uniUTSAppUniModulesPlugin(
     },
     buildEnd() {
       utsModuleCaches.clear()
+      changedFiles.clear()
+    },
+    watchChange(fileName, change) {
+      if (uniXCompiler) {
+        fileName = normalizePath(fileName)
+        if (fileName.startsWith(uniModulesDir)) {
+          // 仅处理uni_modules中的文件
+          const plugin = fileName.slice(uniModulesDir.length + 1).split('/')[0]
+          if (utsPlugins.has(plugin)) {
+            const changeFile = { fileName, event: change.event }
+            if (!changedFiles.has(plugin)) {
+              changedFiles.set(plugin, [changeFile])
+            } else {
+              changedFiles.get(plugin)!.push(changeFile)
+            }
+          }
+        }
+      }
     },
     async transform(_, id, opts) {
       if (opts && opts.ssr) {
@@ -286,4 +395,91 @@ export function uniDecryptUniModulesPlugin(): Plugin {
       }
     },
   }
+}
+
+function resolveTscUniModuleIndexFileName(
+  platform: 'app-android' | 'app-ios',
+  pluginDir: string
+) {
+  let indexFileName = path.resolve(pluginDir, `utssdk/${platform}/index.uts.ts`)
+  if (fs.existsSync(indexFileName)) {
+    return indexFileName
+  }
+  indexFileName = path.resolve(pluginDir, 'utssdk/index.uts.ts')
+  if (fs.existsSync(indexFileName)) {
+    return indexFileName
+  }
+}
+
+function resolveUniModuleGlobs(platform: 'app-android' | 'app-ios' | 'app') {
+  const extname = `.{uts,ts,json}`
+  const globs = [
+    // test-uts/common/**/*
+    `common/**/*${extname}`,
+    `utssdk/*${extname}`,
+    `utssdk/common/**/*${extname}`,
+    // 之所以app-android/app-ios都需要，是因为js引擎下，需要合并两个平台的代码
+    `utssdk/app-android/**/*${extname}`,
+    `utssdk/app-ios/**/*${extname}`,
+  ]
+  return globs
+}
+
+function resolveUniModuleIgnoreGlobs() {
+  return [`utssdk/app-android/config.json`, `utssdk/app-ios/config.json`]
+}
+
+async function syncUniModuleFiles(
+  platform: 'app-android' | 'app-ios' | 'app',
+  pluginDir: string,
+  outputPluginDir: string
+) {
+  return fg(resolveUniModuleGlobs(platform), {
+    cwd: pluginDir,
+    absolute: false,
+    ignore: resolveUniModuleIgnoreGlobs(),
+  }).then((files) => {
+    return Promise.all(
+      files.map((fileName) =>
+        syncUniModuleFile(fileName, pluginDir, outputPluginDir).then(
+          () => fileName
+        )
+      )
+    )
+  })
+}
+
+async function syncUniModuleFile(
+  relativeFileName: string,
+  pluginDir: string,
+  outputPluginDir: string
+) {
+  const src = path.resolve(pluginDir, relativeFileName)
+  const extname = path.extname(relativeFileName)
+  if (extname === '.uts') {
+    // test.uts => test.uts.ts
+    const dest = path.resolve(outputPluginDir, relativeFileName + '.ts')
+    return copyFile(src, dest)
+  } else if (extname === '.json') {
+    return fs.outputFile(
+      path.resolve(outputPluginDir, relativeFileName + '.ts'),
+      // TODO 目前的 preJson 有问题，需要明确app-android/app-ios
+      dataToEsm(JSON.parse(preJson(fs.readFileSync(src, 'utf-8'))), {
+        namedExports: true,
+        preferConst: true,
+      })
+    )
+  }
+  return copyFile(src, path.resolve(outputPluginDir, relativeFileName))
+}
+
+const utsModuleFileCaches = new Map<string, number>()
+
+async function copyFile(src: string, dest: string) {
+  const stat = await fs.stat(src)
+  if (utsModuleFileCaches.get(src) === stat.mtimeMs) {
+    return
+  }
+  utsModuleFileCaches.set(src, stat.mtimeMs)
+  return fs.copy(src, dest, { overwrite: true })
 }

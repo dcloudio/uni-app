@@ -26,6 +26,7 @@ import {
   runByHBuilderX,
 } from './shared'
 import type { ClassMeta } from './code'
+import { uvueOutDir } from './uvue'
 
 interface ToOptions {
   inputDir: string
@@ -844,4 +845,32 @@ export function requireUniHelpers() {
     'uni_helpers/lib/bytenode'
   ))
   return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
+}
+
+export function resolveBundleInputFileName(fileName: string) {
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    return normalizePath(
+      path.resolve(
+        uvueOutDir(),
+        path.relative(process.env.UNI_INPUT_DIR, fileName)
+      )
+    )
+  }
+  return fileName
+}
+
+export function resolveUVueFileName(fileName: string) {
+  if (!fileName) {
+    return fileName
+  }
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    const inputDir = normalizePath(process.env.UNI_INPUT_DIR)
+    fileName = normalizePath(fileName)
+    if (fileName.startsWith(inputDir)) {
+      return normalizePath(
+        path.resolve(uvueOutDir(), path.relative(inputDir, fileName))
+      )
+    }
+  }
+  return fileName
 }

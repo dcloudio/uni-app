@@ -51,6 +51,7 @@ let isFirst = true
 export function uniAppPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
+  const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
   const mainUTS = resolveMainPathOnce(inputDir)
   const uvueOutputDir = uvueOutDir()
   const tscOutputDir = tscOutDir()
@@ -188,9 +189,17 @@ export function uniAppPlugin(): UniVitePlugin {
       // 开发者仅在 script 中引入了 easyCom 类型，但模板里边没用到，此时额外生成一个辅助的.uvue文件
       // checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
-    async watchChange(fileName, change) {
+    watchChange(fileName, change) {
       if (uniXCompiler) {
         // watcher && watcher.watch(3000)
+        fileName = normalizePath(fileName)
+        if (fileName.startsWith(uniModulesDir)) {
+          // 忽略uni_modules uts原生插件中的文件
+          const plugin = fileName.slice(uniModulesDir.length + 1).split('/')[0]
+          if (getCurrentCompiledUTSPlugins().has(plugin)) {
+            return
+          }
+        }
         changedFiles.push({ fileName, event: change.event })
       }
     },

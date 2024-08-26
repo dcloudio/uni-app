@@ -39,10 +39,11 @@ declare class UniXCompiler implements IUTSCompiler {
     private _options;
     private _utsCompiler;
     constructor(options: UniXCompilerOptions);
+    debug(formatter: any, ...args: any[]): void;
     close(): Promise<void>;
     wait(timeout?: number): Promise<void>;
     getRootFiles(): string[];
-    addRootFile(fileName: string): Promise<void>;
+    addRootFile(fileName: string, timeout?: number): Promise<void>;
     getDiagnostics(): tsTypes.Diagnostic[];
     invalidate(files: {
         fileName: string;

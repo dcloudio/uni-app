@@ -37,6 +37,7 @@ import {
   isColorSupported,
   parseKotlinPackageWithPluginId,
   relative,
+  resolveUVueFileName,
 } from './utils'
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
@@ -210,7 +211,7 @@ export function resolveRootIndex(module: string, options: GenProxyCodeOptions) {
     options.is_uni_modules ? 'utssdk' : '',
     `index${options.extname}`
   )
-  return fs.existsSync(filename) && filename
+  return fs.existsSync(filename) ? filename : ''
 }
 
 export function resolveRootInterface(
@@ -222,7 +223,7 @@ export function resolveRootInterface(
     options.is_uni_modules ? 'utssdk' : '',
     `interface${options.extname}`
   )
-  return fs.existsSync(filename) && filename
+  return fs.existsSync(filename) ? filename : ''
 }
 
 export function resolvePlatformIndexFilename(
@@ -244,7 +245,7 @@ export function resolvePlatformIndex(
   options: GenProxyCodeOptions
 ) {
   const filename = resolvePlatformIndexFilename(platform, module, options)
-  return fs.existsSync(filename) && filename
+  return fs.existsSync(filename) ? filename : ''
 }
 
 function exportDefaultCode(format: FORMATS) {
@@ -399,6 +400,7 @@ async function parseInterfaceTypes(
   options: GenProxyCodeOptions
 ): Promise<Types> {
   const interfaceFilename = resolveRootInterface(module, options)
+
   if (!interfaceFilename) {
     return {
       interface: {},
@@ -651,13 +653,18 @@ async function parseFile(
   options: GenProxyCodeOptions
 ): Promise<ProxyDecl[]> {
   if (filename) {
-    return parseCode(
-      fs.readFileSync(filename, 'utf8'),
-      options.namespace,
-      options.types!,
-      filename,
-      options.inputDir!
-    )
+    filename = resolveUVueFileName(filename)
+    // x 下 tsc 仅 emit 了 app-android，但 genJsCode 又可能读取 app-ios
+    // TODO 理论上app-android原生模式，不需要生成 js 代码
+    if (fs.existsSync(filename)) {
+      return parseCode(
+        fs.readFileSync(filename, 'utf8'),
+        options.namespace,
+        options.types!,
+        filename,
+        options.inputDir!
+      )
+    }
   }
   return []
 }

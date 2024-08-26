@@ -30216,7 +30216,12 @@ var visitEachChildTable = {
   [262 /* FunctionDeclaration */]: function visitEachChildOfFunctionDeclaration(node, visitor, context, nodesVisitor, nodeVisitor, tokenVisitor) {
     return context.factory.updateFunctionDeclaration(
       node,
-      nodesVisitor(node.modifiers, visitor, isModifier),
+      nodesVisitor(
+        node.modifiers,
+        visitor,
+        /* fixed by uts 函数声明支持装饰器 isModifier */
+        isModifierLike
+      ),
       tokenVisitor ? nodeVisitor(node.asteriskToken, tokenVisitor, isAsteriskToken) : node.asteriskToken,
       nodeVisitor(node.name, visitor, isIdentifier),
       nodesVisitor(node.typeParameters, visitor, isTypeParameterDeclaration),
