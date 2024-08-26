@@ -8879,9 +8879,8 @@ function getRealPath(filepath) {
         // 鸿蒙平台特性
         return 'file:/' + normalizeLocalPath(filepath);
     }
-    // TODO 暂时使用当前 dirname
-    const href = location.href;
-    const wwwPath = href.substring(0, href.lastIndexOf('/'));
+    // TODO view 层暂时使用当前 dirname，service 层暂时转换为 resource
+    const wwwPath = normalizeLocalPath('_www').replace(/.+?\/apps\//, 'resource://rawfile/apps/');
     // 绝对路径转换为本地文件系统路径
     if (filepath.indexOf('/') === 0) {
         // 平台绝对路径
