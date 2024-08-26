@@ -73,6 +73,10 @@ const props = {
     type: Boolean,
     default: true,
   },
+  fullscreen: {
+    type: Boolean,
+    default: true,
+  },
   webviewStyles: {
     type: Object,
     default() {
@@ -107,7 +111,10 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     return () => (
-      <uni-web-view id={props.id}>
+      <uni-web-view
+        id={props.id}
+        class={props.fullscreen ? 'uni-webview--fullscreen' : ''}
+      >
         <Embed
           ref={embedRef}
           tag="webview"
