@@ -12,7 +12,7 @@ import {
   watch,
 } from 'vue'
 
-import { parseStringStyle } from '@vue/shared'
+import { isString, parseStringStyle } from '@vue/shared'
 import { $dispatch, $dispatchParent } from '../../utils'
 import { _style_picker_column as _style } from './style'
 import { UniPickerViewColumnElement } from './model'
@@ -49,6 +49,24 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       _isMounted: false,
     })
 
+    // data.maskTopStyle
+    const formatUserStyle = (styleStr: string): Record<string, any> => {
+      // 用户传递的 background-color 优先级高
+      let formatUserStyle = parseStringStyle(styleStr)
+      if (
+        isString(formatUserStyle['background-color']) ||
+        isString(formatUserStyle['background'])
+      ) {
+        formatUserStyle = Object.assign({}, formatUserStyle, {
+          backgroundImage: '',
+          background:
+            formatUserStyle['background-color'] ||
+            formatUserStyle['background'],
+        })
+      }
+      return formatUserStyle
+    }
+
     // style
     const contentStyle = computed(() => {
       return Object.assign(
@@ -59,19 +77,25 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     })
 
     const maskTopStyle = computed(() => {
-      return Object.assign(
+      const userStyle = formatUserStyle(data.maskTopStyle)
+
+      const style = Object.assign(
         {},
         _style['uni-picker-view-mask'][''],
         _style['uni-picker-view-mask-top'][''],
-        parseStringStyle(data.maskTopStyle)
+        userStyle
       ) as StyleValue
+
+      return style
     })
     const maskBottomStyle = computed(() => {
+      const userStyle = formatUserStyle(data.maskBottomStyle)
+
       return Object.assign(
         {},
         _style['uni-picker-view-mask'][''],
         _style['uni-picker-view-mask-bottom'][''],
-        parseStringStyle(data.maskBottomStyle)
+        userStyle
       ) as StyleValue
     })
     const indicatorStyle = computed(() => {
