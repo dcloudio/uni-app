@@ -149,7 +149,7 @@ export function initEnv(
       // 指定了鸿蒙项目根目录
       process.env.UNI_OUTPUT_DIR = path.resolve(
         process.env.UNI_APP_HARMONY_PROJECT_PATH,
-        `entry/src/main/resources/rawfile/apps/HBuilder/www`
+        `entry/src/main/resources/resfile/apps/HBuilder/www`
       )
     }
   }
