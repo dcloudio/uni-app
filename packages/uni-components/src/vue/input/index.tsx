@@ -30,6 +30,7 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
 })
 
 const resolveDigitDecimalPointDeleteContentBackward = (() => {
+  //#if !_NODE_JS_
   if (__PLATFORM__ === 'app') {
     const osVersion = plus.os.version
     return (
@@ -56,6 +57,7 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
       !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2
     )
   }
+  //#endif
 })()
 
 function resolveDigitDecimalPoint(

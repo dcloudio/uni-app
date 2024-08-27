@@ -4608,49 +4608,63 @@ const EmitProtocol = [
 class EventBus {
   constructor() {
     this.emitter = new Emitter();
-    this.$on = /* @__PURE__ */ defineSyncApi(
-      API_ON,
-      (name, callback) => {
-        this.emitter.on(name, callback);
-        return () => this.emitter.off(name, callback);
-      },
-      OnProtocol
-    );
-    this.$once = /* @__PURE__ */ defineSyncApi(
-      API_ONCE,
-      (name, callback) => {
-        this.emitter.once(name, callback);
-        return () => this.emitter.off(name, callback);
-      },
-      OnceProtocol
-    );
-    this.$off = /* @__PURE__ */ defineSyncApi(
-      API_OFF,
-      (name, callback) => {
-        if (!name) {
-          this.emitter.e = {};
-          return;
-        }
-        if (!isArray(name))
-          name = [name];
-        name.forEach((n) => this.emitter.off(n, callback));
-      },
-      OffProtocol
-    );
-    this.$emit = /* @__PURE__ */ defineSyncApi(
-      API_EMIT,
-      (name, ...args) => {
-        this.emitter.emit(name, ...args);
-      },
-      EmitProtocol
-    );
+    this.$on = (name, callback) => {
+      this.emitter.on(name, callback);
+    };
+    this.$once = (name, callback) => {
+      this.emitter.once(name, callback);
+    };
+    this.$off = (name, callback) => {
+      if (!name) {
+        this.emitter.e = {};
+        return;
+      }
+      if (!isArray(name))
+        name = [name];
+      name.forEach((n) => this.emitter.off(n, callback));
+    };
+    this.$emit = (name, ...args) => {
+      this.emitter.emit(name, ...args);
+    };
   }
 }
 const eventBus = new EventBus();
-const $on = eventBus.$on;
-const $once = eventBus.$once;
-const $off = eventBus.$off;
-const $emit = eventBus.$emit;
+const $on = /* @__PURE__ */ defineSyncApi(
+  API_ON,
+  (name, callback) => {
+    eventBus.$on(name, callback);
+    return () => eventBus.$off(name, callback);
+  },
+  OnProtocol
+);
+const $once = /* @__PURE__ */ defineSyncApi(
+  API_ONCE,
+  (name, callback) => {
+    eventBus.$once(name, callback);
+    return () => eventBus.$off(name, callback);
+  },
+  OnceProtocol
+);
+const $off = /* @__PURE__ */ defineSyncApi(
+  API_OFF,
+  (name, callback) => {
+    if (!name) {
+      eventBus.emitter.e = {};
+      return;
+    }
+    if (!isArray(name))
+      name = [name];
+    name.forEach((n) => eventBus.$off(n, callback));
+  },
+  OffProtocol
+);
+const $emit = /* @__PURE__ */ defineSyncApi(
+  API_EMIT,
+  (name, ...args) => {
+    eventBus.$emit(name, ...args);
+  },
+  EmitProtocol
+);
 const validator = [
   {
     name: "id",
@@ -10086,15 +10100,19 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
   }
 });
 const resolveDigitDecimalPointDeleteContentBackward = (() => {
-  const iOS17BugVersions = ["17.0", "17.0.1", "17.0.2", "17.0.3", "17.1", "17.1.1", "17.1.2"];
   {
     const ua2 = navigator.userAgent;
     let osVersion = "";
     const osVersionFind = ua2.match(/OS\s([\w_]+)\slike/);
     if (osVersionFind) {
       osVersion = osVersionFind[1].replace(/_/g, ".");
+    } else if (/Macintosh|Mac/i.test(ua2) && navigator.maxTouchPoints > 0) {
+      const versionMatched = ua2.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osVersion = versionMatched[1];
+      }
     }
-    return ua2.includes("iPhone OS 16") || iOS17BugVersions.includes(osVersion);
+    return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
 })();
 function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
@@ -17902,6 +17920,12 @@ function getBrowserInfo() {
     osname = "iOS";
     deviceType = "pad";
     osversion = isFunction(window.BigInt) ? "14.0" : "13.0";
+    if (parseInt(osversion) === 14) {
+      const versionMatched = ua.match(/Version\/(\S*)\b/);
+      if (versionMatched) {
+        osversion = versionMatched[1];
+      }
+    }
   } else if (isWindows || isMac || isLinux) {
     model = "PC";
     osname = "PC";

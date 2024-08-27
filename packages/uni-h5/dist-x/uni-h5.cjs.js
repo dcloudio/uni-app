@@ -3603,17 +3603,7 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = (() => {
-  const iOS17BugVersions = ["17.0", "17.0.1", "17.0.2", "17.0.3", "17.1", "17.1.1", "17.1.2"];
-  {
-    const ua = navigator.userAgent;
-    let osVersion = "";
-    const osVersionFind = ua.match(/OS\s([\w_]+)\slike/);
-    if (osVersionFind) {
-      osVersion = osVersionFind[1].replace(/_/g, ".");
-    }
-    return ua.includes("iPhone OS 16") || iOS17BugVersions.includes(osVersion);
-  }
+const resolveDigitDecimalPointDeleteContentBackward = /* @__PURE__ */ (() => {
 })();
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
   if (cache.value) {
