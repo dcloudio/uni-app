@@ -271,7 +271,7 @@ export function registerDialogPage(
     dialogPage.$vm = page
     // @ts-expect-error
     page.$dialogPage = dialogPage
-    page.$getParentPage = dialogPage.$getParentPage
+    page.$getParentPage = () => dialogPage.$getParentPage()
 
     // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
     // nativePage.addPageEventListener(ON_SHOW, (_) => {
