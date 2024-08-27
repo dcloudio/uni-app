@@ -18,7 +18,7 @@ export function createTransformBorder(
       const index = splitResult.findIndex((str) => item.test(str))
       return index < 0 ? null : splitResult.splice(index, 1)[0]
     })
-    if (splitResult.length) {
+    if (splitResult.length > 0 && value !== '') {
       return [decl]
     }
     return [
