@@ -8,7 +8,6 @@ import {
   buildUniExtApis,
   createUniXCompilerOnce,
   emptyDir,
-  formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
   getUTSComponentAutoImports,
   getUTSEasyComAutoImports,
@@ -252,7 +251,7 @@ export function uniAppPlugin(): UniVitePlugin {
         extApiComponents: [...getExtApiComponents()],
         uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
         autoImports: initAutoImports(),
-        extApiProviders: parseUniExtApiProviders(manifestJson),
+        extApiProviders: parseUniExtApiProviders(),
         uniModulesArtifacts: parseUniModulesArtifacts(),
         env: parseProcessEnv(resolvedConfig),
       })
@@ -372,39 +371,9 @@ const ${className}Styles = []`
   return res
 }
 
-function parseUniExtApiProviders(
-  manifestJson: Record<string, any>
-): [string, string, string][] {
+function parseUniExtApiProviders(): [string, string, string][] {
   const providers: [string, string, string][] = []
   const customProviders = getUniExtApiProviderRegisters()
-  const userModules = manifestJson.app?.distribute?.modules || {}
-  const userModuleNames = Object.keys(userModules)
-  if (userModuleNames.length) {
-    const systemProviders = resolveUTSCompiler().parseExtApiProviders()
-    userModuleNames.forEach((moduleName) => {
-      const systemProvider = systemProviders[moduleName]
-      if (systemProvider) {
-        const userModule = userModules[moduleName]
-        Object.keys(userModule).forEach((providerName) => {
-          if (systemProvider.providers.includes(providerName)) {
-            if (
-              !customProviders.find(
-                (customProvider) =>
-                  customProvider.service === systemProvider.service &&
-                  customProvider.name === providerName
-              )
-            ) {
-              providers.push([
-                systemProvider.service,
-                providerName,
-                formatExtApiProviderName(systemProvider.service, providerName),
-              ])
-            }
-          }
-        })
-      }
-    })
-  }
   customProviders.forEach((provider) => {
     providers.push([provider.service, provider.name, provider.class])
   })
