@@ -1,5 +1,5 @@
 const setPageStyle = jest.fn()
-jest.mock('../../service/framework/page/getCurrentPages', () => ({
+jest.mock('../../../../src/service/framework/page/getCurrentPages', () => ({
   getAllPages: jest.fn(() => {
     return [
       {
@@ -12,7 +12,7 @@ jest.mock('../../service/framework/page/getCurrentPages', () => ({
   }),
 }))
 
-jest.mock('./app/tabBar', () => ({
+jest.mock('../../../../src/x/framework/app/tabBar', () => ({
   getTabBar: jest.fn(() => ({})),
 }))
 
@@ -20,7 +20,7 @@ import {
   getAppThemeFallbackOS,
   normalizePageStyles,
   normalizeTabBarStyles,
-} from './theme'
+} from '../../../../src/x/framework/theme'
 
 describe('test: getAppThemeFallbackOS', () => {
   it('test: getAppThemeFallbackOS1', () => {
