@@ -165,6 +165,12 @@ export default /*#__PURE__*/ defineBuiltInComponent({
       data.scrollToElementTime = Date.now()
     }
 
+    const uniResizeObserver = new UniResizeObserver(
+      (entries: Array<UniResizeObserverEntry>) => {
+        init()
+      }
+    )
+
     const created = () => {
       const $parent =
         instance?.parent?.type.name === 'PickerView' ? instance?.parent : null
@@ -201,11 +207,14 @@ export default /*#__PURE__*/ defineBuiltInComponent({
         setTimeout(() => {
           data._isMounted = true
         }, 1000)
+
+        uniResizeObserver.observe(pickerColumnRef.value!)
       })
     })
 
     onUnmounted(() => {
       const ctx = instance?.proxy
+      uniResizeObserver.disconnect()
       $dispatch(ctx, 'PickerView', '_pickerViewUpdateHandler', ctx, 'remove')
     })
 
