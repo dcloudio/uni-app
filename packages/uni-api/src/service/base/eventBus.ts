@@ -34,13 +34,13 @@ export type EmitterEmit = (eventName: string, param?: any) => void
 
 export class EventBus {
   emitter = new Emitter()
-  $on = (name, callback) => {
+  $on(name: string, callback: (result: any) => void) {
     this.emitter.on(name, callback)
   }
-  $once = (name, callback) => {
+  $once(name: string, callback: (result: any) => void) {
     this.emitter.once(name, callback)
   }
-  $off = (name, callback) => {
+  $off(name?: string | string[], callback?: (result: any) => void) {
     if (!name) {
       this.emitter.e = {}
       return
@@ -48,7 +48,7 @@ export class EventBus {
     if (!isArray(name)) name = [name]
     name.forEach((n) => this.emitter.off(n, callback))
   }
-  $emit = (name, ...args: any[]) => {
+  $emit(name: string, ...args: any[]) {
     this.emitter.emit(name, ...args)
   }
 }
