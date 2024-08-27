@@ -226,6 +226,15 @@
       "SaveVideoToPhotosAlbum"
     ],
     [
+      "ChooseFile"
+    ],
+    [
+      "ChooseFileSuccess"
+    ],
+    [
+      "ChooseFileOptions"
+    ],
+    [
       "Request"
     ],
     [

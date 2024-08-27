@@ -9,6 +9,8 @@ import type {
 import { originalPositionForSync } from '../sourceMap'
 import { normalizePath } from '../shared'
 
+export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
+
 const debugTscWatcher = debug('uts:tsc:watcher')
 
 export function createUniXCompiler(
@@ -18,6 +20,7 @@ export function createUniXCompiler(
     inputDir: string
     outputDir: string
     cacheDir: string
+    paths?: tsTypes.CompilerOptions['paths']
     rootFiles?: string[]
     normalizeFileName: (str: string) => string
   }
@@ -65,10 +68,12 @@ export function createUniXCompiler(
     mode,
     targetLanguage,
     typescript: ts,
+    paths: options.paths,
     utsLibDir,
     hxLanguageServiceDir,
     originalPositionForSync,
     watchFile,
+    incremental: true,
     ...options,
   }
   const { UniXCompiler } = require('../../lib/uni-x/dist/compiler')

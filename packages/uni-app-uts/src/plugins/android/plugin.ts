@@ -2,15 +2,14 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { ResolvedConfig } from 'vite'
 import { extend, isString } from '@vue/shared'
-import type { ChangeEvent, OutputBundle, PluginContext } from 'rollup'
+import type { ChangeEvent } from 'rollup'
 import {
   type UniVitePlugin,
   buildUniExtApis,
-  createUniXCompilerOnce,
+  createUniXKotlinCompilerOnce,
   emptyDir,
   getCurrentCompiledUTSPlugins,
   getUTSComponentAutoImports,
-  getUTSEasyComAutoImports,
   getUniExtApiProviderRegisters,
   normalizeEmitAssetFileName,
   normalizePath,
@@ -42,8 +41,6 @@ import {
   updateManifestModules,
 } from '../utils'
 
-import { genClassName } from '../..'
-
 const uniCloudSpaceList = getUniCloudSpaceList()
 
 let isFirst = true
@@ -52,8 +49,8 @@ export function uniAppPlugin(): UniVitePlugin {
   const outputDir = process.env.UNI_OUTPUT_DIR
   const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
   const mainUTS = resolveMainPathOnce(inputDir)
-  const uvueOutputDir = uvueOutDir()
-  const tscOutputDir = tscOutDir()
+  const uvueOutputDir = uvueOutDir('app-android')
+  const tscOutputDir = tscOutDir('app-android')
 
   const manifestJson = parseManifestJsonOnce(inputDir)
   // 预留一个口子，方便切换测试
@@ -80,8 +77,8 @@ export function uniAppPlugin(): UniVitePlugin {
 
   let resolvedConfig: ResolvedConfig
 
-  const uniXCompiler =
-    process.env.UNI_APP_X_TSC === 'true' ? createUniXCompilerOnce() : null
+  const uniXKotlinCompiler =
+    process.env.UNI_APP_X_TSC === 'true' ? createUniXKotlinCompilerOnce() : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 
   return {
@@ -144,8 +141,8 @@ export function uniAppPlugin(): UniVitePlugin {
     async configResolved(config) {
       configResolved(config, true)
       resolvedConfig = config
-      if (uniXCompiler) {
-        await uniXCompiler.init()
+      if (uniXKotlinCompiler) {
+        await uniXKotlinCompiler.init()
       }
     },
     async transform(code, id) {
@@ -189,7 +186,7 @@ export function uniAppPlugin(): UniVitePlugin {
       // checkUTSEasyComAutoImports(inputDir, bundle, this)
     },
     watchChange(fileName, change) {
-      if (uniXCompiler) {
+      if (uniXKotlinCompiler) {
         // watcher && watcher.watch(3000)
         fileName = normalizePath(fileName)
         if (fileName.startsWith(uniModulesDir)) {
@@ -206,12 +203,14 @@ export function uniAppPlugin(): UniVitePlugin {
       if (process.env.UNI_COMPILE_TARGET === 'uni_modules') {
         return
       }
-      if (uniXCompiler) {
+      if (uniXKotlinCompiler) {
         if (changedFiles.length) {
           const files = changedFiles.splice(0)
-          await uniXCompiler.invalidate(files)
+          await uniXKotlinCompiler.invalidate(files)
         } else if (isFirst) {
-          await uniXCompiler.addRootFile(path.join(tscOutputDir, 'main.uts.ts'))
+          await uniXKotlinCompiler.addRootFile(
+            path.join(tscOutputDir, 'main.uts.ts')
+          )
         }
       }
       let pageCount = 0
@@ -328,47 +327,6 @@ export function main(app: IApp) {
     (createApp()['app'] as VueApp).mount(app);
 }
 `
-}
-
-// @ts-expect-error
-function _checkUTSEasyComAutoImports(
-  inputDir: string,
-  bundle: OutputBundle,
-  ctx: PluginContext
-) {
-  const res = getUTSEasyComAutoImports()
-  const uvueOutputDir = uvueOutDir()
-  Object.keys(res).forEach((fileName) => {
-    if (fileName.endsWith('.vue') || fileName.endsWith('.uvue')) {
-      if (fileName.startsWith('@/')) {
-        fileName = fileName.slice(2)
-      }
-      const relativeFileName = parseUTSRelativeFilename(fileName, inputDir)
-      if (
-        !bundle[relativeFileName] &&
-        // tsc 模式带ts后缀
-        !bundle[relativeFileName + '.ts']
-      ) {
-        const className = genClassName(relativeFileName, UVUE_CLASS_NAME_PREFIX)
-        const assetFileName = normalizeEmitAssetFileName(relativeFileName)
-        const assetSource = `function ${className}Render(): any | null { return null }
-const ${className}Styles = []`
-        if (process.env.UNI_APP_X_TSC === 'true') {
-          const fileName = path.resolve(uvueOutputDir, assetFileName)
-          if (!fs.existsSync(fileName)) {
-            fs.outputFileSync(fileName.replace(/\.ts$/, ''), assetSource)
-          }
-        } else {
-          ctx.emitFile({
-            type: 'asset',
-            fileName: assetFileName,
-            source: assetSource,
-          })
-        }
-      }
-    }
-  })
-  return res
 }
 
 function parseUniExtApiProviders(): [string, string, string][] {

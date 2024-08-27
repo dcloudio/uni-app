@@ -156,7 +156,7 @@ export async function compile(
   const utsPlatform = process.env.UNI_UTS_PLATFORM
 
   const pluginRelativeDir = relative(
-    isCompileUniModules ? uvueOutDir() : inputDir,
+    isCompileUniModules ? uvueOutDir('app-android') : inputDir,
     pluginDir
   )
   const outputPluginDir = normalizePath(join(outputDir, pluginRelativeDir))

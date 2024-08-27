@@ -37,7 +37,6 @@ import {
   isColorSupported,
   parseKotlinPackageWithPluginId,
   relative,
-  resolveUVueFileName,
 } from './utils'
 import { normalizePath } from './shared'
 import { parseUTSSyntaxError } from './stacktrace'
@@ -653,9 +652,8 @@ async function parseFile(
   options: GenProxyCodeOptions
 ): Promise<ProxyDecl[]> {
   if (filename) {
-    filename = resolveUVueFileName(filename)
-    // x 下 tsc 仅 emit 了 app-android，但 genJsCode 又可能读取 app-ios
-    // TODO 理论上app-android原生模式，不需要生成 js 代码
+    // 暂时不从uvue目录读取了，就读取原始文件
+    // filename = resolveUVueFileName(filename)
     if (fs.existsSync(filename)) {
       return parseCode(
         fs.readFileSync(filename, 'utf8'),

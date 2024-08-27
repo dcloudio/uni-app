@@ -16,6 +16,7 @@ import {
 
 import { parseUniExtApis } from './uni_modules'
 import type { EasycomMatcher } from './easycom'
+import type { CompilerOptions } from 'typescript'
 
 function once<T extends (...args: any[]) => any>(
   fn: T,
@@ -137,15 +138,80 @@ function resolveUTSFile(
   }
 }
 
-export const createUniXCompilerOnce = once(() => {
+function resolveUniXCompilerUniModulesPaths(
+  platform: 'app-android' | 'app-ios',
+  inputDir: string,
+  tscInputDir: string
+) {
+  const paths: CompilerOptions['paths'] = {}
+  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
+  fs.readdirSync(uniModulesDir).forEach((dir) => {
+    const pluginPath = `@/uni_modules/${dir}`
+    const pluginDir = path.resolve(uniModulesDir, dir)
+    const utssdkDir = path.resolve(pluginDir, 'utssdk')
+    const tscUtsSdkDir = path.resolve(tscInputDir, 'uni_modules', dir, 'utssdk')
+    // utssdk 插件
+    if (fs.existsSync(utssdkDir)) {
+      // 加密插件
+      if (fs.existsSync(path.resolve(pluginDir, 'encrypt'))) {
+        if (fs.existsSync(path.resolve(utssdkDir, 'interface.uts'))) {
+          paths[pluginPath] = [path.resolve(tscUtsSdkDir, 'interface.uts.ts')]
+        }
+      } else {
+        // 非加密插件
+        // utssdk/app-android/index.uts
+        if (fs.existsSync(path.resolve(utssdkDir, platform, 'index.uts'))) {
+          paths[pluginPath] = [
+            path.resolve(tscUtsSdkDir, platform, 'index.uts.ts'),
+          ]
+          // utssdk/index.uts
+        } else if (fs.existsSync(path.resolve(utssdkDir, 'index.uts'))) {
+          paths[pluginPath] = [path.resolve(tscUtsSdkDir, 'index.uts.ts')]
+        }
+      }
+    }
+  })
+  return paths
+}
+
+export const createUniXKotlinCompilerOnce = once(() => {
   const { createUniXCompiler } = resolveUTSCompiler()
+  const tscInputDir = path.join(
+    process.env.UNI_OUTPUT_DIR,
+    '../.tsc/app-android'
+  )
   return createUniXCompiler(
     process.env.NODE_ENV === 'development' ? 'development' : 'production',
     'Kotlin',
     {
-      inputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.tsc'),
+      inputDir: tscInputDir,
       cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
-      outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue'),
+      outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue/app-android'),
+      paths: resolveUniXCompilerUniModulesPaths(
+        'app-android',
+        process.env.UNI_INPUT_DIR,
+        tscInputDir
+      ),
+      normalizeFileName: normalizeNodeModules,
+    }
+  )
+})
+
+export const createUniXSwiftCompilerOnce = once(() => {
+  const { createUniXCompiler } = resolveUTSCompiler()
+  const tscInputDir = path.join(process.env.UNI_OUTPUT_DIR, '../.tsc/app-ios')
+  return createUniXCompiler(
+    process.env.NODE_ENV === 'development' ? 'development' : 'production',
+    'Swift',
+    {
+      inputDir: tscInputDir,
+      cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
+      outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue/app-ios'),
+      paths: resolveUniXCompilerUniModulesPaths(
+        'app-ios',
+        process.env.UNI_INPUT_DIR,
+        tscInputDir
+      ),
       normalizeFileName: normalizeNodeModules,
     }
   )

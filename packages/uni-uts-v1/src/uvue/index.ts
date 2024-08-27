@@ -175,7 +175,7 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
       split,
       disableSplitManifest: options.disableSplitManifest,
       uniAppX: {
-        uvueOutDir: uvueOutDir(),
+        uvueOutDir: uvueOutDir('app-android'),
       },
       transform: {
         uniExtApiDefaultNamespace: 'io.dcloud.uniapp.extapi',
@@ -232,12 +232,12 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   return runKotlinDev(options, result as RunKotlinDevResult, hasCache)
 }
 
-export function uvueOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
+export function uvueOutDir(platform: 'app-android' | 'app-ios') {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue', platform)
 }
 
-export function tscOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc')
+export function tscOutDir(platform: 'app-android' | 'app-ios') {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc', platform)
 }
 
 function kotlinSrcDir(kotlinDir: string) {

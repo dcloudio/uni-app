@@ -1,6 +1,6 @@
 import { IUTSCompiler } from '@uts/compiler';
 import { MappedPosition } from 'source-map-js';
-import tsTypes from 'typescript';
+import tsTypes, { CompilerOptions } from 'typescript';
 
 interface TransformOptions {
     transformArguments?: {
@@ -28,6 +28,7 @@ type UniXCompilerOptions = {
     utsLibDir: string;
     hxLanguageServiceDir?: string;
     outputDir: string;
+    paths?: CompilerOptions['paths'];
     incremental?: boolean;
     normalizeFileName: (fileName: string) => string;
     originalPositionForSync?: (generatedPosition: Omit<PositionFor, 'filename'>) => MappedPosition & {

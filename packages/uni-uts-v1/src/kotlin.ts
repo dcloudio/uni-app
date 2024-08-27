@@ -140,7 +140,7 @@ export async function runKotlinProd(
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
   const result = await compile(filename, {
-    inputDir: isModule ? uvueOutDir() : inputDir,
+    inputDir: isModule ? uvueOutDir('app-android') : inputDir,
     outputDir,
     sourceMap: !!sourceMap,
     components,
@@ -576,7 +576,7 @@ const DEFAULT_IMPORTS_X = [
 
 function resolveBundleInputRoot(root: string) {
   if (process.env.UNI_APP_X_TSC === 'true') {
-    return uvueOutDir()
+    return uvueOutDir('app-android')
   }
   return root
 }
@@ -628,7 +628,7 @@ export async function compile(
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
     root: resolveBundleInputRoot(inputDir),
-    filename: resolveBundleInputFileName(filename),
+    filename: resolveBundleInputFileName('app-android', filename),
     pluginId: isPlugin ? pluginId : '',
     paths: {
       vue: 'io.dcloud.uniapp.vue',

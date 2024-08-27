@@ -847,11 +847,14 @@ export function requireUniHelpers() {
   return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
 }
 
-export function resolveBundleInputFileName(fileName: string) {
+export function resolveBundleInputFileName(
+  platform: 'app-android' | 'app-ios',
+  fileName: string
+) {
   if (process.env.UNI_APP_X_TSC === 'true') {
     return normalizePath(
       path.resolve(
-        uvueOutDir(),
+        uvueOutDir(platform),
         path.relative(process.env.UNI_INPUT_DIR, fileName)
       )
     )
@@ -859,7 +862,10 @@ export function resolveBundleInputFileName(fileName: string) {
   return fileName
 }
 
-export function resolveUVueFileName(fileName: string) {
+export function resolveUVueFileName(
+  platform: 'app-android' | 'app-ios',
+  fileName: string
+) {
   if (!fileName) {
     return fileName
   }
@@ -868,7 +874,7 @@ export function resolveUVueFileName(fileName: string) {
     fileName = normalizePath(fileName)
     if (fileName.startsWith(inputDir)) {
       return normalizePath(
-        path.resolve(uvueOutDir(), path.relative(inputDir, fileName))
+        path.resolve(uvueOutDir(platform), path.relative(inputDir, fileName))
       )
     }
   }

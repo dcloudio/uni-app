@@ -5,7 +5,8 @@ import fg from 'fast-glob'
 import { once } from '@dcloudio/uni-shared'
 
 import {
-  createUniXCompilerOnce,
+  createUniXKotlinCompilerOnce,
+  createUniXSwiftCompilerOnce,
   resolveUTSAppModule,
   resolveUTSCompiler,
 } from '../../../uts'
@@ -21,6 +22,7 @@ import { parseManifestJsonOnce } from '../../../json'
 import { preJson } from '../../../preprocess'
 import type { ChangeEvent } from 'rollup'
 import { dataToEsm } from '@rollup/pluginutils'
+import type { UniXCompiler } from '@dcloudio/uni-uts-v1'
 
 const UTSProxyRE = /\?uts-proxy$/
 const UniHelpersRE = /\?uni_helpers$/
@@ -56,6 +58,37 @@ export function getCurrentCompiledUTSPlugins() {
 }
 
 let uniExtApiCompiler = async () => {}
+
+function resolveOutputPluginDir(
+  platform: 'app-android' | 'app-ios',
+  inputDir: string,
+  pluginDir: string
+) {
+  return path.join(
+    process.env.UNI_OUTPUT_DIR,
+    '../.tsc',
+    platform,
+    path.relative(inputDir, pluginDir)
+  )
+}
+async function syncUniModuleFilesByCompiler(
+  compiler: UniXCompiler,
+  pluginDir: string,
+  outputPluginDir: string
+) {
+  const start = Date.now()
+  // 目前每次编译，都全量比对同步uni_modules目录下的文件，不然还要 watch dir
+  const files = await syncUniModuleFiles(
+    process.env.UNI_UTS_PLATFORM as any,
+    pluginDir,
+    outputPluginDir
+  )
+  compiler.debug(
+    `${path.basename(pluginDir)} sync files(${files.length})`,
+    Date.now() - start
+  )
+}
+
 // 该插件仅限app-android、app-ios、app-harmony
 export function uniUTSAppUniModulesPlugin(
   options: UniUTSPluginOptions = {}
@@ -64,13 +97,20 @@ export function uniUTSAppUniModulesPlugin(
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
 
-  const uniXCompiler =
+  const uniXKotlinCompiler =
     process.env.UNI_APP_X_TSC === 'true' &&
     (process.env.UNI_UTS_PLATFORM === 'app-android' ||
-      process.env.UNI_UTS_PLATFORM === 'app-ios' ||
       process.env.UNI_UTS_PLATFORM === 'app')
-      ? createUniXCompilerOnce()
+      ? createUniXKotlinCompilerOnce()
       : null
+  const uniXSwiftCompiler =
+    process.env.UNI_APP_X_TSC === 'true' &&
+    (process.env.UNI_UTS_PLATFORM === 'app-ios' ||
+      process.env.UNI_UTS_PLATFORM === 'app')
+      ? createUniXSwiftCompilerOnce()
+      : null
+  const uniXCompiler = uniXKotlinCompiler || uniXSwiftCompiler
+
   const changedFiles = new Map<
     string,
     {
@@ -82,61 +122,40 @@ export function uniUTSAppUniModulesPlugin(
   const compilePlugin = async (pluginDir: string) => {
     const plugin = path.basename(pluginDir)
 
-    if (uniXCompiler) {
-      const start = Date.now()
-      // 目前每次编译，都全量比对同步uni_modules目录下的文件，不然还要 watch dir
-      const files = await syncUniModuleFiles(
-        process.env.UNI_UTS_PLATFORM as any,
+    if (uniXKotlinCompiler) {
+      await syncUniModuleFilesByCompiler(
+        uniXKotlinCompiler,
         pluginDir,
-        path.join(
-          process.env.UNI_OUTPUT_DIR,
-          '../.tsc',
-          path.relative(inputDir, pluginDir)
-        )
+        resolveOutputPluginDir('app-android', inputDir, pluginDir)
       )
-      uniXCompiler.debug(
-        `${plugin} sync files(${files.length})`,
-        Date.now() - start
+    }
+
+    if (uniXSwiftCompiler) {
+      await syncUniModuleFilesByCompiler(
+        uniXSwiftCompiler,
+        pluginDir,
+        resolveOutputPluginDir('app-ios', inputDir, pluginDir)
       )
     }
 
     if (!utsPlugins.has(plugin)) {
       utsPlugins.add(plugin)
-      if (uniXCompiler) {
-        const outputPluginDir = path.join(
-          process.env.UNI_OUTPUT_DIR,
-          '../.tsc',
-          path.relative(inputDir, pluginDir)
+      if (uniXKotlinCompiler) {
+        const indexFileName = resolveTscUniModuleIndexFileName(
+          'app-android',
+          resolveOutputPluginDir('app-android', inputDir, pluginDir)
         )
-        if (
-          // 非 x 需要两个
-          process.env.UNI_APP_X !== 'true'
-        ) {
-          let indexFileName = resolveTscUniModuleIndexFileName(
-            'app-android',
-            outputPluginDir
-          )
-          if (indexFileName) {
-            await uniXCompiler.addRootFile(indexFileName)
-          }
-          indexFileName = resolveTscUniModuleIndexFileName(
-            'app-ios',
-            outputPluginDir
-          )
-          if (indexFileName) {
-            await uniXCompiler.addRootFile(indexFileName)
-          }
-        } else if (
-          process.env.UNI_UTS_PLATFORM === 'app-android' ||
-          process.env.UNI_UTS_PLATFORM === 'app-ios'
-        ) {
-          const indexFileName = resolveTscUniModuleIndexFileName(
-            process.env.UNI_UTS_PLATFORM,
-            outputPluginDir
-          )
-          if (indexFileName) {
-            await uniXCompiler.addRootFile(indexFileName)
-          }
+        if (indexFileName) {
+          await uniXKotlinCompiler.addRootFile(indexFileName)
+        }
+      }
+      if (uniXSwiftCompiler) {
+        const indexFileName = resolveTscUniModuleIndexFileName(
+          'app-ios',
+          resolveOutputPluginDir('app-ios', inputDir, pluginDir)
+        )
+        if (indexFileName) {
+          await uniXSwiftCompiler.addRootFile(indexFileName)
         }
       }
     }
@@ -145,6 +164,7 @@ export function uniUTSAppUniModulesPlugin(
       // 处理uni_modules中的文件变更
       const files = changedFiles.get(plugin)
       if (files) {
+        // 仅限watch模式是会生效
         changedFiles.delete(plugin)
         await uniXCompiler.invalidate(files)
       }
