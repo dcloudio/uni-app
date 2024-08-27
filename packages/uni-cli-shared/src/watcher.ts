@@ -91,11 +91,10 @@ export class FileWatcher {
       return
     }
     try {
-      fs.copySync(this.from(from), to)
+      fs.copySync(this.from(from), to, { overwrite: true })
     } catch (e) {
       // noop
     }
-
     this.onChange && this.onChange()
   }
   remove(from: string) {
