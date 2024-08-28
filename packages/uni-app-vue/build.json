@@ -93,7 +93,7 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"development\""
     },
-    "external": false,
+    "external": ["@dcloudio/uni-nvue-styler"],
     "babel": true
   },
   {
@@ -110,7 +110,7 @@
       "__VUE_PROD_HYDRATION_MISMATCH_DETAILS__": "false",
       "process.env.NODE_ENV": "\"production\""
     },
-    "external": false,
+    "external": ["@dcloudio/uni-nvue-styler"],
     "babel": true
   }
 ]
