@@ -3411,24 +3411,24 @@ const EmitProtocol = [
 class EventBus {
   constructor() {
     this.emitter = new Emitter();
-    this.$on = (name, callback) => {
-      this.emitter.on(name, callback);
-    };
-    this.$once = (name, callback) => {
-      this.emitter.once(name, callback);
-    };
-    this.$off = (name, callback) => {
-      if (!name) {
-        this.emitter.e = {};
-        return;
-      }
-      if (!isArray(name))
-        name = [name];
-      name.forEach((n) => this.emitter.off(n, callback));
-    };
-    this.$emit = (name, ...args) => {
-      this.emitter.emit(name, ...args);
-    };
+  }
+  $on(name, callback) {
+    this.emitter.on(name, callback);
+  }
+  $once(name, callback) {
+    this.emitter.once(name, callback);
+  }
+  $off(name, callback) {
+    if (!name) {
+      this.emitter.e = {};
+      return;
+    }
+    if (!isArray(name))
+      name = [name];
+    name.forEach((n) => this.emitter.off(n, callback));
+  }
+  $emit(name, ...args) {
+    this.emitter.emit(name, ...args);
   }
 }
 const eventBus = new EventBus();

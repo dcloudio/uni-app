@@ -1,3 +1,5 @@
+import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
+
 /**
 * @vue/shared v3.4.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
@@ -92,12 +94,12 @@ var getGlobalThis = () => {
 };
 var GLOBALS_ALLOWED = "Infinity,undefined,NaN,isFinite,isNaN,parseFloat,parseInt,decodeURI,decodeURIComponent,encodeURI,encodeURIComponent,Math,Number,Date,Array,Object,Boolean,String,RegExp,Map,Set,JSON,Intl,BigInt,console,Error";
 var isGloballyAllowed = /* @__PURE__ */makeMap(GLOBALS_ALLOWED);
-function normalizeStyle$1(value) {
+function normalizeStyle$2(value) {
   if (isArray$1(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
       var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$1(item);
+      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$2(item);
       if (normalized) {
         for (var key in normalized) {
           res[key] = normalized[key];
@@ -1267,20 +1269,20 @@ var ON_NAVIGATION_BAR_SEARCH_INPUT_CLICKED = 'onNavigationBarSearchInputClicked'
 var ON_NAVIGATION_BAR_SEARCH_INPUT_CHANGED = 'onNavigationBarSearchInputChanged';
 var ON_NAVIGATION_BAR_SEARCH_INPUT_CONFIRMED = 'onNavigationBarSearchInputConfirmed';
 var ON_NAVIGATION_BAR_SEARCH_INPUT_FOCUS_CHANGED = 'onNavigationBarSearchInputFocusChanged';
-function normalizeStyle(value) {
+function normalizeStyle$1(value) {
   if (value instanceof Map) {
     var styleObject = {};
     value.forEach((value, key) => {
       styleObject[key] = value;
     });
-    return normalizeStyle$1(styleObject);
+    return normalizeStyle$2(styleObject);
   } else if (isString(value)) {
     return parseStringStyle(value);
   } else if (isArray$1(value)) {
     var res = {};
     for (var i = 0; i < value.length; i++) {
       var item = value[i];
-      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle(item);
+      var normalized = isString(item) ? parseStringStyle(item) : normalizeStyle$1(item);
       if (normalized) {
         for (var key in normalized) {
           res[key] = normalized[key];
@@ -1289,7 +1291,7 @@ function normalizeStyle(value) {
     }
     return res;
   } else {
-    return normalizeStyle$1(value);
+    return normalizeStyle$2(value);
   }
 }
 function normalizeClass(value) {
@@ -1322,7 +1324,7 @@ function normalizeProps(props) {
     props.class = normalizeClass(klass);
   }
   if (style) {
-    props.style = normalizeStyle(style);
+    props.style = normalizeStyle$1(style);
   }
   return props;
 }
@@ -6876,7 +6878,7 @@ function _createVNode(type) {
       if (isProxy(style) && !isArray$1(style)) {
         style = extend$1({}, style);
       }
-      props.style = normalizeStyle(style);
+      props.style = normalizeStyle$1(style);
     }
   }
   var shapeFlag = isString(type) ? 1 : isSuspense(type) ? 128 : isTeleport(type) ? 64 : isObject(type) ? 4 : isFunction(type) ? 2 : 0;
@@ -7031,7 +7033,7 @@ function mergeProps() {
           ret.class = normalizeClass([ret.class, toMerge.class]);
         }
       } else if (key === "style") {
-        ret.style = normalizeStyle([ret.style, toMerge.style]);
+        ret.style = normalizeStyle$1([ret.style, toMerge.style]);
       } else if (isOn(key)) {
         var existing = ret[key];
         var incoming = toMerge[key];
@@ -7928,11 +7930,10 @@ function transformAttr(el, key, value, instance) {
     }
     if (opts["style"].indexOf(camelized) > -1) {
       if (isString(value)) {
-        var _style = camelize(value);
-        var sytle2 = parseStringStyle(_style);
-        return [camelized, sytle2];
+        var sytle = parseStringStyle(camelize(value));
+        return [camelized, sytle];
       }
-      return [camelized, normalizeStyle$1(value)];
+      return [camelized, normalizeStyle$2(value)];
     }
   }
   return [key, value];
@@ -8004,156 +8005,45 @@ function createInvoker(initialValue, instance) {
   invoker.modifiers = [...modifiers];
   return invoker;
 }
-var backgroundColor = "backgroundColor";
-var backgroundImage = "backgroundImage";
-var transformBackground = function (prop, value) {
-  var result = /* @__PURE__ */new Map();
-  if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-    result.set(backgroundColor, value);
-  } else if (/^linear-gradient(.+)$/.test(value)) {
-    result.set(backgroundImage, value);
-  } else {
-    result.set(prop, value);
+var processDeclaration = expand({
+  type: "uvue"
+}).Declaration;
+function createDeclaration(prop, value) {
+  var newValue = value + "";
+  if (newValue.includes("!important")) {
+    return {
+      prop,
+      value: newValue.replace(/\s*!important/, ""),
+      important: true
+    };
   }
-  return result;
-};
-var borderWidth = "Width";
-var borderStyle = "Style";
-var borderColor = "Color";
-var transformBorder = function (prop, value) {
-  var splitResult = value.replace(/\s*,\s*/g, ",").split(/\s+/);
-  var values = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
-    var index = splitResult.findIndex(str => item.test(str));
-    return index < 0 ? null : splitResult.splice(index, 1)[0];
-  });
-  var result = /* @__PURE__ */new Map();
-  if (splitResult.length != 0) {
-    result.set(prop, value);
-    return result;
-  }
-  result.set(prop + borderWidth, (values[0] == null ? "medium" : values[0]).trim());
-  result.set(prop + borderStyle, (values[1] == null ? "none" : values[1]).trim());
-  result.set(prop + borderColor, (values[2] == null ? "#000000" : values[2]).trim());
-  return result;
-};
-var borderTop = "borderTop";
-var borderRight = "borderRight";
-var borderBottom = "borderBottom";
-var borderLeft = "borderLeft";
-var transformBorderColor = function (prop, value) {
-  var property = hyphenate(prop).split("-")[1];
-  property = capitalize(property);
-  var splitResult = value.replace(/\s*,\s*/g, ",").split(/\s+/);
-  var result = /* @__PURE__ */new Map();
-  switch (splitResult.length) {
-    case 1:
-      result.set(prop, value);
-      return result;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  result.set(borderTop + property, splitResult[0]);
-  result.set(borderRight + property, splitResult[1]);
-  result.set(borderBottom + property, splitResult[2]);
-  result.set(borderLeft + property, splitResult[3]);
-  return result;
-};
-var borderTopLeftRadius = "borderTopLeftRadius";
-var borderTopRightRadius = "borderTopRightRadius";
-var borderBottomRightRadius = "borderBottomRightRadius";
-var borderBottomLeftRadius = "borderBottomLeftRadius";
-var transformBorderRadius = function (prop, value) {
-  var splitResult = value.split(/\s+/);
-  var result = /* @__PURE__ */new Map();
-  if (value.includes("/")) {
-    result.set(prop, value);
-    return result;
-  }
-  switch (splitResult.length) {
-    case 1:
-      result.set(prop, value);
-      return result;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  result.set(borderTopLeftRadius, splitResult[0]);
-  result.set(borderTopRightRadius, splitResult[1]);
-  result.set(borderBottomRightRadius, splitResult[2]);
-  result.set(borderBottomLeftRadius, splitResult[3]);
-  return result;
-};
-var transformBorderStyle = transformBorderColor;
-var transformBorderWidth = transformBorderColor;
-var top = "Top";
-var right = "Right";
-var bottom = "Bottom";
-var left = "Left";
-var transformMargin = function (prop, value) {
-  var splitResult = value.split(/\s+/);
-  switch (splitResult.length) {
-    case 1:
-      splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
-      break;
-    case 2:
-      splitResult.push(splitResult[0], splitResult[1]);
-      break;
-    case 3:
-      splitResult.push(splitResult[1]);
-      break;
-  }
-  var result = /* @__PURE__ */new Map();
-  result.set(prop + top, splitResult[0]);
-  result.set(prop + right, splitResult[1]);
-  result.set(prop + bottom, splitResult[2]);
-  result.set(prop + left, splitResult[3]);
-  return result;
-};
-var transformPadding = transformMargin;
-var properties = ["transitionProperty", "transitionDuration", "transitionTimingFunction", "transitionDelay"];
-var transformTransition = function (prop, value) {
-  var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
-  var match = CHUNK_REGEXP.exec(value);
-  var result = /* @__PURE__ */new Map();
-  if (match == null) {
-    result.set(prop, value);
-    return result;
-  }
-  var len = match.length;
-  for (var i = 1; i < len && i <= 4; i++) {
-    var val = match[i];
-    if (match[i] != null && val.length > 0) {
-      result.set(properties[i - 1], val);
+  return {
+    prop,
+    value: newValue,
+    important: false
+  };
+}
+function normalizeStyle(name, value) {
+  var decl = Object.assign({}, {
+    replaceWith(newProps) {
+      props = newProps;
     }
-  }
-  return result;
-};
-var importantRE = /\s*!important$/;
-var DeclTransforms = /* @__PURE__ */new Map([["transition", transformTransition], ["margin", transformMargin], ["padding", transformPadding], ["border", transformBorder], ["borderTop", transformBorder], ["borderRight", transformBorder], ["borderBottom", transformBorder], ["borderLeft", transformBorder], ["borderStyle", transformBorderStyle], ["borderWidth", transformBorderWidth], ["borderColor", transformBorderColor], ["borderRadius", transformBorderRadius], ["background", transformBackground]]);
-function expandStyle(prop, value) {
-  if (value == null) {
-    return /* @__PURE__ */new Map([[prop, ""]]);
-  }
-  if (!isString(value)) {
-    value = "" + value;
-  }
-  var important = importantRE.test(value);
-  var newVal = important ? value.replace(importantRE, "") : value;
-  var transform = DeclTransforms.get(prop);
-  if (transform != null) {
-    return transform(prop, newVal);
-  }
-  return /* @__PURE__ */new Map([[prop, newVal]]);
+  }, createDeclaration(name, value));
+  var props = [decl];
+  processDeclaration(decl);
+  return props;
+}
+function setStyle(expandRes) {
+  var resArr = expandRes.map(item => {
+    return [item.prop, item.value];
+  });
+  var resMap = new Map(resArr);
+  return resMap;
 }
 function parseStyleDecl(prop, value) {
-  return expandStyle(prop, value);
+  var val = normalizeStyle(prop, value);
+  var res = setStyle(val);
+  return res;
 }
 function isSame(a, b) {
   return isString(a) && isString(b) || typeof a === "number" && typeof b === "number" ? a == b : a === b;
@@ -8415,4 +8305,4 @@ var createApp = function () {
   };
   return app;
 };
-export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };
+export { BaseTransition, BaseTransitionPropsValidators, Comment, DeprecationTypes, EffectScope, ErrorCodes, ErrorTypeStrings, Fragment, KeepAlive, ReactiveEffect, Static, Suspense, Teleport, Text, TrackOpTypes, TriggerOpTypes, assertNumber, callWithAsyncErrorHandling, callWithErrorHandling, camelize, capitalize, cloneVNode, compatUtils, computed, createApp, createBlock, createCommentVNode, createElementBlock, createBaseVNode as createElementVNode, createHydrationRenderer, createPropsRestProxy, createRenderer, createSlots, createStaticVNode, createTextVNode, createVNode, customRef, defineAsyncComponent, defineComponent, defineEmits, defineExpose, defineModel, defineOptions, defineProps, defineSlots, devtools, effect, effectScope, getCurrentInstance, getCurrentScope, getTransitionRawChildren, guardReactiveProps, h, handleError, hasInjectionContext, hyphenate, initCustomFormatter, inject, injectHook, isInSSRComponentSetup, isMemoSame, isProxy, isReactive, isReadonly, isRef, isRuntimeOnly, isShallow, isVNode, markRaw, mergeDefaults, mergeModels, mergeProps, nextTick, normalizeClass, normalizeProps, normalizeStyle$1 as normalizeStyle, onActivated, onBeforeMount, onBeforeUnmount, onBeforeUpdate, onDeactivated, onErrorCaptured, onMounted, onRenderTracked, onRenderTriggered, onScopeDispose, onServerPrefetch, onUnmounted, onUpdated, openBlock, parseClassList, parseClassStyles, popScopeId, provide, proxyRefs, pushScopeId, queuePostFlushCb, reactive, readonly, ref, registerRuntimeCompiler, render, renderList, renderSlot, resolveComponent, resolveDirective, resolveDynamicComponent, resolveFilter, resolveTransitionHooks, setBlockTracking, setDevtoolsHook, setTransitionHooks, shallowReactive, shallowReadonly, shallowRef, ssrContextKey, ssrUtils, stop, toDisplayString, toHandlerKey, toHandlers, toRaw, toRef, toRefs, toValue, transformVNodeArgs, triggerRef, unref, useAttrs, useCssModule, useCssStyles, useCssVars, useModel, useSSRContext, useSlots, useTransitionState, vModelDynamic, vModelText, vShow, version, warn, watch, watchEffect, watchPostEffect, watchSyncEffect, withAsyncContext, withCtx, withDefaults, withDirectives, withKeys, withMemo, withModifiers, withScopeId };

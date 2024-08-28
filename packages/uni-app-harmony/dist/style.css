@@ -1885,12 +1885,16 @@ uni-icon[hidden] {
   display: none;
 }
 uni-web-view {
+  display: block;
+}
+
+uni-web-view.uni-webview--fullscreen {
   display: inline-block;
   position: absolute;
-  left: 0;
-  right: 0;
   top: 0;
+  left: 0;
   bottom: 0;
+  right: 0;
 }
 uni-canvas {
   width: 300px;
