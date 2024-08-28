@@ -1,5 +1,5 @@
 // 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
-import fs from 'fs'
+import fs from 'fs-extra'
 import path from 'path'
 import glob from 'fast-glob'
 import type * as UTSCompiler from '@dcloudio/uni-uts-v1'
@@ -14,7 +14,7 @@ import {
   normalizePath,
 } from './utils'
 
-import { parseUniExtApis } from './uni_modules'
+import { type Injects, parseUniExtApis } from './uni_modules'
 import type { EasycomMatcher } from './easycom'
 import type { CompilerOptions } from 'typescript'
 
@@ -180,6 +180,7 @@ export const createUniXKotlinCompilerOnce = once(() => {
     process.env.UNI_OUTPUT_DIR,
     '../.tsc/app-android'
   )
+  genUniExtApiDeclarationFileOnce(tscInputDir)
   return createUniXCompiler(
     process.env.NODE_ENV === 'development' ? 'development' : 'production',
     'Kotlin',
@@ -440,12 +441,12 @@ export type UTSTargetLanguage = typeof process.env.UNI_UTS_TARGET_LANGUAGE
 
 let uniExtApiKotlinAutoImports: Record<string, [string, string?][]> | null =
   null
-export async function parseUniExtApiKotlinAutoImportsOnce() {
+async function parseUniExtApiKotlinAutoImportsOnce(extApis: Injects) {
   if (uniExtApiKotlinAutoImports) {
     return uniExtApiKotlinAutoImports
   }
   uniExtApiKotlinAutoImports = {}
-  const extApis = parseUniExtApis(true, 'app-android', 'kotlin')
+
   if (Object.keys(extApis).length) {
     const { parseExportIdentifiers } = resolveUTSCompiler()
     for (const name in extApis) {
@@ -464,9 +465,12 @@ export async function parseUniExtApiKotlinAutoImportsOnce() {
         )
         if (fs.existsSync(interfaceFileName)) {
           const ids = await parseExportIdentifiers(interfaceFileName)
-          ids.forEach((id) => {
-            uniExtApiKotlinAutoImports![source].push([id])
-          })
+          ids
+            // 过滤掉 Uni
+            .filter((id) => id !== 'Uni')
+            .forEach((id) => {
+              uniExtApiKotlinAutoImports![source].push([id])
+            })
         }
       }
     }
@@ -541,7 +545,9 @@ export async function initUTSAutoImportsOnce() {
       autoImports![source] = utsComponents[source]
     }
   })
-  const extApiImports = await parseUniExtApiKotlinAutoImportsOnce()
+
+  const extApis = parseUniExtApis(true, 'app-android', 'kotlin')
+  const extApiImports = await parseUniExtApiKotlinAutoImportsOnce(extApis)
   Object.keys(extApiImports).forEach((source) => {
     if (autoImports![source]) {
       autoImports![source].push(...extApiImports[source])
@@ -551,3 +557,37 @@ export async function initUTSAutoImportsOnce() {
   })
   return autoImports!
 }
+
+const genUniExtApiDeclarationFileOnce = once((tscInputDir: string) => {
+  const extApis = parseUniExtApis(true, 'app-android', 'kotlin')
+  // 之所以往上一级写，是因为 tscInputDir 会被 empty，目前时机有问题，比如先生成了d.ts，又被empty
+  const fileName = path.resolve(tscInputDir, '../uni-ext-api.d.ts')
+  if (fs.existsSync(fileName)) {
+    try {
+      // 先删除
+      fs.unlinkSync(fileName)
+    } catch (e) {}
+  }
+  if (Object.keys(extApis).length) {
+    const apis: string[] = []
+    for (const name in extApis) {
+      const options = extApis[name]
+      if (isArray(options) && options.length >= 2) {
+        const api = name.replace('uni.', '')
+        apis.push(
+          '  ' + api + `: typeof import("${options[0]}")["${options[1]}"]`
+        )
+      }
+    }
+    if (apis.length) {
+      fs.outputFileSync(
+        fileName,
+        `
+interface Uni {
+${apis.join('\n')}
+}
+`
+      )
+    }
+  }
+})
