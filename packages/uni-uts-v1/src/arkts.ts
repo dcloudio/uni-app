@@ -66,10 +66,6 @@ export async function compileArkTS(
   pluginDir: string,
   { isExtApi, transform }: ArkTSCompilerOptions
 ): Promise<CompileResult | void> {
-  if (!process.env.UNI_APP_HARMONY_PROJECT_PATH) {
-    console.error('manifest.json -> app-harmony -> projectPath is required')
-    process.exit(0)
-  }
   const filename = resolveAppHarmonyIndexFile(pluginDir)
   if (!filename) {
     return
@@ -78,11 +74,7 @@ export async function compileArkTS(
   const { bundle, UTSTarget } = getUTSCompiler()
   const pluginId = path.basename(pluginDir)
   const inputDir = process.env.UNI_INPUT_DIR
-  const projectPath = process.env.UNI_APP_HARMONY_PROJECT_PATH
-  const outputUniModuleDir = resolveAppHarmonyUniModuleDir(
-    projectPath,
-    pluginId
-  )
+  const outputUniModuleDir = resolveAppHarmonyUniModuleDir(pluginId)
 
   const autoImportExternals = getArkTSAutoImports()
   if (transform && transform.uniExtApiProviderService) {
@@ -123,6 +115,39 @@ export async function compileArkTS(
       },
     },
   }
+  const configFilePath = path.resolve(
+    pluginDir,
+    'utssdk/app-harmony/config.json'
+  )
+  const ohPackageJson: Record<string, any> = {
+    name: '@uni_modules/' + pluginId,
+    version: '1.0.0',
+    description: '',
+    main: 'utssdk/app-harmony/index.ets',
+    author: '',
+    license: '',
+    dependencies: {},
+  }
+  if (fs.existsSync(configFilePath)) {
+    const config = fs.readJSONSync(configFilePath)
+    ohPackageJson.dependencies = config.dependencies
+    ohPackageJson.dynamicDependencies = config.dynamicDependencies
+    ohPackageJson.devDependencies = config.devDependencies
+  }
+  fs.outputJSONSync(
+    path.resolve(outputUniModuleDir, 'oh-package.json5'),
+    ohPackageJson,
+    {
+      spaces: 2,
+    }
+  )
+  const resourcesDir = path.resolve(pluginDir, 'utssdk/app-harmony/resources')
+  if (fs.existsSync(resourcesDir)) {
+    fs.copySync(
+      resourcesDir,
+      path.resolve(outputUniModuleDir, 'src/main/resources')
+    )
+  }
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
   const deps: string[] = [filename]
   if (process.env.NODE_ENV === 'development') {
@@ -158,10 +183,23 @@ function resolveAppHarmonyIndexFile(pluginDir: string) {
   }
 }
 
-export function resolveAppHarmonyUniModulesRootDir(projectPath: string) {
-  return path.resolve(projectPath, 'entry/src/main/ets/uni_modules')
+export function resolveAppHarmonyUniModulesRootDir() {
+  if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
+    return path.resolve(process.env.UNI_APP_HARMONY_PROJECT_PATH, 'uni_modules')
+  }
+  return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules')
 }
 
-function resolveAppHarmonyUniModuleDir(projectPath: string, pluginId: string) {
-  return path.resolve(resolveAppHarmonyUniModulesRootDir(projectPath), pluginId)
+function resolveAppHarmonyUniModuleDir(pluginId: string) {
+  return path.resolve(resolveAppHarmonyUniModulesRootDir(), pluginId)
+}
+
+export function resolveAppHarmonyUniModulesEntryDir() {
+  if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
+    return path.resolve(
+      process.env.UNI_APP_HARMONY_PROJECT_PATH,
+      'entry/src/main/ets/uni_modules'
+    )
+  }
+  return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules')
 }
