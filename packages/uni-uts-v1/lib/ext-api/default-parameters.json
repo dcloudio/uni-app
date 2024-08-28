@@ -40,6 +40,11 @@
       "null"
     ]
   },
+  "uni-keyboard": {
+    "hideKeyboard": [
+      "null"
+    ]
+  },
   "uni-base": {
     "removeInterceptor": [
       null,
@@ -47,11 +52,6 @@
     ],
     "$off": [
       null,
-      "null"
-    ]
-  },
-  "uni-keyboard": {
-    "hideKeyboard": [
       "null"
     ]
   },
