@@ -232,7 +232,7 @@ function genAppHarmonyIndex(inputDir: string, utsPlugins: Set<string>) {
   })
   if (importProviderCodes.length) {
     importProviderCodes.unshift(
-      `import { registerUniProvider } from '@dcloudio/uni-app-runtime'`
+      `import { registerUniProvider, uni } from '@dcloudio/uni-app-runtime'`
     )
     importCodes.push(...importProviderCodes)
     extApiCodes.push(...registerProviderCodes)
@@ -247,12 +247,12 @@ function genAppHarmonyIndex(inputDir: string, utsPlugins: Set<string>) {
 // Do not modify this file -- YOUR CHANGES WILL BE ERASED!
 ${importCodes.join('\n')}
 
-export function initUniModules(uni: ESObject) {
-  initUniExtApi(uni)
+export function initUniModules() {
+  initUniExtApi()
   ${registerCodes.join('\n  ')}
 }
 
-function initUniExtApi(uni: ESObject) {
+function initUniExtApi() {
   ${extApiCodes.join('\n  ')}
 }
 `
