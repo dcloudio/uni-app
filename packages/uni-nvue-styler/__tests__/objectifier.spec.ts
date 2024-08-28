@@ -29,7 +29,6 @@ describe('nvue-styler: objectifier', () => {
       bar: {
         '': {
           backgroundColor: '#FF0000',
-          backgroundImage: '',
         },
       },
     })

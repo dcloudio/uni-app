@@ -4,7 +4,7 @@ import {
   type TransformDecl,
   hyphenateStyleProperty,
 } from '../utils'
-import { transformBackground } from './background'
+import { createTransformBackground } from './background'
 import { createTransformBorder } from './border'
 import { transformBorderColor } from './borderColor'
 import { transformBorderRadius } from './borderRadius'
@@ -23,7 +23,7 @@ function getDeclTransforms(
   const styleMap: Record<string, TransformDecl> = {
     transition: transformTransition,
     border: transformBorder,
-    background: transformBackground,
+    background: createTransformBackground(options),
     borderTop: transformBorder,
     borderRight: transformBorder,
     borderBottom: transformBorder,
@@ -59,7 +59,7 @@ let DeclTransforms: Record<string, TransformDecl>
 const expanded = Symbol('expanded')
 export function expand(options: NormalizeOptions): Plugin {
   const plugin: Plugin = {
-    postcssPlugin: 'nvue:expand',
+    postcssPlugin: `${options.type || 'nvue'}:expand`,
     Declaration(decl) {
       if ((decl as any)[expanded]) {
         return
