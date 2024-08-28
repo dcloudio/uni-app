@@ -7,6 +7,7 @@ import { once } from '@dcloudio/uni-shared'
 import {
   createUniXKotlinCompilerOnce,
   createUniXSwiftCompilerOnce,
+  initUTSAutoImportsOnce,
   resolveUTSAppModule,
   resolveUTSCompiler,
 } from '../../../uts'
@@ -186,6 +187,7 @@ export function uniUTSAppUniModulesPlugin(
     }
     const compiler = resolveUTSCompiler()
     // 处理依赖的 uts 插件
+    // TODO 当本地有ext-api时，也应该自动加入deps，不然uts内部使用了该api，也会导致编译失败
     const deps = parseUTSModuleDeps(
       pkgJson.uni_modules?.dependencies || [],
       inputDir
@@ -220,6 +222,7 @@ export function uniUTSAppUniModulesPlugin(
         uniExtApiProviderName: extApiProvider?.name,
         uniExtApiProviderService: extApiProvider?.service,
         uniExtApiProviderServicePlugin,
+        autoImports: await initUTSAutoImportsOnce(),
       },
     })
   }

@@ -49,14 +49,14 @@ function resolveOptions(options: UTSOptions) {
   return options
 }
 
-export function parse(source: string, options: UTSParseOptions = {}) {
+export async function parse(source: string, options: UTSParseOptions = {}) {
   options.noColor = !!options.noColor
   return bindings
     .parse(source, toBuffer(options))
     .then((res: string) => JSON.parse(res))
 }
 
-export function toKotlin(options: UTSOptions): Promise<UTSResult> {
+export async function toKotlin(options: UTSOptions): Promise<UTSResult> {
   const kotlinOptions = resolveOptions(options)
   if (!kotlinOptions) {
     return Promise.resolve({})
@@ -66,7 +66,9 @@ export function toKotlin(options: UTSOptions): Promise<UTSResult> {
     .then((res: string) => JSON.parse(res))
 }
 
-export function bundleKotlin(options: UTSBundleOptions): Promise<UTSResult> {
+export async function bundleKotlin(
+  options: UTSBundleOptions
+): Promise<UTSResult> {
   const bundleOptions = resolveOptions(options)
   if (!bundleOptions) {
     return Promise.resolve({})
@@ -79,7 +81,7 @@ export function bundleKotlin(options: UTSBundleOptions): Promise<UTSResult> {
     })
 }
 
-export function toSwift(options: UTSOptions): Promise<UTSResult> {
+export async function toSwift(options: UTSOptions): Promise<UTSResult> {
   const swiftOptions = resolveOptions(options)
   if (!swiftOptions) {
     return Promise.resolve({})
@@ -92,7 +94,9 @@ export function toSwift(options: UTSOptions): Promise<UTSResult> {
     })
 }
 
-export function bundleSwift(options: UTSBundleOptions): Promise<UTSResult> {
+export async function bundleSwift(
+  options: UTSBundleOptions
+): Promise<UTSResult> {
   const bundleOptions = resolveOptions(options)
   if (!bundleOptions) {
     return Promise.resolve({})
@@ -102,7 +106,7 @@ export function bundleSwift(options: UTSBundleOptions): Promise<UTSResult> {
     .then((res: string) => JSON.parse(res))
 }
 
-export function toArkTS(options: UTSOptions): Promise<UTSResult> {
+export async function toArkTS(options: UTSOptions): Promise<UTSResult> {
   const arkTSOptions = resolveOptions(options)
   if (!arkTSOptions) {
     return Promise.resolve({})
@@ -115,7 +119,9 @@ export function toArkTS(options: UTSOptions): Promise<UTSResult> {
     })
 }
 
-export function bundleArkTS(options: UTSBundleOptions): Promise<UTSResult> {
+export async function bundleArkTS(
+  options: UTSBundleOptions
+): Promise<UTSResult> {
   const bundleOptions = resolveOptions(options)
   if (!bundleOptions) {
     return Promise.resolve({})

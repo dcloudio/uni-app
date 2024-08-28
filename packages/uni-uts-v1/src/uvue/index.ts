@@ -38,7 +38,6 @@ import {
   hbuilderFormatter,
 } from '../stacktrace/kotlin'
 import { isWindows } from '../shared'
-import { capitalize } from '@vue/shared'
 
 const DEFAULT_IMPORTS = [
   'kotlinx.coroutines.async',
@@ -104,28 +103,6 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
 
   if (shouldAutoImportUniCloud()) {
     imports.push('io.dcloud.unicloud.*')
-  }
-
-  if (extApis) {
-    // 导入固定的类型
-    Object.keys(extApis).forEach((api) => {
-      const packageName = extApis[api][0]
-      const prefix = capitalize(api)
-      if (!autoImports[packageName]) {
-        autoImports[packageName] = []
-      }
-      ;[
-        'Options',
-        'SuccessCallback',
-        'Result',
-        'FailCallback',
-        'Fail',
-        'CompleteCallback',
-        'Complete',
-      ].forEach((importName) => {
-        autoImports[packageName].push([prefix + importName])
-      })
-    })
   }
 
   const input: UTSInputOptions = {

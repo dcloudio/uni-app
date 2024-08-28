@@ -9,8 +9,8 @@ import {
   createUniXKotlinCompilerOnce,
   emptyDir,
   getCurrentCompiledUTSPlugins,
-  getUTSComponentAutoImports,
   getUniExtApiProviderRegisters,
+  initUTSAutoImportsOnce,
   normalizeEmitAssetFileName,
   normalizePath,
   parseManifestJsonOnce,
@@ -249,7 +249,7 @@ export function uniAppPlugin(): UniVitePlugin {
         ),
         extApiComponents: [...getExtApiComponents()],
         uvueClassNamePrefix: UVUE_CLASS_NAME_PREFIX,
-        autoImports: initAutoImports(),
+        autoImports: await initUTSAutoImportsOnce(),
         extApiProviders: parseUniExtApiProviders(),
         uniModulesArtifacts: parseUniModulesArtifacts(),
         env: parseProcessEnv(resolvedConfig),
@@ -288,19 +288,6 @@ export function uniAppPlugin(): UniVitePlugin {
       }
     },
   }
-}
-
-function initAutoImports() {
-  const utsComponents = getUTSComponentAutoImports()
-  const autoImports: Record<string, [[string, string?]]> = {}
-  Object.keys(utsComponents).forEach((source) => {
-    if (autoImports[source]) {
-      autoImports[source].push(...utsComponents[source])
-    } else {
-      autoImports[source] = utsComponents[source]
-    }
-  })
-  return autoImports
 }
 
 function normalizeFilename(filename: string, isMain = false) {

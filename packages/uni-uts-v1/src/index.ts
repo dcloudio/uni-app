@@ -44,6 +44,8 @@ import { uvueOutDir } from './uvue/index'
 
 export * from './tsc'
 
+export { parseExportIdentifiers } from './code'
+
 export {
   compileArkTS,
   getArkTSAutoImports,

@@ -438,6 +438,42 @@ export function parseSwiftPackageWithPluginId(
 
 export type UTSTargetLanguage = typeof process.env.UNI_UTS_TARGET_LANGUAGE
 
+let uniExtApiKotlinAutoImports: Record<string, [string, string?][]> | null =
+  null
+export async function parseUniExtApiKotlinAutoImportsOnce() {
+  if (uniExtApiKotlinAutoImports) {
+    return uniExtApiKotlinAutoImports
+  }
+  uniExtApiKotlinAutoImports = {}
+  const extApis = parseUniExtApis(true, 'app-android', 'kotlin')
+  if (Object.keys(extApis).length) {
+    const { parseExportIdentifiers } = resolveUTSCompiler()
+    for (const name in extApis) {
+      const options = extApis[name]
+      if (isArray(options) && options.length >= 2) {
+        const pluginId = path.basename(options[0])
+        const source = parseKotlinPackageWithPluginId(pluginId, true)
+        if (uniExtApiKotlinAutoImports[source]) {
+          continue
+        }
+        uniExtApiKotlinAutoImports[source] = []
+        const filename = `uni_modules/${pluginId}/utssdk/interface.uts`
+        const interfaceFileName = path.resolve(
+          process.env.UNI_INPUT_DIR,
+          filename
+        )
+        if (fs.existsSync(interfaceFileName)) {
+          const ids = await parseExportIdentifiers(interfaceFileName)
+          ids.forEach((id) => {
+            uniExtApiKotlinAutoImports![source].push([id])
+          })
+        }
+      }
+    }
+  }
+  return uniExtApiKotlinAutoImports
+}
+
 export const parseUniExtApiNamespacesOnce = once(
   (
     platform: typeof process.env.UNI_UTS_PLATFORM,
@@ -490,4 +526,28 @@ export function resolveUniTypeScript() {
     ))
   }
   return require('@dcloudio/uni-uts-v1/lib/typescript')
+}
+let autoImports: Record<string, [string, string?][]> | null = null
+export async function initUTSAutoImportsOnce() {
+  if (autoImports) {
+    return autoImports
+  }
+  autoImports = {}
+  const utsComponents = getUTSComponentAutoImports()
+  Object.keys(utsComponents).forEach((source) => {
+    if (autoImports![source]) {
+      autoImports![source].push(...utsComponents[source])
+    } else {
+      autoImports![source] = utsComponents[source]
+    }
+  })
+  const extApiImports = await parseUniExtApiKotlinAutoImportsOnce()
+  Object.keys(extApiImports).forEach((source) => {
+    if (autoImports![source]) {
+      autoImports![source].push(...extApiImports[source])
+    } else {
+      autoImports![source] = extApiImports[source]
+    }
+  })
+  return autoImports!
 }
