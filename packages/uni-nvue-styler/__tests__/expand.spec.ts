@@ -1,5 +1,5 @@
 import { type Declaration, type Rule, parse } from 'postcss'
-import { transformBackground } from '../src/expand/background'
+import { createTransformBackground } from '../src/expand/background'
 import { createTransformBorder } from '../src/expand/border'
 import { transformBorderColor } from '../src/expand/borderColor'
 import { transformBorderRadius } from '../src/expand/borderRadius'
@@ -13,6 +13,10 @@ import { transformTransition } from '../src/expand/transition'
 function parseDecl(input: string) {
   return (parse(input).nodes[0] as Rule).nodes[0] as Declaration
 }
+
+const transformBackground = createTransformBackground({
+  type: 'uvue',
+})
 
 describe('nvue-styler: expand', () => {
   test('transform transition', () => {
@@ -827,7 +831,7 @@ describe('nvue-styler: expand', () => {
         {
           type: 'decl',
           prop: 'background-image',
-          value: '',
+          value: 'none',
         },
         {
           type: 'decl',
@@ -839,7 +843,7 @@ describe('nvue-styler: expand', () => {
         {
           type: 'decl',
           prop: 'background-image',
-          value: '',
+          value: 'none',
         },
         {
           type: 'decl',
@@ -856,7 +860,7 @@ describe('nvue-styler: expand', () => {
         {
           type: 'decl',
           prop: 'background-color',
-          value: '',
+          value: 'transparent',
         },
       ],
     }

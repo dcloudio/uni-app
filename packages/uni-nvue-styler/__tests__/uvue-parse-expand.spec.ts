@@ -321,14 +321,14 @@ describe('expand background', () => {
         raws: undefined,
         source: undefined,
         type: 'decl',
-        value: '',
+        value: 'none',
       },
       {
         prop: 'background-color',
         raws: undefined,
         source: undefined,
         type: 'decl',
-        value: '',
+        value: 'transparent',
       },
     ])
   })
@@ -340,7 +340,7 @@ describe('expand background', () => {
         raws: undefined,
         source: undefined,
         type: 'decl',
-        value: '',
+        value: 'none',
       },
       {
         prop: 'background-color',
@@ -370,7 +370,7 @@ describe('expand background', () => {
         raws: undefined,
         source: undefined,
         type: 'decl',
-        value: '',
+        value: 'transparent',
       },
     ])
   })

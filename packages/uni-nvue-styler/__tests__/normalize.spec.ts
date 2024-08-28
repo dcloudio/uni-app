@@ -1,8 +1,11 @@
 import { parse } from '../src'
 
 // for nvue
-async function objectifierRule(input: string) {
-  const { code, messages } = await parse(input, { logLevel: 'NOTE' })
+async function objectifierRule(input: string, isUVue = false) {
+  const { code, messages } = await parse(input, {
+    logLevel: 'NOTE',
+    type: 'nvue',
+  })
   return {
     json: JSON.parse(code),
     messages,
@@ -429,7 +432,6 @@ zIndex: 4;
       foo: {
         '': {
           backgroundColor: '#ff0000',
-          backgroundImage: '',
           abc: 123,
           def: '456px',
           ghi: '789pt',
