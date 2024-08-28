@@ -26,7 +26,12 @@ describe('nvue-styler: objectifier', () => {
           fontWeight: '100',
         },
       },
-      bar: { '': { backgroundColor: '#FF0000' } },
+      bar: {
+        '': {
+          backgroundColor: '#FF0000',
+          backgroundImage: '',
+        },
+      },
     })
     expect(messages[0]).toEqual(
       expect.objectContaining({

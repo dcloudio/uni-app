@@ -429,6 +429,7 @@ zIndex: 4;
       foo: {
         '': {
           backgroundColor: '#ff0000',
+          backgroundImage: '',
           abc: 123,
           def: '456px',
           ghi: '789pt',

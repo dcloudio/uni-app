@@ -826,11 +826,21 @@ describe('nvue-styler: expand', () => {
       '#000000': [
         {
           type: 'decl',
+          prop: 'background-image',
+          value: '',
+        },
+        {
+          type: 'decl',
           prop: 'background-color',
           value: '#000000',
         },
       ],
       'rgb(255,255,255)': [
+        {
+          type: 'decl',
+          prop: 'background-image',
+          value: '',
+        },
         {
           type: 'decl',
           prop: 'background-color',
@@ -842,6 +852,11 @@ describe('nvue-styler: expand', () => {
           type: 'decl',
           prop: 'background-image',
           value: 'linear-gradient(#e66465, #9198e5)',
+        },
+        {
+          type: 'decl',
+          prop: 'background-color',
+          value: '',
         },
       ],
     }
