@@ -109,14 +109,14 @@ class UTSFileWatcher {
     options?: tsTypes.WatchOptions
   ): tsTypes.FileWatcher {
     // 此时记录的是emit出来的.tsc目录的文件
-    const key = path
-      .relative(this._tscDir, fileName)
-      .replace(replacements, '$1')
+    const key = normalizePath(
+      path.relative(this._tscDir, fileName).replace(replacements, '$1')
+    )
 
     this._watchFiles.set(key, { fileName, callback })
     return {
       close: () => {
-        this._watchFiles.delete(fileName)
+        this._watchFiles.delete(key)
       },
     }
   }
