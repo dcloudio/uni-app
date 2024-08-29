@@ -2460,6 +2460,30 @@ function defineAsyncApi(name, fn, protocol, options) {
     wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
   );
 }
+class EventBus {
+  constructor() {
+    this.emitter = new uniShared.Emitter();
+  }
+  $on(name, callback) {
+    this.emitter.on(name, callback);
+  }
+  $once(name, callback) {
+    this.emitter.once(name, callback);
+  }
+  $off(name, callback) {
+    if (!name) {
+      this.emitter.e = {};
+      return;
+    }
+    if (!shared.isArray(name))
+      name = [name];
+    name.forEach((n) => this.emitter.off(n, callback));
+  }
+  $emit(name, ...args) {
+    this.emitter.emit(name, ...args);
+  }
+}
+new EventBus();
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_LOCALE = "getLocale";
 const getLocale = /* @__PURE__ */ defineSyncApi(
@@ -9015,8 +9039,40 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let appVm;
+let $uniApp;
+{
+  class UniApp {
+    constructor() {
+      const eventBus = new EventBus();
+      this.on = (eventName, callback) => {
+        eventBus.$on(eventName, callback);
+      };
+      this.once = (eventName, callback) => {
+        eventBus.$once(eventName, callback);
+      };
+      this.off = (eventName, callback) => {
+        eventBus.$off(eventName, callback);
+      };
+      this.emit = (eventName, ...args) => {
+        eventBus.$emit(eventName, ...args);
+      };
+    }
+    get vm() {
+      return appVm;
+    }
+    get $vm() {
+      return appVm;
+    }
+    get globalData() {
+      return (appVm == null ? void 0 : appVm.globalData) || {};
+    }
+  }
+  $uniApp = new UniApp();
+}
 function getApp$1() {
-  return appVm;
+  {
+    return $uniApp;
+  }
 }
 function initApp(vm) {
   appVm = vm;

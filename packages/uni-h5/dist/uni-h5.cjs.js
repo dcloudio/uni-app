@@ -8272,7 +8272,9 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
 });
 let appVm;
 function getApp$1() {
-  return appVm;
+  {
+    return appVm;
+  }
 }
 function initApp(vm) {
   appVm = vm;

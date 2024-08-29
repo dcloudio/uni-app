@@ -1439,16 +1439,22 @@ class DialogPage {
     this.route = route;
     this.component = component;
     this.$getParentPage = $getParentPage;
-    var {
-      $on: $on2,
-      $once: $once2,
-      $emit: $emit2,
-      $off: $off2
-    } = new EventBus();
-    this.$on = $on2;
-    this.$once = $once2;
-    this.$off = $off2;
-    this.$emit = $emit2;
+    var eventBus2 = new EventBus();
+    this.$on = (eventName, callback) => {
+      eventBus2.$on(eventName, callback);
+    };
+    this.$once = (eventName, callback) => {
+      eventBus2.$once(eventName, callback);
+    };
+    this.$off = (eventName, callback) => {
+      eventBus2.$off(eventName, callback);
+    };
+    this.$emit = function(eventName) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+      eventBus2.$emit(eventName, ...args);
+    };
   }
 }
 var homeDialogPages = [];
@@ -2130,6 +2136,37 @@ var appCtx;
 var defaultApp = {
   globalData: {}
 };
+class UniApp {
+  constructor() {
+    var eventBus2 = new EventBus();
+    this.on = (eventName, callback) => {
+      eventBus2.$on(eventName, callback);
+    };
+    this.once = (eventName, callback) => {
+      eventBus2.$once(eventName, callback);
+    };
+    this.off = (eventName, callback) => {
+      eventBus2.$off(eventName, callback);
+    };
+    this.emit = function(eventName) {
+      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
+        args[_key - 1] = arguments[_key];
+      }
+      eventBus2.$emit(eventName, ...args);
+    };
+  }
+  get vm() {
+    return appCtx;
+  }
+  get $vm() {
+    return appCtx;
+  }
+  get globalData() {
+    var _appCtx;
+    return ((_appCtx = appCtx) === null || _appCtx === void 0 ? void 0 : _appCtx.globalData) || {};
+  }
+}
+var $uniApp = new UniApp();
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -2143,16 +2180,7 @@ function initAppVm(appVm) {
   appVm.$mpType = "app";
 }
 function getApp$1() {
-  var {
-    allowDefault = false
-  } = arguments.length > 0 && arguments[0] !== void 0 ? arguments[0] : {};
-  if (appCtx) {
-    return appCtx;
-  }
-  if (allowDefault) {
-    return defaultApp;
-  }
-  console.error("[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.");
+  return $uniApp;
 }
 function registerApp(appVm, nativeApp2) {
   initEntryPagePath(nativeApp2);

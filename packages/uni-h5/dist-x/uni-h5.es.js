@@ -17405,11 +17405,19 @@ class DialogPage {
     this.component = component;
     this.$getParentPage = $getParentPage;
     this.$disableEscBack = $disableEscBack;
-    const { $on: $on2, $once: $once2, $emit: $emit2, $off: $off2 } = new EventBus();
-    this.$on = $on2;
-    this.$once = $once2;
-    this.$off = $off2;
-    this.$emit = $emit2;
+    const eventBus2 = new EventBus();
+    this.$on = (eventName, callback) => {
+      eventBus2.$on(eventName, callback);
+    };
+    this.$once = (eventName, callback) => {
+      eventBus2.$once(eventName, callback);
+    };
+    this.$off = (eventName, callback) => {
+      eventBus2.$off(eventName, callback);
+    };
+    this.$emit = (eventName, ...args) => {
+      eventBus2.$emit(eventName, ...args);
+    };
   }
 }
 function pruneCurrentPages() {
@@ -18723,8 +18731,40 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
   }
 });
 let appVm;
+let $uniApp;
+{
+  class UniApp {
+    constructor() {
+      const eventBus2 = new EventBus();
+      this.on = (eventName, callback) => {
+        eventBus2.$on(eventName, callback);
+      };
+      this.once = (eventName, callback) => {
+        eventBus2.$once(eventName, callback);
+      };
+      this.off = (eventName, callback) => {
+        eventBus2.$off(eventName, callback);
+      };
+      this.emit = (eventName, ...args) => {
+        eventBus2.$emit(eventName, ...args);
+      };
+    }
+    get vm() {
+      return appVm;
+    }
+    get $vm() {
+      return appVm;
+    }
+    get globalData() {
+      return (appVm == null ? void 0 : appVm.globalData) || {};
+    }
+  }
+  $uniApp = new UniApp();
+}
 function getApp$1() {
-  return appVm;
+  {
+    return $uniApp;
+  }
 }
 function initApp(vm) {
   appVm = vm;
