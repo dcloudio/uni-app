@@ -19,11 +19,55 @@ import type {
   NavigateToOptions,
   SwitchTabOptions,
 } from '@dcloudio/uni-app-x/types/uni'
+import {
+  type EmitterEmit,
+  type EmitterOff,
+  type EmitterOn,
+  type EmitterOnce,
+  EventBus,
+} from '@dcloudio/uni-api'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
+
+class UniApp {
+  on: EmitterOn
+  once: EmitterOnce
+  off: EmitterOff
+  emit: EmitterEmit
+  constructor() {
+    const eventBus = new EventBus()
+    this.on = (eventName: string, callback: (result: any) => void) => {
+      eventBus.$on(eventName, callback)
+    }
+    this.once = (eventName: string, callback: (result: any) => void) => {
+      eventBus.$once(eventName, callback)
+    }
+    this.off = (
+      eventName?: string | string[],
+      callback?: (result: any) => void
+    ) => {
+      eventBus.$off(eventName, callback)
+    }
+    this.emit = (eventName: string, ...args: any[]) => {
+      eventBus.$emit(eventName, ...args)
+    }
+  }
+
+  get vm() {
+    return appCtx
+  }
+  get $vm() {
+    return appCtx
+  }
+  get globalData() {
+    return appCtx?.globalData || {}
+  }
+}
+
+let $uniApp = new UniApp()
 
 export const entryPageState = {
   isReady: false,
@@ -68,18 +112,8 @@ function initAppVm(appVm: ComponentPublicInstance) {
   // TODO uni-app x useI18n
 }
 
-export function getApp({ allowDefault = false } = {}) {
-  if (appCtx) {
-    // 真实的 App 已初始化
-    return appCtx
-  }
-  if (allowDefault) {
-    // 返回默认实现
-    return defaultApp
-  }
-  console.error(
-    '[warn]: getApp() failed. Learn more: https://uniapp.dcloud.io/collocation/frame/window?id=getapp.'
-  )
+export function getApp() {
+  return $uniApp
 }
 
 /**
