@@ -169,7 +169,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           type = 'number'
           break
         default:
-          type = ~INPUT_TYPES.includes(props.type) ? props.type : 'text'
+          type = INPUT_TYPES.includes(props.type) ? props.type : 'text'
           break
       }
       return props.password ? 'password' : type
