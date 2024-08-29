@@ -30,11 +30,22 @@ export class DialogPage {
     this.route = route
     this.component = component
     this.$getParentPage = $getParentPage
-    const { $on, $once, $emit, $off } = new EventBus()
-    this.$on = $on
-    this.$once = $once
-    this.$off = $off
-    this.$emit = $emit
+    const eventBus = new EventBus()
+    this.$on = (eventName: string, callback: (result: any) => void) => {
+      eventBus.$on(eventName, callback)
+    }
+    this.$once = (eventName: string, callback: (result: any) => void) => {
+      eventBus.$once(eventName, callback)
+    }
+    this.$off = (
+      eventName?: string | string[],
+      callback?: (result: any) => void
+    ) => {
+      eventBus.$off(eventName, callback)
+    }
+    this.$emit = (eventName: string, ...args: any[]) => {
+      eventBus.$emit(eventName, ...args)
+    }
   }
 }
 
