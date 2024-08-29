@@ -58,13 +58,13 @@
 import {
   field
 } from 'uni-mixins'
-import { kebabCase } from 'uni-shared'
+import { kebabCase, once } from 'uni-shared'
 const INPUT_TYPES = ['text', 'number', 'idcard', 'digit', 'password', 'tel']
 const NUMBER_TYPES = ['number', 'digit']
 const AUTOCOMPLETES = ['off', 'one-time-code']
 const INPUT_MODES = ['none', 'text', 'decimal', 'numeric', 'tel', 'search', 'email', 'url']
 
-const resolveDigitDecimalPointDeleteContentBackward = (() => {
+const resolveDigitDecimalPointDeleteContentBackward = once(() => {
   if (__PLATFORM__ === 'app-plus') {
     const osVersion = plus.os.version
     return (
@@ -88,7 +88,7 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
     }
     return !!osVersion && (parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2)
   }
-})()
+})
 export default {
   name: 'Input',
   mixins: [field],
@@ -281,7 +281,7 @@ export default {
           }
         } else if ($event.inputType === 'deleteContentBackward') {
           // ios 无法删除小数
-          if (resolveDigitDecimalPointDeleteContentBackward) {
+          if (resolveDigitDecimalPointDeleteContentBackward()) {
             if (this.cachedValue.slice(-2, -1) === '.') {
               this.cachedValue = this.valueSync = $event.target.value = this.cachedValue.slice(0, -2)
               this.$triggerInput($event, {

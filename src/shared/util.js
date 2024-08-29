@@ -46,6 +46,17 @@ export function cached (fn) {
   }
 }
 
+export function once(fn, ctx = null) {
+  let res
+  return ((...args) => {
+      if (fn) {
+          res = fn.apply(ctx, args);
+          fn = null;
+      }
+      return res
+  });
+}
+
 /**
  * Camelize a hyphen-delimited string.
  */
