@@ -103,12 +103,12 @@ export class DialogPage {
   route: string = ''
   component?: any
   $getParentPage: () => ComponentPublicInstance | null
-  $disableEscBack: boolean = false
-  $vm?: ComponentPublicInstance
   $on: EmitterOn
   $once: EmitterOnce
   $off: EmitterOff
   $emit: EmitterEmit
+  $disableEscBack: boolean = false
+  $vm?: ComponentPublicInstance
 
   constructor({
     route,
@@ -125,11 +125,22 @@ export class DialogPage {
     this.component = component
     this.$getParentPage = $getParentPage
     this.$disableEscBack = $disableEscBack
-    const { $on, $once, $emit, $off } = new EventBus()
-    this.$on = $on
-    this.$once = $once
-    this.$off = $off
-    this.$emit = $emit
+    const eventBus = new EventBus()
+    this.$on = (eventName: string, callback: (result: any) => void) => {
+      eventBus.$on(eventName, callback)
+    }
+    this.$once = (eventName: string, callback: (result: any) => void) => {
+      eventBus.$once(eventName, callback)
+    }
+    this.$off = (
+      eventName?: string | string[],
+      callback?: (result: any) => void
+    ) => {
+      eventBus.$off(eventName, callback)
+    }
+    this.$emit = (eventName: string, ...args: any[]) => {
+      eventBus.$emit(eventName, ...args)
+    }
   }
 }
 
