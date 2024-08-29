@@ -567,12 +567,13 @@ const DEFAULT_IMPORTS = [
   'io.dcloud.uniapp.*',
 ]
 
-const DEFAULT_IMPORTS_X = [
+const DEFAULT_IMPORTS_VUE_X = [
   'io.dcloud.uniapp.framework.*',
   'io.dcloud.uniapp.vue.*',
   'io.dcloud.uniapp.vue.shared.*',
-  'io.dcloud.uniapp.runtime.*',
 ]
+
+const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
 
 function resolveBundleInputRoot(root: string) {
   if (process.env.UNI_APP_X_TSC === 'true') {
@@ -602,8 +603,11 @@ export async function compile(
   const { bundle, UTSTarget } = getUTSCompiler()
   // let time = Date.now()
   const imports = [...DEFAULT_IMPORTS]
-  if (isX && !process.env.UNI_UTS_DISABLE_X_IMPORT) {
+  if (isX) {
     imports.push(...DEFAULT_IMPORTS_X)
+    if (!process.env.UNI_UTS_DISABLE_X_IMPORT) {
+      imports.push(...DEFAULT_IMPORTS_VUE_X)
+    }
   }
   const rClass = resolveAndroidResourceClass(filename)
   if (rClass) {
