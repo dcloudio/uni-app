@@ -7,7 +7,7 @@ const BLACKLIST = [
 
 const harmonyDistDir = path.resolve(__dirname, '../packages/uni-app-harmony/dist')
 const autoImportMap = {
-  '@dcloudio/uni-app-harmony': path.resolve(harmonyDistDir, 'uni.api.ets')
+  '@dcloudio/uni-app-runtime': path.resolve(harmonyDistDir, 'uni.api.ets')
 }
 
 function initAutoImportMap() {
@@ -21,7 +21,7 @@ function initAutoImportMap() {
     if (!fs.existsSync(providerEntryFilePath)) {
       return
     }
-    autoImportMap[`@dcloudio/uni-app-harmony/providers/${provider}`] = providerEntryFilePath
+    autoImportMap[`@dcloudio/uni-app-runtime/src/main/ets/uni-app-harmony/providers/${provider}`] = providerEntryFilePath
   })
 }
 

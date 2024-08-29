@@ -1,5 +1,5 @@
 {
-  "@dcloudio/uni-app-harmony": [
+  "@dcloudio/uni-app-runtime": [
     [
       "SetClipboardData"
     ],
@@ -508,7 +508,7 @@
       "initUniExtApi"
     ]
   ],
-  "@dcloudio/uni-app-harmony/providers/uni-payment-alipay": [
+  "@dcloudio/uni-app-runtime/src/main/ets/uni-app-harmony/providers/uni-payment-alipay": [
     [
       "UniPaymentAlipayProviderImpl"
     ]

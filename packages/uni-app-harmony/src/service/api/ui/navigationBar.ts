@@ -46,23 +46,60 @@ export const setNavigationBarTitle =
     SetNavigationBarTitleProtocol
   )
 
+interface SetNavigationbarLoadingOptions {
+  __page__?: ComponentPublicInstance
+}
+
 export const showNavigationBarLoading =
   defineAsyncApi<API_TYPE_SHOW_NAVIGATION_BAR_LOADING>(
     API_SHOW_NAVIGATION_BAR_LOADING,
-    (_, { resolve }) => {
-      plus.nativeUI.showWaiting('', {
-        modal: false,
-      })
-      resolve()
+    (args: SetNavigationbarLoadingOptions | undefined, { resolve, reject }) => {
+      let webview: PlusWebviewWebviewObject | null = null
+      if (args) webview = getWebview(args.__page__)
+      if (webview) {
+        const style = webview.getStyle()
+        if (style && style.titleNView) {
+          webview.setStyle({
+            titleNView: {
+              // @ts-expect-error
+              loading: true,
+            },
+          })
+        }
+        resolve()
+      } else {
+        reject()
+      }
     }
   )
+
+interface HideNavigationbarLoadingOptions {
+  __page__?: ComponentPublicInstance
+}
 
 export const hideNavigationBarLoading =
   defineAsyncApi<API_TYPE_HIDE_NAVIGATION_BAR_LOADING>(
     API_HIDE_NAVIGATION_BAR_LOADING,
-    (_, { resolve }) => {
-      plus.nativeUI.closeWaiting()
-      resolve()
+    (
+      args: HideNavigationbarLoadingOptions | undefined,
+      { resolve, reject }
+    ) => {
+      let webview: PlusWebviewWebviewObject | null = null
+      if (args) webview = getWebview(args.__page__)
+      if (webview) {
+        const style = webview.getStyle()
+        if (style && style.titleNView) {
+          webview.setStyle({
+            titleNView: {
+              // @ts-expect-error
+              loading: false,
+            },
+          })
+        }
+        resolve()
+      } else {
+        reject()
+      }
     }
   )
 
