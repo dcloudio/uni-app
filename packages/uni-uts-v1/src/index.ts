@@ -123,21 +123,18 @@ interface CompilerOptions {
   transform?: UTSOutputOptions['transform']
   sourceMap?: boolean
   uni_modules?: string[]
+  kotlinAutoImports?: () => Promise<
+    Required<UTSOutputOptions>['transform']['autoImports']
+  >
+  swiftAutoImports?: () => Promise<
+    Required<UTSOutputOptions>['transform']['autoImports']
+  >
 }
 
 // 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
 export async function compile(
   pluginDir: string,
-  {
-    isX,
-    isPlugin,
-    extApis,
-    isExtApi,
-    transform,
-    sourceMap,
-    isSingleThread,
-    uni_modules,
-  }: CompilerOptions = {
+  compilerOptions: CompilerOptions = {
     isX: false,
     isPlugin: true,
     isSingleThread: true,
@@ -148,10 +145,23 @@ export async function compile(
   if (!pkg) {
     return
   }
+
   // 加密插件
   if (isEncrypt(pluginDir)) {
-    return compileEncrypt(pluginDir, isX)
+    return compileEncrypt(pluginDir, compilerOptions.isX)
   }
+  const {
+    isX,
+    extApis,
+    isExtApi,
+    transform,
+    sourceMap,
+    isSingleThread,
+    uni_modules,
+  } = compilerOptions
+
+  let isPlugin = compilerOptions.isPlugin
+
   const cacheDir = process.env.HX_DEPENDENCIES_DIR || ''
   const inputDir = process.env.UNI_INPUT_DIR
   const outputDir = process.env.UNI_OUTPUT_DIR
@@ -242,7 +252,10 @@ export async function compile(
           isExtApi,
           isModule: !!indexModuleFilename,
           extApis,
-          transform,
+          transform: await initCompilerOptionsTransform(
+            'kotlin',
+            compilerOptions
+          ),
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.androidHookClass || '',
           uniModules: uni_modules || [],
@@ -300,7 +313,10 @@ export async function compile(
           isPlugin: true, // iOS 目前仅有 plugin 模式
           isExtApi,
           extApis,
-          transform,
+          transform: await initCompilerOptionsTransform(
+            'swift',
+            compilerOptions
+          ),
           sourceMap: !!sourceMap,
           hookClass: proxyCodeOptions.iOSHookClass || '',
           uniModules: uni_modules || [],
@@ -464,7 +480,10 @@ export async function compile(
           pluginRelativeDir,
           is_uni_modules: pkg.is_uni_modules,
           extApis,
-          transform,
+          transform: await initCompilerOptionsTransform(
+            compilerType,
+            compilerOptions
+          ),
           sourceMap: !!sourceMap,
           uniModules: uni_modules || [],
         })
@@ -560,4 +579,37 @@ export async function compile(
     scoped_slots,
     meta
   )
+}
+
+export async function initCompilerOptionsTransform(
+  compilerType: 'kotlin' | 'swift',
+  options: CompilerOptions
+) {
+  const transform: Required<CompilerOptions>['transform'] = JSON.parse(
+    JSON.stringify(options.transform || {})
+  )
+  const customAutoImports = await initCompilerOptionsTransformAutoImports(
+    compilerType === 'kotlin'
+      ? options.kotlinAutoImports
+      : options.swiftAutoImports
+  )
+  if (customAutoImports && Object.keys(customAutoImports).length) {
+    const autoImports = transform.autoImports || {}
+    Object.keys(customAutoImports).forEach((source) => {
+      if (autoImports[source]) {
+        autoImports[source].push(...customAutoImports[source])
+      } else {
+        autoImports[source] = customAutoImports[source]
+      }
+    })
+    transform.autoImports = autoImports
+  }
+
+  return transform
+}
+
+async function initCompilerOptionsTransformAutoImports(
+  autoImports: CompilerOptions['kotlinAutoImports']
+) {
+  return autoImports?.()
 }

@@ -439,25 +439,22 @@ export function parseSwiftPackageWithPluginId(
 
 export type UTSTargetLanguage = typeof process.env.UNI_UTS_TARGET_LANGUAGE
 
-let uniExtApiKotlinAutoImports: Record<string, [string, string?][]> | null =
-  null
-async function parseUniExtApiKotlinAutoImportsOnce(extApis: Injects) {
-  if (uniExtApiKotlinAutoImports) {
-    return uniExtApiKotlinAutoImports
-  }
-  uniExtApiKotlinAutoImports = {}
-
+async function parseUniExtApiAutoImports(
+  uniExtApiAutoImports: Record<string, [string, string?][]>,
+  extApis: Injects,
+  parseSource: (pluginId: string) => string
+) {
   if (Object.keys(extApis).length) {
     const { parseExportIdentifiers } = resolveUTSCompiler()
     for (const name in extApis) {
       const options = extApis[name]
       if (isArray(options) && options.length >= 2) {
         const pluginId = path.basename(options[0])
-        const source = parseKotlinPackageWithPluginId(pluginId, true)
-        if (uniExtApiKotlinAutoImports[source]) {
+        const source = parseSource(pluginId)
+        if (uniExtApiAutoImports[source]) {
           continue
         }
-        uniExtApiKotlinAutoImports[source] = []
+        uniExtApiAutoImports[source] = []
         const filename = `uni_modules/${pluginId}/utssdk/interface.uts`
         const interfaceFileName = path.resolve(
           process.env.UNI_INPUT_DIR,
@@ -469,13 +466,44 @@ async function parseUniExtApiKotlinAutoImportsOnce(extApis: Injects) {
             // 过滤掉 Uni
             .filter((id) => id !== 'Uni')
             .forEach((id) => {
-              uniExtApiKotlinAutoImports![source].push([id])
+              uniExtApiAutoImports[source].push([id])
             })
         }
       }
     }
   }
-  return uniExtApiKotlinAutoImports
+  return uniExtApiAutoImports
+}
+
+let uniExtApiKotlinAutoImports: Record<string, [string, string?][]> | null =
+  null
+async function parseUniExtApiKotlinAutoImportsOnce(extApis: Injects) {
+  if (uniExtApiKotlinAutoImports) {
+    return uniExtApiKotlinAutoImports
+  }
+  uniExtApiKotlinAutoImports = {}
+  return parseUniExtApiAutoImports(
+    uniExtApiKotlinAutoImports,
+    extApis,
+    (pluginId) => {
+      return parseKotlinPackageWithPluginId(pluginId, true)
+    }
+  )
+}
+
+let uniExtApiSwiftAutoImports: Record<string, [string, string?][]> | null = null
+async function parseUniExtApiSwiftAutoImportsOnce(extApis: Injects) {
+  if (uniExtApiSwiftAutoImports) {
+    return uniExtApiSwiftAutoImports
+  }
+  uniExtApiSwiftAutoImports = {}
+  return parseUniExtApiAutoImports(
+    uniExtApiSwiftAutoImports,
+    extApis,
+    (pluginId) => {
+      return parseSwiftPackageWithPluginId(pluginId, true)
+    }
+  )
 }
 
 export const parseUniExtApiNamespacesOnce = once(
@@ -531,31 +559,50 @@ export function resolveUniTypeScript() {
   }
   return require('@dcloudio/uni-uts-v1/lib/typescript')
 }
-let autoImports: Record<string, [string, string?][]> | null = null
-export async function initUTSAutoImportsOnce() {
-  if (autoImports) {
-    return autoImports
-  }
-  autoImports = {}
+
+async function initUTSAutoImports(
+  autoImports: Record<string, [string, string?][]>,
+  platform: 'app-android' | 'app-ios',
+  language: 'kotlin' | 'swift'
+) {
   const utsComponents = getUTSComponentAutoImports()
   Object.keys(utsComponents).forEach((source) => {
-    if (autoImports![source]) {
-      autoImports![source].push(...utsComponents[source])
+    if (autoImports[source]) {
+      autoImports[source].push(...utsComponents[source])
     } else {
-      autoImports![source] = utsComponents[source]
+      autoImports[source] = utsComponents[source]
     }
   })
 
-  const extApis = parseUniExtApis(true, 'app-android', 'kotlin')
-  const extApiImports = await parseUniExtApiKotlinAutoImportsOnce(extApis)
+  const extApis = parseUniExtApis(true, platform, language)
+  const extApiImports = await (language === 'kotlin'
+    ? parseUniExtApiKotlinAutoImportsOnce
+    : parseUniExtApiSwiftAutoImportsOnce)(extApis)
   Object.keys(extApiImports).forEach((source) => {
-    if (autoImports![source]) {
-      autoImports![source].push(...extApiImports[source])
+    if (autoImports[source]) {
+      autoImports[source].push(...extApiImports[source])
     } else {
-      autoImports![source] = extApiImports[source]
+      autoImports[source] = extApiImports[source]
     }
   })
-  return autoImports!
+  return autoImports
+}
+let autoKotlinImports: Record<string, [string, string?][]> | null = null
+export async function initUTSKotlinAutoImportsOnce() {
+  if (autoKotlinImports) {
+    return autoKotlinImports
+  }
+  autoKotlinImports = {}
+  return initUTSAutoImports(autoKotlinImports, 'app-android', 'kotlin')
+}
+
+let autoSwiftImports: Record<string, [string, string?][]> | null = null
+export async function initUTSSwiftAutoImportsOnce() {
+  if (autoSwiftImports) {
+    return autoSwiftImports
+  }
+  autoSwiftImports = {}
+  return initUTSAutoImports(autoSwiftImports, 'app-ios', 'swift')
 }
 
 const genUniExtApiDeclarationFileOnce = once((tscInputDir: string) => {

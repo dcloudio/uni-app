@@ -8,7 +8,10 @@ import type { UniXCompiler } from '@dcloudio/uni-uts-v1'
 import {
   createUniXKotlinCompilerOnce,
   createUniXSwiftCompilerOnce,
-  initUTSAutoImportsOnce,
+  initUTSKotlinAutoImportsOnce,
+  initUTSSwiftAutoImportsOnce,
+  parseKotlinPackageWithPluginId,
+  parseSwiftPackageWithPluginId,
   resolveUTSAppModule,
   resolveUTSCompiler,
 } from '../../../uts'
@@ -156,7 +159,7 @@ export function uniUTSAppUniModulesPlugin(
   >()
 
   const compilePlugin = async (pluginDir: string) => {
-    const plugin = path.basename(pluginDir)
+    const pluginId = path.basename(pluginDir)
 
     if (uniXKotlinCompiler) {
       await syncUniModuleFilesByCompiler(
@@ -176,8 +179,8 @@ export function uniUTSAppUniModulesPlugin(
       )
     }
 
-    if (!utsPlugins.has(plugin)) {
-      utsPlugins.add(plugin)
+    if (!utsPlugins.has(pluginId)) {
+      utsPlugins.add(pluginId)
       if (uniXKotlinCompiler) {
         const indexFileName = resolveTscUniModuleIndexFileName(
           'app-android',
@@ -200,10 +203,10 @@ export function uniUTSAppUniModulesPlugin(
 
     if (uniXCompiler) {
       // 处理uni_modules中的文件变更
-      const files = changedFiles.get(plugin)
+      const files = changedFiles.get(pluginId)
       if (files) {
         // 仅限watch模式是会生效
-        changedFiles.delete(plugin)
+        changedFiles.delete(pluginId)
         await uniXCompiler.invalidate(files)
       }
     }
@@ -247,6 +250,22 @@ export function uniUTSAppUniModulesPlugin(
       })
     }
 
+    function filterAutoImports(
+      autoImports: Record<string, [string, (string | undefined)?][]>,
+      source: string
+    ) {
+      if (autoImports[source]) {
+        // 移除 source
+        return Object.keys(autoImports).reduce((imports, key) => {
+          if (key !== source) {
+            imports[key] = autoImports[key]
+          }
+          return imports
+        }, {})
+      }
+      return autoImports
+    }
+
     return compiler.compile(pluginDir, {
       isX: !!options.x,
       isSingleThread: !!options.isSingleThread,
@@ -259,7 +278,22 @@ export function uniUTSAppUniModulesPlugin(
         uniExtApiProviderName: extApiProvider?.name,
         uniExtApiProviderService: extApiProvider?.service,
         uniExtApiProviderServicePlugin,
-        autoImports: await initUTSAutoImportsOnce(),
+      },
+      async kotlinAutoImports() {
+        return initUTSKotlinAutoImportsOnce().then((autoImports) => {
+          return filterAutoImports(
+            autoImports,
+            parseKotlinPackageWithPluginId(pluginId, true)
+          )
+        })
+      },
+      async swiftAutoImports() {
+        return initUTSSwiftAutoImportsOnce().then((autoImports) => {
+          return filterAutoImports(
+            autoImports,
+            parseSwiftPackageWithPluginId(pluginId, true)
+          )
+        })
       },
     })
   }
