@@ -1,4 +1,5 @@
 import { extend, hyphenate } from '@vue/shared'
+import { once } from '@dcloudio/uni-shared'
 import {
   type ComputedRef,
   type ExtractPropTypes,
@@ -29,7 +30,7 @@ const props = /*#__PURE__*/ extend({}, fieldProps, {
   },
 })
 
-const resolveDigitDecimalPointDeleteContentBackward = (() => {
+const resolveDigitDecimalPointDeleteContentBackward = once(() => {
   //#if !_NODE_JS_
   if (__PLATFORM__ === 'app') {
     const osVersion = plus.os.version
@@ -58,7 +59,7 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
     )
   }
   //#endif
-})()
+})
 
 function resolveDigitDecimalPoint(
   event: InputEvent,
@@ -88,7 +89,7 @@ function resolveDigitDecimalPoint(
       }
     } else if ((event as InputEvent).inputType === 'deleteContentBackward') {
       // ios 无法删除小数
-      if (resolveDigitDecimalPointDeleteContentBackward) {
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === '.') {
           cache.value = state.value = input.value = cache.value.slice(0, -2)
           return true
