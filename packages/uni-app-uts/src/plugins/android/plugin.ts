@@ -254,6 +254,9 @@ export function uniAppPlugin(): UniVitePlugin {
         uniModulesArtifacts: parseUniModulesArtifacts(),
         env: parseProcessEnv(resolvedConfig),
       })
+      if (uniXKotlinCompiler && process.env.NODE_ENV !== 'development') {
+        await uniXKotlinCompiler.close()
+      }
       if (res) {
         if (process.env.NODE_ENV === 'development') {
           const files: string[] = []

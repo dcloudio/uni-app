@@ -31345,7 +31345,14 @@ var BuilderState;
     return state.allFileNames;
   }
   function getReferencedByPaths(state, referencedFilePath) {
+    var _a;
     const keys = state.referencedMap.getKeys(referencedFilePath);
+    if ((_a = globalThis.__utsHacker__) == null ? void 0 : _a.filterReferencedByPaths) {
+      globalThis.__utsHacker__.filterReferencedByPaths(
+        referencedFilePath,
+        keys
+      );
+    }
     return keys ? arrayFrom(keys.keys()) : [];
   }
   BuilderState2.getReferencedByPaths = getReferencedByPaths;
