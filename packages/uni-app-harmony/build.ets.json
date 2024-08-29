@@ -52,7 +52,7 @@
     },
     "wrapper": {
       "name": "initUniExtApi",
-      "args": [["APP_ID", "string"]]
+      "args": []
     }
   },
   {
