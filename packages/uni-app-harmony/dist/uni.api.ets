@@ -80,13 +80,13 @@ import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext10, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext4, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext9, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow1 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow3 } from "@dcloudio/uni-mp-sdk";
@@ -571,18 +571,18 @@ interface IUniGetNetworkTypeEventEmitter {
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 export class GetProviderSuccess extends UTSObject {
-    service!: 'payment' | 'oauth';
+    service!: 'payment';
     provider!: string[];
     providers!: UniProvider[];
 }
 export class GetProviderSyncSuccess extends UTSObject {
-    service!: 'payment' | 'location' | 'oauth';
+    service!: 'payment' | 'location';
     providerIds!: string[];
     providerObjects!: UniProvider[];
 }
 export type GetProviderSync = (options: GetProviderSyncOptions) => GetProviderSyncSuccess;
 export class GetProviderSyncOptions extends UTSObject {
-    service!: 'payment' | 'location' | 'oauth';
+    service!: 'payment' | 'location';
 }
 type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
 type GetProviderFail = IGetProviderFail;
@@ -590,7 +590,7 @@ type GetProviderFailCallback = (result: GetProviderFail) => void;
 type GetProviderComplete = Object;
 type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
 export class GetProviderOptions extends UTSObject {
-    service!: 'payment' | 'oauth';
+    service!: 'payment';
     success: GetProviderSuccessCallback | null = null;
     fail: GetProviderFailCallback | null = null;
     complete: GetProviderCompleteCallback | null = null;
@@ -961,25 +961,6 @@ export class SaveVideoToPhotosAlbumOptions extends UTSObject {
     complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
 }
 export type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
-export class CompressVideoSuccess extends UTSObject {
-    tempFilePath!: string;
-    size!: number;
-}
-type CompressVideoFail = IMediaError;
-type CompressVideoSuccessCallback = (callback: CompressVideoSuccess) => void;
-type CompressVideoFailCallback = (callback: CompressVideoFail) => void;
-type CompressVideoCompleteCallback = ChooseImageCompleteCallback;
-export class CompressVideoOptions extends UTSObject {
-    src!: string.VideoURIString;
-    quality: string | null = null;
-    bitrate: number | null = null;
-    fps: number | null = null;
-    resolution: number | null = null;
-    success: (CompressVideoSuccessCallback) | null = null;
-    fail: (CompressVideoFailCallback) | null = null;
-    complete: (CompressVideoCompleteCallback) | null = null;
-}
-export type CompressVideo = (options: CompressVideoOptions) => void;
 export type ChooseFile = (options: ChooseFileOptions) => void;
 export class ChooseFileSuccess extends UTSObject {
     tempFilePaths!: string[];
@@ -1226,139 +1207,6 @@ interface IDownloadTask {
     offHeadersReceived: Function;
     onProgressUpdate: Function;
     offProgressUpdate: Function;
-}
-export interface UniOAuthProvider extends UniProvider {
-    login(options: LoginOptions): void;
-    getUserInfo(options: GetUserInfoOptions): void;
-}
-export type Login = (options: LoginOptions) => void;
-class AppleLoginAppleInfo extends UTSObject {
-    authorizationCode: string | null = null;
-    fullName: Object | null = null;
-    identityToken: string | null = null;
-    realUserStatus: number | null = null;
-    user: string | null = null;
-}
-export class LoginSuccess extends UTSObject {
-    errMsg!: string;
-    authResult!: Object;
-    code!: string;
-    anonymousCode: string | null = null;
-    authCode: string | null = null;
-    authErrorScope: Object | null = null;
-    authSucessScope: (string[]) | null = null;
-    appleInfo: AppleLoginAppleInfo | null = null;
-}
-type LoginSuccessCallback = (result: LoginSuccess) => void;
-export type LoginFail = IUniError;
-type LoginFailCallback = (result: LoginFail) => void;
-type LoginComplete = Object;
-type LoginCompleteCallback = (result: LoginComplete) => void;
-export class LoginOptions extends UTSObject {
-    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'univerify' | 'huawei' | null = null;
-    scopes: Object | null = null;
-    timeout: number | null = null;
-    univerifyStyle: UniverifyStyle | null = null;
-    onlyAuthorize: boolean | null = null;
-    success: LoginSuccessCallback | null = null;
-    fail: LoginFailCallback | null = null;
-    complete: LoginCompleteCallback | null = null;
-}
-class UniverifyIconStyles extends UTSObject {
-    path!: string;
-    width: string | null = null;
-    height: string | null = null;
-}
-class UniverifyPhoneNumStyles extends UTSObject {
-    color: string | null = null;
-    fontSize: string | null = null;
-}
-class UniverifySloganStyles extends UTSObject {
-    color: string | null = null;
-    fontSize: string | null = null;
-}
-class UniverifyAuthButtonStyles extends UTSObject {
-    normalColor: string | null = null;
-    highlightColor: string | null = null;
-    disabledColor: string | null = null;
-    width: string | null = null;
-    height: string | null = null;
-    textColor: string | null = null;
-    title: string | null = null;
-    borderRadius: string | null = null;
-}
-class UniverifyOtherButtonStyles extends UTSObject {
-    visible: boolean | null = null;
-    normalColor: string | null = null;
-    highlightColor: string | null = null;
-    width: string | null = null;
-    height: string | null = null;
-    textColor: string | null = null;
-    title: string | null = null;
-    borderWidth: string | null = null;
-    borderColor: string | null = null;
-    borderRadius: string | null = null;
-}
-class UniverifyPrivacyItemStyles extends UTSObject {
-    url!: string;
-    title!: string;
-}
-class UniverifyPrivacyTermsStyles extends UTSObject {
-    defaultCheckBoxState: boolean | null = null;
-    textColor: string | null = null;
-    termsColor: string | null = null;
-    prefix: string | null = null;
-    suffix: string | null = null;
-    fontSize: string | null = null;
-    privacyItems: (UniverifyPrivacyItemStyles[]) | null = null;
-}
-class UniVerifyButtonListItem extends UTSObject {
-    provider!: string;
-    iconPath!: string;
-}
-class UniVerifyButtonsStyles extends UTSObject {
-    iconWidth: string | null = null;
-    list!: UniVerifyButtonListItem[];
-}
-class UniverifyStyle extends UTSObject {
-    fullScreen: boolean | null = null;
-    backgroundColor: string | null = null;
-    backgroundImage: string | null = null;
-    icon: UniverifyIconStyles | null = null;
-    phoneNum: UniverifyPhoneNumStyles | null = null;
-    slogan: UniverifySloganStyles | null = null;
-    authButton: UniverifyAuthButtonStyles | null = null;
-    otherLoginButton: UniverifyOtherButtonStyles | null = null;
-    privacyTerms: UniverifyPrivacyTermsStyles | null = null;
-    buttons: UniVerifyButtonsStyles | null = null;
-}
-export type GetUserInfo = (options: GetUserInfoOptions) => void;
-export class UserInfo extends UTSObject {
-    nickName!: string;
-    openId: string | null = null;
-    avatarUrl!: string;
-}
-export class GetUserInfoSuccess extends UTSObject {
-    userInfo!: UserInfo;
-    rawData: string | null = null;
-    signature: string | null = null;
-    encryptedData: string | null = null;
-    iv: string | null = null;
-    errMsg!: string;
-}
-type GetUserInfoSuccessCallback = (result: GetUserInfoSuccess) => void;
-export type GetUserInfoFail = IUniError;
-type GetUserInfoFailCallback = (result: GetUserInfoFail) => void;
-type GetUserInfoComplete = Object;
-type GetUserInfoCompleteCallback = (result: GetUserInfoComplete) => void;
-export class GetUserInfoOptions extends UTSObject {
-    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'huawei' | null = null;
-    withCredentials: boolean | null = null;
-    lang: string | null = null;
-    timeout: number | null = null;
-    success: GetUserInfoSuccessCallback | null = null;
-    fail: GetUserInfoFailCallback | null = null;
-    complete: GetUserInfoCompleteCallback | null = null;
 }
 export type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
 export class OpenAppAuthorizeSettingSuccess extends UTSObject {
@@ -1917,8 +1765,6 @@ interface UniExtApi {
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
-    login: Login;
-    getUserInfo: GetUserInfo;
     openAppAuthorizeSetting: OpenAppAuthorizeSetting;
     openDocument: OpenDocument;
     requestPayment: RequestPayment;
@@ -7062,68 +6908,6 @@ export function initUniExtApi() {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
-    const API_LOGIN = 'login';
-    const LoginApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'provider',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number'
-            }
-        ]
-    ]);
-    const API_GET_USER_INFO = 'getUserInfo';
-    const GetUserInfoApiProtocol = new Map<string, ProtocolOptions>([
-        [
-            'provider',
-            {
-                type: 'string'
-            }
-        ],
-        [
-            'timeout',
-            {
-                type: 'number'
-            }
-        ]
-    ]);
-    const SERVICE = 'oauth';
-    const PROVIDER = 'huawei';
-    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>)=>{
-        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
-        if (!provider) {
-            executor.reject('Provider not found.');
-            return;
-        }
-        provider.login({
-            success (res) {
-                executor.resolve(res);
-            },
-            fail (err) {
-                executor.reject(err.errMsg);
-            }
-        } as LoginOptions);
-    }, LoginApiProtocol) as Login;
-    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>)=>{
-        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
-        if (!provider) {
-            executor.reject('Provider not found.');
-            return;
-        }
-        provider.getUserInfo({
-            success (res) {
-                executor.resolve(res);
-            },
-            fail (err) {
-                executor.reject(err.errMsg);
-            }
-        } as GetUserInfoOptions);
-    }, GetUserInfoApiProtocol) as GetUserInfo;
     const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
     const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
         const want: Want = {
@@ -7134,7 +6918,7 @@ export function initUniExtApi() {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext6() as common1.UIAbilityContext;
+        const context = getAbilityContext5() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -7179,7 +6963,7 @@ export function initUniExtApi() {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext7() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext6() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -7630,7 +7414,7 @@ export function initUniExtApi() {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext8()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext7()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -7674,7 +7458,7 @@ export function initUniExtApi() {
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(getAbilityContext9() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        shareController.show(getAbilityContext8() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
         const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
@@ -7710,7 +7494,7 @@ export function initUniExtApi() {
         if (stores.has(appId)) {
             return stores.get(appId)!;
         }
-        const store = dataPreferences.getPreferencesSync(getAbilityContext10() as common4.UIAbilityContext, {
+        const store = dataPreferences.getPreferencesSync(getAbilityContext9() as common4.UIAbilityContext, {
             name: `storage.${appId}`
         } as dataPreferences.Options);
         stores.set(appId, store);
@@ -8304,8 +8088,6 @@ export function initUniExtApi() {
         request,
         uploadFile,
         downloadFile,
-        login,
-        getUserInfo,
         openAppAuthorizeSetting,
         openDocument,
         requestPayment,

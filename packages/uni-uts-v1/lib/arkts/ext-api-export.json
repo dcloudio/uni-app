@@ -286,36 +286,6 @@
       "DownloadTask"
     ],
     [
-      "UniOAuthProvider"
-    ],
-    [
-      "Login"
-    ],
-    [
-      "LoginSuccess"
-    ],
-    [
-      "LoginFail"
-    ],
-    [
-      "LoginOptions"
-    ],
-    [
-      "GetUserInfo"
-    ],
-    [
-      "UserInfo"
-    ],
-    [
-      "GetUserInfoSuccess"
-    ],
-    [
-      "GetUserInfoFail"
-    ],
-    [
-      "GetUserInfoOptions"
-    ],
-    [
       "OpenAppAuthorizeSetting"
     ],
     [
@@ -536,11 +506,6 @@
     ],
     [
       "initUniExtApi"
-    ]
-  ],
-  "@dcloudio/uni-app-runtime/src/main/ets/uni-app-harmony/providers/uni-oauth-huawei": [
-    [
-      "UniOAuthHuaweiProviderImpl"
     ]
   ],
   "@dcloudio/uni-app-runtime/src/main/ets/uni-app-harmony/providers/uni-payment-alipay": [
