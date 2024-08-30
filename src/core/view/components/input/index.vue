@@ -306,10 +306,12 @@ export default {
         if (maxlength > 0 && $event.target.value.length > maxlength) {
           // 输入前字符长度超出范围，则不触发input，且将值还原
           // 否则截取一定长度且触发input
-          $event.target.value = $event.target.value.slice(0, maxlength)
-          this.valueSync = $event.target.value
-          if (this.value?.toString() === $event.target.value) {
+          if (this.cachedValue.length === maxlength) {
+            this.valueSync = this.cachedValue
             outOfMaxlength = true
+          } else {
+            $event.target.value = $event.target.value.slice(0, maxlength)
+            this.valueSync = $event.target.value
           }
         }
 

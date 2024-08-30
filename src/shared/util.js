@@ -46,15 +46,15 @@ export function cached (fn) {
   }
 }
 
-export function once (fn, ctx = null) {
+export function once(fn, ctx = null) {
   let res
-  return (...args) => {
-    if (fn) {
-      res = fn.apply(ctx, args)
-      fn = null
-    }
-    return res
-  }
+  return ((...args) => {
+      if (fn) {
+          res = fn.apply(ctx, args);
+          fn = null;
+      }
+      return res
+  });
 }
 
 /**
