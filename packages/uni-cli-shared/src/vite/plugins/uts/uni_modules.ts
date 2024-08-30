@@ -365,9 +365,17 @@ export function uniUTSAppUniModulesPlugin(
         return ''
       }
     },
-    buildEnd() {
+    async buildEnd() {
       utsModuleCaches.clear()
       changedFiles.clear()
+      if (process.env.NODE_ENV !== 'development') {
+        if (uniXKotlinCompiler) {
+          await uniXKotlinCompiler.close()
+        }
+        if (uniXSwiftCompiler) {
+          await uniXSwiftCompiler.close()
+        }
+      }
     },
     watchChange(fileName, change) {
       if (uniXCompiler) {
