@@ -145,32 +145,39 @@ function resolveUniXCompilerUniModulesPaths(
 ) {
   const paths: CompilerOptions['paths'] = {}
   const uniModulesDir = path.resolve(inputDir, 'uni_modules')
-  fs.readdirSync(uniModulesDir).forEach((dir) => {
-    const pluginPath = `@/uni_modules/${dir}`
-    const pluginDir = path.resolve(uniModulesDir, dir)
-    const utssdkDir = path.resolve(pluginDir, 'utssdk')
-    const tscUtsSdkDir = path.resolve(tscInputDir, 'uni_modules', dir, 'utssdk')
-    // utssdk 插件
-    if (fs.existsSync(utssdkDir)) {
-      // 加密插件
-      if (fs.existsSync(path.resolve(pluginDir, 'encrypt'))) {
-        if (fs.existsSync(path.resolve(utssdkDir, 'interface.uts'))) {
-          paths[pluginPath] = [path.resolve(tscUtsSdkDir, 'interface.uts.ts')]
-        }
-      } else {
-        // 非加密插件
-        // utssdk/app-android/index.uts
-        if (fs.existsSync(path.resolve(utssdkDir, platform, 'index.uts'))) {
-          paths[pluginPath] = [
-            path.resolve(tscUtsSdkDir, platform, 'index.uts.ts'),
-          ]
-          // utssdk/index.uts
-        } else if (fs.existsSync(path.resolve(utssdkDir, 'index.uts'))) {
-          paths[pluginPath] = [path.resolve(tscUtsSdkDir, 'index.uts.ts')]
+  if (fs.existsSync(uniModulesDir)) {
+    fs.readdirSync(uniModulesDir).forEach((dir) => {
+      const pluginPath = `@/uni_modules/${dir}`
+      const pluginDir = path.resolve(uniModulesDir, dir)
+      const utssdkDir = path.resolve(pluginDir, 'utssdk')
+      const tscUtsSdkDir = path.resolve(
+        tscInputDir,
+        'uni_modules',
+        dir,
+        'utssdk'
+      )
+      // utssdk 插件
+      if (fs.existsSync(utssdkDir)) {
+        // 加密插件
+        if (fs.existsSync(path.resolve(pluginDir, 'encrypt'))) {
+          if (fs.existsSync(path.resolve(utssdkDir, 'interface.uts'))) {
+            paths[pluginPath] = [path.resolve(tscUtsSdkDir, 'interface.uts.ts')]
+          }
+        } else {
+          // 非加密插件
+          // utssdk/app-android/index.uts
+          if (fs.existsSync(path.resolve(utssdkDir, platform, 'index.uts'))) {
+            paths[pluginPath] = [
+              path.resolve(tscUtsSdkDir, platform, 'index.uts.ts'),
+            ]
+            // utssdk/index.uts
+          } else if (fs.existsSync(path.resolve(utssdkDir, 'index.uts'))) {
+            paths[pluginPath] = [path.resolve(tscUtsSdkDir, 'index.uts.ts')]
+          }
         }
       }
-    }
-  })
+    })
+  }
   return paths
 }
 

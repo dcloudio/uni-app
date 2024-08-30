@@ -197,6 +197,9 @@ export function initEnv(
     process.env.UNI_UTS_PLATFORM
   )
 
+  // 默认开启 tsc
+  process.env.UNI_APP_X_TSC = 'true'
+
   initAutomator(options)
 
   initDevtools(options)

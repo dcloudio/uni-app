@@ -33,6 +33,9 @@ export function initUVueEnv() {
     if (manifestJson['uni-app-x']?.singleThread === false) {
       process.env.UNI_APP_X_SINGLE_THREAD = 'false'
     }
+    if (manifestJson['uni-app-x']?.tsc === false) {
+      process.env.UNI_APP_X_TSC = 'false'
+    }
   }
 
   if (process.env.UNI_PLATFORM === 'app') {
