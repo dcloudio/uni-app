@@ -12,6 +12,8 @@ import {
   isColorSupported,
   moveRootIndexSourceMap,
   parseSwiftPackageWithPluginId,
+  resolveBundleInputFileName,
+  resolveBundleInputRoot,
   resolveConfigProvider,
   resolveIOSDir,
   resolvePackage,
@@ -246,8 +248,8 @@ export async function compile(
   const componentsCode = genComponentsCode(filename, components, isX)
   const { namespace, id: pluginId } = parseSwiftPackage(filename)
   const input: UTSInputOptions = {
-    root: inputDir,
-    filename,
+    root: resolveBundleInputRoot('app-ios', inputDir),
+    filename: resolveBundleInputFileName('app-ios', filename),
     pluginId,
     paths: {},
     uniModules,

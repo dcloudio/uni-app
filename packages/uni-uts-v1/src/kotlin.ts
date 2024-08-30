@@ -29,6 +29,7 @@ import {
   parseKotlinPackageWithPluginId,
   resolveAndroidDir,
   resolveBundleInputFileName,
+  resolveBundleInputRoot,
   resolveConfigProvider,
   resolvePackage,
   resolveSourceMapFile,
@@ -575,13 +576,6 @@ const DEFAULT_IMPORTS_VUE_X = [
 
 const DEFAULT_IMPORTS_X = ['io.dcloud.uniapp.runtime.*']
 
-function resolveBundleInputRoot(root: string) {
-  if (process.env.UNI_APP_X_TSC === 'true') {
-    return uvueOutDir('app-android')
-  }
-  return root
-}
-
 export async function compile(
   filename: string,
   {
@@ -631,7 +625,7 @@ export async function compile(
   const componentsCode = genComponentsCode(filename, components, isX)
   const { package: pluginPackage, id: pluginId } = parseKotlinPackage(filename)
   const input: UTSInputOptions = {
-    root: resolveBundleInputRoot(inputDir),
+    root: resolveBundleInputRoot('app-android', inputDir),
     filename: resolveBundleInputFileName('app-android', filename),
     pluginId: isPlugin ? pluginId : '',
     paths: {

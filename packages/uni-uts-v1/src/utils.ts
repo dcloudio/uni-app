@@ -847,6 +847,16 @@ export function requireUniHelpers() {
   return require(path.join(process.env.UNI_HBUILDERX_PLUGINS, 'uni_helpers'))
 }
 
+export function resolveBundleInputRoot(
+  platform: 'app-android' | 'app-ios',
+  root: string
+) {
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    return uvueOutDir(platform)
+  }
+  return root
+}
+
 export function resolveBundleInputFileName(
   platform: 'app-android' | 'app-ios',
   fileName: string

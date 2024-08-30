@@ -37,7 +37,11 @@ export function createUniXCompiler(
     'hbuilderx-language-services'
   )
 
-  const ts = require(path.resolve(utsLibDir, 'typescript')) as typeof tsTypes
+  const ts = (
+    targetLanguage === 'Swift' && process.env.UNI_APP_X === 'true'
+      ? require(path.resolve(utsLibDir, 'typescript/lib/typescript.factory.js'))
+      : require(path.resolve(utsLibDir, 'typescript/lib/typescript.js'))
+  ) as typeof tsTypes
 
   const fileWatcher = new UTSFileWatcher({
     tscDir: inputDir,

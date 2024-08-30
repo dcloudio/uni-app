@@ -30,15 +30,15 @@ import {
   parseUTSRelativeFilename,
   transformAutoImport,
   transformUniCloudMixinDataCom,
-  tscOutDir,
-  uvueOutDir,
 } from './utils'
 import { getOutputManifestJson } from './manifestJson'
 import {
   configResolved,
   createUniOptions,
   getExtApiComponents,
+  tscOutDir,
   updateManifestModules,
+  uvueOutDir,
 } from '../utils'
 
 const uniCloudSpaceList = getUniCloudSpaceList()

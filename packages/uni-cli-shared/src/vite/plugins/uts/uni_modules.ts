@@ -329,6 +329,14 @@ export function uniUTSAppUniModulesPlugin(
     name: 'uni:uts-uni_modules',
     apply: 'build',
     enforce: 'pre',
+    async configResolved() {
+      if (uniXKotlinCompiler) {
+        await uniXKotlinCompiler.init()
+      }
+      if (uniXSwiftCompiler) {
+        await uniXSwiftCompiler.init()
+      }
+    },
     resolveId(id, importer) {
       if (isUTSProxy(id) || isUniHelpers(id)) {
         return id

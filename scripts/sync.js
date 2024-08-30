@@ -17,6 +17,19 @@ if (process.env.UNI_APP_VUE_TYPES_DIR) {
     )
   })
 }
+
+// 重新生成一个 typescript.factory.js
+function generateTypeScriptFactory() {
+  const code = fs.readFileSync(path.resolve(__dirname, '../packages/uni-uts-v1/lib/typescript/lib/typescript.js'), 'utf8')
+  fs.outputFileSync(path.resolve(__dirname, '../packages/uni-uts-v1/lib/typescript/lib/typescript.factory.js'), `
+module.exports = function(__utsHacker__){
+  ${code.replaceAll(`globalThis.__utsHacker__`, `__utsHacker__`)}
+return ts;  
+}  
+  `)
+}
+generateTypeScriptFactory()
+
 // process.env.UNI_APP_TYPES_APP_ANDROID = '/Applications/HBuilderX-Dev.app/Contents/HBuilderX/plugins/uts-development-android/uts-types/app-android'
 // const androidPaths = {}
 // sync('**/*.d.ts', {
