@@ -34,7 +34,11 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       return reject(ON_BACK_PRESS)
     }
 
-    getApp().$router.go(-args!.delta!)
+    if (__X__) {
+      getApp().vm.$router.go(-args!.delta!)
+    } else {
+      getApp().$router.go(-args!.delta!)
+    }
     return resolve()
   },
   NavigateBackProtocol,

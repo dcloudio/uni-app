@@ -34,7 +34,9 @@ export function navigate(
       '当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。'
     )
   }
-  const router = getApp().$router as Router
+  const router = __X__
+    ? (getApp().vm.$router as Router)
+    : (getApp().$router as Router)
   const { path, query } = parseUrl(url)
   return new Promise((resolve, reject) => {
     const state = createPageState(type, __id__)
