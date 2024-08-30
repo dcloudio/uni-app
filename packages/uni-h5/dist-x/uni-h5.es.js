@@ -10099,7 +10099,7 @@ const props$r = /* @__PURE__ */ extend({}, props$s, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = (() => {
+const resolveDigitDecimalPointDeleteContentBackward = once(() => {
   {
     const ua2 = navigator.userAgent;
     let osVersion = "";
@@ -10114,7 +10114,7 @@ const resolveDigitDecimalPointDeleteContentBackward = (() => {
     }
     return !!osVersion && parseInt(osVersion) >= 16 && parseFloat(osVersion) < 17.2;
   }
-})();
+});
 function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -10134,7 +10134,7 @@ function resolveDigitDecimalPoint(event, cache, state2, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward) {
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state2.value = input.value = cache.value.slice(0, -2);
           return true;
@@ -10194,7 +10194,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           type2 = "number";
           break;
         default:
-          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
       }
       return props2.password ? "password" : type2;
@@ -17237,7 +17237,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
     );
   }
-  const router = getApp().$router;
+  const router = getApp().vm.$router;
   const { path, query } = parseUrl(url);
   return new Promise((resolve, reject) => {
     const state2 = createPageState(type, __id__);
@@ -23844,7 +23844,9 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
     if (!canBack) {
       return reject(ON_BACK_PRESS);
     }
-    getApp().$router.go(-args.delta);
+    {
+      getApp().vm.$router.go(-args.delta);
+    }
     return resolve();
   },
   NavigateBackProtocol,

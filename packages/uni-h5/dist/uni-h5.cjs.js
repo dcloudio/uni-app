@@ -3519,8 +3519,8 @@ const props$j = /* @__PURE__ */ shared.extend({}, props$k, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = /* @__PURE__ */ (() => {
-})();
+const resolveDigitDecimalPointDeleteContentBackward = uniShared.once(() => {
+});
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -3540,7 +3540,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward) {
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state.value = input.value = cache.value.slice(0, -2);
           return true;
@@ -3590,7 +3590,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           type2 = "number";
           break;
         default:
-          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
       }
       return props2.password ? "password" : type2;

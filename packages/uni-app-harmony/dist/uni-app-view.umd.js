@@ -16360,6 +16360,11 @@
       default: ""
     }
   });
+  var resolveDigitDecimalPointDeleteContentBackward = once(() => {
+    {
+      return false;
+    }
+  });
   function resolveDigitDecimalPoint(event, cache2, state, input, resetCache) {
     if (cache2.value) {
       if (event.data === ".") {
@@ -16378,8 +16383,14 @@
           }
           return false;
         }
-      } else if (event.inputType === "deleteContentBackward")
-        ;
+      } else if (event.inputType === "deleteContentBackward") {
+        if (resolveDigitDecimalPointDeleteContentBackward()) {
+          if (cache2.value.slice(-2, -1) === ".") {
+            cache2.value = state.value = input.value = cache2.value.slice(0, -2);
+            return true;
+          }
+        }
+      }
     }
   }
   function useCache(props2, type) {
@@ -16424,7 +16435,7 @@
             type2 = "number";
             break;
           default:
-            type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+            type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
             break;
         }
         return props2.password ? "password" : type2;
@@ -22478,6 +22489,10 @@
       type: Boolean,
       default: true
     },
+    fullscreen: {
+      type: Boolean,
+      default: true
+    },
     webviewStyles: {
       type: Object,
       default() {
@@ -22502,7 +22517,8 @@
         UniViewJSBridge.publishHandler(WEBVIEW_REMOVED, {}, pageId);
       });
       return () => createVNode("uni-web-view", {
-        "id": props2.id
+        "id": props2.id,
+        "class": props2.fullscreen ? "uni-webview--fullscreen" : ""
       }, [createVNode(Embed, {
         "ref": embedRef,
         "tag": "webview",
@@ -22512,7 +22528,7 @@
           webviewStyles: props2.webviewStyles
         },
         "style": "width:100%;height:100%"
-      }, null, 8, ["options"])], 8, ["id"]);
+      }, null, 8, ["options"])], 10, ["id"]);
     }
   });
   class UniWebView extends UniComponent {

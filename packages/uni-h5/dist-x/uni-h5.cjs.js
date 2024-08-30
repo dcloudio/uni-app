@@ -3627,8 +3627,8 @@ const props$k = /* @__PURE__ */ shared.extend({}, props$l, {
     default: ""
   }
 });
-const resolveDigitDecimalPointDeleteContentBackward = /* @__PURE__ */ (() => {
-})();
+const resolveDigitDecimalPointDeleteContentBackward = uniShared.once(() => {
+});
 function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
   if (cache.value) {
     if (event.data === ".") {
@@ -3648,7 +3648,7 @@ function resolveDigitDecimalPoint(event, cache, state, input, resetCache) {
         return false;
       }
     } else if (event.inputType === "deleteContentBackward") {
-      if (resolveDigitDecimalPointDeleteContentBackward) {
+      if (resolveDigitDecimalPointDeleteContentBackward()) {
         if (cache.value.slice(-2, -1) === ".") {
           cache.value = state.value = input.value = cache.value.slice(0, -2);
           return true;
@@ -3698,7 +3698,7 @@ const Input = /* @__PURE__ */ defineBuiltInComponent({
           type2 = "number";
           break;
         default:
-          type2 = ~INPUT_TYPES.includes(props2.type) ? props2.type : "text";
+          type2 = INPUT_TYPES.includes(props2.type) ? props2.type : "text";
           break;
       }
       return props2.password ? "password" : type2;
@@ -8637,7 +8637,7 @@ function navigate({ type, url, tabBarText, events, isAutomatedTesting }, __id__)
       "当前项目为单页面工程，不能执行页面跳转api。如果需进行页面跳转， 需要在pages.json文件的pages字段中配置多个页面，然后重新运行。"
     );
   }
-  const router = getApp().$router;
+  const router = getApp().vm.$router;
   const { path, query } = uniShared.parseUrl(url);
   return new Promise((resolve, reject) => {
     const state = createPageState(type, __id__);
