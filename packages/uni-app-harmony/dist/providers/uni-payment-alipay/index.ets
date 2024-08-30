@@ -1,5 +1,5 @@
 import { Pay } from '@cashier_alipay/cashiersdk';
-import { UniPaymentProvider, RequestPaymentOptions, RequestPaymentFail, RequestPaymentSuccess } from "@dcloudio/uni-app-harmony";
+import { UniPaymentProvider, RequestPaymentOptions, RequestPaymentSuccess, RequestPaymentFail } from "@dcloudio/uni-app-runtime";
 interface UniPaymentAlipayProvider extends UniPaymentProvider {
 }
 const errorCodeMap: Map<number, number> = new Map([
@@ -35,15 +35,15 @@ class UniPaymentAlipayProviderImpl implements UniPaymentAlipayProvider {
     requestPayment(options: RequestPaymentOptions) {
         new Pay().pay(options.orderInfo, true).then((res)=>{
             const errorCode = res && res.get('resultStatus');
-            if (errorCode) {
-                options.fail?.({
-                    errCode: errorCodeMap.get(parseInt(errorCode)) ?? 700000
-                } as RequestPaymentFail);
+            if (errorCode === '9000') {
+                options.success?.({
+                    data: null
+                } as RequestPaymentSuccess);
                 return;
             }
-            options.success?.({
-                data: null
-            } as RequestPaymentSuccess);
+            options.fail?.({
+                errCode: errorCodeMap.get(parseInt(errorCode!)) ?? 700000
+            } as RequestPaymentFail);
         }, (err: Error)=>{
             options.fail?.({
                 errCode: 700000
