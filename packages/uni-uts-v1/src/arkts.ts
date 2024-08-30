@@ -247,7 +247,7 @@ export function resolveAppHarmonyUniModulesRootDir() {
   return path.resolve(process.env.UNI_OUTPUT_DIR, 'uni_modules')
 }
 
-function resolveAppHarmonyUniModuleDir(pluginId: string) {
+export function resolveAppHarmonyUniModuleDir(pluginId: string) {
   return path.resolve(resolveAppHarmonyUniModulesRootDir(), pluginId)
 }
 

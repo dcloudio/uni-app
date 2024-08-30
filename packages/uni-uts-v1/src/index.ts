@@ -50,6 +50,7 @@ export {
   compileArkTS,
   getArkTSAutoImports,
   resolveAppHarmonyUniModulesRootDir,
+  resolveAppHarmonyUniModulesEntryDir,
 } from './arkts'
 
 export const sourcemap = {
