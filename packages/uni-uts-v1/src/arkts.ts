@@ -3,6 +3,7 @@ import fs from 'fs-extra'
 import type { UTSBundleOptions } from '@dcloudio/uts'
 import { formatUniProviderName, getUTSCompiler } from './utils'
 import type { CompileResult } from '.'
+import { sync } from 'fast-glob'
 
 interface ArkTSCompilerOptions {
   isX?: boolean
@@ -125,6 +126,16 @@ export async function compileArkTS(
     .replace(/@/g, '')
     .replace(/\//g, '__')
     .replace(/-/g, '_')
+
+  // 拷贝所有ets文件
+  const etsFiles = sync('**/*.ets', {
+    cwd: pluginDir,
+    absolute: true,
+  })
+  for (const etsFile of etsFiles) {
+    const relativePath = path.relative(pluginDir, etsFile)
+    fs.copySync(etsFile, path.resolve(outputUniModuleDir, relativePath))
+  }
 
   // generate oh-package.json5
   const ohPackageJson: Record<string, any> = {
