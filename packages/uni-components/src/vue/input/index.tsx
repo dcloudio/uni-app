@@ -252,7 +252,11 @@ export default /*#__PURE__*/ defineBuiltInComponent({
             state.value = input.value
             // 字符长度超出范围不触发 input 事件
             // 当用户ctrl + v粘贴过长字符时，截断后的input.value 和原来的输入框值不相等时，需要触发input事件
-            return props.modelValue?.toString() !== input.value
+            const modelValue =
+              props.modelValue !== undefined && props.modelValue !== null
+                ? props.modelValue.toString()
+                : ''
+            return modelValue !== input.value
           }
         }
       })
