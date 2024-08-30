@@ -432,6 +432,37 @@
       }
     }
   },
+  "uni-oauth": {
+    "provider": {
+      "service": "oauth"
+    },
+    "uni": {
+      "login": {
+        "name": "login",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      },
+      "getUserInfo": {
+        "name": "getUserInfo",
+        "app": {
+          "js": false,
+          "kotlin": false,
+          "swift": false,
+          "arkts": true
+        }
+      }
+    }
+  },
+  "uni-oauth-huawei": {
+    "provider": {
+      "service": "oauth",
+      "name": "huawei"
+    }
+  },
   "uni-openAppAuthorizeSetting": {
     "uni": {
       "openAppAuthorizeSetting": {
