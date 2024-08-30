@@ -309,7 +309,10 @@ export default {
           $event.target.value = $event.target.value.slice(0, maxlength)
           this.valueSync = $event.target.value
           // 粘贴时过长的字符时，需判断和之前的value是否一致，一致则不更新input
-          if (this.value?.toString() === $event.target.value) {
+          const preValue = (this.value !== null && this.value !== undefined)
+            ? this.value.toString()
+            : ''
+          if (preValue === $event.target.value) {
             outOfMaxlength = true
           }
         }
