@@ -15,8 +15,6 @@ import radio from '@ohos.telephony.radio';
 import webview from '@ohos.web.webview';
 import { BusinessError as BusinessError1 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError10 } from '@ohos.base';
-import { BusinessError as BusinessError11 } from '@ohos.base';
-import { BusinessError as BusinessError12 } from '@ohos.base';
 import { BusinessError as BusinessError2 } from '@ohos.base';
 import { BusinessError as BusinessError3 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError4 } from '@kit.BasicServicesKit';
@@ -26,7 +24,7 @@ import { BusinessError as BusinessError7 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError8 } from '@kit.BasicServicesKit';
 import { BusinessError as BusinessError9 } from '@ohos.base';
 import { BusinessError } from '@kit.BasicServicesKit';
-import { Emitter as Emitter5, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
+import { Emitter as Emitter5, getCurrentMP as getCurrentMP4 } from "@dcloudio/uni-mp-sdk";
 import { Emitter } from "@dcloudio/uni-mp-sdk";
 import Hash from '@ohos.file.hash';
 import I18n from '@ohos.i18n';
@@ -82,19 +80,19 @@ import fs4 from '@ohos.file.fs';
 import fs5 from '@ohos.file.fs';
 import { geoLocationManager } from '@kit.LocationKit';
 import { getAbilityContext as getAbilityContext1 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext10 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext11 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext12 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext13 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext14 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext10, getCurrentMP as getCurrentMP3 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext3 } from "@dcloudio/uni-mp-sdk";
-import { getAbilityContext as getAbilityContext5 } from "@dcloudio/uni-mp-sdk";
+import { getAbilityContext as getAbilityContext4, getCurrentWindow as getCurrentWindow2 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext6 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext7 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext8 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext as getAbilityContext9 } from "@dcloudio/uni-mp-sdk";
 import { getAbilityContext } from "@dcloudio/uni-mp-sdk";
+import { getCurrentWindow as getCurrentWindow1 } from "@dcloudio/uni-mp-sdk";
+import { getCurrentWindow as getCurrentWindow3 } from "@dcloudio/uni-mp-sdk";
+import { getCurrentWindow as getCurrentWindow4 } from "@dcloudio/uni-mp-sdk";
+import { getCurrentWindow as getCurrentWindow5 } from "@dcloudio/uni-mp-sdk";
+import { getCurrentWindow } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv1 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv3, Emitter as Emitter4, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
@@ -105,7 +103,7 @@ import { getRealPath as getRealPath1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath2, waitForCurrentNativePage as waitForCurrentNativePage1 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath3 } from "@dcloudio/uni-mp-sdk";
 import { getRealPath as getRealPath4, Emitter as Emitter3, getCurrentMP as getCurrentMP1 } from "@dcloudio/uni-mp-sdk";
-import { getResourceStr, getAbilityContext as getAbilityContext4 } from "@dcloudio/uni-mp-sdk";
+import { getResourceStr, getAbilityContext as getAbilityContext2 } from "@dcloudio/uni-mp-sdk";
 import { getTabBar } from "@dcloudio/uni-mp-sdk";
 import harmonyUrl from '@ohos.url';
 import harmonyWindow from '@ohos.window';
@@ -138,9 +136,6 @@ import { wantAgent } from '@kit.AbilityKit';
 import { wifiManager } from '@kit.ConnectivityKit';
 import { window as window1 } from '@kit.ArkUI';
 import { window as window2 } from '@kit.ArkUI';
-import { window as window3 } from '@kit.ArkUI';
-import { window as window4 } from '@kit.ArkUI';
-import { window as window5 } from '@kit.ArkUI';
 import { window } from '@kit.ArkUI';
 type AddPhoneContact = (options: AddPhoneContactOptions) => void;
 class AddPhoneContactSuccess extends UTSObject {
@@ -576,18 +571,18 @@ interface IUniGetNetworkTypeEventEmitter {
     emit: (eventName: string, ...args: (Object | undefined | null)[]) => void;
 }
 export class GetProviderSuccess extends UTSObject {
-    service!: 'payment';
+    service!: 'payment' | 'oauth';
     provider!: string[];
     providers!: UniProvider[];
 }
 export class GetProviderSyncSuccess extends UTSObject {
-    service!: 'payment' | 'location';
+    service!: 'payment' | 'location' | 'oauth';
     providerIds!: string[];
     providerObjects!: UniProvider[];
 }
 export type GetProviderSync = (options: GetProviderSyncOptions) => GetProviderSyncSuccess;
 export class GetProviderSyncOptions extends UTSObject {
-    service!: 'payment' | 'location';
+    service!: 'payment' | 'location' | 'oauth';
 }
 type GetProviderSuccessCallback = (result: GetProviderSuccess) => void;
 type GetProviderFail = IGetProviderFail;
@@ -595,7 +590,7 @@ type GetProviderFailCallback = (result: GetProviderFail) => void;
 type GetProviderComplete = Object;
 type GetProviderCompleteCallback = (result: GetProviderComplete) => void;
 export class GetProviderOptions extends UTSObject {
-    service!: 'payment';
+    service!: 'payment' | 'oauth';
     success: GetProviderSuccessCallback | null = null;
     fail: GetProviderFailCallback | null = null;
     complete: GetProviderCompleteCallback | null = null;
@@ -779,7 +774,6 @@ export class MakePhoneCallOptions extends UTSObject {
 type MediaOrientation = 'up' | 'down' | 'left' | 'right' | 'up-mirrored' | 'down-mirrored' | 'left-mirrored' | 'right-mirrored';
 type MediaErrorCode = 1101001 | 1101002 | 1101003 | 1101004 | 1101005 | 1101006 | 1101007 | 1101008 | 1101009 | 1101010;
 interface IMediaError extends IUniError {
-    errMsg: string;
     errCode: MediaErrorCode;
 }
 class ChooseImageTempFile extends UTSObject {
@@ -967,6 +961,25 @@ export class SaveVideoToPhotosAlbumOptions extends UTSObject {
     complete: (SaveVideoToPhotosAlbumCompleteCallback) | null = null;
 }
 export type SaveVideoToPhotosAlbum = (options: SaveVideoToPhotosAlbumOptions) => void;
+export class CompressVideoSuccess extends UTSObject {
+    tempFilePath!: string;
+    size!: number;
+}
+type CompressVideoFail = IMediaError;
+type CompressVideoSuccessCallback = (callback: CompressVideoSuccess) => void;
+type CompressVideoFailCallback = (callback: CompressVideoFail) => void;
+type CompressVideoCompleteCallback = ChooseImageCompleteCallback;
+export class CompressVideoOptions extends UTSObject {
+    src!: string.VideoURIString;
+    quality: string | null = null;
+    bitrate: number | null = null;
+    fps: number | null = null;
+    resolution: number | null = null;
+    success: (CompressVideoSuccessCallback) | null = null;
+    fail: (CompressVideoFailCallback) | null = null;
+    complete: (CompressVideoCompleteCallback) | null = null;
+}
+export type CompressVideo = (options: CompressVideoOptions) => void;
 export type ChooseFile = (options: ChooseFileOptions) => void;
 export class ChooseFileSuccess extends UTSObject {
     tempFilePaths!: string[];
@@ -1213,6 +1226,139 @@ interface IDownloadTask {
     offHeadersReceived: Function;
     onProgressUpdate: Function;
     offProgressUpdate: Function;
+}
+export interface UniOAuthProvider extends UniProvider {
+    login(options: LoginOptions): void;
+    getUserInfo(options: GetUserInfoOptions): void;
+}
+export type Login = (options: LoginOptions) => void;
+class AppleLoginAppleInfo extends UTSObject {
+    authorizationCode: string | null = null;
+    fullName: Object | null = null;
+    identityToken: string | null = null;
+    realUserStatus: number | null = null;
+    user: string | null = null;
+}
+export class LoginSuccess extends UTSObject {
+    errMsg!: string;
+    authResult!: Object;
+    code!: string;
+    anonymousCode: string | null = null;
+    authCode: string | null = null;
+    authErrorScope: Object | null = null;
+    authSucessScope: (string[]) | null = null;
+    appleInfo: AppleLoginAppleInfo | null = null;
+}
+type LoginSuccessCallback = (result: LoginSuccess) => void;
+export type LoginFail = IUniError;
+type LoginFailCallback = (result: LoginFail) => void;
+type LoginComplete = Object;
+type LoginCompleteCallback = (result: LoginComplete) => void;
+export class LoginOptions extends UTSObject {
+    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'univerify' | 'huawei' | null = null;
+    scopes: Object | null = null;
+    timeout: number | null = null;
+    univerifyStyle: UniverifyStyle | null = null;
+    onlyAuthorize: boolean | null = null;
+    success: LoginSuccessCallback | null = null;
+    fail: LoginFailCallback | null = null;
+    complete: LoginCompleteCallback | null = null;
+}
+class UniverifyIconStyles extends UTSObject {
+    path!: string;
+    width: string | null = null;
+    height: string | null = null;
+}
+class UniverifyPhoneNumStyles extends UTSObject {
+    color: string | null = null;
+    fontSize: string | null = null;
+}
+class UniverifySloganStyles extends UTSObject {
+    color: string | null = null;
+    fontSize: string | null = null;
+}
+class UniverifyAuthButtonStyles extends UTSObject {
+    normalColor: string | null = null;
+    highlightColor: string | null = null;
+    disabledColor: string | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    textColor: string | null = null;
+    title: string | null = null;
+    borderRadius: string | null = null;
+}
+class UniverifyOtherButtonStyles extends UTSObject {
+    visible: boolean | null = null;
+    normalColor: string | null = null;
+    highlightColor: string | null = null;
+    width: string | null = null;
+    height: string | null = null;
+    textColor: string | null = null;
+    title: string | null = null;
+    borderWidth: string | null = null;
+    borderColor: string | null = null;
+    borderRadius: string | null = null;
+}
+class UniverifyPrivacyItemStyles extends UTSObject {
+    url!: string;
+    title!: string;
+}
+class UniverifyPrivacyTermsStyles extends UTSObject {
+    defaultCheckBoxState: boolean | null = null;
+    textColor: string | null = null;
+    termsColor: string | null = null;
+    prefix: string | null = null;
+    suffix: string | null = null;
+    fontSize: string | null = null;
+    privacyItems: (UniverifyPrivacyItemStyles[]) | null = null;
+}
+class UniVerifyButtonListItem extends UTSObject {
+    provider!: string;
+    iconPath!: string;
+}
+class UniVerifyButtonsStyles extends UTSObject {
+    iconWidth: string | null = null;
+    list!: UniVerifyButtonListItem[];
+}
+class UniverifyStyle extends UTSObject {
+    fullScreen: boolean | null = null;
+    backgroundColor: string | null = null;
+    backgroundImage: string | null = null;
+    icon: UniverifyIconStyles | null = null;
+    phoneNum: UniverifyPhoneNumStyles | null = null;
+    slogan: UniverifySloganStyles | null = null;
+    authButton: UniverifyAuthButtonStyles | null = null;
+    otherLoginButton: UniverifyOtherButtonStyles | null = null;
+    privacyTerms: UniverifyPrivacyTermsStyles | null = null;
+    buttons: UniVerifyButtonsStyles | null = null;
+}
+export type GetUserInfo = (options: GetUserInfoOptions) => void;
+export class UserInfo extends UTSObject {
+    nickName!: string;
+    openId: string | null = null;
+    avatarUrl!: string;
+}
+export class GetUserInfoSuccess extends UTSObject {
+    userInfo!: UserInfo;
+    rawData: string | null = null;
+    signature: string | null = null;
+    encryptedData: string | null = null;
+    iv: string | null = null;
+    errMsg!: string;
+}
+type GetUserInfoSuccessCallback = (result: GetUserInfoSuccess) => void;
+export type GetUserInfoFail = IUniError;
+type GetUserInfoFailCallback = (result: GetUserInfoFail) => void;
+type GetUserInfoComplete = Object;
+type GetUserInfoCompleteCallback = (result: GetUserInfoComplete) => void;
+export class GetUserInfoOptions extends UTSObject {
+    provider: 'weixin' | 'qq' | 'sinaweibo' | 'xiaomi' | 'apple' | 'huawei' | null = null;
+    withCredentials: boolean | null = null;
+    lang: string | null = null;
+    timeout: number | null = null;
+    success: GetUserInfoSuccessCallback | null = null;
+    fail: GetUserInfoFailCallback | null = null;
+    complete: GetUserInfoCompleteCallback | null = null;
 }
 export type OpenAppAuthorizeSetting = (options: OpenAppAuthorizeSettingOptions) => void;
 export class OpenAppAuthorizeSettingSuccess extends UTSObject {
@@ -1483,6 +1629,9 @@ export class ClearStorageOptions extends UTSObject {
 }
 export type ClearStorage = (option?: ClearStorageOptions | null) => void;
 export type ClearStorageSync = () => void;
+interface UniStorageMP {
+    id: string;
+}
 export type SetTabBarBadgeSuccess = AsyncApiSuccessResult;
 type SetTabBarBadgeSuccessCallback = (result: SetTabBarBadgeSuccess) => void;
 type SetTabBarErrorCode = 100 | 200;
@@ -1768,6 +1917,8 @@ interface UniExtApi {
     request: Request<Object>;
     uploadFile: UploadFile;
     downloadFile: DownloadFile;
+    login: Login;
+    getUserInfo: GetUserInfo;
     openAppAuthorizeSetting: OpenAppAuthorizeSetting;
     openDocument: OpenDocument;
     requestPayment: RequestPayment;
@@ -1808,7 +1959,7 @@ interface UniExtApi {
     onSocketClose: OnSocketClose;
     onSocketError: OnSocketError;
 }
-export function initUniExtApi(APP_ID: string) {
+export function initUniExtApi() {
     const API_ADD_PHONE_CONTACT = 'addPhoneContact';
     const AddPhoneContactApiOptions: ApiOptions<AddPhoneContactOptions> = {
         formatArgs: new Map<string, ((firstName: string) => string | undefined)>([
@@ -5115,7 +5266,7 @@ export function initUniExtApi(APP_ID: string) {
         } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
             _chooseImage(options, res);
         } else {
-            const lastWindow = await window.getLastWindow(getAbilityContext2()!);
+            const lastWindow = getCurrentWindow() as window.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             const index = (await UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -5185,7 +5336,7 @@ export function initUniExtApi(APP_ID: string) {
         } else if (options.sourceType?.length === 1 && options.sourceType[0] === 'album') {
             _chooseVideo(options, res);
         } else {
-            const lastWindow = await window1.getLastWindow(getAbilityContext3()!);
+            const lastWindow = getCurrentWindow1() as window1.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             const index = (await UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -5250,7 +5401,7 @@ export function initUniExtApi(APP_ID: string) {
         });
     }) as ClosePreviewImage;
     const requestPermission = async (): Promise<boolean> =>{
-        const context = getAbilityContext4() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         const atManager: abilityAccessCtrl1.AtManager = abilityAccessCtrl1.createAtManager();
         const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
             'ohos.permission.WRITE_IMAGEVIDEO'
@@ -5259,7 +5410,7 @@ export function initUniExtApi(APP_ID: string) {
         return isGranted;
     };
     const saveResource = async (src: Resource, dest: string)=>{
-        const context = getAbilityContext4() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
         const srcPath: string = src.params?.[0] as string;
         const destFile = fs3.openSync(dest, fs3.OpenMode.WRITE_ONLY);
@@ -5276,7 +5427,7 @@ export function initUniExtApi(APP_ID: string) {
     };
     const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
-        const context = getAbilityContext4() as common.UIAbilityContext;
+        const context = getAbilityContext2() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
         const isResource = typeof realPath !== 'string';
         if (isResource) {
@@ -5391,6 +5542,7 @@ export function initUniExtApi(APP_ID: string) {
         return imagePacker.packToFile(pixelMap, file.fd, packOptions).then((_)=>{
             const size = fileIo4.statSync(file.fd).size;
             fileIo4.closeSync(file.fd);
+            pixelMap.release();
             return {
                 size,
                 tempFilePath
@@ -5507,7 +5659,7 @@ export function initUniExtApi(APP_ID: string) {
         } else {
             try {
                 let documentSelectOptions = new picker1.DocumentSelectOptions();
-                let documentPicker = new picker1.DocumentViewPicker(getAbilityContext5()!);
+                let documentPicker = new picker1.DocumentViewPicker(getAbilityContext3()!);
                 documentSelectOptions.selectMode = picker1.DocumentSelectMode.FILE;
                 if (args.count) documentSelectOptions.maxSelectNumber = args.count;
                 if (args.extension) documentSelectOptions.fileSuffixFilters = args.extension;
@@ -5557,7 +5709,7 @@ export function initUniExtApi(APP_ID: string) {
                 videoDuration: args?.maxDuration ?? 10
             };
             const mediaTypes = getCameraPickerMediaTypes((args.mediaType ?? []) as UNI_MEDIA_TYPE[]);
-            const res = await cameraPicker1.pick(getAbilityContext6()!, mediaTypes, pickerProfile);
+            const res = await cameraPicker1.pick(getAbilityContext4()!, mediaTypes, pickerProfile);
             executor.resolve({
                 type: 'mix',
                 tempFiles: [
@@ -5661,7 +5813,7 @@ export function initUniExtApi(APP_ID: string) {
         if (args.sourceType?.length === 1 && args.sourceType[0] === 'camera') {
             _takeCamera(args, executor);
         } else {
-            const lastWindow = await window2.getLastWindow(getAbilityContext6()!);
+            const lastWindow = getCurrentWindow2() as window2.Window;
             const UIContextPromptAction = await lastWindow.getUIContext().getPromptAction();
             const index = (await UIContextPromptAction.showActionMenu({
                 buttons: [
@@ -6910,6 +7062,68 @@ export function initUniExtApi(APP_ID: string) {
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;
+    const API_LOGIN = 'login';
+    const LoginApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'provider',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const API_GET_USER_INFO = 'getUserInfo';
+    const GetUserInfoApiProtocol = new Map<string, ProtocolOptions>([
+        [
+            'provider',
+            {
+                type: 'string'
+            }
+        ],
+        [
+            'timeout',
+            {
+                type: 'number'
+            }
+        ]
+    ]);
+    const SERVICE = 'oauth';
+    const PROVIDER = 'huawei';
+    const login: Login = defineAsyncApi<LoginOptions, LoginSuccess>(API_LOGIN, (args: LoginOptions, executor: ApiExecutor<LoginSuccess>)=>{
+        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
+        if (!provider) {
+            executor.reject('Provider not found.');
+            return;
+        }
+        provider.login({
+            success (res) {
+                executor.resolve(res);
+            },
+            fail (err) {
+                executor.reject(err.errMsg);
+            }
+        } as LoginOptions);
+    }, LoginApiProtocol) as Login;
+    const getUserInfo: GetUserInfo = defineAsyncApi<GetUserInfoOptions, GetUserInfoSuccess>(API_GET_USER_INFO, (args: GetUserInfoOptions, executor: ApiExecutor<GetUserInfoSuccess>)=>{
+        const provider = getUniProvider<UniOAuthProvider>(SERVICE, args.provider ?? PROVIDER);
+        if (!provider) {
+            executor.reject('Provider not found.');
+            return;
+        }
+        provider.getUserInfo({
+            success (res) {
+                executor.resolve(res);
+            },
+            fail (err) {
+                executor.reject(err.errMsg);
+            }
+        } as GetUserInfoOptions);
+    }, GetUserInfoApiProtocol) as GetUserInfo;
     const API_OPEN_APP_AUTHORIZE_SETTING = 'openAppAuthorizeSetting';
     const openAppAuthorizeSetting: OpenAppAuthorizeSetting = defineAsyncApi<OpenAppAuthorizeSettingOptions, OpenAppAuthorizeSettingSuccess>(API_OPEN_APP_AUTHORIZE_SETTING, (options: OpenAppAuthorizeSettingOptions, exec: ApiExecutor<OpenAppAuthorizeSettingSuccess>)=>{
         const want: Want = {
@@ -6920,7 +7134,7 @@ export function initUniExtApi(APP_ID: string) {
                 pushParams: bundleManager2.getBundleInfoForSelfSync(bundleManager2.BundleFlag.GET_BUNDLE_INFO_DEFAULT).name
             }
         } as Want;
-        const context = getAbilityContext7() as common1.UIAbilityContext;
+        const context = getAbilityContext6() as common1.UIAbilityContext;
         context.startAbility(want).then(()=>{
             exec.resolve({
                 errMsg: ''
@@ -6965,7 +7179,7 @@ export function initUniExtApi(APP_ID: string) {
             uri: uri,
             type: fileContentType as string
         };
-        const abilityContext = getAbilityContext8() as common2.UIAbilityContext;
+        const abilityContext = getAbilityContext7() as common2.UIAbilityContext;
         abilityContext.startAbility(want).then(()=>{
             exec.resolve({} as OpenDocumentSuccess);
         }, (err: Error)=>{
@@ -7220,15 +7434,9 @@ export function initUniExtApi(APP_ID: string) {
                         break;
                 }
             }
-            window3.getLastWindow(getAbilityContext9()!, (err: BusinessError10, window: window3.Window)=>{
-                const errCode: number = err.code;
-                if (errCode) {
-                    console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
-                    return;
-                }
-                window.getUIContext().getPromptAction().showToast(showToastOptions);
-                res.resolve({} as ShowToastSuccess);
-            });
+            const window = getCurrentWindow3() as window.Window;
+            window.getUIContext().getPromptAction().showToast(showToastOptions);
+            res.resolve({} as ShowToastSuccess);
         } catch (error) {
             let message = (error as BusinessError10).message;
             res.reject(message);
@@ -7262,25 +7470,19 @@ export function initUniExtApi(APP_ID: string) {
                 buttons.push(cancelButton);
             }
             buttons.push(confirmButton);
-            window4.getLastWindow(getAbilityContext10()!, (err: BusinessError11, window: window4.Window)=>{
-                const errCode: number = err.code;
-                if (errCode) {
-                    console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
-                    return;
+            const window = getCurrentWindow4() as window.Window;
+            window.getUIContext().showAlertDialog({
+                title: args.title ?? '',
+                message: args.content ?? '',
+                autoCancel: false,
+                alignment: DialogAlignment.Center,
+                buttons,
+                cancel: ()=>{
+                    resolve({
+                        'cancel': true
+                    } as ShowModalSuccess);
                 }
-                window.getUIContext().showAlertDialog({
-                    title: args.title ?? '',
-                    message: args.content ?? '',
-                    autoCancel: false,
-                    alignment: DialogAlignment.Center,
-                    buttons,
-                    cancel: ()=>{
-                        resolve({
-                            'cancel': true
-                        } as ShowModalSuccess);
-                    }
-                } as AlertDialogParamWithOptions);
-            });
+            } as AlertDialogParamWithOptions);
         });
         if (modalRes.confirm) {
             modalRes.cancel = false;
@@ -7309,26 +7511,20 @@ export function initUniExtApi(APP_ID: string) {
                 color: options.itemColor!
             } as promptAction5.Button);
         });
-        window5.getLastWindow(getAbilityContext11()!, (err: BusinessError12, window: window5.Window)=>{
-            const errCode: number = err.code;
-            if (errCode) {
-                console.error(`Failed to obtain the top window. Cause code: ${err.code}, message: ${err.message}`);
+        const window = getCurrentWindow5() as window.Window;
+        window.getUIContext().getPromptAction().showActionMenu({
+            title: options.title,
+            buttons: actionMenuButtons
+        } as promptAction5.ActionMenuOptions).then((showACtionSheetRes)=>{
+            res.resolve({
+                tapIndex: showACtionSheetRes.index
+            } as ShowActionSheetSuccess);
+        }).catch((e: Error)=>{
+            if (e.message === 'cancel') {
+                res.reject('cancel');
                 return;
             }
-            window.getUIContext().getPromptAction().showActionMenu({
-                title: options.title,
-                buttons: actionMenuButtons
-            } as promptAction5.ActionMenuOptions).then((showACtionSheetRes)=>{
-                res.resolve({
-                    tapIndex: showACtionSheetRes.index
-                } as ShowActionSheetSuccess);
-            }).catch((e: Error)=>{
-                if (e.message === 'cancel') {
-                    res.reject('cancel');
-                    return;
-                }
-                res.reject(e.message);
-            });
+            res.reject(e.message);
         });
     }, ShowActionSheetProtocol, ShowActionSheetApiOptions) as ShowActionSheet;
     const showLoading: ShowLoading = defineAsyncApi<ShowLoadingOptions, ShowLoadingSuccess>(API_SHOW_LOADING, async (options: ShowLoadingOptions, exec: ApiExecutor<ShowLoadingSuccess>)=>{
@@ -7434,7 +7630,7 @@ export function initUniExtApi(APP_ID: string) {
             enableMultiMode: true,
             enableAlbum: !options.onlyFromCamera
         };
-        scanBarcode.startScanForResult(getAbilityContext12()!, scanOptions, (err, data)=>{
+        scanBarcode.startScanForResult(getAbilityContext8()!, scanOptions, (err, data)=>{
             if (err) {
                 exec.reject(err.message);
                 return;
@@ -7478,7 +7674,7 @@ export function initUniExtApi(APP_ID: string) {
             shareData.addRecord(shareRecords[index]);
         }
         const shareController: systemShare.ShareController = new systemShare.ShareController(shareData);
-        shareController.show(getAbilityContext13() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
+        shareController.show(getAbilityContext9() as common3.UIAbilityContext, {} as systemShare.ShareControllerOptions);
         const onDismiss = ()=>{
             shareController.off('dismiss', onDismiss);
             exec.resolve({} as ShareWithSystemSuccess);
@@ -7508,14 +7704,16 @@ export function initUniExtApi(APP_ID: string) {
             data: value
         } as ESObject);
     };
-    let store: dataPreferences.Preferences | null = null;
+    const stores = new Map<string, dataPreferences.Preferences>();
     const createStore = (): dataPreferences.Preferences =>{
-        if (store) {
-            return store;
+        const appId = (getCurrentMP3() as UniStorageMP).id;
+        if (stores.has(appId)) {
+            return stores.get(appId)!;
         }
-        store = dataPreferences.getPreferencesSync(getAbilityContext14() as common4.UIAbilityContext, {
-            name: `storage.${APP_ID}`
+        const store = dataPreferences.getPreferencesSync(getAbilityContext10() as common4.UIAbilityContext, {
+            name: `storage.${appId}`
         } as dataPreferences.Options);
+        stores.set(appId, store);
         return store;
     };
     const getStorageSync = defineSyncApi<Object>(API_GET_STORAGE_SYNC, (key: string)=>{
@@ -7891,7 +8089,7 @@ export function initUniExtApi(APP_ID: string) {
         private _ws: webSocket.WebSocket;
         private _emitter: IUniWebsocketEmitter = new Emitter5() as IUniWebsocketEmitter;
         constructor(ws: webSocket.WebSocket){
-            const mp = getCurrentMP3() as UniWebsocketMP;
+            const mp = getCurrentMP4() as UniWebsocketMP;
             this._ws = ws;
             this._ws.on('message', (_, data)=>{
                 const message = {
@@ -7977,7 +8175,7 @@ export function initUniExtApi(APP_ID: string) {
     }
     const socketTasksMap: Map<string, SocketTask1[]> = new Map();
     const addSocketTask = (task: SocketTask1)=>{
-        const mp = getCurrentMP3() as UniWebsocketMP;
+        const mp = getCurrentMP4() as UniWebsocketMP;
         mp.on('beforeClose', task._destroy);
         task.onClose(()=>{
             mp.off('beforeClose', task._destroy);
@@ -7991,14 +8189,14 @@ export function initUniExtApi(APP_ID: string) {
     };
     const getSocketTasks = (id: string | null = null)=>{
         if (!id) {
-            const mp = getCurrentMP3() as UniWebsocketMP;
+            const mp = getCurrentMP4() as UniWebsocketMP;
             id = mp.id;
         }
         return socketTasksMap.get(id) || [];
     };
     const connectSocket = defineTaskApi<ConnectSocketOptions, ConnectSocketSuccess, SocketTask>(API_CONNECT_SOCKET, (args: ConnectSocketOptions, exec: ApiExecutor<ConnectSocketSuccess>)=>{
         const ws = webSocket.createWebSocket();
-        const mp = getCurrentMP3() as UniWebsocketMP;
+        const mp = getCurrentMP4() as UniWebsocketMP;
         ws.connect(args.url, {
             header: args.header ? args.header as Object : undefined,
             protocol: args.protocols ? Array.isArray(args.protocols) ? args.protocols.join(',') : args.protocols : ''
@@ -8106,6 +8304,8 @@ export function initUniExtApi(APP_ID: string) {
         request,
         uploadFile,
         downloadFile,
+        login,
+        getUserInfo,
         openAppAuthorizeSetting,
         openDocument,
         requestPayment,
