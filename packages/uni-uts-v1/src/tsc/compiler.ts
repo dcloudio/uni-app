@@ -34,7 +34,7 @@ export function createUniXCompiler(
 
   const hxLanguageServiceDir = path.resolve(
     pluginPath,
-    'hbuilderx-language-services/builtin-dts'
+    'hbuilderx-language-services'
   )
 
   const ts = require(path.resolve(utsLibDir, 'typescript')) as typeof tsTypes
