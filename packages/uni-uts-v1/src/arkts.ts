@@ -130,11 +130,12 @@ export async function compileArkTS(
   // 拷贝所有ets文件
   const etsFiles = sync('**/*.ets', {
     cwd: pluginDir,
-    absolute: true,
   })
   for (const etsFile of etsFiles) {
-    const relativePath = path.relative(pluginDir, etsFile)
-    fs.copySync(etsFile, path.resolve(outputUniModuleDir, relativePath))
+    fs.copySync(
+      path.resolve(pluginDir, etsFile),
+      path.resolve(outputUniModuleDir, etsFile)
+    )
   }
 
   // generate oh-package.json5
