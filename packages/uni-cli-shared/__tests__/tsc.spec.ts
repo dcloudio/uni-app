@@ -22,7 +22,7 @@ describe('uni_modules', () => {
           'uni_modules',
           plugin
         )
-        sync('**/*.uts', { cwd: outputUVuePluginDir }).forEach((file) => {
+        sync('**/*.{uts,vue}', { cwd: outputUVuePluginDir }).forEach((file) => {
           expect(
             fs.readFileSync(path.resolve(outputUVuePluginDir, file), 'utf8')
           ).toMatchSnapshot(file)

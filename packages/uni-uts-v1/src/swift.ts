@@ -260,7 +260,12 @@ export async function compile(
       input.fileContent = componentsCode
     } else {
       input.fileContent =
-        fs.readFileSync(filename, 'utf8') + `\n` + componentsCode
+        fs.readFileSync(
+          resolveBundleInputFileName('app-ios', filename),
+          'utf8'
+        ) +
+        `\n` +
+        componentsCode
     }
   } else {
     // uts文件不存在，且也无组件
