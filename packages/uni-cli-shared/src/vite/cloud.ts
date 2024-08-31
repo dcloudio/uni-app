@@ -14,7 +14,7 @@ import {
 } from '../uni_modules'
 import { cleanUrl } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
-import { resolveUTSCompiler } from '../uts'
+import { createUniXKotlinCompilerOnce, resolveUTSCompiler } from '../uts'
 import { normalizePath } from '../utils'
 import { getUTSEasyComAutoImports } from '../easycom'
 
@@ -148,8 +148,30 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       if (process.env.UNI_UTS_PLATFORM !== 'app-android') {
         return
       }
+      const uniXKotlinCompiler =
+        process.env.UNI_APP_X_TSC === 'true'
+          ? createUniXKotlinCompilerOnce()
+          : null
+      if (uniXKotlinCompiler) {
+        const tscOutputDir = tscOutDir('app-android')
+        const uniModulesDir = path.resolve(tscOutputDir, 'uni_modules')
+        if (fs.existsSync(uniModulesDir)) {
+          for (const plugin of fs.readdirSync(uniModulesDir)) {
+            const indexFileName = path.join(
+              uniModulesDir,
+              plugin,
+              'index.module.uts.ts'
+            )
+            if (fs.existsSync(indexFileName)) {
+              await uniXKotlinCompiler.addRootFile(indexFileName)
+            }
+          }
+        }
+        await uniXKotlinCompiler.close()
+      }
+
       // 编译所有 uni_modules 插件
-      const tempOutputDir = uvueOutDir()
+      const tempOutputDir = uvueOutDir('app-android')
       const tempUniModulesDir = path.join(tempOutputDir, 'uni_modules')
       const tempUniModules: string[] = []
       if (fs.existsSync(tempUniModulesDir)) {
@@ -222,7 +244,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
               uniModule,
               'package.json'
             ),
-            genUniModulesPackageJson(uniModule, tempOutputDir, {
+            genUniModulesPackageJson(uniModule, process.env.UNI_INPUT_DIR, {
               env: initCheckEnv(),
               apis,
               components,
@@ -236,8 +258,12 @@ export function uniEncryptUniModulesPlugin(): Plugin {
   }
 }
 
-function uvueOutDir() {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue')
+function tscOutDir(platform: 'app-android' | 'app-ios') {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc', platform)
+}
+
+function uvueOutDir(platform: 'app-android' | 'app-ios') {
+  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue', platform)
 }
 
 function createExternal(config: ResolvedConfig) {

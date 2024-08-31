@@ -851,7 +851,11 @@ export function resolveBundleInputRoot(
   platform: 'app-android' | 'app-ios',
   root: string
 ) {
-  if (process.env.UNI_APP_X_TSC === 'true') {
+  if (
+    process.env.UNI_APP_X_TSC === 'true' &&
+    // 云端uni_modules编译，传入的已经是真实地址
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+  ) {
     return uvueOutDir(platform)
   }
   return root
@@ -861,7 +865,11 @@ export function resolveBundleInputFileName(
   platform: 'app-android' | 'app-ios',
   fileName: string
 ) {
-  if (process.env.UNI_APP_X_TSC === 'true') {
+  if (
+    process.env.UNI_APP_X_TSC === 'true' &&
+    // 云端uni_modules编译，传入的已经是真实地址 uni-cli-shared/vite/cloud.ts:190
+    process.env.UNI_COMPILE_TARGET !== 'uni_modules'
+  ) {
     return normalizePath(
       path.resolve(
         uvueOutDir(platform),

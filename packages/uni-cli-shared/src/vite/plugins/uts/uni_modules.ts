@@ -354,7 +354,10 @@ export function uniUTSAppUniModulesPlugin(
     async buildEnd() {
       utsModuleCaches.clear()
       changedFiles.clear()
-      if (process.env.NODE_ENV !== 'development') {
+      if (
+        process.env.NODE_ENV !== 'development' ||
+        process.env.UNI_COMPILE_TARGET === 'uni_modules'
+      ) {
         if (uniXKotlinCompiler) {
           await uniXKotlinCompiler.close()
         }
