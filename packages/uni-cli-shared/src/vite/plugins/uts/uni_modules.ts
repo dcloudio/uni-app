@@ -96,27 +96,13 @@ async function syncUniModuleFilesByCompiler(
 ) {
   const start = Date.now()
   // 目前每次编译，都全量比对同步uni_modules目录下的文件，不然还要 watch dir
-  const files = await syncUniModuleFiles(
-    process.env.UNI_UTS_PLATFORM as any,
-    pluginDir,
-    outputPluginDir,
-    true
-  )
+  const files = await syncUniModuleFiles(pluginDir, outputPluginDir, true)
   // copy vue files
-  const vueFiles = await syncUniModuleVueFiles(
-    process.env.UNI_UTS_PLATFORM as any,
-    pluginDir,
-    uvueOutputPluginDir
-  )
+  const vueFiles = await syncUniModuleVueFiles(pluginDir, uvueOutputPluginDir)
   if (vueFiles.length) {
     // 如果有组件，那再 uts 文件 copy 到 .uvue 目录下，避免 tsc 不 emit 相关的 uts 文件
     // 如果 tsc emit 了，那就会再次覆盖
-    await syncUniModuleFiles(
-      process.env.UNI_UTS_PLATFORM as any,
-      pluginDir,
-      uvueOutputPluginDir,
-      false
-    )
+    await syncUniModuleFiles(pluginDir, uvueOutputPluginDir, false)
     compiler.debug(
       `${path.basename(pluginDir)} sync vue files(${vueFiles.length})`
     )
@@ -552,7 +538,6 @@ function resolveUniModuleVueGlobs() {
 }
 
 async function syncUniModuleVueFiles(
-  _platform: 'app-android' | 'app-ios' | 'app',
   pluginDir: string,
   outputPluginDir: string
 ) {
@@ -571,7 +556,6 @@ async function syncUniModuleVueFiles(
 }
 
 async function syncUniModuleFiles(
-  _platform: 'app-android' | 'app-ios' | 'app',
   pluginDir: string,
   outputPluginDir: string,
   rename: boolean
@@ -628,4 +612,34 @@ async function copyFile(src: string, dest: string) {
   }
   utsModuleFileCaches.set(key, stat.mtimeMs)
   return fs.copy(src, dest, { overwrite: true })
+}
+
+export async function compileUniModuleWithTsc(
+  platform: 'app-android' | 'app-ios',
+  pluginDir: string
+) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  const uniXCompiler =
+    platform === 'app-android'
+      ? createUniXKotlinCompilerOnce()
+      : createUniXSwiftCompilerOnce()
+  // 初始化编译器
+  await uniXCompiler.init()
+  // 同步资源
+  await syncUniModuleFilesByCompiler(
+    uniXCompiler,
+    pluginDir,
+    resolveOutputPluginDir(platform, inputDir, pluginDir),
+    resolveUVueOutputPluginDir(platform, inputDir, pluginDir)
+  )
+
+  // 添加入口
+  const indexFileName = resolveTscUniModuleIndexFileName(
+    platform,
+    resolveOutputPluginDir(platform, inputDir, pluginDir)
+  )
+  if (indexFileName) {
+    await uniXCompiler.addRootFile(indexFileName)
+  }
+  await uniXCompiler.close()
 }

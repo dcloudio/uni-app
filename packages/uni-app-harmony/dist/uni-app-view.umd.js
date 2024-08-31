@@ -16489,7 +16489,8 @@
           if (maxlength > 0 && input.value.length > maxlength) {
             input.value = input.value.slice(0, maxlength);
             state2.value = input.value;
-            return false;
+            var modelValue = props2.modelValue !== void 0 && props2.modelValue !== null ? props2.modelValue.toString() : "";
+            return modelValue !== input.value;
           }
         }
       });

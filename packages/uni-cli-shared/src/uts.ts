@@ -193,7 +193,10 @@ export const createUniXKotlinCompilerOnce = once(() => {
     'Kotlin',
     {
       inputDir: tscInputDir,
-      cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
+      cacheDir: path.resolve(
+        process.env.UNI_APP_X_CACHE_DIR,
+        'tsc/app-android'
+      ),
       outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue/app-android'),
       paths: resolveUniXCompilerUniModulesPaths(
         'app-android',
@@ -213,7 +216,7 @@ export const createUniXSwiftCompilerOnce = once(() => {
     'Swift',
     {
       inputDir: tscInputDir,
-      cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc'),
+      cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc/app-ios'),
       outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue/app-ios'),
       paths: resolveUniXCompilerUniModulesPaths(
         'app-ios',
@@ -237,7 +240,7 @@ export function resolveUTSCompiler(): typeof UTSCompiler {
   if (!compilerPath) {
     try {
       compilerPath = require.resolve('@dcloudio/uni-uts-v1', {
-        paths: [process.env.UNI_CLI_CONTEXT],
+        paths: [process.env.UNI_CLI_CONTEXT || process.cwd()],
       })
     } catch (e) {
       let utsCompilerVersion = ''
