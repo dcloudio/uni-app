@@ -82,13 +82,13 @@
       "null"
     ]
   },
-  "uni-exit": {
-    "exit": [
+  "uni-dialogPage": {
+    "closeDialogPage": [
       "null"
     ]
   },
-  "uni-dialogPage": {
-    "closeDialogPage": [
+  "uni-exit": {
+    "exit": [
       "null"
     ]
   },
