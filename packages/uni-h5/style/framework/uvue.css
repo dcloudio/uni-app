@@ -373,3 +373,7 @@ body .uni-modal__btn_primary {
     color: #747474;
   }
 }
+
+:is(.uni-video-slots *) {
+  pointer-events: auto;
+}
