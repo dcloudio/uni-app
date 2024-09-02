@@ -1,54 +1,37 @@
-import {
-  type EmitterEmit,
-  type EmitterOff,
-  type EmitterOn,
-  type EmitterOnce,
-  EventBus,
-} from '@dcloudio/uni-api'
+import { UniEventBus } from '@dcloudio/uni-api'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
 import type { ComponentPublicInstance } from 'vue'
 
-export class DialogPage {
+export class DialogPage implements UniDialogPage {
   route: string = ''
-  component?: any
+  $component: any | null = null
   $getParentPage: () => ComponentPublicInstance | null
-  $on: EmitterOn
-  $once: EmitterOnce
-  $off: EmitterOff
-  $emit: EmitterEmit
+  private $eventBus = new UniEventBus()
+  on = (eventName: string, callback: Function) => {
+    this.$eventBus.on(eventName, callback)
+  }
+  once = (eventName: string, callback: Function) => {
+    this.$eventBus.once(eventName, callback)
+  }
+  off = (eventName?: string, callback?: Function | null) => {
+    this.$eventBus.off(eventName, callback)
+  }
+  emit = (eventName: string, ...args: any[]) => {
+    this.$eventBus.emit(eventName, ...args)
+  }
   $disableEscBack: boolean = false
-  $vm?: ComponentPublicInstance
+  $vm: ComponentPublicInstance | null = null
 
   constructor({
     route,
-    component,
     $getParentPage,
   }: {
     route: string
-    component: any
     $getParentPage: () => ComponentPublicInstance | null
   }) {
     this.route = route
-    this.component = component
     this.$getParentPage = $getParentPage
-    const eventBus = new EventBus()
-    this.$on = (eventName: string, callback: (result: any) => void) => {
-      eventBus.$on(eventName, callback)
-    }
-    this.$once = (eventName: string, callback: (result: any) => void) => {
-      eventBus.$once(eventName, callback)
-    }
-    this.$off = (
-      eventName?: string | string[],
-      callback?: (result: any) => void
-    ) => {
-      eventBus.$off(eventName, callback)
-    }
-    this.$emit = (eventName: string, ...args: any[]) => {
-      eventBus.$emit(eventName, ...args)
-    }
   }
 }
 
-export type UniDialogPage = DialogPage
-
-export const homeDialogPages = [] as UniDialogPage[]
+export const homeDialogPages: UniDialogPage[] = []

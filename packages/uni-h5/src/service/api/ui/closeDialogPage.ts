@@ -1,11 +1,9 @@
-import {
-  type UniDialogPage,
-  decrementEscBackPageNum,
-} from '../../../framework/setup/page'
+import { decrementEscBackPageNum } from '../../../framework/setup/page'
 import { getPageInstanceByVm } from '../../../framework/setup/utils'
 import type { ComponentPublicInstance } from 'vue'
 import { invokeHook } from '@dcloudio/uni-core'
 import { ON_SHOW, ON_UNLOAD } from '@dcloudio/uni-shared'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
 /**
  *
  * 文档: []()

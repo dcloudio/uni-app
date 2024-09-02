@@ -8,6 +8,7 @@ import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
 import { DialogPage, homeDialogPages } from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import { getWebviewId } from '../../../service/framework/webview/utils'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
 
 /**
  *
@@ -69,7 +70,9 @@ interface OpenDialogPageOptions {
   complete?: (result: OpenDialogPageComplete) => void
 }
 
-export const openDialogPage = (options: OpenDialogPageOptions) => {
+export const openDialogPage = (
+  options: OpenDialogPageOptions
+): UniDialogPage | null => {
   const { url, events, animationType } = options
   if (!options.url) {
     triggerFailCallback(options, 'url is required')
@@ -106,7 +109,6 @@ export const openDialogPage = (options: OpenDialogPageOptions) => {
   const dialogPage = new DialogPage({
     route: url,
     $getParentPage: () => parentPage,
-    component: null,
   })
 
   if (!parentPage) {

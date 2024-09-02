@@ -1,7 +1,8 @@
 import { ON_SHOW } from '@dcloudio/uni-shared'
 import { invokeHook } from '@dcloudio/uni-core'
-import { DialogPage, type UniDialogPage } from '../../framework/page/dialogPage'
+import { DialogPage } from '../../framework/page/dialogPage'
 import { closeNativeDialogPage } from './utils'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
 
 /**
  *

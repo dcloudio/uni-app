@@ -1,7 +1,8 @@
 import type { EventChannel, UniLifecycleHooks } from '@dcloudio/uni-shared'
 import { ComponentCustomProperties, ComponentInternalInstance } from 'vue'
 import type { UniPage } from '@dcloudio/uni-app-x/types/native'
-import type { UniDialogPage } from '@dcloudio/uni-h5/framework/setup/page'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+
 declare module '@vue/runtime-core' {
   interface ComponentCustomOptions {
     rootElement?:

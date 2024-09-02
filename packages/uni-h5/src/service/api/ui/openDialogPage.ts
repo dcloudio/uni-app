@@ -2,13 +2,13 @@ import { createNormalizeUrl } from '@dcloudio/uni-api'
 
 import {
   DialogPage,
-  type UniDialogPage,
   homeDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
 import { EventChannel } from '@dcloudio/uni-shared'
 import { getPageInstanceByVm } from '../../../framework/setup/utils'
 import type { ComponentPublicInstance } from 'vue'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
 
 /**
  *
@@ -93,7 +93,7 @@ export const openDialogPage = (
   }
   const dialogPage = new DialogPage({
     route: options.url,
-    component: targetRoute!.component,
+    $component: targetRoute!.component,
     $getParentPage: () => null,
     $disableEscBack: options.disableEscBack,
   })

@@ -15,8 +15,8 @@ import { _redirectTo } from './redirectTo'
 import { $reLaunch } from './reLaunch'
 import { getCurrentPage } from '@dcloudio/uni-core'
 import { addLeadingSlash } from '@dcloudio/uni-shared'
-import type { UniDialogPage } from '../../framework/page/dialogPage'
 import { getNativeApp } from '../../framework/app/app'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
 
 export function closePage(
   page: ComponentPublicInstance,
