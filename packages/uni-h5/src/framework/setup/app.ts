@@ -7,39 +7,26 @@ import {
   initService,
   initView,
 } from '@dcloudio/uni-core'
-import {
-  type EmitterEmit,
-  type EmitterOff,
-  type EmitterOn,
-  type EmitterOnce,
-  EventBus,
-} from '@dcloudio/uni-api'
+import { UniEventBus } from '@dcloudio/uni-api'
+import type { EventBus } from '@dcloudio/uni-app-x/types/uni'
 
 let appVm: ComponentPublicInstance
+// @ts-expect-error
 let $uniApp: UniApp
 if (__X__) {
-  class UniApp {
-    on: EmitterOn
-    once: EmitterOnce
-    off: EmitterOff
-    emit: EmitterEmit
-    constructor() {
-      const eventBus = new EventBus()
-      this.on = (eventName: string, callback: (result: any) => void) => {
-        eventBus.$on(eventName, callback)
-      }
-      this.once = (eventName: string, callback: (result: any) => void) => {
-        eventBus.$once(eventName, callback)
-      }
-      this.off = (
-        eventName?: string | string[],
-        callback?: (result: any) => void
-      ) => {
-        eventBus.$off(eventName, callback)
-      }
-      this.emit = (eventName: string, ...args: any[]) => {
-        eventBus.$emit(eventName, ...args)
-      }
+  class UniApp implements EventBus {
+    private $eventBus = new UniEventBus()
+    on = (eventName: string, callback: Function) => {
+      this.$eventBus.on(eventName, callback)
+    }
+    once = (eventName: string, callback: Function) => {
+      this.$eventBus.once(eventName, callback)
+    }
+    off = (eventName?: string, callback?: Function | null) => {
+      this.$eventBus.off(eventName, callback)
+    }
+    emit = (eventName: string, ...args: any[]) => {
+      this.$eventBus.emit(eventName, ...args)
     }
 
     get vm() {
@@ -52,7 +39,6 @@ if (__X__) {
       return appVm?.globalData || {}
     }
   }
-  // @ts-expect-error
   $uniApp = new UniApp()
 }
 

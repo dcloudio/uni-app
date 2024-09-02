@@ -16,44 +16,30 @@ import { initService } from './initService'
 import { setNativeApp } from './app'
 import { initComponentInstance } from './initComponentInstance'
 import type {
+  EventBus,
   NavigateToOptions,
   SwitchTabOptions,
 } from '@dcloudio/uni-app-x/types/uni'
-import {
-  type EmitterEmit,
-  type EmitterOff,
-  type EmitterOn,
-  type EmitterOnce,
-  EventBus,
-} from '@dcloudio/uni-api'
+import { UniEventBus } from '@dcloudio/uni-api'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
 
-class UniApp {
-  on: EmitterOn
-  once: EmitterOnce
-  off: EmitterOff
-  emit: EmitterEmit
-  constructor() {
-    const eventBus = new EventBus()
-    this.on = (eventName: string, callback: (result: any) => void) => {
-      eventBus.$on(eventName, callback)
-    }
-    this.once = (eventName: string, callback: (result: any) => void) => {
-      eventBus.$once(eventName, callback)
-    }
-    this.off = (
-      eventName?: string | string[],
-      callback?: (result: any) => void
-    ) => {
-      eventBus.$off(eventName, callback)
-    }
-    this.emit = (eventName: string, ...args: any[]) => {
-      eventBus.$emit(eventName, ...args)
-    }
+class UniApp implements EventBus {
+  private $eventBus = new UniEventBus()
+  on = (eventName: string, callback: Function) => {
+    this.$eventBus.on(eventName, callback)
+  }
+  once = (eventName: string, callback: Function) => {
+    this.$eventBus.once(eventName, callback)
+  }
+  off = (eventName?: string, callback?: Function | null) => {
+    this.$eventBus.off(eventName, callback)
+  }
+  emit = (eventName: string, ...args: any[]) => {
+    this.$eventBus.emit(eventName, ...args)
   }
 
   get vm() {
