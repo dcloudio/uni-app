@@ -50,14 +50,14 @@ export function initOn(app: IApp) {
     setEnterOptionsSync(showOptions)
 
     const page = getCurrentPage()
-    invokeHook(getApp() as ComponentPublicInstance, ON_SHOW, showOptions)
+    invokeHook(getApp().vm as ComponentPublicInstance, ON_SHOW, showOptions)
     if (page) {
       invokeHook(page as ComponentPublicInstance, ON_SHOW)
     }
   })
   app.addEventListener(ON_HIDE, function () {
     const page = getCurrentPage()
-    invokeHook(getApp() as ComponentPublicInstance, ON_HIDE)
+    invokeHook(getApp().vm as ComponentPublicInstance, ON_HIDE)
     if (page) {
       invokeHook(page as ComponentPublicInstance, ON_HIDE)
     }
