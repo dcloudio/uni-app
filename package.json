@@ -51,7 +51,7 @@
     "@dcloudio/types": "3.4.11",
     "@dcloudio/uni-api": "3.0.0-alpha-4020520240719001",
     "@dcloudio/uni-app": "3.0.0-alpha-4020520240719001",
-    "@dcloudio/uni-app-x": "^0.7.25",
+    "@dcloudio/uni-app-x": "^0.7.26",
     "@dcloudio/uni-nvue-styler": "3.0.0-alpha-4020620240828001",
     "@jest/types": "^29.0.3",
     "@microsoft/api-extractor": "^7.34.5",
