@@ -19,7 +19,9 @@ import {
   type Preprocessors,
   getUniExtApiPlugins,
   parseUTSModuleDeps,
+  resolveOutputPluginDir,
   resolveTscUniModuleIndexFileName,
+  resolveUVueOutputPluginDir,
   syncUniModuleFilesByCompiler,
 } from '../../../uni_modules'
 import {
@@ -74,31 +76,6 @@ export function getCurrentCompiledUTSPlugins() {
 }
 
 let uniExtApiCompiler = async () => {}
-
-function resolveOutputPluginDir(
-  platform: 'app-android' | 'app-ios',
-  inputDir: string,
-  pluginDir: string
-) {
-  return path.join(
-    process.env.UNI_OUTPUT_DIR,
-    '../.tsc',
-    platform,
-    path.relative(inputDir, pluginDir)
-  )
-}
-function resolveUVueOutputPluginDir(
-  platform: 'app-android' | 'app-ios',
-  inputDir: string,
-  pluginDir: string
-) {
-  return path.join(
-    process.env.UNI_OUTPUT_DIR,
-    '../.uvue',
-    platform,
-    path.relative(inputDir, pluginDir)
-  )
-}
 
 // 该插件仅限app-android、app-ios、app-harmony
 export function uniUTSAppUniModulesPlugin(
@@ -175,13 +152,16 @@ export function uniUTSAppUniModulesPlugin(
       }
     }
 
-    if (uniXCompiler) {
-      // 处理uni_modules中的文件变更
-      const files = changedFiles.get(pluginId)
-      if (files) {
-        // 仅限watch模式是会生效
-        changedFiles.delete(pluginId)
-        await uniXCompiler.invalidate(files)
+    // 处理uni_modules中的文件变更
+    const files = changedFiles.get(pluginId)
+    if (files) {
+      // 仅限watch模式是会生效
+      changedFiles.delete(pluginId)
+      if (uniXKotlinCompiler) {
+        await uniXKotlinCompiler.invalidate(files)
+      }
+      if (uniXSwiftCompiler) {
+        await uniXSwiftCompiler.invalidate(files)
       }
     }
 

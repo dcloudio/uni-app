@@ -33,7 +33,8 @@ export function initUVueEnv() {
     if (manifestJson['uni-app-x']?.singleThread === false) {
       process.env.UNI_APP_X_SINGLE_THREAD = 'false'
     }
-    if (manifestJson['uni-app-x']?.tsc === false) {
+    // 留个开关
+    if (manifestJson['app']?.['utsCompilerVersion'] === 'v1') {
       process.env.UNI_APP_X_TSC = 'false'
     }
   }

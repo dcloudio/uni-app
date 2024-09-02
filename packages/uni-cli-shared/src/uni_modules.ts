@@ -614,7 +614,7 @@ async function copyFile(src: string, dest: string) {
   return fs.copy(src, dest, { overwrite: true })
 }
 
-function resolveOutputPluginDir(
+export function resolveOutputPluginDir(
   platform: 'app-android' | 'app-ios',
   inputDir: string,
   pluginDir: string
@@ -626,7 +626,7 @@ function resolveOutputPluginDir(
     path.relative(inputDir, pluginDir)
   )
 }
-function resolveUVueOutputPluginDir(
+export function resolveUVueOutputPluginDir(
   platform: 'app-android' | 'app-ios',
   inputDir: string,
   pluginDir: string
