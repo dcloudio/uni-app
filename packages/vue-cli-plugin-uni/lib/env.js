@@ -180,6 +180,9 @@ process.env.VUE_APP_PLATFORM = process.env.UNI_PLATFORM
 process.env.UNI_OUTPUT_DIR = process.env.UNI_OUTPUT_DIR || process.env.UNI_OUTPUT_DEFAULT_DIR
 
 process.env.UNI_APP_X_TSC = 'true'
+if (manifestJsonObj['app-plus']?.['utsCompilerVersion'] === 'v1') {
+  process.env.UNI_APP_X_TSC = 'false'
+}
 const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
 process.env.UNI_APP_X_CACHE_DIR =
   process.env.UNI_APP_X_CACHE_DIR ||
