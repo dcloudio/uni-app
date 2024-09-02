@@ -38,35 +38,5 @@ export function createTransformBackground(
       }
       return [decl]
     }
-
-    if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
-      if (isUvuePlatform) {
-        return [
-          createDecl(backgroundImage, 'none', important, raws, source),
-          createDecl(backgroundColor, value, important, raws, source),
-        ]
-      } else {
-        return [createDecl(backgroundColor, value, important, raws, source)]
-      }
-    } else if (/^linear-gradient(.+)$/.test(value)) {
-      if (isUvuePlatform) {
-        return [
-          createDecl(backgroundImage, value, important, raws, source),
-          createDecl(backgroundColor, 'transparent', important, raws, source),
-        ]
-      } else {
-        return [createDecl(backgroundImage, value, important, raws, source)]
-      }
-    } else if (value == '') {
-      if (isUvuePlatform) {
-        return [
-          createDecl(backgroundImage, 'none', important, raws, source),
-          createDecl(backgroundColor, 'transparent', important, raws, source),
-        ]
-      } else {
-        return [decl]
-      }
-    }
-    return [decl]
   }
 }
