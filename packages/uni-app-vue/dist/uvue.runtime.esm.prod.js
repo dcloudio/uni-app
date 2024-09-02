@@ -1,5 +1,8 @@
-import { expand } from '@dcloudio/uni-nvue-styler/dist/uni-nvue-styler.es';
-
+function ownKeys(e, r) { var t = Object.keys(e); if (Object.getOwnPropertySymbols) { var o = Object.getOwnPropertySymbols(e); r && (o = o.filter(function (r) { return Object.getOwnPropertyDescriptor(e, r).enumerable; })), t.push.apply(t, o); } return t; }
+function _objectSpread(e) { for (var r = 1; r < arguments.length; r++) { var t = null != arguments[r] ? arguments[r] : {}; r % 2 ? ownKeys(Object(t), !0).forEach(function (r) { _defineProperty(e, r, t[r]); }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e, Object.getOwnPropertyDescriptors(t)) : ownKeys(Object(t)).forEach(function (r) { Object.defineProperty(e, r, Object.getOwnPropertyDescriptor(t, r)); }); } return e; }
+function _defineProperty(obj, key, value) { key = _toPropertyKey(key); if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+function _toPropertyKey(t) { var i = _toPrimitive(t, "string"); return "symbol" == typeof i ? i : i + ""; }
+function _toPrimitive(t, r) { if ("object" != typeof t || !t) return t; var e = t[Symbol.toPrimitive]; if (void 0 !== e) { var i = e.call(t, r || "default"); if ("object" != typeof i) return i; throw new TypeError("@@toPrimitive must return a primitive value."); } return ("string" === r ? String : Number)(t); }
 /**
 * @vue/shared v3.4.21
 * (c) 2018-present Yuxi (Evan) You and Vue contributors
@@ -1648,6 +1651,272 @@ Promise$1._unhandledRejectionFn = function _unhandledRejectionFn(err) {
 };
 var lib = Promise$1;
 var PromisePolyfill = /*@__PURE__*/getDefaultExportFromCjs(lib);
+function createDecl(prop, value, important, raws, source) {
+  var decl = {
+    type: 'decl',
+    prop,
+    value: value.toString(),
+    raws,
+    source
+  };
+  if (important) {
+    decl.important = true;
+  }
+  return decl;
+}
+var backgroundColor = 'backgroundColor';
+var backgroundImage = 'backgroundImage';
+function createTransformBackground(options) {
+  return decl => {
+    var {
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    // nvue 平台维持原有逻辑不变
+    var isUvuePlatform = options.type === 'uvue';
+    if (isUvuePlatform) {
+      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, value, important, raws, source)];
+      } else if (/^linear-gradient(.+)$/.test(value)) {
+        return [createDecl(backgroundImage, value, important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+      } else if (value == '') {
+        return [createDecl(backgroundImage, 'none', important, raws, source), createDecl(backgroundColor, 'transparent', important, raws, source)];
+      }
+      return [decl];
+    } else {
+      if (/^#?\S+$/.test(value) || /^rgba?(.+)$/.test(value)) {
+        return [createDecl(backgroundColor, value, important, raws, source)];
+      } else if (/^linear-gradient(.+)$/.test(value)) {
+        return [createDecl(backgroundImage, value, important, raws, source)];
+      } else if (value == '') {
+        return [decl];
+      }
+      return [decl];
+    }
+  };
+}
+var borderWidth = 'Width';
+var borderStyle = 'Style';
+var borderColor = 'Color';
+function createTransformBorder(options) {
+  return decl => {
+    var {
+      prop,
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+    var result = [/^[\d\.]+\S*|^(thin|medium|thick)$/, /^(solid|dashed|dotted|none)$/, /\S+/].map(item => {
+      var index = splitResult.findIndex(str => item.test(str));
+      return index < 0 ? null : splitResult.splice(index, 1)[0];
+    });
+    var isUvuePlatform = options.type === 'uvue';
+    if (isUvuePlatform) {
+      if (splitResult.length > 0 && value !== '') {
+        return [decl];
+      }
+    } else {
+      // nvue 维持不变
+      if (splitResult.length > 0) {
+        return [decl];
+      }
+    }
+    return [createDecl(prop + borderWidth, (result[0] || (options.type === 'uvue' ? 'medium' : '0')).trim(), important, raws, source), createDecl(prop + borderStyle, (result[1] || (options.type === 'uvue' ? 'none' : 'solid')).trim(), important, raws, source), createDecl(prop + borderColor, (result[2] || '#000000').trim(), important, raws, source)];
+  };
+}
+var borderTop = 'borderTop';
+var borderRight = 'borderRight';
+var borderBottom = 'borderBottom';
+var borderLeft = 'borderLeft';
+var transformBorderColor = decl => {
+  var {
+    prop,
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var property = hyphenate(prop).split('-')[1];
+  {
+    property = capitalize(property);
+  }
+  var splitResult = value.replace(/\s*,\s*/g, ',').split(/\s+/);
+  switch (splitResult.length) {
+    case 1:
+      return [decl];
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTop + property, splitResult[0], important, raws, source), createDecl(borderRight + property, splitResult[1], important, raws, source), createDecl(borderBottom + property, splitResult[2], important, raws, source), createDecl(borderLeft + property, splitResult[3], important, raws, source)];
+};
+var borderTopLeftRadius = 'borderTopLeftRadius';
+var borderTopRightRadius = 'borderTopRightRadius';
+var borderBottomRightRadius = 'borderBottomRightRadius';
+var borderBottomLeftRadius = 'borderBottomLeftRadius';
+var transformBorderRadius = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var splitResult = value.split(/\s+/);
+  if (value.includes('/')) {
+    return [decl];
+  }
+  switch (splitResult.length) {
+    case 1:
+      return [decl];
+    case 2:
+      splitResult.push(splitResult[0], splitResult[1]);
+      break;
+    case 3:
+      splitResult.push(splitResult[1]);
+      break;
+  }
+  return [createDecl(borderTopLeftRadius, splitResult[0], important, raws, source), createDecl(borderTopRightRadius, splitResult[1], important, raws, source), createDecl(borderBottomRightRadius, splitResult[2], important, raws, source), createDecl(borderBottomLeftRadius, splitResult[3], important, raws, source)];
+};
+var transformBorderStyle = transformBorderColor;
+var transformBorderWidth = transformBorderColor;
+var flexDirection = 'flexDirection';
+var flexWrap = 'flexWrap';
+var transformFlexFlow = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var splitResult = value.split(/\s+/);
+  var result = [/^(column|column-reverse|row|row-reverse)$/, /^(nowrap|wrap|wrap-reverse)$/].map(item => {
+    var index = splitResult.findIndex(str => item.test(str));
+    return index < 0 ? null : splitResult.splice(index, 1)[0];
+  });
+  if (splitResult.length) {
+    return [decl];
+  }
+  return [createDecl(flexDirection, result[0] || 'column', important, raws, source), createDecl(flexWrap, result[1] || 'nowrap', important, raws, source)];
+};
+var top = 'Top';
+var right = 'Right';
+var bottom = 'Bottom';
+var left = 'Left';
+var createTransformBox = type => {
+  return decl => {
+    var {
+      value,
+      important,
+      raws,
+      source
+    } = decl;
+    var splitResult = value.split(/\s+/);
+    switch (splitResult.length) {
+      case 1:
+        splitResult.push(splitResult[0], splitResult[0], splitResult[0]);
+        break;
+      case 2:
+        splitResult.push(splitResult[0], splitResult[1]);
+        break;
+      case 3:
+        splitResult.push(splitResult[1]);
+        break;
+    }
+    return [createDecl(type + top, splitResult[0], important, raws, source), createDecl(type + right, splitResult[1], important, raws, source), createDecl(type + bottom, splitResult[2], important, raws, source), createDecl(type + left, splitResult[3], important, raws, source)];
+  };
+};
+var transformMargin = createTransformBox('margin');
+var transformPadding = createTransformBox('padding');
+var transitionProperty = 'transitionProperty';
+var transitionDuration = 'transitionDuration';
+var transitionTimingFunction = 'transitionTimingFunction';
+var transitionDelay = 'transitionDelay';
+var transformTransition = decl => {
+  var {
+    value,
+    important,
+    raws,
+    source
+  } = decl;
+  var result = [];
+  var match;
+  // 针对 cubic-bezier 特殊处理
+  // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
+  if (decl.value.includes('cubic-bezier')) {
+    var CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+    match = value.match(CHUNK_REGEXP);
+  } else {
+    var _CHUNK_REGEXP = /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/;
+    match = value.match(_CHUNK_REGEXP);
+  }
+  if (!match) {
+    return result;
+  }
+  match[1] && result.push(createDecl(transitionProperty, match[1], important, raws, source));
+  match[2] && result.push(createDecl(transitionDuration, match[2], important, raws, source));
+  match[3] && result.push(createDecl(transitionTimingFunction, match[3], important, raws, source));
+  match[4] && result.push(createDecl(transitionDelay, match[4], important, raws, source));
+  return result;
+};
+function getDeclTransforms(options) {
+  var transformBorder = createTransformBorder(options);
+  var styleMap = _objectSpread({
+    transition: transformTransition,
+    border: transformBorder,
+    background: createTransformBackground(options),
+    borderTop: transformBorder,
+    borderRight: transformBorder,
+    borderBottom: transformBorder,
+    borderLeft: transformBorder,
+    borderStyle: transformBorderStyle,
+    borderWidth: transformBorderWidth,
+    borderColor: transformBorderColor,
+    borderRadius: transformBorderRadius,
+    // uvue已经支持这些简写属性，不需要展开
+    // margin,padding继续展开，确保样式的优先级
+    margin: transformMargin,
+    padding: transformPadding
+  }, options.type !== 'uvue' ? {
+    flexFlow: transformFlexFlow
+  } : {});
+  var result = {};
+  {
+    result = styleMap;
+  }
+  return result;
+}
+var DeclTransforms;
+var expanded = Symbol('expanded');
+function expand(options) {
+  var plugin = {
+    postcssPlugin: "".concat(options.type || 'nvue', ":expand"),
+    Declaration(decl) {
+      if (decl[expanded]) {
+        return;
+      }
+      if (!DeclTransforms) {
+        DeclTransforms = getDeclTransforms(options);
+      }
+      var transform = DeclTransforms[decl.prop];
+      if (transform) {
+        var res = transform(decl);
+        var _isSame = res.length === 1 && res[0] === decl;
+        if (!_isSame) {
+          decl.replaceWith(res);
+        }
+      }
+      decl[expanded] = true;
+    }
+  };
+  return plugin;
+}
 
 /**
 * @dcloudio/uni-app-nvue v3.4.21

@@ -1,7 +1,12 @@
 import path from 'path'
 import fs from 'fs-extra'
 import { sync } from 'fast-glob'
-import { compileUniModuleWithTsc } from '../src'
+import {
+  compileUniModuleWithTsc,
+  createUniXKotlinCompilerOnce,
+  createUniXSwiftCompilerOnce,
+  uniModulesSyncFilePreprocessors,
+} from '../src'
 
 const inputDir = path.resolve(__dirname, 'examples/tsc/src')
 const distDir = path.resolve(__dirname, 'examples/tsc/dist')
@@ -14,7 +19,14 @@ describe('uni_modules', () => {
       jest.setTimeout(60000)
       test(`tsc ${plugin} ${platform}`, async () => {
         const reset = initEnv(platform)
-        await compileUniModuleWithTsc(platform, pluginDir)
+        await compileUniModuleWithTsc(
+          platform,
+          pluginDir,
+          platform === 'app-android'
+            ? createUniXKotlinCompilerOnce()
+            : createUniXSwiftCompilerOnce(),
+          uniModulesSyncFilePreprocessors
+        )
         const outputUVuePluginDir = path.resolve(
           process.env.UNI_OUTPUT_DIR!,
           '../.uvue',

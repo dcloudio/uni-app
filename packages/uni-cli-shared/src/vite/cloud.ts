@@ -11,7 +11,7 @@ import {
   genEncryptEasyComModuleIndex,
   initCheckEnv,
   parseUniModulesWithComponents,
-} from '../uni_modules'
+} from '../uni_modules.cloud'
 import { cleanUrl } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
 import { createUniXKotlinCompilerOnce, resolveUTSCompiler } from '../uts'
