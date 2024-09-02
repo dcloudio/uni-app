@@ -13,7 +13,7 @@ let proxy: any
 const callbacks: Record<string, Function> = {}
 
 function isUniElement(obj: any) {
-  return typeof obj.getNodeId === 'function' && obj.pageId
+  return typeof obj?.getNodeId === 'function' && obj?.pageId
 }
 
 function isComponentPublicInstance(instance: any) {
