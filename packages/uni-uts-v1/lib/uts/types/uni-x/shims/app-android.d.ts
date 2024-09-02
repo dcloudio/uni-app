@@ -157,8 +157,12 @@ declare global {
     set ready(value: boolean)
   }
 
+  function Suppress(...names: string[]): any
+
   interface UTSAndroid {
     consoleDebugError<T>(obj: T, info: string): T
+    keyword(name: string): any
+    Suppress(...names: string[]): any
   }
 
   interface IUTSSourceMap {
