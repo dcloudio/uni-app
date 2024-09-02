@@ -238,7 +238,7 @@ function genAppHarmonyIndex(inputDir: string, utsPlugins: Set<string>) {
     extApiCodes.push(...registerProviderCodes)
   }
 
-  fs.writeFileSync(
+  fs.outputFileSync(
     path.resolve(
       resolveUTSCompiler().resolveAppHarmonyUniModulesEntryDir(),
       'index.generated.ets'
