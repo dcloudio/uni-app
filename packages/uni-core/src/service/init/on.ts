@@ -25,11 +25,18 @@ function onResize(res: UniApp.WindowResizeResult) {
 function onAppEnterForeground(enterOptions: LaunchOptions) {
   const page = getCurrentPage()
 
-  invokeHook(getApp() as ComponentPublicInstance, ON_SHOW, enterOptions)
+  invokeHook(
+    (__X__ ? getApp().vm : getApp()) as ComponentPublicInstance,
+    ON_SHOW,
+    enterOptions
+  )
   invokeHook(page as ComponentPublicInstance, ON_SHOW)
 }
 
 function onAppEnterBackground() {
-  invokeHook(getApp() as ComponentPublicInstance, ON_HIDE)
+  invokeHook(
+    (__X__ ? getApp().vm : getApp()) as ComponentPublicInstance,
+    ON_HIDE
+  )
   invokeHook(getCurrentPage() as ComponentPublicInstance, ON_HIDE)
 }
