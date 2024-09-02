@@ -178,6 +178,13 @@ if (process.env.UNI_OUTPUT_DIR && process.env.UNI_OUTPUT_DIR.indexOf('./') === 0
 process.env.UNI_PLATFORM = process.env.UNI_PLATFORM || 'h5'
 process.env.VUE_APP_PLATFORM = process.env.UNI_PLATFORM
 process.env.UNI_OUTPUT_DIR = process.env.UNI_OUTPUT_DIR || process.env.UNI_OUTPUT_DEFAULT_DIR
+
+process.env.UNI_APP_X_TSC = 'true'
+const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
+process.env.UNI_APP_X_CACHE_DIR =
+  process.env.UNI_APP_X_CACHE_DIR ||
+  path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
+
 initUtsPlatform()
 
 function initUtsPlatform () {

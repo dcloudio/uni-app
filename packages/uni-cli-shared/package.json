@@ -21,6 +21,7 @@
   "dependencies": {
     "escape-string-regexp": "^4.0.0",
     "fast-glob": "^3.2.11",
+    "fs-extra": "^10.0.0",
     "glob-escape": "^0.0.2",
     "hash-sum": "^1.0.2",
     "postcss-urlrewrite": "^0.2.2",
