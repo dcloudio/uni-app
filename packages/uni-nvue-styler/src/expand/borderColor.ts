@@ -1,12 +1,41 @@
 import { capitalize, hyphenate } from '@vue/shared'
-import { type TransformDecl, createDecl } from '../utils'
+import {
+  type Declaration,
+  //  type TransformDecl,
+  createDecl,
+} from '../utils'
 
-const borderTop = __NODE_JS__ ? 'border-top-' : 'borderTop'
-const borderRight = __NODE_JS__ ? 'border-right-' : 'borderRight'
-const borderBottom = __NODE_JS__ ? 'border-bottom-' : 'borderBottom'
-const borderLeft = __NODE_JS__ ? 'border-left-' : 'borderLeft'
+function borderTop(): string {
+  if (__NODE_JS__) {
+    return 'border-top-'
+  } else {
+    return 'borderTop'
+  }
+}
 
-export const transformBorderColor: TransformDecl = (decl) => {
+function borderRight(): string {
+  if (__NODE_JS__) {
+    return 'border-right-'
+  } else {
+    return 'borderRight'
+  }
+}
+function borderBottom(): string {
+  if (__NODE_JS__) {
+    return 'border-bottom-'
+  } else {
+    return 'borderBottom'
+  }
+}
+function borderLeft(): string {
+  if (__NODE_JS__) {
+    return 'border-left-'
+  } else {
+    return 'borderLeft'
+  }
+}
+
+export const transformBorderColor = (decl: Declaration): Declaration[] => {
   const { prop, value, important, raws, source } = decl
   let property = hyphenate(prop).split('-')[1]
   if (!__NODE_JS__) {
@@ -25,15 +54,27 @@ export const transformBorderColor: TransformDecl = (decl) => {
   }
 
   return [
-    createDecl(borderTop + property, splitResult[0], important, raws, source),
-    createDecl(borderRight + property, splitResult[1], important, raws, source),
+    createDecl(borderTop() + property, splitResult[0], important, raws, source),
     createDecl(
-      borderBottom + property,
+      borderRight() + property,
+      splitResult[1],
+      important,
+      raws,
+      source
+    ),
+    createDecl(
+      borderBottom() + property,
       splitResult[2],
       important,
       raws,
       source
     ),
-    createDecl(borderLeft + property, splitResult[3], important, raws, source),
+    createDecl(
+      borderLeft() + property,
+      splitResult[3],
+      important,
+      raws,
+      source
+    ),
   ]
 }

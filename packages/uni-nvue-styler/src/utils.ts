@@ -1,7 +1,9 @@
-import type { Declaration, Source } from 'postcss'
+import type { Source, Declaration as _Declaration } from 'postcss'
 
 export const COMBINATORS_RE =
   /^((?:(?:\.[A-Za-z0-9_\-]+)+[\+\~\> ])*)((?:\.[A-Za-z0-9_\-\:]+)+)$/
+
+export type Declaration = _Declaration
 
 export type TransformDecl = (decl: Declaration) => Declaration[]
 
@@ -96,7 +98,7 @@ export function createDecl(
   source?: Source
 ) {
   const decl = {
-    type: 'decl',
+    // type: 'decl',
     prop,
     value: value.toString(),
     raws,
