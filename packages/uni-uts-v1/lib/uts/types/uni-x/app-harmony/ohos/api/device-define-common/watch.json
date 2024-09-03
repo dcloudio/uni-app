@@ -1,0 +1,12 @@
+{
+    "SysCaps": [
+        "SystemCapability.HiviewDFX.HiLogLite",
+        "SystemCapability.Security.DeviceAuth",
+        "SystemCapability.Security.Huks.Extension",
+        "SystemCapability.Security.Huks.Core",
+        "SystemCapability.Security.Cipher",
+        "SystemCapability.Communication.SoftBus.Core",
+        "SystemCapability.XTS.DeviceAttest.Lite",
+        "SystemCapability.Developtools.Syscap"
+    ]
+}
