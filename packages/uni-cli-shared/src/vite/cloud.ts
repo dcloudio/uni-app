@@ -14,9 +14,16 @@ import {
 } from '../uni_modules.cloud'
 import { cleanUrl } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
-import { createUniXKotlinCompilerOnce, resolveUTSCompiler } from '../uts'
+import {
+  createUniXArkTSCompilerOnce,
+  createUniXKotlinCompilerOnce,
+  createUniXSwiftCompilerOnce,
+  resolveUTSCompiler,
+} from '../uts'
 import { normalizePath } from '../utils'
 import { getUTSEasyComAutoImports } from '../easycom'
+import { compileUniModuleWithTsc } from '../uni_modules'
+import { uniModulesSyncFilePreprocessors } from './plugins/uts/uni_modules'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -259,11 +266,11 @@ export function uniEncryptUniModulesPlugin(): Plugin {
 }
 
 function tscOutDir(platform: 'app-android' | 'app-ios') {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc', platform)
+  return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
 }
 
 function uvueOutDir(platform: 'app-android' | 'app-ios') {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue', platform)
+  return path.join(process.env.UNI_APP_X_UVUE_DIR, platform)
 }
 
 function createExternal(config: ResolvedConfig) {
@@ -422,4 +429,20 @@ export function addUniModulesExtApiComponents(
 
 function getUniModulesExtApiComponents(uniModuleId: string) {
   return [...(uniModulesExtApiComponents.get(uniModuleId) || [])]
+}
+
+export function compileCloudUniModuleWithTsc(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  pluginDir: string
+) {
+  return compileUniModuleWithTsc(
+    platform,
+    pluginDir,
+    platform === 'app-android'
+      ? createUniXKotlinCompilerOnce()
+      : platform === 'app-harmony'
+      ? createUniXArkTSCompilerOnce()
+      : createUniXSwiftCompilerOnce(),
+    uniModulesSyncFilePreprocessors
+  )
 }

@@ -1,7 +1,12 @@
 import path from 'path'
 import fs from 'fs-extra'
 import type { UTSBundleOptions } from '@dcloudio/uts'
-import { formatUniProviderName, getUTSCompiler } from './utils'
+import {
+  formatUniProviderName,
+  getUTSCompiler,
+  resolveBundleInputFileName,
+  resolveBundleInputRoot,
+} from './utils'
 import type { CompileResult } from '.'
 import { sync } from 'fast-glob'
 
@@ -87,8 +92,8 @@ export async function compileArkTS(
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,
     input: {
-      root: inputDir,
-      filename,
+      root: resolveBundleInputRoot('app-harmony', inputDir),
+      filename: resolveBundleInputFileName('app-harmony', filename),
       paths: {
         '@dcloudio/uni-runtime': '@dcloudio/uni-app-runtime',
       },

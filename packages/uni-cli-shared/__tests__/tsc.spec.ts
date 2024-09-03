@@ -46,11 +46,7 @@ describe('uni_modules', () => {
 })
 
 function initEnv(platform: 'app-android' | 'app-ios') {
-  const oldInputDir = process.env.UNI_INPUT_DIR
-  const oldOutputDir = process.env.UNI_OUTPUT_DIR
-  const oldUTSPlatform = process.env.UNI_UTS_PLATFORM
-  const oldCacheDir = process.env.UNI_APP_X_CACHE_DIR
-  const oldTsc = process.env.UNI_APP_X_TSC
+  const oldEnv = process.env
 
   process.env.UNI_INPUT_DIR = inputDir
   process.env.UNI_OUTPUT_DIR = path.resolve(distDir, 'build', platform)
@@ -59,12 +55,20 @@ function initEnv(platform: 'app-android' | 'app-ios') {
     process.env.UNI_OUTPUT_DIR,
     '../cache/.' + platform
   )
+  process.env.UNI_APP_X_TSC_DIR = path.resolve(
+    process.env.UNI_OUTPUT_DIR,
+    '../.tsc'
+  )
+  process.env.UNI_APP_X_UVUE_DIR = path.resolve(
+    process.env.UNI_OUTPUT_DIR,
+    '../.uvue'
+  )
+  process.env.UNI_APP_X_TSC_CACHE_DIR = path.resolve(
+    process.env.UNI_APP_X_CACHE_DIR,
+    `tsc`
+  )
 
   return () => {
-    process.env.UNI_INPUT_DIR = oldInputDir
-    process.env.UNI_OUTPUT_DIR = oldOutputDir
-    process.env.UNI_UTS_PLATFORM = oldUTSPlatform
-    process.env.UNI_APP_X_CACHE_DIR = oldCacheDir
-    process.env.UNI_APP_X_TSC = oldTsc
+    process.env = oldEnv
   }
 }

@@ -225,11 +225,3 @@ export function addExtApiComponents(components: string[]) {
 export function getExtApiComponents() {
   return extApiComponents
 }
-
-export function uvueOutDir(platform: 'app-android' | 'app-ios') {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue', platform)
-}
-
-export function tscOutDir(platform: 'app-android' | 'app-ios') {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc', platform)
-}

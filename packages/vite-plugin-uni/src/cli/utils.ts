@@ -146,6 +146,24 @@ export function initEnv(
       }
     }
     if (process.env.UNI_APP_HARMONY_PROJECT_PATH) {
+      // 先通过原始outputDir设置，因为下边会修改原始的outputDir到鸿蒙项目里，而这些临时目录不应该影响到鸿蒙项目
+      process.env.UNI_APP_X_TSC_DIR = path.resolve(
+        process.env.UNI_OUTPUT_DIR,
+        '../.tsc'
+      )
+      process.env.UNI_APP_X_UVUE_DIR = path.resolve(
+        process.env.UNI_OUTPUT_DIR,
+        '../.uvue'
+      )
+      const baseOutDir = path.basename(process.env.UNI_OUTPUT_DIR)
+      process.env.UNI_APP_X_CACHE_DIR =
+        process.env.UNI_APP_X_CACHE_DIR ||
+        path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
+
+      process.env.UNI_APP_X_TSC_CACHE_DIR = path.resolve(
+        process.env.UNI_APP_X_CACHE_DIR,
+        `tsc`
+      )
       // 指定了鸿蒙项目根目录
       process.env.UNI_OUTPUT_DIR = path.resolve(
         process.env.UNI_APP_HARMONY_PROJECT_PATH,
@@ -199,6 +217,24 @@ export function initEnv(
 
   // 默认开启 tsc
   process.env.UNI_APP_X_TSC = 'true'
+  if (!process.env.UNI_APP_X_TSC_DIR) {
+    process.env.UNI_APP_X_TSC_DIR = path.resolve(
+      process.env.UNI_OUTPUT_DIR,
+      '../.tsc'
+    )
+  }
+  if (!process.env.UNI_APP_X_UVUE_DIR) {
+    process.env.UNI_APP_X_UVUE_DIR = path.resolve(
+      process.env.UNI_OUTPUT_DIR,
+      '../.uvue'
+    )
+  }
+  if (!process.env.UNI_APP_X_TSC_CACHE_DIR) {
+    process.env.UNI_APP_X_TSC_CACHE_DIR = path.resolve(
+      process.env.UNI_APP_X_CACHE_DIR,
+      `tsc`
+    )
+  }
 
   initAutomator(options)
 

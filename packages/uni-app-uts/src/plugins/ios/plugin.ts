@@ -6,15 +6,16 @@ import {
   buildUniExtApis,
   createEncryptCssUrlReplacer,
   emptyDir,
+  enableSourceMap,
   injectCssPlugin,
   injectCssPostPlugin,
   normalizePath,
   resolveMainPathOnce,
+  tscOutDir,
+  uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
 import { configResolved, createUniOptions } from '../utils'
 import { uniAppCssPlugin } from './css'
-import { enableSourceMap } from '@dcloudio/uni-cli-shared'
-import { tscOutDir, uvueOutDir } from '../utils'
 
 export function uniAppIOSPlugin(): UniVitePlugin {
   const inputDir = process.env.UNI_INPUT_DIR

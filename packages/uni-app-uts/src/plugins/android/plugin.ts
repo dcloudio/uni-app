@@ -19,6 +19,8 @@ import {
   parseVueRequest,
   resolveMainPathOnce,
   resolveUTSCompiler,
+  tscOutDir,
+  uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
 import {
   DEFAULT_APPID,
@@ -36,9 +38,7 @@ import {
   configResolved,
   createUniOptions,
   getExtApiComponents,
-  tscOutDir,
   updateManifestModules,
-  uvueOutDir,
 } from '../utils'
 
 const uniCloudSpaceList = getUniCloudSpaceList()

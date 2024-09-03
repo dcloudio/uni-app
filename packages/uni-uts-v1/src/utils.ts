@@ -848,7 +848,7 @@ export function requireUniHelpers() {
 }
 
 export function resolveBundleInputRoot(
-  platform: 'app-android' | 'app-ios',
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
   root: string
 ) {
   if (
@@ -862,7 +862,7 @@ export function resolveBundleInputRoot(
 }
 
 export function resolveBundleInputFileName(
-  platform: 'app-android' | 'app-ios',
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
   fileName: string
 ) {
   if (

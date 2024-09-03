@@ -12,14 +12,20 @@ declare function filterReferencedByPaths(referencedFilePath: tsTypes__default.Pa
 
 declare function componentPublicInstancePropertyAccessFallback(ts: typeof tsTypes, typeChecker: tsTypes.TypeChecker, node: tsTypes.PropertyAccessExpression | tsTypes.QualifiedName, left: tsTypes.Expression | tsTypes.QualifiedName, leftType: tsTypes.Type, right: tsTypes.Identifier | tsTypes.PrivateIdentifier): tsTypes.Type | undefined;
 
-declare function initTargetHacker(_targetLanguage: 'Kotlin' | 'Swift'): {
+declare enum TargetLanguage {
+    Kotlin = "Kotlin",
+    Swift = "Swift",
+    ArkTS = "ArkTS",
+    JavaScript = "JavaScript"
+}
+declare function initTargetHacker(_targetLanguage: TargetLanguage): {
     componentPublicInstancePropertyAccessFallback: typeof componentPublicInstancePropertyAccessFallback;
     filterReferencedByPaths: typeof filterReferencedByPaths;
     isRelatedTo: typeof isRelatedTo;
     isTypeRelatedTo: typeof isTypeRelatedTo;
     useTypeAndInterfaceAsValue: boolean;
 };
-declare function initTargetTransformers(targetLanguage: 'Kotlin' | 'Swift'): _uts_transforms_base.UTSTransformerFactoryCreator[];
+declare function initTargetTransformers(targetLanguage: TargetLanguage): _uts_transforms_base.UTSTransformerFactoryCreator[];
 
 interface TransformOptions {
     transformArguments?: {
@@ -39,7 +45,7 @@ interface PositionFor {
 }
 type UniXCompilerOptions = {
     mode: 'development' | 'production';
-    targetLanguage: 'Kotlin' | 'Swift';
+    targetLanguage: TargetLanguage;
     tsFactory: (__utsHacker__: unknown) => typeof tsTypes__default;
     inputDir: string;
     cacheDir: string;
@@ -72,4 +78,4 @@ declare class UniXCompiler implements IUTSCompiler {
     init(): Promise<void>;
 }
 
-export { type InvalidateEventKind, type TransformOptions, UniXCompiler, type UniXCompilerOptions, initTargetHacker, initTargetTransformers };
+export { type InvalidateEventKind, TargetLanguage, type TransformOptions, UniXCompiler, type UniXCompilerOptions, initTargetHacker, initTargetTransformers };

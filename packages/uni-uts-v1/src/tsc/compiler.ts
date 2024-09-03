@@ -13,9 +13,11 @@ export type { UniXCompiler } from '../../lib/uni-x/dist/compiler'
 
 const debugTscWatcher = debug('uts:tsc:watcher')
 
+type TargetLanguage = `${UniXCompilerOptions['targetLanguage']}`
+
 export function createUniXCompiler(
   mode: UniXCompilerOptions['mode'],
-  targetLanguage: UniXCompilerOptions['targetLanguage'],
+  targetLanguage: TargetLanguage,
   options: {
     inputDir: string
     outputDir: string
@@ -69,7 +71,7 @@ export function createUniXCompiler(
 
   const compilerOptions: UniXCompilerOptions = {
     mode,
-    targetLanguage,
+    targetLanguage: targetLanguage as UniXCompilerOptions['targetLanguage'],
     tsFactory,
     paths: options.paths,
     utsLibDir,

@@ -139,7 +139,7 @@ function resolveUTSFile(
 }
 
 function resolveUniXCompilerUniModulesPaths(
-  platform: 'app-android' | 'app-ios',
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
   inputDir: string,
   tscInputDir: string
 ) {
@@ -181,51 +181,42 @@ function resolveUniXCompilerUniModulesPaths(
   return paths
 }
 
-export const createUniXKotlinCompilerOnce = once(() => {
+type TargetLanguage = Parameters<(typeof UTSCompiler)['createUniXCompiler']>[1]
+
+function createUniXTargetLanguageCompiler(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  language: TargetLanguage
+) {
   const { createUniXCompiler } = resolveUTSCompiler()
-  const tscInputDir = path.join(
-    process.env.UNI_OUTPUT_DIR,
-    '../.tsc/app-android'
-  )
+  const tscInputDir = path.join(process.env.UNI_APP_X_TSC_DIR, platform)
   genUniExtApiDeclarationFileOnce(tscInputDir)
   return createUniXCompiler(
     process.env.NODE_ENV === 'development' ? 'development' : 'production',
-    'Kotlin',
+    language,
     {
       inputDir: tscInputDir,
-      cacheDir: path.resolve(
-        process.env.UNI_APP_X_CACHE_DIR,
-        'tsc/app-android'
-      ),
-      outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue/app-android'),
+      cacheDir: path.resolve(process.env.UNI_APP_X_TSC_CACHE_DIR, platform),
+      outputDir: path.join(process.env.UNI_APP_X_UVUE_DIR, platform),
       paths: resolveUniXCompilerUniModulesPaths(
-        'app-android',
+        platform,
         process.env.UNI_INPUT_DIR,
         tscInputDir
       ),
       normalizeFileName: normalizeNodeModules,
     }
   )
+}
+
+export const createUniXArkTSCompilerOnce = once(() => {
+  return createUniXTargetLanguageCompiler('app-harmony', 'ArkTS')
+})
+
+export const createUniXKotlinCompilerOnce = once(() => {
+  return createUniXTargetLanguageCompiler('app-android', 'Kotlin')
 })
 
 export const createUniXSwiftCompilerOnce = once(() => {
-  const { createUniXCompiler } = resolveUTSCompiler()
-  const tscInputDir = path.join(process.env.UNI_OUTPUT_DIR, '../.tsc/app-ios')
-  return createUniXCompiler(
-    process.env.NODE_ENV === 'development' ? 'development' : 'production',
-    'Swift',
-    {
-      inputDir: tscInputDir,
-      cacheDir: path.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc/app-ios'),
-      outputDir: path.join(process.env.UNI_OUTPUT_DIR, '../.uvue/app-ios'),
-      paths: resolveUniXCompilerUniModulesPaths(
-        'app-ios',
-        process.env.UNI_INPUT_DIR,
-        tscInputDir
-      ),
-      normalizeFileName: normalizeNodeModules,
-    }
-  )
+  return createUniXTargetLanguageCompiler('app-ios', 'Swift')
 })
 
 export function resolveUTSCompiler(): typeof UTSCompiler {
@@ -648,3 +639,13 @@ ${apis.join('\n')}
     }
   }
 })
+
+export function uvueOutDir(
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
+) {
+  return path.join(process.env.UNI_APP_X_UVUE_DIR, platform)
+}
+
+export function tscOutDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
+  return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
+}

@@ -395,7 +395,7 @@ export function parseUTSModuleDeps(deps: string[], inputDir: string): string[] {
 }
 
 export async function compileUniModuleWithTsc(
-  platform: 'app-android' | 'app-ios',
+  platform: UniXCompilerPlatform,
   pluginDir: string,
   uniXCompiler: UniXCompiler,
   preprocessors: Preprocessors
@@ -406,6 +406,7 @@ export async function compileUniModuleWithTsc(
   await uniXCompiler.init()
   // 同步资源
   await syncUniModuleFilesByCompiler(
+    platform,
     uniXCompiler,
     pluginDir,
     resolveOutputPluginDir(platform, inputDir, pluginDir),
@@ -425,6 +426,7 @@ export async function compileUniModuleWithTsc(
 }
 
 export async function syncUniModuleFilesByCompiler(
+  platform: UniXCompilerPlatform,
   compiler: UniXCompiler,
   pluginDir: string,
   outputPluginDir: string,
@@ -434,6 +436,7 @@ export async function syncUniModuleFilesByCompiler(
   const start = Date.now()
   // 目前每次编译，都全量比对同步uni_modules目录下的文件，不然还要 watch dir
   const files = await syncUniModuleFiles(
+    platform,
     pluginDir,
     outputPluginDir,
     true,
@@ -457,6 +460,7 @@ export async function syncUniModuleFilesByCompiler(
     // 如果有组件，那再 uts 文件 copy 到 .uvue 目录下，避免 tsc 不 emit 相关的 uts 文件
     // 如果 tsc emit 了，那就会再次覆盖
     await syncUniModuleFiles(
+      platform,
       pluginDir,
       uvueOutputPluginDir,
       false,
@@ -484,14 +488,20 @@ function resolveUniModuleGlobs() {
   return globs
 }
 
-function resolveUniModuleIgnoreGlobs() {
+function resolveUniModuleIgnoreGlobs(platform: UniXCompilerPlatform) {
   const globs = [
     `utssdk/app-android/config.json`,
     `utssdk/app-ios/config.json`,
-    `utssdk/app-harmony/**/*`,
     `utssdk/web/**/*`,
     `utssdk/mp-*/**/*`,
   ]
+  if (platform === 'app-android' || platform === 'app-ios') {
+    globs.push(`utssdk/app-harmony/**/*`)
+  }
+  if (platform === 'app-harmony') {
+    globs.push(`utssdk/app-android/**/*`)
+    globs.push(`utssdk/app-ios/**/*`)
+  }
   return globs
 }
 
@@ -551,6 +561,7 @@ async function syncUniModuleVueFiles(
 }
 
 async function syncUniModuleFiles(
+  platform: UniXCompilerPlatform,
   pluginDir: string,
   outputPluginDir: string,
   rename: boolean,
@@ -559,7 +570,7 @@ async function syncUniModuleFiles(
   return fg(resolveUniModuleGlobs(), {
     cwd: pluginDir,
     absolute: false,
-    ignore: resolveUniModuleIgnoreGlobs(),
+    ignore: resolveUniModuleIgnoreGlobs(platform),
   }).then((files) => {
     return Promise.all(
       files.map((fileName) =>
@@ -614,33 +625,33 @@ async function copyFile(src: string, dest: string) {
   return fs.copy(src, dest, { overwrite: true })
 }
 
+export type UniXCompilerPlatform = 'app-android' | 'app-ios' | 'app-harmony'
+
 export function resolveOutputPluginDir(
-  platform: 'app-android' | 'app-ios',
+  platform: UniXCompilerPlatform,
   inputDir: string,
   pluginDir: string
 ) {
   return path.join(
-    process.env.UNI_OUTPUT_DIR,
-    '../.tsc',
+    process.env.UNI_APP_X_TSC_DIR,
     platform,
     path.relative(inputDir, pluginDir)
   )
 }
 export function resolveUVueOutputPluginDir(
-  platform: 'app-android' | 'app-ios',
+  platform: UniXCompilerPlatform,
   inputDir: string,
   pluginDir: string
 ) {
   return path.join(
-    process.env.UNI_OUTPUT_DIR,
-    '../.uvue',
+    process.env.UNI_APP_X_UVUE_DIR,
     platform,
     path.relative(inputDir, pluginDir)
   )
 }
 
 export function resolveTscUniModuleIndexFileName(
-  platform: 'app-android' | 'app-ios',
+  platform: UniXCompilerPlatform,
   pluginDir: string
 ) {
   let indexFileName = path.resolve(pluginDir, `utssdk/${platform}/index.uts.ts`)

@@ -209,12 +209,14 @@ export async function compileApp(entry: string, options: CompileAppOptions) {
   return runKotlinDev(options, result as RunKotlinDevResult, hasCache)
 }
 
-export function uvueOutDir(platform: 'app-android' | 'app-ios') {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.uvue', platform)
+export function uvueOutDir(
+  platform: 'app-android' | 'app-ios' | 'app-harmony'
+) {
+  return path.join(process.env.UNI_APP_X_UVUE_DIR, platform)
 }
 
-export function tscOutDir(platform: 'app-android' | 'app-ios') {
-  return path.join(process.env.UNI_OUTPUT_DIR, '../.tsc', platform)
+export function tscOutDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
+  return path.join(process.env.UNI_APP_X_TSC_DIR, platform)
 }
 
 function kotlinSrcDir(kotlinDir: string) {

@@ -4,12 +4,15 @@ import {
   type UniVitePlugin,
   buildUniExtApis,
   camelize,
+  emptyDir,
   formatExtApiProviderName,
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
   parseManifestJsonOnce,
   parseUniExtApi,
   resolveUTSCompiler,
+  tscOutDir,
+  uvueOutDir,
 } from '@dcloudio/uni-cli-shared'
 import type { OutputChunk } from 'rollup'
 
@@ -62,6 +65,20 @@ function generateHarmonyImportExternalCode(hamonyPackageNames: string[]) {
 }
 
 export function uniAppHarmonyPlugin(): UniVitePlugin {
+  const uvueOutputDir = uvueOutDir('app-harmony')
+  const tscOutputDir = tscOutDir('app-harmony')
+  function emptyUVueDir() {
+    if (fs.existsSync(uvueOutputDir)) {
+      emptyDir(uvueOutputDir)
+    }
+  }
+  emptyUVueDir()
+  function emptyTscDir() {
+    if (fs.existsSync(tscOutputDir)) {
+      emptyDir(tscOutputDir)
+    }
+  }
+  emptyTscDir()
   return {
     name: 'uni:app-harmony',
     apply: 'build',

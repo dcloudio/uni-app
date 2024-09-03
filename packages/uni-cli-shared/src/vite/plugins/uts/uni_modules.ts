@@ -5,6 +5,7 @@ import { once } from '@dcloudio/uni-shared'
 import { dataToEsm } from '@rollup/pluginutils'
 import type { ChangeEvent } from 'rollup'
 import {
+  createUniXArkTSCompilerOnce,
   createUniXKotlinCompilerOnce,
   createUniXSwiftCompilerOnce,
   initUTSKotlinAutoImportsOnce,
@@ -97,7 +98,11 @@ export function uniUTSAppUniModulesPlugin(
       process.env.UNI_UTS_PLATFORM === 'app')
       ? createUniXSwiftCompilerOnce()
       : null
-  const uniXCompiler = uniXKotlinCompiler || uniXSwiftCompiler
+  const uniXArkTSCompiler =
+    process.env.UNI_APP_X_TSC === 'true' &&
+    process.env.UNI_UTS_PLATFORM === 'app-harmony'
+      ? createUniXArkTSCompilerOnce()
+      : null
 
   const changedFiles = new Map<
     string,
@@ -111,21 +116,37 @@ export function uniUTSAppUniModulesPlugin(
     const pluginId = path.basename(pluginDir)
 
     if (uniXKotlinCompiler) {
+      const platform = 'app-android'
       await syncUniModuleFilesByCompiler(
+        platform,
         uniXKotlinCompiler,
         pluginDir,
-        resolveOutputPluginDir('app-android', inputDir, pluginDir),
-        resolveUVueOutputPluginDir('app-android', inputDir, pluginDir),
+        resolveOutputPluginDir(platform, inputDir, pluginDir),
+        resolveUVueOutputPluginDir(platform, inputDir, pluginDir),
         uniModulesSyncFilePreprocessors
       )
     }
 
     if (uniXSwiftCompiler) {
+      const platform = 'app-ios'
       await syncUniModuleFilesByCompiler(
+        platform,
         uniXSwiftCompiler,
         pluginDir,
-        resolveOutputPluginDir('app-ios', inputDir, pluginDir),
-        resolveUVueOutputPluginDir('app-ios', inputDir, pluginDir),
+        resolveOutputPluginDir(platform, inputDir, pluginDir),
+        resolveUVueOutputPluginDir(platform, inputDir, pluginDir),
+        uniModulesSyncFilePreprocessors
+      )
+    }
+
+    if (uniXArkTSCompiler) {
+      const platform = 'app-harmony'
+      await syncUniModuleFilesByCompiler(
+        platform,
+        uniXArkTSCompiler,
+        pluginDir,
+        resolveOutputPluginDir(platform, inputDir, pluginDir),
+        resolveUVueOutputPluginDir(platform, inputDir, pluginDir),
         uniModulesSyncFilePreprocessors
       )
     }
@@ -133,21 +154,33 @@ export function uniUTSAppUniModulesPlugin(
     if (!utsPlugins.has(pluginId)) {
       utsPlugins.add(pluginId)
       if (uniXKotlinCompiler) {
+        const platform = 'app-android'
         const indexFileName = resolveTscUniModuleIndexFileName(
-          'app-android',
-          resolveOutputPluginDir('app-android', inputDir, pluginDir)
+          platform,
+          resolveOutputPluginDir(platform, inputDir, pluginDir)
         )
         if (indexFileName) {
           await uniXKotlinCompiler.addRootFile(indexFileName)
         }
       }
       if (uniXSwiftCompiler) {
+        const platform = 'app-ios'
         const indexFileName = resolveTscUniModuleIndexFileName(
-          'app-ios',
-          resolveOutputPluginDir('app-ios', inputDir, pluginDir)
+          platform,
+          resolveOutputPluginDir(platform, inputDir, pluginDir)
         )
         if (indexFileName) {
           await uniXSwiftCompiler.addRootFile(indexFileName)
+        }
+      }
+      if (uniXArkTSCompiler) {
+        const platform = 'app-harmony'
+        const indexFileName = resolveTscUniModuleIndexFileName(
+          platform,
+          resolveOutputPluginDir(platform, inputDir, pluginDir)
+        )
+        if (indexFileName) {
+          await uniXArkTSCompiler.addRootFile(indexFileName)
         }
       }
     }
@@ -162,6 +195,9 @@ export function uniUTSAppUniModulesPlugin(
       }
       if (uniXSwiftCompiler) {
         await uniXSwiftCompiler.invalidate(files)
+      }
+      if (uniXArkTSCompiler) {
+        await uniXArkTSCompiler.invalidate(files)
       }
     }
 
@@ -290,6 +326,9 @@ export function uniUTSAppUniModulesPlugin(
       if (uniXSwiftCompiler) {
         await uniXSwiftCompiler.init()
       }
+      if (uniXArkTSCompiler) {
+        await uniXArkTSCompiler.init()
+      }
     },
     resolveId(id, importer) {
       if (isUTSProxy(id) || isUniHelpers(id)) {
@@ -335,7 +374,7 @@ export function uniUTSAppUniModulesPlugin(
       }
     },
     watchChange(fileName, change) {
-      if (uniXCompiler) {
+      if (uniXKotlinCompiler || uniXSwiftCompiler || uniXArkTSCompiler) {
         fileName = normalizePath(fileName)
         if (fileName.startsWith(uniModulesDir)) {
           // 仅处理uni_modules中的文件
