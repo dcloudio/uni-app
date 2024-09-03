@@ -1886,11 +1886,11 @@ function onResize(res) {
 }
 function onAppEnterForeground(enterOptions) {
     const page = getCurrentPage();
-    invokeHook(getApp(), ON_SHOW, enterOptions);
+    invokeHook((getApp()), ON_SHOW, enterOptions);
     invokeHook(page, ON_SHOW);
 }
 function onAppEnterBackground() {
-    invokeHook(getApp(), ON_HIDE);
+    invokeHook((getApp()), ON_HIDE);
     invokeHook(getCurrentPage(), ON_HIDE);
 }
 
@@ -9369,49 +9369,44 @@ const EmitProtocol = [
     },
 ];
 
-class EventBus {
+class UniEventBus {
     constructor() {
-        this.emitter = new Emitter();
+        this.$emitter = new Emitter();
     }
-    $on(name, callback) {
-        this.emitter.on(name, callback);
+    on(name, callback) {
+        this.$emitter.on(name, callback);
     }
-    $once(name, callback) {
-        this.emitter.once(name, callback);
+    once(name, callback) {
+        this.$emitter.once(name, callback);
     }
-    $off(name, callback) {
+    off(name, callback) {
         if (!name) {
-            this.emitter.e = {};
+            this.$emitter.e = {};
             return;
         }
-        if (!isArray(name))
-            name = [name];
-        name.forEach((n) => this.emitter.off(n, callback));
+        this.$emitter.off(name, callback);
     }
-    $emit(name, ...args) {
-        this.emitter.emit(name, ...args);
+    emit(name, ...args) {
+        this.$emitter.emit(name, ...args);
     }
 }
-const eventBus = new EventBus();
+const eventBus = new UniEventBus();
 const $on = defineSyncApi(API_ON, (name, callback) => {
-    eventBus.$on(name, callback);
-    return () => eventBus.$off(name, callback);
+    eventBus.on(name, callback);
+    return () => eventBus.off(name, callback);
 }, OnProtocol);
 const $once = defineSyncApi(API_ONCE, (name, callback) => {
-    eventBus.$once(name, callback);
-    return () => eventBus.$off(name, callback);
+    eventBus.once(name, callback);
+    return () => eventBus.off(name, callback);
 }, OnceProtocol);
 const $off = defineSyncApi(API_OFF, (name, callback) => {
-    if (!name) {
-        eventBus.emitter.e = {};
-        return;
-    }
+    // 类型中不再体现 name 支持 string[] 类型, 仅在 uni.$off 保留该逻辑向下兼容
     if (!isArray(name))
-        name = [name];
-    name.forEach((n) => eventBus.$off(n, callback));
+        name = name ? [name] : [];
+    name.forEach((n) => eventBus.off(n, callback));
 }, OffProtocol);
 const $emit = defineSyncApi(API_EMIT, (name, ...args) => {
-    eventBus.$emit(name, ...args);
+    eventBus.emit(name, ...args);
 }, EmitProtocol);
 
 const validator = [
@@ -17428,7 +17423,7 @@ let callbackId = 1;
 let proxy;
 const callbacks = {};
 function isUniElement(obj) {
-    return typeof obj.getNodeId === 'function' && obj.pageId;
+    return typeof (obj === null || obj === void 0 ? void 0 : obj.getNodeId) === 'function' && (obj === null || obj === void 0 ? void 0 : obj.pageId);
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;

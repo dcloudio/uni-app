@@ -617,55 +617,49 @@ var API_ON = "$on";
 var API_ONCE = "$once";
 var API_OFF = "$off";
 var API_EMIT = "$emit";
-class EventBus {
+class UniEventBus {
   constructor() {
-    this.emitter = new Emitter();
+    this.$emitter = new Emitter();
   }
-  $on(name, callback) {
-    this.emitter.on(name, callback);
+  on(name, callback) {
+    this.$emitter.on(name, callback);
   }
-  $once(name, callback) {
-    this.emitter.once(name, callback);
+  once(name, callback) {
+    this.$emitter.once(name, callback);
   }
-  $off(name, callback) {
+  off(name, callback) {
     if (!name) {
-      this.emitter.e = {};
+      this.$emitter.e = {};
       return;
     }
-    if (!isArray(name))
-      name = [name];
-    name.forEach((n) => this.emitter.off(n, callback));
+    this.$emitter.off(name, callback);
   }
-  $emit(name) {
+  emit(name) {
     for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
       args[_key - 1] = arguments[_key];
     }
-    this.emitter.emit(name, ...args);
+    this.$emitter.emit(name, ...args);
   }
 }
-var eventBus = new EventBus();
+var eventBus = new UniEventBus();
 var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
-  eventBus.$on(name, callback);
-  return () => eventBus.$off(name, callback);
+  eventBus.on(name, callback);
+  return () => eventBus.off(name, callback);
 });
 var $once = /* @__PURE__ */ defineSyncApi(API_ONCE, (name, callback) => {
-  eventBus.$once(name, callback);
-  return () => eventBus.$off(name, callback);
+  eventBus.once(name, callback);
+  return () => eventBus.off(name, callback);
 });
 var $off = /* @__PURE__ */ defineSyncApi(API_OFF, (name, callback) => {
-  if (!name) {
-    eventBus.emitter.e = {};
-    return;
-  }
   if (!isArray(name))
-    name = [name];
-  name.forEach((n) => eventBus.$off(n, callback));
+    name = name ? [name] : [];
+  name.forEach((n) => eventBus.off(n, callback));
 });
 var $emit = /* @__PURE__ */ defineSyncApi(API_EMIT, function(name) {
   for (var _len2 = arguments.length, args = new Array(_len2 > 1 ? _len2 - 1 : 0), _key2 = 1; _key2 < _len2; _key2++) {
     args[_key2 - 1] = arguments[_key2];
   }
-  eventBus.$emit(name, ...args);
+  eventBus.emit(name, ...args);
 });
 var appHooks = {
   [ON_UNHANDLE_REJECTION]: [],
@@ -1429,32 +1423,33 @@ function useTheme() {
 }
 class DialogPage {
   constructor(_ref) {
+    var _this = this;
     var {
       route,
-      component,
       $getParentPage
     } = _ref;
     this.route = "";
-    this.$disableEscBack = false;
-    this.route = route;
-    this.component = component;
-    this.$getParentPage = $getParentPage;
-    var eventBus2 = new EventBus();
-    this.$on = (eventName, callback) => {
-      eventBus2.$on(eventName, callback);
+    this.$component = null;
+    this.$eventBus = new UniEventBus();
+    this.on = (eventName, callback) => {
+      this.$eventBus.on(eventName, callback);
     };
-    this.$once = (eventName, callback) => {
-      eventBus2.$once(eventName, callback);
+    this.once = (eventName, callback) => {
+      this.$eventBus.once(eventName, callback);
     };
-    this.$off = (eventName, callback) => {
-      eventBus2.$off(eventName, callback);
+    this.off = (eventName, callback) => {
+      this.$eventBus.off(eventName, callback);
     };
-    this.$emit = function(eventName) {
+    this.emit = function(eventName) {
       for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
       }
-      eventBus2.$emit(eventName, ...args);
+      _this.$eventBus.emit(eventName, ...args);
     };
+    this.$disableEscBack = false;
+    this.$vm = null;
+    this.route = route;
+    this.$getParentPage = $getParentPage;
   }
 }
 var homeDialogPages = [];
@@ -2090,7 +2085,7 @@ function initOn(app) {
       }, schemaLink);
       setEnterOptionsSync(showOptions);
       var page = getCurrentPage();
-      invokeHook(getApp(), ON_SHOW, showOptions);
+      invokeHook(getApp().vm, ON_SHOW, showOptions);
       if (page) {
         invokeHook(page, ON_SHOW);
       }
@@ -2101,7 +2096,7 @@ function initOn(app) {
   }());
   app.addEventListener(ON_HIDE, function() {
     var page = getCurrentPage();
-    invokeHook(getApp(), ON_HIDE);
+    invokeHook(getApp().vm, ON_HIDE);
     if (page) {
       invokeHook(page, ON_HIDE);
     }
@@ -2138,21 +2133,22 @@ var defaultApp = {
 };
 class UniApp {
   constructor() {
-    var eventBus2 = new EventBus();
+    var _this = this;
+    this.$eventBus = new UniEventBus();
     this.on = (eventName, callback) => {
-      eventBus2.$on(eventName, callback);
+      this.$eventBus.on(eventName, callback);
     };
     this.once = (eventName, callback) => {
-      eventBus2.$once(eventName, callback);
+      this.$eventBus.once(eventName, callback);
     };
     this.off = (eventName, callback) => {
-      eventBus2.$off(eventName, callback);
+      this.$eventBus.off(eventName, callback);
     };
     this.emit = function(eventName) {
       for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
         args[_key - 1] = arguments[_key];
       }
-      eventBus2.$emit(eventName, ...args);
+      _this.$eventBus.emit(eventName, ...args);
     };
   }
   get vm() {
@@ -2455,8 +2451,7 @@ var openDialogPage = (options) => {
   }
   var dialogPage = new DialogPage({
     route: url,
-    $getParentPage: () => parentPage,
-    component: null
+    $getParentPage: () => parentPage
   });
   if (!parentPage) {
     homeDialogPages.push(dialogPage);
@@ -3528,7 +3523,7 @@ var callbackId = 1;
 var proxy;
 var callbacks = {};
 function isUniElement(obj) {
-  return typeof obj.getNodeId === "function" && obj.pageId;
+  return typeof (obj === null || obj === void 0 ? void 0 : obj.getNodeId) === "function" && (obj === null || obj === void 0 ? void 0 : obj.pageId);
 }
 function isComponentPublicInstance(instance) {
   return instance && instance.$ && instance.$.proxy === instance;

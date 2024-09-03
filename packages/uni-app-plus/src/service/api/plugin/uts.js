@@ -5,7 +5,7 @@ let callbackId = 1;
 let proxy;
 const callbacks = {};
 function isUniElement(obj) {
-    return typeof obj.getNodeId === 'function' && obj.pageId;
+    return typeof (obj === null || obj === void 0 ? void 0 : obj.getNodeId) === 'function' && (obj === null || obj === void 0 ? void 0 : obj.pageId);
 }
 function isComponentPublicInstance(instance) {
     return instance && instance.$ && instance.$.proxy === instance;

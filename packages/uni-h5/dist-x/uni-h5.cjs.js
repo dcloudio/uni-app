@@ -2460,30 +2460,28 @@ function defineAsyncApi(name, fn, protocol, options) {
     wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
   );
 }
-class EventBus {
+class UniEventBus {
   constructor() {
-    this.emitter = new uniShared.Emitter();
+    this.$emitter = new uniShared.Emitter();
   }
-  $on(name, callback) {
-    this.emitter.on(name, callback);
+  on(name, callback) {
+    this.$emitter.on(name, callback);
   }
-  $once(name, callback) {
-    this.emitter.once(name, callback);
+  once(name, callback) {
+    this.$emitter.once(name, callback);
   }
-  $off(name, callback) {
+  off(name, callback) {
     if (!name) {
-      this.emitter.e = {};
+      this.$emitter.e = {};
       return;
     }
-    if (!shared.isArray(name))
-      name = [name];
-    name.forEach((n) => this.emitter.off(n, callback));
+    this.$emitter.off(name, callback);
   }
-  $emit(name, ...args) {
-    this.emitter.emit(name, ...args);
+  emit(name, ...args) {
+    this.$emitter.emit(name, ...args);
   }
 }
-new EventBus();
+new UniEventBus();
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_LOCALE = "getLocale";
 const getLocale = /* @__PURE__ */ defineSyncApi(
@@ -9044,18 +9042,18 @@ let $uniApp;
 {
   class UniApp {
     constructor() {
-      const eventBus = new EventBus();
+      this.$eventBus = new UniEventBus();
       this.on = (eventName, callback) => {
-        eventBus.$on(eventName, callback);
+        this.$eventBus.on(eventName, callback);
       };
       this.once = (eventName, callback) => {
-        eventBus.$once(eventName, callback);
+        this.$eventBus.once(eventName, callback);
       };
       this.off = (eventName, callback) => {
-        eventBus.$off(eventName, callback);
+        this.$eventBus.off(eventName, callback);
       };
       this.emit = (eventName, ...args) => {
-        eventBus.$emit(eventName, ...args);
+        this.$eventBus.emit(eventName, ...args);
       };
     }
     get vm() {
@@ -13842,7 +13840,7 @@ function createDialogPageVNode(dialogPages) {
     vue.renderList(dialogPages.value, (dialogPage) => {
       return vue.openBlock(), vue.createBlock(
         vue.createVNode(
-          dialogPage.component,
+          dialogPage.$component,
           {
             key: dialogPage.route,
             style: {

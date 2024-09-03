@@ -8892,11 +8892,11 @@ function onResize(res) {
 }
 function onAppEnterForeground(enterOptions) {
     const page = getCurrentPage();
-    invokeHook(getApp(), ON_SHOW, enterOptions);
+    invokeHook((getApp()), ON_SHOW, enterOptions);
     invokeHook(page, ON_SHOW);
 }
 function onAppEnterBackground() {
-    invokeHook(getApp(), ON_HIDE);
+    invokeHook((getApp()), ON_HIDE);
     invokeHook(getCurrentPage(), ON_HIDE);
 }
 

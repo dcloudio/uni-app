@@ -1707,11 +1707,18 @@ function onResize$1(res) {
 }
 function onAppEnterForeground(enterOptions2) {
   const page = getCurrentPage();
-  invokeHook(getApp(), ON_SHOW, enterOptions2);
+  invokeHook(
+    getApp(),
+    ON_SHOW,
+    enterOptions2
+  );
   invokeHook(page, ON_SHOW);
 }
 function onAppEnterBackground() {
-  invokeHook(getApp(), ON_HIDE);
+  invokeHook(
+    getApp(),
+    ON_HIDE
+  );
   invokeHook(getCurrentPage(), ON_HIDE);
 }
 const SUBSCRIBE_LIFECYCLE_HOOKS = [ON_PAGE_SCROLL, ON_REACH_BOTTOM];
@@ -3408,63 +3415,57 @@ const EmitProtocol = [
     required: true
   }
 ];
-class EventBus {
+class UniEventBus {
   constructor() {
-    this.emitter = new Emitter();
+    this.$emitter = new Emitter();
   }
-  $on(name, callback) {
-    this.emitter.on(name, callback);
+  on(name, callback) {
+    this.$emitter.on(name, callback);
   }
-  $once(name, callback) {
-    this.emitter.once(name, callback);
+  once(name, callback) {
+    this.$emitter.once(name, callback);
   }
-  $off(name, callback) {
+  off(name, callback) {
     if (!name) {
-      this.emitter.e = {};
+      this.$emitter.e = {};
       return;
     }
-    if (!isArray(name))
-      name = [name];
-    name.forEach((n) => this.emitter.off(n, callback));
+    this.$emitter.off(name, callback);
   }
-  $emit(name, ...args) {
-    this.emitter.emit(name, ...args);
+  emit(name, ...args) {
+    this.$emitter.emit(name, ...args);
   }
 }
-const eventBus = new EventBus();
+const eventBus = new UniEventBus();
 const $on = /* @__PURE__ */ defineSyncApi(
   API_ON,
   (name, callback) => {
-    eventBus.$on(name, callback);
-    return () => eventBus.$off(name, callback);
+    eventBus.on(name, callback);
+    return () => eventBus.off(name, callback);
   },
   OnProtocol
 );
 const $once = /* @__PURE__ */ defineSyncApi(
   API_ONCE,
   (name, callback) => {
-    eventBus.$once(name, callback);
-    return () => eventBus.$off(name, callback);
+    eventBus.once(name, callback);
+    return () => eventBus.off(name, callback);
   },
   OnceProtocol
 );
 const $off = /* @__PURE__ */ defineSyncApi(
   API_OFF,
   (name, callback) => {
-    if (!name) {
-      eventBus.emitter.e = {};
-      return;
-    }
     if (!isArray(name))
-      name = [name];
-    name.forEach((n) => eventBus.$off(n, callback));
+      name = name ? [name] : [];
+    name.forEach((n) => eventBus.off(n, callback));
   },
   OffProtocol
 );
 const $emit = /* @__PURE__ */ defineSyncApi(
   API_EMIT,
   (name, ...args) => {
-    eventBus.$emit(name, ...args);
+    eventBus.emit(name, ...args);
   },
   EmitProtocol
 );
