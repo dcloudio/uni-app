@@ -1,13 +1,38 @@
-import { type TransformDecl, createDecl } from '../utils'
+import { type Declaration, createDecl } from '../utils'
 
-const top = __NODE_JS__ ? '-top' : 'Top'
-const right = __NODE_JS__ ? '-right' : 'Right'
-const bottom = __NODE_JS__ ? '-bottom' : 'Bottom'
-const left = __NODE_JS__ ? '-left' : 'Left'
+const top = (): string => {
+  if (__NODE_JS__) {
+    return '-top'
+  } else {
+    return 'Top'
+  }
+}
+const right = (): string => {
+  if (__NODE_JS__) {
+    return '-right'
+  } else {
+    return 'Right'
+  }
+}
+const bottom = (): string => {
+  if (__NODE_JS__) {
+    return '-bottom'
+  } else {
+    return 'Bottom'
+  }
+}
+const left = (): string => {
+  if (__NODE_JS__) {
+    return '-left'
+  } else {
+    return 'Left'
+  }
+}
+
 export const createTransformBox = (
   type: 'margin' | 'padding'
-): TransformDecl => {
-  return (decl) => {
+): ((decl: Declaration) => Declaration[]) => {
+  return (decl: Declaration): Declaration[] => {
     const { value, important, raws, source } = decl
     const splitResult = value.split(/\s+/)
 
@@ -24,10 +49,10 @@ export const createTransformBox = (
     }
 
     return [
-      createDecl(type + top, splitResult[0], important, raws, source),
-      createDecl(type + right, splitResult[1], important, raws, source),
-      createDecl(type + bottom, splitResult[2], important, raws, source),
-      createDecl(type + left, splitResult[3], important, raws, source),
+      createDecl(type + top(), splitResult[0], important, raws, source),
+      createDecl(type + right(), splitResult[1], important, raws, source),
+      createDecl(type + bottom(), splitResult[2], important, raws, source),
+      createDecl(type + left(), splitResult[3], important, raws, source),
     ]
   }
 }

@@ -1,22 +1,40 @@
-import type { Declaration } from 'postcss'
-import { type TransformDecl, createDecl } from '../utils'
+import { type Declaration, createDecl } from '../utils'
 
-const transitionProperty = __NODE_JS__
-  ? 'transition-property'
-  : 'transitionProperty'
-const transitionDuration = __NODE_JS__
-  ? 'transition-duration'
-  : 'transitionDuration'
-const transitionTimingFunction = __NODE_JS__
-  ? 'transition-timing-function'
-  : 'transitionTimingFunction'
-const transitionDelay = __NODE_JS__ ? 'transition-delay' : 'transitionDelay'
-export const transformTransition: TransformDecl = (decl) => {
+const transitionProperty = (): string => {
+  if (__NODE_JS__) {
+    return 'transition-property'
+  } else {
+    return 'transitionProperty'
+  }
+}
+
+const transitionDuration = (): string => {
+  if (__NODE_JS__) {
+    return 'transition-duration'
+  } else {
+    return 'transitionDuration'
+  }
+}
+const transitionTimingFunction = (): string => {
+  if (__NODE_JS__) {
+    return 'transition-timing-function'
+  } else {
+    return 'transitionTimingFunction'
+  }
+}
+const transitionDelay = (): string => {
+  if (__NODE_JS__) {
+    return 'transition-delay'
+  } else {
+    return 'transitionDelay'
+  }
+}
+export const transformTransition = (decl: Declaration): Declaration[] => {
   const { value, important, raws, source } = decl
 
   const result: Declaration[] = []
 
-  let match
+  let match: RegExpExecArray | null = null
 
   // 针对 cubic-bezier 特殊处理
   // eg: cubic-bezier(0.42, 0, 1.0, 3) // (0.2,-2,0.8,2)
@@ -24,30 +42,54 @@ export const transformTransition: TransformDecl = (decl) => {
     const CHUNK_REGEXP =
       /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*((\S*)|cubic-bezier\(.*\))?\s*(\d*\.?\d+(?:ms|s)?)?$/
 
-    match = value.match(CHUNK_REGEXP)
+    match = CHUNK_REGEXP.exec(value)
   } else {
     const CHUNK_REGEXP =
       /^(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?\s*(\S*)?\s*(\d*\.?\d+(?:ms|s)?)?$/
 
-    match = value.match(CHUNK_REGEXP)
+    match = CHUNK_REGEXP.exec(value)
   }
 
-  if (!match) {
+  if (match == null) {
     return result
   }
-  match[1] &&
+  if (match[1] != null) {
     result.push(
-      createDecl(transitionProperty, match[1], important, raws, source)
+      createDecl(
+        transitionProperty(),
+        match[1] as string,
+        important,
+        raws,
+        source
+      )
     )
-  match[2] &&
+  }
+  if (match[2] != null) {
     result.push(
-      createDecl(transitionDuration, match[2], important, raws, source)
+      createDecl(
+        transitionDuration(),
+        match[2] as string,
+        important,
+        raws,
+        source
+      )
     )
-  match[3] &&
+  }
+  if (match[3] != null) {
     result.push(
-      createDecl(transitionTimingFunction, match[3], important, raws, source)
+      createDecl(
+        transitionTimingFunction(),
+        match[3] as string,
+        important,
+        raws,
+        source
+      )
     )
-  match[4] &&
-    result.push(createDecl(transitionDelay, match[4], important, raws, source))
+  }
+  if (match[4] != null) {
+    result.push(
+      createDecl(transitionDelay(), match[4] as string, important, raws, source)
+    )
+  }
   return result
 }

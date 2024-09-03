@@ -1,9 +1,5 @@
 import { capitalize, hyphenate } from '@vue/shared'
-import {
-  type Declaration,
-  //  type TransformDecl,
-  createDecl,
-} from '../utils'
+import { type Declaration, createDecl } from '../utils'
 
 function borderTop(): string {
   if (__NODE_JS__) {

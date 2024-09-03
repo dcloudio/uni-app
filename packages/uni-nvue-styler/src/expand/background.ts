@@ -1,4 +1,9 @@
-import { type NormalizeOptions, type TransformDecl, createDecl } from '../utils'
+import {
+  type Declaration,
+  type NormalizeOptions,
+  type TransformDecl,
+  createDecl,
+} from '../utils'
 
 const backgroundColor = (): string => {
   // __NODE_JS__ ? 'background-color' : 'backgroundColor'
@@ -20,7 +25,7 @@ const backgroundImage = (): string => {
 export function createTransformBackground(
   options: NormalizeOptions
 ): TransformDecl {
-  return (decl) => {
+  return (decl: Declaration): Declaration[] => {
     const { value, important, raws, source } = decl
     // nvue 平台维持原有逻辑不变
     const isUvuePlatform = options.type === 'uvue'
