@@ -169,20 +169,6 @@
       }
     }
   },
-  "uni-getLocation-system": {
-    "provider": {
-      "service": "location",
-      "name": "system",
-      "servicePlugin": "uni-getLocation"
-    }
-  },
-  "uni-getLocation-tencent": {
-    "provider": {
-      "service": "location",
-      "name": "tencent",
-      "servicePlugin": "uni-getLocation"
-    }
-  },
   "uni-getNetworkType": {
     "uni": {
       "getNetworkType": {
@@ -432,37 +418,6 @@
       }
     }
   },
-  "uni-oauth": {
-    "provider": {
-      "service": "oauth"
-    },
-    "uni": {
-      "login": {
-        "name": "login",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      },
-      "getUserInfo": {
-        "name": "getUserInfo",
-        "app": {
-          "js": false,
-          "kotlin": false,
-          "swift": false,
-          "arkts": true
-        }
-      }
-    }
-  },
-  "uni-oauth-huawei": {
-    "provider": {
-      "service": "oauth",
-      "name": "huawei"
-    }
-  },
   "uni-openAppAuthorizeSetting": {
     "uni": {
       "openAppAuthorizeSetting": {
@@ -489,18 +444,6 @@
           "arkts": true
         }
       }
-    }
-  },
-  "uni-payment-alipay": {
-    "provider": {
-      "service": "payment",
-      "name": "alipay"
-    }
-  },
-  "uni-payment-wxpay": {
-    "provider": {
-      "service": "payment",
-      "name": "wxpay"
     }
   },
   "uni-prompt": {
