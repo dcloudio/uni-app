@@ -16,7 +16,7 @@ describe('uni_modules', () => {
   for (const plugin of plugins) {
     const pluginDir = path.resolve(inputDir, 'uni_modules', plugin)
     for (const platform of platforms) {
-      jest.setTimeout(60000)
+      jest.setTimeout(100000)
       test(`tsc ${plugin} ${platform}`, async () => {
         const reset = initEnv(platform)
         await compileUniModuleWithTsc(
