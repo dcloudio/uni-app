@@ -169,6 +169,20 @@
       }
     }
   },
+  "uni-getLocation-system": {
+    "provider": {
+      "service": "location",
+      "name": "system",
+      "servicePlugin": "uni-getLocation"
+    }
+  },
+  "uni-getLocation-tencent": {
+    "provider": {
+      "service": "location",
+      "name": "tencent",
+      "servicePlugin": "uni-getLocation"
+    }
+  },
   "uni-getNetworkType": {
     "uni": {
       "getNetworkType": {
@@ -444,6 +458,18 @@
           "arkts": true
         }
       }
+    }
+  },
+  "uni-payment-alipay": {
+    "provider": {
+      "service": "payment",
+      "name": "alipay"
+    }
+  },
+  "uni-payment-wxpay": {
+    "provider": {
+      "service": "payment",
+      "name": "wxpay"
     }
   },
   "uni-prompt": {
