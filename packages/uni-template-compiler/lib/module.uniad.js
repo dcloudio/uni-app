@@ -11,6 +11,13 @@ module.exports = {
       if (AD_COMPONENTS.indexOf(el.tag) > -1) {
         process.env.USE_UNI_AD = true
       }
+    } else if (process.env.UNI_PLATFORM === 'mp-alipay') {
+      if (el.tag === 'ad' && (el.attrsMap.adpid || el.attrsMap[':adpid'])) {
+        el.tag = 'uniad'
+      }
+      if (AD_COMPONENTS.indexOf(el.tag) > -1) {
+        process.env.USE_UNI_AD_ALIPAY = true
+      }
     }
   }
 }
