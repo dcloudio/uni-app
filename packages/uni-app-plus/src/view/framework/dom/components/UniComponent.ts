@@ -158,6 +158,8 @@ export class UniComponent extends UniNode {
     this.$app.unmount()
     removeElement(this.id)
     this.removeUniChildren()
+    // 触发unmounted，确保在queuePostActionJob队列执行之前执行vue生命周期。
+    flushPostFlushCbs()
     this.updateView()
   }
   appendChild(node: Element) {
