@@ -7,28 +7,13 @@ import {
   initService,
   initView,
 } from '@dcloudio/uni-core'
-import { UniEventBus } from '@dcloudio/uni-api'
-import type { EventBus } from '@dcloudio/uni-app-x/types/uni'
+import { EventBus } from '@dcloudio/uni-api'
+import type { UniApp } from '@dcloudio/uni-app-x/types/app'
 
 let appVm: ComponentPublicInstance
-// @ts-expect-error
 let $uniApp: UniApp
 if (__X__) {
-  class UniApp implements EventBus {
-    private $eventBus = new UniEventBus()
-    on = (eventName: string, callback: Function) => {
-      this.$eventBus.on(eventName, callback)
-    }
-    once = (eventName: string, callback: Function) => {
-      this.$eventBus.once(eventName, callback)
-    }
-    off = (eventName?: string, callback?: Function | null) => {
-      this.$eventBus.off(eventName, callback)
-    }
-    emit = (eventName: string, ...args: any[]) => {
-      this.$eventBus.emit(eventName, ...args)
-    }
-
+  class UniAppImpl extends EventBus implements UniApp {
     get vm() {
       return appVm
     }
@@ -39,7 +24,7 @@ if (__X__) {
       return appVm?.globalData || {}
     }
   }
-  $uniApp = new UniApp()
+  $uniApp = new UniAppImpl()
 }
 
 export function getApp() {

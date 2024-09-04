@@ -16,32 +16,18 @@ import { initService } from './initService'
 import { setNativeApp } from './app'
 import { initComponentInstance } from './initComponentInstance'
 import type {
-  EventBus,
   NavigateToOptions,
   SwitchTabOptions,
 } from '@dcloudio/uni-app-x/types/uni'
-import { UniEventBus } from '@dcloudio/uni-api'
+import type { UniApp } from '@dcloudio/uni-app-x/types/app'
+import { EventBus } from '@dcloudio/uni-api'
 
 let appCtx: ComponentPublicInstance
 const defaultApp = {
   globalData: {},
 }
 
-class UniApp implements EventBus {
-  private $eventBus = new UniEventBus()
-  on = (eventName: string, callback: Function) => {
-    this.$eventBus.on(eventName, callback)
-  }
-  once = (eventName: string, callback: Function) => {
-    this.$eventBus.once(eventName, callback)
-  }
-  off = (eventName?: string, callback?: Function | null) => {
-    this.$eventBus.off(eventName, callback)
-  }
-  emit = (eventName: string, ...args: any[]) => {
-    this.$eventBus.emit(eventName, ...args)
-  }
-
+class UniAppImpl extends EventBus implements UniApp {
   get vm() {
     return appCtx
   }
@@ -53,7 +39,7 @@ class UniApp implements EventBus {
   }
 }
 
-let $uniApp = new UniApp()
+let $uniApp = new UniAppImpl()
 
 export const entryPageState = {
   isReady: false,
