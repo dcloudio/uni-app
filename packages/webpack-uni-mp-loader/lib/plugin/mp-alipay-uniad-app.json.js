@@ -1,21 +1,14 @@
 const UNI_PLUGINS = [{
-    name: 'uni-ad',
-    version: '*',
-    provider: '2021004169623603'
-  }
+  name: 'uni-ad',
+  version: '*',
+  provider: '2021004169623603'
+}
 ]
 
-const {
-  getManifestJson
-} = require('@dcloudio/uni-cli-shared/lib/manifest.js')
-
-module.exports = function(appJson, useAD) {
+module.exports = function (appJson, useAD) {
   if (!useAD) {
     return
   }
-
-  const manifestJson = getManifestJson()
-  const manifestJsonWxNode = manifestJson['mp-alipay']
 
   if (!appJson.plugins) {
     appJson.plugins = {}
@@ -39,7 +32,7 @@ module.exports = function(appJson, useAD) {
     appJson.window = {}
   }
   // 信息流需要添加此配置
-  if (!appJson.window['enableInPageRender']) {
-    appJson.window['enableInPageRender'] = 'YES'
+  if (!appJson.window.enableInPageRender) {
+    appJson.window.enableInPageRender = 'YES'
   }
 }
