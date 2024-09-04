@@ -4,7 +4,6 @@ import wantConstant from '@ohos.app.ability.wantConstant';
 import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
-import picker from '@ohos.file.picker';
 import inputMethod from '@ohos.inputMethod';
 import image from '@ohos.multimedia.image';
 import connection from '@ohos.net.connection';
@@ -46,7 +45,6 @@ import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
 import Want1 from '@ohos.app.ability.Want';
 import { abilityAccessCtrl } from '@kit.AbilityKit';
-import abilityAccessCtrl1 from '@ohos.abilityAccessCtrl';
 import { access } from '@kit.ConnectivityKit';
 import { audio as audio1 } from '@kit.AudioKit';
 import { audio } from '@kit.AudioKit';
@@ -120,7 +118,7 @@ import photoAccessHelper1 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper2 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper3 from '@ohos.file.photoAccessHelper';
 import photoAccessHelper4 from '@ohos.file.photoAccessHelper';
-import { picker as picker1, fileIo as fileIo5 } from '@kit.CoreFileKit';
+import { picker, fileIo as fileIo5 } from '@kit.CoreFileKit';
 import { promptAction as promptAction1 } from '@kit.ArkUI';
 import { promptAction as promptAction2 } from '@kit.ArkUI';
 import { promptAction as promptAction4 } from '@kit.ArkUI';
@@ -130,6 +128,7 @@ import promptAction5 from '@ohos.promptAction';
 import { scanCore, scanBarcode } from '@kit.ScanKit';
 import { startPullDownRefresh as internalStartPullDownRefresh, stopPullDownRefresh as internalStopPullDownRefresh } from "@dcloudio/uni-mp-sdk";
 import { systemShare } from '@kit.ShareKit';
+import { uni } from "@dcloudio/uni-mp-sdk";
 import { uniformTypeDescriptor } from '@kit.ArkData';
 import { userAuth } from '@kit.UserAuthenticationKit';
 import { wantAgent } from '@kit.AbilityKit';
@@ -659,6 +658,12 @@ export class SafeAreaInsets extends UTSObject {
     top!: number;
     bottom!: number;
 }
+class CutoutRect extends UTSObject {
+    left!: number;
+    right!: number;
+    top!: number;
+    bottom!: number;
+}
 export class GetSystemInfoResult extends UTSObject {
     SDKVersion!: string;
     appId!: string;
@@ -730,6 +735,7 @@ export class GetWindowInfoResult extends UTSObject {
     safeArea!: SafeArea;
     safeAreaInsets!: SafeAreaInsets;
     screenTop!: number;
+    cutoutArea!: Array<CutoutRect>;
 }
 interface ISystemInfoAppVersion {
     name: string;
@@ -1049,10 +1055,25 @@ interface TakeVideoRes {
     orientation: MediaOrientation;
     type: string;
 }
+interface IGetImageInfoDownloadOptions {
+    url: string;
+    success: (res: IGetImageInfoDownloadSuccess) => void;
+    fail: (err: IGetImageInfoDownloadFail) => void;
+}
+interface IGetImageInfoDownloadSuccess {
+    tempFilePath: string;
+}
+interface IGetImageInfoDownloadFail {
+    errMsg: string;
+}
 interface IPreviewImageOptions {
     urls: string[];
     current: string;
     showmenu: boolean;
+}
+interface ISaveMediaError {
+    code: number;
+    message: string;
 }
 interface _CompressImageSuccess {
     size: number;
@@ -5338,8 +5359,28 @@ export function initUniExtApi() {
             }
         }
     }, ChooseVideoApiProtocol, ChooseVideoApiOptions) as ChooseVideo;
-    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
-        _getImageInfo(options.src).then((getImageInfoRes)=>{
+    const getImageInfo: GetImageInfo = defineAsyncApi<GetImageInfoOptions, GetImageInfoSuccess>(API_GET_IMAGE_INFO, async (options: GetImageInfoOptions, res: ApiExecutor<GetImageInfoSuccess>)=>{
+        let src = options.src;
+        if (src.startsWith('http:') || src.startsWith('https:')) {
+            try {
+                src = await new Promise<string>((resolve, reject)=>{
+                    uni.downloadFile({
+                        url: options.src,
+                        success: (res: IGetImageInfoDownloadSuccess)=>{
+                            resolve(res.tempFilePath);
+                        },
+                        fail: (err: IGetImageInfoDownloadFail)=>{
+                            reject(err);
+                        }
+                    } as IGetImageInfoDownloadOptions);
+                });
+            } catch (err) {
+                const error = err as IGetImageInfoDownloadFail;
+                res.reject(error.errMsg);
+                return;
+            }
+        }
+        _getImageInfo(src).then((getImageInfoRes)=>{
             res.resolve(getImageInfoRes);
         }, (err: Error)=>{
             res.reject(err.message);
@@ -5381,15 +5422,6 @@ export function initUniExtApi() {
             } as ClosePreviewImageSuccess);
         });
     }) as ClosePreviewImage;
-    const requestPermission = async (): Promise<boolean> =>{
-        const context = getAbilityContext2() as common.UIAbilityContext;
-        const atManager: abilityAccessCtrl1.AtManager = abilityAccessCtrl1.createAtManager();
-        const permissionRequestResult = await atManager.requestPermissionsFromUser(context, [
-            'ohos.permission.WRITE_IMAGEVIDEO'
-        ]);
-        const isGranted = permissionRequestResult.authResults[0] === 0;
-        return isGranted;
-    };
     const saveResource = async (src: Resource, dest: string)=>{
         const context = getAbilityContext2() as common.UIAbilityContext;
         const resourceManager = context.resourceManager;
@@ -5406,7 +5438,7 @@ export function initUniExtApi() {
         await fs3.close(srcFile);
         await fs3.close(destFile);
     };
-    const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string> =>{
+    const saveMediaToAlbum = async (fromUri: string, type: 'image' | 'video'): Promise<string | ISaveMediaError> =>{
         const realPath = getResourceStr(fromUri) as string | Resource;
         const context = getAbilityContext2() as common.UIAbilityContext;
         let fileName = Date.now() + (type === 'image' ? '.png' : '.mp4');
@@ -5418,55 +5450,68 @@ export function initUniExtApi() {
         } else {
             fileName = realPath.split('/').pop() || fileName;
         }
-        const photoSaveOptions = new picker.PhotoSaveOptions();
-        photoSaveOptions.newFileNames = [
-            fileName
+        const phAccessHelper = photoAccessHelper3.getPhotoAccessHelper(context);
+        const fileNameParts = fileName.split('.');
+        const title = fileNameParts[0];
+        const fileNameExtension = fileNameParts.pop()!;
+        const photoCreationConfigs: Array<photoAccessHelper3.PhotoCreationConfig> = [
+            {
+                title,
+                fileNameExtension,
+                photoType: type === 'image' ? photoAccessHelper3.PhotoType.IMAGE : photoAccessHelper3.PhotoType.VIDEO
+            }
         ];
-        const photoPicker = new picker.PhotoViewPicker();
-        const photoSaveResult = await photoPicker.save(photoSaveOptions);
-        const destUri = photoSaveResult[0];
+        const desFileUris: Array<string> = await phAccessHelper.showAssetsCreationDialog([
+            fromUri
+        ], photoCreationConfigs);
+        if (!desFileUris || desFileUris.length === 0) {
+            return {
+                code: 1101001,
+                message: MediaUniErrors.get(1101001) as string
+            } as ISaveMediaError;
+        }
+        const destUri = desFileUris[0];
+        if (!destUri.startsWith('file://')) {
+            return {
+                code: 1101006,
+                message: MediaUniErrors.get(1101006) as string + ', code: ' + destUri
+            } as ISaveMediaError;
+        }
         if (isResource) {
             await saveResource(realPath as Resource, destUri);
         } else {
             await saveUri(realPath as string, destUri);
         }
-        const phAccessHelper = photoAccessHelper3.getPhotoAccessHelper(context);
-        const assetChangeRequest: photoAccessHelper3.MediaAssetChangeRequest = photoAccessHelper3.MediaAssetChangeRequest.createImageAssetRequest(context, destUri);
-        await phAccessHelper.applyChanges(assetChangeRequest);
         return destUri;
     };
     const saveImageToPhotosAlbum: SaveImageToPhotosAlbum = defineAsyncApi<SaveImageToPhotosAlbumOptions, SaveImageToPhotosAlbumSuccess>(API_SAVE_IMAGE_TO_PHOTOS_ALBUM, (options: SaveImageToPhotosAlbumOptions, res: ApiExecutor<SaveImageToPhotosAlbumSuccess>)=>{
-        requestPermission().then((isGranted)=>{
-            if (!isGranted) {
-                const errMsg = MediaUniErrors.get(1101005);
-                res.reject(errMsg, {
-                    errCode: 1101005
+        saveMediaToAlbum(options.filePath, 'image').then((uri)=>{
+            if (typeof uri === 'object') {
+                const err = uri as ISaveMediaError;
+                res.reject(err.message, {
+                    errCode: err.code
                 } as ApiError);
                 return;
             }
-            saveMediaToAlbum(options.filePath, 'image').then((uri)=>{
-                res.resolve({
-                    path: uri
-                } as SaveImageToPhotosAlbumSuccess);
-            }, (err: Error)=>{
-                res.reject(err.message);
-            });
+            res.resolve({
+                path: uri
+            } as SaveImageToPhotosAlbumSuccess);
+        }, (err: Error)=>{
+            res.reject(err.message);
         });
     }, SaveImageToPhotosAlbumApiProtocol) as SaveImageToPhotosAlbum;
     const saveVideoToPhotosAlbum: SaveVideoToPhotosAlbum = defineAsyncApi<SaveVideoToPhotosAlbumOptions, SaveVideoToPhotosAlbumSuccess>(API_SAVE_VIDEO_TO_PHOTOS_ALBUM, (options: SaveVideoToPhotosAlbumOptions, res: ApiExecutor<SaveVideoToPhotosAlbumSuccess>)=>{
-        requestPermission().then((isGranted)=>{
-            if (!isGranted) {
-                const errMsg = MediaUniErrors.get(1101005);
-                res.reject(errMsg, {
-                    errCode: 1101005
+        saveMediaToAlbum(options.filePath, 'video').then((uri)=>{
+            if (typeof uri === 'object') {
+                const err = uri as ISaveMediaError;
+                res.reject(err.message, {
+                    errCode: err.code
                 } as ApiError);
                 return;
             }
-            saveMediaToAlbum(options.filePath, 'video').then((uri)=>{
-                res.resolve({} as SaveVideoToPhotosAlbumSuccess);
-            }, (err: Error)=>{
-                res.reject(err.message);
-            });
+            res.resolve({} as SaveVideoToPhotosAlbumSuccess);
+        }, (err: Error)=>{
+            res.reject(err.message);
         });
     }, SaveVideoToPhotosAlbumApiProtocol) as SaveVideoToPhotosAlbum;
     const getFileName = (path: string)=>{
@@ -5639,9 +5684,9 @@ export function initUniExtApi() {
             }
         } else {
             try {
-                let documentSelectOptions = new picker1.DocumentSelectOptions();
-                let documentPicker = new picker1.DocumentViewPicker(getAbilityContext3()!);
-                documentSelectOptions.selectMode = picker1.DocumentSelectMode.FILE;
+                let documentSelectOptions = new picker.DocumentSelectOptions();
+                let documentPicker = new picker.DocumentViewPicker(getAbilityContext3()!);
+                documentSelectOptions.selectMode = picker.DocumentSelectMode.FILE;
                 if (args.count) documentSelectOptions.maxSelectNumber = args.count;
                 if (args.extension) documentSelectOptions.fileSuffixFilters = args.extension;
                 if (args.type === 'image') {
@@ -7024,22 +7069,27 @@ export function initUniExtApi() {
             connectTimeout: timeout ? timeout : undefined,
             readTimeout: timeout ? timeout : undefined
         } as http2.HttpRequestOptions, (err, statusCode)=>{
+            let finishPromise: Promise<void> = Promise.resolve();
             if (err) {
                 exec.reject(err.message);
             } else {
-                writePromise.then(()=>{
-                    stream.flushSync();
-                    stream.closeSync();
+                finishPromise = writePromise.then(async ()=>{
+                    await stream.flush();
+                    await stream.close();
                     exec.resolve({
                         tempFilePath: 'file://' + tempFilePath,
                         statusCode
                     } as DownloadFileSuccess);
+                }).catch((err: Error)=>{
+                    exec.reject(err.message);
                 });
             }
-            downloadTask.offHeadersReceived();
-            downloadTask.offProgressUpdate();
-            httpRequest.destroy();
-            mp.off('beforeClose', destroy);
+            finishPromise.then(()=>{
+                downloadTask.offHeadersReceived();
+                downloadTask.offProgressUpdate();
+                httpRequest.destroy();
+                mp.off('beforeClose', destroy);
+            });
         });
         return new DownloadTask1(downloadTask);
     }, DownloadFileApiProtocol, DownloadFileApiOptions) as DownloadFile;

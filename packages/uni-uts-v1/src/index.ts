@@ -115,7 +115,7 @@ function createResult(
   }
 }
 
-interface CompilerOptions {
+export interface UTSPluginCompilerOptions {
   isX: boolean
   isPlugin: boolean
   isSingleThread: boolean
@@ -135,7 +135,7 @@ interface CompilerOptions {
 // 重要：当调整参数时，需要同步调整 vue2 编译器 uni-cli-shared/lib/uts/uts-loader.js
 export async function compile(
   pluginDir: string,
-  compilerOptions: CompilerOptions = {
+  compilerOptions: UTSPluginCompilerOptions = {
     isX: false,
     isPlugin: true,
     isSingleThread: true,
@@ -584,9 +584,9 @@ export async function compile(
 
 export async function initCompilerOptionsTransform(
   compilerType: 'kotlin' | 'swift',
-  options: CompilerOptions
+  options: UTSPluginCompilerOptions
 ) {
-  const transform: Required<CompilerOptions>['transform'] = JSON.parse(
+  const transform: Required<UTSPluginCompilerOptions>['transform'] = JSON.parse(
     JSON.stringify(options.transform || {})
   )
   const customAutoImports = await initCompilerOptionsTransformAutoImports(
@@ -610,7 +610,7 @@ export async function initCompilerOptionsTransform(
 }
 
 async function initCompilerOptionsTransformAutoImports(
-  autoImports: CompilerOptions['kotlinAutoImports']
+  autoImports: UTSPluginCompilerOptions['kotlinAutoImports']
 ) {
   return autoImports?.()
 }

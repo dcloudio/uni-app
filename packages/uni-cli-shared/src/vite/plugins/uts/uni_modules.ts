@@ -20,6 +20,7 @@ import {
 import { parseVueRequest } from '../../utils'
 import {
   type Preprocessors,
+  compileUniModuleWithTsc,
   getUniExtApiPlugins,
   parseUTSModuleDeps,
   resolveOutputPluginDir,
@@ -35,6 +36,7 @@ import { enableSourceMap, normalizePath } from '../../../utils'
 import { parseManifestJsonOnce } from '../../../json'
 import { preJson } from '../../../preprocess'
 import { emptyDir } from '../../../fs'
+import type { UTSPluginCompilerOptions } from '@dcloudio/uni-uts-v1'
 
 const UTSProxyRE = /\?uts-proxy$/
 const UniHelpersRE = /\?uni_helpers$/
@@ -532,4 +534,43 @@ export function uniDecryptUniModulesPlugin(): Plugin {
       }
     },
   }
+}
+
+async function compileUniModuleWithRust(
+  pluginDir: string,
+  compileOptions: UTSPluginCompilerOptions
+) {
+  return resolveUTSCompiler().compile(pluginDir, compileOptions)
+}
+
+export async function compileUniModuleWithTscAndRust(
+  platform: 'app' | 'app-android' | 'app-ios' | 'app-harmony',
+  pluginDir: string,
+  compileOptions: UTSPluginCompilerOptions
+) {
+  if (platform === 'app-android' || platform === 'app') {
+    await compileUniModuleWithTsc(
+      'app-android',
+      pluginDir,
+      createUniXKotlinCompilerOnce(),
+      uniModulesSyncFilePreprocessors
+    )
+  }
+  if (platform === 'app-ios' || platform === 'app') {
+    await compileUniModuleWithTsc(
+      'app-ios',
+      pluginDir,
+      createUniXSwiftCompilerOnce(),
+      uniModulesSyncFilePreprocessors
+    )
+  }
+  if (platform === 'app-harmony') {
+    await compileUniModuleWithTsc(
+      'app-harmony',
+      pluginDir,
+      createUniXArkTSCompilerOnce(),
+      uniModulesSyncFilePreprocessors
+    )
+  }
+  await compileUniModuleWithRust(pluginDir, compileOptions)
 }

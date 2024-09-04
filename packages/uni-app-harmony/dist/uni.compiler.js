@@ -48,20 +48,6 @@ function generateHarmonyImportExternalCode(hamonyPackageNames) {
         .join('');
 }
 function uniAppHarmonyPlugin() {
-    const uvueOutputDir = uniCliShared.uvueOutDir('app-harmony');
-    const tscOutputDir = uniCliShared.tscOutDir('app-harmony');
-    function emptyUVueDir() {
-        if (fs__default.default.existsSync(uvueOutputDir)) {
-            uniCliShared.emptyDir(uvueOutputDir);
-        }
-    }
-    emptyUVueDir();
-    function emptyTscDir() {
-        if (fs__default.default.existsSync(tscOutputDir)) {
-            uniCliShared.emptyDir(tscOutputDir);
-        }
-    }
-    emptyTscDir();
     return {
         name: 'uni:app-harmony',
         apply: 'build',

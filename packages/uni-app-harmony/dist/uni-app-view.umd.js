@@ -22456,7 +22456,9 @@
       var methodName = MethodList[i3];
       methods[methodName] = function(data, resolve) {
         var elId = embedRef.value.elId;
+        var pageId = getCurrentPageId() + "";
         UniViewJSBridge.invokeServiceMethod("webview" + capitalize(methodName), {
+          pageId,
           elId,
           data
         }, (res) => {
