@@ -15,11 +15,10 @@ import {
   OnProtocol,
   OnceProtocol,
 } from '../../protocols/base/eventBus'
-import type { EventBus } from '@dcloudio/uni-app-x/types/uni'
 
 type EventStopHandler = () => void
 
-export class UniEventBus implements EventBus {
+export class EventBus {
   private $emitter = new Emitter()
   on(name: string, callback: Function) {
     this.$emitter.on(name, callback)
@@ -39,7 +38,7 @@ export class UniEventBus implements EventBus {
   }
 }
 
-const eventBus = new UniEventBus()
+const eventBus = new EventBus()
 export const $on = defineSyncApi<API_TYPE_ON>(
   API_ON,
   (name, callback): EventStopHandler => {
