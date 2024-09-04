@@ -19,18 +19,6 @@
       "GetClipboardDataOptions"
     ],
     [
-      "CreateIntersectionObserver"
-    ],
-    [
-      "CreateIntersectionObserverOptions"
-    ],
-    [
-      "ObserveCallback"
-    ],
-    [
-      "IntersectionObserver"
-    ],
-    [
       "SaveFileSuccess"
     ],
     [
@@ -109,22 +97,19 @@
       "GetProviderSuccess"
     ],
     [
+      "GetProviderSyncSuccess"
+    ],
+    [
+      "GetProviderSync"
+    ],
+    [
+      "GetProviderSyncOptions"
+    ],
+    [
       "GetProviderOptions"
     ],
     [
       "GetProvider"
-    ],
-    [
-      "GetProviderIds"
-    ],
-    [
-      "GetProviderObject"
-    ],
-    [
-      "GetProviderIdsOptions"
-    ],
-    [
-      "GetProviderObjectOptions"
     ],
     [
       "GetSystemInfo"
@@ -241,40 +226,22 @@
       "SaveVideoToPhotosAlbum"
     ],
     [
-      "SetNavigationBarColorOptions"
+      "ChooseFile"
     ],
     [
-      "SetNavigationBarColorSuccess"
+      "ChooseFileSuccess"
     ],
     [
-      "SetNavigationBarColor"
+      "ChooseFileOptions"
     ],
     [
-      "SetNavigationBarTitleOptions"
+      "ChooseMediaSuccess"
     ],
     [
-      "SetNavigationBarTitleSuccess"
+      "ChooseMediaOptions"
     ],
     [
-      "SetNavigationBarTitle"
-    ],
-    [
-      "ShowNavigationBarLoadingSuccess"
-    ],
-    [
-      "ShowNavigationBarLoadingOptions"
-    ],
-    [
-      "ShowNavigationBarLoading"
-    ],
-    [
-      "HideNavigationBarLoadingSuccess"
-    ],
-    [
-      "HideNavigationBarLoadingOptions"
-    ],
-    [
-      "HideNavigationBarLoading"
+      "ChooseMedia"
     ],
     [
       "Request"
@@ -337,15 +304,6 @@
       "OpenDocumentOptions"
     ],
     [
-      "PageScrollToSuccess"
-    ],
-    [
-      "PageScrollToOptions"
-    ],
-    [
-      "PageScrollTo"
-    ],
-    [
       "UniPaymentProvider"
     ],
     [
@@ -377,6 +335,18 @@
     ],
     [
       "ScanCodeOptions"
+    ],
+    [
+      "ShareWithSystemSuccess"
+    ],
+    [
+      "ShareWithSystemFail"
+    ],
+    [
+      "ShareWithSystemOptions"
+    ],
+    [
+      "ShareWithSystem"
     ],
     [
       "SetStorageSuccess"

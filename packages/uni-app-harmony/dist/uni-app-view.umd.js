@@ -26152,7 +26152,7 @@
       topWindowHeight
     } = getWindowOffset();
     if (fields2.node) {
-      var tagName = el.tagName.split("-")[1];
+      var tagName = el.tagName.replace("uni-", "");
       if (tagName) {
         info.node = el.querySelector(tagName);
       }
