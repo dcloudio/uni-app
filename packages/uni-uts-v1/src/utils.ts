@@ -28,6 +28,7 @@ import {
 import type { ClassMeta } from './code'
 import { uvueOutDir } from './uvue'
 
+type UTSPluginPlatform = 'app-android' | 'app-ios' | 'app-harmony'
 interface ToOptions {
   inputDir: string
   outputDir: string
@@ -848,7 +849,7 @@ export function requireUniHelpers() {
 }
 
 export function resolveBundleInputRoot(
-  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  platform: UTSPluginPlatform,
   root: string
 ) {
   if (
@@ -862,7 +863,7 @@ export function resolveBundleInputRoot(
 }
 
 export function resolveBundleInputFileName(
-  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  platform: UTSPluginPlatform,
   fileName: string
 ) {
   if (
@@ -897,4 +898,26 @@ export function resolveUVueFileName(
     }
   }
   return fileName
+}
+
+export function normalizeUTSResult(
+  platform: UTSPluginPlatform,
+  result: UTSResult
+) {
+  if (process.env.UNI_APP_X_TSC === 'true') {
+    if (result.deps && result.deps.length) {
+      const uvueDir = normalizePath(uvueOutDir(platform))
+      result.deps = result.deps.map((file) => {
+        file = normalizePath(file)
+        if (file.startsWith(uvueDir)) {
+          return path.resolve(
+            process.env.UNI_INPUT_DIR,
+            path.relative(uvueDir, file)
+          )
+        }
+        return file
+      })
+    }
+  }
+  return result
 }

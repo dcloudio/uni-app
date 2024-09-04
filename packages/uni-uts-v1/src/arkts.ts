@@ -4,6 +4,7 @@ import type { UTSBundleOptions } from '@dcloudio/uts'
 import {
   formatUniProviderName,
   getUTSCompiler,
+  normalizeUTSResult,
   resolveBundleInputFileName,
   resolveBundleInputRoot,
 } from './utils'
@@ -223,6 +224,7 @@ export default {
   )
 
   const result = await bundle(UTSTarget.ARKTS, buildOptions)
+  normalizeUTSResult('app-harmony', result)
   const deps: string[] = [filename]
   if (process.env.NODE_ENV === 'development') {
     if (result.deps) {

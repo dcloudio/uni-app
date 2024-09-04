@@ -24,6 +24,7 @@ import {
   getUTSCompiler,
   isColorSupported,
   moveRootIndexSourceMap,
+  normalizeUTSResult,
   parseExtApiDefaultParameters,
   parseInjectModules,
   parseKotlinPackageWithPluginId,
@@ -694,7 +695,7 @@ export async function compile(
       package: '',
       result,
     })
-  return result
+  return normalizeUTSResult('app-android', result)
 }
 
 export function resolveKotlincArgs(
@@ -965,7 +966,7 @@ export function parseUTSModuleLibsJars(plugins: string[]) {
   return [...jars]
 }
 
-function checkDepsByPlugin(
+async function checkDepsByPlugin(
   checkType: 1 | 2,
   plugin: string,
   checkDependencies: Required<KotlinCompilerServer>['checkDependencies'],

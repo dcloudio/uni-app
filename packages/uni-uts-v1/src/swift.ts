@@ -11,6 +11,7 @@ import {
   getUTSCompiler,
   isColorSupported,
   moveRootIndexSourceMap,
+  normalizeUTSResult,
   parseSwiftPackageWithPluginId,
   resolveBundleInputFileName,
   resolveBundleInputRoot,
@@ -312,7 +313,7 @@ export async function compile(
       package: '',
       result,
     })
-  return result
+  return normalizeUTSResult('app-ios', result)
 }
 
 const deps = ['Info.plist', 'config.json']
