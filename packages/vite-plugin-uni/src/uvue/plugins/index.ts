@@ -1,5 +1,8 @@
 import type { Plugin } from 'vite'
-import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
+import {
+  getPlatformManifestJson,
+  parseManifestJsonOnce,
+} from '@dcloudio/uni-cli-shared'
 
 import type { VitePluginUniResolvedOptions } from '../..'
 import { createDefine } from '../../config/define'
@@ -14,7 +17,8 @@ export function uniUVuePlugin(options: VitePluginUniResolvedOptions): Plugin {
 
       let base = config.base
       if (!base) {
-        const { h5 } = parseManifestJsonOnce(options.inputDir)
+        const manifestJson = parseManifestJsonOnce(options.inputDir)
+        const h5 = getPlatformManifestJson(manifestJson, 'h5')
         base = (h5 && h5.router && h5.router.base) || ''
       }
       if (!base) {

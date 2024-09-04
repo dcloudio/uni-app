@@ -191,10 +191,11 @@ function initManifestFeature({
     // features.wxs = false
     // features.longpress = false
   }
+  const webManifest = manifestJson.web || manifestJson.h5
   if (
-    manifestJson.h5 &&
-    manifestJson.h5.router &&
-    manifestJson.h5.router.mode === 'history'
+    webManifest &&
+    webManifest.router &&
+    webManifest.router.mode === 'history'
   ) {
     features.routerMode = '"history"'
   }

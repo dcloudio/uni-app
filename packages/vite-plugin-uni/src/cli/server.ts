@@ -13,7 +13,10 @@ import type {
   ViteDevServer,
 } from 'vite'
 
-import { parseManifestJson } from '@dcloudio/uni-cli-shared'
+import {
+  getPlatformManifestJson,
+  parseManifestJson,
+} from '@dcloudio/uni-cli-shared'
 import type { CliOptions } from '.'
 import { addConfigFile, cleanOptions, printStartupDuration } from './utils'
 import type { AddressInfo, Server } from 'net'
@@ -90,7 +93,8 @@ export async function createSSRServer(
   app.use(vite.middlewares)
   app.use('*', async (req, res) => {
     try {
-      const { h5 } = parseManifestJson(process.env.UNI_INPUT_DIR)
+      const manifestJson = parseManifestJson(process.env.UNI_INPUT_DIR)
+      const h5 = getPlatformManifestJson(manifestJson, 'h5')
       const base = (h5 && h5.router && h5.router.base) || ''
       const url = req.originalUrl.replace(base, '')
       const template = await vite.transformIndexHtml(

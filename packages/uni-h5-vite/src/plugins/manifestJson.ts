@@ -2,6 +2,7 @@ import type { Plugin, ResolvedConfig } from 'vite'
 
 import {
   defineUniManifestJsonPlugin,
+  getPlatformManifestJson,
   initI18nOptions,
   normalizeNetworkTimeout,
   normalizeThemeConfigOnce,
@@ -38,7 +39,8 @@ export function uniManifestJsonPlugin(): Plugin {
           return
         }
         const manifest = parseJson(code)
-        const { debug, h5 } = manifest
+        const { debug } = manifest
+        const h5 = getPlatformManifestJson(manifest, 'h5')
         const router = {
           ...defaultRouter,
           ...{ base: resolvedConfig.base },
