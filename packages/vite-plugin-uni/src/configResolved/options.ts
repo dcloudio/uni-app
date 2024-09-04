@@ -1,10 +1,14 @@
 import type { VitePluginUniResolvedOptions } from '..'
 import type { ResolvedConfig } from 'vite'
-import { parseManifestJsonOnce } from '@dcloudio/uni-cli-shared'
+import {
+  getPlatformManifestJson,
+  parseManifestJsonOnce,
+} from '@dcloudio/uni-cli-shared'
 
 function resolveBase() {
   const manifest = parseManifestJsonOnce(process.env.UNI_INPUT_DIR!)
-  return (manifest.h5 && manifest.h5.router && manifest.h5.router.base) || '/'
+  const webManifest = getPlatformManifestJson(manifest, 'h5')
+  return (webManifest && webManifest.router && webManifest.router.base) || '/'
 }
 
 export function initOptions(

@@ -2,6 +2,7 @@ import path from 'path'
 import type { Plugin, UserConfig } from 'vite'
 
 import {
+  getPlatformManifestJson,
   isInHBuilderX,
   // initPreContext,
   // normalizePath,
@@ -24,7 +25,8 @@ export function createConfig(
 
     let base = config.base
     if (!base) {
-      const { h5 } = parseManifestJsonOnce(options.inputDir)
+      const manifestJson = parseManifestJsonOnce(options.inputDir)
+      const h5 = getPlatformManifestJson(manifestJson, 'h5')
       base = (h5 && h5.router && h5.router.base) || ''
     }
     if (!base) {
