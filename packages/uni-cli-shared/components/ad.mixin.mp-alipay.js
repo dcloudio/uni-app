@@ -57,7 +57,7 @@ export default {
       this._refAdPlugin.show()
     },
 
-    _handleAdRef(c) {
+    _handleAdRef (c) {
       // this._refAdPlugin = c
       this._refAdPlugin = c.detail.__args__[0]
       if (this.preload && this._canCreateAd()) {
