@@ -1,6 +1,6 @@
 {
   "name": "@dcloudio/uni-cli-utils",
-  "version": "3.0.0-alpha-4020620240822002",
+  "version": "3.0.0-alpha-4020720240904001",
   "description": "@dcloudio/uni-cli-utils",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
