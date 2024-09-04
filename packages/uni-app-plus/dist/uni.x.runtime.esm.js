@@ -1421,31 +1421,15 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
 function useTheme() {
   registerThemeChange(onThemeChange);
 }
-class DialogPage {
+class DialogPage extends UniEventBus {
   constructor(_ref) {
-    var _this = this;
     var {
       route,
       $getParentPage
     } = _ref;
+    super();
     this.route = "";
     this.$component = null;
-    this.$eventBus = new UniEventBus();
-    this.on = (eventName, callback) => {
-      this.$eventBus.on(eventName, callback);
-    };
-    this.once = (eventName, callback) => {
-      this.$eventBus.once(eventName, callback);
-    };
-    this.off = (eventName, callback) => {
-      this.$eventBus.off(eventName, callback);
-    };
-    this.emit = function(eventName) {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-      _this.$eventBus.emit(eventName, ...args);
-    };
     this.$disableEscBack = false;
     this.$vm = null;
     this.route = route;
@@ -2131,7 +2115,7 @@ var appCtx;
 var defaultApp = {
   globalData: {}
 };
-class UniApp {
+class IUniApp {
   constructor() {
     var _this = this;
     this.$eventBus = new UniEventBus();
@@ -2162,7 +2146,7 @@ class UniApp {
     return ((_appCtx = appCtx) === null || _appCtx === void 0 ? void 0 : _appCtx.globalData) || {};
   }
 }
-var $uniApp = new UniApp();
+var $uniApp = new IUniApp();
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
