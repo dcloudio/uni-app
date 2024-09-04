@@ -26,7 +26,7 @@ import { getPageManager } from '../app/app'
 import { ON_POP_GESTURE } from '../../constants'
 import { getAppThemeFallbackOS, normalizePageStyles } from '../theme'
 import { invokePageReadyHooks } from '../../api/route/performance'
-import { type DialogPage, homeDialogPages } from './dialogPage'
+import { homeDialogPages } from './dialogPage'
 
 type PageNodeOptions = {}
 
@@ -162,7 +162,7 @@ export function registerPage(
     if (pages.length === 1 && homeDialogPages.length) {
       const homePage = pages[0] as ComponentPublicInstance
       homePage.$.$dialogPages = homeDialogPages.map((dialogPage) => {
-        dialogPage.$getParentPage = () => homePage
+        dialogPage.getParentPage = () => homePage
         return dialogPage
       })
       homeDialogPages.length = 0
@@ -220,7 +220,7 @@ export function registerDialogPage(
     nvuePageVm,
     eventChannel,
   }: RegisterPageOptions,
-  dialogPage: DialogPage,
+  dialogPage: UniDialogPage,
   onCreated?: (page: IPage) => void,
   delay = 0
 ) {
@@ -230,7 +230,7 @@ export function registerDialogPage(
     ['navigationStyle', 'custom'],
     ['backgroundColor', 'transparent'],
   ])
-  const parentPage = dialogPage.$getParentPage()
+  const parentPage = dialogPage.getParentPage()
   const nativePage = (getPageManager() as any).createDialogPage(
     parentPage ? parentPage.$page.id.toString() : '',
     id.toString(),
@@ -271,7 +271,7 @@ export function registerDialogPage(
     dialogPage.$vm = page
     // @ts-expect-error
     page.$dialogPage = dialogPage
-    page.$getParentPage = () => dialogPage.$getParentPage()
+    page.getParentPage = () => dialogPage.getParentPage()
 
     // 由于 iOS 调用 show 时机差异，暂不使用页面 onShow 事件
     // nativePage.addPageEventListener(ON_SHOW, (_) => {

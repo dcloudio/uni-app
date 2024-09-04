@@ -23,7 +23,7 @@ import PageHead from './pageHead'
 import PageBody from './pageBody'
 import { providePageMeta } from '../../setup/provide'
 import { getStateId } from '../../../helpers/dom'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 export default /*#__PURE__*/ defineSystemComponent({
   name: 'Page',

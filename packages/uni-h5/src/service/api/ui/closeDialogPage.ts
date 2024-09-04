@@ -3,7 +3,7 @@ import { getPageInstanceByVm } from '../../../framework/setup/utils'
 import type { ComponentPublicInstance } from 'vue'
 import { invokeHook } from '@dcloudio/uni-core'
 import { ON_SHOW, ON_UNLOAD } from '@dcloudio/uni-shared'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 /**
  *
  * 文档: []()
@@ -64,9 +64,9 @@ export const closeDialogPage = (options?: CloseDialogPageOptions) => {
 
   if (options?.dialogPage) {
     const dialogPage = options?.dialogPage!
-    const parentPage = dialogPage.$getParentPage?.()
+    const parentPage = dialogPage.getParentPage?.()
     if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.$getDialogPages()
+      const parentDialogPages = parentPage.getDialogPages()
       const index = parentDialogPages.indexOf(dialogPage)
       parentDialogPages.splice(index, 1)
       invokeHook(dialogPage.$vm!, ON_UNLOAD)

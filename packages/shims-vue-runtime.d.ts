@@ -36,8 +36,8 @@ declare module '@vue/runtime-core' {
     // X web start
     $setPageStyle: (style: Record<string, any>) => void
     $getPageStyle: () => Record<string, any>
-    $getParentPage: () => ComponentPublicInstance | null
-    $getDialogPages: () => UniDialogPage[]
+    getParentPage: () => ComponentPublicInstance | null
+    getDialogPages: () => UniDialogPage[]
     // X web end
   }
 

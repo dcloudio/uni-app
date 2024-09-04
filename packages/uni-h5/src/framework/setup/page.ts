@@ -33,8 +33,8 @@ import {
 import { updateCurPageCssVar } from '../../helpers/cssVar'
 import { getStateId } from '../../helpers/dom'
 import { getPageInstanceByVm } from './utils'
-import { UniEventBus } from '@dcloudio/uni-api'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+import { EventBus } from '@dcloudio/uni-api'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 const SEP = '$$'
 
@@ -73,7 +73,7 @@ function handleEscKeyPress(event) {
   if (event.key === 'Escape') {
     const currentPage = getCurrentPage()
     // @ts-expect-error
-    const dialogPages = currentPage.$getDialogPages()
+    const dialogPages = currentPage.getDialogPages()
     const dialogPage = dialogPages[dialogPages.length - 1]
     if (!dialogPage.$disableEscBack) {
       // @ts-expect-error
@@ -94,40 +94,30 @@ export function decrementEscBackPageNum() {
   }
 }
 
-export class DialogPage implements UniDialogPage {
+export class DialogPageImpl extends EventBus implements UniDialogPage {
   route: string = ''
-  $component: any | null
-  $getParentPage: () => ComponentPublicInstance | null
-  private $eventBus = new UniEventBus()
-  on = (eventName: string, callback: Function) => {
-    this.$eventBus.on(eventName, callback)
-  }
-  once = (eventName: string, callback: Function) => {
-    this.$eventBus.once(eventName, callback)
-  }
-  off = (eventName?: string, callback?: Function | null) => {
-    this.$eventBus.off(eventName, callback)
-  }
-  emit = (eventName: string, ...args: any[]) => {
-    this.$eventBus.emit(eventName, ...args)
-  }
-  $disableEscBack: boolean = false
+  options: Map<string, string | null> = new Map()
+  getParentPage: () => ComponentPublicInstance | null
+  vm: ComponentPublicInstance | null = null
   $vm: ComponentPublicInstance | null = null
+  $component: any | null = null
+  $disableEscBack: boolean = false
 
   constructor({
     route,
     $component,
-    $getParentPage,
+    getParentPage,
     $disableEscBack = false,
   }: {
     route: string
     $component: any
-    $getParentPage: () => ComponentPublicInstance | null
+    getParentPage: () => ComponentPublicInstance | null
     $disableEscBack?: boolean
   }) {
+    super()
     this.route = route
     this.$component = $component
-    this.$getParentPage = $getParentPage
+    this.getParentPage = getParentPage
     this.$disableEscBack = $disableEscBack
   }
 }
@@ -170,7 +160,7 @@ function removeRouteCache(routeKey: string) {
 export function removePage(routeKey: string, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey) as ComponentPublicInstance
   if (__X__) {
-    const dialogPages = pageVm.$getDialogPages()
+    const dialogPages = pageVm.getDialogPages()
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       // @ts-expect-error
       uni.closeDialogPage({ dialogPage: dialogPages[i] })
@@ -268,11 +258,11 @@ export function initPage(vm: ComponentPublicInstance) {
           pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
         backgroundColorContent: pageMeta.backgroundColorContent,
       })
-    vm.$getDialogPages = (): UniDialogPage[] => {
+    vm.getDialogPages = (): UniDialogPage[] => {
       return getPageInstanceByVm(vm)?.$dialogPages.value || []
     }
-    vm.$getParentPage = (): ComponentPublicInstance | null => {
-      return getPageInstanceByVm(vm)?.$dialogPage?.$getParentPage() || null
+    vm.getParentPage = (): ComponentPublicInstance | null => {
+      return getPageInstanceByVm(vm)?.$dialogPage?.getParentPage() || null
     }
     // @ts-expect-error
     vm.$dialogPage = getPageInstanceByVm(vm)?.$dialogPage
@@ -289,7 +279,7 @@ export function initPage(vm: ComponentPublicInstance) {
         }, 0)
         if (homeDialogPages.length) {
           homeDialogPages.forEach((dialogPage) => {
-            dialogPage.$getParentPage = () => vm
+            dialogPage.getParentPage = () => vm
             pageInstance!.$dialogPages.value.push(dialogPage)
           })
           homeDialogPages.length = 0

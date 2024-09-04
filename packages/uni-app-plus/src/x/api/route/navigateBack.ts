@@ -37,7 +37,7 @@ export const navigateBack = defineAsyncApi<API_TYPE_NAVIGATE_BACK>(
       )
       if (onBackPressRes !== true) {
         // @ts-expect-error
-        const dialogPages = page.$getDialogPages()
+        const dialogPages = page.getDialogPages()
         if (dialogPages.length > 0) {
           const dialogPage = dialogPages[dialogPages.length - 1]
           onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {
@@ -90,7 +90,7 @@ function back(
       .reverse()
       .forEach((deltaPage) => {
         // @ts-expect-error
-        const dialogPages = deltaPage.$getDialogPages()
+        const dialogPages = deltaPage.getDialogPages()
         for (let i = dialogPages.length - 1; i >= 0; i--) {
           const dialogPage = dialogPages[i]
           closeNativeDialogPage(dialogPage, 'none')
@@ -129,7 +129,7 @@ function back(
     currentPage.$page.id + ''
   )!
   // @ts-expect-error
-  const dialogPages = currentPage.$getDialogPages()
+  const dialogPages = currentPage.getDialogPages()
   for (let i = dialogPages.length - 1; i >= 0; i--) {
     const dialogPage = dialogPages[i]
     closeNativeDialogPage(dialogPage, 'none')

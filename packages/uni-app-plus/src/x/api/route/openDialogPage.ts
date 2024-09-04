@@ -5,10 +5,13 @@ import { ANI_DURATION, ANI_SHOW } from '../../../service/constants'
 import { showWebview } from './webview'
 import type { ComponentPublicInstance } from 'vue'
 import { beforeRoute, createNormalizeUrl } from '@dcloudio/uni-api'
-import { DialogPage, homeDialogPages } from '../../framework/page/dialogPage'
+import {
+  DialogPageImpl,
+  homeDialogPages,
+} from '../../framework/page/dialogPage'
 import { registerDialogPage } from '../../framework/page/register'
 import { getWebviewId } from '../../../service/framework/webview/utils'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 /**
  *
@@ -106,15 +109,15 @@ export const openDialogPage = (
       currentPages.length - 1
     ] as ComponentPublicInstance
   }
-  const dialogPage = new DialogPage({
+  const dialogPage = new DialogPageImpl({
     route: url,
-    $getParentPage: () => parentPage,
+    getParentPage: () => parentPage,
   })
 
   if (!parentPage) {
     homeDialogPages.push(dialogPage)
   } else {
-    const dialogPages = parentPage.$getDialogPages()
+    const dialogPages = parentPage.getDialogPages()
     if (dialogPages.length) {
       invokeHook(dialogPages[dialogPages.length - 1].$vm!, ON_HIDE)
     }

@@ -86,12 +86,12 @@ export function initScope(
         return vm.$nativePage!.setPageStyle.bind(vm.$nativePage!)
       },
     })
-    Object.defineProperty(vm, '$getDialogPages', {
+    Object.defineProperty(vm, 'getDialogPages', {
       get() {
         return () => vm.$.$dialogPages
       },
     })
-    Object.defineProperty(vm, '$getParentPage', {
+    Object.defineProperty(vm, 'getParentPage', {
       get() {
         return () => null
       },

@@ -147,7 +147,7 @@ export function setupPage(comp: any) {
         if (__X__) {
           const pageInstance = getPageInstanceByChild(instance)
           if (pageInstance.attrs.type === 'dialog') {
-            const parentPage = instance.proxy?.$getParentPage()
+            const parentPage = instance.proxy?.getParentPage()
             const parentPageInstance = parentPage
               ? getPageInstanceByVm(parentPage)
               : null

@@ -1,14 +1,14 @@
 import { createNormalizeUrl } from '@dcloudio/uni-api'
 
 import {
-  DialogPage,
+  DialogPageImpl,
   homeDialogPages,
   incrementEscBackPageNum,
 } from '../../../framework/setup/page'
 import { EventChannel } from '@dcloudio/uni-shared'
 import { getPageInstanceByVm } from '../../../framework/setup/utils'
 import type { ComponentPublicInstance } from 'vue'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 
 /**
  *
@@ -91,10 +91,10 @@ export const openDialogPage = (
     triggerFailCallback(options, `page '${options.url}' is not found`)
     return null
   }
-  const dialogPage = new DialogPage({
+  const dialogPage = new DialogPageImpl({
     route: options.url,
     $component: targetRoute!.component,
-    $getParentPage: () => null,
+    getParentPage: () => null,
     $disableEscBack: options.disableEscBack,
   })
 
@@ -114,7 +114,7 @@ export const openDialogPage = (
         currentPages.length - 1
       ] as ComponentPublicInstance
     }
-    dialogPage.$getParentPage = () => parentPage as ComponentPublicInstance
+    dialogPage.getParentPage = () => parentPage as ComponentPublicInstance
     getPageInstanceByVm(
       parentPage as ComponentPublicInstance
     )!.$dialogPages.value.push(dialogPage)

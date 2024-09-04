@@ -1,36 +1,26 @@
-import { UniEventBus } from '@dcloudio/uni-api'
-import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+import { EventBus } from '@dcloudio/uni-api'
+import type { UniDialogPage } from '@dcloudio/uni-app-x/types/page'
 import type { ComponentPublicInstance } from 'vue'
 
-export class DialogPage implements UniDialogPage {
+export class DialogPageImpl extends EventBus implements UniDialogPage {
   route: string = ''
-  $component: any | null = null
-  $getParentPage: () => ComponentPublicInstance | null
-  private $eventBus = new UniEventBus()
-  on = (eventName: string, callback: Function) => {
-    this.$eventBus.on(eventName, callback)
-  }
-  once = (eventName: string, callback: Function) => {
-    this.$eventBus.once(eventName, callback)
-  }
-  off = (eventName?: string, callback?: Function | null) => {
-    this.$eventBus.off(eventName, callback)
-  }
-  emit = (eventName: string, ...args: any[]) => {
-    this.$eventBus.emit(eventName, ...args)
-  }
-  $disableEscBack: boolean = false
+  options: Map<string, string | null> = new Map()
+  getParentPage: () => ComponentPublicInstance | null
+  vm: ComponentPublicInstance | null = null
   $vm: ComponentPublicInstance | null = null
+  $component: any | null = null
+  $disableEscBack: boolean = false
 
   constructor({
     route,
-    $getParentPage,
+    getParentPage,
   }: {
     route: string
-    $getParentPage: () => ComponentPublicInstance | null
+    getParentPage: () => ComponentPublicInstance | null
   }) {
+    super()
     this.route = route
-    this.$getParentPage = $getParentPage
+    this.getParentPage = getParentPage
   }
 }
 
