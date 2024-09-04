@@ -25,17 +25,12 @@ export function initUVueEnv() {
   // 没有手动指定时，才需要动态读取 manifest.json
   if (process.env.UNI_APP_X !== 'true') {
     const manifestJson = parseManifestJsonOnce(process.env.UNI_INPUT_DIR)
-    const isNVueEnabled = hasOwn(manifestJson, 'uni-app-x')
-    if (!isNVueEnabled) {
+    if (!hasOwn(manifestJson, 'uni-app-x')) {
       return
     }
     process.env.UNI_APP_X = 'true'
     if (manifestJson['uni-app-x']?.singleThread === false) {
       process.env.UNI_APP_X_SINGLE_THREAD = 'false'
-    }
-    // 留个开关
-    if (manifestJson['app']?.['utsCompilerVersion'] === 'v1') {
-      process.env.UNI_APP_X_TSC = 'false'
     }
   }
 

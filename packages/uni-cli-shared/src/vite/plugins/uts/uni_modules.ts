@@ -14,6 +14,8 @@ import {
   parseSwiftPackageWithPluginId,
   resolveUTSAppModule,
   resolveUTSCompiler,
+  tscOutDir,
+  uvueOutDir,
 } from '../../../uts'
 import { parseVueRequest } from '../../utils'
 import {
@@ -32,6 +34,7 @@ import {
 import { enableSourceMap, normalizePath } from '../../../utils'
 import { parseManifestJsonOnce } from '../../../json'
 import { preJson } from '../../../preprocess'
+import { emptyDir } from '../../../fs'
 
 const UTSProxyRE = /\?uts-proxy$/
 const UniHelpersRE = /\?uni_helpers$/
@@ -78,6 +81,23 @@ export function getCurrentCompiledUTSPlugins() {
 
 let uniExtApiCompiler = async () => {}
 
+function emptyCacheDir(platform: 'app-android' | 'app-ios' | 'app-harmony') {
+  const uvueOutputDir = uvueOutDir(platform)
+  const tscOutputDir = tscOutDir(platform)
+  function emptyUVueDir() {
+    if (fs.existsSync(uvueOutputDir)) {
+      emptyDir(uvueOutputDir)
+    }
+  }
+  emptyUVueDir()
+  function emptyTscDir() {
+    if (fs.existsSync(tscOutputDir)) {
+      emptyDir(tscOutputDir)
+    }
+  }
+  emptyTscDir()
+}
+
 // 该插件仅限app-android、app-ios、app-harmony
 export function uniUTSAppUniModulesPlugin(
   options: UniUTSPluginOptions = {}
@@ -103,6 +123,16 @@ export function uniUTSAppUniModulesPlugin(
     process.env.UNI_UTS_PLATFORM === 'app-harmony'
       ? createUniXArkTSCompilerOnce()
       : null
+
+  if (uniXKotlinCompiler) {
+    emptyCacheDir('app-android')
+  }
+  if (uniXSwiftCompiler) {
+    emptyCacheDir('app-ios')
+  }
+  if (uniXArkTSCompiler) {
+    emptyCacheDir('app-harmony')
+  }
 
   const changedFiles = new Map<
     string,
