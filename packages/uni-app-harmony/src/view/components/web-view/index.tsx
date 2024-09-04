@@ -32,9 +32,11 @@ function useMethods(embedRef: Ref<InstanceType<typeof Embed> | null>) {
     ) {
       // @ts-expect-error
       const elId = embedRef.value!.elId
+      const pageId = getCurrentPageId() + ''
       UniViewJSBridge.invokeServiceMethod(
         'webview' + capitalize(methodName),
         {
+          pageId,
           elId,
           data,
         },
