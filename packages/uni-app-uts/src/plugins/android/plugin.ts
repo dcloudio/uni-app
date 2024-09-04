@@ -314,7 +314,7 @@ export function main(app: IApp) {
     definePageRoutes();
     defineAppConfig();
     ${automatorCode}
-    (createApp()['app'] as VueApp).mount(app);
+    (createApp()['app'] as VueApp).mount(app, ${UVUE_CLASS_NAME_PREFIX}UniApp());
 }
 `
 }
