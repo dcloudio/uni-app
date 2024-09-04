@@ -427,9 +427,10 @@ export function uniUTSAppUniModulesPlugin(
       if (!isUTSProxy(id)) {
         return
       }
-      const { filename: pluginDir } = parseVueRequest(id.replace('\0', ''))
+      const { filename } = parseVueRequest(id.replace('\0', ''))
       // 当 vue 和 nvue 均引用了相同 uts 插件，解决两套编译器会编译两次 uts 插件的问题
       // 通过缓存，保证同一个 uts 插件只编译一次
+      const pluginDir = normalizePath(filename)
       if (utsModuleCaches.get(pluginDir)) {
         return utsModuleCaches.get(pluginDir)!().then((result) => {
           if (result) {
