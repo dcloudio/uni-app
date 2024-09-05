@@ -14,15 +14,10 @@ import {
 } from '../uni_modules.cloud'
 import { cleanUrl } from './plugins/vitejs/utils'
 import type { CssUrlReplacer } from './plugins/vitejs/plugins/css'
-import {
-  createUniXArkTSCompilerOnce,
-  createUniXKotlinCompilerOnce,
-  createUniXSwiftCompilerOnce,
-  resolveUTSCompiler,
-} from '../uts'
+import { resolveUTSCompiler } from '../uts'
 import { normalizePath } from '../utils'
 import { getUTSEasyComAutoImports } from '../easycom'
-import { compileUniModuleWithTsc } from '../uni_modules'
+
 import { uniModulesSyncFilePreprocessors } from './plugins/uts/uni_modules'
 
 export function createEncryptCssUrlReplacer(
@@ -157,7 +152,7 @@ export function uniEncryptUniModulesPlugin(): Plugin {
       }
       const uniXKotlinCompiler =
         process.env.UNI_APP_X_TSC === 'true'
-          ? createUniXKotlinCompilerOnce()
+          ? resolveUTSCompiler().createUniXKotlinCompilerOnce()
           : null
       if (uniXKotlinCompiler) {
         const tscOutputDir = tscOutDir('app-android')
@@ -435,6 +430,12 @@ export function compileCloudUniModuleWithTsc(
   platform: 'app-android' | 'app-ios' | 'app-harmony',
   pluginDir: string
 ) {
+  const {
+    compileUniModuleWithTsc,
+    createUniXKotlinCompilerOnce,
+    createUniXSwiftCompilerOnce,
+    createUniXArkTSCompilerOnce,
+  } = resolveUTSCompiler()
   return compileUniModuleWithTsc(
     platform,
     pluginDir,

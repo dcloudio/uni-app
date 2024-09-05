@@ -617,7 +617,7 @@ var API_ON = "$on";
 var API_ONCE = "$once";
 var API_OFF = "$off";
 var API_EMIT = "$emit";
-class UniEventBus {
+class EventBus {
   constructor() {
     this.$emitter = new Emitter();
   }
@@ -641,7 +641,7 @@ class UniEventBus {
     this.$emitter.emit(name, ...args);
   }
 }
-var eventBus = new UniEventBus();
+var eventBus = new EventBus();
 var $on = /* @__PURE__ */ defineSyncApi(API_ON, (name, callback) => {
   eventBus.on(name, callback);
   return () => eventBus.off(name, callback);
@@ -1024,12 +1024,12 @@ function initScope(pageId, vm, pageInstance) {
         return vm.$nativePage.setPageStyle.bind(vm.$nativePage);
       }
     });
-    Object.defineProperty(vm, "$getDialogPages", {
+    Object.defineProperty(vm, "getDialogPages", {
       get() {
         return () => vm.$.$dialogPages;
       }
     });
-    Object.defineProperty(vm, "$getParentPage", {
+    Object.defineProperty(vm, "getParentPage", {
       get() {
         return () => null;
       }
@@ -1421,35 +1421,21 @@ function normalizeTabBarStyles(tabBar, themeConfig, themeMode) {
 function useTheme() {
   registerThemeChange(onThemeChange);
 }
-class DialogPage {
+class DialogPageImpl extends EventBus {
   constructor(_ref) {
-    var _this = this;
     var {
       route,
-      $getParentPage
+      getParentPage
     } = _ref;
+    super();
     this.route = "";
-    this.$component = null;
-    this.$eventBus = new UniEventBus();
-    this.on = (eventName, callback) => {
-      this.$eventBus.on(eventName, callback);
-    };
-    this.once = (eventName, callback) => {
-      this.$eventBus.once(eventName, callback);
-    };
-    this.off = (eventName, callback) => {
-      this.$eventBus.off(eventName, callback);
-    };
-    this.emit = function(eventName) {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-      _this.$eventBus.emit(eventName, ...args);
-    };
-    this.$disableEscBack = false;
+    this.options = /* @__PURE__ */ new Map();
+    this.vm = null;
     this.$vm = null;
+    this.$component = null;
+    this.$disableEscBack = false;
     this.route = route;
-    this.$getParentPage = $getParentPage;
+    this.getParentPage = getParentPage;
   }
 }
 var homeDialogPages = [];
@@ -1531,7 +1517,7 @@ function registerPage(_ref, onCreated) {
     if (pages2.length === 1 && homeDialogPages.length) {
       var homePage = pages2[0];
       homePage.$.$dialogPages = homeDialogPages.map((dialogPage) => {
-        dialogPage.$getParentPage = () => homePage;
+        dialogPage.getParentPage = () => homePage;
         return dialogPage;
       });
       homeDialogPages.length = 0;
@@ -1588,7 +1574,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
   var id2 = genWebviewId();
   var routeOptions = initRouteOptions(path, openType);
   var pageStyle = /* @__PURE__ */ new Map([["navigationStyle", "custom"], ["backgroundColor", "transparent"]]);
-  var parentPage = dialogPage.$getParentPage();
+  var parentPage = dialogPage.getParentPage();
   var nativePage2 = getPageManager().createDialogPage(parentPage ? parentPage.$page.id.toString() : "", id2.toString(), url, pageStyle);
   if (onCreated) {
     onCreated(nativePage2);
@@ -1609,7 +1595,7 @@ function registerDialogPage(_ref2, dialogPage, onCreated) {
     var page = createVuePage(id2, route, query, pageInstance, {}, nativePage2);
     dialogPage.$vm = page;
     page.$dialogPage = dialogPage;
-    page.$getParentPage = () => dialogPage.$getParentPage();
+    page.getParentPage = () => dialogPage.getParentPage();
     nativePage2.addPageEventListener(ON_POP_GESTURE, function(e) {
       uni.navigateBack({
         from: "popGesture",
@@ -2131,26 +2117,7 @@ var appCtx;
 var defaultApp = {
   globalData: {}
 };
-class UniApp {
-  constructor() {
-    var _this = this;
-    this.$eventBus = new UniEventBus();
-    this.on = (eventName, callback) => {
-      this.$eventBus.on(eventName, callback);
-    };
-    this.once = (eventName, callback) => {
-      this.$eventBus.once(eventName, callback);
-    };
-    this.off = (eventName, callback) => {
-      this.$eventBus.off(eventName, callback);
-    };
-    this.emit = function(eventName) {
-      for (var _len = arguments.length, args = new Array(_len > 1 ? _len - 1 : 0), _key = 1; _key < _len; _key++) {
-        args[_key - 1] = arguments[_key];
-      }
-      _this.$eventBus.emit(eventName, ...args);
-    };
-  }
+class UniAppImpl extends EventBus {
   get vm() {
     return appCtx;
   }
@@ -2162,7 +2129,7 @@ class UniApp {
     return ((_appCtx = appCtx) === null || _appCtx === void 0 ? void 0 : _appCtx.globalData) || {};
   }
 }
-var $uniApp = new UniApp();
+var $uniApp = new UniAppImpl();
 var entryPageState = {
   isReady: false,
   handledBeforeEntryPageRoutes: false
@@ -2338,7 +2305,7 @@ var navigateBack = /* @__PURE__ */ defineAsyncApi(API_NAVIGATE_BACK, (args, _ref
       from: args.from || "navigateBack"
     });
     if (onBackPressRes !== true) {
-      var dialogPages = page.$getDialogPages();
+      var dialogPages = page.getDialogPages();
       if (dialogPages.length > 0) {
         var dialogPage = dialogPages[dialogPages.length - 1];
         onBackPressRes = invokeHook(dialogPage.$vm, ON_BACK_PRESS, {
@@ -2378,7 +2345,7 @@ function back(delta, animationType, animationDuration) {
   var currentPage = pages2[len - 1];
   if (delta > 1) {
     pages2.slice(len - delta, len - 1).reverse().forEach((deltaPage) => {
-      var dialogPages2 = deltaPage.$getDialogPages();
+      var dialogPages2 = deltaPage.getDialogPages();
       for (var i2 = dialogPages2.length - 1; i2 >= 0; i2--) {
         var dialogPage2 = dialogPages2[i2];
         closeNativeDialogPage(dialogPage2, "none");
@@ -2404,7 +2371,7 @@ function back(delta, animationType, animationDuration) {
     });
   };
   var webview = getNativeApp().pageManager.findPageById(currentPage.$page.id + "");
-  var dialogPages = currentPage.$getDialogPages();
+  var dialogPages = currentPage.getDialogPages();
   for (var i = dialogPages.length - 1; i >= 0; i--) {
     var dialogPage = dialogPages[i];
     closeNativeDialogPage(dialogPage, "none");
@@ -2449,14 +2416,14 @@ var openDialogPage = (options) => {
   if (currentPages.length && !parentPage) {
     parentPage = currentPages[currentPages.length - 1];
   }
-  var dialogPage = new DialogPage({
+  var dialogPage = new DialogPageImpl({
     route: url,
-    $getParentPage: () => parentPage
+    getParentPage: () => parentPage
   });
   if (!parentPage) {
     homeDialogPages.push(dialogPage);
   } else {
-    var dialogPages = parentPage.$getDialogPages();
+    var dialogPages = parentPage.getDialogPages();
     if (dialogPages.length) {
       invokeHook(dialogPages[dialogPages.length - 1].$vm, ON_HIDE);
     }
@@ -2529,13 +2496,13 @@ var closeDialogPage = (options) => {
   }
   if (options !== null && options !== void 0 && options.dialogPage) {
     var dialogPage = options === null || options === void 0 ? void 0 : options.dialogPage;
-    if (!(dialogPage instanceof DialogPage)) {
+    if (!(dialogPage instanceof DialogPageImpl)) {
       triggerFailCallback(options, "dialogPage is not a valid page");
       return;
     }
-    var parentPage = dialogPage.$getParentPage();
+    var parentPage = dialogPage.getParentPage();
     if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      var parentDialogPages = parentPage.$getDialogPages();
+      var parentDialogPages = parentPage.getDialogPages();
       var index2 = parentDialogPages.indexOf(dialogPage);
       parentDialogPages.splice(index2, 1);
       closeNativeDialogPage(dialogPage, (options === null || options === void 0 ? void 0 : options.animationType) || "none");
@@ -2547,7 +2514,7 @@ var closeDialogPage = (options) => {
       return;
     }
   } else {
-    var dialogPages = currentPage.$getDialogPages();
+    var dialogPages = currentPage.getDialogPages();
     for (var i = dialogPages.length - 1; i >= 0; i--) {
       closeNativeDialogPage(dialogPages[i], (options === null || options === void 0 ? void 0 : options.animationType) || "none");
       if (i > 0) {

@@ -1,5 +1,5 @@
 import { extend, isArray } from '@vue/shared'
-import { join, relative } from 'path'
+import { join, relative, resolve } from 'path'
 
 import { resolveAndroidDepFiles } from './kotlin'
 import { resolveIOSDepFiles } from './swift'
@@ -41,6 +41,16 @@ import type { UTSOutputOptions } from '@dcloudio/uts'
 import { isModule } from './module'
 import { getCompiler } from './compiler'
 import { uvueOutDir } from './uvue/index'
+import {
+  type SyncUniModulesFilePreprocessors,
+  compileUniModuleWithTsc,
+  createUniXArkTSCompilerOnce,
+  createUniXKotlinCompilerOnce,
+  createUniXSwiftCompilerOnce,
+  resolveOutputPluginDir,
+  resolveUVueOutputPluginDir,
+} from './uni_modules'
+import { existsSync, readdirSync, rmSync } from 'fs-extra'
 
 export * from './tsc'
 
@@ -614,3 +624,82 @@ async function initCompilerOptionsTransformAutoImports(
 ) {
   return autoImports?.()
 }
+
+function emptyCacheDir(
+  platform: 'app-android' | 'app-ios' | 'app-harmony',
+  inputDir: string,
+  pluginDir: string
+) {
+  const outputPluginDir = resolveOutputPluginDir(platform, inputDir, pluginDir)
+  const uvueOutputPluginDir = resolveUVueOutputPluginDir(
+    platform,
+    inputDir,
+    pluginDir
+  )
+  if (existsSync(outputPluginDir)) {
+    emptyDir(outputPluginDir)
+  }
+  if (existsSync(uvueOutputPluginDir)) {
+    emptyDir(uvueOutputPluginDir)
+  }
+}
+
+function emptyDir(dir: string) {
+  try {
+    for (const file of readdirSync(dir)) {
+      // node >= 14.14.0
+      rmSync(resolve(dir, file), { recursive: true, force: true })
+    }
+  } catch (e) {}
+}
+
+/**
+ * 发行模式(会自动清理临时目录)
+ * @param platform
+ * @param pluginDir
+ * @param param2
+ * @param compilerOptions
+ */
+export async function buildUniModules(
+  platform: 'app' | 'app-android' | 'app-ios' | 'app-harmony',
+  pluginDir: string,
+  {
+    syncUniModulesFilePreprocessors,
+  }: { syncUniModulesFilePreprocessors: SyncUniModulesFilePreprocessors },
+  compilerOptions: UTSPluginCompilerOptions
+) {
+  const inputDir = process.env.UNI_INPUT_DIR
+  if (platform === 'app-android' || platform === 'app') {
+    const platform = 'app-android'
+    emptyCacheDir(platform, inputDir, pluginDir)
+    await compileUniModuleWithTsc(
+      'app-android',
+      pluginDir,
+      createUniXKotlinCompilerOnce(),
+      syncUniModulesFilePreprocessors
+    )
+  }
+  if (platform === 'app-ios' || platform === 'app') {
+    const platform = 'app-ios'
+    emptyCacheDir(platform, inputDir, pluginDir)
+    await compileUniModuleWithTsc(
+      'app-ios',
+      pluginDir,
+      createUniXSwiftCompilerOnce(),
+      syncUniModulesFilePreprocessors
+    )
+  }
+  if (platform === 'app-harmony') {
+    const platform = 'app-harmony'
+    emptyCacheDir(platform, inputDir, pluginDir)
+    await compileUniModuleWithTsc(
+      'app-harmony',
+      pluginDir,
+      createUniXArkTSCompilerOnce(),
+      syncUniModulesFilePreprocessors
+    )
+  }
+  return compile(pluginDir, compilerOptions)
+}
+
+export * from './uni_modules'

@@ -32,7 +32,6 @@ export {
   Defines,
   getUniExtApiProviderRegisters,
   formatExtApiProviderName,
-  compileUniModuleWithTsc,
 } from './uni_modules'
 export {
   parseUniModulesArtifacts,

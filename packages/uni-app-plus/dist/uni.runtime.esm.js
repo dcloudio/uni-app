@@ -9369,7 +9369,7 @@ const EmitProtocol = [
     },
 ];
 
-class UniEventBus {
+class EventBus {
     constructor() {
         this.$emitter = new Emitter();
     }
@@ -9390,7 +9390,7 @@ class UniEventBus {
         this.$emitter.emit(name, ...args);
     }
 }
-const eventBus = new UniEventBus();
+const eventBus = new EventBus();
 const $on = defineSyncApi(API_ON, (name, callback) => {
     eventBus.on(name, callback);
     return () => eventBus.off(name, callback);

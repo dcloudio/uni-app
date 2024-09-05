@@ -2460,7 +2460,7 @@ function defineAsyncApi(name, fn, protocol, options) {
     wrapperAsyncApi(name, fn, process.env.NODE_ENV !== "production" ? protocol : void 0, options)
   );
 }
-class UniEventBus {
+class EventBus {
   constructor() {
     this.$emitter = new uniShared.Emitter();
   }
@@ -2481,7 +2481,7 @@ class UniEventBus {
     this.$emitter.emit(name, ...args);
   }
 }
-new UniEventBus();
+new EventBus();
 const API_ON_TAB_BAR_MID_BUTTON_TAP = "onTabBarMidButtonTap";
 const API_GET_LOCALE = "getLocale";
 const getLocale = /* @__PURE__ */ defineSyncApi(
@@ -8760,7 +8760,7 @@ function removeRouteCache(routeKey) {
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
   {
-    const dialogPages = pageVm.$getDialogPages();
+    const dialogPages = pageVm.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       uni.closeDialogPage({ dialogPage: dialogPages[i] });
     }
@@ -8836,13 +8836,13 @@ function initPage(vm) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || uniShared.ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
-    vm.$getDialogPages = () => {
+    vm.getDialogPages = () => {
       var _a2;
       return ((_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPages.value) || [];
     };
-    vm.$getParentPage = () => {
+    vm.getParentPage = () => {
       var _a2, _b;
-      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
+      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.getParentPage()) || null;
     };
     vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
   }
@@ -8856,7 +8856,7 @@ function initPage(vm) {
         }, 0);
         if (homeDialogPages.length) {
           homeDialogPages.forEach((dialogPage) => {
-            dialogPage.$getParentPage = () => vm;
+            dialogPage.getParentPage = () => vm;
             pageInstance.$dialogPages.value.push(dialogPage);
           });
           homeDialogPages.length = 0;
@@ -9040,22 +9040,7 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
 let appVm;
 let $uniApp;
 {
-  class UniApp {
-    constructor() {
-      this.$eventBus = new UniEventBus();
-      this.on = (eventName, callback) => {
-        this.$eventBus.on(eventName, callback);
-      };
-      this.once = (eventName, callback) => {
-        this.$eventBus.once(eventName, callback);
-      };
-      this.off = (eventName, callback) => {
-        this.$eventBus.off(eventName, callback);
-      };
-      this.emit = (eventName, ...args) => {
-        this.$eventBus.emit(eventName, ...args);
-      };
-    }
+  class UniAppImpl extends EventBus {
     get vm() {
       return appVm;
     }
@@ -9066,7 +9051,7 @@ let $uniApp;
       return (appVm == null ? void 0 : appVm.globalData) || {};
     }
   }
-  $uniApp = new UniApp();
+  $uniApp = new UniAppImpl();
 }
 function getApp$1() {
   {

@@ -6,7 +6,6 @@ import type { ChangeEvent } from 'rollup'
 import {
   type UniVitePlugin,
   buildUniExtApis,
-  createUniXKotlinCompilerOnce,
   emptyDir,
   getCurrentCompiledUTSPlugins,
   getUniExtApiProviderRegisters,
@@ -78,7 +77,9 @@ export function uniAppPlugin(): UniVitePlugin {
   let resolvedConfig: ResolvedConfig
 
   const uniXKotlinCompiler =
-    process.env.UNI_APP_X_TSC === 'true' ? createUniXKotlinCompilerOnce() : null
+    process.env.UNI_APP_X_TSC === 'true'
+      ? resolveUTSCompiler().createUniXKotlinCompilerOnce()
+      : null
   const changedFiles: { fileName: string; event: ChangeEvent }[] = []
 
   return {

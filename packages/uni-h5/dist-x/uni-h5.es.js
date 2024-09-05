@@ -4612,7 +4612,7 @@ const EmitProtocol = [
     required: true
   }
 ];
-class UniEventBus {
+class EventBus {
   constructor() {
     this.$emitter = new Emitter();
   }
@@ -4633,7 +4633,7 @@ class UniEventBus {
     this.$emitter.emit(name, ...args);
   }
 }
-const eventBus = new UniEventBus();
+const eventBus = new EventBus();
 const $on = /* @__PURE__ */ defineSyncApi(
   API_ON,
   (name, callback) => {
@@ -17375,7 +17375,7 @@ let escBackPageNum = 0;
 function handleEscKeyPress(event) {
   if (event.key === "Escape") {
     const currentPage = getCurrentPage();
-    const dialogPages = currentPage.$getDialogPages();
+    const dialogPages = currentPage.getDialogPages();
     const dialogPage = dialogPages[dialogPages.length - 1];
     if (!dialogPage.$disableEscBack) {
       uni.closeDialogPage({ dialogPage });
@@ -17394,32 +17394,23 @@ function decrementEscBackPageNum() {
     document.removeEventListener("keydown", handleEscKeyPress);
   }
 }
-class DialogPage {
+class DialogPageImpl extends EventBus {
   constructor({
     route,
     $component,
-    $getParentPage,
+    getParentPage,
     $disableEscBack = false
   }) {
+    super();
     this.route = "";
-    this.$eventBus = new UniEventBus();
-    this.on = (eventName, callback) => {
-      this.$eventBus.on(eventName, callback);
-    };
-    this.once = (eventName, callback) => {
-      this.$eventBus.once(eventName, callback);
-    };
-    this.off = (eventName, callback) => {
-      this.$eventBus.off(eventName, callback);
-    };
-    this.emit = (eventName, ...args) => {
-      this.$eventBus.emit(eventName, ...args);
-    };
-    this.$disableEscBack = false;
+    this.options = /* @__PURE__ */ new Map();
+    this.vm = null;
     this.$vm = null;
+    this.$component = null;
+    this.$disableEscBack = false;
     this.route = route;
     this.$component = $component;
-    this.$getParentPage = $getParentPage;
+    this.getParentPage = getParentPage;
     this.$disableEscBack = $disableEscBack;
   }
 }
@@ -17457,7 +17448,7 @@ function removeRouteCache(routeKey) {
 function removePage(routeKey, removeRouteCaches = true) {
   const pageVm = currentPagesMap.get(routeKey);
   {
-    const dialogPages = pageVm.$getDialogPages();
+    const dialogPages = pageVm.getDialogPages();
     for (let i = dialogPages.length - 1; i >= 0; i--) {
       uni.closeDialogPage({ dialogPage: dialogPages[i] });
     }
@@ -17533,13 +17524,13 @@ function initPage(vm) {
       onReachBottomDistance: pageMeta.onReachBottomDistance || ON_REACH_BOTTOM_DISTANCE,
       backgroundColorContent: pageMeta.backgroundColorContent
     });
-    vm.$getDialogPages = () => {
+    vm.getDialogPages = () => {
       var _a2;
       return ((_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPages.value) || [];
     };
-    vm.$getParentPage = () => {
+    vm.getParentPage = () => {
       var _a2, _b;
-      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.$getParentPage()) || null;
+      return ((_b = (_a2 = getPageInstanceByVm(vm)) == null ? void 0 : _a2.$dialogPage) == null ? void 0 : _b.getParentPage()) || null;
     };
     vm.$dialogPage = (_a = getPageInstanceByVm(vm)) == null ? void 0 : _a.$dialogPage;
   }
@@ -17553,7 +17544,7 @@ function initPage(vm) {
         }, 0);
         if (homeDialogPages.length) {
           homeDialogPages.forEach((dialogPage) => {
-            dialogPage.$getParentPage = () => vm;
+            dialogPage.getParentPage = () => vm;
             pageInstance.$dialogPages.value.push(dialogPage);
           });
           homeDialogPages.length = 0;
@@ -18736,22 +18727,7 @@ const AsyncErrorComponent = /* @__PURE__ */ defineSystemComponent({
 let appVm;
 let $uniApp;
 {
-  class UniApp {
-    constructor() {
-      this.$eventBus = new UniEventBus();
-      this.on = (eventName, callback) => {
-        this.$eventBus.on(eventName, callback);
-      };
-      this.once = (eventName, callback) => {
-        this.$eventBus.once(eventName, callback);
-      };
-      this.off = (eventName, callback) => {
-        this.$eventBus.off(eventName, callback);
-      };
-      this.emit = (eventName, ...args) => {
-        this.$eventBus.emit(eventName, ...args);
-      };
-    }
+  class UniAppImpl extends EventBus {
     get vm() {
       return appVm;
     }
@@ -18762,7 +18738,7 @@ let $uniApp;
       return (appVm == null ? void 0 : appVm.globalData) || {};
     }
   }
-  $uniApp = new UniApp();
+  $uniApp = new UniAppImpl();
 }
 function getApp$1() {
   {
@@ -18865,7 +18841,7 @@ function setupPage(comp) {
         {
           const pageInstance = getPageInstanceByChild(instance2);
           if (pageInstance.attrs.type === "dialog") {
-            const parentPage = (_a = instance2.proxy) == null ? void 0 : _a.$getParentPage();
+            const parentPage = (_a = instance2.proxy) == null ? void 0 : _a.getParentPage();
             const parentPageInstance = parentPage ? getPageInstanceByVm(parentPage) : null;
             if (parentPageInstance) {
               const dialogPages = parentPageInstance.$dialogPages.value;
@@ -23837,7 +23813,7 @@ const navigateBack = /* @__PURE__ */ defineAsyncApi(
     {
       const currentPage = getCurrentPage();
       if (currentPage) {
-        const dialogPages = currentPage.$getDialogPages();
+        const dialogPages = currentPage.getDialogPages();
         const dialogPage = dialogPages[dialogPages.length - 1];
         if (((_b = dialogPage == null ? void 0 : (_a = dialogPage.$vm.$options).onBackPress) == null ? void 0 : _b.call(_a)) === true) {
           canBack = false;
@@ -25378,10 +25354,10 @@ const openDialogPage = (options) => {
     triggerFailCallback$1(options, `page '${options.url}' is not found`);
     return null;
   }
-  const dialogPage = new DialogPage({
+  const dialogPage = new DialogPageImpl({
     route: options.url,
     $component: targetRoute.component,
-    $getParentPage: () => null,
+    getParentPage: () => null,
     $disableEscBack: options.disableEscBack
   });
   let parentPage = options.parentPage;
@@ -25398,7 +25374,7 @@ const openDialogPage = (options) => {
     if (!parentPage) {
       parentPage = currentPages[currentPages.length - 1];
     }
-    dialogPage.$getParentPage = () => parentPage;
+    dialogPage.getParentPage = () => parentPage;
     getPageInstanceByVm(
       parentPage
     ).$dialogPages.value.push(dialogPage);
@@ -25434,9 +25410,9 @@ const closeDialogPage = (options) => {
   }
   if (options == null ? void 0 : options.dialogPage) {
     const dialogPage = options == null ? void 0 : options.dialogPage;
-    const parentPage = (_a = dialogPage.$getParentPage) == null ? void 0 : _a.call(dialogPage);
+    const parentPage = (_a = dialogPage.getParentPage) == null ? void 0 : _a.call(dialogPage);
     if (parentPage && currentPages.indexOf(parentPage) !== -1) {
-      const parentDialogPages = parentPage.$getDialogPages();
+      const parentDialogPages = parentPage.getDialogPages();
       const index2 = parentDialogPages.indexOf(dialogPage);
       parentDialogPages.splice(index2, 1);
       invokeHook(dialogPage.$vm, ON_UNLOAD);

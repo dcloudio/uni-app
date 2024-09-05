@@ -5,7 +5,6 @@ import {
   compileUniModuleWithTsc,
   createUniXKotlinCompilerOnce,
   createUniXSwiftCompilerOnce,
-  uniModulesSyncFilePreprocessors,
 } from '../src'
 
 const inputDir = path.resolve(__dirname, 'examples/tsc/src')
@@ -25,7 +24,11 @@ describe('uni_modules', () => {
           platform === 'app-android'
             ? createUniXKotlinCompilerOnce()
             : createUniXSwiftCompilerOnce(),
-          uniModulesSyncFilePreprocessors
+          {
+            '.json'(content) {
+              return content
+            },
+          }
         )
         const outputUVuePluginDir = path.resolve(
           process.env.UNI_OUTPUT_DIR!,

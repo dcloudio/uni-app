@@ -10,13 +10,11 @@ import {
   capitalize,
   installDepTips,
   isArray,
-  normalizeNodeModules,
   normalizePath,
 } from './utils'
 
 import { type Injects, parseUniExtApis } from './uni_modules'
 import type { EasycomMatcher } from './easycom'
-import type { CompilerOptions } from 'typescript'
 
 function once<T extends (...args: any[]) => any>(
   fn: T,
@@ -137,87 +135,6 @@ function resolveUTSFile(
     }
   }
 }
-
-function resolveUniXCompilerUniModulesPaths(
-  platform: 'app-android' | 'app-ios' | 'app-harmony',
-  inputDir: string,
-  tscInputDir: string
-) {
-  const paths: CompilerOptions['paths'] = {}
-  const uniModulesDir = path.resolve(inputDir, 'uni_modules')
-  if (fs.existsSync(uniModulesDir)) {
-    fs.readdirSync(uniModulesDir).forEach((dir) => {
-      const pluginPath = `@/uni_modules/${dir}`
-      const pluginDir = path.resolve(uniModulesDir, dir)
-      const utssdkDir = path.resolve(pluginDir, 'utssdk')
-      const tscUtsSdkDir = path.resolve(
-        tscInputDir,
-        'uni_modules',
-        dir,
-        'utssdk'
-      )
-      // utssdk 插件
-      if (fs.existsSync(utssdkDir)) {
-        // 加密插件
-        if (fs.existsSync(path.resolve(pluginDir, 'encrypt'))) {
-          if (fs.existsSync(path.resolve(utssdkDir, 'interface.uts'))) {
-            paths[pluginPath] = [path.resolve(tscUtsSdkDir, 'interface.uts.ts')]
-          }
-        } else {
-          // 非加密插件
-          // utssdk/app-android/index.uts
-          if (fs.existsSync(path.resolve(utssdkDir, platform, 'index.uts'))) {
-            paths[pluginPath] = [
-              path.resolve(tscUtsSdkDir, platform, 'index.uts.ts'),
-            ]
-            // utssdk/index.uts
-          } else if (fs.existsSync(path.resolve(utssdkDir, 'index.uts'))) {
-            paths[pluginPath] = [path.resolve(tscUtsSdkDir, 'index.uts.ts')]
-          }
-        }
-      }
-    })
-  }
-  return paths
-}
-
-type TargetLanguage = Parameters<(typeof UTSCompiler)['createUniXCompiler']>[1]
-
-function createUniXTargetLanguageCompiler(
-  platform: 'app-android' | 'app-ios' | 'app-harmony',
-  language: TargetLanguage
-) {
-  const { createUniXCompiler } = resolveUTSCompiler()
-  const tscInputDir = path.join(process.env.UNI_APP_X_TSC_DIR, platform)
-  genUniExtApiDeclarationFileOnce(tscInputDir)
-  return createUniXCompiler(
-    process.env.NODE_ENV === 'development' ? 'development' : 'production',
-    language,
-    {
-      inputDir: tscInputDir,
-      cacheDir: path.resolve(process.env.UNI_APP_X_TSC_CACHE_DIR, platform),
-      outputDir: path.join(process.env.UNI_APP_X_UVUE_DIR, platform),
-      paths: resolveUniXCompilerUniModulesPaths(
-        platform,
-        process.env.UNI_INPUT_DIR,
-        tscInputDir
-      ),
-      normalizeFileName: normalizeNodeModules,
-    }
-  )
-}
-
-export const createUniXArkTSCompilerOnce = once(() => {
-  return createUniXTargetLanguageCompiler('app-harmony', 'ArkTS')
-})
-
-export const createUniXKotlinCompilerOnce = once(() => {
-  return createUniXTargetLanguageCompiler('app-android', 'Kotlin')
-})
-
-export const createUniXSwiftCompilerOnce = once(() => {
-  return createUniXTargetLanguageCompiler('app-ios', 'Swift')
-})
 
 export function resolveUTSCompiler(): typeof UTSCompiler {
   let compilerPath: string = ''
@@ -606,7 +523,7 @@ export async function initUTSSwiftAutoImportsOnce() {
   return initUTSAutoImports(autoSwiftImports, 'app-ios', 'swift')
 }
 
-const genUniExtApiDeclarationFileOnce = once((tscInputDir: string) => {
+export const genUniExtApiDeclarationFileOnce = once((tscInputDir: string) => {
   const extApis = parseUniExtApis(true, 'app-android', 'kotlin')
   // 之所以往上一级写，是因为 tscInputDir 会被 empty，目前时机有问题，比如先生成了d.ts，又被empty
   const fileName = path.resolve(tscInputDir, '../uni-ext-api.d.ts')
