@@ -47,7 +47,11 @@ declare module '@vue/compiler-sfc' {
 export function createDescriptor(
   filename: string,
   source: string,
-  { root, sourceMap, compiler }: ResolvedOptions
+  {
+    root,
+    sourceMap,
+    compiler,
+  }: ResolvedOptions & { compiler: typeof _compiler }
 ): SFCParseResult {
   // ensure the path is normalized in a way that is consistent inside
   // project (relative to root) and on different systems.
