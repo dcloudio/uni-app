@@ -188,6 +188,18 @@ process.env.UNI_APP_X_CACHE_DIR =
   process.env.UNI_APP_X_CACHE_DIR ||
   path.resolve(process.env.UNI_OUTPUT_DIR, '../cache/.' + baseOutDir)
 
+process.env.UNI_APP_X_TSC_DIR = path.resolve(
+  process.env.UNI_OUTPUT_DIR,
+  '../.tsc'
+)
+process.env.UNI_APP_X_UVUE_DIR = path.resolve(
+  process.env.UNI_OUTPUT_DIR,
+  '../.uvue'
+)
+process.env.UNI_APP_X_TSC_CACHE_DIR = path.resolve(
+  process.env.UNI_APP_X_CACHE_DIR,
+  'tsc'
+)
 initUtsPlatform()
 
 function initUtsPlatform () {

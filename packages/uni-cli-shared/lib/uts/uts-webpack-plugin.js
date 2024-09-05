@@ -1,8 +1,7 @@
 const path = require('path')
 const fs = require('fs-extra')
 const {
-  createUniXKotlinCompilerOnce,
-  createUniXSwiftCompilerOnce
+  resolveUTSCompiler
 } = require('./uts')
 const {
   normalizePath
@@ -75,6 +74,10 @@ function getUniXKotlinCompiler () {
   if (uniXKotlinCompiler) {
     return uniXKotlinCompiler
   }
+  const {
+    createUniXKotlinCompilerOnce
+  } = resolveUTSCompiler()
+
   uniXKotlinCompiler = runByHBuilderX && process.env.UNI_APP_X_TSC === 'true' &&
     (process.env.UNI_UTS_PLATFORM === 'app-android' ||
       process.env.UNI_UTS_PLATFORM === 'app' ||
@@ -100,6 +103,9 @@ function getUniXSwiftCompiler () {
   if (uniXSwiftCompiler) {
     return uniXSwiftCompiler
   }
+  const {
+    createUniXSwiftCompilerOnce
+  } = resolveUTSCompiler()
 
   uniXSwiftCompiler =
     runByHBuilderX && process.env.UNI_APP_X_TSC === 'true' &&

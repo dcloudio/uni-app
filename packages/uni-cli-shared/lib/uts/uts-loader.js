@@ -4,11 +4,7 @@ const {
   parseUniExtApiNamespacesOnce
 } = require('./uts')
 const {
-  parseUTSModuleDeps,
-  resolveOutputPluginDir,
-  resolveUVueOutputPluginDir,
-  resolveTscUniModuleIndexFileName,
-  syncUniModuleFilesByCompiler
+  parseUTSModuleDeps
 } = require('./uni_modules')
 const {
   parseJson
@@ -39,7 +35,10 @@ module.exports = async function (content) {
   const uniXKotlinCompiler = getUniXKotlinCompiler()
   const uniXSwiftCompiler = getUniXSwiftCompiler()
 
-  const inputDir = process.env.UNI_INPUT_DIR
+  const {
+    syncUniModuleFilesByCompiler,
+    resolveTscUniModuleIndexFileName
+  } = resolveUTSCompiler()
 
   const compilePlugin = async (pluginDir) => {
     const pluginId = path.basename(pluginDir)
@@ -49,10 +48,9 @@ module.exports = async function (content) {
     if (uniXKotlinCompiler) {
       await uniXKotlinCompiler.init()
       await syncUniModuleFilesByCompiler(
+        'app-android',
         uniXKotlinCompiler,
         pluginDir,
-        resolveOutputPluginDir('app-android', inputDir, pluginDir),
-        resolveUVueOutputPluginDir('app-android', inputDir, pluginDir),
         uniModulesSyncFilePreprocessors
       )
     }
@@ -60,10 +58,9 @@ module.exports = async function (content) {
     if (uniXSwiftCompiler) {
       await uniXSwiftCompiler.init()
       await syncUniModuleFilesByCompiler(
+        'app-ios',
         uniXSwiftCompiler,
         pluginDir,
-        resolveOutputPluginDir('app-ios', inputDir, pluginDir),
-        resolveUVueOutputPluginDir('app-ios', inputDir, pluginDir),
         uniModulesSyncFilePreprocessors
       )
     }
@@ -73,7 +70,7 @@ module.exports = async function (content) {
       if (uniXKotlinCompiler) {
         const indexFileName = resolveTscUniModuleIndexFileName(
           'app-android',
-          resolveOutputPluginDir('app-android', inputDir, pluginDir)
+          pluginDir
         )
         if (indexFileName) {
           await uniXKotlinCompiler.addRootFile(indexFileName)
@@ -82,7 +79,7 @@ module.exports = async function (content) {
       if (uniXSwiftCompiler) {
         const indexFileName = resolveTscUniModuleIndexFileName(
           'app-ios',
-          resolveOutputPluginDir('app-ios', inputDir, pluginDir)
+          pluginDir
         )
         if (indexFileName) {
           await uniXSwiftCompiler.addRootFile(indexFileName)

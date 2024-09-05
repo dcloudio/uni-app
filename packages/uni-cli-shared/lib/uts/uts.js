@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initUTSSwiftAutoImportsOnce = exports.initUTSKotlinAutoImportsOnce = exports.resolveUniTypeScript = exports.parseUniExtApiNamespacesJsOnce = exports.parseUniExtApiNamespacesOnce = exports.parseSwiftPackageWithPluginId = exports.parseKotlinPackageWithPluginId = exports.initUTSComponents = exports.parseUTSComponent = exports.getUTSComponentAutoImports = exports.isUTSComponent = exports.resolveUTSCompiler = exports.createUniXSwiftCompilerOnce = exports.createUniXKotlinCompilerOnce = exports.resolveUTSModule = exports.resolveUTSAppModule = void 0;
+exports.tscOutDir = exports.uvueOutDir = exports.genUniExtApiDeclarationFileOnce = exports.initUTSSwiftAutoImportsOnce = exports.initUTSKotlinAutoImportsOnce = exports.resolveUniTypeScript = exports.parseUniExtApiNamespacesJsOnce = exports.parseUniExtApiNamespacesOnce = exports.parseSwiftPackageWithPluginId = exports.parseKotlinPackageWithPluginId = exports.initUTSComponents = exports.parseUTSComponent = exports.getUTSComponentAutoImports = exports.isUTSComponent = exports.resolveUTSCompiler = exports.resolveUTSModule = exports.resolveUTSAppModule = void 0;
 // 重要，该文件编译后的 js 需要同步到 vue2 编译器 uni-cli-shared/lib/uts
 const fs_extra_1 = __importDefault(require("fs-extra"));
 const path_1 = __importDefault(require("path"));
@@ -105,64 +105,6 @@ function resolveUTSFile(dir, extensions = ['.uts', '.ts', '.js']) {
         }
     }
 }
-function resolveUniXCompilerUniModulesPaths(platform, inputDir, tscInputDir) {
-    const paths = {};
-    const uniModulesDir = path_1.default.resolve(inputDir, 'uni_modules');
-    if (fs_extra_1.default.existsSync(uniModulesDir)) {
-        fs_extra_1.default.readdirSync(uniModulesDir).forEach((dir) => {
-            const pluginPath = `@/uni_modules/${dir}`;
-            const pluginDir = path_1.default.resolve(uniModulesDir, dir);
-            const utssdkDir = path_1.default.resolve(pluginDir, 'utssdk');
-            const tscUtsSdkDir = path_1.default.resolve(tscInputDir, 'uni_modules', dir, 'utssdk');
-            // utssdk 插件
-            if (fs_extra_1.default.existsSync(utssdkDir)) {
-                // 加密插件
-                if (fs_extra_1.default.existsSync(path_1.default.resolve(pluginDir, 'encrypt'))) {
-                    if (fs_extra_1.default.existsSync(path_1.default.resolve(utssdkDir, 'interface.uts'))) {
-                        paths[pluginPath] = [path_1.default.resolve(tscUtsSdkDir, 'interface.uts.ts')];
-                    }
-                }
-                else {
-                    // 非加密插件
-                    // utssdk/app-android/index.uts
-                    if (fs_extra_1.default.existsSync(path_1.default.resolve(utssdkDir, platform, 'index.uts'))) {
-                        paths[pluginPath] = [
-                            path_1.default.resolve(tscUtsSdkDir, platform, 'index.uts.ts'),
-                        ];
-                        // utssdk/index.uts
-                    }
-                    else if (fs_extra_1.default.existsSync(path_1.default.resolve(utssdkDir, 'index.uts'))) {
-                        paths[pluginPath] = [path_1.default.resolve(tscUtsSdkDir, 'index.uts.ts')];
-                    }
-                }
-            }
-        });
-    }
-    return paths;
-}
-exports.createUniXKotlinCompilerOnce = once(() => {
-    const { createUniXCompiler } = resolveUTSCompiler();
-    const tscInputDir = path_1.default.join(process.env.UNI_OUTPUT_DIR, '../.tsc/app-android');
-    genUniExtApiDeclarationFileOnce(tscInputDir);
-    return createUniXCompiler(process.env.NODE_ENV === 'development' ? 'development' : 'production', 'Kotlin', {
-        inputDir: tscInputDir,
-        cacheDir: path_1.default.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc/app-android'),
-        outputDir: path_1.default.join(process.env.UNI_OUTPUT_DIR, '../.uvue/app-android'),
-        paths: resolveUniXCompilerUniModulesPaths('app-android', process.env.UNI_INPUT_DIR, tscInputDir),
-        normalizeFileName: utils_1.normalizeNodeModules,
-    });
-});
-exports.createUniXSwiftCompilerOnce = once(() => {
-    const { createUniXCompiler } = resolveUTSCompiler();
-    const tscInputDir = path_1.default.join(process.env.UNI_OUTPUT_DIR, '../.tsc/app-ios');
-    return createUniXCompiler(process.env.NODE_ENV === 'development' ? 'development' : 'production', 'Swift', {
-        inputDir: tscInputDir,
-        cacheDir: path_1.default.resolve(process.env.UNI_APP_X_CACHE_DIR, 'tsc/app-ios'),
-        outputDir: path_1.default.join(process.env.UNI_OUTPUT_DIR, '../.uvue/app-ios'),
-        paths: resolveUniXCompilerUniModulesPaths('app-ios', process.env.UNI_INPUT_DIR, tscInputDir),
-        normalizeFileName: utils_1.normalizeNodeModules,
-    });
-});
 function resolveUTSCompiler() {
     let compilerPath = '';
     if ((0, hbx_1.isInHBuilderX)()) {
@@ -454,7 +396,7 @@ async function initUTSSwiftAutoImportsOnce() {
     return initUTSAutoImports(autoSwiftImports, 'app-ios', 'swift');
 }
 exports.initUTSSwiftAutoImportsOnce = initUTSSwiftAutoImportsOnce;
-const genUniExtApiDeclarationFileOnce = once((tscInputDir) => {
+exports.genUniExtApiDeclarationFileOnce = once((tscInputDir) => {
     const extApis = (0, uni_modules_1.parseUniExtApis)(true, 'app-android', 'kotlin');
     // 之所以往上一级写，是因为 tscInputDir 会被 empty，目前时机有问题，比如先生成了d.ts，又被empty
     const fileName = path_1.default.resolve(tscInputDir, '../uni-ext-api.d.ts');
@@ -483,3 +425,11 @@ ${apis.join('\n')}
         }
     }
 });
+function uvueOutDir(platform) {
+    return path_1.default.join(process.env.UNI_APP_X_UVUE_DIR, platform);
+}
+exports.uvueOutDir = uvueOutDir;
+function tscOutDir(platform) {
+    return path_1.default.join(process.env.UNI_APP_X_TSC_DIR, platform);
+}
+exports.tscOutDir = tscOutDir;
