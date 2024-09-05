@@ -33,7 +33,6 @@ import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony10 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-mp-sdk";
@@ -41,6 +40,7 @@ import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, waitForCurrentNativePag
 import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
@@ -93,7 +93,7 @@ import { getCurrentWindow as getCurrentWindow4 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow5 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv1 } from "@dcloudio/uni-mp-sdk";
-import { getEnv as getEnv2, UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv3, Emitter as Emitter4, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
 import { getEnv, getRealPath } from "@dcloudio/uni-mp-sdk";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage2 } from "@dcloudio/uni-mp-sdk";
@@ -5524,23 +5524,7 @@ export function initUniExtApi() {
         const imageName = getFileName(args.src);
         const imageExt = imageName.split('.').slice(-1)[0];
         const imagePacker: image1.ImagePacker = image1.createImagePacker();
-        let file2: fileIo4.File | null = null;
-        try {
-            file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
-        } catch (error) {
-            UTSHarmony9.requestSystemPermission([
-                'ohos.permission.READ_IMAGEVIDEO'
-            ], (allRight: boolean)=>{
-                if (allRight) {
-                    file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
-                }
-            }, ()=>{
-                throw new Error('open file failed');
-            });
-        }
-        if (!file2) {
-            throw new Error('open file failed');
-        }
+        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_WRITE);
         const imageSource: image1.ImageSource = image1.createImageSource(file2.fd);
         if (imageSource == null) {
             throw new Error('create image source failed');
@@ -7615,7 +7599,7 @@ export function initUniExtApi() {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony10.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony9.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {

@@ -18,7 +18,11 @@ import { resolveUTSCompiler } from '../uts'
 import { normalizePath } from '../utils'
 import { getUTSEasyComAutoImports } from '../easycom'
 
-import { uniModulesSyncFilePreprocessors } from './plugins/uts/uni_modules'
+import {
+  createAppAndroidUniModulesSyncFilePreprocessorOnce,
+  createAppHarmonyUniModulesSyncFilePreprocessorOnce,
+  createAppIosUniModulesSyncFilePreprocessorOnce,
+} from './plugins/uts/uni_modules'
 
 export function createEncryptCssUrlReplacer(
   resolve: ResolveFn
@@ -436,6 +440,7 @@ export function compileCloudUniModuleWithTsc(
     createUniXSwiftCompilerOnce,
     createUniXArkTSCompilerOnce,
   } = resolveUTSCompiler()
+  const isX = process.env.UNI_APP_X === 'true'
   return compileUniModuleWithTsc(
     platform,
     pluginDir,
@@ -444,6 +449,10 @@ export function compileCloudUniModuleWithTsc(
       : platform === 'app-harmony'
       ? createUniXArkTSCompilerOnce()
       : createUniXSwiftCompilerOnce(),
-    uniModulesSyncFilePreprocessors
+    platform === 'app-android'
+      ? createAppAndroidUniModulesSyncFilePreprocessorOnce(isX)
+      : platform === 'app-harmony'
+      ? createAppHarmonyUniModulesSyncFilePreprocessorOnce(isX)
+      : createAppIosUniModulesSyncFilePreprocessorOnce(isX)
   )
 }

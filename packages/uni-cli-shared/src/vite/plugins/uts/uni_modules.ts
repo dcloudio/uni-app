@@ -4,7 +4,7 @@ import path from 'path'
 import { once } from '@dcloudio/uni-shared'
 import { dataToEsm } from '@rollup/pluginutils'
 import type { ChangeEvent } from 'rollup'
-import type { SyncUniModulesFilePreprocessors } from '@dcloudio/uni-uts-v1'
+import type { SyncUniModulesFilePreprocessor } from '@dcloudio/uni-uts-v1'
 import {
   genUniExtApiDeclarationFileOnce,
   initUTSKotlinAutoImportsOnce,
@@ -24,22 +24,79 @@ import {
 } from '../../../uni_modules.cloud'
 import { enableSourceMap, normalizePath } from '../../../utils'
 import { parseManifestJsonOnce } from '../../../json'
-import { preJson } from '../../../preprocess'
 import { emptyDir } from '../../../fs'
+import { initScopedPreContext } from '../../../preprocess/context'
+
+/* eslint-disable no-restricted-globals */
+const { preprocess } = require('../../../../lib/preprocess')
 
 const UTSProxyRE = /\?uts-proxy$/
 const UniHelpersRE = /\?uni_helpers$/
 
-export const uniModulesSyncFilePreprocessors: SyncUniModulesFilePreprocessors =
-  {
-    '.json'(content) {
-      // TODO 目前的 preJson 有问题，需要明确app-android/app-ios
-      return dataToEsm(JSON.parse(preJson(content)), {
+function createUniModulesSyncFilePreprocessor(
+  platform: UniApp.PLATFORM,
+  utsPlatform: 'app-android' | 'app-ios' | 'app-harmony',
+  isX: boolean
+): SyncUniModulesFilePreprocessor {
+  const { preVueContext, preUVueContext } = initScopedPreContext(
+    platform,
+    undefined,
+    utsPlatform,
+    true
+  )
+  const preContext = isX ? preUVueContext : preVueContext
+  if (!isX) {
+    if (utsPlatform === 'app-android') {
+      preContext.APP_ANDROID = true
+    }
+    if (utsPlatform === 'app-ios') {
+      preContext.APP_IOS = true
+    }
+    if (utsPlatform === 'app-harmony') {
+      preContext.APP_HARMONY = true
+    }
+  }
+  function preJs(jsCode: string) {
+    return preprocess(jsCode, preContext, { type: 'js' })
+  }
+
+  function preHtml(htmlCode: string) {
+    return preprocess(htmlCode, preContext, { type: 'html' })
+  }
+
+  return (content, fileName) => {
+    const extname = path.extname(fileName)
+    if (extname === '.json') {
+      return dataToEsm(JSON.parse(preJs(content)), {
         namedExports: true,
         preferConst: true,
       })
-    },
+    } else if (extname === '.uts' || extname === '.ts') {
+      return preJs(content)
+    } else if (extname === '.uvue' || extname === '.vue') {
+      return preJs(preHtml(content))
+    }
+    return content
   }
+}
+
+export const createAppAndroidUniModulesSyncFilePreprocessorOnce = once(
+  (isX: boolean) => {
+    return createUniModulesSyncFilePreprocessor('app', 'app-android', isX)
+  }
+)
+
+export const createAppIosUniModulesSyncFilePreprocessorOnce = once(
+  (isX: boolean) => {
+    return createUniModulesSyncFilePreprocessor('app', 'app-ios', isX)
+  }
+)
+
+export const createAppHarmonyUniModulesSyncFilePreprocessorOnce = once(
+  (isX: boolean) => {
+    return createUniModulesSyncFilePreprocessor('app', 'app-harmony', isX)
+  }
+)
 
 function isUTSProxy(id: string) {
   return UTSProxyRE.test(id)
@@ -106,6 +163,7 @@ const emptyHarmonyCacheDirOnce = once(() => {
 export function uniUTSAppUniModulesPlugin(
   options: UniUTSPluginOptions = {}
 ): Plugin {
+  const isX = process.env.UNI_APP_X === 'true'
   const inputDir = process.env.UNI_INPUT_DIR
   process.env.UNI_UTS_USING_ROLLUP = 'true'
   const uniModulesDir = normalizePath(path.resolve(inputDir, 'uni_modules'))
@@ -166,7 +224,7 @@ export function uniUTSAppUniModulesPlugin(
         platform,
         uniXKotlinCompiler,
         pluginDir,
-        uniModulesSyncFilePreprocessors
+        createAppAndroidUniModulesSyncFilePreprocessorOnce(isX)
       )
     }
 
@@ -176,7 +234,7 @@ export function uniUTSAppUniModulesPlugin(
         platform,
         uniXSwiftCompiler,
         pluginDir,
-        uniModulesSyncFilePreprocessors
+        createAppIosUniModulesSyncFilePreprocessorOnce(isX)
       )
     }
 
@@ -186,7 +244,7 @@ export function uniUTSAppUniModulesPlugin(
         platform,
         uniXArkTSCompiler,
         pluginDir,
-        uniModulesSyncFilePreprocessors
+        createAppHarmonyUniModulesSyncFilePreprocessorOnce(isX)
       )
     }
 

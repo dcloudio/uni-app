@@ -42,7 +42,7 @@ import { isModule } from './module'
 import { getCompiler } from './compiler'
 import { uvueOutDir } from './uvue/index'
 import {
-  type SyncUniModulesFilePreprocessors,
+  type SyncUniModulesFilePreprocessor,
   compileUniModuleWithTsc,
   createUniXArkTSCompilerOnce,
   createUniXKotlinCompilerOnce,
@@ -664,8 +664,8 @@ export async function buildUniModules(
   platform: 'app' | 'app-android' | 'app-ios' | 'app-harmony',
   pluginDir: string,
   {
-    syncUniModulesFilePreprocessors,
-  }: { syncUniModulesFilePreprocessors: SyncUniModulesFilePreprocessors },
+    syncUniModulesFilePreprocessor,
+  }: { syncUniModulesFilePreprocessor: SyncUniModulesFilePreprocessor },
   compilerOptions: UTSPluginCompilerOptions
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -676,7 +676,7 @@ export async function buildUniModules(
       'app-android',
       pluginDir,
       createUniXKotlinCompilerOnce(),
-      syncUniModulesFilePreprocessors
+      syncUniModulesFilePreprocessor
     )
   }
   if (platform === 'app-ios' || platform === 'app') {
@@ -686,7 +686,7 @@ export async function buildUniModules(
       'app-ios',
       pluginDir,
       createUniXSwiftCompilerOnce(),
-      syncUniModulesFilePreprocessors
+      syncUniModulesFilePreprocessor
     )
   }
   if (platform === 'app-harmony') {
@@ -696,7 +696,7 @@ export async function buildUniModules(
       'app-harmony',
       pluginDir,
       createUniXArkTSCompilerOnce(),
-      syncUniModulesFilePreprocessors
+      syncUniModulesFilePreprocessor
     )
   }
   return compile(pluginDir, compilerOptions)

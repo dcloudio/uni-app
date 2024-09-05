@@ -24,10 +24,8 @@ describe('uni_modules', () => {
           platform === 'app-android'
             ? createUniXKotlinCompilerOnce()
             : createUniXSwiftCompilerOnce(),
-          {
-            '.json'(content) {
-              return content
-            },
+          (content) => {
+            return content
           }
         )
         const outputUVuePluginDir = path.resolve(

@@ -115,7 +115,7 @@ export async function compileUniModuleWithTsc(
   platform: UniXCompilerPlatform,
   pluginDir: string,
   uniXCompiler: UniXCompiler,
-  preprocessors: SyncUniModulesFilePreprocessors
+  preprocessor: SyncUniModulesFilePreprocessor
 ) {
   // 初始化编译器
   await uniXCompiler.init()
@@ -124,7 +124,7 @@ export async function compileUniModuleWithTsc(
     platform,
     uniXCompiler,
     pluginDir,
-    preprocessors
+    preprocessor
   )
 
   // 添加入口
@@ -139,7 +139,7 @@ export async function syncUniModuleFilesByCompiler(
   platform: UniXCompilerPlatform,
   compiler: UniXCompiler,
   pluginDir: string,
-  preprocessors: SyncUniModulesFilePreprocessors
+  preprocessor: SyncUniModulesFilePreprocessor
 ) {
   const start = Date.now()
   const inputDir = process.env.UNI_INPUT_DIR
@@ -155,12 +155,12 @@ export async function syncUniModuleFilesByCompiler(
     pluginDir,
     outputPluginDir,
     true,
-    preprocessors
+    preprocessor
   )
   const staticFiles = await syncUniModuleStaticFiles(
     pluginDir,
     uvueOutputPluginDir,
-    preprocessors
+    preprocessor
   )
   if (staticFiles.length) {
     files.push(...staticFiles)
@@ -169,7 +169,7 @@ export async function syncUniModuleFilesByCompiler(
   const vueFiles = await syncUniModuleVueFiles(
     pluginDir,
     uvueOutputPluginDir,
-    preprocessors
+    preprocessor
   )
   if (vueFiles.length) {
     // 如果有组件，那再 uts 文件 copy 到 .uvue 目录下，避免 tsc 不 emit 相关的 uts 文件
@@ -179,7 +179,7 @@ export async function syncUniModuleFilesByCompiler(
       pluginDir,
       uvueOutputPluginDir,
       false,
-      preprocessors
+      preprocessor
     )
     compiler.debug(
       `${path.basename(pluginDir)} sync vue files(${vueFiles.length})`
@@ -232,7 +232,7 @@ function resolveUniModuleVueGlobs() {
 async function syncUniModuleStaticFiles(
   pluginDir: string,
   outputPluginDir: string,
-  preprocessors: SyncUniModulesFilePreprocessors
+  preprocessor: SyncUniModulesFilePreprocessor
 ) {
   return fg(`static/**/*`, {
     cwd: pluginDir,
@@ -245,7 +245,7 @@ async function syncUniModuleStaticFiles(
           pluginDir,
           outputPluginDir,
           false,
-          preprocessors
+          preprocessor
         ).then(() => fileName)
       )
     )
@@ -255,7 +255,7 @@ async function syncUniModuleStaticFiles(
 async function syncUniModuleVueFiles(
   pluginDir: string,
   outputPluginDir: string,
-  preprocessors: SyncUniModulesFilePreprocessors
+  preprocessor: SyncUniModulesFilePreprocessor
 ) {
   return fg(resolveUniModuleVueGlobs(), {
     cwd: pluginDir,
@@ -268,7 +268,7 @@ async function syncUniModuleVueFiles(
           pluginDir,
           outputPluginDir,
           false,
-          preprocessors
+          preprocessor
         ).then(() => fileName)
       )
     )
@@ -280,7 +280,7 @@ async function syncUniModulesFiles(
   pluginDir: string,
   outputPluginDir: string,
   rename: boolean,
-  preprocessors: SyncUniModulesFilePreprocessors
+  preprocessor: SyncUniModulesFilePreprocessor
 ) {
   return fg(resolveUniModuleGlobs(), {
     cwd: pluginDir,
@@ -294,34 +294,35 @@ async function syncUniModulesFiles(
           pluginDir,
           outputPluginDir,
           rename,
-          preprocessors
+          preprocessor
         ).then(() => fileName)
       )
     )
   })
 }
 
-export type SyncUniModulesFilePreprocessors = {
-  '.json': (content: string) => string
-}
+export type SyncUniModulesFilePreprocessor = (
+  code: string,
+  fileName: string
+) => string
+
 async function syncUniModulesFile(
   relativeFileName: string,
   pluginDir: string,
   outputPluginDir: string,
   rename: boolean,
-  preprocessors: SyncUniModulesFilePreprocessors
+  preprocessor: SyncUniModulesFilePreprocessor
 ) {
   const src = path.resolve(pluginDir, relativeFileName)
   if (rename) {
     const extname = path.extname(relativeFileName)
-    if (extname === '.uts') {
+    if (['.uts', '.json'].includes(extname)) {
       // test.uts => test.uts.ts
-      const dest = path.resolve(outputPluginDir, relativeFileName + '.ts')
-      return copyFile(src, dest)
-    } else if (extname === '.json') {
-      return fs.outputFile(
+      // test.json => test.json.ts
+      return writeFile(
+        src,
         path.resolve(outputPluginDir, relativeFileName + '.ts'),
-        preprocessors[extname](fs.readFileSync(src, 'utf-8'))
+        preprocessor
       )
     }
   }
@@ -329,6 +330,20 @@ async function syncUniModulesFile(
 }
 
 const utsModuleFileCaches = new Map<string, number>()
+
+async function writeFile(
+  src: string,
+  dest: string,
+  preprocessor: SyncUniModulesFilePreprocessor
+) {
+  const stat = await fs.stat(src)
+  const key = src + ',' + dest
+  if (utsModuleFileCaches.get(key) === stat.mtimeMs) {
+    return
+  }
+  utsModuleFileCaches.set(key, stat.mtimeMs)
+  return fs.outputFile(dest, preprocessor(fs.readFileSync(src, 'utf-8'), src))
+}
 
 async function copyFile(src: string, dest: string) {
   const stat = await fs.stat(src)
