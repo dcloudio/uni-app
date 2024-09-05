@@ -197,8 +197,8 @@ export function registerPage(
       invokeHook(page, ON_REACH_BOTTOM)
     })
 
-    nativePage.addPageEventListener(ON_RESIZE, (_) => {
-      invokeHook(page, ON_RESIZE)
+    nativePage.addPageEventListener(ON_RESIZE, (arg: PageEvent) => {
+      invokeHook(page, ON_RESIZE, arg)
     })
     nativePage.startRender()
   }
@@ -306,8 +306,8 @@ export function registerDialogPage(
       invokeHook(page, ON_REACH_BOTTOM)
     })
 
-    nativePage.addPageEventListener(ON_RESIZE, (_) => {
-      invokeHook(page, ON_RESIZE)
+    nativePage.addPageEventListener(ON_RESIZE, (arg: PageEvent) => {
+      invokeHook(page, ON_RESIZE, arg)
     })
     nativePage.startRender()
   }
