@@ -146,16 +146,17 @@ function isUTSComponent(name) {
     return utsComponents.has(name);
 }
 exports.isUTSComponent = isUTSComponent;
-function getUTSComponentAutoImports() {
+function getUTSComponentAutoImports(language) {
     const utsComponentAutoImports = {};
-    utsComponents.forEach(({ kotlinPackage }, name) => {
+    utsComponents.forEach(({ kotlinPackage, swiftModule }, name) => {
+        const source = language === 'kotlin' ? kotlinPackage : swiftModule;
         const className = (0, utils_1.capitalize)((0, utils_1.camelize)(name)) + 'Element';
-        if (!utsComponentAutoImports[kotlinPackage]) {
-            utsComponentAutoImports[kotlinPackage] = [[className]];
+        if (!utsComponentAutoImports[source]) {
+            utsComponentAutoImports[source] = [[className]];
         }
         else {
-            if (!utsComponentAutoImports[kotlinPackage].find((item) => item[0] === className)) {
-                utsComponentAutoImports[kotlinPackage].push([className]);
+            if (!utsComponentAutoImports[source].find((item) => item[0] === className)) {
+                utsComponentAutoImports[source].push([className]);
             }
         }
     });
@@ -355,7 +356,7 @@ function resolveUniTypeScript() {
 }
 exports.resolveUniTypeScript = resolveUniTypeScript;
 async function initUTSAutoImports(autoImports, platform, language) {
-    const utsComponents = getUTSComponentAutoImports();
+    const utsComponents = getUTSComponentAutoImports(language);
     Object.keys(utsComponents).forEach((source) => {
         if (autoImports[source]) {
             autoImports[source].push(...utsComponents[source]);

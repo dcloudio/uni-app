@@ -7,9 +7,6 @@ const {
   parseUTSModuleDeps
 } = require('./uni_modules')
 const {
-  parseJson
-} = require('../json')
-const {
   dataToEsm
 } = require('./dataToEsm')
 const {
@@ -19,15 +16,77 @@ const {
   getUTSPlugins
 } = require('./uts-webpack-plugin')
 
-const uniModulesSyncFilePreprocessors = {
-  '.json' (content) {
-    // TODO 目前的 preJson 有问题，需要明确app-android/app-ios
-    return dataToEsm(parseJson(content, true), {
-      namedExports: true,
-      preferConst: true
+function createUniModulesSyncFilePreprocessor (
+  platform,
+  utsPlatform
+) {
+  const initPreprocessContext = require('../preprocess')
+  const {
+    vueContext: preContext
+  } = initPreprocessContext(
+    platform,
+    global.uniPlugin.platforms
+  )
+  if (utsPlatform === 'app-android') {
+    preContext.APP_ANDROID = true
+  }
+  if (utsPlatform === 'app-ios') {
+    preContext.APP_IOS = true
+  }
+  const {
+    preprocess
+  } = require('@dcloudio/vue-cli-plugin-uni/packages/webpack-preprocess-loader/preprocess/lib/preprocess')
+
+  function preJs (jsCode) {
+    return preprocess(jsCode, preContext, {
+      type: 'js'
     })
   }
+
+  function preHtml (htmlCode) {
+    return preprocess(htmlCode, preContext, {
+      type: 'html'
+    })
+  }
+
+  return (content, fileName) => {
+    const extname = path.extname(fileName)
+    if (extname === '.json') {
+      return dataToEsm(JSON.parse(preJs(content)), {
+        namedExports: true,
+        preferConst: true
+      })
+    } else if (extname === '.uts' || extname === '.ts') {
+      return preJs(content)
+    } else if (extname === '.uvue' || extname === '.vue') {
+      return preJs(preHtml(content))
+    }
+    return content
+  }
 }
+
+function once (fn, ctx = null) {
+  let res
+  return (...args) => {
+    if (fn) {
+      res = fn.apply(ctx, args)
+      fn = null
+    }
+    return res
+  }
+}
+
+const createAppAndroidUniModulesSyncFilePreprocessorOnce = once(
+  () => {
+    return createUniModulesSyncFilePreprocessor('app', 'app-android')
+  }
+)
+
+const createAppIosUniModulesSyncFilePreprocessorOnce = once(
+  () => {
+    return createUniModulesSyncFilePreprocessor('app', 'app-ios')
+  }
+)
 
 module.exports = async function (content) {
   const callback = this.async()
@@ -51,7 +110,7 @@ module.exports = async function (content) {
         'app-android',
         uniXKotlinCompiler,
         pluginDir,
-        uniModulesSyncFilePreprocessors
+        createAppAndroidUniModulesSyncFilePreprocessorOnce()
       )
     }
 
@@ -61,7 +120,7 @@ module.exports = async function (content) {
         'app-ios',
         uniXSwiftCompiler,
         pluginDir,
-        uniModulesSyncFilePreprocessors
+        createAppIosUniModulesSyncFilePreprocessorOnce()
       )
     }
 
