@@ -219,13 +219,28 @@ function parseExtApiProvider(uniModulesDir: string) {
 
 initArkTSExtApi()
 
+function getExtApiPaths(dirs: string[]) {
+  return dirs.reduce((paths: Record<string, string>, dir: string) => {
+    for (const extApi of fs.readdirSync(dir)) {
+      if (extApi.startsWith('.')) {
+        continue
+      }
+      paths[extApi] = path.resolve(dir, extApi)
+    }
+    return paths
+  }, {} as Record<string, string>)
+}
+
 function initArkTSExtApi() {
-  if (!process.env.UNI_APP_EXT_API_DIR) {
+  if (!process.env.UNI_APP_EXT_API_DIR || !process.env.UNI_APP_EXT_API_INTERNAL_DIR) {
     return
   }
+  const internalExtApiDir = path.resolve(process.env.UNI_APP_EXT_API_INTERNAL_DIR)
   // 遍历所有 ext-api，查找已实现 app-harmony 的 ext-api
   const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR)
   const extApiTempDir = resolveExtApiTempDir('uni-app-harmony')
+  const extApiStore = getExtApiPaths([internalExtApiDir, extApiDir])
+
   const importExtApis: string[] = []
   const exportExtApis: string[] = []
   const defineExtApis: string[] = []
@@ -241,8 +256,8 @@ function initArkTSExtApi() {
   delete extApiProviderBuildJson.input['temp/uni-ext-api/index.uts']
   delete extApiProviderBuildJson.wrapper
 
-  for (const extApi of fs.readdirSync(extApiDir)) {
-    const extApiPath = path.resolve(extApiDir, extApi)
+  for (const extApi in extApiStore) {
+    const extApiPath = extApiStore[extApi]
     if (
       !fs.existsSync(
         path.resolve(extApiPath, 'utssdk', 'app-harmony', 'index.uts')
