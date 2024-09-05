@@ -58,6 +58,7 @@ export { parseExportIdentifiers } from './code'
 
 export {
   compileArkTS,
+  compileArkTSExtApi,
   getArkTSAutoImports,
   resolveAppHarmonyUniModulesRootDir,
   resolveAppHarmonyUniModulesEntryDir,

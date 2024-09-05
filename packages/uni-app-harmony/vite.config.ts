@@ -195,26 +195,9 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-      'uni-ext-api'
+    'uni-ext-api'
     ] || {}
   )
-}
-
-function parseExtApiProvider(uniModulesDir: string) {
-  const exiApiConfig =
-    require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-      'uni-ext-api'
-    ] || {}
-  if (
-    exiApiConfig.provider &&
-    exiApiConfig.provider.service &&
-    exiApiConfig.provider.name
-  ) {
-    return {
-      service: exiApiConfig.provider.service,
-      name: exiApiConfig.provider.name,
-    }
-  }
 }
 
 initArkTSExtApi()
@@ -232,6 +215,10 @@ function getExtApiPaths(dirs: string[]) {
 }
 
 function initArkTSExtApi() {
+  const standaloneExtApi = [
+    'uni-payment-alipay',
+    'uni-facialRecognitionVerify'
+  ]
   if (!process.env.UNI_APP_EXT_API_DIR || !process.env.UNI_APP_EXT_API_INTERNAL_DIR) {
     return
   }
@@ -246,31 +233,19 @@ function initArkTSExtApi() {
   const defineExtApis: string[] = []
   const uniExtApis: string[] = []
   // TODO 优化编译配置的生成及传递
-  const extApiProviderBuildJson = JSON.parse(
-    JSON.stringify(
-      require(path.resolve(__dirname, 'build.ets.json')).find(
-        (item) => !!item.input['temp/uni-ext-api/index.uts']
-      )
-    )
-  )
-  delete extApiProviderBuildJson.input['temp/uni-ext-api/index.uts']
-  delete extApiProviderBuildJson.wrapper
+  const extApiStandaloneBuildJson: { input: string, output: string }[] = []
 
   for (const extApi in extApiStore) {
     const extApiPath = extApiStore[extApi]
-    if (
-      !fs.existsSync(
-        path.resolve(extApiPath, 'utssdk', 'app-harmony', 'index.uts')
-      )
-    ) {
+    if (!fs.existsSync(path.resolve(extApiPath, 'utssdk/app-harmony/index.uts'))) {
       continue
     }
-    const extApiProvider = parseExtApiProvider(extApiPath)
-    if (extApiProvider) {
+    if (standaloneExtApi.includes(extApi)) {
       fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
-      extApiProviderBuildJson.input[
-        `temp/uni-ext-api/${extApi}/utssdk/app-harmony/index.uts`
-      ] = `providers/${extApi}/index.ets`
+      extApiStandaloneBuildJson.push({
+        input: path.resolve(extApiTempDir, extApi),
+        output: path.resolve(__dirname, `dist/packages/${extApi}`)
+      })
       continue
     }
     const injects = parseExtApiInjects(extApiPath)
@@ -305,12 +280,10 @@ function initArkTSExtApi() {
     )
     fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
   }
-  if (Object.keys(extApiProviderBuildJson.input).length > 0) {
-    fs.writeFileSync(
-      path.resolve(extApiTempDir, 'provider.build.json'),
-      JSON.stringify(extApiProviderBuildJson, null, 2)
-    )
-  }
+  fs.writeFileSync(
+    path.resolve(extApiTempDir, 'build.har.json'),
+    JSON.stringify(extApiStandaloneBuildJson, null, 2)
+  )
   // 生成 ext-api/index.ts
   const extApiIndex = path.resolve(extApiTempDir, 'index.uts')
   fs.writeFileSync(

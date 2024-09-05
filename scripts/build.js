@@ -242,20 +242,10 @@ async function build (target) {
   }
 }
 
-function getProviderBuildJson (projectDir, buildJson) {
-  const uniExtApiBuildJson = buildJson.find(options => options.input?.['temp/uni-ext-api/index.uts'] === 'uni.api.ets')
-  if (!uniExtApiBuildJson) {
-    return
-  }
-  const providerBuildJsonFilePath = path.resolve(projectDir, 'temp/uni-ext-api/provider.build.json')
-  if (fs.existsSync(providerBuildJsonFilePath)) {
-    return require(providerBuildJsonFilePath)
-  }
-}
-
-async function buildArkTS (target, buildJson, buildProvider = false) {
+async function buildArkTS (target, buildJson) {
   const projectDir = path.resolve(__dirname, '../packages', target)
   const { bundleArkTS } = require('../packages/uts/dist')
+  const { compileArkTSExtApi } = require('../packages/uni-uts-v1/dist')
   const start = Date.now()
   if (!Array.isArray(buildJson)) {
     buildJson = [buildJson]
@@ -344,12 +334,20 @@ async function buildArkTS (target, buildJson, buildProvider = false) {
     { spaces: 2 }
   )
 
-  if (!buildProvider) {
-    const providerBuildJson = getProviderBuildJson(projectDir, buildJson)
-    if (!providerBuildJson) {
-      return
-    }
-    Object.assign(providerBuildJson.autoImports, extApiExport)
-    await buildArkTS('uni-app-harmony', [providerBuildJson], true)
+  const harBuildJson = require(path.resolve(projectDir, 'temp/uni-ext-api/build.har.json'))
+  for (let i = 0; i < harBuildJson.length; i++) {
+    const {
+      input,
+      output,
+    } = harBuildJson[i];
+    await compileArkTSExtApi(
+      path.resolve(input, '..'),
+      input,
+      output,
+      {
+        isExtApi: true,
+        transform: {}
+      }
+    )
   }
 }
