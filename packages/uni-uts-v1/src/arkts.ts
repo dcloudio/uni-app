@@ -69,6 +69,36 @@ export function getArkTSAutoImports(): AutoImportOptions {
     require('../lib/arkts/ext-api-export.json')
   )
 }
+
+/**
+ * 将config.json内的依赖相对路径转为oh-package.json5的依赖相对路径
+ */
+function parsePackageDeps(
+  deps?: Record<string, string>
+): Record<string, string> | undefined {
+  if (!deps) {
+    return
+  }
+  const base = '/'
+  const result: Record<string, string> = {}
+  for (const key in deps) {
+    const value = deps[key]
+    if (value.startsWith('file:.') || value.startsWith('.')) {
+      const configRelativePath = value.replace(/^file:/, '')
+      const packageRelativePath = path
+        .relative(
+          base,
+          path.resolve(base, 'utssdk/app-harmony', configRelativePath)
+        )
+        .replace(/\\/g, '/')
+      result[key] = packageRelativePath.startsWith('.')
+        ? packageRelativePath
+        : './' + packageRelativePath
+    }
+  }
+  return result
+}
+
 export async function compileArkTS(
   pluginDir: string,
   { isExtApi, transform }: ArkTSCompilerOptions
@@ -133,8 +163,8 @@ export async function compileArkTS(
     .replace(/\//g, '__')
     .replace(/-/g, '_')
 
-  // 拷贝所有ets文件
-  const etsFiles = sync('**/*.ets', {
+  // 拷贝所有ets、har文件
+  const etsFiles = sync('**/*.{ets,har}', {
     cwd: pluginDir,
   })
   for (const etsFile of etsFiles) {
@@ -156,9 +186,12 @@ export async function compileArkTS(
   }
   if (fs.existsSync(configFilePath)) {
     const config = fs.readJSONSync(configFilePath)
-    ohPackageJson.dependencies = config.dependencies
-    ohPackageJson.dynamicDependencies = config.dynamicDependencies
-    ohPackageJson.devDependencies = config.devDependencies
+    ohPackageJson.dependencies = parsePackageDeps(config.dependencies)
+    ohPackageJson.dynamicDependencies = parsePackageDeps(
+      config.dynamicDependencies
+    )
+    ohPackageJson.devDependencies = parsePackageDeps(config.devDependencies)
+    ohPackageJson.overrides = parsePackageDeps(config.overrides)
   }
   fs.outputJSONSync(
     path.resolve(outputUniModuleDir, 'oh-package.json5'),
