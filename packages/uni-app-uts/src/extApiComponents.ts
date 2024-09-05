@@ -9,9 +9,9 @@ import {
 } from '@dcloudio/uni-cli-shared'
 import { parse } from '@dcloudio/uni-nvue-styler'
 
-import { transformMain as transformAndroid } from './uvue/sfc/main'
+import { transformMain as transformAndroid } from './plugins/android/uvue/sfc/main'
 
-export async function buildExtApiComponent(
+export async function transformExtApiComponent(
   platform: 'app-android' | 'app-ios', // | 'app-harmony',
   vueFileName: string
 ) {
@@ -25,13 +25,13 @@ export async function buildExtApiComponent(
   const code = preUVueJs(preUVueHtml(readFileSync(vueFileName, 'utf8')))
 
   if (platform === 'app-android') {
-    return buildAppAndroidExtApiComponent(vueFileName, code)
+    return transformAppAndroidExtApiComponent(vueFileName, code)
   } else if (platform === 'app-ios') {
-    return buildAppIosExtApiComponent(vueFileName, code)
+    return transformAppIosExtApiComponent(vueFileName, code)
   }
 }
 
-async function buildAppAndroidExtApiComponent(
+async function transformAppAndroidExtApiComponent(
   vueFileName: string,
   code: string
 ) {
@@ -63,7 +63,10 @@ async function buildAppAndroidExtApiComponent(
   )
 }
 
-async function buildAppIosExtApiComponent(vueFileName: string, code: string) {}
+async function transformAppIosExtApiComponent(
+  vueFileName: string,
+  code: string
+) {}
 
 async function parseAppAndroidVueStyle(
   name: string,
