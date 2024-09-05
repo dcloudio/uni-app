@@ -1,6 +1,7 @@
 import Want from '@ohos.app.ability.Want';
 import common from '@ohos.app.ability.common';
 import wantConstant from '@ohos.app.ability.wantConstant';
+import buffer from '@ohos.buffer';
 import deviceInfo from '@ohos.deviceInfo';
 import fs from '@ohos.file.fs';
 import photoAccessHelper from '@ohos.file.photoAccessHelper';
@@ -32,6 +33,7 @@ import I18n2 from '@ohos.i18n';
 import { ListFileOptions } from '@ohos.file.fs';
 import { ReadOptions } from '@ohos.file.fs';
 import { UTSHarmony as UTSHarmony1 } from "@dcloudio/uni-mp-sdk";
+import { UTSHarmony as UTSHarmony10 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony2 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony3 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony4, getDeviceId } from "@dcloudio/uni-mp-sdk";
@@ -39,7 +41,6 @@ import { UTSHarmony as UTSHarmony5, Emitter as Emitter1, waitForCurrentNativePag
 import { UTSHarmony as UTSHarmony6 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony7, getWindowInfo as internalGetWindowInfo, getDeviceId as getDeviceId1 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony as UTSHarmony8 } from "@dcloudio/uni-mp-sdk";
-import { UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
 import { UTSHarmony } from "@dcloudio/uni-mp-sdk";
 import { UTSObject, UTSJSONObject } from "@dcloudio/uts-harmony";
 import { UniError, IUniError, UniProvider, string, AsyncApiSuccessResult, AsyncApiResult, ApiOptions, ProtocolOptions, defineAsyncApi, ApiExecutor, ApiError, defineSyncApi, getUniProviders, defineTaskApi, getUniProvider } from "@dcloudio/uni-app-harmony";
@@ -92,7 +93,7 @@ import { getCurrentWindow as getCurrentWindow4 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow as getCurrentWindow5 } from "@dcloudio/uni-mp-sdk";
 import { getCurrentWindow } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv1 } from "@dcloudio/uni-mp-sdk";
-import { getEnv as getEnv2 } from "@dcloudio/uni-mp-sdk";
+import { getEnv as getEnv2, UTSHarmony as UTSHarmony9 } from "@dcloudio/uni-mp-sdk";
 import { getEnv as getEnv3, Emitter as Emitter4, getCurrentMP as getCurrentMP2 } from "@dcloudio/uni-mp-sdk";
 import { getEnv, getRealPath } from "@dcloudio/uni-mp-sdk";
 import { getOSRuntime as getOSRuntime1, waitForCurrentNativePage as waitForCurrentNativePage2 } from "@dcloudio/uni-mp-sdk";
@@ -5523,7 +5524,23 @@ export function initUniExtApi() {
         const imageName = getFileName(args.src);
         const imageExt = imageName.split('.').slice(-1)[0];
         const imagePacker: image1.ImagePacker = image1.createImagePacker();
-        const file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_WRITE);
+        let file2: fileIo4.File | null = null;
+        try {
+            file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
+        } catch (error) {
+            UTSHarmony9.requestSystemPermission([
+                'ohos.permission.READ_IMAGEVIDEO'
+            ], (allRight: boolean)=>{
+                if (allRight) {
+                    file2 = fileIo4.openSync(args.src, fileIo4.OpenMode.READ_ONLY);
+                }
+            }, ()=>{
+                throw new Error('open file failed');
+            });
+        }
+        if (!file2) {
+            throw new Error('open file failed');
+        }
         const imageSource: image1.ImageSource = image1.createImageSource(file2.fd);
         if (imageSource == null) {
             throw new Error('create image source failed');
@@ -6200,14 +6217,6 @@ export function initUniExtApi() {
                 return (encodeURIComponent(key) + '=' + encodeURIComponent(dataRecord[key] as number | string | boolean));
             }).join('&');
         }
-        let expectDataType: http.HttpDataType = http.HttpDataType.STRING;
-        if (responseType === 'arraybuffer') {
-            expectDataType = http.HttpDataType.ARRAY_BUFFER;
-        } else if (dataType === 'json') {
-            expectDataType = http.HttpDataType.STRING;
-        } else {
-            expectDataType = http.HttpDataType.STRING;
-        }
         const httpRequest = http.createHttp();
         const mp = getCurrentMP() as UniNetworkMP;
         const emitter = new Emitter2() as IUniRequestEmitter;
@@ -6228,35 +6237,57 @@ export function initUniExtApi() {
             httpRequest.destroy();
         };
         mp.on('beforeClose', destroy);
+        let latestHeaders: Object | null = null;
         httpRequest.on('headersReceive', (headers: Object)=>{
             const realHeaders = headers as Record<string, string | string[]>;
             const setCookieHeader = realHeaders['set-cookie'] || realHeaders['Set-Cookie'];
             if (setCookieHeader) {
                 setCookieSync(url, setCookieHeader as string[]);
             }
+            latestHeaders = headers;
         });
-        httpRequest.request(parseUrl(url), {
+        const bufs = [] as buffer.Buffer[];
+        httpRequest.on('dataReceive', (data)=>{
+            bufs.push(buffer.from(data));
+        });
+        httpRequest.requestInStream(parseUrl(url), {
             header: headers,
             method: (method || 'GET').toUpperCase() as http.RequestMethod,
             extraData: data || undefined,
-            expectDataType,
             connectTimeout: timeout ? timeout : undefined,
             readTimeout: timeout ? timeout : undefined
-        } as http.HttpRequestOptions, (err, res)=>{
+        } as http.HttpRequestOptions, (err, statusCode)=>{
             if (err) {
                 exec.reject(err.message);
             } else {
-                let data = res.result;
-                if (dataType === 'json' && typeof data === 'string') {
-                    try {
-                        data = JSON.parse(data);
-                    } catch (e) {}
+                const responseData = buffer.concat(bufs);
+                let data: ArrayBuffer | string | object = '';
+                if (responseType === 'arraybuffer') {
+                    data = responseData.buffer;
+                } else {
+                    data = responseData.toString('utf8');
+                    if (dataType === 'json') {
+                        try {
+                            data = JSON.parse(data);
+                        } catch (e) {}
+                    }
+                }
+                const headers = latestHeaders as Record<string, string | string[]>;
+                const oldCookies = (headers['Set-Cookie'] || headers['set-cookie'] || []) as string[];
+                const cookies = latestHeaders ? cookiesParse(latestHeaders as Record<string, string>) : [];
+                let newCookies = oldCookies.join(',');
+                if (newCookies) {
+                    if (headers['Set-Cookie']) {
+                        headers['Set-Cookie'] = newCookies;
+                    } else {
+                        headers['set-cookie'] = newCookies;
+                    }
                 }
                 exec.resolve({
                     data,
-                    statusCode: res.responseCode,
-                    header: res.header,
-                    cookies: cookiesParse(res.header as Record<string, string>)
+                    statusCode,
+                    header: latestHeaders!,
+                    cookies: cookies
                 } as RequestSuccess<Object>);
             }
             requestTask.offHeadersReceived();
@@ -7584,7 +7615,7 @@ export function initUniExtApi() {
     const API_RPX2PX = 'rpx2px';
     const EPS = 1e-4;
     const rpx2px: Rpx2px = defineSyncApi<number>(API_RPX2PX, (number: number): number =>{
-        const windowStage: harmonyWindow.WindowStage = UTSHarmony9.getWindowStage();
+        const windowStage: harmonyWindow.WindowStage = UTSHarmony10.getWindowStage();
         let windowWidthInVp: number = 384;
         let windowWidthInPx: number = 1344;
         if (windowStage) {
