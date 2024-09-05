@@ -188,19 +188,18 @@ export function isUTSComponent(name: string) {
   return utsComponents.has(name)
 }
 
-export function getUTSComponentAutoImports() {
+export function getUTSComponentAutoImports(language: 'kotlin' | 'swift') {
   const utsComponentAutoImports: Record<string, [[string]]> = {}
-  utsComponents.forEach(({ kotlinPackage }, name) => {
+  utsComponents.forEach(({ kotlinPackage, swiftModule }, name) => {
+    const source = language === 'kotlin' ? kotlinPackage : swiftModule
     const className = capitalize(camelize(name)) + 'Element'
-    if (!utsComponentAutoImports[kotlinPackage]) {
-      utsComponentAutoImports[kotlinPackage] = [[className]]
+    if (!utsComponentAutoImports[source]) {
+      utsComponentAutoImports[source] = [[className]]
     } else {
       if (
-        !utsComponentAutoImports[kotlinPackage].find(
-          (item) => item[0] === className
-        )
+        !utsComponentAutoImports[source].find((item) => item[0] === className)
       ) {
-        utsComponentAutoImports[kotlinPackage].push([className])
+        utsComponentAutoImports[source].push([className])
       }
     }
   })
@@ -483,7 +482,7 @@ async function initUTSAutoImports(
   platform: 'app-android' | 'app-ios',
   language: 'kotlin' | 'swift'
 ) {
-  const utsComponents = getUTSComponentAutoImports()
+  const utsComponents = getUTSComponentAutoImports(language)
   Object.keys(utsComponents).forEach((source) => {
     if (autoImports[source]) {
       autoImports[source].push(...utsComponents[source])
