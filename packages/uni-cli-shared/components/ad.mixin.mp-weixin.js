@@ -43,11 +43,9 @@ export default {
   },
   created () {
     this._ad = null
-    setTimeout(() => {
-      if (this.preload && this._canCreateAd()) {
-        this.load()
-      }
-    }, 100)
+    if (this.preload && this._canCreateAd()) {
+      this.load()
+    }
   },
   methods: {
     load () {
