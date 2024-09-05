@@ -664,8 +664,14 @@ export async function buildUniModules(
   platform: 'app' | 'app-android' | 'app-ios' | 'app-harmony',
   pluginDir: string,
   {
-    syncUniModulesFilePreprocessor,
-  }: { syncUniModulesFilePreprocessor: SyncUniModulesFilePreprocessor },
+    syncUniModulesFilePreprocessors,
+  }: {
+    syncUniModulesFilePreprocessors: {
+      android: SyncUniModulesFilePreprocessor
+      ios: SyncUniModulesFilePreprocessor
+      harmony: SyncUniModulesFilePreprocessor
+    }
+  },
   compilerOptions: UTSPluginCompilerOptions
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
@@ -676,7 +682,7 @@ export async function buildUniModules(
       'app-android',
       pluginDir,
       createUniXKotlinCompilerOnce(),
-      syncUniModulesFilePreprocessor
+      syncUniModulesFilePreprocessors.android
     )
   }
   if (platform === 'app-ios' || platform === 'app') {
@@ -686,7 +692,7 @@ export async function buildUniModules(
       'app-ios',
       pluginDir,
       createUniXSwiftCompilerOnce(),
-      syncUniModulesFilePreprocessor
+      syncUniModulesFilePreprocessors.ios
     )
   }
   if (platform === 'app-harmony') {
@@ -696,7 +702,7 @@ export async function buildUniModules(
       'app-harmony',
       pluginDir,
       createUniXArkTSCompilerOnce(),
-      syncUniModulesFilePreprocessor
+      syncUniModulesFilePreprocessors.harmony
     )
   }
   return compile(pluginDir, compilerOptions)

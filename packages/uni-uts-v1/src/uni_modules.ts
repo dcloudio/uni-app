@@ -172,7 +172,7 @@ export async function syncUniModuleFilesByCompiler(
     preprocessor
   )
   if (vueFiles.length) {
-    // 如果有组件，那再 uts 文件 copy 到 .uvue 目录下，避免 tsc 不 emit 相关的 uts 文件
+    // 如果有组件，那将 uts 文件 copy 到 .uvue 目录下，避免 tsc 不 emit 相关的 uts 文件
     // 如果 tsc emit 了，那就会再次覆盖
     await syncUniModulesFiles(
       platform,
