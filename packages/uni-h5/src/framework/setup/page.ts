@@ -481,12 +481,13 @@ function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
   }
 }
 function updatePageMeta(pageMeta: UniApp.PageRouteMeta) {
-  if (pageMeta.pageStyle) {
-    setCurrentPageMeta(null, { pageStyle: pageMeta.pageStyle })
-  }
-  if (pageMeta.rootFontSize) {
-    setCurrentPageMeta(null, { rootFontSize: pageMeta.rootFontSize })
-  }
+  // 触发页面page-meta.vue的设置
+  nextTick(() => {
+    setCurrentPageMeta(null, {
+      pageStyle: pageMeta.pageStyle,
+      rootFontSize: pageMeta.rootFontSize,
+    })
+  })
 }
 export function onPageShow(
   instance: ComponentInternalInstance,
