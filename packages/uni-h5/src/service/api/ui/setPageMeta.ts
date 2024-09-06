@@ -3,19 +3,28 @@ import type { SetPageMetaOptions } from '@dcloudio/uni-api'
 
 export function setCurrentPageMeta(
   page: ComponentPublicInstance | null,
-  { pageStyle, rootFontSize }: SetPageMetaOptions
+  options: SetPageMetaOptions
 ) {
-  // h5端 page-meta.vue组件触发时setPageMeta时，仅仅将pageStyle，rootFontSize设置到$page.meta里面
-  // 页面切换onPageShow逻辑会更新pageStyle，rootFontSize
+  const { pageStyle, rootFontSize } = options
+  // h5端 page-meta.vue组件触发时setPageMeta时, 需要将pageStyle和rootFontSize存储到page.$page.meta
   if (__PLATFORM__ === 'h5' && page) {
-    if (pageStyle) {
+    if (hasKey(options, 'pageStyle')) {
       page.$page.meta.pageStyle = pageStyle
     }
-    if (rootFontSize) {
+    if (hasKey(options, 'rootFontSize')) {
       page.$page.meta.rootFontSize = rootFontSize
     }
-    return
   }
+
+  if (hasKey(options, 'pageStyle')) {
+    setPageStyle(pageStyle)
+  }
+  if (hasKey(options, 'rootFontSize')) {
+    setRootFontSize(rootFontSize)
+  }
+}
+
+const setPageStyle = (pageStyle: string | undefined | null) => {
   const pageElm = document.querySelector('uni-page-body') || document.body
   if (__PLATFORM__ === 'h5' && pageElm === document.body) {
     console.warn('uni-page-body 获取失败')
@@ -26,7 +35,9 @@ export function setCurrentPageMeta(
   } else {
     pageElm.removeAttribute('style')
   }
+}
 
+const setRootFontSize = (rootFontSize: string | undefined | null) => {
   if (document.documentElement.style.fontSize === rootFontSize) {
     return
   }
@@ -37,4 +48,11 @@ export function setCurrentPageMeta(
     document.documentElement.style.removeProperty('font-size')
     document.documentElement.removeAttribute('root-font-size')
   }
+}
+
+function hasKey<T extends object, K extends keyof T>(
+  obj: T,
+  key: K
+): obj is T & Record<K, unknown> {
+  return obj.hasOwnProperty(key)
 }
