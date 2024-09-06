@@ -5,8 +5,7 @@ export function setCurrentPageMeta(
   page: ComponentPublicInstance | null,
   { pageStyle, rootFontSize }: SetPageMetaOptions
 ) {
-  // h5端 page-meta.vue组件触发时，
-  // 仅仅将pageStyle，rootFontSize设置到$page.meta里面
+  // h5端 page-meta.vue组件触发时setPageMeta时，仅仅将pageStyle，rootFontSize设置到$page.meta里面
   // 页面切换onPageShow逻辑会更新pageStyle，rootFontSize
   if (__PLATFORM__ === 'h5' && page) {
     if (pageStyle) {
@@ -31,9 +30,11 @@ export function setCurrentPageMeta(
   if (document.documentElement.style.fontSize === rootFontSize) {
     return
   }
-  if (!rootFontSize) {
-    document.documentElement.style.removeProperty('font-size')
-  } else {
+  if (rootFontSize) {
     document.documentElement.style.fontSize = rootFontSize
+    document.documentElement.setAttribute('root-font-size', 'true')
+  } else {
+    document.documentElement.style.removeProperty('font-size')
+    document.documentElement.removeAttribute('root-font-size')
   }
 }

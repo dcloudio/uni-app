@@ -28,7 +28,10 @@ export function useRem() {
   function updateRem() {
     let width = getWindowWidth()
     width = width <= maxWidth ? width : baseWidth
-    document.documentElement.style.fontSize = width / 23.4375 + 'px'
+    // 用户设置page-meta的rootFontSize优先
+    if (!document.documentElement.hasAttribute('root-font-size')) {
+      document.documentElement.style.fontSize = width / 23.4375 + 'px'
+    }
   }
   updateRem()
   document.addEventListener('DOMContentLoaded', updateRem)

@@ -251,11 +251,11 @@ declare namespace UniNamespace {
     leftWindow?: boolean
     rightWindow?: boolean
     eventChannel?: any
-    // 目前 app-harmony 专用
-    isNVueStyle?: boolean
-    // 目前 h5 专用
+    // page-meta的属性
     pageStyle?:any, 
     rootFontSize?:string
+    // 目前 app-harmony 专用
+    isNVueStyle?: boolean
   }
 
   interface PagesJsonPageOptions {
