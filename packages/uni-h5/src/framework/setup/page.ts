@@ -35,6 +35,7 @@ import { getStateId } from '../../helpers/dom'
 import { getPageInstanceByVm } from './utils'
 import { UniEventBus } from '@dcloudio/uni-api'
 import type { UniDialogPage } from '@dcloudio/uni-app-x/types/uni'
+import { setCurrentPageMeta } from '../../service/api/ui/setPageMeta'
 
 const SEP = '$$'
 
@@ -400,7 +401,14 @@ function updateCurPageAttrs(pageMeta: UniApp.PageRouteMeta) {
     }
   }
 }
-
+function updatePageMeta(pageMeta: UniApp.PageRouteMeta) {
+  if (pageMeta.pageStyle) {
+    setCurrentPageMeta(null, { pageStyle: pageMeta.pageStyle })
+  }
+  if (pageMeta.rootFontSize) {
+    setCurrentPageMeta(null, { rootFontSize: pageMeta.rootFontSize })
+  }
+}
 export function onPageShow(
   instance: ComponentInternalInstance,
   pageMeta: UniApp.PageRouteMeta
@@ -408,6 +416,7 @@ export function onPageShow(
   updateBodyScopeId(instance)
   updateCurPageCssVar(pageMeta)
   updateCurPageAttrs(pageMeta)
+  updatePageMeta(pageMeta)
   initPageScrollListener(instance, pageMeta)
 }
 
