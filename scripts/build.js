@@ -326,6 +326,7 @@ async function buildArkTS (target, buildJson) {
       })
     }
   }
+  // 先生成一遍提供给ohpm包使用
   const extApiExportJsonPath = path.resolve(__dirname, '../packages/uni-uts-v1/lib/arkts/ext-api-export.json')
   const extApiExport = genHarmonyExtApiExport()
   fs.outputJSON(
@@ -366,6 +367,12 @@ async function buildArkTS (target, buildJson) {
   fs.outputJSON(
     path.resolve(projectDir, 'src/compiler/standalone-ext-apis.json'),
     standaloneExtApis,
+    { spaces: 2 }
+  )
+  const extApiExportWithHar = genHarmonyExtApiExport()
+  fs.outputJSON(
+    extApiExportJsonPath,
+    extApiExportWithHar,
     { spaces: 2 }
   )
 }

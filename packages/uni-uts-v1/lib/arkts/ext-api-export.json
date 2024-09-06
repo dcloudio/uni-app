@@ -537,5 +537,23 @@
     [
       "initUniExtApi"
     ]
+  ],
+  "@uni_modules/uni-facialRecognitionVerify": [
+    [
+      "getFacialRecognitionMetaInfo"
+    ],
+    [
+      "startFacialRecognitionVerify"
+    ]
+  ],
+  "@uni_modules/uni-oauth-huawei": [
+    [
+      "UniOAuthHuaweiProviderImpl"
+    ]
+  ],
+  "@uni_modules/uni-payment-alipay": [
+    [
+      "UniPaymentAlipayProviderImpl"
+    ]
   ]
 }
