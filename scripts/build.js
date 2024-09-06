@@ -212,6 +212,13 @@ async function build (target) {
       stdio: 'inherit',
     })
   }
+  if (hasArkTSBundler) {
+    if (process.env.UNI_APP_EXT_API_DIR) {
+      await buildArkTS(target, parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8')))
+    } else {
+      console.error(`Please set UNI_APP_EXT_API_DIR in .env file`)
+    }
+  }
   if (hasRollupBundler) {
     await execa(
       'rollup',
@@ -231,13 +238,6 @@ async function build (target) {
     )
     if (types && target !== 'uni-uts-vite') {
       await extract(target)
-    }
-  }
-  if (hasArkTSBundler) {
-    if (process.env.UNI_APP_EXT_API_DIR) {
-      await buildArkTS(target, parse(fs.readFileSync(path.resolve(pkgDir, 'build.ets.json'), 'utf8')))
-    } else {
-      console.error(`Please set UNI_APP_EXT_API_DIR in .env file`)
     }
   }
 }
@@ -335,10 +335,16 @@ async function buildArkTS (target, buildJson) {
   )
 
   const harBuildJson = require(path.resolve(projectDir, 'temp/uni-ext-api/build.har.json'))
+  const standaloneExtApis = []
   for (let i = 0; i < harBuildJson.length; i++) {
     const {
       input,
       output,
+      type,
+      plugin,
+      apis,
+      provider,
+      service
     } = harBuildJson[i];
     await compileArkTSExtApi(
       path.resolve(input, '..'),
@@ -349,5 +355,17 @@ async function buildArkTS (target, buildJson) {
         transform: {}
       }
     )
+    standaloneExtApis.push({
+      type,
+      plugin,
+      apis,
+      provider,
+      service
+    })
   }
+  fs.outputJSON(
+    path.resolve(projectDir, 'src/compiler/standalone-ext-apis.json'),
+    standaloneExtApis,
+    { spaces: 2 }
+  )
 }

@@ -1,0 +1,16 @@
+[
+  {
+    "type": "extapi",
+    "plugin": "uni-facialRecognitionVerify",
+    "apis": [
+      "startFacialRecognitionVerify",
+      "getFacialRecognitionMetaInfo"
+    ]
+  },
+  {
+    "type": "provider",
+    "plugin": "uni-payment-alipay",
+    "provider": "alipay",
+    "service": "payment"
+  }
+]

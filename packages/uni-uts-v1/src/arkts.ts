@@ -2,7 +2,6 @@ import path from 'path'
 import fs from 'fs-extra'
 import type { UTSBundleOptions } from '@dcloudio/uts'
 import {
-  formatUniProviderName,
   getUTSCompiler,
   normalizeUTSResult,
   resolveBundleInputFileName,
@@ -115,11 +114,6 @@ export async function compileArkTSExtApi(
   const outputUniModuleDir = outputDir
 
   const autoImportExternals = getArkTSAutoImports()
-  if (transform && transform.uniExtApiProviderService) {
-    autoImportExternals['@dcloudio/uni-app-runtime'].push([
-      formatUniProviderName(transform.uniExtApiProviderService),
-    ])
-  }
 
   const buildOptions: UTSBundleOptions = {
     hbxVersion: process.env.HX_Version || process.env.UNI_COMPILER_VERSION,

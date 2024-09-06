@@ -1,6 +1,51 @@
 {
   "@dcloudio/uni-app-runtime": [
     [
+      "UniOAuthProvider"
+    ],
+    [
+      "Login"
+    ],
+    [
+      "LoginSuccess"
+    ],
+    [
+      "LoginFail"
+    ],
+    [
+      "LoginOptions"
+    ],
+    [
+      "GetUserInfo"
+    ],
+    [
+      "UserInfo"
+    ],
+    [
+      "GetUserInfoSuccess"
+    ],
+    [
+      "GetUserInfoFail"
+    ],
+    [
+      "GetUserInfoOptions"
+    ],
+    [
+      "UniPaymentProvider"
+    ],
+    [
+      "RequestPayment"
+    ],
+    [
+      "RequestPaymentSuccess"
+    ],
+    [
+      "RequestPaymentFail"
+    ],
+    [
+      "RequestPaymentOptions"
+    ],
+    [
       "SetClipboardData"
     ],
     [
@@ -286,36 +331,6 @@
       "DownloadTask"
     ],
     [
-      "UniOAuthProvider"
-    ],
-    [
-      "Login"
-    ],
-    [
-      "LoginSuccess"
-    ],
-    [
-      "LoginFail"
-    ],
-    [
-      "LoginOptions"
-    ],
-    [
-      "GetUserInfo"
-    ],
-    [
-      "UserInfo"
-    ],
-    [
-      "GetUserInfoSuccess"
-    ],
-    [
-      "GetUserInfoFail"
-    ],
-    [
-      "GetUserInfoOptions"
-    ],
-    [
       "OpenAppAuthorizeSetting"
     ],
     [
@@ -332,21 +347,6 @@
     ],
     [
       "OpenDocumentOptions"
-    ],
-    [
-      "UniPaymentProvider"
-    ],
-    [
-      "RequestPayment"
-    ],
-    [
-      "RequestPaymentSuccess"
-    ],
-    [
-      "RequestPaymentFail"
-    ],
-    [
-      "RequestPaymentOptions"
     ],
     [
       "StartPullDownRefreshOptions"
@@ -536,16 +536,6 @@
     ],
     [
       "initUniExtApi"
-    ]
-  ],
-  "@dcloudio/uni-app-runtime/src/main/ets/uni-app-harmony/providers/uni-oauth-huawei": [
-    [
-      "UniOAuthHuaweiProviderImpl"
-    ]
-  ],
-  "@dcloudio/uni-app-runtime/src/main/ets/uni-app-harmony/providers/uni-payment-alipay": [
-    [
-      "UniPaymentAlipayProviderImpl"
     ]
   ]
 }
