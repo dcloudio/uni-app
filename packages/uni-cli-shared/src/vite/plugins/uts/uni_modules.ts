@@ -64,7 +64,7 @@ function createUniModulesSyncFilePreprocessor(
     return preprocess(htmlCode, preContext, { type: 'html' })
   }
 
-  return (content, fileName) => {
+  return async (content, fileName) => {
     const extname = path.extname(fileName)
     if (extname === '.json') {
       return dataToEsm(JSON.parse(preJs(content)), {

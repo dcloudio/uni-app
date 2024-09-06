@@ -24,7 +24,7 @@ describe('uni_modules', () => {
           platform === 'app-android'
             ? createUniXKotlinCompilerOnce()
             : createUniXSwiftCompilerOnce(),
-          (content) => {
+          async (content) => {
             return content
           }
         )

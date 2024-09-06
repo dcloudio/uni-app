@@ -199,6 +199,7 @@ function resolveUniModuleGlobs() {
     // test-uts/common/**/*
     `common/**/*${extname}`,
     `utssdk/**/*${extname}`,
+    `components/**/*`,
   ]
   return globs
 }
@@ -304,7 +305,7 @@ async function syncUniModulesFiles(
 export type SyncUniModulesFilePreprocessor = (
   code: string,
   fileName: string
-) => string
+) => Promise<string>
 
 async function syncUniModulesFile(
   relativeFileName: string,
@@ -316,7 +317,7 @@ async function syncUniModulesFile(
   const src = path.resolve(pluginDir, relativeFileName)
   if (rename) {
     const extname = path.extname(relativeFileName)
-    if (['.uts', '.json'].includes(extname)) {
+    if (['.uts', '.json', '.vue', '.uvue'].includes(extname)) {
       // test.uts => test.uts.ts
       // test.json => test.json.ts
       return writeFile(
@@ -342,7 +343,9 @@ async function writeFile(
     return
   }
   utsModuleFileCaches.set(key, stat.mtimeMs)
-  return fs.outputFile(dest, preprocessor(fs.readFileSync(src, 'utf-8'), src))
+  return preprocessor(fs.readFileSync(src, 'utf-8'), src).then((content) =>
+    fs.outputFile(dest, content)
+  )
 }
 
 async function copyFile(src: string, dest: string) {

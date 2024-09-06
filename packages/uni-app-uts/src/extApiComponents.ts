@@ -11,7 +11,7 @@ import { parse } from '@dcloudio/uni-nvue-styler'
 
 import { transformMain as transformAndroid } from './plugins/android/uvue/sfc/main'
 
-export async function transformExtApiComponent(
+export async function transformExtApiVueFile(
   platform: 'app-android' | 'app-ios', // | 'app-harmony',
   vueFileName: string
 ) {
@@ -41,7 +41,7 @@ async function transformAppAndroidExtApiComponent(
     classNamePrefix: 'Uni',
     genDefaultAs: '__sfc__',
     sourceMap: false,
-    componentType: 'app',
+    componentType: 'component',
   })
   if (!result) {
     return null

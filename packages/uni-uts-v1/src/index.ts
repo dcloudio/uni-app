@@ -1,5 +1,5 @@
 import { extend, isArray } from '@vue/shared'
-import { join, relative, resolve } from 'path'
+import { extname, join, relative, resolve } from 'path'
 
 import { resolveAndroidDepFiles } from './kotlin'
 import { resolveIOSDepFiles } from './swift'
@@ -43,6 +43,7 @@ import { getCompiler } from './compiler'
 import { uvueOutDir } from './uvue/index'
 import {
   type SyncUniModulesFilePreprocessor,
+  type UniXCompilerPlatform,
   compileUniModuleWithTsc,
   createUniXArkTSCompilerOnce,
   createUniXKotlinCompilerOnce,
@@ -656,6 +657,7 @@ function emptyDir(dir: string) {
 
 /**
  * 发行模式(会自动清理临时目录)
+ * 目前仅 ext-api 框架的地方使用了
  * @param platform
  * @param pluginDir
  * @param param2
@@ -664,18 +666,28 @@ function emptyDir(dir: string) {
 export async function buildUniModules(
   platform: 'app' | 'app-android' | 'app-ios' | 'app-harmony',
   pluginDir: string,
-  {
-    syncUniModulesFilePreprocessors,
-  }: {
+  options: {
     syncUniModulesFilePreprocessors: {
       android: SyncUniModulesFilePreprocessor
       ios: SyncUniModulesFilePreprocessor
       harmony: SyncUniModulesFilePreprocessor
     }
+    transformVueFile?: (
+      platform: UniXCompilerPlatform,
+      fileName: string
+    ) => Promise<string>
   },
   compilerOptions: UTSPluginCompilerOptions
 ) {
   const inputDir = process.env.UNI_INPUT_DIR
+
+  const syncUniModulesFilePreprocessors = options.transformVueFile
+    ? patchSyncUniModulesFilePreprocessors(
+        options.syncUniModulesFilePreprocessors,
+        options.transformVueFile
+      )
+    : options.syncUniModulesFilePreprocessors
+
   if (platform === 'app-android' || platform === 'app') {
     const platform = 'app-android'
     emptyCacheDir(platform, inputDir, pluginDir)
@@ -707,6 +719,53 @@ export async function buildUniModules(
     )
   }
   return compile(pluginDir, compilerOptions)
+}
+
+function patchSyncUniModulesFilePreprocessors(
+  syncUniModulesFilePreprocessors: {
+    android: SyncUniModulesFilePreprocessor
+    ios: SyncUniModulesFilePreprocessor
+    harmony: SyncUniModulesFilePreprocessor
+  },
+  transformVueFile: (
+    platform: UniXCompilerPlatform,
+    fileName: string
+  ) => Promise<string>
+) {
+  return {
+    android: patchSyncUniModulesFilePreprocessor(
+      'app-android',
+      syncUniModulesFilePreprocessors.android,
+      transformVueFile
+    ),
+    ios: patchSyncUniModulesFilePreprocessor(
+      'app-ios',
+      syncUniModulesFilePreprocessors.ios,
+      transformVueFile
+    ),
+    harmony: patchSyncUniModulesFilePreprocessor(
+      'app-harmony',
+      syncUniModulesFilePreprocessors.harmony,
+      transformVueFile
+    ),
+  }
+}
+
+function patchSyncUniModulesFilePreprocessor(
+  platform: UniXCompilerPlatform,
+  preprocessor: SyncUniModulesFilePreprocessor,
+  transformVueFile: (
+    platform: UniXCompilerPlatform,
+    fileName: string
+  ) => Promise<string>
+) {
+  return async (content: string, fileName: string) => {
+    const fileExtname = extname(fileName)
+    if (['.vue', '.uvue'].includes(fileExtname)) {
+      return transformVueFile(platform, fileName)
+    }
+    return preprocessor(content, fileName)
+  }
 }
 
 export * from './uni_modules'
