@@ -45,9 +45,9 @@ import {
   type SyncUniModulesFilePreprocessor,
   type UniXCompilerPlatform,
   compileUniModuleWithTsc,
-  createUniXArkTSCompilerOnce,
-  createUniXKotlinCompilerOnce,
-  createUniXSwiftCompilerOnce,
+  createUniXArkTSCompiler,
+  createUniXKotlinCompiler,
+  createUniXSwiftCompiler,
   resolveOutputPluginDir,
   resolveUVueOutputPluginDir,
 } from './uni_modules'
@@ -676,6 +676,7 @@ export async function buildUniModules(
       platform: UniXCompilerPlatform,
       fileName: string
     ) => Promise<string>
+    rootFiles?: string[]
   },
   compilerOptions: UTSPluginCompilerOptions
 ) {
@@ -694,8 +695,11 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-android',
       pluginDir,
-      createUniXKotlinCompilerOnce(),
-      syncUniModulesFilePreprocessors.android
+      createUniXKotlinCompiler(),
+      {
+        rootFiles: options.rootFiles,
+        preprocessor: syncUniModulesFilePreprocessors.android,
+      }
     )
   }
   if (platform === 'app-ios' || platform === 'app') {
@@ -704,8 +708,11 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-ios',
       pluginDir,
-      createUniXSwiftCompilerOnce(),
-      syncUniModulesFilePreprocessors.ios
+      createUniXSwiftCompiler(),
+      {
+        rootFiles: options.rootFiles,
+        preprocessor: syncUniModulesFilePreprocessors.ios,
+      }
     )
   }
   if (platform === 'app-harmony') {
@@ -714,8 +721,11 @@ export async function buildUniModules(
     await compileUniModuleWithTsc(
       'app-harmony',
       pluginDir,
-      createUniXArkTSCompilerOnce(),
-      syncUniModulesFilePreprocessors.harmony
+      createUniXArkTSCompiler(),
+      {
+        rootFiles: options.rootFiles,
+        preprocessor: syncUniModulesFilePreprocessors.harmony,
+      }
     )
   }
   return compile(pluginDir, compilerOptions)

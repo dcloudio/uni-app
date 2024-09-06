@@ -12,7 +12,6 @@ import babel from '@rollup/plugin-babel'
 import { capitalize, cssTarget, parseInjects } from '@dcloudio/uni-cli-shared'
 import { isH5CustomElement } from '@dcloudio/uni-shared'
 import { resolveExtApiTempDir } from '../../scripts/ext-api'
-import { StandaloneExtApi } from './src/compiler/constants'
 
 function resolve(file: string) {
   return path.resolve(__dirname, file)
@@ -196,7 +195,7 @@ function parseExtApiInjects(uniModulesDir: string) {
     '',
     uniModulesDir,
     require(path.resolve(uniModulesDir, 'package.json'))?.uni_modules[
-    'uni-ext-api'
+      'uni-ext-api'
     ] || {}
   )
 }
@@ -215,21 +214,17 @@ function getExtApiPaths(dirs: string[]) {
   }, {} as Record<string, string>)
 }
 
-interface IStandaloneExtApi {
-  input: string,
-  output: string,
-  plugin: string,
-  type: 'extapi' | 'provider',
-  apis?: string[]
-  provider?: string
-  service?: string
-}
-
 function initArkTSExtApi() {
-  if (!process.env.UNI_APP_EXT_API_DIR || !process.env.UNI_APP_EXT_API_INTERNAL_DIR) {
+  const standaloneExtApi = ['uni-payment-alipay', 'uni-facialRecognitionVerify']
+  if (
+    !process.env.UNI_APP_EXT_API_DIR ||
+    !process.env.UNI_APP_EXT_API_INTERNAL_DIR
+  ) {
     return
   }
-  const internalExtApiDir = path.resolve(process.env.UNI_APP_EXT_API_INTERNAL_DIR)
+  const internalExtApiDir = path.resolve(
+    process.env.UNI_APP_EXT_API_INTERNAL_DIR
+  )
   // 遍历所有 ext-api，查找已实现 app-harmony 的 ext-api
   const extApiDir = path.resolve(process.env.UNI_APP_EXT_API_DIR)
   const extApiTempDir = resolveExtApiTempDir('uni-app-harmony')
@@ -240,42 +235,24 @@ function initArkTSExtApi() {
   const defineExtApis: string[] = []
   const uniExtApis: string[] = []
   // TODO 优化编译配置的生成及传递
-  const extApiStandaloneBuildJson: IStandaloneExtApi[] = []
+  const extApiStandaloneBuildJson: { input: string; output: string }[] = []
 
   for (const extApi in extApiStore) {
     const extApiPath = extApiStore[extApi]
-    if (!fs.existsSync(path.resolve(extApiPath, 'utssdk/app-harmony/index.uts'))) {
+    if (
+      !fs.existsSync(path.resolve(extApiPath, 'utssdk/app-harmony/index.uts'))
+    ) {
+      continue
+    }
+    if (standaloneExtApi.includes(extApi)) {
+      fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
+      extApiStandaloneBuildJson.push({
+        input: path.resolve(extApiTempDir, extApi),
+        output: path.resolve(__dirname, `dist/packages/${extApi}`),
+      })
       continue
     }
     const injects = parseExtApiInjects(extApiPath)
-    const standaloneExtApi = StandaloneExtApi.find((item) => item.name === extApi)
-    if (standaloneExtApi) {
-      fs.copySync(extApiPath, path.resolve(extApiTempDir, extApi))
-      if (standaloneExtApi.type === 'extapi') {
-        const apis = Object.keys(injects).filter((key) => {
-          const inject = injects[key]
-          return Array.isArray(inject) && inject.length > 1
-        }).map((key) => injects[key][1])
-        extApiStandaloneBuildJson.push({
-          input: path.resolve(extApiTempDir, extApi),
-          output: path.resolve(__dirname, `dist/packages/${extApi}`),
-          plugin: extApi,
-          type: standaloneExtApi.type,
-          apis,
-        })
-      } else if (standaloneExtApi.type === 'provider') {
-        const [_, service, provider] = extApi.split('-')
-        extApiStandaloneBuildJson.push({
-          input: path.resolve(extApiTempDir, extApi),
-          output: path.resolve(__dirname, `dist/packages/${extApi}`),
-          plugin: extApi,
-          type: standaloneExtApi.type,
-          provider,
-          service 
-        })
-      }
-      continue
-    }
     if (Object.keys(injects).length === 0) {
       continue
     }
@@ -324,6 +301,4 @@ export default {
   ${defineExtApis.join(',\n  ')}
 } as UniExtApi`
   )
-
-  // TODO内置provider在uni.api.ts中注册
 }

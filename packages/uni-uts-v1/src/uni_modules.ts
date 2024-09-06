@@ -29,17 +29,22 @@ function createUniXTargetLanguageCompiler(
   )
 }
 
-export const createUniXArkTSCompilerOnce = once(() => {
+export function createUniXArkTSCompiler() {
   return createUniXTargetLanguageCompiler('app-harmony', 'ArkTS')
-})
+}
 
-export const createUniXKotlinCompilerOnce = once(() => {
+export const createUniXArkTSCompilerOnce = once(createUniXArkTSCompiler)
+
+export function createUniXKotlinCompiler() {
   return createUniXTargetLanguageCompiler('app-android', 'Kotlin')
-})
+}
+export const createUniXKotlinCompilerOnce = once(createUniXKotlinCompiler)
 
-export const createUniXSwiftCompilerOnce = once(() => {
+export function createUniXSwiftCompiler() {
   return createUniXTargetLanguageCompiler('app-ios', 'Swift')
-})
+}
+
+export const createUniXSwiftCompilerOnce = once(createUniXSwiftCompiler)
 
 function resolveUniXCompilerUniModulesPaths(
   platform: 'app-android' | 'app-ios' | 'app-harmony',
@@ -115,7 +120,13 @@ export async function compileUniModuleWithTsc(
   platform: UniXCompilerPlatform,
   pluginDir: string,
   uniXCompiler: UniXCompiler,
-  preprocessor: SyncUniModulesFilePreprocessor
+  {
+    rootFiles,
+    preprocessor,
+  }: {
+    rootFiles?: string[]
+    preprocessor: SyncUniModulesFilePreprocessor
+  }
 ) {
   // 初始化编译器
   await uniXCompiler.init()
@@ -131,6 +142,9 @@ export async function compileUniModuleWithTsc(
   const indexFileName = resolveTscUniModuleIndexFileName(platform, pluginDir)
   if (indexFileName) {
     await uniXCompiler.addRootFile(indexFileName)
+  }
+  if (rootFiles && rootFiles.length) {
+    await uniXCompiler.addRootFiles(rootFiles)
   }
   await uniXCompiler.close()
 }

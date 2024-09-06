@@ -24,8 +24,11 @@ describe('uni_modules', () => {
           platform === 'app-android'
             ? createUniXKotlinCompilerOnce()
             : createUniXSwiftCompilerOnce(),
-          async (content) => {
-            return content
+          {
+            rootFiles: [],
+            preprocessor: async (content) => {
+              return content
+            },
           }
         )
         const outputUVuePluginDir = path.resolve(

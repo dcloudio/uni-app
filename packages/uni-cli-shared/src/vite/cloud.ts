@@ -449,10 +449,14 @@ export function compileCloudUniModuleWithTsc(
       : platform === 'app-harmony'
       ? createUniXArkTSCompilerOnce()
       : createUniXSwiftCompilerOnce(),
-    platform === 'app-android'
-      ? createAppAndroidUniModulesSyncFilePreprocessorOnce(isX)
-      : platform === 'app-harmony'
-      ? createAppHarmonyUniModulesSyncFilePreprocessorOnce(isX)
-      : createAppIosUniModulesSyncFilePreprocessorOnce(isX)
+    {
+      rootFiles: [],
+      preprocessor:
+        platform === 'app-android'
+          ? createAppAndroidUniModulesSyncFilePreprocessorOnce(isX)
+          : platform === 'app-harmony'
+          ? createAppHarmonyUniModulesSyncFilePreprocessorOnce(isX)
+          : createAppIosUniModulesSyncFilePreprocessorOnce(isX),
+    }
   )
 }
