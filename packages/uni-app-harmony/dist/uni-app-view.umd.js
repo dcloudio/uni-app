@@ -22406,6 +22406,12 @@
       default() {
         return {};
       }
+    },
+    methods: {
+      type: Array,
+      default() {
+        return [];
+      }
     }
   };
   var index$1 = 0;
@@ -22416,12 +22422,10 @@
         expose,
         attrs: attrs2
       } = _ref;
-      var clickRef = ref(0);
       var elId = String(index$1++);
       var src = computed(() => {
         var on = [];
         var options = Object.assign({}, props2.options, {
-          click: clickRef.value,
           on
         });
         Object.keys(attrs2).forEach((key2) => {
@@ -22435,13 +22439,18 @@
       watch(src, (srcValue2) => {
         harmonyChannel.invokeSync("onNativeEmbedLifecycleChange", [srcValue2]);
       });
-      function click() {
-        clickRef.value++;
-      }
-      expose({
-        click,
+      var exposed = {
         elId
+      };
+      props2.methods.forEach((method) => {
+        exposed[method] = function() {
+          for (var _len = arguments.length, args = new Array(_len), _key = 0; _key < _len; _key++) {
+            args[_key] = arguments[_key];
+          }
+          harmonyChannel.invokeSync("invokeNativeEmbed", [elId, method, args]);
+        };
       });
+      expose(exposed);
       return () => createVNode("embed", mergeProps({
         "el-id": elId,
         "type": "native/".concat(props2.tag),
@@ -23514,7 +23523,7 @@
       var embedRef = ref(null);
       var trigger2 = useCustomEvent(rootRef, emit2);
       function onClick() {
-        embedRef.value.click();
+        embedRef.value.show();
       }
       function onCancel(event) {
         trigger2("cancel", event, event.detail);
@@ -23531,6 +23540,7 @@
         "ref": embedRef,
         "tag": "picker",
         "options": props2,
+        "methods": ["show"],
         "onChange": onChange2,
         "onColumnchange": onColumnchange,
         "onCancel": onCancel

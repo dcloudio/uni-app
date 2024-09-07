@@ -112,7 +112,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
     const trigger = useCustomEvent<EmitEvent<typeof emit>>(rootRef, emit)
     function onClick() {
       // @ts-expect-error
-      embedRef.value!.click()
+      embedRef.value!.show()
     }
     function onCancel(event: CustomEvent<any>) {
       trigger('cancel', event, event.detail)
@@ -129,6 +129,7 @@ export default /*#__PURE__*/ defineBuiltInComponent({
           ref={embedRef}
           tag="picker"
           options={props}
+          methods={['show']}
           onChange={onChange}
           onColumnchange={onColumnchange}
           onCancel={onCancel}
